@@ -33,6 +33,8 @@ import org.veo.adapter.presenter.api.dto.AbstractPersonDto;
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto;
 import org.veo.adapter.presenter.api.dto.AbstractScenarioDto;
 import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
+import org.veo.adapter.presenter.api.dto.ControlDomainAssociationDto;
+import org.veo.adapter.presenter.api.dto.ControlRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
 import org.veo.adapter.service.domaintemplate.SyntheticIdRef;
 import org.veo.core.entity.Asset;
@@ -46,6 +48,9 @@ import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.risk.ControlRiskValues;
+import org.veo.core.entity.risk.ImplementationStatusRef;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 
 /**
  * Maps {@link Domain} associations of {@link Element}s between entities and
@@ -60,7 +65,21 @@ public class DomainAssociationTransformer {
 
     public void mapDomainsToEntity(AbstractControlDto source, Control target,
             IdRefResolver idRefResolver) {
-        mapToEntity(source.getDomains(), target, idRefResolver);
+        mapToEntity(source.getDomains(), target, idRefResolver, (domain, associationDto) -> {
+            target.setRiskValues(domain, associationDto.getRiskValues()
+                                                       .entrySet()
+                                                       .stream()
+                                                       .collect(Collectors.toMap(kv -> RiskDefinitionRef.from(kv.getKey()),
+                                                                                 this::mapControlRiskValuesDto2Entity)));
+        });
+    }
+
+    private ControlRiskValues mapControlRiskValuesDto2Entity(
+            Map.Entry<String, ControlRiskValuesDto> kv) {
+        var riskValues = new ControlRiskValues();
+        riskValues.setImplementationStatus(ImplementationStatusRef.from(kv.getValue()
+                                                                          .getImplementationStatus()));
+        return riskValues;
     }
 
     public void mapDomainsToEntity(AbstractDocumentDto source, Document target,
@@ -98,7 +117,27 @@ public class DomainAssociationTransformer {
     }
 
     public void mapDomainsToDto(Control source, AbstractControlDto target) {
-        target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new));
+        target.setDomains(extractDomainAssociations(source, (domain) -> {
+            var assocationDto = new ControlDomainAssociationDto();
+            source.getRiskValues(domain)
+                  .ifPresent(riskValues -> {
+                      assocationDto.setRiskValues(riskValues.entrySet()
+                                                            .stream()
+                                                            .collect(Collectors.toMap(kv -> kv.getKey()
+                                                                                              .getId(),
+                                                                                      this::mapControlRiskValuesToDto)));
+                  });
+            return assocationDto;
+        }));
+    }
+
+    private ControlRiskValuesDto mapControlRiskValuesToDto(
+            Map.Entry<RiskDefinitionRef, ControlRiskValues> entry) {
+        var riskValuesDto = new ControlRiskValuesDto();
+        riskValuesDto.setImplementationStatus(entry.getValue()
+                                                   .getImplementationStatus()
+                                                   .getKey());
+        return riskValuesDto;
     }
 
     public void mapDomainsToDto(Document source, AbstractDocumentDto target) {

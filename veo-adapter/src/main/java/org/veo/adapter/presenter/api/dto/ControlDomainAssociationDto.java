@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2019  Urs Zeidler.
+ * Copyright (C) 2022  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,34 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.adapter.presenter.api.dto;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-import org.veo.core.entity.risk.ControlRiskValues;
-import org.veo.core.entity.risk.RiskDefinitionRef;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-/**
- * A control represents something with can be applied to an entity.
- */
-public interface Control extends Element, CompositeElement<Control> {
-
-    String SINGULAR_TERM = "control";
-    String PLURAL_TERM = "controls";
-    String TYPE_DESIGNATOR = "CTL";
-
-    @Override
-    default String getModelType() {
-        return SINGULAR_TERM;
-    }
-
-    @Override
-    default String getTypeDesignator() {
-        return TYPE_DESIGNATOR;
-    }
-
-    Optional<Map<RiskDefinitionRef, ControlRiskValues>> getRiskValues(DomainTemplate domain);
-
-    void setRiskValues(DomainTemplate domain, Map<RiskDefinitionRef, ControlRiskValues> riskValues);
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class ControlDomainAssociationDto extends DomainAssociationDto {
+    @Schema(description = "Key is risk definition ID, value contains risk values in the context of that risk definition.")
+    Map<String, ControlRiskValuesDto> riskValues = new HashMap<>();
 }

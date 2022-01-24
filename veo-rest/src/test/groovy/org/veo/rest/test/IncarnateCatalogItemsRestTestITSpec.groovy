@@ -69,7 +69,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             name == "Control-cc-1"
             abbreviation == "cc-1"
             description.startsWith("Lorem ipsum")
-            domains[domainId] == [:]
+            domains[domainId] == [riskValues: [:]]
             links.size() ==1
             links["Control_details_Control"].domains.size() == 1
             links["Control_details_Control"].domains[0].displayName[0] == "td test-domain"
@@ -144,7 +144,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             name == "Control-cc-2"
             abbreviation == "cc-2"
             description.startsWith("Lorem ipsum")
-            domains[domainId] == [:]
+            domains[domainId] == [riskValues: [:]]
             links.size() ==1
             links["Control_details_Control"].domains.size() == 1
             links["Control_details_Control"].domains[0].displayName[0] == "td test-domain"
@@ -215,7 +215,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             items[0].abbreviation == "c-2"
             items[0].description.startsWith("Lorem ipsum")
             items[0].owner.displayName == "Testunit"
-            items[0].domains[domainId] == [:]
+            items[0].domains[domainId] == [riskValues: [:]]
         }
     }
 
@@ -244,7 +244,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             name == "Control-cc-1"
             abbreviation == "cc-1"
             description.startsWith("Lorem ipsum")
-            domains[domainId] == [:]
+            domains[domainId] == [riskValues: [:]]
             links.size() ==1
             links["Control_details_Control"].domains.size() == 1
             links["Control_details_Control"].domains[0].displayName[0] == "td test-domain"
@@ -256,7 +256,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             name == "Control-cc-2"
             abbreviation == "cc-2"
             description.startsWith("Lorem ipsum")
-            domains[domainId] == [:]
+            domains[domainId] == [riskValues: [:]]
             links.size() ==1
             links["Control_details_Control"].domains.size() == 1
             links["Control_details_Control"].domains[0].displayName[0] == "td test-domain"

@@ -81,7 +81,7 @@ public abstract class AbstractControlDto extends CompositeEntityDto<Control> {
         setDomains(Map.of(id, getDomains().values()
                                           .stream()
                                           .findFirst()
-                                          .orElse(new DomainAssociationDto())));
+                                          .orElse(new ControlDomainAssociationDto())));
     }
 
     @Override
@@ -91,5 +91,5 @@ public abstract class AbstractControlDto extends CompositeEntityDto<Control> {
 
     @Valid
     @Schema(description = "Details about this element's association with domains. Domain ID is key, association object is value.")
-    private Map<String, DomainAssociationDto> domains = new HashMap<>();
+    private Map<String, ControlDomainAssociationDto> domains = new HashMap<>();
 }

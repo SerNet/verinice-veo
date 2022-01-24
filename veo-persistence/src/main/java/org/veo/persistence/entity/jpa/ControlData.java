@@ -18,17 +18,24 @@
 package org.veo.persistence.entity.jpa;
 
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Control;
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.risk.ControlRiskValues;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -53,4 +60,27 @@ public class ControlData extends ElementData implements Control {
     @Getter
     private final Set<Control> parts = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.ALL,
+               orphanRemoval = true,
+               targetEntity = ControlRiskValuesAspectData.class,
+               mappedBy = "owner",
+               fetch = FetchType.LAZY)
+    @Valid
+    private final Set<ControlRiskValuesAspectData> riskValuesAspects = new HashSet<>();
+
+    @Override
+    public void setRiskValues(DomainTemplate domain,
+            Map<RiskDefinitionRef, ControlRiskValues> riskValues) {
+        var aspect = findAspectByDomain(riskValuesAspects, domain).orElseGet(() -> {
+            var newAspect = new ControlRiskValuesAspectData(domain, this);
+            riskValuesAspects.add(newAspect);
+            return newAspect;
+        });
+        aspect.setValues(riskValues);
+    }
+
+    public Optional<Map<RiskDefinitionRef, ControlRiskValues>> getRiskValues(
+            DomainTemplate domain) {
+        return findAspectByDomain(riskValuesAspects, domain).map(a -> a.getValues());
+    }
 }

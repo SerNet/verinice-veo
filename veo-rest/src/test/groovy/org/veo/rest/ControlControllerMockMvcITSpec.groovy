@@ -269,7 +269,9 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the control is found"
         result.name == 'New control-2'
         result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == [:]
+        result.domains[dsgvoDomain.id.uuidValue()] == [
+            riskValues: [:]
+        ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
@@ -319,7 +321,9 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the control is found"
         result.name == 'New control-2'
         result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == [:]
+        result.domains[dsgvoDomain.id.uuidValue()] == [
+            riskValues: [:]
+        ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 

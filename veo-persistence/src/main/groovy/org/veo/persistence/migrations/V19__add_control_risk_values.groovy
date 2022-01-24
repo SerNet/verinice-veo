@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2019  Urs Zeidler.
+ * Copyright (C) 2021  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,34 +15,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity;
+package org.veo.persistence.migrations
 
-import java.util.Map;
-import java.util.Optional;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-import org.veo.core.entity.risk.ControlRiskValues;
-import org.veo.core.entity.risk.RiskDefinitionRef;
+import groovy.sql.Sql
 
-/**
- * A control represents something with can be applied to an entity.
- */
-public interface Control extends Element, CompositeElement<Control> {
-
-    String SINGULAR_TERM = "control";
-    String PLURAL_TERM = "controls";
-    String TYPE_DESIGNATOR = "CTL";
-
+class V19__add_control_risk_values extends BaseJavaMigration {
     @Override
-    default String getModelType() {
-        return SINGULAR_TERM;
+    void migrate(Context context) throws Exception {
+        new Sql(context.connection).execute("""
+
+        create table control_risk_values_aspect (
+           db_id varchar(255) not null,
+            control_risk_values jsonb,
+            domain_id varchar(255) not null,
+            owner_db_id varchar(255) not null,
+            primary key (db_id)
+        );
+
+        alter table control_risk_values_aspect
+           add constraint FK_owner_id
+           foreign key (owner_db_id)
+           references element;
+
+""")
     }
-
-    @Override
-    default String getTypeDesignator() {
-        return TYPE_DESIGNATOR;
-    }
-
-    Optional<Map<RiskDefinitionRef, ControlRiskValues>> getRiskValues(DomainTemplate domain);
-
-    void setRiskValues(DomainTemplate domain, Map<RiskDefinitionRef, ControlRiskValues> riskValues);
 }
