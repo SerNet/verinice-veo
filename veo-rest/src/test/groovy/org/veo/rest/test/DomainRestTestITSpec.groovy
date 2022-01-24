@@ -62,12 +62,13 @@ class DomainRestTestITSpec extends VeoRestTest {
         def catalog = domainDto.catalogs[0]
         def vvt = catalog.catalogItems.find { it.element.abbreviation == "VVT" }
         def tomi = catalog.catalogItems.find { it.element.abbreviation == "TOM-I" }
+        def dsg23 = catalog.catalogItems.find { it.element.abbreviation == "DS-G.23" }
         log.info("==> catalogItems tomi: {}", tomi)
         log.info("==> catalogItems VVT: {}", vvt)
 
         then: "the domain is exported"
         with(catalog) {
-            catalogItems.size() == 9
+            catalogItems.size() == 65
             name == "DS-GVO-Controls"
         }
         with (vvt) {
@@ -85,6 +86,13 @@ class DomainRestTestITSpec extends VeoRestTest {
             customAspects.control_dataProtection.attributes.control_dataProtection_objectives == "control_dataProtection_objectives_integrity"
             domains[dsgvoId].subType == "CTL_TOM"
             domains[dsgvoId].status == "NEW"
+        }
+        with (dsg23) {
+            with (element) {
+                name == "Keine Widerspruchsmöglichkeit für Betroffene gegen die Datenverarbeitung"
+                domains[dsgvoId].subType == "SCN_Scenario"
+                domains[dsgvoId].status == "NEW"
+            }
         }
     }
 }

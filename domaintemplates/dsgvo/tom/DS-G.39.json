@@ -1,0 +1,19 @@
+{
+  "name": "\u00dcberschreitung des Erforderlichkeitsgrundsatzes",
+  "abbreviation": "DS-G.39",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "468f508f-038e-454e-83e3-726df976534f"
+}

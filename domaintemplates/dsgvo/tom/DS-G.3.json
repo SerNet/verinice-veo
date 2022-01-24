@@ -1,0 +1,19 @@
+{
+  "name": "Erstellung und Nutzung umfassender Profile zur Unterst\u00fctzung Entscheidungsfindung",
+  "abbreviation": "DS-G.3",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "1e55de12-b219-4f61-901b-1176f92cc23b"
+}

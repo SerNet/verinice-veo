@@ -1,0 +1,19 @@
+{
+  "name": "Keine Widerspruchsm\u00f6glichkeit f\u00fcr Betroffene gegen die Datenverarbeitung",
+  "abbreviation": "DS-G.23",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "98fac979-da16-4538-a0d4-789e57c98f9f"
+}

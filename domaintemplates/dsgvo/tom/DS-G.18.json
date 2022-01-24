@@ -1,0 +1,19 @@
+{
+  "name": "Fehlendes oder unzureichendes Privacy by Design",
+  "abbreviation": "DS-G.18",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "6da23c08-2870-4ac3-b189-22108a132740"
+}

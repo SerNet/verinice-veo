@@ -1,0 +1,19 @@
+{
+  "name": "Hinderung der Kontrolle \u00fcber eigene Daten",
+  "abbreviation": "DS-G.20",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "a2f6f94b-326d-4c2b-8b78-9e5f16332e2a"
+}

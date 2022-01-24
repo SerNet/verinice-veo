@@ -1,0 +1,19 @@
+{
+  "name": "Verarbeitung von Daten Minderj\u00e4hriger",
+  "abbreviation": "DS-G.50",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "63955aed-2918-47e3-ab3f-a65dba3c8e70"
+}

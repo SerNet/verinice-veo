@@ -1,0 +1,19 @@
+{
+  "name": "Verletzung auf Verpflichtung auf Vertraulichkeit ",
+  "abbreviation": "DS-G.52",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "20297f89-4820-4f96-b313-1b85f1a2f6c8"
+}

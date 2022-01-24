@@ -1,0 +1,19 @@
+{
+  "name": "Fehlendes oder unvollst\u00e4ndiges Verzeichnis der Verarbeitungst\u00e4tigkeiten",
+  "abbreviation": "DS-G.16",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "d9576b30-a847-43af-98e2-4c360bdec678"
+}

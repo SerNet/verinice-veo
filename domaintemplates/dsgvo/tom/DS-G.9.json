@@ -1,0 +1,19 @@
+{
+  "name": "Fehlende oder unzureichende Identifikation, Analyse und Bewertung von Datenschutzrisiken",
+  "abbreviation": "DS-G.9",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "4046a7bc-4677-4dff-a680-7e9cfd2f0ab0"
+}

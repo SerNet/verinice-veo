@@ -1,0 +1,19 @@
+{
+  "name": "Identit\u00e4tsdiebstahl oder Identit\u00e4tsbetrug",
+  "abbreviation": "DS-G.22",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "d62f9fde-0bdb-4fec-b7b7-1f9be28ae32e"
+}

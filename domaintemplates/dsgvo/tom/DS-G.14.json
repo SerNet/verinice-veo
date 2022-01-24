@@ -1,0 +1,19 @@
+{
+  "name": "Fehlender oder unzureichender Prozess meldepflichtiger Vorf\u00e4lle",
+  "abbreviation": "DS-G.14",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "7281af11-2037-4032-a926-f0d9e61c0162"
+}

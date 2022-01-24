@@ -1,0 +1,19 @@
+{
+  "name": "Fehlende oder unzureichende Datenschutzkontrollen",
+  "abbreviation": "DS-G.8",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "cf850f7c-5223-409a-8347-beec964f8368"
+}

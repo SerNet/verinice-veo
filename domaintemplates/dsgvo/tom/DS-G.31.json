@@ -1,0 +1,19 @@
+{
+  "name": "Manipulation oder unberechtigte Ver\u00e4nderung personenbezogener Daten",
+  "abbreviation": "DS-G.31",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "3bf0b9f4-5ea9-4c4f-b7df-e3c48e1912bb"
+}

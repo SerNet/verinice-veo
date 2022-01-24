@@ -1,0 +1,19 @@
+{
+  "name": "Verwendung der Daten zu inkompatiblen Zwecken",
+  "abbreviation": "DS-G.55",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "af592ea3-c3cc-49d5-9b92-e800217ddf71"
+}

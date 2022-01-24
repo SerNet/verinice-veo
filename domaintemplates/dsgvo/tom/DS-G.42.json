@@ -1,0 +1,19 @@
+{
+  "name": "Unberechtigte Kenntnisnahme",
+  "abbreviation": "DS-G.42",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "28b4a4ca-7981-4c64-b900-4d30e4060d54"
+}

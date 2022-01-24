@@ -162,7 +162,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
 
         then: "the expected catalog was instantiated"
         with(catalog) {
-            catalogItems.size() == 9
+            catalogItems.size() == 65
             name == "DS-GVO-Controls"
         }
 
@@ -249,7 +249,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
 
         then: "the expected catalog was instantiated"
         with(catalog) {
-            catalogItems.size() == 9
+            catalogItems.size() == 65
             name == "DS-GVO-Controls"
         }
 
@@ -263,7 +263,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
 
         log.debug("==> elementResults: {}", elementResults)
         then: "all elements are created"
-        elementResults.size() == 9
+        elementResults.size() == 65
 
         when: "we get each element"
         elementResults.each { element ->

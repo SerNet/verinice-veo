@@ -1,0 +1,19 @@
+{
+  "name": "Betroffenenrechte werden nicht oder nur unvollst\u00e4ndig gew\u00e4hrt",
+  "abbreviation": "DS-G.2",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "5695027b-b332-4fdf-bded-95f85f651038"
+}

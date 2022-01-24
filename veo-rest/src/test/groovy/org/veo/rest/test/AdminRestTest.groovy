@@ -63,7 +63,7 @@ class AdminRestTest extends VeoRestTest{
         with (dump.elements.find { it.abbreviation == "VVT" }) {
             description == "VVT-Prozess"
             links.size() == 1
-            links.process_tom.size() == catalog.catalogItems.size()-1
+            links.process_tom.size() == 8
             domains[dsgvoId].subType == "PRO_DataProcessing"
             domains[dsgvoId].status == "NEW"
         }

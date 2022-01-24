@@ -1,0 +1,19 @@
+{
+  "name": "Fehlende oder unzureichende Datenschutz-Folgenabsch\u00e4tzung",
+  "abbreviation": "DS-G.7",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "edea7047-678f-45a7-92f4-12198bf80c95"
+}

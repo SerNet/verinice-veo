@@ -1,0 +1,19 @@
+{
+  "name": "Mangelnde Freiwilligkeit der Einwilligungserkl\u00e4rung",
+  "abbreviation": "DS-G.29",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "6ce32735-5781-42f7-8e13-c70d1f5b9d55"
+}

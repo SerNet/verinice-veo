@@ -25,6 +25,9 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
+import org.veo.core.entity.Control
+import org.veo.core.entity.Process
+import org.veo.core.entity.Scenario
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.exception.ModelConsistencyException
 import org.veo.core.service.DomainTemplateService
@@ -62,9 +65,13 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             revision == domainTemplate.revision
             templateVersion == domainTemplate.templateVersion
             catalogs.size() == 1
-            catalogs.first().catalogItems.size() == 9
+            catalogs.first().catalogItems.size() == 65
         }
-        with (domainFromTemplate.catalogs.first().catalogItems.sort { it.element.abbreviation }) {
+        when:
+        def catalogItemsFirstCatalog = domainFromTemplate.catalogs.first().catalogItems
+        then: 'its catalog has has the expected Control elements'
+        with (catalogItemsFirstCatalog.findAll{it.element.modelInterface == Control}.sort { it.element.abbreviation }) {
+            it.size() == 8
             with(it[0]) {
                 tailoringReferences.size()==1
                 with(element) {
@@ -91,10 +98,34 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             it[7].element.abbreviation == 'TOM-REC'
             it[7].tailoringReferences.size()==1
             it[7].tailoringReferences[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
-
-            it[8].element.abbreviation == 'VVT'
-            it[8].tailoringReferences.size() == 8
-            it[8].tailoringReferences[0].referenceType == TailoringReferenceType.LINK
+        }
+        and: 'its catalog has has the expected Process elements'
+        with (catalogItemsFirstCatalog.findAll{it.element.modelInterface == Process}.sort { it.element.abbreviation }) {
+            it.size() == 1
+            with(it[0]) {
+                element.abbreviation == 'VVT'
+                tailoringReferences.size() == 8
+                tailoringReferences[0].referenceType == TailoringReferenceType.LINK
+            }
+        }
+        and: 'its catalog has has the expected Scenario elements'
+        with (catalogItemsFirstCatalog.findAll{it.element.modelInterface == Scenario}.sort { it.element.abbreviation }) {
+            it.size() == 56
+            with(it[0]) {
+                with(element) {
+                    links.size()==0
+                    abbreviation == 'DS-G.1'
+                    name == 'Auftragsverarbeitung in Drittstaaten ohne adäquates Datenschutzniveau'
+                }
+            }
+            // items are sorted lexicographically
+            with(it[31]) {
+                with(element) {
+                    links.size()==0
+                    abbreviation == 'DS-G.39'
+                    name == 'Überschreitung des Erforderlichkeitsgrundsatzes'
+                }
+            }
         }
 
         when: 'check the test domain'
@@ -235,7 +266,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         }
         domainFromTemplate = client.domains.first()
         domainFromTemplate.templateVersion = "1.0"
-        domainFromTemplate.revision = "1";
+        domainFromTemplate.revision = "1"
 
         def domainTemplateFromDomain = txTemplate.execute {
             domainTemplateService.createDomainTemplateFromDomain(domainFromTemplate)
@@ -297,7 +328,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         }
         domainFromTemplate = client.domains.first()
         domainFromTemplate.templateVersion = "1.0"
-        domainFromTemplate.revision = "2";
+        domainFromTemplate.revision = "2"
 
         def domainTemplateFromDomain = txTemplate.execute {
             domainTemplateService.createDomainTemplateFromDomain(domainFromTemplate)

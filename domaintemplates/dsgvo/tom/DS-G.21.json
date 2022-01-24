@@ -1,0 +1,19 @@
+{
+  "name": "Hohe Anzahl betroffener Personen durch Datenschutzverletzung",
+  "abbreviation": "DS-G.21",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "e5bae164-ef7e-4c99-9806-c90f99edf96e"
+}

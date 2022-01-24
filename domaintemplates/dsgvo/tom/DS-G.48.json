@@ -1,0 +1,19 @@
+{
+  "name": "Verarbeitung gro\u00dfer Datenmengen",
+  "abbreviation": "DS-G.48",
+  "domains": {
+    "f8ed22b1-b277-56ec-a2ce-0dbd94e24824": {
+      "subType": "SCN_Scenario",
+      "status": "NEW"
+    }
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    
+  },
+  "type": "scenario",
+  "parts": [],
+  "id": "66e01245-5348-4889-9466-eb8417207237"
+}
