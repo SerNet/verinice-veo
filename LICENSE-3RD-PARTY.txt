@@ -18666,7 +18666,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-147. Group: org.springframework.hateoas  Name: spring-hateoas  Version: 1.3.6
+147. Group: org.springframework.hateoas  Name: spring-hateoas  Version: 1.4.1
 
 POM Project URL: https://github.com/spring-projects/spring-hateoas
 
@@ -19237,5 +19237,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Fri Jan 21 07:02:22 UTC 2022.
+This report was generated at Mon Jan 24 11:54:23 CET 2022.
 

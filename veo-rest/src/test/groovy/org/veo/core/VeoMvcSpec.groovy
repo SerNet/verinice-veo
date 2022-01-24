@@ -81,9 +81,13 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
                 expectedStatusCode)
     }
 
-
     ResultActions get(String url, boolean expectSuccessfulRequest = true) {
         doRequest(MockMvcRequestBuilders.get(url)
+                .accept(APPLICATION_JSON), 200, expectSuccessfulRequest)
+    }
+
+    ResultActions get(URI uri, boolean expectSuccessfulRequest = true) {
+        doRequest(MockMvcRequestBuilders.get(uri)
                 .accept(APPLICATION_JSON), 200, expectSuccessfulRequest)
     }
 

@@ -243,7 +243,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         def postSearchResponse = parseJson(post('http://localhost/assets/searches', search))
 
         and: "the search is run"
-        def searchResult = parseJson(get(postSearchResponse.searchUrl))
+        def searchResult = parseJson(get(new URI(postSearchResponse.searchUrl)))
 
         then: "the response contains the expected data"
         searchResult.items*.id == [asset.id.uuidValue()]

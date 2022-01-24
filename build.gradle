@@ -152,10 +152,6 @@ subprojects {
         }
     }
 
-    //  pin spring-hateoas to a version before 1.4 to work around https://github.com/spring-projects/spring-hateoas/issues/1722
-    ext['spring-hateoas.version'] = '1.3.6'
-
-
     sourceCompatibility = 11
     targetCompatibility = 11
 

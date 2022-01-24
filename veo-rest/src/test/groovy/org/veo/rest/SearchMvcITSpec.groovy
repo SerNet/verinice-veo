@@ -79,7 +79,7 @@ class SearchMvcITSpec extends VeoMvcSpec {
                 values: ["IN_PROGRESS"]
             ]
         ])).searchUrl
-        results = parseJson(get(searchUrl))
+        results = parseJson(get(new URI(searchUrl)))
 
         then: "the result is the same"
         results.items*.name == ["two"]
