@@ -30,13 +30,16 @@ import org.veo.core.entity.DomainTemplate;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity(name = "domain")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
+@ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class DomainData extends DomainTemplateData implements NameableData, Domain {
 
     @Column(name = "active")
+    @ToString.Include
     private boolean active = true;
     // one to one
     @ManyToOne(targetEntity = DomainTemplateData.class)
