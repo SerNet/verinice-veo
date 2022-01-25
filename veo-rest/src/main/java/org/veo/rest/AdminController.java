@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.UnitDumpDto;
 import org.veo.adapter.presenter.api.io.mapper.UnitDumpMapper;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -49,7 +48,6 @@ public class AdminController {
     private final DeleteClientUseCase deleteClientUseCase;
     private final GetUnitDumpUseCase getUnitDumpUseCase;
     private final EntityToDtoTransformer entityToDtoTransformer;
-    private final ReferenceAssembler referenceAssembler;
 
     public static final String URL_BASE_PATH = "/admin";
 
