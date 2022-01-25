@@ -17,6 +17,12 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Map;
+import java.util.Optional;
+
+import org.veo.core.entity.risk.PotentialProbabilityImpl;
+import org.veo.core.entity.risk.RiskDefinitionRef;
+
 /**
  * NIST: Threat Scenario: A set of discrete threat events, associated with a
  * specific threat source or multiple threat sources, partially ordered in time.
@@ -41,4 +47,10 @@ public interface Scenario extends Element, CompositeElement<Scenario> {
     default String getTypeDesignator() {
         return TYPE_DESIGNATOR;
     }
+
+    Optional<Map<RiskDefinitionRef, PotentialProbabilityImpl>> getPotentialProbability(
+            DomainTemplate domain);
+
+    void setPotentialProbability(DomainTemplate domain,
+            Map<RiskDefinitionRef, PotentialProbabilityImpl> potentialProbability);
 }
