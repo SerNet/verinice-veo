@@ -35,6 +35,8 @@ public interface DomainRepository extends IdentifiableVersionedRepository<Domain
 
     Set<Domain> findAllByClient(Key<UUID> clientId);
 
+    Set<Domain> findAllByTemplateId(Key<UUID> domainTemplateId);
+
     Optional<Domain> findByCatalogItem(CatalogItem catalogItem);
 
 }

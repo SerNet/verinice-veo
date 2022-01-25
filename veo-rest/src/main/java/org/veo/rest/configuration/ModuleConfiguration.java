@@ -98,6 +98,7 @@ import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
+import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
 import org.veo.core.usecase.incident.CreateIncidentUseCase;
@@ -709,5 +710,13 @@ public class ModuleConfiguration {
     @Bean
     public ElementMigrationService elementMigrationService() {
         return new ElementMigrationService();
+    }
+
+    @Bean
+    public UpdateAllClientDomainsUseCase getUpdateAllClientDomainsUseCase(
+            DomainRepository domainRepository, RepositoryProvider repositoryProvider,
+            UnitRepository unitRepository, ElementMigrationService elementMigrationService) {
+        return new UpdateAllClientDomainsUseCase(domainRepository, repositoryProvider,
+                unitRepository, elementMigrationService);
     }
 }

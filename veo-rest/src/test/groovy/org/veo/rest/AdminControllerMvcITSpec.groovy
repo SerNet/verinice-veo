@@ -20,20 +20,24 @@ package org.veo.rest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
+import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.VeoMvcSpec
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.DocumentRepository
 import org.veo.core.repository.UnitRepository
+import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 
 @WithUserDetails("admin")
 class AdminControllerMvcITSpec extends VeoMvcSpec {
 
     @Autowired
-    private ClientRepository clientRepo;
+    private ClientRepository clientRepo
     @Autowired
-    private UnitRepository unitRepo;
+    private UnitRepository unitRepo
     @Autowired
-    private DocumentRepository documentRepo;
+    private DocumentRepository documentRepo
+    @Autowired
+    private CreateDemoUnitUseCase createDemoUnitUseCase
 
     def "deletes client"() {
         given: "a client with some units and a document"
@@ -131,6 +135,37 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
                 "http://localhost/assets/$assetId/risks/$scenarioId",
                 "http://localhost/processes/$processId/risks/$scenarioId"
             ]
+        }
+    }
+
+    def "update client domains"() {
+        given: "a client with some units and a document"
+        def client = executeInTransaction {
+            def client = newClient()
+            def dsgvoDomain = domainTemplateService.createDomain(client, DomainTemplateServiceImpl.DSGVO_DOMAINTEMPLATE_UUID)
+            def dsgvoTestDomain = domainTemplateService.createDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+            client.addToDomains(dsgvoDomain)
+            client.addToDomains(dsgvoTestDomain)
+            client = clientRepo.save(client)
+        }
+        def demoUnit = createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(client.id)).unit
+        when: 'updating all clients'
+        post("/admin/domaintemplates/${DSGVO_TEST_DOMAIN_TEMPLATE_ID}/allclientsupdate", [:], 204)
+        then: 'the demo unit is transferred to the new domain'
+        with(parseJson(get("/admin/unit-dump/${demoUnit.idAsString}"))) {
+            domains.size() == 1
+            domains.first().name == 'DSGVO-test'
+            elements.each {
+                it.domains.keySet() == ['DSGVO-test']
+                it.customAspects.each { type, ca ->
+                    ca.domains*.displayName == ['DSGVO-test']
+                }
+                it.links.each { type, linksOfType->
+                    linksOfType.each {
+                        it.domains*.displayName == ['DSGVO-test']
+                    }
+                }
+            }
         }
     }
 }

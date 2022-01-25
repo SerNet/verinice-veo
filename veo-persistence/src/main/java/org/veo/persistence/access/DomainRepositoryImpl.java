@@ -52,6 +52,14 @@ public class DomainRepositoryImpl extends
     }
 
     @Override
+    public Set<Domain> findAllByTemplateId(Key<UUID> domainTemplateId) {
+        return dataRepository.findAllByDomainTemplateId(domainTemplateId.uuidValue())
+                             .stream()
+                             .map(Domain.class::cast)
+                             .collect(Collectors.toSet());
+    }
+
+    @Override
     public Optional<Domain> findByCatalogItem(CatalogItem catalogItem) {
         return dataRepository.findByCatalogsCatalogItemsId(catalogItem.getId()
                                                                       .uuidValue())

@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,6 +35,7 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Key;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.client.DeleteClientUseCase;
+import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -47,6 +49,7 @@ public class AdminController {
     private final UseCaseInteractor useCaseInteractor;
     private final DeleteClientUseCase deleteClientUseCase;
     private final GetUnitDumpUseCase getUnitDumpUseCase;
+    private final UpdateAllClientDomainsUseCase updateAllClientDomainsUseCase;
     private final EntityToDtoTransformer entityToDtoTransformer;
 
     public static final String URL_BASE_PATH = "/admin";
@@ -65,5 +68,15 @@ public class AdminController {
                                          (Supplier<GetUnitDumpUseCase.InputData>) () -> UnitDumpMapper.mapInput(unitId),
                                          out -> UnitDumpMapper.mapOutput(out,
                                                                          entityToDtoTransformer));
+    }
+
+    @PostMapping("domaintemplates/{id}/allclientsupdate")
+    public CompletableFuture<ResponseEntity<ApiResponseBody>> updateAllClientDomains(
+            @PathVariable String id) {
+        return useCaseInteractor.execute(updateAllClientDomainsUseCase,
+                                         new UpdateAllClientDomainsUseCase.InputData(
+                                                 Key.uuidFrom(id)),
+                                         out -> ResponseEntity.noContent()
+                                                              .build());
     }
 }

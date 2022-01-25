@@ -17,11 +17,13 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.Query;
 
+import org.veo.core.entity.Domain;
 import org.veo.persistence.entity.jpa.DomainData;
 
 public interface DomainDataRepository extends IdentifiableVersionedDataRepository<DomainData> {
@@ -29,6 +31,10 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
     @Query("select e from #{#entityName} as e join e.catalogs as c join c.catalogItems as i where i.dbId = ?1")
     Optional<DomainData> findByCatalogsCatalogItemsId(String catalogItemId);
 
+    @Query("select e from #{#entityName} as e join e.domainTemplate as t where t.dbId = ?1")
+    Collection<Domain> findAllByDomainTemplateId(String domainTemplateId);
+
     @Query("select d from #{#entityName} d left join fetch d.elementTypeDefinitions where d.owner.id = ?1")
     Set<DomainData> findAllByClient(String clientId);
+
 }
