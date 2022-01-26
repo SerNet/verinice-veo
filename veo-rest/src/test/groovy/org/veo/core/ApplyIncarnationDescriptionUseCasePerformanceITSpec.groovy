@@ -200,10 +200,4 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends VeoSpringSpec 
             catalog = catalogRepository.save(catalog)
         }
     }
-
-    def executeInTransaction(Closure cl) {
-        txTemplate.execute {
-            cl.call()
-        }
-    }
 }

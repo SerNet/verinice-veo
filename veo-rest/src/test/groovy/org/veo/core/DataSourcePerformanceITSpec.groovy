@@ -610,12 +610,6 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         }
     }
 
-    def executeInTransaction(Closure cl) {
-        txTemplate.execute {
-            cl.call()
-        }
-    }
-
     QueryCount trackQueryCounts(Closure cl) {
         QueryCountHolder.clear()
         executeInTransaction {

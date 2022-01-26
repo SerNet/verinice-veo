@@ -166,4 +166,10 @@ abstract class VeoSpringSpec extends VeoSpec {
             return domain
         }
     }
+
+    def executeInTransaction(Closure cl) {
+        txTemplate.execute {
+            cl.call()
+        }
+    }
 }

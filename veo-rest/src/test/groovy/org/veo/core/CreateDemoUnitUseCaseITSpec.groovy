@@ -186,12 +186,6 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         }
     }
 
-    def executeInTransaction(Closure cl) {
-        txTemplate.execute {
-            cl.call()
-        }
-    }
-
     private JsonSchema getSchema(Client client, String type) {
         def schemaString = entitySchemaService.findSchema(type, client.domains)
         JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909).getSchema(schemaString)
