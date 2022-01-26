@@ -26,10 +26,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * A special dimension defining the implementation levels.
+ */
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(callSuper = true)
-@ToString(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = true, onlyExplicitlyIncluded = true)
 public class ImplementationStateDefinition extends DimensionDefinition {
     public ImplementationStateDefinition(String name, String abbreviation, String description,
             List<CategoryLevel> levels) {
@@ -38,6 +41,7 @@ public class ImplementationStateDefinition extends DimensionDefinition {
         initLevel(levels);
     }
 
+    @EqualsAndHashCode.Include
     private List<CategoryLevel> levels = new ArrayList<>();
 
     public Optional<CategoryLevel> getLevel(int ordinalValue) {

@@ -26,9 +26,16 @@ import org.veo.core.entity.Constraints;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * The basic class for a dimension definition. A dimension definition has an
+ * unique id and can work with {@link DiscreteValue} as level.
+ */
+@ToString(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -38,6 +45,7 @@ public class DimensionDefinition {
 
     @NotNull(message = "An id must be present.")
     @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
+    @EqualsAndHashCode.Include
     @ToString.Include
     private String id;
     @NotNull(message = "A name must be present.")

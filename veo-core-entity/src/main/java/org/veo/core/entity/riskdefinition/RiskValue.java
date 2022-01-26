@@ -28,6 +28,12 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * A RiskValue is a specific type of {@link DiscreteValue}. It has a symbolic
+ * risk which needs to be unique and is used to define the values of the
+ * {@link RiskDefinition#getRiskValues()} and the values of the
+ * {@link CategoryDefinition#getValueMatrix()}
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

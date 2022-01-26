@@ -25,10 +25,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * A special dimension defining the probability levels.
+ */
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(callSuper = true)
-@ToString(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(callSuper = true, onlyExplicitlyIncluded = true)
 public class ProbabilityDefinition extends DimensionDefinition {
 
     public ProbabilityDefinition(String name, String abbreviation, String description,
@@ -38,5 +41,6 @@ public class ProbabilityDefinition extends DimensionDefinition {
         initLevel(levels);
     }
 
+    @EqualsAndHashCode.Include
     private List<ProbabilityLevel> levels = new ArrayList<>();
 }

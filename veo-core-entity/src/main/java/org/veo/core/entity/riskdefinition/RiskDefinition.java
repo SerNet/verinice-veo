@@ -22,23 +22,33 @@ import static org.veo.core.entity.riskdefinition.DimensionDefinition.initLevel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.veo.core.entity.Constraints;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * Defines the {@link CategoryDefinition}'s and possible {@link RiskValue}'s for
+ * a matrix based risk determination.
+ */
+@EqualsAndHashCode()
 @Data()
 @ToString(onlyExplicitlyIncluded = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class RiskDefinition {
     @NotNull(message = "An id must be present.")
     @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
     @ToString.Include
     private String id;
-    @NotNull
     private ProbabilityDefinition probability;
     @NotNull
     private ImplementationStateDefinition implementationStateDefinition;
@@ -61,8 +71,51 @@ public class RiskDefinition {
         initLevel(values);
     }
 
+    /**
+     * A {@link RiskDefinition} is valid if the {@link RiskDefinition#probability}
+     * is set and not empty, the id of the {@link CategoryDefinition} in
+     * {@link RiskDefinition#categories} is unique and not empty. All
+     * {@link RiskDefinition#riskValues} {@link RiskValue#getSymbolicRisk()} need to
+     * be unique. Each {@link CategoryDefinition} in
+     * {@link RiskDefinition#categories} need to be valid.
+     */
     public void validateRiskDefinition() {
+        if (probability == null) {
+            throw new IllegalArgumentException("Probability unset.");
+        }
+
+        if (probability.getLevels()
+                       .isEmpty()) {
+            throw new IllegalArgumentException("Probability level is empty.");
+        }
+        if (categories.isEmpty()) {
+            throw new IllegalArgumentException("Categories are empty.");
+        }
+        validateCategoryUniqueness();
+        validateSymbolicRiskUniqueness();
         categories.stream()
-                  .forEach(cd -> cd.validateRiskCategory(riskValues));
+                  .forEach(cd -> cd.validateRiskCategory(riskValues, probability));
+    }
+
+    private void validateSymbolicRiskUniqueness() {
+        List<String> ids = riskValues.stream()
+                                     .map(RiskValue::getSymbolicRisk)
+                                     .collect(Collectors.toList());
+        if (ids.size() > ids.stream()
+                            .distinct()
+                            .count()) {
+            throw new IllegalArgumentException("SymbolicRisk not unique.");
+        }
+    }
+
+    private void validateCategoryUniqueness() {
+        List<String> ids = categories.stream()
+                                     .map(CategoryDefinition::getId)
+                                     .collect(Collectors.toList());
+        if (ids.size() > ids.stream()
+                            .distinct()
+                            .count()) {
+            throw new IllegalArgumentException("Categories not unique.");
+        }
     }
 }
