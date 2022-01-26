@@ -24,12 +24,14 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scope
+import org.veo.core.entity.event.RiskComponentChangeEvent
 import org.veo.core.repository.AssetRepository
 import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.DocumentRepository
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.ScopeRepository
+import org.veo.core.service.EventPublisher
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.DeleteElementUseCase.InputData
 
@@ -41,9 +43,10 @@ public class DeleteElementUseCaseSpec extends UseCaseSpec {
     PersonRepository personRepository = Mock()
     ProcessRepository processRepository = Mock()
     ScopeRepository scopeRepository = Mock()
+    EventPublisher eventPublisher = Mock()
 
 
-    def usecase = new DeleteElementUseCase(repositoryProvider)
+    def usecase = new DeleteElementUseCase(repositoryProvider, eventPublisher)
 
     def setup() {
         repositoryProvider.getElementRepositoryFor(Asset) >> assetRepository
@@ -59,12 +62,17 @@ public class DeleteElementUseCaseSpec extends UseCaseSpec {
         Process process = Mock() {
             getOwner() >> existingUnit
             getId() >> id
+            getModelInterface() >> Process
         }
         when:
         usecase.execute(new InputData(Process,id, existingClient))
         then:
         1 * processRepository.findById(id) >> Optional.of(process)
         1 * processRepository.deleteById(id)
+        1 * eventPublisher.publish({RiskComponentChangeEvent event->
+            event.entityType == Process
+            event.entityId == id
+        })
     }
 
     def "Delete a person" () {

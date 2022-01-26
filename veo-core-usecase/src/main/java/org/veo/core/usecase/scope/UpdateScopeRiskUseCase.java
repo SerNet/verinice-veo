@@ -20,10 +20,12 @@ package org.veo.core.usecase.scope;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.risk.UpdateRiskUseCase;
 
 public class UpdateScopeRiskUseCase extends UpdateRiskUseCase<Scope, ScopeRisk> {
-    public UpdateScopeRiskUseCase(RepositoryProvider repositoryProvider) {
-        super(repositoryProvider, Scope.class);
+    public UpdateScopeRiskUseCase(RepositoryProvider repositoryProvider,
+            EventPublisher eventPublisher) {
+        super(repositoryProvider, Scope.class, eventPublisher);
     }
 }

@@ -20,13 +20,14 @@ package org.veo.core.usecase.scope;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.risk.CreateRiskUseCase;
 
 public class CreateScopeRiskUseCase extends CreateRiskUseCase<Scope, ScopeRisk> {
 
     public CreateScopeRiskUseCase(RepositoryProvider repositoryProvider,
-            DesignatorService designatorService) {
-        super(Scope.class, repositoryProvider, designatorService);
+            DesignatorService designatorService, EventPublisher eventPublisher) {
+        super(Scope.class, repositoryProvider, designatorService, eventPublisher);
     }
 }

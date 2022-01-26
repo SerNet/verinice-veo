@@ -17,14 +17,20 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
+import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Control;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Process;
+import org.veo.core.entity.Scenario;
+import org.veo.core.entity.event.RiskComponentChangeEvent;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
@@ -35,9 +41,16 @@ public class DeleteElementUseCase
         implements TransactionalUseCase<DeleteElementUseCase.InputData, EmptyOutput> {
 
     private final RepositoryProvider repositoryProvider;
+    private final EventPublisher eventPublisher;
 
-    public DeleteElementUseCase(RepositoryProvider repositoryProvider) {
+    private static final Set<Class<?>> RELEVANT_CLASSES_FOR_RISK = Set.of(Process.class,
+                                                                          Scenario.class,
+                                                                          Control.class);
+
+    public DeleteElementUseCase(RepositoryProvider repositoryProvider,
+            EventPublisher eventPublisher) {
         this.repositoryProvider = repositoryProvider;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -49,6 +62,9 @@ public class DeleteElementUseCase
                                                                                    .uuidValue()));
         entity.checkSameClient(input.authenticatedClient);
         repository.deleteById(entity.getId());
+        if (RELEVANT_CLASSES_FOR_RISK.contains(input.getEntityClass())) {
+            eventPublisher.publish(new RiskComponentChangeEvent(entity));
+        }
         return EmptyOutput.INSTANCE;
     }
 

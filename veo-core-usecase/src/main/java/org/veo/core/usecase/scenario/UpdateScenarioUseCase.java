@@ -18,13 +18,26 @@
 package org.veo.core.usecase.scenario;
 
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.event.RiskComponentChangeEvent;
 import org.veo.core.repository.ScenarioRepository;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 
 public class UpdateScenarioUseCase extends ModifyElementUseCase<Scenario> {
 
-    public UpdateScenarioUseCase(ScenarioRepository scenarioRepository) {
+    private final EventPublisher eventPublisher;
+
+    public UpdateScenarioUseCase(ScenarioRepository scenarioRepository,
+            EventPublisher eventPublisher) {
         super(scenarioRepository);
+        this.eventPublisher = eventPublisher;
+    }
+
+    @Override
+    public OutputData<Scenario> execute(InputData<Scenario> input) {
+        OutputData<Scenario> result = super.execute(input);
+        eventPublisher.publish(new RiskComponentChangeEvent(result.getEntity()));
+        return result;
     }
 
 }

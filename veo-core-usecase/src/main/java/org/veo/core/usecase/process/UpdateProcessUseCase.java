@@ -18,14 +18,27 @@
 package org.veo.core.usecase.process;
 
 import org.veo.core.entity.Process;
+import org.veo.core.entity.event.RiskComponentChangeEvent;
 import org.veo.core.repository.ProcessRepository;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 
 /**
  * Update a persisted process object.
  */
 public class UpdateProcessUseCase extends ModifyElementUseCase<Process> {
-    public UpdateProcessUseCase(ProcessRepository processRepository) {
+    private final EventPublisher eventPublisher;
+
+    public UpdateProcessUseCase(ProcessRepository processRepository,
+            EventPublisher eventPublisher) {
         super(processRepository);
+        this.eventPublisher = eventPublisher;
+    }
+
+    @Override
+    public OutputData<Process> execute(InputData<Process> input) {
+        OutputData<Process> result = super.execute(input);
+        eventPublisher.publish(new RiskComponentChangeEvent(result.getEntity()));
+        return result;
     }
 }

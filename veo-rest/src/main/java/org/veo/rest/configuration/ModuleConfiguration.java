@@ -67,6 +67,7 @@ import org.veo.core.service.CatalogItemService;
 import org.veo.core.service.DomainTemplateIdGenerator;
 import org.veo.core.service.DomainTemplateService;
 import org.veo.core.service.EntitySchemaService;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.IncomingMessageHandler;
 import org.veo.core.usecase.MessageCreator;
@@ -162,6 +163,7 @@ import org.veo.rest.security.CurrentUserProviderImpl;
 import org.veo.service.DefaultDomainCreator;
 import org.veo.service.ElementMigrationService;
 import org.veo.service.EtagService;
+import org.veo.service.risk.RiskService;
 
 /**
  * This configuration takes care of wiring classes from core modules
@@ -179,13 +181,14 @@ public class ModuleConfiguration {
 
     @Bean
     public CreateAssetRiskUseCase createAssetRiskUseCase(RepositoryProvider repositoryProvider,
-            DesignatorService designatorService) {
-        return new CreateAssetRiskUseCase(repositoryProvider, designatorService);
+            DesignatorService designatorService, EventPublisher eventPublisher) {
+        return new CreateAssetRiskUseCase(repositoryProvider, designatorService, eventPublisher);
     }
 
     @Bean
-    public UpdateAssetRiskUseCase updateAssetRiskUseCase(RepositoryProvider repositoryProvider) {
-        return new UpdateAssetRiskUseCase(repositoryProvider);
+    public UpdateAssetRiskUseCase updateAssetRiskUseCase(RepositoryProvider repositoryProvider,
+            EventPublisher eventPublisher) {
+        return new UpdateAssetRiskUseCase(repositoryProvider, eventPublisher);
     }
 
     @Bean
@@ -222,8 +225,9 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public UpdateControlUseCase updateControlUseCase(ControlRepositoryImpl controlRepository) {
-        return new UpdateControlUseCase(controlRepository);
+    public UpdateControlUseCase updateControlUseCase(ControlRepositoryImpl controlRepository,
+            EventPublisher eventPublisher) {
+        return new UpdateControlUseCase(controlRepository, eventPublisher);
     }
 
     @Bean
@@ -268,8 +272,9 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public UpdateScenarioUseCase updateScenarioUseCase(ScenarioRepositoryImpl scenarioRepository) {
-        return new UpdateScenarioUseCase(scenarioRepository);
+    public UpdateScenarioUseCase updateScenarioUseCase(ScenarioRepositoryImpl scenarioRepository,
+            EventPublisher eventPublisher) {
+        return new UpdateScenarioUseCase(scenarioRepository, eventPublisher);
     }
 
     @Bean
@@ -297,14 +302,16 @@ public class ModuleConfiguration {
 
     @Bean
     public CreateProcessUseCase createProcessUseCase(UnitRepositoryImpl unitRepository,
-            ProcessRepositoryImpl processRepository, DesignatorService designatorService) {
-        return new CreateProcessUseCase(unitRepository, processRepository, designatorService);
+            ProcessRepositoryImpl processRepository, DesignatorService designatorService,
+            EventPublisher eventPublisher) {
+        return new CreateProcessUseCase(unitRepository, processRepository, designatorService,
+                eventPublisher);
     }
 
     @Bean
     public CreateProcessRiskUseCase createProcessRiskUseCase(RepositoryProvider repositoryProvider,
-            DesignatorService designatorService) {
-        return new CreateProcessRiskUseCase(repositoryProvider, designatorService);
+            DesignatorService designatorService, EventPublisher eventPublisher) {
+        return new CreateProcessRiskUseCase(repositoryProvider, designatorService, eventPublisher);
     }
 
     @Bean
@@ -324,14 +331,15 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public UpdateProcessRiskUseCase updateProcessRiskUseCase(
-            RepositoryProvider repositoryProvider) {
-        return new UpdateProcessRiskUseCase(repositoryProvider);
+    public UpdateProcessRiskUseCase updateProcessRiskUseCase(RepositoryProvider repositoryProvider,
+            EventPublisher eventPublisher) {
+        return new UpdateProcessRiskUseCase(repositoryProvider, eventPublisher);
     }
 
     @Bean
-    public UpdateProcessUseCase putProcessUseCase(ProcessRepositoryImpl processRepository) {
-        return new UpdateProcessUseCase(processRepository);
+    public UpdateProcessUseCase putProcessUseCase(ProcessRepositoryImpl processRepository,
+            EventPublisher eventPublisher) {
+        return new UpdateProcessUseCase(processRepository, eventPublisher);
     }
 
     @Bean
@@ -429,13 +437,15 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public DeleteElementUseCase deleteElementUseCase(RepositoryProvider repositoryProvider) {
-        return new DeleteElementUseCase(repositoryProvider);
+    public DeleteElementUseCase deleteElementUseCase(RepositoryProvider repositoryProvider,
+            EventPublisher eventPublisher) {
+        return new DeleteElementUseCase(repositoryProvider, eventPublisher);
     }
 
     @Bean
-    public DeleteRiskUseCase deleteRiskUseCase(RepositoryProvider repositoryProvider) {
-        return new DeleteRiskUseCase(repositoryProvider);
+    public DeleteRiskUseCase deleteRiskUseCase(RepositoryProvider repositoryProvider,
+            EventPublisher eventPublisher) {
+        return new DeleteRiskUseCase(repositoryProvider, eventPublisher);
     }
 
     @Bean
@@ -672,13 +682,14 @@ public class ModuleConfiguration {
 
     @Bean
     public CreateScopeRiskUseCase createScopeRiskUseCase(RepositoryProvider repositoryProvider,
-            DesignatorService designatorService) {
-        return new CreateScopeRiskUseCase(repositoryProvider, designatorService);
+            DesignatorService designatorService, EventPublisher eventPublisher) {
+        return new CreateScopeRiskUseCase(repositoryProvider, designatorService, eventPublisher);
     }
 
     @Bean
-    public UpdateScopeRiskUseCase updateScopeRiskUseCase(RepositoryProvider repositoryProvider) {
-        return new UpdateScopeRiskUseCase(repositoryProvider);
+    public UpdateScopeRiskUseCase updateScopeRiskUseCase(RepositoryProvider repositoryProvider,
+            EventPublisher eventPublisher) {
+        return new UpdateScopeRiskUseCase(repositoryProvider, eventPublisher);
     }
 
     @Bean
@@ -713,7 +724,7 @@ public class ModuleConfiguration {
 
     @Bean
     public IncomingMessageHandler incomingMessageHandler(RepositoryProvider repositoryProvider,
-            ElementMigrationService elementMigrationService) {
+            ElementMigrationService elementMigrationService, RiskService riskService) {
         return new IncomingMessageHandler(repositoryProvider, elementMigrationService);
     }
 
@@ -750,5 +761,10 @@ public class ModuleConfiguration {
             DomainTemplateRepository domainTemplateRepository,
             DomainTemplateIdGenerator domainTemplateIdGenerator) {
         return new CreateDomainTemplateUseCase(domainTemplateRepository, domainTemplateIdGenerator);
+    }
+
+    @Bean
+    public RiskService riskService(ProcessRepository processRepository) {
+        return new RiskService(processRepository);
     }
 }

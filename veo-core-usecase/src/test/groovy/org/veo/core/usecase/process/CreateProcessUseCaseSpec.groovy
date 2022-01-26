@@ -17,9 +17,12 @@
  ******************************************************************************/
 package org.veo.core.usecase.process
 
+import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
+import org.veo.core.entity.event.RiskComponentChangeEvent
 import org.veo.core.repository.ProcessRepository
+import org.veo.core.service.EventPublisher
 import org.veo.core.usecase.DesignatorService
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.CreateElementUseCase
@@ -30,11 +33,15 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
     Process process = Mock()
     Unit unit = Mock()
     DesignatorService designatorService = Mock()
+    EventPublisher eventPublisher = Mock()
 
-    CreateProcessUseCase usecase = new CreateProcessUseCase(unitRepository, processRepository, designatorService)
+    CreateProcessUseCase usecase = new CreateProcessUseCase(unitRepository, processRepository, designatorService, eventPublisher)
     def "create a process"() {
+        def id = Key.newUuid()
         process.owner >> unit
         process.name >> "John's process"
+        process.modelInterface >> Process
+        process.id >> id
 
         when:
         def output = usecase.execute(new CreateElementUseCase.InputData(process, existingClient))
@@ -42,6 +49,10 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
         1 * processRepository.save(process) >> process
         1 * designatorService.assignDesignator(process, existingClient)
+        1 * eventPublisher.publish({RiskComponentChangeEvent event->
+            event.entityType == Process
+            event.entityId == id
+        })
         output.entity != null
         output.entity.name == "John's process"
     }

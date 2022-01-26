@@ -18,8 +18,10 @@
 package org.veo.core.usecase.process;
 
 import org.veo.core.entity.Process;
+import org.veo.core.entity.event.RiskComponentChangeEvent;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.base.CreateElementUseCase;
 
@@ -28,8 +30,18 @@ import org.veo.core.usecase.base.CreateElementUseCase;
  */
 public class CreateProcessUseCase extends CreateElementUseCase<Process> {
 
+    private final EventPublisher eventPublisher;
+
     public CreateProcessUseCase(UnitRepository unitRepository, ProcessRepository entityRepo,
-            DesignatorService designatorService) {
+            DesignatorService designatorService, EventPublisher eventPublisher) {
         super(unitRepository, entityRepo, designatorService);
+        this.eventPublisher = eventPublisher;
+    }
+
+    @Override
+    public OutputData<Process> execute(InputData<Process> input) {
+        OutputData<Process> result = super.execute(input);
+        eventPublisher.publish(new RiskComponentChangeEvent(result.getEntity()));
+        return result;
     }
 }

@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
@@ -40,4 +41,10 @@ public interface ProcessRepository extends RiskAffectedRepository<Process, Proce
     Set<Process> findRisksWithValue(Scenario scenario);
 
     Optional<Process> findByIdWithRiskValues(Key<UUID> processId);
+
+    /**
+     * Find elements that have risks associated to them.
+     */
+    Set<Process> findAllHavingRisks(Client client);
+
 }

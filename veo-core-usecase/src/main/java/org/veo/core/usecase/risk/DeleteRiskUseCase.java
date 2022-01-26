@@ -25,7 +25,9 @@ import javax.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.event.RiskComponentChangeEvent;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
@@ -35,9 +37,11 @@ public class DeleteRiskUseCase
         implements TransactionalUseCase<DeleteRiskUseCase.InputData, UseCase.EmptyOutput> {
 
     private final RepositoryProvider repositoryProvider;
+    private final EventPublisher eventPublisher;
 
-    public DeleteRiskUseCase(RepositoryProvider repositoryProvider) {
+    public DeleteRiskUseCase(RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {
         this.repositoryProvider = repositoryProvider;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -51,7 +55,7 @@ public class DeleteRiskUseCase
         riskAffected.getRisk(input.scenarioRef)
                     .orElseThrow()
                     .remove();
-
+        eventPublisher.publish(new RiskComponentChangeEvent(riskAffected));
         return EmptyOutput.INSTANCE;
     }
 

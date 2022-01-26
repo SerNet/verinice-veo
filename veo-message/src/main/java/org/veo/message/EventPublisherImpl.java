@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import org.veo.core.entity.event.RiskComponentChangeEvent;
 import org.veo.core.entity.event.StoredEvent;
 import org.veo.core.service.EventPublisher;
 
@@ -36,6 +37,11 @@ public class EventPublisherImpl implements EventPublisher {
 
     @Override
     public void publish(StoredEvent event) {
+        publisher.publishEvent(event);
+    }
+
+    @Override
+    public void publish(RiskComponentChangeEvent event) {
         publisher.publishEvent(event);
     }
 }

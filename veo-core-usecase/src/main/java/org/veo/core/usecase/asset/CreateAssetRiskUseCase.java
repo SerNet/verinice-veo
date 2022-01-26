@@ -20,13 +20,14 @@ package org.veo.core.usecase.asset;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.risk.CreateRiskUseCase;
 
 public class CreateAssetRiskUseCase extends CreateRiskUseCase<Asset, AssetRisk> {
 
     public CreateAssetRiskUseCase(RepositoryProvider repositoryProvider,
-            DesignatorService designatorService) {
-        super(Asset.class, repositoryProvider, designatorService);
+            DesignatorService designatorService, EventPublisher eventPublisher) {
+        super(Asset.class, repositoryProvider, designatorService, eventPublisher);
     }
 }

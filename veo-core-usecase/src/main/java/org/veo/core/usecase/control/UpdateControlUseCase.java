@@ -18,12 +18,25 @@
 package org.veo.core.usecase.control;
 
 import org.veo.core.entity.Control;
+import org.veo.core.entity.event.RiskComponentChangeEvent;
 import org.veo.core.repository.ControlRepository;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 
 public class UpdateControlUseCase extends ModifyElementUseCase<Control> {
 
-    public UpdateControlUseCase(ControlRepository controlRepository) {
+    private final EventPublisher eventPublisher;
+
+    public UpdateControlUseCase(ControlRepository controlRepository,
+            EventPublisher eventPublisher) {
         super(controlRepository);
+        this.eventPublisher = eventPublisher;
+    }
+
+    @Override
+    public OutputData<Control> execute(InputData<Control> input) {
+        OutputData<Control> result = super.execute(input);
+        eventPublisher.publish(new RiskComponentChangeEvent(result.getEntity()));
+        return result;
     }
 }

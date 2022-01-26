@@ -19,7 +19,9 @@ package org.veo.core.usecase.process
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
+import org.veo.core.entity.event.RiskComponentChangeEvent
 import org.veo.core.repository.ProcessRepository
+import org.veo.core.service.EventPublisher
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData
 import org.veo.core.usecase.common.ETag
@@ -27,8 +29,10 @@ import org.veo.core.usecase.common.ETag
 public class UpdateProcessUseCaseSpec extends UseCaseSpec {
 
     ProcessRepository processRepository = Mock()
+    EventPublisher eventPublisher = Mock()
 
-    UpdateProcessUseCase usecase = new UpdateProcessUseCase(processRepository)
+
+    UpdateProcessUseCase usecase = new UpdateProcessUseCase(processRepository, eventPublisher)
     def "update a process"() {
         given:
         def id = Key.newUuid()
@@ -37,6 +41,7 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
         process.getName()>> "Updated process"
         process.getOwner() >> existingUnit
         process.version >> 0
+        process.modelInterface >> Process
 
         def existingProcess = Mock(Process) {
             it.id >> process.id
@@ -53,6 +58,10 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
         1 * process.version("max", existingProcess)
         1 * processRepository.save(process) >> process
         1 * processRepository.findById(process.id) >> Optional.of(existingProcess)
+        1 * eventPublisher.publish({RiskComponentChangeEvent event->
+            event.entityType == Process
+            event.entityId == id
+        })
         output.entity != null
         output.entity.name == "Updated process"
     }

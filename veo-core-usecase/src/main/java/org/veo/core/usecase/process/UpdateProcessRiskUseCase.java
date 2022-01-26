@@ -20,10 +20,12 @@ package org.veo.core.usecase.process;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.risk.UpdateRiskUseCase;
 
 public class UpdateProcessRiskUseCase extends UpdateRiskUseCase<Process, ProcessRisk> {
-    public UpdateProcessRiskUseCase(RepositoryProvider repositoryProvider) {
-        super(repositoryProvider, Process.class);
+    public UpdateProcessRiskUseCase(RepositoryProvider repositoryProvider,
+            EventPublisher eventPublisher) {
+        super(repositoryProvider, Process.class, eventPublisher);
     }
 }

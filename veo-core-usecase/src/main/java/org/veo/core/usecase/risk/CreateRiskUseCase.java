@@ -24,7 +24,9 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.event.RiskComponentChangeEvent;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
 
 public class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
@@ -32,12 +34,14 @@ public class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractR
 
     private final DesignatorService designatorService;
     private final Class<T> entityClass;
+    private final EventPublisher eventPublisher;
 
     public CreateRiskUseCase(Class<T> entityClass, RepositoryProvider repositoryProvider,
-            DesignatorService designatorService) {
+            DesignatorService designatorService, EventPublisher eventPublisher) {
         super(repositoryProvider);
         this.entityClass = entityClass;
         this.designatorService = designatorService;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -63,7 +67,7 @@ public class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractR
 
         risk = applyOptionalInput(input, risk);
         designatorService.assignDesignator(risk, input.getAuthenticatedClient());
-
+        eventPublisher.publish(new RiskComponentChangeEvent(riskAffected));
         return new OutputData<>(risk);
     }
 }

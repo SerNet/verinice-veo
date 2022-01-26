@@ -23,9 +23,11 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
@@ -43,9 +45,12 @@ public class ProcessRepositoryImpl
         extends AbstractCompositeRiskAffectedRepository<Process, ProcessRisk, ProcessData>
         implements ProcessRepository {
 
+    private final ProcessDataRepository processDataRepository;
+
     public ProcessRepositoryImpl(ProcessDataRepository dataRepository, ValidationService validation,
             CustomLinkDataRepository linkDataRepository, ScopeDataRepository scopeDataRepository) {
         super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+        processDataRepository = dataRepository;
     }
 
     @Override
@@ -60,5 +65,12 @@ public class ProcessRepositoryImpl
         return processes.stream()
                         .findFirst()
                         .map(Process.class::cast);
+    }
+
+    @Override
+    public Set<Process> findAllHavingRisks(Client client) {
+        return processDataRepository.findAllHavingRisks(client)
+                                    .stream()
+                                    .collect(Collectors.toSet());
     }
 }

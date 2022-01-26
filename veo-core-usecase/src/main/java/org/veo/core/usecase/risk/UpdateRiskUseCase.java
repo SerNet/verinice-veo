@@ -25,7 +25,9 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.event.RiskComponentChangeEvent;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.common.ETagMismatchException;
 
@@ -33,10 +35,13 @@ public class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractR
         extends AbstractRiskUseCase<T, R> {
 
     private final Class<T> entityClass;
+    private final EventPublisher eventPublisher;
 
-    public UpdateRiskUseCase(RepositoryProvider repositoryProvider, Class<T> entityClass) {
+    public UpdateRiskUseCase(RepositoryProvider repositoryProvider, Class<T> entityClass,
+            EventPublisher eventPublisher) {
         super(repositoryProvider);
         this.entityClass = entityClass;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -67,9 +72,10 @@ public class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractR
         riskOwner.ifPresent(person -> person.checkSameClient(input.getAuthenticatedClient()));
 
         // Execute requested operation:
-        return new OutputData<>(
-                riskAffected.updateRisk(risk, domains, mitigation.orElse(null),
-                                        riskOwner.orElse(null), input.getRiskValues()));
+        R result = riskAffected.updateRisk(risk, domains, mitigation.orElse(null),
+                                           riskOwner.orElse(null), input.getRiskValues());
+        eventPublisher.publish(new RiskComponentChangeEvent(riskAffected));
+        return new OutputData<>(result);
     }
 
     private void checkETag(AbstractRisk<T, R> risk, InputData input) {

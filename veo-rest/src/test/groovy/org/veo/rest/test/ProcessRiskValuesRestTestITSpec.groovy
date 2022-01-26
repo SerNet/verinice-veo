@@ -118,9 +118,10 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         impactI.category == "I"
         impactI.potentialImpact == 1
         impactI.effectiveImpact == 1
-        riskI.size() == 2
+        riskI.size() == 3
         riskI.category == "I"
         riskI.riskTreatments == []
+        riskI.inherentRisk == 1
 
         impactA.size() == 3
         impactA.category == "A"
@@ -178,6 +179,7 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         updatedImpactI.effectiveImpact == 3
         updatedImpactI.specificImpactExplanation == BRACE_FOR_IMPACT
 
+        updatedRiskI.inherentRisk == 3
         updatedRiskI.residualRisk == 1
         updatedRiskI.residualRiskExplanation == NO_RISK
         updatedRiskI.riskTreatments ==~ [
@@ -189,11 +191,6 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         // read-only values have not been changed:
         updatedProbability.potentialProbability == 2
         updatedImpactI.potentialImpact == 1
-        updatedRisk.inherentRisk != 2
-
-        // TODO VEO-1110 inherentRisk must be calculated correctly by risk service
-
-
 
         and: "the first saved values are still present"
         updatedImpactA.category == "A"

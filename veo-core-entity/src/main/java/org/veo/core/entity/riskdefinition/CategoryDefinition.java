@@ -25,6 +25,9 @@ import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
+import org.veo.core.entity.risk.ImpactRef;
+import org.veo.core.entity.risk.ProbabilityRef;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -62,20 +65,29 @@ public class CategoryDefinition extends DimensionDefinition {
      * CategoryLevel.
      */
     public RiskValue getRiskValue(ProbabilityLevel plevel, CategoryLevel clevel) {
-        if (clevel.getOrdinalValue() > valueMatrix.size() - 1)
-            throw new IllegalArgumentException("No risk Value for CategoryLevel: "
-                    + clevel.getName() + "[" + clevel.getOrdinalValue() + "]");
         if (!potentialImpacts.contains(clevel)) {
             throw new IllegalArgumentException(
                     "CategoryLevel not part of potentialImpacts: " + clevel);
         }
+        return getRiskValue(ProbabilityRef.from(plevel), ImpactRef.from(clevel));
+    }
 
-        List<RiskValue> probability = valueMatrix.get(clevel.getOrdinalValue());
-        if (plevel.getOrdinalValue() > probability.size() - 1)
-            throw new IllegalArgumentException("No risk value for ProbabilityLevel: "
-                    + plevel.getName() + "[" + plevel.getOrdinalValue() + "]");
+    public RiskValue getRiskValue(ProbabilityRef effectiveProbability, ImpactRef effectiveImpact) {
+        int categoryOrdinalValue = effectiveImpact.getIdRef()
+                                                  .intValue();
+        if (categoryOrdinalValue > valueMatrix.size() - 1) {
+            throw new IllegalArgumentException(
+                    "No risk value for category: " + categoryOrdinalValue);
+        }
 
-        return probability.get(plevel.getOrdinalValue());
+        List<RiskValue> probability = valueMatrix.get(categoryOrdinalValue);
+        int probabliltyOrdinalValue = effectiveProbability.getIdRef()
+                                                          .intValue();
+        if (probabliltyOrdinalValue > probability.size() - 1)
+            throw new IllegalArgumentException(
+                    "No risk value for probability: " + probabliltyOrdinalValue);
+
+        return probability.get(probabliltyOrdinalValue);
     }
 
     public void setPotentialImpacts(@NotNull List<CategoryLevel> potentialImpacts) {
