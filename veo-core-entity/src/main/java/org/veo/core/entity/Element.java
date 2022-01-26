@@ -47,18 +47,38 @@ public interface Element
      *
      * @return true if added
      */
-    boolean addToDomains(Domain aDomain);
+    default boolean addToDomains(Domain aDomain) {
+        return this.getDomains()
+                   .add(aDomain);
+    }
 
     /**
      * Remove the given Domain from the collection domains.
      *
      * @return true if removed
      */
-    boolean removeFromDomains(Domain aDomain);
+    default boolean removeFromDomains(Domain aDomain) {
+        boolean removed = this.getDomains()
+                              .remove(aDomain);
+        if (removed) {
+            getCustomAspects().forEach(ca -> ca.removeFromDomains(aDomain));
+            getLinks().forEach(ca -> ca.removeFromDomains(aDomain));
+            getSubTypeAspects().removeIf(sa -> sa.getDomain()
+                                                 .equals(aDomain));
+        }
+        return removed;
+    }
 
     Set<Domain> getDomains();
 
-    void setDomains(Set<Domain> aDomains);
+    default void setDomains(Set<Domain> newDomains) {
+        for (Domain domain : this.getDomains()) {
+            removeFromDomains(domain);
+        }
+        for (Domain domain : newDomains) {
+            addToDomains(domain);
+        }
+    }
 
     /**
      * Add the given CustomLink to the collection links. Adding will set the source

@@ -195,29 +195,6 @@ public abstract class ElementData extends IdentifiableVersionedData
         this.customAspects.addAll(aCustomAspects);
     }
 
-    public void setDomains(Set<Domain> newDomains) {
-        this.domains.clear();
-        this.domains.addAll(newDomains);
-    }
-
-    /**
-     * Add the given Domain to the collection domains.
-     *
-     * @return true if added
-     */
-    public boolean addToDomains(Domain aDomain) {
-        return this.domains.add(aDomain);
-    }
-
-    /**
-     * Remove the given Domain from the collection domains.
-     *
-     * @return true if removed
-     */
-    public boolean removeFromDomains(Domain aDomain) {
-        return this.domains.remove(aDomain);
-    }
-
     /**
      * Add the given CustomLink to the collection of links. Manages the association
      * between Element and CustomLink.

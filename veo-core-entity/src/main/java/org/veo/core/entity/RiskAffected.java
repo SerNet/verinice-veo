@@ -148,4 +148,13 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
                     "The provided domain '%s' is not yet known to this object. ",
                     domain.getDisplayName());
     }
+
+    @Override
+    default boolean removeFromDomains(Domain aDomain) {
+        boolean removed = Element.super.removeFromDomains(aDomain);
+        if (removed) {
+            getRisks().forEach(r -> r.removeFromDomains(aDomain));
+        }
+        return removed;
+    }
 }
