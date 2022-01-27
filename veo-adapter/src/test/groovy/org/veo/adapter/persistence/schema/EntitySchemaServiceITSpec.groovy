@@ -30,6 +30,8 @@ import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.core.entity.riskdefinition.CategoryLevel
 import org.veo.core.entity.riskdefinition.ImplementationStateDefinition
+import org.veo.core.entity.riskdefinition.ProbabilityDefinition
+import org.veo.core.entity.riskdefinition.ProbabilityLevel
 import org.veo.core.entity.riskdefinition.RiskDefinition
 import org.veo.core.service.EntitySchemaService
 
@@ -74,6 +76,17 @@ class EntitySchemaServiceITSpec extends Specification {
         def riskValueProps = schema.get(PROPS).get("domains").get(PROPS).get(testDomain.idAsString).get(PROPS).get("riskValues").get(PROPS)
         riskValueProps.get("riskDefA").get(PROPS).get("implementationStatus").get("enum").asList()*.asInt() == [0, 1, 2]
         riskValueProps.get("riskDefB").get(PROPS).get("implementationStatus").get("enum").asList()*.asInt() == [0, 1]
+    }
+
+    def "scenario schema domain association is complete"() {
+        given:
+        def testDomain = getTestDomain()
+        when:
+        def schema = getSchema(Set.of(testDomain), "scenario")
+        then:
+        def riskValueProps = schema.get(PROPS).get("domains").get(PROPS).get(testDomain.idAsString).get(PROPS).get("riskValues").get(PROPS)
+        riskValueProps.get("riskDefA").get(PROPS).get("potentialProbability").get("enum").asList()*.asInt() == [0, 1, 2]
+        riskValueProps.get("riskDefB").get(PROPS).get("potentialProbability").get("enum").asList()*.asInt() == [0, 1]
     }
 
     def "definitions from multiple domains are composed"() {
@@ -194,6 +207,23 @@ class EntitySchemaServiceITSpec extends Specification {
                     ]
                 }
             ]
+            getElementTypeDefinition("scenario") >> [
+                Mock(ElementTypeDefinition) {
+                    customAspects >> [:]
+                    links >> [:]
+                    subTypes >> [
+                        subScenario: Mock(SubTypeDefinition) {
+                            statuses >> [
+                                "IN_PROGRESS",
+                                "NEW",
+                                "RELEASED",
+                                "FOR_REVIEW",
+                                "ARCHIVED"
+                            ]
+                        }
+                    ]
+                }
+            ]
             getRiskDefinitions() >> [
                 "riskDefA": Mock(RiskDefinition) {
                     implementationStateDefinition >> Mock(ImplementationStateDefinition) {
@@ -209,6 +239,19 @@ class EntitySchemaServiceITSpec extends Specification {
                             },
                         ]
                     }
+                    probability >> Mock(ProbabilityDefinition) {
+                        levels >> [
+                            Mock(ProbabilityLevel) {
+                                ordinalValue >> 0
+                            },
+                            Mock(ProbabilityLevel) {
+                                ordinalValue >> 1
+                            },
+                            Mock(ProbabilityLevel) {
+                                ordinalValue >> 2
+                            },
+                        ]
+                    }
                 },
                 "riskDefB": Mock(RiskDefinition) {
                     implementationStateDefinition >> Mock(ImplementationStateDefinition) {
@@ -217,6 +260,16 @@ class EntitySchemaServiceITSpec extends Specification {
                                 ordinalValue >> 0
                             },
                             Mock(CategoryLevel) {
+                                ordinalValue >> 1
+                            },
+                        ]
+                    }
+                    probability >> Mock(ProbabilityDefinition) {
+                        levels >> [
+                            Mock(ProbabilityLevel) {
+                                ordinalValue >> 0
+                            },
+                            Mock(ProbabilityLevel) {
                                 ordinalValue >> 1
                             },
                         ]

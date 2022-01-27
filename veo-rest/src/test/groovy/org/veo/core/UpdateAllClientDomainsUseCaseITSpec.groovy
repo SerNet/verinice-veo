@@ -24,13 +24,17 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
+import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
 import org.veo.core.entity.risk.ControlRiskValues
 import org.veo.core.entity.risk.ImplementationStatusRef
+import org.veo.core.entity.risk.PotentialProbabilityImpl
+import org.veo.core.entity.risk.ProbabilityRef
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.PagingConfiguration
+import org.veo.core.repository.ScenarioRepository
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase.InputData
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
@@ -39,6 +43,7 @@ import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.ControlData
+import org.veo.persistence.entity.jpa.ScenarioData
 
 @WithUserDetails("user@domain.example")
 class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
@@ -63,6 +68,9 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
 
     @Autowired
     ControlRepository controlRepository
+
+    @Autowired
+    ScenarioRepository scenarioRepository
 
     Client client
     Domain dsgvoDomain
@@ -144,6 +152,51 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             with(it.values) {
                 size() == 1
                 get(riskDefinitionRef).implementationStatus.ordinalValue == 42
+            }
+        }
+    }
+
+    def "Migrate a scenario with probability"() {
+        given: 'a unit with a scenario containing a probability'
+        RiskDefinitionRef riskDefinitionRef = new RiskDefinitionRef("xyz")
+        ProbabilityRef probabilityRef = new ProbabilityRef(2)
+        PotentialProbabilityImpl probability = new PotentialProbabilityImpl(probabilityRef)
+        Map riskValues = [
+            (riskDefinitionRef) : probability
+        ]
+        Unit unit = unitRepository.save(newUnit(client) {
+            addToDomains(dsgvoDomain)
+        })
+        Scenario scenario = scenarioRepository.save(newScenario(unit) {
+            addToDomains(dsgvoDomain)
+            setPotentialProbability(dsgvoDomain, riskValues)
+        })
+
+        when: 'executing the UpdateAllClientDomainsUseCase'
+        runUseCase(DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        unit = executeInTransaction {
+            unitRepository.findById(unit.id).get().tap {
+                //initialize lazy associations
+                it.domains*.name
+            }
+        }
+        scenario = executeInTransaction {
+            scenarioRepository.findById(scenario.id).get().tap {
+                //initialize lazy associations
+                it.getPotentialProbability(dsgvoTestDomain)
+            }
+        }
+
+        then: "the scenario probability is moved to the new domain"
+        scenario.riskValuesAspects.size() == 1
+        /* TODO VEO-1171 - the next 7 lines should be replaced by:
+         * scenario.getPotentialProbability(dsgvoTestDomain).orElseThrow().get(riskDefinitionRef).potentialProbability.idRef == 2
+         * But scenario.getPotentialProbability(dsgvoTestDomain) does not return a result */
+        with(((ScenarioData)scenario).riskValuesAspects.first()) {
+            it.domain == dsgvoTestDomain
+            with(it.potentialProbability) {
+                size() == 1
+                get(riskDefinitionRef).potentialProbability.idRef == 2
             }
         }
     }
