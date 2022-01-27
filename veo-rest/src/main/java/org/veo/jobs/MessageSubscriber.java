@@ -69,6 +69,8 @@ public class MessageSubscriber {
                                            .asText());
         var elementType = EntityType.getBySingularTerm(content.get("elementType")
                                                               .asText());
+        log.info("Received {} message for element type {} in domain {}",
+                 ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE, elementType, domainId.uuidValue());
         domainRepository.findById(domainId)
                         .ifPresent(domain -> {
                             AsSystemUser.runInClient(domain.getOwner(), () -> {
