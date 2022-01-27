@@ -166,8 +166,15 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
         and: "triggering message processing"
         messagingJob.sendMessages()
 
-        and: "retrieving the current version of our asset"
-        def retrievedAsset = parseJson(get("/assets/$assetId"))
+        and: "wait for the asset to be migrated"
+        def retrievedAsset = null
+        for (def i = 0; i < 50; i++) {
+            retrievedAsset = parseJson(get("/assets/$assetId"))
+            if (retrievedAsset.customAspects.size() == 1) {
+                break;
+            }
+            sleep(200)
+        }
 
         then: "the content of the asset that still conforms to the current element type definition is still there"
         retrievedAsset.customAspects.aspectOne != null
