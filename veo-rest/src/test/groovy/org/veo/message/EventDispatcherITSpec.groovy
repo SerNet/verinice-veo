@@ -77,7 +77,7 @@ class EventDispatcherITSpec extends VeoSpringSpec {
     @Autowired
     StoredEventDataRepository storedEventRepository
 
-    @Value('${veo.test.message.dispatch.routing_key_prefix:veo.testmessage.}')
+    @Value('${veo.message.dispatch.routing-key-prefix}')
     String routingKeyPrefix
 
     Set<EventMessage> sentEvents = new HashSet<>(NUM_EVENTS)
@@ -88,7 +88,7 @@ class EventDispatcherITSpec extends VeoSpringSpec {
     @Autowired
     private RabbitAdmin rabbitAdmin
 
-    @Value('${veo.test.message.consume.queue:veo.entity_test_queue}')
+    @Value('${veo.message.consume.queue}')
     String testQueue
 
     static final Instant FOREVER_AND_EVER = Instant.now().plus(365000, ChronoUnit.DAYS)
@@ -119,7 +119,7 @@ class EventDispatcherITSpec extends VeoSpringSpec {
         when: "the events are published"
         Long id = 0
         NUM_EVENTS.times {
-            StoredEvent event = StoredEventData.newInstance("testEvent", routingKeyPrefix + "storedevent")
+            StoredEvent event = StoredEventData.newInstance("testEvent", routingKeyPrefix + "veo.testmessage")
             event.setId(id++)
             sentEvents.add EventMessage.from(event)
         }
@@ -159,7 +159,7 @@ class EventDispatcherITSpec extends VeoSpringSpec {
         def events = new HashSet<StoredEventData>()
         NUM_EVENTS.times {
             events.add new StoredEventData().tap {
-                routingKey = routingKeyPrefix + "storedevent"
+                routingKey = routingKeyPrefix + "veo.testmessage"
             }
         }
 

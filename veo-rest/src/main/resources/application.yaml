@@ -33,13 +33,6 @@ veo:
   scheduler:
     resetAllDemoUnits:
       cron: '0 0 3 * * *'
-  #test:
-    #message:
-      #dispatch:
-        #routing_key_prefix: veo.testmessage.
-      #consume:
-          #queue: veo.entity_test_queue
-          #routing_key: veo.testmessage.#
 
 spring:
   data:

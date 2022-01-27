@@ -44,13 +44,13 @@ public class TestEventSubscriber {
     @Getter
     CountDownLatch latch = new CountDownLatch(0);
 
-    @RabbitListener(bindings = @QueueBinding(value = @Queue(value = "${veo.test.message.consume.queue:veo.entity_test_queue}",
-                                                            exclusive = "true",
+    @RabbitListener(bindings = @QueueBinding(value = @Queue(value = "${veo.message.consume.queue}_TestEventSubscriber",
+                                                            exclusive = "false",
                                                             durable = "false",
                                                             autoDelete = "true"),
                                              exchange = @Exchange(value = "${veo.message.dispatch.exchange}",
                                                                   type = "topic"),
-                                             key = "${veo.test.message.consume.routing_key:veo.testmessage.#}"))
+                                             key = "${veo.message.dispatch.routing-key-prefix}veo.testmessage"))
     void handleEntityEvent(EventMessage event) {
         log.debug("Consumed test event with content: {}", event.getContent());
         try {
