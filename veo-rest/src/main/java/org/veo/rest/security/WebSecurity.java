@@ -63,52 +63,46 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @SuppressFBWarnings("SPRING_CSRF_PROTECTION_DISABLED")
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // @formatter:off
-        // Keep the formatter off or you will never understand what this does.
-        // #whitespacematters #pythonmeetsjava.
-        http
-                .csrf().disable()
+        http.csrf()
+            .disable();
+        http.cors();
+        http.headers()
+            .cacheControl()
+            .disable();
 
-                .cors()
+        // Anonymous access (a user with role "ROLE_ANONYMOUS" must be enabled for
+        // swagger-ui). We cannot disable it.
+        // Make sure that no critical API can be accessed by an anonymous user!
+        // .anonymous().disable()
 
-                .and().headers().cacheControl().disable()
+        http.authorizeRequests()
+            .antMatchers("/actuator/**")
+            .permitAll();
 
-                // Anonymous access (a user with role "ROLE_ANONYMOUS" must be
-                // enabled for
-                // swagger-ui. We cannot disable it.
-                // Make sure that no critical API can be accessed by an
-                // anonymous user!
-                // .anonymous()
-                // .disable()
+        http.sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-                .and().authorizeRequests().antMatchers("/actuator/**").permitAll()
+        http.authorizeRequests()
+            .antMatchers(HttpMethod.GET, "/", "/v2/api-docs/**", "/v3/api-docs/**", "/swagger.json",
+                         "/swagger-ui.html", "/swagger-resources/**", "/webjars/**",
+                         "/swagger-ui/**")
+            .permitAll()
+            .antMatchers(HttpMethod.POST, "/domains/*/createdomaintemplate/*")
+            .hasRole("veo-content-creator")
+            .antMatchers("/units/**", "/assets/**", "/controls/**", "/scopes/**", "/persons/**",
+                         "/processes/**", "/schemas/**", "/translations/**", "/domains/**")
+            .hasRole("veo-user")
+            .antMatchers("/admin/**", "/domaintemplates/**")
+            .hasRole("veo-admin")
+            .anyRequest()
+            .authenticated(); // CAUTION:
+                              // this includes anonymous users,
+                              // see above
 
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        http.oauth2ResourceServer()
+            .jwt()
+            .jwtAuthenticationConverter(jwtAuthenticationConverter());
 
-                .and().authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/", "/v2/api-docs/**", "/v3/api-docs/**",
-                        "/swagger.json", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**",
-                        "/swagger-ui/**")
-                .permitAll()
-                .antMatchers(HttpMethod.POST, "/domains/*/createdomaintemplate/*").hasRole("veo-content-creator")
-                .antMatchers("/units/**", "/assets/**", "/controls/**", "/scopes/**", "/persons/**",
-                        "/processes/**", "/schemas/**", "/translations/**", "/domains/**")
-                .hasRole("veo-user")
-
-                .antMatchers("/admin/**", "/domaintemplates/**").hasRole("veo-admin")
-
-                .anyRequest().authenticated() // CAUTION:
-                                                                             // this
-                                                                             // includes
-                                                                             // anonymous
-                                                                             // users,
-                                                                             // see
-                                                                             // above
-
-                .and().oauth2ResourceServer().jwt()
-                .jwtAuthenticationConverter(jwtAuthenticationConverter());
-
-        // @formatter:on
     }
 
     private JwtAuthenticationConverter jwtAuthenticationConverter() {
