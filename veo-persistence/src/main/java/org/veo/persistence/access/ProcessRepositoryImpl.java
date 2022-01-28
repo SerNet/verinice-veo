@@ -17,15 +17,22 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
+import static java.util.Collections.singleton;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
+import org.veo.core.entity.Scenario;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.ProcessData;
+import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
@@ -36,5 +43,11 @@ public class ProcessRepositoryImpl
     public ProcessRepositoryImpl(ProcessDataRepository dataRepository, ValidationService validation,
             CustomLinkDataRepository linkDataRepository, ScopeDataRepository scopeDataRepository) {
         super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+    }
+
+    @Override
+    public Set<Process> findRisksWithValue(Scenario scenario) {
+        return new HashSet<>(
+                ((ProcessDataRepository) dataRepository).findRisksWithValue(singleton(((ScenarioData) scenario))));
     }
 }

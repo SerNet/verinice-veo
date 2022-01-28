@@ -20,6 +20,7 @@ package org.veo.persistence.entity.jpa;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -114,9 +115,20 @@ public class DomainTemplateData extends IdentifiableVersionedData
     @Column(columnDefinition = "jsonb")
     private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
 
+    public void setRiskDefinitions(Map<String, RiskDefinition> riskDefinitions) {
+        this.riskDefinitions.clear();
+        this.riskDefinitions.putAll(riskDefinitions);
+    }
+
     public void setElementTypeDefinitions(Set<ElementTypeDefinition> elementTypeDefinitions) {
         elementTypeDefinitions.forEach(d -> ((ElementTypeDefinitionData) d).setOwner(this));
         this.elementTypeDefinitions.clear();
         this.elementTypeDefinitions.addAll(elementTypeDefinitions);
+    }
+
+    @Override
+    public Optional<RiskDefinition> getRiskDefinition(String riskDefinitionId) {
+        return Optional.ofNullable(getRiskDefinitions().get(riskDefinitionId));
+
     }
 }

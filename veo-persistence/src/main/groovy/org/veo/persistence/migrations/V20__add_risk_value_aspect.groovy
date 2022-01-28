@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2019  Urs Zeidler.
+ * Copyright (C) 2021  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,24 +15,34 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.repository;
+package org.veo.persistence.migrations
 
-import java.util.Set;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-import org.veo.core.entity.Process;
-import org.veo.core.entity.ProcessRisk;
-import org.veo.core.entity.Scenario;
+import groovy.sql.Sql
 
-/**
- * A repository for <code>Process</code> entities.
- *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
- */
-public interface ProcessRepository extends RiskAffectedRepository<Process, ProcessRisk> {
+class V20__add_risk_value_aspect extends BaseJavaMigration {
+    @Override
+    void migrate(Context context) throws Exception {
+        new Sql(context.connection).execute("""
 
-    /**
-     * Returns risks with initialized risk value aspects.
-     */
-    Set<Process> findRisksWithValue(Scenario scenario);
+    create table riskvalue_aspect (
+        db_id varchar(255) not null,
+        impact_categories jsonb,
+        probability jsonb,
+        risk_categories jsonb,
+        risk_definition varchar(255),
+        domain_id varchar(255) not null,
+        owner_db_id varchar(255) not null,
+        primary key (db_id)
+    );
+
+    alter table riskvalue_aspect
+       add constraint FK_owner_db_id
+       foreign key (owner_db_id)
+       references abstractriskdata;
+
+""")
+    }
 }

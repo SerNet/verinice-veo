@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2019  Urs Zeidler.
+ * Copyright (C) 2022  Alexander Koderman
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,24 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.repository;
+package org.veo.persistence.entity.jpa;
 
-import java.util.Set;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
-import org.veo.core.entity.Process;
-import org.veo.core.entity.ProcessRisk;
-import org.veo.core.entity.Scenario;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 
-/**
- * A repository for <code>Process</code> entities.
- *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
- */
-public interface ProcessRepository extends RiskAffectedRepository<Process, ProcessRisk> {
+@Converter(autoApply = true)
+public class RiskDefinitionRefConverter implements AttributeConverter<RiskDefinitionRef, String> {
 
-    /**
-     * Returns risks with initialized risk value aspects.
-     */
-    Set<Process> findRisksWithValue(Scenario scenario);
+    @Override
+    public String convertToDatabaseColumn(RiskDefinitionRef attribute) {
+        return attribute == null ? null : attribute.getIdRef();
+    }
+
+    @Override
+    public RiskDefinitionRef convertToEntityAttribute(String dbData) {
+        return dbData == null ? null
+                : RiskReferenceFactory.getInstance()
+                                      .createRiskDefinitionRef(dbData);
+    }
 }

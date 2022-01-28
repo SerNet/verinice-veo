@@ -17,28 +17,36 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
-import org.veo.core.entity.riskdefinition.RiskDefinition;
-
 import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import lombok.Data;
+import lombok.Setter;
 
-/**
- * References a complete risk definition. Each {@code Scope} must have 0..1
- * references to a risk definition of a domain known to it.
- *
- * @see org.veo.core.entity.Scope
- */
-@Value
-@Builder
-@Jacksonized
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class RiskDefinitionRef {
-    String idRef;
+@Data
+public class ProbabilityImpl implements Probability {
+    private ProbabilityRef potentialProbability;
 
-    public static RiskDefinitionRef from(RiskDefinition rd) {
-        return rd == null ? null : new RiskDefinitionRef(rd.getId());
+    private ProbabilityRef specificProbability;
+
+    @Setter(AccessLevel.NONE)
+    private ProbabilityRef effectiveProbability;
+
+    private String specificProbabilityExplanation;
+
+    public void setPotentialProbability(ProbabilityRef potentialProbability) {
+        this.potentialProbability = potentialProbability;
+        updateEffectiveProbability();
     }
+
+    public void setSpecificProbability(ProbabilityRef specificProbability) {
+        this.specificProbability = specificProbability;
+        updateEffectiveProbability();
+    }
+
+    private void updateEffectiveProbability() {
+        if (specificProbability != null)
+            effectiveProbability = specificProbability;
+        else
+            effectiveProbability = potentialProbability;
+    }
+
 }

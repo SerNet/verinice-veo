@@ -17,7 +17,22 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
+import java.util.Collection;
+import java.util.Set;
+
+import org.springframework.data.jpa.repository.Query;
+
 import org.veo.persistence.entity.jpa.ProcessData;
+import org.veo.persistence.entity.jpa.ScenarioData;
 
 public interface ProcessDataRepository extends CompositeRiskAffectedDataRepository<ProcessData> {
+
+    //@formatter:off
+    //@formatter:off
+    @Query("select distinct p from process p " +
+            "left join fetch p.risks risks " +
+            "left join fetch risks.riskAspects " +
+            "where risks.scenario in ?1")
+    //@formatter:on
+    Set<ProcessData> findRisksWithValue(Collection<ScenarioData> causes);
 }

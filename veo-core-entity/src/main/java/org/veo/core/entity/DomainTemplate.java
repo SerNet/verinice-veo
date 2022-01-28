@@ -91,7 +91,12 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
                                           .findFirst();
     }
 
+    /**
+     * Returns a map of risk definitions grouped by their ID.
+     */
     Map<String, RiskDefinition> getRiskDefinitions();
+
+    Optional<RiskDefinition> getRiskDefinition(String riskDefinitionId);
 
     void setRiskDefinitions(Map<String, RiskDefinition> definitions);
 }

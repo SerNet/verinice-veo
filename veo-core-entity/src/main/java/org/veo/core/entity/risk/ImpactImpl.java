@@ -17,28 +17,45 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
-import org.veo.core.entity.riskdefinition.RiskDefinition;
-
 import lombok.AccessLevel;
-import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import lombok.Setter;
 
-/**
- * References a complete risk definition. Each {@code Scope} must have 0..1
- * references to a risk definition of a domain known to it.
- *
- * @see org.veo.core.entity.Scope
- */
-@Value
-@Builder
-@Jacksonized
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class RiskDefinitionRef {
-    String idRef;
+@Data
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
+public class ImpactImpl implements Impact {
 
-    public static RiskDefinitionRef from(RiskDefinition rd) {
-        return rd == null ? null : new RiskDefinitionRef(rd.getId());
+    @Setter(AccessLevel.NONE)
+    @NonNull
+    private CategoryRef category;
+
+    private ImpactRef potentialImpact;
+
+    private ImpactRef specificImpact;
+
+    @Setter(AccessLevel.NONE)
+    private ImpactRef effectiveImpact;
+
+    private String specificImpactExplanation;
+
+    public void setPotentialImpact(ImpactRef potentialImpact) {
+        this.potentialImpact = potentialImpact;
+        updateEffectiveImpact();
+    }
+
+    public void setSpecificImpact(ImpactRef specificImpact) {
+        this.specificImpact = specificImpact;
+        updateEffectiveImpact();
+    }
+
+    private void updateEffectiveImpact() {
+        if (specificImpact != null)
+            effectiveImpact = specificImpact;
+        else
+            effectiveImpact = potentialImpact;
     }
 }

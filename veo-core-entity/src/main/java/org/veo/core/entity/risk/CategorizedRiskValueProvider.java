@@ -17,28 +17,30 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
-import org.veo.core.entity.riskdefinition.RiskDefinition;
+import java.util.List;
+import java.util.Set;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+public interface CategorizedRiskValueProvider {
 
-/**
- * References a complete risk definition. Each {@code Scope} must have 0..1
- * references to a risk definition of a domain known to it.
- *
- * @see org.veo.core.entity.Scope
- */
-@Value
-@Builder
-@Jacksonized
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class RiskDefinitionRef {
-    String idRef;
+    List<DeterminedRisk> getCategorizedRisks();
 
-    public static RiskDefinitionRef from(RiskDefinition rd) {
-        return rd == null ? null : new RiskDefinitionRef(rd.getId());
-    }
+    List<CategoryRef> getAvailableCategories();
+
+    void setRiskTreatmentExplanation(CategoryRef impactCategory, String riskTreatmentExplanation);
+
+    RiskRef getInherentRisk(CategoryRef impactCategory);
+
+    RiskRef getResidualRisk(CategoryRef impactCategory);
+
+    void setResidualRiskExplanation(CategoryRef impactCategory, String residualRiskExplanation);
+
+    String getResidualRiskExplanation(CategoryRef impactCategory);
+
+    Set<RiskTreatmentOption> getRiskTreatments(CategoryRef impactCategory);
+
+    String getRiskTreatmentExplanation(CategoryRef impactCategory);
+
+    void setResidualRisk(CategoryRef impactCategory, RiskRef residualRisk);
+
+    void setRiskTreatments(CategoryRef impactCategory, Set<RiskTreatmentOption> riskTreatments);
 }

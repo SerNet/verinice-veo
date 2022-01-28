@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2019  Urs Zeidler.
+ * Copyright (C) 2022  Alexander Koderman
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,24 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.repository;
+package org.veo.core.entity.risk;
 
-import java.util.Set;
+public abstract class ReferenceFactory {
+    protected RiskRef createRiskRef(String id) {
+        return id == null ? null : new RiskRef(id);
+    }
 
-import org.veo.core.entity.Process;
-import org.veo.core.entity.ProcessRisk;
-import org.veo.core.entity.Scenario;
+    protected ProbabilityRef createProbabilityRef(String id) {
+        return id == null ? null : new ProbabilityRef(id);
+    }
 
-/**
- * A repository for <code>Process</code> entities.
- *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
- */
-public interface ProcessRepository extends RiskAffectedRepository<Process, ProcessRisk> {
+    protected ImpactRef createImpactRef(String id) {
+        return id == null ? null : new ImpactRef(id);
+    }
 
-    /**
-     * Returns risks with initialized risk value aspects.
-     */
-    Set<Process> findRisksWithValue(Scenario scenario);
+    protected CategoryRef createCategoryRef(String id) {
+        return id == null ? null : new CategoryRef(id);
+    }
+
+    protected RiskDefinitionRef createRiskDefinitionRef(String id) {
+        return id == null ? null : new RiskDefinitionRef(id);
+    }
 }

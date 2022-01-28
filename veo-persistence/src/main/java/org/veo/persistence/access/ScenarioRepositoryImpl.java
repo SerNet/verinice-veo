@@ -67,7 +67,7 @@ public class ScenarioRepositoryImpl
                                                                            .orElseThrow()
                                                                            .remove()));
 
-        var processes = processDataRepository.findDistinctByRisks_ScenarioIn(scenarios);
+        var processes = processDataRepository.findRisksWithValue(scenarios);
         processes.forEach(processData -> scenarios.forEach(scenario -> processData.getRisk(scenario)
                                                                                   .orElseThrow()
                                                                                   .remove()));

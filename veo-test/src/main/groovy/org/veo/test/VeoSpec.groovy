@@ -266,7 +266,7 @@ abstract class VeoSpec extends Specification {
     }
 
     static RiskDefinition createRiskDefinition(String id) {
-        RiskDefinition rd = new RiskDefinition();
+        RiskDefinition rd = new RiskDefinition()
         rd.id = id
         rd.riskValues = [
             new RiskValue(0,"gering","1","Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.","#004643","symbolic_risk_1"),
@@ -325,12 +325,14 @@ abstract class VeoSpec extends Specification {
         ] as List)
 
         rd.implementationStateDefinition = new ImplementationStateDefinition("prop-1","pro-name-1","",[
-            new CategoryLevel("name","abbreviation","description","#004643"),
-            new CategoryLevel("name","abbreviation","description","#004643")
+            new CategoryLevel("ja","J","Die Maßnahme ist vollständig umgesetzt.","#12AE0F"),
+            new CategoryLevel("nein","N","Die Maßnahme ist nicht umgesetzt.","#AE0D11"),
+            new CategoryLevel("teilweise","Tw","Die Maßnahme ist nicht vollständig umgesetzt.","#EDE92F"),
+            new CategoryLevel("nicht anwendbar","NA","Die Maßnahme ist für den Betrachtungsgegenstand nicht anwendbar.","#49A2ED")
         ] as List)
         rd.riskMethod = new RiskMethod("highwatermark","description")
 
-        return rd;
+        return rd
     }
 
     private static List<CategoryLevel> createDefaultCategoryLevels() {

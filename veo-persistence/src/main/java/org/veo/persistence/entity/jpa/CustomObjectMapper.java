@@ -15,12 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence;
+package org.veo.persistence.entity.jpa;
 
 import java.io.IOException;
 import java.util.Optional;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -43,6 +42,8 @@ public class CustomObjectMapper extends ObjectMapper {
     }
 
     private class RefModule extends SimpleModule {
+        RiskReferenceFactory refFactory = RiskReferenceFactory.getInstance();
+
         public RefModule() {
             addSerializer(ImplementationStatusRef.class, new JsonSerializer<>() {
                 @Override
@@ -51,31 +52,29 @@ public class CustomObjectMapper extends ObjectMapper {
                     gen.writeString(value.getKey());
                 }
             });
-            addDeserializer(ImplementationStatusRef.class,
-                            new JsonDeserializer<ImplementationStatusRef>() {
-                                @Override
-                                public ImplementationStatusRef deserialize(JsonParser p,
-                                        DeserializationContext ctxt)
-                                        throws IOException, JacksonException {
-                                    return Optional.ofNullable(p.getText())
-                                                   .map(key -> ImplementationStatusRef.from(key))
-                                                   .orElse(null);
-                                }
-                            });
+            addDeserializer(ImplementationStatusRef.class, new JsonDeserializer<>() {
+                @Override
+                public ImplementationStatusRef deserialize(JsonParser p,
+                        DeserializationContext ctxt) throws IOException {
+                    return Optional.ofNullable(p.getText())
+                                   .map(ImplementationStatusRef::from)
+                                   .orElse(null);
+                }
+            });
 
             addSerializer(RiskDefinitionRef.class, new JsonSerializer<>() {
                 @Override
                 public void serialize(RiskDefinitionRef value, JsonGenerator gen,
                         SerializerProvider serializers) throws IOException {
-                    gen.writeString(value.getId());
+                    gen.writeString(value.getIdRef());
                 }
             });
-            addDeserializer(RiskDefinitionRef.class, new JsonDeserializer<RiskDefinitionRef>() {
+            addDeserializer(RiskDefinitionRef.class, new JsonDeserializer<>() {
                 @Override
                 public RiskDefinitionRef deserialize(JsonParser p, DeserializationContext ctxt)
-                        throws IOException, JacksonException {
+                        throws IOException {
                     return Optional.ofNullable(p.getText())
-                                   .map(key -> RiskDefinitionRef.from(key))
+                                   .map(key -> refFactory.createRiskDefinitionRef(key))
                                    .orElse(null);
                 }
             });
@@ -83,14 +82,13 @@ public class CustomObjectMapper extends ObjectMapper {
                 @Override
                 public void serialize(RiskDefinitionRef value, JsonGenerator gen,
                         SerializerProvider serializers) throws IOException {
-                    gen.writeFieldName(value.getId());
+                    gen.writeFieldName(value.getIdRef());
                 }
             });
             addKeyDeserializer(RiskDefinitionRef.class, new KeyDeserializer() {
                 @Override
-                public Object deserializeKey(String key, DeserializationContext ctxt)
-                        throws IOException {
-                    return RiskDefinitionRef.from(key);
+                public Object deserializeKey(String key, DeserializationContext ctxt) {
+                    return refFactory.createRiskDefinitionRef(key);
                 }
             });
         }

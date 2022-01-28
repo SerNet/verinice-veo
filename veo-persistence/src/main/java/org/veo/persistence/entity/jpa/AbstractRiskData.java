@@ -43,7 +43,7 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.exception.ModelConsistencyException;
 
 import lombok.AccessLevel;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +52,8 @@ import lombok.ToString;
 
 @Entity(name = "abstractriskdata")
 @ToString(onlyExplicitlyIncluded = true)
-@Data
+@Getter
+@Setter
 @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
@@ -71,28 +72,33 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
 
     @Column(name = "domains")
     @ManyToMany(targetEntity = DomainData.class, fetch = FetchType.LAZY)
+    @ToString.Exclude
     final private Set<Domain> domains = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = ControlData.class)
     @JoinColumn(name = "control_id")
     @Setter(AccessLevel.PRIVATE)
+    @ToString.Exclude
     private Control mitigation;
 
     @NotNull
     @NonNull
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = ScenarioData.class, optional = false)
     @Setter(AccessLevel.PROTECTED)
+    @ToString.Exclude
     private Scenario scenario;
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = PersonData.class)
     @JoinColumn(name = "person_id")
     @Setter(AccessLevel.PRIVATE)
+    @ToString.Exclude
     private Person riskOwner;
 
     @NotNull
     @NonNull
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = RiskAffectedData.class, optional = false)
     @Setter(AccessLevel.PRIVATE)
+    @ToString.Exclude
     private T entity;
 
     @Override

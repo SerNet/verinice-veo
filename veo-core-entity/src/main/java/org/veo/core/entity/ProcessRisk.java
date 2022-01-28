@@ -17,6 +17,13 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Set;
+
+import org.veo.core.entity.risk.CategorizedImpactValueProvider;
+import org.veo.core.entity.risk.CategorizedRiskValueProvider;
+import org.veo.core.entity.risk.ProbabilityValueProvider;
+import org.veo.core.entity.risk.RiskDefinitionRef;
+
 /**
  * Based on the definition of the term 'risk' from NIST 800-37:
  * <p>
@@ -31,4 +38,11 @@ package org.veo.core.entity;
  */
 public interface ProcessRisk extends AbstractRisk<Process, ProcessRisk> {
 
+    ProbabilityValueProvider getProbabilityProvider(RiskDefinitionRef riskDefinition);
+
+    CategorizedImpactValueProvider getImpactProvider(RiskDefinitionRef riskDefinition);
+
+    CategorizedRiskValueProvider getRiskProvider(RiskDefinitionRef riskDefinition);
+
+    Set<RiskDefinitionRef> getRiskDefinitions();
 }

@@ -17,11 +17,14 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer;
 
+import static org.veo.adapter.presenter.api.io.mapper.DomainRiskReferenceProvider.referencesForDomain;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.veo.adapter.IdRefResolver;
@@ -48,6 +51,7 @@ import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.ImplementationStatusRef;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -69,9 +73,18 @@ public class DomainAssociationTransformer {
             target.setRiskValues(domain, associationDto.getRiskValues()
                                                        .entrySet()
                                                        .stream()
-                                                       .collect(Collectors.toMap(kv -> RiskDefinitionRef.from(kv.getKey()),
-                                                                                 this::mapControlRiskValuesDto2Entity)));
+                                                       .collect(groupRiskDefinitionsByDomain(domain)));
         });
+    }
+
+    private Collector<Map.Entry<String, ControlRiskValuesDto>, ?, Map<RiskDefinitionRef, ControlRiskValues>> groupRiskDefinitionsByDomain(
+            DomainTemplate domain) {
+        return Collectors.toMap(kv -> referencesForDomain(domain).getRiskDefinitionRef(kv.getKey())
+                                                                 .orElseThrow(() -> new NotFoundException(
+                                                                         "Risk definition '%s' was not found for domain '%s'",
+                                                                         kv.getKey(),
+                                                                         domain.getId())),
+                                this::mapControlRiskValuesDto2Entity);
     }
 
     private ControlRiskValues mapControlRiskValuesDto2Entity(
@@ -124,7 +137,7 @@ public class DomainAssociationTransformer {
                       assocationDto.setRiskValues(riskValues.entrySet()
                                                             .stream()
                                                             .collect(Collectors.toMap(kv -> kv.getKey()
-                                                                                              .getId(),
+                                                                                              .getIdRef(),
                                                                                       this::mapControlRiskValuesToDto)));
                   });
             return assocationDto;
