@@ -255,7 +255,7 @@ pipeline {
                                     -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver\
                                     -e VEO_RESTTEST_BASEURL=http://veo-${n}:8070") {
                                                         echo 'Waiting for container startup'
-                                                        timeout(1) {
+                                                        timeout(2) {
                                                             waitUntil {
                                                                 script {
                                                                     def r = sh returnStatus:true, script: "wget --no-proxy -q http://veo-${n}:8070 -O /dev/null"
@@ -310,7 +310,7 @@ pipeline {
                                 veo.inside("--network ${n} --name veo-${n} --entrypoint=''"){
                                     sh "java -Dlogging.file.name=${WORKSPACE}/veo-rest.log -Dveo.etag.salt=zuL4Q8JKdy -Dspring.datasource.url=jdbc:postgresql://database-${n}:5432/postgres -Dspring.datasource.username=postgres -Dspring.datasource.password=postgres -Dspring.security.oauth2.resourceserver.jwt.issuer-uri=${env.VEO_AUTH_URL} -Dveo.etag.salt=pleasemrpostman -Dspring.rabbitmq.username=\$RABBITMQ_CREDS_USR -Dspring.rabbitmq.password=\$RABBITMQ_CREDS_PSW -Dspring.rabbitmq.host=${env.SPRING_RABBITMQ_HOST} -Dspring.rabbitmq.port=${env.SPRING_RABBITMQ_PORT} -Dspring.security.oauth2.resourceserver.jwt.jwk-set-uri=${env.VEO_AUTH_URL}/protocol/openid-connect/certs -Dhttp.proxyHost=cache.sernet.private -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.sernet.private -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Dhttp.proxySet=true -jar ${WORKSPACE}/veo-rest/build/libs/veo-rest-${projectVersion}.jar &"
                                     echo 'Waiting for application startup'
-                                    timeout(1) {
+                                    timeout(2) {
                                         waitUntil {
                                             script {
                                                 def r = sh returnStatus:true, script: 'wget -q http://localhost:8070 -O /dev/null'
