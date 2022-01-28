@@ -161,6 +161,8 @@ resttest:
 Leave the `baseUrl` empty to run the tests against a local bootstrapped server
 (this is the default).
 
+#### Profile 'development'
+This profile is active in the dev environment only.
 
 ### Logging
 

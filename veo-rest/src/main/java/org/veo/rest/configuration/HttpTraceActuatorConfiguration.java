@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2018  Jochen Kemnade.
+ * Copyright (C) 2022  Finn Westendorf
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,35 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.rest;
+package org.veo.rest.configuration;
 
-import java.time.Duration;
+import static org.veo.rest.VeoRestConfiguration.PROFILE_DEVELOPMENT;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.boot.actuate.trace.http.HttpTraceRepository;
+import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import org.veo.core.usecase.common.ETag;
-
-import lombok.Getter;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
-@ComponentScan("org.veo")
-public class VeoRestConfiguration {
-    public static final String PROFILE_BACKGROUND_TASKS = "background-tasks";
-    public static final String PROFILE_DEVELOPMENT = "development";
+@Profile(PROFILE_DEVELOPMENT)
+@ConditionalOnProperty(value = "veo.dev.dangerous.httptrace", havingValue = "true")
+public class HttpTraceActuatorConfiguration {
 
-    @Value("${veo.etag.salt}")
-    private String eTagSalt;
-
-    @Value("${veo.messages.publishing.lockExpirationMs:20000}")
-    @Getter
-    private Duration messagePublishingLockExpiration;
-
-    @PostConstruct
-    public void configureETagSalt() {
-        ETag.setSalt(eTagSalt);
+    @Bean
+    public HttpTraceRepository httpTraceRepository() {
+        return new InMemoryHttpTraceRepository();
     }
+
 }

@@ -23,6 +23,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.jsonwebtoken:jjwt-api'
     implementation 'org.springdoc:springdoc-openapi-ui'
     implementation 'io.swagger.core.v3:swagger-core'
@@ -33,7 +34,6 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson'
     runtimeOnly 'org.postgresql:postgresql'
-    runtimeOnly 'org.springframework.boot:spring-boot-starter-actuator'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
     testImplementation "org.testcontainers:spock"
