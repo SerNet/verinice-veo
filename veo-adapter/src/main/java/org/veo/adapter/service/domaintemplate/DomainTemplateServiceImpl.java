@@ -199,11 +199,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                       elementCache.entrySet()
                                   .forEach(e -> {
                                       Element value = e.getValue();
-                                      value.setDomains(Collections.singleton(domain));
                                       value.setId(null);
-                                      value.getSubTypeAspects()
-                                           .stream()
-                                           .forEach(st -> st.setDomain(domain));
                                   });
                       elements.addAll(elementCache.values());
                   } catch (JsonMappingException e) {
