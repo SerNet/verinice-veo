@@ -21,11 +21,11 @@ import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import com.sun.istack.NotNull;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 
 import org.veo.core.entity.Control;
