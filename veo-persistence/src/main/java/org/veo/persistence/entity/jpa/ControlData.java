@@ -32,6 +32,7 @@ import javax.persistence.OneToMany;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Control;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.risk.ControlRiskValues;
@@ -82,5 +83,11 @@ public class ControlData extends ElementData implements Control {
     public Optional<Map<RiskDefinitionRef, ControlRiskValues>> getRiskValues(
             DomainTemplate domain) {
         return findAspectByDomain(riskValuesAspects, domain).map(a -> a.getValues());
+    }
+
+    @Override
+    public void transferToDomain(Domain oldDomain, Domain newDomain) {
+        findAspectByDomain(riskValuesAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
+        super.transferToDomain(oldDomain, newDomain);
     }
 }

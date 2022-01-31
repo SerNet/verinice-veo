@@ -80,6 +80,31 @@ public interface Element
         }
     }
 
+    default void transferToDomain(Domain oldDomain, Domain newDomain) {
+        if (!getDomains().contains(oldDomain)) {
+            throw new IllegalArgumentException(this + " is not a member of " + oldDomain);
+        }
+        if (getDomains().contains(newDomain)) {
+            throw new IllegalArgumentException(this + " is already a member of " + newDomain);
+        }
+        addToDomains(newDomain);
+        getCustomAspects().forEach(ca -> {
+            ca.removeFromDomains(oldDomain);
+            ca.addToDomains(newDomain);
+        });
+        getLinks().forEach(cl -> {
+            cl.removeFromDomains(oldDomain);
+            cl.addToDomains(newDomain);
+        });
+        getSubTypeAspects().forEach(sa -> {
+            if (sa.getDomain()
+                  .equals(oldDomain)) {
+                sa.setDomain(newDomain);
+            }
+        });
+        removeFromDomains(oldDomain);
+    }
+
     /**
      * Add the given CustomLink to the collection links. Adding will set the source
      * to this.

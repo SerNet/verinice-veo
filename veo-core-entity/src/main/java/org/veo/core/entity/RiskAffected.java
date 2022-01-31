@@ -157,4 +157,10 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
         }
         return removed;
     }
+
+    @Override
+    default void transferToDomain(Domain oldDomain, Domain newDomain) {
+        Element.super.transferToDomain(oldDomain, newDomain);
+        getRisks().forEach(r -> r.addToDomains(newDomain));
+    }
 }
