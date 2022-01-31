@@ -22,6 +22,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.riskdefinition.ImplementationStateDefinition
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
@@ -45,7 +46,20 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
     def setup() {
         txTemplate.execute {
             def client = createTestClient()
-            domainId = newDomain(client).idAsString
+            def domain = newDomain(client) {
+                riskDefinitions = [
+                    "myFirstRiskDefinition": createRiskDefinition("myFirstRiskDefinition"),
+                    "mySecondRiskDefinition": createRiskDefinition("mySecondRiskDefinition"),
+                    "myThirdRiskDefinition": createRiskDefinition("myThirdRiskDefinition"),
+                    "theOneWithOnlyTwoImplementationStatuses": createRiskDefinition("theOneWithOnlyTwoImplementationStatuses") {
+                        implementationStateDefinition = new ImplementationStateDefinition("", "", "", [
+                            newCategoryLevel("not done"),
+                            newCategoryLevel("done"),
+                        ])
+                    },
+                ]
+            }
+            domainId = domain.idAsString
             unitId = unitRepository.save(newUnit(client)).idAsString
             clientRepository.save(client)
         }
@@ -60,10 +74,10 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
                 (domainId): [
                     riskValues: [
                         myFirstRiskDefinition : [
-                            implementationStatus: "PLANNED"
+                            implementationStatus: 0
                         ],
                         mySecondRiskDefinition : [
-                            implementationStatus: "PROPOSED"
+                            implementationStatus: 1
                         ]
                     ]
                 ]
@@ -76,8 +90,8 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
         def retrievedControl = parseJson(getControlResponse)
 
         then: "the retrieved risk values are complete"
-        retrievedControl.domains[domainId].riskValues.myFirstRiskDefinition.implementationStatus == "PLANNED"
-        retrievedControl.domains[domainId].riskValues.mySecondRiskDefinition.implementationStatus == "PROPOSED"
+        retrievedControl.domains[domainId].riskValues.myFirstRiskDefinition.implementationStatus == 0
+        retrievedControl.domains[domainId].riskValues.mySecondRiskDefinition.implementationStatus == 1
 
         when: "updating the risk values on the control"
         put("/controls/$controlId", [
@@ -87,10 +101,10 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
                 (domainId): [
                     riskValues: [
                         myFirstRiskDefinition : [
-                            implementationStatus: "ADVANCED"
+                            implementationStatus: 2
                         ],
                         myThirdRiskDefinition : [
-                            implementationStatus: "NEW"
+                            implementationStatus: 3
                         ]
                     ]
                 ]
@@ -101,8 +115,45 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
         def updatedControl = parseJson(get("/controls/$controlId"))
 
         then: "the changes have been applied"
-        updatedControl.domains[domainId].riskValues.myFirstRiskDefinition.implementationStatus == "ADVANCED"
+        updatedControl.domains[domainId].riskValues.myFirstRiskDefinition.implementationStatus == 2
         updatedControl.domains[domainId].riskValues.mySecondRiskDefinition == null
-        updatedControl.domains[domainId].riskValues.myThirdRiskDefinition.implementationStatus == "NEW"
+        updatedControl.domains[domainId].riskValues.myThirdRiskDefinition.implementationStatus == 3
+    }
+
+    def "undefined implementation status is rejected"() {
+        when: "creating a control with a valid implementation status"
+        post("/controls", [
+            name: "Super CTL",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [
+                    riskValues: [
+                        theOneWithOnlyTwoImplementationStatuses : [
+                            implementationStatus: 1
+                        ]
+                    ]
+                ]
+            ]
+        ])
+        then:
+        notThrown(Exception)
+
+        when: "creating a control with an undefined implementation status"
+        post("/controls", [
+            name: "Super CTL",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [
+                    riskValues: [
+                        theOneWithOnlyTwoImplementationStatuses : [
+                            implementationStatus: 2
+                        ]
+                    ]
+                ]
+            ]
+        ], false)
+
+        then: "it is rejected"
+        thrown(IllegalArgumentException)
     }
 }

@@ -17,21 +17,16 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * References an implementation status with a certain key. This should provide
  * some type safety.
  */
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class ImplementationStatusRef {
-    private String key;
-
-    public static ImplementationStatusRef from(String key) {
-        return new ImplementationStatusRef(key);
-    }
-
-    public String getKey() {
-        return key;
-    }
+    @Getter
+    private int ordinalValue;
 }

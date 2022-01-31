@@ -17,12 +17,12 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Min;
 
 import lombok.Data;
 
 @Data
 public class ControlRiskValuesDto {
-    @Size(max = 256)
-    String implementationStatus;
+    @Min(0)
+    int implementationStatus;
 }

@@ -19,6 +19,7 @@ package org.veo.persistence.entity.jpa;
 
 import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ImpactRef;
+import org.veo.core.entity.risk.ImplementationStatusRef;
 import org.veo.core.entity.risk.ProbabilityRef;
 import org.veo.core.entity.risk.ReferenceFactory;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -68,5 +69,10 @@ final class RiskReferenceFactory extends ReferenceFactory {
     @Override
     protected RiskDefinitionRef createRiskDefinitionRef(String dbData) {
         return super.createRiskDefinitionRef(dbData);
+    }
+
+    @Override
+    protected ImplementationStatusRef createImplementationStatusRef(int ordinalValue) {
+        return super.createImplementationStatusRef(ordinalValue);
     }
 }

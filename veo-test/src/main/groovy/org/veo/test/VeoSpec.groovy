@@ -265,7 +265,8 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static RiskDefinition createRiskDefinition(String id) {
+    static RiskDefinition createRiskDefinition(String id, @DelegatesTo(value = RiskDefinition.class)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.riskdefinition.RiskDefintiion") Closure init = null) {
         RiskDefinition rd = new RiskDefinition()
         rd.id = id
         rd.riskValues = [
@@ -332,7 +333,15 @@ abstract class VeoSpec extends Specification {
         ] as List)
         rd.riskMethod = new RiskMethod("highwatermark","description")
 
+        execute(rd, init)
         return rd
+    }
+
+    static CategoryLevel newCategoryLevel(String name, @DelegatesTo(value = CategoryLevel.class)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.riskdefinition.CategoryLevel") Closure init = null) {
+        var categoryLevel = new CategoryLevel(name, "SCL", "whatever", "#000000")
+        execute(categoryLevel, init)
+        return categoryLevel
     }
 
     private static List<CategoryLevel> createDefaultCategoryLevels() {

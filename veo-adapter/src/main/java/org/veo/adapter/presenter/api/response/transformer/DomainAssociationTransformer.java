@@ -39,6 +39,7 @@ import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
 import org.veo.adapter.presenter.api.dto.ControlDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ControlRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
+import org.veo.adapter.presenter.api.io.mapper.DomainRiskReferenceProvider;
 import org.veo.adapter.service.domaintemplate.SyntheticIdRef;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
@@ -53,7 +54,6 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.risk.ControlRiskValues;
-import org.veo.core.entity.risk.ImplementationStatusRef;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
 /**
@@ -79,19 +79,25 @@ public class DomainAssociationTransformer {
 
     private Collector<Map.Entry<String, ControlRiskValuesDto>, ?, Map<RiskDefinitionRef, ControlRiskValues>> groupRiskDefinitionsByDomain(
             DomainTemplate domain) {
-        return Collectors.toMap(kv -> referencesForDomain(domain).getRiskDefinitionRef(kv.getKey())
-                                                                 .orElseThrow(() -> new NotFoundException(
-                                                                         "Risk definition '%s' was not found for domain '%s'",
-                                                                         kv.getKey(),
-                                                                         domain.getId())),
-                                this::mapControlRiskValuesDto2Entity);
+        var referenceProvider = referencesForDomain(domain);
+        return Collectors.toMap(kv -> referenceProvider.getRiskDefinitionRef(kv.getKey())
+                                                       .orElseThrow(() -> new NotFoundException(
+                                                               "Risk definition '%s' was not found for domain '%s'",
+                                                               kv.getKey(), domain.getId())),
+                                kv -> mapControlRiskValuesDto2Entity(kv.getKey(), kv.getValue(),
+                                                                     referenceProvider));
     }
 
-    private ControlRiskValues mapControlRiskValuesDto2Entity(
-            Map.Entry<String, ControlRiskValuesDto> kv) {
+    private ControlRiskValues mapControlRiskValuesDto2Entity(String riskDefinitionId,
+            ControlRiskValuesDto riskValuesDto, DomainRiskReferenceProvider referenceProvider) {
         var riskValues = new ControlRiskValues();
-        riskValues.setImplementationStatus(ImplementationStatusRef.from(kv.getValue()
-                                                                          .getImplementationStatus()));
+        var implementationStatus = referenceProvider.getImplementationStatus(riskDefinitionId,
+                                                                             riskValuesDto.getImplementationStatus())
+                                                    .orElseThrow(() -> new IllegalArgumentException(
+                                                            String.format("Risk definition %s contains no implementation status with ordinal value %d",
+                                                                          riskDefinitionId,
+                                                                          riskValuesDto.getImplementationStatus())));
+        riskValues.setImplementationStatus(implementationStatus);
         return riskValues;
     }
 
@@ -149,7 +155,7 @@ public class DomainAssociationTransformer {
         var riskValuesDto = new ControlRiskValuesDto();
         riskValuesDto.setImplementationStatus(entry.getValue()
                                                    .getImplementationStatus()
-                                                   .getKey());
+                                                   .getOrdinalValue());
         return riskValuesDto;
     }
 

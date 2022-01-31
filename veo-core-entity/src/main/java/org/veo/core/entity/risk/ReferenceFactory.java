@@ -34,6 +34,10 @@ public abstract class ReferenceFactory {
         return id == null ? null : new CategoryRef(id);
     }
 
+    protected ImplementationStatusRef createImplementationStatusRef(int ordinalValue) {
+        return new ImplementationStatusRef(ordinalValue);
+    }
+
     protected RiskDefinitionRef createRiskDefinitionRef(String id) {
         return id == null ? null : new RiskDefinitionRef(id);
     }

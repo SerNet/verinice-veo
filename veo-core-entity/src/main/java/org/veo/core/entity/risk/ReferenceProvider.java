@@ -43,6 +43,9 @@ public abstract class ReferenceProvider extends ReferenceFactory {
     public abstract Optional<CategoryRef> getCategoryRef(String riskDefinitionId,
             String categoryId);
 
+    public abstract Optional<ImplementationStatusRef> getImplementationStatus(
+            String riskDefinitionId, int ordinalValue);
+
     public abstract Optional<RiskDefinitionRef> getRiskDefinitionRef(String riskDefinitionId);
 
 }

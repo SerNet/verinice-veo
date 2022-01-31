@@ -49,15 +49,15 @@ public class CustomObjectMapper extends ObjectMapper {
                 @Override
                 public void serialize(ImplementationStatusRef value, JsonGenerator gen,
                         SerializerProvider serializers) throws IOException {
-                    gen.writeString(value.getKey());
+                    gen.writeNumber(value.getOrdinalValue());
                 }
             });
             addDeserializer(ImplementationStatusRef.class, new JsonDeserializer<>() {
                 @Override
                 public ImplementationStatusRef deserialize(JsonParser p,
                         DeserializationContext ctxt) throws IOException {
-                    return Optional.ofNullable(p.getText())
-                                   .map(ImplementationStatusRef::from)
+                    return Optional.ofNullable(p.getIntValue())
+                                   .map(ordinalValue -> refFactory.createImplementationStatusRef(ordinalValue))
                                    .orElse(null);
                 }
             });

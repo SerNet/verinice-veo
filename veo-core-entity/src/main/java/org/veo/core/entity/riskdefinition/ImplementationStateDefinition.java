@@ -19,6 +19,7 @@ package org.veo.core.entity.riskdefinition;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,4 +40,9 @@ public class ImplementationStateDefinition extends DimensionDefinition {
 
     private List<CategoryLevel> levels = new ArrayList<>();
 
+    public Optional<CategoryLevel> getLevel(int ordinalValue) {
+        return levels.stream()
+                     .filter(l -> l.getOrdinalValue() == ordinalValue)
+                     .findFirst();
+    }
 }

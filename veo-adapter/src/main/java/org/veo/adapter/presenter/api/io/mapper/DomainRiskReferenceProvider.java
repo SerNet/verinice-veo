@@ -22,6 +22,7 @@ import java.util.Optional;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ImpactRef;
+import org.veo.core.entity.risk.ImplementationStatusRef;
 import org.veo.core.entity.risk.ProbabilityRef;
 import org.veo.core.entity.risk.ReferenceProvider;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -65,6 +66,15 @@ public class DomainRiskReferenceProvider extends ReferenceProvider {
     public Optional<CategoryRef> getCategoryRef(String riskDefinitionId, String categoryId) {
         // TODO VEO-1104 ensure valid riskdefinition constraints
         return Optional.ofNullable(createCategoryRef(categoryId));
+    }
+
+    @Override
+    public Optional<ImplementationStatusRef> getImplementationStatus(String riskDefinitionId,
+            int ordinalValue) {
+        return domain.getRiskDefinition(riskDefinitionId)
+                     .flatMap(rd -> rd.getImplementationStateDefinition()
+                                      .getLevel(ordinalValue))
+                     .map(level -> createImplementationStatusRef(level.getOrdinalValue()));
     }
 
     @Override
