@@ -55,7 +55,7 @@ public class StoredEventData implements StoredEvent {
     @SequenceGenerator(name = "seq_events", allocationSize = 50)
     private Long id;
 
-    @Column(length = 100000)
+    @Column(length = 10000000)
     private String content;
     private String routingKey;
     @Column(nullable = false)
