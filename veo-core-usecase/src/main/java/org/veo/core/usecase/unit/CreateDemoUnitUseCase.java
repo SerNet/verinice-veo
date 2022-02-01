@@ -33,6 +33,7 @@ import javax.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.CustomLink;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
@@ -86,8 +87,14 @@ public class CreateDemoUnitUseCase implements
     private Unit createDemoUnitForClient(Client savedClient) {
         Unit demoUnit = entityFactory.createUnit(DEMO_UNIT_NAME, null);
         demoUnit.setClient(savedClient);
-        unitRepository.save(demoUnit);
         Collection<Element> demoUnitElements = domainTemplateService.getElementsForDemoUnit(savedClient);
+        Set<Domain> domainsFromElements = demoUnitElements.stream()
+                                                          .flatMap(element -> element.getDomains()
+                                                                                     .stream())
+                                                          .distinct()
+                                                          .collect(Collectors.toSet());
+        demoUnit.addToDomains(domainsFromElements);
+        unitRepository.save(demoUnit);
         Map<Class<Element>, List<Element>> elementsGroupedByType = groupByType(demoUnitElements);
         Map<Element, Set<CustomLink>> links = new HashMap<>();
         // save links after the elements

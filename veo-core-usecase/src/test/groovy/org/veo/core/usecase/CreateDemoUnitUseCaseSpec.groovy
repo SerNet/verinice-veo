@@ -18,6 +18,7 @@
 package org.veo.core.usecase
 
 import org.veo.core.entity.Asset
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
 import org.veo.core.repository.AssetRepository
@@ -38,21 +39,25 @@ public class CreateDemoUnitUseCaseSpec extends UseCaseSpec {
         given: "starting values for a unit"
 
         Unit demoUnit = Mock()
+        Domain domain = Mock()
 
         Asset asset1 = Mock {
             getModelInterface() >> Asset
             getParts() >> []
             getLinks() >> []
+            getDomains()  >> [domain]
         }
         Asset asset2 = Mock() {
             getModelInterface() >> Asset
             getParts() >> []
             getLinks() >> []
+            getDomains()  >> [domain]
         }
         Process process = Mock {
             getModelInterface() >> Process
             getParts() >> []
             getLinks() >> []
+            getDomains()  >> [domain]
         }
 
         and: "a parent unit in an existing client"
@@ -67,6 +72,7 @@ public class CreateDemoUnitUseCaseSpec extends UseCaseSpec {
         and: "a new unit is created in the client"
         1 * entityFactory.createUnit("Demo", null) >> demoUnit
         1 * demoUnit.setClient(existingClient)
+        1 * demoUnit.addToDomains([domain] as Set)
 
         and: "the demo unit elements are created for the unit"
         1 * domainTemplateService.getElementsForDemoUnit(existingClient) >> [asset1, asset2, process]

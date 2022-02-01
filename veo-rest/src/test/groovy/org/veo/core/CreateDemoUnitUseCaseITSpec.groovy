@@ -63,6 +63,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         unit != null
         with(unit) {
             it.name == 'Demo'
+            it.domains*.name == ['DS-GVO']
         }
         unitRepository.findByClient(client).size() == 1
         when: 'loading the processes'
