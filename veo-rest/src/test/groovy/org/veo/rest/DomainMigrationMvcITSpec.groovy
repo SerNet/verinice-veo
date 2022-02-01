@@ -124,8 +124,8 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
                     ]
                 ],
                 domains: [
-                    patternProperties: [
-                        "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\$": [
+                    properties: [
+                        "70e5c01d-2f81-4940-8635-1078c057c34c": [
                             allOf: []
                         ]
                     ]

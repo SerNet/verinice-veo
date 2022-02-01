@@ -67,8 +67,9 @@ public class ObjectSchemaParser {
     private Map<String, SubTypeDefinition> extractSubTypeDefinitions(JsonNode properties) {
         JsonNode domains = properties.get("domains");
 
-        JsonNode allOf = domains.get("patternProperties")
-                                .get("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+        JsonNode allOf = domains.get(PROPERTIES)
+                                .elements()
+                                .next()
                                 .get("allOf");
 
         return StreamSupport.stream(allOf.spliterator(), false)
