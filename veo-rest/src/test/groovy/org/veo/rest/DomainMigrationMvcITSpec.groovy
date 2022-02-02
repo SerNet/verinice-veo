@@ -39,7 +39,7 @@ import spock.lang.Shared
 
 @ActiveProfiles(["test", PROFILE_BACKGROUND_TASKS])
 @DirtiesContext(classMode = AFTER_CLASS)
-@WithUserDetails("user@domain.example")
+@WithUserDetails("content-creator")
 class DomainMigrationMvcITSpec extends VeoMvcSpec {
     @Shared
     @AutoCleanup("stop")

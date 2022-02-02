@@ -152,7 +152,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         result*.name.sort().first() == 'Domain 1'
     }
 
-    @WithUserDetails("user@domain.example")
+    @WithUserDetails("content-creator")
     def "update the element type schema in a domain with an object schema"() {
         given:
         def schemaJson = DomainControllerMockMvcITSpec.getResourceAsStream('/os_scope.json').withCloseable {
@@ -194,8 +194,21 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
                 }
             }
         }
-
     }
+
+    @WithUserDetails("user@domain.example")
+    def "cannot update element type schema as regular user"() {
+
+        given:
+        def schemaJson = DomainControllerMockMvcITSpec.getResourceAsStream('/os_scope.json').withCloseable {
+            new JsonSlurper().parse(it)
+        }
+        when: "a request is made to the server"
+        def status = postUnauthorized("/domains/${testDomain.id.uuidValue()}/elementtypedefinitions/scope/updatefromobjectschema", schemaJson)
+        then: "it is forbidden"
+        status.andReturn().response.status == 403
+    }
+
 
     @WithUserDetails("user@domain.example")
     def "export a Domain"() {
