@@ -17,9 +17,11 @@
  ******************************************************************************/
 package org.veo.rest.schemas.controller;
 
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
@@ -28,7 +30,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.rest.schemas.resource.EntitySchemaResource;
@@ -52,24 +56,31 @@ public class EntitySchemaController implements EntitySchemaResource {
 
     @Override
     public CompletableFuture<ResponseEntity<String>> getSchema(Authentication auth,
-            @PathVariable String type, @RequestParam(value = "domains") List<String> domains) {
+            @PathVariable String type, @RequestParam(value = "domains") List<String> domainIDs) {
         return CompletableFuture.supplyAsync(() -> {
-            List<String> userRoles = Collections.emptyList();
-            if (auth.getPrincipal() instanceof ApplicationUser) {
-                ApplicationUser user = (ApplicationUser) auth.getPrincipal();
-                userRoles = user.getAuthorities()
-                                .stream()
-                                .map(grant -> grant.getAuthority())
-                                .collect(Collectors.toList());
-            }
+            ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
+            List<String> userRoles = user.getAuthorities()
+                                         .stream()
+                                         .map(grant -> grant.getAuthority())
+                                         .collect(Collectors.toList());
             // TODO define schema-roles for users
             // TODO use valid 'domain' class
 
-            var clientDomains = domainRepository.findAllByClient(Key.uuidFrom(ApplicationUser.authenticatedUser(auth.getPrincipal())
-                                                                                             .getClientId()));
+            var clientDomainsById = domainRepository.findAllByClient(Key.uuidFrom(user.getClientId()))
+                                                    .stream()
+                                                    .collect(Collectors.toMap(Domain::getIdAsString,
+                                                                              Function.identity()));
+            Set<Domain> domains = new HashSet<>(domainIDs.size());
+            for (String domainId : domainIDs) {
+                Domain domain = clientDomainsById.get(domainId);
+                if (domain == null) {
+                    throw new NotFoundException("Domain %s not found", domainId);
+                }
+                domains.add(domain);
+            }
 
             String schema = schemaService.roleFilter(userRoles,
-                                                     schemaService.findSchema(type, clientDomains));
+                                                     schemaService.findSchema(type, domains));
             return ResponseEntity.ok()
                                  .body(schema);
         });

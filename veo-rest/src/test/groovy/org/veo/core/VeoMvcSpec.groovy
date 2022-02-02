@@ -91,6 +91,11 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
                 .accept(APPLICATION_JSON), 200, expectSuccessfulRequest)
     }
 
+    ResultActions get(String url, int expectedStatusCode) {
+        doRequest(MockMvcRequestBuilders.get(url)
+                .accept(APPLICATION_JSON), expectedStatusCode)
+    }
+
     ResultActions put(String url, Map content, Map headers, boolean expectSuccessfulRequest = true) {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(url)
                 .contentType(APPLICATION_JSON)

@@ -90,14 +90,14 @@ public interface EntitySchemaResource {
             @PathVariable String type,
 
             @Parameter(required = true,
-                description = "A list of domains. Attributes of these domains will be returned for the given entity type.",
-                example = "GDPR,ISO_27001",
+                description = "A list of domain IDs. Attributes of these domains will be returned for the given entity type.",
+                example = "15f58e45-48b7-409e-a32f-48d208aac5d5,7592f0d7-740f-4f4c-838e-1af88bf3c414",
                 schema = @Schema(
                     type = "string",
                     description = "List of domain identifiers - must not contain any reserved characters "
                             + "defined in RFC 3986."
                 )
             )
-            @RequestParam(value = "domains") List<String> domains);
+            @RequestParam(value = "domains") List<String> domainIDs);
     // @formatter:on
 }
