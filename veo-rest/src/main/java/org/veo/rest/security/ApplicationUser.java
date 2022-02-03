@@ -54,7 +54,7 @@ public class ApplicationUser implements UserDetails {
     private final List<String> groups;
     private final List<String> roles;
 
-    private Collection<? extends GrantedAuthority> authorities;
+    private Collection<? extends GrantedAuthority> authorities = Collections.emptyList();
     private boolean accountNonExpired = !false;
     private boolean accountNonLocked = !false;
     private boolean credentialsNonExpired = !false;
