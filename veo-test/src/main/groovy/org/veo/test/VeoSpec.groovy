@@ -270,10 +270,10 @@ abstract class VeoSpec extends Specification {
         RiskDefinition rd = new RiskDefinition()
         rd.id = id
         rd.riskValues = [
-            new RiskValue(0,"gering","1","Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.","#004643","symbolic_risk_1"),
-            new RiskValue(1,"mittel","2","Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.","#234643","symbolic_risk_2"),
-            new RiskValue(2,"hoch","3","Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.","#234643","symbolic_risk_3"),
-            new RiskValue(3,"sehr hoch","4","Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.","#234643","symbolic_risk_4")
+            new RiskValue(0,"gering","1","Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.","#A0CF11","symbolic_risk_1"),
+            new RiskValue(1,"mittel","2","Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.","#FFFF13","symbolic_risk_2"),
+            new RiskValue(2,"hoch","3","Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.","#FF8E43","symbolic_risk_3"),
+            new RiskValue(3,"sehr hoch","4","Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.","#FF1212","symbolic_risk_4")
         ] as List
 
         def riskMatrix = [
@@ -339,7 +339,7 @@ abstract class VeoSpec extends Specification {
 
     static CategoryLevel newCategoryLevel(String name, @DelegatesTo(value = CategoryLevel.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.riskdefinition.CategoryLevel") Closure init = null) {
-        var categoryLevel = new CategoryLevel(name, "SCL", "whatever", "#000000")
+        CategoryLevel categoryLevel = new CategoryLevel(name, "SCL", "whatever", "#000000")
         execute(categoryLevel, init)
         return categoryLevel
     }
