@@ -52,7 +52,6 @@ task assembleDomainTemplates(type: JavaExec) {
         'domaintemplate.abbreviation': "DS-GVO",
         'domaintemplate.authority': "SERNET",
         'domaintemplate.description': "The DS-GVO DomainTemplate.",
-        'domaintemplate.id': "2221bad5-53cd-5073-9f5f-683ec8a8ce1e",
         'domaintemplate.name': "DS-GVO",
         'domaintemplate.out.file': "${targetDirectory}/dsgvo-example.json",
         'domaintemplate.revision': "latest",

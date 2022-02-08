@@ -39,8 +39,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.uuid.Generators;
-import com.fasterxml.uuid.impl.NameBasedGenerator;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
@@ -72,6 +70,7 @@ import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.DomainTemplateRepository;
+import org.veo.core.service.DomainTemplateIdGenerator;
 import org.veo.core.service.DomainTemplateService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -79,13 +78,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DomainTemplateServiceImpl implements DomainTemplateService {
 
-    private static final String SERNET_VERNDOR_URL = "https://v.de/veo/domain-templates/";
     private final DomainTemplateRepository domainTemplateRepository;
     private final DtoToEntityTransformer entityTransformer;
     private final EntityToDtoTransformer dtoTransformer;
     private final EntityFactory factory;
     private final List<VeoInputStreamResource> domainResources;
     private final CatalogItemPrepareStrategy preparations;
+    private final DomainTemplateIdGenerator domainTemplateIdGenerator;
     private final Set<String> defaultDomainTemplateIds;
 
     private ReferenceAssembler assembler;
@@ -96,11 +95,14 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     public DomainTemplateServiceImpl(DomainTemplateRepository domainTemplateRepository,
             EntityFactory factory, List<VeoInputStreamResource> domainResources,
             DomainAssociationTransformer domainAssociationTransformer,
-            CatalogItemPrepareStrategy preparations, Set<String> defaultDomainTemplateIds) {
+            CatalogItemPrepareStrategy preparations,
+            DomainTemplateIdGenerator domainTemplateIdGenerator,
+            Set<String> defaultDomainTemplateIds) {
         this.domainTemplateRepository = domainTemplateRepository;
         this.factory = factory;
         this.domainResources = domainResources;
         this.preparations = preparations;
+        this.domainTemplateIdGenerator = domainTemplateIdGenerator;
         this.defaultDomainTemplateIds = defaultDomainTemplateIds;
 
         entityTransformer = new DtoToEntityTransformer(factory, domainAssociationTransformer);
@@ -269,12 +271,9 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     }
 
     private String createDomainTemplateId(Domain domain) {
-        String url = SERNET_VERNDOR_URL + domain.getName() + "/" + domain.getTemplateVersion() + "."
-                + domain.getRevision();
-        UUID namebaseUUID = Generators.nameBasedGenerator(NameBasedGenerator.NAMESPACE_URL)
-                                      .generate(url);
-        log.info("generated domain template id url:{} UUID:{}", url, namebaseUUID);
-        return namebaseUUID.toString();
+        return domainTemplateIdGenerator.createDomainTemplateId(domain.getName(),
+                                                                domain.getTemplateVersion(),
+                                                                domain.getRevision());
     }
 
     /**

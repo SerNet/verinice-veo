@@ -48,6 +48,7 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.adapter.service.domaintemplate.CatalogItemPrepareStrategy;
 import org.veo.adapter.service.domaintemplate.CatalogItemServiceImpl;
+import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl;
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl;
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.specification.EntityValidator;
@@ -63,6 +64,7 @@ import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.service.CatalogItemService;
+import org.veo.core.service.DomainTemplateIdGenerator;
 import org.veo.core.service.DomainTemplateService;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.usecase.DesignatorService;
@@ -581,6 +583,7 @@ public class ModuleConfiguration {
             DomainTemplateResource domainTemplateResource,
             DomainAssociationTransformer domainAssociationTransformer,
             CatalogItemPrepareStrategy prepareStrategy,
+            DomainTemplateIdGenerator domainTemplateIdGenerator,
             @Value("${veo.default.domaintemplate.ids:"
                     + DomainTemplateService.DSGVO_DOMAINTEMPLATE_UUID
                     + "}") String[] defaultDomainTemlateIds) {
@@ -588,7 +591,7 @@ public class ModuleConfiguration {
                                             .collect(Collectors.toSet());
         return new DomainTemplateServiceImpl(domainTemplateRepository, factory,
                 domainTemplateResource.getResources(), domainAssociationTransformer,
-                prepareStrategy, domainTemplates);
+                prepareStrategy, domainTemplateIdGenerator, domainTemplates);
     }
 
     @Bean
@@ -720,5 +723,10 @@ public class ModuleConfiguration {
             UnitRepository unitRepository, ElementMigrationService elementMigrationService) {
         return new UpdateAllClientDomainsUseCase(domainRepository, repositoryProvider,
                 unitRepository, elementMigrationService);
+    }
+
+    @Bean
+    public DomainTemplateIdGenerator domainTemplateIdGenerator() {
+        return new DomainTemplateIdGeneratorImpl();
     }
 }

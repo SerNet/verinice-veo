@@ -67,13 +67,15 @@ public class DomainTemplateAssemblerMain {
     public static void main(String[] args) {
         try {
             var snippetPath = Path.of(System.getenv("domaintemplate.dir"));
-            DomainTemplateAssembler assembler = new DomainTemplateAssembler(REFERENCE_ASSEMBLER,
-                    System.getenv("domaintemplate.id"), System.getenv("domaintemplate.name"),
-                    System.getenv("domaintemplate.abbreviation"),
+            var name = System.getenv("domaintemplate.name");
+            var version = System.getenv("domaintemplate.templateVersion");
+            var revision = System.getenv("domaintemplate.revision");
+            var id = new DomainTemplateIdGeneratorImpl().createDomainTemplateId(name, version,
+                                                                                revision);
+            DomainTemplateAssembler assembler = new DomainTemplateAssembler(REFERENCE_ASSEMBLER, id,
+                    name, System.getenv("domaintemplate.abbreviation"),
                     System.getenv("domaintemplate.description"),
-                    System.getenv("domaintemplate.authority"),
-                    System.getenv("domaintemplate.templateVersion"),
-                    System.getenv("domaintemplate.revision"));
+                    System.getenv("domaintemplate.authority"), version, revision);
 
             var typeAssembler = new ElementTypeDefinitionAssembler();
             assembler.setElementTypeDefinitions(typeAssembler.loadDefinitions(snippetPath.resolve("types")
