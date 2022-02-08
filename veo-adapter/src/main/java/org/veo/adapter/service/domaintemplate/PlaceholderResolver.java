@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.veo.adapter.IdRefResolver;
+import org.veo.adapter.DbIdRefResolver;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
@@ -33,7 +33,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.exception.NotFoundException;
 
-class PlaceholderResolver extends IdRefResolver {
+class PlaceholderResolver extends DbIdRefResolver {
     Map<String, Identifiable> cache = new HashMap<>();
     Map<String, IdentifiableDto> dtoCache = new HashMap<>();
 

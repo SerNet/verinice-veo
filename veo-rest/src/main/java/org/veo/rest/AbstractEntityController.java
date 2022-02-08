@@ -35,6 +35,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import org.veo.adapter.DbIdRefResolver;
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
@@ -116,7 +117,7 @@ public abstract class AbstractEntityController {
     }
 
     protected IdRefResolver createIdRefResolver(Client client) {
-        return new IdRefResolver(repositoryProvider, client);
+        return new DbIdRefResolver(repositoryProvider, client);
     }
 
     protected abstract String buildSearchUri(String searchId);

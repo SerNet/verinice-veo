@@ -28,11 +28,11 @@ import org.veo.core.repository.RepositoryProvider
 
 import spock.lang.Specification
 
-class IdentifiableReferenceResolverSpec extends Specification {
+class DbIdRefResolverSpec extends Specification {
 
     RepositoryProvider repositoryProvider = Mock()
     Client client = Mock()
-    IdRefResolver referenceResolver = new IdRefResolver(repositoryProvider, client)
+    IdRefResolver referenceResolver = new DbIdRefResolver(repositoryProvider, client)
 
     Repository<Asset, Key<UUID>> assetRepo = Mock()
     Repository<Person, Key<UUID>> personRepo = Mock()
