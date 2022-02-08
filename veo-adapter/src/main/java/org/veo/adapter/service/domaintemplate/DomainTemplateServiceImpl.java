@@ -182,11 +182,15 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         Set<Element> elements = new HashSet<>();
         PlaceholderResolver ref = new PlaceholderResolver(entityTransformer);
         client.getDomains()
+              .stream()
+              .filter(d -> d.isActive() && d.getDomainTemplate() != null
+                      && domainTemplateFiles.containsKey(d.getDomainTemplate()
+                                                          .getIdAsString()))
               .forEach(domain -> {
                   log.info("Processing {}", domain);
-                  VeoInputStreamResource templateFile = domainTemplateFiles.get(domain.getDomainTemplate()
-                                                                                      .getId()
-                                                                                      .uuidValue());
+                  DomainTemplate template = domain.getDomainTemplate();
+                  // TODO VEO-1168: read demo unit elements from the database
+                  VeoInputStreamResource templateFile = domainTemplateFiles.get(template.getIdAsString());
                   try {
                       TransformDomainTemplateDto domainTemplateDto = readInstanceFile(templateFile);
                       ref.cache.put(domainTemplateDto.getId(), domain);

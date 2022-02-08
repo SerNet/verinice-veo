@@ -173,6 +173,54 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         unitRepository.findByClient(client3).size() == 1
     }
 
+    def "create demo unit for a client with an unknown domain"() {
+        given:
+        def client = createClient()
+        def domain2 = newDomain(client)
+        client = clientRepository.save(client)
+        when:
+        def unit = runUseCase(client)
+        then:
+        unit != null
+        with(unit) {
+            it.name == 'Demo'
+        }
+    }
+
+    def "create demo unit for a client with an inactive domain"() {
+        given:
+        def client = createClient()
+        client.domains.each {
+            it.active = false
+        }
+        client = clientRepository.save(client)
+        when:
+        def unit = runUseCase(client)
+        then:
+        unit != null
+        with(unit) {
+            it.name == 'Demo'
+        }
+        processDataRepository.findByUnits([unit.idAsString] as Set).empty
+    }
+
+    def "create demo units for a client with a domain with an unknown template"() {
+        given:
+        def client = createClient()
+        def template = domainTemplateDataRepository.save(newDomainTemplate())
+        def domain2 = newDomain(client) {
+            it.domainTemplate = template
+        }
+        client = clientRepository.save(client)
+        when:
+        def unit = runUseCase(client)
+        then:
+        unit != null
+        with(unit) {
+            it.name == 'Demo'
+        }
+    }
+
     Unit runUseCase(Client client) {
         executeInTransaction {
             useCase.execute(new InputData(client.id)).unit
