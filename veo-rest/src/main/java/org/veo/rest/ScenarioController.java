@@ -179,7 +179,7 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
     }
 
     @Override
-    @Operation(summary = "Loads an scenario")
+    @Operation(summary = "Loads a scenario")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                          description = "Scenario loaded",
@@ -209,7 +209,7 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
     }
 
     @PostMapping()
-    @Operation(summary = "Creates an scenario")
+    @Operation(summary = "Creates a scenario")
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Scenario created") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createScenario(
             @Parameter(hidden = true) ApplicationUser user,
@@ -229,7 +229,7 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
     }
 
     @PutMapping(value = "/{id}")
-    @Operation(summary = "Updates an scenario")
+    @Operation(summary = "Updates a scenario")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Scenario updated"),
             @ApiResponse(responseCode = "404", description = "Scenario not found") })
     public CompletableFuture<FullScenarioDto> updateScenario(
@@ -256,7 +256,7 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
     }
 
     @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
-    @Operation(summary = "Deletes an scenario")
+    @Operation(summary = "Deletes a scenario")
     @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Scenario deleted"),
             @ApiResponse(responseCode = "404", description = "Scenario not found") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteScenario(
