@@ -581,7 +581,9 @@ public class ModuleConfiguration {
             DomainTemplateResource domainTemplateResource,
             DomainAssociationTransformer domainAssociationTransformer,
             CatalogItemPrepareStrategy prepareStrategy,
-            @Value("${veo.default.domaintemplate.ids:f8ed22b1-b277-56ec-a2ce-0dbd94e24824}") String[] defaultDomainTemlateIds) {
+            @Value("${veo.default.domaintemplate.ids:"
+                    + DomainTemplateService.DSGVO_DOMAINTEMPLATE_UUID
+                    + "}") String[] defaultDomainTemlateIds) {
         Set<String> domainTemplates = Arrays.stream(defaultDomainTemlateIds)
                                             .collect(Collectors.toSet());
         return new DomainTemplateServiceImpl(domainTemplateRepository, factory,
