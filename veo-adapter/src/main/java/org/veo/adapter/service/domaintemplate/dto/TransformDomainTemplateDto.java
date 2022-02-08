@@ -46,7 +46,8 @@ public class TransformDomainTemplateDto extends AbstractDomainTemplateDto
     @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
     @Schema(description = "ID must be a valid UUID string following RFC 4122. "
             + " Offical templates should have a name base uuid defined in sec. 4.3",
-            example = "f8ed22b1-b277-56ec-a2ce-0dbd94e24824")
+            example = "f8ed22b1-b277-56ec-a2ce-0dbd94e24824",
+            format = "uuid")
     @ToString.Include
     private String id;
 

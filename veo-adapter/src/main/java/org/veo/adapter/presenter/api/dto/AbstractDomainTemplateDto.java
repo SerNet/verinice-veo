@@ -62,16 +62,19 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfRef
 
     @NotNull(message = "A authority must be present.")
     @Schema(description = "The authority for the DomainTemplate.", example = "ISO", required = true)
+    @Size(min = 1, max = DomainTemplate.AUTHORITY_MAX_LENGTH)
     private String authority;
 
     @NotNull(message = "A templateVersion must be present.")
     @Schema(description = "The templateVersion for the DomainTemplate.",
             example = "1.0",
             required = true)
+    @Size(min = 1, max = DomainTemplate.TEMPLATE_VERSION_MAX_LENGTH)
     private String templateVersion;
 
     @NotNull(message = "A revision must be present.")
     @Schema(description = "The revision for the DomainTemplate.", example = "0", required = true)
+    @Size(min = 1, max = DomainTemplate.REVISION_MAX_LENGTH)
     private String revision;
 
     @Schema(description = "A list of catalogs belonging to the DomainTemplate.")

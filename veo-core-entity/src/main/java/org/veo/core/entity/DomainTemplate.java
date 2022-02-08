@@ -34,6 +34,10 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
     String SINGULAR_TERM = "domaintemplate";
     String PLURAL_TERM = "domaintemplates";
 
+    int AUTHORITY_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
+    int REVISION_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
+    int TEMPLATE_VERSION_MAX_LENGTH = 10;
+
     /**
      * The authority of this domaintemplate.
      */

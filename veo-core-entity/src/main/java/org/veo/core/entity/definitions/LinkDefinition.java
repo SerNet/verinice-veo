@@ -17,12 +17,20 @@
  ******************************************************************************/
 package org.veo.core.entity.definitions;
 
+import static org.veo.core.entity.aspects.SubTypeAspect.SUB_TYPE_MAX_LENGTH;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class LinkDefinition extends CustomAspectDefinition {
+    @NotNull
+    @Size(min = 1, max = 32)
     private String targetType;
+    @Size(min = 1, max = SUB_TYPE_MAX_LENGTH)
     private String targetSubType;
 }
