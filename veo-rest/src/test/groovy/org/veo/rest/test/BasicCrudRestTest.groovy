@@ -19,7 +19,6 @@ package org.veo.rest.test
 
 class BasicCrudRestTest extends VeoRestTest{
 
-
     def "Validate API response"() {
 
         given: 'a unit name'
@@ -68,7 +67,6 @@ class BasicCrudRestTest extends VeoRestTest{
         and: 'given an asset'
         def assetName = 'CRUD test asset'
         def asset = [name: assetName, owner: [displayName: "$unitName", targetUri: "$baseUrl/units/$unitId"]]
-        def baseUri = baseUrl.empty ? restTemplate.rootUri : baseUrl
 
         when: 'creating an asset inside the unit'
         postResponse = post("/assets", asset, 201, UserType.DEFAULT)
@@ -84,8 +82,8 @@ class BasicCrudRestTest extends VeoRestTest{
         getResponse.body.id                 == assetId
         getResponse.body.name               == assetName
         getResponse.body.owner.displayName  == unitName
-        getResponse.body.owner.targetUri    == "$baseUri/units/$unitId"
-        def targetUri = "$baseUri/units/$unitId"
+        getResponse.body.owner.targetUri    == "$baseUrl/units/$unitId"
+        def targetUri = "$baseUrl/units/$unitId"
         def assetEtag= getETag(getResponse.headers.eTag)
         assetEtag instanceof String
 

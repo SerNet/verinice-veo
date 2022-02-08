@@ -63,7 +63,9 @@ class VeoRestTest extends spock.lang.Specification {
     EntityFactory factory = new EntityDataFactory()
 
     @Value('${veo.resttest.baseUrl}')
-    String baseUrl
+    private String configuredBaseUrl
+
+    def baseUrl
 
     @Value('${veo.resttest.oidcUrl}')
     def oidcUrl
@@ -101,6 +103,10 @@ class VeoRestTest extends spock.lang.Specification {
 
     def setupSpec() {
         jsonSlurper = new JsonSlurper()
+    }
+
+    def setup() {
+        baseUrl = configuredBaseUrl.empty ? restTemplate.rootUri : configuredBaseUrl
     }
 
     def String getETag(String text) {
