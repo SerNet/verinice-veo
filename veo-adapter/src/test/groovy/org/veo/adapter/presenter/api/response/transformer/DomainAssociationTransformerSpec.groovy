@@ -21,6 +21,7 @@ package org.veo.adapter.presenter.api.response.transformer
 import org.veo.adapter.IdRefResolver
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto
+import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto
 import org.veo.adapter.service.domaintemplate.SyntheticIdRef
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
@@ -45,13 +46,15 @@ class DomainAssociationTransformerSpec extends Specification {
         Process entity = Mock()
         entity.modelInterface >> Process
         dto.domains >> [
-            (domain0.id.uuidValue()): Mock(DomainAssociationDto) {
+            (domain0.id.uuidValue()): Mock(ProcessDomainAssociationDto) {
                 subType >> "foo"
                 status >> "NEW_FOO"
+                riskValues >> [:]
             },
-            (domain1.id.uuidValue()): Mock(DomainAssociationDto) {
+            (domain1.id.uuidValue()): Mock(ProcessDomainAssociationDto) {
                 subType >> "bar"
                 status >> "NEW_BAR"
+                riskValues >> [:]
             }
         ]
 
@@ -70,7 +73,8 @@ class DomainAssociationTransformerSpec extends Specification {
         given: "a process with different sub types in two domains"
         AbstractProcessDto dto = Mock()
         Process entity = Mock()
-        Map<String, DomainAssociationDto> capturedDomainMap
+        entity.getImpactValues(_) >> [:]
+        Map<String, ProcessDomainAssociationDto> capturedDomainMap
         entity.domains >> [domain0, domain1]
         entity.subTypeAspects >> [
             Mock(SubTypeAspect) {

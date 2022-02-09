@@ -114,7 +114,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends VeoSpringSpec 
         }
         queryCounts = QueryCountHolder.grandTotal
         then:
-        queryCounts.select == 24
+        queryCounts.select == 25
         queryCounts.insert == 23
     }
 

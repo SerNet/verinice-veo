@@ -18,18 +18,26 @@
 package org.veo.persistence.entity.jpa;
 
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.validation.Valid;
 
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.risk.ProcessImpactValues;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -54,5 +62,42 @@ public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implemen
     @Override
     ProcessRiskData createRisk(Scenario scenario) {
         return new ProcessRiskData(this, scenario);
+    }
+
+    @OneToMany(cascade = CascadeType.ALL,
+               orphanRemoval = true,
+               targetEntity = ProcessImpactValuesAspectData.class,
+               mappedBy = "owner",
+               fetch = FetchType.LAZY)
+    @Valid
+    private final Set<ProcessImpactValuesAspectData> riskValuesAspects = new HashSet<>();
+
+    @Override
+    public void setImpactValues(DomainTemplate domain,
+            Map<RiskDefinitionRef, ProcessImpactValues> riskValues) {
+        var aspect = findAspectByDomain(riskValuesAspects, domain).orElseGet(() -> {
+            var newAspect = new ProcessImpactValuesAspectData(domain, this);
+            riskValuesAspects.add(newAspect);
+            return newAspect;
+        });
+        aspect.setValues(riskValues);
+    }
+
+    public Optional<Map<RiskDefinitionRef, ProcessImpactValues>> getImpactValues(
+            DomainTemplate domain) {
+        return findAspectByDomain(riskValuesAspects,
+                                  domain).map(ProcessImpactValuesAspectData::getValues);
+    }
+
+    @Override
+    public Optional<ProcessImpactValues> getImpactValues(DomainTemplate domain,
+            RiskDefinitionRef riskDefinition) {
+        return getImpactValues(domain).map(impactValuesByRiskDefinition -> impactValuesByRiskDefinition.get(riskDefinition));
+    }
+
+    @Override
+    public void transferToDomain(Domain oldDomain, Domain newDomain) {
+        findAspectByDomain(riskValuesAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
+        super.transferToDomain(oldDomain, newDomain);
     }
 }

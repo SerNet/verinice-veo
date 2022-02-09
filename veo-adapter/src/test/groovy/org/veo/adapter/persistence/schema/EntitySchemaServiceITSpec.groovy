@@ -24,10 +24,12 @@ import com.networknt.schema.JsonSchemaFactory
 
 import org.veo.core.entity.Domain
 import org.veo.core.entity.EntityType
+import org.veo.core.entity.Process
 import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.SubTypeDefinition
+import org.veo.core.entity.riskdefinition.CategoryDefinition
 import org.veo.core.entity.riskdefinition.CategoryLevel
 import org.veo.core.entity.riskdefinition.ImplementationStateDefinition
 import org.veo.core.entity.riskdefinition.ProbabilityDefinition
@@ -35,6 +37,7 @@ import org.veo.core.entity.riskdefinition.ProbabilityLevel
 import org.veo.core.entity.riskdefinition.RiskDefinition
 import org.veo.core.service.EntitySchemaService
 
+import groovy.json.JsonSlurper
 import io.swagger.v3.core.util.Json
 import spock.lang.Specification
 
@@ -98,6 +101,18 @@ class EntitySchemaServiceITSpec extends Specification {
         then:
         schema.get(PROPS).domains.get(PROPS).get(testDomain.idAsString).get(PROPS).riskDefinition.enum*.textValue() ==~ ["riskDefA", "riskDefB"]
         schema.get(PROPS).domains.get(PROPS).get(extraTestDomain.idAsString).get(PROPS).riskDefinition.enum*.textValue() ==~ ["extraRiskDef"]
+    }
+
+    def "process schema domain association is complete"() {
+        given:
+        def testDomain = getTestDomain()
+
+        when:
+        def schema = new JsonSlurper().parseText(entitySchemaService.findSchema(Process.SINGULAR_TERM, Set.of(testDomain)))
+
+        then:
+        def riskValueProps = schema.properties.domains.properties.(testDomain.idAsString).properties.riskValues.properties
+        riskValueProps.riskDefA.properties.riskValues.C.enum ==~ [0, 1]
     }
 
     def "definitions from multiple domains are composed"() {
@@ -246,8 +261,32 @@ class EntitySchemaServiceITSpec extends Specification {
                     ]
                 }
             ]
+            getElementTypeDefinition(Process.SINGULAR_TERM) >> [
+                Mock(ElementTypeDefinition) {
+                    customAspects >> [:]
+                    links >> [:]
+                    subTypes >> [
+                        subControl: Mock(SubTypeDefinition) {
+                            statuses >> ["NEW", "OLD"]
+                        }
+                    ]
+                }
+            ]
             getRiskDefinitions() >> [
                 "riskDefA": Mock(RiskDefinition) {
+                    categories >> [
+                        Mock(CategoryDefinition) {
+                            id >> 'C'
+                            potentialImpacts >> [
+                                Mock(CategoryLevel) {
+                                    ordinalValue >> 0
+                                },
+                                Mock(CategoryLevel) {
+                                    ordinalValue >> 1
+                                }
+                            ]
+                        }
+                    ]
                     implementationStateDefinition >> Mock(ImplementationStateDefinition) {
                         levels >> [
                             Mock(CategoryLevel) {
@@ -276,6 +315,7 @@ class EntitySchemaServiceITSpec extends Specification {
                     }
                 },
                 "riskDefB": Mock(RiskDefinition) {
+                    categories >> []
                     implementationStateDefinition >> Mock(ImplementationStateDefinition) {
                         levels >> [
                             Mock(CategoryLevel) {

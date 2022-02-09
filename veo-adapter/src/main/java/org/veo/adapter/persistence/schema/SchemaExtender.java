@@ -35,11 +35,14 @@ import org.veo.adapter.presenter.api.dto.ControlRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
+import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto;
+import org.veo.adapter.presenter.api.dto.ProcessRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.ScenarioDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ScenarioRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.ScopeDomainAssociationDto;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
@@ -100,10 +103,38 @@ public class SchemaExtender {
         if (elementType.equals(Scenario.SINGULAR_TERM)) {
             return buildDomainAssociationSchemaForScenario(generator, domain);
         }
+        if (elementType.equals(Process.SINGULAR_TERM)) {
+            return buildDomainAssociationSchemaForProcess(generator, domain);
+        }
         if (elementType.equals(Scope.SINGULAR_TERM)) {
             return buildDomainAssociationSchemaForScope(generator, domain);
         }
         return generator.generateSchema(DomainAssociationDto.class);
+    }
+
+    private ObjectNode buildDomainAssociationSchemaForProcess(SchemaGenerator generator,
+            Domain domain) {
+        var domainAssociationSchema = generator.generateSchema(ProcessDomainAssociationDto.class);
+        var riskValuesProps = ((ObjectNode) domainAssociationSchema.get(PROPS)
+                                                                   .get("riskValues")).putObject(PROPS);
+        domain.getRiskDefinitions()
+              .forEach((riskDefId, riskDef) -> {
+                  var riskValuesSchema = generator.generateSchema(ProcessRiskValuesDto.class);
+                  var riskValueSchema = (ObjectNode) riskValuesSchema.get(PROPS)
+                                                                     .get("riskValues");
+
+                  riskDef.getCategories()
+                         .forEach(c -> riskValueSchema.putObject(c.getId())
+                                                      .putArray("enum")
+                                                      .addAll(c.getPotentialImpacts()
+
+                                                               .stream()
+                                                               .map(DiscreteValue::getOrdinalValue)
+                                                               .map(IntNode::new)
+                                                               .collect(Collectors.toList())));
+                  riskValuesProps.set(riskDefId, riskValuesSchema);
+              });
+        return domainAssociationSchema;
     }
 
     private ObjectNode buildDomainAssociationSchemaForControl(SchemaGenerator generator,
@@ -211,9 +242,9 @@ public class SchemaExtender {
 
     private void addCustomAspects(ObjectNode customAspectProps,
             Map<String, CustomAspectDefinition> customAspects, SchemaGenerator generator) {
-        customAspects.forEach((type, definition) -> {
-            customAspectProps.set(type, createCustomAspectSchema(generator, definition));
-        });
+        customAspects.forEach((type,
+                definition) -> customAspectProps.set(type, createCustomAspectSchema(generator,
+                                                                                    definition)));
     }
 
     private void addLinks(ObjectNode linkProps, Map<String, LinkDefinition> links,
@@ -246,11 +277,9 @@ public class SchemaExtender {
                    .putArray("enum")
                    .add(definition.getTargetType());
         Optional.ofNullable(definition.getTargetSubType())
-                .ifPresent(subType -> {
-                    targetProps.putObject("subType")
-                               .putArray("enum")
-                               .add(subType);
-                });
+                .ifPresent(subType -> targetProps.putObject("subType")
+                                                 .putArray("enum")
+                                                 .add(subType));
 
         return linkSchema;
     }
@@ -261,8 +290,8 @@ public class SchemaExtender {
         attributesNode.put(ADDITIONAL_PROPERTIES, false);
 
         var attributePropsNode = attributesNode.putObject(PROPS);
-        attributeSchemas.forEach((attributeKey, attributeSchema) -> {
-            attributePropsNode.set(attributeKey, mapper.valueToTree(attributeSchema));
-        });
+        attributeSchemas.forEach((attributeKey,
+                attributeSchema) -> attributePropsNode.set(attributeKey,
+                                                           mapper.valueToTree(attributeSchema)));
     }
 }

@@ -96,18 +96,15 @@ public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> impl
         });
     }
 
-    private ProcessRiskValuesAspectData createRiskAspect(Domain d,
+    private ProcessRiskValuesAspectData createRiskAspect(Domain domain,
             RiskDefinitionRef riskDefinition) {
-        var riskAspect = new ProcessRiskValuesAspectData(d, this, riskDefinition);
-        getScenario().getPotentialProbability(d)
+        var riskAspect = new ProcessRiskValuesAspectData(domain, this, riskDefinition);
+        getScenario().getPotentialProbability(domain)
                      .ifPresent(probabilitiesByRiskDefinition -> riskAspect.setPotentialProbability(probabilitiesByRiskDefinition.get(riskDefinition)
                                                                                                                                  .getPotentialProbability()));
-        // TODO VEO-1102 get potential impact from process:
-        // use impactProvider or riskDefinition...
-        // getImpactProvider(rdp).getAvailableCategories().forEach(c -> {
-        // riskAspect.setPotentialImpact(c, getEntity().getPotentialImpact(c));
-        // });
-
+        getEntity().getImpactValues(domain, riskDefinition)
+                   .ifPresent(impactValues -> impactValues.getPotentialImpacts()
+                                                          .forEach(riskAspect::setPotentialImpact));
         return riskAspect;
     }
 

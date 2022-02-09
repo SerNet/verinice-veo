@@ -34,10 +34,18 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
 
     def "create and update process risk values"() {
         given: "a composite process and a scenario"
-        // TODO VEO-1102 set potential-impact on process
         def processId = post("/processes", [
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    riskValues: [
+                        DSRA : [
+                            riskValues: [
+                                "C": "0",
+                                "I": "1"
+                            ]
+                        ]
+                    ]
+                ]
             ],
             name: "risk test process",
             owner: [targetUri: "http://localhost/units/$unitId"]
@@ -98,24 +106,34 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         def riskI = createdRiskValues.riskValues.find {it.category == "I"}
         def impactA = createdRiskValues.impactValues.find {it.category == "A"}
         def riskA = createdRiskValues.riskValues.find {it.category == "A"}
+        def impactC = createdRiskValues.impactValues.find {it.category == "C"}
+
 
         // one json object for each category and one for probability was initialized:
         risk.domains.(domainId).riskDefinitions.values()[0].impactValues.size() == 4
         risk.domains.(domainId).riskDefinitions.values()[0].riskValues.size() == 4
         probability == [potentialProbability:2, effectiveProbability:2]
 
-        impactI.size() == 1
+        impactI.size() == 3
         impactI.category == "I"
+        impactI.potentialImpact == 1
+        impactI.effectiveImpact == 1
         riskI.size() == 2
         riskI.category == "I"
         riskI.riskTreatments == []
 
+        impactA.size() == 3
         impactA.category == "A"
         impactA.specificImpact == 1
+        impactA.effectiveImpact == 1
         riskA.category == "A"
         riskA.residualRiskExplanation == PROBLEM
         riskA.riskTreatments ==~ ["RISK_TREATMENT_REDUCTION"]
 
+        impactC.size() == 3
+        impactC.category == "C"
+        impactC.potentialImpact == 0
+        impactC.effectiveImpact == 0
 
         when: "the risk is updated with additional values"
         probability.specificProbability = 2
@@ -132,7 +150,7 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         ]
         riskI.riskTreatmentExplanation = PROBLEM
 
-        // make sure that read-only fields are not saved:
+        // make sure that read-only fields are *not* saved:
         probability.potentialProbability = 1
         impactI.potentialImpact = 2
         riskI.inherentRisk = 2
@@ -170,10 +188,11 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
 
         // read-only values have not been changed:
         updatedProbability.potentialProbability == 2
-        updatedImpactI.potentialImpact != 2
+        updatedImpactI.potentialImpact == 1
         updatedRisk.inherentRisk != 2
+
         // TODO VEO-1110 inherentRisk must be calculated correctly by risk service
-        // TODO VEO-1102 potentialImpact must be used from process value
+
 
 
         and: "the first saved values are still present"

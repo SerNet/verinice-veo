@@ -22,6 +22,7 @@ import static org.veo.core.entity.risk.DomainRiskReferenceProvider.referencesFor
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -40,6 +41,8 @@ import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
 import org.veo.adapter.presenter.api.dto.ControlDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ControlRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
+import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto;
+import org.veo.adapter.presenter.api.dto.ProcessRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.ScenarioDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ScenarioRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.ScopeDomainAssociationDto;
@@ -56,9 +59,12 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
+import org.veo.core.entity.risk.ImpactRef;
 import org.veo.core.entity.risk.PotentialProbabilityImpl;
+import org.veo.core.entity.risk.ProcessImpactValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
 /**
@@ -123,7 +129,52 @@ public class DomainAssociationTransformer {
 
     public void mapDomainsToEntity(AbstractProcessDto source, Process target,
             IdRefResolver idRefResolver) {
-        mapToEntity(source.getDomains(), target, idRefResolver);
+        mapToEntity(source.getDomains(), target, idRefResolver, (domain, associationDto) -> {
+            var referenceProvider = referencesForDomain(domain);
+            target.setImpactValues(domain, associationDto.getRiskValues()
+                                                         .entrySet()
+                                                         .stream()
+                                                         .collect(Collectors.toMap(e -> referenceProvider.getRiskDefinitionRef(e.getKey())
+                                                                                                         .orElseThrow(() -> new IllegalArgumentException(
+                                                                                                                 "Undefined Risk definitions: "
+                                                                                                                         + e.getKey())),
+                                                                                   e -> mapProcessImpactValues(e.getKey(),
+                                                                                                               e.getValue(),
+                                                                                                               referenceProvider))));
+        });
+
+    }
+
+    private ProcessImpactValues mapProcessImpactValues(String riskDefinitionId,
+            ProcessRiskValuesDto value, DomainRiskReferenceProvider referenceProvider) {
+        var riskValues = new ProcessImpactValues();
+
+        Map<CategoryRef, ImpactRef> potentialImpacts = value.getRiskValues()
+                                                            .entrySet()
+                                                            .stream()
+                                                            .collect(Collectors.toMap(e -> toCategoryRef(riskDefinitionId,
+                                                                                                         referenceProvider,
+                                                                                                         e),
+                                                                                      e -> toImpactRef(riskDefinitionId,
+                                                                                                       referenceProvider,
+                                                                                                       e)));
+        riskValues.setPotentialImpacts(potentialImpacts);
+        return riskValues;
+    }
+
+    private ImpactRef toImpactRef(String riskDefinitionId,
+            DomainRiskReferenceProvider referenceProvider, Entry<String, String> e) {
+        return referenceProvider.getImpactRef(riskDefinitionId, e.getKey(),
+                                              new BigDecimal(e.getValue()))
+                                .orElseThrow(() -> new IllegalArgumentException("Impact: '"
+                                        + e.getValue() + "' not defined in " + riskDefinitionId));
+    }
+
+    private CategoryRef toCategoryRef(String riskDefinitionId,
+            DomainRiskReferenceProvider referenceProvider, Entry<String, String> e) {
+        return referenceProvider.getCategoryRef(riskDefinitionId, e.getKey())
+                                .orElseThrow(() -> new IllegalArgumentException("Category: '"
+                                        + e.getKey() + "' not defined in " + riskDefinitionId));
     }
 
     public void mapDomainsToEntity(AbstractScenarioDto source, Scenario target,
@@ -170,18 +221,20 @@ public class DomainAssociationTransformer {
     }
 
     public void mapDomainsToDto(Control source, AbstractControlDto target) {
-        target.setDomains(extractDomainAssociations(source, (domain) -> {
-            var assocationDto = new ControlDomainAssociationDto();
-            source.getRiskValues(domain)
-                  .ifPresent(riskValues -> {
-                      assocationDto.setRiskValues(riskValues.entrySet()
-                                                            .stream()
-                                                            .collect(Collectors.toMap(kv -> kv.getKey()
-                                                                                              .getIdRef(),
-                                                                                      this::mapControlRiskValuesToDto)));
-                  });
-            return assocationDto;
-        }));
+        Map<String, ControlDomainAssociationDto> extractDomainAssociations = extractDomainAssociations(source,
+                                                                                                       (domain) -> {
+                                                                                                           var associationDto = new ControlDomainAssociationDto();
+                                                                                                           source.getRiskValues(domain)
+                                                                                                                 .ifPresent(riskValues -> {
+                                                                                                                     associationDto.setRiskValues(riskValues.entrySet()
+                                                                                                                                                            .stream()
+                                                                                                                                                            .collect(Collectors.toMap(kv -> kv.getKey()
+                                                                                                                                                                                              .getIdRef(),
+                                                                                                                                                                                      this::mapControlRiskValuesToDto)));
+                                                                                                                 });
+                                                                                                           return associationDto;
+                                                                                                       });
+        target.setDomains(extractDomainAssociations);
     }
 
     private ControlRiskValuesDto mapControlRiskValuesToDto(
@@ -190,6 +243,22 @@ public class DomainAssociationTransformer {
         riskValuesDto.setImplementationStatus(entry.getValue()
                                                    .getImplementationStatus()
                                                    .getOrdinalValue());
+        return riskValuesDto;
+    }
+
+    private ProcessRiskValuesDto mapProcessRiskValuesToDto(
+            Map.Entry<RiskDefinitionRef, ProcessImpactValues> entry) {
+        var riskValuesDto = new ProcessRiskValuesDto();
+        Map<CategoryRef, ImpactRef> potentialImpacts = entry.getValue()
+                                                            .getPotentialImpacts();
+        Map<String, String> riskValues = potentialImpacts.entrySet()
+                                                         .stream()
+                                                         .collect(Collectors.toMap(e -> e.getKey()
+                                                                                         .getIdRef(),
+                                                                                   e -> e.getValue()
+                                                                                         .getIdRef()
+                                                                                         .toString()));
+        riskValuesDto.setRiskValues(riskValues);
         return riskValuesDto;
     }
 
@@ -206,7 +275,20 @@ public class DomainAssociationTransformer {
     }
 
     public void mapDomainsToDto(Process source, AbstractProcessDto target) {
-        target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new));
+        target.setDomains(extractDomainAssociations(source, (domain) -> {
+            var assocationDto = new ProcessDomainAssociationDto();
+            source.getImpactValues(domain)
+                  .ifPresent(riskValues -> {
+                      Collector<Entry<RiskDefinitionRef, ProcessImpactValues>, ?, Map<String, ProcessRiskValuesDto>> collector = Collectors.toMap(kv -> kv.getKey()
+                                                                                                                                                          .getIdRef(),
+                                                                                                                                                  kk -> mapProcessRiskValuesToDto(kk));
+                      Map<String, ProcessRiskValuesDto> values = riskValues.entrySet()
+                                                                           .stream()
+                                                                           .collect(collector);
+                      assocationDto.setRiskValues(values);
+                  });
+            return assocationDto;
+        }));
     }
 
     public void mapDomainsToDto(Scenario source, AbstractScenarioDto target) {

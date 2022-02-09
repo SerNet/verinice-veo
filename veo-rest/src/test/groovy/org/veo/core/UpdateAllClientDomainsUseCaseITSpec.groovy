@@ -24,16 +24,22 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
+import org.veo.core.entity.Process
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
+import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.ControlRiskValues
+import org.veo.core.entity.risk.DomainRiskReferenceProvider
+import org.veo.core.entity.risk.ImpactRef
 import org.veo.core.entity.risk.ImplementationStatusRef
 import org.veo.core.entity.risk.PotentialProbabilityImpl
 import org.veo.core.entity.risk.ProbabilityRef
+import org.veo.core.entity.risk.ProcessImpactValues
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.PagingConfiguration
+import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.ScenarioRepository
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase.InputData
@@ -43,6 +49,7 @@ import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.ControlData
+import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.ScenarioData
 import org.veo.persistence.entity.jpa.ScopeData
 
@@ -78,10 +85,13 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
     Domain dsgvoTestDomain
 
     def setup() {
+        createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
+        createTestDomainTemplate(DSGVO_TEST_DOMAIN_TEMPLATE_ID)
         executeInTransaction {
-            client = createTestClient()
-            dsgvoDomain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
-            dsgvoTestDomain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+            client = newClient()
+            dsgvoDomain = domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+            dsgvoDomain.riskDefinitions = ["xyz":createRiskDefinition("xyz")]
+            dsgvoTestDomain = domainTemplateService.createDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
             client.addToDomains(dsgvoDomain)
             client.addToDomains(dsgvoTestDomain)
             client = clientRepository.save(client)
@@ -225,6 +235,51 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             with(it.potentialProbability) {
                 size() == 1
                 get(riskDefinitionRef).potentialProbability.idRef == 2
+            }
+        }
+    }
+
+    def "Migrate a process with risk values"() {
+        given: 'a client with an empty unit'
+        RiskDefinitionRef riskDefinitionRef = new RiskDefinitionRef("xyz")
+        DomainRiskReferenceProvider riskreferenceProvider = DomainRiskReferenceProvider.referencesForDomain(dsgvoDomain)
+
+        ProcessImpactValues processImpactValues = new ProcessImpactValues()
+        def categoryref = riskreferenceProvider.getCategoryRef(riskDefinitionRef.getIdRef(), "C").get()
+        def impactValue = riskreferenceProvider.getImpactRef(riskDefinitionRef.getIdRef(), categoryref.getIdRef(), new BigDecimal("2")).get()
+        processImpactValues.potentialImpacts = [(categoryref) : impactValue]
+        Map impactValues = [
+            (riskDefinitionRef) : processImpactValues
+        ]
+        Unit unit = unitRepository.save(newUnit(client) {
+            addToDomains(dsgvoDomain)
+        })
+        Process process = processRepository.save(newProcess(unit) {
+            addToDomains(dsgvoDomain)
+            setImpactValues(dsgvoDomain, impactValues)
+        })
+        when: 'executing the UpdateAllClientDomainsUseCase'
+        runUseCase(DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        unit = executeInTransaction {
+            unitRepository.findById(unit.id).get().tap {
+                //initialize lazy associations
+                it.domains*.name
+            }
+        }
+        process = executeInTransaction {
+            processRepository.findById(process.id).get().tap {
+                //initialize lazy associations
+                it.getImpactValues(dsgvoTestDomain)
+            }
+        }
+
+        then: "the control's risk values are moved to the new domain"
+        process.riskValuesAspects.size() == 1
+        with(((ProcessData)process).riskValuesAspects.first()) {
+            it.domain == dsgvoTestDomain
+            with(it.values) {
+                size() == 1
+                get(riskDefinitionRef) == processImpactValues
             }
         }
     }
