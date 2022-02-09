@@ -324,6 +324,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                                                                                   newDomain))
                          .forEach(etd -> newDomain.getElementTypeDefinitions()
                                                   .add(etd));
+        newDomain.setRiskDefinitions(Map.copyOf(domainTemplateDto.getRiskDefinitions()));
 
         initCatalog(newDomain, itemCache);
         return newDomain;

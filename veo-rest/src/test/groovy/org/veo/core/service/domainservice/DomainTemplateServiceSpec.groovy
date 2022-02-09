@@ -66,6 +66,8 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             templateVersion == domainTemplate.templateVersion
             catalogs.size() == 1
             catalogs.first().catalogItems.size() == 65
+            riskDefinitions.size() == 1
+            riskDefinitions.get('DSRA').categories.size() == 4
         }
         when:
         def catalogItemsFirstCatalog = domainFromTemplate.catalogs.first().catalogItems

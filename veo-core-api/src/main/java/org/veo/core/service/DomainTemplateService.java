@@ -37,8 +37,8 @@ import org.veo.core.entity.exception.NotFoundException;
  * creating a client domain from a domain template.
  */
 public interface DomainTemplateService {
-    // Name-Based UUID: https://v.de/veo/domain-templates/dsgvo/v1.1.0
-    static final String DSGVO_DOMAINTEMPLATE_UUID = "2221bad5-53cd-5073-9f5f-683ec8a8ce1e";
+    // Name-Based UUID: https://v.de/veo/domain-templates/dsgvo/v1.2.0
+    static final String DSGVO_DOMAINTEMPLATE_UUID = "efc3fa10-df63-5bd9-9bdf-5f52d34ab584";
 
     List<DomainTemplate> getTemplates(Client client);
 

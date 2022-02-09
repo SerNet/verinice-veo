@@ -246,7 +246,7 @@ pipeline {
                                 -e SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=${env.VEO_AUTH_URL}/protocol/openid-connect/certs\
                                 -e 'VEO_CORS_ORIGINS=https://*.verinice.example, https://frontend.somewhereelse.example'\
                                 -e 'VEO_DOMAIN_FILE_SELECTOR=file:/domaintemplates/*/*.json'\
-                                -e VEO_DEFAULT_DOMAINTEMPLATE_IDS=2221bad5-53cd-5073-9f5f-683ec8a8ce1e,2b00d864-77ee-5378-aba6-e41f618c7bad\
+                                -e VEO_DEFAULT_DOMAINTEMPLATE_IDS=efc3fa10-df63-5bd9-9bdf-5f52d34ab584,2b00d864-77ee-5378-aba6-e41f618c7bad\
                                 -e VEO_ETAG_SALT=zuL4Q8JKdy\
                                 -e 'JDK_JAVA_OPTIONS=-Dhttp.proxyHost=cache.sernet.private -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.sernet.private -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Dhttp.proxySet=true'") { veo ->
                                             docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages}\

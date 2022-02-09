@@ -46,6 +46,7 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.TailoringReferenceType;
+import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import lombok.RequiredArgsConstructor;
 
@@ -68,6 +69,7 @@ class DomainTemplateAssembler {
     private final String revision;
     private final Set<AbstractCatalogDto> catalogs = new HashSet<>();
     private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions = new HashMap<>();
+    private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
 
     /**
      * Creates a domain template with all catalogs previously added by
@@ -84,12 +86,17 @@ class DomainTemplateAssembler {
         domainTemplateDto.setTemplateVersion(templateVersion);
         domainTemplateDto.setElementTypeDefinitions(elementTypeDefinitions);
         domainTemplateDto.setCatalogs(catalogs);
+        domainTemplateDto.setRiskDefinitions(riskDefinitions);
         return domainTemplateDto;
     }
 
     public void setElementTypeDefinitions(
             Map<String, ElementTypeDefinitionDto> elementTypeDefinitions) {
         this.elementTypeDefinitions = elementTypeDefinitions;
+    }
+
+    public void setRiskDefinitions(Map<String, RiskDefinition> riskDefinitions) {
+        this.riskDefinitions = riskDefinitions;
     }
 
     /**

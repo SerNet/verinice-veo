@@ -182,6 +182,7 @@ public final class DtoToEntityTransformer {
                                                                                       entry.getValue(),
                                                                                       target))
                                                .collect(Collectors.toSet()));
+        target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
         return target;
     }
 

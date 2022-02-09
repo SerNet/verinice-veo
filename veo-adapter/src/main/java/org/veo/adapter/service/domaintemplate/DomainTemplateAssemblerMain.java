@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -40,6 +41,7 @@ import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformElementDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformUnitDumpDto;
+import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
@@ -88,6 +90,7 @@ public class DomainTemplateAssemblerMain {
                                      readCatalogItems(snippetPath.resolve(prefix)));
             }
 
+            assembler.setRiskDefinitions(readRiskDefinitions(snippetPath.resolve("riskdefinitions")));
             TransformDomainTemplateDto templateDto = assembler.createDomainTemplateDto();
             templateDto.setDemoUnitElements(assembler.processDemoUnit(readDemoUnitElements(new File(
                     System.getenv("domaintemplate.unit-dump-file")))));
@@ -98,6 +101,20 @@ public class DomainTemplateAssemblerMain {
             log.error("Error writing domain", e);
             System.exit(1);
         }
+    }
+
+    private static Map<String, RiskDefinition> readRiskDefinitions(Path riskDefinitionPath) {
+        Map<String, RiskDefinition> m = new HashMap<>();
+
+        File[] files = riskDefinitionPath.toFile()
+                                         .listFiles((f, name) -> name.endsWith(".json"));
+        if (files != null) {
+            for (File file : files) {
+                RiskDefinition def = readInstanceFile(file, RiskDefinition.class);
+                m.put(def.getId(), def);
+            }
+        }
+        return m;
     }
 
     private static Set<AbstractElementDto> readDemoUnitElements(File demoUnit) {
