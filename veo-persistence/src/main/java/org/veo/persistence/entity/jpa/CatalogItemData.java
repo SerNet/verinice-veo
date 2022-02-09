@@ -52,6 +52,12 @@ public class CatalogItemData extends ElementOwnerData implements CatalogItem, El
     @ManyToOne(targetEntity = CatalogData.class, optional = false)
     private Catalog catalog;
 
+    public void setCatalog(Catalog catalog) {
+        this.catalog = catalog;
+        catalog.getCatalogItems()
+               .add(this);
+    }
+
     @Column(name = "tailoringreferences")
     @OneToMany(cascade = CascadeType.ALL,
                orphanRemoval = true,
@@ -71,6 +77,20 @@ public class CatalogItemData extends ElementOwnerData implements CatalogItem, El
     @NotNull
     @Valid
     private Element element;
+
+    /**
+     * Sets this item's element. This item is removed from its previous element (if
+     * there is one) and this is set as the catalog item on the new element.
+     */
+    public void setElement(Element element) {
+        if (this.element != null) {
+            this.element.setContainingCatalogItem(null);
+        }
+        this.element = element;
+        if (element != null) {
+            element.setContainingCatalogItem(this);
+        }
+    }
 
     @Column(name = "updatereferences")
     @OneToMany(cascade = CascadeType.ALL,

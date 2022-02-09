@@ -52,6 +52,7 @@ import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl;
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.specification.EntityValidator;
 import org.veo.core.entity.transform.EntityFactory;
+import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.events.MessageCreatorImpl;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.CatalogRepository;
@@ -154,6 +155,7 @@ import org.veo.persistence.access.StoredEventRepositoryImpl;
 import org.veo.persistence.access.UnitRepositoryImpl;
 import org.veo.persistence.access.jpa.StoredEventDataRepository;
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
+import org.veo.persistence.entity.jpa.transformer.IdentifiableDataFactory;
 import org.veo.rest.security.AuthAwareImpl;
 import org.veo.rest.security.CurrentUserProviderImpl;
 import org.veo.service.DefaultDomainCreator;
@@ -455,6 +457,11 @@ public class ModuleConfiguration {
     }
 
     @Bean
+    public IdentifiableFactory identifiableFactory() {
+        return new IdentifiableDataFactory();
+    }
+
+    @Bean
     public UnitHierarchyProvider unitHierarchyProvider(UnitRepository unitRepository) {
         return new UnitHierarchyProvider(unitRepository);
     }
@@ -537,9 +544,10 @@ public class ModuleConfiguration {
 
     @Bean
     public DtoToEntityTransformer dtoToEntityTransformer(EntityFactory entityFactory,
-            EntitySchemaService entitySchemaService,
+            IdentifiableFactory identifiableFactory, EntitySchemaService entitySchemaService,
             DomainAssociationTransformer domainAssociationTransformer) {
-        return new DtoToEntityTransformer(entityFactory, domainAssociationTransformer);
+        return new DtoToEntityTransformer(entityFactory, identifiableFactory,
+                domainAssociationTransformer);
     }
 
     @Primary
@@ -580,21 +588,21 @@ public class ModuleConfiguration {
     @Bean
     public DomainTemplateServiceImpl domainTemplateService(
             DomainTemplateRepository domainTemplateRepository, EntityFactory factory,
-            DomainTemplateResource domainTemplateResource,
+            IdentifiableFactory identifiableFactory, DomainTemplateResource domainTemplateResource,
             DomainAssociationTransformer domainAssociationTransformer,
             CatalogItemPrepareStrategy prepareStrategy,
             DomainTemplateIdGenerator domainTemplateIdGenerator) {
         return new DomainTemplateServiceImpl(domainTemplateRepository, factory,
                 domainTemplateResource.getResources(), domainAssociationTransformer,
-                prepareStrategy, domainTemplateIdGenerator);
+                identifiableFactory, prepareStrategy, domainTemplateIdGenerator);
     }
 
     @Bean
     public CatalogItemService catalogItemService(EntityToDtoTransformer dtoTransformer,
             EntityFactory factory, DomainAssociationTransformer domainAssociationTransformer,
-            CatalogItemPrepareStrategy prepareStrategy) {
-        return new CatalogItemServiceImpl(dtoTransformer, factory, domainAssociationTransformer,
-                prepareStrategy);
+            CatalogItemPrepareStrategy prepareStrategy, IdentifiableFactory identifiableFactory) {
+        return new CatalogItemServiceImpl(dtoTransformer, factory, identifiableFactory,
+                domainAssociationTransformer, prepareStrategy);
     }
 
     @Bean

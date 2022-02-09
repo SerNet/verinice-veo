@@ -31,6 +31,7 @@ import org.veo.core.entity.Document
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
+import org.veo.core.entity.transform.IdentifiableFactory
 
 import spock.lang.Specification
 
@@ -42,10 +43,11 @@ class CompositeElementDtoTransformerSpec extends Specification {
 
     def refAssembler = Mock(ReferenceAssembler)
     def factory = Mock(EntityFactory)
+    def identifiableFactory = Mock(IdentifiableFactory)
     def idRefResolver = Mock(IdRefResolver)
     def domainAssociationTransformer = Mock(DomainAssociationTransformer)
     def entityToDtoTransformer = new EntityToDtoTransformer(refAssembler, domainAssociationTransformer)
-    def dtoToEntityTransformer = new DtoToEntityTransformer(factory, domainAssociationTransformer)
+    def dtoToEntityTransformer = new DtoToEntityTransformer(factory, identifiableFactory, domainAssociationTransformer)
 
     def createUnit() {
         Unit subUnit = Mock()
@@ -167,7 +169,7 @@ class CompositeElementDtoTransformerSpec extends Specification {
         def result = dtoToEntityTransformer.transformDto2Asset(compositeAssetDto, idRefResolver)
 
         then: "the composite element is transformed with parts"
-        1 * factory.createAsset("Composite Asset", null) >> newCompositeAssetEntity
+        1 * identifiableFactory.create(Asset.class, compositeAssetId) >> newCompositeAssetEntity
         1 * idRefResolver.resolve(Set.of(asset1Ref, asset2Ref)) >> [asset1, asset2]
         result == newCompositeAssetEntity
         1 * newCompositeAssetEntity.setParts([asset1, asset2].toSet())

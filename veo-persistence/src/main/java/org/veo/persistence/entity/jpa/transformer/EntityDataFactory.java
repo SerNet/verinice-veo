@@ -209,10 +209,7 @@ public class EntityDataFactory implements EntityFactory {
         CatalogItem catalogItem = new CatalogItemData();
         catalogItem.setCatalog(catalog);
         Element element = elementFactory.apply(catalogItem);
-        element.setContainingCatalogItem(catalogItem);
         catalogItem.setElement(element);
-        catalog.getCatalogItems()
-               .add(catalogItem);
         return catalogItem;
     }
 

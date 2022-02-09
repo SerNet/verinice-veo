@@ -33,7 +33,6 @@ import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
 import org.veo.adapter.presenter.api.dto.AbstractDocumentDto;
-import org.veo.adapter.presenter.api.dto.AbstractDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractDomainTemplateDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractIncidentDto;
@@ -48,7 +47,6 @@ import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
-import org.veo.adapter.presenter.api.dto.VersionedDto;
 import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogDto;
 import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogDto;
@@ -80,73 +78,72 @@ import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.transform.EntityFactory;
+import org.veo.core.entity.transform.IdentifiableFactory;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * A collection of transform functions to transform entities to Dto back and
  * forth.
  */
+@RequiredArgsConstructor
 public final class DtoToEntityTransformer {
 
-    public DtoToEntityTransformer(EntityFactory entityFactory,
-            DomainAssociationTransformer domainAssociationTransformer) {
-        this.factory = entityFactory;
-        this.domainAssociationTransformer = domainAssociationTransformer;
-    }
-
     private final EntityFactory factory;
+    private final IdentifiableFactory identifiableFactory;
     private final DomainAssociationTransformer domainAssociationTransformer;
 
     public Person transformDto2Person(AbstractPersonDto source, IdRefResolver idRefResolver) {
-        var target = factory.createPerson(source.getName(), null);
+        var target = createIdentifiable(Person.class, source);
         mapCompositeEntity(source, target, idRefResolver);
         domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
         return target;
     }
 
     public Asset transformDto2Asset(AbstractAssetDto source, IdRefResolver idRefResolver) {
-        var target = factory.createAsset(source.getName(), null);
+        var target = createIdentifiable(Asset.class, source);
         mapCompositeEntity(source, target, idRefResolver);
         domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
         return target;
     }
 
     public Process transformDto2Process(AbstractProcessDto source, IdRefResolver idRefResolver) {
-        var target = factory.createProcess(source.getName(), null);
+        var target = createIdentifiable(Process.class, source);
         mapCompositeEntity(source, target, idRefResolver);
         domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
         return target;
     }
 
     public Document transformDto2Document(AbstractDocumentDto source, IdRefResolver idRefResolver) {
-        var target = factory.createDocument(source.getName(), null);
+        var target = createIdentifiable(Document.class, source);
         mapCompositeEntity(source, target, idRefResolver);
         domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
         return target;
     }
 
     public Control transformDto2Control(AbstractControlDto source, IdRefResolver idRefResolver) {
-        var target = factory.createControl(source.getName(), null);
+        var target = createIdentifiable(Control.class, source);
         mapCompositeEntity(source, target, idRefResolver);
         domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
         return target;
     }
 
     public Incident transformDto2Incident(AbstractIncidentDto source, IdRefResolver idRefResolver) {
-        var target = factory.createIncident(source.getName(), null);
+        var target = createIdentifiable(Incident.class, source);
         mapCompositeEntity(source, target, idRefResolver);
         domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
         return target;
     }
 
     public Scenario transformDto2Scenario(AbstractScenarioDto source, IdRefResolver idRefResolver) {
-        var target = factory.createScenario(source.getName(), null);
+        var target = createIdentifiable(Scenario.class, source);
         mapCompositeEntity(source, target, idRefResolver);
         domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
         return target;
     }
 
     public Scope transformDto2Scope(AbstractScopeDto source, IdRefResolver idRefResolver) {
-        var target = factory.createScope(source.getName(), null);
+        var target = createIdentifiable(Scope.class, source);
         mapElement(source, target, idRefResolver);
         domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
         Set<IdRef<Element>> memberReferences = source.getMembers();
@@ -163,18 +160,26 @@ public final class DtoToEntityTransformer {
         return target;
     }
 
-    public Domain transformDto2Domain(AbstractDomainDto source, Key<UUID> key) {
-        var target = factory.createDomain(source.getName(), "", "", "");
-        mapIdentifiableProperties(source, target);
-        mapNameableProperties(source, target);
-        target.setActive(true);
-
+    public DomainTemplate transformTransformDomainTemplateDto2DomainTemplate(
+            TransformDomainTemplateDto source, IdRefResolver idRefResolver) {
+        var target = createIdentifiable(DomainTemplate.class, source);
+        mapTransformDomainTemplate(source, idRefResolver, target);
         return target;
     }
 
     public Domain transformTransformDomainTemplateDto2Domain(TransformDomainTemplateDto source,
             IdRefResolver idRefResolver) {
-        var target = transformDomainTemplateDto2Domain(source, idRefResolver);
+        // DO NOT use domain template ID as domain ID.
+        var target = identifiableFactory.create(Domain.class, Key.newUuid());
+        mapTransformDomainTemplate(source, idRefResolver, target);
+        target.setActive(true);
+        return target;
+    }
+
+    private void mapTransformDomainTemplate(TransformDomainTemplateDto source,
+            IdRefResolver idRefResolver, DomainTemplate target) {
+        mapDomainTemplate(source, idRefResolver, target);
+
         target.setElementTypeDefinitions(source.getElementTypeDefinitions()
                                                .entrySet()
                                                .stream()
@@ -183,7 +188,6 @@ public final class DtoToEntityTransformer {
                                                                                       target))
                                                .collect(Collectors.toSet()));
         target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
-        return target;
     }
 
     public ElementTypeDefinition mapElementTypeDefinition(String type,
@@ -196,29 +200,10 @@ public final class DtoToEntityTransformer {
         return target;
     }
 
-    public Domain transformDomainTemplateDto2Domain(AbstractDomainTemplateDto source,
-            IdRefResolver idRefResolver) {
-        var target = factory.createDomain(source.getName(), source.getAuthority(),
-                                          source.getTemplateVersion(), source.getRevision());
-        target.setActive(true);
-        mapDomainTemplate(source, idRefResolver, target);
-        return target;
-    }
-
-    public DomainTemplate transformDto2DomainTemplate(AbstractDomainTemplateDto source,
-            IdRefResolver idRefResolver) {
-        var target = factory.createDomainTemplate(source.getName(), source.getAuthority(),
-                                                  source.getTemplateVersion(), source.getRevision(),
-                                                  null);
-        mapIdentifiableProperties(source, target);
-        mapDomainTemplate(source, idRefResolver, target);
-
-        return target;
-    }
-
     public Catalog transformDto2Catalog(AbstractCatalogDto source, IdRefResolver idRefResolver) {
-        var target = factory.createCatalog(idRefResolver.resolve(source.getDomainTemplate()));
-        mapIdentifiableProperties(source, target);
+        var target = createIdentifiable(Catalog.class, source);
+        idRefResolver.resolve(source.getDomainTemplate())
+                     .addToCatalogs(target);
         mapNameableProperties(source, target);
         if (source instanceof ReferenceCatalogDto) {
             ReferenceCatalogDto catalogDto = (ReferenceCatalogDto) source;
@@ -237,11 +222,10 @@ public final class DtoToEntityTransformer {
             CatalogItem owner, IdRefResolver idRefResolver) {
 
         var target = source.isLinkTailoringReferences()
-                ? factory.createLinkTailoringReference(owner, source.getReferenceType())
-                : factory.createTailoringReference(owner, source.getReferenceType());
-
-        mapIdentifiableProperties(source, target);
-
+                ? createIdentifiable(LinkTailoringReference.class, source)
+                : createIdentifiable(TailoringReference.class, source);
+        target.setOwner(owner);
+        target.setReferenceType(source.getReferenceType());
         if (source.getCatalogItem() != null) {
             CatalogItem resolve = idRefResolver.resolve(source.getCatalogItem());
             target.setCatalogItem(resolve);
@@ -258,8 +242,7 @@ public final class DtoToEntityTransformer {
     }
 
     public Unit transformDto2Unit(AbstractUnitDto source, IdRefResolver idRefResolver) {
-        var target = factory.createUnit(source.getName(), null);
-        mapIdentifiableProperties(source, target);
+        var target = createIdentifiable(Unit.class, source);
         mapNameableProperties(source, target);
 
         target.setDomains(idRefResolver.resolve(source.getDomains()));
@@ -319,6 +302,9 @@ public final class DtoToEntityTransformer {
 
     private void mapDomainTemplate(AbstractDomainTemplateDto source, IdRefResolver idRefResolver,
             DomainTemplate target) {
+        target.setAuthority(source.getAuthority());
+        target.setRevision(source.getRevision());
+        target.setTemplateVersion(source.getTemplateVersion());
         mapNameableProperties(source, target);
         if (source.getCatalogs() != null) {
             target.setCatalogs(source.getCatalogs()
@@ -337,18 +323,11 @@ public final class DtoToEntityTransformer {
 
     private <TDto extends AbstractElementDto, TEntity extends Element> void mapElement(TDto source,
             TEntity target, IdRefResolver idRefResolver) {
-        mapIdentifiableProperties(source, target);
         mapNameableProperties(source, target);
         target.setLinks(mapLinks(target, source, idRefResolver));
         target.setCustomAspects(mapCustomAspects(source, factory));
         if (source.getOwner() != null) {
             target.setOwnerOrContainingCatalogItem(idRefResolver.resolve(source.getOwner()));
-        }
-    }
-
-    private void mapIdentifiableProperties(VersionedDto source, Identifiable target) {
-        if (source instanceof IdentifiableDto) {
-            target.setId(Key.uuidFrom(((IdentifiableDto) source).getId()));
         }
     }
 
@@ -396,35 +375,41 @@ public final class DtoToEntityTransformer {
 
     public CatalogItem transformDto2CatalogItem(AbstractCatalogItemDto source,
             IdRefResolver idRefResolver, Catalog catalog) {
-        var target = factory.createCatalogItem(catalog, catalogItem -> {
-            if (source instanceof CompositeCatalogItemDto) {
-                CompositeCatalogItemDto catalogitem = (CompositeCatalogItemDto) source;
-                AbstractElementDto elementDto = catalogitem.getElement();
-                if (elementDto instanceof AbstractAssetDto) {
-                    return transformDto2Asset((AbstractAssetDto) elementDto, idRefResolver);
-                } else if (elementDto instanceof AbstractControlDto) {
-                    return transformDto2Control((AbstractControlDto) elementDto, idRefResolver);
-                } else if (elementDto instanceof AbstractDocumentDto) {
-                    return transformDto2Document((AbstractDocumentDto) elementDto, idRefResolver);
-                } else if (elementDto instanceof AbstractIncidentDto) {
-                    return transformDto2Incident((AbstractIncidentDto) elementDto, idRefResolver);
-                } else if (elementDto instanceof AbstractPersonDto) {
-                    return transformDto2Person((AbstractPersonDto) elementDto, idRefResolver);
-                } else if (elementDto instanceof AbstractProcessDto) {
-                    return transformDto2Process((AbstractProcessDto) elementDto, idRefResolver);
-                } else if (elementDto instanceof AbstractScenarioDto) {
-                    return transformDto2Scenario((AbstractScenarioDto) elementDto, idRefResolver);
-                } else if (elementDto instanceof AbstractScopeDto) {
-                    return transformDto2Scope((AbstractScopeDto) elementDto, idRefResolver);
-                }
-            } else if (source instanceof ReferenceCatalogItemDto) {
-                ReferenceCatalogItemDto catalogitem = (ReferenceCatalogItemDto) source;
-                return idRefResolver.resolve(catalogitem.getElement());
+        var target = createIdentifiable(CatalogItem.class, source);
+        target.setCatalog(catalog);
+        if (source instanceof CompositeCatalogItemDto) {
+            CompositeCatalogItemDto catalogitem = (CompositeCatalogItemDto) source;
+            AbstractElementDto elementDto = catalogitem.getElement();
+            if (elementDto instanceof AbstractAssetDto) {
+                target.setElement(transformDto2Asset((AbstractAssetDto) elementDto, idRefResolver));
+            } else if (elementDto instanceof AbstractControlDto) {
+                target.setElement(transformDto2Control((AbstractControlDto) elementDto,
+                                                       idRefResolver));
+            } else if (elementDto instanceof AbstractDocumentDto) {
+                target.setElement(transformDto2Document((AbstractDocumentDto) elementDto,
+                                                        idRefResolver));
+            } else if (elementDto instanceof AbstractIncidentDto) {
+                target.setElement(transformDto2Incident((AbstractIncidentDto) elementDto,
+                                                        idRefResolver));
+            } else if (elementDto instanceof AbstractPersonDto) {
+                target.setElement(transformDto2Person((AbstractPersonDto) elementDto,
+                                                      idRefResolver));
+            } else if (elementDto instanceof AbstractProcessDto) {
+                target.setElement(transformDto2Process((AbstractProcessDto) elementDto,
+                                                       idRefResolver));
+            } else if (elementDto instanceof AbstractScenarioDto) {
+                target.setElement(transformDto2Scenario((AbstractScenarioDto) elementDto,
+                                                        idRefResolver));
+            } else if (elementDto instanceof AbstractScopeDto) {
+                target.setElement(transformDto2Scope((AbstractScopeDto) elementDto, idRefResolver));
             }
+        } else if (source instanceof ReferenceCatalogItemDto) {
+            ReferenceCatalogItemDto catalogitem = (ReferenceCatalogItemDto) source;
+            target.setElement(idRefResolver.resolve(catalogitem.getElement()));
+        } else {
             throw new IllegalArgumentException("Cannot handle entity type " + source.getClass()
                                                                                     .getName());
-        });
-        mapIdentifiableProperties(source, target);
+        }
         target.setNamespace(source.getNamespace());
 
         target.getTailoringReferences()
@@ -435,4 +420,11 @@ public final class DtoToEntityTransformer {
         return target;
     }
 
+    private <T extends Identifiable> T createIdentifiable(Class<T> type, Object source) {
+        Key<UUID> key = null;
+        if (source instanceof IdentifiableDto) {
+            key = Key.uuidFrom(((IdentifiableDto) source).getId());
+        }
+        return identifiableFactory.create(type, key);
+    }
 }

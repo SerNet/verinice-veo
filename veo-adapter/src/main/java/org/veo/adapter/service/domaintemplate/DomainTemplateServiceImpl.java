@@ -69,6 +69,7 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.EntityFactory;
+import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.service.DomainTemplateIdGenerator;
 import org.veo.core.service.DomainTemplateService;
@@ -94,7 +95,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     public DomainTemplateServiceImpl(DomainTemplateRepository domainTemplateRepository,
             EntityFactory factory, List<VeoInputStreamResource> domainResources,
             DomainAssociationTransformer domainAssociationTransformer,
-            CatalogItemPrepareStrategy preparations,
+            IdentifiableFactory identifiableFactory, CatalogItemPrepareStrategy preparations,
             DomainTemplateIdGenerator domainTemplateIdGenerator) {
         this.domainTemplateRepository = domainTemplateRepository;
         this.factory = factory;
@@ -102,7 +103,8 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         this.preparations = preparations;
         this.domainTemplateIdGenerator = domainTemplateIdGenerator;
 
-        entityTransformer = new DtoToEntityTransformer(factory, domainAssociationTransformer);
+        entityTransformer = new DtoToEntityTransformer(factory, identifiableFactory,
+                domainAssociationTransformer);
         assembler = new LocalReferenceAssembler();
         dtoTransformer = new EntityToDtoTransformer(assembler, domainAssociationTransformer);
         deserializer = new ReferenceDeserializer(assembler);

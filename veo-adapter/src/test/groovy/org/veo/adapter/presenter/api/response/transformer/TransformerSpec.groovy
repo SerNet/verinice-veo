@@ -27,6 +27,7 @@ import org.veo.adapter.presenter.api.dto.full.FullUnitDto
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
+import org.veo.core.entity.transform.IdentifiableFactory
 
 import spock.lang.Specification
 
@@ -45,10 +46,11 @@ class TransformerSpec extends Specification {
     def mUnitId = null
 
     def factory = Mock(EntityFactory)
+    def identifiableFactory = Mock(IdentifiableFactory)
 
     def entityToDtoTransformer = new EntityToDtoTransformer(Mock(ReferenceAssembler), Mock(DomainAssociationTransformer))
     def idRefResolver = Mock(IdRefResolver)
-    def dtoToEntityTransformer = new DtoToEntityTransformer(factory, null)
+    def dtoToEntityTransformer = new DtoToEntityTransformer(factory, identifiableFactory, null)
 
     def createUnit() {
         Unit subUnit = Mock()
@@ -109,17 +111,15 @@ class TransformerSpec extends Specification {
 
         Unit u=  Mock(Unit)
         u.id >> Key.uuidFrom(unitId)
-        u.name >> unitName
 
 
-        factory.createUnit(_,_) >> u
+        identifiableFactory.create(Unit.class, u.id) >> u
 
         when: "The parent unit DTO is transformed into a unit"
         def unit = dtoToEntityTransformer.transformDto2Unit( unitDto, idRefResolver)
 
         then: "The unit contains all data"
-        unit.id.uuidValue() == unitId
-        unit.name == unitName
-
+        unit == u
+        1 * u.setName(unitName)
     }
 }
