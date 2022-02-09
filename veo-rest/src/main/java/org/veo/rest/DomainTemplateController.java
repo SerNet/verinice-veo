@@ -21,18 +21,30 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.io.mapper.CreateDomainTemplateInputMapper;
+import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
+import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
+import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.transform.EntityFactory;
+import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
+import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
+import org.veo.rest.common.RestApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -59,6 +71,10 @@ public class DomainTemplateController {
 
     private final UseCaseInteractor useCaseInteractor;
     private final CreateDomainUseCase createDomainUseCase;
+    private final CreateDomainTemplateUseCase createDomainTemplatesUseCase;
+    private final EntityFactory entityFactory;
+    private final IdentifiableFactory identifiableFactory;
+    private final DomainAssociationTransformer domainAssociationTransformer;
 
     @PostMapping(value = "/{id}/createdomains")
     @Operation(summary = "Creates domains from a domain template")
@@ -71,5 +87,22 @@ public class DomainTemplateController {
                                                  Optional.ofNullable(clientIds)),
                                          out -> ResponseEntity.noContent()
                                                               .build());
+    }
+
+    @PostMapping(value = "/")
+    @Operation(summary = "Creates domain template")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Domain template created"),
+            @ApiResponse(responseCode = "409",
+                         description = "Domain template with given ID already exists") })
+    public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomainTemplate(
+            @Valid @NotNull @RequestBody TransformDomainTemplateDto domainTemplateDto) {
+        var input = CreateDomainTemplateInputMapper.map(domainTemplateDto, identifiableFactory,
+                                                        entityFactory,
+                                                        domainAssociationTransformer);
+        return useCaseInteractor.execute(createDomainTemplatesUseCase, input, out -> {
+            var body = CreateOutputMapper.map(out.getDomainTemplate());
+            return RestApiResponse.created(URL_BASE_PATH, body);
+        });
     }
 }

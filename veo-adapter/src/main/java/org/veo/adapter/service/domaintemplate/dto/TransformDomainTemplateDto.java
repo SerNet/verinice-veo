@@ -24,6 +24,8 @@ import java.util.Set;
 
 import javax.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import org.veo.adapter.presenter.api.Patterns;
@@ -31,7 +33,23 @@ import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
 import org.veo.adapter.presenter.api.dto.AbstractDomainTemplateDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
+import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
+import org.veo.adapter.presenter.api.dto.full.FullControlDto;
+import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
+import org.veo.adapter.presenter.api.dto.full.FullIncidentDto;
+import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
+import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
+import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
+import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.core.entity.Asset;
+import org.veo.core.entity.Control;
+import org.veo.core.entity.Document;
+import org.veo.core.entity.Incident;
+import org.veo.core.entity.Person;
+import org.veo.core.entity.Process;
+import org.veo.core.entity.Scenario;
+import org.veo.core.entity.Scope;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -51,6 +69,17 @@ public class TransformDomainTemplateDto extends AbstractDomainTemplateDto
     @ToString.Include
     private String id;
 
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
+                  include = JsonTypeInfo.As.EXISTING_PROPERTY,
+                  property = "type")
+    @JsonSubTypes({ @JsonSubTypes.Type(value = FullAssetDto.class, name = Asset.SINGULAR_TERM),
+            @JsonSubTypes.Type(value = FullControlDto.class, name = Control.SINGULAR_TERM),
+            @JsonSubTypes.Type(value = FullDocumentDto.class, name = Document.SINGULAR_TERM),
+            @JsonSubTypes.Type(value = FullIncidentDto.class, name = Incident.SINGULAR_TERM),
+            @JsonSubTypes.Type(value = FullPersonDto.class, name = Person.SINGULAR_TERM),
+            @JsonSubTypes.Type(value = FullProcessDto.class, name = Process.SINGULAR_TERM),
+            @JsonSubTypes.Type(value = FullScenarioDto.class, name = Scenario.SINGULAR_TERM),
+            @JsonSubTypes.Type(value = FullScopeDto.class, name = Scope.SINGULAR_TERM) })
     private Set<AbstractElementDto> demoUnitElements = new HashSet<>();
 
     @JsonDeserialize(contentAs = TransformCatalogDto.class)

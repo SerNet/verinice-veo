@@ -49,4 +49,16 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         and: "domain creation to be forbidden"
         mvc.perform(MockMvcRequestBuilders.post("/domaintemplates/f8ed22b1-b277-56ec-a2ce-0dbd94e24824/createdomains")).andReturn().response.status == 403
     }
+
+    @WithUserDetails("user@domain.example")
+    def "content-creator endpoints are forbidden for a normal user"() {
+        expect: "domain template creation to be forbidden"
+        mvc.perform(MockMvcRequestBuilders.post("/domaintemplates/").content("{}")).andReturn().response.status == 403
+    }
+
+    @WithUserDetails("admin")
+    def "content-creator endpoints are forbidden for an admin"() {
+        expect: "domain template creation to be forbidden"
+        mvc.perform(MockMvcRequestBuilders.post("/domaintemplates/").content("{}")).andReturn().response.status == 403
+    }
 }

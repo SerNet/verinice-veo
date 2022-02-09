@@ -58,7 +58,7 @@ class AdminRestTest extends VeoRestTest{
         then:
         dump.unit.name == "my catalog unit"
 
-        dump.domains.size() == 2
+        dump.domains.size() >= 2
         dump.elements.size() == catalog.catalogItems.size()
         with (dump.elements.find { it.abbreviation == "VVT" }) {
             description == "VVT-Prozess"

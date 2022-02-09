@@ -87,13 +87,17 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                          "/swagger-ui.html", "/swagger-resources/**", "/webjars/**",
                          "/swagger-ui/**")
             .permitAll()
-            .antMatchers(HttpMethod.POST, "/domains/**")
+
+            .antMatchers(HttpMethod.POST, "/domains/**", "/domaintemplates/")
             .hasRole("veo-content-creator")
+
             .antMatchers("/units/**", "/assets/**", "/controls/**", "/scopes/**", "/persons/**",
                          "/processes/**", "/schemas/**", "/translations/**", "/domains/**")
             .hasRole("veo-user")
-            .antMatchers("/admin/**", "/domaintemplates/**")
+
+            .antMatchers("/admin/**", "/domaintemplates/*/createdomains")
             .hasRole("veo-admin")
+
             .anyRequest()
             .authenticated(); // CAUTION:
                               // this includes anonymous users,

@@ -103,6 +103,7 @@ import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
+import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
 import org.veo.core.usecase.incident.CreateIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentsUseCase;
@@ -741,5 +742,11 @@ public class ModuleConfiguration {
         return new DefaultDomainCreator(Arrays.stream(defaultDomainTemplateIds)
                                               .collect(Collectors.toSet()),
                 domainService, domainTemplateRepository);
+    }
+
+    @Bean
+    public CreateDomainTemplateUseCase createDomainTemplateUseCase(
+            DomainTemplateRepository domainTemplateRepository) {
+        return new CreateDomainTemplateUseCase(domainTemplateRepository);
     }
 }

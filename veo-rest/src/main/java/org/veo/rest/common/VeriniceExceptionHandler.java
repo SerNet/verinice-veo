@@ -33,6 +33,7 @@ import org.veo.core.entity.DomainException;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.usecase.common.ETagMismatchException;
+import org.veo.core.usecase.domaintemplate.EntityAlreadyExistsException;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,6 +49,11 @@ public class VeriniceExceptionHandler {
     @ExceptionHandler({ IllegalArgumentException.class })
     protected ResponseEntity<ApiResponseBody> handle(IllegalArgumentException exception) {
         return handle(exception, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({ EntityAlreadyExistsException.class })
+    protected ResponseEntity<ApiResponseBody> handle(EntityAlreadyExistsException exception) {
+        return handle(exception, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler({ DeviatingIdException.class })

@@ -32,6 +32,8 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import org.springframework.web.util.UriComponentsBuilder;
 
 import org.veo.adapter.presenter.api.dto.ModelDto;
+import org.veo.adapter.presenter.api.dto.full.FullCatalogItemDto;
+import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,6 +67,14 @@ public class TypeExtractor {
                                                    .getPath();
         if (pathComponent == null)
             return Optional.empty();
+
+        if (uriString.startsWith("/catalogitems")) {
+            return Optional.of(FullCatalogItemDto.class);
+        }
+        if (uriString.startsWith("/domaintemplates")) {
+            return Optional.of(TransformDomainTemplateDto.class);
+        }
+
         log.debug("Reduced URI string {} to path component {}", uriString, pathComponent);
 
         var strippedPathComponent = removeServletContextPath(pathComponent);
