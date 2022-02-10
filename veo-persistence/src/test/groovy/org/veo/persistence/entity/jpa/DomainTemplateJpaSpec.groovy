@@ -24,7 +24,7 @@ import org.veo.core.entity.Catalog
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.transform.EntityFactory
-import org.veo.persistence.access.jpa.CatalogDataRepository
+import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.test.VeoSpec
@@ -33,7 +33,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
     @Autowired
     DomainTemplateDataRepository repository
     @Autowired
-    CatalogDataRepository catalogRepository
+    DomainDataRepository domainRepository
     @Autowired
     TransactionTemplate txTemplate
 
@@ -230,5 +230,36 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
             element.links[0].target.name == 'p1'
         }
         d.elementTypeDefinitions.size() == 1
+    }
+
+    def 'fetches latest template by name'() {
+        given: "different iso template versions and one unrelated mogs template"
+        repository.save(newDomainTemplate {
+            name = "ISO"
+            templateVersion = "10.0.2"
+        })
+        repository.save(newDomainTemplate {
+            name = "ISO"
+            templateVersion = "2.3.4"
+        })
+        repository.save(newDomainTemplate {
+            name = "ISO"
+            templateVersion = "10.1.0"
+        })
+        repository.save(newDomainTemplate {
+            name = "ISO"
+            templateVersion = "10.1.1"
+        })
+        repository.save(newDomainTemplate {
+            name = "MOGS"
+            templateVersion = "10.2.3"
+        })
+
+        when:
+        def result = repository.findLatestTemplateIdByName("ISO")
+
+        then:
+        result.present
+        repository.findById(result.get()).get().templateVersion == "10.1.1"
     }
 }

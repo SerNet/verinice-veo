@@ -47,6 +47,7 @@ import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 import org.veo.rest.RestApplication
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
+import org.veo.service.DefaultDomainCreator
 import org.veo.test.VeoSpec
 
 /**
@@ -58,6 +59,9 @@ import org.veo.test.VeoSpec
 @ImportAutoConfiguration
 @ComponentScan("org.veo")
 abstract class VeoSpringSpec extends VeoSpec {
+    // Name-Based UUID: https://v.de/veo/domain-templates/dsgvo/v1.2.0
+    public static final String DSGVO_DOMAINTEMPLATE_UUID = "efc3fa10-df63-5bd9-9bdf-5f52d34ab584"
+
     // dsgvo-test-1.json
     public static final String DSGVO_TEST_DOMAIN_TEMPLATE_ID = "00000000-0000-0000-0000-000000000001"
 
@@ -109,6 +113,9 @@ abstract class VeoSpringSpec extends VeoSpec {
     DomainTemplateServiceImpl domainTemplateService
 
     @Autowired
+    DefaultDomainCreator defaultDomainCreator
+
+    @Autowired
     TransactionTemplate txTemplate
 
     @Autowired
@@ -142,7 +149,7 @@ abstract class VeoSpringSpec extends VeoSpec {
 
     Domain createDsgvoDomain(Client client) {
         return txTemplate.execute {
-            def domain = domainTemplateService.createDomain(client, DomainTemplateServiceImpl.DSGVO_DOMAINTEMPLATE_UUID)
+            def domain = domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
             client.addToDomains(domain)
             clientDataRepository.save(client)
             return domain

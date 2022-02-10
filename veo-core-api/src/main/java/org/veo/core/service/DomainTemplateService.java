@@ -20,7 +20,6 @@ package org.veo.core.service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.ExportDto;
@@ -37,8 +36,6 @@ import org.veo.core.entity.exception.NotFoundException;
  * creating a client domain from a domain template.
  */
 public interface DomainTemplateService {
-    // Name-Based UUID: https://v.de/veo/domain-templates/dsgvo/v1.2.0
-    static final String DSGVO_DOMAINTEMPLATE_UUID = "efc3fa10-df63-5bd9-9bdf-5f52d34ab584";
 
     List<DomainTemplate> getTemplates(Client client);
 
@@ -52,13 +49,6 @@ public interface DomainTemplateService {
      *             when the template doesn't exist
      */
     Domain createDomain(Client client, String templateId);
-
-    /**
-     * Creates the default domains for the given client. The client is used check
-     * the rights and what are the default domains. No modification on the client is
-     * done. Return Empty.set when client.getDomains().size()!=0.
-     */
-    Set<Domain> createDefaultDomains(Client client);
 
     /**
      * Returns the elements that are to be created in the demo unit for the new

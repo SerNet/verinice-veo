@@ -18,12 +18,15 @@
 package org.veo.persistence.access;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.Key;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository;
 import org.veo.persistence.entity.jpa.DomainTemplateData;
@@ -48,5 +51,11 @@ public class DomainTemplateRepositoryImpl
                                     false)
                             .map(e -> (DomainTemplate) e)
                             .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Key<UUID>> getLatestDomainTemplateId(String name) {
+        return dataRepository.findLatestTemplateIdByName(name)
+                             .map(Key::uuidFrom);
     }
 }

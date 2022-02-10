@@ -18,24 +18,23 @@
 package org.veo.core.usecase.unit;
 
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.UnitRepository;
-import org.veo.core.service.DomainTemplateService;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.NameableInputData;
+import org.veo.service.DefaultDomainCreator;
 
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,6 +51,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author akoderman
  */
+@RequiredArgsConstructor
 @Slf4j
 public class CreateUnitUseCase
         implements TransactionalUseCase<CreateUnitUseCase.InputData, CreateUnitUseCase.OutputData> {
@@ -59,18 +59,8 @@ public class CreateUnitUseCase
     private final ClientRepository clientRepository;
     private final UnitRepository unitRepository;
     private final EntityFactory entityFactory;
-    private final DomainTemplateService domainTemplateService;
+    private final DefaultDomainCreator defaultDomainCreator;
     private final CreateDemoUnitUseCase createDemoUnitUseCase;
-
-    public CreateUnitUseCase(ClientRepository clientRepository, UnitRepository unitRepository,
-            EntityFactory entityFactory, DomainTemplateService domainTemplateService,
-            CreateDemoUnitUseCase createDemoUnitUseCase) {
-        this.clientRepository = clientRepository;
-        this.unitRepository = unitRepository;
-        this.entityFactory = entityFactory;
-        this.domainTemplateService = domainTemplateService;
-        this.createDemoUnitUseCase = createDemoUnitUseCase;
-    }
 
     @Override
     public OutputData execute(InputData input) {
@@ -118,9 +108,7 @@ public class CreateUnitUseCase
         // and abbreviation:
         Client client = entityFactory.createClient(input.getClientId(), input.getNameableInput()
                                                                              .getName());
-        Set<Domain> domainsFromTemplate = domainTemplateService.createDefaultDomains(client);
-        log.info("{} default domains created.", domainsFromTemplate.size());
-        domainsFromTemplate.forEach(client::addToDomains);
+        defaultDomainCreator.addDefaultDomains(client);
         Client savedClient = clientRepository.save(client);
         createDemoUnitForClient(savedClient);
         return savedClient;

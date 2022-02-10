@@ -20,7 +20,6 @@ package org.veo.core
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
-import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
@@ -72,7 +71,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
     def setup() {
         executeInTransaction {
             client = newClient()
-            dsgvoDomain = domainTemplateService.createDomain(client, DomainTemplateServiceImpl.DSGVO_DOMAINTEMPLATE_UUID)
+            dsgvoDomain = domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
             dsgvoTestDomain = domainTemplateService.createDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
             client.addToDomains(dsgvoDomain)
             client.addToDomains(dsgvoTestDomain)

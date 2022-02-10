@@ -20,7 +20,6 @@ package org.veo.jobs
 import static org.veo.core.usecase.unit.CreateDemoUnitUseCase.InputData
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.core.Authentication
 
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
@@ -29,6 +28,7 @@ import org.veo.core.entity.Unit
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.service.DefaultDomainCreator
 
 import spock.lang.AutoCleanup
 
@@ -55,7 +55,8 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
     @Autowired
     private ResetDemoUnitJob job
 
-    Authentication originalAuthentication
+    @Autowired
+    DefaultDomainCreator defaultDomainCreator
 
     @AutoCleanup('revokeUser')
     UserSwitcher userSwitcher
@@ -216,7 +217,7 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
             def client = newClient {
                 id = Key.uuidFrom(clientId)
             }
-            domainTemplateService.createDefaultDomains(client)
+            defaultDomainCreator.addDefaultDomains(client)
             clientRepository.save(client)
             client
         }

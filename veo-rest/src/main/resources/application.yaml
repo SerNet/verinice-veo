@@ -13,6 +13,9 @@ veo:
   # Salt for hashing the ETags, enter a 10 random characters
   # etag:
     # salt:
+  default:
+    domaintemplate:
+      names: 'DS-GVO'
   logging:
     properties: 'spring.datasource.url,spring.jpa.database-platform'
   message:

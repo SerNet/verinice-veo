@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.service.domainservice
 
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.security.test.context.support.WithUserDetails
@@ -25,12 +24,8 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
-import org.veo.core.entity.Control
-import org.veo.core.entity.Process
-import org.veo.core.entity.Scenario
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.exception.ModelConsistencyException
-import org.veo.core.service.DomainTemplateService
 import org.veo.persistence.access.ClientRepositoryImpl
 
 @ComponentScan("org.veo")
@@ -41,162 +36,6 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
     @Autowired
     DomainTemplateServiceImpl domainTemplateService
-
-    def "create default domains from template"() {
-        given: "a client"
-        Client client = repository.save(newClient {
-            name = "Demo Client"
-        })
-
-        def domainsFromTemplate = null
-        txTemplate.execute {
-            domainsFromTemplate = domainTemplateService.createDefaultDomains(client)
-            domainsFromTemplate.forEach({client.addToDomains(it)})
-            client = repository.save(client)
-        }
-        def domainFromTemplate = client.domains.find { it.name == "DS-GVO" }
-        expect: 'the domain matches with the linked domainTemplate'
-        with(domainFromTemplate) {
-            domainTemplate.dbId == DomainTemplateService.DSGVO_DOMAINTEMPLATE_UUID
-            name == domainTemplate.name
-            abbreviation == domainTemplate.abbreviation
-            description == domainTemplate.description
-            authority == domainTemplate.authority
-            revision == domainTemplate.revision
-            templateVersion == domainTemplate.templateVersion
-            catalogs.size() == 1
-            catalogs.first().catalogItems.size() == 65
-            riskDefinitions.size() == 1
-            riskDefinitions.get('DSRA').categories.size() == 4
-        }
-        when:
-        def catalogItemsFirstCatalog = domainFromTemplate.catalogs.first().catalogItems
-        then: 'its catalog has has the expected Control elements'
-        with (catalogItemsFirstCatalog.findAll{it.element.modelInterface == Control}.sort { it.element.abbreviation }) {
-            it.size() == 8
-            with(it[0]) {
-                tailoringReferences.size()==1
-                with(element) {
-                    links.size()==0
-                    abbreviation == 'TOM-A'
-                    name == 'TOM zur Gewährleistung der Verfügbarkeit'
-                    description.startsWith('Gewährleistung der Verfügbarkeit: Technische')
-                }
-            }
-            with(it[1]) {
-                tailoringReferences.size() == 1
-                tailoringReferences[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
-                element.abbreviation == 'TOM-C'
-            }
-            with(it[2]) {
-                tailoringReferences.size() == 1
-                tailoringReferences[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
-                element.abbreviation == 'TOM-E'
-            }
-            it[3].element.abbreviation == 'TOM-EFF'
-            it[4].element.abbreviation == 'TOM-I'
-            it[5].element.abbreviation == 'TOM-P'
-            it[6].element.abbreviation == 'TOM-R'
-            it[7].element.abbreviation == 'TOM-REC'
-            it[7].tailoringReferences.size()==1
-            it[7].tailoringReferences[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
-        }
-        and: 'its catalog has has the expected Process elements'
-        with (catalogItemsFirstCatalog.findAll{it.element.modelInterface == Process}.sort { it.element.abbreviation }) {
-            it.size() == 1
-            with(it[0]) {
-                element.abbreviation == 'VVT'
-                tailoringReferences.size() == 8
-                tailoringReferences[0].referenceType == TailoringReferenceType.LINK
-            }
-        }
-        and: 'its catalog has has the expected Scenario elements'
-        with (catalogItemsFirstCatalog.findAll{it.element.modelInterface == Scenario}.sort { it.element.abbreviation }) {
-            it.size() == 56
-            with(it[0]) {
-                with(element) {
-                    links.size()==0
-                    abbreviation == 'DS-G.1'
-                    name == 'Auftragsverarbeitung in Drittstaaten ohne adäquates Datenschutzniveau'
-                }
-            }
-            // items are sorted lexicographically
-            with(it[31]) {
-                with(element) {
-                    links.size()==0
-                    abbreviation == 'DS-G.39'
-                    name == 'Überschreitung des Erforderlichkeitsgrundsatzes'
-                }
-            }
-        }
-
-        when: 'check the test domain'
-        domainFromTemplate = client.domains.find { it.name == "test-domain" }
-        then: 'the domain matches with the linked domainTemplate'
-        with(domainFromTemplate) {
-            domainTemplate.dbId == "2b00d864-77ee-5378-aba6-e41f618c7bad"
-            name == domainTemplate.name
-            abbreviation == domainTemplate.abbreviation
-            description == domainTemplate.description
-            authority == domainTemplate.authority
-            revision == domainTemplate.revision
-            templateVersion == domainTemplate.templateVersion
-            catalogs.size() == 1
-            catalogs.first().catalogItems.size() == 6
-        }
-        with (domainFromTemplate.catalogs.first().catalogItems.sort { it.element.name }) {
-            with(it[0]) {
-                tailoringReferences.size()==0
-                with(element) {
-                    links.size()==0
-                    abbreviation == 'c-1'
-                    name == 'Control-1'
-                    description.startsWith('Lore')
-                }
-            }
-            it[1].element.abbreviation == 'c-2'
-
-            it[2].element.abbreviation == 'c-3'
-            it[2].tailoringReferences.size()==1
-            it[2].tailoringReferences[0].referenceType == TailoringReferenceType.LINK
-            it[2].tailoringReferences[0].catalogItem == it[0]
-
-            it[3].element.abbreviation == 'c-4'
-            it[3].element.links.size()==0
-            it[3].tailoringReferences.size()==1
-            it[3].tailoringReferences[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
-            it[3].tailoringReferences[0].catalogItem == it[1]
-
-            it[4].element.abbreviation == 'cc-1'
-            it[4].tailoringReferences.size()==1
-            it[4].tailoringReferences.first().referenceType == TailoringReferenceType.LINK
-            it[4].tailoringReferences.first().catalogItem == it[5]
-
-            it[5].element.abbreviation == 'cc-2'
-            it[5].tailoringReferences.size()==1
-            it[5].tailoringReferences[0].referenceType == TailoringReferenceType.LINK
-            it[5].tailoringReferences[0].catalogItem == it[4]
-        }
-    }
-
-    def "don't create domain when client has domain"() {
-        given: "a client with a domain"
-        Client client = repository.save(newClient {
-            name = "Demo Client"
-        })
-
-        client.addToDomains(newDomain(client))
-
-
-        when: 'default domains are created'
-        def domainsFromTemplate = null
-        txTemplate.execute {
-            domainsFromTemplate = domainTemplateService.createDefaultDomains(client)
-        }
-
-        then: 'exception is thrown'
-        IllegalArgumentException ex = thrown()
-    }
 
     def "create specific domain from template"() {
         given: "a client"

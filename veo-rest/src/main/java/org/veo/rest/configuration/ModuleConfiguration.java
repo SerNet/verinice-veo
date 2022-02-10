@@ -18,7 +18,6 @@
 package org.veo.rest.configuration;
 
 import java.util.Arrays;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -157,6 +156,7 @@ import org.veo.persistence.access.jpa.StoredEventDataRepository;
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
 import org.veo.rest.security.AuthAwareImpl;
 import org.veo.rest.security.CurrentUserProviderImpl;
+import org.veo.service.DefaultDomainCreator;
 import org.veo.service.ElementMigrationService;
 import org.veo.service.EtagService;
 
@@ -354,10 +354,10 @@ public class ModuleConfiguration {
 
     @Bean
     public CreateUnitUseCase getCreateUnitUseCase(ClientRepositoryImpl clientRepository,
-            UnitRepositoryImpl unitRepository, DomainTemplateService domainTemplateService,
-            CreateDemoUnitUseCase createDemoUnitUseCase) {
+            UnitRepositoryImpl unitRepository, CreateDemoUnitUseCase createDemoUnitUseCase,
+            DefaultDomainCreator defaultDomainCreator) {
         return new CreateUnitUseCase(clientRepository, unitRepository, getEntityFactory(),
-                domainTemplateService, createDemoUnitUseCase);
+                defaultDomainCreator, createDemoUnitUseCase);
     }
 
     @Bean
@@ -583,15 +583,10 @@ public class ModuleConfiguration {
             DomainTemplateResource domainTemplateResource,
             DomainAssociationTransformer domainAssociationTransformer,
             CatalogItemPrepareStrategy prepareStrategy,
-            DomainTemplateIdGenerator domainTemplateIdGenerator,
-            @Value("${veo.default.domaintemplate.ids:"
-                    + DomainTemplateService.DSGVO_DOMAINTEMPLATE_UUID
-                    + "}") String[] defaultDomainTemlateIds) {
-        Set<String> domainTemplates = Arrays.stream(defaultDomainTemlateIds)
-                                            .collect(Collectors.toSet());
+            DomainTemplateIdGenerator domainTemplateIdGenerator) {
         return new DomainTemplateServiceImpl(domainTemplateRepository, factory,
                 domainTemplateResource.getResources(), domainAssociationTransformer,
-                prepareStrategy, domainTemplateIdGenerator, domainTemplates);
+                prepareStrategy, domainTemplateIdGenerator);
     }
 
     @Bean
@@ -728,5 +723,15 @@ public class ModuleConfiguration {
     @Bean
     public DomainTemplateIdGenerator domainTemplateIdGenerator() {
         return new DomainTemplateIdGeneratorImpl();
+    }
+
+    @Bean
+    public DefaultDomainCreator defaultDomainTemplateProvider(
+            @Value("${veo.default.domaintemplate.names}") String[] defaultDomainTemplateIds,
+            DomainTemplateService domainService,
+            DomainTemplateRepository domainTemplateRepository) {
+        return new DefaultDomainCreator(Arrays.stream(defaultDomainTemplateIds)
+                                              .collect(Collectors.toSet()),
+                domainService, domainTemplateRepository);
     }
 }

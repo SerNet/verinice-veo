@@ -31,7 +31,6 @@ import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
-
 @WithUserDetails("user@domain.example")
 class CatalogItemServiceSpec extends VeoSpringSpec {
     @Autowired
@@ -62,10 +61,8 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
             name = "Demo Client"
         })
 
-        def domainsFromTemplate = null
         txTemplate.execute {
-            domainsFromTemplate = domainTemplateService.createDefaultDomains(client)
-            domainsFromTemplate.forEach({client.addToDomains(it)})
+            defaultDomainCreator.addDefaultDomains(client)
             client = repository.save(client)
             unit = unitRepository.save(newUnit(client) {
                 name = "Test unit"

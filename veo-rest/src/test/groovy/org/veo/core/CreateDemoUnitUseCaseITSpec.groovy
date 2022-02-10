@@ -230,7 +230,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
     Client createClient() {
         executeInTransaction {
             def client = newClient()
-            domainTemplateService.createDefaultDomains(client)
+            defaultDomainCreator.addDefaultDomains(client)
             return clientRepository.save(client)
         }
     }

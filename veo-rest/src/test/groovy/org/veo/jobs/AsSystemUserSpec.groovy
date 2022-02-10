@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.jobs
 
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.context.SecurityContextHolder
 
@@ -65,7 +64,7 @@ class AsSystemUserSpec extends VeoSpringSpec {
             client = newClient {
                 id = Key.uuidFrom(clientId)
             }
-            domainTemplateService.createDefaultDomains(client)
+            defaultDomainCreator.addDefaultDomains(client)
             clientRepository.save(client)
         }
         userSwitcher.revokeUser()

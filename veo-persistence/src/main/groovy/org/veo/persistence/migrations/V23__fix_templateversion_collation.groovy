@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler.
+ * Copyright (C) 2022  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,20 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.repository;
+package org.veo.persistence.migrations
 
-import java.util.Optional;
-import java.util.UUID;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Key;
+import groovy.sql.Sql
 
-/**
- * A repository for <code>DomainTemplate</code> entities.
- *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
- */
-public interface DomainTemplateRepository extends Repository<DomainTemplate, Key<UUID>> {
-    Optional<Key<UUID>> getLatestDomainTemplateId(String name);
+class V23__fix_templateversion_collation extends BaseJavaMigration {
+
+    @Override
+    void migrate(Context context) throws Exception {
+        new Sql(context.connection).execute("""
+            create collation sem_ver (locale = 'en@colNumeric=yes', provider = 'icu');
+
+            alter table domaintemplate
+                alter column templateversion type varchar(255) collate sem_ver;
+            alter table domain
+                alter column templateversion type varchar(255) collate sem_ver;
+""")
+    }
 }

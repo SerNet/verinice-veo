@@ -85,7 +85,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     private final List<VeoInputStreamResource> domainResources;
     private final CatalogItemPrepareStrategy preparations;
     private final DomainTemplateIdGenerator domainTemplateIdGenerator;
-    private final Set<String> defaultDomainTemplateIds;
 
     private ReferenceAssembler assembler;
     private ObjectMapper objectMapper;
@@ -96,14 +95,12 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
             EntityFactory factory, List<VeoInputStreamResource> domainResources,
             DomainAssociationTransformer domainAssociationTransformer,
             CatalogItemPrepareStrategy preparations,
-            DomainTemplateIdGenerator domainTemplateIdGenerator,
-            Set<String> defaultDomainTemplateIds) {
+            DomainTemplateIdGenerator domainTemplateIdGenerator) {
         this.domainTemplateRepository = domainTemplateRepository;
         this.factory = factory;
         this.domainResources = domainResources;
         this.preparations = preparations;
         this.domainTemplateIdGenerator = domainTemplateIdGenerator;
-        this.defaultDomainTemplateIds = defaultDomainTemplateIds;
 
         entityTransformer = new DtoToEntityTransformer(factory, domainAssociationTransformer);
         assembler = new LocalReferenceAssembler();
@@ -141,20 +138,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     @Override
     public Optional<DomainTemplate> getTemplate(Client client, Key<UUID> key) {
         return Optional.empty();
-    }
-
-    @Override
-    public Set<Domain> createDefaultDomains(Client client) {
-        if (!client.getDomains()
-                   .isEmpty()) {
-            throw new IllegalArgumentException("The client owns already domains.");
-        }
-        Set<String> templateIds = getDefaultDomainTemplateIds(client);
-        log.info("Construct new default domains from templates [{}] for Client {}", templateIds,
-                 client);
-        return templateIds.stream()
-                          .map(id -> createDomain(client, id))
-                          .collect(Collectors.toSet());
     }
 
     @Override
@@ -215,13 +198,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                   }
               });
         return elements;
-    }
-
-    /**
-     * Returns the default template id for a client.
-     */
-    private Set<String> getDefaultDomainTemplateIds(Client client) {
-        return defaultDomainTemplateIds;
     }
 
     /**

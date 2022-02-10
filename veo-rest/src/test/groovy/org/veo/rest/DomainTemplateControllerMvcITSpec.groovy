@@ -26,7 +26,6 @@ import org.veo.core.entity.Client
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.DocumentRepository
 import org.veo.core.repository.UnitRepository
-import org.veo.core.service.DomainTemplateService
 
 @WithUserDetails("admin")
 class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
@@ -44,7 +43,7 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
         def client2 = clientRepo.save(newClient {})
 
         when: "creating the DSGVO domain for the client"
-        post("/domaintemplates/${DomainTemplateService.DSGVO_DOMAINTEMPLATE_UUID}/createdomains?clientids=${client1.id.uuidValue()}", [:], HttpStatus.SC_NO_CONTENT)
+        post("/domaintemplates/$DSGVO_DOMAINTEMPLATE_UUID/createdomains?clientids=${client1.id.uuidValue()}", [:], HttpStatus.SC_NO_CONTENT)
         client1 = loadClientAndInitializeDomains(client1.id)
         then: "the client gets the new domain"
         with(client1.domains) {
@@ -64,7 +63,7 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
         def client3 = clientRepo.save(newClient {})
 
         when: "creating the DSGVO domain for the client"
-        post("/domaintemplates/${DomainTemplateService.DSGVO_DOMAINTEMPLATE_UUID}/createdomains?clientids=${client1.id.uuidValue()},${client2.id.uuidValue()}", [:], HttpStatus.SC_NO_CONTENT)
+        post("/domaintemplates/$DSGVO_DOMAINTEMPLATE_UUID/createdomains?clientids=${client1.id.uuidValue()},${client2.id.uuidValue()}", [:], HttpStatus.SC_NO_CONTENT)
         client1 = loadClientAndInitializeDomains(client1.id)
         client2 = loadClientAndInitializeDomains(client2.id)
         client3 = loadClientAndInitializeDomains(client3.id)
@@ -90,7 +89,7 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
         def client3 = clientRepo.save(newClient {})
 
         when: "creating the DSGVO domain for the client"
-        post("/domaintemplates/${DomainTemplateService.DSGVO_DOMAINTEMPLATE_UUID}/createdomains", [:], HttpStatus.SC_NO_CONTENT)
+        post("/domaintemplates/$DSGVO_DOMAINTEMPLATE_UUID/createdomains", [:], HttpStatus.SC_NO_CONTENT)
         client1 = loadClientAndInitializeDomains(client1.id)
         client2 = loadClientAndInitializeDomains(client2.id)
         client3 = loadClientAndInitializeDomains(client3.id)

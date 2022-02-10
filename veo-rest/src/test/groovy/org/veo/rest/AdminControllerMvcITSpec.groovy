@@ -20,7 +20,6 @@ package org.veo.rest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
-import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.VeoMvcSpec
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.DocumentRepository
@@ -142,7 +141,7 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
         given: "a client with some units and a document"
         def client = executeInTransaction {
             def client = newClient()
-            def dsgvoDomain = domainTemplateService.createDomain(client, DomainTemplateServiceImpl.DSGVO_DOMAINTEMPLATE_UUID)
+            def dsgvoDomain = domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
             def dsgvoTestDomain = domainTemplateService.createDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
             client.addToDomains(dsgvoDomain)
             client.addToDomains(dsgvoTestDomain)
