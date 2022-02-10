@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2019  Urs Zeidler.
+ * Copyright (C) 2022  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,20 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.aspects;
+package org.veo.core.entity.specification;
 
-import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Versioned;
+import org.veo.core.entity.AbstractRisk;
 
 /**
- * An aspect is a set of properties or functions defining a specialized function
- * of the software.
+ * Checks that a risk's domains are contained in the element's domains
  */
-public interface Aspect {
+@SuppressWarnings("rawtypes")
+class RisksHaveDomain implements EntitySpecification<AbstractRisk> {
 
-    DomainTemplate getDomain();
+    @Override
+    public boolean test(AbstractRisk risk) {
+        return risk.getEntity()
+                   .getDomains()
+                   .containsAll(risk.getDomains());
+    }
 
-    void setDomain(DomainTemplate domain);
-
-    Versioned getOwner();
 }

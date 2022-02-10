@@ -19,9 +19,12 @@ package org.veo.core.entity.specification;
 
 import java.util.List;
 
+import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
+import org.veo.core.entity.aspects.Aspect;
 import org.veo.core.entity.code.EntityValidationException;
 
 import lombok.RequiredArgsConstructor;
@@ -35,7 +38,11 @@ public class EntityValidator {
                 new SameClientSpecification(accountProvider.getCurrentUserAccount()
                                                            .getClient())),
                 new TypedValidator<>(Domain.class,
-                        new CompleteEntityTypeDefinitionsSpecification()))
+                        new CompleteEntityTypeDefinitionsSpecification()),
+                new TypedValidator<>(Element.class, new ElementCustomAspectsHaveDomain()),
+                new TypedValidator<>(Element.class, new ElementBelongsOnlyToClientDomains()),
+                new TypedValidator<>(Aspect.class, new AspectsHaveOwnerDomain()),
+                new TypedValidator<>(AbstractRisk.class, new RisksHaveDomain()))
             .forEach(v -> v.validateIfApplicable(entity));
     }
 

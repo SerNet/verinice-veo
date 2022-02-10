@@ -18,11 +18,13 @@
 package org.veo.core.entity
 
 import org.veo.core.entity.code.EntityValidationException
+import org.veo.core.entity.exception.ModelConsistencyException
 import org.veo.core.entity.specification.EntityValidator
 import org.veo.test.VeoSpec
 
 class EntityValidatorSpec extends VeoSpec {
     private def client = newClient()
+    private def domain = newDomain(client)
     private def otherClient = newClient()
     private def accountProvider = Mock(AccountProvider) {
         currentUserAccount >> Mock(Account) {
@@ -35,7 +37,9 @@ class EntityValidatorSpec extends VeoSpec {
 
     def "a properly initialized Person instance passes validation"() {
         given : "a valid person"
-        Person person = newPerson(unit)
+        Person person = newPerson(unit) {
+            addToDomains(domain)
+        }
 
         when : "it is validated"
         validator.validate(person)
@@ -57,7 +61,9 @@ class EntityValidatorSpec extends VeoSpec {
 
     def "a properly initialized Asset instance passes validation"() {
         given : "a valid asset"
-        Asset asset = newAsset(unit)
+        Asset asset = newAsset(unit) {
+            addToDomains(domain)
+        }
 
         when : "it is validated"
         validator.validate(asset)
@@ -79,7 +85,9 @@ class EntityValidatorSpec extends VeoSpec {
 
     def "a properly initialized Process instance passes validation"() {
         given : "a valid process"
-        Process process = newProcess(unit)
+        Process process = newProcess(unit) {
+            addToDomains(domain)
+        }
 
         when : "it is validated"
         validator.validate(process)
@@ -101,7 +109,9 @@ class EntityValidatorSpec extends VeoSpec {
 
     def "a properly initialized Document instance passes validation"() {
         given : "a valid document"
-        Document document = newDocument(unit)
+        Document document = newDocument(unit) {
+            addToDomains(domain)
+        }
 
         when : "it is validated"
         validator.validate(document)
@@ -123,7 +133,9 @@ class EntityValidatorSpec extends VeoSpec {
 
     def "a properly initialized Control instance passes validation"() {
         given : "a valid control"
-        Control control = newControl(unit)
+        Control control = newControl(unit) {
+            addToDomains(domain)
+        }
 
         when : "it is validated"
         validator.validate(control)
@@ -184,6 +196,85 @@ class EntityValidatorSpec extends VeoSpec {
 
         when : "it is validated"
         validator.validate(unit)
+
+        then: "the validation is unsuccessful"
+        thrown(EntityValidationException)
+    }
+
+    def "A custom aspect with a wrong domain does not pass validation"() {
+        given : "an entity with a custom aspect in the wrong domain"
+        Domain otherDomain = newDomain(client)
+        Process process = newProcess(unit) {
+            addToDomains(domain)
+        }
+        process.addToCustomAspects( newCustomAspect("a") {
+            addToDomains(otherDomain)
+        })
+
+        when : "it is validated"
+        validator.validate(process)
+
+        then: "the validation is unsuccessful"
+        thrown(EntityValidationException)
+    }
+
+    def "A custom link with a wrong domain does not pass validation"() {
+        given : "an entity with a custom link in the wrong domain"
+        Domain otherDomain = newDomain(client)
+        Process process = newProcess(unit) {
+            addToDomains(domain)
+        }
+        Control control = newControl(unit) {
+            addToDomains(domain)
+        }
+        process.addToLinks( newCustomLink(control, "a") {
+            addToDomains(otherDomain)
+        })
+
+        when : "it is validated"
+        validator.validate(process)
+
+        then: "the validation is unsuccessful"
+        thrown(EntityValidationException)
+    }
+
+    def "A subtype with a wrong domain does not pass validation"() {
+        given : "an entity with a custom link in the wrong domain"
+        Domain otherDomain = newDomain(client)
+        Process process = newProcess(unit) {
+            addToDomains(domain)
+        }
+        process.setSubType(otherDomain, "Foo", "Bar")
+
+        when : "it is validated"
+        validator.validate(process.subTypeAspects.first())
+
+        then: "the validation is unsuccessful"
+        thrown(EntityValidationException)
+    }
+
+    def "A process with a risk in the wrong domain does not pass validation"() {
+        when : "an entity with a custom link in the wrong domain"
+        Domain otherDomain = newDomain(client)
+        Process process = newProcess(unit) {
+            addToDomains(domain)
+        }
+        Scenario scenario = newScenario(unit)
+        process.obtainRisk(scenario, otherDomain)
+
+        then: "the validation is unsuccessful"
+        thrown(ModelConsistencyException)
+    }
+
+    def "a Person with a domain in the wrong client does not pass validation"() {
+        given : "a person for another client"
+        Domain otherDomain = newDomain(otherClient)
+        Person person = newPerson(unit) {
+            addToDomains(otherDomain)
+        }
+
+        when : "it is validated"
+        validator.validate(person)
 
         then: "the validation is unsuccessful"
         thrown(EntityValidationException)
