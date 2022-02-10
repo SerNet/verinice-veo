@@ -114,8 +114,8 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends VeoSpringSpec 
         }
         queryCounts = QueryCountHolder.grandTotal
         then:
-        queryCounts.select == 26
-        queryCounts.insert == 23
+        queryCounts.select == 30
+        queryCounts.insert == 24
     }
 
     Client createClient() {

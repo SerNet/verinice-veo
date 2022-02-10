@@ -351,6 +351,75 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         thrown(NotFoundException)
     }
 
+    @WithUserDetails("user@domain.example")
+    def "retrieve the apply info for processImpactExample and post"() {
+        given: "the created catalogitems"
+        when: "a request is made to the server to create a processImpactExample element"
+        def result = getIncarnationDescriptions(unit,processImpactExample)
+
+        then: "it contains 1 elements to create, processImpactExample"
+        result.parameters.size() == 1
+
+        when: "we create processImpactExample"
+        def postResult = postIncarnationDescriptions(unit,result)
+        then: "1 objects are created"
+        postResult.size() == 1
+
+        when: "we get the created process"
+        def processResult = parseJson(get(postResult[0].targetUri))
+        then: "the process is created and the risk values are set"
+
+        validateNewElementAgainstCatalogItem(processResult, processImpactExample, domain)
+        processResult.owner.displayName == 'Test unit'
+        processResult.domains[domain.id.uuidValue()].riskValues.id.potentialImpacts.C == "2"
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "retrieve the apply info for controlImpactExample and post"() {
+        given: "the created catalogitems"
+        when: "a request is made to the server to create a controlImpactExample element"
+        def result = getIncarnationDescriptions(unit,controlImpactExample)
+
+        then: "it contains 1 elements to create, controlImpactExample"
+        result.parameters.size() == 1
+
+        when: "we create controlImpactExample"
+        def postResult = postIncarnationDescriptions(unit,result)
+        then: "1 objects are created"
+        postResult.size() == 1
+
+        when: "we get the created Control"
+        def controlResult = parseJson(get(postResult[0].targetUri))
+        then: "the control is created and the risk values are set"
+
+        validateNewElementAgainstCatalogItem(controlResult, controlImpactExample, domain)
+        controlResult.owner.displayName == 'Test unit'
+        controlResult.domains[domain.id.uuidValue()].riskValues.id.implementationStatus == 1
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "retrieve the apply info for scenarioProbabilityExample and post"() {
+        given: "the created catalogitems"
+        when: "a request is made to the server to create a scenarioProbabilityExample element"
+        def result = getIncarnationDescriptions(unit,scenarioProbabilityExample)
+
+        then: "it contains 1 elements to create, scenarioProbabilityExample"
+        result.parameters.size() == 1
+
+        when: "we create scenarioProbabilityExample"
+        def postResult = postIncarnationDescriptions(unit,result)
+        then: "1 objects are created"
+        postResult.size() == 1
+
+        when: "we get the created scenario"
+        def scenarioResult = parseJson(get(postResult[0].targetUri))
+        then: "the scenario is created and the risk values are set"
+
+        validateNewElementAgainstCatalogItem(scenarioResult, scenarioProbabilityExample, domain)
+        scenarioResult.owner.displayName == 'Test unit'
+        scenarioResult.domains[domain.id.uuidValue()].riskValues.id.potentialProbability == 3
+    }
+
     private getIncarnationDescriptions(Unit unit, CatalogItem... items) {
         parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${items.collect{it.id.uuidValue()}.join(',')}"))
     }

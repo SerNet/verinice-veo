@@ -28,6 +28,15 @@ import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
+import org.veo.core.entity.risk.CategoryRef
+import org.veo.core.entity.risk.ControlRiskValues
+import org.veo.core.entity.risk.DomainRiskReferenceProvider
+import org.veo.core.entity.risk.ImpactRef
+import org.veo.core.entity.risk.ImplementationStatusRef
+import org.veo.core.entity.risk.PotentialProbabilityImpl
+import org.veo.core.entity.risk.ProbabilityRef
+import org.veo.core.entity.risk.ProcessImpactValues
+import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.persistence.access.CatalogRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
@@ -39,6 +48,8 @@ import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
  * This provides a complete client domain catalog example.
  */
 class CatalogSpec extends VeoMvcSpec {
+
+    static final String RISK_DEF_ID = "id"
     @Autowired
     ClientRepositoryImpl clientRepository
     @Autowired
@@ -67,6 +78,9 @@ class CatalogSpec extends VeoMvcSpec {
     CatalogItem zz1
     CatalogItem zz2
     CatalogItem otherItem
+    CatalogItem processImpactExample
+    CatalogItem controlImpactExample
+    CatalogItem scenarioProbabilityExample
     Client client
     Client secondClient
     Domain domain3
@@ -87,6 +101,7 @@ class CatalogSpec extends VeoMvcSpec {
                 revision = '1'
                 templateVersion = '1.0'
                 domainTemplate = domainTemplate
+                riskDefinitions = [(RISK_DEF_ID): createRiskDefinition(RISK_DEF_ID)]
             }
             catalog = newCatalog(domain) {
                 name= 'a'
@@ -223,6 +238,46 @@ class CatalogSpec extends VeoMvcSpec {
                 ]
             }
 
+            def riskDefinitionRef = new RiskDefinitionRef(RISK_DEF_ID)
+
+            processImpactExample = newCatalogItem(catalog, {
+                newProcess(it) {
+                    name = 'zzzp-impact'
+                    description = "a process example entry"
+                    setImpactValues(domain, [
+                        (riskDefinitionRef) : new ProcessImpactValues().tap{
+                            potentialImpacts = [
+                                (new CategoryRef("C")): new ImpactRef(2)
+                            ]
+                        }
+                    ] as Map )
+                }
+            })
+
+            controlImpactExample = newCatalogItem(catalog, {
+                newControl(it) {
+                    name = 'zzzzc-impact'
+                    description = "a control example entry"
+                    setRiskValues(domain, [
+                        (riskDefinitionRef): new ControlRiskValues().tap {
+                            implementationStatus = new ImplementationStatusRef(1)
+                        }
+                    ] as Map)
+                }
+            })
+
+            scenarioProbabilityExample = newCatalogItem(catalog, {
+                newScenario(it) {
+                    name = 'zzzzszsimpact'
+                    description = "a scenario example entry"
+                    setPotentialProbability(domain, [
+                        (riskDefinitionRef): new PotentialProbabilityImpl().tap {
+                            potentialProbability = new ProbabilityRef(3)
+                        }
+                    ] as Map)
+                }
+            })
+
             domain1 = newDomain (client) {
                 description = "ISO/IEC2"
                 abbreviation = "ISO"
@@ -243,7 +298,7 @@ class CatalogSpec extends VeoMvcSpec {
             domain1 = client.domains.toList().get(1)
             catalog = domain.catalogs.first()
 
-            (item1, item2, item3, item4, item5, item6, item7, zz1, zz2) = catalog.catalogItems.sort{it.element.name}
+            (item1, item2, item3, item4, item5, item6, item7, zz1, zz2, processImpactExample, controlImpactExample, scenarioProbabilityExample) = catalog.catalogItems.sort{it.element.name}
 
             secondClient = newClient() {
                 it.name = "the other"
