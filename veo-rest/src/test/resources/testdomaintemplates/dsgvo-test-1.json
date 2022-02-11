@@ -27,7 +27,6 @@
             },
             "name": "Test process-1",
             "parts": [],
-            "status": "NEW",
             "type": "process"
           },
           "id": "005ed626-1de1-4ff1-bb1a-eb741a64a87c",
