@@ -17,19 +17,25 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
+
+import org.veo.core.entity.Constraints;
 import org.veo.core.entity.riskdefinition.CategoryDefinition;
 
 import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
-@Value
-@Builder
-@Jacksonized
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@EqualsAndHashCode
+@Valid
 public class CategoryRef {
+    public static final int MAX_ID_LENGTH = Constraints.DEFAULT_CONSTANT_MAX_LENGTH;
+
+    @Getter
+    @Size(max = MAX_ID_LENGTH)
     String idRef;
 
     public static CategoryRef from(CategoryDefinition cd) {

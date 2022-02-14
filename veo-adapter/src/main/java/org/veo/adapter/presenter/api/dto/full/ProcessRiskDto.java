@@ -17,6 +17,10 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.full;
 
+import static java.util.stream.Collectors.toMap;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,18 +28,25 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.common.RiskRef;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
+import org.veo.adapter.presenter.api.dto.RiskDomainAssociationDto;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -46,10 +57,28 @@ import lombok.Singular;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
+
 public class ProcessRiskDto extends AbstractRiskDto {
 
     @Valid
     private IdRef<Process> process;
+
+    @Valid
+    @JsonIgnore
+    private Map<String, RiskDomainAssociationDto> domainsWithRiskValues;
+
+    @JsonGetter(value = "domains")
+    @Schema(description = "Key is a domain-ID, values are the reference to the "
+            + "domain and its available risk definitions")
+    public Map<String, RiskDomainAssociationDto> getDomains() {
+        return domainsWithRiskValues;
+    }
+
+    @JsonSetter(value = "domains")
+    public void setDomains(Map<String, RiskDomainAssociationDto> domainMap) {
+        super.setDomains(domainMap);
+        this.domainsWithRiskValues = domainMap;
+    }
 
     @Builder
     public ProcessRiskDto(@Valid @Singular Set<IdRef<Domain>> domains,
@@ -57,7 +86,8 @@ public class ProcessRiskDto extends AbstractRiskDto {
             @Valid IdRef<Control> mitigatedBy, @Valid IdRef<Person> riskOwner,
             @Pattern(regexp = Patterns.DATETIME) String createdAt, String createdBy,
             @Pattern(regexp = Patterns.DATETIME) String updatedAt, String updatedBy,
-            @Valid IdRef<Process> process, RiskRef selfRef, long version, String designator) {
+            @Valid IdRef<Process> process, RiskRef selfRef, long version, String designator,
+            @Valid Map<String, RiskDomainAssociationDto> domainsWithRiskValues) {
         super(designator, domains, scenario, mitigatedBy, riskOwner);
         this.process = process;
         setSelfRef(selfRef);
@@ -66,6 +96,7 @@ public class ProcessRiskDto extends AbstractRiskDto {
         setUpdatedAt(updatedAt);
         setUpdatedBy(updatedBy);
         setVersion(version);
+        setDomainsWithRiskValues(domainsWithRiskValues);
     }
 
     public static ProcessRiskDto from(@Valid ProcessRisk risk,
@@ -83,11 +114,33 @@ public class ProcessRiskDto extends AbstractRiskDto {
                                             .toString())
                              .updatedBy(risk.getUpdatedBy())
                              .version(risk.getVersion())
-                             .domains(risk.getDomains()
-                                          .stream()
-                                          .map(o -> IdRef.from(o, referenceAssembler))
-                                          .collect(Collectors.toSet()))
+                             .domains(toDomainReferences(risk, referenceAssembler))
                              .selfRef(new RiskRef(referenceAssembler, risk))
+                             .domainsWithRiskValues(toDomainRiskDefinitions(risk,
+                                                                            referenceAssembler))
                              .build();
+    }
+
+    private static Set<IdRef<Domain>> toDomainReferences(ProcessRisk risk,
+            ReferenceAssembler referenceAssembler) {
+        return risk.getDomains()
+                   .stream()
+                   .map(o -> IdRef.from(o, referenceAssembler))
+                   .collect(Collectors.toSet());
+    }
+
+    private static Map<String, RiskDomainAssociationDto> toDomainRiskDefinitions(ProcessRisk risk,
+            ReferenceAssembler referenceAssembler) {
+        HashMap<String, RiskDomainAssociationDto> result = new HashMap<>();
+        risk.getDomains()
+            .forEach(d -> result.put(d.getIdAsString(), new RiskDomainAssociationDto(
+                    IdRef.from(d, referenceAssembler), valuesGroupedByRiskDefinition(risk))));
+        return result;
+    }
+
+    private static Map<String, RiskValuesDto> valuesGroupedByRiskDefinition(ProcessRisk risk) {
+        return risk.getRiskDefinitions()
+                   .stream()
+                   .collect(toMap(RiskDefinitionRef::getIdRef, rd -> RiskValuesDto.from(risk, rd)));
     }
 }

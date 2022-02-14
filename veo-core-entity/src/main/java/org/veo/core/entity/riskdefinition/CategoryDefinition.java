@@ -19,6 +19,7 @@ package org.veo.core.entity.riskdefinition;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -112,5 +113,11 @@ public class CategoryDefinition extends DimensionDefinition {
                                    "Value matrix does not conform to probability.");
                        }
                    });
+    }
+
+    public Optional<CategoryLevel> getLevel(int ordinalValue) {
+        return potentialImpacts.stream()
+                               .filter(level -> level.getOrdinalValue() == ordinalValue)
+                               .findFirst();
     }
 }

@@ -39,6 +39,7 @@ import org.veo.core.entity.Process
 import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
+import org.veo.rest.common.marshalling.ReferenceAssemblerImpl
 import org.veo.rest.configuration.TypeExtractor
 
 import spock.lang.Specification

@@ -105,11 +105,11 @@ class ProcessRiskAspectSpec extends VeoSpec {
 
         where:
         potProb   | specProb   | effProb   | potC   | specC   | effC
-        '0'       | null       | '0'       | '0'    | null    | '0'
-        null      | '1'        | '1'       | null   | '2'     | '2'
-        '0'       | '1'        | '1'       | '0'    | '1'     | '1'
-        '3'       | '2'        | '2'       | '0'    | '1'     | '1'
-        '2'       | '2'        | '2'       | '3'    | '3'     | '3'
+        0         | null       | 0         | 0      | null    | 0
+        null      | 1          | 1         | null   | 2       | 2
+        0         | 1          | 1         | 0      | 1       | 1
+        3         | 2          | 2         | 0      | 1       | 1
+        2         | 2          | 2         | 3      | 3       | 3
     }
 
     private createRisk(Process process, Domain domain) {

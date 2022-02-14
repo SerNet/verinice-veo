@@ -17,8 +17,14 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
+import javax.validation.Valid;
+import javax.validation.constraints.PositiveOrZero;
+
+import org.veo.core.entity.riskdefinition.CategoryLevel;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
@@ -26,7 +32,14 @@ import lombok.Getter;
  * some type safety.
  */
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
+@EqualsAndHashCode
+@Valid
 public class ImplementationStatusRef {
     @Getter
+    @PositiveOrZero
     private int ordinalValue;
+
+    public static ImplementationStatusRef from(CategoryLevel cl) {
+        return new ImplementationStatusRef(cl.getOrdinalValue());
+    }
 }

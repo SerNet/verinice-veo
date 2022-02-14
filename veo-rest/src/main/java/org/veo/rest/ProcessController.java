@@ -79,6 +79,7 @@ import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
+import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
@@ -88,7 +89,6 @@ import org.veo.core.entity.Process;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
-import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.process.CreateProcessRiskUseCase;
@@ -220,16 +220,15 @@ public class ProcessController extends AbstractElementController<Process, FullPr
             @PathVariable String id,
             @Valid @RequestBody @JsonSchemaValidation(Process.SINGULAR_TERM) FullProcessDto processDto) {
         processDto.applyResourceId(id);
-        return useCaseInteractor.execute(updateProcessUseCase, new Supplier<InputData<Process>>() {
-            @Override
-            public InputData<Process> get() {
-                Client client = getClient(user);
-                IdRefResolver idRefResolver = createIdRefResolver(client);
-                return new ModifyElementUseCase.InputData<>(
-                        dtoToEntityTransformer.transformDto2Process(processDto, idRefResolver),
-                        client, eTag, user.getUsername());
-            }
-        }
+        return useCaseInteractor.execute(updateProcessUseCase,
+                                         (Supplier<InputData<Process>>) () -> {
+                                             Client client = getClient(user);
+                                             IdRefResolver idRefResolver = createIdRefResolver(client);
+                                             return new InputData<>(
+                                                     dtoToEntityTransformer.transformDto2Process(processDto,
+                                                                                                 idRefResolver),
+                                                     client, eTag, user.getUsername());
+                                         }
 
                                          ,
                                          output -> entityToDtoTransformer.transformProcess2Dto(output.getEntity()));
@@ -274,7 +273,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
             @RequestParam(value = SORT_ORDER_PARAM,
                           required = false,
                           defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
-        Client client = null;
+        Client client;
         try {
             client = getAuthenticatedClient(auth);
         } catch (NoSuchElementException e) {
@@ -374,10 +373,17 @@ public class ProcessController extends AbstractElementController<Process, FullPr
     public CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(ApplicationUser user,
             @Valid @NotNull ProcessRiskDto dto, String processId) {
 
-        var input = new CreateProcessRiskUseCase.InputData(getClient(user.getClientId()),
-                Key.uuidFrom(processId), urlAssembler.toKey(dto.getScenario()),
-                urlAssembler.toKeys(dto.getDomains()), urlAssembler.toKey(dto.getMitigation()),
-                urlAssembler.toKey(dto.getRiskOwner()));
+        //@formatter:off
+        var input = new CreateProcessRiskUseCase.InputData(
+                getClient(user.getClientId()),
+                Key.uuidFrom(processId),
+                urlAssembler.toKey(dto.getScenario()),
+                urlAssembler.toKeys(dto.getDomainReferences()),
+                urlAssembler.toKey(dto.getMitigation()),
+                urlAssembler.toKey(dto.getRiskOwner()),
+                CategorizedRiskValueMapper.map(dto.getDomainsWithRiskValues())
+        );
+        //@formatter:on
 
         return useCaseInteractor.execute(createProcessRiskUseCase, input, output -> {
             var url = String.format("%s/%s/%s", URL_BASE_PATH, output.getRisk()
@@ -411,10 +417,18 @@ public class ProcessController extends AbstractElementController<Process, FullPr
     public @Valid CompletableFuture<ResponseEntity<ProcessRiskDto>> updateRisk(ApplicationUser user,
             String processId, String scenarioId, @Valid @NotNull ProcessRiskDto dto, String eTag) {
 
-        var input = new UpdateProcessRiskUseCase.InputData(getClient(user.getClientId()),
-                Key.uuidFrom(processId), urlAssembler.toKey(dto.getScenario()),
-                urlAssembler.toKeys(dto.getDomains()), urlAssembler.toKey(dto.getMitigation()),
-                urlAssembler.toKey(dto.getRiskOwner()), eTag);
+        //@formatter:off
+        var input = new UpdateProcessRiskUseCase.InputData(
+                getClient(user.getClientId()),
+                Key.uuidFrom(processId),
+                urlAssembler.toKey(dto.getScenario()),
+                urlAssembler.toKeys(dto.getDomainReferences()),
+                urlAssembler.toKey(dto.getMitigation()),
+                urlAssembler.toKey(dto.getRiskOwner()),
+                eTag,
+                CategorizedRiskValueMapper.map(dto.getDomainsWithRiskValues())
+                );
+        //@formatter:on
 
         // update risk and return saved risk with updated ETag, timestamps etc.:
         return useCaseInteractor.execute(updateProcessRiskUseCase, input, output -> null)

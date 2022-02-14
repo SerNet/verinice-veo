@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer;
 
-import static org.veo.adapter.presenter.api.io.mapper.DomainRiskReferenceProvider.referencesForDomain;
+import static org.veo.core.entity.risk.DomainRiskReferenceProvider.referencesForDomain;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -39,7 +39,6 @@ import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
 import org.veo.adapter.presenter.api.dto.ControlDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ControlRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
-import org.veo.adapter.presenter.api.io.mapper.DomainRiskReferenceProvider;
 import org.veo.adapter.service.domaintemplate.SyntheticIdRef;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
@@ -54,6 +53,7 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.risk.ControlRiskValues;
+import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
 /**

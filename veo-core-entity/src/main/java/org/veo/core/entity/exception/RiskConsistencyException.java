@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Alexander Koderman
+ * Copyright (C) 2020  Alexander Koderman.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,25 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.entity.jpa;
+package org.veo.core.entity.exception;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+import org.veo.core.entity.DomainException;
 
-import org.veo.core.entity.risk.ImpactRef;
-
-@Converter(autoApply = true)
-public class ImpactRefConverter implements AttributeConverter<ImpactRef, String> {
-
-    @Override
-    public String convertToDatabaseColumn(ImpactRef attribute) {
-        return attribute == null ? null : attribute.getIdRef();
-    }
-
-    @Override
-    public ImpactRef convertToEntityAttribute(String dbData) {
-        return dbData == null ? null
-                : RiskReferenceFactory.getInstance()
-                                      .createImpactRef(dbData);
+/**
+ * Runtime exception that is thrown when a reference could not be resolved to a
+ * risk value valid in the available domains/risk-definitions.
+ */
+public class RiskConsistencyException extends DomainException {
+    public RiskConsistencyException(String message) {
+        super(message);
     }
 }

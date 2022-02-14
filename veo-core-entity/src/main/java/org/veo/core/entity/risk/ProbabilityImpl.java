@@ -17,12 +17,17 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
+
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 
 @Data
+@Valid
 public class ProbabilityImpl implements Probability {
+
     private ProbabilityRef potentialProbability;
 
     private ProbabilityRef specificProbability;
@@ -30,6 +35,7 @@ public class ProbabilityImpl implements Probability {
     @Setter(AccessLevel.NONE)
     private ProbabilityRef effectiveProbability;
 
+    @Size(max = Probability.EXPLANATION_MAX_LENGTH)
     private String specificProbabilityExplanation;
 
     public void setPotentialProbability(ProbabilityRef potentialProbability) {

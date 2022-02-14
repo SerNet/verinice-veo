@@ -15,18 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.io.mapper;
+package org.veo.core.entity.risk;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.risk.CategoryRef;
-import org.veo.core.entity.risk.ImpactRef;
-import org.veo.core.entity.risk.ImplementationStatusRef;
-import org.veo.core.entity.risk.ProbabilityRef;
-import org.veo.core.entity.risk.ReferenceProvider;
-import org.veo.core.entity.risk.RiskDefinitionRef;
-import org.veo.core.entity.risk.RiskRef;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -43,29 +37,40 @@ public class DomainRiskReferenceProvider extends ReferenceProvider {
     }
 
     @Override
-    public Optional<RiskRef> getRiskRef(String riskDefinitionId, String category, String riskId) {
-        // TODO VEO-1104 ensure valid riskdefinition constraints
-        return Optional.ofNullable(createRiskRef(riskId));
+    public Optional<RiskRef> getRiskRef(String riskDefinitionId, BigDecimal ordinalValue) {
+        return domain.getRiskDefinition(riskDefinitionId)
+                     .orElseThrow()
+                     .getRiskValue(ordinalValue.intValue())
+                     .map(RiskRef::from);
     }
 
     @Override
     public Optional<ProbabilityRef> getProbabilityRef(String riskDefinitionId,
-            String probabilityId) {
-        // TODO VEO-1104 ensure valid riskdefinition constraints
-        return Optional.ofNullable(createProbabilityRef(probabilityId));
+            BigDecimal probabilityId) {
+        return domain.getRiskDefinition(riskDefinitionId)
+                     .orElseThrow()
+                     .getProbability()
+                     .getLevel(probabilityId.intValue())
+                     .map(ProbabilityRef::from);
     }
 
     @Override
     public Optional<ImpactRef> getImpactRef(String riskDefinitionId, String category,
-            String probabilityId) {
-        // TODO VEO-1104 ensure valid riskdefinition constraints
-        return Optional.ofNullable(createImpactRef(probabilityId));
+            BigDecimal impactId) {
+        return domain.getRiskDefinition(riskDefinitionId)
+                     .orElseThrow()
+                     .getCategory(category)
+                     .orElseThrow()
+                     .getLevel(impactId.intValue())
+                     .map(ImpactRef::from);
     }
 
     @Override
     public Optional<CategoryRef> getCategoryRef(String riskDefinitionId, String categoryId) {
-        // TODO VEO-1104 ensure valid riskdefinition constraints
-        return Optional.ofNullable(createCategoryRef(categoryId));
+        return domain.getRiskDefinition(riskDefinitionId)
+                     .orElseThrow()
+                     .getCategory(categoryId)
+                     .map(CategoryRef::from);
     }
 
     @Override
@@ -74,7 +79,7 @@ public class DomainRiskReferenceProvider extends ReferenceProvider {
         return domain.getRiskDefinition(riskDefinitionId)
                      .flatMap(rd -> rd.getImplementationStateDefinition()
                                       .getLevel(ordinalValue))
-                     .map(level -> createImplementationStatusRef(level.getOrdinalValue()));
+                     .map(ImplementationStatusRef::from);
     }
 
     @Override

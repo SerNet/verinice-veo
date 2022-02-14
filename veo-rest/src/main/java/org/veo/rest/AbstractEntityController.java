@@ -48,8 +48,8 @@ import org.veo.core.entity.Versioned;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.UseCaseInteractor;
-import org.veo.rest.common.ReferenceAssemblerImpl;
 import org.veo.rest.common.SearchResponse;
+import org.veo.rest.common.marshalling.ReferenceAssemblerImpl;
 import org.veo.rest.security.ApplicationUser;
 import org.veo.service.EtagService;
 

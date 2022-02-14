@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
+
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +30,7 @@ import lombok.Setter;
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
+@Valid
 public class ImpactImpl implements Impact {
 
     @Setter(AccessLevel.NONE)
@@ -40,6 +44,7 @@ public class ImpactImpl implements Impact {
     @Setter(AccessLevel.NONE)
     private ImpactRef effectiveImpact;
 
+    @Size(max = Impact.EXPLANATION_MAX_LENGTH)
     private String specificImpactExplanation;
 
     public void setPotentialImpact(ImpactRef potentialImpact) {

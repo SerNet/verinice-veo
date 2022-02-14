@@ -17,16 +17,18 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
+import java.math.BigDecimal;
+
 public abstract class ReferenceFactory {
-    protected RiskRef createRiskRef(String id) {
+    protected RiskRef createRiskRef(BigDecimal id) {
         return id == null ? null : new RiskRef(id);
     }
 
-    protected ProbabilityRef createProbabilityRef(String id) {
+    protected ProbabilityRef createProbabilityRef(BigDecimal id) {
         return id == null ? null : new ProbabilityRef(id);
     }
 
-    protected ImpactRef createImpactRef(String id) {
+    protected ImpactRef createImpactRef(BigDecimal id) {
         return id == null ? null : new ImpactRef(id);
     }
 

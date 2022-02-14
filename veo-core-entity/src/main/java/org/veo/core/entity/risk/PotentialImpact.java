@@ -15,25 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.entity.jpa;
+package org.veo.core.entity.risk;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+/**
+ * The potential impact on one of the information security properties of an
+ * asset (or a process/scope).
+ * <p>
+ * This is taken from the risk-affected entity (i.e. process) and does not yet
+ * take individual scenarios into account. It is solely based on evaluation the
+ * data processed by/on the process/the asset.
+ */
+public interface PotentialImpact {
 
-import org.veo.core.entity.risk.ProbabilityRef;
+    ImpactRef getPotentialImpact();
 
-@Converter(autoApply = true)
-public class ProbabilityRefConverter implements AttributeConverter<ProbabilityRef, String> {
+    void setPotentialImpact(ImpactRef potential);
 
-    @Override
-    public String convertToDatabaseColumn(ProbabilityRef attribute) {
-        return attribute == null ? null : attribute.getIdRef();
-    }
-
-    @Override
-    public ProbabilityRef convertToEntityAttribute(String dbData) {
-        return dbData == null ? null
-                : RiskReferenceFactory.getInstance()
-                                      .createProbabilityRef(dbData);
-    }
+    CategoryRef getCategory();
 }

@@ -662,7 +662,9 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def json = parseJson(post("/processes/"+process.id.uuidValue()+"/risks", [
             scenario: [ targetUri: '/scenarios/'+ scenario.id.uuidValue() ],
             domains: [
-                [targetUri: '/domains/'+ dsgvoDomain.id.uuidValue() ]
+                (dsgvoDomain.getIdAsString()) : [
+                    reference: [targetUri: '/domains/'+ dsgvoDomain.id.uuidValue() ]
+                ]
             ]
         ] as Map))
 
@@ -693,7 +695,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             it.process.targetUri ==~ /.*${process.id.uuidValue()}.*/
             it.scenario.targetUri ==~ /.*${scenario.id.uuidValue()}.*/
             it.scenario.targetUri ==~ /.*${postResult.resourceId}.*/
-            it.domains.first().displayName == this.dsgvoDomain.displayName
+            it.domains.values().first().reference.displayName == this.dsgvoDomain.displayName
             it._self ==~ /.*processes\/${process.id.uuidValue()}\/risks\/${scenario.id.uuidValue()}.*/
             Instant.parse(it.createdAt) > beforeCreation
             Instant.parse(it.updatedAt) > beforeCreation
@@ -719,13 +721,17 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         post("/processes/"+process.id.uuidValue()+"/risks", [
             scenario: [ targetUri: '/scenarios/'+ scenario2.id.uuidValue() ],
             domains: [
-                [targetUri: '/domains/'+ dsgvoDomain.id.uuidValue() ]
+                (dsgvoDomain.idAsString) : [
+                    reference: [targetUri: '/domains/'+ dsgvoDomain.id.uuidValue() ]
+                ]
             ]
         ] as Map)
         post("/processes/"+process.id.uuidValue()+"/risks", [
             scenario: [ targetUri: '/scenarios/'+ scenario3.id.uuidValue() ],
             domains: [
-                [targetUri: '/domains/'+ dsgvoDomain.id.uuidValue() ]
+                (dsgvoDomain.idAsString) : [
+                    reference: [targetUri: '/domains/'+ dsgvoDomain.id.uuidValue() ]
+                ]
             ]
         ] as Map)
 
@@ -808,7 +814,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             it.riskOwner.targetUri ==~ /.*${person.id.uuidValue()}.*/
             it.process.targetUri ==~ /.*${process.id.uuidValue()}.*/
             it.scenario.targetUri ==~ /.*${scenario.id.uuidValue()}.*/
-            it.domains.first().displayName == this.dsgvoDomain.displayName
+            it.domains.values().first().reference.displayName == this.dsgvoDomain.displayName
             it._self ==~ /.*processes\/${process.id.uuidValue()}\/risks\/${scenario.id.uuidValue()}.*/
             Instant.parse(it.createdAt) > beforeCreation
             Instant.parse(it.createdAt) < beforeUpdate
@@ -866,7 +872,9 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
                 post("/processes/" + process.id.uuidValue() + "/risks", [
                     scenario: [targetUri: '/scenarios/' + scenario.id.uuidValue()],
                     domains : [
-                        [targetUri: '/domains/' + dsgvoDomain.id.uuidValue()]
+                        (dsgvoDomain.getIdAsString()) : [
+                            reference: [targetUri: '/domains/' + dsgvoDomain.id.uuidValue()]
+                        ]
                     ]
                 ]))
         return [

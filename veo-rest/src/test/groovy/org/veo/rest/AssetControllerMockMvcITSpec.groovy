@@ -668,11 +668,13 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a new risk can be created successfully"
+        def domainId = dsgvoDomain.getIdAsString()
         def json = parseJson(post("/assets/"+asset.id.uuidValue()+"/risks", [
             scenario: [ targetUri: 'http://localhost/scenarios/'+ scenario.id.uuidValue() ],
             domains: [
-                [targetUri: 'http://localhost/domains/'+ dsgvoDomain
-                    .id.uuidValue() ]
+                (domainId) : [
+                    reference: [ targetUri: 'http://localhost/domains/'+ domainId]
+                ]
             ]
         ]))
 
@@ -703,7 +705,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             it.asset.targetUri ==~ /.*${asset.id.uuidValue()}.*/
             it.scenario.targetUri ==~ /.*${scenario.id.uuidValue()}.*/
             it.scenario.targetUri ==~ /.*${postResult.resourceId}.*/
-            it.domains.first().displayName == this.dsgvoDomain
+            it.domains.values().first().reference.displayName == this.dsgvoDomain
                     .displayName
             it._self ==~ /.*assets\/${asset.id.uuidValue()}\/risks\/${scenario.id.uuidValue()}.*/
             Instant.parse(it.createdAt) > beforeCreation
@@ -730,15 +732,20 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         post("/assets/"+asset.id.uuidValue()+"/risks", [
             scenario: [ targetUri: 'http://localhost/scenarios/'+ scenario2.id.uuidValue() ],
             domains: [
-                [targetUri: 'http://localhost/domains/'+ dsgvoDomain
-                    .id.uuidValue() ]
+                (dsgvoDomain.getIdAsString()) : [
+                    reference: [targetUri: 'http://localhost/domains/'+ dsgvoDomain
+                        .id.uuidValue() ]
+                ]
+
             ]
         ] as Map)
         post("/assets/"+asset.id.uuidValue()+"/risks", [
             scenario: [ targetUri: 'http://localhost/scenarios/'+ scenario3.id.uuidValue() ],
             domains: [
-                [targetUri: 'http://localhost/domains/'+ dsgvoDomain
-                    .id.uuidValue() ]
+                (dsgvoDomain.getIdAsString()) : [
+                    reference: [targetUri: 'http://localhost/domains/'+ dsgvoDomain
+                        .id.uuidValue() ]
+                ]
             ]
         ] as Map)
 
@@ -821,7 +828,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             it.riskOwner.targetUri ==~ /.*${person.id.uuidValue()}.*/
             it.asset.targetUri ==~ /.*${asset.id.uuidValue()}.*/
             it.scenario.targetUri ==~ /.*${scenario.id.uuidValue()}.*/
-            it.domains.first().displayName == this.dsgvoDomain
+            it.domains.values().first().reference.displayName == this.dsgvoDomain
                     .displayName
             it._self ==~ /.*assets\/${asset.id.uuidValue()}\/risks\/${scenario.id.uuidValue()}.*/
             Instant.parse(it.createdAt) > beforeCreation
@@ -880,8 +887,10 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 post("/assets/" + asset.id.uuidValue() + "/risks", [
                     scenario: [targetUri: 'http://localhost/scenarios/' + scenario.id.uuidValue()],
                     domains : [
-                        [targetUri: 'http://localhost/domains/' + dsgvoDomain
-                            .id.uuidValue()]
+                        (dsgvoDomain.getIdAsString()): [
+                            reference: [targetUri: 'http://localhost/domains/' + dsgvoDomain
+                                .id.uuidValue()]
+                        ]
                     ]
                 ]))
         return [asset, scenario, postResult]

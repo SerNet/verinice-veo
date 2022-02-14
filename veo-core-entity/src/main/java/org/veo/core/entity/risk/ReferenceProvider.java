@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 /**
@@ -31,14 +32,13 @@ public abstract class ReferenceProvider extends ReferenceFactory {
      * Returns a valid risk reference. Implementations must respect a valid risk
      * definition for the context.
      */
-    public abstract Optional<RiskRef> getRiskRef(String riskDefinitionId, String category,
-            String riskId);
+    public abstract Optional<RiskRef> getRiskRef(String riskDefinitionId, BigDecimal riskId);
 
     public abstract Optional<ProbabilityRef> getProbabilityRef(String riskDefinitionId,
-            String probabilityId);
+            BigDecimal probabilityId);
 
     public abstract Optional<ImpactRef> getImpactRef(String riskDefinitionId, String category,
-            String probabilityId);
+            BigDecimal probabilityId);
 
     public abstract Optional<CategoryRef> getCategoryRef(String riskDefinitionId,
             String categoryId);
@@ -47,5 +47,4 @@ public abstract class ReferenceProvider extends ReferenceFactory {
             String riskDefinitionId, int ordinalValue);
 
     public abstract Optional<RiskDefinitionRef> getRiskDefinitionRef(String riskDefinitionId);
-
 }

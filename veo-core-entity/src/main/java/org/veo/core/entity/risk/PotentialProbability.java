@@ -15,25 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.entity.jpa;
+package org.veo.core.entity.risk;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+/**
+ * The default probability defined for the scenario.
+ */
+public interface PotentialProbability {
 
-import org.veo.core.entity.risk.CategoryRef;
+    ProbabilityRef getPotentialProbability();
 
-@Converter(autoApply = true)
-public class CategoryRefConverter implements AttributeConverter<CategoryRef, String> {
-
-    @Override
-    public String convertToDatabaseColumn(CategoryRef attribute) {
-        return attribute == null ? null : attribute.getIdRef();
-    }
-
-    @Override
-    public CategoryRef convertToEntityAttribute(String dbData) {
-        return dbData == null ? null
-                : RiskReferenceFactory.getInstance()
-                                      .createCategoryRef(dbData);
-    }
+    void setPotentialProbability(ProbabilityRef potential);
 }

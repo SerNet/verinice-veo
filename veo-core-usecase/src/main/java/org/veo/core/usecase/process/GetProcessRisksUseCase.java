@@ -19,11 +19,30 @@ package org.veo.core.usecase.process;
 
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
+import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.risk.GetRisksUseCase;
 
 public class GetProcessRisksUseCase extends GetRisksUseCase<Process, ProcessRisk> {
-    public GetProcessRisksUseCase(RepositoryProvider repositoryProvider) {
+
+    ProcessRepository processRepository;
+
+    public GetProcessRisksUseCase(RepositoryProvider repositoryProvider,
+            ProcessRepository processRepository) {
         super(repositoryProvider, Process.class);
+        this.processRepository = processRepository;
+    }
+
+    @Override
+    public OutputData<ProcessRisk> execute(InputData input) {
+        var process = processRepository.findByIdWithRiskValues(input.getRiskAffectedRef())
+                                       .orElseThrow(() -> new NotFoundException(
+                                               "Could not find risks for process %s",
+                                               input.getRiskAffectedRef()
+                                                    .uuidValue()));
+
+        process.checkSameClient(input.getAuthenticatedClient());
+        return new OutputData<>(process.getRisks());
     }
 }

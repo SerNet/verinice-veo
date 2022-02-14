@@ -191,7 +191,9 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         post("/assets/$assetId/risks", [
             scenario: [targetUri: "http://localhost/scenarios/$scenarioId"],
             domains : [
-                [targetUri: "http://localhost/domains/${domain.id.uuidValue()}"]
+                (domain.getIdAsString()) : [
+                    reference: [targetUri: "http://localhost/domains/${domain.id.uuidValue()}"]
+                ]
             ]
         ])
 
@@ -213,7 +215,9 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             mitigation: [targetUri:  "/controls/$controlId"],
             scenario: [targetUri: "http://localhost/scenarios/$scenarioId"],
             domains : [
-                [targetUri: "http://localhost/domains/${domain.id.uuidValue()}"]
+                (domain.getIdAsString()) : [
+                    reference: [targetUri: "http://localhost/domains/${domain.id.uuidValue()}"]
+                ]
             ]
         ], ["If-Match": riskETag])
 
@@ -251,7 +255,9 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         post("/processes/$processId/risks", [
             scenario: [targetUri: "http://localhost/scenarios/$scenarioId"],
             domains : [
-                [targetUri: "http://localhost/domains/${domain.id.uuidValue()}"]
+                (domain.getIdAsString()) : [
+                    reference: [targetUri: "http://localhost/domains/${domain.id.uuidValue()}"]
+                ]
             ]
         ])
 
@@ -273,7 +279,9 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             mitigation: [targetUri:  "/controls/$controlId"],
             scenario: [targetUri: "http://localhost/scenarios/$scenarioId"],
             domains : [
-                [targetUri: "http://localhost/domains/${domain.id.uuidValue()}"]
+                (domain.getIdAsString()) : [
+                    reference: [targetUri: "http://localhost/domains/${domain.id.uuidValue()}"]
+                ]
             ]
         ], ["If-Match": riskETag])
 

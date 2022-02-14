@@ -41,6 +41,7 @@ import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -60,7 +61,8 @@ public interface ProcessRiskResource {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                          description = "Risks returned",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)) })
+                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            array = @ArraySchema(schema = @Schema(implementation = ProcessRiskDto.class)))) })
     @Valid
     CompletableFuture<List<ProcessRiskDto>> getRisks(@Parameter(hidden = true) ApplicationUser user,
             @PathVariable String processId);

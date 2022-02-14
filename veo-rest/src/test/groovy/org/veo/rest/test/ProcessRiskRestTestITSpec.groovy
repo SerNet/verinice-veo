@@ -52,7 +52,9 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
         when: "creating the risk"
         post("/processes/$processId/risks", [
             domains: [
-                [targetUri: "http://localhost/domains/$domainId"]
+                (domainId) : [
+                    reference: [targetUri: "http://localhost/domains/$domainId"]
+                ]
             ],
             scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
         ])

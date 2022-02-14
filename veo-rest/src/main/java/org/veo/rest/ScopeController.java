@@ -192,7 +192,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
             @RequestParam(value = SORT_ORDER_PARAM,
                           required = false,
                           defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
-        Client client = null;
+        Client client;
         try {
             client = getAuthenticatedClient(auth);
         } catch (NoSuchElementException e) {
@@ -418,8 +418,9 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
 
         var input = new CreateScopeRiskUseCase.InputData(getClient(user.getClientId()),
                 Key.uuidFrom(scopeId), urlAssembler.toKey(dto.getScenario()),
-                urlAssembler.toKeys(dto.getDomains()), urlAssembler.toKey(dto.getMitigation()),
-                urlAssembler.toKey(dto.getRiskOwner()));
+                urlAssembler.toKeys(dto.getDomainReferences()),
+                urlAssembler.toKey(dto.getMitigation()), urlAssembler.toKey(dto.getRiskOwner()),
+                null);
 
         return useCaseInteractor.execute(createScopeRiskUseCase, input, output -> {
             var url = String.format("%s/%s/%s", URL_BASE_PATH, output.getRisk()
@@ -455,8 +456,9 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
 
         var input = new UpdateScopeRiskUseCase.InputData(getClient(user.getClientId()),
                 Key.uuidFrom(scopeId), urlAssembler.toKey(dto.getScenario()),
-                urlAssembler.toKeys(dto.getDomains()), urlAssembler.toKey(dto.getMitigation()),
-                urlAssembler.toKey(dto.getRiskOwner()), eTag);
+                urlAssembler.toKeys(dto.getDomainReferences()),
+                urlAssembler.toKey(dto.getMitigation()), urlAssembler.toKey(dto.getRiskOwner()),
+                eTag, null);
 
         // update risk and return saved risk with updated ETag, timestamps etc.:
         return useCaseInteractor.execute(updateScopeRiskUseCase, input, output -> null)

@@ -110,7 +110,9 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
         post("/assets/$assetId/risks", [
             domains: [
-                [ targetUri: "http://localhost/domains/${domain.id.uuidValue()}"]
+                (domain.getIdAsString()): [
+                    reference: [ targetUri: "http://localhost/domains/${domain.id.uuidValue()}"]
+                ]
             ],
             scenario: [ targetUri: "/scenarios/$scenarioId"]
         ])
@@ -131,7 +133,9 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
         post("/processes/$processId/risks", [
             domains: [
-                [ targetUri: "http://localhost/domains/${domain.id.uuidValue()}"]
+                (domain.getIdAsString()) : [
+                    reference: [ targetUri: "http://localhost/domains/${domain.id.uuidValue()}"]
+                ]
             ],
             scenario: [ targetUri: "http://localhost/scenarios/$scenarioId"]
         ])

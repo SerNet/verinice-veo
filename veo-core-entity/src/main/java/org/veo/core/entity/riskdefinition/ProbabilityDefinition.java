@@ -19,6 +19,7 @@ package org.veo.core.entity.riskdefinition;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -43,4 +44,10 @@ public class ProbabilityDefinition extends DimensionDefinition {
 
     @EqualsAndHashCode.Include
     private List<ProbabilityLevel> levels = new ArrayList<>();
+
+    public Optional<ProbabilityLevel> getLevel(int ordinalValue) {
+        return levels.stream()
+                     .filter(l -> l.getOrdinalValue() == ordinalValue)
+                     .findFirst();
+    }
 }

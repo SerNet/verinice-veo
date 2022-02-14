@@ -45,8 +45,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RiskDefinition {
+
+    public static final int MAX_ID_SIZE = Constraints.DEFAULT_CONSTANT_MAX_LENGTH;
+
     @NotNull(message = "An id must be present.")
-    @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
+    @Size(max = MAX_ID_SIZE)
     @ToString.Include
     private String id;
     private ProbabilityDefinition probability;
@@ -117,5 +120,18 @@ public class RiskDefinition {
                             .count()) {
             throw new IllegalArgumentException("Categories not unique.");
         }
+    }
+
+    public Optional<RiskValue> getRiskValue(String symbolicRiskId) {
+        return riskValues.stream()
+                         .filter(rv -> rv.getSymbolicRisk()
+                                         .equals(symbolicRiskId))
+                         .findFirst();
+    }
+
+    public Optional<RiskValue> getRiskValue(int ordinalValue) {
+        return riskValues.stream()
+                         .filter(rv -> rv.getOrdinalValue() == ordinalValue)
+                         .findFirst();
     }
 }

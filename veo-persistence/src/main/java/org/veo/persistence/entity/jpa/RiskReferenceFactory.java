@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.math.BigDecimal;
+
 import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ImpactRef;
 import org.veo.core.entity.risk.ImplementationStatusRef;
@@ -31,33 +33,33 @@ import org.veo.core.entity.risk.RiskRef;
  * instead which ensures that references cannot be created outside their valid
  * scope.
  *
- * @see ReferenceProviderImpl
+ * @see org.veo.core.entity.risk.ReferenceProvider
  */
 final class RiskReferenceFactory extends ReferenceFactory {
 
-    private static RiskReferenceFactory instance;
+    private static RiskReferenceFactory instance = new RiskReferenceFactory();
 
     private RiskReferenceFactory() {
     }
 
-    synchronized public static RiskReferenceFactory getInstance() {
+    public static RiskReferenceFactory getInstance() {
         if (instance == null)
             instance = new RiskReferenceFactory();
         return instance;
     }
 
     @Override
-    protected RiskRef createRiskRef(String id) {
+    protected RiskRef createRiskRef(BigDecimal id) {
         return super.createRiskRef(id);
     }
 
     @Override
-    protected ProbabilityRef createProbabilityRef(String id) {
+    protected ProbabilityRef createProbabilityRef(BigDecimal id) {
         return super.createProbabilityRef(id);
     }
 
     @Override
-    protected ImpactRef createImpactRef(String id) {
+    protected ImpactRef createImpactRef(BigDecimal id) {
         return super.createImpactRef(id);
     }
 

@@ -15,25 +15,39 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.entity.jpa;
+package org.veo.core.entity.risk;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+import java.util.List;
+import java.util.UUID;
 
-import org.veo.core.entity.risk.RiskDefinitionRef;
+import javax.validation.Valid;
 
-@Converter(autoApply = true)
-public class RiskDefinitionRefConverter implements AttributeConverter<RiskDefinitionRef, String> {
+import org.veo.core.entity.Key;
 
-    @Override
-    public String convertToDatabaseColumn(RiskDefinitionRef attribute) {
-        return attribute == null ? null : attribute.getIdRef();
-    }
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
-    @Override
-    public RiskDefinitionRef convertToEntityAttribute(String dbData) {
-        return dbData == null ? null
-                : RiskReferenceFactory.getInstance()
-                                      .createRiskDefinitionRef(dbData);
-    }
+/**
+ * Risk values to be used as input for a use case.
+ */
+@Data
+@AllArgsConstructor
+@Builder
+public class RiskValues implements RiskValuesProvider {
+
+    @Valid
+    private Probability probability;
+
+    @Valid
+    private List<Impact> impactCategories;
+
+    @Valid
+    private List<DeterminedRisk> categorizedRisks;
+
+    @Valid
+    private Key<String> riskDefinitionId;
+
+    @Valid
+    private Key<UUID> domainId;
 }

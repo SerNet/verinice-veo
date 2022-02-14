@@ -20,6 +20,9 @@ package org.veo.core.entity.risk;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,6 +33,7 @@ import lombok.Setter;
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
+@Valid
 public class DeterminedRiskImpl implements DeterminedRisk {
 
     @NonNull
@@ -48,6 +52,7 @@ public class DeterminedRiskImpl implements DeterminedRisk {
      */
     private RiskRef residualRisk;
 
+    @Max(DeterminedRisk.EXPLANATION_MAX_LENGTH)
     private String residualRiskExplanation;
 
     /**
@@ -55,6 +60,7 @@ public class DeterminedRiskImpl implements DeterminedRisk {
      */
     private Set<RiskTreatmentOption> riskTreatments = new HashSet<>();
 
+    @Max(DeterminedRisk.EXPLANATION_MAX_LENGTH)
     private String riskTreatmentExplanation;
 
     public void setRiskTreatments(Set<RiskTreatmentOption> riskTreatments) {

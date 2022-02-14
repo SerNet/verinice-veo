@@ -17,17 +17,22 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
+import static org.veo.core.entity.Nameable.DESCRIPTION_MAX_LENGTH;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
+
+import org.veo.core.entity.Constraints;
+
 /**
  * The probability of a risk event occuring.
  *
  * @see org.veo.core.entity.riskdefinition.RiskDefinition
  */
-public interface Probability {
+@Valid
+public interface Probability extends PotentialProbability {
 
-    /**
-     * The default probability defined for the scenario.
-     */
-    ProbabilityRef getPotentialProbability();
+    int EXPLANATION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
 
     /**
      * The corrected value for a specific case of a scenario interfering with a
@@ -43,15 +48,10 @@ public interface Probability {
     String getSpecificProbabilityExplanation();
 
     /**
-     * The default probability defined for the scenario.
-     */
-    void setPotentialProbability(ProbabilityRef potential);
-
-    /**
      * The corrected value for a specific case of a scenario interfering with a
      * risk-affected entity.
      */
     void setSpecificProbability(ProbabilityRef specific);
 
-    void setSpecificProbabilityExplanation(String explanation);
+    void setSpecificProbabilityExplanation(@Size(max = DESCRIPTION_MAX_LENGTH) String explanation);
 }

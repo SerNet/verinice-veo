@@ -23,6 +23,7 @@ import org.veo.core.entity.risk.CategorizedImpactValueProvider;
 import org.veo.core.entity.risk.CategorizedRiskValueProvider;
 import org.veo.core.entity.risk.ProbabilityValueProvider;
 import org.veo.core.entity.risk.RiskDefinitionRef;
+import org.veo.core.entity.risk.RiskValues;
 
 /**
  * Based on the definition of the term 'risk' from NIST 800-37:
@@ -45,4 +46,8 @@ public interface ProcessRisk extends AbstractRisk<Process, ProcessRisk> {
     CategorizedRiskValueProvider getRiskProvider(RiskDefinitionRef riskDefinition);
 
     Set<RiskDefinitionRef> getRiskDefinitions();
+
+    Set<RiskDefinitionRef> getRiskDefinitions(Domain domain);
+
+    void updateRiskValues(Set<RiskValues> riskAspects);
 }

@@ -17,22 +17,40 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
+import java.math.BigDecimal;
+
+import javax.validation.Valid;
+import javax.validation.constraints.PositiveOrZero;
+
 import org.veo.core.entity.riskdefinition.RiskValue;
 
 import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
-@Value
-@Builder
-@Jacksonized
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+/**
+ * Depending on the category definition, a RiskRef can either be a reference to
+ * a pre-defined level in the category definition (i.e. a discrete integer that
+ * corresponds to a predefined CategoryLevel's ordinal value) or an arbitrary
+ * number that lies within the category definition's boundaries (i.e. a
+ * decimal).
+ *
+ * This is because risks can be defined as either discrete predefined levels or
+ * as a continuous value such as a monetary loss.
+ *
+ * As of now, only discrete reference values are supported.
+ */
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@Valid
+@EqualsAndHashCode
 public class RiskRef {
-    String idRef;
+
+    @PositiveOrZero
+    @Getter
+    BigDecimal idRef;
 
     public static RiskRef from(RiskValue rd) {
-        return new RiskRef(Integer.toString(rd.getOrdinalValue()));
+        return new RiskRef(new BigDecimal(rd.getOrdinalValue()));
     }
 }

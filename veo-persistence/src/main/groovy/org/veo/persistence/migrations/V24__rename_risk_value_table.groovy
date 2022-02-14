@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Alexander Koderman
+ * Copyright (C) 2021  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,25 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.entity.jpa;
+package org.veo.persistence.migrations
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-import org.veo.core.entity.risk.RiskRef;
+import groovy.sql.Sql
 
-@Converter(autoApply = true)
-public class RiskRefConverter implements AttributeConverter<RiskRef, String> {
-
+class V24__rename_risk_value_table extends BaseJavaMigration {
     @Override
-    public String convertToDatabaseColumn(RiskRef attribute) {
-        return attribute == null ? null : attribute.getIdRef();
-    }
+    void migrate(Context context) throws Exception {
+        new Sql(context.connection).execute("""
 
-    @Override
-    public RiskRef convertToEntityAttribute(String dbData) {
-        return dbData == null ? null
-                : RiskReferenceFactory.getInstance()
-                                      .createRiskRef(dbData);
+    alter table riskvalue_aspect
+    rename to riskvalues_aspect;
+
+""")
     }
 }

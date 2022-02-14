@@ -67,8 +67,9 @@ public class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractR
         riskOwner.ifPresent(person -> person.checkSameClient(input.getAuthenticatedClient()));
 
         // Execute requested operation:
-        return new OutputData<>(riskAffected.updateRisk(risk, domains, mitigation.orElse(null),
-                                                        riskOwner.orElse(null)));
+        return new OutputData<>(
+                riskAffected.updateRisk(risk, domains, mitigation.orElse(null),
+                                        riskOwner.orElse(null), input.getRiskValues()));
     }
 
     private void checkETag(AbstractRisk<T, R> risk, InputData input) {

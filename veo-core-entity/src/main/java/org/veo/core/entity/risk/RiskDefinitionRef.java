@@ -17,13 +17,15 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
+
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 /**
  * References a complete risk definition. Each {@code Scope} must have 0..1
@@ -31,11 +33,12 @@ import lombok.extern.jackson.Jacksonized;
  *
  * @see org.veo.core.entity.Scope
  */
-@Value
-@Builder
-@Jacksonized
-@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@Valid
+@EqualsAndHashCode
 public class RiskDefinitionRef {
+    @Getter
+    @Size(max = RiskDefinition.MAX_ID_SIZE)
     String idRef;
 
     public static RiskDefinitionRef from(RiskDefinition rd) {

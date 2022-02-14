@@ -21,6 +21,7 @@ import javax.transaction.Transactional;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.repository.RepositoryProvider;
@@ -56,6 +57,9 @@ public class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractR
 
         // Apply requested operation:
         var risk = riskAffected.obtainRisk(scenario, domains);
+
+        if (risk instanceof ProcessRisk)
+            ((ProcessRisk) risk).updateRiskValues(input.getRiskValues());
 
         risk = applyOptionalInput(input, risk);
         designatorService.assignDesignator(risk, input.getAuthenticatedClient());

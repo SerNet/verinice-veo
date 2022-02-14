@@ -20,10 +20,13 @@ package org.veo.persistence.access;
 import static java.util.Collections.singleton;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
 
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
@@ -49,5 +52,13 @@ public class ProcessRepositoryImpl
     public Set<Process> findRisksWithValue(Scenario scenario) {
         return new HashSet<>(
                 ((ProcessDataRepository) dataRepository).findRisksWithValue(singleton(((ScenarioData) scenario))));
+    }
+
+    @Override
+    public Optional<Process> findByIdWithRiskValues(Key<UUID> processId) {
+        var processes = ((ProcessDataRepository) dataRepository).findByIdsWithRiskValues(singleton(processId.uuidValue()));
+        return processes.stream()
+                        .findFirst()
+                        .map(Process.class::cast);
     }
 }

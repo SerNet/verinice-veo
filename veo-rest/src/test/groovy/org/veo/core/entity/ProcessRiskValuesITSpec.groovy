@@ -132,19 +132,19 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
         txTemplate.execute{
             def process = processRepository.findRisksWithValue(scenario1).first()
             process.risks.first().getProbabilityProvider(riskDefRef).with {
-                potentialProbability = new ProbabilityRef("2")
-                specificProbability = new ProbabilityRef("1")
+                potentialProbability = new ProbabilityRef(2)
+                specificProbability = new ProbabilityRef(1)
                 specificProbabilityExplanation = BAD_FEELINGS
             }
 
             process.risks.first().getImpactProvider(riskDefRef).with {
-                it.setPotentialImpact(confidentiality, new ImpactRef("1"))
-                it.setSpecificImpact(confidentiality, new ImpactRef("3"))
+                it.setPotentialImpact(confidentiality, new ImpactRef(1))
+                it.setSpecificImpact(confidentiality, new ImpactRef(3))
                 it.setSpecificImpactExplanation(confidentiality, MURPHYS_LAW)
             }
 
             process.risks.first().getRiskProvider(riskDefRef).with {
-                it.setResidualRisk(confidentiality, new RiskRef("0"))
+                it.setResidualRisk(confidentiality, new RiskRef(0))
                 it.setResidualRiskExplanation(confidentiality, NO_RISK_NO_FUN)
                 it.setRiskTreatmentExplanation(confidentiality, RISK_ACCEPTANCE)
                 it.setRiskTreatments(confidentiality, [
@@ -162,22 +162,22 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
 
         then: "the persisted object reflects the changes"
         with(retrievedRisk2.getProbabilityProvider(riskDefRef)) {
-            it.potentialProbability == new ProbabilityRef("2")
-            it.specificProbability == new ProbabilityRef("1")
-            it.effectiveProbability == new ProbabilityRef("1")
+            it.potentialProbability == new ProbabilityRef(2)
+            it.specificProbability == new ProbabilityRef(1)
+            it.effectiveProbability == new ProbabilityRef(1)
             it.specificProbabilityExplanation == BAD_FEELINGS
         }
 
 
         with(retrievedRisk2.getImpactProvider(riskDefRef)) {
-            it.getPotentialImpact(confidentiality) == new ImpactRef("1")
-            it.getSpecificImpact(confidentiality) == new ImpactRef("3")
+            it.getPotentialImpact(confidentiality) == new ImpactRef(1)
+            it.getSpecificImpact(confidentiality) == new ImpactRef(3)
             it.getSpecificImpactExplanation(confidentiality) == MURPHYS_LAW
 
         }
 
         with(retrievedRisk2.getRiskProvider(riskDefRef)) {
-            it.getResidualRisk(confidentiality) ==  new RiskRef("0")
+            it.getResidualRisk(confidentiality) ==  new RiskRef(0)
             it.getResidualRiskExplanation(confidentiality) == NO_RISK_NO_FUN
             it.getRiskTreatmentExplanation(confidentiality) == RISK_ACCEPTANCE
             it.getRiskTreatments(confidentiality) == [

@@ -19,6 +19,11 @@ package org.veo.core.entity.risk;
 
 import java.util.Set;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
+
+import org.veo.core.entity.Constraints;
+
 /**
  * A risk value as determined by a risk service.
  * <p>
@@ -28,9 +33,13 @@ import java.util.Set;
  *
  * @see org.veo.core.entity.riskdefinition.RiskDefinition
  */
+@Valid
 public interface DeterminedRisk {
 
-    void setRiskTreatmentExplanation(String riskTreatmentExplanation);
+    int EXPLANATION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
+
+    void setRiskTreatmentExplanation(
+            @Size(max = EXPLANATION_MAX_LENGTH) String riskTreatmentExplanation);
 
     /**
      * The risk that was determined based on probability and impact. This does not
@@ -42,11 +51,12 @@ public interface DeterminedRisk {
     RiskRef getInherentRisk();
 
     /**
-     * The risk after excisting controls have been taken into account.
+     * The risk after existing controls have been taken into account.
      */
     RiskRef getResidualRisk();
 
-    void setResidualRiskExplanation(String residualRiskExplanation);
+    void setResidualRiskExplanation(
+            @Size(max = EXPLANATION_MAX_LENGTH) String residualRiskExplanation);
 
     String getResidualRiskExplanation();
 
@@ -55,10 +65,11 @@ public interface DeterminedRisk {
     String getRiskTreatmentExplanation();
 
     /**
-     * The risk after excisting controls have been taken into account.
+     * The risk after existing controls have been taken into account.
      */
     void setResidualRisk(RiskRef residualRisk);
 
     void setRiskTreatments(Set<RiskTreatmentOption> riskTreatments);
 
+    CategoryRef getCategory();
 }

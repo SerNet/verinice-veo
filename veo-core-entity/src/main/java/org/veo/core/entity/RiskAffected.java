@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 import org.veo.core.entity.exception.ModelConsistencyException;
+import org.veo.core.entity.risk.RiskValues;
 
 /**
  * An entity that is affected by risks resulting from association with
@@ -89,7 +90,6 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
                                                .findFirst()
                                                .orElseThrow());
         domains.forEach(risk::addToDomains);
-
         return risk;
     }
 
@@ -132,12 +132,20 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
      * @return the updated risk entity
      */
     default R updateRisk(R existingRisk, Set<Domain> domains, @Nullable Control mitigation,
-            @Nullable Person riskOwner) {
+            @Nullable Person riskOwner, Set<RiskValues> riskValuesSet) {
 
         var riskToUpdate = getRisk(existingRisk.getScenario()).orElseThrow(() -> new IllegalArgumentException(
                 String.format("The risk is not know to this object: %s", existingRisk)));
 
         riskToUpdate.setDomains(domains);
+
+        // TODO VEO-209 remove the if-statement when risk values are supported for all
+        // risk-affected entities
+        if (riskToUpdate instanceof ProcessRisk) {
+            var processRisk = (ProcessRisk) riskToUpdate;
+            processRisk.updateRiskValues(riskValuesSet);
+        }
+
         return riskToUpdate.mitigate(mitigation)
                            .appoint(riskOwner);
     }

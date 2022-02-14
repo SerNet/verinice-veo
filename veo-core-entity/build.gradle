@@ -4,8 +4,6 @@ dependencies {
 
     compileOnly 'javax.validation:validation-api'
 
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
-
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

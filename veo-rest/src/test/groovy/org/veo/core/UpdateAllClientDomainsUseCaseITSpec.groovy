@@ -109,7 +109,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
 
     def "Migrate a control with risk values"() {
         given: 'a client with an empty unit'
-        RiskDefinitionRef riskDefinitionRef = RiskDefinitionRef.builder().idRef("xyz").build()
+        RiskDefinitionRef riskDefinitionRef = new RiskDefinitionRef("xyz")
         ImplementationStatusRef implementationStatusRef = new ImplementationStatusRef(42)
         ControlRiskValues controlRiskValues = new ControlRiskValues(implementationStatusRef)
         Map riskValues = [

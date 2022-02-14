@@ -18,13 +18,20 @@
 package org.veo.adapter.presenter.api.dto;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefDomains;
+import org.veo.adapter.presenter.api.openapi.IdRefEntity;
 import org.veo.adapter.presenter.api.openapi.IdRefOwner;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
@@ -35,11 +42,13 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
 import lombok.ToString;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(onlyExplicitlyIncluded = true)
@@ -56,8 +65,28 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
 
     @Valid
     @ArraySchema(schema = @Schema(implementation = IdRefDomains.class))
+    @JsonIgnore
     @Singular
     private Set<IdRef<Domain>> domains = Collections.emptySet();
+
+    @JsonGetter(value = "domains")
+    public Map<String, RiskDomainAssociationDto> getDomains() {
+        return domains.stream()
+                      .collect(Collectors.toMap(IdRef::getId, RiskDomainAssociationDto::new));
+    }
+
+    @JsonSetter(value = "domains")
+    public void setDomains(Map<String, RiskDomainAssociationDto> domainMap) {
+        this.domains = domainMap.values()
+                                .stream()
+                                .map(RiskDomainAssociationDto::getReference)
+                                .collect(Collectors.toSet());
+    }
+
+    @JsonIgnore
+    public Set<IdRef<Domain>> getDomainReferences() {
+        return domains;
+    }
 
     @Valid
     @NotNull(message = "A scenario must be present.")
@@ -65,12 +94,12 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
     private IdRef<Scenario> scenario;
 
     @Valid
-    @Schema(implementation = IdRefOwner.class,
+    @Schema(implementation = IdRefEntity.class,
             description = "This risk is mitigated by this control or control-composite.")
     private IdRef<Control> mitigation;
 
     @Valid
-    @Schema(implementation = IdRefOwner.class,
+    @Schema(implementation = IdRefEntity.class,
             description = "The accountable point-of-contact for this risk.")
     private IdRef<Person> riskOwner;
 

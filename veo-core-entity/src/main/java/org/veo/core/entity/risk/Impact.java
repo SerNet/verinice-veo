@@ -17,13 +17,21 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
+
+import org.veo.core.entity.Constraints;
+
 /**
  * The effects of a threat event interfering with an asset / a process / a
  * scope.
  *
  * @see org.veo.core.entity.riskdefinition.RiskDefinition
  */
-public interface Impact {
+@Valid
+public interface Impact extends PotentialImpact {
+
+    int EXPLANATION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
 
     /**
      * The impact for a specific combination of scenario and process/asset/scope. It
@@ -31,16 +39,6 @@ public interface Impact {
      * impact that was initially estimated.
      */
     void setSpecificImpact(ImpactRef specific);
-
-    /**
-     * The potential impact on one of the information security properties of an
-     * asset (or a process/scope).
-     * <p>
-     * This is taken from the risk-affected entity (i.e. process) and does not yet
-     * take individual scenarios into account. It is solely based on evaluation the
-     * data processed by/on the process/the asset.
-     */
-    ImpactRef getPotentialImpact();
 
     /**
      * The impact for a specific combination of scenario and process/asset/scope. It
@@ -56,15 +54,6 @@ public interface Impact {
 
     String getSpecificImpactExplanation();
 
-    /**
-     * The potential impact on one of the information security properties of an
-     * asset (or a process/scope).
-     * <p>
-     * This is taken from the risk-affected entity (i.e. process) and does not yet
-     * take individual scenarios into account. It is solely based on evaluation the
-     * data processed by/on the process/the asset.
-     */
-    void setPotentialImpact(ImpactRef potential);
+    void setSpecificImpactExplanation(@Size(max = EXPLANATION_MAX_LENGTH) String explanation);
 
-    void setSpecificImpactExplanation(String explanation);
 }

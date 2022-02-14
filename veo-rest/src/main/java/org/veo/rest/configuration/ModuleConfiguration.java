@@ -318,8 +318,9 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public GetProcessRisksUseCase getProcessRisksUseCase(RepositoryProvider repositoryProvider) {
-        return new GetProcessRisksUseCase(repositoryProvider);
+    public GetProcessRisksUseCase getProcessRisksUseCase(RepositoryProvider repositoryProvider,
+            ProcessRepository processRepository) {
+        return new GetProcessRisksUseCase(repositoryProvider, processRepository);
     }
 
     @Bean

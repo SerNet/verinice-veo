@@ -27,9 +27,12 @@ import javax.validation.Valid;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.risk.RiskValues;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.base.AbstractUseCase;
@@ -68,6 +71,15 @@ public abstract class AbstractRiskUseCase<T extends RiskAffected<T, R>, R extend
         return risk;
     }
 
+    protected Domain domainForKey(Set<Domain> domains, Key<UUID> key) {
+        return domains.stream()
+                      .filter(d -> d.getId()
+                                    .equals(key))
+                      .findFirst()
+                      .orElseThrow(() -> new NotFoundException(
+                              "Could not resolve domain with ID %s", key.uuidValue()));
+    }
+
     @Valid
     @Value
     @AllArgsConstructor
@@ -84,12 +96,7 @@ public abstract class AbstractRiskUseCase<T extends RiskAffected<T, R>, R extend
         @Nullable
         String eTag;
 
-        public InputData(Client authenticatedClient, Key<UUID> riskAffectedRef,
-                Key<UUID> scenarioRef, Set<Key<UUID>> domainRefs, Key<UUID> controlRef,
-                Key<UUID> riskOwnerRef) {
-            this(authenticatedClient, riskAffectedRef, scenarioRef, domainRefs, controlRef,
-                    riskOwnerRef, null);
-        }
+        Set<RiskValues> riskValues;
 
         public Optional<Key<UUID>> getControlRef() {
             return Optional.ofNullable(controlRef);
@@ -97,6 +104,14 @@ public abstract class AbstractRiskUseCase<T extends RiskAffected<T, R>, R extend
 
         public Optional<Key<UUID>> getRiskOwnerRef() {
             return Optional.ofNullable(riskOwnerRef);
+        }
+
+        public InputData(Client authenticatedClient, Key<UUID> riskAffectedRef,
+                Key<UUID> scenarioRef, Set<Key<UUID>> domainRefs, Key<UUID> controlRef,
+                Key<UUID> riskOwnerRef, Set<RiskValues> riskValues) {
+            this(authenticatedClient, riskAffectedRef, scenarioRef, domainRefs, controlRef,
+                    riskOwnerRef, null, riskValues);
+
         }
     }
 
@@ -106,4 +121,5 @@ public abstract class AbstractRiskUseCase<T extends RiskAffected<T, R>, R extend
         @Valid
         R risk;
     }
+
 }
