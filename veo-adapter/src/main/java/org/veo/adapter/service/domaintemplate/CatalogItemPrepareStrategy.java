@@ -52,7 +52,7 @@ public class CatalogItemPrepareStrategy {
         item.setCatalog(catalog);
         updateVersion(item);
         item.getTailoringReferences()
-            .forEach(t -> updateVersion(t));
+            .forEach(CatalogItemPrepareStrategy::updateVersion);
         Element element = item.getElement();
         if (element != null) {
             prepareElement(domain, element, true);
@@ -91,7 +91,7 @@ public class CatalogItemPrepareStrategy {
         // TODO: VEO-612 add parts from CompositeEntity
     }
 
-    public void updateVersion(Versioned v) {
+    public static void updateVersion(Versioned v) {
         v.setCreatedBy(SYSTEM_USER);
         v.setUpdatedBy(SYSTEM_USER);
         v.setCreatedAt(Instant.now());
@@ -117,9 +117,7 @@ public class CatalogItemPrepareStrategy {
 
     private void processSubTypes(DomainTemplate domain, Element est) {
         est.getSubTypeAspects()
-           .forEach(oldAspect -> {
-               oldAspect.setDomain(domain);
-           });
+           .forEach(oldAspect -> oldAspect.setDomain(domain));
     }
 
 }
