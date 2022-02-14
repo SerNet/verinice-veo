@@ -1,0 +1,31 @@
+{
+  "attributeSchemas": {
+    "process_PIAResult_comment": {
+      "type": "string"
+    },
+    "process_PIAResult_consultationConducted": {
+      "type": "boolean"
+    },
+    "process_PIAResult_consultationDate": {
+      "format": "date",
+      "type": "string"
+    },
+    "process_PIAResult_consultationDokument": {
+      "format": "uri",
+      "pattern": "^(https?|ftp)://",
+      "type": "string"
+    },
+    "process_PIAResult_consultationJustification": {
+      "type": "string"
+    },
+    "process_PIAResult_consultationRequired": {
+      "type": "boolean"
+    },
+    "process_PIAResult_consultationResult": {
+      "type": "string"
+    },
+    "process_PIAResult_risk": {
+      "type": "boolean"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "attributeSchemas": {
+    "process_PIAAssessment_necessity": {
+      "type": "string"
+    },
+    "process_PIAAssessment_rules": {
+      "type": "string"
+    },
+    "process_PIAAssessment_rulesExisting": {
+      "type": "boolean"
+    }
+  }
+}

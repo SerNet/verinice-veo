@@ -1,0 +1,15 @@
+{
+  "attributeSchemas": {
+    "process_PIADPO_advice": {
+      "type": "boolean"
+    },
+    "process_PIADPO_comment": {
+      "type": "string"
+    },
+    "process_PIADPO_document": {
+      "format": "uri",
+      "pattern": "^(https?|ftp)://",
+      "type": "string"
+    }
+  }
+}

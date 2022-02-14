@@ -1,0 +1,35 @@
+{
+  "attributeSchemas": {
+    "process_PIAInvolvement_affectedPersons": {
+      "type": "string"
+    },
+    "process_PIAInvolvement_affectedPersonsComment": {
+      "type": "string"
+    },
+    "process_PIAInvolvement_affectedPersonsDocument": {
+      "format": "uri",
+      "pattern": "^(https?|ftp)://",
+      "type": "string"
+    },
+    "process_PIAInvolvement_affectedPersonsPOV": {
+      "type": "boolean"
+    },
+    "process_PIAInvolvement_stakeholder": {
+      "type": "string"
+    },
+    "process_PIAInvolvement_stakeholderComment": {
+      "type": "string"
+    },
+    "process_PIAInvolvement_stakeholderDocument": {
+      "format": "uri",
+      "pattern": "^(https?|ftp)://",
+      "type": "string"
+    },
+    "process_PIAInvolvement_stakeholderPOV": {
+      "type": "boolean"
+    },
+    "process_PIAInvolvement_stakeholderParticipation": {
+      "type": "boolean"
+    }
+  }
+}

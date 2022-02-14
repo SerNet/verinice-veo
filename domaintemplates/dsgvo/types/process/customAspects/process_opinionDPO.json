@@ -3,6 +3,15 @@
     "process_opinionDPO_comment": {
       "type": "string"
     },
+    "process_opinionDPO_consultationComment": {
+      "type": "string"
+    },
+    "process_opinionDPO_consultationConducted": {
+      "type": "boolean"
+    },
+    "process_opinionDPO_consultationRequired": {
+      "type": "boolean"
+    },
     "process_opinionDPO_document": {
       "format": "uri",
       "pattern": "^(https?|ftp)://",
