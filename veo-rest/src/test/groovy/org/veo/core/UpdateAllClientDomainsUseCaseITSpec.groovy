@@ -172,7 +172,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
                 }
             }
         }
-        scopes.size() == 5
+        scopes.size() == 6
         scopes.each {
             with(it) {
                 it.domains == [dsgvoTestDomain] as Set
