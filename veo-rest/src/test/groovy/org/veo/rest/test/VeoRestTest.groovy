@@ -107,6 +107,9 @@ class VeoRestTest extends spock.lang.Specification {
 
     def setup() {
         baseUrl = configuredBaseUrl.empty ? restTemplate.rootUri : configuredBaseUrl
+        if (baseUrl.endsWith('/')) {
+            baseUrl = baseUrl[0..-2]
+        }
     }
 
     def String getETag(String text) {
