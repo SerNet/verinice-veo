@@ -16,6 +16,9 @@ veo:
       admin:
         name: ''
         pass: ''
+      content-creator:
+        name: ''
+        pass: ''
     proxyHost: cache.company.private
     proxyPort: 3128
 

@@ -218,6 +218,7 @@ pipeline {
                 def tag = "${env.BUILD_TAG}".replaceAll("[^A-Za-z0-9]", "_")
                 KEYCLOAK_DEFAULT_CREDS = credentials('veo_authentication_credentials')
                 KEYCLOAK_ADMIN_CREDS = credentials('veo_admin_authentication_credentials')
+                KEYCLOAK_CONTENT_CREATOR_CREDS = credentials('veo_content_creator_authentication_credentials')
                 RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
                 VEO_MESSAGE_DISPATCH_ROUTINGKEYPREFIX =  "VEO_REST_TEST_${tag}."
                 VEO_MESSAGE_CONSUME_QUEUE = "VEO_REST_TEST_${tag}"
@@ -269,6 +270,8 @@ pipeline {
                                                    export VEO_RESTTEST_USERS_DEFAULT_PASS=\$KEYCLOAK_DEFAULT_CREDS_PSW && \
                                                    export VEO_RESTTEST_USERS_ADMIN_NAME=\$KEYCLOAK_ADMIN_CREDS_USR && \
                                                    export VEO_RESTTEST_USERS_ADMIN_PASS=\$KEYCLOAK_ADMIN_CREDS_PSW && \
+                                                   export VEO_RESTTEST_USERS_CONTENTCREATOR_NAME=\$KEYCLOAK_CONTENT_CREATOR_CREDS_USR && \
+                                                   export VEO_RESTTEST_USERS_CONTENTCREATOR_PASS=\$KEYCLOAK_CONTENT_CREATOR_CREDS_PSW && \
                                                    ./gradlew -Dhttp.nonProxyHosts=\"localhost|veo-${n}\" -PciBuildNumber=\$BUILD_NUMBER -PciJobName=\$JOB_NAME veo-rest:restTest"""
                                                         junit allowEmptyResults: true, testResults: 'veo-rest/build/test-results/restTest/*.xml'
                                                         publishHTML([

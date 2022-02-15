@@ -88,6 +88,12 @@ class VeoRestTest extends spock.lang.Specification {
     @Value('${veo.resttest.users.admin.pass}')
     private String adminUserPass
 
+    @Value('${veo.resttest.users.content-creator.name}')
+    String contentCreatorUserName
+
+    @Value('${veo.resttest.users.content-creator.pass}')
+    private String contentCreatorUserPass
+
     @Value('${veo.resttest.proxyHost}')
     private String proxyHost
 
@@ -196,6 +202,10 @@ class VeoRestTest extends spock.lang.Specification {
         if (userType == UserType.ADMIN) {
             user = adminUserName
             pass = adminUserPass
+        }
+        else if (userType == UserType.CONTENT_CREATOR) {
+            user = contentCreatorUserName
+            pass = contentCreatorUserPass
         }
         if (userTokenCache.hasProperty(user)) {
             return userTokenCache[user]
