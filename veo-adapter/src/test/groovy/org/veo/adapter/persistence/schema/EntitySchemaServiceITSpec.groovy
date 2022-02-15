@@ -44,31 +44,29 @@ class EntitySchemaServiceITSpec extends Specification {
     def "entity schema is a valid schema"() {
         given:
         def schema201909 = getMetaSchemaV2019_09()
-        def schema = getSchema(Set.of(getTestDomain()))
+        def schema = getSchema(Set.of(getTestDomain()), "asset")
         expect:
         schema201909.validate(schema).empty
     }
 
     def "designator is marked read-only in entity schema #schema.title"() {
         expect:
-        def schema = getSchema(Set.of(getTestDomain()))
+        def schema = getSchema(Set.of(getTestDomain()), "asset")
         schema.get(PROPS).get("designator").get("readOnly").booleanValue()
     }
 
     def "_self is marked read-only in entity schema #schema.title"() {
         given:
-        def schema = getSchema(Set.of(getTestDomain()))
+        def schema = getSchema(Set.of(getTestDomain()), "asset")
         expect:
         schema.get(PROPS).get("_self").get("readOnly").booleanValue()
     }
 
     def "definitions from multiple domains are composed"() {
         given:
-        def type = "whateverType"
-
         def testDomain = getTestDomain()
         def extraTestDomain = getExtraTestDomain()
-        def schema = getSchema(Set.of(testDomain, extraTestDomain))
+        def schema = getSchema(Set.of(testDomain, extraTestDomain), "asset")
 
         expect:
         with(schema.get(PROPS).get("customAspects").get(PROPS)) {
@@ -112,11 +110,11 @@ class EntitySchemaServiceITSpec extends Specification {
     private List<JsonNode> getEntitySchemas() {
         EntityType.ELEMENT_TYPES
                 .collect { it.singularTerm }
-                .collect { getSchema(Set.of(getTestDomain())) }
+                .collect { getSchema(Set.of(getTestDomain()), "asset") }
     }
 
-    private JsonNode getSchema(Set<Domain> domains) {
-        Json.mapper().readTree(entitySchemaService.findSchema("asset", domains))
+    private JsonNode getSchema(Set<Domain> domains, String type) {
+        Json.mapper().readTree(entitySchemaService.findSchema(type, domains))
     }
 
     private Domain getTestDomain() {
