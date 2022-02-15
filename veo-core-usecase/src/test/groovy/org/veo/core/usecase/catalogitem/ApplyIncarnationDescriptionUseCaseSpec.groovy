@@ -126,6 +126,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
 
         Control control2 = Mock()
         Control control3 = Mock()
+        control3.domains >> [existingDomain]
 
         def id2 = Key.newUuid()
         item2.id >> id2

@@ -243,6 +243,12 @@ public class ApplyIncarnationDescriptionUseCase implements
             LinkTailoringReference catalogReference = references.next();
             Element element = tailoringReferenceParameter.getReferencedElement();
             if (element != null) {
+                if (element.getDomains() == null || !element.getDomains()
+                                                            .contains(domain)) {
+                    throw new IllegalArgumentException(
+                            "The element to link is not part of the domain: "
+                                    + element.getDesignator() + "  " + domain.getName());
+                }
                 createLink(element, linkTargetEntity, domain, catalogReference.getLinkType(),
                            catalogReference.getAttributes());
                 saveElement(element);

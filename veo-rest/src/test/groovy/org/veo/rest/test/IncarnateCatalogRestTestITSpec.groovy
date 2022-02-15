@@ -153,6 +153,36 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         sourceControl.links.Control_details_Control.target.targetUri ==~ /.*\/controls\/$c4Id.*/
     }
 
+    def "Create elements with reversed links from catalog to wrong element"() {
+        given:
+        def postResponse = postNewUnit(UNIT_NAME)
+        unitId = postResponse.resourceId
+        def domainId = getDomains().find { it.name == "test-domain" }.id
+
+        when: "the catalog is retrieved"
+        def catalogId = extractLastId(getDomains().find { it.name == "test-domain" }.catalogs.first().targetUri)
+        def catalog = getCatalog(catalogId)
+
+        then: "the expected catalog was instantiated"
+        with(catalog) {
+            catalogItems.size() == 6
+            name == "TEST-Controls"
+            domainTemplate.displayName == "td test-domain"
+        }
+
+        when: "a control is created"
+        def sourceControlId = post("/controls", [
+            name : "Link Target Control",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+        ]).body.resourceId
+
+        and: "C-4 is instantiated"
+        def elementResults = applyCatalogItems(catalog, ["Control-4"], "/controls/$sourceControlId", false)
+
+        then: "an error messages is returned"
+        elementResults.message ==~/The element to link is not part of the domain: CTL.*/
+    }
+
     def "Create linked elements from the dsgvo catalog"() {
         log.info("Create a unit and get ApplyCatalogItems info for Items")
 
@@ -283,8 +313,11 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
     private applyCatalogItems(catalog) {
         return applyCatalogItems(catalog, null, null)
     }
-
     private applyCatalogItems(catalog, selectedItems, sourceElementUri) {
+        applyCatalogItems(catalog, selectedItems, sourceElementUri, true)
+    }
+
+    private applyCatalogItems(catalog, selectedItems, sourceElementUri, boolean succesful) {
         def elementResults = []
         catalog.catalogItems
                 .sort { it.displayName }
@@ -316,18 +349,22 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
                             ) {
                         log.info("Will be applied: {}", it.displayName)
 
-                        def postApply = postIncarnationDescriptions(unitId, applyInfo)
+                        def postApply = postIncarnationDescriptions(unitId, applyInfo, succesful ? 201 : 400)
+                        if(succesful == true) {
+                            and: "get the created element"
+                            def elementResult = get(postApply.first().targetUri).body
+                            log.info("Incarnated element {}", elementResult)
+                            elementResults.add(elementResult)
 
-                        and: "get the created element"
-                        def elementResult = get(postApply.first().targetUri).body
-                        log.info("Incarnated element {}", elementResult)
-                        elementResults.add(elementResult)
-
-                        assert it.displayName ==~ /.*$elementResult.name.*/
-                        assert Instant.parse(elementResult.createdAt) > beforeCreation
-                        assert Instant.parse(elementResult.updatedAt) > beforeCreation
-                        assert !elementResult.description.isBlank()
-                        assert !elementResult.id.isBlank()
+                            assert it.displayName ==~ /.*$elementResult.name.*/
+                            assert Instant.parse(elementResult.createdAt) > beforeCreation
+                            assert Instant.parse(elementResult.updatedAt) > beforeCreation
+                            assert !elementResult.description.isBlank()
+                            assert !elementResult.id.isBlank()
+                        } else {
+                            elementResults = postApply
+                            return
+                        }
                     }
                 }
         return elementResults
@@ -341,9 +378,9 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         get("/units/${unitId}/incarnations?itemIds=${itemIds.join(',')}").body
     }
 
-    private postIncarnationDescriptions(unitId, applyInfo) {
+    private postIncarnationDescriptions(unitId, applyInfo, int expectedStatus = 201) {
         log.info("postIncarnationDescriptions before: {}", applyInfo)
-        def response = post("/units/${unitId}/incarnations", applyInfo)
+        def response = post("/units/${unitId}/incarnations", applyInfo, expectedStatus)
         log.info("postIncarnationDescriptions after: {}", response.body)
         response.body
     }
