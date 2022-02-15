@@ -161,7 +161,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         ex.message ==~ /.*subType: does not have a value in the enumeration.*/
     }
 
-    def "created control with custom aspect conforms to schema"() {
+    def "created control with custom aspect and risk value conforms to schema"() {
         given: "the control schema and a newly created control"
         def schema = getSchema("control")
         def controlId = (String)parseJson(post("/controls", [
@@ -169,6 +169,15 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                 control_generalInformation: [
                     attributes: [
                         control_generalInformation_document: "https://example.org/controls/this_one"
+                    ]
+                ]
+            ],
+            domains: [
+                (domainId): [
+                    riskValues: [
+                        DSRA: [
+                            implementationStatus: 1
+                        ]
                     ]
                 ]
             ],

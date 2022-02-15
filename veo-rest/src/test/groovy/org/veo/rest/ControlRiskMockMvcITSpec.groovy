@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
+import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
+
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.riskdefinition.ImplementationStateDefinition
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -154,6 +156,7 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
         ], false)
 
         then: "it is rejected"
-        thrown(IllegalArgumentException)
+        def ex = thrown(JsonSchemaValidationException)
+        ex.message.contains("implementationStatus: does not have a value in the enumeration [0, 1]")
     }
 }

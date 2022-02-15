@@ -28,6 +28,9 @@ import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.SubTypeDefinition
+import org.veo.core.entity.riskdefinition.CategoryLevel
+import org.veo.core.entity.riskdefinition.ImplementationStateDefinition
+import org.veo.core.entity.riskdefinition.RiskDefinition
 import org.veo.core.service.EntitySchemaService
 
 import io.swagger.v3.core.util.Json
@@ -60,6 +63,17 @@ class EntitySchemaServiceITSpec extends Specification {
         def schema = getSchema(Set.of(getTestDomain()), "asset")
         expect:
         schema.get(PROPS).get("_self").get("readOnly").booleanValue()
+    }
+
+    def "control schema domain association is complete"() {
+        given:
+        def testDomain = getTestDomain()
+        when:
+        def schema = getSchema(Set.of(testDomain), "control")
+        then:
+        def riskValueProps = schema.get(PROPS).get("domains").get(PROPS).get(testDomain.idAsString).get(PROPS).get("riskValues").get(PROPS)
+        riskValueProps.get("riskDefA").get(PROPS).get("implementationStatus").get("enum").asList()*.asInt() == [0, 1, 2]
+        riskValueProps.get("riskDefB").get(PROPS).get("implementationStatus").get("enum").asList()*.asInt() == [0, 1]
     }
 
     def "definitions from multiple domains are composed"() {
@@ -148,6 +162,46 @@ class EntitySchemaServiceITSpec extends Specification {
                         }
                     ]
                 }
+            ]
+            getElementTypeDefinition("control") >> [
+                Mock(ElementTypeDefinition) {
+                    customAspects >> [:]
+                    links >> [:]
+                    subTypes >> [
+                        subControl: Mock(SubTypeDefinition) {
+                            statuses >> ["NEW", "OLD"]
+                        }
+                    ]
+                }
+            ]
+            getRiskDefinitions() >> [
+                "riskDefA": Mock(RiskDefinition) {
+                    implementationStateDefinition >> Mock(ImplementationStateDefinition) {
+                        levels >> [
+                            Mock(CategoryLevel) {
+                                ordinalValue >> 0
+                            },
+                            Mock(CategoryLevel) {
+                                ordinalValue >> 1
+                            },
+                            Mock(CategoryLevel) {
+                                ordinalValue >> 2
+                            },
+                        ]
+                    }
+                },
+                "riskDefB": Mock(RiskDefinition) {
+                    implementationStateDefinition >> Mock(ImplementationStateDefinition) {
+                        levels >> [
+                            Mock(CategoryLevel) {
+                                ordinalValue >> 0
+                            },
+                            Mock(CategoryLevel) {
+                                ordinalValue >> 1
+                            },
+                        ]
+                    }
+                },
             ]
         }
     }

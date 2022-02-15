@@ -21,25 +21,32 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.victools.jsonschema.generator.SchemaGenerator;
 
+import org.veo.adapter.presenter.api.dto.ControlDomainAssociationDto;
+import org.veo.adapter.presenter.api.dto.ControlRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
+import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.SubTypeDefinition;
+import org.veo.core.entity.riskdefinition.DiscreteValue;
 
 /**
  * Add domain-specific sub schemas to an element schema.
  */
 public class SchemaExtender {
     public static final String PROPS = "properties";
+    public static final String RISK_VALUES = "riskValues";
     private final ObjectMapper mapper = new ObjectMapper();
 
     public void extendSchema(SchemaGenerator generator, JsonNode schema, String elementType,
@@ -58,7 +65,8 @@ public class SchemaExtender {
         var customObjectProperties = customAspectsSchema.putObject(PROPS);
 
         domains.forEach(domain -> {
-            var domainAssociationSchema = addDomainAssociation(domainProps, domain, generator);
+            var domainAssociationSchema = addDomainAssociation(domainProps, domain, generator,
+                                                               elementType);
             var typeDef = domain.getElementTypeDefinition(elementType)
                                 .orElseThrow(() -> new NoSuchElementException(
                                         String.format("Element type %s not configured in domain %s",
@@ -70,10 +78,35 @@ public class SchemaExtender {
     }
 
     private ObjectNode addDomainAssociation(ObjectNode domainProps, Domain domain,
-            SchemaGenerator generator) {
-        var domainAssociationNode = generator.generateSchema(DomainAssociationDto.class);
+            SchemaGenerator generator, String elementType) {
+        var domainAssociationNode = buildDomainAssociationSchema(elementType, generator, domain);
         domainProps.set(domain.getIdAsString(), domainAssociationNode);
         return domainAssociationNode;
+    }
+
+    private ObjectNode buildDomainAssociationSchema(String elementType, SchemaGenerator generator,
+            Domain domain) {
+        if (elementType.equals(Control.SINGULAR_TERM)) {
+            var domainAssociationSchema = generator.generateSchema(ControlDomainAssociationDto.class);
+            var riskValuesProps = ((ObjectNode) domainAssociationSchema.get(PROPS)
+                                                                       .get(RISK_VALUES)).putObject(PROPS);
+            domain.getRiskDefinitions()
+                  .forEach((riskDefId, riskDef) -> {
+                      var riskValuesSchema = generator.generateSchema(ControlRiskValuesDto.class);
+                      var implStatusSchema = (ObjectNode) riskValuesSchema.get(PROPS)
+                                                                          .get("implementationStatus");
+                      implStatusSchema.putArray("enum")
+                                      .addAll(riskDef.getImplementationStateDefinition()
+                                                     .getLevels()
+                                                     .stream()
+                                                     .map(DiscreteValue::getOrdinalValue)
+                                                     .map(IntNode::new)
+                                                     .collect(Collectors.toList()));
+                      riskValuesProps.set(riskDefId, riskValuesSchema);
+                  });
+            return domainAssociationSchema;
+        }
+        return generator.generateSchema(DomainAssociationDto.class);
     }
 
     private void addSubTypes(ObjectNode domainAssociationSchema,
