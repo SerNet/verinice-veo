@@ -39,6 +39,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.test.context.ActiveProfiles
 
 import org.veo.core.entity.transform.EntityFactory
+import org.veo.jobs.RestTestDomainTemplateCreator
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.RestApplication
 import org.veo.rest.security.WebSecurity
@@ -55,6 +56,9 @@ class VeoRestTest extends spock.lang.Specification {
 
     @Autowired
     TestRestTemplate restTemplate
+
+    @Autowired
+    RestTestDomainTemplateCreator domainTemplateCreator
 
     @Shared
     JsonSlurper jsonSlurper
@@ -116,6 +120,8 @@ class VeoRestTest extends spock.lang.Specification {
         if (baseUrl.endsWith('/')) {
             baseUrl = baseUrl[0..-2]
         }
+        domainTemplateCreator.create('dsgvo', this)
+        domainTemplateCreator.create('test-domain', this)
     }
 
     def String getETag(String text) {
@@ -128,37 +134,45 @@ class VeoRestTest extends spock.lang.Specification {
         }
     }
 
-    Response get(String uri, int assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
+    Response get(String uri, Integer assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
         def resp = exchange(uri, HttpMethod.GET, new HttpHeaders(), null, userType)
-        assert resp.statusCodeValue == assertStatusCode
+        assertStatusCode?.tap{
+            assert resp.statusCodeValue == it
+        }
         log.debug("retrieved data: {}", resp.body)
         new Response(
                 headers: resp.headers,
                 body: jsonSlurper.parseText(resp.body.toString()))
     }
 
-    Response post(String uri, Object requestBody, int assertStatusCode = 201, UserType userType = UserType.DEFAULT) {
+    Response post(String uri, Object requestBody, Integer assertStatusCode = 201, UserType userType = UserType.DEFAULT) {
         HttpHeaders headers = new HttpHeaders()
         headers.setContentType(MediaType.APPLICATION_JSON)
 
         def resp = exchange(uri, HttpMethod.POST, headers, requestBody, userType)
-        assert resp.statusCodeValue == assertStatusCode
+        assertStatusCode?.tap{
+            assert resp.statusCodeValue == it
+        }
         new Response(headers: resp.headers,
         body: jsonSlurper.parseText(resp.body.toString()))
     }
 
-    void put(String uri, Object requestBody, String etagHeader, int assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
+    void put(String uri, Object requestBody, String etagHeader, Integer assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
         HttpHeaders headers = new HttpHeaders()
         headers.setIfMatch(getETag(etagHeader))
         headers.setContentType(MediaType.APPLICATION_JSON)
 
         def resp = exchange(uri, HttpMethod.PUT, headers, requestBody, userType)
-        assert resp.statusCodeValue == assertStatusCode
+        assertStatusCode?.tap{
+            assert resp.statusCodeValue == it
+        }
     }
 
-    void delete(String uri, int assertStatusCode = 204, UserType userType = UserType.DEFAULT) {
+    void delete(String uri, Integer assertStatusCode = 204, UserType userType = UserType.DEFAULT) {
         def resp = exchange(uri, HttpMethod.DELETE, new HttpHeaders(), null, userType)
-        assert resp.statusCodeValue == assertStatusCode
+        assertStatusCode?.tap{
+            assert resp.statusCodeValue == it
+        }
     }
 
     def getUnit(id) {

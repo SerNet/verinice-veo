@@ -30,7 +30,6 @@ import com.networknt.schema.SpecVersion
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
-import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.UnitRepository
 import org.veo.core.service.EntitySchemaService
 
@@ -46,18 +45,17 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
     @Autowired
     UnitRepository unitRepository
 
-    @Autowired
-    DomainRepository domainRepository
-
     Client client
     ObjectMapper om = new ObjectMapper()
     String domainId
     String unitId
 
     def setup() {
-        client = createTestClient()
-        domainId = createDsgvoDomain(client).id.uuidValue()
-        unitId = unitRepository.save(newUnit(client)).dbId
+        executeInTransaction {
+            client = createTestClient()
+            domainId = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID).id.uuidValue()
+            unitId = unitRepository.save(newUnit(client)).dbId
+        }
     }
 
     def "created asset with custom aspect conforms to schema"() {

@@ -39,13 +39,14 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
     def "create specific domain from template"() {
         given: "a client"
-        Client client = repository.save(newClient {
-            name = "Demo Client"
-        })
 
         def domainFromTemplate = null
+        def client = null
         txTemplate.execute {
-            domainFromTemplate = domainTemplateService.createDomain(client, "00000000-0000-0000-0000-000000000001")
+            client = repository.save(newClient {
+                name = "Demo Client"
+            })
+            domainFromTemplate = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
             client.addToDomains(domainFromTemplate)
             client = repository.save(client)
         }
@@ -101,7 +102,8 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
         def domainFromTemplate = null
         txTemplate.execute {
-            domainFromTemplate = domainTemplateService.createDomain(client, "00000000-0000-0000-0000-000000000001")
+            createTestDomainTemplate(DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+            domainFromTemplate = domainTemplateService.createDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
             client.addToDomains(domainFromTemplate)
             client = repository.save(client)
         }
@@ -163,7 +165,8 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
         def domainFromTemplate = null
         txTemplate.execute {
-            domainFromTemplate = domainTemplateService.createDomain(client, "00000000-0000-0000-0000-000000000001")
+            createTestDomainTemplate(DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+            domainFromTemplate = domainTemplateService.createDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
             client.addToDomains(domainFromTemplate)
             client = repository.save(client)
         }
@@ -190,7 +193,9 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
         def domainFromTemplate = null
         txTemplate.execute {
-            domainFromTemplate = domainTemplateService.createDomain(client, "ae567e90-14c4-4ceb-bd16-32eda13d1e0b")
+            def testDomainVeo612TemplateId = "ae567e90-14c4-4ceb-bd16-32eda13d1e0b"
+            createTestDomainTemplate(testDomainVeo612TemplateId)
+            domainFromTemplate = domainTemplateService.createDomain(client, testDomainVeo612TemplateId)
             client.addToDomains(domainFromTemplate)
             client = repository.save(client)
         }
@@ -228,7 +233,9 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
         def domainFromTemplate = null
         txTemplate.execute {
-            domainFromTemplate = domainTemplateService.createDomain(client, "56596c4c-436a-40f1-9aaf-32c962f9553b")
+            def testDomainTemplateVeo620 = "56596c4c-436a-40f1-9aaf-32c962f9553b"
+            createTestDomainTemplate(testDomainTemplateVeo620)
+            domainFromTemplate = domainTemplateService.createDomain(client, testDomainTemplateVeo620)
             client.addToDomains(domainFromTemplate)
             client = repository.save(client)
         }

@@ -57,18 +57,17 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
     def element
 
     public setup () {
-        client = repository.save(newClient {
-            name = "Demo Client"
-        })
-
         txTemplate.execute {
-            defaultDomainCreator.addDefaultDomains(client)
+            client = repository.save(newClient {
+                name = "Demo Client"
+            })
+            domainFromTemplate = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID)
+            createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
             client = repository.save(client)
             unit = unitRepository.save(newUnit(client) {
                 name = "Test unit"
             })
         }
-        domainFromTemplate = client.domains.find { it.name == "test-domain" }
         item = domainFromTemplate.catalogs.first().catalogItems.sort({it.namespace}).first()
         element = catalogItemService.createInstance(item, domainFromTemplate)
     }

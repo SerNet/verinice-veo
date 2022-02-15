@@ -84,7 +84,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     def setup() {
         txTemplate.execute {
             def client = createTestClient()
-            dsgvoDomain = createDsgvoTestDomain(client)
+            dsgvoDomain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
 
             unit = newUnit(client) {
                 name = "Test unit"

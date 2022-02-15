@@ -70,9 +70,9 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
 
     def setup() {
         executeInTransaction {
-            client = newClient()
-            dsgvoDomain = domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
-            dsgvoTestDomain = domainTemplateService.createDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+            client = createTestClient()
+            dsgvoDomain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+            dsgvoTestDomain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
             client.addToDomains(dsgvoDomain)
             client.addToDomains(dsgvoTestDomain)
             client = clientRepository.save(client)

@@ -33,7 +33,7 @@ class SchemaControllerMockMvcSpec extends VeoMvcSpec {
     String domainId
 
     def setup() {
-        domainId = createDsgvoTestDomain(createTestClient()).id.uuidValue()
+        domainId = createTestDomain(createTestClient(), DSGVO_TEST_DOMAIN_TEMPLATE_ID).id.uuidValue()
     }
 
     @WithUserDetails("user@domain.example")

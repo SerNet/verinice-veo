@@ -42,7 +42,7 @@ class BasicCrudITSpec extends VeoMvcSpec {
 
     def setup() {
         client = createTestClient()
-        createDsgvoTestDomain(client)
+        createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
     }
 
     @WithUserDetails("user@domain.example")

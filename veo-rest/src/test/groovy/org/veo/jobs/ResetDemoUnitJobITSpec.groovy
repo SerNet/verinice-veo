@@ -64,6 +64,7 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
     @Override
     def setup() {
         userSwitcher = new UserSwitcher()
+        createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
     }
 
     def "Reset demo unit to defaults"() {

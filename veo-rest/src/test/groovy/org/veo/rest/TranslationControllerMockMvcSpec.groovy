@@ -20,6 +20,7 @@ package org.veo.rest
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+
 /**
  * Integration test for the translation controller.
  * Uses mocked spring MVC environment.
@@ -32,7 +33,7 @@ class TranslationControllerMockMvcSpec extends VeoMvcSpec {
     def "get the translation for all languages"() {
         given:
         createTestClient().tap {
-            createDsgvoDomain(it)
+            createTestDomain(it, DSGVO_DOMAINTEMPLATE_UUID)
         }
         when: "a request for a T10N file is made"
 

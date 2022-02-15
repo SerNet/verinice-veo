@@ -63,8 +63,10 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
     private Domain domain
 
     def setup() {
-        client = createTestClient()
-        domain = createDsgvoTestDomain(client)
+        executeInTransaction {
+            client = createTestClient()
+            domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        }
     }
 
     @WithUserDetails("user@domain.example")

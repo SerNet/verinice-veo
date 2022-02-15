@@ -129,7 +129,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                 log.error("Error reading file", e);
             }
         });
-        domainTemplateFiles.forEach(this::createDomainTemplate);
     }
 
     @Override

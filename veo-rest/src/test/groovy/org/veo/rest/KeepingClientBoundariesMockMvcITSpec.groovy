@@ -74,7 +74,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
     def setup() {
         txTemplate.execute {
             client = createTestClient()
-            createDsgvoTestDomain(client)
+            createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
 
             unit = unitRepository.save(newUnit(client) {
                 name = "Test unit"

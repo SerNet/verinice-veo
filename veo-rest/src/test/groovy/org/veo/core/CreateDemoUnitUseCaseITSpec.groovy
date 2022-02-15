@@ -56,7 +56,11 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
 
     def "create a demo unit for a client"() {
         given: 'a client'
-        def client = createClient()
+        def client = executeInTransaction {
+            createClient().tap{
+                createTestDomain(it, DSGVO_DOMAINTEMPLATE_UUID)
+            }
+        }
         when: 'executing the CreateDemoUnitUseCase'
         def unit = runUseCase(client)
         then: 'the demo unit is created'

@@ -23,7 +23,7 @@ import groovy.util.logging.Slf4j
 
 @Slf4j
 /**
- * Tests creation of elements from the catalog 'dsgvo-example.json'.
+ * Tests creation of elements from the catalog 'dsgvo.json'.
  * The catalog contains six controls: C-1, C-2, C-3, C-4, CC-1 and CC-2
  * They have the following tailoring references between them:
  * C1

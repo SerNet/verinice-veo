@@ -37,6 +37,9 @@ class ClientCreationMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "create a new client"() {
+        given:
+        createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
+        createTestDomainTemplate(TEST_DOMAIN_TEMPLATE_ID)
         when: "posting a unit as a new client"
         post("/units", ["name": "nova"])
 

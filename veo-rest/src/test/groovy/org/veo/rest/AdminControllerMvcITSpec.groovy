@@ -57,6 +57,9 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
 
     def "generates unit dump"() {
         given: "a unit with a bunch of elements and risks"
+        def client = createTestClient()
+        createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID)
+        createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
         def unitId = parseJson(post("/units", [name: "you knit"])).resourceId
         def domainId = parseJson(get("/domains")).first().id
         def owner = [targetUri: "http://localhost/units/$unitId"]
@@ -139,14 +142,9 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
 
     def "update client domains"() {
         given: "a client with some units and a document"
-        def client = executeInTransaction {
-            def client = newClient()
-            def dsgvoDomain = domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
-            def dsgvoTestDomain = domainTemplateService.createDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-            client.addToDomains(dsgvoDomain)
-            client.addToDomains(dsgvoTestDomain)
-            client = clientRepo.save(client)
-        }
+        def client = createTestClient()
+        createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+        createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
         def demoUnit = createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(client.id)).unit
         when: 'updating all clients'
         post("/admin/domaintemplates/${DSGVO_TEST_DOMAIN_TEMPLATE_ID}/allclientsupdate", [:], 204)

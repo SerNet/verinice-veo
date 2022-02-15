@@ -37,6 +37,10 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
     @Autowired
     private DocumentRepository documentRepo
 
+    def setup() {
+        createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
+    }
+
     def "create DSGVO domain for a single client"() {
         given: "a client with some units and a document"
         def client1 = clientRepo.save(newClient {})

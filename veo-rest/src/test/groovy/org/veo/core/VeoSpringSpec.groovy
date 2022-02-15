@@ -31,6 +31,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.unit.DeleteUnitUseCase
+import org.veo.jobs.SpringSpecDomainTemplateCreator
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.CatalogDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
@@ -121,6 +122,9 @@ abstract class VeoSpringSpec extends VeoSpec {
     @Autowired
     DeleteUnitUseCase deleteUnitUseCase
 
+    @Autowired
+    SpringSpecDomainTemplateCreator domainTemplateCreator
+
     def deleteUnitRecursively(Unit unit) {
         unit.units.each {
             deleteUnitRecursively(it)
@@ -138,7 +142,12 @@ abstract class VeoSpringSpec extends VeoSpec {
                 clientDataRepository.delete(client)
             }
             eventStoreDataRepository.deleteAll()
+            domainTemplateDataRepository.deleteAll()
         }
+    }
+
+    def createTestDomainTemplate(String templateId) {
+        domainTemplateCreator.createTestTemplate(templateId)
     }
 
     Client createTestClient() {
@@ -147,30 +156,9 @@ abstract class VeoSpringSpec extends VeoSpec {
         })
     }
 
-    Domain createDsgvoDomain(Client client) {
+    Domain createTestDomain(Client client, String templateId) {
         return txTemplate.execute {
-            def domain = domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
-            client.addToDomains(domain)
-            clientDataRepository.save(client)
-            return domain
-        }
-    }
-
-    Domain createDsgvoTestDomain(Client client) {
-        return txTemplate.execute {
-            def domain = domainTemplateService.createDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-            client.addToDomains(domain)
-            clientDataRepository.save(client)
-            return domain
-        }
-    }
-
-    Domain createTestDomain(Client client) {
-        return txTemplate.execute {
-            def domain = domainTemplateService.createDomain(client, TEST_DOMAIN_TEMPLATE_ID)
-            client.addToDomains(domain)
-            clientDataRepository.save(client)
-            return domain
+            return domainTemplateCreator.createDomainFromTemplate(templateId, client)
         }
     }
 
