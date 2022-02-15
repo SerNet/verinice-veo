@@ -109,6 +109,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         given:
         def postResponse = postNewUnit(UNIT_NAME)
         unitId = postResponse.resourceId
+        def domainId = getDomains().find { it.name == "test-domain" }.id
 
         when: "the catalog is retrieved"
         def catalogId = extractLastId(getDomains().find { it.name == "test-domain" }.catalogs.first().targetUri)
@@ -125,6 +126,9 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         def sourceControlId = post("/controls", [
             name : "Link Target Control",
             owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [:] as Map
+            ]
         ]).body.resourceId
 
         and: "C-4 is instantiated"
