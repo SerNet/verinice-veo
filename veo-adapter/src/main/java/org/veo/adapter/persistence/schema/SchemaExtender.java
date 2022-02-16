@@ -34,8 +34,11 @@ import org.veo.adapter.presenter.api.dto.ControlRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
+import org.veo.adapter.presenter.api.dto.ScenarioDomainAssociationDto;
+import org.veo.adapter.presenter.api.dto.ScenarioRiskValuesDto;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Scenario;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.SubTypeDefinition;
@@ -89,6 +92,9 @@ public class SchemaExtender {
         if (elementType.equals(Control.SINGULAR_TERM)) {
             return buildDomainAssociationSchemaForControl(generator, domain);
         }
+        if (elementType.equals(Scenario.SINGULAR_TERM)) {
+            return buildDomainAssociationSchemaForScenario(generator, domain);
+        }
         return generator.generateSchema(DomainAssociationDto.class);
     }
 
@@ -109,6 +115,28 @@ public class SchemaExtender {
                                                  .map(DiscreteValue::getOrdinalValue)
                                                  .map(IntNode::new)
                                                  .collect(Collectors.toList()));
+                  riskValuesProps.set(riskDefId, riskValuesSchema);
+              });
+        return domainAssociationSchema;
+    }
+
+    private ObjectNode buildDomainAssociationSchemaForScenario(SchemaGenerator generator,
+            Domain domain) {
+        var domainAssociationSchema = generator.generateSchema(ScenarioDomainAssociationDto.class);
+        var riskValuesProps = ((ObjectNode) domainAssociationSchema.get(PROPS)
+                                                                   .get(RISK_VALUES)).putObject(PROPS);
+        domain.getRiskDefinitions()
+              .forEach((riskDefId, riskDef) -> {
+                  var riskValuesSchema = generator.generateSchema(ScenarioRiskValuesDto.class);
+                  var potentialProbabilitySchema = (ObjectNode) riskValuesSchema.get(PROPS)
+                                                                                .get("potentialProbability");
+                  potentialProbabilitySchema.putArray("enum")
+                                            .addAll(riskDef.getProbability()
+                                                           .getLevels()
+                                                           .stream()
+                                                           .map(DiscreteValue::getOrdinalValue)
+                                                           .map(IntNode::new)
+                                                           .collect(Collectors.toList()));
                   riskValuesProps.set(riskDefId, riskValuesSchema);
               });
         return domainAssociationSchema;

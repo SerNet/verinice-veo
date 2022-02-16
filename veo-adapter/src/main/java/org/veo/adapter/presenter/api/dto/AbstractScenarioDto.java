@@ -82,7 +82,7 @@ public abstract class AbstractScenarioDto extends CompositeEntityDto<Scenario> {
         setDomains(Map.of(id, getDomains().values()
                                           .stream()
                                           .findFirst()
-                                          .orElse(new DomainAssociationDto())));
+                                          .orElse(new ScenarioDomainAssociationDto())));
     }
 
     @Override
@@ -92,5 +92,5 @@ public abstract class AbstractScenarioDto extends CompositeEntityDto<Scenario> {
 
     @Valid
     @Schema(description = "Details about this element's association with domains. Domain ID is key, association object is value.")
-    private Map<String, DomainAssociationDto> domains = new HashMap<>();
+    private Map<String, ScenarioDomainAssociationDto> domains = new HashMap<>();
 }

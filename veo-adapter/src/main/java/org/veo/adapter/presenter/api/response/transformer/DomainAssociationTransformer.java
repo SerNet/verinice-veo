@@ -19,6 +19,7 @@ package org.veo.adapter.presenter.api.response.transformer;
 
 import static org.veo.core.entity.risk.DomainRiskReferenceProvider.referencesForDomain;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -39,6 +40,8 @@ import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
 import org.veo.adapter.presenter.api.dto.ControlDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ControlRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
+import org.veo.adapter.presenter.api.dto.ScenarioDomainAssociationDto;
+import org.veo.adapter.presenter.api.dto.ScenarioRiskValuesDto;
 import org.veo.adapter.service.domaintemplate.SyntheticIdRef;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
@@ -54,6 +57,7 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
+import org.veo.core.entity.risk.PotentialProbabilityImpl;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
 /**
@@ -123,7 +127,36 @@ public class DomainAssociationTransformer {
 
     public void mapDomainsToEntity(AbstractScenarioDto source, Scenario target,
             IdRefResolver idRefResolver) {
-        mapToEntity(source.getDomains(), target, idRefResolver);
+        mapToEntity(source.getDomains(), target, idRefResolver, (domain, associationDto) -> {
+            target.setPotentialProbability(domain, associationDto.getRiskValues()
+                                                                 .entrySet()
+                                                                 .stream()
+                                                                 .collect(groupScenarioRiskValuesByDomain(domain)));
+        });
+    }
+
+    private Collector<Map.Entry<String, ScenarioRiskValuesDto>, ?, Map<RiskDefinitionRef, PotentialProbabilityImpl>> groupScenarioRiskValuesByDomain(
+            DomainTemplate domain) {
+        var referenceProvider = referencesForDomain(domain);
+        return Collectors.toMap(kv -> referenceProvider.getRiskDefinitionRef(kv.getKey())
+                                                       .orElseThrow(() -> new NotFoundException(
+                                                               "Risk definition '%s' was not found for domain '%s'",
+                                                               kv.getKey(), domain.getId())),
+                                kv -> mapScenarioRiskValuesDto2Entity(kv.getKey(), kv.getValue(),
+                                                                      referenceProvider));
+    }
+
+    private PotentialProbabilityImpl mapScenarioRiskValuesDto2Entity(String riskDefinitionId,
+            ScenarioRiskValuesDto riskValuesDto, DomainRiskReferenceProvider referenceProvider) {
+        var riskValues = new PotentialProbabilityImpl();
+        var probability = referenceProvider.getProbabilityRef(riskDefinitionId,
+                                                              BigDecimal.valueOf(riskValuesDto.getPotentialProbability()))
+                                           .orElseThrow(() -> new IllegalArgumentException(
+                                                   String.format("Risk definition %s contains no implementation status with ordinal value %d",
+                                                                 riskDefinitionId,
+                                                                 riskValuesDto.getPotentialProbability())));
+        riskValues.setPotentialProbability(probability);
+        return riskValues;
     }
 
     public void mapDomainsToEntity(AbstractScopeDto source, Scope target,
@@ -176,7 +209,28 @@ public class DomainAssociationTransformer {
     }
 
     public void mapDomainsToDto(Scenario source, AbstractScenarioDto target) {
-        target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new));
+        target.setDomains(extractDomainAssociations(source, (domain) -> {
+            var assocationDto = new ScenarioDomainAssociationDto();
+            source.getPotentialProbability(domain)
+                  .ifPresent(riskValues -> {
+                      assocationDto.setRiskValues(riskValues.entrySet()
+                                                            .stream()
+                                                            .collect(Collectors.toMap(kv -> kv.getKey()
+                                                                                              .getIdRef(),
+                                                                                      this::mapScenarioRiskValuesToDto)));
+                  });
+            return assocationDto;
+        }));
+    }
+
+    private ScenarioRiskValuesDto mapScenarioRiskValuesToDto(
+            Map.Entry<RiskDefinitionRef, PotentialProbabilityImpl> entry) {
+        var riskValuesDto = new ScenarioRiskValuesDto();
+        riskValuesDto.setPotentialProbability(entry.getValue()
+                                                   .getPotentialProbability()
+                                                   .getIdRef()
+                                                   .intValue());
+        return riskValuesDto;
     }
 
     public void mapDomainsToDto(Scope source, AbstractScopeDto target) {
