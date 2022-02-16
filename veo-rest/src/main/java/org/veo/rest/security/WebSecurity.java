@@ -40,8 +40,6 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.filter.ForwardedHeaderFilter;
 
 import org.veo.persistence.CurrentUserProvider;
 import org.veo.persistence.LenientCurrentUserProviderImpl;
@@ -104,11 +102,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http.oauth2ResourceServer()
             .jwt()
             .jwtAuthenticationConverter(jwtAuthenticationConverter());
-
-        // Filter X-Forwarded-Host etc
-        var forwardedFilter = new ForwardedHeaderFilter();
-        forwardedFilter.setRemoveOnly(true);
-        http.addFilterBefore(forwardedFilter, CorsFilter.class);
     }
 
     private JwtAuthenticationConverter jwtAuthenticationConverter() {
