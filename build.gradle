@@ -134,8 +134,8 @@ subprojects {
             dependency 'io.jsonwebtoken:jjwt-api:0.11.2'
             dependency 'io.jsonwebtoken:jjwt-impl:0.11.2'
             dependency 'io.jsonwebtoken:jjwt-jackson:0.11.2'
-            dependency "org.spockframework:spock-core:2.0-groovy-3.0"
-            dependency "org.spockframework:spock-spring:2.0-groovy-3.0"
+            dependency "org.spockframework:spock-core:2.1-groovy-3.0"
+            dependency "org.spockframework:spock-spring:2.1-groovy-3.0"
             dependency 'org.springdoc:springdoc-openapi-ui:1.6.6'
             dependency 'io.swagger.core.v3:swagger-core:2.1.13'
             dependency 'io.swagger.core.v3:swagger-annotations:2.1.13'
