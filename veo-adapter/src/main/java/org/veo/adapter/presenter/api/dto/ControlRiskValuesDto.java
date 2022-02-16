@@ -19,10 +19,13 @@ package org.veo.adapter.presenter.api.dto;
 
 import javax.validation.constraints.Min;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
 public class ControlRiskValuesDto {
     @Min(0)
+    @Schema(description = "Reference to an implementation status level in the risk definition",
+            example = "2")
     int implementationStatus;
 }
