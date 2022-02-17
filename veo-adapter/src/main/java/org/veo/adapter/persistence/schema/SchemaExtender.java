@@ -87,26 +87,31 @@ public class SchemaExtender {
     private ObjectNode buildDomainAssociationSchema(String elementType, SchemaGenerator generator,
             Domain domain) {
         if (elementType.equals(Control.SINGULAR_TERM)) {
-            var domainAssociationSchema = generator.generateSchema(ControlDomainAssociationDto.class);
-            var riskValuesProps = ((ObjectNode) domainAssociationSchema.get(PROPS)
-                                                                       .get(RISK_VALUES)).putObject(PROPS);
-            domain.getRiskDefinitions()
-                  .forEach((riskDefId, riskDef) -> {
-                      var riskValuesSchema = generator.generateSchema(ControlRiskValuesDto.class);
-                      var implStatusSchema = (ObjectNode) riskValuesSchema.get(PROPS)
-                                                                          .get("implementationStatus");
-                      implStatusSchema.putArray("enum")
-                                      .addAll(riskDef.getImplementationStateDefinition()
-                                                     .getLevels()
-                                                     .stream()
-                                                     .map(DiscreteValue::getOrdinalValue)
-                                                     .map(IntNode::new)
-                                                     .collect(Collectors.toList()));
-                      riskValuesProps.set(riskDefId, riskValuesSchema);
-                  });
-            return domainAssociationSchema;
+            return buildDomainAssociationSchemaForControl(generator, domain);
         }
         return generator.generateSchema(DomainAssociationDto.class);
+    }
+
+    private ObjectNode buildDomainAssociationSchemaForControl(SchemaGenerator generator,
+            Domain domain) {
+        var domainAssociationSchema = generator.generateSchema(ControlDomainAssociationDto.class);
+        var riskValuesProps = ((ObjectNode) domainAssociationSchema.get(PROPS)
+                                                                   .get(RISK_VALUES)).putObject(PROPS);
+        domain.getRiskDefinitions()
+              .forEach((riskDefId, riskDef) -> {
+                  var riskValuesSchema = generator.generateSchema(ControlRiskValuesDto.class);
+                  var implStatusSchema = (ObjectNode) riskValuesSchema.get(PROPS)
+                                                                      .get("implementationStatus");
+                  implStatusSchema.putArray("enum")
+                                  .addAll(riskDef.getImplementationStateDefinition()
+                                                 .getLevels()
+                                                 .stream()
+                                                 .map(DiscreteValue::getOrdinalValue)
+                                                 .map(IntNode::new)
+                                                 .collect(Collectors.toList()));
+                  riskValuesProps.set(riskDefId, riskValuesSchema);
+              });
+        return domainAssociationSchema;
     }
 
     private void addSubTypes(ObjectNode domainAssociationSchema,
