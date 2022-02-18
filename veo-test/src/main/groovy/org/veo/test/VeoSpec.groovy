@@ -28,6 +28,7 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.CustomLink
+import org.veo.core.entity.Designated
 import org.veo.core.entity.Document
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
@@ -369,7 +370,7 @@ abstract class VeoSpec extends Specification {
 
     private static initElement(Element target) {
         if(target.designator == null) {
-            target.designator = "${target.typeDesignator}-${designatorCounter++}"
+            assignDesignator(target)
         }
         if(target.customAspects == null) {
             target.customAspects = []
@@ -382,6 +383,10 @@ abstract class VeoSpec extends Specification {
         }
         name(target)
         version(target)
+    }
+
+    static def assignDesignator(Designated target) {
+        target.designator = "${target.typeDesignator}-${designatorCounter++}"
     }
 
     private static def version(Versioned target) {
