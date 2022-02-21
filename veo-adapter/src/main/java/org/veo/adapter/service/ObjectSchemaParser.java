@@ -87,7 +87,7 @@ public class ObjectSchemaParser {
                                                           subTypeDefinition.setStatuses(StreamSupport.stream(statusValues.spliterator(),
                                                                                                              false)
                                                                                                      .map(JsonNode::asText)
-                                                                                                     .collect(Collectors.toSet()));
+                                                                                                     .collect(Collectors.toList()));
                                                           return subTypeDefinition;
                                                       }));
     }

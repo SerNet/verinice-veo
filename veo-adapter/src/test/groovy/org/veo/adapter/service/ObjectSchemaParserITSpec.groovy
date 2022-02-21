@@ -46,19 +46,19 @@ class ObjectSchemaParserITSpec extends Specification {
                 'PRO_DataProcessing'
             ] as Set
             it.PRO_DataTransfer.statuses==[
-                'IN_PROGRESS',
                 'NEW',
-                'RELEASED',
+                'IN_PROGRESS',
                 'FOR_REVIEW',
+                'RELEASED',
                 'ARCHIVED'
-            ] as Set
+            ]
             it.PRO_DataProcessing.statuses==[
-                'IN_PROGRESS',
                 'NEW',
-                'RELEASED',
+                'IN_PROGRESS',
                 'FOR_REVIEW',
+                'RELEASED',
                 'ARCHIVED'
-            ] as Set
+            ]
         })
 
         1 * elementDefinition.setCustomAspects({

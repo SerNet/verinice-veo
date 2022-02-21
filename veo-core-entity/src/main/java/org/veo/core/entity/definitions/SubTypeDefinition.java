@@ -17,11 +17,11 @@
  ******************************************************************************/
 package org.veo.core.entity.definitions;
 
-import java.util.Set;
+import java.util.List;
 
 import lombok.Data;
 
 @Data
 public class SubTypeDefinition {
-    private Set<String> statuses;
+    private List<String> statuses;
 }
