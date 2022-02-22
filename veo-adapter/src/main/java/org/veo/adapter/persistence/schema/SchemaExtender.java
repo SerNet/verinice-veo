@@ -124,6 +124,18 @@ public class SchemaExtender {
                                                                 .get("subType");
         var subTypesEnum = subTypeSchema.putArray("enum");
         var conditions = domainAssociationSchema.putArray("allOf");
+
+        // Define status as an enum value with all the possible statuses from all
+        // possible subtypes.
+        var commonStatusEnum = ((ObjectNode) domainAssociationSchema.get(PROPS)
+                                                                    .get("status")).putArray("enum");
+        subTypes.values()
+                .stream()
+                .flatMap(s -> s.getStatuses()
+                               .stream())
+                .distinct()
+                .forEach(commonStatusEnum::add);
+
         subTypes.forEach((subTypeKey, definition) -> {
             subTypesEnum.add(subTypeKey);
             var condition = conditions.addObject();

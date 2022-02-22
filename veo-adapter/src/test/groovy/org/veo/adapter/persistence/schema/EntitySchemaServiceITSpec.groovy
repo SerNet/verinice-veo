@@ -98,12 +98,32 @@ class EntitySchemaServiceITSpec extends Specification {
         }
         with(schema.get(PROPS).get("domains").get(PROPS)) {
             get(testDomain.idAsString).get(PROPS).get("subType").get("enum")*.textValue() == ["testSubType"]
+            get(testDomain.idAsString).get(PROPS).get("status").get("enum")*.textValue() ==~ ["NEW", "OLD"]
             get(testDomain.idAsString).get("allOf").first().get("if").get(PROPS).get("subType").get("const").textValue() == "testSubType"
             get(testDomain.idAsString).get("allOf").first().get("then").get(PROPS).get("status").get("enum")*.textValue() == ["NEW", "OLD"]
 
-            get(extraTestDomain.idAsString).get(PROPS).get("subType").get("enum")*.textValue() == ["extraTestSubType"]
-            get(extraTestDomain.idAsString).get("allOf").first().get("if").get(PROPS).get("subType").get("const").textValue() == "extraTestSubType"
-            get(extraTestDomain.idAsString).get("allOf").first().get("then").get(PROPS).get("status").get("enum")*.textValue() == ["EXTRA_NEW", "EXTRA_OLD"]
+            with(get(extraTestDomain.idAsString)) {
+                get(PROPS).get("subType").get("enum")*.textValue() ==~ [
+                    "extraTestSubType",
+                    "extraSuperSubType"
+                ]
+                get(PROPS).get("status").get("enum")*.textValue() ==~ [
+                    "EXTRA_NEW",
+                    "EXTRA_OLD",
+                    "SUPER_NEW",
+                    "SUPER_OLD"
+                ]
+
+                with(get("allOf")) { JsonNode allOf ->
+                    allOf.size() == 2
+                    with(allOf.find { it.get("if").get(PROPS).get("subType").get("const").textValue() == "extraTestSubType" }) {
+                        get("then").get(PROPS).get("status").get("enum")*.textValue() ==~ ["EXTRA_NEW", "EXTRA_OLD"]
+                    }
+                    with(allOf.find { it.get("if").get(PROPS).get("subType").get("const").textValue() == "extraSuperSubType" }) {
+                        get("then").get(PROPS).get("status").get("enum")*.textValue() ==~ ["SUPER_NEW", "SUPER_OLD"]
+                    }
+                }
+            }
         }
     }
 
@@ -234,7 +254,10 @@ class EntitySchemaServiceITSpec extends Specification {
                     subTypes >> [
                         extraTestSubType: Mock(SubTypeDefinition) {
                             statuses >> ["EXTRA_NEW", "EXTRA_OLD"]
-                        }
+                        },
+                        extraSuperSubType: Mock(SubTypeDefinition) {
+                            statuses >> ["SUPER_NEW", "SUPER_OLD"]
+                        },
                     ]
                 }
             ]
