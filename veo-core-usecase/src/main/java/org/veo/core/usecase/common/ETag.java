@@ -17,11 +17,10 @@
  ******************************************************************************/
 package org.veo.core.usecase.common;
 
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
-import javax.xml.bind.DatatypeConverter;
 
 /**
  * This class provides methods to manage ETags, see:
@@ -65,8 +64,9 @@ public final class ETag {
     private static String createSHA256Hash(String s) throws NoSuchAlgorithmException {
         MessageDigest digest = MessageDigest.getInstance(SHA256_ALGORITHM);
         byte[] encodedhash = digest.digest(s.getBytes(StandardCharsets.UTF_8));
-        return DatatypeConverter.printHexBinary(encodedhash)
-                                .toLowerCase();
+        BigInteger bigInteger = new BigInteger(1, encodedhash);
+        // https://www.baeldung.com/java-byte-arrays-hex-strings#using-thebiginteger-class
+        return String.format("%0" + (encodedhash.length << 1) + "x", bigInteger);
     }
 
     public static void setSalt(String salt) {
