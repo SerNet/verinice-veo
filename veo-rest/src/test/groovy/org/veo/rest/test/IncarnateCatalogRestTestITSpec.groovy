@@ -269,17 +269,15 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         then: "all elements are created"
         elementResults.size() == 65
 
-        when: "we get each element"
+        and: "all elements have subtype information"
         elementResults.each { element ->
             String targetUri = element.targetUri
             def elementResult = get(targetUri).body
             log.debug("==> elementResult: {}", elementResult)
 
-            then: "check the domain and subtype"
-            elementResult.domains[dsgvoId].subType != null
-            elementResult.domains[dsgvoId].status != null
+            assert elementResult.domains[dsgvoId].subType != null
+            assert elementResult.domains[dsgvoId].status != null
         }
-        then: "nothing"
     }
 
     private applyCatalogItems(catalog) {
