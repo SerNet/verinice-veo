@@ -159,6 +159,58 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         ex.message ==~ /.*subType: does not have a value in the enumeration.*/
     }
 
+    def "status is validated by schema"() {
+        when: "posting a control with a sub type but null status"
+        post("/controls", [
+            name: "control",
+            owner: [
+                targetUri: "http://localhost/units/"+unitId,
+            ],
+            domains: [
+                (domainId): [
+                    subType: "CTL_TOM",
+                    status: null
+                ]
+            ]
+        ])
+        then: "an exception is thrown"
+        def ex = thrown(JsonSchemaValidationException)
+        ex.message ==~ /.*status: null found, string expected.*/
+
+        when: "posting a control with an invalid status"
+        post("/controls", [
+            name: "control",
+            owner: [
+                targetUri: "http://localhost/units/"+unitId,
+            ],
+            domains: [
+                (domainId): [
+                    subType: "CTL_TOM",
+                    status: "CRAZY"
+                ]
+            ]
+        ])
+        then: "an exception is thrown"
+        ex = thrown(JsonSchemaValidationException)
+        ex.message ==~ /.*status: does not have a value in the enumeration.*/
+
+        when: "posting a control with a valid status"
+        post("/controls", [
+            name: "control",
+            owner: [
+                targetUri: "http://localhost/units/"+unitId,
+            ],
+            domains: [
+                (domainId): [
+                    subType: "CTL_TOM",
+                    status: "NEW"
+                ]
+            ]
+        ])
+        then: "no exception is thrown"
+        notThrown(Exception)
+    }
+
     def "created control with custom aspect and risk value conforms to schema"() {
         given: "the control schema and a newly created control"
         def schema = getSchema("control")
