@@ -51,6 +51,7 @@ import org.veo.core.entity.risk.Impact;
 import org.veo.core.entity.risk.ImpactImpl;
 import org.veo.core.entity.risk.ProbabilityImpl;
 import org.veo.core.entity.risk.RiskDefinitionRef;
+import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -105,8 +106,7 @@ public class ProcessRiskValuesAspectData implements RiskValuesAspect {
     private DomainTemplate domain;
 
     @Setter(AccessLevel.NONE)
-    @Column(columnDefinition = "jsonb")
-    @Type(type = "json")
+    @Column(length = RiskDefinition.MAX_ID_SIZE)
     private RiskDefinitionRef riskDefinition;
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = ProcessRiskData.class, optional = false)
