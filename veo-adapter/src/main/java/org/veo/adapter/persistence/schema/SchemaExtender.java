@@ -84,6 +84,7 @@ public class SchemaExtender {
     private ObjectNode addDomainAssociation(ObjectNode domainProps, Domain domain,
             SchemaGenerator generator, String elementType) {
         var domainAssociationNode = buildDomainAssociationSchema(elementType, generator, domain);
+        domainAssociationNode.put(ADDITIONAL_PROPERTIES, false);
         domainProps.set(domain.getIdAsString(), domainAssociationNode);
         return domainAssociationNode;
     }
@@ -116,6 +117,7 @@ public class SchemaExtender {
                                                  .map(DiscreteValue::getOrdinalValue)
                                                  .map(IntNode::new)
                                                  .collect(Collectors.toList()));
+                  riskValuesSchema.put(ADDITIONAL_PROPERTIES, false);
                   riskValuesProps.set(riskDefId, riskValuesSchema);
               });
         return domainAssociationSchema;
@@ -138,6 +140,7 @@ public class SchemaExtender {
                                                            .map(DiscreteValue::getOrdinalValue)
                                                            .map(IntNode::new)
                                                            .collect(Collectors.toList()));
+                  riskValuesSchema.put(ADDITIONAL_PROPERTIES, false);
                   riskValuesProps.set(riskDefId, riskValuesSchema);
               });
         return domainAssociationSchema;

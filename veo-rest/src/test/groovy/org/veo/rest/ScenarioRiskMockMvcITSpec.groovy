@@ -187,7 +187,7 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
         ], false)
 
         then: "an exception is thrown"
-        ex = thrown(HttpMessageNotReadableException)
-        ex.message.contains("JSON parse error: Unrecognized field \"implementationStatus\"")
+        ex = thrown(JsonSchemaValidationException)
+        ex.message.contains("implementationStatus: is not defined in the schema")
     }
 }
