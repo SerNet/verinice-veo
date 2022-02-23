@@ -202,7 +202,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         given: "the domain template and a catalog"
 
         domain0 = newDomain(client)
-        Catalog catalog = newCatalog(domain0) {
+        newCatalog(domain0) {
             name = 'a'
 
             newCatalogItem(it, {

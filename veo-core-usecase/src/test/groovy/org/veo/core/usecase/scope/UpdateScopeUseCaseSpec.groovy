@@ -32,7 +32,6 @@ class UpdateScopeUseCaseSpec extends UseCaseSpec {
     UpdateScopeUseCase usecase = new UpdateScopeUseCase(scopeRepository)
     def "update a scope"() {
         given:
-        def repository = Mock(ScopeRepository)
         def scopeId = Key.newUuid()
         def scope = Mock(Scope)
         scope.getOwner() >> existingUnit

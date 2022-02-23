@@ -50,7 +50,7 @@ class AdminRestTest extends VeoRestTest{
 
         def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${allItems}").body
         log.info("==> incarnationDescription: {}", JsonOutput.toJson(incarnationDescription))
-        def response = post("/units/${unitId}/incarnations", incarnationDescription)
+        post("/units/${unitId}/incarnations", incarnationDescription)
 
         when:
         def dump = get("/admin/unit-dump/$unitId", 200, UserType.ADMIN).body

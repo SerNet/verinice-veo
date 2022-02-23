@@ -61,7 +61,7 @@ public class DeleteElementUseCaseSpec extends UseCaseSpec {
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(Process,id, existingClient))
+        usecase.execute(new InputData(Process,id, existingClient))
         then:
         1 * processRepository.findById(id) >> Optional.of(process)
         1 * processRepository.deleteById(id)
@@ -74,7 +74,7 @@ public class DeleteElementUseCaseSpec extends UseCaseSpec {
             getId() >> id
         }
         when:
-        def output = usecase.execute(new InputData(Person,id, existingClient))
+        usecase.execute(new InputData(Person,id, existingClient))
         then:
         1 * personRepository.findById(id) >> Optional.of(person)
         1 * personRepository.deleteById(id)
@@ -88,7 +88,7 @@ public class DeleteElementUseCaseSpec extends UseCaseSpec {
             getId() >> scopeId
         }
         when:
-        def output = usecase.execute(new InputData(Scope, scopeId, existingClient))
+        usecase.execute(new InputData(Scope, scopeId, existingClient))
         then:
         1 * scopeRepository.findById(scopeId) >> Optional.of(scope)
         1 * scopeRepository.deleteById(scopeId)

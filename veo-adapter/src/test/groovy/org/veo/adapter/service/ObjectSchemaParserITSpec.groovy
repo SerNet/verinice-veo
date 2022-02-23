@@ -35,10 +35,11 @@ class ObjectSchemaParserITSpec extends Specification {
     def "parse an object schema into an ElementTypeDefinition"() {
         given:
         def schemaNode = objectMapper.readTree(ObjectSchemaParserITSpec.getResourceAsStream('/os_process.json'))
-        ElementTypeDefinition elementDefinition = Mock()
+        def elementDefinition = Mock(ElementTypeDefinition)
         when:
-        elementDefinition = objectSchemaParser.parseTypeDefinitionFromObjectSchema(EntityType.PROCESS, schemaNode)
+        def result = objectSchemaParser.parseTypeDefinitionFromObjectSchema(EntityType.PROCESS, schemaNode)
         then:
+        result == elementDefinition
         1 * entityFactory.createElementTypeDefinition('process', null) >> elementDefinition
         1 * elementDefinition.setSubTypes({
             it.keySet() == [

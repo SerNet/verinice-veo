@@ -52,21 +52,21 @@ class GetDomainUseCaseSpec extends UseCaseSpec {
     def "retrieve an inactive domain"() {
         when:
         existingDomain.isActive() >> false
-        def output = usecase.execute(new IdAndClient(existingDomainId,  existingClient))
+        usecase.execute(new IdAndClient(existingDomainId,  existingClient))
         then:
         thrown(NotFoundException)
     }
 
     def "retrieve a domain unknown client"() {
         when:
-        def output = usecase.execute(new IdAndClient(existingDomainId,  anotherClient))
+        usecase.execute(new IdAndClient(existingDomainId,  anotherClient))
         then:
         thrown(ClientBoundaryViolationException)
     }
 
     def "retrieve an unknown domain"() {
         when:
-        def output = usecase.execute(new IdAndClient(Key.newUuid(),  existingClient))
+        usecase.execute(new IdAndClient(Key.newUuid(),  existingClient))
         then:
         thrown(NotFoundException)
     }

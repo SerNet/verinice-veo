@@ -65,7 +65,7 @@ class GetDomainTemplatesUseCaseSpec extends UseCaseSpec {
         clientRepository.findById(client.id) >> Optional.empty()
         templateService.getTemplates(existingClient) >> Collections.singletonList(domaintemplate)
         when:
-        def output = usecase.execute(new InputData(client))
+        usecase.execute(new InputData(client))
         then:
         thrown(NotFoundException)
     }

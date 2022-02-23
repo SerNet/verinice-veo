@@ -185,7 +185,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         item1.element >> control
 
         when:
-        def output = usecase.execute(new InputData(existingClient, existingUnit.id, [
+        usecase.execute(new InputData(existingClient, existingUnit.id, [
             new IncarnateCatalogItemDescription(item1, [])
         ]))
         then:
@@ -202,7 +202,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         anotherUnit.id >> unitId
 
         when:
-        def output = usecase.execute(new InputData(existingClient, anotherUnit.id, [
+        usecase.execute(new InputData(existingClient, anotherUnit.id, [
             new IncarnateCatalogItemDescription(item1, [])
         ]))
         then:
@@ -221,7 +221,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         other.domainTemplate >> Mock(Domain)
 
         when:
-        def output = usecase.execute(new InputData(existingClient, existingUnit.id, [
+        usecase.execute(new InputData(existingClient, existingUnit.id, [
             new IncarnateCatalogItemDescription(item2, [])
         ]))
         then:
@@ -237,7 +237,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         ref.referenceType >> TailoringReferenceType.LINK_EXTERNAL
 
         when:
-        def output = usecase.execute(new InputData(existingClient, existingUnit.id,
+        usecase.execute(new InputData(existingClient, existingUnit.id,
                 [
                     new IncarnateCatalogItemDescription(item1, [ref])
                 ]))

@@ -174,15 +174,15 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         domainFromTemplate.templateVersion = "1.0"
         domainFromTemplate.revision = "2"
 
-        def domainTemplateFromDomain = txTemplate.execute {
+        txTemplate.execute {
             domainTemplateService.createDomainTemplateFromDomain(domainFromTemplate)
         }
         when:"created with same name/version/revision"
-        def second = txTemplate.execute {
+        txTemplate.execute {
             domainTemplateService.createDomainTemplateFromDomain(domainFromTemplate)
         }
         then: "an exception is thrown"
-        ModelConsistencyException ex = thrown()
+        thrown(ModelConsistencyException)
     }
 
     def "create a domain whose catalog contains a composite"() {

@@ -55,10 +55,10 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server"
-        def results = get("/${basePath}/${unitSecondClient.id.uuidValue()}/incarnations?itemIds=${item1.id.uuidValue()}", 400)
+        get("/${basePath}/${unitSecondClient.id.uuidValue()}/incarnations?itemIds=${item1.id.uuidValue()}", 400)
 
         then: "the data is rejected"
-        ClientBoundaryViolationException ex = thrown()
+        thrown(ClientBoundaryViolationException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -66,10 +66,10 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server"
-        def results = get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${otherItem.id.uuidValue()}", 400)
+        get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${otherItem.id.uuidValue()}", 400)
 
         then: "the data is rejected"
-        ClientBoundaryViolationException ex = thrown()
+        thrown(ClientBoundaryViolationException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -181,7 +181,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems and the control c1"
 
         def result = getIncarnationDescriptions(unit,item1)
-        def postResult = postIncarnationDescriptions(unit,result)
+        postIncarnationDescriptions(unit,result)
 
         when: "a request is made to the server to create a p3-all-features element"
         result = getIncarnationDescriptions(unit,item6)
@@ -190,7 +190,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters.size() == 1
 
         when: "we create Item6"
-        postResult = postIncarnationDescriptions(unit,result)
+        def postResult = postIncarnationDescriptions(unit,result)
         then: "1 object is created"
         postResult.size() == 1
 
@@ -219,11 +219,10 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems and the control p1, also the linked controls"
 
         def incarnationDescriptions = getIncarnationDescriptions(unit,item1,item2)
-        def postResult = postIncarnationDescriptions(unit,incarnationDescriptions)
+        postIncarnationDescriptions(unit,incarnationDescriptions)
 
         incarnationDescriptions = getIncarnationDescriptions(unit,item4)
-        postResult = postIncarnationDescriptions(unit,incarnationDescriptions)
-        def processUri = postResult[0].targetUri
+        def processUri = postIncarnationDescriptions(unit,incarnationDescriptions)[0].targetUri
 
         when: "a request is made to the server to create a TOM1 element"
         incarnationDescriptions = getIncarnationDescriptions(unit,item7)
@@ -232,7 +231,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         incarnationDescriptions.parameters.size() == 1
 
         when: "we create Item7"
-        postResult = postIncarnationDescriptions(unit,incarnationDescriptions)
+        def postResult = postIncarnationDescriptions(unit,incarnationDescriptions)
         then: "1 object is created"
         postResult.size() == 1
 
@@ -294,9 +293,9 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters.size() == 3
 
         when: "post the data"
-        def postResults = post("/${basePath}/${unitSecondClient.id.uuidValue()}/incarnations",result, 400)
+        post("/${basePath}/${unitSecondClient.id.uuidValue()}/incarnations",result, 400)
         then: "the data is rejected"
-        ClientBoundaryViolationException ex = thrown()
+        thrown(ClientBoundaryViolationException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -347,9 +346,9 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters.size() == 2
 
         when: "post the data"
-        def postResult = post("/${basePath}/${unit.id.uuidValue()}/incarnations",result, 404)
+        post("/${basePath}/${unit.id.uuidValue()}/incarnations",result, 404)
         then: "the data is rejected"
-        NotFoundException ex = thrown()
+        thrown(NotFoundException)
     }
 
     private getIncarnationDescriptions(Unit unit, CatalogItem... items) {

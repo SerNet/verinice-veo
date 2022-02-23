@@ -119,7 +119,6 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         incarnationDescription = getIncarnationDescriptions(unitId, itemCC1Id)
         incarnationDescription.parameters.first().references[0].put("referencedElement", ["targetUri":createdElementC1])
         postApply = postIncarnationDescriptions(postResponse.resourceId, incarnationDescription)
-        def controlCC1Id = extractLastId(postApply.first().targetUri)
         def controlCC1TargetUri = postApply.first().targetUri
 
         log.info("===========> create element cc-2 by incarnation linked to cc-1")
@@ -199,8 +198,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         def itemC1Id = itemIdByDisplayName(catalog, "NO_DESIGNATOR c-2 Control-2")
         def incarnationDescription = getIncarnationDescriptions(postResponse.resourceId, itemC1Id)
         10.times {
-            def postApply = postIncarnationDescriptions(postResponse.resourceId, incarnationDescription)
-            def createdElementC1 = postApply.first().targetUri
+            postIncarnationDescriptions(postResponse.resourceId, incarnationDescription)
         }
 
         def controls = getControlsForUnit(unitId)

@@ -62,7 +62,7 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
     def "retrieve a catalogitem for a deleted domain"() {
         when:
         existingDomain.isActive() >> false
-        def output = usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId,catalogId, Optional.of(existingDomainId), existingClient))
+        usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId,catalogId, Optional.of(existingDomainId), existingClient))
         then:
         thrown(NotFoundException)
     }
@@ -70,7 +70,7 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
     def "retrieve a catalogitem for another client"() {
         when:
         existingDomain.isActive() >> true
-        def output = usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, catalogId, Optional.empty(),anotherClient))
+        usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, catalogId, Optional.empty(),anotherClient))
         then:
         thrown(NotFoundException)
     }
@@ -78,7 +78,7 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
     def "retrieve an unknown catalogitem"() {
         when:
         existingDomain.isActive() >> true
-        def output = usecase.execute(new GetCatalogItemUseCase.InputData(Key.newUuid(), catalogId,  Optional.of(existingDomainId),existingClient))
+        usecase.execute(new GetCatalogItemUseCase.InputData(Key.newUuid(), catalogId,  Optional.of(existingDomainId),existingClient))
         then:
         thrown(NotFoundException)
     }

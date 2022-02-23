@@ -807,9 +807,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             'If-Match': eTag
         ]
 
-        def putResult =
-                put("/assets/${asset.id.uuidValue()}/risks/${scenario.id.uuidValue()}",
-                putBody as Map, headers)
+        put("/assets/${asset.id.uuidValue()}/risks/${scenario.id.uuidValue()}", putBody as Map, headers)
 
         and: "the risk is retrieved again"
         def riskJson = parseJson(

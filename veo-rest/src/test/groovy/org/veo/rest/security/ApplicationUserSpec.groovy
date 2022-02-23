@@ -36,7 +36,7 @@ public class ApplicationUserSpec extends Specification {
     def "A helpful error message is produced if a user does not belong to any groups"() {
         when:
         def jwt = new Jwt.Builder('foo').header('Foo', 'Bar').claim('name', 'Arthur').build()
-        ApplicationUser user = ApplicationUser.authenticatedUser(jwt)
+        ApplicationUser.authenticatedUser(jwt)
         then:
         Exception e = thrown()
         e.message =~ /Expected 1 client/

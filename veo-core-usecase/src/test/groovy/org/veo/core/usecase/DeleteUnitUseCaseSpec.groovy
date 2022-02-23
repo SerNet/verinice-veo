@@ -45,7 +45,6 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
         Unit existingUnit = Mock(Unit)
         existingUnit.id >> uid
         existingUnit.client >> existingClient
-        Unit subUnit = Mock(Unit)
         def assetRepository = Mock(AssetRepository)
         def controlRepository = Mock(ControlRepository)
         def documentRepository = Mock(DocumentRepository)

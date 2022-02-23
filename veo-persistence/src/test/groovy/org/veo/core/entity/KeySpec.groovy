@@ -98,9 +98,9 @@ public class KeySpec extends Specification {
         !key.equals(otherCompoundKeySameType)
 
         and: "the UUID can be read"
-        String uuid = key.uuidValue()
+        key.uuidValue()
 
         and: "the key equals one created with the same UUID"
-        Key sameKey = new Key()
+        key == Key.uuidFrom(key.uuidValue())
     }
 }

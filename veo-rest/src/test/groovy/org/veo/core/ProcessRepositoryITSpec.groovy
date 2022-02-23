@@ -24,7 +24,6 @@ import org.springframework.transaction.TransactionSystemException
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.entity.Client
-import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
@@ -61,7 +60,6 @@ class ProcessRepositoryITSpec extends VeoSpringSpec {
 
     def "try to persist an invalid process at the persistence layer"() {
         given: "an invalid process object"
-        Key<UUID> id = Key.newUuid()
         def processData = new ProcessData()
 
         when: "the process is saved using the repository"

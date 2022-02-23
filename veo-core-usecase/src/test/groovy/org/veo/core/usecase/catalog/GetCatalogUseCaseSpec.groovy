@@ -68,7 +68,7 @@ class GetCatalogUseCaseSpec extends UseCaseSpec {
     def "retrieve a catalog for another client"() {
         when:
         existingDomain.isActive() >> true
-        def output = usecase.execute(new IdAndClient(catalogId,  anotherClient))
+        usecase.execute(new IdAndClient(catalogId,  anotherClient))
         then:
         thrown(ClientBoundaryViolationException)
     }
@@ -76,7 +76,7 @@ class GetCatalogUseCaseSpec extends UseCaseSpec {
     def "retrieve a catalog for inactive domain"() {
         when:
         existingDomain.isActive() >> false
-        def output = usecase.execute(new IdAndClient(catalogId,  existingClient))
+        usecase.execute(new IdAndClient(catalogId,  existingClient))
         then:
         thrown(NotFoundException)
     }
@@ -84,7 +84,7 @@ class GetCatalogUseCaseSpec extends UseCaseSpec {
     def "retrieve an unknown catalog"() {
         when:
         existingDomain.isActive() >> true
-        def output = usecase.execute(new IdAndClient(Key.newUuid(),  existingClient))
+        usecase.execute(new IdAndClient(Key.newUuid(),  existingClient))
         then:
         thrown(NotFoundException)
     }
@@ -92,7 +92,7 @@ class GetCatalogUseCaseSpec extends UseCaseSpec {
     def "retrieve a catalog for domain template"() {
         anotherClient.getDomains() >> [domaintemplate]
         when:
-        def output = usecase.execute(new IdAndClient(catalog1Id,  anotherClient))
+        usecase.execute(new IdAndClient(catalog1Id,  anotherClient))
         then:
         thrown(IllegalArgumentException)
     }

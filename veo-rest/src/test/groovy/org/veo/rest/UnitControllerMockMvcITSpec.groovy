@@ -358,7 +358,6 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         ]
         def createProcessResponse = post('/processes', createProcessRequest)
         def createProcessResult = new JsonSlurper().parseText(createProcessResponse.andReturn().response.contentAsString)
-        def processId = createProcessResult.resourceId
 
         Map putProcessRequest = [
             name: 'New Process-2',

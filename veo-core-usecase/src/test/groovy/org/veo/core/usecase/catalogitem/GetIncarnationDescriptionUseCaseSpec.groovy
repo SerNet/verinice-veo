@@ -150,7 +150,6 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
     def "get the apply information for a catalog-item with link to an unknown feature "() {
         given:
-
         Element someThing = Mock()
         item1.element >> someThing
 
@@ -160,17 +159,14 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         tr.catalogItem >> item1
         item1.tailoringReferences >> [tr]
 
-        Control control2 = Mock()
-
         when:
-        def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
+        usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
         then:
         thrown(RuntimeModelException)
     }
 
     def "wrong unit"() {
         given:
-
         item1.tailoringReferences >> []
 
         def unitId = Key.newUuid()
@@ -178,29 +174,27 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         anotherUnit.id >> unitId
 
         when:
-        def output = usecase.execute(new InputData(existingClient, anotherUnit.id, [item1.id]))
+        usecase.execute(new InputData(existingClient, anotherUnit.id, [item1.id]))
         then:
         thrown(NotFoundException)
     }
 
     def "wrong item id"() {
         given:
-
         item1.tailoringReferences >> []
 
         when:
-        def output = usecase.execute(new InputData(existingClient, existingUnit.id, [Key.newUuid()]))
+        usecase.execute(new InputData(existingClient, existingUnit.id, [Key.newUuid()]))
         then:
         thrown(NotFoundException)
     }
 
     def "not unique items"() {
         given:
-
         item1.tailoringReferences >> []
 
         when:
-        def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id, item1.id]))
+        usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id, item1.id]))
         then:
         thrown(IllegalArgumentException)
     }

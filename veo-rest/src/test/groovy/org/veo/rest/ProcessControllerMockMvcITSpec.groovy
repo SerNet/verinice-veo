@@ -134,7 +134,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         when: "a request is made to the server"
-        def results = post('/processes', request, 400)
+        post('/processes', request, 400)
 
         then: "the process is not created"
         JsonSchemaValidationException ex = thrown()
@@ -190,7 +190,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(process.id.uuidValue(), 1)
         ]
-        def results = put("/processes/${process.id.uuidValue()}", request, headers, 403)
+        put("/processes/${process.id.uuidValue()}", request, headers, 403)
 
         then: "the process is not updated"
         JsonSchemaValidationException ex = thrown()
@@ -420,7 +420,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         def createProcessResponse = post('/processes', createProcessRequest)
         def createProcessResult = new JsonSlurper().parseText(createProcessResponse.andReturn().response.contentAsString)
-        def processId = createProcessResult.resourceId
 
         Map putProcessRequest = [
             name: 'New Process-2',
@@ -792,9 +791,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             'If-Match': eTag
         ]
 
-        def putResult =
-                put("/processes/${process.id.uuidValue()}/risks/${scenario.id.uuidValue()}",
-                putBody as Map, headers)
+        put("/processes/${process.id.uuidValue()}/risks/${scenario.id.uuidValue()}", putBody as Map, headers)
 
         and: "the risk is retrieved again"
         def riskJson = parseJson(

@@ -76,26 +76,18 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
     }
 
     def 'domainTemplate with catalog is inserted'() {
-        given: "the domain template"
-
-        domain0 = newDomainTemplate()
-
-        when: "saving"
-
-        domain0 = repository.save(domain0)
-        Catalog c = newCatalog(domain0) {
-            name = "a"
-        }
-
+        when: "saving a domain template with a catalog"
         domain0 = txTemplate.execute {
-            return repository.save(domain0)
+            repository.save(newDomainTemplate {
+                newCatalog(it)
+            })
         }
-        DomainTemplate d = txTemplate.execute {
+        and: "retrieving it"
+        def d = txTemplate.execute {
             return repository.findById(domain0.dbId).get()
         }
 
         then: "saved and loaded"
-
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
@@ -106,12 +98,13 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
     def 'domainTemplate with catalog and catalog items'() {
         given: "the domain template and a catalog"
 
-        domain0 = newDomainTemplate()
-        Catalog catalog = newCatalog(domain0) {
-            name = "a"
-            newCatalogItem(it, VeoSpec.&newControl)
-            newCatalogItem(it, VeoSpec.&newControl)
-            newCatalogItem(it, VeoSpec.&newControl)
+        domain0 = newDomainTemplate() {
+            newCatalog(it) {
+                name = "a"
+                newCatalogItem(it, VeoSpec.&newControl)
+                newCatalogItem(it, VeoSpec.&newControl)
+                newCatalogItem(it, VeoSpec.&newControl)
+            }
         }
 
         when: "saving"

@@ -19,7 +19,6 @@ package org.veo.rest
 
 import org.springframework.security.test.context.support.WithUserDetails
 
-import org.veo.core.entity.Catalog
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 
@@ -54,17 +53,17 @@ class CatalogControllerMockMvcITSpec extends CatalogSpec {
         given: "a catalog"
 
         when: "a request is made to the server"
-        def results = get("/catalogs/${catalog1.id.uuidValue()}", 400)
+        get("/catalogs/${catalog1.id.uuidValue()}", 400)
 
         then: "the data is rejected"
-        ClientBoundaryViolationException ex = thrown()
+        thrown(ClientBoundaryViolationException)
     }
 
     @WithUserDetails("user@domain.example")
     def "retrieve all catalogs"() {
         given: "two catalogs"
 
-        Catalog catalog1 = newCatalog(domain1) {
+        newCatalog(domain1) {
             name = 'c'
         }
 
@@ -99,10 +98,10 @@ class CatalogControllerMockMvcITSpec extends CatalogSpec {
         given: "a saved catalogitem with a catalog"
 
         when: "a request is made to the server"
-        def results = get("/catalogs/${catalog1.id.uuidValue()}/items/${otherItem.id.uuidValue()}", 404)
+        get("/catalogs/${catalog1.id.uuidValue()}/items/${otherItem.id.uuidValue()}", 404)
 
         then: "the data is rejected"
-        NotFoundException ex = thrown()
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -126,9 +125,9 @@ class CatalogControllerMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server"
-        def results = get("/catalogs/${catalog1.dbId}/items", 404)
+        get("/catalogs/${catalog1.dbId}/items", 404)
 
         then: "the data is rejected"
-        NotFoundException ex = thrown()
+        thrown(NotFoundException)
     }
 }

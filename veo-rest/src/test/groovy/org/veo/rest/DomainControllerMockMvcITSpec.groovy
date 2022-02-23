@@ -136,10 +136,10 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a saved domain"
 
         when: "a request is made to the server"
-        def results = get("/domains/${domainSecondClient.id.uuidValue()}", 400)
+        get("/domains/${domainSecondClient.id.uuidValue()}", 400)
 
         then: "the data is rejected"
-        ClientBoundaryViolationException ex = thrown()
+        thrown(ClientBoundaryViolationException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -235,39 +235,32 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("content-creator")
     def "create a DomainTemplate"() {
-        given: "a saved domain"
-        when: "a request is made to the server"
-        def count1 = txTemplate.execute {
+        given: "a number of existing templates"
+        def initialTemplateCount = txTemplate.execute {
             domainTemplateDataRepository.count()
         }
-
-        def results = post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/update-1",[:])
-        def result = parseJson(results)
+        when: "a template is created"
+        def result = parseJson(post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/update-1",[:]))
         then: "a result is returned"
         result != null
+        and: "there is one more template in the repo"
+        domainTemplateDataRepository.count() == initialTemplateCount + 1
 
         when: "loading the domaintemplates from the database"
-        def count2 = txTemplate.execute {
-            domainTemplateDataRepository.count()
-        }
         def dt = txTemplate.execute {
             domainTemplateRepository.getAll().find{ it.name == "Domain 1" }
         }
-        then: "one domaintemplate more"
-        count2 == count1 +1
+        then: "the revision is set"
         dt.revision == "update-1"
 
-        when: "create the next template"
-        results = post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/update-2",[:])
-        count2 = txTemplate.execute {
-            domainTemplateDataRepository.count()
-        }
-        then: "one domaintemplate more"
-        count2 == count1 +2
+        when: "creating the next template"
+        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/update-2",[:])
+        then: "one domain template more"
+        domainTemplateDataRepository.count() == initialTemplateCount + 2
     }
 
     @WithUserDetails("content-creator")
-    def "create a DomainTemplate without revison number"() {
+    def "create a DomainTemplate without revision number"() {
         given: "a saved domain"
         when: "a request is made to the server"
         def count1 = txTemplate.execute {
@@ -287,9 +280,9 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         count2 == count1 +1
 
         when: "create the next template"
-        results = post("/domains/${secondDomain.id.uuidValue()}/createdomaintemplate/update-3",[:],400)
+        post("/domains/${secondDomain.id.uuidValue()}/createdomaintemplate/update-3",[:],400)
         then: "the data is rejected"
-        ModelConsistencyException ex = thrown()
+        thrown(ModelConsistencyException)
     }
 
     @WithUserDetails("user@domain.example")

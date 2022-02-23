@@ -101,7 +101,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         }
         when: 'loading the demo unit elements and converting them to JSON'
         def demoElementsForUnitAsDtos = executeInTransaction{
-            def demoElementsForUnit = [
+            [
                 assetDataRepository,
                 controlDataRepository,
                 documentDataRepository,
@@ -180,7 +180,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
     def "create demo unit for a client with an unknown domain"() {
         given:
         def client = createClient()
-        def domain2 = newDomain(client)
+        newDomain(client)
         client = clientRepository.save(client)
         when:
         def unit = runUseCase(client)
@@ -212,7 +212,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         given:
         def client = createClient()
         def template = domainTemplateDataRepository.save(newDomainTemplate())
-        def domain2 = newDomain(client) {
+        newDomain(client) {
             it.domainTemplate = template
         }
         client = clientRepository.save(client)

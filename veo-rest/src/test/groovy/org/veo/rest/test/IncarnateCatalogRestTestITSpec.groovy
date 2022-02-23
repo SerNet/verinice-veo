@@ -216,49 +216,41 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         def elementResults = applyCatalogItems(catalog, [
             "TOM zur Gewährleistung der Vertraulichkeit"
         ], "/processes/$sourceProcessId")
-        String tom1Id = elementResults.first().id
         get("/processes/${sourceProcessId}").body.links.size()==1
 
         elementResults = applyCatalogItems(catalog, [
             "TOM zur Gewährleistung der Verfügbarkeit"
         ], "/processes/$sourceProcessId")
-        String tom2Id = elementResults.first().id
         get("/processes/${sourceProcessId}").body.links.size()==2
 
         elementResults = applyCatalogItems(catalog, [
             "TOM zur Wiederherstellbarkeit"
         ], "/processes/$sourceProcessId")
-        String tom3Id = elementResults.first().id
         get("/processes/${sourceProcessId}").body.links.size()==3
 
         elementResults = applyCatalogItems(catalog, [
             "TOM zur Verschlüsselung"
         ], "/processes/$sourceProcessId")
-        String tom4Id = elementResults.first().id
         get("/processes/${sourceProcessId}").body.links.size()==4
 
         elementResults = applyCatalogItems(catalog, [
             "Verfahren regelmäßiger Überprüfung, Bewertung und Evaluierung der Wirksamkeit der TOM"
         ], "/processes/$sourceProcessId")
-        String tom5Id = elementResults.first().id
         get("/processes/${sourceProcessId}").body.links.size()==5
 
         elementResults = applyCatalogItems(catalog, [
             "TOM zur Gewährleistung der Integrität"
         ], "/processes/$sourceProcessId")
-        String tom6Id = elementResults.first().id
         get("/processes/${sourceProcessId}").body.links.size()==6
 
         elementResults = applyCatalogItems(catalog, [
             "TOM zur Pseudonymisierung"
         ], "/processes/$sourceProcessId")
-        String tom7Id = elementResults.first().id
         get("/processes/${sourceProcessId}").body.links.size()==7
 
         elementResults = applyCatalogItems(catalog, [
             "TOM zur Gewährleistung der Belastbarkeit"
         ], "/processes/$sourceProcessId")
-        String tom8Id = elementResults.first().id
         get("/processes/${sourceProcessId}").body.links.size()==8
 
         elementResults = applyCatalogItems(catalog, ["VVT"], null)

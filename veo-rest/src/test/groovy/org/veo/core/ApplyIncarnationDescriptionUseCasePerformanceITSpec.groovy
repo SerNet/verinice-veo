@@ -197,7 +197,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends VeoSpringSpec 
                 item6
             ] as Set
 
-            catalog = catalogRepository.save(catalog)
+            catalogRepository.save(catalog)
         }
     }
 }

@@ -32,7 +32,7 @@ class UnitRestTestITSpec extends VeoRestTest {
 
     def "Creating a unit returns the correct HTTP status code"() {
         expect:
-        def response = post("/units", [
+        post("/units", [
             name: UNIT_NAME
         ], 201)
     }
@@ -125,7 +125,7 @@ class UnitRestTestITSpec extends VeoRestTest {
     def "Delete a unit"() {
         given: "a unit"
         def postResponse = postNewUnit(UNIT_NAME)
-        def getResponse = getUnit(postResponse.resourceId)
+        getUnit(postResponse.resourceId)
 
         when: "the unit is deleted"
         restDeleteUnit(postResponse.resourceId)

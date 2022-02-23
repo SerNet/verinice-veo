@@ -56,7 +56,7 @@ class GetDomainTemplateUseCaseSpec extends UseCaseSpec {
 
         clientRepository.findById(existingClient.id) >> Optional.empty()
         when:
-        def output = usecase.execute(new IdAndClient(id,  existingClient))
+        usecase.execute(new IdAndClient(id,  existingClient))
         then:
         thrown(NotFoundException)
     }

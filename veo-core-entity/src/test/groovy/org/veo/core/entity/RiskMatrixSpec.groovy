@@ -362,7 +362,7 @@ class RiskMatrixSpec extends Specification {
         when: "we validate"
         rd.validateRiskDefinition()
         then: "illegal Argument exception is thrown"
-        IllegalArgumentException ex = thrown()
+        thrown(IllegalArgumentException)
 
         when: "we add the probability levels"
         rd.probability = new ProbabilityDefinition()
@@ -373,7 +373,7 @@ class RiskMatrixSpec extends Specification {
 
         rd.validateRiskDefinition()
         then: "illegal Argument exception is thrown"
-        ex = thrown()
+        thrown(IllegalArgumentException)
 
         when: "we add a risk matrix for cd"
         cd.valueMatrix = [
@@ -403,7 +403,7 @@ class RiskMatrixSpec extends Specification {
         ] as List
         rd.validateRiskDefinition()
         then: "illegal Argument exception is thrown"
-        ex = thrown()
+        thrown(IllegalArgumentException)
 
         when: "we fix the definition"
         cd.valueMatrix = [
@@ -427,7 +427,7 @@ class RiskMatrixSpec extends Specification {
         ] as List
         rd.validateRiskDefinition()
         then: "illegal Argument exception is thrown"
-        ex = thrown()
+        thrown(IllegalArgumentException)
 
         when: "we fix the definition"
         cd.valueMatrix = [
@@ -456,21 +456,21 @@ class RiskMatrixSpec extends Specification {
         pl.ordinalValue = 10
         cd.getRiskValue(pl,  cd.potentialImpacts[0])
         then: "illegal Argument exception is thrown"
-        ex = thrown()
+        thrown(IllegalArgumentException)
 
         when: "the implact level is not right"
         CategoryLevel cl = new CategoryLevel("l1", "", "", "")
         cl.setOrdinalValue(10)
         cd.getRiskValue(rd.probability.levels[0], cl)
         then: "illegal Argument exception is thrown"
-        ex = thrown()
+        thrown(IllegalArgumentException)
 
         when: "the implact level is still not right but in range"
         cl = new CategoryLevel("l1", "", "", "")
         cl.setOrdinalValue(2)
         cd.getRiskValue(rd.probability.levels[0], cl)
         then: "illegal Argument exception is thrown"
-        ex = thrown()
+        thrown(IllegalArgumentException)
 
         when: "the implact level is right"
         cl = new CategoryLevel("l1", "", "", "")

@@ -30,7 +30,6 @@ class GetScopeUseCaseSpec extends UseCaseSpec {
     GetScopeUseCase usecase = new GetScopeUseCase(scopeRepository)
     def "retrieve a scope"() {
         given:
-        def repository = Mock(ScopeRepository)
         def scopeId = Key.newUuid()
         def scope = Mock(Scope) {
             getOwner() >> existingUnit

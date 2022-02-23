@@ -22,15 +22,9 @@ import javax.validation.ConstraintViolationException
 
 import org.springframework.beans.factory.annotation.Autowired
 
-import org.veo.core.entity.Asset
-import org.veo.core.entity.Catalog
-import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
-import org.veo.core.entity.Document
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
-import org.veo.core.entity.Person
-import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
@@ -152,19 +146,19 @@ class ClientRepositorySpec extends VeoSpringSpec {
             domains = [domain] as Set
         }
 
-        Person person = newPerson(unit) {
+        newPerson(unit) {
             domains = [domain] as Set
         }
 
-        Asset asset = newAsset(unit) {
+        newAsset(unit) {
             domains = [domain] as Set
         }
 
-        Process process = newProcess(unit) {
+        newProcess(unit) {
             domains = [domain] as Set
         }
 
-        Document document = newDocument(unit) {
+        newDocument(unit) {
             domains = [domain] as Set
         }
 
@@ -200,16 +194,17 @@ class ClientRepositorySpec extends VeoSpringSpec {
             abbreviation = "ISO"
         }
 
-        Catalog catalog = newCatalog(domain)
-        CatalogItem item1 = newCatalogItem(catalog, {
-            newControl(it)
-        })
-        CatalogItem item2 = newCatalogItem(catalog, {
-            newControl(it)
-        })
-        CatalogItem item3 = newCatalogItem(catalog, {
-            newControl(it)
-        })
+        newCatalog(domain) {
+            newCatalogItem(it, {
+                newControl(it)
+            })
+            newCatalogItem(it, {
+                newControl(it)
+            })
+            newCatalogItem(it, {
+                newControl(it)
+            })
+        }
 
         Client client = newClient {
             name = "Demo Client"

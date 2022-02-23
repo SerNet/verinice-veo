@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
-import org.veo.core.entity.Domain
+
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.repository.RepositoryProvider
@@ -35,8 +35,6 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
     createDemoUnitUseCase)
 
     def "Create new unit in a new client" () {
-        Domain domainFromTemplate = Mock()
-
         Unit newUnit1 = Mock()
         newUnit1.id >> Key.newUuid()
         newUnit1.name >> "New unit"

@@ -422,7 +422,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         AssetDataRepository dataRepository = Mock()
         def query = new ElementQueryImpl<>(dataRepository, client)
         when:
-        def result = query.execute(new PagingConfiguration(2, 0, 'foo', SortOrder.ASCENDING))
+        query.execute(new PagingConfiguration(2, 0, 'foo', SortOrder.ASCENDING))
         then:
         1 * dataRepository.findAll(_, { Pageable pageable->
             pageable.pageSize == 2

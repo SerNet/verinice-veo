@@ -438,8 +438,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
     def "removing an entity that is a member of a scope does not remove the scope"() {
         given: "a saved scope with two members"
 
-        def (asset, scenario,scope ) = txTemplate.execute {
-
+        def (asset, scope) = txTemplate.execute {
             def asset = assetRepository.save(newAsset(unit) {
                 name = 'Test asset'
             })
@@ -453,7 +452,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
             })
             [
                 asset,
-                scenario,
                 scope
             ]
         }

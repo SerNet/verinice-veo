@@ -99,10 +99,10 @@ class BasicCrudRestTest extends VeoRestTest{
         assetName = "Asset of $name"
 
         and: 'Status Code is correct when updating the asset'
-        def putAssetResponse = put("/assets/$assetId", [id: assetId, name: assetName, owner: [displayName: unitName,targetUri: targetUri]], assetEtag,200, UserType.DEFAULT)
+        put("/assets/$assetId", [id: assetId, name: assetName, owner: [displayName: unitName,targetUri: targetUri]], assetEtag,200, UserType.DEFAULT)
 
         and: 'Server denies updating the asset concurrently'
-        putAssetResponse = put("/assets/$assetId", [id: assetId, name: assetName, owner: [displayName: unitName, targetUri: targetUri]], assetEtag,412, UserType.DEFAULT)
+        put("/assets/$assetId", [id: assetId, name: assetName, owner: [displayName: unitName, targetUri: targetUri]], assetEtag,412, UserType.DEFAULT)
 
         and: 'Creating a person inside the unit'
         def personName = 'CRUD test person'
@@ -136,16 +136,15 @@ class BasicCrudRestTest extends VeoRestTest{
         and: 'Changing the name of the person'
         def newPersonName = 'Person with Mohammed Api'
         def putBody = [id: personId, name: newPersonName, owner: [displayName: unitName, targetUri: targetUri]]
-        def putPersonResponse = put("$baseUrl/persons/$personId", putBody, personEtag,200, UserType.DEFAULT)
+        put("$baseUrl/persons/$personId", putBody, personEtag,200, UserType.DEFAULT)
 
         and: 'Updating person concurrently'
-        def concurrentPutPersonResponse = put("$baseUrl/persons/$personId",putBody,personEtag,412,UserType.DEFAULT)
+        put("$baseUrl/persons/$personId",putBody,personEtag,412,UserType.DEFAULT)
 
         and: 'Creating a control inside the unit'
         def controlName = 'CRUD test control'
         def controlBody = [name: controlName, owner: [displayName: unitName, targetUri: targetUri]]
         def postControlResponse = post("$baseUrl"+"/controls",controlBody,201,UserType.DEFAULT)
         postControlResponse.body.resourceId instanceof String
-        def controlId = postControlResponse.body.resourceId
     }
 }
