@@ -43,10 +43,18 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
             owner: [targetUri: "http://localhost/units/$unitId"]
         ]).body.resourceId
 
-        // TODO VEO-1101 set potential-probability on scenario
         def scenarioId = post("/scenarios", [
             name: "process risk test scenario",
-            owner: [targetUri: "http://localhost/units/$unitId"]
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [
+                    riskValues: [
+                        DSRA : [
+                            potentialProbability: 2
+                        ]
+                    ]
+                ]
+            ]
         ]).body.resourceId
 
         when: "creating the risk with only partial risk values"
@@ -94,7 +102,7 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         // one json object for each category and one for probability was initialized:
         risk.domains.(domainId).riskDefinitions.values()[0].impactValues.size() == 4
         risk.domains.(domainId).riskDefinitions.values()[0].riskValues.size() == 4
-        probability == [:]
+        probability == [potentialProbability:2, effectiveProbability:2]
 
         impactI.size() == 1
         impactI.category == "I"
@@ -161,11 +169,10 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         updatedRiskI.riskTreatmentExplanation == PROBLEM
 
         // read-only values have not been changed:
-        updatedProbability.potentialProbability != 1
+        updatedProbability.potentialProbability == 2
         updatedImpactI.potentialImpact != 2
         updatedRisk.inherentRisk != 2
         // TODO VEO-1110 inherentRisk must be calculated correctly by risk service
-        // TODO VEO-1101 potentialProbability must be used from scenario value
         // TODO VEO-1102 potentialImpact must be used from process value
 
 
