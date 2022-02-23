@@ -50,21 +50,22 @@ import org.veo.core.entity.riskdefinition.DiscreteValue;
 public class SchemaExtender {
     public static final String PROPS = "properties";
     public static final String RISK_VALUES = "riskValues";
+    public static final String ADDITIONAL_PROPERTIES = "additionalProperties";
     private final ObjectMapper mapper = new ObjectMapper();
 
     public void extendSchema(SchemaGenerator generator, JsonNode schema, String elementType,
             Set<Domain> domains) {
         var domainsRoot = (ObjectNode) schema.get(PROPS)
                                              .get("domains");
-        domainsRoot.put("additionalProperties", false);
+        domainsRoot.put(ADDITIONAL_PROPERTIES, false);
         var domainProps = domainsRoot.putObject(PROPS);
 
         var linksRoot = (ObjectNode) schema.findValue("links");
-        linksRoot.put("additionalProperties", false);
+        linksRoot.put(ADDITIONAL_PROPERTIES, false);
         var linkProps = linksRoot.putObject(PROPS);
 
         var customAspectsSchema = (ObjectNode) schema.findValue("customAspects");
-        customAspectsSchema.put("additionalProperties", false);
+        customAspectsSchema.put(ADDITIONAL_PROPERTIES, false);
         var customObjectProperties = customAspectsSchema.putObject(PROPS);
 
         domains.forEach(domain -> {
@@ -234,7 +235,7 @@ public class SchemaExtender {
     private void addAttributes(ObjectNode parentSchema, Map<String, Object> attributeSchemas) {
         var attributesNode = (ObjectNode) parentSchema.get(PROPS)
                                                       .get("attributes");
-        attributesNode.put("additionalProperties", false);
+        attributesNode.put(ADDITIONAL_PROPERTIES, false);
 
         var attributePropsNode = attributesNode.putObject(PROPS);
         attributeSchemas.forEach((attributeKey, attributeSchema) -> {
