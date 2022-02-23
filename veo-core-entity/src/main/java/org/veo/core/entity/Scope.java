@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Optional;
 import java.util.Set;
+
+import org.veo.core.entity.risk.RiskDefinitionRef;
 
 /**
  * A group of {@link Element} objects that form a logical unit. An object may
@@ -66,4 +69,8 @@ public interface Scope extends Element, RiskAffected<Scope, ScopeRisk> {
     default String getTypeDesignator() {
         return TYPE_DESIGNATOR;
     }
+
+    Optional<RiskDefinitionRef> getRiskDefinition(DomainTemplate domain);
+
+    void setRiskDefinition(DomainTemplate domain, RiskDefinitionRef riskDefinition);
 }

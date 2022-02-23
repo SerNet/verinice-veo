@@ -113,6 +113,18 @@ class SwaggerSpec extends VeoSpringSpec {
         scenarioRiskValuesSchema.properties.potentialProbability.type == "integer"
     }
 
+    def "scope risk values are mapped correctly"() {
+        given:
+        def schemas = parsedApiDocs.components.schemas
+
+        expect:
+        def scopeSchema = schemas.FullScopeDto
+        scopeSchema.properties.domains.additionalProperties.'$ref' == "#/components/schemas/ScopeDomainAssociationDto"
+
+        def scopeDomainAssociationSchema = schemas.ScopeDomainAssociationDto
+        scopeDomainAssociationSchema.properties.riskDefinition.type == "string"
+    }
+
     def "targetUri is required for parts when putting composite elements"() {
         when:
         def scenarioDtoSchema = parsedApiDocs.components.schemas.FullScenarioDto

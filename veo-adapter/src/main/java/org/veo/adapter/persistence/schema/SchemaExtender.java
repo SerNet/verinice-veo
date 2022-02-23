@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.github.victools.jsonschema.generator.SchemaGenerator;
 
 import org.veo.adapter.presenter.api.dto.ControlDomainAssociationDto;
@@ -36,9 +37,11 @@ import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ScenarioDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ScenarioRiskValuesDto;
+import org.veo.adapter.presenter.api.dto.ScopeDomainAssociationDto;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.SubTypeDefinition;
@@ -97,6 +100,9 @@ public class SchemaExtender {
         if (elementType.equals(Scenario.SINGULAR_TERM)) {
             return buildDomainAssociationSchemaForScenario(generator, domain);
         }
+        if (elementType.equals(Scope.SINGULAR_TERM)) {
+            return buildDomainAssociationSchemaForScope(generator, domain);
+        }
         return generator.generateSchema(DomainAssociationDto.class);
     }
 
@@ -143,6 +149,20 @@ public class SchemaExtender {
                   riskValuesSchema.put(ADDITIONAL_PROPERTIES, false);
                   riskValuesProps.set(riskDefId, riskValuesSchema);
               });
+        return domainAssociationSchema;
+    }
+
+    private ObjectNode buildDomainAssociationSchemaForScope(SchemaGenerator generator,
+            Domain domain) {
+        var domainAssociationSchema = generator.generateSchema(ScopeDomainAssociationDto.class);
+        var riskDefinitionNode = (ObjectNode) domainAssociationSchema.get(PROPS)
+                                                                     .get("riskDefinition");
+        riskDefinitionNode.putArray("enum")
+                          .addAll(domain.getRiskDefinitions()
+                                        .keySet()
+                                        .stream()
+                                        .map(TextNode::new)
+                                        .collect(Collectors.toList()));
         return domainAssociationSchema;
     }
 

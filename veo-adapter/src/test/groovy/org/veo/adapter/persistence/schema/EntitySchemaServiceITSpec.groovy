@@ -89,6 +89,17 @@ class EntitySchemaServiceITSpec extends Specification {
         riskValueProps.get("riskDefB").get(PROPS).get("potentialProbability").get("enum").asList()*.asInt() == [0, 1]
     }
 
+    def "scope schema domain association is complete"() {
+        given:
+        def testDomain = getTestDomain()
+        def extraTestDomain = getExtraTestDomain()
+        when:
+        def schema = getSchema(Set.of(testDomain, extraTestDomain), "scope")
+        then:
+        schema.get(PROPS).domains.get(PROPS).get(testDomain.idAsString).get(PROPS).riskDefinition.enum*.textValue() ==~ ["riskDefA", "riskDefB"]
+        schema.get(PROPS).domains.get(PROPS).get(extraTestDomain.idAsString).get(PROPS).riskDefinition.enum*.textValue() ==~ ["extraRiskDef"]
+    }
+
     def "definitions from multiple domains are composed"() {
         given:
         def testDomain = getTestDomain()
@@ -224,6 +235,17 @@ class EntitySchemaServiceITSpec extends Specification {
                     ]
                 }
             ]
+            getElementTypeDefinition("scope") >> [
+                Mock(ElementTypeDefinition) {
+                    customAspects >> [:]
+                    links >> [:]
+                    subTypes >> [
+                        subScope: Mock(SubTypeDefinition) {
+                            statuses >> ["NEW", "OLD"]
+                        }
+                    ]
+                }
+            ]
             getRiskDefinitions() >> [
                 "riskDefA": Mock(RiskDefinition) {
                     implementationStateDefinition >> Mock(ImplementationStateDefinition) {
@@ -313,6 +335,16 @@ class EntitySchemaServiceITSpec extends Specification {
                         },
                     ]
                 }
+            ]
+            getElementTypeDefinition("scope") >> [
+                Mock(ElementTypeDefinition) {
+                    customAspects >> [:]
+                    links >> [:]
+                    subTypes >> [:]
+                }
+            ]
+            getRiskDefinitions() >> [
+                "extraRiskDef": Mock(RiskDefinition)
             ]
         }
     }

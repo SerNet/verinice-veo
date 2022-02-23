@@ -42,6 +42,7 @@ import org.veo.adapter.presenter.api.dto.ControlRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ScenarioDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ScenarioRiskValuesDto;
+import org.veo.adapter.presenter.api.dto.ScopeDomainAssociationDto;
 import org.veo.adapter.service.domaintemplate.SyntheticIdRef;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
@@ -138,10 +139,7 @@ public class DomainAssociationTransformer {
     private Collector<Map.Entry<String, ScenarioRiskValuesDto>, ?, Map<RiskDefinitionRef, PotentialProbabilityImpl>> groupScenarioRiskValuesByDomain(
             DomainTemplate domain) {
         var referenceProvider = referencesForDomain(domain);
-        return Collectors.toMap(kv -> referenceProvider.getRiskDefinitionRef(kv.getKey())
-                                                       .orElseThrow(() -> new NotFoundException(
-                                                               "Risk definition '%s' was not found for domain '%s'",
-                                                               kv.getKey(), domain.getId())),
+        return Collectors.toMap(kv -> toRiskDefinitionRef(kv.getKey(), domain),
                                 kv -> mapScenarioRiskValuesDto2Entity(kv.getKey(), kv.getValue(),
                                                                       referenceProvider));
     }
@@ -161,7 +159,10 @@ public class DomainAssociationTransformer {
 
     public void mapDomainsToEntity(AbstractScopeDto source, Scope target,
             IdRefResolver idRefResolver) {
-        mapToEntity(source.getDomains(), target, idRefResolver);
+        mapToEntity(source.getDomains(), target, idRefResolver, (domain, associationDto) -> {
+            target.setRiskDefinition(domain, toRiskDefinitionRef(associationDto.getRiskDefinition(),
+                                                                 domain));
+        });
     }
 
     public void mapDomainsToDto(Asset source, AbstractAssetDto target) {
@@ -234,7 +235,13 @@ public class DomainAssociationTransformer {
     }
 
     public void mapDomainsToDto(Scope source, AbstractScopeDto target) {
-        target.setDomains(extractDomainAssociations(source, DomainAssociationDto::new));
+        target.setDomains(extractDomainAssociations(source, (domain) -> {
+            var assocationDto = new ScopeDomainAssociationDto();
+            source.getRiskDefinition(domain)
+                  .map(RiskDefinitionRef::getIdRef)
+                  .ifPresent(assocationDto::setRiskDefinition);
+            return assocationDto;
+        }));
     }
 
     private <T extends DomainAssociationDto> Map<String, T> extractDomainAssociations(
@@ -292,4 +299,16 @@ public class DomainAssociationTransformer {
                    customMapper.accept(domainTemplate, associationDto);
                });
     }
+
+    private RiskDefinitionRef toRiskDefinitionRef(String riskDefId, DomainTemplate domain) {
+        if (riskDefId == null) {
+            return null;
+        }
+        return referencesForDomain(domain).getRiskDefinitionRef(riskDefId)
+                                          .orElseThrow(() -> new NotFoundException(
+                                                  String.format("Risk definition '%s' was not found for domain '%s'",
+                                                                riskDefId,
+                                                                domain.getIdAsString())));
+    }
+
 }

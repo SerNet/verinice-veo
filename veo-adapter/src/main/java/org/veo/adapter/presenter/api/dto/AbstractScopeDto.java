@@ -53,7 +53,7 @@ public abstract class AbstractScopeDto extends AbstractElementDto {
         setDomains(Map.of(id, getDomains().values()
                                           .stream()
                                           .findFirst()
-                                          .orElse(new DomainAssociationDto())));
+                                          .orElse(new ScopeDomainAssociationDto())));
     }
 
     @Override
@@ -63,5 +63,5 @@ public abstract class AbstractScopeDto extends AbstractElementDto {
 
     @Valid
     @Schema(description = "Details about this element's association with domains. Domain ID is key, association object is value.")
-    private Map<String, DomainAssociationDto> domains = new HashMap<>();
+    private Map<String, ScopeDomainAssociationDto> domains = new HashMap<>();
 }

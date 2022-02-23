@@ -44,6 +44,7 @@ import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.ControlData
 import org.veo.persistence.entity.jpa.ScenarioData
+import org.veo.persistence.entity.jpa.ScopeData
 
 @WithUserDetails("user@domain.example")
 class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
@@ -153,6 +154,33 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
                 size() == 1
                 get(riskDefinitionRef).implementationStatus.ordinalValue == 42
             }
+        }
+    }
+
+    def "Migrate a scope referencing a risk definition"() {
+        given: 'a unit with a scope that references a risk definition'
+        def unit = unitRepository.save(newUnit(client) {
+            addToDomains(dsgvoDomain)
+        })
+        def scope = scopeRepository.save(newScope(unit) {
+            addToDomains(dsgvoDomain)
+            setRiskDefinition(dsgvoDomain, new RiskDefinitionRef("xyz"))
+        })
+
+        when: 'executing the UpdateAllClientDomainsUseCase'
+        runUseCase(DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        scope = executeInTransaction {
+            scopeRepository.findById(scope.id).get().tap{
+                // init lazy associations
+                ((ScopeData)it).getRiskDefinition(dsgvoTestDomain)
+            }
+        }
+
+        then: "the scope's risk definition ref is moved to the new domain"
+        with(((ScopeData)scope).riskValuesAspects) {
+            size() == 1
+            first().domain == dsgvoTestDomain
+            first().riskDefinitionRef.idRef == "xyz"
         }
     }
 
