@@ -45,7 +45,6 @@ import net.ttddyy.dsproxy.QueryCountHolder
 
 class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
-    public static final String PROP_KEY = "propKey"
     @Autowired
     private ClientRepositoryImpl clientRepository
 
