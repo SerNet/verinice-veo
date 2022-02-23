@@ -19,7 +19,6 @@ package org.veo.core.usecase.base
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Control
-import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Document
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
@@ -93,25 +92,5 @@ public class DeleteElementUseCaseSpec extends UseCaseSpec {
         then:
         1 * scopeRepository.findById(scopeId) >> Optional.of(scope)
         1 * scopeRepository.deleteById(scopeId)
-    }
-
-    def "Delete a document that is a link target" () {
-        def id = Key.newUuid()
-        Document document = Mock() {
-            getOwner() >> existingUnit
-            getId() >> id
-        }
-        CustomLink customLink = Mock {
-            getTarget() >> document
-        }
-        Person person = Mock {
-            getLinks () >> [customLink]
-        }
-
-        when:
-        def output = usecase.execute(new InputData(Document,id, existingClient))
-        then:
-        1 * documentRepository.findById(id) >> Optional.of(document)
-        1 * documentRepository.deleteById(id)
     }
 }
