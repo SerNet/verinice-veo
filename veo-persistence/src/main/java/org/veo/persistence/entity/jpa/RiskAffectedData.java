@@ -18,7 +18,6 @@
 package org.veo.persistence.entity.jpa;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -58,18 +57,17 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
     public R obtainRisk(Scenario scenario, Domain domain) {
         scenario.checkSameClient(this);
         isDomainValid(domain);
-        Optional<R> existingRisk = risks.stream()
-                                        .filter(r -> r.getScenario()
-                                                      .equals(scenario))
-                                        .findAny();
-        if (existingRisk.isPresent()) {
-            return existingRisk.get();
-        }
-        var riskData = createRisk(scenario);
-        riskData.addToDomains(domain);
-        addRisk((R) riskData);
-        return (R) riskData;
+        return risks.stream()
+                    .filter(r -> r.getScenario()
+                                  .equals(scenario))
+                    .findAny()
+                    .orElseGet(() -> {
+                        var riskData = createRisk(scenario);
+                        riskData.addToDomains(domain);
+                        addRisk(riskData);
+                        return riskData;
+                    });
     }
 
-    abstract AbstractRiskData<T, R> createRisk(Scenario scenario);
+    abstract R createRisk(Scenario scenario);
 }

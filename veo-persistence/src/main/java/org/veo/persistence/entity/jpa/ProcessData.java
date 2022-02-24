@@ -60,7 +60,7 @@ public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implemen
     private final Set<Process> parts = new HashSet<>();
 
     @Override
-    ProcessRiskData createRisk(Scenario scenario) {
+    ProcessRisk createRisk(Scenario scenario) {
         return new ProcessRiskData(this, scenario);
     }
 

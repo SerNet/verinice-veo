@@ -70,7 +70,7 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
     }
 
     @Override
-    AbstractRiskData<Scope, ScopeRisk> createRisk(Scenario scenario) {
+    ScopeRisk createRisk(Scenario scenario) {
         return new ScopeRiskData(this, scenario);
     }
 

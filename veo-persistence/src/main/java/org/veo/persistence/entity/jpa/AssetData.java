@@ -50,7 +50,7 @@ public class AssetData extends RiskAffectedData<Asset, AssetRisk> implements Ass
     private final Set<Asset> parts = new HashSet<>();
 
     @Override
-    AssetRiskData createRisk(Scenario scenario) {
+    AssetRisk createRisk(Scenario scenario) {
         return new AssetRiskData(this, scenario);
     }
 
