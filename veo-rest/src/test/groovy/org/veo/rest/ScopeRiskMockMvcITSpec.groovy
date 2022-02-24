@@ -19,6 +19,7 @@ package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
+import org.springframework.test.web.servlet.ResultActions
 import org.springframework.transaction.support.TransactionTemplate
 
 import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
@@ -58,7 +59,7 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
-    def "can create and update scope risk definition reference"() {
+    def "can create a scope with a risk definition reference"() {
         when: "creating a scope with reference to a risk definition"
         def scopeId = parseJson(post("/scopes", [
             name: "Project scope",
@@ -72,26 +73,78 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
 
         and: "retrieving it"
         def getScopeResponse = get("/scopes/$scopeId")
-        def scopeETag = getETag(getScopeResponse)
         def retrievedScope = parseJson(getScopeResponse)
 
         then: "the retrieved risk values are complete"
         retrievedScope.domains[domainId].riskDefinition == "risk-definition-for-projects"
+    }
 
-        when: "updating the risk definition in the scope"
+    def "cannot change risk definition reference"() {
+        when: "creating a scope without a risk definition"
+        def scopeId = parseJson(post("/scopes", [
+            name: "Project scope",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [:]
+            ]
+        ])).resourceId
+        def scopeETag = getETag(get("/scopes/$scopeId"))
+
+        and: "adding a risk definition reference"
         put("/scopes/$scopeId", [
             name: "Project scope",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
-                (domainId): [riskDefinition: "default-risk-definition"]
+                (domainId): [riskDefinition: "risk-definition-for-projects"]
             ]
         ], ['If-Match': scopeETag])
 
-        and: "retrieving it again"
-        def updatedScope = parseJson(get("/scopes/$scopeId"))
+        and: "retrieving the scope"
+        def retrieveScopeResponse = get("/scopes/$scopeId")
+        def retrievedScope = parseJson(retrieveScopeResponse)
+        scopeETag = getETag(retrieveScopeResponse)
 
-        then: "the changes have been applied"
-        updatedScope.domains[domainId].riskDefinition == "default-risk-definition"
+        then: "the change has been applied"
+        retrievedScope.domains[domainId].riskDefinition == "risk-definition-for-projects"
+
+        when: "making a change not related to the risk definition"
+        put("/scopes/$scopeId", [
+            name: "Cinema scope",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [riskDefinition: "risk-definition-for-projects"]
+            ]
+        ], ['If-Match': scopeETag])
+        scopeETag = getETag(get("/scopes/$scopeId"))
+
+        then: "it is fine"
+        notThrown(Exception)
+
+        when: "trying to change the risk definition"
+        put("/scopes/$scopeId", [
+            name: "Cinema scope",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [riskDefinition: "default-risk-definition"]
+            ]
+        ], ['If-Match': scopeETag], 400)
+
+        then: "it is rejected"
+        IllegalArgumentException ex = thrown()
+        ex.message == "Cannot update existing risk definition reference from scope $scopeId"
+
+        when: "trying to remove the risk definition reference"
+        put("/scopes/$scopeId", [
+            name: "Cinema scope",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [:]
+            ]
+        ], ['If-Match': scopeETag], 400)
+
+        then: "it is rejected"
+        ex = thrown()
+        ex.message == "Cannot remove existing risk definition reference from scope $scopeId"
     }
 
     def "invalid risk definition reference is rejected"() {

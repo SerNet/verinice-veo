@@ -41,4 +41,8 @@ public class UpdateProcessUseCase extends ModifyElementUseCase<Process> {
         eventPublisher.publish(new RiskComponentChangeEvent(result.getEntity()));
         return result;
     }
+
+    @Override
+    protected void validate(Process oldElement, Process newElement) {
+    }
 }

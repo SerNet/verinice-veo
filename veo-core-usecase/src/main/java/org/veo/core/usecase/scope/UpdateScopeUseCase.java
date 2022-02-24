@@ -26,4 +26,26 @@ public class UpdateScopeUseCase extends ModifyElementUseCase<Scope> {
     public UpdateScopeUseCase(ScopeRepository scopeRepository) {
         super(scopeRepository);
     }
+
+    @Override
+    protected void validate(Scope oldElement, Scope newElement) {
+        oldElement.getDomains()
+                  .forEach(domain -> {
+                      oldElement.getRiskDefinition(domain)
+                                .ifPresent(oldRiskDef -> {
+                                    newElement.getRiskDefinition(domain)
+                                              .ifPresentOrElse(newRiskDef -> {
+                                                  if (!oldRiskDef.equals(newRiskDef)) {
+                                                      throw new IllegalArgumentException(
+                                                              String.format("Cannot update existing risk definition reference from scope %s",
+                                                                            oldElement.getIdAsString()));
+                                                  }
+                                              }, () -> {
+                                                  throw new IllegalArgumentException(
+                                                          String.format("Cannot remove existing risk definition reference from scope %s",
+                                                                        oldElement.getIdAsString()));
+                                              });
+                                });
+                  });
+    }
 }

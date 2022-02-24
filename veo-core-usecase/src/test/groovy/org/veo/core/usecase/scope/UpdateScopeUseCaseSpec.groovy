@@ -37,6 +37,7 @@ class UpdateScopeUseCaseSpec extends UseCaseSpec {
         scope.getOwner() >> existingUnit
         scope.getId() >> scopeId
         scope.name >> "Updated scope"
+        scope.domains >> []
         scope.links >> []
 
         def existingScope = Mock(Scope) {

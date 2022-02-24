@@ -28,4 +28,9 @@ public class UpdateAssetUseCase extends ModifyElementUseCase<Asset> {
     public UpdateAssetUseCase(AssetRepository assetRepository) {
         super(assetRepository);
     }
+
+    @Override
+    protected void validate(Asset oldElement, Asset newElement) {
+        // GNDN
+    }
 }

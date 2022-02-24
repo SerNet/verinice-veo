@@ -26,4 +26,9 @@ public class UpdatePersonUseCase extends ModifyElementUseCase<Person> {
     public UpdatePersonUseCase(PersonRepository personRepository) {
         super(personRepository);
     }
+
+    @Override
+    protected void validate(Person oldElement, Person newElement) {
+        // GNDN
+    }
 }

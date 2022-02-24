@@ -27,4 +27,8 @@ public class UpdateDocumentUseCase extends ModifyElementUseCase<Document> {
         super(documentRepository);
     }
 
+    @Override
+    protected void validate(Document oldElement, Document newElement) {
+        // GNDN
+    }
 }

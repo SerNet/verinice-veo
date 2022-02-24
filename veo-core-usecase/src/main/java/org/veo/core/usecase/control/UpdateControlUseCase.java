@@ -39,4 +39,8 @@ public class UpdateControlUseCase extends ModifyElementUseCase<Control> {
         eventPublisher.publish(new RiskComponentChangeEvent(result.getEntity()));
         return result;
     }
+
+    @Override
+    protected void validate(Control oldElement, Control newElement) {
+    }
 }

@@ -40,4 +40,9 @@ public class UpdateScenarioUseCase extends ModifyElementUseCase<Scenario> {
         return result;
     }
 
+    @Override
+    protected void validate(Scenario oldElement, Scenario newElement) {
+        // GNDN
+    }
+
 }
