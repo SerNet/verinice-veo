@@ -18,7 +18,7 @@
 package org.veo.adapter.presenter.api.dto.full;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -41,7 +41,7 @@ public class ProbabilityDto implements Probability {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     ProbabilityRef effectiveProbability;
 
-    @Max(Probability.EXPLANATION_MAX_LENGTH)
+    @Size(max = Probability.EXPLANATION_MAX_LENGTH)
     String specificProbabilityExplanation;
 
     public static ProbabilityDto from(ProbabilityValueProvider from) {

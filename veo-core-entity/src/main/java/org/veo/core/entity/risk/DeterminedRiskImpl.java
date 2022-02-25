@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -52,7 +52,7 @@ public class DeterminedRiskImpl implements DeterminedRisk {
      */
     private RiskRef residualRisk;
 
-    @Max(DeterminedRisk.EXPLANATION_MAX_LENGTH)
+    @Size(max = DeterminedRisk.EXPLANATION_MAX_LENGTH)
     private String residualRiskExplanation;
 
     /**
@@ -60,7 +60,7 @@ public class DeterminedRiskImpl implements DeterminedRisk {
      */
     private Set<RiskTreatmentOption> riskTreatments = new HashSet<>();
 
-    @Max(DeterminedRisk.EXPLANATION_MAX_LENGTH)
+    @Size(max = DeterminedRisk.EXPLANATION_MAX_LENGTH)
     private String riskTreatmentExplanation;
 
     public void setRiskTreatments(Set<RiskTreatmentOption> riskTreatments) {
