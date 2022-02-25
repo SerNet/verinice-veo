@@ -151,7 +151,7 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
             assert asyncResult.resolvedException == null
             asyncActions.andExpect(status().is(expectedStatusCode))
         } else {
-            asyncActions.andExpect({result -> result.response.status == expectedStatusCode})
+            asyncActions.andExpect(status().is(expectedStatusCode))
             assert asyncResult.resolvedException != null
             throw asyncResult.resolvedException
         }
