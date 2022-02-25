@@ -64,16 +64,9 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
         return asyncActions.andExpect(status().is4xxClientError())
     }
 
-    ResultActions post(String url, Map content, boolean expectSuccessfulRequest = true) {
-        doRequest(MockMvcRequestBuilders.post(url)
-                .contentType(APPLICATION_JSON)
-                .content(toJson(content))
-                .accept(APPLICATION_JSON),
-                201,
-                expectSuccessfulRequest)
-    }
 
-    ResultActions post(String url, Map content, int expectedStatusCode) {
+
+    ResultActions post(String url, Map content, int expectedStatusCode = 201) {
         doRequest(MockMvcRequestBuilders.post(url)
                 .contentType(APPLICATION_JSON)
                 .content(toJson(content))
@@ -81,22 +74,17 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
                 expectedStatusCode)
     }
 
-    ResultActions get(String url, boolean expectSuccessfulRequest = true) {
-        doRequest(MockMvcRequestBuilders.get(url)
-                .accept(APPLICATION_JSON), 200, expectSuccessfulRequest)
-    }
-
-    ResultActions get(URI uri, boolean expectSuccessfulRequest = true) {
+    ResultActions get(URI uri, int expectedStatusCode = 200) {
         doRequest(MockMvcRequestBuilders.get(uri)
-                .accept(APPLICATION_JSON), 200, expectSuccessfulRequest)
+                .accept(APPLICATION_JSON), expectedStatusCode)
     }
 
-    ResultActions get(String url, int expectedStatusCode) {
+    ResultActions get(String url, int expectedStatusCode = 200) {
         doRequest(MockMvcRequestBuilders.get(url)
                 .accept(APPLICATION_JSON), expectedStatusCode)
     }
 
-    ResultActions put(String url, Map content, Map headers, boolean expectSuccessfulRequest = true) {
+    ResultActions put(String url, Map content, Map headers, int expectedStatusCode = 200) {
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put(url)
                 .contentType(APPLICATION_JSON)
                 .content(toJson(content))
@@ -105,39 +93,20 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
             requestBuilder.header(key, headers.get(key))
         }
         doRequest(requestBuilder,
-                200,
-                expectSuccessfulRequest)
+                expectedStatusCode)
     }
 
-
-    ResultActions put(String url, Map content, boolean expectSuccessfulRequest = true) {
+    ResultActions put(String url, Map content, int expectedStatusCode = 200) {
         doRequest(MockMvcRequestBuilders.put(url)
                 .contentType(APPLICATION_JSON)
                 .content(toJson(content))
                 .accept(APPLICATION_JSON),
-                200,
-                expectSuccessfulRequest)
+                200)
     }
 
-    ResultActions delete(String url, boolean expectSuccessfulRequest = true) {
+    ResultActions delete(String url, int expectedStatusCode = 204) {
         doRequest(MockMvcRequestBuilders.delete(url)
-                .accept(APPLICATION_JSON), 204, expectSuccessfulRequest)
-    }
-
-    ResultActions doRequest(MockHttpServletRequestBuilder requestBuilder, int successfulStatusCode, boolean expectSuccessfulRequest) throws Exception {
-        ResultActions asyncActions = mvc
-                .perform(MockMvcRequestBuilders.asyncDispatch(prepareAsyncRequest(requestBuilder)))
-        MvcResult asyncResult = asyncActions.andReturn()
-
-        if (expectSuccessfulRequest) {
-            assert asyncResult.resolvedException == null
-            asyncActions.andExpect(status().is(successfulStatusCode))
-        } else {
-            asyncActions.andExpect({result -> result.response.status != successfulStatusCode})
-            assert asyncResult.resolvedException != null
-            throw asyncResult.resolvedException
-        }
-        return asyncActions
+                .accept(APPLICATION_JSON), expectedStatusCode)
     }
 
     ResultActions doRequest(MockHttpServletRequestBuilder requestBuilder, int expectedStatusCode) throws Exception {

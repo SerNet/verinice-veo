@@ -603,7 +603,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             id: asset1.id.uuidValue(),
             name: "new name 1",
             owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
-        ], headers, false)
+        ], headers, 403)
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }
@@ -695,9 +695,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "the risk is requested"
         def getResult = parseJson(
-                get("/assets/" + asset.id.uuidValue() + "/risks/" + scenario.id.uuidValue(),
-                true)
-                )
+                get("/assets/" + asset.id.uuidValue() + "/risks/" + scenario.id.uuidValue()))
 
         then: "the correct object is returned"
         getResult != null
@@ -794,8 +792,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         and: "the created risk is retrieved"
-        def getResponse = get("/assets/" + asset.id.uuidValue() + "/risks/" + scenario.id.uuidValue(),
-                true)
+        def getResponse = get("/assets/" + asset.id.uuidValue() + "/risks/" + scenario.id.uuidValue())
         def getResult = parseJson(getResponse)
         String eTag = getResponse.andReturn().response.getHeader("ETag").replace("\"", "")
 
@@ -812,13 +809,11 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         def putResult =
                 put("/assets/${asset.id.uuidValue()}/risks/${scenario.id.uuidValue()}",
-                putBody as Map, headers, true)
+                putBody as Map, headers)
 
         and: "the risk is retrieved again"
         def riskJson = parseJson(
-                get("/assets/" + asset.id.uuidValue() + "/risks/" + scenario.id.uuidValue(),
-                true)
-                )
+                get("/assets/" + asset.id.uuidValue() + "/risks/" + scenario.id.uuidValue()))
 
         then: "the information was persisted"
         eTag.length() > 0
@@ -843,9 +838,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         delete("/persons/${person.id.uuidValue()}")
         delete("/controls/${control.id.uuidValue()}")
         riskJson = parseJson(
-                get("/assets/" + asset.id.uuidValue() + "/risks/" + scenario.id.uuidValue(),
-                true)
-                )
+                get("/assets/" + asset.id.uuidValue() + "/risks/" + scenario.id.uuidValue()))
 
         then: "their references are removed from the risk"
         riskJson != null
@@ -864,8 +857,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         delete("/scenarios/${scenario.id.uuidValue()}")
 
         and: "the risk is requested"
-        get("/assets/" + asset.id.uuidValue() + "/risks/" + scenario.id.uuidValue(),
-                false)
+        get("/assets/" + asset.id.uuidValue() + "/risks/" + scenario.id.uuidValue(), 404)
 
         then: "the risk was removed as well"
         thrown(NotFoundException)

@@ -242,7 +242,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
             id: document1.id.uuidValue(),
             name: "new name 1",
             owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
-        ], headers, false)
+        ], headers, 403)
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }
@@ -269,7 +269,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
             description: "!".repeat(Nameable.DESCRIPTION_MAX_LENGTH+1),
             name: "new name",
             owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
-        ], false)
+        ], 400)
 
         then:
         def ex = thrown(JsonSchemaValidationException)

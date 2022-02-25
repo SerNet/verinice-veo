@@ -55,7 +55,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server"
-        def results = get("/${basePath}/${unitSecondClient.id.uuidValue()}/incarnations?itemIds=${item1.id.uuidValue()}", false)
+        def results = get("/${basePath}/${unitSecondClient.id.uuidValue()}/incarnations?itemIds=${item1.id.uuidValue()}", 400)
 
         then: "the data is rejected"
         ClientBoundaryViolationException ex = thrown()
@@ -66,7 +66,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server"
-        def results = get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${otherItem.id.uuidValue()}", false)
+        def results = get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${otherItem.id.uuidValue()}", 400)
 
         then: "the data is rejected"
         ClientBoundaryViolationException ex = thrown()
@@ -294,7 +294,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters.size() == 3
 
         when: "post the data"
-        def postResults = post("/${basePath}/${unitSecondClient.id.uuidValue()}/incarnations",result, false)
+        def postResults = post("/${basePath}/${unitSecondClient.id.uuidValue()}/incarnations",result, 400)
         then: "the data is rejected"
         ClientBoundaryViolationException ex = thrown()
     }
@@ -347,7 +347,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters.size() == 2
 
         when: "post the data"
-        def postResult = post("/${basePath}/${unit.id.uuidValue()}/incarnations",result, false)
+        def postResult = post("/${basePath}/${unit.id.uuidValue()}/incarnations",result, 404)
         then: "the data is rejected"
         NotFoundException ex = thrown()
     }

@@ -134,7 +134,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         when: "a request is made to the server"
-        def results = post('/processes', request, false)
+        def results = post('/processes', request, 400)
 
         then: "the process is not created"
         JsonSchemaValidationException ex = thrown()
@@ -190,14 +190,13 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(process.id.uuidValue(), 1)
         ]
-        def results = put("/processes/${process.id.uuidValue()}", request, headers, false)
+        def results = put("/processes/${process.id.uuidValue()}", request, headers, 403)
 
         then: "the process is not updated"
         JsonSchemaValidationException ex = thrown()
 
         and: "the reason is given"
         ex.message ==~ /.*.name: is missing but it is required.*/
-
     }
 
     @WithUserDetails("user@domain.example")
@@ -622,7 +621,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             id: process1.id.uuidValue(),
             name: "new name 1",
             owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
-        ], headers, false)
+        ], headers, 403)
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }
@@ -685,9 +684,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "the risk is requested"
         def getResult = parseJson(
-                get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue(),
-                true)
-                )
+                get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue()))
 
         then: "the correct object is returned"
         getResult != null
@@ -780,8 +777,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         and: "the created risk is retrieved"
-        def getResponse = get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue(),
-                true)
+        def getResponse = get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue())
         def getResult = parseJson(getResponse)
         String eTag = getResponse.andReturn().response.getHeader("ETag").replace("\"", "")
 
@@ -798,13 +794,11 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         def putResult =
                 put("/processes/${process.id.uuidValue()}/risks/${scenario.id.uuidValue()}",
-                putBody as Map, headers, true)
+                putBody as Map, headers)
 
         and: "the risk is retrieved again"
         def riskJson = parseJson(
-                get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue(),
-                true)
-                )
+                get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue()))
 
         then: "the information was persisted"
         eTag.length() > 0
@@ -828,9 +822,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         delete("/persons/${person.id.uuidValue()}")
         delete("/controls/${control.id.uuidValue()}")
         riskJson = parseJson(
-                get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue(),
-                true)
-                )
+                get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue()))
 
         then: "their references are removed from the risk"
         riskJson != null
@@ -850,7 +842,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         and: "the risk is requested"
         get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue(),
-                false)
+                404)
 
         then: "the risk was removed as well"
         thrown(NotFoundException)

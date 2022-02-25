@@ -96,7 +96,7 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
         }
 
         when: "setting page size to zero"
-        get("/$type?size=0&sortBy=abbreviation&sortOrder=desc", false)
+        get("/$type?size=0&sortBy=abbreviation&sortOrder=desc", 400)
         then:
         thrown(IllegalArgumentException)
 
@@ -142,7 +142,7 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
         }
 
         when: "setting page size to zero"
-        get("$searchUri?size=0&sortBy=abbreviation&sortOrder=desc", false)
+        get("$searchUri?size=0&sortBy=abbreviation&sortOrder=desc", 400)
         then:
         thrown(IllegalArgumentException)
 

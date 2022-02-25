@@ -134,7 +134,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             name: 'hijacked-unit',
             parent: [displayName: 'Test unit',
                 targetUri: 'http://localhost//units/' + unit.id.value()]
-        ], headers, false)
+        ], headers, 400)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -194,7 +194,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             unitRepository.save(newUnit(otherClient))
         })
         when: "a delete request tries to delete the unit"
-        delete("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.getId().uuidValue(), false)
+        delete("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.getId().uuidValue(), 400)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -206,7 +206,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             assetRepository.save(newAsset(otherClientsUnit))
         })
         when: "a delete request tries to delete the asset"
-        delete("/" + Asset.PLURAL_TERM + "/" + otherClientsAsset.getId().uuidValue(), false)
+        delete("/" + Asset.PLURAL_TERM + "/" + otherClientsAsset.getId().uuidValue(), 400)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -218,7 +218,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             controlRepository.save(newControl(otherClientsUnit))
         })
         when: "a delete request tries to delete the control"
-        delete("/" + Control.PLURAL_TERM + "/" + otherClientsControl.getId().uuidValue(), false)
+        delete("/" + Control.PLURAL_TERM + "/" + otherClientsControl.getId().uuidValue(), 400)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -230,7 +230,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             personRepository.save(newPerson(otherClientsUnit))
         })
         when: "a delete request tries to delete the person"
-        delete("/" + Person.PLURAL_TERM + "/" + otherClientsPerson.getId().uuidValue(), false)
+        delete("/" + Person.PLURAL_TERM + "/" + otherClientsPerson.getId().uuidValue(), 400)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -242,7 +242,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             processRepository.save(newProcess(otherClientsUnit))
         })
         when: "a delete request tries to delete the process"
-        delete("/" + Process.PLURAL_TERM + "/" + otherClientsProcess.getId().uuidValue(), false)
+        delete("/" + Process.PLURAL_TERM + "/" + otherClientsProcess.getId().uuidValue(), 400)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -254,7 +254,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             assetRepository.save(newAsset(otherClientsUnit))
         })
         when: "a get request tries to get the asset"
-        get("/" + Asset.PLURAL_TERM + "/" + otherClientsAsset.getId().uuidValue(), false)
+        get("/" + Asset.PLURAL_TERM + "/" + otherClientsAsset.getId().uuidValue(), 400)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -266,7 +266,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             controlRepository.save(newControl(otherClientsUnit))
         })
         when: "aa get request tries to get the control"
-        get("/" + Control.PLURAL_TERM + "/" + otherClientsControl.getId().uuidValue(), false)
+        get("/" + Control.PLURAL_TERM + "/" + otherClientsControl.getId().uuidValue(), 400)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -278,7 +278,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             personRepository.save(newPerson(otherClientsUnit))
         })
         when: "a get request tries to get the person"
-        get("/" + Person.PLURAL_TERM + "/" + otherClientsPerson.getId().uuidValue(), false)
+        get("/" + Person.PLURAL_TERM + "/" + otherClientsPerson.getId().uuidValue(), 400)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -290,7 +290,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             processRepository.save(newProcess(otherClientsUnit))
         })
         when: "a get request tries to get the process"
-        get("/" + Process.PLURAL_TERM + "/" + otherClientsProcess.getId().uuidValue(), false)
+        get("/" + Process.PLURAL_TERM + "/" + otherClientsProcess.getId().uuidValue(), 400)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -304,7 +304,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             unitRepository.save(unit)
         })
         when: "a get request tries to get the unit"
-        get("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.getId().uuidValue(), false)
+        get("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.getId().uuidValue(), 400)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -331,7 +331,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ], false)
+        ], 400)
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -341,7 +341,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             name: 'entity-in-another client',
             owner: [displayName: '' + otherClientsUnit.name,
                 targetUri: 'http://localhost/units/' + otherClientsUnit.id.value()]
-        ],false)
+        ],400)
     }
 
     def putEntityToAnotherUnit(String url, String entityUuid) {
@@ -353,6 +353,6 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             name: 'hijacked-entity',
             owner: [displayName: 'Test unit',
                 targetUri: 'http://localhost/units/' + unit.id.value()]
-        ], headers, false)
+        ], headers, 400)
     }
 }

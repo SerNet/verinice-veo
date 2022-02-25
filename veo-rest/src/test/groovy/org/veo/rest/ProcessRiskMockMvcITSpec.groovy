@@ -147,7 +147,7 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ],false)).resourceId
+        ],400)).resourceId
 
         then: "an exception is thrown"
         IllegalArgumentException ex = thrown()
@@ -176,7 +176,7 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ],false)).resourceId
+        ],400)).resourceId
 
         then: "an exception is thrown"
         IllegalArgumentException ex = thrown()
@@ -199,7 +199,7 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ],false)).resourceId
+        ],400)).resourceId
 
         then: "an exception is thrown"
         IllegalArgumentException ex = thrown()

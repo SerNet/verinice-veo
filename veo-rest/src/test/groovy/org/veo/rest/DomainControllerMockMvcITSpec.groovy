@@ -136,7 +136,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a saved domain"
 
         when: "a request is made to the server"
-        def results = get("/domains/${domainSecondClient.id.uuidValue()}", false)
+        def results = get("/domains/${domainSecondClient.id.uuidValue()}", 400)
 
         then: "the data is rejected"
         ClientBoundaryViolationException ex = thrown()
@@ -287,7 +287,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         count2 == count1 +1
 
         when: "create the next template"
-        results = post("/domains/${secondDomain.id.uuidValue()}/createdomaintemplate/update-3",[:],false)
+        results = post("/domains/${secondDomain.id.uuidValue()}/createdomaintemplate/update-3",[:],400)
         then: "the data is rejected"
         ModelConsistencyException ex = thrown()
     }

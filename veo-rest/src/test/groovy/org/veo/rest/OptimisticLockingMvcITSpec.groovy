@@ -94,7 +94,7 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
                 displayName: 'test2',
                 targetUri: 'http://localhost/units/' + unit.id.uuidValue()
             ]
-        ], headers, false)
+        ], headers, 412)
         then: "a ETagMismatchException is thrown"
         thrown ETagMismatchException
     }

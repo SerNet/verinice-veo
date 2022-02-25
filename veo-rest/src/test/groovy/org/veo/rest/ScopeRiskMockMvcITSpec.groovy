@@ -104,7 +104,7 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
                     riskDefinition: "fantasy-definition"
                 ]
             ]
-        ], false)
+        ], 400)
 
         then:
         JsonSchemaValidationException ex = thrown()

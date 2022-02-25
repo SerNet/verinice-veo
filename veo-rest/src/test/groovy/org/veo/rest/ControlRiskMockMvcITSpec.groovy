@@ -153,7 +153,7 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ], false)
+        ], 400)
 
         then: "it is rejected"
         def ex = thrown(JsonSchemaValidationException)

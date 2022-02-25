@@ -278,7 +278,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
             id: person1.id.uuidValue(),
             name: "new name 1",
             owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
-        ], headers, false)
+        ], headers, 403)
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }

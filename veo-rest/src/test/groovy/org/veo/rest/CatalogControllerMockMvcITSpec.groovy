@@ -54,7 +54,7 @@ class CatalogControllerMockMvcITSpec extends CatalogSpec {
         given: "a catalog"
 
         when: "a request is made to the server"
-        def results = get("/catalogs/${catalog1.id.uuidValue()}", false)
+        def results = get("/catalogs/${catalog1.id.uuidValue()}", 400)
 
         then: "the data is rejected"
         ClientBoundaryViolationException ex = thrown()
@@ -99,7 +99,7 @@ class CatalogControllerMockMvcITSpec extends CatalogSpec {
         given: "a saved catalogitem with a catalog"
 
         when: "a request is made to the server"
-        def results = get("/catalogs/${catalog1.id.uuidValue()}/items/${otherItem.id.uuidValue()}", false)
+        def results = get("/catalogs/${catalog1.id.uuidValue()}/items/${otherItem.id.uuidValue()}", 404)
 
         then: "the data is rejected"
         NotFoundException ex = thrown()
@@ -126,7 +126,7 @@ class CatalogControllerMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server"
-        def results = get("/catalogs/${catalog1.dbId}/items", false)
+        def results = get("/catalogs/${catalog1.dbId}/items", 404)
 
         then: "the data is rejected"
         NotFoundException ex = thrown()

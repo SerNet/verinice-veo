@@ -18,7 +18,6 @@
 package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.test.context.support.WithUserDetails
 
 import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
@@ -144,7 +143,7 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ], false)
+        ], 400)
 
         then: "an exception is thrown"
         def ex = thrown(JsonSchemaValidationException)
@@ -164,7 +163,7 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ], false)
+        ], 404)
 
         then: "an exception is thrown"
         ex = thrown(NotFoundException)
@@ -184,7 +183,7 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ], false)
+        ], 400)
 
         then: "an exception is thrown"
         ex = thrown(JsonSchemaValidationException)

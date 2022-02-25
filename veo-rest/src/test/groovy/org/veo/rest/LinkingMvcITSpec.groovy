@@ -162,8 +162,8 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ], false)
+        ], 201)
         then:
-        thrown(org.spockframework.runtime.ConditionNotSatisfiedError)
+        noExceptionThrown()
     }
 }

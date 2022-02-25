@@ -452,7 +452,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         put("/units/${unit2.id.uuidValue()}", [
             id: unit1.id.uuidValue(),
             name: "new name 1"
-        ], headers, false)
+        ], headers, 400)
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }
