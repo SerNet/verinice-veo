@@ -19,13 +19,13 @@ package org.veo.adapter.presenter.api.dto;
 
 import java.util.Map;
 
-import org.veo.adapter.presenter.api.openapi.ProcessDomainAssociationSchema;
+import org.veo.adapter.presenter.api.openapi.PotentialImpactsSchema;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-@Schema(implementation = ProcessDomainAssociationSchema.class)
 public class ProcessRiskValuesDto {
+    @Schema(implementation = PotentialImpactsSchema.class)
     private Map<String, String> potentialImpacts;
 }

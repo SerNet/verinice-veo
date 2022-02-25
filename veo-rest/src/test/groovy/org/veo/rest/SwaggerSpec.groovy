@@ -125,6 +125,26 @@ class SwaggerSpec extends VeoSpringSpec {
         scopeDomainAssociationSchema.properties.riskDefinition.type == "string"
     }
 
+    def "process risk values are mapped correctly"() {
+        given:
+        def schemas = parsedApiDocs.components.schemas
+
+        expect:
+        def processSchema = schemas.FullProcessDto
+        processSchema.properties.domains.additionalProperties.'$ref' == "#/components/schemas/ProcessDomainAssociationDto"
+
+        def processDomainAssociationSchema = schemas.ProcessDomainAssociationDto
+        processDomainAssociationSchema.description == '''Details about this element's association with domains. Domain ID is key, association object is value.'''
+        processDomainAssociationSchema.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ProcessRiskValuesDto"
+
+        def processRiskValuesSchema = schemas.ProcessRiskValuesDto
+        processRiskValuesSchema.description == '''Key is risk definition ID, value contains risk values in the context of that risk definition.'''
+        def potentialImpactsSchema = processRiskValuesSchema.properties.potentialImpacts
+        potentialImpactsSchema.type == "object"
+        potentialImpactsSchema.description == "Potential impacts for a set of risk categories"
+        potentialImpactsSchema.example == [C:2, I:3]
+    }
+
     def "targetUri is required for parts when putting composite elements"() {
         when:
         def scenarioDtoSchema = parsedApiDocs.components.schemas.FullScenarioDto

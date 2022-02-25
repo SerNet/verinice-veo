@@ -17,22 +17,22 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.openapi;
 
-import java.util.Map;
-import java.util.Set;
+import javax.validation.constraints.Min;
 
-import org.veo.core.entity.aspects.SubTypeAspect;
+import org.veo.core.entity.Constraints;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "Details about this element's association with domains. Domain ID is key, association object is value.")
-public interface ProcessDomainAssociationSchema {
-    @Schema(name = "riskValues", implementation = ProcessRiskValueSchema.class)
-    Map<String, Set<ProcessRiskValueSchema>> getRiskValues();
+@Schema(name = "PotentialImpacts",
+        description = "Potential impacts for a set of risk categories",
+        example = "{\"C\":2,\n\"I\":3}")
+public interface PotentialImpactsSchema {
+    @Schema(description = "A category ID as defined in the risk definition",
+            minLength = 1,
+            maxLength = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
+    String getKey();
 
-    @Schema(minLength = 1, maxLength = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
-    String getSubType();
-
-    @Schema(minLength = 1, maxLength = SubTypeAspect.STATUS_MAX_LENGTH)
-    String getStatus();
-
+    @Schema(description = "The potential impact ID.")
+    @Min(0)
+    Integer getValue();
 }

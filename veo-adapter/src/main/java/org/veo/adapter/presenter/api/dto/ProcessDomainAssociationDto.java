@@ -20,15 +20,13 @@ package org.veo.adapter.presenter.api.dto;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.veo.adapter.presenter.api.openapi.ProcessDomainAssociationSchema;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Schema(implementation = ProcessDomainAssociationSchema.class)
 public class ProcessDomainAssociationDto extends DomainAssociationDto {
+    @Schema(description = "Key is risk definition ID, value contains risk values in the context of that risk definition.")
     Map<String, ProcessRiskValuesDto> riskValues = new HashMap<>();
 }

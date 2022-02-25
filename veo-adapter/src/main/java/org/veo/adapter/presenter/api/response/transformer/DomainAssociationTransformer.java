@@ -333,8 +333,10 @@ public class DomainAssociationTransformer {
 
     private <T extends DomainAssociationDto> Map<String, T> extractDomainAssociations(
             Element source, Function<DomainTemplate, T> supplier) {
-        // Catalog item elements in a domain template may have aspects for domains that
-        // the element is not assigned to. Seems invalid, but that's the situation we
+        // Catalog item elements in a domain template may have aspects for
+        // domains that
+        // the element is not assigned to. Seems invalid, but that's the
+        // situation we
         // have to deal with here.
         var domains = new HashSet<DomainTemplate>();
         domains.addAll(source.getDomains());
