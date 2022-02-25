@@ -26,7 +26,6 @@ import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.transaction.support.TransactionTemplate
-import org.springframework.web.util.NestedServletException
 
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
@@ -35,6 +34,7 @@ import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
+import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -868,8 +868,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 false)
 
         then: "the risk was removed as well"
-        def e = thrown NestedServletException
-        e.getCause() instanceof NoSuchElementException
+        thrown(NotFoundException)
     }
 
     private List createRisk() {

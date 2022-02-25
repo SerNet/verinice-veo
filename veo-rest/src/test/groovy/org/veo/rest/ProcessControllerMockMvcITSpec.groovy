@@ -22,7 +22,6 @@ import java.time.Instant
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
-import org.springframework.web.util.NestedServletException
 
 import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
 
@@ -33,6 +32,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
+import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
@@ -853,8 +853,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
                 false)
 
         then: "the risk was removed as well"
-        def e = thrown NestedServletException
-        e.getCause() instanceof NoSuchElementException
+        thrown(NotFoundException)
     }
 
     private List createRisk() {

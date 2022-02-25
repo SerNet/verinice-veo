@@ -27,6 +27,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -48,16 +49,22 @@ public class GetRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk
     public OutputData<R> execute(InputData input) {
         var entity = repositoryProvider.getRepositoryFor(entityClass)
                                        .findById(input.entityRef)
-                                       .orElseThrow();
+                                       .orElseThrow(() -> new NotFoundException(
+                                               "Entity with UUID %s not found",
+                                               input.entityRef.uuidValue()));
         var scenario = repositoryProvider.getRepositoryFor(Scenario.class)
                                          .findById(input.scenarioRef)
-                                         .orElseThrow();
+                                         .orElseThrow(() -> new NotFoundException(
+                                                 "Scenario with UUID %s not found",
+                                                 input.scenarioRef.uuidValue()));
 
         entity.checkSameClient(input.authenticatedClient);
         scenario.checkSameClient(input.authenticatedClient);
 
         return new OutputData<>(entity.getRisk(scenario)
-                                      .orElseThrow());
+                                      .orElseThrow(() -> new NotFoundException(
+                                              "No risk found for entity %s and scenario %s",
+                                              entity.getDisplayName(), scenario.getDisplayName())));
     }
 
     @Valid
