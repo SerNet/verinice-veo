@@ -53,7 +53,7 @@ public class RiskValuesDto {
 
     @Valid
     @JsonDeserialize(as = ProbabilityImpl.class)
-    @Schema(description = "Values describing the probability of this risk occuring",
+    @Schema(description = "Values describing the probability of this risk occurring",
             implementation = ProbabilitySchema.class)
     private Probability probability;
 

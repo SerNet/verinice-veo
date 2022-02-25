@@ -25,7 +25,7 @@ import javax.validation.constraints.Size;
 import org.veo.core.entity.Constraints;
 
 /**
- * The probability of a risk event occuring.
+ * The probability of a risk event occurring.
  *
  * @see org.veo.core.entity.riskdefinition.RiskDefinition
  */
