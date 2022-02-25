@@ -19,10 +19,14 @@ package org.veo.persistence.access;
 
 import static java.util.Collections.singleton;
 
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.veo.core.entity.CompositeElement;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
+import org.veo.core.repository.CompositeElementRepository;
 import org.veo.persistence.access.jpa.CompositeEntityDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
@@ -30,7 +34,7 @@ import org.veo.persistence.entity.jpa.ElementData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
 abstract class AbstractCompositeEntityRepositoryImpl<S extends CompositeElement<?>, T extends ElementData & CompositeElement<?>>
-        extends AbstractElementRepository<S, T> {
+        extends AbstractElementRepository<S, T> implements CompositeElementRepository<S> {
 
     private final CompositeEntityDataRepository<T> compositeRepo;
 
@@ -48,5 +52,16 @@ abstract class AbstractCompositeEntityRepositoryImpl<S extends CompositeElement<
         composites.forEach(assetComposite -> assetComposite.removePartById(id));
 
         super.deleteById(id);
+    }
+
+    @Override
+    public Set<S> findCompositesByParts(Set<S> parts) {
+        var partIds = parts.stream()
+                           .map(Identifiable::getIdAsString)
+                           .collect(Collectors.toSet());
+        return compositeRepo.findDistinctByParts_DbId_In(partIds)
+                            .stream()
+                            .map(data -> (S) data)
+                            .collect(Collectors.toSet());
     }
 }

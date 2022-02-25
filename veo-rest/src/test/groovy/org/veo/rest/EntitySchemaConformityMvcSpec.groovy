@@ -211,10 +211,34 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         notThrown(Exception)
     }
 
-    def "created control with custom aspect and risk value conforms to schema"() {
-        given: "the control schema and a newly created control"
+    def "control with custom aspect and risk value conforms to schema"() {
+        given: "the control schema and a newly created control in a scope"
         def schema = getSchema("control")
         def controlId = (String)parseJson(post("/controls", [
+            domains: [
+                (domainId): [:]
+            ],
+            name: "control",
+            owner: [
+                targetUri: "http://localhost/units/"+unitId,
+            ]])).resourceId
+
+        post("/scopes", [
+            name: "schema test scope",
+            domains: [
+                (domainId): [
+                    riskDefinition: "DSRA"
+                ]
+            ],
+            members: [
+                [targetUri: "http://localhost/controls/$controlId"]
+            ],
+            owner: [
+                targetUri: "http://localhost/units/"+unitId,
+            ]
+        ])
+        def controlETag = getETag(get("/controls/$controlId"))
+        put("/controls/$controlId", [
             customAspects: [
                 control_generalInformation: [
                     attributes: [
@@ -230,15 +254,17 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                         ]
                     ]
                 ]
+
             ],
             name: "control",
             owner: [
                 targetUri: "http://localhost/units/"+unitId,
-            ]])).resourceId
-        def createdControlJson = parseNode(get("/controls/$controlId"))
+            ]
+        ], ['If-Match': controlETag])
+        def controlJson = parseNode(get("/controls/$controlId"))
 
         when: "validating the control JSON"
-        def validationMessages = schema.validate(createdControlJson)
+        def validationMessages = schema.validate(controlJson)
 
         then:
         validationMessages.empty

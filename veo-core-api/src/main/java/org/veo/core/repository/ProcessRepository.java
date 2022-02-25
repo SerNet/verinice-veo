@@ -33,7 +33,8 @@ import org.veo.core.entity.Scenario;
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
  */
-public interface ProcessRepository extends RiskAffectedRepository<Process, ProcessRisk> {
+public interface ProcessRepository
+        extends RiskAffectedRepository<Process, ProcessRisk>, CompositeElementRepository<Process> {
 
     /**
      * Returns risks with initialized risk value aspects.

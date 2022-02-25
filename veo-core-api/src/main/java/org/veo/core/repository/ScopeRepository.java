@@ -17,8 +17,13 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import java.util.Set;
+
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 
 /**
  * A repository for <code>Scope</code> entities.
@@ -27,5 +32,10 @@ import org.veo.core.entity.ScopeRisk;
  * with more specific methods - i.e. queries based on particular fields.
  */
 public interface ScopeRepository extends RiskAffectedRepository<Scope, ScopeRisk> {
-
+    /**
+     * Select if any of the given elements is a direct member of a scope with given
+     * risk definition and domain.
+     */
+    Boolean canUseRiskDefinition(Set<? extends Element> members,
+            RiskDefinitionRef riskDefinitionRef, Domain domain);
 }

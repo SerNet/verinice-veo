@@ -23,6 +23,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.persistence.entity.jpa.ElementData;
 import org.veo.persistence.entity.jpa.ScopeData;
 
@@ -41,4 +42,10 @@ public interface ScopeDataRepository extends ScopeRiskAffectedDataRepository {
     @Transactional(readOnly = true)
     @Override
     Set<ScopeData> findByUnits(Set<String> unitIds);
+
+    @Query("select count(s) > 0 from #{#entityName} as s " + "inner join s.riskValuesAspects r "
+            + "inner join s.members m "
+            + "where m.dbId in ?1 and r.riskDefinitionRef = ?2 and r.domain.dbId = ?3")
+    Boolean canUseRiskDefinition(Set<String> elementIds, RiskDefinitionRef riskDefinitionRef,
+            String domainId);
 }

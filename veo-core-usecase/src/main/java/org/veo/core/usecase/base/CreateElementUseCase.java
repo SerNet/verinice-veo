@@ -57,8 +57,11 @@ public abstract class CreateElementUseCase<TEntity extends Element> implements
         unit.checkSameClient(input.authenticatedClient);
         DomainSensitiveElementValidator.validate(entity);
         designatorService.assignDesignator(entity, input.authenticatedClient);
+        validate(entity);
         return new CreateElementUseCase.OutputData<>(entityRepo.save(entity));
     }
+
+    protected abstract void validate(TEntity entity);
 
     @Valid
     @Value

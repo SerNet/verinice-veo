@@ -44,4 +44,8 @@ public class CreateProcessUseCase extends CreateElementUseCase<Process> {
         eventPublisher.publish(new RiskComponentChangeEvent(result.getEntity()));
         return result;
     }
+
+    @Override
+    protected void validate(Process process) {
+    }
 }

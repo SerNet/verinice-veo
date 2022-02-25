@@ -29,4 +29,9 @@ public class CreateAssetUseCase extends CreateElementUseCase<Asset> {
             DesignatorService designatorService) {
         super(unitRepository, entityRepo, designatorService);
     }
+
+    @Override
+    protected void validate(Asset asset) {
+        // GNDN
+    }
 }

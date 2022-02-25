@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jonas Jordan.
+ * Copyright (C) 2022  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,23 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.incident;
+package org.veo.core.repository;
 
-import org.veo.core.entity.Incident;
-import org.veo.core.repository.IncidentRepository;
-import org.veo.core.repository.UnitRepository;
-import org.veo.core.usecase.DesignatorService;
-import org.veo.core.usecase.base.CreateElementUseCase;
+import java.util.Set;
 
-public class CreateIncidentUseCase extends CreateElementUseCase<Incident> {
+import org.veo.core.entity.CompositeElement;
 
-    public CreateIncidentUseCase(UnitRepository unitRepository, IncidentRepository entityRepo,
-            DesignatorService designatorService) {
-        super(unitRepository, entityRepo, designatorService);
-    }
-
-    @Override
-    protected void validate(Incident incident) {
-        // GNDN
-    }
+/**
+ * Generic repository for {@link CompositeElement}s.
+ */
+public interface CompositeElementRepository<T extends CompositeElement<?>> {
+    Set<T> findCompositesByParts(Set<T> part);
 }

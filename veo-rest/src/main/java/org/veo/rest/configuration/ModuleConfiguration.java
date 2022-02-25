@@ -57,11 +57,13 @@ import org.veo.core.events.MessageCreatorImpl;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.CatalogRepository;
 import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.ControlRepository;
 import org.veo.core.repository.DesignatorSequenceRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.service.CatalogItemService;
 import org.veo.core.service.DomainTemplateIdGenerator;
@@ -80,6 +82,7 @@ import org.veo.core.usecase.asset.GetAssetsUseCase;
 import org.veo.core.usecase.asset.UpdateAssetRiskUseCase;
 import org.veo.core.usecase.asset.UpdateAssetUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
+import org.veo.core.usecase.base.ScopeProvider;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 import org.veo.core.usecase.catalog.GetCatalogUseCase;
 import org.veo.core.usecase.catalog.GetCatalogsUseCase;
@@ -226,8 +229,8 @@ public class ModuleConfiguration {
 
     @Bean
     public UpdateControlUseCase updateControlUseCase(ControlRepositoryImpl controlRepository,
-            EventPublisher eventPublisher) {
-        return new UpdateControlUseCase(controlRepository, eventPublisher);
+            EventPublisher eventPublisher, ScopeProvider scopeProvider) {
+        return new UpdateControlUseCase(controlRepository, eventPublisher, scopeProvider);
     }
 
     @Bean
@@ -476,6 +479,12 @@ public class ModuleConfiguration {
     @Bean
     public UnitHierarchyProvider unitHierarchyProvider(UnitRepository unitRepository) {
         return new UnitHierarchyProvider(unitRepository);
+    }
+
+    @Bean
+    public ScopeProvider scopeProvider(ControlRepository controlRepository,
+            ProcessRepository processRepository, ScopeRepository scopeRepository) {
+        return new ScopeProvider(controlRepository, processRepository, scopeRepository);
     }
 
     @Bean

@@ -29,4 +29,9 @@ public class CreateDocumentUseCase extends CreateElementUseCase<Document> {
             DesignatorService designatorService) {
         super(unitRepository, entityRepo, designatorService);
     }
+
+    @Override
+    protected void validate(Document document) {
+        // GNDN
+    }
 }

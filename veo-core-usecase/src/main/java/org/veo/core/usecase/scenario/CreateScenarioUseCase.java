@@ -29,4 +29,9 @@ public class CreateScenarioUseCase extends CreateElementUseCase<Scenario> {
             DesignatorService designatorService) {
         super(unitRepository, entityRepo, designatorService);
     }
+
+    @Override
+    protected void validate(Scenario scenario) {
+        // GNDN
+    }
 }

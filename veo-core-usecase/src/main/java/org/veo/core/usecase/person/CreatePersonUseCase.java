@@ -29,4 +29,9 @@ public class CreatePersonUseCase extends CreateElementUseCase<Person> {
             DesignatorService designatorService) {
         super(unitRepository, entityRepo, designatorService);
     }
+
+    @Override
+    protected void validate(Person person) {
+        // GNDN
+    }
 }

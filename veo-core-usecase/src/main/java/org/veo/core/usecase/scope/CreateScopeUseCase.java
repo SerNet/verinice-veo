@@ -30,4 +30,8 @@ public class CreateScopeUseCase extends CreateElementUseCase<Scope> {
         super(unitRepository, scopeRepository, designatorService);
     }
 
+    @Override
+    protected void validate(Scope scope) {
+        // GNDN
+    }
 }
