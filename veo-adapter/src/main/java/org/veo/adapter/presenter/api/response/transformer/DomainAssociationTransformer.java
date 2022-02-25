@@ -149,7 +149,7 @@ public class DomainAssociationTransformer {
             ProcessRiskValuesDto value, DomainRiskReferenceProvider referenceProvider) {
         var riskValues = new ProcessImpactValues();
 
-        Map<CategoryRef, ImpactRef> potentialImpacts = value.getRiskValues()
+        Map<CategoryRef, ImpactRef> potentialImpacts = value.getPotentialImpacts()
                                                             .entrySet()
                                                             .stream()
                                                             .collect(Collectors.toMap(e -> toCategoryRef(riskDefinitionId,
@@ -258,7 +258,7 @@ public class DomainAssociationTransformer {
                                                                                    e -> e.getValue()
                                                                                          .getIdRef()
                                                                                          .toString()));
-        riskValuesDto.setRiskValues(riskValues);
+        riskValuesDto.setPotentialImpacts(riskValues);
         return riskValuesDto;
     }
 

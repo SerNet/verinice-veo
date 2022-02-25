@@ -202,13 +202,14 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
             domains: [
                 (domainId): [
                     riskValues: [
-                        myFirstRiskDefinition : [
-                            riskValues: [ "C": "0",
+                        myFirstRiskDefinition: [
+                            potentialImpacts: [
+                                "C": "0",
                                 "I": "1"
                             ]
                         ],
-                        mySecondRiskDefinition : [
-                            riskValues: [
+                        mySecondRiskDefinition: [
+                            potentialImpacts: [
                                 "C": "1"
                             ]
                         ]
@@ -223,10 +224,10 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         def retrievedProcess = parseJson(getProcessResponse)
 
         then: "the retrieved risk values are complete"
-        retrievedProcess.domains[domainId].riskValues.myFirstRiskDefinition.riskValues.size() == 2
-        retrievedProcess.domains[domainId].riskValues.myFirstRiskDefinition.riskValues.C == "0"
-        retrievedProcess.domains[domainId].riskValues.myFirstRiskDefinition.riskValues.I == "1"
-        retrievedProcess.domains[domainId].riskValues.mySecondRiskDefinition.riskValues.C == "1"
+        retrievedProcess.domains[domainId].riskValues.myFirstRiskDefinition.potentialImpacts.size() == 2
+        retrievedProcess.domains[domainId].riskValues.myFirstRiskDefinition.potentialImpacts.C == "0"
+        retrievedProcess.domains[domainId].riskValues.myFirstRiskDefinition.potentialImpacts.I == "1"
+        retrievedProcess.domains[domainId].riskValues.mySecondRiskDefinition.potentialImpacts.C == "1"
 
         when: "updating the risk values on the process"
         put("/processes/$processId", [
@@ -235,13 +236,13 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
             domains: [
                 (domainId): [
                     riskValues: [
-                        myFirstRiskDefinition : [
-                            riskValues: [ "C": "1",
+                        myFirstRiskDefinition: [
+                            potentialImpacts: [ "C": "1",
                                 "I": "2"
                             ]
                         ],
-                        myThirdRiskDefinition : [
-                            riskValues: [ "C": "1",
+                        myThirdRiskDefinition: [
+                            potentialImpacts: [ "C": "1",
                                 "I": "2"
                             ]
                         ]
@@ -254,10 +255,10 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         def updatedProcess = parseJson(get("/processes/$processId"))
 
         then: "the changes have been applied"
-        updatedProcess.domains[domainId].riskValues.myFirstRiskDefinition.riskValues.C == "1"
+        updatedProcess.domains[domainId].riskValues.myFirstRiskDefinition.potentialImpacts.C == "1"
         updatedProcess.domains[domainId].riskValues.mySecondRiskDefinition == null
-        updatedProcess.domains[domainId].riskValues.myThirdRiskDefinition.riskValues.C == "1"
-        updatedProcess.domains[domainId].riskValues.myThirdRiskDefinition.riskValues.I == "2"
+        updatedProcess.domains[domainId].riskValues.myThirdRiskDefinition.potentialImpacts.C == "1"
+        updatedProcess.domains[domainId].riskValues.myThirdRiskDefinition.potentialImpacts.I == "2"
     }
 
     def "can't create process with wrong riskdefinition id"() {
@@ -268,13 +269,14 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
             domains: [
                 (domainId): [
                     riskValues: [
-                        myFirstWrongDefinition : [
-                            riskValues: [ "E": "0",
+                        myFirstWrongDefinition: [
+                            potentialImpacts: [
+                                "E": "0",
                                 "GGG": "1"
                             ]
                         ],
-                        mySecondRiskDefinition : [
-                            riskValues: [
+                        mySecondRiskDefinition: [
+                            potentialImpacts: [
                                 "C": "1"
                             ]
                         ]
@@ -296,13 +298,14 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
             domains: [
                 (domainId): [
                     riskValues: [
-                        myFirstRiskDefinition : [
-                            riskValues: [ "E": "0",
+                        myFirstRiskDefinition: [
+                            potentialImpacts: [
+                                "E": "0",
                                 "GGG": "1"
                             ]
                         ],
-                        mySecondRiskDefinition : [
-                            riskValues: [
+                        mySecondRiskDefinition: [
+                            potentialImpacts: [
                                 "C": "1"
                             ]
                         ]
@@ -324,8 +327,8 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
             domains: [
                 (domainId): [
                     riskValues: [
-                        mySecondRiskDefinition : [
-                            riskValues: [
+                        mySecondRiskDefinition: [
+                            potentialImpacts: [
                                 "C": "10"
                             ]
                         ]

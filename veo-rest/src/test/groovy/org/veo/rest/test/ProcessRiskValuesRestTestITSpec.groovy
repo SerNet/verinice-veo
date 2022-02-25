@@ -39,7 +39,7 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
                 (domainId): [
                     riskValues: [
                         DSRA : [
-                            riskValues: [
+                            potentialImpacts: [
                                 "C": "0",
                                 "I": "1"
                             ]

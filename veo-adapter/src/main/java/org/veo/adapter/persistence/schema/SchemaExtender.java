@@ -120,18 +120,18 @@ public class SchemaExtender {
         domain.getRiskDefinitions()
               .forEach((riskDefId, riskDef) -> {
                   var riskValuesSchema = generator.generateSchema(ProcessRiskValuesDto.class);
-                  var riskValueSchema = (ObjectNode) riskValuesSchema.get(PROPS)
-                                                                     .get("riskValues");
+                  var potentialImpactsSchema = (ObjectNode) riskValuesSchema.get(PROPS)
+                                                                            .get("potentialImpacts");
 
                   riskDef.getCategories()
-                         .forEach(c -> riskValueSchema.putObject(c.getId())
-                                                      .putArray("enum")
-                                                      .addAll(c.getPotentialImpacts()
+                         .forEach(c -> potentialImpactsSchema.putObject(c.getId())
+                                                             .putArray("enum")
+                                                             .addAll(c.getPotentialImpacts()
 
-                                                               .stream()
-                                                               .map(DiscreteValue::getOrdinalValue)
-                                                               .map(IntNode::new)
-                                                               .collect(Collectors.toList())));
+                                                                      .stream()
+                                                                      .map(DiscreteValue::getOrdinalValue)
+                                                                      .map(IntNode::new)
+                                                                      .collect(Collectors.toList())));
                   riskValuesProps.set(riskDefId, riskValuesSchema);
               });
         return domainAssociationSchema;

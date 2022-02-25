@@ -27,5 +27,5 @@ import lombok.Data;
 @Data
 @Schema(implementation = ProcessDomainAssociationSchema.class)
 public class ProcessRiskValuesDto {
-    private Map<String, String> riskValues;
+    private Map<String, String> potentialImpacts;
 }
