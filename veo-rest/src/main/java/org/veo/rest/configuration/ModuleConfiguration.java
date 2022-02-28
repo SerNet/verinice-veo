@@ -346,8 +346,8 @@ public class ModuleConfiguration {
 
     @Bean
     public UpdateProcessUseCase putProcessUseCase(ProcessRepositoryImpl processRepository,
-            EventPublisher eventPublisher) {
-        return new UpdateProcessUseCase(processRepository, eventPublisher);
+            EventPublisher eventPublisher, ScopeProvider scopeProvider) {
+        return new UpdateProcessUseCase(processRepository, eventPublisher, scopeProvider);
     }
 
     @Bean

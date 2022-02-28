@@ -47,5 +47,16 @@ public class CreateProcessUseCase extends CreateElementUseCase<Process> {
 
     @Override
     protected void validate(Process process) {
+        // TODO VEO-1244 The same kind of validation as in UpdateControlUseCase should
+        // be used here as soon as it is possible to create an element within a scope.
+        process.getDomains()
+               .forEach(domain -> {
+                   if (process.getImpactValues(domain)
+                              .map(rv -> !rv.isEmpty())
+                              .orElse(false)) {
+                       throw new IllegalArgumentException(
+                               "Cannot create process with risk values, because it must a member of a scope with a risk definition first");
+                   }
+               });
     }
 }

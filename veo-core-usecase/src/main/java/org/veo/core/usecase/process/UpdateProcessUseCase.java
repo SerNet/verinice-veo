@@ -17,22 +17,30 @@
  ******************************************************************************/
 package org.veo.core.usecase.process;
 
+import java.util.Map;
+
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.event.RiskComponentChangeEvent;
+import org.veo.core.entity.risk.ProcessImpactValues;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.base.ModifyElementUseCase;
+import org.veo.core.usecase.base.ScopeProvider;
 
 /**
  * Update a persisted process object.
  */
 public class UpdateProcessUseCase extends ModifyElementUseCase<Process> {
     private final EventPublisher eventPublisher;
+    private final ScopeProvider scopeProvider;
 
-    public UpdateProcessUseCase(ProcessRepository processRepository,
-            EventPublisher eventPublisher) {
+    public UpdateProcessUseCase(ProcessRepository processRepository, EventPublisher eventPublisher,
+            ScopeProvider scopeProvider) {
         super(processRepository);
         this.eventPublisher = eventPublisher;
+        this.scopeProvider = scopeProvider;
     }
 
     @Override
@@ -44,5 +52,24 @@ public class UpdateProcessUseCase extends ModifyElementUseCase<Process> {
 
     @Override
     protected void validate(Process oldElement, Process newElement) {
+        newElement.getDomains()
+                  .forEach(domain -> {
+                      newElement.getImpactValues(domain)
+                                .ifPresent(impactMap -> validateRiskValues(newElement, domain,
+                                                                           impactMap));
+                  });
+    }
+
+    private void validateRiskValues(Process control, Domain domain,
+            Map<RiskDefinitionRef, ProcessImpactValues> riskValueMap) {
+        riskValueMap.keySet()
+                    .forEach(riskDefinitionRef -> {
+                        if (!scopeProvider.canUseRiskDefinition(control, domain,
+                                                                riskDefinitionRef)) {
+                            throw new IllegalArgumentException(
+                                    String.format("Cannot use risk definition '%s' because the element is not a member of a scope with that risk definition",
+                                                  riskDefinitionRef.getIdRef()));
+                        }
+                    });
     }
 }

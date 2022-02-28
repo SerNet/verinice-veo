@@ -38,6 +38,7 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
     CreateProcessUseCase usecase = new CreateProcessUseCase(unitRepository, processRepository, designatorService, eventPublisher)
     def "create a process"() {
         def id = Key.newUuid()
+        process.domains >> []
         process.owner >> unit
         process.name >> "John's process"
         process.modelInterface >> Process

@@ -19,11 +19,14 @@ package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
+import org.springframework.test.web.servlet.ResultActions
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
+
+import spock.lang.Issue
 
 /**
  * Test risk related functionality on controls.
@@ -58,9 +61,47 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
-    def "can create and update process impact"() {
-        when: "creating a process with risk values for different risk definitions"
+    @Issue("VEO-1244")
+    def "cannot create process with risk values"() {
+        when:
+        post("/processes", [
+            name: "Super PRO",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [
+                    riskValues: [
+                        myFirstRiskDefinition: [
+                            potentialImpacts: [
+                                "C": "0",
+                                "I": "1"
+                            ]
+                        ],
+                    ]
+                ]
+            ]
+        ], 400)
+
+        then:
+        IllegalArgumentException ex = thrown()
+        ex.message == "Cannot create process with risk values, because it must a member of a scope with a risk definition first"
+    }
+
+    def "can update process impact"() {
+        given: "a process in scopes with different risk definitions"
         def processId = parseJson(post("/processes", [
+            name: "Super PRO",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [:]
+            ]
+        ])).resourceId
+        postScope(processId, "myFirstRiskDefinition")
+        postScope(processId, "mySecondRiskDefinition")
+        postScope(processId, "myThirdRiskDefinition")
+        def processETag = getETag(get("/processes/$processId"))
+
+        when: "updating the control with impact values for different risk definitions"
+        put("/processes/$processId", [
             name: "Super PRO",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
@@ -80,11 +121,11 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ])).resourceId
+        ], ['If-Match': processETag])
 
         and: "retrieving it"
         def getProcessResponse = get("/processes/$processId")
-        def processETag = getETag(getProcessResponse)
+        processETag = getETag(getProcessResponse)
         def retrievedProcess = parseJson(getProcessResponse)
 
         then: "the retrieved risk values are complete"
@@ -125,9 +166,91 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         updatedProcess.domains[domainId].riskValues.myThirdRiskDefinition.potentialImpacts.I == "2"
     }
 
-    def "can't create process with wrong riskdefinition id"() {
-        when: "creating a process with risk values for different risk definitions"
+    def "process must be in a scope with the used risk definition"() {
+        given: "a process in a scope with myFirstRiskDefinition"
         def processId = parseJson(post("/processes", [
+            name: "Super PRO",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [:]
+            ]
+        ])).resourceId
+        postScope(processId, "myFirstRiskDefinition")
+        def processETag = getETag(get("/processes/$processId"))
+
+        when: "trying to update the process with risk values for mySecondRiskDefinition"
+        put("/processes/$processId", [
+            name: "Super PRO",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [
+                    riskValues: [
+                        mySecondRiskDefinition: [
+                            potentialImpacts: [
+                                "C": "1",
+                                "I": "2",
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ], ['If-Match': processETag], 400)
+
+        then: "it fails"
+        IllegalArgumentException ex = thrown()
+        ex.message == "Cannot use risk definition 'mySecondRiskDefinition' because the element is not a member of a scope with that risk definition"
+
+        when: "adding the process to a composite that is in a scope with mySecondRiskDefinition"
+        def compositeControlId = parseJson(post("/processes", [
+            name: "Super composite PRO",
+            parts: [
+                [targetUri: "http://localhost/processes/$processId"]
+            ],
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [:]
+            ]
+        ])).resourceId
+        postScope(compositeControlId, "mySecondRiskDefinition")
+
+        and: "updating the process with risk values for mySecondRiskDefinition"
+        put("/processes/$processId", [
+            name: "Super PRO",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [
+                    riskValues: [
+                        mySecondRiskDefinition: [
+                            potentialImpacts: [
+                                "C": "1",
+                                "I": "2",
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ], ['If-Match': processETag])
+
+        then: "it succeeds"
+        notThrown(Exception)
+    }
+
+
+    def "can't create process with wrong riskdefinition id"() {
+        given: "a process in a scope with myFirstRiskDefinition & mySecondRiskDefinition"
+        def processId = parseJson(post("/processes", [
+            name: "Super PRO",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [:]
+            ]
+        ])).resourceId
+        postScope(processId, "myFirstRiskDefinition")
+        postScope(processId, "mySecondRiskDefinition")
+        def processETag = getETag(get("/processes/$processId"))
+
+        when: "creating a process with risk values for different risk definitions"
+        put("/processes/$processId", [
             name: "Super PRO wrong",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
@@ -147,7 +270,7 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ],400)).resourceId
+        ],['If-Match': processETag],400)
 
         then: "an exception is thrown"
         IllegalArgumentException ex = thrown()
@@ -155,8 +278,20 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "can't create process with wrong impact"() {
-        when: "creating a process with risk values for different risk definitions"
+        given: "a process in a scopes with myFirstRiskDefinition & mySecondRiskDefinition"
         def processId = parseJson(post("/processes", [
+            name: "Super PRO",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [:]
+            ]
+        ])).resourceId
+        postScope(processId, "myFirstRiskDefinition")
+        postScope(processId, "mySecondRiskDefinition")
+        def processETag = getETag(get("/processes/$processId"))
+
+        when: "creating a process with risk values for different risk definitions"
+        put("/processes/$processId", [
             name: "Super PRO wrong",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
@@ -176,7 +311,7 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ],400)).resourceId
+        ],['If-Match': processETag],400)
 
         then: "an exception is thrown"
         IllegalArgumentException ex = thrown()
@@ -184,8 +319,19 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "can't create process with wrong impact value"() {
-        when: "creating a process with risk values for different risk definitions"
+        given: "a process in a scope with mySecondRiskDefinition"
         def processId = parseJson(post("/processes", [
+            name: "Super PRO",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [:]
+            ]
+        ])).resourceId
+        postScope(processId, "mySecondRiskDefinition")
+        def processETag = getETag(get("/processes/$processId"))
+
+        when: "updating the process with risk values for different risk definitions"
+        put("/processes/$processId", [
             name: "Super PRO wrong",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
@@ -199,10 +345,25 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ],400)).resourceId
+        ], ['If-Match': processETag], 400).resourceId
 
         then: "an exception is thrown"
         IllegalArgumentException ex = thrown()
         ex.message == "Impact: '10' not defined in mySecondRiskDefinition"
+    }
+
+    private ResultActions postScope(processId, String riskDefinition) {
+        post("/scopes", [
+            name: "$riskDefinition scope",
+            domains: [
+                (domainId): [
+                    riskDefinition: riskDefinition
+                ]
+            ],
+            members: [
+                [targetUri: "http://localhost/processes/$processId"]
+            ],
+            owner: [targetUri: "http://localhost/units/$unitId"],
+        ])
     }
 }

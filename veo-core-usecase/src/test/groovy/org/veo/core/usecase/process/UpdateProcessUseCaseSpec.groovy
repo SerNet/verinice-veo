@@ -24,6 +24,7 @@ import org.veo.core.repository.ProcessRepository
 import org.veo.core.service.EventPublisher
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData
+import org.veo.core.usecase.base.ScopeProvider
 import org.veo.core.usecase.common.ETag
 
 public class UpdateProcessUseCaseSpec extends UseCaseSpec {
@@ -31,12 +32,12 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
     ProcessRepository processRepository = Mock()
     EventPublisher eventPublisher = Mock()
 
-
-    UpdateProcessUseCase usecase = new UpdateProcessUseCase(processRepository, eventPublisher)
+    UpdateProcessUseCase usecase = new UpdateProcessUseCase(processRepository, eventPublisher, Mock(ScopeProvider))
     def "update a process"() {
         given:
         def id = Key.newUuid()
         Process process = Mock()
+        process.domains >> []
         process.getId() >> id
         process.getName()>> "Updated process"
         process.getOwner() >> existingUnit
