@@ -86,6 +86,9 @@ class RiskServiceITSpec extends VeoSpringSpec {
         })
         ProcessRisk risk = process.obtainRisk(scenario, domain).tap {
             assignDesignator(it)
+            defineRiskValues([
+                newRiskValues(riskDefinitionRef, domain)
+            ] as Set)
         }
         process = processDataRepository.save(process)
         when: 'running the risk service on the changed process'

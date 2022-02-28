@@ -63,7 +63,7 @@ public class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractR
         var risk = riskAffected.obtainRisk(scenario, domains);
 
         if (risk instanceof ProcessRisk)
-            ((ProcessRisk) risk).updateRiskValues(input.getRiskValues());
+            ((ProcessRisk) risk).defineRiskValues(input.getRiskValues());
 
         risk = applyOptionalInput(input, risk);
         designatorService.assignDesignator(risk, input.getAuthenticatedClient());

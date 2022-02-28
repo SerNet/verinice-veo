@@ -20,7 +20,6 @@ package org.veo.core.entity
 import static org.veo.core.entity.risk.RiskTreatmentOption.RISK_TREATMENT_ACCEPTANCE
 import static org.veo.core.entity.risk.RiskTreatmentOption.RISK_TREATMENT_REDUCTION
 
-import org.hibernate.Hibernate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.annotation.Transactional
@@ -94,7 +93,6 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
     }
 
     def "risk values can be modified"() {
-
         given: "A risk definition, a process with a risk and a scenario"
         def process1 = newProcess(unit)
         def scenario1 = newScenario(unit)
@@ -119,6 +117,25 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
             Set<Process> processes = processRepository.findRisksWithValue(scenario1)
             def processRisk = processes.first().risks.first()
             return processRisk
+        }
+
+        then: "risk values are empty"
+        retrievedRisk1 == risk
+        retrievedRisk1.getRiskDefinitions().size() == 0
+
+        when: "blank risk values are added for a risk definition"
+        txTemplate.execute{
+            var process = processRepository.findById(retrievedRisk1.entity.id).orElseThrow()
+            process.risks.first().defineRiskValues([
+                newRiskValues(riskDefRef, domain)
+            ] as Set)
+            processRepository.save(process)
+        }
+
+        and: "the risk is retrieved"
+        retrievedRisk1 = txTemplate.execute{
+            Set<Process> processes = processRepository.findRisksWithValue(scenario1)
+            return processes.first().risks.first()
         }
 
         then: "risk values were initialized"

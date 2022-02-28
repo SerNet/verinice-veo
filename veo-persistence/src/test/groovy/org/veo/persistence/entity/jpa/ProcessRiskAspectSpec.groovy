@@ -72,7 +72,7 @@ class ProcessRiskAspectSpec extends VeoSpec {
 
         def rd = domain.getRiskDefinitions().values().first()
         def rdRef = RiskDefinitionRef.from(rd)
-        def risk = createRisk(process, domain)
+        def risk = createRisk(process, domain, rdRef)
 
         when: "get the list of impact categories"
         def categories = risk.getImpactProvider(rdRef).getAvailableCategories()
@@ -87,7 +87,7 @@ class ProcessRiskAspectSpec extends VeoSpec {
         process.addToDomains(domain)
         def rd = domain.getRiskDefinitions().values().first()
         def rdRef = RiskDefinitionRef.from(rd)
-        def risk = createRisk(process, domain)
+        def risk = createRisk(process, domain, rdRef)
 
         when: "default and specific values are set"
         def probability = risk.getProbabilityProvider(rdRef)
@@ -112,12 +112,15 @@ class ProcessRiskAspectSpec extends VeoSpec {
         2         | 2          | 2         | 3      | 3       | 3
     }
 
-    private createRisk(Process process, Domain domain) {
+    private createRisk(Process process, Domain domain, RiskDefinitionRef rdRef) {
         def scenario = newScenario(unit)
         def control = newControl(unit)
         process.addToDomains(domain)
         def risk = process.obtainRisk(scenario, domain)
         risk = risk.mitigate(control)
+        risk.defineRiskValues([
+            newRiskValues(rdRef, domain)
+        ] as Set)
         risk
     }
 

@@ -143,7 +143,7 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
         // risk-affected entities
         if (riskToUpdate instanceof ProcessRisk) {
             var processRisk = (ProcessRisk) riskToUpdate;
-            processRisk.updateRiskValues(riskValuesSet);
+            processRisk.defineRiskValues(riskValuesSet);
         }
 
         return riskToUpdate.mitigate(mitigation)

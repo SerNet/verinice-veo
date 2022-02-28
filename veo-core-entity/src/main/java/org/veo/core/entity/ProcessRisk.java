@@ -49,5 +49,5 @@ public interface ProcessRisk extends AbstractRisk<Process, ProcessRisk> {
 
     Set<RiskDefinitionRef> getRiskDefinitions(Domain domain);
 
-    void updateRiskValues(Set<RiskValues> riskAspects);
+    void defineRiskValues(Set<RiskValues> riskAspects);
 }

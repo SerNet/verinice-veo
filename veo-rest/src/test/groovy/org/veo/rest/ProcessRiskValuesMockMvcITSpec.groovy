@@ -128,15 +128,24 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         riskDef1Risk.find {it.category=="C"} != null
         riskDef1Risk.find {it.category=="R"} != null
 
-        and: "the second risk definition was also initialized"
-        def riskDef2Impact = retrievedProcessRisk.domains.(domainId).riskDefinitions.r2d2.impactValues
-        def riskDef2Risk = retrievedProcessRisk.domains.(domainId).riskDefinitions.r2d2.riskValues
-        riskDef2Impact != null
-        riskDef2Risk != null
+        and: "the second risk definition was not initialized"
+        retrievedProcessRisk.domains.(domainId).riskDefinitions.r2d2 == null
 
         when: "setting values for the second risk definition"
-        riskDef2Impact.find {it.category=="A"}.specificImpact = 3
-        riskDef2Risk.find {it.category=="A"}.residualRisk = 2
+        retrievedProcessRisk.domains.(domainId).riskDefinitions.r2d2 = [
+            impactValues: [
+                [
+                    category: "A",
+                    specificImpact: 3,
+                ],
+            ],
+            riskValues: [
+                [
+                    category: "A",
+                    residualRisk: 2,
+                ],
+            ]
+        ]
         put("/processes/$processId/risks/$scenarioId", retrievedProcessRisk, ['If-Match': riskETag])
 
         and: "retrieving it again"

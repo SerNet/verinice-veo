@@ -44,6 +44,7 @@ import org.veo.core.entity.risk.DeterminedRisk;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.entity.risk.DomainRiskReferenceValidator;
 import org.veo.core.entity.risk.Impact;
+import org.veo.core.entity.risk.PotentialProbabilityImpl;
 import org.veo.core.entity.risk.ProbabilityImpl;
 import org.veo.core.entity.risk.ProbabilityValueProvider;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -72,40 +73,27 @@ public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> impl
         super(scenario, process);
     }
 
-    private void createRiskAspects() {
-        log.debug("Creating risk aspects");
-        getDomains().forEach(d -> {
-            log.debug("Creating risk aspect for domain {} with risk definitions: {}",
-                      d.getDisplayName(), String.join(", ", d.getRiskDefinitions()
-                                                             .keySet()));
-            // create one aspect for each risk-definition and domain
-            d.getRiskDefinitions()
-             .forEach((key, value) -> {
-                 var riskDefinitionRef = RiskDefinitionRef.from(value);
-                 var existingRiskDefinition = riskAspects.stream()
-                                                         .filter(ra -> ra.getDomain()
-                                                                         .equals(d))
-                                                         .filter(ra -> ra.getRiskDefinition()
-                                                                         .equals(riskDefinitionRef))
-                                                         .findFirst();
-                 // only create new risk definition if it doesn't exist yet:
-                 if (existingRiskDefinition.isEmpty()) {
-                     riskAspects.add(createRiskAspect(d, riskDefinitionRef));
-                 }
-             });
-        });
-    }
-
-    private ProcessRiskValuesAspectData createRiskAspect(Domain domain,
-            RiskDefinitionRef riskDefinition) {
-        var riskAspect = new ProcessRiskValuesAspectData(domain, this, riskDefinition);
-        getScenario().getPotentialProbability(domain)
-                     .ifPresent(probabilitiesByRiskDefinition -> riskAspect.setPotentialProbability(probabilitiesByRiskDefinition.get(riskDefinition)
-                                                                                                                                 .getPotentialProbability()));
-        getEntity().getImpactValues(domain, riskDefinition)
-                   .ifPresent(impactValues -> impactValues.getPotentialImpacts()
-                                                          .forEach(riskAspect::setPotentialImpact));
-        return riskAspect;
+    private ProcessRiskValuesAspectData getOrCreateRiskAspect(Domain domain,
+            RiskDefinitionRef riskDefinitionRef) {
+        return riskAspects.stream()
+                          .filter(ra -> ra.getDomain()
+                                          .equals(domain))
+                          .filter(ra -> ra.getRiskDefinition()
+                                          .equals(riskDefinitionRef))
+                          .findFirst()
+                          .orElseGet(() -> {
+                              var riskAspect = new ProcessRiskValuesAspectData(domain, this,
+                                      riskDefinitionRef);
+                              getScenario().getPotentialProbability(domain)
+                                           .map(probablities -> probablities.get(riskDefinitionRef))
+                                           .map(PotentialProbabilityImpl::getPotentialProbability)
+                                           .ifPresent(riskAspect::setPotentialProbability);
+                              getEntity().getImpactValues(domain, riskDefinitionRef)
+                                         .ifPresent(impactValues -> impactValues.getPotentialImpacts()
+                                                                                .forEach(riskAspect::setPotentialImpact));
+                              riskAspects.add(riskAspect);
+                              return riskAspect;
+                          });
     }
 
     /**
@@ -174,26 +162,31 @@ public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> impl
     }
 
     @Override
-    public void updateRiskValues(Set<RiskValues> newValuesSet) {
-        riskAspects.forEach(ra -> {
-            var domain = ra.getDomain();
-            var rd = ra.getRiskDefinition();
+    public void defineRiskValues(Set<RiskValues> newValuesSet) {
+        newValuesSet.forEach(newValues -> {
+            var domain = getDomains().stream()
+                                     .filter(d -> d.getId()
+                                                   .equals(newValues.getDomainId()))
+                                     .findFirst()
+                                     .orElseThrow();
+            var riskDefinition = domain.getRiskDefinition(newValues.getRiskDefinitionId()
+                                                                   .value())
+                                       .map(RiskDefinitionRef::from)
+                                       .orElseThrow();
 
-            getRiskValuesForRiskDefinition(newValuesSet, domain, rd).ifPresent(newValues -> {
-                var validator = new DomainRiskReferenceValidator(
-                        DomainRiskReferenceProvider.referencesForDomain(domain), rd);
+            var ra = getOrCreateRiskAspect(domain, riskDefinition);
+            var validator = new DomainRiskReferenceValidator(
+                    DomainRiskReferenceProvider.referencesForDomain(domain), riskDefinition);
 
-                var probability = ra.getProbability();
-                updateProbability(probability, newValues, validator);
+            var probability = ra.getProbability();
+            updateProbability(probability, newValues, validator);
 
-                var impacts = ra.getImpactCategories();
-                updateImpacts(impacts, newValues, validator);
+            var impacts = ra.getImpactCategories();
+            updateImpacts(impacts, newValues, validator);
 
-                var risks = ra.getCategorizedRisks();
-                updateRisks(risks, newValues, validator);
-            });
+            var risks = ra.getCategorizedRisks();
+            updateRisks(risks, newValues, validator);
         });
-        // FIXME VEO-1105 check if risk-definitions are all valid for scope
     }
 
     private void updateRisks(List<DeterminedRisk> risks, RiskValues newRiskValues,
@@ -246,14 +239,6 @@ public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> impl
                                         .value()
                                         .equals(riskDefinition.getIdRef()))
                         .findFirst();
-    }
-
-    @Override
-    public boolean addToDomains(Domain aDomain) {
-        var added = super.addToDomains(aDomain);
-        if (added)
-            createRiskAspects();
-        return added;
     }
 
     @Override

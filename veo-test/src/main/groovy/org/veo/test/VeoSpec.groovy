@@ -50,6 +50,9 @@ import org.veo.core.entity.Unit
 import org.veo.core.entity.UpdateReference
 import org.veo.core.entity.Versioned
 import org.veo.core.entity.definitions.ElementTypeDefinition
+import org.veo.core.entity.risk.ProbabilityImpl
+import org.veo.core.entity.risk.RiskDefinitionRef
+import org.veo.core.entity.risk.RiskValues
 import org.veo.core.entity.riskdefinition.CategoryDefinition
 import org.veo.core.entity.riskdefinition.CategoryLevel
 import org.veo.core.entity.riskdefinition.ImplementationStateDefinition
@@ -350,6 +353,13 @@ abstract class VeoSpec extends Specification {
         CategoryLevel categoryLevel = new CategoryLevel(name, "SCL", "whatever", "#000000")
         execute(categoryLevel, init)
         return categoryLevel
+    }
+
+    static RiskValues newRiskValues(RiskDefinitionRef riskDefinitionRef, Domain domain, @DelegatesTo(value = RiskValues.class)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.risk.RiskValues") Closure init = null) {
+        return new RiskValues(new ProbabilityImpl(), [], [], new Key<String>(riskDefinitionRef.idRef), domain.id).tap{
+            VeoSpec.execute(it, init)
+        }
     }
 
     private static List<CategoryLevel> createDefaultCategoryLevels() {
