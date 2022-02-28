@@ -510,7 +510,7 @@ export function loadSchema(type) {
       Authorization: TOKEN,
     },
   };
-  url.searchParams.append('domains', "GDPR");
+  url.searchParams.append('domains', domainId);
   var result = http.get(url.toString(), params);
   check(result, {
     "Get schema is status 200": (r) => r.status === 200
