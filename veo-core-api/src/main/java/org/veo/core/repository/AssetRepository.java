@@ -26,6 +26,7 @@ import org.veo.core.entity.AssetRisk;
  * Implements basic CRUD operations from the superinterface and extends them
  * with more specific methods - i.e. queries based on particular fields.
  */
-public interface AssetRepository extends RiskAffectedRepository<Asset, AssetRisk> {
+public interface AssetRepository
+        extends RiskAffectedRepository<Asset, AssetRisk>, CompositeElementRepository<Asset> {
 
 }

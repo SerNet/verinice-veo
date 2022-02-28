@@ -102,5 +102,9 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
 
     Optional<RiskDefinition> getRiskDefinition(String riskDefinitionId);
 
+    default Optional<RiskDefinition> getRiskDefinition(Key<String> riskDefinitionId) {
+        return getRiskDefinition(riskDefinitionId.value());
+    }
+
     void setRiskDefinitions(Map<String, RiskDefinition> definitions);
 }

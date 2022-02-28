@@ -32,6 +32,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.risk.RiskValues;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.UseCase;
@@ -79,6 +80,27 @@ public abstract class AbstractRiskUseCase<T extends RiskAffected<T, R>, R extend
                       .orElseThrow(() -> new NotFoundException(
                               "Could not resolve domain with ID %s", key.uuidValue()));
     }
+
+    protected void validateRiskValues(Set<RiskValues> riskValues, Set<Domain> domains,
+            T riskAffected) {
+        if (riskValues == null) {
+            return;
+        }
+        riskValues.forEach(rv -> {
+            var domain = domains.stream()
+                                .filter(d -> d.getId()
+                                              .equals(rv.getDomainId()))
+                                .findAny()
+                                .orElseThrow();
+            var riskDefinitionRef = domain.getRiskDefinition(rv.getRiskDefinitionId())
+                                          .map(RiskDefinitionRef::from)
+                                          .orElseThrow();
+            validateRiskDefinition(riskAffected, riskDefinitionRef, domain);
+        });
+    }
+
+    abstract protected void validateRiskDefinition(T riskAffected,
+            RiskDefinitionRef riskDefinitionRef, Domain domain);
 
     @Valid
     @Value

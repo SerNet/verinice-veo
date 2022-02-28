@@ -17,15 +17,31 @@
  ******************************************************************************/
 package org.veo.core.usecase.process;
 
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
+import org.veo.core.usecase.base.ScopeProvider;
 import org.veo.core.usecase.risk.UpdateRiskUseCase;
 
 public class UpdateProcessRiskUseCase extends UpdateRiskUseCase<Process, ProcessRisk> {
+    private final ScopeProvider scopeProvider;
+
     public UpdateProcessRiskUseCase(RepositoryProvider repositoryProvider,
-            EventPublisher eventPublisher) {
+            EventPublisher eventPublisher, ScopeProvider scopeProvider) {
         super(repositoryProvider, Process.class, eventPublisher);
+        this.scopeProvider = scopeProvider;
+    }
+
+    @Override
+    protected void validateRiskDefinition(Process process, RiskDefinitionRef riskDefinitionRef,
+            Domain domain) {
+        if (!scopeProvider.canUseRiskDefinition(process, domain, riskDefinitionRef)) {
+            throw new IllegalArgumentException(
+                    String.format("Cannot define risk values for risk definition '%s' because the process %s is not within a scope that uses that risk definition",
+                                  riskDefinitionRef.getIdRef(), process.getIdAsString()));
+        }
     }
 }

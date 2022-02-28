@@ -20,6 +20,7 @@ package org.veo.core.usecase.base;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.veo.core.entity.Asset;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
@@ -27,6 +28,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.risk.RiskDefinitionRef;
+import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.CompositeElementRepository;
 import org.veo.core.repository.ControlRepository;
 import org.veo.core.repository.ProcessRepository;
@@ -39,9 +41,19 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 public class ScopeProvider {
+    private final AssetRepository assetRepository;
     private final ControlRepository controlRepository;
     private final ProcessRepository processRepository;
     private final ScopeRepository scopeRepository;
+
+    /**
+     * Determines whether given asset may use given risk definition due to its
+     * (direct or indirect) scope memberships.
+     */
+    public boolean canUseRiskDefinition(Asset element, Domain domain,
+            RiskDefinitionRef riskDefinitionRef) {
+        return canUseRiskDefinition(element, domain, riskDefinitionRef, assetRepository);
+    }
 
     /**
      * Determines whether given process may use given risk definition due to its

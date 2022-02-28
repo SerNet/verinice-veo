@@ -49,22 +49,6 @@ class ProcessRiskAspectSpec extends VeoSpec {
         }
     }
 
-    @Ignore
-    // FIXME VEO-1105
-    def "A risk aspect must match its containing scope"() {
-        given: "a scope with a referenced risk definition"
-        when: "a risk aspect is added to the process"
-        then: "the aspect was added"
-    }
-
-    @Ignore
-    // FIXME VEO-1105
-    def "A risk aspect cannot be added outside of scope"() {
-        given: "a scope without reference to a risk definition"
-        when: "a risk aspect is added to the process"
-        then: "the aspect cannot be added"
-    }
-
     def "The risk object contains the applicable impact categories"() {
         given: "a process risk"
         def process = newProcess(unit)
@@ -123,6 +107,4 @@ class ProcessRiskAspectSpec extends VeoSpec {
         ] as Set)
         risk
     }
-
-
 }

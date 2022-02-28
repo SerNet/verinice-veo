@@ -84,6 +84,10 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "values can be set on a second risk definition"() {
+        given: "that the process can use both r1d1 & r2d2"
+        addProcessToScope("r1d1")
+        addProcessToScope("r2d2")
+
         when: "creating a process with risk values for a single risk definition"
         def processId = process.getIdAsString()
         def scenarioId = scenario.getIdAsString()
@@ -161,5 +165,114 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         updatedRiskDef2ImpactA.effectiveImpact == 3
 
         updatedRisk.domains.(domainId).riskDefinitions.r2d2.riskValues.find{it.category=="A"}.residualRisk == 2
+    }
+
+    def "cannot create risk with risk values for illegal risk definition"() {
+        given: "that the process can only use one risk definition"
+        addProcessToScope("r1d1")
+
+        when: "trying to set risk values for forbidden risk definition"
+        def processId = process.getIdAsString()
+        def scenarioId = scenario.getIdAsString()
+        post("/processes/$processId/risks/", [
+            domains: [
+                (domainId): [
+                    reference: [targetUri: "http://localhost/domains/$domainId"],
+                    riskDefinitions: [
+                        r2d2 : [
+                            impactValues: [
+                                [
+                                    category: "A",
+                                    specificImpact: 1
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ], 400)
+
+        then: "it fails"
+        IllegalArgumentException ex = thrown()
+        ex.message == "Cannot define risk values for risk definition 'r2d2' because the process $processId is not within a scope that uses that risk definition"
+    }
+
+    def "cannot update risk with risk values for illegal risk definition"() {
+        given: "that the process can only use one risk definition"
+        addProcessToScope("r1d1")
+
+        when: "initializing the risk with values for legal risk definition"
+        def processId = process.getIdAsString()
+        def scenarioId = scenario.getIdAsString()
+        post("/processes/$processId/risks/", [
+            domains: [
+                (domainId): [
+                    reference: [targetUri: "http://localhost/domains/$domainId"],
+                    riskDefinitions: [
+                        r1d1 : [
+                            impactValues: [
+                                [
+                                    category: "A",
+                                    specificImpact: 1
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ])
+        def eTag = getETag(get("/processes/$processId/risks/$scenarioId"))
+
+        then: "it is accepted"
+        notThrown(Exception)
+
+        when: "trying to update it with illegal values"
+        put("/processes/$processId/risks/$scenarioId", [
+            domains: [
+                (domainId): [
+                    reference: [targetUri: "http://localhost/domains/$domainId"],
+                    riskDefinitions: [
+                        r1d1 : [
+                            impactValues: [
+                                [
+                                    category: "A",
+                                    specificImpact: 1
+                                ]
+                            ]
+                        ],
+                        r2d2 : [
+                            impactValues: [
+                                [
+                                    category: "A",
+                                    specificImpact: 1
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ], ['If-Match': eTag], 400)
+
+        then: "it fails"
+        IllegalArgumentException ex = thrown()
+        ex.message == "Cannot define risk values for risk definition 'r2d2' because the process $processId is not within a scope that uses that risk definition"
+    }
+
+    private def addProcessToScope(String riskDefinitionId) {
+        post("/scopes", [
+            domains: [
+                (domainId): [
+                    riskDefinition: riskDefinitionId
+                ]
+            ],
+            name: "$riskDefinitionId scope",
+            members: [
+                [targetUri: "http://localhost/processes/$process.idAsString"]
+            ],
+            owner: [targetUri: "http://localhost/units/$process.owner.idAsString"]
+        ])
     }
 }

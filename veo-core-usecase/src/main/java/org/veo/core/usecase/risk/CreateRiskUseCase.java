@@ -29,7 +29,7 @@ import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
 
-public class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
+public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
         extends AbstractRiskUseCase<T, R> {
 
     private final DesignatorService designatorService;
@@ -67,6 +67,7 @@ public class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractR
 
         risk = applyOptionalInput(input, risk);
         designatorService.assignDesignator(risk, input.getAuthenticatedClient());
+        validateRiskValues(input.getRiskValues(), domains, riskAffected);
         eventPublisher.publish(new RiskComponentChangeEvent(riskAffected));
         return new OutputData<>(risk);
     }

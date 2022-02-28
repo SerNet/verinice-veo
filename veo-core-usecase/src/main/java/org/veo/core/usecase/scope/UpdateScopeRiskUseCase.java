@@ -17,8 +17,10 @@
  ******************************************************************************/
 package org.veo.core.usecase.scope;
 
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.risk.UpdateRiskUseCase;
@@ -27,5 +29,22 @@ public class UpdateScopeRiskUseCase extends UpdateRiskUseCase<Scope, ScopeRisk> 
     public UpdateScopeRiskUseCase(RepositoryProvider repositoryProvider,
             EventPublisher eventPublisher) {
         super(repositoryProvider, Scope.class, eventPublisher);
+    }
+
+    @Override
+    protected void validateRiskDefinition(Scope scope, RiskDefinitionRef riskDefinitionRef,
+            Domain domain) {
+        scope.getRiskDefinition(domain)
+             .ifPresentOrElse(scopeRiskDefinitionRef -> {
+                 if (!scopeRiskDefinitionRef.equals(riskDefinitionRef)) {
+                     throw new IllegalArgumentException(
+                             String.format("Cannot define risk values for risk definition '%s' because the scope uses risk definition '%s'",
+                                           riskDefinitionRef.getIdRef(), scopeRiskDefinitionRef));
+                 }
+             }, () -> {
+                 throw new IllegalArgumentException(
+                         String.format("Cannot define risk values for risk definition '%s' because the scope has no risk definition",
+                                       riskDefinitionRef.getIdRef()));
+             });
     }
 }

@@ -76,7 +76,7 @@ class AssetRiskSpec extends VeoSpec {
         asset.addToDomains(domain1)
 
         when: "risks are added"
-        def risks = asset.obtainRisks([scenario1, scenario2] as Set, domain1)
+        def risks = asset.obtainRisks([scenario1, scenario2] as Set, domain1,[] as Set)
 
         then: "the asset has new risks"
         asset.risks.size() == 2

@@ -76,7 +76,7 @@ class ProcessRiskSpec extends VeoSpec {
         process.addToDomains(domain1)
 
         when: "risks are added"
-        def risks = process.obtainRisks([scenario1, scenario2] as Set, domain1)
+        def risks = process.obtainRisks([scenario1, scenario2] as Set, domain1,[] as Set)
 
         then: "the process has new risks"
         process.risks.size() == 2

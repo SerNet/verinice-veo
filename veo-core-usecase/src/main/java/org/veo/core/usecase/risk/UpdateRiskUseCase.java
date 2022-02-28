@@ -31,7 +31,7 @@ import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.common.ETagMismatchException;
 
-public class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
+public abstract class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
         extends AbstractRiskUseCase<T, R> {
 
     private final Class<T> entityClass;
@@ -70,6 +70,7 @@ public class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractR
         checkDomainOwnership(input.getAuthenticatedClient(), domains);
         mitigation.ifPresent(control -> control.checkSameClient(input.getAuthenticatedClient()));
         riskOwner.ifPresent(person -> person.checkSameClient(input.getAuthenticatedClient()));
+        validateRiskValues(input.getRiskValues(), domains, riskAffected);
 
         // Execute requested operation:
         R result = riskAffected.updateRisk(risk, domains, mitigation.orElse(null),

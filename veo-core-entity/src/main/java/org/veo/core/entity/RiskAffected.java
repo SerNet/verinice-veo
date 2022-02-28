@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 import org.veo.core.entity.exception.ModelConsistencyException;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.risk.RiskValues;
 
 /**
@@ -78,8 +79,9 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
      */
     R obtainRisk(Scenario scenario, Domain domain);
 
-    default Set<R> obtainRisks(Set<Scenario> scenarios, Domain domain) {
-        return getOrCreateRisks(scenarios, singleton(domain));
+    default Set<R> obtainRisks(Set<Scenario> scenarios, Domain domain,
+            Set<RiskDefinitionRef> riskDefinitions) {
+        return getOrCreateRisks(scenarios, singleton(domain), riskDefinitions);
     }
 
     default R obtainRisk(Scenario scenario, Set<Domain> domains) {
@@ -93,7 +95,8 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
         return risk;
     }
 
-    default Set<R> getOrCreateRisks(Set<Scenario> scenarios, Set<Domain> domains) {
+    default Set<R> getOrCreateRisks(Set<Scenario> scenarios, Set<Domain> domains,
+            Set<RiskDefinitionRef> riskDefinitions) {
         scenarios.forEach(s -> s.checkSameClient(this));
         domains.forEach(this::isDomainValid);
 
