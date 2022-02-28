@@ -254,7 +254,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
             domainTemplateRepository.getAll().find{ it.name == "Domain 1" }
         }
         then: "one domaintemplate more"
-        count2 == count1 +1;
+        count2 == count1 +1
         dt.revision == "update-1"
 
         when: "create the next template"
@@ -263,7 +263,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
             domainTemplateDataRepository.count()
         }
         then: "one domaintemplate more"
-        count2 == count1 +2;
+        count2 == count1 +2
     }
 
     @WithUserDetails("content-creator")
@@ -284,7 +284,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
             domainTemplateDataRepository.count()
         }
         then: "one domaintemplate more"
-        count2 == count1 +1;
+        count2 == count1 +1
 
         when: "create the next template"
         results = post("/domains/${secondDomain.id.uuidValue()}/createdomaintemplate/update-3",[:],false)
@@ -300,5 +300,4 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         then: "it is forbidden"
         status.andReturn().response.status == 403
     }
-
 }
