@@ -47,12 +47,13 @@ import org.veo.rest.security.WebSecurity
 import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import spock.lang.Shared
+import spock.lang.Specification
 
 @SpringBootTest(classes = [RestApplication.class, WebSecurity.class],
 webEnvironment = RANDOM_PORT)
 @ActiveProfiles(["test", "resttest", "local"])
 @Slf4j
-class VeoRestTest extends spock.lang.Specification {
+class VeoRestTest extends Specification {
 
     @Autowired
     TestRestTemplate restTemplate
