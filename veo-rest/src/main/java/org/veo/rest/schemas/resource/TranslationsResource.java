@@ -49,7 +49,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 // @RolesAllowed("ROLE_USER")
 public interface TranslationsResource {
 
-    public static final String URL_BASE_PATH = "/translations";
+    String URL_BASE_PATH = "/translations";
 
     // @formatter:off
     @GetMapping()
@@ -60,7 +60,7 @@ public interface TranslationsResource {
                                                                                                      // meta-schema
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
             @ApiResponse(responseCode = "404", description = "Translation not found") })
-    public CompletableFuture<ResponseEntity<TranslationsDto>> getSchema(
+    CompletableFuture<ResponseEntity<TranslationsDto>> getSchema(
 
             @Parameter(required = false, hidden = true) Authentication auth,
 

@@ -60,7 +60,7 @@ public interface UseCaseInteractor {
      *            additional helper classes to do the mapping.
      * @return
      */
-    public <R, I extends UseCase.InputData, O extends UseCase.OutputData> CompletableFuture<R> execute(
+    <R, I extends UseCase.InputData, O extends UseCase.OutputData> CompletableFuture<R> execute(
             UseCase<I, O> useCase, Supplier<I> inputSupplier, Function<O, R> outputMapper);
 
     /**
@@ -84,7 +84,7 @@ public interface UseCaseInteractor {
      *            additional helper classes to do the mapping.
      * @return
      */
-    public <R, I extends UseCase.InputData, O extends UseCase.OutputData> CompletableFuture<R> execute(
+    <R, I extends UseCase.InputData, O extends UseCase.OutputData> CompletableFuture<R> execute(
             UseCase<I, O> useCase, @Valid I input, Function<O, R> outputMapper);
 
     /**
@@ -100,5 +100,5 @@ public interface UseCaseInteractor {
      *            the input passed to the
      * @param input
      */
-    public <I extends UseCase.InputData> void validated(I input);
+    <I extends UseCase.InputData> void validated(I input);
 }

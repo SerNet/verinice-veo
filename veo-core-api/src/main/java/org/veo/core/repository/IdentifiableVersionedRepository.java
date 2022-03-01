@@ -27,6 +27,6 @@ import org.veo.core.entity.Versioned;
 public interface IdentifiableVersionedRepository<T extends Versioned & Identifiable>
         extends Repository<T, Key<UUID>> {
 
-    public Optional<Long> getVersion(Key<UUID> uuidFrom);
+    Optional<Long> getVersion(Key<UUID> uuidFrom);
 
 }

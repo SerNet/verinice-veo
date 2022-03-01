@@ -30,10 +30,10 @@ import org.veo.core.entity.Versioned;
  */
 public interface RepositoryProvider {
 
-    public <T extends Element> ElementRepository<T> getElementRepositoryFor(Class<T> entityType);
+    <T extends Element> ElementRepository<T> getElementRepositoryFor(Class<T> entityType);
 
-    public <T extends Identifiable & Versioned> IdentifiableVersionedRepository<T> getVersionedIdentifiableRepositoryFor(
+    <T extends Identifiable & Versioned> IdentifiableVersionedRepository<T> getVersionedIdentifiableRepositoryFor(
             Class<T> entityType);
 
-    public <T extends Identifiable> Repository<T, Key<UUID>> getRepositoryFor(Class<T> entityType);
+    <T extends Identifiable> Repository<T, Key<UUID>> getRepositoryFor(Class<T> entityType);
 }

@@ -33,9 +33,9 @@ import org.veo.core.entity.Unit;
  */
 public interface UnitRepository extends IdentifiableVersionedRepository<Unit> {
 
-    public List<Unit> findByClient(Client client);
+    List<Unit> findByClient(Client client);
 
-    public List<Unit> findByParent(Unit parent);
+    List<Unit> findByParent(Unit parent);
 
-    public Optional<Unit> findByIdFetchClient(Key<UUID> id);
+    Optional<Unit> findByIdFetchClient(Key<UUID> id);
 }

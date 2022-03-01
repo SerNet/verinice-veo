@@ -34,18 +34,18 @@ import java.util.Set;
 * */
 public interface Repository<T, K> {
 
-    public T save(T entity);
+    T save(T entity);
 
-    public List<T> saveAll(Set<T> entities);
+    List<T> saveAll(Set<T> entities);
 
-    public Optional<T> findById(K id);
+    Optional<T> findById(K id);
 
-    public Set<T> getByIds(Set<K> ids);
+    Set<T> getByIds(Set<K> ids);
 
-    public void delete(T entity);
+    void delete(T entity);
 
-    public void deleteById(K id);
+    void deleteById(K id);
 
-    public boolean exists(K id);
+    boolean exists(K id);
 
 }

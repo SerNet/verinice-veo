@@ -39,13 +39,13 @@ public interface EntitySchemaService {
      *            the domains to use, i.e. 'GDPR', 'ISO_27001'
      * @return a JSON schema document dynamically generated for the above parameters
      */
-    public String findSchema(String type, Set<Domain> domains);
+    String findSchema(String type, Set<Domain> domains);
 
     /**
      * Returns a translations for the given language identifiers. If no translation
      * is present for any identifier, it will be ignored.
      */
-    public Translations findTranslations(Client client, Set<String> languages);
+    Translations findTranslations(Client client, Set<String> languages);
 
     /**
      * Filter the inputSchema to remove attributes that do not match the given user
@@ -57,5 +57,5 @@ public interface EntitySchemaService {
      *            the input schema from which certain attributes will be removed
      * @return the reduced JSON-schema document
      */
-    public String roleFilter(List<String> roles, String inputSchema);
+    String roleFilter(List<String> roles, String inputSchema);
 }

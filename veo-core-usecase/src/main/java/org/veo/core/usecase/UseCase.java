@@ -71,7 +71,7 @@ public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputDa
      *
      * InputData should be an immutable value object.
      */
-    public interface InputData {
+    interface InputData {
 
     }
 
@@ -80,11 +80,11 @@ public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputDa
      *
      * OutputData should be an immutable value object.
      */
-    public interface OutputData {
+    interface OutputData {
 
     }
 
-    public static final class EmptyOutput implements OutputData {
+    final class EmptyOutput implements OutputData {
 
         public static final EmptyOutput INSTANCE = new EmptyOutput();
 
@@ -93,7 +93,7 @@ public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputDa
         }
     }
 
-    public static final class EmptyInput implements InputData {
+    final class EmptyInput implements InputData {
 
         public static final EmptyInput INSTANCE = new EmptyInput();
 
@@ -109,7 +109,7 @@ public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputDa
      */
     @Valid
     @Value
-    public static class IdAndClient implements UseCase.InputData {
+    class IdAndClient implements UseCase.InputData {
         Key<UUID> id;
         Client authenticatedClient;
     }

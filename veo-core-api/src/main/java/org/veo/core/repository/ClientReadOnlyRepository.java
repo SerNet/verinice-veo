@@ -31,5 +31,5 @@ import org.veo.core.entity.Key;
  * operations that do not require write access to clients.
  */
 public interface ClientReadOnlyRepository {
-    public Optional<Client> findById(Key<UUID> id);
+    Optional<Client> findById(Key<UUID> id);
 }

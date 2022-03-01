@@ -81,7 +81,7 @@ public interface AssetRiskResource {
     @Operation(summary = "Creates a risk")
     @PostMapping(value = RELPATH)
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Risk created") })
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
+    CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
             @Parameter(hidden = true) ApplicationUser user,
             @Valid @NotNull @RequestBody AssetRiskDto dto, @PathVariable String assetId);
 
@@ -89,7 +89,8 @@ public interface AssetRiskResource {
     @Operation(summary = "Updates a risk")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Risk updated"),
             @ApiResponse(responseCode = "404", description = "Risk not found") })
-    public @Valid CompletableFuture<ResponseEntity<AssetRiskDto>> updateRisk(
+    @Valid
+    CompletableFuture<ResponseEntity<AssetRiskDto>> updateRisk(
             @Parameter(hidden = true) ApplicationUser user, @PathVariable String assetId,
             @PathVariable String scenarioId, @Valid @NotNull @RequestBody AssetRiskDto assetDto,
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag);
@@ -98,7 +99,7 @@ public interface AssetRiskResource {
     @Operation(summary = "Removes a risk")
     @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Risk deleted"),
             @ApiResponse(responseCode = "404", description = "Risk not found") })
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(
+    CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(
             @Parameter(hidden = true) ApplicationUser user, @PathVariable String assetId,
             @PathVariable String scenarioId);
 
