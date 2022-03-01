@@ -540,7 +540,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         }
     }
 
-    def Process saveProcessWithCustomAspect() {
+    Process saveProcessWithCustomAspect() {
         executeInTransaction {
             def process = newProcess(unit)
             CustomAspect customAspect = newCustomAspect("aType")
@@ -552,7 +552,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         }
     }
 
-    def void updateProcessWithCustomAspect(Process detachedProcess) {
+    void updateProcessWithCustomAspect(Process detachedProcess) {
         executeInTransaction {
             def process = processRepository.findById(detachedProcess.getId()).get()
             // adding 1 value to the end of the list:

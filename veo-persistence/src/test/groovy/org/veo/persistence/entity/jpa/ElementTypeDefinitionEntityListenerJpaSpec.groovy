@@ -34,13 +34,13 @@ import org.veo.persistence.access.jpa.DomainDataRepository
 @ContextConfiguration(classes = Config.class)
 class ElementTypeDefinitionEntityListenerJpaSpec extends AbstractJpaSpec {
     @Autowired
-    def ClientDataRepository clientRepo
+    ClientDataRepository clientRepo
     @Autowired
-    def DomainDataRepository domainRepo
+    DomainDataRepository domainRepo
     @Autowired
-    def TransactionTemplate txTemplate
+    TransactionTemplate txTemplate
     @Autowired
-    def ElementTypeDefinitionUpdateEventListener listener
+    ElementTypeDefinitionUpdateEventListener listener
 
     static class Config {
         @Bean
@@ -50,7 +50,7 @@ class ElementTypeDefinitionEntityListenerJpaSpec extends AbstractJpaSpec {
     }
 
     static class ElementTypeDefinitionUpdateEventListener {
-        def int eventCount;
+        int eventCount;
 
         @EventListener
         def listen(ElementTypeDefinitionUpdateEvent event) {

@@ -124,7 +124,7 @@ class VeoRestTest extends spock.lang.Specification {
         domainTemplateCreator.create('test-domain', this)
     }
 
-    def String getETag(String text) {
+    String getETag(String text) {
         Pattern p = Pattern.compile("\"([^\"]*)\"")
         Matcher m = p.matcher(text)
         if (m.find()) {

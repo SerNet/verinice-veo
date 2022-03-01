@@ -79,7 +79,7 @@ class TransformerSpec extends Specification {
     }
 
 
-    def AbstractUnitDto createUnitDto() {
+    AbstractUnitDto createUnitDto() {
         def subUnitDto = Mock(IdRef) {
             it.id >> subUnitId
         }
