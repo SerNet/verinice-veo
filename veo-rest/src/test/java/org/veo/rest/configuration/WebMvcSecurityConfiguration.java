@@ -84,7 +84,7 @@ public class WebMvcSecurityConfiguration {
     class CustomUserDetailsManager extends InMemoryUserDetailsManager {
 
         // This would be a repository or service in production:
-        private Map<String, ApplicationUser> users = new HashMap<String, ApplicationUser>();
+        private final Map<String, ApplicationUser> users = new HashMap<String, ApplicationUser>();
 
         public CustomUserDetailsManager(Collection<ApplicationUser> appUsers) {
             super(appUsers.stream()

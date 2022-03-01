@@ -87,10 +87,9 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     private final CatalogItemPrepareStrategy preparations;
     private final DomainTemplateIdGenerator domainTemplateIdGenerator;
 
-    private ReferenceAssembler assembler;
-    private ObjectMapper objectMapper;
-    private ReferenceDeserializer deserializer;
-    private Map<String, VeoInputStreamResource> domainTemplateFiles = new HashMap<>();
+    private final ReferenceAssembler assembler;
+    private final ObjectMapper objectMapper;
+    private final Map<String, VeoInputStreamResource> domainTemplateFiles = new HashMap<>();
 
     public DomainTemplateServiceImpl(DomainTemplateRepository domainTemplateRepository,
             EntityFactory factory, List<VeoInputStreamResource> domainResources,
@@ -107,11 +106,11 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                 domainAssociationTransformer);
         assembler = new LocalReferenceAssembler();
         dtoTransformer = new EntityToDtoTransformer(assembler, domainAssociationTransformer);
-        deserializer = new ReferenceDeserializer(assembler);
         objectMapper = new ObjectMapper().addMixIn(AbstractElementDto.class,
                                                    TransformElementDto.class)
                                          .registerModule(new SimpleModule().addDeserializer(IdRef.class,
-                                                                                            deserializer))
+                                                                                            new ReferenceDeserializer(
+                                                                                                    assembler)))
                                          .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
                                                     false);
         readTemplateFiles();

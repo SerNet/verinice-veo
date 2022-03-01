@@ -47,7 +47,7 @@ public class Key<T> {
     public static final Key<UUID> NIL_UUID = new Key<>(NIL_UUID_STRING);
 
     @ToString.Include
-    private List<T> fields;
+    private final List<T> fields;
 
     @SafeVarargs
     public Key(T... fields) {

@@ -48,7 +48,7 @@ public class EntityTypeSchemaProvider implements JsonSchemaProvider {
     private final DomainRepository domainRepository;
     private final EntitySchemaService schemaService;
 
-    private JsonSchemaFactory jsonSchemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909);
+    private final JsonSchemaFactory jsonSchemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909);
 
     @Override
     @Transactional
