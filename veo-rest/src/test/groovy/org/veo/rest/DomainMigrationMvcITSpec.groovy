@@ -133,7 +133,7 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
                 links: [properties:[:]],
                 translations: [:]
             ]
-        ];
+        ]
         post("/domains/$domainId/elementtypedefinitions/asset/updatefromobjectschema", schema, 204)
 
         and: "an asset that conforms to the element type definition"
@@ -171,7 +171,7 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
         for (def i = 0; i < 50; i++) {
             retrievedAsset = parseJson(get("/assets/$assetId"))
             if (retrievedAsset.customAspects.size() == 1) {
-                break;
+                break
             }
             sleep(200)
         }

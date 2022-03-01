@@ -45,16 +45,16 @@ class ElementTypeDefinitionEntityListenerJpaSpec extends AbstractJpaSpec {
     static class Config {
         @Bean
         public ElementTypeDefinitionUpdateEventListener listener() {
-            return new ElementTypeDefinitionUpdateEventListener();
+            return new ElementTypeDefinitionUpdateEventListener()
         }
     }
 
     static class ElementTypeDefinitionUpdateEventListener {
-        int eventCount;
+        int eventCount
 
         @EventListener
         def listen(ElementTypeDefinitionUpdateEvent event) {
-            eventCount++;
+            eventCount++
         }
     }
 

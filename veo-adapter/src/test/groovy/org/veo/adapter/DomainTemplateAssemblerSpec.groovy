@@ -38,7 +38,7 @@ class DomainTemplateAssemblerSpec extends Specification{
         def typeDefinitions = [
             asset: new ElementTypeDefinitionDto(),
             document: new ElementTypeDefinitionDto(),
-        ];
+        ]
         domainTemplateAssembler.setElementTypeDefinitions(typeDefinitions)
         def dto = domainTemplateAssembler.createDomainTemplateDto()
 

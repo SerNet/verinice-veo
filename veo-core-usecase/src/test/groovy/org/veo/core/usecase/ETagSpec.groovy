@@ -27,11 +27,11 @@ public class ETagSpec extends Specification{
 
     def "create an etag"() {
         given:
-        String id = UUID.randomUUID().toString();
-        long version = 4;
+        String id = UUID.randomUUID().toString()
+        long version = 4
         String salt = "salt-for-etag"
         ETag.setSalt(salt)
-        String idSaltVersion = id + "_" + salt + "_" + Long.toString(version);
+        String idSaltVersion = id + "_" + salt + "_" + Long.toString(version)
 
         when:
         String eTag = ETag.from(id, version)
@@ -43,11 +43,11 @@ public class ETagSpec extends Specification{
 
     def "match an etag"() {
         given:
-        String id = UUID.randomUUID().toString();
-        long version = 4;
+        String id = UUID.randomUUID().toString()
+        long version = 4
         String salt = "salt-for-etag"
         ETag.setSalt(salt)
-        String idSaltVersion = id + "_" + salt + "_" + Long.toString(version);
+        String idSaltVersion = id + "_" + salt + "_" + Long.toString(version)
 
         when:
         String hash = DigestUtils.sha256Hex(idSaltVersion)
