@@ -342,7 +342,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
                         log.info("Will be applied: {}", it.displayName)
 
                         def postApply = postIncarnationDescriptions(unitId, applyInfo, succesful ? 201 : 400)
-                        if(succesful == true) {
+                        if(succesful) {
                             and: "get the created element"
                             def elementResult = get(postApply.first().targetUri).body
                             log.info("Incarnated element {}", elementResult)

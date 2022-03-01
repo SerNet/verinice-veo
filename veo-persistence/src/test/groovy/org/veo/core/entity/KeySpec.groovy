@@ -29,9 +29,9 @@ public class KeySpec extends Specification {
         Key key = Key.undefined()
 
         then: "the key compares correctly to other keys"
-        key.equals(other) == false
-        other.equals(key) == false
-        key.isUndefined() == true
+        key != other
+        other != key
+        key.isUndefined()
     }
 
     def "Create a simple value key" () {

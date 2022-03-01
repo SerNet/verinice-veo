@@ -64,7 +64,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
         Client c = newClient.get()
 
         then : "client and domain are valid"
-        isPresent == true
+        isPresent
         c.name == "Demo Client"
         c.domains.size()==1
         c.domains.first().name == "27001"
@@ -79,7 +79,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
         c = newClient.get()
 
         then : "the client and domain are valid"
-        isPresent == true
+        isPresent
         c.name == "Demo Client"
         c.domains.size()==1
         c.domains.first().name == "27001"
@@ -220,7 +220,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
         Client c = newClient.get()
 
         then : "client and domain are valid"
-        isPresent == true
+        isPresent
         c.name == "Demo Client"
         c.domains.size()==1
         c.domains.first().name == "27001"
@@ -237,7 +237,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
         c = newClient.get()
 
         then : "the client and domain are valid"
-        isPresent == true
+        isPresent
         c.name == "Demo Client"
         c.domains.size()==1
         c.domains.first().name == "27001"
