@@ -104,10 +104,10 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
         def reference = entityManager.getReference(clazz, entity.getDbId())
 
         //then: "the reference is equal with the entity"
-        assert reference.equals(entity)
+        assert reference == entity
 
         //and: "the entity is equal with the reference"
-        assert entity.equals(reference)
+        assert entity == reference
 
         //and: "the entity is present in the set"
         assert entities.contains(reference)

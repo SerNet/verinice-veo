@@ -35,9 +35,9 @@ class ClientSpec extends VeoSpec{
         }
 
         then: "domain is correctly initialized"
-        client.getName().equals(clientName)
+        client.getName() == clientName
         client.getDomains().size() == 1
-        client.getDomains().first().getName().equals(domainName)
+        client.getDomains().first().getName() == domainName
         domain.owner == client
     }
 }

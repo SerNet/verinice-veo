@@ -45,11 +45,11 @@ public class KeySpec extends Specification {
         Key key = new Key("TheValue")
 
         then: "the key compares correctly to other keys"
-        key.isUndefined() == false
-        !key.equals(simpleKey)
-        !key.equals(compoundKeyMultiType)
-        !key.equals(compoundKeySameType)
-        key.equals(sameKey)
+        !key.isUndefined()
+        key != simpleKey
+        key != compoundKeyMultiType
+        key != compoundKeySameType
+        key == sameKey
 
         when: "we read the simple value from the key"
         String value = key.value()
@@ -69,11 +69,11 @@ public class KeySpec extends Specification {
         Key key = new Key("TheValue", 2, false)
 
         then: "the key compares correctly to other keys"
-        key.isUndefined() == false
-        !key.equals(otherSimpleKey)
-        !key.equals(otherCompoundKeyMultiType)
-        !key.equals(otherCompoundKeySameType)
-        key.equals(sameKey)
+        !key.isUndefined()
+        key != otherSimpleKey
+        key != otherCompoundKeyMultiType
+        key != otherCompoundKeySameType
+        key == sameKey
 
         when: "we try to read a compound key as a simple value"
         key.value()
@@ -93,9 +93,9 @@ public class KeySpec extends Specification {
 
         then: "the key compares correctly to other keys"
         !key.isUndefined()
-        !key.equals(otherSimpleKey)
-        !key.equals(otherCompoundKeyMultiType)
-        !key.equals(otherCompoundKeySameType)
+        key != otherSimpleKey
+        key != otherCompoundKeyMultiType
+        key != otherCompoundKeySameType
 
         and: "the UUID can be read"
         key.uuidValue()

@@ -41,10 +41,10 @@ class DomainTemplateSpec extends VeoSpec {
         }
 
         then: "domain is correct initatlized"
-        domainTemplate.getName().equals(name)
-        domainTemplate.getAuthority().equals(auth)
-        domainTemplate.getTemplateVersion().equals(templateVersion)
-        domainTemplate.getRevision().equals(rev)
+        domainTemplate.getName() == name
+        domainTemplate.getAuthority() == auth
+        domainTemplate.getTemplateVersion() == templateVersion
+        domainTemplate.getRevision() == rev
         domainTemplate.getRiskDefinitions() != null
     }
 }

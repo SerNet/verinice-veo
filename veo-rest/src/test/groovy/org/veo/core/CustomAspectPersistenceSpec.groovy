@@ -86,7 +86,7 @@ class CustomAspectPersistenceSpec extends VeoSpringSpec {
         when:
         cp = assetData.getCustomAspects().first()
         then:
-        cp.getType().equals(cp.getType())
+        cp.getType() == cp.type
 
         cp.attributes == [
             "my.key.1": "my test value 1",

@@ -33,7 +33,7 @@ class DomainSpec extends VeoSpec {
         }
 
         then: "domain is correct initatlized"
-        domain.getName().equals(name)
+        domain.getName() == name
         domain.owner == client
         client.getDomains().size() == 1
         client.getDomains().first() == domain
@@ -60,7 +60,7 @@ class DomainSpec extends VeoSpec {
         domain.domainTemplate = domainTemplate
 
         then: "domain is correct initatlized"
-        domain.getName().equals(name)
+        domain.getName() == name
         domain.owner == client
         domain.domainTemplate == domainTemplate
         client.getDomains().size() == 1
