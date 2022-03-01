@@ -64,9 +64,8 @@ public class CreateUnitUseCase
 
     @Override
     public OutputData execute(InputData input) {
-
-        Optional<Client> optional = clientRepository.findById(input.getClientId());
-        Client client = optional.isPresent() ? optional.get() : createNewClient(input);
+        Client client = clientRepository.findById(input.getClientId())
+                                        .orElseGet(() -> createNewClient(input));
 
         // Note: the new client will get the name of the new unit by default.
         // If we want to get a client name we would have to do a REST call to
