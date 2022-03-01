@@ -60,8 +60,8 @@ import org.veo.test.VeoSpec
 @ImportAutoConfiguration
 @ComponentScan("org.veo")
 abstract class VeoSpringSpec extends VeoSpec {
-    // Name-Based UUID: https://v.de/veo/domain-templates/dsgvo/v1.3.0
-    public static final String DSGVO_DOMAINTEMPLATE_UUID = "633a3fed-ece2-5791-8667-129627a621f3"
+    // Name-Based UUID: https://v.de/veo/domain-templates/dsgvo/v1.4.0
+    public static final String DSGVO_DOMAINTEMPLATE_UUID = "e96dd67f-090e-52be-8b76-f66b75624b45"
 
     // dsgvo-test-1.json
     public static final String DSGVO_TEST_DOMAIN_TEMPLATE_ID = "00000000-0000-0000-0000-000000000001"

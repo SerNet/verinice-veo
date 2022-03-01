@@ -69,7 +69,7 @@ class DomainRestTestITSpec extends VeoRestTest {
         then: "the domain is exported"
         with(catalog) {
             catalogItems.size() == 65
-            name == "DS-GVO-Controls"
+            name == "DS-GVO"
         }
         with (vvt) {
             namespace == "TOM.VVT"

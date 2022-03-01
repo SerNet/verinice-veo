@@ -197,7 +197,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         then: "the expected catalog was instantiated"
         with(catalog) {
             catalogItems.size() == 65
-            name == "DS-GVO-Controls"
+            name == "DS-GVO"
         }
 
         when:"we create the controls"
@@ -284,7 +284,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         then: "the expected catalog was instantiated"
         with(catalog) {
             catalogItems.size() == 65
-            name == "DS-GVO-Controls"
+            name == "DS-GVO"
         }
 
         when:"we create all controls"
