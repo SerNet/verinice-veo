@@ -79,7 +79,7 @@ class DesignatorSequenceRepositoryImplSpec extends AbstractJpaSpec{
         when:
         designatorSequenceRepo.createSequences(clientId)
         then:
-        notThrown()
+        notThrown(Exception)
     }
 
     def "idempotent sequence deletion"() {
@@ -90,6 +90,6 @@ class DesignatorSequenceRepositoryImplSpec extends AbstractJpaSpec{
         when:
         designatorSequenceRepo.deleteSequences(clientId)
         then:
-        notThrown()
+        notThrown(Exception)
     }
 }
