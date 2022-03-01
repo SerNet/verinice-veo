@@ -38,7 +38,7 @@ public final class ETag {
 
     public static String from(String id, long version) {
         try {
-            return createSHA256Hash(id + "_" + salt + "_" + Long.toString(version));
+            return createSHA256Hash(id + "_" + salt + "_" + version);
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }
