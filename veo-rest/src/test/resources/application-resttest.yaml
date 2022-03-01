@@ -19,7 +19,7 @@ veo:
       content-creator:
         name: ''
         pass: ''
-    proxyHost: cache.company.private
+    proxyHost: cache.int.company.de
     proxyPort: 3128
 
 spring:

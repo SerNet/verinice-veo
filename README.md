@@ -137,8 +137,8 @@ Keycloak service to verifx access tokens) you can pass them on the command line 
 
 ```shell
 ./gradlew veo-rest:restTest \
--Phttp.proxyHost=cache.sernet.private -Phttp.proxyPort=3128 \
--Phttps.proxyHost=cache.sernet.private -Phttps.proxyPort=3128
+-Phttp.proxyHost=cache.int.sernet.de -Phttp.proxyPort=3128 \
+-Phttps.proxyHost=cache.int.sernet.de -Phttps.proxyPort=3128
 ```
 
 The REST API tests will spin up a local server. All tests execute purely as HTTP requests

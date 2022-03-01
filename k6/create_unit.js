@@ -24,8 +24,8 @@ Before executing the script, these parameters must be set in the file:
 
 To run the script behind a proxy set environment variables before executing:
 
- export HTTPS_PROXY=http://cache.sernet.private:3128
- export HTTP_PROXY=http://cache.sernet.private:3128
+ export HTTPS_PROXY=http://cache.int.sernet.de:3128
+ export HTTP_PROXY=http://cache.int.sernet.de:3128
 
 After installing k6, this script is started with:
 

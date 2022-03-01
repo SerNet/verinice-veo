@@ -29,7 +29,7 @@ pipeline {
         // In case the build server exports a custom JAVA_HOME, we fix the JAVA_HOME
         // to the one used by the docker image.
         JAVA_HOME='/usr/local/openjdk-11'
-        GRADLE_OPTS='-Dhttp.proxyHost=cache.sernet.private -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.sernet.private -Dhttps.proxyPort=3128'
+        GRADLE_OPTS='-Dhttp.proxyHost=cache.int.sernet.de -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.int.sernet.de -Dhttps.proxyPort=3128'
         // pass -Pci=true to gradle, https://docs.gradle.org/current/userguide/build_environment.html#sec:project_properties
         ORG_GRADLE_PROJECT_ci=true
     }
@@ -225,7 +225,7 @@ pipeline {
                 VEO_RESTTEST_OIDCURL = "${env.OIDC_URL_DEV}"
                 VEO_RESTTEST_REALM = "${env.OIDC_REALM_DEV}"
                 VEO_RESTTEST_CLIENTID = "${env.OIDC_CLIENT_DEV}"
-                VEO_RESTTEST_PROXYHOST = "cache.sernet.private"
+                VEO_RESTTEST_PROXYHOST = "cache.int.sernet.de"
                 VEO_RESTTEST_PROXYPORT = 3128
             }
             agent any
@@ -249,7 +249,7 @@ pipeline {
                                 -e 'VEO_DOMAIN_FILE_SELECTOR=file:/domaintemplates/*/*.json'\
                                 -e VEO_DEFAULT_DOMAINTEMPLATE_NAMES=DS-GVO,test-domain\
                                 -e VEO_ETAG_SALT=zuL4Q8JKdy\
-                                -e 'JDK_JAVA_OPTIONS=-Dhttp.proxyHost=cache.sernet.private -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.sernet.private -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Dhttp.proxySet=true'") { veo ->
+                                -e 'JDK_JAVA_OPTIONS=-Dhttp.proxyHost=cache.int.sernet.de -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.int.sernet.de -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Dhttp.proxySet=true'") { veo ->
                                             docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages}\
                                     --network ${n}\
                                     -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres\
