@@ -17,11 +17,12 @@
  ******************************************************************************/
 package org.veo.core.entity.definitions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
 
 @Data
 public class SubTypeDefinition {
-    private List<String> statuses;
+    private List<String> statuses = new ArrayList<>();
 }

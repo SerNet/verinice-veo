@@ -17,11 +17,12 @@
  ******************************************************************************/
 package org.veo.core.entity.definitions;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import lombok.Data;
 
 @Data
 public class CustomAspectDefinition {
-    Map<String, Object> attributeSchemas;
+    Map<String, Object> attributeSchemas = new HashMap<>();
 }
