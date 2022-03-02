@@ -21,7 +21,9 @@ import javax.validation.Valid;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.Key;
 import org.veo.core.repository.DomainTemplateRepository;
+import org.veo.core.service.DomainTemplateIdGenerator;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
@@ -36,10 +38,17 @@ import lombok.Value;
 public class CreateDomainTemplateUseCase implements
         TransactionalUseCase<CreateDomainTemplateUseCase.InputData, CreateDomainTemplateUseCase.OutputData> {
     private final DomainTemplateRepository domainTemplateRepository;
+    private final DomainTemplateIdGenerator domainTemplateIdGenerator;
 
     @Override
     public OutputData execute(InputData input) {
         var domainTemplate = input.domainTemplate;
+
+        // Generate domain template UUID (ID from input is ignored).
+        domainTemplate.setId(Key.uuidFrom(domainTemplateIdGenerator.createDomainTemplateId(domainTemplate.getName(),
+                                                                                           domainTemplate.getTemplateVersion(),
+                                                                                           domainTemplate.getRevision())));
+
         if (domainTemplateRepository.exists(domainTemplate.getId())) {
             throw new EntityAlreadyExistsException(domainTemplate);
         }

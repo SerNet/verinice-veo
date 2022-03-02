@@ -747,7 +747,8 @@ public class ModuleConfiguration {
 
     @Bean
     public CreateDomainTemplateUseCase createDomainTemplateUseCase(
-            DomainTemplateRepository domainTemplateRepository) {
-        return new CreateDomainTemplateUseCase(domainTemplateRepository);
+            DomainTemplateRepository domainTemplateRepository,
+            DomainTemplateIdGenerator domainTemplateIdGenerator) {
+        return new CreateDomainTemplateUseCase(domainTemplateRepository, domainTemplateIdGenerator);
     }
 }

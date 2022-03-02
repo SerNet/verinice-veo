@@ -37,8 +37,11 @@ public class CreateDomainTemplateInputMapper {
             DomainAssociationTransformer domainAssociationTransformer) {
         var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
 
-        // Redirect any domain references to our domain template (so we can import not
-        // only domain templates but also domains).
+        // Define an arbitrary temporary domain template ID and redirect any domain
+        // references to our domain template (so we can import not only domain templates
+        // but also domains).
+        domainTemplateDto.setId(Key.newUuid()
+                                   .uuidValue());
         resolvingFactory.setGlobalDomainTemplate(domainTemplateDto.getId());
 
         var transformer = new DtoToEntityTransformer(entityFactory, resolvingFactory,
@@ -46,9 +49,6 @@ public class CreateDomainTemplateInputMapper {
 
         var newDomainTemplate = transformer.transformTransformDomainTemplateDto2DomainTemplate(domainTemplateDto,
                                                                                                resolvingFactory);
-        // Map domain template ID (our factory does not assign IDs to avoid conflicts
-        // with entities in DB).
-        newDomainTemplate.setId(Key.uuidFrom(domainTemplateDto.getId()));
 
         return new CreateDomainTemplateUseCase.InputData(newDomainTemplate);
     }
