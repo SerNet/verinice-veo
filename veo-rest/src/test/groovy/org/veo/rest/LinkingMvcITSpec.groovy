@@ -22,6 +22,10 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Person
+import org.veo.core.entity.Scope
+import org.veo.core.entity.definitions.LinkDefinition
+import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.core.repository.UnitRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
@@ -47,7 +51,34 @@ class LinkingMvcITSpec extends VeoMvcSpec {
     def setup() {
         txTemplate.execute {
             def client = createTestClient()
-            domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).id.uuidValue()
+            domainId = newDomain(client) {
+                it.elementTypeDefinitions = [
+                    newElementTypeDefinition(Person.SINGULAR_TERM, it) {
+                        subTypes["Normal"] = new SubTypeDefinition().tap{
+                            it.statuses = ["NEW"]
+                        }
+                        subTypes["Nice"] = new SubTypeDefinition().tap{
+                            it.statuses = ["NEW"]
+                        }
+                    },
+                    newElementTypeDefinition(Scope.SINGULAR_TERM, it) {
+                        links["linkToWhateverPersonA"] = new LinkDefinition().tap{
+                            targetType = Person.SINGULAR_TERM
+                        }
+                        links["linkToWhateverPersonB"] = new LinkDefinition().tap{
+                            targetType = Person.SINGULAR_TERM
+                        }
+                        links["linkToNormalPerson"] = new LinkDefinition().tap{
+                            targetType = Person.SINGULAR_TERM
+                            targetSubType = "Normal"
+                        }
+                        links["linkToNicePerson"] = new LinkDefinition().tap{
+                            targetType = Person.SINGULAR_TERM
+                            targetSubType = "Nice"
+                        }
+                    },
+                ]
+            }.idAsString
             unitId = unitRepository.save(newUnit(client)).id.uuidValue()
         }
     }
@@ -70,7 +101,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         when: "creating a scope with different links to all persons"
         def scopeId = parseJson(post("/scopes", [
             links: [
-                scope_dataProtectionOfficer: [
+                linkToWhateverPersonA: [
                     [
                         target: [targetUri: "http://localhost/persons/$person1"]
                     ],
@@ -78,7 +109,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                         target: [targetUri: "http://localhost/persons/$person2"]
                     ]
                 ],
-                scope_headOfDataProcessing: [
+                linkToWhateverPersonB: [
                     [
                         target: [targetUri: "http://localhost/persons/$person2"]
                     ],
@@ -93,12 +124,12 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         def retrievedScope = parseJson(get("/scopes/$scopeId"))
 
         then:
-        with(retrievedScope.links.scope_dataProtectionOfficer.sort {it.name}) {
+        with(retrievedScope.links.linkToWhateverPersonA.sort {it.name}) {
             size() == 2
             it[0].target.targetUri == "http://localhost/persons/$person1"
             it[1].target.targetUri == "http://localhost/persons/$person2"
         }
-        with(retrievedScope.links.scope_headOfDataProcessing.sort{it.name}) {
+        with(retrievedScope.links.linkToWhateverPersonB.sort{it.name}) {
             size() == 2
             it[0].target.targetUri == "http://localhost/persons/$person2"
             it[1].target.targetUri == "http://localhost/persons/$person3"
@@ -107,38 +138,38 @@ class LinkingMvcITSpec extends VeoMvcSpec {
 
     def "link target sub type is validated"() {
         given:
-        def controllerPerson = parseJson(post("/persons", [
+        def nicePersonId = parseJson(post("/persons", [
             name: "Jane",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
-                    subType: "PER_DataProtectionOfficer",
+                    subType: "Nice",
                     status: "NEW"
                 ]
             ]
         ])).resourceId
-        def randomPerson = parseJson(post("/persons", [
+        def normalPersonId = parseJson(post("/persons", [
             name: "John",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
-                    subType: "PER_Person",
+                    subType: "Normal",
                     status: "NEW"
                 ]
             ]
         ])).resourceId
 
-        when: "posting a process with a controller link to the controller person"
-        post("/processes", [
-            name: "My little process",
+        when: "posting a scope with a correct link"
+        post("/scopes", [
+            name: "Good scope",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
             links: [
-                process_controller: [
+                linkToNicePerson: [
                     [
                         target: [
-                            targetUri: "http://localhost/persons/$controllerPerson"
+                            targetUri: "http://localhost/persons/$nicePersonId"
                         ]
                     ]
                 ]
@@ -147,22 +178,22 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         then:
         noExceptionThrown()
 
-        when: "posting a process with a controller link to the other person"
-        post("/processes", [
-            name: "My little process",
+        when: "posting a scope with a wrong link"
+        post("/scopes", [
+            name: "Bad scope",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
             links: [
-                process_controller: [
+                linkToNicePerson: [
                     [
                         target: [
-                            targetUri: "http://localhost/persons/$randomPerson"
+                            targetUri: "http://localhost/persons/$normalPersonId"
                         ]
                     ]
                 ]
             ]
-        ], 201)
+        ])
         then:
         noExceptionThrown()
     }

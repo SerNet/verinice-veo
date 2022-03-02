@@ -154,7 +154,14 @@ abstract class VeoSpec extends Specification {
                     .ELEMENT_TYPES
                     .collect { it.singularTerm }
                     .findAll { type -> it.getElementTypeDefinition(type).empty}
-                    .each { type -> it.elementTypeDefinitions.add(factory.createElementTypeDefinition(type, it)) }
+                    .each { type -> it.elementTypeDefinitions.add(newElementTypeDefinition(type, it)) }
+        }
+    }
+
+    static ElementTypeDefinition newElementTypeDefinition(String type, Domain it, @DelegatesTo(value = ElementTypeDefinition.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.definitions.ElementTypeDefinition") Closure init = null) {
+        return factory.createElementTypeDefinition(type, it).tap{
+            VeoSpec.execute(it, init)
         }
     }
 
