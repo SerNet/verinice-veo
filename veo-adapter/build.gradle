@@ -40,14 +40,8 @@ dependencies {
 task assembleDomainTemplates(type: JavaExec) {
     def targetDirectory = file("$domainTemplatesDir/domaintemplates/")
     def templateSnippetDir = rootProject.file('domaintemplates/')
-    outputs.dir targetDirectory
-    outputs.cacheIf { true }
-    inputs.files compileJava.outputs
-    inputs.files templateSnippetDir
-    classpath compileJava.outputs.files
-    classpath compileJava.classpath
-    mainClass = 'org.veo.adapter.service.domaintemplate.DomainTemplateAssemblerMain'
-    environment = [
+
+    def config = [
         'domaintemplate.dir': "${templateSnippetDir}/dsgvo",
         'domaintemplate.abbreviation': "DS-GVO",
         'domaintemplate.authority': "SERNET",
@@ -61,6 +55,16 @@ task assembleDomainTemplates(type: JavaExec) {
         'tom.prefix': "TOM.",
         'domaintemplate.unit-dump-file': "${templateSnippetDir}/dsgvo/demo-unit/unit-dump.json"
     ]
+
+    outputs.dir targetDirectory
+    outputs.cacheIf { true }
+    inputs.files compileJava.outputs
+    inputs.files templateSnippetDir
+    inputs.properties config
+    classpath compileJava.outputs.files
+    classpath compileJava.classpath
+    mainClass = 'org.veo.adapter.service.domaintemplate.DomainTemplateAssemblerMain'
+    environment = config
 }
 
 plugins.withId('eclipse'){
