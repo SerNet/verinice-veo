@@ -88,7 +88,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                          "/swagger-ui/**")
             .permitAll()
 
-            .antMatchers(HttpMethod.POST, "/domains/**", "/domaintemplates/")
+            .antMatchers(HttpMethod.POST, "/domains/**", "/domaintemplates", "/domaintemplates/")
             .hasRole("veo-content-creator")
 
             .antMatchers("/units/**", "/assets/**", "/controls/**", "/scopes/**", "/persons/**",

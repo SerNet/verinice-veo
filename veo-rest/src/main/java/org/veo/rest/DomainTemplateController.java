@@ -89,7 +89,7 @@ public class DomainTemplateController {
                                                               .build());
     }
 
-    @PostMapping(value = "/")
+    @PostMapping()
     @Operation(summary = "Creates domain template")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Domain template created"),

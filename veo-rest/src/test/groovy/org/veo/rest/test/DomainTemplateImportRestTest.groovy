@@ -28,7 +28,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         def template = getTemplateBody()
 
         when: "importing the domain template"
-        def templateId = post("/domaintemplates/", template, 201, UserType.CONTENT_CREATOR).body.resourceId
+        def templateId = post("/domaintemplates", template, 201, UserType.CONTENT_CREATOR).body.resourceId
 
         and: "creating and fetching a new domain based on the template"
         post("/domaintemplates/$templateId/createdomains", null, 204, UserType.ADMIN)
@@ -81,7 +81,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         catalogItemElements*.name.sort() == ["Control-1", "Test process-1"]
 
         expect: "updating to fail"
-        post("/domaintemplates/", template, 409)
+        post("/domaintemplates", template, 409)
     }
 
     def "cannot import template with identical name & version twice"() {
@@ -89,13 +89,13 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         def name = "import test template ${UUID.randomUUID()}"
 
         expect: "posting different version numbers to succeed"
-        post("/domaintemplates/", [
+        post("/domaintemplates", [
             name: name,
             templateVersion: "2.0",
             revision: "finest",
             authority: "me"
         ], 201, UserType.CONTENT_CREATOR)
-        post("/domaintemplates/", [
+        post("/domaintemplates", [
             name: name,
             templateVersion: "2.1",
             revision: "finest",
