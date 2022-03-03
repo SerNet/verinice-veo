@@ -72,4 +72,90 @@ class SubTypeMvcSpec extends VeoMvcSpec {
         retrievedProcess.domains[domainId].subType == "PRO_DataProcessing"
         retrievedProcess.domains[domainId].status == "NEW"
     }
+
+    def 'sub type cannot be changed'() {
+        when: "saving a process with no sub type"
+        def processId = parseJson(post("/processes", [
+            name: "Verarbeitungstaetigkeit",
+            owner: [
+                targetUri: "http://localhost/units/$unitId"
+            ],
+            domains: [
+                (domainId): [:]
+            ]
+        ])).resourceId
+        def processETag = getETag(get("/processes/$processId"))
+
+        then:
+        noExceptionThrown()
+
+        when: "updating the process with a sub type"
+        put("/processes/$processId", [
+            name: "Verarbeitungstaetigkeit",
+            owner: [
+                targetUri: "http://localhost/units/$unitId"
+            ],
+            domains: [
+                (domainId): [
+                    "subType": "PRO_DataProcessing",
+                    "status": "NEW"
+                ]
+            ]
+        ], ['If-Match': processETag])
+        processETag = getETag(get("/processes/$processId"))
+
+        then:
+        noExceptionThrown()
+
+        when: "updating the process with the same sub type"
+        put("/processes/$processId", [
+            name: "Verarbeitungstaetigkeit with a new name",
+            owner: [
+                targetUri: "http://localhost/units/$unitId"
+            ],
+            domains: [
+                (domainId): [
+                    "subType": "PRO_DataProcessing",
+                    "status": "NEW"
+                ]
+            ]
+        ], ['If-Match': processETag])
+        processETag = getETag(get("/processes/$processId"))
+
+        then:
+        noExceptionThrown()
+
+        when: "updating the process with a different sub type"
+        put("/processes/$processId", [
+            name: "Verarbeitungstaetigkeit with a new name",
+            owner: [
+                targetUri: "http://localhost/units/$unitId"
+            ],
+            domains: [
+                (domainId): [
+                    "subType": "PRO_DataTransfer",
+                    "status": "NEW"
+                ]
+            ]
+        ], ['If-Match': processETag], 400)
+
+        then:
+        IllegalArgumentException ex = thrown()
+        ex.message == "Cannot change a sub type on an existing element"
+
+        when: "updating the process with no sub type"
+        put("/processes/$processId", [
+            name: "Verarbeitungstaetigkeit with a new name",
+            owner: [
+                targetUri: "http://localhost/units/$unitId"
+            ],
+            domains: [
+                (domainId): [:]
+            ]
+        ], ['If-Match': processETag], 400)
+
+        then:
+        ex = thrown()
+        ex.message == "Cannot remove a sub type from an existing element"
+    }
 }

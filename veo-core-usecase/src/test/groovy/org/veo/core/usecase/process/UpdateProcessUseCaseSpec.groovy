@@ -42,6 +42,7 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
             it.id >> process.id
             it.name >> "Old process"
             it.owner >> existingUnit
+            it.domains >> []
         }
 
         when:

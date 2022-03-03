@@ -47,9 +47,26 @@ public abstract class ModifyElementUseCase<T extends Element> implements
         checkETag(storedEntity, input);
         entity.version(input.username, storedEntity);
         checkClientBoundaries(input, storedEntity);
+        checkSubTypeChange(entity, storedEntity);
         // The designator is read-only so it must stay the same.
         entity.setDesignator(storedEntity.getDesignator());
         return new OutputData<T>(repo.save(entity));
+    }
+
+    private void checkSubTypeChange(T newElement, T oldElement) {
+        oldElement.getDomains()
+                  .forEach(domain -> {
+                      oldElement.getSubType(domain)
+                                .ifPresent(oldSubType -> {
+                                    var newSubType = newElement.getSubType(domain)
+                                                               .orElseThrow((() -> new IllegalArgumentException(
+                                                                       "Cannot remove a sub type from an existing element")));
+                                    if (!newSubType.equals(oldSubType)) {
+                                        throw new IllegalArgumentException(
+                                                "Cannot change a sub type on an existing element");
+                                    }
+                                });
+                  });
     }
 
     private void checkETag(Element storedElement, InputData<? extends Element> input) {
