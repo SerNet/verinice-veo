@@ -67,7 +67,7 @@ abstract class VeoSpringSpec extends VeoSpec {
     public static final String DSGVO_TEST_DOMAIN_TEMPLATE_ID = "3d4321c8-8764-52fb-b6d4-2480672038ed"
 
     // test-domain.json
-    public static final String TEST_DOMAIN_TEMPLATE_ID = "2b00d864-77ee-5378-aba6-e41f618c7bad"
+    public static final String TEST_DOMAIN_TEMPLATE_ID = "6b27accf-594b-5750-8b4f-4f869762225c"
 
     @Autowired
     ClientDataRepository clientDataRepository
