@@ -397,18 +397,19 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "put a process with link"() {
         given: "a created asset and process"
-
-        Map createAssetRequest = [
+        def assetId = parseJson(post('/assets', [
             name: 'New Asset',
+            domains: [
+                (dsgvoDomain.idAsString): [
+                    subType: "AST_Datatype",
+                    status: "NEW"
+                ]
+            ],
             owner: [
                 displayName: 'test2',
                 targetUri: 'http://localhost/units/' + unit.id.uuidValue()
             ]
-        ]
-
-        def creatAssetResponse = post('/assets', createAssetRequest)
-
-        def createAssetResult = new JsonSlurper().parseText(creatAssetResponse.andReturn().response.contentAsString)
+        ])).resourceId
 
         Map createProcessRequest = [
             name: 'New process',
@@ -445,7 +446,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
                         ],
                         target:
                         [
-                            targetUri: 'http://localhost/assets/'+createAssetResult.resourceId,
+                            targetUri: 'http://localhost/assets/'+assetId,
                             displayName: 'test ddd'
                         ]
                     ]
@@ -475,14 +476,19 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "post a process with link"() {
         when:
-        def result = parseJson(post('/assets', [
+        def assetId = parseJson(post('/assets', [
             name : 'My asset',
+            domains: [
+                (dsgvoDomain.idAsString): [
+                    subType: "AST_Datatype",
+                    status: "NEW"
+                ]
+            ],
             owner: [
                 targetUri: 'http://localhost/units/'+unit.id.uuidValue()
             ]
-        ]))
-        def assetId = result.resourceId
-        result = parseJson(post('/processes', [
+        ])).resourceId
+        def processId = parseJson(post('/processes', [
             name : 'My process',
             owner: [
                 targetUri: 'http://localhost/units/'+unit.id.uuidValue()
@@ -497,8 +503,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ]))
-        def processId = result.resourceId
+        ])).resourceId
         def process1 = txTemplate.execute{
             Process process = processRepository.findById(Key.uuidFrom(processId)).get()
             with(process.links) {

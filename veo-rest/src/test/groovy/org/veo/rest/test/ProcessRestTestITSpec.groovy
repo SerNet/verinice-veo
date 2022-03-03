@@ -19,17 +19,25 @@ package org.veo.rest.test
 
 class ProcessRestTestITSpec extends VeoRestTest{
     String unitId
+    String dsgvoDomainId
 
     def setup() {
         unitId = post("/units", [
             name: "process test unit"
         ]).body.resourceId
+        dsgvoDomainId = domains.find { it.name == "DS-GVO" }.id
     }
 
     def "Create, retrieve, update & delete process"() {
         given: "a target asset"
         def assetId = post("/assets", [
             name: "target asset for process",
+            domains: [
+                (dsgvoDomainId): [
+                    subType: "AST_Datatype",
+                    status: "NEW"
+                ]
+            ],
             owner: [targetUri: "http://localhost/units/$unitId"],
         ]).body.resourceId
 

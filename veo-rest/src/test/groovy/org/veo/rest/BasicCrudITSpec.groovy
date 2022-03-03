@@ -39,10 +39,11 @@ class BasicCrudITSpec extends VeoMvcSpec {
     TransactionTemplate txTemplate
 
     Client client
+    String domainId
 
     def setup() {
         client = createTestClient()
-        createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
     }
 
     @WithUserDetails("user@domain.example")
@@ -56,6 +57,12 @@ class BasicCrudITSpec extends VeoMvcSpec {
         def unitId = result.resourceId
         result = parseJson(post('/assets', [
             name : 'My CRUD asset',
+            domains: [
+                (domainId): [
+                    subType: "AST_Datatype",
+                    status: "NEW"
+                ]
+            ],
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ]

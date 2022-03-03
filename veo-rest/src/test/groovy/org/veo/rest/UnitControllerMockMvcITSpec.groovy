@@ -339,15 +339,18 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a unit with linked asset and process"
         def unit = createTestClientUnit()
 
-        Map createAssetRequest = [
+        def assetId = parseJson(post('/assets', [
             name: 'New Asset',
+            domains: [
+                (domain.idAsString): [
+                    subType: "AST_Datatype",
+                    status: "NEW"
+                ]
+            ],
             owner: [
-                displayName: 'test2',
-                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
+                targetUri: "http://localhost/units/${unit.idAsString}"
             ]
-        ]
-        def creatAssetResponse = post('/assets', createAssetRequest)
-        def createAssetResult = new JsonSlurper().parseText(creatAssetResponse.andReturn().response.contentAsString)
+        ])).resourceId
 
         Map createProcessRequest = [
             name: 'New process',
@@ -382,7 +385,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
                         ],
                         target:
                         [
-                            targetUri: 'http://localhost/assets/'+createAssetResult.resourceId,
+                            targetUri: "http://localhost/assets/$assetId",
                             displayName: 'test ddd'
                         ]
                     ]
