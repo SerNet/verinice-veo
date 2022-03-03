@@ -50,6 +50,7 @@ public abstract class ModifyElementUseCase<T extends Element> implements
         checkSubTypeChange(entity, storedEntity);
         // The designator is read-only so it must stay the same.
         entity.setDesignator(storedEntity.getDesignator());
+        DomainSensitiveElementValidator.validate(entity);
         return new OutputData<T>(repo.save(entity));
     }
 

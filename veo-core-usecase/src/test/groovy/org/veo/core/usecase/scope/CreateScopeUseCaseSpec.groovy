@@ -38,6 +38,7 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         Scope scope = Mock()
         scope.name >> "My scope"
         scope.owner >> unit
+        scope.links >> []
 
         when:
         def output = usecase.execute(new CreateElementUseCase.InputData( scope, existingClient))

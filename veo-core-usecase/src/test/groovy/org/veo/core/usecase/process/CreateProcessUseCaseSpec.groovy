@@ -42,6 +42,7 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
         process.name >> "John's process"
         process.modelInterface >> Process
         process.id >> id
+        process.links >> []
 
         when:
         def output = usecase.execute(new CreateElementUseCase.InputData(process, existingClient))

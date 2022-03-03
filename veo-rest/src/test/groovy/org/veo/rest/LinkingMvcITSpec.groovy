@@ -62,6 +62,9 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                         }
                     },
                     newElementTypeDefinition(Scope.SINGULAR_TERM, it) {
+                        subTypes["Normal"] = new SubTypeDefinition().tap{
+                            it.statuses = ["NEW"]
+                        }
                         links["linkToWhateverPersonA"] = new LinkDefinition().tap{
                             targetType = Person.SINGULAR_TERM
                         }
@@ -136,18 +139,8 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         }
     }
 
-    def "link target sub type is validated"() {
+    def "link target type is validated"() {
         given:
-        def nicePersonId = parseJson(post("/persons", [
-            name: "Jane",
-            owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "Nice",
-                    status: "NEW"
-                ]
-            ]
-        ])).resourceId
         def normalPersonId = parseJson(post("/persons", [
             name: "John",
             owner: [targetUri: "http://localhost/units/$unitId"],
@@ -158,9 +151,147 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                 ]
             ]
         ])).resourceId
+        def anotherNormalPersonId = parseJson(post("/persons", [
+            name: "Mia",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [
+                    subType: "Normal",
+                    status: "NEW"
+                ]
+            ]
+        ])).resourceId
+        def normalScopeId = parseJson(post("/scopes", [
+            name: "Just a normal scope",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [
+                    subType: "Normal",
+                    status: "NEW"
+                ]
+            ]
+        ])).resourceId
 
         when: "posting a scope with a correct link"
+        def scopeId = parseJson(post("/scopes", [
+            name: "Good scope",
+            owner: [
+                targetUri: "http://localhost/units/$unitId"
+            ],
+            links: [
+                linkToNormalPerson: [
+                    [
+                        target: [
+                            targetUri: "http://localhost/persons/$normalPersonId"
+                        ]
+                    ]
+                ]
+            ]
+        ])).resourceId
+        def scopeETag = getETag(get("/scopes/$scopeId"))
+
+        then:
+        noExceptionThrown()
+
+        when: "updating the scope with a valid link"
+        put("/scopes/$scopeId", [
+            name: "Good scope",
+            owner: [
+                targetUri: "http://localhost/units/$unitId"
+            ],
+            links: [
+                linkToNormalPerson: [
+                    [
+                        target: [
+                            targetUri: "http://localhost/persons/$anotherNormalPersonId"
+                        ]
+                    ]
+                ]
+            ]
+        ], ['If-Match': scopeETag])
+        scopeETag = getETag(get("/scopes/$scopeId"))
+
+        then:
+        noExceptionThrown()
+
+        when: "updating the scope with an invalid link"
+        put("/scopes/$scopeId", [
+            name: "Bad scope",
+            owner: [
+                targetUri: "http://localhost/units/$unitId"
+            ],
+            links: [
+                linkToNormalPerson: [
+                    [
+                        target: [
+                            targetUri: "http://localhost/scopes/$normalScopeId"
+                        ]
+                    ]
+                ]
+            ]
+        ], ['If-Match': scopeETag], 400)
+
+        then:
+        IllegalArgumentException ex = thrown()
+        ex.message == "Invalid target type 'scope' for link type 'linkToNormalPerson'"
+
+        when: "posting a scope with an invalid link"
         post("/scopes", [
+            name: "Bad scope",
+            owner: [
+                targetUri: "http://localhost/units/$unitId"
+            ],
+            links: [
+                linkToNormalPerson: [
+                    [
+                        target: [
+                            targetUri: "http://localhost/scopes/$normalScopeId"
+                        ]
+                    ]
+                ]
+            ]
+        ], 400)
+
+        then:
+        ex = thrown()
+        ex.message == "Invalid target type 'scope' for link type 'linkToNormalPerson'"
+    }
+
+    def "link target sub type is validated"() {
+        given:
+        def normalPersonId = parseJson(post("/persons", [
+            name: "John",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [
+                    subType: "Normal",
+                    status: "NEW"
+                ]
+            ]
+        ])).resourceId
+        def nicePersonId = parseJson(post("/persons", [
+            name: "Jane",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [
+                    subType: "Nice",
+                    status: "NEW"
+                ]
+            ]
+        ])).resourceId
+        def anotherNicePersonId = parseJson(post("/persons", [
+            name: "Junior",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [
+                    subType: "Nice",
+                    status: "NEW"
+                ]
+            ]
+        ])).resourceId
+
+        when: "posting a scope with a correct link"
+        def scopeId = parseJson(post("/scopes", [
             name: "Good scope",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
@@ -174,11 +305,55 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ])
+        ])).resourceId
+        def scopeETag = getETag(get("/scopes/$scopeId"))
+
         then:
         noExceptionThrown()
 
-        when: "posting a scope with a wrong link"
+        when: "updating the scope with a valid link"
+        put("/scopes/$scopeId", [
+            name: "Good scope",
+            owner: [
+                targetUri: "http://localhost/units/$unitId"
+            ],
+            links: [
+                linkToNicePerson: [
+                    [
+                        target: [
+                            targetUri: "http://localhost/persons/$anotherNicePersonId"
+                        ]
+                    ]
+                ]
+            ]
+        ], ['If-Match': scopeETag])
+        scopeETag = getETag(get("/scopes/$scopeId"))
+
+        then:
+        noExceptionThrown()
+
+        when: "updating the scope with an invalid link"
+        put("/scopes/$scopeId", [
+            name: "Bad scope",
+            owner: [
+                targetUri: "http://localhost/units/$unitId"
+            ],
+            links: [
+                linkToNicePerson: [
+                    [
+                        target: [
+                            targetUri: "http://localhost/persons/$normalPersonId"
+                        ]
+                    ]
+                ]
+            ]
+        ], ['If-Match': scopeETag], 400)
+
+        then:
+        IllegalArgumentException ex = thrown()
+        ex.message == "Invalid target sub type 'Normal' for link type 'linkToNicePerson'"
+
+        when: "posting a scope with an invalid link"
         post("/scopes", [
             name: "Bad scope",
             owner: [
@@ -193,8 +368,10 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ])
+        ], 400)
+
         then:
-        noExceptionThrown()
+        ex = thrown()
+        ex.message == "Invalid target sub type 'Normal' for link type 'linkToNicePerson'"
     }
 }

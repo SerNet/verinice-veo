@@ -39,6 +39,7 @@ public class UpdatePersonUseCaseSpec extends UseCaseSpec {
         person.name >> "Updated person"
         person.version >> 0
         person.domains >> []
+        person.links >> []
 
         when:
         def eTag = ETag.from(person.getId().uuidValue(), 0)

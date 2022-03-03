@@ -34,6 +34,7 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
         Person p = Mock()
         p.name >> "John"
         p.owner >> existingUnit
+        p.links >> []
 
         when:
         def output = usecase.execute(new CreateElementUseCase.InputData(p, existingClient))

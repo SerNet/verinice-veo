@@ -55,6 +55,7 @@ public abstract class CreateElementUseCase<TEntity extends Element> implements
                                                 .getId()
                                                 .uuidValue()));
         unit.checkSameClient(input.authenticatedClient);
+        DomainSensitiveElementValidator.validate(entity);
         designatorService.assignDesignator(entity, input.authenticatedClient);
         return new CreateElementUseCase.OutputData<>(entityRepo.save(entity));
     }

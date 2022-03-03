@@ -42,6 +42,7 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
         process.getOwner() >> existingUnit
         process.version >> 0
         process.modelInterface >> Process
+        process.links >> []
 
         def existingProcess = Mock(Process) {
             it.id >> process.id
