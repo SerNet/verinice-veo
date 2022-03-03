@@ -55,7 +55,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         expect: 'the domain matches'
         domainFromTemplate != null
         with (domainFromTemplate) {
-            domainTemplate.dbId == "00000000-0000-0000-0000-000000000001"
+            domainTemplate.dbId == DSGVO_TEST_DOMAIN_TEMPLATE_ID
             name == domainTemplate.name
             abbreviation == domainTemplate.abbreviation
             description == domainTemplate.description
