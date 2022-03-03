@@ -20,8 +20,8 @@ package org.veo.jobs;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -56,7 +56,7 @@ public class SpringSpecDomainTemplateCreator {
             getClass().getClassLoader());
     private final ObjectMapper objectMapper;
     private final DomainTemplateRepository domainTemplateRepository;
-    private Set<TransformDomainTemplateDto> domainTemplateDtos;
+    private Map<String, TransformDomainTemplateDto> domainTemplateDtos;
     private final IdentifiableFactory identifiableFactory;
     private final EntityFactory entityFactory;
     private final DomainAssociationTransformer domainAssociationTransformer;
@@ -92,13 +92,7 @@ public class SpringSpecDomainTemplateCreator {
      * template resource file.
      */
     public void createTestTemplate(String templateId) {
-        var dto = getTestTemplateDtos().stream()
-                                       .filter(d -> d.getId()
-                                                     .equals(templateId))
-                                       .findFirst()
-                                       .orElseThrow(() -> new IllegalArgumentException(
-                                               String.format("No test domain template found with ID %s",
-                                                             templateId)));
+        var dto = getTestTemplateDto(templateId);
         AsSystemUser.runAsContentCreator(() -> {
             var input = CreateDomainTemplateInputMapper.map(dto, identifiableFactory, entityFactory,
                                                             domainAssociationTransformer);
@@ -107,7 +101,7 @@ public class SpringSpecDomainTemplateCreator {
 
     }
 
-    private Set<TransformDomainTemplateDto> getTestTemplateDtos() {
+    private TransformDomainTemplateDto getTestTemplateDto(String templateId) {
         if (domainTemplateDtos == null) {
             try {
                 domainTemplateDtos = Arrays.stream(resourceResolver.getResources("classpath*:/testdomaintemplates/*.json"))
@@ -119,11 +113,15 @@ public class SpringSpecDomainTemplateCreator {
                                                    throw new RuntimeException(e);
                                                }
                                            })
-                                           .collect(Collectors.toSet());
+                                           .collect(Collectors.toMap(dto -> dto.getId(),
+                                                                     dto -> dto));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-        return domainTemplateDtos;
+        return Optional.ofNullable(domainTemplateDtos.get(templateId))
+                       .orElseThrow(() -> new IllegalArgumentException(
+                               String.format("No test domain template found with ID %s",
+                                             templateId)));
     }
 }
