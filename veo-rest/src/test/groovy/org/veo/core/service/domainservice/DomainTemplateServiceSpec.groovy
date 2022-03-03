@@ -193,7 +193,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
         def domainFromTemplate = null
         txTemplate.execute {
-            def testDomainVeo612TemplateId = "ae567e90-14c4-4ceb-bd16-32eda13d1e0b"
+            def testDomainVeo612TemplateId = "1624d827-299f-59d1-a1be-7064ed6f7f44"
             createTestDomainTemplate(testDomainVeo612TemplateId)
             domainFromTemplate = domainTemplateService.createDomain(client, testDomainVeo612TemplateId)
             client.addToDomains(domainFromTemplate)
@@ -204,7 +204,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         expect: 'the domain matches'
         domainFromTemplate != null
         with (domainFromTemplate) {
-            domainTemplate.dbId == "ae567e90-14c4-4ceb-bd16-32eda13d1e0b"
+            domainTemplate.dbId == "1624d827-299f-59d1-a1be-7064ed6f7f44"
             name == domainTemplate.name
             abbreviation == domainTemplate.abbreviation
             description == domainTemplate.description
@@ -233,7 +233,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
         def domainFromTemplate = null
         txTemplate.execute {
-            def testDomainTemplateVeo620 = "56596c4c-436a-40f1-9aaf-32c962f9553b"
+            def testDomainTemplateVeo620 = "7254b28e-6804-5ea9-8905-e2a7b4883030"
             createTestDomainTemplate(testDomainTemplateVeo620)
             domainFromTemplate = domainTemplateService.createDomain(client, testDomainTemplateVeo620)
             client.addToDomains(domainFromTemplate)
@@ -244,7 +244,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         expect: 'the domain matches'
         domainFromTemplate != null
         with (domainFromTemplate) {
-            domainTemplate.dbId == "56596c4c-436a-40f1-9aaf-32c962f9553b"
+            domainTemplate.dbId == "7254b28e-6804-5ea9-8905-e2a7b4883030"
             name == domainTemplate.name
             abbreviation == domainTemplate.abbreviation
             description == domainTemplate.description

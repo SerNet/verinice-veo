@@ -1,5 +1,5 @@
 {
-  "id": "56596c4c-436a-40f1-9aaf-32c962f9553b",
+  "id": "7254b28e-6804-5ea9-8905-e2a7b4883030",
   "name": "test-domain-veo-620",
   "abbreviation": "td-620",
   "authority": "SERNET",
@@ -10,7 +10,7 @@
       "id": "aed7c0a6-ac6e-4fe4-84d2-fd6532aa7558",
       "name": "TEST-Elements",
       "domainTemplate": {
-        "targetUri": "/domaintemplates/56596c4c-436a-40f1-9aaf-32c962f9553b"
+        "targetUri": "/domaintemplates/7254b28e-6804-5ea9-8905-e2a7b4883030"
       },
       "catalogItems": [
         {
