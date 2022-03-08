@@ -54,7 +54,6 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
     ClientData client
     Domain domain
     UnitData unit
-    ElementQuery<Asset> query
 
     def setup() {
         client = clientDataRepository.save(newClient{
@@ -63,12 +62,11 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         })
         domain = client.domains.first()
         unit = unitDataRepository.save(newUnit(client))
-
-        query = new ElementQueryImpl<>(processDataRepository, client)
     }
 
     def 'queries by client'() {
         given:
+        def query = new ElementQueryImpl<>(processDataRepository, client)
         def otherClient = clientDataRepository.save(newClient {})
         def otherClientUnit = unitDataRepository.save(newUnit(otherClient))
         processDataRepository.saveAll([
@@ -87,6 +85,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries all processes'() {
         given:
+        def query = new ElementQueryImpl<>(processDataRepository, client)
         processDataRepository.saveAll([
             newProcess(unit),
             newProcess(unit),
@@ -100,6 +99,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by units'() {
         given:
+        def query = new ElementQueryImpl<>(processDataRepository, client)
         def unit2 = unitDataRepository.save(newUnit(client))
         def unit3 = unitDataRepository.save(newUnit(client))
         processDataRepository.saveAll([
@@ -122,6 +122,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by sub type'() {
         given:
+        def query = new ElementQueryImpl<>(processDataRepository, client)
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "a"
@@ -150,6 +151,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by status'() {
         given:
+        def query = new ElementQueryImpl<>(processDataRepository, client)
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "a"
@@ -183,6 +185,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by sub type & status combined'() {
         given:
+        def query = new ElementQueryImpl<>(processDataRepository, client)
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "a"
@@ -216,6 +219,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'finds processes with no sub type'() {
         given:
+        def query = new ElementQueryImpl<>(processDataRepository, client)
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "a"
@@ -244,6 +248,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by unit & client'() {
         given:
+        def query = new ElementQueryImpl<>(processDataRepository, client)
         def client2 = clientDataRepository.save(newClient {})
         def unit2 = unitDataRepository.save(newUnit(client))
         def unit3 = unitDataRepository.save(newUnit(client2))
@@ -270,6 +275,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by name'() {
         given:
+        def query = new ElementQueryImpl<>(processDataRepository, client)
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "Process One"
@@ -292,6 +298,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by description'() {
         given:
+        def query = new ElementQueryImpl<>(processDataRepository, client)
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "A"
@@ -317,6 +324,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by designator'() {
         given:
+        def query = new ElementQueryImpl<>(processDataRepository, client)
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "A"
@@ -342,6 +350,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by updatedBy'() {
         given:
+        def query = new ElementQueryImpl<>(processDataRepository, client)
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "A"
@@ -367,7 +376,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'sort results by different properties'() {
         given: "three processes"
-
+        def query = new ElementQueryImpl<>(processDataRepository, client)
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "process 0"
