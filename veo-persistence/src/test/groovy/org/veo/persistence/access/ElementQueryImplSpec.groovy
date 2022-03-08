@@ -32,6 +32,7 @@ import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.PersonDataRepository
 import org.veo.persistence.access.jpa.ProcessDataRepository
+import org.veo.persistence.access.jpa.ScopeDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 import org.veo.persistence.entity.jpa.AbstractJpaSpec
 import org.veo.persistence.entity.jpa.ClientData
@@ -50,6 +51,9 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     @Autowired
     UnitDataRepository unitDataRepository
+
+    @Autowired
+    ScopeDataRepository scopeDataRepository
 
     ClientData client
     Domain domain
@@ -81,6 +85,160 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         then:
         result.totalResults == 1
         result.resultPage.first().name == "client process"
+    }
+
+    def 'queries composites by parts'() {
+        given:
+        def query = new ElementQueryImpl<>(processDataRepository, client)
+        def part1 = processDataRepository.save(newProcess(unit))
+        def part2 = processDataRepository.save(newProcess(unit))
+        def part3 = processDataRepository.save(newProcess(unit))
+        processDataRepository.saveAll([
+            newProcess(unit) {
+                name = "composite of part 1 & 2"
+                parts = [part1, part2]
+            },
+            newProcess(unit) {
+                name = "composite of part 2"
+                parts = [part2]
+            },
+            newProcess(unit) {
+                name = "composite of part 3"
+                parts = [part3]
+            },
+        ])
+
+        when:
+        query.whereChildElementIn(new QueryCondition<>([
+            part1.id,
+            part2.id,
+        ] as Set))
+        def result = query.execute(PagingConfiguration.UNPAGED)
+
+        then:
+        result.resultPage*.name =~ [
+            "composite of part 1 & 2",
+            "composite of part 2"
+        ]
+    }
+
+    def 'queries composites by part presence'() {
+        given:
+        def part1 = processDataRepository.save(newProcess(unit) {
+            name = "part one"
+        })
+        def part2 = processDataRepository.save(newProcess(unit) {
+            name = "part two"
+        })
+        processDataRepository.saveAll([
+            newProcess(unit) {
+                name = "composite with one part"
+                parts = [part1]
+            },
+            newProcess(unit) {
+                name = "composite with two parts"
+                parts = [part1, part2]
+            },
+        ])
+
+        when:
+        def elementsWithChildren = new ElementQueryImpl<>(processDataRepository, client)
+                .whereChildElementsPresent(true)
+                .execute(PagingConfiguration.UNPAGED)
+
+        then:
+        elementsWithChildren.resultPage*.name =~ [
+            "composite with one part",
+            "composite with two parts"
+        ]
+
+        when:
+        def elementsWithoutChildren = new ElementQueryImpl<>(processDataRepository, client)
+                .whereChildElementsPresent(false)
+                .execute(PagingConfiguration.UNPAGED)
+
+        then:
+        elementsWithoutChildren.resultPage*.name =~ [
+            "part one",
+            "part two",
+        ]
+    }
+
+    def 'queries scopes by members'() {
+        given:
+        def query = new ElementQueryImpl(scopeDataRepository, client)
+        def member1 = processDataRepository.save(newProcess(unit))
+        def member2 = processDataRepository.save(newProcess(unit))
+        def member3 = processDataRepository.save(newProcess(unit))
+        scopeDataRepository.saveAll([
+            newScope(unit) {
+                name = "scope of member 1 & 2"
+                members = [member1, member2]
+            },
+            newScope(unit) {
+                name = "scope of member 2"
+                members = [member2]
+            },
+            newScope(unit) {
+                name = "scope of member 3"
+                members = [member3]
+            },
+        ])
+
+        when:
+        query.whereChildElementIn(new QueryCondition<>([
+            member1.id,
+            member2.id,
+        ] as Set))
+        def result = query.execute(PagingConfiguration.UNPAGED)
+
+        then:
+        result.resultPage*.name =~ [
+            "scope of member 1 & 2",
+            "scope of member 2"
+        ]
+    }
+
+    def 'queries scopes by member presence'() {
+        given:
+        def member1 = scopeDataRepository.save(newScope(unit) {
+            name = "member one"
+        })
+        def member2 = scopeDataRepository.save(newScope(unit) {
+            name = "member two"
+        })
+        scopeDataRepository.saveAll([
+            newScope(unit) {
+                name = "scope with one member"
+                members = [member1]
+            },
+            newScope(unit) {
+                name = "scope with two members"
+                members = [member1, member2]
+            },
+        ])
+
+        when:
+        def elementsWithChildren = new ElementQueryImpl<>(scopeDataRepository, client)
+                .whereChildElementsPresent(true)
+                .execute(PagingConfiguration.UNPAGED)
+
+        then:
+        elementsWithChildren.resultPage*.name =~ [
+            "scope with one member",
+            "scope with two members"
+        ]
+
+        when:
+        def elementsWithoutChildren = new ElementQueryImpl<>(scopeDataRepository, client)
+                .whereChildElementsPresent(false)
+                .execute(PagingConfiguration.UNPAGED)
+
+        then:
+        elementsWithoutChildren.resultPage*.name =~ [
+            "member one",
+            "member two",
+        ]
     }
 
     def 'queries all processes'() {

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -40,12 +41,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
+import org.veo.persistence.access.jpa.CompositeEntityDataRepository;
 import org.veo.persistence.access.jpa.ElementDataRepository;
+import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.ElementData;
 import org.veo.persistence.entity.jpa.UnitData;
 
@@ -91,6 +95,28 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
                 criteriaBuilder) -> in(root.join("subTypeAspects", JoinType.LEFT)
                                            .get("subType"),
                                        condition.getValues(), criteriaBuilder));
+        return this;
+    }
+
+    @Override
+    public ElementQuery<TInterface> whereChildElementIn(QueryCondition<Key<UUID>> condition) {
+        var childIdsAsString = condition.getValues()
+                                        .stream()
+                                        .map(Key::uuidValue)
+                                        .collect(Collectors.toSet());
+        mySpec = mySpec.and((root, query,
+                criateriaBuilder) -> in(root.join(getChildAttributeName(), JoinType.INNER)
+                                            .get("dbId"),
+                                        childIdsAsString, criateriaBuilder));
+        return this;
+    }
+
+    @Override
+    public ElementQuery<TInterface> whereChildElementsPresent(boolean present) {
+        mySpec = mySpec.and((root, query,
+                criteriaBuilder) -> checkNull(root.join(getChildAttributeName(), JoinType.LEFT)
+                                                  .get("dbId"),
+                                              !present, criteriaBuilder));
         return this;
     }
 
@@ -176,6 +202,24 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
                                                                                                  "%" + str.toUpperCase(Locale.GERMAN)
                                                                                                          + "%"))
                                                                 .toArray(Predicate[]::new)));
+    }
+
+    private Predicate checkNull(Path<Object> pathExpression, boolean assertNull,
+            CriteriaBuilder criteriaBuilder) {
+        if (assertNull) {
+            return criteriaBuilder.isNull(pathExpression);
+        }
+        return criteriaBuilder.isNotNull(pathExpression);
+    }
+
+    private String getChildAttributeName() {
+        if (dataRepository instanceof CompositeEntityDataRepository) {
+            return "parts";
+        }
+        if (dataRepository instanceof ScopeDataRepository) {
+            return "members";
+        }
+        throw new UnsupportedOperationException("Cannot filter by child elements");
     }
 
     protected static Pageable toPageable(PagingConfiguration pagingConfiguration) {

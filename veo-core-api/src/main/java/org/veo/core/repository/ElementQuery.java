@@ -19,9 +19,11 @@ package org.veo.core.repository;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.UUID;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 
 /**
@@ -35,6 +37,28 @@ public interface ElementQuery<T extends Element> {
     ElementQuery<T> whereUnitIn(Set<Unit> units);
 
     ElementQuery<T> whereSubTypeMatches(QueryCondition<String> values);
+
+    /**
+     * Only include elements where at least one of its child elements (members or
+     * parts) has one of the given IDs.
+     *
+     * @param elementIds
+     *            elements IDs to be matched against the child element IDs. UUIDs
+     *            are assumed to be unique across different types of elements.
+     * @return this
+     */
+    ElementQuery<T> whereChildElementIn(QueryCondition<Key<UUID>> elementIds);
+
+    /**
+     * Only include elements with / without at least one child element (member or
+     * part).
+     *
+     * @param present
+     *            pass true to only include elements with child elements, pass false
+     *            to only include elements without child elements
+     * @return this
+     */
+    ElementQuery<T> whereChildElementsPresent(boolean present);
 
     ElementQuery<T> whereStatusMatches(QueryCondition<String> values);
 
