@@ -156,8 +156,7 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         impactI.potentialImpact = 2
         riskI.inherentRisk = 2
 
-        put("/processes/$processId/risks/$scenarioId", risk,
-                retrievedRiskResponse.headers["ETag"].toString())
+        put("/processes/$processId/risks/$scenarioId", risk, retrievedRiskResponse.parseETag())
 
 
         then: "the changed risk values can be retrieved"

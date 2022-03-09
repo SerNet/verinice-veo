@@ -55,14 +55,14 @@ class BasicCrudRestTest extends VeoRestTest{
         }
 
         when: 'updating the unit'
-        def etag = getResponse.headers.ETag
+        def etag = getResponse.parseETag()
         unitName = "Unit of $name"
 
         then: 'RESTapi responds with status code 200'
-        put("/units/$unitId", ["name": unitName], "$etag",200, UserType.DEFAULT)
+        put("/units/$unitId", ["name": unitName], etag,200, UserType.DEFAULT)
 
         then: 'updating with the same eTag should no longer work (412)'
-        put("/units/$unitId", ["name": unitName], "$etag", 412, UserType.DEFAULT)
+        put("/units/$unitId", ["name": unitName], etag, 412, UserType.DEFAULT)
 
         and: 'given an asset'
         def assetName = 'CRUD test asset'
@@ -84,8 +84,7 @@ class BasicCrudRestTest extends VeoRestTest{
         getResponse.body.owner.displayName  == unitName
         getResponse.body.owner.targetUri    == "$baseUrl/units/$unitId"
         def targetUri = "$baseUrl/units/$unitId"
-        def assetEtag= getETag(getResponse.headers.eTag)
-        assetEtag instanceof String
+        def assetEtag = getResponse.parseETag()
 
         and: 'when loading all assets in the unit'
         def getResponseAllAssets = get("/assets?unit=$unitId",200, UserType.DEFAULT)
@@ -130,8 +129,7 @@ class BasicCrudRestTest extends VeoRestTest{
         getResponsePerson.body.id       == personId
         getResponsePerson.body.name     == personName
         getResponsePerson.body[1]       == null
-        def personEtag= getETag(getResponsePerson.headers.eTag)
-        personEtag instanceof String
+        def personEtag= getResponsePerson.parseETag()
 
         and: 'Changing the name of the person'
         def newPersonName = 'Person with Mohammed Api'

@@ -112,6 +112,19 @@ class VeoRestTest extends Specification {
         Object body
     }
 
+    class GetResponse extends Response{
+        String parseETag() {
+            var text = headers["ETag"].toString()
+            Pattern p = Pattern.compile("\"([^\"]*)\"")
+            Matcher m = p.matcher(text)
+            if (m.find()) {
+                return m.group(1)
+            } else {
+                return text
+            }
+        }
+    }
+
     def setupSpec() {
         jsonSlurper = new JsonSlurper()
     }
@@ -125,23 +138,13 @@ class VeoRestTest extends Specification {
         domainTemplateCreator.create('test-domain', this)
     }
 
-    String getETag(String text) {
-        Pattern p = Pattern.compile("\"([^\"]*)\"")
-        Matcher m = p.matcher(text)
-        if (m.find()) {
-            return m.group(1)
-        } else {
-            return text
-        }
-    }
-
-    Response get(String uri, Integer assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
+    GetResponse get(String uri, Integer assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
         def resp = exchange(uri, HttpMethod.GET, new HttpHeaders(), null, userType)
         assertStatusCode?.tap{
             assert resp.statusCodeValue == it
         }
         log.debug("retrieved data: {}", resp.body)
-        new Response(
+        new GetResponse(
                 headers: resp.headers,
                 body: jsonSlurper.parseText(resp.body.toString()))
     }
@@ -158,9 +161,9 @@ class VeoRestTest extends Specification {
         body: jsonSlurper.parseText(resp.body.toString()))
     }
 
-    void put(String uri, Object requestBody, String etagHeader, Integer assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
+    void put(String uri, Object requestBody, String etag, Integer assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
         HttpHeaders headers = new HttpHeaders()
-        headers.setIfMatch(getETag(etagHeader))
+        headers.setIfMatch(etag)
         headers.setContentType(MediaType.APPLICATION_JSON)
 
         def resp = exchange(uri, HttpMethod.PUT, headers, requestBody, userType)

@@ -61,7 +61,7 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
             parts: [
                 [targetUri: "http://localhost/assets/$partBId"],
             ]
-        ], getETag(compositeResponse.headers["ETag"]))
+        ], compositeResponse.parseETag())
 
         then: "the removed part is missing in the retrieved composite"
         get("/assets/$compositeId").body.parts*.targetUri =~ /.*\/assets\/$partBId/
@@ -130,7 +130,7 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
                 [targetUri: "http://localhost/assets/$assetCompositeId"],
                 [targetUri: "http://localhost/persons/$personCompositeId"],
             ]
-        ], getETag(scopeResponse.headers["ETag"]))
+        ], scopeResponse.parseETag())
 
         then: "the retrieved scope points to both composites"
         with(get("/scopes/$scopeId").body.members.toSorted{it.displayName}*.targetUri) {
