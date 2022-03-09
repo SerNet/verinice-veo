@@ -141,6 +141,22 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         and: "the retrieved person composite points to its part"
         get("/persons/$personCompositeId").body.parts.first().targetUri =~ /.*\/persons\/$personPartId/
 
+        when: "removing the person from the scope"
+        def scopeETag = get("/scopes/$scopeId").parseETag()
+        put("/scopes/$scopeId", [
+            name: "scope of everything",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            members: [
+                [targetUri: "http://localhost/assets/$assetCompositeId"]
+            ]
+        ], scopeETag)
+
+        then: "the person has been removed"
+        with(get("/scopes/$scopeId").body.members*.targetUri) {
+            size() == 1
+            get(0) =~ /.*\/assets\/$assetCompositeId/
+        }
+
         when: "deleting the scope"
         delete("/scopes/$scopeId")
 
@@ -155,5 +171,46 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
 
         and:
         notThrown(Exception)
+    }
+
+    def "updating an element does not detach it from its scopes and composites"() {
+        given: "a person in a scope and in a composite"
+        def personId = post("/persons", [
+            name: "little person",
+            owner: [targetUri: "http://localhost/units/$unitId"]
+        ]).body.resourceId
+        def scopeId = post("/scopes", [
+            name: "scope with person as member",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            members: [
+                [targetUri: "http://localhost/persons/$personId"]
+            ]
+        ]).body.resourceId
+        def compositePersonId = post("/persons", [
+            name: "person with person as part",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            parts: [
+                [targetUri: "http://localhost/persons/$personId"]
+            ]
+        ]).body.resourceId
+
+        when: "updating the person"
+        def personETag = get("/persons/$personId").parseETag()
+        put("/persons/$personId", [
+            name: "little person in a scope and in a composite",
+            owner: [targetUri: "http://localhost/units/$unitId"]
+        ], personETag)
+
+        then: "it is still a member of the scope"
+        with(get("/scopes/$scopeId").body.members*.targetUri) {
+            size() == 1
+            get(0) =~ /.*\/persons\/$personId/
+        }
+
+        and: "it is still a part of the composite"
+        with(get("/persons/$compositePersonId").body.parts*.targetUri) {
+            size() == 1
+            get(0) =~ /.*\/persons\/$personId/
+        }
     }
 }
