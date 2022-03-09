@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.rest
 
+import java.time.Instant
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
@@ -273,6 +274,42 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
                 [targetUri: "http://localhost/processes/$process.idAsString"]
             ],
             owner: [targetUri: "http://localhost/units/$process.owner.idAsString"]
+        ])
+    }
+
+    def "Creating the same risk twice does not fail"() {
+        when: "a POST request is issued to the risk ressource"
+        def processId = process.getIdAsString()
+        def scenarioId = scenario.getIdAsString()
+
+        def beforeCreation = Instant.now()
+        postProcessRisk(processId, scenarioId)
+        def afterCreation = Instant.now()
+
+        then: "a risk resource was created"
+        def retrievedProcessRisk1 = parseJson(get("/processes/$processId/risks/$scenarioId"))
+
+        Instant.parse(retrievedProcessRisk1.createdAt) > beforeCreation
+        Instant.parse(retrievedProcessRisk1.createdAt) < afterCreation
+
+        when: "the request can be made once more"
+        postProcessRisk(processId, scenarioId)
+
+        then: "the existing risk resource is returned - the call is idempotent"
+        def retrievedProcessRisk2 = parseJson(get("/processes/$processId/risks/$scenarioId"))
+        retrievedProcessRisk2.designator == retrievedProcessRisk1.designator
+        retrievedProcessRisk2.createdAt == retrievedProcessRisk1.createdAt
+        retrievedProcessRisk2.version == retrievedProcessRisk1.version
+    }
+
+    private postProcessRisk(String processId, String scenarioId) {
+        post("/processes/$processId/risks", [
+            domains : [
+                (domainId): [
+                    reference      : [targetUri: "http://localhost/domains/$domainId"]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
         ])
     }
 }

@@ -61,12 +61,13 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
 
         // Apply requested operation:
         var risk = riskAffected.obtainRisk(scenario, domains);
-
         if (risk instanceof ProcessRisk)
             ((ProcessRisk) risk).defineRiskValues(input.getRiskValues());
 
         risk = applyOptionalInput(input, risk);
-        designatorService.assignDesignator(risk, input.getAuthenticatedClient());
+        if (risk.getDesignator() == null || risk.getDesignator()
+                                                .isEmpty())
+            designatorService.assignDesignator(risk, input.getAuthenticatedClient());
         validateRiskValues(input.getRiskValues(), domains, riskAffected);
         eventPublisher.publish(new RiskComponentChangeEvent(riskAffected));
         return new OutputData<>(risk);
