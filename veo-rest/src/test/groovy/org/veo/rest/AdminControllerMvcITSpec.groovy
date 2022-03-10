@@ -148,22 +148,27 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
         given: "a client with some units and a document"
         def client = createTestClient()
         createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
-        createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID)
         def demoUnit = createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(client.id)).unit
         when: 'updating all clients'
-        post("/admin/domaintemplates/${DSGVO_TEST_DOMAIN_TEMPLATE_ID}/allclientsupdate", [:], 204)
+        post("/admin/domaintemplates/${DSGVO_DOMAINTEMPLATE_V2_UUID}/allclientsupdate", [:], 204)
         then: 'the demo unit is transferred to the new domain'
         with(parseJson(get("/admin/unit-dump/${demoUnit.idAsString}"))) {
             domains.size() == 1
-            domains.first().name == 'DSGVO-test'
+            domains.first().templateVersion == '2.0.0'
+            def domainId = domains.first().id
             elements.each {
-                it.domains.keySet() == ['DSGVO-test']
+                assert it.domains.keySet() =~ [domainId]
                 it.customAspects.each { type, ca ->
-                    ca.domains*.displayName == ['DSGVO-test']
+                    assert ca.domains*.targetUri =~ [
+                        "http://localhost/domains/$domainId"
+                    ]
                 }
                 it.links.each { type, linksOfType->
                     linksOfType.each {
-                        it.domains*.displayName == ['DSGVO-test']
+                        assert it.domains*.targetUri =~ [
+                            "http://localhost/domains/$domainId"
+                        ]
                     }
                 }
             }

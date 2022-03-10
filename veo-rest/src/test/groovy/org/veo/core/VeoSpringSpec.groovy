@@ -63,6 +63,9 @@ abstract class VeoSpringSpec extends VeoSpec {
     // Name-Based UUID: https://v.de/veo/domain-templates/dsgvo/v1.4.0
     public static final String DSGVO_DOMAINTEMPLATE_UUID = "e96dd67f-090e-52be-8b76-f66b75624b45"
 
+    // Name-Based UUID: https://v.de/veo/domain-templates/dsgvo/v2.0.0
+    public static final String DSGVO_DOMAINTEMPLATE_V2_UUID = "0482da04-fc3a-5af5-9911-54a1a326116c"
+
     // dsgvo-test-1.json
     public static final String DSGVO_TEST_DOMAIN_TEMPLATE_ID = "3d4321c8-8764-52fb-b6d4-2480672038ed"
 

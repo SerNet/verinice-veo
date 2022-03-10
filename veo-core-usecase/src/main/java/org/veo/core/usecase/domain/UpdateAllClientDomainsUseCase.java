@@ -62,6 +62,8 @@ public class UpdateAllClientDomainsUseCase
             Set<Domain> clientActiveDomains = client.getDomains()
                                                     .stream()
                                                     .filter(Domain::isActive)
+                                                    .filter(d -> d.getName()
+                                                                  .equals(newDomain.getName()))
                                                     .collect(Collectors.toSet());
             if (clientActiveDomains.size() != 2) {
                 log.warn("Skipping client {}, found {} active domains instead of 2", client,

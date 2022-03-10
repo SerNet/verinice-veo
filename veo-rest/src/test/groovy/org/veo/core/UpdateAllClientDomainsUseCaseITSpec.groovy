@@ -28,10 +28,8 @@ import org.veo.core.entity.Process
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
-import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.ControlRiskValues
 import org.veo.core.entity.risk.DomainRiskReferenceProvider
-import org.veo.core.entity.risk.ImpactRef
 import org.veo.core.entity.risk.ImplementationStatusRef
 import org.veo.core.entity.risk.PotentialProbabilityImpl
 import org.veo.core.entity.risk.ProbabilityRef
@@ -39,7 +37,6 @@ import org.veo.core.entity.risk.ProcessImpactValues
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.PagingConfiguration
-import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.ScenarioRepository
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase.InputData
@@ -82,29 +79,29 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
 
     Client client
     Domain dsgvoDomain
-    Domain dsgvoTestDomain
+    Domain dsgvoDomainV2
 
     def setup() {
         createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
-        createTestDomainTemplate(DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_V2_UUID)
         executeInTransaction {
             client = newClient()
             dsgvoDomain = domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
             dsgvoDomain.riskDefinitions = ["xyz":createRiskDefinition("xyz")]
-            dsgvoTestDomain = domainTemplateService.createDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+            dsgvoDomainV2 = domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID)
             client.addToDomains(dsgvoDomain)
-            client.addToDomains(dsgvoTestDomain)
+            client.addToDomains(dsgvoDomainV2)
             client = clientRepository.save(client)
         }
     }
 
     def "Migrate an empty client"() {
         when: 'executing the UpdateAllClientDomainsUseCase'
-        runUseCase(DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        runUseCase(DSGVO_DOMAINTEMPLATE_V2_UUID)
         client = clientRepository.findById(client.id).get()
         then: 'the old domain is disabled'
         !client.domains.find{it.id == dsgvoDomain.id}.active
-        client.domains.find{it.id == dsgvoTestDomain.id}.active
+        client.domains.find{it.id == dsgvoDomainV2.id}.active
     }
 
     def "Migrate an empty unit"() {
@@ -113,7 +110,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             addToDomains(dsgvoDomain)
         })
         when: 'executing the UpdateAllClientDomainsUseCase'
-        runUseCase(DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        runUseCase(DSGVO_DOMAINTEMPLATE_V2_UUID)
         unit = executeInTransaction {
             unitRepository.findById(unit.id).get().tap {
                 //initialize lazy associations
@@ -121,7 +118,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             }
         }
         then: 'the unit is moved to the new domain'
-        unit.domains == [dsgvoTestDomain] as Set
+        unit.domains == [dsgvoDomainV2] as Set
     }
 
 
@@ -142,7 +139,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             setRiskValues(dsgvoDomain, riskValues)
         })
         when: 'executing the UpdateAllClientDomainsUseCase'
-        runUseCase(DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        runUseCase(DSGVO_DOMAINTEMPLATE_V2_UUID)
         unit = executeInTransaction {
             unitRepository.findById(unit.id).get().tap {
                 //initialize lazy associations
@@ -152,14 +149,14 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         control = executeInTransaction {
             controlRepository.findById(control.id).get().tap {
                 //initialize lazy associations
-                it.getRiskValues(dsgvoTestDomain)
+                it.getRiskValues(dsgvoDomainV2)
             }
         }
 
         then: "the control's risk values are moved to the new domain"
         control.riskValuesAspects.size() == 1
         with(((ControlData)control).riskValuesAspects.first()) {
-            it.domain == dsgvoTestDomain
+            it.domain == dsgvoDomainV2
             with(it.values) {
                 size() == 1
                 get(riskDefinitionRef).implementationStatus.ordinalValue == 42
@@ -178,18 +175,18 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         })
 
         when: 'executing the UpdateAllClientDomainsUseCase'
-        runUseCase(DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        runUseCase(DSGVO_DOMAINTEMPLATE_V2_UUID)
         scope = executeInTransaction {
             scopeRepository.findById(scope.id).get().tap{
                 // init lazy associations
-                ((ScopeData)it).getRiskDefinition(dsgvoTestDomain)
+                ((ScopeData)it).getRiskDefinition(dsgvoDomainV2)
             }
         }
 
         then: "the scope's risk definition ref is moved to the new domain"
         with(((ScopeData)scope).riskValuesAspects) {
             size() == 1
-            first().domain == dsgvoTestDomain
+            first().domain == dsgvoDomainV2
             first().riskDefinitionRef.idRef == "xyz"
         }
     }
@@ -211,7 +208,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         })
 
         when: 'executing the UpdateAllClientDomainsUseCase'
-        runUseCase(DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        runUseCase(DSGVO_DOMAINTEMPLATE_V2_UUID)
         unit = executeInTransaction {
             unitRepository.findById(unit.id).get().tap {
                 //initialize lazy associations
@@ -221,7 +218,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         scenario = executeInTransaction {
             scenarioRepository.findById(scenario.id).get().tap {
                 //initialize lazy associations
-                it.getPotentialProbability(dsgvoTestDomain)
+                it.getPotentialProbability(dsgvoDomainV2)
             }
         }
 
@@ -231,7 +228,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
          * scenario.getPotentialProbability(dsgvoTestDomain).orElseThrow().get(riskDefinitionRef).potentialProbability.idRef == 2
          * But scenario.getPotentialProbability(dsgvoTestDomain) does not return a result */
         with(((ScenarioData)scenario).riskValuesAspects.first()) {
-            it.domain == dsgvoTestDomain
+            it.domain == dsgvoDomainV2
             with(it.potentialProbability) {
                 size() == 1
                 get(riskDefinitionRef).potentialProbability.idRef == 2
@@ -259,7 +256,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             setImpactValues(dsgvoDomain, impactValues)
         })
         when: 'executing the UpdateAllClientDomainsUseCase'
-        runUseCase(DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        runUseCase(DSGVO_DOMAINTEMPLATE_V2_UUID)
         unit = executeInTransaction {
             unitRepository.findById(unit.id).get().tap {
                 //initialize lazy associations
@@ -269,14 +266,14 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         process = executeInTransaction {
             processRepository.findById(process.id).get().tap {
                 //initialize lazy associations
-                it.getImpactValues(dsgvoTestDomain)
+                it.getImpactValues(dsgvoDomainV2)
             }
         }
 
         then: "the control's risk values are moved to the new domain"
         process.riskValuesAspects.size() == 1
         with(((ProcessData)process).riskValuesAspects.first()) {
-            it.domain == dsgvoTestDomain
+            it.domain == dsgvoDomainV2
             with(it.values) {
                 size() == 1
                 get(riskDefinitionRef) == processImpactValues
@@ -288,7 +285,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         given: 'a client with a demo unit'
         def demoUnit = createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(client.id)).unit
         when: 'executing the UpdateAllClientDomainsUseCase'
-        runUseCase(DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        runUseCase(DSGVO_DOMAINTEMPLATE_V2_UUID)
         demoUnit = executeInTransaction {
             unitRepository.findById(demoUnit.id).get().tap {
                 //initialize lazy associations
@@ -296,7 +293,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             }
         }
         then: 'the demo unit belongs to the new domain'
-        demoUnit.domains == [dsgvoTestDomain] as Set
+        demoUnit.domains == [dsgvoDomainV2] as Set
         and: 'the scope elements belong to the new domain'
         List<Scope> scopes = executeInTransaction {
             scopeRepository.query(client).whereOwnerIs(demoUnit).execute(PagingConfiguration.UNPAGED).resultPage.tap {
@@ -311,18 +308,18 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         scopes.size() == 6
         scopes.each {
             with(it) {
-                it.domains == [dsgvoTestDomain] as Set
+                it.domains == [dsgvoDomainV2] as Set
                 it.customAspects.every {
-                    it.domains == [dsgvoTestDomain] as Set
+                    it.domains == [dsgvoDomainV2] as Set
                 }
                 it.links.every {
-                    it.domains == [dsgvoTestDomain] as Set
+                    it.domains == [dsgvoDomainV2] as Set
                 }
                 it.subTypeAspects.every {
-                    it.domain == dsgvoTestDomain
+                    it.domain == dsgvoDomainV2
                 }
                 it.risks.every {
-                    it.domains == [dsgvoTestDomain] as Set
+                    it.domains == [dsgvoDomainV2] as Set
                 }
             }
         }
@@ -333,29 +330,29 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
                 it.each {
                     it.customAspects*.domains*.name
                     it.links*.domains*.name
-                    it.getRiskValues(dsgvoTestDomain)
+                    it.getRiskValues(dsgvoDomainV2)
                 }
             }
         }
         controls.size() == 16
         controls.each {
             with(it) {
-                it.domains == [dsgvoTestDomain] as Set
+                it.domains == [dsgvoDomainV2] as Set
                 it.customAspects.every {
-                    it.domains == [dsgvoTestDomain] as Set
+                    it.domains == [dsgvoDomainV2] as Set
                 }
                 it.links.every {
-                    it.domains == [dsgvoTestDomain] as Set
+                    it.domains == [dsgvoDomainV2] as Set
                 }
                 it.subTypeAspects.every {
-                    it.domain == dsgvoTestDomain
+                    it.domain == dsgvoDomainV2
                 }
-                it.riskValuesAspects*.domain == [dsgvoTestDomain]
+                it.riskValuesAspects*.domain == [dsgvoDomainV2]
             }
         }
         and: 'there is a responsible body'
         def responsibleBody = scopes.find{
-            it.subTypeAspects.find {it.domain == dsgvoTestDomain}.subType =='SCP_ResponsibleBody'
+            it.subTypeAspects.find {it.domain == dsgvoDomainV2}.subType =='SCP_ResponsibleBody'
         }
         responsibleBody != null
         and: "the responsible body's custom aspects are intact"
@@ -364,7 +361,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             subTypeAspects.size() == 1
             customAspects.size() == 4
             customAspects.every {
-                it.domains == [dsgvoTestDomain] as Set
+                it.domains == [dsgvoDomainV2] as Set
             }
             customAspects.find{it.type == 'scope_contactInformation'}.attributes.'scope_contactInformation_website' == 'www.data.de'
         }

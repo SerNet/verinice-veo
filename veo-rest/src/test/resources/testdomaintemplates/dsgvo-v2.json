@@ -1,0 +1,4389 @@
+{
+  "name": "DS-GVO",
+  "abbreviation": "DS-GVO",
+  "description": "The DS-GVO DomainTemplate.",
+  "authority": "SERNET",
+  "templateVersion": "2.0.0",
+  "revision": "latest",
+  "catalogs": [
+    {
+      "name": "DS-GVO",
+      "domainTemplate": {
+        "targetUri": "/domaintemplates/e96dd67f-090e-52be-8b76-f66b75624b45"
+      },
+      "catalogItems": [
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.38",
+          "element": {
+            "name": "Social Engineering",
+            "abbreviation": "DS-G.38",
+            "owner": {
+              "targetUri": "/catalogitems/00e615a4-58cf-4953-a61a-43755000a73c"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "b9beedf7-1f56-49ec-a0bc-377a663c9fbf"
+          },
+          "id": "00e615a4-58cf-4953-a61a-43755000a73c"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.54",
+          "element": {
+            "name": "Vernichtung oder Verlust personenbezogener Daten  ",
+            "abbreviation": "DS-G.54",
+            "owner": {
+              "targetUri": "/catalogitems/d5fb4ac2-ac69-438c-bea6-d6a3b5a367b9"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "79baae60-8a40-46c2-bc1d-0c298ce531e5"
+          },
+          "id": "d5fb4ac2-ac69-438c-bea6-d6a3b5a367b9"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [
+            {
+              "catalogItem": {
+                "targetUri": "/catalogitems/e40d750a-24f3-40ac-84a7-746ac13f64d4"
+              },
+              "referenceType": "LINK_EXTERNAL",
+              "linkType": "process_tom",
+              "attributes": {
+                
+              }
+            }
+          ],
+          "namespace": "TOM.TOM-C",
+          "element": {
+            "name": "TOM zur Gewährleistung der Vertraulichkeit",
+            "abbreviation": "TOM-C",
+            "description": "Gewährleistung der Vertraulichkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Vertraulichkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
+            "owner": {
+              "targetUri": "/catalogitems/e40d750a-24f3-40ac-84a7-746ac13f64d4"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              "control_dataProtection": {
+                "domains": [],
+                "attributes": {
+                  "control_dataProtection_objectives": "control_dataProtection_objectives_confidentiality"
+                }
+              }
+            },
+            "type": "control",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "CTL_TOM",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e004"
+          },
+          "id": "e40d750a-24f3-40ac-84a7-746ac13f64d4"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.20",
+          "element": {
+            "name": "Hinderung der Kontrolle über eigene Daten",
+            "abbreviation": "DS-G.20",
+            "owner": {
+              "targetUri": "/catalogitems/97dd4533-8b55-44a3-a39c-6a3a442a1e22"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "a2f6f94b-326d-4c2b-8b78-9e5f16332e2a"
+          },
+          "id": "97dd4533-8b55-44a3-a39c-6a3a442a1e22"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.40",
+          "element": {
+            "name": "Unbefugte Offenlegung personenbezogener Daten ",
+            "abbreviation": "DS-G.40",
+            "owner": {
+              "targetUri": "/catalogitems/ca872478-b4f4-4767-88a6-f52fa22553dc"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "5d16e330-a4f8-4fdc-8637-e008ef164b73"
+          },
+          "id": "ca872478-b4f4-4767-88a6-f52fa22553dc"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.39",
+          "element": {
+            "name": "Überschreitung des Erforderlichkeitsgrundsatzes",
+            "abbreviation": "DS-G.39",
+            "owner": {
+              "targetUri": "/catalogitems/7329aaa6-1902-480f-a955-e424476ecb49"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "468f508f-038e-454e-83e3-726df976534f"
+          },
+          "id": "7329aaa6-1902-480f-a955-e424476ecb49"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.53",
+          "element": {
+            "name": "Verletzung von Berufs-, Sozial oder Amtsgeheimnissen",
+            "abbreviation": "DS-G.53",
+            "owner": {
+              "targetUri": "/catalogitems/4b11925b-d5ad-4bf0-b296-86d239188a37"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "b606a32a-0d7f-4682-93b4-56ff0143b2c7"
+          },
+          "id": "4b11925b-d5ad-4bf0-b296-86d239188a37"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.12",
+          "element": {
+            "name": "Fehlende oder unzureichende regelmäßige Überprüfung, Korrektur und Anpassung",
+            "abbreviation": "DS-G.12",
+            "owner": {
+              "targetUri": "/catalogitems/8adafe5f-649f-4623-8d1f-5067139561f1"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "30e1ea81-67e5-469b-9d94-fd8c4fb69baa"
+          },
+          "id": "8adafe5f-649f-4623-8d1f-5067139561f1"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.15",
+          "element": {
+            "name": "Fehlender oder unzureichender Vertrag zur Auftragsverarbeitung",
+            "abbreviation": "DS-G.15",
+            "owner": {
+              "targetUri": "/catalogitems/e19ae22b-d171-48ce-ae3a-f1e4b2d7fd9c"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "9be43c6d-d6c7-46f5-bf31-a463832ecc50"
+          },
+          "id": "e19ae22b-d171-48ce-ae3a-f1e4b2d7fd9c"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.13",
+          "element": {
+            "name": "Fehlender oder unzureichender DSB",
+            "abbreviation": "DS-G.13",
+            "owner": {
+              "targetUri": "/catalogitems/42ed00c8-7194-4a6a-b394-378c149c695c"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "d89159e9-3746-4bcc-a8b1-c8a8903635a0"
+          },
+          "id": "42ed00c8-7194-4a6a-b394-378c149c695c"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.34",
+          "element": {
+            "name": "Recht auf Datenübertragbarkeit wird nicht oder unvollständig gewährt",
+            "abbreviation": "DS-G.34",
+            "owner": {
+              "targetUri": "/catalogitems/30155753-99a3-4d2a-b6a7-d7f33c30653f"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "448c936e-eab2-4131-a9fe-3fa99fa5270e"
+          },
+          "id": "30155753-99a3-4d2a-b6a7-d7f33c30653f"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.26",
+          "element": {
+            "name": "Mangelhafte Protokollierung",
+            "abbreviation": "DS-G.26",
+            "owner": {
+              "targetUri": "/catalogitems/c17efe02-534a-40aa-9838-53d86ccad5f7"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "9fec24aa-72ec-4136-b453-2e7c139442e6"
+          },
+          "id": "c17efe02-534a-40aa-9838-53d86ccad5f7"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.56",
+          "element": {
+            "name": "Andere wirtschaftliche oder gesellschaftliche Nachteile",
+            "abbreviation": "DS-G.56",
+            "owner": {
+              "targetUri": "/catalogitems/cf505bc7-bc09-4e4a-8d7b-e022da12fe46"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "fbb3317c-bac9-4634-823c-379cebef09a9"
+          },
+          "id": "cf505bc7-bc09-4e4a-8d7b-e022da12fe46"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.31",
+          "element": {
+            "name": "Manipulation oder unberechtigte Veränderung personenbezogener Daten",
+            "abbreviation": "DS-G.31",
+            "owner": {
+              "targetUri": "/catalogitems/beb6f452-e4fa-4f30-80da-0affbcc1d265"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "3bf0b9f4-5ea9-4c4f-b7df-e3c48e1912bb"
+          },
+          "id": "beb6f452-e4fa-4f30-80da-0affbcc1d265"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.55",
+          "element": {
+            "name": "Verwendung der Daten zu inkompatiblen Zwecken",
+            "abbreviation": "DS-G.55",
+            "owner": {
+              "targetUri": "/catalogitems/d8000d73-16b7-43a9-af5e-8aa1dc6858bf"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "af592ea3-c3cc-49d5-9b92-e800217ddf71"
+          },
+          "id": "d8000d73-16b7-43a9-af5e-8aa1dc6858bf"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [
+            {
+              "catalogItem": {
+                "targetUri": "/catalogitems/7a60f2cc-fb20-4669-9eda-d76863a29602"
+              },
+              "referenceType": "LINK_EXTERNAL",
+              "linkType": "process_tom",
+              "attributes": {
+                
+              }
+            }
+          ],
+          "namespace": "TOM.TOM-E",
+          "element": {
+            "name": "TOM zur Verschlüsselung",
+            "abbreviation": "TOM-E",
+            "description": "Verschlüsselung: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Verschlüsselung personenbezogener Daten.",
+            "owner": {
+              "targetUri": "/catalogitems/7a60f2cc-fb20-4669-9eda-d76863a29602"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              "control_dataProtection": {
+                "domains": [],
+                "attributes": {
+                  "control_dataProtection_objectives": "control_dataProtection_objectives_encryption"
+                }
+              }
+            },
+            "type": "control",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "CTL_TOM",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e002"
+          },
+          "id": "7a60f2cc-fb20-4669-9eda-d76863a29602"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [
+            {
+              "catalogItem": {
+                "targetUri": "/catalogitems/1a3f8704-4eee-45ed-b818-410fad32e412"
+              },
+              "referenceType": "LINK_EXTERNAL",
+              "linkType": "process_tom",
+              "attributes": {
+                
+              }
+            }
+          ],
+          "namespace": "TOM.TOM-REC",
+          "element": {
+            "name": "TOM zur Wiederherstellbarkeit",
+            "abbreviation": "TOM-REC",
+            "description": "Wiederherstellbarkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Verfügbarkeit der personenbezogenen Daten und den Zugang zu ihnen bei einem physischen oder technischen Zwischenfall rasch wiederherzustellen.",
+            "owner": {
+              "targetUri": "/catalogitems/1a3f8704-4eee-45ed-b818-410fad32e412"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              "control_dataProtection": {
+                "domains": [],
+                "attributes": {
+                  "control_dataProtection_objectives": "control_dataProtection_objectives_recoverability"
+                }
+              }
+            },
+            "type": "control",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "CTL_TOM",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e007"
+          },
+          "id": "1a3f8704-4eee-45ed-b818-410fad32e412"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [
+            {
+              "catalogItem": {
+                "targetUri": "/catalogitems/01f07484-ef75-445e-aeeb-8013bb34c8a9"
+              },
+              "referenceType": "LINK_EXTERNAL",
+              "linkType": "process_tom",
+              "attributes": {
+                
+              }
+            }
+          ],
+          "namespace": "TOM.TOM-A",
+          "element": {
+            "name": "TOM zur Gewährleistung der Verfügbarkeit",
+            "abbreviation": "TOM-A",
+            "description": "Gewährleistung der Verfügbarkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Verfügbarkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
+            "owner": {
+              "targetUri": "/catalogitems/01f07484-ef75-445e-aeeb-8013bb34c8a9"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              "control_dataProtection": {
+                "domains": [],
+                "attributes": {
+                  "control_dataProtection_objectives": "control_dataProtection_objectives_availability"
+                }
+              }
+            },
+            "type": "control",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "CTL_TOM",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e000"
+          },
+          "id": "01f07484-ef75-445e-aeeb-8013bb34c8a9"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.18",
+          "element": {
+            "name": "Fehlendes oder unzureichendes Privacy by Design",
+            "abbreviation": "DS-G.18",
+            "owner": {
+              "targetUri": "/catalogitems/c0f71954-447c-4f4a-b286-000e1e9490ca"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "6da23c08-2870-4ac3-b189-22108a132740"
+          },
+          "id": "c0f71954-447c-4f4a-b286-000e1e9490ca"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [
+            {
+              "catalogItem": {
+                "targetUri": "/catalogitems/f78f6d65-2e36-4598-9628-76f0433742e0"
+              },
+              "referenceType": "LINK_EXTERNAL",
+              "linkType": "process_tom",
+              "attributes": {
+                
+              }
+            }
+          ],
+          "namespace": "TOM.TOM-I",
+          "element": {
+            "name": "TOM zur Gewährleistung der Integrität",
+            "abbreviation": "TOM-I",
+            "description": "Gewährleistung der Vertraulichkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Vertraulichkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
+            "owner": {
+              "targetUri": "/catalogitems/f78f6d65-2e36-4598-9628-76f0433742e0"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              "control_dataProtection": {
+                "domains": [],
+                "attributes": {
+                  "control_dataProtection_objectives": "control_dataProtection_objectives_integrity"
+                }
+              }
+            },
+            "type": "control",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "CTL_TOM",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e001"
+          },
+          "id": "f78f6d65-2e36-4598-9628-76f0433742e0"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.42",
+          "element": {
+            "name": "Unberechtigte Kenntnisnahme",
+            "abbreviation": "DS-G.42",
+            "owner": {
+              "targetUri": "/catalogitems/22c3f334-9875-450c-81e0-b27366b2a144"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "28b4a4ca-7981-4c64-b900-4d30e4060d54"
+          },
+          "id": "22c3f334-9875-450c-81e0-b27366b2a144"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.37",
+          "element": {
+            "name": "Schlecht- oder Nichterfüllung eines Auskunftsanspruchs",
+            "abbreviation": "DS-G.37",
+            "owner": {
+              "targetUri": "/catalogitems/a4f330e1-86fb-4f27-a7f3-cc9b24499d93"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "8759faba-e8ff-40c5-a43d-6ad83dd5462c"
+          },
+          "id": "a4f330e1-86fb-4f27-a7f3-cc9b24499d93"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.8",
+          "element": {
+            "name": "Fehlende oder unzureichende Datenschutzkontrollen",
+            "abbreviation": "DS-G.8",
+            "owner": {
+              "targetUri": "/catalogitems/90fe5407-592a-47fc-80f5-3376c92866fe"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "cf850f7c-5223-409a-8347-beec964f8368"
+          },
+          "id": "90fe5407-592a-47fc-80f5-3376c92866fe"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.17",
+          "element": {
+            "name": "Fehlendes oder unzureichendes Privacy by Default",
+            "abbreviation": "DS-G.17",
+            "owner": {
+              "targetUri": "/catalogitems/427b6849-2ba7-47c4-887c-5aeb226fc0ac"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "b2f7e6e7-45d6-466c-92e3-a963baea39df"
+          },
+          "id": "427b6849-2ba7-47c4-887c-5aeb226fc0ac"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [
+            {
+              "catalogItem": {
+                "targetUri": "/catalogitems/1a3f8704-4eee-45ed-b818-410fad32e412"
+              },
+              "referenceType": "LINK",
+              "linkType": "process_tom",
+              "attributes": {
+                
+              }
+            },
+            {
+              "catalogItem": {
+                "targetUri": "/catalogitems/7a60f2cc-fb20-4669-9eda-d76863a29602"
+              },
+              "referenceType": "LINK",
+              "linkType": "process_tom",
+              "attributes": {
+                
+              }
+            },
+            {
+              "catalogItem": {
+                "targetUri": "/catalogitems/f78f6d65-2e36-4598-9628-76f0433742e0"
+              },
+              "referenceType": "LINK",
+              "linkType": "process_tom",
+              "attributes": {
+                
+              }
+            },
+            {
+              "catalogItem": {
+                "targetUri": "/catalogitems/e40d750a-24f3-40ac-84a7-746ac13f64d4"
+              },
+              "referenceType": "LINK",
+              "linkType": "process_tom",
+              "attributes": {
+                
+              }
+            },
+            {
+              "catalogItem": {
+                "targetUri": "/catalogitems/c4f39b57-acc3-4edf-9a0b-7d8595607424"
+              },
+              "referenceType": "LINK",
+              "linkType": "process_tom",
+              "attributes": {
+                
+              }
+            },
+            {
+              "catalogItem": {
+                "targetUri": "/catalogitems/545aa1a7-984d-42ab-a7d0-55682153b3b0"
+              },
+              "referenceType": "LINK",
+              "linkType": "process_tom",
+              "attributes": {
+                
+              }
+            },
+            {
+              "catalogItem": {
+                "targetUri": "/catalogitems/01f07484-ef75-445e-aeeb-8013bb34c8a9"
+              },
+              "referenceType": "LINK",
+              "linkType": "process_tom",
+              "attributes": {
+                
+              }
+            },
+            {
+              "catalogItem": {
+                "targetUri": "/catalogitems/971b5250-3673-4c80-8343-7aec2f5980ae"
+              },
+              "referenceType": "LINK",
+              "linkType": "process_tom",
+              "attributes": {
+                
+              }
+            }
+          ],
+          "namespace": "TOM.VVT",
+          "element": {
+            "name": "VVT",
+            "abbreviation": "VVT",
+            "description": "VVT-Prozess",
+            "owner": {
+              "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "process",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "PRO_DataProcessing",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "392a5687-b415-4b2c-afde-a0ea355751be"
+          },
+          "id": "44501434-1c5f-4ea2-92a1-56f8bb21d034"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.22",
+          "element": {
+            "name": "Identitätsdiebstahl oder Identitätsbetrug",
+            "abbreviation": "DS-G.22",
+            "owner": {
+              "targetUri": "/catalogitems/0706a55c-e38d-42e4-afcb-b99dad446ef8"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "d62f9fde-0bdb-4fec-b7b7-1f9be28ae32e"
+          },
+          "id": "0706a55c-e38d-42e4-afcb-b99dad446ef8"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.4",
+          "element": {
+            "name": "Fehlende oder unzureichende Absicherung der Datenverarbeitung im Auftrag",
+            "abbreviation": "DS-G.4",
+            "owner": {
+              "targetUri": "/catalogitems/75d43e2f-a376-498a-ab5c-c09837605109"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "02a025b2-9e9b-483c-8945-9eb75d30cdf6"
+          },
+          "id": "75d43e2f-a376-498a-ab5c-c09837605109"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.3",
+          "element": {
+            "name": "Erstellung und Nutzung umfassender Profile zur Unterstützung Entscheidungsfindung",
+            "abbreviation": "DS-G.3",
+            "owner": {
+              "targetUri": "/catalogitems/2747d87a-b61b-4b34-8566-fff8f6adbc10"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "1e55de12-b219-4f61-901b-1176f92cc23b"
+          },
+          "id": "2747d87a-b61b-4b34-8566-fff8f6adbc10"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.10",
+          "element": {
+            "name": "Fehlende oder unzureichende Information oder mangelnde Transparenz",
+            "abbreviation": "DS-G.10",
+            "owner": {
+              "targetUri": "/catalogitems/7d32e351-6e4a-4368-8d6f-08acc4bf7254"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "09f8c4cc-e4f8-4e98-8918-cf7c43c4cb48"
+          },
+          "id": "7d32e351-6e4a-4368-8d6f-08acc4bf7254"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.23",
+          "element": {
+            "name": "Keine Widerspruchsmöglichkeit für Betroffene gegen die Datenverarbeitung",
+            "abbreviation": "DS-G.23",
+            "owner": {
+              "targetUri": "/catalogitems/1b73e686-f922-4eb3-aae9-356a49d4df6d"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "98fac979-da16-4538-a0d4-789e57c98f9f"
+          },
+          "id": "1b73e686-f922-4eb3-aae9-356a49d4df6d"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [
+            {
+              "catalogItem": {
+                "targetUri": "/catalogitems/c4f39b57-acc3-4edf-9a0b-7d8595607424"
+              },
+              "referenceType": "LINK_EXTERNAL",
+              "linkType": "process_tom",
+              "attributes": {
+                
+              }
+            }
+          ],
+          "namespace": "TOM.TOM-R",
+          "element": {
+            "name": "TOM zur Gewährleistung der Belastbarkeit",
+            "abbreviation": "TOM-R",
+            "description": "Gewährleistung der Belastbarkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Belastbarkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
+            "owner": {
+              "targetUri": "/catalogitems/c4f39b57-acc3-4edf-9a0b-7d8595607424"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              "control_dataProtection": {
+                "domains": [],
+                "attributes": {
+                  "control_dataProtection_objectives": "control_dataProtection_objectives_resilience"
+                }
+              }
+            },
+            "type": "control",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "CTL_TOM",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e006"
+          },
+          "id": "c4f39b57-acc3-4edf-9a0b-7d8595607424"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.5",
+          "element": {
+            "name": "Fehlende oder unzureichende Beachtung des Stands der Technik",
+            "abbreviation": "DS-G.5",
+            "owner": {
+              "targetUri": "/catalogitems/37c95dff-cd20-43e5-a95a-19d743eebdb9"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "223129b8-9ab7-4b26-ac72-2c76c28d02f8"
+          },
+          "id": "37c95dff-cd20-43e5-a95a-19d743eebdb9"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.11",
+          "element": {
+            "name": "Fehlende oder unzureichende Löschvorgaben bzw. Löschmechanismen",
+            "abbreviation": "DS-G.11",
+            "owner": {
+              "targetUri": "/catalogitems/c98a17c6-c896-43d2-ac40-bbc307050fec"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "45a7cda1-2e88-4cfe-a870-a52b49fdc208"
+          },
+          "id": "c98a17c6-c896-43d2-ac40-bbc307050fec"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.48",
+          "element": {
+            "name": "Verarbeitung großer Datenmengen",
+            "abbreviation": "DS-G.48",
+            "owner": {
+              "targetUri": "/catalogitems/ed604045-d939-4ad1-91a6-eec17e4f9b28"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "66e01245-5348-4889-9466-eb8417207237"
+          },
+          "id": "ed604045-d939-4ad1-91a6-eec17e4f9b28"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.45",
+          "element": {
+            "name": "Unzulässige Auskunftserteilung an Dritte",
+            "abbreviation": "DS-G.45",
+            "owner": {
+              "targetUri": "/catalogitems/780d9beb-cd8e-48cd-9890-923f03f3e62a"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "22ac634d-d4e7-4e35-a694-63f3a6d32353"
+          },
+          "id": "780d9beb-cd8e-48cd-9890-923f03f3e62a"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.27",
+          "element": {
+            "name": "Mangelhafter Umgang mit Datenschutzvorfällen",
+            "abbreviation": "DS-G.27",
+            "owner": {
+              "targetUri": "/catalogitems/87d14fe1-0cca-4fa3-8bd6-70c506f2a541"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "3603b48f-6198-4b0c-9618-f8f366d98be2"
+          },
+          "id": "87d14fe1-0cca-4fa3-8bd6-70c506f2a541"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.6",
+          "element": {
+            "name": "Fehlende oder unzureichende Datenminimierung, Datensparsamkeit ",
+            "abbreviation": "DS-G.6",
+            "owner": {
+              "targetUri": "/catalogitems/4c093853-49e0-4d93-8fbf-ebf390386b68"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "40ae37ef-916c-4ff5-892a-269101a930bf"
+          },
+          "id": "4c093853-49e0-4d93-8fbf-ebf390386b68"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.43",
+          "element": {
+            "name": "Unberechtigter Zugriff auf personenbezogene Daten",
+            "abbreviation": "DS-G.43",
+            "owner": {
+              "targetUri": "/catalogitems/f0514b31-5868-480d-a5fb-24cd7a926e3b"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "16d5b34b-6757-4520-9c85-a8da950b93ba"
+          },
+          "id": "f0514b31-5868-480d-a5fb-24cd7a926e3b"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.41",
+          "element": {
+            "name": "Unbefugter Zugang zu personenbezogenen Daten",
+            "abbreviation": "DS-G.41",
+            "owner": {
+              "targetUri": "/catalogitems/5339b295-34f1-496a-b663-9ce103a56ee5"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "f85fb012-5652-42c0-9883-b80a8e440719"
+          },
+          "id": "5339b295-34f1-496a-b663-9ce103a56ee5"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.29",
+          "element": {
+            "name": "Mangelnde Freiwilligkeit der Einwilligungserklärung",
+            "abbreviation": "DS-G.29",
+            "owner": {
+              "targetUri": "/catalogitems/6734be97-537e-4626-a144-fb1a6ab1c136"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "6ce32735-5781-42f7-8e13-c70d1f5b9d55"
+          },
+          "id": "6734be97-537e-4626-a144-fb1a6ab1c136"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.44",
+          "element": {
+            "name": "Unvollständige Verträge",
+            "abbreviation": "DS-G.44",
+            "owner": {
+              "targetUri": "/catalogitems/7875eff2-cad9-495d-a9d6-42df1f57746a"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "95054c19-d22e-4deb-bfb5-25cf467000af"
+          },
+          "id": "7875eff2-cad9-495d-a9d6-42df1f57746a"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.49",
+          "element": {
+            "name": "Verarbeitung über die Speicherfrist hinaus",
+            "abbreviation": "DS-G.49",
+            "owner": {
+              "targetUri": "/catalogitems/d3040e5b-9908-4d89-b901-204ad4c03eba"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "d52b8683-0324-48f7-8680-87f2c5de81a8"
+          },
+          "id": "d3040e5b-9908-4d89-b901-204ad4c03eba"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.33",
+          "element": {
+            "name": "Phishing ",
+            "abbreviation": "DS-G.33",
+            "owner": {
+              "targetUri": "/catalogitems/615f9e1e-fc23-45e2-a21b-6564ee479781"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "c48e6ff8-fdd0-4e5c-8432-ac5cd8ab1572"
+          },
+          "id": "615f9e1e-fc23-45e2-a21b-6564ee479781"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.7",
+          "element": {
+            "name": "Fehlende oder unzureichende Datenschutz-Folgenabschätzung",
+            "abbreviation": "DS-G.7",
+            "owner": {
+              "targetUri": "/catalogitems/7c306d92-fb0c-4e4f-9bbc-f7d72932479e"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "edea7047-678f-45a7-92f4-12198bf80c95"
+          },
+          "id": "7c306d92-fb0c-4e4f-9bbc-f7d72932479e"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.51",
+          "element": {
+            "name": "Verarbeitung wider Treu und Glauben",
+            "abbreviation": "DS-G.51",
+            "owner": {
+              "targetUri": "/catalogitems/b9932a54-d023-4b57-9121-d852a614c59c"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "11df5681-efe9-4109-8d9e-961b1e20d1d6"
+          },
+          "id": "b9932a54-d023-4b57-9121-d852a614c59c"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.46",
+          "element": {
+            "name": "Unzureichende Erfüllung von Nachweis- und Dokumentationspflichten ",
+            "abbreviation": "DS-G.46",
+            "owner": {
+              "targetUri": "/catalogitems/e2b43a73-0038-4f0f-8c3f-7d23a20fdf41"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "e3048694-faff-4fb1-9699-dc357ae43c7d"
+          },
+          "id": "e2b43a73-0038-4f0f-8c3f-7d23a20fdf41"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.25",
+          "element": {
+            "name": "Kundentracking",
+            "abbreviation": "DS-G.25",
+            "owner": {
+              "targetUri": "/catalogitems/56b98dc5-4c3f-4466-b6c2-48f9910d2adc"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "6d94aaf7-ebd1-44d4-bd57-a51bdc1c33b3"
+          },
+          "id": "56b98dc5-4c3f-4466-b6c2-48f9910d2adc"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.35",
+          "element": {
+            "name": "Rechtswidrige bzw. unrechtmäßige Verabeitung personenbezogener Daten",
+            "abbreviation": "DS-G.35",
+            "owner": {
+              "targetUri": "/catalogitems/3b7fa647-ae0e-40c2-8f83-ad2910eed369"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "84ea1151-0361-4eb7-8f7a-d21f331f4731"
+          },
+          "id": "3b7fa647-ae0e-40c2-8f83-ad2910eed369"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.32",
+          "element": {
+            "name": "Missachtung der Zweckbindung",
+            "abbreviation": "DS-G.32",
+            "owner": {
+              "targetUri": "/catalogitems/0fcf3b61-014c-4ba6-9d38-6e869775198b"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "eb55389e-9202-4079-b2e5-5bab5a4a9bed"
+          },
+          "id": "0fcf3b61-014c-4ba6-9d38-6e869775198b"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.21",
+          "element": {
+            "name": "Hohe Anzahl betroffener Personen durch Datenschutzverletzung",
+            "abbreviation": "DS-G.21",
+            "owner": {
+              "targetUri": "/catalogitems/9b777242-bf70-481c-807a-c5e0a0926c15"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "e5bae164-ef7e-4c99-9806-c90f99edf96e"
+          },
+          "id": "9b777242-bf70-481c-807a-c5e0a0926c15"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.50",
+          "element": {
+            "name": "Verarbeitung von Daten Minderjähriger",
+            "abbreviation": "DS-G.50",
+            "owner": {
+              "targetUri": "/catalogitems/a920e1fe-db44-4cf3-ad2c-ce4c60fdf3ff"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "63955aed-2918-47e3-ab3f-a65dba3c8e70"
+          },
+          "id": "a920e1fe-db44-4cf3-ad2c-ce4c60fdf3ff"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.2",
+          "element": {
+            "name": "Betroffenenrechte werden nicht oder nur unvollständig gewährt",
+            "abbreviation": "DS-G.2",
+            "owner": {
+              "targetUri": "/catalogitems/506776b1-133c-42cf-bf17-e51f921aec09"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "5695027b-b332-4fdf-bded-95f85f651038"
+          },
+          "id": "506776b1-133c-42cf-bf17-e51f921aec09"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.47",
+          "element": {
+            "name": "Unzureichende  Pseudonymisierung oder Anonymisierung",
+            "abbreviation": "DS-G.47",
+            "owner": {
+              "targetUri": "/catalogitems/0614ebef-3a99-4a0b-a6dc-766f960cf079"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "6e674405-3217-4900-a65d-91b74e969b82"
+          },
+          "id": "0614ebef-3a99-4a0b-a6dc-766f960cf079"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.19",
+          "element": {
+            "name": "Fehlerhafter Einsatz neuartiger Technologien",
+            "abbreviation": "DS-G.19",
+            "owner": {
+              "targetUri": "/catalogitems/6c513ced-0356-415c-ba00-dd1e833369d5"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "6025e6eb-b4e5-46a7-81e8-2d6c2a229659"
+          },
+          "id": "6c513ced-0356-415c-ba00-dd1e833369d5"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.36",
+          "element": {
+            "name": "Rufschädigung",
+            "abbreviation": "DS-G.36",
+            "owner": {
+              "targetUri": "/catalogitems/ad9895dd-0764-4dbb-a51a-d2dffbc0bc1e"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "5671ef60-568a-498d-95ef-ad06bb43cf35"
+          },
+          "id": "ad9895dd-0764-4dbb-a51a-d2dffbc0bc1e"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.9",
+          "element": {
+            "name": "Fehlende oder unzureichende Identifikation, Analyse und Bewertung von Datenschutzrisiken",
+            "abbreviation": "DS-G.9",
+            "owner": {
+              "targetUri": "/catalogitems/51df49d6-4f20-4d30-a5d6-64012ac4bce6"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "4046a7bc-4677-4dff-a680-7e9cfd2f0ab0"
+          },
+          "id": "51df49d6-4f20-4d30-a5d6-64012ac4bce6"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.30",
+          "element": {
+            "name": "Mangelndes Datenschutzbewusstsein",
+            "abbreviation": "DS-G.30",
+            "owner": {
+              "targetUri": "/catalogitems/0412a2be-8545-49e9-8660-992ea1988127"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "4ca2241e-b564-4757-a283-67dec9f87709"
+          },
+          "id": "0412a2be-8545-49e9-8660-992ea1988127"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.24",
+          "element": {
+            "name": "Kein Prozess zur Berichtigung unrichtiger Daten",
+            "abbreviation": "DS-G.24",
+            "owner": {
+              "targetUri": "/catalogitems/cd6b3524-b0d7-49a8-b76c-4180722abfea"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "405c1ac5-33f4-49af-abc1-bd0e5848321d"
+          },
+          "id": "cd6b3524-b0d7-49a8-b76c-4180722abfea"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.57",
+          "element": {
+            "name": "Diskriminierung",
+            "abbreviation": "DS-G.57",
+            "owner": {
+              "targetUri": "/catalogitems/ba7435fd-6b48-43e7-9c88-236c7918f3cb"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "95e473ca-45ed-48c7-9a5a-955cbf8babd2"
+          },
+          "id": "ba7435fd-6b48-43e7-9c88-236c7918f3cb"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [
+            {
+              "catalogItem": {
+                "targetUri": "/catalogitems/545aa1a7-984d-42ab-a7d0-55682153b3b0"
+              },
+              "referenceType": "LINK_EXTERNAL",
+              "linkType": "process_tom",
+              "attributes": {
+                
+              }
+            }
+          ],
+          "namespace": "TOM.TOM-P",
+          "element": {
+            "name": "TOM zur Pseudonymisierung",
+            "abbreviation": "TOM-P",
+            "description": "Pseudonymisierung: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Pseudonymisierung personenbezogener Daten.",
+            "owner": {
+              "targetUri": "/catalogitems/545aa1a7-984d-42ab-a7d0-55682153b3b0"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              "control_dataProtection": {
+                "domains": [],
+                "attributes": {
+                  "control_dataProtection_objectives": "control_dataProtection_objectives_pseudonymization"
+                }
+              }
+            },
+            "type": "control",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "CTL_TOM",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e005"
+          },
+          "id": "545aa1a7-984d-42ab-a7d0-55682153b3b0"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.52",
+          "element": {
+            "name": "Verletzung auf Verpflichtung auf Vertraulichkeit ",
+            "abbreviation": "DS-G.52",
+            "owner": {
+              "targetUri": "/catalogitems/2acd6766-8ed1-4517-923b-3a3232a7ddba"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "20297f89-4820-4f96-b313-1b85f1a2f6c8"
+          },
+          "id": "2acd6766-8ed1-4517-923b-3a3232a7ddba"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [
+            {
+              "catalogItem": {
+                "targetUri": "/catalogitems/971b5250-3673-4c80-8343-7aec2f5980ae"
+              },
+              "referenceType": "LINK_EXTERNAL",
+              "linkType": "process_tom",
+              "attributes": {
+                
+              }
+            }
+          ],
+          "namespace": "TOM.TOM-EFF",
+          "element": {
+            "name": "Verfahren regelmäßiger Überprüfung, Bewertung und Evaluierung der Wirksamkeit der TOM",
+            "abbreviation": "TOM-EFF",
+            "description": "Verfahren regelmäßiger Überprüfung, Bewertung und Evaluierung der Wirksamkeit der TOM: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich Verfahren zur regelmäßigen Überprüfung, Bewertung und Evaluierung der Wirksamkeit der technischen und organisatorischen Maßnahmen zur Gewährleistung der Sicherheit der Verarbeitung.",
+            "owner": {
+              "targetUri": "/catalogitems/971b5250-3673-4c80-8343-7aec2f5980ae"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              "control_dataProtection": {
+                "domains": [],
+                "attributes": {
+                  "control_dataProtection_objectives": "control_dataProtection_objectives_effectiveness"
+                }
+              }
+            },
+            "type": "control",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "CTL_TOM",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e003"
+          },
+          "id": "971b5250-3673-4c80-8343-7aec2f5980ae"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.14",
+          "element": {
+            "name": "Fehlender oder unzureichender Prozess meldepflichtiger Vorfälle",
+            "abbreviation": "DS-G.14",
+            "owner": {
+              "targetUri": "/catalogitems/ec67bd2b-fbc5-45e3-b74a-7dd9a7d6b26c"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "7281af11-2037-4032-a926-f0d9e61c0162"
+          },
+          "id": "ec67bd2b-fbc5-45e3-b74a-7dd9a7d6b26c"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.1",
+          "element": {
+            "name": "Auftragsverarbeitung in Drittstaaten ohne adäquates Datenschutzniveau",
+            "abbreviation": "DS-G.1",
+            "owner": {
+              "targetUri": "/catalogitems/d4f16bde-812d-41e5-9217-50a95b27518b"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "33178781-c632-4b1d-a6d2-6c8e6a039c30"
+          },
+          "id": "d4f16bde-812d-41e5-9217-50a95b27518b"
+        },
+        {
+          "catalog": {
+            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
+          },
+          "tailoringReferences": [],
+          "namespace": "TOM.DS-G.16",
+          "element": {
+            "name": "Fehlendes oder unvollständiges Verzeichnis der Verarbeitungstätigkeiten",
+            "abbreviation": "DS-G.16",
+            "owner": {
+              "targetUri": "/catalogitems/34f29b65-a544-4d54-a998-90376469d56a"
+            },
+            "links": {
+              
+            },
+            "customAspects": {
+              
+            },
+            "type": "scenario",
+            "parts": [],
+            "domains": {
+              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+                "subType": "SCN_Scenario",
+                "status": "NEW",
+                "riskValues": {
+                  
+                }
+              }
+            },
+            "id": "d9576b30-a847-43af-98e2-4c360bdec678"
+          },
+          "id": "34f29b65-a544-4d54-a998-90376469d56a"
+        }
+      ],
+      "id": "16bda087-5e16-4631-9890-8b863c445e63"
+    }
+  ],
+  "riskDefinitions": {
+    "DSRA": {
+      "id": "DSRA",
+      "probability": {
+        "id": "Prob",
+        "name": "prop-1",
+        "abbreviation": "pro-name-1",
+        "description": "",
+        "levels": [
+          {
+            "ordinalValue": 0,
+            "name": "selten",
+            "abbreviation": "1",
+            "description": "Ereignis könnte nach heutigem Kenntnisstand höchstens alle fünf Jahre eintreten.",
+            "htmlColor": "#004643"
+          },
+          {
+            "ordinalValue": 1,
+            "name": "mittel",
+            "abbreviation": "2",
+            "description": "Ereignis tritt einmal alle fünf Jahre bis einmal im Jahr ein.",
+            "htmlColor": "#004643"
+          },
+          {
+            "ordinalValue": 2,
+            "name": "häufig",
+            "abbreviation": "3",
+            "description": "Ereignis tritt einmal im Jahr bis einmal pro Monat ein.",
+            "htmlColor": "#004643"
+          },
+          {
+            "ordinalValue": 3,
+            "name": "sehr häufig",
+            "abbreviation": "4",
+            "description": "Ereignis tritt mehrmals im Monat ein.",
+            "htmlColor": "#004643"
+          }
+        ]
+      },
+      "implementationStateDefinition": {
+        "id": "Ctr",
+        "name": "prop-1",
+        "abbreviation": "pro-name-1",
+        "description": "",
+        "levels": [
+          {
+            "ordinalValue": 0,
+            "name": "ja",
+            "abbreviation": "J",
+            "description": "Die Maßnahme ist vollständig umgesetzt.",
+            "htmlColor": "#12AE0F"
+          },
+          {
+            "ordinalValue": 1,
+            "name": "nein",
+            "abbreviation": "N",
+            "description": "Die Maßnahme ist nicht umgesetzt.",
+            "htmlColor": "#AE0D11"
+          },
+          {
+            "ordinalValue": 2,
+            "name": "teilweise",
+            "abbreviation": "Tw",
+            "description": "Die Maßnahme ist nicht vollständig umgesetzt.",
+            "htmlColor": "#EDE92F"
+          },
+          {
+            "ordinalValue": 3,
+            "name": "nicht anwendbar",
+            "abbreviation": "NA",
+            "description": "Die Maßnahme ist für den Betrachtungsgegenstand nicht anwendbar.",
+            "htmlColor": "#49A2ED"
+          }
+        ]
+      },
+      "categories": [
+        {
+          "id": "C",
+          "name": "Vertraulichkeit",
+          "abbreviation": "c",
+          "description": "",
+          "valueMatrix": [
+            [
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              }
+            ],
+            [
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 1,
+                "name": "mittel",
+                "abbreviation": "2",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                "htmlColor": "#FFFF13",
+                "symbolicRisk": "symbolic_risk_2"
+              },
+              {
+                "ordinalValue": 2,
+                "name": "hoch",
+                "abbreviation": "3",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                "htmlColor": "#FF8E43",
+                "symbolicRisk": "symbolic_risk_3"
+              }
+            ],
+            [
+              {
+                "ordinalValue": 1,
+                "name": "mittel",
+                "abbreviation": "2",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                "htmlColor": "#FFFF13",
+                "symbolicRisk": "symbolic_risk_2"
+              },
+              {
+                "ordinalValue": 1,
+                "name": "mittel",
+                "abbreviation": "2",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                "htmlColor": "#FFFF13",
+                "symbolicRisk": "symbolic_risk_2"
+              },
+              {
+                "ordinalValue": 2,
+                "name": "hoch",
+                "abbreviation": "3",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                "htmlColor": "#FF8E43",
+                "symbolicRisk": "symbolic_risk_3"
+              },
+              {
+                "ordinalValue": 3,
+                "name": "sehr hoch",
+                "abbreviation": "4",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                "htmlColor": "#FF1212",
+                "symbolicRisk": "symbolic_risk_4"
+              }
+            ],
+            [
+              {
+                "ordinalValue": 1,
+                "name": "mittel",
+                "abbreviation": "2",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                "htmlColor": "#FFFF13",
+                "symbolicRisk": "symbolic_risk_2"
+              },
+              {
+                "ordinalValue": 2,
+                "name": "hoch",
+                "abbreviation": "3",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                "htmlColor": "#FF8E43",
+                "symbolicRisk": "symbolic_risk_3"
+              },
+              {
+                "ordinalValue": 3,
+                "name": "sehr hoch",
+                "abbreviation": "4",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                "htmlColor": "#FF1212",
+                "symbolicRisk": "symbolic_risk_4"
+              },
+              {
+                "ordinalValue": 3,
+                "name": "sehr hoch",
+                "abbreviation": "4",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                "htmlColor": "#FF1212",
+                "symbolicRisk": "symbolic_risk_4"
+              }
+            ]
+          ],
+          "potentialImpacts": [
+            {
+              "ordinalValue": 0,
+              "name": "vernachlässigbar",
+              "abbreviation": "1",
+              "description": "Die Schadensauswirkungen sind gering und können vernachlässigt werden.",
+              "htmlColor": "#004643"
+            },
+            {
+              "ordinalValue": 1,
+              "name": "begrenzt",
+              "abbreviation": "2",
+              "description": "Die Schadensauswirkungen sind begrenzt und überschaubar.",
+              "htmlColor": "#004643"
+            },
+            {
+              "ordinalValue": 2,
+              "name": "beträchtlich",
+              "abbreviation": "3",
+              "description": "Die Schadensauswirkungen können beträchtlich sein.",
+              "htmlColor": "#004643"
+            },
+            {
+              "ordinalValue": 3,
+              "name": "existenzbedrohend",
+              "abbreviation": "4",
+              "description": "Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen.",
+              "htmlColor": "#004643"
+            }
+          ]
+        },
+        {
+          "id": "I",
+          "name": "Integrität",
+          "abbreviation": "i",
+          "description": "",
+          "valueMatrix": [
+            [
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              }
+            ],
+            [
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 1,
+                "name": "mittel",
+                "abbreviation": "2",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                "htmlColor": "#FFFF13",
+                "symbolicRisk": "symbolic_risk_2"
+              },
+              {
+                "ordinalValue": 2,
+                "name": "hoch",
+                "abbreviation": "3",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                "htmlColor": "#FF8E43",
+                "symbolicRisk": "symbolic_risk_3"
+              }
+            ],
+            [
+              {
+                "ordinalValue": 1,
+                "name": "mittel",
+                "abbreviation": "2",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                "htmlColor": "#FFFF13",
+                "symbolicRisk": "symbolic_risk_2"
+              },
+              {
+                "ordinalValue": 1,
+                "name": "mittel",
+                "abbreviation": "2",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                "htmlColor": "#FFFF13",
+                "symbolicRisk": "symbolic_risk_2"
+              },
+              {
+                "ordinalValue": 2,
+                "name": "hoch",
+                "abbreviation": "3",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                "htmlColor": "#FF8E43",
+                "symbolicRisk": "symbolic_risk_3"
+              },
+              {
+                "ordinalValue": 3,
+                "name": "sehr hoch",
+                "abbreviation": "4",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                "htmlColor": "#FF1212",
+                "symbolicRisk": "symbolic_risk_4"
+              }
+            ],
+            [
+              {
+                "ordinalValue": 1,
+                "name": "mittel",
+                "abbreviation": "2",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                "htmlColor": "#FFFF13",
+                "symbolicRisk": "symbolic_risk_2"
+              },
+              {
+                "ordinalValue": 2,
+                "name": "hoch",
+                "abbreviation": "3",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                "htmlColor": "#FF8E43",
+                "symbolicRisk": "symbolic_risk_3"
+              },
+              {
+                "ordinalValue": 3,
+                "name": "sehr hoch",
+                "abbreviation": "4",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                "htmlColor": "#FF1212",
+                "symbolicRisk": "symbolic_risk_4"
+              },
+              {
+                "ordinalValue": 3,
+                "name": "sehr hoch",
+                "abbreviation": "4",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                "htmlColor": "#FF1212",
+                "symbolicRisk": "symbolic_risk_4"
+              }
+            ]
+          ],
+          "potentialImpacts": [
+            {
+              "ordinalValue": 0,
+              "name": "vernachlässigbar",
+              "abbreviation": "1",
+              "description": "Die Schadensauswirkungen sind gering und können vernachlässigt werden.",
+              "htmlColor": "#004643"
+            },
+            {
+              "ordinalValue": 1,
+              "name": "begrenzt",
+              "abbreviation": "2",
+              "description": "Die Schadensauswirkungen sind begrenzt und überschaubar.",
+              "htmlColor": "#004643"
+            },
+            {
+              "ordinalValue": 2,
+              "name": "beträchtlich",
+              "abbreviation": "3",
+              "description": "Die Schadensauswirkungen können beträchtlich sein.",
+              "htmlColor": "#004643"
+            },
+            {
+              "ordinalValue": 3,
+              "name": "existenzbedrohend",
+              "abbreviation": "4",
+              "description": "Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen.",
+              "htmlColor": "#004643"
+            }
+          ]
+        },
+        {
+          "id": "A",
+          "name": "Verfügbarkeit",
+          "abbreviation": "a",
+          "description": "",
+          "valueMatrix": [
+            [
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              }
+            ],
+            [
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 1,
+                "name": "mittel",
+                "abbreviation": "2",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                "htmlColor": "#FFFF13",
+                "symbolicRisk": "symbolic_risk_2"
+              },
+              {
+                "ordinalValue": 2,
+                "name": "hoch",
+                "abbreviation": "3",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                "htmlColor": "#FF8E43",
+                "symbolicRisk": "symbolic_risk_3"
+              }
+            ],
+            [
+              {
+                "ordinalValue": 1,
+                "name": "mittel",
+                "abbreviation": "2",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                "htmlColor": "#FFFF13",
+                "symbolicRisk": "symbolic_risk_2"
+              },
+              {
+                "ordinalValue": 1,
+                "name": "mittel",
+                "abbreviation": "2",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                "htmlColor": "#FFFF13",
+                "symbolicRisk": "symbolic_risk_2"
+              },
+              {
+                "ordinalValue": 2,
+                "name": "hoch",
+                "abbreviation": "3",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                "htmlColor": "#FF8E43",
+                "symbolicRisk": "symbolic_risk_3"
+              },
+              {
+                "ordinalValue": 3,
+                "name": "sehr hoch",
+                "abbreviation": "4",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                "htmlColor": "#FF1212",
+                "symbolicRisk": "symbolic_risk_4"
+              }
+            ],
+            [
+              {
+                "ordinalValue": 1,
+                "name": "mittel",
+                "abbreviation": "2",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                "htmlColor": "#FFFF13",
+                "symbolicRisk": "symbolic_risk_2"
+              },
+              {
+                "ordinalValue": 2,
+                "name": "hoch",
+                "abbreviation": "3",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                "htmlColor": "#FF8E43",
+                "symbolicRisk": "symbolic_risk_3"
+              },
+              {
+                "ordinalValue": 3,
+                "name": "sehr hoch",
+                "abbreviation": "4",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                "htmlColor": "#FF1212",
+                "symbolicRisk": "symbolic_risk_4"
+              },
+              {
+                "ordinalValue": 3,
+                "name": "sehr hoch",
+                "abbreviation": "4",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                "htmlColor": "#FF1212",
+                "symbolicRisk": "symbolic_risk_4"
+              }
+            ]
+          ],
+          "potentialImpacts": [
+            {
+              "ordinalValue": 0,
+              "name": "vernachlässigbar",
+              "abbreviation": "1",
+              "description": "Die Schadensauswirkungen sind gering und können vernachlässigt werden.",
+              "htmlColor": "#004643"
+            },
+            {
+              "ordinalValue": 1,
+              "name": "begrenzt",
+              "abbreviation": "2",
+              "description": "Die Schadensauswirkungen sind begrenzt und überschaubar.",
+              "htmlColor": "#004643"
+            },
+            {
+              "ordinalValue": 2,
+              "name": "beträchtlich",
+              "abbreviation": "3",
+              "description": "Die Schadensauswirkungen können beträchtlich sein.",
+              "htmlColor": "#004643"
+            },
+            {
+              "ordinalValue": 3,
+              "name": "existenzbedrohend",
+              "abbreviation": "4",
+              "description": "Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen.",
+              "htmlColor": "#004643"
+            }
+          ]
+        },
+        {
+          "id": "R",
+          "name": "Belastbarkeit",
+          "abbreviation": "r",
+          "description": "",
+          "valueMatrix": [
+            [
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              }
+            ],
+            [
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 0,
+                "name": "gering",
+                "abbreviation": "1",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+                "htmlColor": "#A0CF11",
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 1,
+                "name": "mittel",
+                "abbreviation": "2",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                "htmlColor": "#FFFF13",
+                "symbolicRisk": "symbolic_risk_2"
+              },
+              {
+                "ordinalValue": 2,
+                "name": "hoch",
+                "abbreviation": "3",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                "htmlColor": "#FF8E43",
+                "symbolicRisk": "symbolic_risk_3"
+              }
+            ],
+            [
+              {
+                "ordinalValue": 1,
+                "name": "mittel",
+                "abbreviation": "2",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                "htmlColor": "#FFFF13",
+                "symbolicRisk": "symbolic_risk_2"
+              },
+              {
+                "ordinalValue": 1,
+                "name": "mittel",
+                "abbreviation": "2",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                "htmlColor": "#FFFF13",
+                "symbolicRisk": "symbolic_risk_2"
+              },
+              {
+                "ordinalValue": 2,
+                "name": "hoch",
+                "abbreviation": "3",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                "htmlColor": "#FF8E43",
+                "symbolicRisk": "symbolic_risk_3"
+              },
+              {
+                "ordinalValue": 3,
+                "name": "sehr hoch",
+                "abbreviation": "4",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                "htmlColor": "#FF1212",
+                "symbolicRisk": "symbolic_risk_4"
+              }
+            ],
+            [
+              {
+                "ordinalValue": 1,
+                "name": "mittel",
+                "abbreviation": "2",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+                "htmlColor": "#FFFF13",
+                "symbolicRisk": "symbolic_risk_2"
+              },
+              {
+                "ordinalValue": 2,
+                "name": "hoch",
+                "abbreviation": "3",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+                "htmlColor": "#FF8E43",
+                "symbolicRisk": "symbolic_risk_3"
+              },
+              {
+                "ordinalValue": 3,
+                "name": "sehr hoch",
+                "abbreviation": "4",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                "htmlColor": "#FF1212",
+                "symbolicRisk": "symbolic_risk_4"
+              },
+              {
+                "ordinalValue": 3,
+                "name": "sehr hoch",
+                "abbreviation": "4",
+                "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+                "htmlColor": "#FF1212",
+                "symbolicRisk": "symbolic_risk_4"
+              }
+            ]
+          ],
+          "potentialImpacts": [
+            {
+              "ordinalValue": 0,
+              "name": "vernachlässigbar",
+              "abbreviation": "1",
+              "description": "Die Schadensauswirkungen sind gering und können vernachlässigt werden.",
+              "htmlColor": "#004643"
+            },
+            {
+              "ordinalValue": 1,
+              "name": "begrenzt",
+              "abbreviation": "2",
+              "description": "Die Schadensauswirkungen sind begrenzt und überschaubar.",
+              "htmlColor": "#004643"
+            },
+            {
+              "ordinalValue": 2,
+              "name": "beträchtlich",
+              "abbreviation": "3",
+              "description": "Die Schadensauswirkungen können beträchtlich sein.",
+              "htmlColor": "#004643"
+            },
+            {
+              "ordinalValue": 3,
+              "name": "existenzbedrohend",
+              "abbreviation": "4",
+              "description": "Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen.",
+              "htmlColor": "#004643"
+            }
+          ]
+        }
+      ],
+      "riskValues": [
+        {
+          "ordinalValue": 0,
+          "name": "gering",
+          "abbreviation": "1",
+          "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.",
+          "htmlColor": "#A0CF11",
+          "symbolicRisk": "symbolic_risk_1"
+        },
+        {
+          "ordinalValue": 1,
+          "name": "mittel",
+          "abbreviation": "2",
+          "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.",
+          "htmlColor": "#FFFF13",
+          "symbolicRisk": "symbolic_risk_2"
+        },
+        {
+          "ordinalValue": 2,
+          "name": "hoch",
+          "abbreviation": "3",
+          "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.",
+          "htmlColor": "#FF8E43",
+          "symbolicRisk": "symbolic_risk_3"
+        },
+        {
+          "ordinalValue": 3,
+          "name": "sehr hoch",
+          "abbreviation": "4",
+          "description": "Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.",
+          "htmlColor": "#FF1212",
+          "symbolicRisk": "symbolic_risk_4"
+        }
+      ],
+      "riskMethod": {
+        "impactMethod": "highwatermark",
+        "description": "description"
+      }
+    }
+  },
+  "id": "0482da04-fc3a-5af5-9911-54a1a326116c",
+  "elementTypeDefinitions": {
+    "process": {
+      "subTypes": {
+        "PRO_DataTransfer": {
+          "statuses": [
+            "IN_PROGRESS",
+            "NEW",
+            "RELEASED",
+            "FOR_REVIEW",
+            "ARCHIVED"
+          ]
+        },
+        "PRO_DataProcessing": {
+          "statuses": [
+            "IN_PROGRESS",
+            "NEW",
+            "RELEASED",
+            "FOR_REVIEW",
+            "ARCHIVED"
+          ]
+        }
+      },
+      "customAspects": {
+        "process_processing": {
+          "attributeSchemas": {
+            "process_processing_asProcessor": {
+              "type": "boolean"
+            }
+          }
+        },
+        "process_accessAuthorization": {
+          "attributeSchemas": {
+            "process_accessAuthorization_concept": {
+              "type": "boolean"
+            },
+            "process_accessAuthorization_description": {
+              "type": "string"
+            },
+            "process_accessAuthorization_document": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            }
+          }
+        },
+        "process_processingDetails": {
+          "attributeSchemas": {
+            "process_processingDetails_comment": {
+              "type": "string"
+            },
+            "process_processingDetails_operatingStage": {
+              "enum": [
+                "process_processingDetails_operatingStage_operation",
+                "process_processingDetails_operatingStage_planning",
+                "process_processingDetails_operatingStage_test",
+                "process_processingDetails_operatingStage_rollout"
+              ]
+            },
+            "process_processingDetails_responsibleDepartment": {
+              "type": "string"
+            },
+            "process_processingDetails_surveyConductedOn": {
+              "format": "date",
+              "type": "string"
+            },
+            "process_processingDetails_typeOfSurvey": {
+              "enum": [
+                "process_processingDetails_typeOfSurvey_new",
+                "process_processingDetails_typeOfSurvey_change"
+              ]
+            }
+          }
+        },
+        "process_recipient": {
+          "attributeSchemas": {
+            "process_recipient_type": {
+              "enum": [
+                "process_recipient_type_internal",
+                "process_recipient_type_external",
+                "process_recipient_type_processor"
+              ]
+            }
+          }
+        },
+        "process_dataProcessing": {
+          "attributeSchemas": {
+            "process_dataProcessing_document": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            },
+            "process_dataProcessing_explanation": {
+              "type": "string"
+            },
+            "process_dataProcessing_legalBasis": {
+              "items": {
+                "enum": [
+                  "process_dataProcessing_legalBasis_Art6Abs1litaDSGVO",
+                  "process_dataProcessing_legalBasis_Art6Abs1litbDSGVO",
+                  "process_dataProcessing_legalBasis_Art6Abs1litcDSGVO",
+                  "process_dataProcessing_legalBasis_Art6Abs1litdDSGVO",
+                  "process_dataProcessing_legalBasis_Art6Abs1liteDSGVO",
+                  "process_dataProcessing_legalBasis_Art6Abs1litfDSGVO",
+                  "process_dataProcessing_legalBasis_Art6Abs2DSGVO",
+                  "process_dataProcessing_legalBasis_Art6Abs3DSGVO",
+                  "process_dataProcessing_legalBasis_Art9Abs2litaDSGVO",
+                  "process_dataProcessing_legalBasis_Art9Abs2litbDSGVO",
+                  "process_dataProcessing_legalBasis_Art9Abs2litcDSGVO",
+                  "process_dataProcessing_legalBasis_Art9Abs2litfDSGVO",
+                  "process_dataProcessing_legalBasis_Art9Abs2litgDSGVO",
+                  "process_dataProcessing_legalBasis_Art9Abs2lithDSGVO",
+                  "process_dataProcessing_legalBasis_Art9Abs2litiDSGVO",
+                  "process_dataProcessing_legalBasis_Art9Abs2litjDSGVO",
+                  "process_dataProcessing_legalBasis_Art88DSGVO",
+                  "process_dataProcessing_legalBasis_P26Abs1BDSG",
+                  "process_dataProcessing_legalBasis_P26Abs2BDSG",
+                  "process_dataProcessing_legalBasis_P26Abs4Satz1BDSG",
+                  "process_dataProcessing_legalBasis_P4BDSG"
+                ]
+              },
+              "type": "array"
+            },
+            "process_dataProcessing_otherLegalBasis": {
+              "type": "string"
+            }
+          }
+        },
+        "process_dataTransfer": {
+          "attributeSchemas": {
+            "process_dataTransfer_document": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            },
+            "process_dataTransfer_explanation": {
+              "type": "string"
+            },
+            "process_dataTransfer_legalBasis": {
+              "items": {
+                "enum": [
+                  "process_dataTransfer_legalBasis_Art6Abs2DSGVO",
+                  "process_dataTransfer_legalBasis_Art6Abs3DSGVO",
+                  "process_dataTransfer_legalBasis_Art9Abs2litfDSGVO",
+                  "process_dataTransfer_legalBasis_P31aBPolG",
+                  "process_dataTransfer_legalBasis_P67bAbs1S1SGBX",
+                  "process_dataTransfer_legalBasis_P25BDSG",
+                  "process_dataTransfer_legalBasis_P24BDSG",
+                  "process_dataTransfer_legalBasis_P8IfSG",
+                  "process_dataTransfer_legalBasis_17aAbs4RoeVP28Abs8RooeV",
+                  "process_dataTransfer_legalBasis_P61StrlSchV",
+                  "process_dataTransfer_legalBasis_P18PStG",
+                  "process_dataTransfer_legalBasis_P294SGBV",
+                  "process_dataTransfer_legalBasis_P298SGBV",
+                  "process_dataTransfer_legalBasis_P138_139StGB",
+                  "process_dataTransfer_legalBasis_P64SGBVIII"
+                ]
+              },
+              "type": "array"
+            },
+            "process_dataTransfer_otherLegalBasis": {
+              "type": "string"
+            }
+          }
+        },
+        "process_opinionDPO": {
+          "attributeSchemas": {
+            "process_opinionDPO_comment": {
+              "type": "string"
+            },
+            "process_opinionDPO_document": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            },
+            "process_opinionDPO_findings": {
+              "type": "string"
+            },
+            "process_opinionDPO_opinionDPO": {
+              "type": "string"
+            },
+            "process_opinionDPO_privacyImpactAssessment": {
+              "type": "boolean"
+            },
+            "process_opinionDPO_recommendations": {
+              "type": "string"
+            }
+          }
+        },
+        "process_tomAssessment": {
+          "attributeSchemas": {
+            "process_tomAssessment_certification": {
+              "type": "boolean"
+            },
+            "process_tomAssessment_certificationStandard": {
+              "type": "string"
+            },
+            "process_tomAssessment_comment": {
+              "type": "string"
+            },
+            "process_tomAssessment_overallAssessment": {
+              "type": "string"
+            },
+            "process_tomAssessment_securityConcept": {
+              "type": "boolean"
+            }
+          }
+        },
+        "process_dataSubjects": {
+          "attributeSchemas": {
+            "process_dataSubjects_dataSubjects": {
+              "items": {
+                "enum": [
+                  "process_dataSubjects_dataSubjects_shareholders",
+                  "process_dataSubjects_dataSubjects_employers",
+                  "process_dataSubjects_dataSubjects_employees",
+                  "process_dataSubjects_dataSubjects_controllers",
+                  "process_dataSubjects_dataSubjects_applicants",
+                  "process_dataSubjects_dataSubjects_parents",
+                  "process_dataSubjects_dataSubjects_externalConsultants",
+                  "process_dataSubjects_dataSubjects_externalServiceProvider",
+                  "process_dataSubjects_dataSubjects_interestedParties",
+                  "process_dataSubjects_dataSubjects_customers",
+                  "process_dataSubjects_dataSubjects_supplier",
+                  "process_dataSubjects_dataSubjects_clients",
+                  "process_dataSubjects_dataSubjects_tenants",
+                  "process_dataSubjects_dataSubjects_members",
+                  "process_dataSubjects_dataSubjects_newsletterSubscribers",
+                  "process_dataSubjects_dataSubjects_partners",
+                  "process_dataSubjects_dataSubjects_patients",
+                  "process_dataSubjects_dataSubjects_pupils",
+                  "process_dataSubjects_dataSubjects_students",
+                  "process_dataSubjects_dataSubjects_websiteVisitors"
+                ]
+              },
+              "type": "array"
+            },
+            "process_dataSubjects_otherDataSubjects": {
+              "type": "string"
+            }
+          }
+        },
+        "process_intendedPurpose": {
+          "attributeSchemas": {
+            "process_intendedPurpose_intendedPurpose": {
+              "type": "string"
+            }
+          }
+        },
+        "process_generalInformation": {
+          "attributeSchemas": {
+            "process_generalInformation_document": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            }
+          }
+        },
+        "process_privacyImpactAssessment": {
+          "attributeSchemas": {
+            "process_privacyImpactAssessment_blacklistComment": {
+              "type": "string"
+            },
+            "process_privacyImpactAssessment_blacklistDocument": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            },
+            "process_privacyImpactAssessment_comment": {
+              "type": "string"
+            },
+            "process_privacyImpactAssessment_document": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            },
+            "process_privacyImpactAssessment_otherExclusions": {
+              "type": "boolean"
+            },
+            "process_privacyImpactAssessment_otherExclusionsComment": {
+              "type": "string"
+            },
+            "process_privacyImpactAssessment_otherReasons": {
+              "type": "string"
+            },
+            "process_privacyImpactAssessment_processingCriteria": {
+              "items": {
+                "enum": [
+                  "process_privacyImpactAssessment_processingCriteria_profiling",
+                  "process_privacyImpactAssessment_processingCriteria_automated",
+                  "process_privacyImpactAssessment_processingCriteria_monitoring",
+                  "process_privacyImpactAssessment_processingCriteria_specialCategories",
+                  "process_privacyImpactAssessment_processingCriteria_Art9",
+                  "process_privacyImpactAssessment_processingCriteria_Art10",
+                  "process_privacyImpactAssessment_processingCriteria_matching",
+                  "process_privacyImpactAssessment_processingCriteria_vulnerability",
+                  "process_privacyImpactAssessment_processingCriteria_newTechnology",
+                  "process_privacyImpactAssessment_processingCriteria_execution"
+                ]
+              },
+              "type": "array"
+            },
+            "process_privacyImpactAssessment_processingOnBlacklistArt35": {
+              "type": "boolean"
+            },
+            "process_privacyImpactAssessment_processingOnWhitelist": {
+              "type": "boolean"
+            },
+            "process_privacyImpactAssessment_processingOperationAccordingArt35": {
+              "type": "boolean"
+            },
+            "process_privacyImpactAssessment_supervisoryAuthorityComment": {
+              "type": "string"
+            },
+            "process_privacyImpactAssessment_supervisoryAuthorityConsulted": {
+              "type": "boolean"
+            },
+            "process_privacyImpactAssessment_twoProcessingCriteria": {
+              "type": "boolean"
+            },
+            "process_privacyImpactAssessment_twoProcessingCriteriaComment": {
+              "type": "string"
+            }
+          }
+        },
+        "process_informationsObligations": {
+          "attributeSchemas": {
+            "process_informationsObligations_document": {
+              "type": "string"
+            },
+            "process_informationsObligations_explanation": {
+              "type": "string"
+            },
+            "process_informationsObligations_status": {
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "links": {
+        "process_dataType": {
+          "attributeSchemas": {
+            "process_dataType_comment": {
+              "type": "string"
+            },
+            "process_dataType_dataOrigin": {
+              "enum": [
+                "process_dataType_dataOrigin_direct",
+                "process_dataType_dataOrigin_transmission"
+              ]
+            },
+            "process_dataType_deletionPeriod": {
+              "enum": [
+                "process_dataType_deletionPeriod_immediately",
+                "process_dataType_deletionPeriod_7d",
+                "process_dataType_deletionPeriod_10d",
+                "process_dataType_deletionPeriod_14d",
+                "process_dataType_deletionPeriod_21d",
+                "process_dataType_deletionPeriod_1m",
+                "process_dataType_deletionPeriod_3m",
+                "process_dataType_deletionPeriod_6m",
+                "process_dataType_deletionPeriod_9m",
+                "process_dataType_deletionPeriod_1y",
+                "process_dataType_deletionPeriod_4y",
+                "process_dataType_deletionPeriod_7y",
+                "process_dataType_deletionPeriod_30y"
+              ]
+            },
+            "process_dataType_deletionPeriodStart": {
+              "enum": [
+                "process_dataType_deletionPeriodStart_completion",
+                "process_dataType_deletionPeriodStart_appplicationClosure",
+                "process_dataType_deletionPeriodStart_deletionRequest",
+                "process_dataType_deletionPeriodStart_endOfRelationship",
+                "process_dataType_deletionPeriodStart_purposeDiscontinuation",
+                "process_dataType_deletionPeriodStart_dataCollection",
+                "process_dataType_deletionPeriodStart_consentWithdrawal"
+              ]
+            },
+            "process_dataType_descriptionDeletionProcedure": {
+              "type": "string"
+            },
+            "process_dataType_otherDataOrigin": {
+              "type": "string"
+            },
+            "process_dataType_otherDeletionPeriod": {
+              "type": "string"
+            },
+            "process_dataType_otherDeletionPeriodStart": {
+              "type": "string"
+            }
+          },
+          "targetType": "asset",
+          "targetSubType": "AST_Datatype"
+        },
+        "process_requiredApplications": {
+          "attributeSchemas": {
+            
+          },
+          "targetType": "asset",
+          "targetSubType": "AST_Application"
+        },
+        "process_internalRecipient": {
+          "attributeSchemas": {
+            "process_internalRecipient_thirdCountryDocument": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            },
+            "process_internalRecipient_thirdCountryExplanation": {
+              "type": "string"
+            },
+            "process_internalRecipient_thirdCountryGuarantees": {
+              "type": "string"
+            },
+            "process_internalRecipient_thirdCountryName": {
+              "type": "string"
+            },
+            "process_internalRecipient_thirdCountryProcessing": {
+              "type": "boolean"
+            }
+          },
+          "targetType": "person",
+          "targetSubType": "PER_Person"
+        },
+        "process_responsiblePerson": {
+          "attributeSchemas": {
+            
+          },
+          "targetType": "person",
+          "targetSubType": "PER_Person"
+        },
+        "process_tom": {
+          "attributeSchemas": {
+            
+          },
+          "targetType": "control",
+          "targetSubType": "CTL_TOM"
+        },
+        "process_externalRecipient": {
+          "attributeSchemas": {
+            "process_externalRecipient_thirdCountryDocument": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            },
+            "process_externalRecipient_thirdCountryExplanation": {
+              "type": "string"
+            },
+            "process_externalRecipient_thirdCountryGuarantees": {
+              "type": "string"
+            },
+            "process_externalRecipient_thirdCountryName": {
+              "type": "string"
+            },
+            "process_externalRecipient_thirdCountryProcessing": {
+              "type": "boolean"
+            }
+          },
+          "targetType": "person",
+          "targetSubType": "PER_Person"
+        },
+        "process_requiredITSystems": {
+          "attributeSchemas": {
+            
+          },
+          "targetType": "asset",
+          "targetSubType": "AST_IT-System"
+        },
+        "process_responsibleBody": {
+          "attributeSchemas": {
+            
+          },
+          "targetType": "scope",
+          "targetSubType": "SCP_ResponsibleBody"
+        },
+        "process_controller": {
+          "attributeSchemas": {
+            "process_controller_document": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            }
+          },
+          "targetType": "scope",
+          "targetSubType": "SCP_Controller"
+        },
+        "process_processor": {
+          "attributeSchemas": {
+            "process_processor_thirdCountryDocument": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            },
+            "process_processor_thirdCountryExplanation": {
+              "type": "string"
+            },
+            "process_processor_thirdCountryGuarantees": {
+              "type": "string"
+            },
+            "process_processor_thirdCountryName": {
+              "type": "string"
+            },
+            "process_processor_thirdCountryProcessing": {
+              "type": "boolean"
+            }
+          },
+          "targetType": "scope",
+          "targetSubType": "SCP_Processor"
+        },
+        "process_dataTransmission": {
+          "attributeSchemas": {
+            
+          },
+          "targetType": "process",
+          "targetSubType": "PRO_DataTransfer"
+        },
+        "process_jointControllership": {
+          "attributeSchemas": {
+            "process_jointControllership_document": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            }
+          },
+          "targetType": "scope",
+          "targetSubType": "SCP_JoinController"
+        }
+      }
+    },
+    "scenario": {
+      "subTypes": {
+        "SCN_Scenario": {
+          "statuses": [
+            "IN_PROGRESS",
+            "NEW",
+            "RELEASED",
+            "FOR_REVIEW",
+            "ARCHIVED"
+          ]
+        }
+      },
+      "customAspects": {
+        "scenario_threat": {
+          "attributeSchemas": {
+            "scenario_threat_otherType": {
+              "type": "string"
+            },
+            "scenario_threat_type": {
+              "enum": [
+                "scenario_threat_type_undirectedAttacks",
+                "scenario_threat_type_criminalAct",
+                "scenario_threat_type_forceMajeure",
+                "scenario_threat_type_identityAbuse",
+                "scenario_threat_type_internalOffender",
+                "scenario_threat_type_dependencyOnThirdParties",
+                "scenario_threat_type_unauthorizedAccess",
+                "scenario_threat_type_damageIT",
+                "scenario_threat_type_malware",
+                "scenario_threat_type_socialEngineering",
+                "scenario_threat_type_targetedAttacks",
+                "scenario_threat_type_lossOfStoredInformation",
+                "scenario_threat_type_damageEquipment",
+                "scenario_threat_type_overload",
+                "scenario_threat_type_criminal",
+                "scenario_threat_type_lossOfConfidentiality",
+                "scenario_threat_type_lossOfLiability",
+                "scenario_threat_type_lossOfAdministration",
+                "scenario_threat_type_exploitation",
+                "scenario_threat_type_systemFailure",
+                "scenario_threat_type_wlanFailure",
+                "scenario_threat_type_other"
+              ]
+            }
+          }
+        },
+        "scenario_generalInformation": {
+          "attributeSchemas": {
+            "scenario_generalInformation_document": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            }
+          }
+        },
+        "scenario_vulnerability": {
+          "attributeSchemas": {
+            "scenario_vulnerability_otherType": {
+              "type": "string"
+            },
+            "scenario_vulnerability_type": {
+              "enum": [
+                "scenario_vulnerability_type_organisationalDeficiencies",
+                "scenario_vulnerability_type_technicalVulnerabilities",
+                "scenario_vulnerability_type_technicalBreakdown",
+                "scenario_vulnerability_type_humanMistakes",
+                "scenario_vulnerability_type_lackOfInfrastructure",
+                "scenario_vulnerability_type_networkDefects",
+                "scenario_vulnerability_type_couplingOfServices",
+                "scenario_vulnerability_type_intentionalAction",
+                "scenario_vulnerability_type_other"
+              ]
+            }
+          }
+        }
+      },
+      "links": {
+        
+      }
+    },
+    "person": {
+      "subTypes": {
+        "PER_Person": {
+          "statuses": [
+            "IN_PROGRESS",
+            "NEW",
+            "RELEASED",
+            "FOR_REVIEW",
+            "ARCHIVED"
+          ]
+        },
+        "PER_DataProtectionOfficer": {
+          "statuses": [
+            "IN_PROGRESS",
+            "NEW",
+            "RELEASED",
+            "FOR_REVIEW",
+            "ARCHIVED"
+          ]
+        }
+      },
+      "customAspects": {
+        "person_generalInformation": {
+          "attributeSchemas": {
+            "person_generalInformation_familyName": {
+              "type": "string"
+            },
+            "person_generalInformation_givenName": {
+              "type": "string"
+            },
+            "person_generalInformation_salutation": {
+              "type": "string"
+            },
+            "person_generalInformation_title": {
+              "type": "string"
+            }
+          }
+        },
+        "person_address": {
+          "attributeSchemas": {
+            "person_address_address1": {
+              "type": "string"
+            },
+            "person_address_address2": {
+              "type": "string"
+            },
+            "person_address_city": {
+              "type": "string"
+            },
+            "person_address_country": {
+              "type": "string"
+            },
+            "person_address_postcode": {
+              "type": "string"
+            },
+            "person_address_state": {
+              "type": "string"
+            }
+          }
+        },
+        "person_dataProtectionOfficer": {
+          "attributeSchemas": {
+            "person_dataProtectionOfficer_expertise": {
+              "type": "boolean"
+            },
+            "person_dataProtectionOfficer_profession": {
+              "type": "string"
+            }
+          }
+        },
+        "person_contactInformation": {
+          "attributeSchemas": {
+            "person_contactInformation_email": {
+              "type": "string"
+            },
+            "person_contactInformation_fax": {
+              "type": "string"
+            },
+            "person_contactInformation_mobile": {
+              "type": "string"
+            },
+            "person_contactInformation_office": {
+              "type": "string"
+            },
+            "person_contactInformation_private": {
+              "type": "string"
+            },
+            "person_contactInformation_website": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            }
+          }
+        }
+      },
+      "links": {
+        
+      }
+    },
+    "scope": {
+      "subTypes": {
+        "SCP_Scope": {
+          "statuses": [
+            "IN_PROGRESS",
+            "NEW",
+            "RELEASED",
+            "FOR_REVIEW",
+            "ARCHIVED"
+          ]
+        },
+        "SCP_Processor": {
+          "statuses": [
+            "IN_PROGRESS",
+            "NEW",
+            "RELEASED",
+            "FOR_REVIEW",
+            "ARCHIVED"
+          ]
+        },
+        "SCP_ResponsibleBody": {
+          "statuses": [
+            "IN_PROGRESS",
+            "NEW",
+            "RELEASED",
+            "FOR_REVIEW",
+            "ARCHIVED"
+          ]
+        },
+        "SCP_JointController": {
+          "statuses": [
+            "IN_PROGRESS",
+            "NEW",
+            "RELEASED",
+            "FOR_REVIEW",
+            "ARCHIVED"
+          ]
+        },
+        "SCP_Controller": {
+          "statuses": [
+            "IN_PROGRESS",
+            "NEW",
+            "RELEASED",
+            "FOR_REVIEW",
+            "ARCHIVED"
+          ]
+        }
+      },
+      "customAspects": {
+        "scope_generalInformation": {
+          "attributeSchemas": {
+            "scope_generalInformation_document": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            }
+          }
+        },
+        "scope_thirdCountry": {
+          "attributeSchemas": {
+            "scope_thirdCountry_address1": {
+              "type": "string"
+            },
+            "scope_thirdCountry_address2": {
+              "type": "string"
+            },
+            "scope_thirdCountry_city": {
+              "type": "string"
+            },
+            "scope_thirdCountry_country": {
+              "type": "string"
+            },
+            "scope_thirdCountry_description": {
+              "type": "string"
+            },
+            "scope_thirdCountry_email": {
+              "type": "string"
+            },
+            "scope_thirdCountry_fax": {
+              "type": "string"
+            },
+            "scope_thirdCountry_name": {
+              "type": "string"
+            },
+            "scope_thirdCountry_phone": {
+              "type": "string"
+            },
+            "scope_thirdCountry_postcode": {
+              "type": "string"
+            },
+            "scope_thirdCountry_state": {
+              "type": "string"
+            },
+            "scope_thirdCountry_status": {
+              "type": "boolean"
+            },
+            "scope_thirdCountry_website": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            }
+          }
+        },
+        "scope_address": {
+          "attributeSchemas": {
+            "scope_address_address1": {
+              "type": "string"
+            },
+            "scope_address_address2": {
+              "type": "string"
+            },
+            "scope_address_city": {
+              "type": "string"
+            },
+            "scope_address_country": {
+              "type": "string"
+            },
+            "scope_address_postcode": {
+              "type": "string"
+            },
+            "scope_address_state": {
+              "type": "string"
+            }
+          }
+        },
+        "scope_regulatoryAuthority": {
+          "attributeSchemas": {
+            "scope_regulatoryAuthority_address1": {
+              "type": "string"
+            },
+            "scope_regulatoryAuthority_address2": {
+              "type": "string"
+            },
+            "scope_regulatoryAuthority_city": {
+              "type": "string"
+            },
+            "scope_regulatoryAuthority_country": {
+              "type": "string"
+            },
+            "scope_regulatoryAuthority_description": {
+              "type": "string"
+            },
+            "scope_regulatoryAuthority_email": {
+              "type": "string"
+            },
+            "scope_regulatoryAuthority_fax": {
+              "type": "string"
+            },
+            "scope_regulatoryAuthority_name": {
+              "type": "string"
+            },
+            "scope_regulatoryAuthority_phone": {
+              "type": "string"
+            },
+            "scope_regulatoryAuthority_postcode": {
+              "type": "string"
+            },
+            "scope_regulatoryAuthority_state": {
+              "type": "string"
+            },
+            "scope_regulatoryAuthority_website": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            }
+          }
+        },
+        "scope_contactInformation": {
+          "attributeSchemas": {
+            "scope_contactInformation_email": {
+              "type": "string"
+            },
+            "scope_contactInformation_fax": {
+              "type": "string"
+            },
+            "scope_contactInformation_phone": {
+              "type": "string"
+            },
+            "scope_contactInformation_website": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "links": {
+        "scope_informationSecurityOfficer": {
+          "attributeSchemas": {
+            
+          },
+          "targetType": "scope",
+          "targetSubType": "SCP_Controller"
+        },
+        "scope_headOfDataProcessing": {
+          "attributeSchemas": {
+            
+          },
+          "targetType": "person",
+          "targetSubType": "PER_Person"
+        },
+        "scope_dataProtectionOfficer": {
+          "attributeSchemas": {
+            "scope_dataProtectionOfficer_affiliation": {
+              "enum": [
+                "scope_dataProtectionOfficer_affiliation_internal",
+                "scope_dataProtectionOfficer_affiliation_external"
+              ]
+            },
+            "scope_dataProtectionOfficer_comment": {
+              "type": "string"
+            },
+            "scope_dataProtectionOfficer_nomination": {
+              "type": "boolean"
+            },
+            "scope_dataProtectionOfficer_nominationDate": {
+              "format": "date",
+              "type": "string"
+            },
+            "scope_dataProtectionOfficer_nominationEvidence": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            }
+          },
+          "targetType": "person",
+          "targetSubType": "PER_DataProtectionOfficer"
+        },
+        "scope_management": {
+          "attributeSchemas": {
+            
+          },
+          "targetType": "person",
+          "targetSubType": "PER_Person"
+        }
+      }
+    },
+    "document": {
+      "subTypes": {
+        "DOC_Document": {
+          "statuses": [
+            "IN_PROGRESS",
+            "NEW",
+            "RELEASED",
+            "FOR_REVIEW",
+            "ARCHIVED"
+          ]
+        }
+      },
+      "customAspects": {
+        "document_details": {
+          "attributeSchemas": {
+            "document_details_approvalDate": {
+              "format": "date",
+              "type": "string"
+            },
+            "document_details_classification": {
+              "enum": [
+                "document_details_classification_public",
+                "document_details_classification_internalUse",
+                "document_details_classification_confidential",
+                "document_details_classification_strictlyConfidential"
+              ]
+            },
+            "document_details_otherTypeOfDocument": {
+              "type": "string"
+            },
+            "document_details_status": {
+              "enum": [
+                "document_details_status_draft",
+                "document_details_status_inProgress",
+                "document_details_status_approvalRequested",
+                "document_details_status_approved",
+                "document_details_status_outOfDate",
+                "document_details_status_notApplicable"
+              ]
+            },
+            "document_details_typeOfDocument": {
+              "enum": [
+                "document_details_typeOfDocument_policy",
+                "document_details_typeOfDocument_contract",
+                "document_details_typeOfDocument_agreement",
+                "document_details_typeOfDocument_systemDocumentation",
+                "document_details_typeOfDocument_researchResults",
+                "document_details_typeOfDocument_trainingMaterials",
+                "document_details_typeOfDocument_other"
+              ]
+            },
+            "document_details_version": {
+              "type": "string"
+            }
+          }
+        },
+        "document_revision": {
+          "attributeSchemas": {
+            "document_revision_comment": {
+              "type": "string"
+            },
+            "document_revision_last": {
+              "format": "date",
+              "type": "string"
+            },
+            "document_revision_next": {
+              "format": "date",
+              "type": "string"
+            }
+          }
+        },
+        "document_generalInformation": {
+          "attributeSchemas": {
+            "document_generalInformation_externalLink": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            }
+          }
+        }
+      },
+      "links": {
+        
+      }
+    },
+    "control": {
+      "subTypes": {
+        "CTL_TOM": {
+          "statuses": [
+            "IN_PROGRESS",
+            "NEW",
+            "RELEASED",
+            "FOR_REVIEW",
+            "ARCHIVED"
+          ]
+        }
+      },
+      "customAspects": {
+        "control_implementation": {
+          "attributeSchemas": {
+            "control_implementation_date": {
+              "format": "date",
+              "type": "string"
+            },
+            "control_implementation_explanation": {
+              "type": "string"
+            },
+            "control_implementation_status": {
+              "enum": [
+                "control_implementation_status_yes",
+                "control_implementation_status_no",
+                "control_implementation_status_partially",
+                "control_implementation_status_notApplicable"
+              ]
+            }
+          }
+        },
+        "control_generalInformation": {
+          "attributeSchemas": {
+            "control_generalInformation_document": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            }
+          }
+        },
+        "control_dataProtection": {
+          "attributeSchemas": {
+            "control_dataProtection_objectives": {
+              "items": {
+                "enum": [
+                  "control_dataProtection_objectives_pseudonymization",
+                  "control_dataProtection_objectives_confidentiality",
+                  "control_dataProtection_objectives_integrity",
+                  "control_dataProtection_objectives_availability",
+                  "control_dataProtection_objectives_resilience",
+                  "control_dataProtection_objectives_recoverability",
+                  "control_dataProtection_objectives_effectiveness",
+                  "control_dataProtection_objectives_encryption"
+                ]
+              },
+              "type": "array"
+            }
+          }
+        },
+        "control_revision": {
+          "attributeSchemas": {
+            "control_revision_comment": {
+              "type": "string"
+            },
+            "control_revision_last": {
+              "format": "date",
+              "type": "string"
+            },
+            "control_revision_next": {
+              "format": "date",
+              "type": "string"
+            }
+          }
+        }
+      },
+      "links": {
+        "control_tom": {
+          "attributeSchemas": {
+            
+          },
+          "targetType": "control"
+        }
+      }
+    },
+    "asset": {
+      "subTypes": {
+        "AST_Application": {
+          "statuses": [
+            "IN_PROGRESS",
+            "NEW",
+            "RELEASED",
+            "FOR_REVIEW",
+            "ARCHIVED"
+          ]
+        },
+        "AST_Datatype": {
+          "statuses": [
+            "IN_PROGRESS",
+            "NEW",
+            "RELEASED",
+            "FOR_REVIEW",
+            "ARCHIVED"
+          ]
+        },
+        "AST_IT-System": {
+          "statuses": [
+            "IN_PROGRESS",
+            "NEW",
+            "RELEASED",
+            "FOR_REVIEW",
+            "ARCHIVED"
+          ]
+        }
+      },
+      "customAspects": {
+        "asset_details": {
+          "attributeSchemas": {
+            "asset_details_number": {
+              "type": "integer"
+            },
+            "asset_details_operatingStage": {
+              "enum": [
+                "asset_details_operatingStage_operation",
+                "asset_details_operatingStage_planning",
+                "asset_details_operatingStage_test",
+                "asset_details_operatingStage_rollout"
+              ]
+            }
+          }
+        },
+        "asset_generalInformation": {
+          "attributeSchemas": {
+            "asset_generalInformation_document": {
+              "format": "uri",
+              "pattern": "^(https?|ftp)://",
+              "type": "string"
+            }
+          }
+        }
+      },
+      "links": {
+        
+      }
+    },
+    "incident": {
+      "subTypes": {
+        "INC_Incident": {
+          "statuses": [
+            "IN_PROGRESS",
+            "NEW",
+            "RELEASED",
+            "FOR_REVIEW",
+            "ARCHIVED"
+          ]
+        }
+      },
+      "customAspects": {
+        
+      },
+      "links": {
+        
+      }
+    }
+  }
+}
