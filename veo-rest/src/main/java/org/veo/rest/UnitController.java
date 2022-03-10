@@ -193,8 +193,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
     public @Valid CompletableFuture<List<FullUnitDto>> getUnits(
             @Parameter(required = false, hidden = true) Authentication auth,
             @UnitUuidParam @RequestParam(value = PARENT_PARAM, required = false) String parentUuid,
-            @UnitUuidParam @RequestParam(value = DISPLAY_NAME_PARAM,
-                                         required = false) String displayName) {
+            @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName) {
         Client client = null;
         try {
             client = getAuthenticatedClient(auth);

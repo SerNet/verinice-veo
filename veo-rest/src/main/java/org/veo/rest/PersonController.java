@@ -137,8 +137,7 @@ public class PersonController extends AbstractElementController<Person, FullPers
     public @Valid CompletableFuture<PageDto<FullPersonDto>> getPersons(
             @Parameter(required = false, hidden = true) Authentication auth,
             @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
-            @UnitUuidParam @RequestParam(value = DISPLAY_NAME_PARAM,
-                                         required = false) String displayName,
+            @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
             @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
             @RequestParam(value = STATUS_PARAM, required = false) String status,
             @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,

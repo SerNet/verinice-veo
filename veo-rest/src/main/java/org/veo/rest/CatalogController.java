@@ -131,8 +131,7 @@ public class CatalogController extends AbstractEntityController {
     public @Valid CompletableFuture<List<FullCatalogDto>> getCatalogs(
             @Parameter(required = false, hidden = true) Authentication auth,
             @UnitUuidParam @RequestParam(value = DOMAIN_PARAM, required = false) String domainUuid,
-            @UnitUuidParam @RequestParam(value = DISPLAY_NAME_PARAM,
-                                         required = false) String displayName) {
+            @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName) {
         Client client = null;
         try {
             client = getClientWithCatalogsAndItems(auth, false);

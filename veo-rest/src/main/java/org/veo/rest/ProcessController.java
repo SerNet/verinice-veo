@@ -262,8 +262,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
     public @Valid CompletableFuture<PageDto<FullProcessDto>> getProcesses(
             @Parameter(required = false, hidden = true) Authentication auth,
             @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String parentUuid,
-            @UnitUuidParam @RequestParam(value = DISPLAY_NAME_PARAM,
-                                         required = false) String displayName,
+            @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
             @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
             @RequestParam(value = STATUS_PARAM, required = false) String status,
             @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
