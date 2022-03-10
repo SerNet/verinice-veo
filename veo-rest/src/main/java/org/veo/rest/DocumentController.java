@@ -39,6 +39,8 @@ import static org.veo.rest.ControllerConstants.STATUS_PARAM;
 import static org.veo.rest.ControllerConstants.SUB_TYPE_PARAM;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UPDATED_BY_PARAM;
+import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
+import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
@@ -90,7 +92,6 @@ import org.veo.core.usecase.document.CreateDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentsUseCase;
 import org.veo.core.usecase.document.UpdateDocumentUseCase;
-import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.security.ApplicationUser;
@@ -189,7 +190,10 @@ public class DocumentController extends AbstractElementController<Document, Full
     @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
     public @Valid CompletableFuture<ResponseEntity<FullDocumentDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid, WebRequest request) {
+            @Parameter(required = true,
+                       example = UUID_EXAMPLE,
+                       description = UUID_DESCRIPTION) @PathVariable String uuid,
+            WebRequest request) {
         return super.getElement(auth, uuid, request);
     }
 
@@ -204,7 +208,10 @@ public class DocumentController extends AbstractElementController<Document, Full
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
     public @Valid CompletableFuture<ResponseEntity<List<FullDocumentDto>>> getElementParts(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid, WebRequest request) {
+            @Parameter(required = true,
+                       example = UUID_EXAMPLE,
+                       description = UUID_DESCRIPTION) @PathVariable String uuid,
+            WebRequest request) {
         return super.getElementParts(auth, uuid, request);
     }
 
@@ -256,7 +263,9 @@ public class DocumentController extends AbstractElementController<Document, Full
             @ApiResponse(responseCode = "404", description = "Document not found") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteDocument(
             @Parameter(hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
+            @Parameter(required = true,
+                       example = UUID_EXAMPLE,
+                       description = UUID_DESCRIPTION) @PathVariable String uuid) {
         ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
         Client client = getClient(user.getClientId());
         return useCaseInteractor.execute(deleteElementUseCase,

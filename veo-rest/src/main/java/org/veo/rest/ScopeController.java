@@ -39,6 +39,8 @@ import static org.veo.rest.ControllerConstants.STATUS_PARAM;
 import static org.veo.rest.ControllerConstants.SUB_TYPE_PARAM;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UPDATED_BY_PARAM;
+import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
+import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
@@ -101,7 +103,6 @@ import org.veo.core.usecase.scope.GetScopeUseCase;
 import org.veo.core.usecase.scope.GetScopesUseCase;
 import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
 import org.veo.core.usecase.scope.UpdateScopeUseCase;
-import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.security.ApplicationUser;
@@ -229,7 +230,10 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
             @ApiResponse(responseCode = "404", description = "Scope not found") })
     public @Valid CompletableFuture<ResponseEntity<FullScopeDto>> getScope(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid, WebRequest request) {
+            @Parameter(required = true,
+                       example = UUID_EXAMPLE,
+                       description = UUID_DESCRIPTION) @PathVariable String uuid,
+            WebRequest request) {
         Client client = getAuthenticatedClient(auth);
         if (getEtag(Scope.class, uuid).map(request::checkNotModified)
                                       .orElse(false)) {
@@ -255,7 +259,10 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
             @ApiResponse(responseCode = "404", description = "Scope not found") })
     public @Valid CompletableFuture<ResponseEntity<List<AbstractElementDto>>> getMembers(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid, WebRequest request) {
+            @Parameter(required = true,
+                       example = UUID_EXAMPLE,
+                       description = UUID_DESCRIPTION) @PathVariable String uuid,
+            WebRequest request) {
         Client client = getAuthenticatedClient(auth);
         if (getEtag(Scope.class, uuid).map(request::checkNotModified)
                                       .orElse(false)) {
@@ -308,7 +315,9 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
     public CompletableFuture<FullScopeDto> updateScope(
             @Parameter(hidden = true) ApplicationUser user,
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
+            @Parameter(required = true,
+                       example = UUID_EXAMPLE,
+                       description = UUID_DESCRIPTION) @PathVariable String uuid,
             @Valid @NotNull @RequestBody @JsonSchemaValidation(Scope.SINGULAR_TERM) FullScopeDto scopeDto) {
         scopeDto.applyResourceId(uuid);
         return useCaseInteractor.execute(updateScopeUseCase,
@@ -329,7 +338,9 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
             @ApiResponse(responseCode = "404", description = "Scope not found") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteScope(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
+            @Parameter(required = true,
+                       example = UUID_EXAMPLE,
+                       description = UUID_DESCRIPTION) @PathVariable String uuid) {
         Client client = getAuthenticatedClient(auth);
 
         return useCaseInteractor.execute(deleteElementUseCase,

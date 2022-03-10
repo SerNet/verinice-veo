@@ -66,9 +66,7 @@ public final class ControllerConstants {
     static final String SORT_ORDER_PATTERN = "[asc|desc|ASC|DESC]";
     static final String IF_MATCH_HEADER = "If-Match";
 
-    static final String UUID_DEFINITION = "This is the normalized UUID representation:\n"
-            + "* a block of 8 HEX chars followed by\n* 3 blocks of 4 HEX chars followed by\n"
-            + "* a block of 12 HEX chars.";
+    static final String UUID_DESCRIPTION = "A UUID conforming to RFC4122 in canonical textual representation.";
     static final String UUID_EXAMPLE = "f35b982c-8ad4-4515-96ee-df5fdd4247b9";
 
     private ControllerConstants() {

@@ -39,6 +39,8 @@ import static org.veo.rest.ControllerConstants.STATUS_PARAM;
 import static org.veo.rest.ControllerConstants.SUB_TYPE_PARAM;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UPDATED_BY_PARAM;
+import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
+import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
@@ -91,7 +93,6 @@ import org.veo.core.usecase.person.CreatePersonUseCase;
 import org.veo.core.usecase.person.GetPersonUseCase;
 import org.veo.core.usecase.person.GetPersonsUseCase;
 import org.veo.core.usecase.person.UpdatePersonUseCase;
-import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.security.ApplicationUser;
@@ -187,7 +188,10 @@ public class PersonController extends AbstractElementController<Person, FullPers
     @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
     public @Valid CompletableFuture<ResponseEntity<FullPersonDto>> getElement(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid, WebRequest request) {
+            @Parameter(required = true,
+                       example = UUID_EXAMPLE,
+                       description = UUID_DESCRIPTION) @PathVariable String uuid,
+            WebRequest request) {
         return super.getElement(auth, uuid, request);
     }
 
@@ -202,7 +206,10 @@ public class PersonController extends AbstractElementController<Person, FullPers
     @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
     public @Valid CompletableFuture<ResponseEntity<List<FullPersonDto>>> getElementParts(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid, WebRequest request) {
+            @Parameter(required = true,
+                       example = UUID_EXAMPLE,
+                       description = UUID_DESCRIPTION) @PathVariable String uuid,
+            WebRequest request) {
         return super.getElementParts(auth, uuid, request);
     }
 
@@ -233,7 +240,9 @@ public class PersonController extends AbstractElementController<Person, FullPers
     public CompletableFuture<FullPersonDto> updatePerson(
             @Parameter(hidden = true) ApplicationUser user,
             @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid,
+            @Parameter(required = true,
+                       example = UUID_EXAMPLE,
+                       description = UUID_DESCRIPTION) @PathVariable String uuid,
             @Valid @NotNull @RequestBody @JsonSchemaValidation(Person.SINGULAR_TERM) FullPersonDto personDto) {
         personDto.applyResourceId(uuid);
         return useCaseInteractor.execute(updatePersonUseCase, new Supplier<InputData<Person>>() {
@@ -256,7 +265,9 @@ public class PersonController extends AbstractElementController<Person, FullPers
             @ApiResponse(responseCode = "404", description = "Person not found") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> deletePerson(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
+            @Parameter(required = true,
+                       example = UUID_EXAMPLE,
+                       description = UUID_DESCRIPTION) @PathVariable String uuid) {
         Client client = getAuthenticatedClient(auth);
         return useCaseInteractor.execute(deleteElementUseCase,
                                          new DeleteElementUseCase.InputData(Person.class,

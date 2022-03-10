@@ -22,7 +22,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
 import static org.veo.rest.ControllerConstants.PARENT_PARAM;
-import static org.veo.rest.ControllerConstants.UUID_PARAM;
+import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
+import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -76,7 +77,6 @@ import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitsUseCase;
 import org.veo.core.usecase.unit.UpdateUnitUseCase;
-import org.veo.rest.annotations.ParameterUuid;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.security.ApplicationUser;
@@ -287,7 +287,9 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
             @ApiResponse(responseCode = "404", description = "Unit not found") })
     public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteUnit(
             @Parameter(required = false, hidden = true) Authentication auth,
-            @ParameterUuid @PathVariable(UUID_PARAM) String uuid) {
+            @Parameter(required = true,
+                       example = UUID_EXAMPLE,
+                       description = UUID_DESCRIPTION) @PathVariable String uuid) {
 
         return useCaseInteractor.execute(deleteUnitUseCase, new DeleteUnitUseCase.InputData(
                 Key.uuidFrom(uuid), getAuthenticatedClient(auth)), output -> {
