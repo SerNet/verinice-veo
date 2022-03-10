@@ -25,9 +25,17 @@ class DomainUpdateRestTest extends VeoRestTest {
     String oldDomainTemplateId
     String newDomainTemplateId
     String templateName
+    String processToScopeLinkName
 
     def setup() {
         templateName = "domain update test template ${UUID.randomUUID()}"
+
+        // TODO VEO-661 use constant link name once each link is assigned to one domain and the
+        // DomainSensitiveElementValidator has been fixed.
+        // Currently link names must be unique across different domains. If this link name was static now there could
+        // be conflicts when there are still domains created by this test left in the DB from a previous test run
+        // (because rest-tests never cleanup the DB by design).
+        processToScopeLinkName = "processToScopeLink_${UUID.randomUUID()}"
 
         def template = getTemplate()
         oldDomainTemplateId = post("/domaintemplates", template, 201, CONTENT_CREATOR).body.resourceId
@@ -67,6 +75,22 @@ class DomainUpdateRestTest extends VeoRestTest {
         then: "the sub type is still present under the new domain"
         migratedScope.domains.keySet() =~ [newDomainId]
         migratedScope.domains[newDomainId].subType == "SCP_ResponsibleBody"
+
+        when: "adding a link from a new process to an old scope"
+        post("/processes", [
+            name: "new process",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            links: [
+                (processToScopeLinkName): [
+                    [
+                        target: [targetUri: "http://localhost/scopes/$scopeId"]
+                    ]
+                ]
+            ]
+        ])
+
+        then:
+        noExceptionThrown()
     }
 
     private LinkedHashMap<String, Serializable> getTemplate() {
@@ -134,7 +158,13 @@ class DomainUpdateRestTest extends VeoRestTest {
                 ],
                 'process': [
                     'customAspects': [:],
-                    'links': [:],
+                    'links': [
+                        (processToScopeLinkName): [
+                            'attributeSchemas': [:],
+                            'targetSubType': 'SCP_ResponsibleBody',
+                            'targetType': 'scope'
+                        ]
+                    ],
                     'subTypes': [
                         'PRO_DataProcessing': [
                             'statuses': [

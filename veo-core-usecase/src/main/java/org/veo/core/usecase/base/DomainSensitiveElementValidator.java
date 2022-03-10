@@ -37,6 +37,7 @@ class DomainSensitiveElementValidator {
                                        .get()
                                        .getDomains()
                                        .stream()
+                                       .filter(Domain::isActive)
                                        .filter(d -> d.getElementTypeDefinition(element.getModelType())
                                                      .orElseThrow()
                                                      .getLinks()
