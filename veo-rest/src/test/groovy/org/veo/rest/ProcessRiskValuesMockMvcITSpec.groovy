@@ -287,22 +287,29 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         def afterCreation = Instant.now()
 
         then: "a risk resource was created"
-        def retrievedProcessRisk1 = parseJson(get("/processes/$processId/risks/$scenarioId"))
+        def results = get("/processes/$processId/risks/$scenarioId")
+        def retrievedProcessRisk1 = parseJson(results)
+        String eTag1 = getETag(results)
 
         Instant.parse(retrievedProcessRisk1.createdAt) > beforeCreation
         Instant.parse(retrievedProcessRisk1.createdAt) < afterCreation
 
-        when: "the request can be made once more"
-        postProcessRisk(processId, scenarioId)
+        when: "a safe retry is made"
+        postProcessRisk(processId, scenarioId, 204)
 
-        then: "the existing risk resource is returned - the call is idempotent"
-        def retrievedProcessRisk2 = parseJson(get("/processes/$processId/risks/$scenarioId"))
+        and: "the resource is requested"
+        results = get("/processes/$processId/risks/$scenarioId")
+        def retrievedProcessRisk2 = parseJson(results)
+        String eTag2 = getETag(results)
+
+        then: "the existing risk resource is unchanged: the POST request was idempotent"
+        eTag2 != null
+        eTag1 == eTag2
         retrievedProcessRisk2.designator == retrievedProcessRisk1.designator
         retrievedProcessRisk2.createdAt == retrievedProcessRisk1.createdAt
-        retrievedProcessRisk2.version == retrievedProcessRisk1.version
     }
 
-    private postProcessRisk(String processId, String scenarioId) {
+    private postProcessRisk(String processId, String scenarioId, int expectedStatusCode = 201) {
         post("/processes/$processId/risks", [
             domains : [
                 (domainId): [
@@ -310,6 +317,6 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
                 ]
             ],
             scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
-        ])
+        ], expectedStatusCode)
     }
 }

@@ -139,9 +139,17 @@ public abstract class AbstractRiskUseCase<T extends RiskAffected<T, R>, R extend
 
     @Valid
     @Value
+    @AllArgsConstructor
     public static class OutputData<R extends AbstractRisk<?, ?>> implements UseCase.OutputData {
         @Valid
         R risk;
+
+        boolean newlyCreatedRisk;
+
+        public OutputData(R risk) {
+            this.risk = risk;
+            this.newlyCreatedRisk = false;
+        }
     }
 
 }

@@ -47,6 +47,7 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
     @Transactional
     @Override
     public OutputData<R> execute(InputData input) {
+        boolean newRiskCreated = false;
         // Retrieve the necessary entities for the requested operation:
         var riskAffected = findEntity(entityClass, input.getRiskAffectedRef()).orElseThrow();
 
@@ -66,10 +67,14 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
 
         risk = applyOptionalInput(input, risk);
         if (risk.getDesignator() == null || risk.getDesignator()
-                                                .isEmpty())
+                                                .isEmpty()) {
             designatorService.assignDesignator(risk, input.getAuthenticatedClient());
+            newRiskCreated = true;
+        }
+
         validateRiskValues(input.getRiskValues(), domains, riskAffected);
         eventPublisher.publish(new RiskComponentChangeEvent(riskAffected));
-        return new OutputData<>(risk);
+        return new OutputData<>(risk, newRiskCreated);
     }
+
 }

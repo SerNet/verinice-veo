@@ -372,6 +372,9 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
                 null);
 
         return useCaseInteractor.execute(createAssetRiskUseCase, input, output -> {
+            if (!output.isNewlyCreatedRisk())
+                return RestApiResponse.noContent();
+
             var url = String.format("%s/%s/%s", URL_BASE_PATH, output.getRisk()
                                                                      .getEntity()
                                                                      .getId()

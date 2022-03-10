@@ -386,6 +386,9 @@ public class ProcessController extends AbstractElementController<Process, FullPr
         //@formatter:on
 
         return useCaseInteractor.execute(createProcessRiskUseCase, input, output -> {
+            if (!output.isNewlyCreatedRisk())
+                return RestApiResponse.noContent();
+
             var url = String.format("%s/%s/%s", URL_BASE_PATH, output.getRisk()
                                                                      .getEntity()
                                                                      .getId()
