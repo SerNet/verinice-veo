@@ -78,6 +78,15 @@ public class SearchQueryDto {
     @Schema(description = "An element's status.")
     QueryConditionDto<String> status;
 
+    @Schema(description = "IDs of an element's child elements.")
+    QueryConditionDto<String> childElementIds;
+
+    @Schema(description = "Whether the elements must / mustn't have child elements (members or parts)")
+    SingleValueQueryConditionDto<Boolean> hasChildElements;
+
+    @Schema(description = "Whether the elements must / mustn't have parent elements (scopes or composites)")
+    SingleValueQueryConditionDto<Boolean> hasParentElements;
+
     /**
      * Encodes this search query as a base64url-encoded, compressed string. This
      * representation only contains unreserved URI characters (see RFC 3986 section

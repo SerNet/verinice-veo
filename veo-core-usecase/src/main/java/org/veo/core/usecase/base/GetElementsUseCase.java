@@ -31,6 +31,7 @@ import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
+import org.veo.core.repository.SingleValueQueryCondition;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseTools;
@@ -111,6 +112,22 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
         if (input.getUpdatedBy() != null) {
             query.whereUpdatedByContainsIgnoreCase(input.getUpdatedBy());
         }
+
+        if (input.getChildElementIds() != null) {
+            query.whereChildElementIn(input.getChildElementIds());
+        }
+
+        if (input.getHasChildElements() != null) {
+            query.whereChildElementsPresent(input.getHasChildElements()
+                                                 .getValue()
+                                                 .booleanValue());
+        }
+
+        if (input.getHasParentElements() != null) {
+            query.whereParentElementPresent(input.getHasParentElements()
+                                                 .getValue()
+                                                 .booleanValue());
+        }
     }
 
     @Valid
@@ -122,6 +139,9 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
         QueryCondition<String> displayName;
         QueryCondition<String> subType;
         QueryCondition<String> status;
+        QueryCondition<Key<UUID>> childElementIds;
+        SingleValueQueryCondition<Boolean> hasChildElements;
+        SingleValueQueryCondition<Boolean> hasParentElements;
         QueryCondition<String> description;
         QueryCondition<String> designator;
         QueryCondition<String> name;

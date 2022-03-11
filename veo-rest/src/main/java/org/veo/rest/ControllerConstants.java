@@ -40,6 +40,7 @@ public final class ControllerConstants {
     public static final SearchQueryDto ANY_SEARCH = null;
     public static final String ANY_STRING = null;
     public static final List<String> ANY_STRING_LIST = null;
+    public static final Boolean ANY_BOOLEAN = null;
     public static final WebRequest ANY_REQUEST = null;
 
     static final String PARENT_PARAM = "parent";
@@ -53,6 +54,9 @@ public final class ControllerConstants {
     static final String NAME_PARAM = "name";
     static final String SUB_TYPE_PARAM = "subType";
     static final String STATUS_PARAM = "status";
+    static final String CHILD_ELEMENT_IDS_PARAM = "childElementIds";
+    static final String HAS_CHILD_ELEMENTS_PARAM = "hasChildElements";
+    static final String HAS_PARENT_ELEMENTS_PARAM = "hasParentElements";
     static final String UPDATED_BY_PARAM = "updatedBy";
     static final String DISPLAY_NAME_PARAM = "displayName";
     static final String PAGE_SIZE_PARAM = "size";

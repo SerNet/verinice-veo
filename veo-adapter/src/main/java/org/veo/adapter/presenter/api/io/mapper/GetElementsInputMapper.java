@@ -18,28 +18,34 @@
 package org.veo.adapter.presenter.api.io.mapper;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.veo.adapter.presenter.api.dto.QueryConditionDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
+import org.veo.adapter.presenter.api.dto.SingleValueQueryConditionDto;
 import org.veo.adapter.presenter.api.dto.UuidQueryConditionDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
+import org.veo.core.repository.SingleValueQueryCondition;
 import org.veo.core.usecase.base.GetElementsUseCase;
 
 public class GetElementsInputMapper {
 
     public static GetElementsUseCase.InputData map(Client client, String unitUuid,
-            String displayName, String subType, String status, String description,
+            String displayName, String subType, String status, List<String> childElementIds,
+            Boolean hasChildElements, Boolean hasParentElements, String description,
             String designator, String name, String updatedBy,
             PagingConfiguration pagingConfiguration) {
         return new GetElementsUseCase.InputData(client, createUuidCondition(unitUuid),
                 createStringFilter(displayName), createNonEmptyCondition(subType),
-                createNonEmptyCondition(status), createStringFilter(description),
+                createNonEmptyCondition(status), createUuidListCondition(childElementIds),
+                createSingleValueCondition(hasChildElements),
+                createSingleValueCondition(hasParentElements), createStringFilter(description),
                 createStringFilter(designator), createStringFilter(name),
                 createStringFilter(updatedBy), pagingConfiguration);
     }
@@ -50,10 +56,21 @@ public class GetElementsInputMapper {
                 transformCondition(searchQuery.getDisplayName()),
                 transformCondition(searchQuery.getSubType()),
                 transformCondition(searchQuery.getStatus()),
+                transformUuidCondition(searchQuery.getChildElementIds()),
+                transformCondition(searchQuery.getHasChildElements()),
+                transformCondition(searchQuery.getHasParentElements()),
                 transformCondition(searchQuery.getDescription()),
                 transformCondition(searchQuery.getDesignator()),
                 transformCondition(searchQuery.getName()),
                 transformCondition(searchQuery.getUpdatedBy()), pagingConfiguration);
+    }
+
+    private static <T> SingleValueQueryCondition<T> transformCondition(
+            SingleValueQueryConditionDto<T> dto) {
+        if (dto != null) {
+            return new SingleValueQueryCondition<>(dto.value);
+        }
+        return null;
     }
 
     private static QueryCondition<Key<UUID>> transformCondition(UuidQueryConditionDto filterDto) {
@@ -65,9 +82,26 @@ public class GetElementsInputMapper {
         return null;
     }
 
+    private static QueryCondition<Key<UUID>> transformUuidCondition(
+            QueryConditionDto<String> condition) {
+        if (condition == null) {
+            return null;
+        }
+        return new QueryCondition<>(condition.values.stream()
+                                                    .map(Key::uuidFrom)
+                                                    .collect(Collectors.toSet()));
+    }
+
     private static <T> QueryCondition<T> transformCondition(QueryConditionDto<T> filterDto) {
         if (filterDto != null) {
             return new QueryCondition<>(filterDto.values);
+        }
+        return null;
+    }
+
+    private static <T> SingleValueQueryCondition<T> createSingleValueCondition(T value) {
+        if (value != null) {
+            return new SingleValueQueryCondition<>(value);
         }
         return null;
     }
@@ -81,6 +115,15 @@ public class GetElementsInputMapper {
             return new QueryCondition<>(Collections.singleton(null));
         }
         return new QueryCondition<>(Set.of(value));
+    }
+
+    private static QueryCondition<Key<UUID>> createUuidListCondition(List<String> ids) {
+        if (ids != null) {
+            return new QueryCondition<Key<UUID>>(ids.stream()
+                                                    .map(Key::uuidFrom)
+                                                    .collect(Collectors.toSet()));
+        }
+        return null;
     }
 
     private static QueryCondition<String> createStringFilter(String value) {

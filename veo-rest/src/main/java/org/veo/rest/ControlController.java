@@ -22,9 +22,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.ANY_INT;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
+import static org.veo.rest.ControllerConstants.CHILD_ELEMENT_IDS_PARAM;
 import static org.veo.rest.ControllerConstants.DESCRIPTION_PARAM;
 import static org.veo.rest.ControllerConstants.DESIGNATOR_PARAM;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
+import static org.veo.rest.ControllerConstants.HAS_CHILD_ELEMENTS_PARAM;
+import static org.veo.rest.ControllerConstants.HAS_PARENT_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.NAME_PARAM;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_PARAM;
@@ -141,6 +144,12 @@ public class ControlController extends AbstractElementController<Control, FullCo
             @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
             @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
             @RequestParam(value = STATUS_PARAM, required = false) String status,
+            @RequestParam(value = CHILD_ELEMENT_IDS_PARAM,
+                          required = false) List<String> childElementIds,
+            @RequestParam(value = HAS_PARENT_ELEMENTS_PARAM,
+                          required = false) Boolean hasParentElements,
+            @RequestParam(value = HAS_CHILD_ELEMENTS_PARAM,
+                          required = false) Boolean hasChildElements,
             @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
             @RequestParam(value = DESIGNATOR_PARAM, required = false) String designator,
             @RequestParam(value = NAME_PARAM, required = false) String name,
@@ -165,8 +174,9 @@ public class ControlController extends AbstractElementController<Control, FullCo
         }
 
         return getControls(GetElementsInputMapper.map(client, unitUuid, displayName, subType,
-                                                      status, description, designator, name,
-                                                      updatedBy,
+                                                      status, childElementIds, hasChildElements,
+                                                      hasParentElements, description, designator,
+                                                      name, updatedBy,
                                                       PagingMapper.toConfig(pageSize, pageNumber,
                                                                             sortColumn,
                                                                             sortOrder)));
