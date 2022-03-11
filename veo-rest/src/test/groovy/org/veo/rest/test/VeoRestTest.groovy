@@ -214,7 +214,14 @@ class VeoRestTest extends Specification {
         return restTemplate.exchange(absoluteUri, httpMethod, new HttpEntity(requestBody?.with { toJson(it) }, headers), String.class)
     }
 
-    private String getToken(UserType userType) {
+    ResponseEntity<String> exchange(URI uri, HttpMethod httpMethod, HttpHeaders headers, Object requestBody = null, UserType userType = UserType.DEFAULT) {
+        headers.put("Authorization", [
+            "Bearer " + getToken(userType)
+        ])
+        return restTemplate.exchange(uri, httpMethod, new HttpEntity(requestBody?.with { toJson(it) }, headers), String.class)
+    }
+
+    protected String getToken(UserType userType) {
         def user = defaultUserName
         def pass = defaultUserPass
         if (userType == UserType.ADMIN) {
