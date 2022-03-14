@@ -121,6 +121,31 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
     }
 
     @Override
+    public ElementQuery<TInterface> whereParentElementPresent(boolean present) {
+        var parentSpec = (Specification<TDataClass>) (root, query,
+                criteriaBuilder) -> checkNull(root.join("scopes", JoinType.LEFT)
+                                                  .get("dbId"),
+                                              !present, criteriaBuilder);
+        if (dataRepository instanceof CompositeEntityDataRepository) {
+            var compositeSpec = (Specification<TDataClass>) (root, query,
+                    criteriaBuilder) -> checkNull(root.join("composites", JoinType.LEFT)
+                                                      .get("dbId"),
+                                                  !present, criteriaBuilder);
+
+            if (present) {
+                // scope present or composite present
+                parentSpec = parentSpec.or(compositeSpec);
+            } else {
+                // no scope present and no composite present
+                parentSpec = parentSpec.and(compositeSpec);
+            }
+        }
+
+        mySpec = mySpec.and(parentSpec);
+        return this;
+    }
+
+    @Override
     public ElementQuery<TInterface> whereStatusMatches(QueryCondition<String> condition) {
         mySpec = mySpec.and((root, query,
                 criteriaBuilder) -> in(root.join("subTypeAspects", JoinType.LEFT)

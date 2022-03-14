@@ -21,10 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
-import org.veo.core.entity.Asset
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
-import org.veo.core.repository.ElementQuery
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PagingConfiguration.SortOrder
 import org.veo.core.repository.QueryCondition
@@ -196,6 +194,106 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         result.resultPage*.name =~ [
             "scope of member 1 & 2",
             "scope of member 2"
+        ]
+    }
+
+    def 'queries elements by scopes & composoites'() {
+        given:
+        def processInAComposite = processDataRepository.save(newProcess(unit) {
+            name = "process in a composite"
+        })
+        def processInAScope = processDataRepository.save(newProcess(unit) {
+            name = "process in a scope"
+        })
+        def processInAScopeAndComposite = processDataRepository.save(newProcess(unit) {
+            name = "process in a scope and composite"
+        })
+        processDataRepository.save(newProcess(unit) {
+            name = "first process in nothing"
+        })
+        processDataRepository.save(newProcess(unit) {
+            name = "second process in nothing"
+        })
+        processDataRepository.save(newProcess(unit) {
+            name = "process with two parts"
+            parts = [
+                processInAComposite,
+                processInAScopeAndComposite
+            ]
+        })
+        scopeDataRepository.saveAll([
+            newScope(unit) {
+                members = [
+                    processInAScope,
+                    processInAScopeAndComposite
+                ]
+            },
+        ])
+
+        when:
+        def processesWithParent = new ElementQueryImpl(processDataRepository, client)
+                .whereParentElementPresent(true)
+                .execute(PagingConfiguration.UNPAGED)
+
+        then:
+        processesWithParent.resultPage*.name =~ [
+            "process in a composite",
+            "process in a scope",
+            "process in a scope and composite",
+        ]
+
+        when:
+        def processesWithoutParent = new ElementQueryImpl(processDataRepository, client)
+                .whereParentElementPresent(false)
+                .execute(PagingConfiguration.UNPAGED)
+
+        then:
+        processesWithoutParent.resultPage*.name =~ [
+            "first process in nothing",
+            "second process in nothing",
+            "process with two parts",
+        ]
+    }
+
+    def 'queries scopes by scopes'() {
+        given:
+        def firstScopeInAScope = scopeDataRepository.save(newScope(unit) {
+            name = "first scope in a scope"
+        })
+        def secondScopeInAScope = scopeDataRepository.save(newScope(unit) {
+            name = "second scope in a scope"
+        })
+        scopeDataRepository.save(newScope(unit) {
+            name = "first scope in no scopes"
+            members = [
+                firstScopeInAScope,
+                secondScopeInAScope
+            ]
+        })
+        scopeDataRepository.save(newScope(unit) {
+            name = "second scope in no scopes"
+        })
+
+        when:
+        def scopesWithParent = new ElementQueryImpl(scopeDataRepository, client)
+                .whereParentElementPresent(true)
+                .execute(PagingConfiguration.UNPAGED)
+
+        then:
+        scopesWithParent.resultPage*.name =~ [
+            "first scope in a scope",
+            "second scope in a scope",
+        ]
+
+        when:
+        def scopesWithoutParent = new ElementQueryImpl(scopeDataRepository, client)
+                .whereParentElementPresent(false)
+                .execute(PagingConfiguration.UNPAGED)
+
+        then:
+        scopesWithoutParent.resultPage*.name =~ [
+            "first scope in no scopes",
+            "second scope in no scopes",
         ]
     }
 

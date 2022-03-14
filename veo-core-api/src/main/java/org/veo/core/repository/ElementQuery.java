@@ -60,6 +60,17 @@ public interface ElementQuery<T extends Element> {
      */
     ElementQuery<T> whereChildElementsPresent(boolean present);
 
+    /**
+     * Only include elements with / without at leat one parent element (scope or
+     * composite).
+     *
+     * @param present
+     *            pass true only include elements with parent elements, pass false
+     *            to only include elements without parent elements.
+     * @return this
+     */
+    ElementQuery<T> whereParentElementPresent(boolean present);
+
     ElementQuery<T> whereStatusMatches(QueryCondition<String> values);
 
     ElementQuery<T> whereDisplayNameMatchesIgnoringCase(QueryCondition<String> values);
