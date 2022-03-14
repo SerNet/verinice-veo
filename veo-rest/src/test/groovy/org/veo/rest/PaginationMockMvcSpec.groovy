@@ -102,25 +102,25 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
 
         expect: "pagination works when running a search for all elements in the unit"
         def searchUri = parseJson(post("/$type/searches", [:])).searchUrl
-        with(parseJson(get("$searchUri?size=2&sortBy=abbreviation&sortOrder=desc"))) {
+        with(parseJson(get(new URI("$searchUri?size=2&sortBy=abbreviation&sortOrder=desc")))) {
             items*.abbreviation == ["5", "4"]
             page == 0
             totalItemCount == 5
             pageCount == 3
         }
-        with(parseJson(get("$searchUri?size=2&sortBy=abbreviation&sortOrder=desc&page=1"))) {
+        with(parseJson(get(new URI("$searchUri?size=2&sortBy=abbreviation&sortOrder=desc&page=1")))) {
             items*.abbreviation == ["3", "2"]
             page == 1
             totalItemCount == 5
             pageCount == 3
         }
-        with(parseJson(get("$searchUri?size=2&sortBy=abbreviation&sortOrder=desc&page=2"))) {
+        with(parseJson(get(new URI("$searchUri?size=2&sortBy=abbreviation&sortOrder=desc&page=2")))) {
             items*.abbreviation == ["1"]
             page == 2
             totalItemCount == 5
             pageCount == 3
         }
-        with(parseJson(get("$searchUri?size=2&sortBy=abbreviation&sortOrder=desc&page=3"))) {
+        with(parseJson(get(new URI("$searchUri?size=2&sortBy=abbreviation&sortOrder=desc&page=3")))) {
             items*.abbreviation == []
             page == 3
             totalItemCount == 5
@@ -128,13 +128,13 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
         }
 
         and: "big page sizes work"
-        with(parseJson(get("$searchUri?size=5&sortBy=abbreviation&sortOrder=desc"))) {
+        with(parseJson(get(new URI("$searchUri?size=5&sortBy=abbreviation&sortOrder=desc")))) {
             items*.abbreviation == ["5", "4", "3", "2", "1"]
             page == 0
             totalItemCount == 5
             pageCount == 1
         }
-        with(parseJson(get("$searchUri?size=10&sortBy=abbreviation&sortOrder=desc"))) {
+        with(parseJson(get(new URI("$searchUri?size=10&sortBy=abbreviation&sortOrder=desc")))) {
             items*.abbreviation == ["5", "4", "3", "2", "1"]
             page == 0
             totalItemCount == 5
@@ -142,7 +142,7 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
         }
 
         when: "setting page size to zero"
-        get("$searchUri?size=0&sortBy=abbreviation&sortOrder=desc", 400)
+        get(new URI("$searchUri?size=0&sortBy=abbreviation&sortOrder=desc"), 400)
         then:
         thrown(IllegalArgumentException)
 
