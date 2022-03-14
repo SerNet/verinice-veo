@@ -296,54 +296,6 @@ pipeline {
                 }
             }
         }
-        stage('Postman Tests') {
-            environment {
-                KEYCLOAK_CREDS = credentials('veo_authentication_credentials')
-                RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
-            }
-            agent any
-            steps {
-                timeout(time: 5, unit: 'MINUTES'){
-                    unarchive mapping: ["veo-rest/build/libs/veo-rest-${projectVersion}.jar": "veo-rest/build/libs/veo-rest-${projectVersion}.jar"]
-                    script {
-                        def veo = docker.build("veo", "-f postman/Dockerfile .")
-                        withDockerNetwork{ n ->
-                            docker.image('postgres:13.4-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_PASSWORD=postgres") { db ->
-                                sh 'until pg_isready; do sleep 1; done'
-                                veo.inside("--network ${n} --name veo-${n} --entrypoint=''"){
-                                    sh "java -Dlogging.file.name=${WORKSPACE}/veo-rest.log -Dveo.etag.salt=zuL4Q8JKdy -Dspring.datasource.url=jdbc:postgresql://database-${n}:5432/postgres -Dspring.datasource.username=postgres -Dspring.datasource.password=postgres -Dspring.security.oauth2.resourceserver.jwt.issuer-uri=${env.VEO_AUTH_URL} -Dveo.etag.salt=pleasemrpostman -Dspring.rabbitmq.username=\$RABBITMQ_CREDS_USR -Dspring.rabbitmq.password=\$RABBITMQ_CREDS_PSW -Dspring.rabbitmq.host=${env.SPRING_RABBITMQ_HOST} -Dspring.rabbitmq.port=${env.SPRING_RABBITMQ_PORT} -Dspring.security.oauth2.resourceserver.jwt.jwk-set-uri=${env.VEO_AUTH_URL}/protocol/openid-connect/certs -Dhttp.proxyHost=cache.sernet.private -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.sernet.private -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Dhttp.proxySet=true -jar ${WORKSPACE}/veo-rest/build/libs/veo-rest-${projectVersion}.jar &"
-                                    echo 'Waiting for application startup'
-                                    timeout(2) {
-                                        waitUntil {
-                                            script {
-                                                def r = sh returnStatus:true, script: 'wget -q http://localhost:8070 -O /dev/null'
-                                                return (r == 0);
-                                            }
-                                        }
-                                    }
-                                    def accessToken = sh(
-                                            returnStdout:true,
-                                            script: 'VEO_USER=$KEYCLOAK_CREDS_USR VEO_USER_PASSWORD=$KEYCLOAK_CREDS_PSW /veo/authenticate -r verinice-veo -c veo-development-client'
-                                            ).trim()
-                                    sh "newman run 'postman/verinice.VEO_REST_API.postman_collection.json' --env-var 'accessToken=${accessToken}' --reporters 'cli,junit' --reporter-junit-export='newman-report.xml' --suppress-exit-code"
-                                    junit allowEmptyResults: true, testResults: 'newman-report.xml'
-                                    perfReport failBuildIfNoResultFile: false,
-                                    modePerformancePerTestCase: true,
-                                    showTrendGraphs: true,
-                                    sourceDataFiles: 'newman-report.xml'
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            post {
-                always {
-                    archiveArtifacts artifacts: 'veo-rest.log*', fingerprint: false
-                    sh 'rm veo-rest.log*'
-                }
-            }
-        }
         stage('Trigger Deployment') {
             agent none
             when {
