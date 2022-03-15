@@ -49,10 +49,9 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         def compositeResponse = get("/assets/$compositeId")
 
         then: "the retrieved composite assets points to its parts"
-        with(compositeResponse.body.parts.toSorted{it.displayName}*.targetUri) {
-            get(0) =~ /.*\/assets\/$partAId/
-            get(1) =~ /.*\/assets\/$partBId/
-        }
+        String urlA = "$baseUrl/assets/$partAId"
+        String urlB = "$baseUrl/assets/$partBId"
+        compositeResponse.body.parts*.targetUri ==~ [urlA, urlB]
 
         when: "removing a part from the composite"
         put("/assets/$compositeId", [
