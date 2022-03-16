@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -54,4 +55,7 @@ public class AssetData extends RiskAffectedData<Asset, AssetRisk> implements Ass
         return new AssetRiskData(this, scenario);
     }
 
+    @ManyToMany(targetEntity = AssetData.class, mappedBy = "parts", fetch = FetchType.LAZY)
+    @Getter
+    private final Set<Asset> composites = new HashSet<>();
 }

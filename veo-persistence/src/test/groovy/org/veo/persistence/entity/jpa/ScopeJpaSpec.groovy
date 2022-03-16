@@ -120,6 +120,7 @@ class ScopeJpaSpec extends AbstractJpaSpec {
 
         when: "the scope is removed"
         txTemplate.execute{
+            scope.remove()
             scopeDataRepository.delete(scope)
         }
 

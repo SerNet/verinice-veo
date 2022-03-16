@@ -315,7 +315,7 @@ public final class DtoToEntityTransformer {
         target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
     }
 
-    private <T extends Element> void mapCompositeEntity(CompositeEntityDto<T> source,
+    private <T extends CompositeElement> void mapCompositeEntity(CompositeEntityDto<T> source,
             CompositeElement<T> target, IdRefResolver idRefResolver) {
         mapElement(source, target, idRefResolver);
         target.setParts(idRefResolver.resolve(source.getParts()));

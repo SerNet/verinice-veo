@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -45,24 +46,43 @@ public interface Scope extends Element, RiskAffected<Scope, ScopeRisk> {
     Set<Element> getMembers();
 
     default boolean addMember(Element member) {
+        member.getScopes()
+              .add(this);
         return getMembers().add(member);
     }
 
     default boolean addMembers(Set<Element> members) {
-        return getMembers().addAll(members);
+        var added = false;
+        for (var member : members) {
+            if (addMember(member)) {
+                added = true;
+            }
+        }
+        return added;
     }
 
     default boolean removeMember(Element member) {
-        return getMembers().remove(member);
+        if (getMembers().remove(member)) {
+            member.getScopes()
+                  .remove(this);
+            return true;
+        }
+        return false;
     }
 
     default boolean removeMembers(Set<Element> members) {
-        return getMembers().removeAll(members);
+        var removed = false;
+        for (var member : new HashSet<>(members)) {
+            if (removeMember(member)) {
+                removed = true;
+            }
+        }
+        return removed;
     }
 
     default void setMembers(Set<Element> members) {
-        getMembers().clear();
-        getMembers().addAll(members);
+        removeMembers(getMembers());
+        addMembers(members);
     }
 
     @Override
@@ -73,4 +93,10 @@ public interface Scope extends Element, RiskAffected<Scope, ScopeRisk> {
     Optional<RiskDefinitionRef> getRiskDefinition(DomainTemplate domain);
 
     void setRiskDefinition(DomainTemplate domain, RiskDefinitionRef riskDefinition);
+
+    @Override
+    default void remove() {
+        setMembers(new HashSet<>());
+        getScopes().forEach(s -> s.removeMember(this));
+    }
 }

@@ -61,6 +61,7 @@ public class DeleteElementUseCase
                                            input.entityClass.getSimpleName(), input.getId()
                                                                                    .uuidValue()));
         entity.checkSameClient(input.authenticatedClient);
+        entity.remove();
         repository.deleteById(entity.getId());
         if (RELEVANT_CLASSES_FOR_RISK.contains(input.getEntityClass())) {
             eventPublisher.publish(new RiskComponentChangeEvent(entity));

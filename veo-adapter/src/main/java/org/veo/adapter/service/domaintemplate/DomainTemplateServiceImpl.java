@@ -480,16 +480,17 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
                        });
                      if (es instanceof CompositeElement) {
-                         CompositeElement<Element> ce = (CompositeElement<Element>) es;
+                         CompositeElement<CompositeElement> ce = (CompositeElement<CompositeElement>) es;
                          Set<String> partIds = ce.getParts()
                                                  .stream()
                                                  .map(Identifiable::getIdAsString)
                                                  .collect(Collectors.toSet());
-                         Set<Element> resolvedParts = elementCache.entrySet()
-                                                                  .stream()
-                                                                  .filter(e -> partIds.contains(e.getKey()))
-                                                                  .map(Entry::getValue)
-                                                                  .collect(Collectors.toSet());
+                         Set<CompositeElement> resolvedParts = elementCache.entrySet()
+                                                                           .stream()
+                                                                           .filter(e -> partIds.contains(e.getKey()))
+                                                                           .map(Entry::getValue)
+                                                                           .map(it -> (CompositeElement) it)
+                                                                           .collect(Collectors.toSet());
                          ce.setParts(resolvedParts);
                      }
                      if (es instanceof Scope) {

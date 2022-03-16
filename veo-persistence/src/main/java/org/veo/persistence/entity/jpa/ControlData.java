@@ -69,6 +69,10 @@ public class ControlData extends ElementData implements Control {
     @Valid
     private final Set<ControlRiskValuesAspectData> riskValuesAspects = new HashSet<>();
 
+    @ManyToMany(targetEntity = ControlData.class, mappedBy = "parts", fetch = FetchType.LAZY)
+    @Getter
+    private final Set<Control> composites = new HashSet<>();
+
     @Override
     public void setRiskValues(DomainTemplate domain,
             Map<RiskDefinitionRef, ControlRiskValues> riskValues) {

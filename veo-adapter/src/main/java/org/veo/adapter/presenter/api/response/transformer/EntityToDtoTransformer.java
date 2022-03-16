@@ -456,7 +456,7 @@ public final class EntityToDtoTransformer {
         mapVersionedProperties(source, target);
     }
 
-    private <TEntity extends Element, TDto extends CompositeEntityDto<TEntity> & IdentifiableDto> void mapCompositeEntity(
+    private <TEntity extends CompositeElement, TDto extends CompositeEntityDto<TEntity> & IdentifiableDto> void mapCompositeEntity(
             CompositeElement<TEntity> source, TDto target) {
         mapElement(source, target);
         target.setParts(convertReferenceSet(source.getParts()));

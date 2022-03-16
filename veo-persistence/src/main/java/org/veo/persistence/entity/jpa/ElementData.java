@@ -50,6 +50,7 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.InvalidSubTypeException;
 import org.veo.core.entity.Nameable;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.aspects.Aspect;
 import org.veo.core.entity.aspects.SubTypeAspect;
@@ -120,6 +121,9 @@ public abstract class ElementData extends IdentifiableVersionedData
                fetch = FetchType.LAZY)
     @Valid
     final private Set<CustomAspect> customAspects = new HashSet<>();
+
+    @ManyToMany(targetEntity = ScopeData.class, mappedBy = "members", fetch = FetchType.LAZY)
+    final private Set<Scope> scopes = new HashSet<>();
 
     @Column(name = "sub_type_aspects")
     @OneToMany(cascade = CascadeType.ALL,

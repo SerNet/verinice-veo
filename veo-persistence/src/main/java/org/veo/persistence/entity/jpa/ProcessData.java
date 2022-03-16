@@ -59,6 +59,10 @@ public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implemen
     @Getter
     private final Set<Process> parts = new HashSet<>();
 
+    @ManyToMany(targetEntity = ProcessData.class, mappedBy = "parts", fetch = FetchType.LAZY)
+    @Getter
+    private final Set<Process> composites = new HashSet<>();
+
     @Override
     ProcessRisk createRisk(Scenario scenario) {
         return new ProcessRiskData(this, scenario);

@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,9 +29,11 @@ import org.veo.core.entity.specification.EntitySpecification;
  * @param <T>
  *            the type of the entity and its parts
  */
-public interface CompositeElement<T extends Element> extends Element {
+public interface CompositeElement<T extends CompositeElement> extends Element {
 
     Set<T> getParts();
+
+    Set<T> getComposites();
 
     default Set<T> findPartsFulfilling(EntitySpecification<T> specification) {
         return specification.selectSatisfyingElementsFrom(getParts());
@@ -40,6 +43,8 @@ public interface CompositeElement<T extends Element> extends Element {
         if (getOwningClient().isPresent()) {
             checkSameClient(part);
         }
+        part.getComposites()
+            .add(this);
         return getParts().add(part);
     }
 
@@ -47,15 +52,32 @@ public interface CompositeElement<T extends Element> extends Element {
         if (getOwningClient().isPresent()) {
             parts.forEach(CompositeElement.this::checkSameClient);
         }
-        return getParts().addAll(parts);
+        var added = false;
+        for (var part : parts) {
+            if (addPart(part)) {
+                added = true;
+            }
+        }
+        return added;
     }
 
     default boolean removePart(T part) {
-        return getParts().remove(part);
+        if (getParts().remove(part)) {
+            part.getComposites()
+                .remove(this);
+            return true;
+        }
+        return false;
     }
 
     default boolean removeParts(Set<T> parts) {
-        return getParts().removeAll(parts);
+        var removed = false;
+        for (var part : new HashSet<>(parts)) {
+            if (removePart(part)) {
+                removed = true;
+            }
+        }
+        return removed;
     }
 
     default void setParts(Set<T> parts) {
@@ -63,8 +85,8 @@ public interface CompositeElement<T extends Element> extends Element {
             parts.stream()
                  .forEach(CompositeElement.this::checkSameClient);
         }
-        getParts().clear();
-        getParts().addAll(parts);
+        removeParts(getParts());
+        addParts(parts);
     }
 
     default boolean removePartById(Key<UUID> id) {
@@ -72,4 +94,10 @@ public interface CompositeElement<T extends Element> extends Element {
                                                .equals(id));
     }
 
+    @Override
+    default void remove() {
+        setParts(new HashSet<>());
+        getScopes().forEach(s -> s.removeMember(this));
+        getComposites().forEach(c -> c.removePart(this));
+    }
 }

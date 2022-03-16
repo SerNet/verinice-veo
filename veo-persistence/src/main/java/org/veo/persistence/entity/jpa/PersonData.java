@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -52,4 +53,8 @@ public class PersonData extends ElementData implements Person {
     @Getter
     @Valid
     private final Set<Person> parts = new HashSet<>();
+
+    @ManyToMany(targetEntity = PersonData.class, mappedBy = "parts", fetch = FetchType.LAZY)
+    @Getter
+    private final Set<Person> composites = new HashSet<>();
 }

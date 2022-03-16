@@ -63,6 +63,11 @@ public class ScenarioData extends ElementData implements Scenario {
     @Valid
     private final Set<ScenarioRiskValuesAspectData> riskValuesAspects = new HashSet<>();
 
+    @ManyToMany(targetEntity = ScenarioData.class, mappedBy = "parts", fetch = FetchType.LAZY)
+    @Valid
+    @Getter
+    private final Set<Scenario> composites = new HashSet<>();
+
     public void setPotentialProbability(DomainTemplate domain,
             Map<RiskDefinitionRef, PotentialProbabilityImpl> potentialProbability) {
         var aspect = findAspectByDomain(this.riskValuesAspects, domain).orElseGet(() -> {

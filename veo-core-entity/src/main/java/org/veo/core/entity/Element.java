@@ -212,4 +212,11 @@ public interface Element
     CatalogItem getContainingCatalogItem();
 
     void setContainingCatalogItem(CatalogItem containigCatalogItem);
+
+    Set<Scope> getScopes();
+
+    /**
+     * Detach this element from related elements to prepare for deletion.
+     */
+    void remove();
 }

@@ -22,6 +22,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -53,4 +54,7 @@ public class DocumentData extends ElementData implements Document {
     @Getter
     private final Set<Document> parts = new HashSet<>();
 
+    @ManyToMany(targetEntity = DocumentData.class, mappedBy = "parts", fetch = FetchType.LAZY)
+    @Getter
+    private final Set<Document> composites = new HashSet<>();
 }
