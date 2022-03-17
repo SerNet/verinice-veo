@@ -31,6 +31,9 @@ import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.ScenarioData
 
+import spock.lang.Ignore
+import spock.lang.Issue
+
 /**
  * Test risk related functionality on controls.
  */
@@ -307,6 +310,54 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         eTag1 == eTag2
         retrievedProcessRisk2.designator == retrievedProcessRisk1.designator
         retrievedProcessRisk2.createdAt == retrievedProcessRisk1.createdAt
+    }
+
+    @Ignore
+    @Issue("VEO-1265")
+    def "Creating a risk with only specific probability and impact values calculates risk value"() {
+        given: "a process in a scope with a risk definition"
+        addProcessToScope("r1d1")
+        def processId = process.getIdAsString()
+        def scenarioId = scenario.getIdAsString()
+
+        when: "a risk is created with probability and impact"
+        post("/processes/$processId/risks", [
+            domains : [
+                (domainId): [
+                    reference      : [targetUri: "http://localhost/domains/$domainId"],
+                    riskDefinitions: [
+                        r1d1: [
+                            probability: [
+                                specificProbability: 1
+                            ],
+                            impactValues: [
+                                [
+                                    category      : "A",
+                                    specificImpact: 1
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ], 201)
+
+        and: "the resource is requested"
+        def results = get("/processes/$processId/risks/$scenarioId")
+        def retrievedProcessRisk2 = parseJson(results)
+
+        then: "the risk resource was created with the values"
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.size() == 1
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.specificImpact == 1
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.effectiveImpact == 1
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.specificProbability == 1
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.effectiveProbability == 1
+
+        and: "the risk was calculated"
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.size == 4
+        // FIXME VEO-1265 this will fail:
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}.inherentRisk == 0
     }
 
     def "Trying to create an existing risk updates its values"() {
