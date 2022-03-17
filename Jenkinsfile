@@ -312,7 +312,9 @@ pipeline {
         }
         always {
             node('') {
-                sh 'rm veo-rest/build/libs/*.jar gendocs/build/libs/*.jar'
+                catchError() {
+                    sh 'rm veo-rest/build/libs/*.jar gendocs/build/libs/*.jar'
+                }
                 recordIssues(enabledForFailure: true, tools: [java()])
                 recordIssues(enabledForFailure: true, tools: [javaDoc()])
                 recordIssues(
