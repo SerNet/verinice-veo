@@ -315,7 +315,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         def processId = process.getIdAsString()
         def scenarioId = scenario.getIdAsString()
 
-        when: "a POST request is issued to the risk ressource"
+        when: "a POST request is issued to the risk resource"
         def beforeCreation = Instant.now()
         postProcessRisk(processId, scenarioId)
         def afterCreation = Instant.now()
@@ -336,6 +336,9 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
                     reference      : [targetUri: "http://localhost/domains/$domainId"],
                     riskDefinitions: [
                         r1d1: [
+                            probability: [
+                                specificProbability: 1
+                            ],
                             impactValues: [
                                 [
                                     category      : "A",
@@ -358,11 +361,18 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.size() == 1
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.specificImpact == 1
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.effectiveImpact == 1
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.specificProbability == 1
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.effectiveProbability == 1
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.size == 4
 
-        eTag2 != null
-        eTag1 == eTag2
+        and: "it is still the same risk object"
         retrievedProcessRisk2.designator == retrievedProcessRisk1.designator
         retrievedProcessRisk2.createdAt == retrievedProcessRisk1.createdAt
+
+        // TODO VEO-1248 the version/eTag should be increased by the update:
+        eTag2 != null
+        eTag1 == eTag2
+
     }
 
     private postProcessRisk(String processId, String scenarioId, int expectedStatusCode = 201) {

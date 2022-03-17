@@ -62,6 +62,7 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
 
         // Apply requested operation:
         var risk = riskAffected.obtainRisk(scenario, domains);
+        validateRiskValues(input.getRiskValues(), domains, riskAffected);
         if (risk instanceof ProcessRisk)
             ((ProcessRisk) risk).defineRiskValues(input.getRiskValues());
 
@@ -72,7 +73,6 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
             newRiskCreated = true;
         }
 
-        validateRiskValues(input.getRiskValues(), domains, riskAffected);
         eventPublisher.publish(new RiskComponentChangeEvent(riskAffected));
         return new OutputData<>(risk, newRiskCreated);
     }
