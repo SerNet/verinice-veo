@@ -309,6 +309,62 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         retrievedProcessRisk2.createdAt == retrievedProcessRisk1.createdAt
     }
 
+    def "Trying to create an existing risk updates its values"() {
+        given: "a process in a scope with a risk definition"
+        addProcessToScope("r1d1")
+        def processId = process.getIdAsString()
+        def scenarioId = scenario.getIdAsString()
+
+        when: "a POST request is issued to the risk ressource"
+        def beforeCreation = Instant.now()
+        postProcessRisk(processId, scenarioId)
+        def afterCreation = Instant.now()
+
+        then: "a risk resource was created"
+        def results = get("/processes/$processId/risks/$scenarioId")
+        def retrievedProcessRisk1 = parseJson(results)
+        String eTag1 = getETag(results)
+
+        Instant.parse(retrievedProcessRisk1.createdAt) > beforeCreation
+        Instant.parse(retrievedProcessRisk1.createdAt) < afterCreation
+        retrievedProcessRisk1.domains.(domainId).riskDefinitions.size() == 0
+
+        when: "a safe retry is made with new values"
+        post("/processes/$processId/risks", [
+            domains : [
+                (domainId): [
+                    reference      : [targetUri: "http://localhost/domains/$domainId"],
+                    riskDefinitions: [
+                        r1d1: [
+                            impactValues: [
+                                [
+                                    category      : "A",
+                                    specificImpact: 1
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ], 204)
+
+        and: "the resource is requested"
+        results = get("/processes/$processId/risks/$scenarioId")
+        def retrievedProcessRisk2 = parseJson(results)
+        String eTag2 = getETag(results)
+
+        then: "the existing risk resource was updated with new values"
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.size() == 1
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.specificImpact == 1
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.effectiveImpact == 1
+
+        eTag2 != null
+        eTag1 == eTag2
+        retrievedProcessRisk2.designator == retrievedProcessRisk1.designator
+        retrievedProcessRisk2.createdAt == retrievedProcessRisk1.createdAt
+    }
+
     private postProcessRisk(String processId, String scenarioId, int expectedStatusCode = 201) {
         post("/processes/$processId/risks", [
             domains : [
