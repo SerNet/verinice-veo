@@ -360,6 +360,114 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}.inherentRisk == 0
     }
 
+    @Ignore
+    @Issue("VEO-1265")
+    def "Creating a risk with potential values calculates risk value"() {
+        given: "a process in a scope with one risk definition (out of two in the domain)"
+        def processId = parseJson(post("/processes", [
+            domains: [
+                (domainId): [ : ]
+            ],
+            name: "risk test process",
+            owner: [targetUri: "http://localhost/units/$unitId"]
+        ])).resourceId
+        def processETag = getETag(get("/processes/$processId"))
+
+        post("/scopes", [
+            name: "r1d1 scope",
+            domains: [
+                (domainId): [
+                    riskDefinition: "r1d1"
+                ]
+            ],
+            members: [
+                [targetUri: "http://localhost/processes/$processId"]
+            ],
+            owner: [targetUri: "http://localhost/units/$unitId"]
+        ])
+
+        Map headers = [
+            'If-Match': processETag
+        ]
+        put("/processes/$processId", [
+            domains: [
+                (domainId): [
+                    riskValues: [
+                        r1d1 : [
+                            potentialImpacts: [
+                                "A": "2",
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            name: "risk test process",
+            owner: [targetUri: "http://localhost/units/$unitId"]
+        ], headers)
+
+        def scenarioId = parseJson(post("/scenarios", [
+            name: "process risk test scenario",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [
+                    riskValues: [
+                        r1d1 : [
+                            potentialProbability: 2
+                        ]
+                    ]
+                ]
+            ]
+        ])).resourceId
+
+        when: "a risk is created with specific probability and impact"
+        post("/processes/$processId/risks", [
+            domains : [
+                (domainId): [
+                    reference      : [targetUri: "http://localhost/domains/$domainId"],
+                    riskDefinitions: [
+                        r1d1: [
+                            probability: [
+                                specificProbability: 1
+                            ],
+                            impactValues: [
+                                [
+                                    category      : "A",
+                                    specificImpact: 1
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ], 201)
+
+        then: "process contains impact"
+        def retrievedProcess = parseJson(get("/processes/$processId"))
+        retrievedProcess.domains.(domainId).riskValues.r1d1.potentialImpacts.A == "2"
+
+        and: "scenario contains probability"
+        def retrievedScenario = parseJson(get("/scenarios/$scenarioId"))
+        retrievedScenario.domains.(domainId).riskValues.r1d1.potentialProbability == 2
+
+        and: "the risk resource was created with the values"
+        def retrievedProcessRisk2 = parseJson(get("/processes/$processId/risks/$scenarioId"))
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.size() == 1
+
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.potentialImpact == 2
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.specificImpact == 1
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.effectiveImpact == 1
+
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.potentialProbability == 2
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.specificProbability == 1
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.effectiveProbability == 1
+
+        and: "the risk was calculated"
+        // FIXME VEO-1265 this will fail:
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.size == 4
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}.inherentRisk == 0
+    }
+
     def "Trying to create an existing risk updates its values"() {
         given: "a process in a scope with a risk definition"
         addProcessToScope("r1d1")
