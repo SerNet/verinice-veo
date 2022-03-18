@@ -204,6 +204,7 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
 
     private Specification<TDataClass> createSpecification(Client client) {
         return (root, query, criteriaBuilder) -> {
+            query.distinct(true);
             Path<UnitData> unit = criteriaBuilder.treat(root.join("owner"), UnitData.class);
             return criteriaBuilder.equal(unit.get("client"), client);
         };

@@ -195,6 +195,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
             "scope of member 1 & 2",
             "scope of member 2"
         ]
+        result.totalResults == 2
     }
 
     def 'queries elements by scopes & composoites'() {
