@@ -213,4 +213,30 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
             get(0) =~ /.*\/persons\/$personId/
         }
     }
+
+    def "delete unit with composite that has parts in other unit"() {
+        given: "a composite in this unit with a part in another unit"
+        def otherUnitId = post("/units", [
+            name: "process test unit"
+        ]).body.resourceId
+        def partInOtherUnitId = post("/persons", [
+            name: "part",
+            owner: [targetUri: "http://localhost/units/$otherUnitId"]
+        ]).body.resourceId
+        def compositeInThisUnitId = post("/persons", [
+            name: "composite",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            parts: [
+                [targetUri: "http://localhost/persons/$partInOtherUnitId"]
+            ]
+        ]).body.resourceId
+
+        when: "deleting this unit"
+        delete("/units/$unitId")
+
+        then: "the composite in this unit is gone"
+        get("/units/$unitId", 404)
+        get("/persons/$compositeInThisUnitId", 404)
+        get("/persons/$partInOtherUnitId")
+    }
 }
