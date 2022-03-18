@@ -24,6 +24,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Client
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScenarioRepositoryImpl
@@ -55,14 +56,16 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
     @Autowired
     private ScenarioRepositoryImpl scenarioRepository
 
+    private Client client
     private String unitId
     private String domainId
+    private String r1d1DomainId
     private ProcessData process
     private ScenarioData scenario
 
     def setup() {
         txTemplate.execute {
-            def client = createTestClient()
+            client = createTestClient()
             def domain = newDomain(client) {
                 riskDefinitions = [
                     "r1d1": createRiskDefinition("r1d1"),
@@ -70,6 +73,12 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
                 ]
             }
             domainId = domain.idAsString
+
+            r1d1DomainId = (newDomain(client) {
+                riskDefinitions = [
+                    "r1d1": createRiskDefinition("r1d1"),
+                ]
+            }).idAsString
 
             def unit = newUnit(client)
             unitId = unitRepository.save(unit).idAsString
@@ -467,6 +476,113 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.size == 4
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}.inherentRisk == 0
     }
+
+    def "Creating a risk with potential values calculates risk value (with only one risk definition in the domain)"() {
+        given: "a process in a domain with only a single risk definition"
+        def processId = parseJson(post("/processes", [
+            domains: [
+                (r1d1DomainId): [ : ]
+            ],
+            name: "risk test process",
+            owner: [targetUri: "http://localhost/units/$unitId"]
+        ])).resourceId
+        def processETag = getETag(get("/processes/$processId"))
+
+        post("/scopes", [
+            name: "r1d1 scope",
+            domains: [
+                (r1d1DomainId): [
+                    riskDefinition: "r1d1"
+                ]
+            ],
+            members: [
+                [targetUri: "http://localhost/processes/$processId"]
+            ],
+            owner: [targetUri: "http://localhost/units/$unitId"]
+        ])
+
+        Map headers = [
+            'If-Match': processETag
+        ]
+        put("/processes/$processId", [
+            domains: [
+                (r1d1DomainId): [
+                    riskValues: [
+                        r1d1 : [
+                            potentialImpacts: [
+                                "A": "2",
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            name: "risk test process",
+            owner: [targetUri: "http://localhost/units/$unitId"]
+        ], headers)
+
+        def scenarioId = parseJson(post("/scenarios", [
+            name: "process risk test scenario",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (r1d1DomainId): [
+                    riskValues: [
+                        r1d1 : [
+                            potentialProbability: 2
+                        ]
+                    ]
+                ]
+            ]
+        ])).resourceId
+
+        when: "a risk is created with specific probability and impact"
+        post("/processes/$processId/risks", [
+            domains : [
+                (r1d1DomainId): [
+                    reference      : [targetUri: "http://localhost/domains/$r1d1DomainId"],
+                    riskDefinitions: [
+                        r1d1: [
+                            probability: [
+                                specificProbability: 1
+                            ],
+                            impactValues: [
+                                [
+                                    category      : "A",
+                                    specificImpact: 1
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ], 201)
+
+        then: "process contains impact"
+        def retrievedProcess = parseJson(get("/processes/$processId"))
+        retrievedProcess.domains.(r1d1DomainId).riskValues.r1d1.potentialImpacts.A == "2"
+
+        and: "scenario contains probability"
+        def retrievedScenario = parseJson(get("/scenarios/$scenarioId"))
+        retrievedScenario.domains.(r1d1DomainId).riskValues.r1d1.potentialProbability == 2
+
+        and: "the risk resource was created with the values"
+        def retrievedProcessRisk2 = parseJson(get("/processes/$processId/risks/$scenarioId"))
+        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.size() == 1
+
+        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.potentialImpact == 2
+        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.specificImpact == 1
+        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.effectiveImpact == 1
+
+        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.probability.potentialProbability == 2
+        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.probability.specificProbability == 1
+        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.probability.effectiveProbability == 1
+
+        and: "the risk was calculated"
+        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.riskValues.size == 4
+        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}.inherentRisk == 0
+    }
+
+
 
     def "Trying to create an existing risk updates its values"() {
         given: "a process in a scope with a risk definition"
