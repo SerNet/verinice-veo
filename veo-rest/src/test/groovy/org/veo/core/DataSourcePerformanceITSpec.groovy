@@ -357,20 +357,29 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         def queryCounts = trackQueryCounts{
             deleteUnit()
         }
+
         then: "all elements are removed"
-        with(personRepository.query(client)) {
-            whereUnitIn([unit] as Set)
-            execute(PagingConfiguration.UNPAGED).totalResults == 0
-        }
-        with(assetRepository.query(client)) {
-            whereUnitIn([unit] as Set)
-            execute(PagingConfiguration.UNPAGED).totalResults == 0
-        }
-        with(processRepository.query(client)) {
-            whereUnitIn([unit] as Set)
-            execute(PagingConfiguration.UNPAGED).totalResults == 0
-        }
-        unitRepository.findByClient(client).size() == 0
+        executeInTransaction {
+            personRepository.query(client)
+                    .whereUnitIn([unit] as Set)
+                    .execute(PagingConfiguration.UNPAGED)
+        }.totalResults == 0
+
+        executeInTransaction {
+            assetRepository.query(client)
+                    .whereUnitIn([unit] as Set)
+                    .execute(PagingConfiguration.UNPAGED)
+        }.totalResults == 0
+
+        executeInTransaction {
+            processRepository.query(client)
+                    .whereUnitIn([unit] as Set)
+                    .execute(PagingConfiguration.UNPAGED)
+        }.totalResults == 0
+
+        executeInTransaction {
+            unitRepository.findByClient(client).size()
+        } == 0
 
         and:
         queryCounts.delete == 10
