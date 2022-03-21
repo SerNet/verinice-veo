@@ -48,6 +48,8 @@ public interface CompositeEntityDataRepository<T extends ElementData>
             + "left join fetch e.subTypeAspects "
             + "left join fetch e.appliedCatalogItems "
             + "left join fetch e.parts "
+            + "left join fetch e.composites  "
+            + "left join fetch e.scopes  "
             + "left join fetch e.domains "
             + "where e.owner.dbId IN ?1")
     //@formatter:on

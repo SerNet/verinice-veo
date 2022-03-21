@@ -345,7 +345,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 16
         queryCounts.insert == 11
         queryCounts.update == 0
-        queryCounts.select == 17
+        queryCounts.select == 16
     }
 
     def "SQL performance for deleting a unit with 1 asset, 1 process and 1 composite person linked to each other"() {
@@ -385,7 +385,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 10
         queryCounts.insert == 4
         queryCounts.update == 0
-        queryCounts.select == 28
+        queryCounts.select == 24
     }
 
     def "SQL performance for deleting 2 units with 1 commonly referenced domain"() {

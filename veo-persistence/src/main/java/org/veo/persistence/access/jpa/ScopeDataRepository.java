@@ -38,7 +38,7 @@ public interface ScopeDataRepository extends ScopeRiskAffectedDataRepository {
     @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
             + "left join fetch e.links " + "left join fetch e.subTypeAspects "
             + "left join fetch e.members " + "left join fetch e.domains "
-            + "where e.owner.dbId IN ?1")
+            + "left join fetch e.scopes " + "where e.owner.dbId IN ?1")
     @Transactional(readOnly = true)
     @Override
     Set<ScopeData> findByUnits(Set<String> unitIds);

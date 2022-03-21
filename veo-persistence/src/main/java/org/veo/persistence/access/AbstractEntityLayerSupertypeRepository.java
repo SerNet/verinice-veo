@@ -19,7 +19,6 @@ package org.veo.persistence.access;
 
 import static java.util.Collections.singleton;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -89,9 +88,7 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
         links.forEach(CustomLink::remove);
         linkDataRepository.deleteAll(links);
 
-        // remove the unit's elements from scope members:
-        var scopes = scopeDataRepository.findDistinctByMembersIn(elements);
-        scopes.forEach(scope -> scope.removeMembers(new HashSet<>(elements)));
+        elements.forEach(Element::remove);
 
         dataRepository.deleteAll(elements);
     }
