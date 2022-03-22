@@ -97,7 +97,8 @@ public interface CompositeElement<T extends CompositeElement> extends Element {
     @Override
     default void remove() {
         setParts(new HashSet<>());
-        getScopes().forEach(s -> s.removeMember(this));
-        getComposites().forEach(c -> c.removePart(this));
+        // Work with copies of parent element lists to avoid concurrent modifications
+        new HashSet<>(getComposites()).forEach(c -> c.removePart(this));
+        new HashSet<>(getScopes()).forEach(s -> s.removeMember(this));
     }
 }

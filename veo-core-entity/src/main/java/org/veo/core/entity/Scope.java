@@ -97,6 +97,7 @@ public interface Scope extends Element, RiskAffected<Scope, ScopeRisk> {
     @Override
     default void remove() {
         setMembers(new HashSet<>());
-        getScopes().forEach(s -> s.removeMember(this));
+        // Work with copy of parent element list to avoid concurrent modifications
+        new HashSet<>(getScopes()).forEach(s -> s.removeMember(this));
     }
 }
