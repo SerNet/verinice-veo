@@ -19,6 +19,7 @@ package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
@@ -27,6 +28,7 @@ import org.veo.core.entity.Key
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 
+@ActiveProfiles(["test", "stats", "local"])
 class BasicCrudITSpec extends VeoMvcSpec {
 
     @Autowired
@@ -101,11 +103,20 @@ class BasicCrudITSpec extends VeoMvcSpec {
         process.present
         when:
         def links = process.get().links
+
         then:
         links.size() == 1
         links.first().type == 'process_dataType'
         links.first().target.id.uuidValue() == assetId
+
         when:
+        def memberScopeId = parseJson(post('/scopes', [
+            name : 'My CRUD memeber scope',
+            owner: [
+                targetUri: "http://localhost/units/$unitId"
+            ],
+            members: []
+        ])).resourceId
 
         result = parseJson(post('/scopes', [
             name : 'My CRUD scope',
@@ -119,6 +130,9 @@ class BasicCrudITSpec extends VeoMvcSpec {
                 [
                     targetUri: "http://localhost/processes/$processId"
                 ],
+                [
+                    targetUri: "http://localhost/scopes/$memberScopeId"
+                ]
             ]
         ]))
         then:

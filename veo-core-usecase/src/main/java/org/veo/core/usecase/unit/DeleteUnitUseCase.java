@@ -17,15 +17,21 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
+import static java.util.function.Predicate.not;
+
 import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
 
 import javax.validation.Valid;
 
+import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.Process;
+import org.veo.core.entity.Scenario;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ClientRepository;
@@ -36,7 +42,9 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
 
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class DeleteUnitUseCase
         implements TransactionalUseCase<DeleteUnitUseCase.InputData, EmptyOutput> {
 
@@ -68,11 +76,22 @@ public class DeleteUnitUseCase
     }
 
     void removeObjectsInUnit(Unit unit) {
-        // delete risk-affected elements first to prevent FK constraint
+        // delete scope and risk-affected elements first to prevent FK constraint
         // violations
+        // FIXME VEO-1124 remove all relations first, then elements
+        var associationOwners = List.of(Scope.class, Process.class, Asset.class, Scenario.class);
+        associationOwners.forEach((type) -> {
+            log.debug("Step 1: First remove the owning side of bi-directional associations "
+                    + "members / risks on {}.", type.getSimpleName());
+            repositoryProvider.getElementRepositoryFor(type)
+                              .deleteByUnit(unit);
+        });
+
         EntityType.ELEMENT_TYPE_CLASSES.stream()
-                                       .sorted(Comparator.comparing(RiskAffected.class::isAssignableFrom)
-                                                         .reversed())
+                                       .filter(not(associationOwners::contains))
+                                       .sorted(Comparator.comparing(Class::getSimpleName))
+                                       .peek((e) -> log.debug("Step 2:Deleting all unit members "
+                                               + "of type {}.", e.getSimpleName()))
                                        .forEach(clazz -> repositoryProvider.getElementRepositoryFor(clazz)
                                                                            .deleteByUnit(unit));
     }
