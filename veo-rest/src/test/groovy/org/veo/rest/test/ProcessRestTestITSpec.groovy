@@ -38,7 +38,7 @@ class ProcessRestTestITSpec extends VeoRestTest{
                     status: "NEW"
                 ]
             ],
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
         ]).body.resourceId
 
         when: "creating a process"
@@ -57,13 +57,13 @@ class ProcessRestTestITSpec extends VeoRestTest{
                 process_dataType: [
                     [
                         target: [
-                            targetUri: "http://localhost/assets/$assetId"
+                            targetUri: "$baseUrl/assets/$assetId"
                         ]
                     ]
                 ]
             ],
             name: "process",
-            owner: [targetUri: "http://localhost/units/$unitId"]
+            owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
 
         then: "it can be retrieved"

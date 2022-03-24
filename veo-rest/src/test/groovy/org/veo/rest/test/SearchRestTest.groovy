@@ -30,67 +30,67 @@ class SearchRestTest extends VeoRestTest{
         given: "a hierarchy of persons"
         def developerId = post("/persons", [
             name: "developer",
-            owner: [targetUri: "http://localhost/units/$unitId"]
+            owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
         def designingDeveloperId = post("/persons", [
             name: "developer who is also a designer",
-            owner: [targetUri: "http://localhost/units/$unitId"]
+            owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
         def salesPersonId = post("/persons", [
             name: "sales person",
-            owner: [targetUri: "http://localhost/units/$unitId"]
+            owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
 
         def developmentTeamId = post("/persons", [
             name: "development team",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             parts: [
-                [targetUri: "http://localhost/persons/$developerId"],
-                [targetUri: "http://localhost/persons/$designingDeveloperId"],
+                [targetUri: "$baseUrl/persons/$developerId"],
+                [targetUri: "$baseUrl/persons/$designingDeveloperId"],
             ]
         ]).body.resourceId
         def designTeamId = post("/persons", [
             name: "design team",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             parts: [
-                [targetUri: "http://localhost/persons/$designingDeveloperId"],
+                [targetUri: "$baseUrl/persons/$designingDeveloperId"],
             ]
         ]).body.resourceId
         def salesTeamId = post("/persons", [
             name: "sales team",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             parts: [
-                [targetUri: "http://localhost/persons/$salesPersonId"],
+                [targetUri: "$baseUrl/persons/$salesPersonId"],
             ]
         ]).body.resourceId
 
         and: "a related hierarchy of scopes"
         def salesScopeId = post("/scopes", [
             name: "sales scope",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             members: [
-                [targetUri: "http://localhost/persons/$salesTeamId"],
+                [targetUri: "$baseUrl/persons/$salesTeamId"],
             ]
         ]).body.resourceId
         def emptyScopeId = post("/scopes", [
             name: "empty scope",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             members: []
         ]).body.resourceId
         post("/scopes", [
             name: "super scope",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             members: [
-                [targetUri: "http://localhost/scopes/$salesScopeId"],
-                [targetUri: "http://localhost/scopes/$emptyScopeId"],
+                [targetUri: "$baseUrl/scopes/$salesScopeId"],
+                [targetUri: "$baseUrl/scopes/$emptyScopeId"],
             ]
         ])
         post("/scopes", [
             name: "scope containing empty scope & design team",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             members: [
-                [targetUri: "http://localhost/scopes/$emptyScopeId"],
-                [targetUri: "http://localhost/persons/$designTeamId"],
+                [targetUri: "$baseUrl/scopes/$emptyScopeId"],
+                [targetUri: "$baseUrl/persons/$designTeamId"],
             ]
         ])
 

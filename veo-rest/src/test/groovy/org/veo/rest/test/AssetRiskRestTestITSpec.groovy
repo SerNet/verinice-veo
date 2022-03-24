@@ -31,7 +31,7 @@ class AssetRiskRestTestITSpec extends VeoRestTest{
         given: "a composite asset and a scenario"
         def subAssetId = post("/assets", [
             name: "sub asset",
-            owner: [targetUri: "http://localhost/units/$unitId"]
+            owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
         def assetId = post("/assets", [
             domains: [
@@ -39,24 +39,24 @@ class AssetRiskRestTestITSpec extends VeoRestTest{
             ],
             parts: [
                 // The part is not relevant for the risk, it just spices things up.
-                [targetUri: "http://localhost/assets/$subAssetId"]
+                [targetUri: "$baseUrl/assets/$subAssetId"]
             ],
             name: "risk test asset",
-            owner: [targetUri: "http://localhost/units/$unitId"]
+            owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
         def scenarioId = post("/scenarios", [
             name: "asset risk test scenario",
-            owner: [targetUri: "http://localhost/units/$unitId"]
+            owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
 
         when: "creating the risk"
         post("/assets/$assetId/risks", [
             domains: [
                 (domainId): [
-                    reference: [targetUri: "http://localhost/domains/$domainId"]
+                    reference: [targetUri: "$baseUrl/domains/$domainId"]
                 ]
             ],
-            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+            scenario: [targetUri: "$baseUrl/scenarios/$scenarioId"]
         ])
 
         then: "it can be retrieved"
@@ -67,9 +67,9 @@ class AssetRiskRestTestITSpec extends VeoRestTest{
         when: "assigning a risk owner"
         def ownerPersonId = post("/persons", [
             name: "asset risk owner",
-            owner: [targetUri: "http://localhost/units/$unitId"]
+            owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
-        risk.riskOwner = [targetUri: "http://localhost/persons/$ownerPersonId"]
+        risk.riskOwner = [targetUri: "$baseUrl/persons/$ownerPersonId"]
         put("/assets/$assetId/risks/$scenarioId", risk, retrievedRiskResponse.parseETag())
 
         then: "the risk has an owner"

@@ -51,7 +51,7 @@ class DomainUpdateRestTest extends VeoRestTest {
         def unitId = postNewUnit("you knit").resourceId
         def scopeId = post("/scopes", [
             name: "target scope",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             domains: [
                 (oldDomainId): [
                     subType: "SCP_ResponsibleBody",
@@ -79,11 +79,11 @@ class DomainUpdateRestTest extends VeoRestTest {
         when: "adding a link from a new process to an old scope"
         post("/processes", [
             name: "new process",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             links: [
                 (processToScopeLinkName): [
                     [
-                        target: [targetUri: "http://localhost/scopes/$scopeId"]
+                        target: [targetUri: "$baseUrl/scopes/$scopeId"]
                     ]
                 ]
             ]

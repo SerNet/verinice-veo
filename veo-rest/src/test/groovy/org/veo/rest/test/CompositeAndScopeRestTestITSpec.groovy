@@ -30,20 +30,20 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         given: "two assets"
         def partAId = post("/assets", [
             name: "part a",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
         ]).body.resourceId
         def partBId = post("/assets", [
             name: "part b",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
         ]).body.resourceId
 
         when: "creating and retrieving a composite asset containing the two existing assets"
         def compositeId = post("/assets", [
             name: "composite",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             parts: [
-                [targetUri: "http://localhost/assets/$partAId"],
-                [targetUri: "http://localhost/assets/$partBId"],
+                [targetUri: "$baseUrl/assets/$partAId"],
+                [targetUri: "$baseUrl/assets/$partBId"],
             ],
         ]).body.resourceId
         def compositeResponse = get("/assets/$compositeId")
@@ -56,9 +56,9 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         when: "removing a part from the composite"
         put("/assets/$compositeId", [
             name: "composite",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             parts: [
-                [targetUri: "http://localhost/assets/$partBId"],
+                [targetUri: "$baseUrl/assets/$partBId"],
             ]
         ], compositeResponse.parseETag())
 
@@ -84,22 +84,22 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         given: "a composite asset"
         def assetPartId = post("/assets", [
             name: "asset part",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
         ]).body.resourceId
         def assetCompositeId = post("/assets", [
             name: "asset composite",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             parts: [
-                [targetUri: "http://localhost/assets/$assetPartId"]
+                [targetUri: "$baseUrl/assets/$assetPartId"]
             ],
         ]).body.resourceId
 
         when: "creating & retrieving a scope that contains the composite"
         def scopeId = post("/scopes", [
             name: "scope of everything",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             members: [
-                [targetUri: "http://localhost/assets/$assetCompositeId"]
+                [targetUri: "$baseUrl/assets/$assetCompositeId"]
             ]
         ]).body.resourceId
         def scopeResponse = get("/scopes/$scopeId")
@@ -113,21 +113,21 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         when: "adding another composite to the part"
         def personPartId = post("/persons", [
             name: "person part",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
         ]).body.resourceId
         def personCompositeId = post("/persons", [
             name: "person composite",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             parts: [
-                [targetUri: "http://localhost/persons/$personPartId"]
+                [targetUri: "$baseUrl/persons/$personPartId"]
             ],
         ]).body.resourceId
         put("/scopes/$scopeId", [
             name: "scope of everything",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             members: [
-                [targetUri: "http://localhost/assets/$assetCompositeId"],
-                [targetUri: "http://localhost/persons/$personCompositeId"],
+                [targetUri: "$baseUrl/assets/$assetCompositeId"],
+                [targetUri: "$baseUrl/persons/$personCompositeId"],
             ]
         ], scopeResponse.parseETag())
 
@@ -144,9 +144,9 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         def scopeETag = get("/scopes/$scopeId").parseETag()
         put("/scopes/$scopeId", [
             name: "scope of everything",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             members: [
-                [targetUri: "http://localhost/assets/$assetCompositeId"]
+                [targetUri: "$baseUrl/assets/$assetCompositeId"]
             ]
         ], scopeETag)
 
@@ -176,20 +176,20 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         given: "a person in a scope and in a composite"
         def personId = post("/persons", [
             name: "little person",
-            owner: [targetUri: "http://localhost/units/$unitId"]
+            owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
         def scopeId = post("/scopes", [
             name: "scope with person as member",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             members: [
-                [targetUri: "http://localhost/persons/$personId"]
+                [targetUri: "$baseUrl/persons/$personId"]
             ]
         ]).body.resourceId
         def compositePersonId = post("/persons", [
             name: "person with person as part",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             parts: [
-                [targetUri: "http://localhost/persons/$personId"]
+                [targetUri: "$baseUrl/persons/$personId"]
             ]
         ]).body.resourceId
 
@@ -197,7 +197,7 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         def personETag = get("/persons/$personId").parseETag()
         put("/persons/$personId", [
             name: "little person in a scope and in a composite",
-            owner: [targetUri: "http://localhost/units/$unitId"]
+            owner: [targetUri: "$baseUrl/units/$unitId"]
         ], personETag)
 
         then: "it is still a member of the scope"
@@ -220,13 +220,13 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         ]).body.resourceId
         def partInOtherUnitId = post("/persons", [
             name: "part",
-            owner: [targetUri: "http://localhost/units/$otherUnitId"]
+            owner: [targetUri: "$baseUrl/units/$otherUnitId"]
         ]).body.resourceId
         def compositeInThisUnitId = post("/persons", [
             name: "composite",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             parts: [
-                [targetUri: "http://localhost/persons/$partInOtherUnitId"]
+                [targetUri: "$baseUrl/persons/$partInOtherUnitId"]
             ]
         ]).body.resourceId
 
@@ -243,16 +243,16 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         given: "a person in this unit that is part of a composite in another unit"
         def partInThisUnitId = post("/persons", [
             name: "part",
-            owner: [targetUri: "http://localhost/units/$unitId"]
+            owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
         def otherUnitId = post("/units", [
             name: "process test unit"
         ]).body.resourceId
         def compositeInOtherUnitId = post("/persons", [
             name: "composite",
-            owner: [targetUri: "http://localhost/units/$otherUnitId"],
+            owner: [targetUri: "$baseUrl/units/$otherUnitId"],
             parts: [
-                [targetUri: "http://localhost/persons/$partInThisUnitId"]
+                [targetUri: "$baseUrl/persons/$partInThisUnitId"]
             ]
         ]).body.resourceId
 

@@ -39,7 +39,7 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
                 (domainId): [ : ]
             ],
             name: "risk test process",
-            owner: [targetUri: "http://localhost/units/$unitId"]
+            owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
         def processETag = get("/processes/$processId").parseETag()
 
@@ -51,9 +51,9 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
                 ]
             ],
             members: [
-                [targetUri: "http://localhost/processes/$processId"]
+                [targetUri: "$baseUrl/processes/$processId"]
             ],
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
         ])
 
         put("/processes/$processId", [
@@ -70,12 +70,12 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
                 ]
             ],
             name: "risk test process",
-            owner: [targetUri: "http://localhost/units/$unitId"]
+            owner: [targetUri: "$baseUrl/units/$unitId"]
         ], processETag)
 
         def scenarioId = post("/scenarios", [
             name: "process risk test scenario",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             domains: [
                 (domainId): [
                     riskValues: [
@@ -91,7 +91,7 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         def riskBody = [
             domains : [
                 (domainId): [
-                    reference: [targetUri: "http://localhost/domains/$domainId"],
+                    reference: [targetUri: "$baseUrl/domains/$domainId"],
                     riskDefinitions: [
                         DSRA: [
                             impactValues: [
@@ -111,7 +111,7 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
                     ]
                 ]
             ],
-            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+            scenario: [targetUri: "$baseUrl/scenarios/$scenarioId"]
         ]
         post("/processes/$processId/risks", riskBody)
 

@@ -125,7 +125,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         when: "a control is created"
         def sourceControlId = post("/controls", [
             name : "Link Target Control",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
             domains: [
                 (domainId): [:] as Map
             ]
@@ -173,7 +173,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         when: "a control is created"
         def sourceControlId = post("/controls", [
             name : "Link Target Control",
-            owner: [targetUri: "http://localhost/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
         ]).body.resourceId
 
         and: "C-4 is instantiated"
@@ -210,7 +210,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
                     status: "NEW"
                 ]
             ],
-            owner: [targetUri: "http://localhost/units/$unitId"]
+            owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
 
         def elementResults = applyCatalogItems(catalog, [
