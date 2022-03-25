@@ -11,28 +11,28 @@
         "name": "selten",
         "abbreviation": "1",
         "description": "Ereignis könnte nach heutigem Kenntnisstand höchstens alle fünf Jahre eintreten.",
-        "htmlColor": "#004643"
+        "htmlColor": "#f3f4f6"
       },
       {
         "ordinalValue": 1,
         "name": "mittel",
         "abbreviation": "2",
         "description": "Ereignis tritt einmal alle fünf Jahre bis einmal im Jahr ein.",
-        "htmlColor": "#004643"
+        "htmlColor": "#f3f4f6"
       },
       {
         "ordinalValue": 2,
         "name": "häufig",
         "abbreviation": "3",
         "description": "Ereignis tritt einmal im Jahr bis einmal pro Monat ein.",
-        "htmlColor": "#004643"
+        "htmlColor": "#f3f4f6"
       },
       {
         "ordinalValue": 3,
         "name": "sehr häufig",
         "abbreviation": "4",
         "description": "Ereignis tritt mehrmals im Monat ein.",
-        "htmlColor": "#004643"
+        "htmlColor": "#f3f4f6"
       }
     ]
   },
@@ -222,28 +222,28 @@
           "name": "vernachlässigbar",
           "abbreviation": "1",
           "description": "Die Schadensauswirkungen sind gering und können vernachlässigt werden.",
-          "htmlColor": "#004643"
+          "htmlColor": "#f3f4f6"
         },
         {
           "ordinalValue": 1,
           "name": "begrenzt",
           "abbreviation": "2",
           "description": "Die Schadensauswirkungen sind begrenzt und überschaubar.",
-          "htmlColor": "#004643"
+          "htmlColor": "#f3f4f6"
         },
         {
           "ordinalValue": 2,
           "name": "beträchtlich",
           "abbreviation": "3",
           "description": "Die Schadensauswirkungen können beträchtlich sein.",
-          "htmlColor": "#004643"
+          "htmlColor": "#f3f4f6"
         },
         {
           "ordinalValue": 3,
           "name": "existenzbedrohend",
           "abbreviation": "4",
           "description": "Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen.",
-          "htmlColor": "#004643"
+          "htmlColor": "#f3f4f6"
         }
       ]
     },
@@ -396,28 +396,28 @@
           "name": "vernachlässigbar",
           "abbreviation": "1",
           "description": "Die Schadensauswirkungen sind gering und können vernachlässigt werden.",
-          "htmlColor": "#004643"
+          "htmlColor": "#f3f4f6"
         },
         {
           "ordinalValue": 1,
           "name": "begrenzt",
           "abbreviation": "2",
           "description": "Die Schadensauswirkungen sind begrenzt und überschaubar.",
-          "htmlColor": "#004643"
+          "htmlColor": "#f3f4f6"
         },
         {
           "ordinalValue": 2,
           "name": "beträchtlich",
           "abbreviation": "3",
           "description": "Die Schadensauswirkungen können beträchtlich sein.",
-          "htmlColor": "#004643"
+          "htmlColor": "#f3f4f6"
         },
         {
           "ordinalValue": 3,
           "name": "existenzbedrohend",
           "abbreviation": "4",
           "description": "Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen.",
-          "htmlColor": "#004643"
+          "htmlColor": "#f3f4f6"
         }
       ]
     },
@@ -570,28 +570,28 @@
           "name": "vernachlässigbar",
           "abbreviation": "1",
           "description": "Die Schadensauswirkungen sind gering und können vernachlässigt werden.",
-          "htmlColor": "#004643"
+          "htmlColor": "#f3f4f6"
         },
         {
           "ordinalValue": 1,
           "name": "begrenzt",
           "abbreviation": "2",
           "description": "Die Schadensauswirkungen sind begrenzt und überschaubar.",
-          "htmlColor": "#004643"
+          "htmlColor": "#f3f4f6"
         },
         {
           "ordinalValue": 2,
           "name": "beträchtlich",
           "abbreviation": "3",
           "description": "Die Schadensauswirkungen können beträchtlich sein.",
-          "htmlColor": "#004643"
+          "htmlColor": "#f3f4f6"
         },
         {
           "ordinalValue": 3,
           "name": "existenzbedrohend",
           "abbreviation": "4",
           "description": "Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen.",
-          "htmlColor": "#004643"
+          "htmlColor": "#f3f4f6"
         }
       ]
     },
@@ -744,28 +744,28 @@
           "name": "vernachlässigbar",
           "abbreviation": "1",
           "description": "Die Schadensauswirkungen sind gering und können vernachlässigt werden.",
-          "htmlColor": "#004643"
+          "htmlColor": "#f3f4f6"
         },
         {
           "ordinalValue": 1,
           "name": "begrenzt",
           "abbreviation": "2",
           "description": "Die Schadensauswirkungen sind begrenzt und überschaubar.",
-          "htmlColor": "#004643"
+          "htmlColor": "#f3f4f6"
         },
         {
           "ordinalValue": 2,
           "name": "beträchtlich",
           "abbreviation": "3",
           "description": "Die Schadensauswirkungen können beträchtlich sein.",
-          "htmlColor": "#004643"
+          "htmlColor": "#f3f4f6"
         },
         {
           "ordinalValue": 3,
           "name": "existenzbedrohend",
           "abbreviation": "4",
           "description": "Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen.",
-          "htmlColor": "#004643"
+          "htmlColor": "#f3f4f6"
         }
       ]
     }
