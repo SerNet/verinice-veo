@@ -19,9 +19,6 @@ package org.veo.rest.test
 
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
-
-import org.veo.test.VeoSpec
-
 /**
  * This class contains tests of the basic operations create, read, update, and delete (CRUD).
  */
@@ -58,7 +55,7 @@ class BasicCrudRestTest extends VeoRestTest {
         getResponseAll.body*.name.contains(unitName)
 
         when: 'updating the unit'
-        def etag = getETag(getResponse.headers.ETag)
+        def etag = getResponse.parseETag()
         unitName = "New name of Unit"
 
         then: 'RESTapi responds with status code 200'
@@ -90,7 +87,7 @@ class BasicCrudRestTest extends VeoRestTest {
         getResponse.body.owner.displayName == unitName
         getResponse.body.owner.targetUri == "$baseUrl/units/$unitId"
 
-        def assetEtag = getETag(getResponse.headers.eTag)
+        def assetEtag = getResponse.parseETag()
         assetEtag instanceof String
 
         and: 'when loading all assets in the unit'
@@ -159,7 +156,7 @@ class BasicCrudRestTest extends VeoRestTest {
         getResponsePerson.body.id == personId
         getResponsePerson.body.name == personName
         getResponsePerson.body[1] == null
-        def personEtag = getETag(getResponsePerson.headers.eTag)
+        def personEtag = getResponsePerson.parseETag()
         personEtag instanceof String
 
         and: 'Changing the name of the person'
@@ -215,7 +212,7 @@ class BasicCrudRestTest extends VeoRestTest {
         getControlResponse.body.name == controlName
         getControlResponse.body.owner.displayName == unitName
         getControlResponse.body.owner.targetUri == targetUri
-        def controlEtag = getETag(getControlResponse.headers.eTag)
+        def controlEtag = getControlResponse.parseETag()
 
         controlEtag instanceof String
 
@@ -423,9 +420,5 @@ class BasicCrudRestTest extends VeoRestTest {
 
         and: 'Deleting the unit'
         delete("$baseUrl/units/$unitId", 204, UserType.DEFAULT)
-    }
-
-    def "getETag"(String header) {
-        return VeoSpec.getTextBetweenQuotes(header)
     }
 }
