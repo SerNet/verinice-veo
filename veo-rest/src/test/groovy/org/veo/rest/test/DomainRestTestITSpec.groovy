@@ -17,27 +17,16 @@
  ******************************************************************************/
 package org.veo.rest.test
 
-import groovy.util.logging.Slf4j
-
-@Slf4j
 class DomainRestTestITSpec extends VeoRestTest {
 
-    public static final String UNIT_NAME = 'Testunit'
-
-    def postResponse
-    String unitId
+    def setup() {
+        postNewUnit("some unit")
+    }
 
     def "export the test domain"() {
-        log.info("Create a unit and export domain")
-
-        given:
-        postResponse = postNewUnit(UNIT_NAME)
-        unitId = postResponse.resourceId
-
         when: "the catalog is retrieved"
         def dsgvoId = getDomains().find { it.name == "test-domain" }.id
         def domainDto = exportDomain(dsgvoId)
-        log.info("==> exported domain: {}", domainDto)
 
         then: "the domain is exported"
         with(domainDto.catalogs[0]) {
@@ -48,23 +37,14 @@ class DomainRestTestITSpec extends VeoRestTest {
     }
 
     def "export the dsgvo domain"() {
-        log.info("Create a unit and export dsgvo domain")
-
-        given:
-        postResponse = postNewUnit(UNIT_NAME)
-        unitId = postResponse.resourceId
-
         when: "the catalog is retrieved"
         def dsgvoId = getDomains().find { it.name == "DS-GVO" }.id
         def domainDto = exportDomain(dsgvoId)
-        log.info("==> exported domain: {}", domainDto)
 
         def catalog = domainDto.catalogs[0]
         def vvt = catalog.catalogItems.find { it.element.abbreviation == "VVT" }
         def tomi = catalog.catalogItems.find { it.element.abbreviation == "TOM-I" }
         def dsg23 = catalog.catalogItems.find { it.element.abbreviation == "DS-G.23" }
-        log.info("==> catalogItems tomi: {}", tomi)
-        log.info("==> catalogItems VVT: {}", vvt)
 
         then: "the domain is exported"
         with(catalog) {
