@@ -40,7 +40,6 @@ import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.ScenarioRepository
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase.InputData
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
@@ -61,9 +60,6 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
 
     @Autowired
     private UpdateAllClientDomainsUseCase useCase
-
-    @Autowired
-    private CreateDemoUnitUseCase createDemoUnitUseCase
 
     @Autowired
     ScopeRepositoryImpl scopeRepository
@@ -280,96 +276,6 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             }
         }
     }
-
-    def "Migrate a client with the demo unit"() {
-        given: 'a client with a demo unit'
-        def demoUnit = createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(client.id)).unit
-        when: 'executing the UpdateAllClientDomainsUseCase'
-        runUseCase(DSGVO_DOMAINTEMPLATE_V2_UUID)
-        demoUnit = executeInTransaction {
-            unitRepository.findById(demoUnit.id).get().tap {
-                //initialize lazy associations
-                it.domains*.name
-            }
-        }
-        then: 'the demo unit belongs to the new domain'
-        demoUnit.domains == [dsgvoDomainV2] as Set
-        and: 'the scope elements belong to the new domain'
-        List<Scope> scopes = executeInTransaction {
-            scopeRepository.query(client).whereOwnerIs(demoUnit).execute(PagingConfiguration.UNPAGED).resultPage.tap {
-                //initialize lazy associations
-                it.each {
-                    it.customAspects*.domains*.name
-                    it.links*.domains*.name
-                    it.risks*.domains*.name
-                }
-            }
-        }
-        scopes.size() == 6
-        scopes.each {
-            with(it) {
-                it.domains == [dsgvoDomainV2] as Set
-                it.customAspects.every {
-                    it.domains == [dsgvoDomainV2] as Set
-                }
-                it.links.every {
-                    it.domains == [dsgvoDomainV2] as Set
-                }
-                it.subTypeAspects.every {
-                    it.domain == dsgvoDomainV2
-                }
-                it.risks.every {
-                    it.domains == [dsgvoDomainV2] as Set
-                }
-            }
-        }
-        and: 'the control elements belong to the new domain'
-        List<Control> controls = executeInTransaction {
-            controlRepository.query(client).whereOwnerIs(demoUnit).execute(PagingConfiguration.UNPAGED).resultPage.tap {
-                //initialize lazy associations
-                it.each {
-                    it.customAspects*.domains*.name
-                    it.links*.domains*.name
-                    it.getRiskValues(dsgvoDomainV2)
-                }
-            }
-        }
-        controls.size() == 16
-        controls.each {
-            with(it) {
-                it.domains == [dsgvoDomainV2] as Set
-                it.customAspects.every {
-                    it.domains == [dsgvoDomainV2] as Set
-                }
-                it.links.every {
-                    it.domains == [dsgvoDomainV2] as Set
-                }
-                it.subTypeAspects.every {
-                    it.domain == dsgvoDomainV2
-                }
-                it.riskValuesAspects*.domain == [dsgvoDomainV2]
-            }
-        }
-        and: 'there is a responsible body'
-        def responsibleBody = scopes.find{
-            it.subTypeAspects.find {it.domain == dsgvoDomainV2}.subType =='SCP_ResponsibleBody'
-        }
-        responsibleBody != null
-        and: "the responsible body's custom aspects are intact"
-
-        with(responsibleBody) {
-            subTypeAspects.size() == 1
-            customAspects.size() == 4
-            customAspects.every {
-                it.domains == [dsgvoDomainV2] as Set
-            }
-            customAspects.find{it.type == 'scope_contactInformation'}.attributes.'scope_contactInformation_website' == 'www.data.de'
-        }
-        and: 'the old domain is removed from all processes'
-        processRepository.findByDomain(dsgvoDomain).empty
-    }
-
-
 
     def runUseCase(String domainTemplateId) {
         executeInTransaction {

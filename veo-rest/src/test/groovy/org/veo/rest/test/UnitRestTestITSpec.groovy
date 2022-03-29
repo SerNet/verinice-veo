@@ -19,8 +19,6 @@ package org.veo.rest.test
 
 import java.time.Instant
 
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase
-
 import groovy.util.logging.Slf4j
 
 @Slf4j
@@ -36,26 +34,6 @@ class UnitRestTestITSpec extends VeoRestTest {
             name: UNIT_NAME
         ], 201)
     }
-
-    def "Select demo unit"() {
-        given: 'a unit and a client'
-        post("/units", [
-            name: UNIT_NAME
-        ], 201)
-        when: "retrieving the client's units"
-        def units = get("/units").body
-        log.info("==> units:  {}", units)
-        then: 'the demo unit is included'
-        def demoUnit = units.find { it.name == CreateDemoUnitUseCase.DEMO_UNIT_NAME }
-        demoUnit != null
-        when: 'retrieving the demo unit from the backend'
-        def unit = getUnit(demoUnit.id)
-        log.info("==> unit:  {}", unit)
-        then: 'the demo unit is returned'
-        unit != null
-        unit.name == CreateDemoUnitUseCase.DEMO_UNIT_NAME
-    }
-
 
     def "Create a unit"() {
         def user = defaultUserName

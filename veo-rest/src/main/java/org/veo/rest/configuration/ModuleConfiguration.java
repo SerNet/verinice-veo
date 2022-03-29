@@ -139,9 +139,7 @@ import org.veo.core.usecase.scope.GetScopeUseCase;
 import org.veo.core.usecase.scope.GetScopesUseCase;
 import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
 import org.veo.core.usecase.scope.UpdateScopeUseCase;
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
-import org.veo.core.usecase.unit.DeleteDemoUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
@@ -375,24 +373,9 @@ public class ModuleConfiguration {
 
     @Bean
     public CreateUnitUseCase getCreateUnitUseCase(ClientRepositoryImpl clientRepository,
-            UnitRepositoryImpl unitRepository, CreateDemoUnitUseCase createDemoUnitUseCase,
-            DefaultDomainCreator defaultDomainCreator) {
+            UnitRepositoryImpl unitRepository, DefaultDomainCreator defaultDomainCreator) {
         return new CreateUnitUseCase(clientRepository, unitRepository, getEntityFactory(),
-                defaultDomainCreator, createDemoUnitUseCase);
-    }
-
-    @Bean
-    public CreateDemoUnitUseCase getCreateDemoUnitUseCase(ClientRepositoryImpl clientRepository,
-            UnitRepositoryImpl unitRepository, DomainTemplateService domainTemplateService,
-            RepositoryProvider repositoryProvider) {
-        return new CreateDemoUnitUseCase(clientRepository, unitRepository, getEntityFactory(),
-                domainTemplateService, repositoryProvider);
-    }
-
-    @Bean
-    public DeleteDemoUnitUseCase getDeleteDemoUnitUseCase(DeleteUnitUseCase deleteUnitUseCase,
-            GetClientUseCase getClientUseCase, GetUnitsUseCase getUnitsUseCase) {
-        return new DeleteDemoUnitUseCase(deleteUnitUseCase, getClientUseCase, getUnitsUseCase);
+                defaultDomainCreator);
     }
 
     @Bean
