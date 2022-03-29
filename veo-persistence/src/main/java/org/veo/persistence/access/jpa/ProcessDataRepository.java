@@ -40,11 +40,16 @@ public interface ProcessDataRepository extends CompositeRiskAffectedDataReposito
     // @formatter:on
     Set<ProcessData> findByIdsWithRiskValues(Set<String> dbIds);
 
-    @Query("select distinct e from #{#entityName} e " + "left join fetch e.owner o "
-            + "inner join fetch e.riskValuesAspects "
-            + "inner join fetch e.risks r left join fetch r.riskAspects "
+    // @formatter:off
+    @Query("select distinct e from #{#entityName} e "
+            + "left join fetch e.owner o "
+            + "left join fetch e.riskValuesAspects "
+            + "inner join fetch e.risks r "
+            + "left join fetch r.riskAspects "
             + "inner join fetch r.domains "
-            + "inner join fetch r.scenario s inner join fetch s.riskValuesAspects "
+            + "inner join fetch r.scenario s "
+            + "left join fetch s.riskValuesAspects "
             + " where o.client = ?1")
+    // @formatter:on
     Set<ProcessData> findAllHavingRisks(Client client);
 }

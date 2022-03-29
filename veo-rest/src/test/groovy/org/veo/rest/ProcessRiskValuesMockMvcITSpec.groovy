@@ -321,8 +321,6 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         retrievedProcessRisk2.createdAt == retrievedProcessRisk1.createdAt
     }
 
-    @Ignore
-    @Issue("VEO-1265")
     def "Creating a risk with only specific probability and impact values calculates risk value"() {
         given: "a process in a scope with a risk definition"
         addProcessToScope("r1d1")
@@ -365,12 +363,9 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
         and: "the risk was calculated"
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.size == 4
-        // FIXME VEO-1265 this will fail:
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}.inherentRisk == 0
     }
 
-    @Ignore
-    @Issue("VEO-1265")
     def "Creating a risk with potential values calculates risk value"() {
         given: "a process in a scope with one risk definition (out of two in the domain)"
         def processId = parseJson(post("/processes", [
@@ -472,7 +467,6 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.effectiveProbability == 1
 
         and: "the risk was calculated"
-        // FIXME VEO-1265 this will fail:
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.size == 4
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}.inherentRisk == 0
     }
