@@ -112,7 +112,7 @@ class EntitySchemaServiceITSpec extends Specification {
 
         then:
         def riskValueProps = schema.properties.domains.properties.(testDomain.idAsString).properties.riskValues.properties
-        riskValueProps.riskDefA.properties.potentialImpacts.C.enum ==~ [0, 1]
+        riskValueProps.riskDefA.properties.potentialImpacts.properties.C.enum ==~ [0, 1]
     }
 
     def "definitions from multiple domains are composed"() {

@@ -19,13 +19,12 @@ package org.veo.adapter.presenter.api.dto;
 
 import java.util.Map;
 
-import org.veo.adapter.presenter.api.openapi.PotentialImpactsSchema;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
 public class ProcessRiskValuesDto {
-    @Schema(implementation = PotentialImpactsSchema.class)
+    @Schema(description = "Potential impacts for a set of risk categories",
+            example = "{\"C\":2,\n\"I\":3}")
     private Map<String, String> potentialImpacts;
 }

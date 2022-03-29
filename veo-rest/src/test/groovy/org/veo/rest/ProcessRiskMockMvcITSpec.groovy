@@ -22,6 +22,8 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.transaction.support.TransactionTemplate
 
+import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
+
 import org.veo.core.VeoMvcSpec
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -273,8 +275,8 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         ],['If-Match': processETag],400)
 
         then: "an exception is thrown"
-        IllegalArgumentException ex = thrown()
-        ex.message == 'Undefined Risk definitions: myFirstWrongDefinition'
+        JsonSchemaValidationException ex = thrown()
+        ex.message.contains( 'myFirstWrongDefinition' )
     }
 
     def "can't create process with wrong impact"() {
@@ -314,8 +316,8 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         ],['If-Match': processETag],400)
 
         then: "an exception is thrown"
-        IllegalArgumentException ex = thrown()
-        ex.message == "Category: 'E' not defined in myFirstRiskDefinition"
+        JsonSchemaValidationException ex = thrown()
+        ex.message.contains( 'potentialImpacts.E' )
     }
 
     def "can't create process with wrong impact value"() {
@@ -348,8 +350,8 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         ], ['If-Match': processETag], 400).resourceId
 
         then: "an exception is thrown"
-        IllegalArgumentException ex = thrown()
-        ex.message == "Impact: '10' not defined in mySecondRiskDefinition"
+        JsonSchemaValidationException ex = thrown()
+        ex.message.contains( 'potentialImpacts.C' )
     }
 
     private ResultActions postScope(processId, String riskDefinition) {

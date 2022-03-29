@@ -116,23 +116,29 @@ public class SchemaExtender {
     private ObjectNode buildDomainAssociationSchemaForProcess(SchemaGenerator generator,
             Domain domain) {
         var domainAssociationSchema = generator.generateSchema(ProcessDomainAssociationDto.class);
-        var riskValuesProps = ((ObjectNode) domainAssociationSchema.get(PROPS)
-                                                                   .get("riskValues")).putObject(PROPS);
+        var riskValuesSchema = (ObjectNode) domainAssociationSchema.get(PROPS)
+                                                                   .get("riskValues");
+        riskValuesSchema.put(ADDITIONAL_PROPERTIES, false);
+        var riskValuesProps = riskValuesSchema.putObject(PROPS);
         domain.getRiskDefinitions()
               .forEach((riskDefId, riskDef) -> {
                   var riskDefinitionSchema = generator.generateSchema(ProcessRiskValuesDto.class);
-                  var potentialImpactsSchema = (ObjectNode) riskValuesSchema.get(PROPS)
-                                                                            .get("potentialImpacts");
+                  riskDefinitionSchema.put(ADDITIONAL_PROPERTIES, false);
+                  var potentialImpactsSchema = (ObjectNode) riskDefinitionSchema.get(PROPS)
+                                                                                .get("potentialImpacts");
 
+                  potentialImpactsSchema.put(ADDITIONAL_PROPERTIES, false);
+                  var potentialImpactsSchemaProperties = potentialImpactsSchema.putObject(PROPS);
                   riskDef.getCategories()
-                         .forEach(c -> potentialImpactsSchema.putObject(c.getId())
-                                                             .putArray("enum")
-                                                             .addAll(c.getPotentialImpacts()
+                         .forEach(c -> potentialImpactsSchemaProperties.putObject(c.getId())
+                                                                       .put(TYPE, "number")
+                                                                       .putArray("enum")
+                                                                       .addAll(c.getPotentialImpacts()
 
-                                                                      .stream()
-                                                                      .map(DiscreteValue::getOrdinalValue)
-                                                                      .map(IntNode::new)
-                                                                      .collect(Collectors.toList())));
+                                                                                .stream()
+                                                                                .map(DiscreteValue::getOrdinalValue)
+                                                                                .map(IntNode::new)
+                                                                                .collect(Collectors.toList())));
                   riskValuesProps.set(riskDefId, riskDefinitionSchema);
               });
         return domainAssociationSchema;
