@@ -26,7 +26,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -40,7 +39,6 @@ import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformElementDto;
-import org.veo.adapter.service.domaintemplate.dto.TransformUnitDumpDto;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -92,8 +90,6 @@ public class DomainTemplateAssemblerMain {
 
             assembler.setRiskDefinitions(readRiskDefinitions(snippetPath.resolve("riskdefinitions")));
             TransformDomainTemplateDto templateDto = assembler.createDomainTemplateDto();
-            templateDto.setDemoUnitElements(assembler.processDemoUnit(readDemoUnitElements(new File(
-                    System.getenv("domaintemplate.unit-dump-file")))));
             OBJECT_MAPPER.writerFor(TransformDomainTemplateDto.class)
                          .writeValue(new File(System.getenv("domaintemplate.out.file")),
                                      templateDto);
@@ -115,11 +111,6 @@ public class DomainTemplateAssemblerMain {
             }
         }
         return m;
-    }
-
-    private static Set<AbstractElementDto> readDemoUnitElements(File demoUnit) {
-        TransformUnitDumpDto exportDto = readInstanceFile(demoUnit, TransformUnitDumpDto.class);
-        return exportDto.getElements();
     }
 
     @SuppressFBWarnings("PATH_TRAVERSAL_IN")

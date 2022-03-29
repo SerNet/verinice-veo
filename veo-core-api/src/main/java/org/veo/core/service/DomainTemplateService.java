@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,7 +25,6 @@ import org.veo.core.ExportDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 
@@ -49,12 +47,6 @@ public interface DomainTemplateService {
      *             when the template doesn't exist
      */
     Domain createDomain(Client client, String templateId);
-
-    /**
-     * Returns the elements that are to be created in the demo unit for the new
-     * client.
-     */
-    Collection<Element> getElementsForDemoUnit(Client client);
 
     ExportDto exportDomain(Domain domain);
 

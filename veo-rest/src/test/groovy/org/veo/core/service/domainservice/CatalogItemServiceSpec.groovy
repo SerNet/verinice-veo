@@ -72,23 +72,6 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
         element = catalogItemService.createInstance(item, domainFromTemplate)
     }
 
-    def "retrieve demo unit elements for default client"() {
-        when: "retrieving the demo unit elements for a client"
-        def elements = domainTemplateService.getElementsForDemoUnit(client)
-        then: "the elements for all the client's units are returned"
-        elements.size() == 73
-    }
-
-
-    def "retrieve demo unit elements for client without domains"() {
-        given:
-        def clientWithoutDomains = repository.save(newClient())
-        when: "retrieving the demo unit elements for a client"
-        def elements = domainTemplateService.getElementsForDemoUnit(clientWithoutDomains)
-        then: "the elements for all the client's units are returned"
-        elements.empty
-    }
-
     def "create an element from a catalog item"() {
         given: "a client and a domain"
         expect: "the element is created and initialized"

@@ -21,7 +21,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -157,47 +156,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         client.addToDomains(domain);
         log.info("Domain {} created for client {}", domain.getName(), client);
         return domain;
-    }
-
-    @Override
-    public Collection<Element> getElementsForDemoUnit(Client client) {
-        log.info("Create demo unit elements for {}", client);
-        Set<Element> elements = new HashSet<>();
-        PlaceholderResolver ref = new PlaceholderResolver(entityTransformer);
-        client.getDomains()
-              .stream()
-              .filter(d -> d.isActive() && d.getDomainTemplate() != null
-                      && domainTemplateFiles.containsKey(d.getDomainTemplate()
-                                                          .getIdAsString()))
-              .forEach(domain -> {
-                  log.info("Processing {}", domain);
-                  DomainTemplate template = domain.getDomainTemplate();
-                  // TODO VEO-1168: read demo unit elements from the database
-                  VeoInputStreamResource templateFile = domainTemplateFiles.get(template.getIdAsString());
-                  try {
-                      TransformDomainTemplateDto domainTemplateDto = readInstanceFile(templateFile);
-                      ref.cache.put(domainTemplateDto.getId(), domain);
-                      Map<String, Element> elementCache = createElementCache(ref,
-                                                                             domainTemplateDto.getDemoUnitElements()
-                                                                                              .stream()
-                                                                                              .map(this::removeOwner)
-                                                                                              .map(IdentifiableDto.class::cast)
-                                                                                              .collect(Collectors.toMap(IdentifiableDto::getId,
-                                                                                                                        Function.identity())));
-
-                      elementCache.entrySet()
-                                  .forEach(e -> {
-                                      Element value = e.getValue();
-                                      value.setId(null);
-                                  });
-                      elements.addAll(elementCache.values());
-                  } catch (JsonMappingException e) {
-                      log.error("Error parsing file", e);
-                  } catch (IOException e) {
-                      log.error("Error loading file", e);
-                  }
-              });
-        return elements;
     }
 
     /**

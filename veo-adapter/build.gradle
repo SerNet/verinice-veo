@@ -52,8 +52,7 @@ task assembleDomainTemplates(type: JavaExec) {
         'domaintemplate.templateVersion': "1.5.1",
         'domaintemplate.catalogPrefixes': "tom",
         'tom.catalog.name': "DS-GVO",
-        'tom.prefix': "TOM.",
-        'domaintemplate.unit-dump-file': "${templateSnippetDir}/dsgvo/demo-unit/unit-dump.json"
+        'tom.prefix': "TOM."
     ]
 
     outputs.dir targetDirectory
