@@ -20,11 +20,13 @@ package org.veo.core.entity.decision;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 /**
  * Provides the value for a certain custom aspect attribute on an element.
  */
+@Data
 @RequiredArgsConstructor
 public class CustomAspectAttributeValueProvider implements InputProvider {
     private final String customAspect;

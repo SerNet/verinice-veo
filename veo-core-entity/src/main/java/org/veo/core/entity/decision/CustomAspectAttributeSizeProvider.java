@@ -22,12 +22,14 @@ import java.util.Collection;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 /**
  * Provides the size/length of a collection value for a certain custom aspect
  * attribute on an element.
  */
+@Data
 @RequiredArgsConstructor
 public class CustomAspectAttributeSizeProvider implements InputProvider {
     private final String customAspectType;

@@ -20,12 +20,14 @@ package org.veo.core.entity.decision;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 /**
  * Configurable condition for a {@link Rule} in a {@link Decision} which checks
  * elements using an injectable input provider and matcher.
  */
+@Data
 @RequiredArgsConstructor
 public class RuleCondition {
     private final InputProvider inputProvider;

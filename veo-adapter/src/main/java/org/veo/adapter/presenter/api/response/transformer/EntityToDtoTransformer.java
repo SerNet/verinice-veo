@@ -243,6 +243,7 @@ public final class EntityToDtoTransformer {
         target.setAuthority(source.getAuthority());
         target.setRevision(source.getRevision());
         target.setTemplateVersion(source.getTemplateVersion());
+        target.setDecisions(source.getDecisions());
 
         mapVersionedSelfReferencingProperties(source, target);
         mapNameableProperties(source, target);

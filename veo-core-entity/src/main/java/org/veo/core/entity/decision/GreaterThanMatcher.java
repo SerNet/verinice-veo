@@ -21,12 +21,14 @@ import java.math.BigDecimal;
 
 import javax.validation.constraints.NotNull;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 /**
  * Matches if the value is a greater number than an injectable comparison value.
  * Only supports int, long & decimal.
  */
+@Data
 @RequiredArgsConstructor
 public class GreaterThanMatcher implements InputMatcher {
     @NotNull

@@ -34,6 +34,8 @@ import org.veo.core.entity.specification.EntitySpecifications;
 public interface Element
         extends Nameable, Identifiable, ClientOwned, Designated, Versioned, Displayable {
 
+    public static int ELEMENT_TYPE_MAX_LENGTH = Constraints.DEFAULT_CONSTANT_MAX_LENGTH;
+
     /**
      * Can be null when the owner is a catalogitem owned by a domain template.
      */

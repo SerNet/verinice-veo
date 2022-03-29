@@ -27,7 +27,7 @@ import javax.validation.constraints.NotNull;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -36,17 +36,16 @@ import lombok.RequiredArgsConstructor;
  * matches the element (unless another rule takes precedence). An element only
  * matches the rule if all the rule conditions match.
  */
+@Data
 @RequiredArgsConstructor
 public class Rule {
     /**
      * Should become the decision's result value if this rule matches (unless it is
      * overruled). Can be null.
      */
-    @Getter
     private final Boolean output;
 
     /** Translated human-readable texts. Key is ISO language code, value is text. */
-    @Getter
     @NotNull
     private final Map<String, String> description;
 

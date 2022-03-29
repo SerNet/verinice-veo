@@ -124,6 +124,15 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         result._self == "http://localhost/domains/${testDomain.id.uuidValue()}"
         result.name == testDomain.name
         result.catalogs.size() == 1
+        with(result.decisions.piaMandatory) {
+            elementSubType == "PRO_DataProcessing"
+            rules[5].description.en == "Processing on blacklist"
+            rules[5].conditions[0].inputProvider.type == "customAspectAttributeValue"
+            rules[5].conditions[0].inputProvider.customAspect == "process_privacyImpactAssessment"
+            rules[5].conditions[0].inputProvider.attribute == "process_privacyImpactAssessment_listed"
+            rules[5].conditions[0].inputMatcher.type == "equals"
+            rules[5].conditions[0].inputMatcher.comparisonValue == "process_privacyImpactAssessment_listed_positive"
+        }
         when:
         def firstCatalog = result.catalogs.first()
         then:

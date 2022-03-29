@@ -17,26 +17,34 @@
  ******************************************************************************/
 package org.veo.core.entity.decision;
 
+import static org.veo.core.entity.Element.ELEMENT_TYPE_MAX_LENGTH;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.Size;
+
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.aspects.SubTypeAspect;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 /**
  * Configurable logic for a specific decision on a type of element. Accepts an
  * element and checks it against a list of rules to determine a boolean result
- * value. The first rule that matches determines the result.
+ * value. The first rule (i.e. with the highest priority) that matches
+ * determines the result (first hit policy).
  */
-@Getter
+@Data
 @RequiredArgsConstructor
 public class Decision {
+    @Size(max = ELEMENT_TYPE_MAX_LENGTH)
     private final String elementType;
+    @Size(max = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
     private final String elementSubType;
     /**
      * Rules ordered by priority (descending).

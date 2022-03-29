@@ -25,11 +25,14 @@ import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.risk.RiskRef;
 
+import lombok.Data;
+
 /**
  * Provides the highest effective risk value affecting given element. Returns
  * null if the element is not affected by any risks or if none of the risks have
  * an effective risk value.
  */
+@Data
 public class MaxRiskProvider implements InputProvider {
     @Override
     public Object getValue(Element element, Domain domain) {

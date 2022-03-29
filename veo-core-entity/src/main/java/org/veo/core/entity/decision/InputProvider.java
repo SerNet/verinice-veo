@@ -17,6 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity.decision;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 
@@ -25,6 +29,12 @@ import org.veo.core.entity.Element;
  * an element and extracts a value from the element in the context of a given
  * domain.
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+        @Type(value = CustomAspectAttributeSizeProvider.class, name = "customAspectAttributeSize"),
+        @Type(value = CustomAspectAttributeValueProvider.class,
+              name = "customAspectAttributeValue"),
+        @Type(value = MaxRiskProvider.class, name = "maxRiskProvider"), })
 public interface InputProvider {
     public Object getValue(Element element, Domain domain);
 }

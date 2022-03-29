@@ -17,9 +17,12 @@
  ******************************************************************************/
 package org.veo.core.entity.decision;
 
+import lombok.Data;
+
 /**
  * Matches value if it is null.
  */
+@Data
 public class IsNullMatcher implements InputMatcher {
     @Override
     public boolean matches(Object value) {
