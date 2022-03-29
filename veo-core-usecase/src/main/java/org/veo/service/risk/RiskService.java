@@ -89,9 +89,10 @@ public class RiskService {
 
                         // Transfer potentialProbability from scenario to riskValues if present:
                         ProbabilityValueProvider riskValueProbability = risk.getProbabilityProvider(rdr);
-                        scenario.getPotentialProbability(domain)
-                                .map(probabilityByRiskDefinition -> probabilityByRiskDefinition.get((rdr)))
-                                .ifPresent(probability -> riskValueProbability.setPotentialProbability(probability.getPotentialProbability()));
+                        riskValueProbability.setPotentialProbability(scenario.getPotentialProbability(domain,
+                                                                                                      rdr)
+                                                                             .map(PotentialProbabilityImpl::getPotentialProbability)
+                                                                             .orElse(null));
 
                         // Retrieve the resulting effective probability:
                         ProbabilityRef riskValueEffectiveProbability = riskValueProbability.getEffectiveProbability();
