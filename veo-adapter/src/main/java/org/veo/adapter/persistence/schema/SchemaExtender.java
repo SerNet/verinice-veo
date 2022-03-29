@@ -57,6 +57,7 @@ public class SchemaExtender {
     public static final String PROPS = "properties";
     public static final String RISK_VALUES = "riskValues";
     public static final String ADDITIONAL_PROPERTIES = "additionalProperties";
+    public static final String TYPE = "type";
     private final ObjectMapper mapper = new ObjectMapper();
 
     public void extendSchema(SchemaGenerator generator, JsonNode schema, String elementType,
@@ -119,7 +120,7 @@ public class SchemaExtender {
                                                                    .get("riskValues")).putObject(PROPS);
         domain.getRiskDefinitions()
               .forEach((riskDefId, riskDef) -> {
-                  var riskValuesSchema = generator.generateSchema(ProcessRiskValuesDto.class);
+                  var riskDefinitionSchema = generator.generateSchema(ProcessRiskValuesDto.class);
                   var potentialImpactsSchema = (ObjectNode) riskValuesSchema.get(PROPS)
                                                                             .get("potentialImpacts");
 
@@ -132,7 +133,7 @@ public class SchemaExtender {
                                                                       .map(DiscreteValue::getOrdinalValue)
                                                                       .map(IntNode::new)
                                                                       .collect(Collectors.toList())));
-                  riskValuesProps.set(riskDefId, riskValuesSchema);
+                  riskValuesProps.set(riskDefId, riskDefinitionSchema);
               });
         return domainAssociationSchema;
     }
@@ -251,7 +252,7 @@ public class SchemaExtender {
             SchemaGenerator generator) {
         links.forEach((type, definition) -> {
             var linkPropNode = linkProps.putObject(type);
-            linkPropNode.put("type", "array");
+            linkPropNode.put(TYPE, "array");
             linkPropNode.set("items", createLinkSchema(generator, definition));
         });
     }
@@ -273,7 +274,7 @@ public class SchemaExtender {
         var targetProps = (ObjectNode) linkSchema.get(PROPS)
                                                  .get("target")
                                                  .get(PROPS);
-        targetProps.putObject("type")
+        targetProps.putObject(TYPE)
                    .putArray("enum")
                    .add(definition.getTargetType());
         Optional.ofNullable(definition.getTargetSubType())
