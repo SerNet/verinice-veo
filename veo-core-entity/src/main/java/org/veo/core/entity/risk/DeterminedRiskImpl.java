@@ -40,16 +40,8 @@ public class DeterminedRiskImpl implements DeterminedRisk {
     @Setter(AccessLevel.NONE)
     private CategoryRef category;
 
-    /**
-     * A risk value that is determined by the risk service according to the method
-     * defined in the risk definition.
-     */
     private RiskRef inherentRisk;
 
-    /**
-     * The residual risk (aka net risk) entered manually by the user as result of
-     * taking control effects into account.
-     */
     private RiskRef residualRisk;
 
     @Size(max = DeterminedRisk.EXPLANATION_MAX_LENGTH)

@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
+import java.beans.Transient;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -42,18 +44,33 @@ public interface DeterminedRisk {
             @Size(max = EXPLANATION_MAX_LENGTH) String riskTreatmentExplanation);
 
     /**
-     * The risk that was determined based on probability and impact. This does not
-     * take existing controls into account.
+     * A risk value that is determined by the risk service according to the method
+     * defined in the risk definition.
      *
+     * @return inherent risk or null
      * @see Probability
      * @see Impact
      */
     RiskRef getInherentRisk();
 
     /**
-     * The risk after existing controls have been taken into account.
+     * The residual risk (aka net risk) entered manually by the user as result of
+     * taking control effects into account.
      */
     RiskRef getResidualRisk();
+
+    /**
+     * The inherent risk becomes the effective risk - unless it is overruled by the
+     * user-defined residual risk.
+     *
+     * @return effective risk or null (if there is no residual risk and no inherent
+     *         risk)
+     */
+    @Transient
+    default RiskRef getEffectiveRisk() {
+        return Optional.ofNullable(getResidualRisk())
+                       .orElse(getInherentRisk());
+    }
 
     void setResidualRiskExplanation(
             @Size(max = EXPLANATION_MAX_LENGTH) String residualRiskExplanation);
