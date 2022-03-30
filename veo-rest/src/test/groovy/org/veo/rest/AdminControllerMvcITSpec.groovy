@@ -57,65 +57,7 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
         def client = createTestClient()
         createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID)
         createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        def unitId = parseJson(post("/units", [name: "you knit"])).resourceId
-        def domainId = parseJson(get("/domains")).first().id
-        def owner = [targetUri: "http://localhost/units/$unitId"]
-
-        def assetId = parseJson(post("/assets", [
-            domains: [
-                (domainId): [:]
-            ],
-            name: "asset",
-            owner: owner
-        ])).resourceId
-        post("/controls", [
-            name: "control",
-            owner: owner
-        ])
-        post("/documents", [
-            name: "document",
-            owner: owner
-        ])
-        post("/incidents", [
-            name: "incident",
-            owner: owner
-        ])
-        post("/persons", [
-            name: "person",
-            owner: owner
-        ])
-        def processId = parseJson(post("/processes", [
-            domains: [
-                (domainId): [:]
-            ],
-            name: "process",
-            owner: owner
-        ])).resourceId
-        def scenarioId = parseJson(post("/scenarios", [
-            name: "scenario",
-            owner: owner
-        ])).resourceId
-        post("/scopes", [
-            name: "scope",
-            owner: owner
-        ])
-
-        post("/assets/$assetId/risks", [
-            domains: [
-                (domainId): [
-                    reference: [ targetUri: "http://localhost/domains/$domainId" ]
-                ]
-            ],
-            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
-        ])
-        post("/processes/$processId/risks", [
-            domains: [
-                (domainId) : [
-                    reference: [ targetUri: "http://localhost/domains/$domainId" ]
-                ]
-            ],
-            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
-        ])
+        def (unitId, assetId, scenarioId, processId) = createUnitWithElements()
 
         when: "requesting a unit dump"
         def dump = parseJson(get("/admin/unit-dump/$unitId"))
@@ -142,16 +84,127 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
     }
 
     def "update client domains"() {
-        given: "a client with some units and a document"
+        given: "a unit with a bunch of elements and risks"
         def client = createTestClient()
         createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
         createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID)
+        def (unitId, assetId, scenarioId, processId) = createUnitWithElements()
+
         when: 'updating all clients'
         post("/admin/domaintemplates/${DSGVO_DOMAINTEMPLATE_V2_UUID}/allclientsupdate", [:], 204)
 
-        // FIXME introduce elements previously provided by demo-unit to test allclientsupdate
-        // maybe preserve the previous "demo unit" just as example content for tests?
-        then: 'surely everything is fine'
-        null == null
+        then: 'the elements are transferred to the new domain'
+        with(parseJson(get("/admin/unit-dump/$unitId"))) {
+            domains.size() == 1
+            domains.first().templateVersion == '2.0.0'
+            def domainId = domains.first().id
+            elements.size() == 8
+            elements.each {
+                assert it.domains.keySet() =~ [domainId]
+                it.customAspects.each { type, ca ->
+                    assert ca.domains*.targetUri =~ [
+                        "http://localhost/domains/$domainId"
+                    ]
+                }
+                it.links.each { type, linksOfType->
+                    linksOfType.each {
+                        assert it.domains*.targetUri =~ [
+                            "http://localhost/domains/$domainId"
+                        ]
+                    }
+                }
+            }
+        }
+    }
+
+    private createUnitWithElements() {
+        def domainId = parseJson(get("/domains")).first().id
+        def unitId = parseJson(post("/units", [
+            name   : "you knit",
+            domains: [
+                [targetUri: "http://localhost/domains/(domainId)"]
+            ]
+        ])).resourceId
+        def owner = [targetUri: "http://localhost/units/$unitId"]
+
+        def assetId = parseJson(post("/assets", [
+            domains: [
+                (domainId): [:]
+            ],
+            name   : "asset",
+            owner  : owner
+        ])).resourceId
+        post("/controls", [
+            name   : "control",
+            domains: [
+                (domainId): [:]
+            ],
+            owner  : owner
+        ])
+        post("/documents", [
+            name   : "document",
+            domains: [
+                (domainId): [:]
+            ],
+            owner  : owner
+        ])
+        post("/incidents", [
+            name   : "incident",
+            domains: [
+                (domainId): [:]
+            ],
+            owner  : owner
+        ])
+        post("/persons", [
+            name   : "person",
+            domains: [
+                (domainId): [:]
+            ],
+            owner  : owner
+        ])
+        def processId = parseJson(post("/processes", [
+            domains: [
+                (domainId): [:]
+            ],
+            name   : "process",
+            owner  : owner
+        ])).resourceId
+        def scenarioId = parseJson(post("/scenarios", [
+            name   : "scenario",
+            domains: [
+                (domainId): [:]
+            ],
+            owner  : owner
+        ])).resourceId
+        post("/scopes", [
+            name   : "scope",
+            domains: [
+                (domainId): [:]
+            ],
+            owner  : owner
+        ])
+
+        post("/assets/$assetId/risks", [
+            domains : [
+                (domainId): [
+                    reference: [targetUri: "http://localhost/domains/$domainId"]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ])
+        post("/processes/$processId/risks", [
+            domains : [
+                (domainId): [
+                    reference: [targetUri: "http://localhost/domains/$domainId"]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ])
+        [
+            unitId,
+            assetId,
+            scenarioId,
+            processId
+        ]
     }
 }
