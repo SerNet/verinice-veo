@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -71,7 +72,7 @@ public class CustomAspectData implements CustomAspect {
 
     @Type(type = "json")
     @Column(columnDefinition = "jsonb")
-    private Map<String, Object> attributes;
+    private Map<String, Object> attributes = new HashMap<>();
 
     /**
      * Add the given Domain to the collection domains.

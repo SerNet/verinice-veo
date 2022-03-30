@@ -355,6 +355,22 @@ abstract class VeoSpec extends Specification {
         return categoryLevel
     }
 
+    static RiskDefinition newRiskDefinition(String id, @DelegatesTo(value = RiskDefinition.class)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.riskdefinition.RiskDefinition") Closure init = null) {
+        var rd = new RiskDefinition()
+        rd.id = id
+        execute(rd, init)
+        return rd
+    }
+
+    static CategoryDefinition newCategoryDefinition(String id, @DelegatesTo(value = CategoryDefinition.class)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.riskdefinition.CategoryDefinition") Closure init = null) {
+        var rd = new CategoryDefinition()
+        rd.id = id
+        execute(rd, init)
+        return rd
+    }
+
     static RiskValues newRiskValues(RiskDefinitionRef riskDefinitionRef, Domain domain, @DelegatesTo(value = RiskValues.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.risk.RiskValues") Closure init = null) {
         return new RiskValues(new ProbabilityImpl(), [], [], new Key<String>(riskDefinitionRef.idRef), domain.id).tap{

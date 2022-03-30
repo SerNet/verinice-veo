@@ -17,10 +17,14 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.veo.core.entity.decision.Decision;
+import org.veo.core.entity.decision.Rule;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
@@ -107,4 +111,48 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
     }
 
     void setRiskDefinitions(Map<String, RiskDefinition> definitions);
+
+    default Map<String, Decision> getDecisions() {
+        // TODO VEO-1294 use configurable persisted decisions
+        // @formatter:off
+        final var piaCa = "process_privacyImpactAssessment";
+        return Map.of("piaMandatory", new Decision(Process.SINGULAR_TERM, "PRO_DataProcessing", List.of(
+                new Rule(null, Map.of(
+                    "en", "Risk analysis not carried out",
+                        "de", "Risikoanalyse VT nicht durchgeführt"
+                )).ifNoRiskValuesPresent(),
+
+                new Rule(false, Map.of(
+                        "en", "Processing on whitelist",
+                        "de", "VT auf Negativliste"
+                )).ifAttributeEquals(piaCa + "_listed_negative", piaCa + "_listed", piaCa),
+
+                new Rule(false, Map.of(
+                        "en", "Part of a joint processing",
+                        "de", "Gemeinsame VT"
+                )).ifAttributeEquals(true, piaCa + "_processingOperationAccordingArt35", piaCa),
+
+                new Rule(false, Map.of(
+                        "en", "Other exclusions",
+                        "de", "Anderer Ausschlusstatbestand"
+                )).ifAttributeEquals(true, piaCa + "_otherExclusions", piaCa),
+
+                new Rule(true, Map.of(
+                        "en", "High risk present",
+                        "de", "Hohes Risiko vorhanden"
+                )).ifMaxRiskGreaterThan(BigDecimal.valueOf(1)),
+
+                new Rule(true, Map.of(
+                        "en", "Processing on blacklist",
+                        "de", "VT auf Positivliste"
+                )).ifAttributeEquals(piaCa + "_listed_positive", piaCa + "_listed", piaCa),
+
+                new Rule(true, Map.of(
+                        "en", "Two or more criteria apply",
+                        "de", "Mehrere Kriterien treffen zu"
+                )).ifAttributeSizeGreaterThan(1, piaCa + "_processingCriteria", piaCa)
+
+        )));
+        // @formatter:on
+    }
 }
