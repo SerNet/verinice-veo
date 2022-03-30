@@ -5,5 +5,5 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.diffplug.spotless:spotless-lib-extra:2.24.0'
+    implementation 'com.diffplug.spotless:spotless-lib-extra:2.24.1'
 }
