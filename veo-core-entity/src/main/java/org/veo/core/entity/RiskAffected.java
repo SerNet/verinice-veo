@@ -170,8 +170,16 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
     }
 
     @Override
+    default boolean addToDomains(Domain aDomain) {
+        boolean added = Element.super.addToDomains(aDomain);
+        if (added) {
+            getRisks().forEach(r -> r.addToDomains(aDomain));
+        }
+        return added;
+    }
+
+    @Override
     default void transferToDomain(Domain oldDomain, Domain newDomain) {
         Element.super.transferToDomain(oldDomain, newDomain);
-        getRisks().forEach(r -> r.addToDomains(newDomain));
     }
 }

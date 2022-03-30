@@ -34,7 +34,7 @@ import org.veo.core.entity.specification.EntitySpecifications;
 public interface Element
         extends Nameable, Identifiable, ClientOwned, Designated, Versioned, Displayable {
 
-    public static int ELEMENT_TYPE_MAX_LENGTH = Constraints.DEFAULT_CONSTANT_MAX_LENGTH;
+    int ELEMENT_TYPE_MAX_LENGTH = Constraints.DEFAULT_CONSTANT_MAX_LENGTH;
 
     /**
      * Can be null when the owner is a catalogitem owned by a domain template.
@@ -168,7 +168,7 @@ public interface Element
      */
     default void checkSameClient(Client client) {
         Objects.requireNonNull(client, "client must not be null");
-        Client thisEntitysClient = null;
+        Client thisEntitysClient;
         ElementOwner thisEntitysOwner = Objects.requireNonNull(getOwnerOrContainingCatalogItem(),
                                                                "No owner or containing catalog item set for "
                                                                        + this);
