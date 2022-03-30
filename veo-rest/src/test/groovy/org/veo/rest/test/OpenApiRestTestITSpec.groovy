@@ -24,7 +24,7 @@ class OpenApiRestTestITSpec extends VeoRestTest {
                 .findAll { k, v -> !v.readOnly }
                 .collectMany({schemaName, schemaDefinition ->
                     schemaDefinition.properties
-                            ?.findAll { propName, propDefinition -> !hasSufficientValidationRules(propDefinition) }
+                            ?.findAll { propName, propDefinition -> !hasSufficientValidationRules(propName, propDefinition) }
                             ?.collect { propName, propDefinition -> "$schemaName.$propName" }
                             ?: []
                 })
@@ -35,8 +35,12 @@ class OpenApiRestTestITSpec extends VeoRestTest {
         return get('/v3/api-docs').body
     }
 
-    static boolean hasSufficientValidationRules(Object propDef) {
+    static boolean hasSufficientValidationRules(String propName, Object propDef) {
         if (propDef.readOnly) {
+            return true
+        }
+        // Ignore discriminator for polymorphism (json sub types).
+        if (propName == "type") {
             return true
         }
         if (propDef.type == "string") {
