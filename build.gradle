@@ -140,10 +140,10 @@ subprojects {
             dependency 'io.swagger.core.v3:swagger-core:2.1.13'
             dependency 'io.swagger.core.v3:swagger-annotations:2.1.13'
             dependency 'net.ttddyy:datasource-proxy:1.7'
-            dependency 'com.github.victools:jsonschema-generator:4.24.0'
-            dependency 'com.github.victools:jsonschema-module-jackson:4.24.0'
-            dependency 'com.github.victools:jsonschema-module-javax-validation:4.24.0'
-            dependency 'com.github.victools:jsonschema-module-swagger-2:4.24.0'
+            dependency 'com.github.victools:jsonschema-generator:4.24.1'
+            dependency 'com.github.victools:jsonschema-module-jackson:4.24.1'
+            dependency 'com.github.victools:jsonschema-module-javax-validation:4.24.1'
+            dependency 'com.github.victools:jsonschema-module-swagger-2:4.24.1'
             dependency 'com.networknt:json-schema-validator:1.0.67'
             dependency "org.testcontainers:spock:1.16.3"
             dependency "org.testcontainers:postgresql:1.16.3"
