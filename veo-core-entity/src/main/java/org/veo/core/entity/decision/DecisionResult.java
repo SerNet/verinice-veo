@@ -30,6 +30,10 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 public class DecisionResult {
+    public DecisionResult() {
+        this(null, null, List.of(), List.of());
+    }
+
     /** Actual decision result value */
     final Boolean value;
 

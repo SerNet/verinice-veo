@@ -20,7 +20,6 @@ package org.veo.core.entity.decision;
 import static org.veo.core.entity.Element.ELEMENT_TYPE_MAX_LENGTH;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -70,8 +69,7 @@ public class Decision {
         return matchingRules.stream()
                             .findFirst()
                             .map(decisiveRuleIndex -> buildResult(decisiveRuleIndex, matchingRules))
-                            .orElse(new DecisionResult(null, null, Collections.emptyList(),
-                                    Collections.emptyList()));
+                            .orElse(new DecisionResult());
     }
 
     private DecisionResult buildResult(int decisiveRuleIndex, List<Integer> matchingRules) {
