@@ -19,7 +19,6 @@ package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
@@ -28,7 +27,6 @@ import org.veo.core.entity.Key
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 
-@ActiveProfiles(["test", "stats", "local"])
 class BasicCrudITSpec extends VeoMvcSpec {
 
     @Autowired
