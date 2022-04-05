@@ -35,7 +35,9 @@ class RestTestDomainTemplateCreator {
     def create(String filename, VeoRestTest test) {
         if(!injectedDomainTemplates.contains(filename)) {
             var template = jsonSlurper.parse(getClass().getResource('/testdomaintemplates/' + filename + '.json'))
-            test.post("/domaintemplates/", template, null, UserType.CONTENT_CREATOR)
+            test.post("/domaintemplates/", template, null, UserType.CONTENT_CREATOR).tap{
+                assert statusCode == 201 || statusCode == 409
+            }
             injectedDomainTemplates.add(filename)
         }
     }

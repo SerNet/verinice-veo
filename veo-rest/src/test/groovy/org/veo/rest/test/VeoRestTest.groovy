@@ -110,6 +110,7 @@ class VeoRestTest extends Specification {
     class Response{
         Map headers
         Object body
+        int statusCode
     }
 
     class GetResponse extends Response{
@@ -146,7 +147,8 @@ class VeoRestTest extends Specification {
         log.debug("retrieved data: {}", resp.body)
         new GetResponse(
                 headers: resp.headers,
-                body: jsonSlurper.parseText(resp.body.toString()))
+                body: jsonSlurper.parseText(resp.body.toString()),
+                statusCode: resp.statusCodeValue)
     }
 
     Response post(String uri, Object requestBody, Integer assertStatusCode = 201, UserType userType = UserType.DEFAULT) {
@@ -157,8 +159,10 @@ class VeoRestTest extends Specification {
         assertStatusCode?.tap{
             assert resp.statusCodeValue == it
         }
-        new Response(headers: resp.headers,
-        body: jsonSlurper.parseText(resp.body.toString()))
+        new Response(
+                headers: resp.headers,
+                body: jsonSlurper.parseText(resp.body.toString()),
+                statusCode: resp.statusCodeValue)
     }
 
     void put(String uri, Object requestBody, String etag, Integer assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
