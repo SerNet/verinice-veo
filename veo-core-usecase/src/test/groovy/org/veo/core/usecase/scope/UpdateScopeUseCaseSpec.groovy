@@ -23,13 +23,15 @@ import org.veo.core.repository.ScopeRepository
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.ModifyElementUseCase
 import org.veo.core.usecase.common.ETag
+import org.veo.core.usecase.decision.Decider
 
 class UpdateScopeUseCaseSpec extends UseCaseSpec {
 
     public static final String USER_NAME = "john"
     ScopeRepository scopeRepository = Mock()
+    Decider decider = Mock()
 
-    UpdateScopeUseCase usecase = new UpdateScopeUseCase(scopeRepository)
+    UpdateScopeUseCase usecase = new UpdateScopeUseCase(scopeRepository, decider)
     def "update a scope"() {
         given:
         def scopeId = Key.newUuid()

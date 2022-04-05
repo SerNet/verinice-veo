@@ -26,6 +26,7 @@ import org.veo.core.service.EventPublisher
 import org.veo.core.usecase.DesignatorService
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.CreateElementUseCase
+import org.veo.core.usecase.decision.Decider
 
 class CreateProcessUseCaseSpec extends UseCaseSpec {
 
@@ -34,8 +35,9 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
     Unit unit = Mock()
     DesignatorService designatorService = Mock()
     EventPublisher eventPublisher = Mock()
+    Decider decider = Mock()
 
-    CreateProcessUseCase usecase = new CreateProcessUseCase(unitRepository, processRepository, designatorService, eventPublisher)
+    CreateProcessUseCase usecase = new CreateProcessUseCase(unitRepository, processRepository, designatorService, eventPublisher, decider)
     def "create a process"() {
         def id = Key.newUuid()
         process.domains >> []

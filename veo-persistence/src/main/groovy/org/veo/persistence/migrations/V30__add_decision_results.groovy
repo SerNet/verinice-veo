@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jonas Jordan
+ * Copyright (C) 2022  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,24 +15,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.persistence.migrations
 
-import java.util.Map;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-import org.veo.core.entity.aspects.SubTypeAspect;
-import org.veo.core.entity.decision.DecisionResult;
+import groovy.sql.Sql
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+class V30__add_decision_results extends BaseJavaMigration {
+    @Override
+    void migrate(Context context) throws Exception {
+        new Sql(context.connection).execute("""
 
-@Data
-public class DomainAssociationDto {
-    @Schema(minLength = 1, maxLength = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
-    String subType;
-    @Schema(minLength = 1, maxLength = SubTypeAspect.STATUS_MAX_LENGTH)
-    String status;
+        create table decision_results_aspect (
+           db_id varchar(255) not null,
+            results jsonb not null,
+            domain_id varchar(255) not null,
+            owner_db_id varchar(255) not null,
+            primary key (db_id)
+        );
 
-    @Schema(description = "Results of all decisions concerning this element within this domain. Key is decision key, value is results.",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private Map<String, DecisionResult> decisionResults;
+        alter table decision_results_aspect
+           add constraint FK_owner_id
+           foreign key (owner_db_id)
+           references element;
+
+""")
+    }
 }

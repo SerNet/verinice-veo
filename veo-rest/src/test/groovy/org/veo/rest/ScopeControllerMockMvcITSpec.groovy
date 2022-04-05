@@ -345,7 +345,9 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the scope is found"
         result.name == 'New scope 2'
         result.abbreviation == 's-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == [:]
+        result.domains[dsgvoDomain.id.uuidValue()] == [
+            decisionResults: [:]
+        ]
         result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
 
         when:

@@ -17,17 +17,24 @@
  ******************************************************************************/
 package org.veo.core.entity.decision;
 
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
+
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+
 import org.veo.core.entity.Element;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
  * Result of a {@link Decision} for an {@link Element}
  */
+@Getter
+@JsonAutoDetect(fieldVisibility = ANY)
 @RequiredArgsConstructor
 public class DecisionResult {
     public DecisionResult() {

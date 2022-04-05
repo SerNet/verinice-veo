@@ -18,6 +18,7 @@
 package org.veo.persistence.entity.jpa;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -54,6 +55,7 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.aspects.Aspect;
 import org.veo.core.entity.aspects.SubTypeAspect;
+import org.veo.core.entity.decision.DecisionResult;
 import org.veo.persistence.entity.jpa.validation.HasOwnerOrContainingCatalogItem;
 
 import lombok.AccessLevel;
@@ -71,6 +73,7 @@ import lombok.ToString;
                           @NamedAttributeNode(value = "domains"),
                           @NamedAttributeNode(value = "appliedCatalogItems"),
                           @NamedAttributeNode(value = "links"),
+                          @NamedAttributeNode(value = "decisionResultsAspects"),
                           @NamedAttributeNode(value = "subTypeAspects") })
 @HasOwnerOrContainingCatalogItem
 public abstract class ElementData extends IdentifiableVersionedData
@@ -134,6 +137,15 @@ public abstract class ElementData extends IdentifiableVersionedData
     @Valid
     private Set<SubTypeAspect> subTypeAspects = new HashSet<>();
 
+    @Column(name = "decision_results_aspect")
+    @OneToMany(cascade = CascadeType.ALL,
+               orphanRemoval = true,
+               targetEntity = DecisionResultsAspectData.class,
+               mappedBy = "owner",
+               fetch = FetchType.LAZY)
+    @Valid
+    final private Set<DecisionResultsAspectData> decisionResultsAspects = new HashSet<>();
+
     @ManyToMany(targetEntity = CatalogItemData.class, fetch = FetchType.LAZY)
     private Set<CatalogItem> appliedCatalogItems = new HashSet<>();
 
@@ -172,8 +184,7 @@ public abstract class ElementData extends IdentifiableVersionedData
 
     @Override
     public void setSubType(DomainTemplate domain, String subType, String status) {
-        subTypeAspects.removeIf(a -> a.getDomain()
-                                      .equals(domain));
+        removeAspect(subTypeAspects, domain);
         if (subType != null) {
             subTypeAspects.add(new SubTypeAspectData(domain, this, subType, status));
         } else if (status != null) {
@@ -197,6 +208,19 @@ public abstract class ElementData extends IdentifiableVersionedData
             }
         });
         this.customAspects.addAll(aCustomAspects);
+    }
+
+    @Override
+    public Map<String, DecisionResult> getDecisionResults(DomainTemplate domain) {
+        return findAspectByDomain(decisionResultsAspects,
+                                  domain).map(DecisionResultsAspectData::getResults)
+                                         .orElse(Map.of());
+    }
+
+    @Override
+    public void setDecisionResults(Map<String, DecisionResult> results, Domain domain) {
+        removeAspect(decisionResultsAspects, domain);
+        decisionResultsAspects.add(new DecisionResultsAspectData(domain, this, results));
     }
 
     /**
@@ -250,5 +274,10 @@ public abstract class ElementData extends IdentifiableVersionedData
     @Override
     public String getDisplayName() {
         return displayName;
+    }
+
+    private void removeAspect(Set<? extends Aspect> aspects, DomainTemplate domain) {
+        aspects.removeIf(a -> a.getDomain()
+                               .equals(domain));
     }
 }

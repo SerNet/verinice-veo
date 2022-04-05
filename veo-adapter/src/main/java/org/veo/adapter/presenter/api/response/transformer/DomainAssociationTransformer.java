@@ -354,6 +354,7 @@ public class DomainAssociationTransformer {
                                                                                  .orElse(null));
                                                     association.setStatus(source.getStatus(domain)
                                                                                 .orElse(null));
+                                                    association.setDecisionResults(source.getDecisionResults(domain));
                                                     return association;
                                                 }));
     }

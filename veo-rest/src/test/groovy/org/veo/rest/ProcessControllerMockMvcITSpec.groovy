@@ -233,7 +233,10 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the process is found"
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == ['riskValues':[:]]
+        result.domains[dsgvoDomain.id.uuidValue()] == [
+            decisionResults: [:],
+            riskValues: [:],
+        ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
@@ -303,7 +306,10 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the process is found"
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == ['riskValues':[:]]
+        result.domains[dsgvoDomain.id.uuidValue()] == [
+            decisionResults: [:],
+            riskValues: [:],
+        ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
         when:
@@ -374,7 +380,10 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the process is found"
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == ['riskValues':[:]]
+        result.domains[dsgvoDomain.id.uuidValue()] == [
+            decisionResults: [:],
+            riskValues: [:],
+        ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
         when:
@@ -463,7 +472,10 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the process is found"
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == ['riskValues':[:]]
+        result.domains[dsgvoDomain.id.uuidValue()] == [
+            decisionResults: [:],
+            riskValues: [:],
+        ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
         and: 'there is one type of links'
         def links = result.links

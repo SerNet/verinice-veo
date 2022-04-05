@@ -22,12 +22,14 @@ import org.veo.core.entity.Person
 import org.veo.core.repository.PersonRepository
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData
 import org.veo.core.usecase.common.ETag
+import org.veo.core.usecase.decision.Decider
 import org.veo.core.usecase.person.UpdatePersonUseCase
 
 public class UpdatePersonUseCaseSpec extends UseCaseSpec {
 
     PersonRepository personRepository = Mock()
-    UpdatePersonUseCase usecase = new UpdatePersonUseCase(personRepository)
+    Decider decider = Mock()
+    UpdatePersonUseCase usecase = new UpdatePersonUseCase(personRepository, decider)
 
 
     def "update a person"() {

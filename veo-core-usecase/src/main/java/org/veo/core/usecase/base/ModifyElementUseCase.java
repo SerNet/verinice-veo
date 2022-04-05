@@ -26,17 +26,17 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.common.ETagMismatchException;
+import org.veo.core.usecase.decision.Decider;
 
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
+@RequiredArgsConstructor
 public abstract class ModifyElementUseCase<T extends Element> implements
         TransactionalUseCase<ModifyElementUseCase.InputData<T>, ModifyElementUseCase.OutputData<T>> {
 
     private final ElementRepository<T> repo;
-
-    public ModifyElementUseCase(ElementRepository<T> repo) {
-        this.repo = repo;
-    }
+    private final Decider decider;
 
     @Override
     public OutputData<T> execute(InputData<T> input) {
@@ -50,9 +50,17 @@ public abstract class ModifyElementUseCase<T extends Element> implements
         checkSubTypeChange(entity, storedEntity);
         // The designator is read-only so it must stay the same.
         entity.setDesignator(storedEntity.getDesignator());
+        evaluateDecisions(entity, storedEntity);
         validate(storedEntity, entity);
         DomainSensitiveElementValidator.validate(entity);
         return new OutputData<T>(repo.save(entity));
+    }
+
+    protected void evaluateDecisions(T entity, T storedEntity) {
+        entity.getDomains()
+              .forEach(domain -> {
+                  entity.setDecisionResults(decider.decide(entity, domain), domain);
+              });
     }
 
     protected abstract void validate(T oldElement, T newElement);

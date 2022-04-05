@@ -212,7 +212,8 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == 'New scenario-2'
         result.abbreviation == 'u-2'
         result.domains[domain.id.uuidValue()] == [
-            riskValues: [:]
+            decisionResults: [:],
+            riskValues: [:],
         ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }

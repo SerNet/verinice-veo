@@ -202,7 +202,9 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the incident is found"
         result.name == 'New incident-2'
         result.abbreviation == 'u-2'
-        result.domains[domain.id.uuidValue()] == [:]
+        result.domains[domain.id.uuidValue()] == [
+            decisionResults: [:]
+        ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 

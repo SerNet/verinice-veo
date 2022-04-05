@@ -22,12 +22,13 @@ import org.veo.core.repository.IncidentRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.base.CreateElementUseCase;
+import org.veo.core.usecase.decision.Decider;
 
 public class CreateIncidentUseCase extends CreateElementUseCase<Incident> {
 
     public CreateIncidentUseCase(UnitRepository unitRepository, IncidentRepository entityRepo,
-            DesignatorService designatorService) {
-        super(unitRepository, entityRepo, designatorService);
+            DesignatorService designatorService, Decider decider) {
+        super(unitRepository, entityRepo, designatorService, decider);
     }
 
     @Override

@@ -20,14 +20,16 @@ package org.veo.core.usecase
 import org.veo.core.entity.Person
 import org.veo.core.repository.PersonRepository
 import org.veo.core.usecase.base.CreateElementUseCase
+import org.veo.core.usecase.decision.Decider
 import org.veo.core.usecase.person.CreatePersonUseCase
 
 class CreatePersonUseCaseSpec extends UseCaseSpec {
 
     PersonRepository personRepository = Mock()
     DesignatorService designatorService = Mock()
+    Decider decider = Mock()
 
-    CreatePersonUseCase usecase = new CreatePersonUseCase(unitRepository, personRepository, designatorService)
+    CreatePersonUseCase usecase = new CreatePersonUseCase(unitRepository, personRepository, designatorService, decider)
 
     def "create a person"() {
         given:
@@ -35,6 +37,7 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
         p.name >> "John"
         p.owner >> existingUnit
         p.links >> []
+        p.domains >> []
 
         when:
         def output = usecase.execute(new CreateElementUseCase.InputData(p, existingClient))

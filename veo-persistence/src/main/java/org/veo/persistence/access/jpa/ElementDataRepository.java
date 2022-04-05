@@ -38,9 +38,9 @@ public interface ElementDataRepository<T extends ElementData> extends JpaReposit
         JpaSpecificationExecutor<T>, IdentifiableVersionedDataRepository<T> {
 
     @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
-            + "left join fetch e.domains " + "left join fetch e.subTypeAspects "
-            + "left join fetch e.appliedCatalogItems " + "left join fetch e.links "
-            + "where e.dbId = ?1")
+            + "left join fetch e.domains " + "left join fetch e.decisionResultsAspects "
+            + "left join fetch e.subTypeAspects " + "left join fetch e.appliedCatalogItems "
+            + "left join fetch e.links " + "where e.dbId = ?1")
     @Override
     @Nonnull
     Optional<T> findById(@Nonnull String id);
@@ -66,15 +66,19 @@ public interface ElementDataRepository<T extends ElementData> extends JpaReposit
      *            a list of units' UUIDs
      */
     // @formatter:off
-    @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
-            + "left join fetch e.links " + "left join fetch e.appliedCatalogItems "
-            + "left join fetch e.subTypeAspects " + "where e.owner.dbId IN ?1")
+    @Query("select e from #{#entityName} as e " +
+            "left join fetch e.customAspects " +
+            "left join fetch e.links " +
+            "left join fetch e.appliedCatalogItems " +
+            "left join fetch e.decisionResultsAspects " +
+            "left join fetch e.subTypeAspects " +
+            "where e.owner.dbId IN ?1")
     // @formatter:on
     @Transactional(readOnly = true)
     Set<T> findByUnits(Set<String> unitIds);
 
     @Query("select distinct e from #{#entityName} as e " + "left join fetch e.links "
-            + "left join fetch e.customAspects " + "left join fetch e.subTypeAspects "
-            + "join e.domains d " + "where d.id = ?1")
+            + "left join fetch e.customAspects " + "left join fetch e.decisionResultsAspects "
+            + "left join fetch e.subTypeAspects " + "join e.domains d " + "where d.id = ?1")
     Set<T> findByDomain(String domainId);
 }

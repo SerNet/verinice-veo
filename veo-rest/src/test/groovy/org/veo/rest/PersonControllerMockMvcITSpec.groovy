@@ -169,7 +169,9 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the person is found"
         result.name == 'New person-2'
         result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == [:]
+        result.domains[dsgvoDomain.id.uuidValue()] == [
+            decisionResults: [:]
+        ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 
@@ -219,7 +221,9 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the person is found"
         result.name == 'New person-2'
         result.abbreviation == 'u-2'
-        result.domains[dsgvoDomain.id.uuidValue()] == [:]
+        result.domains[dsgvoDomain.id.uuidValue()] == [
+            decisionResults: [:]
+        ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
         when:

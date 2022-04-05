@@ -203,7 +203,9 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the document is found"
         result.name == 'New document-2'
         result.abbreviation == 'u-2'
-        result.domains[domain.id.uuidValue()] == [:]
+        result.domains[domain.id.uuidValue()] == [
+            decisionResults: [:]
+        ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
 

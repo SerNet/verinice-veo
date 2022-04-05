@@ -178,8 +178,9 @@ public class ModuleConfiguration {
 
     @Bean
     public CreateAssetUseCase createAssetUseCase(UnitRepositoryImpl unitRepository,
-            AssetRepositoryImpl assetRepository, DesignatorService designatorService) {
-        return new CreateAssetUseCase(unitRepository, assetRepository, designatorService);
+            AssetRepositoryImpl assetRepository, DesignatorService designatorService,
+            Decider decider) {
+        return new CreateAssetUseCase(unitRepository, assetRepository, designatorService, decider);
     }
 
     @Bean
@@ -208,14 +209,17 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public UpdateAssetUseCase updateAssetUseCase(AssetRepositoryImpl assetRepository) {
-        return new UpdateAssetUseCase(assetRepository);
+    public UpdateAssetUseCase updateAssetUseCase(AssetRepositoryImpl assetRepository,
+            Decider decider) {
+        return new UpdateAssetUseCase(assetRepository, decider);
     }
 
     @Bean
     public CreateControlUseCase createControlUseCase(UnitRepositoryImpl unitRepository,
-            ControlRepositoryImpl controlRepository, DesignatorService designatorService) {
-        return new CreateControlUseCase(unitRepository, controlRepository, designatorService);
+            ControlRepositoryImpl controlRepository, DesignatorService designatorService,
+            Decider decider) {
+        return new CreateControlUseCase(unitRepository, controlRepository, designatorService,
+                decider);
     }
 
     @Bean
@@ -231,14 +235,16 @@ public class ModuleConfiguration {
 
     @Bean
     public UpdateControlUseCase updateControlUseCase(ControlRepositoryImpl controlRepository,
-            EventPublisher eventPublisher, ScopeProvider scopeProvider) {
-        return new UpdateControlUseCase(controlRepository, eventPublisher, scopeProvider);
+            EventPublisher eventPublisher, ScopeProvider scopeProvider, Decider decider) {
+        return new UpdateControlUseCase(controlRepository, eventPublisher, scopeProvider, decider);
     }
 
     @Bean
     public CreateDocumentUseCase createDocumentUseCase(UnitRepositoryImpl unitRepository,
-            DocumentRepositoryImpl documentRepository, DesignatorService designatorService) {
-        return new CreateDocumentUseCase(unitRepository, documentRepository, designatorService);
+            DocumentRepositoryImpl documentRepository, DesignatorService designatorService,
+            Decider decider) {
+        return new CreateDocumentUseCase(unitRepository, documentRepository, designatorService,
+                decider);
     }
 
     @Bean
@@ -254,14 +260,17 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public UpdateDocumentUseCase updateDocumentUseCase(DocumentRepositoryImpl documentRepository) {
-        return new UpdateDocumentUseCase(documentRepository);
+    public UpdateDocumentUseCase updateDocumentUseCase(DocumentRepositoryImpl documentRepository,
+            Decider decider) {
+        return new UpdateDocumentUseCase(documentRepository, decider);
     }
 
     @Bean
     public CreateScenarioUseCase createScenarioUseCase(UnitRepositoryImpl unitRepository,
-            ScenarioRepositoryImpl scenarioRepository, DesignatorService designatorService) {
-        return new CreateScenarioUseCase(unitRepository, scenarioRepository, designatorService);
+            ScenarioRepositoryImpl scenarioRepository, DesignatorService designatorService,
+            Decider decider) {
+        return new CreateScenarioUseCase(unitRepository, scenarioRepository, designatorService,
+                decider);
     }
 
     @Bean
@@ -278,14 +287,16 @@ public class ModuleConfiguration {
 
     @Bean
     public UpdateScenarioUseCase updateScenarioUseCase(ScenarioRepositoryImpl scenarioRepository,
-            EventPublisher eventPublisher) {
-        return new UpdateScenarioUseCase(scenarioRepository, eventPublisher);
+            EventPublisher eventPublisher, Decider decider) {
+        return new UpdateScenarioUseCase(scenarioRepository, eventPublisher, decider);
     }
 
     @Bean
     public CreateIncidentUseCase createIncidentUseCase(UnitRepositoryImpl unitRepository,
-            IncidentRepositoryImpl incidentRepository, DesignatorService designatorService) {
-        return new CreateIncidentUseCase(unitRepository, incidentRepository, designatorService);
+            IncidentRepositoryImpl incidentRepository, DesignatorService designatorService,
+            Decider decider) {
+        return new CreateIncidentUseCase(unitRepository, incidentRepository, designatorService,
+                decider);
     }
 
     @Bean
@@ -301,16 +312,17 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public UpdateIncidentUseCase updateIncidentUseCase(IncidentRepositoryImpl incidentRepository) {
-        return new UpdateIncidentUseCase(incidentRepository);
+    public UpdateIncidentUseCase updateIncidentUseCase(IncidentRepositoryImpl incidentRepository,
+            Decider decider) {
+        return new UpdateIncidentUseCase(incidentRepository, decider);
     }
 
     @Bean
     public CreateProcessUseCase createProcessUseCase(UnitRepositoryImpl unitRepository,
             ProcessRepositoryImpl processRepository, DesignatorService designatorService,
-            EventPublisher eventPublisher) {
+            EventPublisher eventPublisher, Decider decider) {
         return new CreateProcessUseCase(unitRepository, processRepository, designatorService,
-                eventPublisher);
+                eventPublisher, decider);
     }
 
     @Bean
@@ -345,8 +357,8 @@ public class ModuleConfiguration {
 
     @Bean
     public UpdateProcessUseCase putProcessUseCase(ProcessRepositoryImpl processRepository,
-            EventPublisher eventPublisher, ScopeProvider scopeProvider) {
-        return new UpdateProcessUseCase(processRepository, eventPublisher, scopeProvider);
+            EventPublisher eventPublisher, ScopeProvider scopeProvider, Decider decider) {
+        return new UpdateProcessUseCase(processRepository, eventPublisher, scopeProvider, decider);
     }
 
     @Bean
@@ -386,8 +398,10 @@ public class ModuleConfiguration {
 
     @Bean
     public CreatePersonUseCase createPersonUseCase(UnitRepositoryImpl unitRepository,
-            PersonRepositoryImpl personRepository, DesignatorService designatorService) {
-        return new CreatePersonUseCase(unitRepository, personRepository, designatorService);
+            PersonRepositoryImpl personRepository, DesignatorService designatorService,
+            Decider decider) {
+        return new CreatePersonUseCase(unitRepository, personRepository, designatorService,
+                decider);
     }
 
     @Bean
@@ -402,14 +416,16 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public UpdatePersonUseCase updatePersonUseCase(PersonRepositoryImpl personRepository) {
-        return new UpdatePersonUseCase(personRepository);
+    public UpdatePersonUseCase updatePersonUseCase(PersonRepositoryImpl personRepository,
+            Decider decider) {
+        return new UpdatePersonUseCase(personRepository, decider);
     }
 
     @Bean
     public CreateScopeUseCase createScopeUseCase(UnitRepositoryImpl unitRepository,
-            ScopeRepositoryImpl scopeRepository, DesignatorService designatorService) {
-        return new CreateScopeUseCase(unitRepository, scopeRepository, designatorService);
+            ScopeRepositoryImpl scopeRepository, DesignatorService designatorService,
+            Decider decider) {
+        return new CreateScopeUseCase(unitRepository, scopeRepository, designatorService, decider);
     }
 
     @Bean
@@ -424,8 +440,9 @@ public class ModuleConfiguration {
     }
 
     @Bean
-    public UpdateScopeUseCase updateScopeUseCase(ScopeRepositoryImpl scopeRepository) {
-        return new UpdateScopeUseCase(scopeRepository);
+    public UpdateScopeUseCase updateScopeUseCase(ScopeRepositoryImpl scopeRepository,
+            Decider decider) {
+        return new UpdateScopeUseCase(scopeRepository, decider);
     }
 
     @Bean

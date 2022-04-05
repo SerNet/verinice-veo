@@ -20,11 +20,12 @@ package org.veo.core.usecase.scope;
 import org.veo.core.entity.Scope;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.usecase.base.ModifyElementUseCase;
+import org.veo.core.usecase.decision.Decider;
 
 public class UpdateScopeUseCase extends ModifyElementUseCase<Scope> {
 
-    public UpdateScopeUseCase(ScopeRepository scopeRepository) {
-        super(scopeRepository);
+    public UpdateScopeUseCase(ScopeRepository scopeRepository, Decider decider) {
+        super(scopeRepository, decider);
     }
 
     @Override
@@ -47,5 +48,14 @@ public class UpdateScopeUseCase extends ModifyElementUseCase<Scope> {
                                               });
                                 });
                   });
+    }
+
+    @Override
+    protected void evaluateDecisions(Scope entity, Scope storedEntity) {
+        // FIXME VEO-839
+        // Transfer risks from stored element because they may be relevant for risk
+        // evaluation
+        entity.setRisks(storedEntity.getRisks());
+        super.evaluateDecisions(entity, storedEntity);
     }
 }

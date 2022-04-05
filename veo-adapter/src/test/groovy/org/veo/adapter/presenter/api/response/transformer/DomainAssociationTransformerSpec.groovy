@@ -27,6 +27,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.aspects.SubTypeAspect
+import org.veo.core.entity.decision.DecisionResult
 
 import spock.lang.Specification
 
@@ -88,10 +89,15 @@ class DomainAssociationTransformerSpec extends Specification {
                 status >> "NEW_BAR"
             }
         ]
+        def decisionResults0 = ["decision0": Mock(DecisionResult)]
+        def decisionResults1 = ["decision1": Mock(DecisionResult)]
+
         entity.getSubType(domain0) >> Optional.of("foo")
         entity.getStatus(domain0) >> Optional.of("NEW_FOO")
+        entity.getDecisionResults(domain0) >> decisionResults0
         entity.getSubType(domain1) >> Optional.of("bar")
         entity.getStatus(domain1) >> Optional.of("NEW_BAR")
+        entity.getDecisionResults(domain1) >> decisionResults1
 
         when: "the sub types are mapped"
         domainAssociationTransformer.mapDomainsToDto(entity, dto)
@@ -102,10 +108,12 @@ class DomainAssociationTransformerSpec extends Specification {
         with(capturedDomainMap[domain0.id.uuidValue()]) {
             subType == "foo"
             status == "NEW_FOO"
+            decisionResults == decisionResults0
         }
         with(capturedDomainMap[domain1.id.uuidValue()]) {
             subType == "bar"
             status == "NEW_BAR"
+            decisionResults == decisionResults1
         }
     }
 }

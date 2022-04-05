@@ -22,14 +22,15 @@ import org.veo.core.entity.event.RiskComponentChangeEvent;
 import org.veo.core.repository.ScenarioRepository;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.base.ModifyElementUseCase;
+import org.veo.core.usecase.decision.Decider;
 
 public class UpdateScenarioUseCase extends ModifyElementUseCase<Scenario> {
 
     private final EventPublisher eventPublisher;
 
     public UpdateScenarioUseCase(ScenarioRepository scenarioRepository,
-            EventPublisher eventPublisher) {
-        super(scenarioRepository);
+            EventPublisher eventPublisher, Decider decider) {
+        super(scenarioRepository, decider);
         this.eventPublisher = eventPublisher;
     }
 

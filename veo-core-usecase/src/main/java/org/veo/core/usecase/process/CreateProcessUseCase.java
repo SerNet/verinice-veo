@@ -24,6 +24,7 @@ import org.veo.core.repository.UnitRepository;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.base.CreateElementUseCase;
+import org.veo.core.usecase.decision.Decider;
 
 /**
  * Creates a persistent new process object.
@@ -33,8 +34,8 @@ public class CreateProcessUseCase extends CreateElementUseCase<Process> {
     private final EventPublisher eventPublisher;
 
     public CreateProcessUseCase(UnitRepository unitRepository, ProcessRepository entityRepo,
-            DesignatorService designatorService, EventPublisher eventPublisher) {
-        super(unitRepository, entityRepo, designatorService);
+            DesignatorService designatorService, EventPublisher eventPublisher, Decider decider) {
+        super(unitRepository, entityRepo, designatorService, decider);
         this.eventPublisher = eventPublisher;
     }
 

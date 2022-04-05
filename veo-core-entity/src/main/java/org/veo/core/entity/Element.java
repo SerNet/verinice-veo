@@ -17,11 +17,13 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
 import org.veo.core.entity.aspects.SubTypeAspect;
+import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.EntitySpecifications;
 
@@ -221,4 +223,8 @@ public interface Element
      * Detach this element from related elements to prepare for deletion.
      */
     void remove();
+
+    Map<String, DecisionResult> getDecisionResults(DomainTemplate domain);
+
+    void setDecisionResults(Map<String, DecisionResult> decisionResults, Domain domain);
 }

@@ -45,6 +45,7 @@ public interface CompositeEntityDataRepository<T extends ElementData>
     @Query("select e from #{#entityName} as e "
             + "left join fetch e.customAspects "
             + "left join fetch e.links "
+            + "left join fetch e.decisionResultsAspects "
             + "left join fetch e.subTypeAspects "
             + "left join fetch e.appliedCatalogItems "
             + "left join fetch e.parts "

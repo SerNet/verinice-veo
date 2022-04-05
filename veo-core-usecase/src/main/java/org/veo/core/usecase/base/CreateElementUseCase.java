@@ -32,6 +32,7 @@ import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.decision.Decider;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -42,6 +43,7 @@ public abstract class CreateElementUseCase<TEntity extends Element> implements
     private final UnitRepository unitRepository;
     private final Repository<TEntity, Key<UUID>> entityRepo;
     private final DesignatorService designatorService;
+    private final Decider decider;
 
     @Override
     @Transactional(Transactional.TxType.REQUIRED)
@@ -57,8 +59,16 @@ public abstract class CreateElementUseCase<TEntity extends Element> implements
         unit.checkSameClient(input.authenticatedClient);
         DomainSensitiveElementValidator.validate(entity);
         designatorService.assignDesignator(entity, input.authenticatedClient);
+        evaluateDecisions(entity);
         validate(entity);
         return new CreateElementUseCase.OutputData<>(entityRepo.save(entity));
+    }
+
+    private void evaluateDecisions(TEntity entity) {
+        entity.getDomains()
+              .forEach(domain -> {
+                  entity.setDecisionResults(decider.decide(entity, domain), domain);
+              });
     }
 
     protected abstract void validate(TEntity entity);

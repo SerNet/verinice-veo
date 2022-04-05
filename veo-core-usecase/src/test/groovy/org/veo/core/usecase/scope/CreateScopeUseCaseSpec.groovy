@@ -23,13 +23,15 @@ import org.veo.core.repository.ScopeRepository
 import org.veo.core.usecase.DesignatorService
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.CreateElementUseCase
+import org.veo.core.usecase.decision.Decider
 
 class CreateScopeUseCaseSpec extends UseCaseSpec {
 
     ScopeRepository entityScopeRepository = Mock()
     DesignatorService designatorService = Mock()
+    Decider decider = Mock()
 
-    CreateScopeUseCase usecase = new CreateScopeUseCase(unitRepository, entityScopeRepository, designatorService)
+    CreateScopeUseCase usecase = new CreateScopeUseCase(unitRepository, entityScopeRepository, designatorService, decider)
     Unit unit = Mock()
 
     def "create a scope"() {
@@ -39,6 +41,7 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         scope.name >> "My scope"
         scope.owner >> unit
         scope.links >> []
+        scope.domains >> []
 
         when:
         def output = usecase.execute(new CreateElementUseCase.InputData( scope, existingClient))

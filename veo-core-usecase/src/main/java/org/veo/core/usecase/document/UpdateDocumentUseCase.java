@@ -20,11 +20,12 @@ package org.veo.core.usecase.document;
 import org.veo.core.entity.Document;
 import org.veo.core.repository.DocumentRepository;
 import org.veo.core.usecase.base.ModifyElementUseCase;
+import org.veo.core.usecase.decision.Decider;
 
 public class UpdateDocumentUseCase extends ModifyElementUseCase<Document> {
 
-    public UpdateDocumentUseCase(DocumentRepository documentRepository) {
-        super(documentRepository);
+    public UpdateDocumentUseCase(DocumentRepository documentRepository, Decider decider) {
+        super(documentRepository, decider);
     }
 
     @Override

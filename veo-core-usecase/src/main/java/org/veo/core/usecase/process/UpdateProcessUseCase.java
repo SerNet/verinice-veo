@@ -28,6 +28,7 @@ import org.veo.core.repository.ProcessRepository;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.base.ScopeProvider;
+import org.veo.core.usecase.decision.Decider;
 
 /**
  * Update a persisted process object.
@@ -37,8 +38,8 @@ public class UpdateProcessUseCase extends ModifyElementUseCase<Process> {
     private final ScopeProvider scopeProvider;
 
     public UpdateProcessUseCase(ProcessRepository processRepository, EventPublisher eventPublisher,
-            ScopeProvider scopeProvider) {
-        super(processRepository);
+            ScopeProvider scopeProvider, Decider decider) {
+        super(processRepository, decider);
         this.eventPublisher = eventPublisher;
         this.scopeProvider = scopeProvider;
     }
@@ -71,5 +72,14 @@ public class UpdateProcessUseCase extends ModifyElementUseCase<Process> {
                                                   riskDefinitionRef.getIdRef()));
                         }
                     });
+    }
+
+    @Override
+    protected void evaluateDecisions(Process entity, Process storedEntity) {
+        // FIXME VEO-839
+        // Transfer risks from stored element because they may be relevant for risk
+        // evaluation
+        entity.setRisks(storedEntity.getRisks());
+        super.evaluateDecisions(entity, storedEntity);
     }
 }

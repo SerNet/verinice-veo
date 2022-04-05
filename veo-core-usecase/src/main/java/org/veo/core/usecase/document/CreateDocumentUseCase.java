@@ -22,12 +22,13 @@ import org.veo.core.repository.DocumentRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.base.CreateElementUseCase;
+import org.veo.core.usecase.decision.Decider;
 
 public class CreateDocumentUseCase extends CreateElementUseCase<Document> {
 
     public CreateDocumentUseCase(UnitRepository unitRepository, DocumentRepository entityRepo,
-            DesignatorService designatorService) {
-        super(unitRepository, entityRepo, designatorService);
+            DesignatorService designatorService, Decider decider) {
+        super(unitRepository, entityRepo, designatorService, decider);
     }
 
     @Override
