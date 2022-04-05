@@ -34,7 +34,7 @@ import org.veo.core.entity.Element;
         @Type(value = CustomAspectAttributeSizeProvider.class, name = "customAspectAttributeSize"),
         @Type(value = CustomAspectAttributeValueProvider.class,
               name = "customAspectAttributeValue"),
-        @Type(value = MaxRiskProvider.class, name = "maxRiskProvider"), })
+        @Type(value = MaxRiskProvider.class, name = "maxRisk"), })
 public interface InputProvider {
     public Object getValue(Element element, Domain domain);
 }
