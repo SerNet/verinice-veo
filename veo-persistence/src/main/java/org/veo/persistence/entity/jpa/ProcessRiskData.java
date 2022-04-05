@@ -19,6 +19,7 @@ package org.veo.persistence.entity.jpa;
 
 import static java.util.stream.Collectors.toSet;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -187,6 +188,11 @@ public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> impl
             var risks = ra.getCategorizedRisks();
             updateRisks(risks, newValues, validator);
         });
+
+        // increase optimistic locking version:
+        if (!newValuesSet.isEmpty()) {
+            this.setUpdatedAt(Instant.now());
+        }
     }
 
     private void updateRisks(List<DeterminedRisk> risks, RiskValues newRiskValues,

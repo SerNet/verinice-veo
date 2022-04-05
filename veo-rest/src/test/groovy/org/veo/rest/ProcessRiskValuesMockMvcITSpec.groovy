@@ -637,11 +637,8 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         and: "it is still the same risk object"
         retrievedProcessRisk2.designator == retrievedProcessRisk1.designator
         retrievedProcessRisk2.createdAt == retrievedProcessRisk1.createdAt
-
-        // TODO VEO-1248 the version/eTag should be increased by the update:
         eTag2 != null
-        eTag1 == eTag2
-
+        eTag1 != eTag2
     }
 
     private postProcessRisk(String processId, String scenarioId, int expectedStatusCode = 201) {
