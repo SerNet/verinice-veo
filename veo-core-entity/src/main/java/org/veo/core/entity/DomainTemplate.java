@@ -116,7 +116,10 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
         // TODO VEO-1294 use configurable persisted decisions
         // @formatter:off
         final var piaCa = "process_privacyImpactAssessment";
-        return Map.of("piaMandatory", new Decision(Process.SINGULAR_TERM, "PRO_DataProcessing", List.of(
+        return Map.of("piaMandatory", new Decision(Map.of(
+                "en", "PIA mandatory",
+                "de", "DSFA erforderlich"
+        ),Process.SINGULAR_TERM, "PRO_DataProcessing", List.of(
                 new Rule(null, Map.of(
                     "en", "Risk analysis not carried out",
                         "de", "Risikoanalyse VT nicht durchgeführt"

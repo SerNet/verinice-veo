@@ -125,6 +125,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == testDomain.name
         result.catalogs.size() == 1
         with(result.decisions.piaMandatory) {
+            name.en == "PIA mandatory"
             elementSubType == "PRO_DataProcessing"
             rules[5].description.en == "Processing on blacklist"
             rules[5].conditions[0].inputProvider.type == "customAspectAttributeValue"

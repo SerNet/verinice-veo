@@ -22,8 +22,10 @@ import static org.veo.core.entity.Element.ELEMENT_TYPE_MAX_LENGTH;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.veo.core.entity.Domain;
@@ -42,6 +44,9 @@ import lombok.RequiredArgsConstructor;
 @Data
 @RequiredArgsConstructor
 public class Decision {
+    /** Translated human-readable text. Key is ISO language code, value is text. */
+    @NotNull
+    private final Map<String, String> name;
     @Size(max = ELEMENT_TYPE_MAX_LENGTH)
     private final String elementType;
     @Size(max = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
