@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.service.risk;
 
+import java.time.Instant;
 import java.util.Set;
 
 import org.veo.core.entity.Client;
@@ -86,6 +87,10 @@ public class RiskService {
                                           .getIdAsString());
                             continue;
                         }
+
+                        // Setting values does not increase the risk's (aggregate root's) version,
+                        // we have to do it manually:
+                        risk.setUpdatedAt(Instant.now());
 
                         // Transfer potentialProbability from scenario to riskValues if present:
                         ProbabilityValueProvider riskValueProbability = risk.getProbabilityProvider(rdr);

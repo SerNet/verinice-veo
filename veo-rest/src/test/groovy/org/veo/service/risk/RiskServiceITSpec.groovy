@@ -91,6 +91,7 @@ class RiskServiceITSpec extends VeoSpringSpec {
             ] as Set)
         }
         process = processDataRepository.save(process)
+
         when: 'running the risk service on the changed process'
         executeInTransaction {
             riskService.evaluateChangedRiskComponent(process)
@@ -99,6 +100,8 @@ class RiskServiceITSpec extends VeoSpringSpec {
             process = processDataRepository.findByIdsWithRiskValues(Set.of(process.idAsString)).first()
             process.risks.first()
         }
+        def oldRiskVersion = risk.version
+
         then: 'the effective and inherent risk values are set'
         with(risk.getProbabilityProvider(riskDefinitionRef)) {
             effectiveProbability.idRef == 0
@@ -123,6 +126,8 @@ class RiskServiceITSpec extends VeoSpringSpec {
                 riskDefinition.getRiskValue(it.idRef as int).orElseThrow().name == MITTEL
             }
         }
+        oldRiskVersion == 1
+
         when: "changing the scenario's potential probability and running the risk service"
         executeInTransaction {
             scenario = scenarioDataRepository.findById(scenario.idAsString).get().tap {
@@ -140,6 +145,7 @@ class RiskServiceITSpec extends VeoSpringSpec {
                 }
             }
         }
+
         then: 'the effective and inherent risk values are updated accordingly'
         with(risk.getProbabilityProvider(riskDefinitionRef)) {
             effectiveProbability.idRef == 2
@@ -164,6 +170,7 @@ class RiskServiceITSpec extends VeoSpringSpec {
                 riskDefinition.getRiskValue(it.idRef as int).orElseThrow().name == HOCH
             }
         }
+
         when: "changing the risk's specific impact and running the risk service"
         risk.getImpactProvider(riskDefinitionRef).setSpecificImpact(availabilityRef, ImpactRef.from(highAvailabilityImpact))
         executeInTransaction {
@@ -172,6 +179,7 @@ class RiskServiceITSpec extends VeoSpringSpec {
             process = processDataRepository.save(process)
             risk = process.risks.first()
         }
+
         then: 'the effective and inherent risk values are updated accordingly'
         with(risk.getProbabilityProvider(riskDefinitionRef)) {
             effectiveProbability.idRef == 2
@@ -196,5 +204,7 @@ class RiskServiceITSpec extends VeoSpringSpec {
                 riskDefinition.getRiskValue(it.idRef as int).orElseThrow().name == SEHR_HOCH
             }
         }
+        oldRiskVersion < risk.getVersion()
+        risk.version == 3
     }
 }
