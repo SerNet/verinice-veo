@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jonas Jordan
+ * Copyright (C) 2022  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,25 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.core.entity.decision;
 
-import java.util.Map;
+/**
+ * Simple factory for reference objects to be used by JPA converters. Should not
+ * be used outside the package by converters - use one of the public
+ * constructors of the reference types instead.
+ */
+public abstract class DecisionReferenceFactory {
+    protected DecisionRef createDecisionRef(String key) {
+        return key == null ? null : new DecisionRef(key);
+    }
 
-import org.veo.core.entity.aspects.SubTypeAspect;
-import org.veo.core.entity.decision.DecisionRef;
-import org.veo.core.entity.decision.DecisionResult;
-
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-
-@Data
-public class DomainAssociationDto {
-    @Schema(minLength = 1, maxLength = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
-    String subType;
-    @Schema(minLength = 1, maxLength = SubTypeAspect.STATUS_MAX_LENGTH)
-    String status;
-
-    @Schema(description = "Results of all decisions concerning this element within this domain. Key is decision key, value is results.",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private Map<DecisionRef, DecisionResult> decisionResults;
+    protected DecisionRuleRef createDecisionRuleRef(Integer intValue) {
+        return intValue == null ? null : new DecisionRuleRef(intValue);
+    }
 }

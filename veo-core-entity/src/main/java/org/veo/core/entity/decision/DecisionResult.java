@@ -48,16 +48,16 @@ public class DecisionResult {
      * Index of the rule on the decision that caused this decision result (i.e. the
      * matching rule with the highest priority)
      */
-    final Integer decisiveRule;
+    final DecisionRuleRef decisiveRule;
 
     /** Indexes of all rules that matched. */
     @NotNull
-    final List<Integer> matchingRules;
+    final List<DecisionRuleRef> matchingRules;
 
     /**
      * Indexes of all rules that matched and would have caused the same decision
      * result value as the decisive rule.
      */
     @NotNull
-    final List<Integer> agreeingRules;
+    final List<DecisionRuleRef> agreeingRules;
 }

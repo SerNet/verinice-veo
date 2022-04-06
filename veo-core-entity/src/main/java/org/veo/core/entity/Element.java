@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.veo.core.entity.aspects.SubTypeAspect;
+import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.EntitySpecifications;
@@ -224,7 +225,7 @@ public interface Element
      */
     void remove();
 
-    Map<String, DecisionResult> getDecisionResults(DomainTemplate domain);
+    Map<DecisionRef, DecisionResult> getDecisionResults(DomainTemplate domain);
 
-    void setDecisionResults(Map<String, DecisionResult> decisionResults, Domain domain);
+    void setDecisionResults(Map<DecisionRef, DecisionResult> decisionResults, Domain domain);
 }

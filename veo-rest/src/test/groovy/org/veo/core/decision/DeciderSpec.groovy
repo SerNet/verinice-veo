@@ -23,6 +23,7 @@ import org.veo.core.entity.Process
 import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Unit
+import org.veo.core.entity.decision.DecisionRef
 import org.veo.core.entity.risk.CategorizedRiskValueProvider
 import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.DeterminedRiskImpl
@@ -33,6 +34,7 @@ import org.veo.core.usecase.decision.Decider
 import org.veo.test.VeoSpec
 
 class DeciderSpec extends VeoSpec {
+    def piaMandatoryRef = new DecisionRef("piaMandatory")
     Decider decider = new Decider()
 
     Unit unit
@@ -90,11 +92,11 @@ class DeciderSpec extends VeoSpec {
         def decisions = decider.decide(process, domain)
 
         then:
-        with(decisions.piaMandatory) {
+        with(decisions[piaMandatoryRef]) {
             value == null
-            decisiveRule == 0
-            matchingRules == [0, 5]
-            agreeingRules == [0]
+            decisiveRule.index == 0
+            matchingRules*.index == [0, 5]
+            agreeingRules*.index == [0]
         }
     }
 
@@ -109,11 +111,11 @@ class DeciderSpec extends VeoSpec {
         def decisions = decider.decide(process, domain)
 
         then:
-        with(decisions.piaMandatory) {
+        with(decisions[piaMandatoryRef]) {
             value == null
-            decisiveRule == 0
-            matchingRules == [0, 5]
-            agreeingRules == [0]
+            decisiveRule.index == 0
+            matchingRules*.index == [0, 5]
+            agreeingRules*.index == [0]
         }
     }
 
@@ -130,11 +132,11 @@ class DeciderSpec extends VeoSpec {
         def decisions = decider.decide(process, domain)
 
         then:
-        with(decisions.piaMandatory) {
+        with(decisions[piaMandatoryRef]) {
             value == null
-            decisiveRule == 0
-            matchingRules == [0, 5]
-            agreeingRules == [0]
+            decisiveRule.index == 0
+            matchingRules*.index == [0, 5]
+            agreeingRules*.index == [0]
         }
     }
 
@@ -151,11 +153,11 @@ class DeciderSpec extends VeoSpec {
         def decisions = decider.decide(process, domain)
 
         then:
-        with(decisions.piaMandatory) {
+        with(decisions[piaMandatoryRef]) {
             value
-            decisiveRule == 5
-            matchingRules == [5]
-            agreeingRules == [5]
+            decisiveRule.index == 5
+            matchingRules*.index == [5]
+            agreeingRules*.index == [5]
         }
     }
 
@@ -174,11 +176,11 @@ class DeciderSpec extends VeoSpec {
         def decisions = decider.decide(process, domain)
 
         then:
-        with(decisions.piaMandatory) {
+        with(decisions[piaMandatoryRef]) {
             value == null
             decisiveRule == null
-            matchingRules == []
-            agreeingRules == []
+            matchingRules*.index == []
+            agreeingRules*.index == []
         }
     }
 
@@ -198,11 +200,11 @@ class DeciderSpec extends VeoSpec {
         def decisions = decider.decide(process, domain)
 
         then:
-        with(decisions.piaMandatory) {
+        with(decisions[piaMandatoryRef]) {
             value
-            decisiveRule == 6
-            matchingRules == [6]
-            agreeingRules == [6]
+            decisiveRule.index == 6
+            matchingRules*.index == [6]
+            agreeingRules*.index == [6]
         }
     }
 
@@ -223,11 +225,11 @@ class DeciderSpec extends VeoSpec {
         def decisions = decider.decide(process, domain)
 
         then:
-        with(decisions.piaMandatory) {
+        with(decisions[piaMandatoryRef]) {
             value
-            decisiveRule == 6
-            matchingRules == [6]
-            agreeingRules == [6]
+            decisiveRule.index == 6
+            matchingRules*.index == [6]
+            agreeingRules*.index == [6]
         }
     }
 
@@ -245,11 +247,11 @@ class DeciderSpec extends VeoSpec {
         def decisions = decider.decide(process, domain)
 
         then:
-        with(decisions.piaMandatory) {
+        with(decisions[piaMandatoryRef]) {
             value
-            decisiveRule == 4
-            matchingRules == [4]
-            agreeingRules == [4]
+            decisiveRule.index == 4
+            matchingRules*.index == [4]
+            agreeingRules*.index == [4]
         }
     }
 
@@ -264,11 +266,11 @@ class DeciderSpec extends VeoSpec {
         def decisions = decider.decide(process, domain)
 
         then:
-        with(decisions.piaMandatory) {
+        with(decisions[piaMandatoryRef]) {
             value
-            decisiveRule == 4
-            matchingRules == [4]
-            agreeingRules == [4]
+            decisiveRule.index == 4
+            matchingRules*.index == [4]
+            agreeingRules*.index == [4]
         }
     }
 
@@ -285,11 +287,11 @@ class DeciderSpec extends VeoSpec {
         def decisions = decider.decide(process, domain)
 
         then:
-        with(decisions.piaMandatory) {
+        with(decisions[piaMandatoryRef]) {
             value == false
-            decisiveRule == 1
-            matchingRules == [1, 4]
-            agreeingRules == [1]
+            decisiveRule.index == 1
+            matchingRules*.index == [1, 4]
+            agreeingRules*.index == [1]
         }
     }
 
@@ -305,11 +307,11 @@ class DeciderSpec extends VeoSpec {
         def decisions = decider.decide(process, domain)
 
         then:
-        with(decisions.piaMandatory) {
+        with(decisions[piaMandatoryRef]) {
             value == null
             decisiveRule == null
-            matchingRules == []
-            agreeingRules == []
+            matchingRules*.index == []
+            agreeingRules*.index == []
         }
     }
 
@@ -328,11 +330,11 @@ class DeciderSpec extends VeoSpec {
         def decisions = decider.decide(process, domain)
 
         then:
-        with(decisions.piaMandatory) {
+        with(decisions[piaMandatoryRef]) {
             value == false
-            decisiveRule == 1
-            matchingRules == [1, 2, 3, 4]
-            agreeingRules == [1, 2, 3]
+            decisiveRule.index == 1
+            matchingRules*.index == [1, 2, 3, 4]
+            agreeingRules*.index == [1, 2, 3]
         }
     }
 
@@ -348,11 +350,11 @@ class DeciderSpec extends VeoSpec {
         def decisions = decider.decide(process, domain)
 
         then:
-        with(decisions.piaMandatory) {
+        with(decisions[piaMandatoryRef]) {
             value == false
-            decisiveRule == 2
-            matchingRules == [2, 5]
-            agreeingRules == [2]
+            decisiveRule.index == 2
+            matchingRules*.index == [2, 5]
+            agreeingRules*.index == [2]
         }
     }
 
@@ -368,11 +370,11 @@ class DeciderSpec extends VeoSpec {
         def decisions = decider.decide(process, domain)
 
         then:
-        with(decisions.piaMandatory) {
+        with(decisions[piaMandatoryRef]) {
             value == false
-            decisiveRule == 3
-            matchingRules == [3, 5]
-            agreeingRules == [3]
+            decisiveRule.index == 3
+            matchingRules*.index == [3, 5]
+            agreeingRules*.index == [3]
         }
     }
 
@@ -388,11 +390,11 @@ class DeciderSpec extends VeoSpec {
         def decisions = decider.decide(process, domain)
 
         then:
-        with(decisions.piaMandatory) {
+        with(decisions[piaMandatoryRef]) {
             value == null
             decisiveRule == null
-            matchingRules == []
-            agreeingRules == []
+            matchingRules*.index == []
+            agreeingRules*.index == []
         }
     }
 

@@ -22,14 +22,18 @@ import java.util.Map;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Runs all applicable decisions for an element and gathers the results.
  */
+@RequiredArgsConstructor
 public class Decider {
-    public Map<String, DecisionResult> decide(Element element, Domain domain) {
-        var results = new HashMap<String, DecisionResult>();
+    public Map<DecisionRef, DecisionResult> decide(Element element, Domain domain) {
+        var results = new HashMap<DecisionRef, DecisionResult>();
         domain.getDecisions()
               .forEach((key, decision) -> {
                   if (decision.getElementType()
@@ -37,7 +41,7 @@ public class Decider {
                           && decision.getElementSubType()
                                      .equals(element.getSubType(domain)
                                                     .orElse(null))) {
-                      results.put(key, decision.evaluate(element, domain));
+                      results.put(new DecisionRef(key, domain), decision.evaluate(element, domain));
                   }
               });
         return results;

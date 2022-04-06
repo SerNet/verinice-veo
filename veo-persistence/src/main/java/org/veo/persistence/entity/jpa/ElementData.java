@@ -55,6 +55,7 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.aspects.Aspect;
 import org.veo.core.entity.aspects.SubTypeAspect;
+import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.persistence.entity.jpa.validation.HasOwnerOrContainingCatalogItem;
 
@@ -211,14 +212,14 @@ public abstract class ElementData extends IdentifiableVersionedData
     }
 
     @Override
-    public Map<String, DecisionResult> getDecisionResults(DomainTemplate domain) {
+    public Map<DecisionRef, DecisionResult> getDecisionResults(DomainTemplate domain) {
         return findAspectByDomain(decisionResultsAspects,
                                   domain).map(DecisionResultsAspectData::getResults)
                                          .orElse(Map.of());
     }
 
     @Override
-    public void setDecisionResults(Map<String, DecisionResult> results, Domain domain) {
+    public void setDecisionResults(Map<DecisionRef, DecisionResult> results, Domain domain) {
         removeAspect(decisionResultsAspects, domain);
         decisionResultsAspects.add(new DecisionResultsAspectData(domain, this, results));
     }

@@ -28,6 +28,8 @@ import com.fasterxml.jackson.databind.KeyDeserializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
+import org.veo.core.entity.decision.DecisionRef;
+import org.veo.core.entity.decision.DecisionRuleRef;
 import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ImpactRef;
 import org.veo.core.entity.risk.ImplementationStatusRef;
@@ -37,6 +39,7 @@ import org.veo.core.entity.risk.RiskRef;
 
 public class ReferenceSerializationModule extends SimpleModule {
     transient RiskReferenceFactoryImpl refFactory = RiskReferenceFactoryImpl.getInstance();
+    transient DecisionReferenceFactoryImpl decisionRefFactory = DecisionReferenceFactoryImpl.getInstance();
 
     private static final long serialVersionUID = -786416108694458569L;
 
@@ -112,6 +115,51 @@ public class ReferenceSerializationModule extends SimpleModule {
                 return refFactory.createRiskDefinitionRef(p.getValueAsString());
             }
         });
+
+        addKeySerializer(DecisionRef.class, new JsonSerializer<>() {
+            @Override
+            public void serialize(DecisionRef value, JsonGenerator gen,
+                    SerializerProvider serializers) throws IOException {
+                gen.writeFieldName(value.getKeyRef());
+            }
+        });
+
+        addSerializer(DecisionRuleRef.class, new JsonSerializer<>() {
+            @Override
+            public void serialize(DecisionRuleRef value, JsonGenerator gen,
+                    SerializerProvider serializers) throws IOException {
+                gen.writeNumber(value.getIndex());
+            }
+        });
+        addDeserializer(DecisionRuleRef.class, new JsonDeserializer<>() {
+            @Override
+            public DecisionRuleRef deserialize(JsonParser p, DeserializationContext ctxt)
+                    throws IOException {
+                return decisionRefFactory.createDecisionRuleRef(p.getIntValue());
+            }
+        });
+
+        addKeyDeserializer(DecisionRef.class, new KeyDeserializer() {
+            @Override
+            public Object deserializeKey(String key, DeserializationContext ctxt) {
+                return decisionRefFactory.createDecisionRef(key);
+            }
+        });
+        addSerializer(DecisionRef.class, new JsonSerializer<>() {
+            @Override
+            public void serialize(DecisionRef value, JsonGenerator gen,
+                    SerializerProvider serializers) throws IOException {
+                gen.writeString(value.getKeyRef());
+            }
+        });
+        addDeserializer(DecisionRef.class, new JsonDeserializer<>() {
+            @Override
+            public DecisionRef deserialize(JsonParser p, DeserializationContext ctxt)
+                    throws IOException {
+                return decisionRefFactory.createDecisionRef(p.getValueAsString());
+            }
+        });
+
         addKeySerializer(RiskDefinitionRef.class, new JsonSerializer<>() {
             @Override
             public void serialize(RiskDefinitionRef value, JsonGenerator gen,

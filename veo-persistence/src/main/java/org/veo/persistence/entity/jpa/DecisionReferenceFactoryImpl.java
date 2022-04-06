@@ -17,39 +17,33 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import java.util.Map;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-
-import org.hibernate.annotations.TypeDef;
-
-import com.vladmihalcea.hibernate.type.json.JsonType;
-
-import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Element;
 import org.veo.core.entity.decision.DecisionRef;
-import org.veo.core.entity.decision.DecisionResult;
+import org.veo.core.entity.decision.DecisionReferenceFactory;
+import org.veo.core.entity.decision.DecisionRuleRef;
 
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-@Entity(name = "decision_results_aspect")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-@ToString(onlyExplicitlyIncluded = true, callSuper = true)
+/**
+ * @see DecisionReferenceFactory
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@TypeDef(name = "json", typeClass = JsonType.class, defaultForType = Map.class)
-public class DecisionResultsAspectData extends AspectData {
-    public DecisionResultsAspectData(DomainTemplate domain, Element owner,
-            Map<DecisionRef, DecisionResult> results) {
-        super(domain, owner);
-        this.results = results;
+public class DecisionReferenceFactoryImpl extends DecisionReferenceFactory {
+    private static DecisionReferenceFactoryImpl instance = new DecisionReferenceFactoryImpl();
+
+    public static DecisionReferenceFactoryImpl getInstance() {
+        if (instance == null)
+            instance = new DecisionReferenceFactoryImpl();
+        return instance;
     }
 
-    @Column(columnDefinition = "jsonb")
-    @Getter
-    private Map<DecisionRef, DecisionResult> results;
+    @Override
+    protected DecisionRef createDecisionRef(String key) {
+        return super.createDecisionRef(key);
+    }
+
+    @Override
+    protected DecisionRuleRef createDecisionRuleRef(Integer intValue) {
+        return super.createDecisionRuleRef(intValue);
+    }
 }

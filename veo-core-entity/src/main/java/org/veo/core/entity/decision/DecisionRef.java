@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jonas Jordan
+ * Copyright (C) 2022  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,25 +15,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.core.entity.decision;
 
-import java.util.Map;
+import org.veo.core.entity.Domain;
 
-import org.veo.core.entity.aspects.SubTypeAspect;
-import org.veo.core.entity.decision.DecisionRef;
-import org.veo.core.entity.decision.DecisionResult;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+/**
+ * References a decision on a domain using the decision's key (in the domain's
+ * map of decisions). A decision key is only unique within a specific domain.
+ */
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+@Value
+public class DecisionRef {
+    @Getter
+    private final String keyRef;
 
-@Data
-public class DomainAssociationDto {
-    @Schema(minLength = 1, maxLength = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
-    String subType;
-    @Schema(minLength = 1, maxLength = SubTypeAspect.STATUS_MAX_LENGTH)
-    String status;
-
-    @Schema(description = "Results of all decisions concerning this element within this domain. Key is decision key, value is results.",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private Map<DecisionRef, DecisionResult> decisionResults;
+    public DecisionRef(String keyRef, Domain domain) {
+        this(keyRef);
+        if (!domain.getDecisions()
+                   .containsKey(keyRef)) {
+            throw new IllegalArgumentException();
+        }
+    }
 }

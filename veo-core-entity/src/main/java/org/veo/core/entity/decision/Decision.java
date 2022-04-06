@@ -57,28 +57,32 @@ public class Decision {
 
     public DecisionResult evaluate(Element element, Domain domain) {
         // Find all matching rules
-        var matchingRules = new ArrayList<Integer>();
+        var matchingRules = new ArrayList<DecisionRuleRef>();
         for (var i = 0; i < rules.size(); i++) {
             var rule = rules.get(i);
             if (rule.matches(element, domain)) {
-                matchingRules.add(i);
+                matchingRules.add(new DecisionRuleRef(i, this));
             }
         }
 
         // The first matching rule determines the result.
         return matchingRules.stream()
                             .findFirst()
-                            .map(decisiveRuleIndex -> buildResult(decisiveRuleIndex, matchingRules))
+                            .map(decisiveRuleRef -> buildResult(decisiveRuleRef, matchingRules))
                             .orElse(new DecisionResult());
     }
 
-    private DecisionResult buildResult(int decisiveRuleIndex, List<Integer> matchingRules) {
-        var value = rules.get(decisiveRuleIndex)
-                         .getOutput();
-        var agreeingRules = matchingRules.stream()
-                                         .filter(index -> rules.get(index)
-                                                               .outputEquals(value))
-                                         .collect(Collectors.toList());
-        return new DecisionResult(value, decisiveRuleIndex, matchingRules, agreeingRules);
+    public Rule getRule(DecisionRuleRef ref) {
+        return rules.get(ref.getIndex());
     }
+
+    private DecisionResult buildResult(DecisionRuleRef decisiveRuleRef,
+            List<DecisionRuleRef> matchingRules) {
+        var value = getRule(decisiveRuleRef).getOutput();
+        var agreeingRules = matchingRules.stream()
+                                         .filter(ref -> getRule(ref).outputEquals(value))
+                                         .collect(Collectors.toList());
+        return new DecisionResult(value, decisiveRuleRef, matchingRules, agreeingRules);
+    }
+
 }
