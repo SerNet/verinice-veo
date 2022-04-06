@@ -23,9 +23,9 @@ import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ImpactRef;
 import org.veo.core.entity.risk.ImplementationStatusRef;
 import org.veo.core.entity.risk.ProbabilityRef;
-import org.veo.core.entity.risk.ReferenceFactory;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.risk.RiskRef;
+import org.veo.core.entity.risk.RiskReferenceProvider;
 
 /**
  * Simple factory for reference objects to be used by JPA converters. Should not
@@ -33,18 +33,18 @@ import org.veo.core.entity.risk.RiskRef;
  * instead which ensures that references cannot be created outside their valid
  * scope.
  *
- * @see org.veo.core.entity.risk.ReferenceProvider
+ * @see RiskReferenceProvider
  */
-final class RiskReferenceFactory extends ReferenceFactory {
+final class RiskReferenceFactoryImpl extends org.veo.core.entity.risk.RiskReferenceFactory {
 
-    private static RiskReferenceFactory instance = new RiskReferenceFactory();
+    private static RiskReferenceFactoryImpl instance = new RiskReferenceFactoryImpl();
 
-    private RiskReferenceFactory() {
+    private RiskReferenceFactoryImpl() {
     }
 
-    public static RiskReferenceFactory getInstance() {
+    public static RiskReferenceFactoryImpl getInstance() {
         if (instance == null)
-            instance = new RiskReferenceFactory();
+            instance = new RiskReferenceFactoryImpl();
         return instance;
     }
 

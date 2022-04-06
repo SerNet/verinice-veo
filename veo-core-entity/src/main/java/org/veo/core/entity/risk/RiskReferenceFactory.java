@@ -19,7 +19,7 @@ package org.veo.core.entity.risk;
 
 import java.math.BigDecimal;
 
-public abstract class ReferenceFactory {
+public abstract class RiskReferenceFactory {
     protected RiskRef createRiskRef(BigDecimal id) {
         return id == null ? null : new RiskRef(id);
     }

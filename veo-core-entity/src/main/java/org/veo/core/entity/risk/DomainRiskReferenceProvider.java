@@ -27,7 +27,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class DomainRiskReferenceProvider extends ReferenceProvider {
+public class DomainRiskReferenceProvider extends RiskReferenceProvider {
 
     @Getter
     private DomainTemplate domain;

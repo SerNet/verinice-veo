@@ -24,7 +24,7 @@ package org.veo.core.entity.risk;
  * The implementing provider must make sure that the requested reference object
  * is valid in each context.
  */
-public abstract class ReferenceValidator extends ReferenceFactory {
+public abstract class ReferenceValidator extends RiskReferenceFactory {
     /**
      * Validates the given reference against the risk-definition.
      *

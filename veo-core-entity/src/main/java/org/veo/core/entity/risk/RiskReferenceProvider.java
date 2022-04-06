@@ -27,7 +27,7 @@ import java.util.Optional;
  * The implementing provider must make sure that the requested reference object
  * is valid in each context.
  */
-public abstract class ReferenceProvider extends ReferenceFactory {
+public abstract class RiskReferenceProvider extends RiskReferenceFactory {
     /**
      * Returns a valid risk reference. Implementations must respect a valid risk
      * definition for the context.

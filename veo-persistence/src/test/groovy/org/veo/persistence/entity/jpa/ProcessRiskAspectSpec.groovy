@@ -25,8 +25,6 @@ import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.riskdefinition.RiskDefinition
 import org.veo.test.VeoSpec
 
-import spock.lang.Ignore
-
 class ProcessRiskAspectSpec extends VeoSpec {
 
 
@@ -34,7 +32,7 @@ class ProcessRiskAspectSpec extends VeoSpec {
     Unit unit
     public static final String RISK_DEF_ID = "r2d2"
 
-    RiskReferenceFactory factory = RiskReferenceFactory.getInstance()
+    RiskReferenceFactoryImpl factory = RiskReferenceFactoryImpl.getInstance()
     RiskDefinition riskDefinition
     Domain domain
 

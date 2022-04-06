@@ -36,7 +36,7 @@ import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.risk.RiskRef;
 
 public class ReferenceSerializationModule extends SimpleModule {
-    transient RiskReferenceFactory refFactory = RiskReferenceFactory.getInstance();
+    transient RiskReferenceFactoryImpl refFactory = RiskReferenceFactoryImpl.getInstance();
 
     private static final long serialVersionUID = -786416108694458569L;
 

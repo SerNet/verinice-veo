@@ -36,7 +36,7 @@ class RiskDefinitionRefConverter implements AttributeConverter<RiskDefinitionRef
     @Override
     public RiskDefinitionRef convertToEntityAttribute(String dbData) {
         return dbData == null ? null
-                : RiskReferenceFactory.getInstance()
-                                      .createRiskDefinitionRef(dbData);
+                : RiskReferenceFactoryImpl.getInstance()
+                                          .createRiskDefinitionRef(dbData);
     }
 }
