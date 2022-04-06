@@ -145,6 +145,19 @@ class SwaggerSpec extends VeoSpringSpec {
         potentialImpactsSchema.example == [C:2, I:3]
     }
 
+    def "decision rule ref values are mapped correctly"() {
+        given:
+        def schemas = parsedApiDocs.components.schemas
+
+        expect:
+        def scopeDomainAssociationSchema = schemas.ScopeDomainAssociationDto
+        scopeDomainAssociationSchema.properties.decisionResults.additionalProperties.'$ref' == "#/components/schemas/DecisionResultsSchema"
+
+        def decisionResultsSchema = schemas.DecisionResultsSchema
+        decisionResultsSchema.properties.decisiveRule.type == "integer"
+        decisionResultsSchema.properties.agreeingRules.items.type == "integer"
+    }
+
     def "targetUri is required for parts when putting composite elements"() {
         when:
         def scenarioDtoSchema = parsedApiDocs.components.schemas.FullScenarioDto

@@ -36,6 +36,7 @@ import org.springframework.data.domain.AuditorAware;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import org.veo.adapter.SchemaReplacer;
 import org.veo.adapter.persistence.schema.EntitySchemaGenerator;
 import org.veo.adapter.persistence.schema.EntitySchemaServiceImpl;
 import org.veo.adapter.persistence.schema.SchemaExtender;
@@ -788,5 +789,10 @@ public class ModuleConfiguration {
     @Bean
     public Decider decider() {
         return new Decider();
+    }
+
+    @Bean
+    public SchemaReplacer schemaReplacer() {
+        return new SchemaReplacer();
     }
 }
