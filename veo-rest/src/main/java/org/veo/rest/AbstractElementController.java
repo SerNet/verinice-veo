@@ -23,16 +23,20 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.context.request.WebRequest;
 
+import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
+import org.veo.core.usecase.decision.EvaluateDecisionUseCase;
 import org.veo.rest.security.ApplicationUser;
 
 import lombok.RequiredArgsConstructor;
@@ -44,6 +48,10 @@ public abstract class AbstractElementController<T extends CompositeElement<T>, E
     private final Class<T> modelType;
 
     private final GetElementUseCase<T> getElementUseCase;
+    private final EvaluateDecisionUseCase evaluateDecisionUseCase;
+
+    @Autowired
+    private TransactionalRunner runner;
 
     /**
      * Load the element for the given id. The result is provided asynchronously by
@@ -93,6 +101,21 @@ public abstract class AbstractElementController<T extends CompositeElement<T>, E
                                                                                .map(this::entity2Dto)
                                                                                .collect(Collectors.toList()));
                                          });
+    }
+
+    public @Valid CompletableFuture<ResponseEntity<DecisionResult>> evaluateDecision(
+            Authentication auth, @Valid AbstractElementDto dto, String decisionKey,
+            String domainId) {
+        var client = getAuthenticatedClient(auth);
+
+        var element = runner.run(() -> {
+            return dtoToEntityTransformer.transformDto2Element(dto, createIdRefResolver(client));
+        });
+        return useCaseInteractor.execute(evaluateDecisionUseCase,
+                                         new EvaluateDecisionUseCase.InputData(client,
+                                                 Key.uuidFrom(domainId), decisionKey, element),
+                                         output -> ResponseEntity.ok()
+                                                                 .body(output.getDecisionResult()));
     }
 
     protected abstract E entity2Dto(T entity);

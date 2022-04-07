@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2019  Urs Zeidler.
+ * Copyright (C) 2022  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,29 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.repository;
+package org.veo.rest;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.function.Supplier;
 
-import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * A repository for <code>Domain</code> entities.
- *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
+ * Executes actions within a new DB transaction. Can be called from controllers.
+ * This can be used when the transaction boundaries for the usecase execution
+ * and the DTO transformation are separated.
  */
-public interface DomainRepository extends IdentifiableVersionedRepository<Domain> {
+@Component
+public class TransactionalRunner {
 
-    Set<Domain> findAllByClient(Key<UUID> clientId);
-
-    Set<Domain> findAllByTemplateId(Key<UUID> domainTemplateId);
-
-    Optional<Domain> findByCatalogItem(CatalogItem catalogItem);
-
-    Optional<Domain> findById(Key<UUID> domainId, Key<UUID> clientId);
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public <T> T run(Supplier<T> action) {
+        return action.get();
+    }
 }

@@ -32,6 +32,8 @@ import org.veo.persistence.access.jpa.DomainDataRepository;
 import org.veo.persistence.entity.jpa.DomainData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
+import lombok.NonNull;
+
 @Repository
 public class DomainRepositoryImpl extends
         AbstractIdentifiableVersionedRepository<Domain, DomainData> implements DomainRepository {
@@ -64,6 +66,11 @@ public class DomainRepositoryImpl extends
         return dataRepository.findByCatalogsCatalogItemsId(catalogItem.getId()
                                                                       .uuidValue())
                              .map(Domain.class::cast);
+    }
+
+    @Override
+    public Optional<Domain> findById(@NonNull Key<UUID> domainId, @NonNull Key<UUID> clientId) {
+        return dataRepository.findById(domainId.uuidValue(), clientId.uuidValue());
     }
 
 }

@@ -158,4 +158,8 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
         )));
         // @formatter:on
     }
+
+    default Optional<Decision> getDecision(String decisionKey) {
+        return Optional.ofNullable(getDecisions().get(decisionKey));
+    }
 }

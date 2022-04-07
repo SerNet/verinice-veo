@@ -23,9 +23,12 @@ import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.ANY_INT;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
 import static org.veo.rest.ControllerConstants.CHILD_ELEMENT_IDS_PARAM;
+import static org.veo.rest.ControllerConstants.DECISION_KEY_DESCRIPTION;
+import static org.veo.rest.ControllerConstants.DECISION_KEY_PARAM;
 import static org.veo.rest.ControllerConstants.DESCRIPTION_PARAM;
 import static org.veo.rest.ControllerConstants.DESIGNATOR_PARAM;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
+import static org.veo.rest.ControllerConstants.DOMAIN_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_CHILD_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_PARENT_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.NAME_PARAM;
@@ -88,6 +91,7 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
@@ -97,6 +101,7 @@ import org.veo.core.usecase.control.CreateControlUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
 import org.veo.core.usecase.control.GetControlsUseCase;
 import org.veo.core.usecase.control.UpdateControlUseCase;
+import org.veo.core.usecase.decision.EvaluateDecisionUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.security.ApplicationUser;
@@ -128,8 +133,9 @@ public class ControlController extends AbstractElementController<Control, FullCo
 
     public ControlController(CreateControlUseCase createControlUseCase,
             GetControlUseCase getControlUseCase, GetControlsUseCase getControlsUseCase,
-            UpdateControlUseCase updateControlUseCase, DeleteElementUseCase deleteElementUseCase) {
-        super(Control.class, getControlUseCase);
+            UpdateControlUseCase updateControlUseCase, DeleteElementUseCase deleteElementUseCase,
+            EvaluateDecisionUseCase evaluateDecisionUseCase) {
+        super(Control.class, getControlUseCase, evaluateDecisionUseCase);
         this.createControlUseCase = createControlUseCase;
         this.getControlsUseCase = getControlsUseCase;
         this.updateControlUseCase = updateControlUseCase;
@@ -326,6 +332,22 @@ public class ControlController extends AbstractElementController<Control, FullCo
             log.error("Could not decode search URL: {}", e.getLocalizedMessage());
             return null;
         }
+    }
+
+    @Operation(summary = "Evaluates a decision on a transient control without persisting anything")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                         description = "Decision evaluated",
+                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            array = @ArraySchema(schema = @Schema(implementation = FullControlDto.class)))),
+            @ApiResponse(responseCode = "404", description = "Decision not found") })
+    @PostMapping(value = "/decision-evaluation")
+    public @Valid CompletableFuture<ResponseEntity<DecisionResult>> evaluateDecision(
+            @Parameter(required = true, hidden = true) Authentication auth,
+            @Valid @RequestBody FullControlDto element,
+            @Parameter(description = DECISION_KEY_DESCRIPTION) @RequestParam(value = DECISION_KEY_PARAM) String decisionKey,
+            @RequestParam(value = DOMAIN_PARAM) String domainId) {
+        return super.evaluateDecision(auth, element, decisionKey, domainId);
     }
 
     @Override

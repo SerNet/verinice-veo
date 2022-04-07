@@ -20,18 +20,20 @@ package org.veo.rest.test
 class DecisionRestTest extends VeoRestTest {
     def PIA = "process_privacyImpactAssessment"
     String unitUri
+    String unitId
     String domainId
     def decisions
 
     def setup() {
-        unitUri = "http://localhost/units/" + post("/units", [name: "decision rest test unit"]).body.resourceId
+        unitId = post("/units", [name: "decision rest test unit"]).body.resourceId
+        unitUri = "http://localhost/units/" + unitId
 
         def domain = get("/domains").body.find { it.name == "DS-GVO" }
         domainId = domain.id
         decisions = domain.decisions
     }
 
-    def "piaRequired decision is made"() {
+    def "piaMandatory decision is persisted"() {
         given:
         def decision = decisions.piaMandatory
 
@@ -56,6 +58,129 @@ class DecisionRestTest extends VeoRestTest {
         }
 
         when: "adding a risk"
+        addRiskValue(processId, 1)
+
+        // TODO VEO-1282 assert that the decision has already changed based on the added risk
+
+        and: "adding PIA related attributes"
+        put("/processes/$processId", [
+            name: "blank process",
+            customAspects: [
+                (PIA): [
+                    attributes: [
+                        ("${PIA}_listed"): "${PIA}_listed_negative",
+                        ("${PIA}_processingCriteria"): [
+                            "${PIA}_processingCriteria_automated",
+                            "${PIA}_processingCriteria_specialCategories",
+                        ],
+                    ]
+                ]
+            ],
+            domains: [
+                (domainId): [
+                    subType: "PRO_DataProcessing",
+                    status: "NEW"
+                ],
+            ],
+            owner: [targetUri: unitUri]
+        ], get("/processes/$processId").parseETag())
+
+        then: "added risk and attributes are taken into consideration"
+        with(get("/processes/$processId").body.domains[domainId].decisionResults.piaMandatory) {
+            value == false
+            decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations not subject to a DPIA"
+            matchingRules.collect { decision.rules[it].description.en } ==~ [
+                "Processing on list of the kinds of processing operations not subject to a DPIA",
+                "Two or more criteria apply"
+            ]
+            agreeingRules.collect { decision.rules[it].description.en } ==~ [
+                "Processing on list of the kinds of processing operations not subject to a DPIA"
+            ]
+        }
+    }
+
+    def "piaMandatory decision can be evaluated for transient process"() {
+        given: "a transient process"
+        def decision = decisions.piaMandatory
+        def process = [
+            name: "transient process",
+            customAspects: [
+                (PIA): [
+                    attributes:[
+                        ("${PIA}_listed"): "${PIA}_listed_positive"
+                    ]
+                ]
+            ],
+            domains: [
+                (domainId): [
+                    subType: "PRO_DataProcessing",
+                    status: "NEW"
+                ],
+            ],
+            owner: [targetUri: unitUri]
+        ]
+
+        expect: "non-persistent evaluation to consider custom aspect attribute and missing risk values"
+        with(post("/processes/decision-evaluation?decision=piaMandatory&domain=$domainId", process, 200).body) {
+            value == null
+            decision.rules[decisiveRule].description.en == "Risk analysis not carried out"
+            matchingRules.collect{decision.rules[it].description.en} == [
+                "Risk analysis not carried out",
+                "Processing on list of the kinds of processing operations subject to a DPIA",
+            ]
+            agreeingRules.collect{decision.rules[it].description.en} == [
+                "Risk analysis not carried out"
+            ]
+        }
+
+        and: "no process has been persisted"
+        get("/processes?unit=$unitId").body.totalItemCount == 0
+
+        when: "persisting the process and adding a risk"
+        def processId = post("/processes", process).body.resourceId
+        process = get("/processes/$processId").body
+        addRiskValue(processId, 1)
+
+        then: "non-persistent evaluation returns different results due to added risk"
+        with(post("/processes/decision-evaluation?decision=piaMandatory&domain=$domainId", process, 200).body) {
+            value == true
+            decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations subject to a DPIA"
+            matchingRules.collect{decision.rules[it].description.en} == [
+                "Processing on list of the kinds of processing operations subject to a DPIA",
+            ]
+            agreeingRules.collect{decision.rules[it].description.en} == [
+                "Processing on list of the kinds of processing operations subject to a DPIA"
+            ]
+        }
+
+        when: "adding an attribute to the transient process"
+        def processUpdateTimeBeforeEvaluation = get("/processes/$processId").body.updatedAt
+        process.customAspects[PIA].attributes["${PIA}_otherExclusions"] = true
+
+        then: "non-persistent evaluation returns different results due to added attribute"
+        with(post("/processes/decision-evaluation?decision=piaMandatory&domain=$domainId", process, 200).body) {
+            value == false
+            decision.rules[decisiveRule].description.en == "Other exclusions"
+            matchingRules.collect{decision.rules[it].description.en} == [
+                "Other exclusions",
+                "Processing on list of the kinds of processing operations subject to a DPIA"
+            ]
+            agreeingRules.collect{decision.rules[it].description.en} == [
+                "Other exclusions"
+            ]
+        }
+
+        and: "changes to the process have not been persisted"
+        with(get("/processes/$processId").body) {
+            customAspects[owner.PIA].attributes.size() == 1
+            updatedAt == processUpdateTimeBeforeEvaluation
+        }
+
+        and: "risk is still attached to the process"
+        get("/processes/$processId/risks").body.size() == 1
+    }
+
+    private void addRiskValue(String processId, Integer residualRisk) {
         post("/scopes", [
             name: "risky scope",
             domains: [
@@ -87,7 +212,7 @@ class DecisionRestTest extends VeoRestTest {
                             riskValues: [
                                 [
                                     category: "A",
-                                    residualRisk: 1
+                                    residualRisk: residualRisk
                                 ]
                             ]
                         ]
@@ -96,43 +221,7 @@ class DecisionRestTest extends VeoRestTest {
             ],
             scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
         ])
-
-        // TODO VEO-1282 assert that the decision has already changed based on the added risk
-
-        and: "adding PIA related attributes"
-        put("/processes/$processId", [
-            name: "blank process",
-            customAspects: [
-                (PIA): [
-                    attributes: [
-                        ("${PIA}_listed"): "${PIA}_listed_negative",
-                        ("${PIA}_processingCriteria"): [
-                            "${PIA}_processingCriteria_automated",
-                            "${PIA}_processingCriteria_specialCategories",
-                        ],
-                    ]
-                ]
-            ],
-            domains: [
-                (domainId): [
-                    subType: "PRO_DataProcessing",
-                    status: "NEW"
-                ],
-            ],
-            owner: [targetUri: unitUri]
-        ], get("/processes/$processId").parseETag())
-
-        then:
-        with(get("/processes/$processId").body.domains[domainId].decisionResults.piaMandatory) {
-            value == false
-            decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations not subject to a DPIA"
-            matchingRules.collect { decision.rules[it].description.en } =~ [
-                "Processing on list of the kinds of processing operations not subject to a DPIA",
-                "Two or more criteria apply"
-            ]
-            agreeingRules.collect { decision.rules[it].description.en } =~ [
-                "Processing on list of the kinds of processing operations not subject to a DPIA"
-            ]
-        }
     }
+
+
 }

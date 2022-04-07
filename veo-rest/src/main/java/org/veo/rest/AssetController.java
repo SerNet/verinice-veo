@@ -23,9 +23,12 @@ import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.ANY_INT;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
 import static org.veo.rest.ControllerConstants.CHILD_ELEMENT_IDS_PARAM;
+import static org.veo.rest.ControllerConstants.DECISION_KEY_DESCRIPTION;
+import static org.veo.rest.ControllerConstants.DECISION_KEY_PARAM;
 import static org.veo.rest.ControllerConstants.DESCRIPTION_PARAM;
 import static org.veo.rest.ControllerConstants.DESIGNATOR_PARAM;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
+import static org.veo.rest.ControllerConstants.DOMAIN_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_CHILD_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_PARENT_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.NAME_PARAM;
@@ -90,6 +93,7 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
 import org.veo.core.usecase.asset.CreateAssetUseCase;
 import org.veo.core.usecase.asset.GetAssetRiskUseCase;
@@ -103,6 +107,7 @@ import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.common.ETag;
+import org.veo.core.usecase.decision.EvaluateDecisionUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
@@ -136,8 +141,9 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
             DeleteElementUseCase deleteElementUseCase,
             CreateAssetRiskUseCase createAssetRiskUseCase, GetAssetRiskUseCase getAssetRiskUseCase,
             DeleteRiskUseCase deleteRiskUseCase, UpdateAssetRiskUseCase updateAssetRiskUseCase,
-            GetAssetRisksUseCase getAssetRisksUseCase) {
-        super(Asset.class, getAssetUseCase);
+            GetAssetRisksUseCase getAssetRisksUseCase,
+            EvaluateDecisionUseCase evaluateDecisionUseCase) {
+        super(Asset.class, getAssetUseCase, evaluateDecisionUseCase);
         this.getAssetsUseCase = getAssetsUseCase;
         this.createAssetUseCase = createAssetUseCase;
         this.updateAssetUseCase = updateAssetUseCase;
@@ -343,6 +349,22 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
             log.error("Could not decode search URL: {}", e.getLocalizedMessage());
             return null;
         }
+    }
+
+    @Operation(summary = "Evaluates a decision on a transient asset without persisting anything")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                         description = "Decision evaluated",
+                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            array = @ArraySchema(schema = @Schema(implementation = FullAssetDto.class)))),
+            @ApiResponse(responseCode = "404", description = "Decision not found") })
+    @PostMapping(value = "/decision-evaluation")
+    public @Valid CompletableFuture<ResponseEntity<DecisionResult>> evaluateDecision(
+            @Parameter(required = true, hidden = true) Authentication auth,
+            @Valid @RequestBody FullAssetDto element,
+            @Parameter(description = DECISION_KEY_DESCRIPTION) @RequestParam(value = DECISION_KEY_PARAM) String decisionKey,
+            @RequestParam(value = DOMAIN_PARAM) String domainId) {
+        return super.evaluateDecision(auth, element, decisionKey, domainId);
     }
 
     @Override
