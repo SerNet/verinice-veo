@@ -7,8 +7,8 @@ def dockerArgsForGradleStages = '-v /data/gradle-homes/executor-$EXECUTOR_NUMBER
 def projectVersion
 
 def withDockerNetwork(Closure inner) {
-    def networkId = UUID.randomUUID().toString()
     try {
+        networkId = UUID.randomUUID().toString()
         sh "docker network create ${networkId}"
         inner.call(networkId)
     } finally {
@@ -68,6 +68,54 @@ pipeline {
                 }
             }
         }
+        stage('Test') {
+            environment {
+                def tag = "${env.BUILD_TAG}".replaceAll("[^A-Za-z0-9]", "_")
+                RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
+                VEO_MESSAGE_DISPATCH_ROUTINGKEYPREFIX =  "VEO_TEST_${tag}."
+                VEO_MESSAGE_CONSUME_QUEUE = "VEO_TEST_${tag}"
+            }
+            agent any
+            steps {
+                timeout(time: 20, unit: 'MINUTES'){
+                    script {
+                        withDockerNetwork{ n ->
+                            docker.image('postgres:13.4-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
+                                docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages} --network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
+                                    sh '''export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
+                                          export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
+                                          ./gradlew -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME test'''
+                                    jacoco classPattern: '**/build/classes/java/main'
+                                    junit allowEmptyResults: true,
+                                    testResults: '**/build/test-results/test/*.xml',
+                                    testDataPublishers: [
+                                        [$class: 'StabilityTestDataPublisher']
+                                    ]
+                                    [
+                                        'veo-adapter',
+                                        'veo-core-entity',
+                                        'veo-core-usecase',
+                                        'veo-persistence',
+                                        'veo-rest',
+                                        'veo-test',
+                                        'gendocs'
+                                    ].each {
+                                        publishHTML([
+                                            allowMissing: false,
+                                            alwaysLinkToLastBuild: false,
+                                            keepAll: true,
+                                            reportDir: "${it}/build/reports/tests/test/",
+                                            reportFiles: 'index.html',
+                                            reportName: "Test report: ${it}"
+                                        ])
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         stage('Artifacts') {
             agent {
                 docker {
@@ -80,9 +128,65 @@ pipeline {
                 sh './gradlew -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME build -x check'
                 archiveArtifacts artifacts: 'veo-rest/build/libs/*.jar,gendocs/build/libs/*.jar', fingerprint: true
             }
+        }
+        stage('Generate Domain Template docs') {
+            agent any
+            steps {
+                script {
+
+                    docker.image(imageForGradleStages).inside {
+                        unarchive mapping: ["gendocs/build/libs/gendocs-${projectVersion}.jar": "gendocs/build/libs/gendocs-${projectVersion}.jar"]
+                        sh "java -jar gendocs/build/libs/gendocs-${projectVersion}.jar -d domaintemplates/dsgvo/ > dsgvo.adoc"
+                        archiveArtifacts artifacts: 'dsgvo.adoc', fingerprint: true
+                    }
+                    docker.image('asciidoctor/docker-asciidoctor').inside {
+                        sh 'asciidoctor --doctype book dsgvo.adoc'
+                        sh 'asciidoctor-pdf --doctype book dsgvo.adoc'
+                        archiveArtifacts artifacts: 'dsgvo.pdf', fingerprint: true
+                    }
+                    publishHTML([
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll: true,
+                        reportDir: '.',
+                        reportFiles: 'dsgvo.html',
+                        reportName: 'DS-GVO domain template documentation'
+                    ])
+                }
+            }
+        }
+        stage('Analyze') {
+            agent {
+                docker {
+                    image imageForGradleStages
+                    alwaysPull true
+                    args dockerArgsForGradleStages
+                }
+            }
+            steps {
+                timeout(time: 5, unit: 'MINUTES'){
+                    unarchive mapping: ['build/reports/dependency-license/LICENSE-3RD-PARTY.txt': 'build/reports/dependency-license/LICENSE-3RD-PARTY.txt']
+                    script {
+                        def repositoryFileContent = readFile('LICENSE-3RD-PARTY.txt')
+                        def generatedFileContent = readFile('build/reports/dependency-license/LICENSE-3RD-PARTY.txt')
+                        def repositoryFileContentWithoutDate = repositoryFileContent.replaceAll(/\RThis report was generated at .+\R/, '')
+                        def generatedFileContentWithoutDate = generatedFileContent.replaceAll(/\RThis report was generated at .+\R/, '')
+                        if (repositoryFileContentWithoutDate != generatedFileContentWithoutDate){
+                            error 'LICENSE-3RD-PARTY.txt is not up to date, please re-run ./gradlew generateLicenseReport'
+                        }
+                    }
+                    // work around https://github.com/spotbugs/spotbugs-gradle-plugin/issues/391
+                    sh './gradlew -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME check -x test -x spotbugsTest'
+                }
+            }
             post {
-                always{
-                    sh 'rm veo-rest/build/libs/*.jar gendocs/build/libs/*.jar'
+                failure {
+                    recordIssues(enabledForFailure: true, tools: [
+                        spotBugs(pattern: '**/build/reports/spotbugs/main.xml', useRankAsPriority: true, trendChartType: 'NONE')
+                    ])
+                    recordIssues(enabledForFailure: true, tools: [
+                        pmdParser(pattern: '**/build/reports/pmd/main.xml', trendChartType: 'NONE')
+                    ])
                 }
             }
         }
@@ -107,164 +211,30 @@ pipeline {
                     }
                 }
             }
-            post {
-                always{
-                    sh 'rm veo-rest/build/libs/*.jar'
-                }
-            }
-
         }
-        stage('veo-rest test classes') {
-            agent {
-                docker {
-                    image imageForGradleStages
-                    alwaysPull true
-                    args dockerArgsForGradleStages
-                }
+
+        stage('HTTP REST Test') {
+            environment {
+                def tag = "${env.BUILD_TAG}".replaceAll("[^A-Za-z0-9]", "_")
+                KEYCLOAK_DEFAULT_CREDS = credentials('veo_authentication_credentials')
+                KEYCLOAK_ADMIN_CREDS = credentials('veo_admin_authentication_credentials')
+                KEYCLOAK_CONTENT_CREATOR_CREDS = credentials('veo_content_creator_authentication_credentials')
+                RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
+                VEO_MESSAGE_DISPATCH_ROUTINGKEYPREFIX =  "VEO_REST_TEST_${tag}."
+                VEO_MESSAGE_CONSUME_QUEUE = "VEO_REST_TEST_${tag}"
+                VEO_RESTTEST_OIDCURL = "${env.OIDC_URL_DEV}"
+                VEO_RESTTEST_REALM = "${env.OIDC_REALM_DEV}"
+                VEO_RESTTEST_CLIENTID = "${env.OIDC_CLIENT_DEV}"
+                VEO_RESTTEST_PROXYHOST = "cache.sernet.private"
+                VEO_RESTTEST_PROXYPORT = 3128
             }
+            agent any
             steps {
-                sh './gradlew -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME veo-rest:testClasses'
-            }
-        }
-        stage('Post-build steps') {
-            parallel {
-
-                stage('Analyze') {
-                    agent {
-                        docker {
-                            image imageForGradleStages
-                            alwaysPull true
-                            args dockerArgsForGradleStages
-                        }
-                    }
-                    steps {
-                        timeout(time: 5, unit: 'MINUTES'){
-                            unarchive mapping: ['build/reports/dependency-license/LICENSE-3RD-PARTY.txt': 'build/reports/dependency-license/LICENSE-3RD-PARTY.txt']
-                            script {
-                                def repositoryFileContent = readFile('LICENSE-3RD-PARTY.txt')
-                                def generatedFileContent = readFile('build/reports/dependency-license/LICENSE-3RD-PARTY.txt')
-                                def repositoryFileContentWithoutDate = repositoryFileContent.replaceAll(/\RThis report was generated at .+\R/, '')
-                                def generatedFileContentWithoutDate = generatedFileContent.replaceAll(/\RThis report was generated at .+\R/, '')
-                                if (repositoryFileContentWithoutDate != generatedFileContentWithoutDate){
-                                    error 'LICENSE-3RD-PARTY.txt is not up to date, please re-run ./gradlew generateLicenseReport'
-                                }
-                            }
-                            // work around https://github.com/spotbugs/spotbugs-gradle-plugin/issues/391
-                            sh './gradlew -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME check -x test -x spotbugsTest'
-                        }
-                    }
-                    post {
-                        failure {
-                            recordIssues(enabledForFailure: true, tools: [
-                                spotBugs(pattern: '**/build/reports/spotbugs/main.xml', useRankAsPriority: true, trendChartType: 'NONE')
-                            ])
-                            recordIssues(enabledForFailure: true, tools: [
-                                pmdParser(pattern: '**/build/reports/pmd/main.xml', trendChartType: 'NONE')
-                            ])
-                        }
-                    }
-                }
-                stage('Generate Domain Template docs') {
-                    agent any
-                    steps {
-                        script {
-
-                            docker.image(imageForGradleStages).inside {
-                                unarchive mapping: ["gendocs/build/libs/gendocs-${projectVersion}.jar": "gendocs/build/libs/gendocs-${projectVersion}.jar"]
-                                sh "java -jar gendocs/build/libs/gendocs-${projectVersion}.jar -d domaintemplates/dsgvo/ > dsgvo.adoc"
-                                archiveArtifacts artifacts: 'dsgvo.adoc', fingerprint: true
-                            }
-                            docker.image('asciidoctor/docker-asciidoctor').inside {
-                                sh 'asciidoctor --doctype book dsgvo.adoc'
-                                sh 'asciidoctor-pdf --doctype book dsgvo.adoc'
-                                archiveArtifacts artifacts: 'dsgvo.pdf', fingerprint: true
-                            }
-                            publishHTML([
-                                allowMissing: false,
-                                alwaysLinkToLastBuild: false,
-                                keepAll: true,
-                                reportDir: '.',
-                                reportFiles: 'dsgvo.html',
-                                reportName: 'DS-GVO domain template documentation'
-                            ])
-                        }
-                    }
-                    post {
-                        always{
-                            sh 'rm gendocs/build/libs/*.jar'
-                        }
-                    }
-                }
-                stage('Test') {
-                    environment {
-                        def tag = "${env.BUILD_TAG}".replaceAll("[^A-Za-z0-9]", "_")
-                        RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
-                        VEO_MESSAGE_DISPATCH_ROUTINGKEYPREFIX =  "VEO_TEST_${tag}."
-                        VEO_MESSAGE_CONSUME_QUEUE = "VEO_TEST_${tag}"
-                    }
-                    agent any
-                    steps {
-                        timeout(time: 20, unit: 'MINUTES'){
-                            script {
-                                withDockerNetwork{ n ->
-                                    docker.image('postgres:13.4-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
-                                        docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages} --network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
-                                            sh '''export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
-                                          export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
-                                          ./gradlew -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME test'''
-                                            jacoco classPattern: '**/build/classes/java/main'
-                                            junit allowEmptyResults: true,
-                                            testResults: '**/build/test-results/test/*.xml',
-                                            testDataPublishers: [
-                                                [$class: 'StabilityTestDataPublisher']
-                                            ]
-                                            [
-                                                'veo-adapter',
-                                                'veo-core-entity',
-                                                'veo-core-usecase',
-                                                'veo-persistence',
-                                                'veo-rest',
-                                                'veo-test',
-                                                'gendocs'
-                                            ].each {
-                                                publishHTML([
-                                                    allowMissing: false,
-                                                    alwaysLinkToLastBuild: false,
-                                                    keepAll: true,
-                                                    reportDir: "${it}/build/reports/tests/test/",
-                                                    reportFiles: 'index.html',
-                                                    reportName: "Test report: ${it}"
-                                                ])
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                stage('HTTP REST Test') {
-                    environment {
-                        def tag = "${env.BUILD_TAG}".replaceAll("[^A-Za-z0-9]", "_")
-                        KEYCLOAK_DEFAULT_CREDS = credentials('veo_authentication_credentials')
-                        KEYCLOAK_ADMIN_CREDS = credentials('veo_admin_authentication_credentials')
-                        KEYCLOAK_CONTENT_CREATOR_CREDS = credentials('veo_content_creator_authentication_credentials')
-                        RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
-                        VEO_MESSAGE_DISPATCH_ROUTINGKEYPREFIX =  "VEO_REST_TEST_${tag}."
-                        VEO_MESSAGE_CONSUME_QUEUE = "VEO_REST_TEST_${tag}"
-                        VEO_RESTTEST_OIDCURL = "${env.OIDC_URL_DEV}"
-                        VEO_RESTTEST_REALM = "${env.OIDC_REALM_DEV}"
-                        VEO_RESTTEST_CLIENTID = "${env.OIDC_CLIENT_DEV}"
-                        VEO_RESTTEST_PROXYHOST = "cache.sernet.private"
-                        VEO_RESTTEST_PROXYPORT = 3128
-                    }
-                    agent any
-                    steps {
-                        timeout(time: 20, unit: 'MINUTES'){
-                            script {
-                                withDockerNetwork{ n ->
-                                    docker.image('postgres:13.4-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
-                                        docker.image("eu.gcr.io/veo-projekt/veo:git-${env.GIT_COMMIT}").withRun("\
+                timeout(time: 20, unit: 'MINUTES'){
+                    script {
+                        withDockerNetwork{ n ->
+                            docker.image('postgres:13.4-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
+                                docker.image("eu.gcr.io/veo-projekt/veo:git-${env.GIT_COMMIT}").withRun("\
                                 --network ${n}\
                                 --name veo-${n}\
                                 -v ${WORKSPACE}/veo-adapter/build/domain_templates/domaintemplates:/domaintemplates/main/\
@@ -280,21 +250,21 @@ pipeline {
                                 -e VEO_DEFAULT_DOMAINTEMPLATE_NAMES=DS-GVO,test-domain\
                                 -e VEO_ETAG_SALT=zuL4Q8JKdy\
                                 -e 'JDK_JAVA_OPTIONS=-Dhttp.proxyHost=cache.sernet.private -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.sernet.private -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Dhttp.proxySet=true'") { veo ->
-                                                    docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages}\
+                                            docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages}\
                                     --network ${n}\
                                     -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres\
                                     -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver\
                                     -e VEO_RESTTEST_BASEURL=http://veo-${n}:8070") {
-                                                                echo 'Waiting for container startup'
-                                                                timeout(2) {
-                                                                    waitUntil {
-                                                                        script {
-                                                                            def r = sh returnStatus:true, script: "wget --no-proxy -q http://veo-${n}:8070 -O /dev/null"
-                                                                            return (r == 0);
-                                                                        }
-                                                                    }
+                                                        echo 'Waiting for container startup'
+                                                        timeout(2) {
+                                                            waitUntil {
+                                                                script {
+                                                                    def r = sh returnStatus:true, script: "wget --no-proxy -q http://veo-${n}:8070 -O /dev/null"
+                                                                    return (r == 0);
                                                                 }
-                                                                sh """export SPRING_RABBITMQ_USERNAME=\$RABBITMQ_CREDS_USR && \
+                                                            }
+                                                        }
+                                                        sh """export SPRING_RABBITMQ_USERNAME=\$RABBITMQ_CREDS_USR && \
                                                    export SPRING_RABBITMQ_PASSWORD=\$RABBITMQ_CREDS_PSW && \
                                                    export VEO_RESTTEST_USERS_DEFAULT_NAME=\$KEYCLOAK_DEFAULT_CREDS_USR && \
                                                    export VEO_RESTTEST_USERS_DEFAULT_PASS=\$KEYCLOAK_DEFAULT_CREDS_PSW && \
@@ -303,25 +273,23 @@ pipeline {
                                                    export VEO_RESTTEST_USERS_CONTENTCREATOR_NAME=\$KEYCLOAK_CONTENT_CREATOR_CREDS_USR && \
                                                    export VEO_RESTTEST_USERS_CONTENTCREATOR_PASS=\$KEYCLOAK_CONTENT_CREATOR_CREDS_PSW && \
                                                    ./gradlew -Dhttp.nonProxyHosts=\"localhost|veo-${n}\" -PciBuildNumber=\$BUILD_NUMBER -PciJobName=\$JOB_NAME veo-rest:restTest"""
-                                                                junit allowEmptyResults: true, testResults: 'veo-rest/build/test-results/restTest/*.xml'
-                                                                publishHTML([
-                                                                    allowMissing: false,
-                                                                    alwaysLinkToLastBuild: false,
-                                                                    keepAll: true,
-                                                                    reportDir: 'veo-rest/build/reports/tests/restTest/',
-                                                                    reportFiles: 'index.html',
-                                                                    reportName: 'Test report: veo-rest-integration-test'
-                                                                ])
-                                                                perfReport failBuildIfNoResultFile: false,
-                                                                modePerformancePerTestCase: true,
-                                                                showTrendGraphs: true,
-                                                                sourceDataFiles: 'veo-rest/build/test-results/restTest/*.xml'
-                                                            }
-                                                    sh "docker logs ${veo.id} > rest-test-container-logs.log"
-                                                    archive 'rest-test-container-logs.log'
-                                                }
-                                    }
-                                }
+                                                        junit allowEmptyResults: true, testResults: 'veo-rest/build/test-results/restTest/*.xml'
+                                                        publishHTML([
+                                                            allowMissing: false,
+                                                            alwaysLinkToLastBuild: false,
+                                                            keepAll: true,
+                                                            reportDir: 'veo-rest/build/reports/tests/restTest/',
+                                                            reportFiles: 'index.html',
+                                                            reportName: 'Test report: veo-rest-integration-test'
+                                                        ])
+                                                        perfReport failBuildIfNoResultFile: false,
+                                                        modePerformancePerTestCase: true,
+                                                        showTrendGraphs: true,
+                                                        sourceDataFiles: 'veo-rest/build/test-results/restTest/*.xml'
+                                                    }
+                                            sh "docker logs ${veo.id} > rest-test-container-logs.log"
+                                            archive 'rest-test-container-logs.log'
+                                        }
                             }
                         }
                     }
@@ -344,6 +312,9 @@ pipeline {
         }
         always {
             node('') {
+                catchError() {
+                    sh 'rm veo-rest/build/libs/*.jar gendocs/build/libs/*.jar'
+                }
                 recordIssues(enabledForFailure: true, tools: [java()])
                 recordIssues(enabledForFailure: true, tools: [javaDoc()])
                 recordIssues(
