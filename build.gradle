@@ -136,10 +136,10 @@ subprojects {
             dependency 'io.jsonwebtoken:jjwt-jackson:0.11.2'
             dependency "org.spockframework:spock-core:2.1-groovy-3.0"
             dependency "org.spockframework:spock-spring:2.1-groovy-3.0"
-            dependency 'org.springdoc:springdoc-openapi-ui:1.6.6'
-            dependency 'org.springdoc:springdoc-openapi-common:1.6.6'
-            dependency 'io.swagger.core.v3:swagger-core:2.1.13'
-            dependency 'io.swagger.core.v3:swagger-annotations:2.1.13'
+            dependency 'org.springdoc:springdoc-openapi-ui:1.6.7'
+            dependency 'org.springdoc:springdoc-openapi-common:1.6.7'
+            dependency 'io.swagger.core.v3:swagger-core:2.2.0'
+            dependency 'io.swagger.core.v3:swagger-annotations:2.2.0'
             dependency 'net.ttddyy:datasource-proxy:1.7'
             dependency 'com.github.victools:jsonschema-generator:4.24.2'
             dependency 'com.github.victools:jsonschema-module-jackson:4.24.2'
