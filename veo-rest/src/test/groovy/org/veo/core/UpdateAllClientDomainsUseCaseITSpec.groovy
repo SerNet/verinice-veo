@@ -96,7 +96,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         runUseCase(DSGVO_DOMAINTEMPLATE_V2_UUID)
         client = clientRepository.findById(client.id).get()
         then: 'the old domain is disabled'
-        !client.domains.find{it.id == dsgvoDomain.id}.active
+        !client.getAllDomains().find{it.id == dsgvoDomain.id}.active
         client.domains.find{it.id == dsgvoDomainV2.id}.active
     }
 

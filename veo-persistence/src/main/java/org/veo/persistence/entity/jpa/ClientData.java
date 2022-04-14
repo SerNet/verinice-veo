@@ -19,6 +19,7 @@ package org.veo.persistence.entity.jpa;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -68,6 +69,17 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
         domains.clear();
         newDomains.forEach(domain -> domain.setOwner(this));
         domains.addAll(newDomains);
+    }
+
+    // Only return active domains
+    public Set<Domain> getDomains() {
+        return domains.stream()
+                      .filter(Domain::isActive)
+                      .collect(Collectors.toSet());
+    }
+
+    public Set<Domain> getAllDomains() {
+        return domains;
     }
 
     /**
