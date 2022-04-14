@@ -127,7 +127,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         with(result.decisions.piaMandatory) {
             name.en == "PIA mandatory"
             elementSubType == "PRO_DataProcessing"
-            rules[5].description.en == "Processing on blacklist"
+            rules[5].description.en == "Processing on list of the kinds of processing operations subject to a DPIA"
             rules[5].conditions[0].inputProvider.type == "customAspectAttributeValue"
             rules[5].conditions[0].inputProvider.customAspect == "process_privacyImpactAssessment"
             rules[5].conditions[0].inputProvider.attribute == "process_privacyImpactAssessment_listed"

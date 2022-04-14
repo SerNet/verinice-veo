@@ -125,13 +125,13 @@ class DecisionRestTest extends VeoRestTest {
         then:
         with(get("/processes/$processId").body.domains[domainId].decisionResults.piaMandatory) {
             value == false
-            decision.rules[decisiveRule].description.en == "Processing on whitelist"
+            decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations not subject to a DPIA"
             matchingRules.collect { decision.rules[it].description.en } =~ [
-                "Processing on whitelist",
+                "Processing on list of the kinds of processing operations not subject to a DPIA",
                 "Two or more criteria apply"
             ]
             agreeingRules.collect { decision.rules[it].description.en } =~ [
-                "Processing on whitelist"
+                "Processing on list of the kinds of processing operations not subject to a DPIA"
             ]
         }
     }

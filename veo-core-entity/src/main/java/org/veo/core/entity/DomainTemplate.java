@@ -126,7 +126,7 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
                 )).ifNoRiskValuesPresent(),
 
                 new Rule(false, Map.of(
-                        "en", "Processing on whitelist",
+                        "en", "Processing on list of the kinds of processing operations not subject to a DPIA",
                         "de", "VT auf Negativliste"
                 )).ifAttributeEquals(piaCa + "_listed_negative", piaCa + "_listed", piaCa),
 
@@ -146,7 +146,7 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
                 )).ifMaxRiskGreaterThan(BigDecimal.valueOf(1)),
 
                 new Rule(true, Map.of(
-                        "en", "Processing on blacklist",
+                        "en", "Processing on list of the kinds of processing operations subject to a DPIA",
                         "de", "VT auf Positivliste"
                 )).ifAttributeEquals(piaCa + "_listed_positive", piaCa + "_listed", piaCa),
 
