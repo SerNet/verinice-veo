@@ -27,6 +27,7 @@ import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.DeterminedRisk;
 import org.veo.core.entity.risk.RiskTreatmentOption;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "DeterminedRisk", description = "A collection of risk values for a risk category.")
@@ -60,8 +61,8 @@ public interface DeterminedRiskSchema {
     @Size(max = DeterminedRisk.EXPLANATION_MAX_LENGTH)
     String getResidualRiskExplanation();
 
-    @Schema(description = "A choice of risk-treatment options as selected by the user.",
-            example = "[RISK_TREATMENT_ACCEPTANCE, RISK_TREATMENT_REDUCTION]")
+    @ArraySchema(schema = @Schema(description = "A choice of risk-treatment options as selected by the user.",
+                                  example = "RISK_TREATMENT_ACCEPTANCE"))
     Set<RiskTreatmentOption> getRiskTreatments();
 
     @Schema(description = "The user's explanation for her choice of risk treatment methods.",
