@@ -39,7 +39,7 @@ class GetProcessUseCaseSpec extends UseCaseSpec {
         when:
         def output = usecase.execute(new UseCase.IdAndClient(id,  existingClient))
         then:
-        1 * processRepository.findById(id) >> Optional.of(process)
+        1 * processRepository.findById(*_) >> Optional.of(process)
         output.element != null
         output.element.id == id
     }

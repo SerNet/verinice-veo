@@ -46,7 +46,7 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
         implements TransactionalUseCase<I, GetElementsUseCase.OutputData<T>> {
 
     private final ElementRepository<T> repository;
-    private final ClientRepository clientRepository;
+    protected final ClientRepository clientRepository;
     private final UnitHierarchyProvider unitHierarchyProvider;
 
     public GetElementsUseCase(ClientRepository clientRepository, ElementRepository<T> repository,
@@ -67,16 +67,16 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
                                                             .getId(),
                                                        clientRepository);
 
-        var query = createQuery(client, input);
+        var query = createQuery(client);
         applyDefaultQueryParameters(input, query);
         return new OutputData<>(query.execute(input.getPagingConfiguration()));
     }
 
-    protected ElementQuery<T> createQuery(Client client, I input) {
+    protected ElementQuery<T> createQuery(Client client) {
         return repository.query(client);
     }
 
-    private void applyDefaultQueryParameters(I input, ElementQuery<T> query) {
+    protected void applyDefaultQueryParameters(I input, ElementQuery<T> query) {
         if (input.getUnitUuid() != null) {
             query.whereUnitIn(input.getUnitUuid()
                                    .getValues()

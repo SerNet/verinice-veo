@@ -65,7 +65,7 @@ public class GetElementsInputMapper {
                 transformCondition(searchQuery.getUpdatedBy()), pagingConfiguration);
     }
 
-    private static <T> SingleValueQueryCondition<T> transformCondition(
+    static <T> SingleValueQueryCondition<T> transformCondition(
             SingleValueQueryConditionDto<T> dto) {
         if (dto != null) {
             return new SingleValueQueryCondition<>(dto.value);
@@ -73,7 +73,7 @@ public class GetElementsInputMapper {
         return null;
     }
 
-    private static QueryCondition<Key<UUID>> transformCondition(UuidQueryConditionDto filterDto) {
+    static QueryCondition<Key<UUID>> transformCondition(UuidQueryConditionDto filterDto) {
         if (filterDto != null) {
             return new QueryCondition<>(filterDto.values.stream()
                                                         .map(Key::uuidFrom)
@@ -82,8 +82,7 @@ public class GetElementsInputMapper {
         return null;
     }
 
-    private static QueryCondition<Key<UUID>> transformUuidCondition(
-            QueryConditionDto<String> condition) {
+    static QueryCondition<Key<UUID>> transformUuidCondition(QueryConditionDto<String> condition) {
         if (condition == null) {
             return null;
         }
@@ -92,21 +91,21 @@ public class GetElementsInputMapper {
                                                     .collect(Collectors.toSet()));
     }
 
-    private static <T> QueryCondition<T> transformCondition(QueryConditionDto<T> filterDto) {
+    static <T> QueryCondition<T> transformCondition(QueryConditionDto<T> filterDto) {
         if (filterDto != null) {
             return new QueryCondition<>(filterDto.values);
         }
         return null;
     }
 
-    private static <T> SingleValueQueryCondition<T> createSingleValueCondition(T value) {
+    static <T> SingleValueQueryCondition<T> createSingleValueCondition(T value) {
         if (value != null) {
             return new SingleValueQueryCondition<>(value);
         }
         return null;
     }
 
-    private static <T> QueryCondition<T> createNonEmptyCondition(T value) {
+    static <T> QueryCondition<T> createNonEmptyCondition(T value) {
         if (value == null) {
             return null;
         }
@@ -117,7 +116,7 @@ public class GetElementsInputMapper {
         return new QueryCondition<>(Set.of(value));
     }
 
-    private static QueryCondition<Key<UUID>> createUuidListCondition(List<String> ids) {
+    static QueryCondition<Key<UUID>> createUuidListCondition(List<String> ids) {
         if (ids != null) {
             return new QueryCondition<Key<UUID>>(ids.stream()
                                                     .map(Key::uuidFrom)
@@ -126,14 +125,14 @@ public class GetElementsInputMapper {
         return null;
     }
 
-    private static QueryCondition<String> createStringFilter(String value) {
+    static QueryCondition<String> createStringFilter(String value) {
         if (value != null) {
             return new QueryCondition<>(Set.of(value));
         }
         return null;
     }
 
-    private static QueryCondition<Key<UUID>> createUuidCondition(String value) {
+    static QueryCondition<Key<UUID>> createUuidCondition(String value) {
         if (value != null) {
             return new QueryCondition<>(Set.of(Key.uuidFrom(value)));
         }

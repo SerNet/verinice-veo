@@ -193,9 +193,22 @@ public final class EntityToDtoTransformer {
     }
 
     public FullProcessDto transformProcess2Dto(@Valid Process source) {
+        return transformProcess2Dto(source, false);
+    }
+
+    public FullProcessDto transformProcess2Dto(@Valid Process source, boolean embedRisks) {
         FullProcessDto target = new FullProcessDto();
         mapCompositeEntity(source, target);
         domainAssociationTransformer.mapDomainsToDto(source, target);
+
+        if (embedRisks) {
+            target.setRisks(source.getRisks()
+                                  .stream()
+                                  .map(this::transform2Dto)
+                                  .map(ProcessRiskDto.class::cast)
+                                  .collect(Collectors.toSet()));
+        }
+
         return target;
     }
 

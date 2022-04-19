@@ -127,9 +127,10 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                                    .getHref();
         }
         if (Process.class.isAssignableFrom(type)) {
-            return linkTo(methodOn(ProcessController.class).getElement(ANY_AUTH, id,
-                                                                       ANY_REQUEST)).withRel(ProcessController.URL_BASE_PATH)
-                                                                                    .getHref();
+            return trimVariables(linkTo(methodOn(ProcessController.class).getProcess(ANY_AUTH, id,
+                                                                                     ANY_BOOLEAN,
+                                                                                     ANY_REQUEST)).withRel(ProcessController.URL_BASE_PATH)
+                                                                                                  .getHref());
         }
         if (Control.class.isAssignableFrom(type)) {
             return linkTo(methodOn(ControlController.class).getElement(ANY_AUTH, id,
@@ -174,6 +175,21 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
         }
 
         throw new NotImplementedException("Unsupported reference type " + type);
+    }
+
+    /**
+     * HATEOAS links may contain a list of optional variables that are invalid as a
+     * URI if they are not expanded with values (i.e.
+     * "{@code {?embedRisks=false}}"). This method removes those because we have
+     * many places that do not expect optional variables in the reference URI and
+     * trip over them.
+     */
+    // TODO VEO-1352 remove this method when users can handle the URI template
+    // format
+    private String trimVariables(String href) {
+        if (href.contains("{"))
+            return href.split("\\{")[0];
+        return href;
     }
 
     @Override
@@ -321,9 +337,9 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                                                                          ANY_STRING, ANY_STRING,
                                                                          ANY_STRING, ANY_STRING,
                                                                          ANY_INT, ANY_INT,
-                                                                         ANY_STRING, ANY_STRING))
-                                                                                                 .withSelfRel()
-                                                                                                 .getHref();
+                                                                         ANY_STRING, ANY_STRING,
+                                                                         ANY_BOOLEAN)).withSelfRel()
+                                                                                      .getHref();
         }
         if (Person.class.isAssignableFrom(type)) {
             return linkTo(methodOn(PersonController.class).getPersons(ANY_AUTH, ANY_STRING,

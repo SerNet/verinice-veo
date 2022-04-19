@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -195,11 +196,15 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
         List<String> ids = items.stream()
                                 .map(ElementData::getDbId)
                                 .collect(Collectors.toList());
-        List<TDataClass> fullyLoadedItems = dataRepository.findAllById(ids);
+        List<TDataClass> fullyLoadedItems = fullyLoadItems(ids);
         fullyLoadedItems.sort(Comparator.comparingInt(item -> ids.indexOf(item.getDbId())));
 
         return new PagedResult<>(pagingConfiguration, (List<TInterface>) fullyLoadedItems,
                 items.getTotalElements(), items.getTotalPages());
+    }
+
+    protected List<TDataClass> fullyLoadItems(List<String> ids) {
+        return new ArrayList<>(dataRepository.findAllById(ids));
     }
 
     private Specification<TDataClass> createSpecification(Client client) {

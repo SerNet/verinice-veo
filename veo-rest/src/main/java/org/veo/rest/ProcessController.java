@@ -20,6 +20,7 @@ package org.veo.rest;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
+import static org.veo.rest.ControllerConstants.ANY_BOOLEAN;
 import static org.veo.rest.ControllerConstants.ANY_INT;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
 import static org.veo.rest.ControllerConstants.CHILD_ELEMENT_IDS_PARAM;
@@ -29,6 +30,7 @@ import static org.veo.rest.ControllerConstants.DESCRIPTION_PARAM;
 import static org.veo.rest.ControllerConstants.DESIGNATOR_PARAM;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
 import static org.veo.rest.ControllerConstants.DOMAIN_PARAM;
+import static org.veo.rest.ControllerConstants.EMBED_RISKS_DESC;
 import static org.veo.rest.ControllerConstants.HAS_CHILD_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_PARENT_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.NAME_PARAM;
@@ -89,7 +91,7 @@ import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetProcessesInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
@@ -97,7 +99,6 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
-import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.decision.EvaluateDecisionUseCase;
@@ -136,6 +137,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
         implements ProcessRiskResource {
 
     public static final String URL_BASE_PATH = "/" + Process.PLURAL_TERM;
+    public static final String EMBED_RISKS_PARAM = "embedRisks";
 
     private final CreateProcessUseCase createProcessUseCase;
     private final UpdateProcessUseCase updateProcessUseCase;
@@ -146,6 +148,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
     private final GetProcessRisksUseCase getProcessRisksUseCase;
     private final DeleteRiskUseCase deleteRiskUseCase;
     private final UpdateProcessRiskUseCase updateProcessRiskUseCase;
+    private final GetProcessUseCase getProcessUseCase;
 
     public ProcessController(CreateProcessUseCase createProcessUseCase,
             GetProcessUseCase getProcessUseCase, UpdateProcessUseCase putProcessUseCase,
@@ -165,9 +168,9 @@ public class ProcessController extends AbstractElementController<Process, FullPr
         this.getProcessRisksUseCase = getProcessRisksUseCase;
         this.deleteRiskUseCase = deleteRiskUseCase;
         this.updateProcessRiskUseCase = updateProcessRiskUseCase;
+        this.getProcessUseCase = getProcessUseCase;
     }
 
-    @Override
     @Operation(summary = "Loads a process")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -176,12 +179,39 @@ public class ProcessController extends AbstractElementController<Process, FullPr
                                             schema = @Schema(implementation = FullProcessDto.class))),
             @ApiResponse(responseCode = "404", description = "Process not found") })
     @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
-    public @Valid CompletableFuture<ResponseEntity<FullProcessDto>> getElement(
+    public @Valid CompletableFuture<ResponseEntity<FullProcessDto>> getProcess(
             @Parameter(required = false, hidden = true) Authentication auth,
             @Parameter(required = true,
                        example = UUID_EXAMPLE,
                        description = UUID_DESCRIPTION) @PathVariable String uuid,
+            @RequestParam(name = EMBED_RISKS_PARAM,
+                          required = false,
+                          defaultValue = "false") @Parameter(name = EMBED_RISKS_PARAM,
+                                                             required = false,
+                                                             description = EMBED_RISKS_DESC) Boolean embedRisksParam,
             WebRequest request) {
+        boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
+        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
+        Client client = getClient(user.getClientId());
+        if (getEtag(Process.class, uuid).map(request::checkNotModified)
+                                        .orElse(false)) {
+            return null;
+        }
+        CompletableFuture<FullProcessDto> entityFuture = useCaseInteractor.execute(getProcessUseCase,
+                                                                                   new GetProcessUseCase.InputData(
+                                                                                           Key.uuidFrom(uuid),
+                                                                                           client,
+                                                                                           embedRisks),
+                                                                                   output -> entity2Dto(output.getElement(),
+                                                                                                        embedRisks));
+        return entityFuture.thenApply(dto -> ResponseEntity.ok()
+                                                           .cacheControl(defaultCacheControl)
+                                                           .body(dto));
+    }
+
+    @Override
+    public CompletableFuture<ResponseEntity<FullProcessDto>> getElement(Authentication auth,
+            String uuid, WebRequest request) {
         return super.getElement(auth, uuid, request);
     }
 
@@ -295,41 +325,50 @@ public class ProcessController extends AbstractElementController<Process, FullPr
                           defaultValue = SORT_COLUMN_DEFAULT_VALUE) String sortColumn,
             @RequestParam(value = SORT_ORDER_PARAM,
                           required = false,
-                          defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
+                          defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder,
+            @RequestParam(name = EMBED_RISKS_PARAM,
+                          required = false,
+                          defaultValue = "false") @Parameter(name = EMBED_RISKS_PARAM,
+                                                             required = false,
+                                                             description = EMBED_RISKS_DESC) Boolean embedRisksParam) {
         Client client;
+        boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
         try {
             client = getAuthenticatedClient(auth);
         } catch (NoSuchElementException e) {
             return CompletableFuture.supplyAsync(PageDto::emptyPage);
         }
 
-        return getProcesses(GetElementsInputMapper.map(client, parentUuid, displayName, subType,
-                                                       status, childElementIds, hasChildElements,
-                                                       hasParentElements, description, designator,
-                                                       name, updatedBy,
-                                                       PagingMapper.toConfig(pageSize, pageNumber,
-                                                                             sortColumn,
-                                                                             sortOrder)));
+        return getProcesses(GetProcessesInputMapper.map(client, parentUuid, displayName, subType,
+                                                        status, childElementIds, hasChildElements,
+                                                        hasParentElements, description, designator,
+                                                        name, updatedBy,
+                                                        PagingMapper.toConfig(pageSize, pageNumber,
+                                                                              sortColumn,
+                                                                              sortOrder),
+                                                        embedRisks));
     }
 
     private CompletableFuture<PageDto<FullProcessDto>> getProcesses(
-            GetElementsUseCase.InputData inputData) {
+            GetProcessesUseCase.InputData inputData) {
+
         return useCaseInteractor.execute(getProcessesUseCase, inputData,
                                          output -> PagingMapper.toPage(output.getElements(),
-                                                                       entityToDtoTransformer::transformProcess2Dto));
+                                                                       process -> entity2Dto(process,
+                                                                                             inputData.isEmbedRisks())));
     }
 
     @Override
     @SuppressFBWarnings("NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS")
     protected String buildSearchUri(String id) {
         return linkTo(methodOn(ProcessController.class).runSearch(ANY_AUTH, id, ANY_INT, ANY_INT,
-                                                                  ANY_STRING, ANY_STRING))
-                                                                                          .withSelfRel()
-                                                                                          .getHref();
+                                                                  ANY_STRING, ANY_STRING,
+                                                                  ANY_BOOLEAN)).withSelfRel()
+                                                                               .getHref();
     }
 
     @GetMapping(value = "/searches/{searchId}")
-    @Operation(summary = "Finds controls for the search.")
+    @Operation(summary = "Finds processes for the search.")
     public @Valid CompletableFuture<PageDto<FullProcessDto>> runSearch(
             @Parameter(required = false, hidden = true) Authentication auth,
             @PathVariable String searchId,
@@ -344,14 +383,21 @@ public class ProcessController extends AbstractElementController<Process, FullPr
                           defaultValue = SORT_COLUMN_DEFAULT_VALUE) String sortColumn,
             @RequestParam(value = SORT_ORDER_PARAM,
                           required = false,
-                          defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
+                          defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder,
+            @RequestParam(name = EMBED_RISKS_PARAM,
+                          required = false,
+                          defaultValue = "false") @Parameter(name = EMBED_RISKS_PARAM,
+                                                             required = false,
+                                                             description = EMBED_RISKS_DESC) Boolean embedRisksParam) {
+        boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
         try {
-            return getProcesses(GetElementsInputMapper.map(getAuthenticatedClient(auth),
-                                                           SearchQueryDto.decodeFromSearchId(searchId),
-                                                           PagingMapper.toConfig(pageSize,
-                                                                                 pageNumber,
-                                                                                 sortColumn,
-                                                                                 sortOrder)));
+            return getProcesses(GetProcessesInputMapper.map(getAuthenticatedClient(auth),
+                                                            SearchQueryDto.decodeFromSearchId(searchId),
+                                                            PagingMapper.toConfig(pageSize,
+                                                                                  pageNumber,
+                                                                                  sortColumn,
+                                                                                  sortOrder),
+                                                            embedRisks));
         } catch (IOException e) {
             log.error("Could not decode search URL: {}", e.getLocalizedMessage());
             return null;
@@ -480,6 +526,10 @@ public class ProcessController extends AbstractElementController<Process, FullPr
 
     @Override
     protected FullProcessDto entity2Dto(Process entity) {
-        return entityToDtoTransformer.transformProcess2Dto(entity);
+        return entity2Dto(entity, false);
+    }
+
+    private FullProcessDto entity2Dto(Process entity, boolean embedRisks) {
+        return entityToDtoTransformer.transformProcess2Dto(entity, embedRisks);
     }
 }

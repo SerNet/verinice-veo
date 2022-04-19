@@ -18,8 +18,12 @@
 package org.veo.persistence.access.jpa;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 
 import org.veo.core.entity.Client;
@@ -52,4 +56,8 @@ public interface ProcessDataRepository extends CompositeRiskAffectedDataReposito
             + " where o.client = ?1")
     // @formatter:on
     Set<ProcessData> findAllHavingRisks(Client client);
+
+    @Nonnull
+    @EntityGraph(ProcessData.FULL_AGGREGATE_GRAPH_WITH_RISKS)
+    List<ProcessData> findAllWithRisksByDbIdIn(Iterable<String> ids);
 }

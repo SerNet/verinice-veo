@@ -35,7 +35,7 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
     GetProcessesUseCase usecase = new GetProcessesUseCase(clientRepository, processRepository, unitHierarchyProvider)
 
     def setup() {
-        processRepository.query(existingClient) >> query
+        processRepository.query(existingClient, false) >> query
     }
 
     def "retrieve all processes for a client"() {
@@ -45,7 +45,10 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
         process.getOwner() >> existingUnit
         process.getId() >> id
         when:
-        def output = usecase.execute(new GetElementsUseCase.InputData(existingClient, null, null, null, null, null, null, null, null, null, null, null, pagingConfiguration))
+        def output = usecase.execute(new GetProcessesUseCase.InputData(existingClient,
+                null, null, null, null, null,
+                null, null, null, null, null,
+                null, pagingConfiguration, false))
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * query.execute(pagingConfiguration) >> singleResult(process, pagingConfiguration)
@@ -61,9 +64,9 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
             getOwner() >> existingUnit
             getId() >> id
         }
-        def input = new GetElementsUseCase.InputData(existingClient, Mock(QueryCondition) {
+        def input = new GetProcessesUseCase.InputData(existingClient, Mock(QueryCondition) {
             getValues() >> [existingUnit.id]
-        }, null, Mock(QueryCondition), null, null, null, null, null, null, null, Mock(QueryCondition), pagingConfiguration)
+        }, null, Mock(QueryCondition), null, null, null, null, null, null, null, Mock(QueryCondition), pagingConfiguration, false)
         when:
         def output = usecase.execute(input)
         then:

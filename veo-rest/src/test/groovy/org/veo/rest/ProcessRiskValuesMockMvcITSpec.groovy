@@ -25,15 +25,14 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
+import org.veo.core.entity.Domain
+import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScenarioRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.ScenarioData
-
-import spock.lang.Ignore
-import spock.lang.Issue
 
 /**
  * Test risk related functionality on controls.
@@ -57,6 +56,8 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
     private ScenarioRepositoryImpl scenarioRepository
 
     private Client client
+    private Unit unit
+    private Domain domain
     private String unitId
     private String domainId
     private String r1d1DomainId
@@ -66,7 +67,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
     def setup() {
         txTemplate.execute {
             client = createTestClient()
-            def domain = newDomain(client) {
+            domain = newDomain(client) {
                 riskDefinitions = [
                     "r1d1": createRiskDefinition("r1d1"),
                     "r2d2": createRiskDefinition("r2d2")
@@ -80,7 +81,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
                 ]
             }).idAsString
 
-            def unit = newUnit(client)
+            unit = newUnit(client)
             unitId = unitRepository.save(unit).idAsString
             clientRepository.save(client)
 
@@ -101,7 +102,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         addProcessToScope("r1d1")
         addProcessToScope("r2d2")
 
-        when: "creating a process with risk values for a single risk definition"
+        when: "creating a process with risk values for two risk definitions"
         def processId = process.getIdAsString()
         def scenarioId = scenario.getIdAsString()
         post("/processes/$processId/risks", [
@@ -178,6 +179,290 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         updatedRiskDef2ImpactA.effectiveImpact == 3
 
         updatedRisk.domains.(domainId).riskDefinitions.r2d2.riskValues.find{it.category=="A"}.residualRisk == 2
+    }
+
+    def "embedded risks can be requested"() {
+        given: "a process with risks and risk values"
+        addProcessToScope("r1d1")
+        addProcessToScope("r2d2")
+
+        def processId = process.getIdAsString()
+        def scenarioId = scenario.getIdAsString()
+
+        def scenario2Id = scenarioRepository.save(newScenario(unit) {
+            addToDomains(domain)
+        }).idAsString
+
+        postRisk1(processId, scenarioId)
+        postRisk2(processId, scenario2Id)
+
+        when: "the process is requested with embedded risks"
+        def response = parseJson(
+                get("/processes/${process.id.uuidValue()}?embedRisks=true"))
+
+        then: "the risk values are embedded in the response"
+        response.name == "process null"
+        response.risks != null
+        response.risks.size() == 2
+        response.risks*.domains*.(domainId).reference.targetUri =~ [
+            "http://localhost/domains/$domainId"
+        ]
+
+        and: "First risk, first risk definition: all values are correct"
+        with(response.risks.find { it.designator == "RSK-1" }.domains.(domainId).riskDefinitions.r1d1) {
+            // probability is not set:
+            probability.size() == 0
+
+            // impact is present in first risk definition:
+            with(impactValues.find { it.category == "A" }) {
+                effectiveImpact == 1
+                specificImpact == 1
+            }
+
+            // empty impact values contain only category:
+            impactValues.find { it.category == "C" }.size() == 1
+            impactValues.find { it.category == "I" }.size() == 1
+            impactValues.find { it.category == "R" }.size() == 1
+
+            // empty risk values contain category and empty impactValues collection:
+            riskValues.find { it.category == "R" }.size() == 2
+            riskValues.find { it.category == "I" }.size() == 2
+            riskValues.find { it.category == "C" }.size() == 2
+            riskValues.find { it.category == "A" }.size() == 2
+        }
+
+        and: "First risk, second risk definition: all values are correct"
+        with (response.risks.find { it.designator == "RSK-1" }.domains.(domainId).riskDefinitions.r2d2) {
+            // impact is present in second risk definition:
+            with(impactValues.find { it.category == "A" }) {
+                specificImpact == 2
+                effectiveImpact == 2
+            }
+
+            // risk values are present in second risk definition:
+            riskValues.find { it.category == "A" }.residualRisk == 0
+        }
+
+        and: "Second risk, first risk definition: all values are correct"
+        with (response.risks.find { it.designator == "RSK-2" }.domains.(domainId).riskDefinitions.r1d1) {
+            // probability is set:
+            probability.specificProbability == 2
+            probability.effectiveProbability == 2
+
+            // impact is present in first risk definition:
+            with(impactValues.find { it.category == "A" }) {
+                effectiveImpact == 3
+                specificImpact == 3
+            }
+
+            // empty impact values contain only category:
+            impactValues.find { it.category == "C" }.size() == 1
+            impactValues.find { it.category == "I" }.size() == 1
+            impactValues.find { it.category == "R" }.size() == 1
+
+            // empty risk values contain category and empty impactValues collection:
+            riskValues.find { it.category == "R" }.size() == 2
+            riskValues.find { it.category == "I" }.size() == 2
+            riskValues.find { it.category == "C" }.size() == 2
+
+            // risk values are calculated in first risk definition:
+            riskValues.find{it.category == "A"}.size() == 3
+            riskValues.find{it.category == "A"}.inherentRisk == 3
+        }
+
+        and: "Second risk, second risk definition: all values are correct"
+        with (response.risks.find { it.designator == "RSK-2" }.domains.(domainId).riskDefinitions.r2d2) {
+            // impact is present in second risk definition:
+            with(impactValues.find { it.category == "A" }) {
+                specificImpact == 3
+                effectiveImpact == 3
+            }
+
+            // all manually set risk values are present in second risk definition:
+            riskValues.find { it.category == "A" }.size() == 3
+            riskValues.find { it.category == "A" }.residualRisk == 3
+        }
+    }
+
+    private postRisk2(String processId, String scenario2Id) {
+        post("/processes/$processId/risks", [
+            domains : [
+                (domainId): [
+                    reference      : [targetUri: "http://localhost/domains/$domainId"],
+                    riskDefinitions: [
+                        r1d1: [
+                            probability : [
+                                specificProbability: 2
+                            ],
+                            impactValues: [
+                                [
+                                    category      : "A",
+                                    specificImpact: 3
+                                ]
+                            ]
+                        ],
+                        r2d2: [
+                            impactValues: [
+                                [
+                                    category      : "A",
+                                    specificImpact: 3,
+                                ],
+                            ],
+                            riskValues  : [
+                                [
+                                    category    : "A",
+                                    residualRisk: 3,
+                                ],
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenario2Id"]
+        ])
+    }
+
+    private postRisk1(String processId, String scenarioId) {
+        post("/processes/$processId/risks", [
+            domains : [
+                (domainId): [
+                    reference      : [targetUri: "http://localhost/domains/$domainId"],
+                    riskDefinitions: [
+                        r1d1: [
+                            impactValues: [
+                                [
+                                    category      : "A",
+                                    specificImpact: 1
+                                ]
+                            ]
+                        ],
+                        r2d2: [
+                            impactValues: [
+                                [
+                                    category      : "A",
+                                    specificImpact: 2,
+                                ],
+                            ],
+                            riskValues  : [
+                                [
+                                    category    : "A",
+                                    residualRisk: 0,
+                                ],
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ])
+    }
+
+    def "Request a list of processes with embedded risks"() {
+        given: "a list of processes with risks"
+        addProcessToScope("r1d1")
+        addProcessToScope("r2d2")
+        def processId = process.getIdAsString()
+        def scenarioId = scenario.getIdAsString()
+        def scenario2 = newScenario(unit) {
+            addToDomains(domain)
+        }
+        scenarioRepository.save(scenario2)
+        def scenario2Id = scenario2.getIdAsString()
+        postRisk1(processId, scenarioId)
+        postRisk2(processId, scenario2Id)
+
+        def process2 = newProcess(unit) {
+            addToDomains(domain)
+        }
+        processRepository.save(process2)
+        addProcessToScope(process2, "r1d1")
+        addProcessToScope(process2, "r2d2")
+        postRisk1(process2.idAsString, scenarioId)
+        postRisk2(process2.idAsString, scenario2Id)
+
+        when: "all processes are requested"
+        def result = parseJson(get("/processes"))
+
+        then: "the risks are not embedded"
+        result.items != null
+        result.items.size() == 2
+        result.items.each {assert it.risks == null}
+
+        when: "all processes are requested with risks"
+        result = parseJson(get("/processes?embedRisks=true"))
+
+        then: "the risks are embedded"
+        result.items != null
+        result.items.size() == 2
+        result.items.each {assert it.risks != null}
+
+        result.items*.risks*.domains.(domainId).riskDefinitions.r1d1.riskValues.size() == 2
+        result.items*.risks*.domains.(domainId).riskDefinitions.r2d2.riskValues.size() == 2
+
+        def process1Risks = result.items.find { it.id == process.idAsString }.risks
+        process1Risks.find{it.designator=="RSK-2"}.domains.(domainId).riskDefinitions.r1d1.probability.specificProbability != null
+        process1Risks.find{it.designator=="RSK-1"}.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=="A"}.effectiveImpact != null
+
+        def process2Risks = result.items.find { it.id == process2.idAsString }.risks
+        process2Risks.find{it.designator=="RSK-4"}.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=="A"}.inherentRisk != null
+    }
+
+
+    def "Searching for processes with embedded risks"() {
+        given: "a list of processes with risks"
+        addProcessToScope("r1d1")
+        addProcessToScope("r2d2")
+        def processId = process.getIdAsString()
+        def scenarioId = scenario.getIdAsString()
+        def scenario2 = newScenario(unit) {
+            addToDomains(domain)
+        }
+        scenarioRepository.save(scenario2)
+        def scenario2Id = scenario2.getIdAsString()
+        postRisk1(processId, scenarioId)
+        postRisk2(processId, scenario2Id)
+
+        def process2 = newProcess(unit) {
+            addToDomains(domain)
+        }
+        processRepository.save(process2)
+        addProcessToScope(process2, "r1d1")
+        addProcessToScope(process2, "r2d2")
+        postRisk1(process2.idAsString, scenarioId)
+        postRisk2(process2.idAsString, scenario2Id)
+
+        when: "all processes are searched for"
+        def searchUrl = parseJson(post("/processes/searches", [
+            unitId: [
+                values: [
+                    unit.id.uuidValue()
+                ]
+            ]
+        ])).searchUrl
+        def result = parseJson(get(new URI(searchUrl)))
+
+        then: "the risks are not embedded"
+        result.items != null
+        result.items.size() == 2
+        result.items.each {assert it.risks == null}
+
+        when: "all processes are searched for with risks"
+        result = parseJson(get(new URI(searchUrl + "?embedRisks=true")))
+
+        then: "the risks are embedded"
+        result.items != null
+        result.items.size() == 2
+        result.items.each {assert it.risks != null}
+
+        result.items*.risks*.domains.(domainId).riskDefinitions.r1d1.riskValues.size() == 2
+        result.items*.risks*.domains.(domainId).riskDefinitions.r2d2.riskValues.size() == 2
+
+        def process1Risks = result.items.find { it.id == process.idAsString }.risks
+        process1Risks.find{it.designator=="RSK-2"}.domains.(domainId).riskDefinitions.r1d1.probability.specificProbability != null
+        process1Risks.find{it.designator=="RSK-1"}.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=="A"}.effectiveImpact != null
+
+        def process2Risks = result.items.find { it.id == process2.idAsString }.risks
+        process2Risks.find{it.designator=="RSK-4"}.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=="A"}.inherentRisk != null
     }
 
     def "cannot create risk with risk values for illegal risk definition"() {
@@ -275,6 +560,10 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
     }
 
     private def addProcessToScope(String riskDefinitionId) {
+        this.addProcessToScope(process, riskDefinitionId)
+    }
+
+    private def addProcessToScope(ProcessData process, String riskDefinitionId) {
         post("/scopes", [
             domains: [
                 (domainId): [

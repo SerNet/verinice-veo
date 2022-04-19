@@ -34,6 +34,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.decision.DecisionResult;
+import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
 import org.veo.core.usecase.decision.EvaluateDecisionUseCase;
@@ -47,7 +48,7 @@ public abstract class AbstractElementController<T extends CompositeElement<T>, E
 
     private final Class<T> modelType;
 
-    private final GetElementUseCase<T> getElementUseCase;
+    private final TransactionalUseCase<UseCase.IdAndClient, GetElementUseCase.OutputData<T>> getElementUseCase;
     private final EvaluateDecisionUseCase evaluateDecisionUseCase;
 
     @Autowired

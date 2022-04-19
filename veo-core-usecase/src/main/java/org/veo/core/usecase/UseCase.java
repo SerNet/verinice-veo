@@ -26,7 +26,8 @@ import javax.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * Superclass for all use cases. Each use case must provide an implementation of
@@ -108,10 +109,11 @@ public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputDa
      * to check if the given ID is valid in the client.
      */
     @Valid
-    @Value
+    @AllArgsConstructor
+    @Getter
     class IdAndClient implements UseCase.InputData {
-        Key<UUID> id;
-        Client authenticatedClient;
+        private final Key<UUID> id;
+        private final Client authenticatedClient;
     }
 
 }

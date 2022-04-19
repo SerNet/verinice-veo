@@ -26,10 +26,12 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.CompositeElement
 import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.Element
+import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
+import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.repository.PagingConfiguration
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -159,6 +161,58 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.insert == 3
         queryCounts.update == 0
         queryCounts.select == 0
+    }
+
+    def "SQL performance for selecting 1 process with embedded risk"() {
+        given:
+        createClientWithRiskDefinition()
+        def process = saveProcessWithRisk()
+
+        when: "fetch risks using full aggregate graph with risks"
+        def rd = new RiskDefinitionRef("r2d2")
+        def processes
+        def queryCounts = trackQueryCounts{
+            processes = selectProcesses(process.id, true)
+            processes.first().risks.forEach{
+                it.getRiskProvider(rd)
+                        .getCategorizedRisks().size() == 4
+                def prob = it.getProbabilityProvider(rd).effectiveProbability
+                def cat = it.getRiskProvider(rd).getAvailableCategories().first()
+                def risk = it.getRiskProvider(rd).getInherentRisk(cat)
+                def scenario = it.getScenario().getDisplayName()
+                def person = it.getRiskOwner().getDisplayName()
+                def mitigation = it.getMitigation().getDisplayName()
+                def customAttributes = process.customAspects.first().attributes
+            }
+        }
+
+        then: "all risks elements were join-fetched"
+        queryCounts.delete == 0
+        queryCounts.insert == 0
+        queryCounts.update == 0
+        queryCounts.select == 2
+
+        when: "fetch risks using only full aggregate graph"
+        queryCounts = trackQueryCounts{
+            processes = selectProcesses(process.id, false)
+            processes.first().risks.forEach{
+                it.getRiskProvider(rd)
+                        .getCategorizedRisks().size() == 4
+                def prob = it.getProbabilityProvider(rd).effectiveProbability
+                def cat = it.getRiskProvider(rd).getAvailableCategories().first()
+                def risk = it.getRiskProvider(rd).getInherentRisk(cat)
+                def scenario = it.getScenario().getDisplayName()
+                def person = it.getRiskOwner().getDisplayName()
+                def mitigation = it.getMitigation().getDisplayName()
+                def customAttributes = process.customAspects.first().attributes
+            }
+        }
+
+        then: "risk relations had to be selected additionally"
+        queryCounts.delete == 0
+        queryCounts.insert == 0
+        queryCounts.update == 0
+        queryCounts.select == 6
     }
 
     def "SQL performance for putting 1 string value in 1 customAspect with 10 existing values"() {
@@ -431,6 +485,26 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         }
     }
 
+    void createClientWithRiskDefinition() {
+        executeInTransaction {
+            client = clientRepository.save(newClient() {
+                newDomain(it) {
+                    it.riskDefinitions = [ "r2d2":
+                        createRiskDefinition("r2d2")
+                    ] as Map
+                }
+            })
+
+            def domain = client.domains.first()
+
+            unit = newUnit(client)
+            unit.setClient(client)
+            unit.addToDomains(domain)
+
+            unit = unitRepository.save(unit)
+        }
+    }
+
     Asset saveAsset(String assetName) {
         executeInTransaction {
             return assetRepository.save(newAsset(unit).with {
@@ -531,6 +605,15 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         }
     }
 
+    List<Process> selectProcesses(Key<UUID> id, boolean withRisks = false) {
+        executeInTransaction {
+            if (withRisks)
+                processDataRepository.findAllWithRisksByDbIdIn([id.uuidValue()])
+            else
+                processDataRepository.findAllById([id.uuidValue()])
+        }
+    }
+
     void createSubUnits(int count) {
         executeInTransaction {
             for (i in 0..<count) {
@@ -559,6 +642,31 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
             process.addToCustomAspects(customAspect)
             return processRepository.save(process)
         }
+    }
+
+    Process saveProcessWithRisk() {
+        def process = saveProcessWithCustomAspect()
+        executeInTransaction {
+            def domain = client.domains.first()
+            def scenario = scenarioDataRepository.save(newScenario(unit))
+            def person = personDataRepository.save(newPerson(unit))
+            def control = controlDataRepository.save(newControl(unit))
+            process.addToDomains(domain)
+            scenario.addToDomains(domain)
+            process.obtainRisk(scenario, domain).tap{
+                it.setDesignator("RSK-1")
+                it.setCreatedBy("me")
+                it.setUpdatedBy("someoneelse")
+                it.mitigate(control)
+                it.appoint(person)
+            }
+            process.risks.first().defineRiskValues([
+                newRiskValues(new RiskDefinitionRef("r2d2"), domain)
+            ] as Set)
+
+            process = processDataRepository.save(process)
+        }
+        return process
     }
 
     void updateProcessWithCustomAspect(Process detachedProcess) {

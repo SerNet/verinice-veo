@@ -28,6 +28,9 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
 
@@ -45,11 +48,31 @@ import lombok.Getter;
 import lombok.ToString;
 
 @Entity(name = "process")
+@NamedEntityGraph(name = ProcessData.FULL_AGGREGATE_GRAPH_WITH_RISKS,
+                  attributeNodes = { @NamedAttributeNode(value = "customAspects"),
+                          @NamedAttributeNode(value = "domains"),
+                          @NamedAttributeNode(value = "appliedCatalogItems"),
+                          @NamedAttributeNode(value = "links"),
+                          @NamedAttributeNode(value = "subTypeAspects"),
+                          @NamedAttributeNode(value = "risks", subgraph = "risk.entities"), },
+                  subgraphs = {
+                          @NamedSubgraph(name = "risk.entities",
+                                         attributeNodes = { @NamedAttributeNode(value = "scenario"),
+                                                 @NamedAttributeNode(value = "mitigation"),
+                                                 @NamedAttributeNode(value = "riskOwner"), }) },
+                  subclassSubgraphs = {
+                          @NamedSubgraph(name = "risk.entities",
+                                         type = ProcessRiskData.class,
+                                         attributeNodes = { @NamedAttributeNode(value = "scenario"),
+                                                 @NamedAttributeNode(value = "mitigation"),
+                                                 @NamedAttributeNode(value = "riskOwner"),
+                                                 @NamedAttributeNode(value = "riskAspects"), }) })
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implements Process {
 
+    public static final String FULL_AGGREGATE_GRAPH_WITH_RISKS = "fullAggregateGraphWithRisks";
     @ManyToMany(targetEntity = ProcessData.class,
                 cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(name = "process_parts",

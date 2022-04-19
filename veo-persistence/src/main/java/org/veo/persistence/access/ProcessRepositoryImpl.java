@@ -32,6 +32,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
+import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
@@ -72,5 +73,19 @@ public class ProcessRepositoryImpl
         return processDataRepository.findAllHavingRisks(client)
                                     .stream()
                                     .collect(Collectors.toSet());
+    }
+
+    @Override
+    public ElementQuery<Process> query(Client client, boolean withRisks) {
+        return new ProcessQueryImpl((ProcessDataRepository) dataRepository, client, withRisks);
+    }
+
+    @Override
+    public Optional<Process> findById(Key<UUID> id, boolean shouldEmbedRisks) {
+        if (shouldEmbedRisks) {
+            return this.findByIdWithRiskValues(id);
+        } else {
+            return this.findById(id);
+        }
     }
 }

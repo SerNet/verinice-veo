@@ -117,7 +117,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         when: "a request is made to the server"
         def result = parseJson(post('/processes', request))
 
-        then: "the location of the new unit is returned"
+        then: "the location of the new process is returned"
         result.success == true
         def resourceId = result.resourceId
         resourceId != null
@@ -159,6 +159,9 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         result._self == "http://localhost/processes/${process.id.uuidValue()}"
         result.name == 'Test process'
         result.owner.targetUri == "http://localhost/units/" + unit.id.uuidValue()
+
+        and: "the risks property is not present"
+        result.risks == null
     }
 
     @WithUserDetails("user@domain.example")
@@ -719,8 +722,19 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "A list of risks can be retrieved for a process"() {
-        given: "A process with multiple risks"
+        given: "a process with multiple risks"
         def (Process process, ScenarioData scenario, Object postResult) = createRisk()
+        createTwoRisks(process)
+
+        when: "the risks are queried"
+        def getResult = parseJson(
+                get("/processes/${process.id.uuidValue()}/risks/"))
+
+        then: "the risks are retreived"
+        getResult.size == 3
+    }
+
+    private createTwoRisks(Process process) {
         def scenario2 = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit) {
                 domains = [dsgvoDomain] as Set
@@ -747,13 +761,24 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
                 ]
             ]
         ] as Map)
+    }
 
-        when: "The risks are queried"
-        def getResult = parseJson(
-                get("/processes/${process.id.uuidValue()}/risks/"))
+    @WithUserDetails("user@domain.example")
+    def "An embedded list of risks can be retrieved for a process"() {
+        given: "a process with multiple risks"
+        def (Process process, ScenarioData scenario, Object postResult) = createRisk()
+        createTwoRisks(process)
 
-        then: "The risks are retreived"
-        getResult.size == 3
+        when: "the embedded risks are queried"
+        def response = parseJson(
+                get("/processes/${process.id.uuidValue()}?embedRisks=true"))
+
+        then: "the risks are retreived"
+        response.name == "process null"
+        response.risks != null
+        response.risks.size() == 3
+        response.risks*.scenario.forEach{assert it.displayName =~ /SCN-.*scenario null/}
+        response.risks*.process.forEach{assert it.displayName =~ /PRO-.*process null/}
     }
 
     @WithUserDetails("user@domain.example")
@@ -798,7 +823,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         String eTag = getResponse.andReturn().response.getHeader("ETag").replace("\"", "")
 
 
-        when: "The risk is updated"
+        when: "the risk is updated"
         def beforeUpdate = Instant.now()
         def putBody = getResult + [
             mitigation: [targetUri: '/controls/' + control.id.uuidValue()],

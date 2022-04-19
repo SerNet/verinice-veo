@@ -74,6 +74,7 @@ public final class ControllerConstants {
 
     static final String UUID_DESCRIPTION = "A UUID conforming to RFC4122 in canonical textual representation.";
     static final String UUID_EXAMPLE = "f35b982c-8ad4-4515-96ee-df5fdd4247b9";
+    static final String EMBED_RISKS_DESC = "Embed the risk values in the response.";
 
     private ControllerConstants() {
     }
