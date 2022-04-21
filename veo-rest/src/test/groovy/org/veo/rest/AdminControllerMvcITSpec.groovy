@@ -28,12 +28,16 @@ import org.veo.core.repository.UnitRepository
 @WithUserDetails("admin")
 class AdminControllerMvcITSpec extends VeoMvcSpec {
 
+    public static final String DSGVO_NAME = "DS-GVO DS-GVO"
     @Autowired
     private ClientRepository clientRepo
     @Autowired
     private UnitRepository unitRepo
     @Autowired
     private DocumentRepository documentRepo
+
+    public static final String PROBLEM = "In computer science, there are only three hard problems: " +
+    "Cache invalidation, naming things, and off-by-one errors."
 
     def "deletes client"() {
         given: "a client with some units and a document"
@@ -88,19 +92,28 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
         def client = createTestClient()
         createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
         createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID)
-        def (unitId, assetId, scenarioId, processId) = createUnitWithElements()
+        def (unitId, assetId, scenarioId, processId) = createUnitWithRiskyElements()
 
-        when: 'updating all clients'
+        when: "the process risk values are preserved before migration"
+        def json = parseJson(get("/admin/unit-dump/$unitId"))
+        def domainId = json.domains.find{it.templateVersion == "1.4.0"}.id
+        def risk = json.risks.find{it.process != null}
+        def oldDomainName = risk.domains.(domainId).reference.displayName
+        def oldRiskValues = risk.domains.(domainId).riskDefinitions.DSRA.riskValues
+        def oldImpactValues = risk.domains.(domainId).riskDefinitions.DSRA.impactValues
+        def oldProbability = risk.domains.(domainId).riskDefinitions.DSRA.probability
+
+        and: 'updating all clients'
         post("/admin/domaintemplates/${DSGVO_DOMAINTEMPLATE_V2_UUID}/allclientsupdate", [:], 204)
 
-        then: 'the elements are transferred to the new domain'
+        then: 'the elements and risks are transferred to the new domain'
         with(parseJson(get("/admin/unit-dump/$unitId"))) {
             domains.size() == 1
             domains.first().templateVersion == '2.0.0'
-            def domainId = domains.first().id
+            def newDomainId = domains.first().id
             elements.size() == 8
             elements.each {
-                assert it.domains.keySet() =~ [domainId]
+                assert it.domains.keySet() =~ [newDomainId]
                 it.customAspects.each { type, ca ->
                     assert ca.domains*.targetUri =~ [
                         "http://localhost/domains/$domainId"
@@ -113,6 +126,38 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
                         ]
                     }
                 }
+            }
+            // process is present with risk values:
+            with(elements.find{it.id == processId}) {
+                name == "updated process"
+                domains.(newDomainId).riskValues.DSRA.potentialImpacts.size() == 2
+                domains.(newDomainId).riskValues.DSRA.potentialImpacts.C == "0"
+                domains.(newDomainId).riskValues.DSRA.potentialImpacts.I == "1"
+            }
+
+            // scenario is present with risk values:
+            with(elements.find{it.id == scenarioId}) {
+                name == "scenario"
+                domains.(newDomainId).riskValues.DSRA.potentialProbability == 2
+            }
+
+            // asset risk is present without risk values:
+            with (risks.find{it.asset != null}) {
+                domains.size()==1
+                domains.(newDomainId) != null
+                domains.(newDomainId).reference.displayName == DSGVO_NAME
+                domains.(newDomainId).riskDefinitions.size() == 0
+            }
+
+            // process risk is present with risk values:
+            with (risks.find{it.process != null}) {
+                domains.size()==1
+                domains.(newDomainId) != null
+
+                domains.(newDomainId).reference.displayName == oldDomainName
+                domains.(newDomainId).riskDefinitions.DSRA.riskValues   == oldRiskValues
+                domains.(newDomainId).riskDefinitions.DSRA.impactValues == oldImpactValues
+                domains.(newDomainId).riskDefinitions.DSRA.probability  == oldProbability
             }
         }
     }
@@ -196,6 +241,146 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
             domains : [
                 (domainId): [
                     reference: [targetUri: "http://localhost/domains/$domainId"]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ])
+        [
+            unitId,
+            assetId,
+            scenarioId,
+            processId
+        ]
+    }
+
+
+    private createUnitWithRiskyElements() {
+        def domainId = parseJson(get("/domains")).find{it.templateVersion=="1.4.0"}.id
+        def unitId = parseJson(post("/units", [
+            name   : "you knit",
+            domains: [
+                [targetUri: "http://localhost/domains/(domainId)"]
+            ]
+        ])).resourceId
+        def owner = [targetUri: "http://localhost/units/$unitId"]
+
+        def assetId = parseJson(post("/assets", [
+            domains: [
+                (domainId): [:]
+            ],
+            name   : "asset",
+            owner  : owner
+        ])).resourceId
+        post("/controls", [
+            name   : "control",
+            domains: [
+                (domainId): [:]
+            ],
+            owner  : owner
+        ])
+        post("/documents", [
+            name   : "document",
+            domains: [
+                (domainId): [:]
+            ],
+            owner  : owner
+        ])
+        post("/incidents", [
+            name   : "incident",
+            domains: [
+                (domainId): [:]
+            ],
+            owner  : owner
+        ])
+        post("/persons", [
+            name   : "person",
+            domains: [
+                (domainId): [:]
+            ],
+            owner  : owner
+        ])
+
+        def processId = parseJson(post("/processes", [
+            domains: [
+                (domainId): [ : ]
+            ],
+            name   : "process",
+            owner  : owner
+        ])).resourceId
+        def eTag = parseETag(get("/processes/$processId"))
+
+        post("/scopes", [
+            name: "DSRA scope",
+            domains: [
+                (domainId): [
+                    riskDefinition: "DSRA"
+                ]
+            ],
+            members: [
+                [targetUri: "http://localhost/processes/$processId"]
+            ],
+            owner: owner
+        ])
+
+        parseJson(put("/processes/${processId}", [
+            domains: [
+                (domainId): [
+                    riskValues: [
+                        DSRA: [
+                            potentialImpacts: [
+                                "C": "0",
+                                "I": "1"
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            name   : "updated process",
+            owner  : owner
+        ], ['If-Match': eTag]))
+
+        def scenarioId = parseJson(post("/scenarios", [
+            name   : "scenario",
+            domains: [
+                (domainId): [
+                    riskValues: [
+                        DSRA : [
+                            potentialProbability: 2
+                        ]
+                    ]
+                ]
+            ],
+            owner  : owner
+        ])).resourceId
+        post("/assets/$assetId/risks", [
+            domains : [
+                (domainId): [
+                    reference: [targetUri: "http://localhost/domains/$domainId"]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ])
+        post("/processes/$processId/risks", [
+            domains : [
+                (domainId): [
+                    reference: [targetUri: "http://localhost/domains/$domainId"],
+                    riskDefinitions: [
+                        DSRA: [
+                            impactValues: [
+                                [
+                                    category: "A",
+                                    specificImpact: 1
+                                ]
+                            ],
+                            riskValues: [
+                                [
+                                    category: "A",
+                                    residualRiskExplanation: PROBLEM,
+                                    riskTreatments: ["RISK_TREATMENT_REDUCTION"]
+                                ]
+                            ]
+                        ]
+                    ]
                 ]
             ],
             scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]

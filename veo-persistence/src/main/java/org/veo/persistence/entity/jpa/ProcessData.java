@@ -125,6 +125,7 @@ public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implemen
     @Override
     public void transferToDomain(Domain oldDomain, Domain newDomain) {
         findAspectByDomain(riskValuesAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
+        getRisks().forEach(r -> r.transferToDomain(oldDomain, newDomain));
         super.transferToDomain(oldDomain, newDomain);
     }
 }

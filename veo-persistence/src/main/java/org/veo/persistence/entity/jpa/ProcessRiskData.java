@@ -258,4 +258,13 @@ public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> impl
         riskAspects.removeIf(ra -> ra.getDomain()
                                      .equals(aDomain));
     }
+
+    @Override
+    public void transferToDomain(Domain oldDomain, Domain newDomain) {
+        // TODO VEO-1351 Validate compatibility of risk-definitions before migration
+        this.riskAspects.stream()
+                        .filter(ra -> ra.getDomain()
+                                        .equals(oldDomain))
+                        .forEach(ra -> ra.setDomain(newDomain));
+    }
 }
