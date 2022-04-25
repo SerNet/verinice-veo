@@ -64,7 +64,6 @@
       "matchPackagePatterns": [
         "^com.diffplug.spotless",
         "^org.spockframework:",
-        "^org.springdoc:",
         "^com.github.jk1.dependency-license-report$",
         "^com.github.spotbugs$",
         "org.testcontainers:",
