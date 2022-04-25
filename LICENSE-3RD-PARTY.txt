@@ -1795,7 +1795,7 @@ POM License: MIT License - https://opensource.org/licenses/MIT
 
 --------------------------------------------------------------------------------
 
-33. Group: io.jsonwebtoken  Name: jjwt-api  Version: 0.11.2
+33. Group: io.jsonwebtoken  Name: jjwt-api  Version: 0.11.3
 
 Manifest Project URL: https://github.com/jwtk/jjwt
 
@@ -20335,5 +20335,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Thu Apr 21 13:31:51 UTC 2022.
+This report was generated at Mon Apr 25 05:32:32 UTC 2022.
 
