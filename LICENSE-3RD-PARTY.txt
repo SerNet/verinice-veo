@@ -9636,19 +9636,19 @@ POM License: MIT License - https://opensource.org/licenses/MIT
 
 --------------------------------------------------------------------------------
 
-106. Group: org.springdoc  Name: springdoc-openapi-common  Version: 1.6.7
+106. Group: org.springdoc  Name: springdoc-openapi-common  Version: 1.6.8
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
 --------------------------------------------------------------------------------
 
-107. Group: org.springdoc  Name: springdoc-openapi-ui  Version: 1.6.7
+107. Group: org.springdoc  Name: springdoc-openapi-ui  Version: 1.6.8
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
 --------------------------------------------------------------------------------
 
-108. Group: org.springdoc  Name: springdoc-openapi-webmvc-core  Version: 1.6.7
+108. Group: org.springdoc  Name: springdoc-openapi-webmvc-core  Version: 1.6.8
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
@@ -20335,5 +20335,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Mon Apr 25 07:52:01 UTC 2022.
+This report was generated at Mon Apr 25 09:14:56 UTC 2022.
 
