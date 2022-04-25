@@ -56,6 +56,12 @@
     },
     {
       "matchPackagePatterns": [
+        "^io.jsonwebtoken:"
+      ],
+      "groupName": "JWT"
+    },
+    {
+      "matchPackagePatterns": [
         "^com.diffplug.spotless",
         "^org.spockframework:",
         "^org.springdoc:",
