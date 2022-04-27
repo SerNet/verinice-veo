@@ -357,7 +357,7 @@ abstract class VeoSpec extends Specification {
 
     static RiskDefinition newRiskDefinition(String id, @DelegatesTo(value = RiskDefinition.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.riskdefinition.RiskDefinition") Closure init = null) {
-        var rd = new RiskDefinition()
+        def rd = new RiskDefinition()
         rd.id = id
         execute(rd, init)
         return rd
@@ -365,7 +365,7 @@ abstract class VeoSpec extends Specification {
 
     static CategoryDefinition newCategoryDefinition(String id, @DelegatesTo(value = CategoryDefinition.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.riskdefinition.CategoryDefinition") Closure init = null) {
-        var rd = new CategoryDefinition()
+        def rd = new CategoryDefinition()
         rd.id = id
         execute(rd, init)
         return rd
