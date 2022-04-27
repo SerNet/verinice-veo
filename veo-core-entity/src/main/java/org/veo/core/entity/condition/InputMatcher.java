@@ -15,15 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.decision;
+package org.veo.core.entity.condition;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-/** Matches value if it is null. */
-@Data
-public class IsNullMatcher implements InputMatcher {
-  @Override
-  public boolean matches(Object value) {
-    return value == null;
-  }
+/** Checks a value in the context of a {@link Condition}. */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+  @JsonSubTypes.Type(value = EqualsMatcher.class, name = "equals"),
+  @JsonSubTypes.Type(value = GreaterThanMatcher.class, name = "greaterThan"),
+  @JsonSubTypes.Type(value = IsNullMatcher.class, name = "isNull"),
+})
+public interface InputMatcher {
+  boolean matches(Object value);
 }

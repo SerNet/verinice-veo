@@ -15,21 +15,41 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.decision;
+package org.veo.core.entity.condition;
 
-import javax.validation.constraints.NotNull;
+import java.util.Collection;
+
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-/** Matches if the value matches an injectable comparison value. */
+/**
+ * Provides the size/length of a collection value for a certain custom aspect attribute on an
+ * element.
+ */
 @Data
 @RequiredArgsConstructor
-public class EqualsMatcher implements InputMatcher {
-  @NotNull private final Object comparisonValue;
+public class CustomAspectAttributeSizeProvider implements InputProvider {
+  private final String customAspectType;
+  private final String attributeType;
 
   @Override
-  public boolean matches(Object value) {
-    return comparisonValue.equals(value);
+  public Object getValue(Element element, Domain domain) {
+    var value =
+        new CustomAspectAttributeValueProvider(customAspectType, attributeType)
+            .getValue(element, domain);
+
+    if (value == null) {
+      return 0;
+    }
+    if (value instanceof Collection<?>) {
+      return ((Collection) value).size();
+    }
+    throw new IllegalArgumentException(
+        String.format(
+            "Cannot determine size for custom aspect %s attribute %s because the value is not a collection",
+            customAspectType, attributeType));
   }
 }

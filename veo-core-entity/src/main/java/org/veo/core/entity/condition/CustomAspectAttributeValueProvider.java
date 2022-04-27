@@ -15,25 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.decision;
-
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+package org.veo.core.entity.condition;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 
-/**
- * Provides input value for a {@link RuleCondition} in a {@link Decision}. Takes an element and
- * extracts a value from the element in the context of a given domain.
- */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-@JsonSubTypes({
-  @Type(value = CustomAspectAttributeSizeProvider.class, name = "customAspectAttributeSize"),
-  @Type(value = CustomAspectAttributeValueProvider.class, name = "customAspectAttributeValue"),
-  @Type(value = MaxRiskProvider.class, name = "maxRisk"),
-})
-public interface InputProvider {
-  public Object getValue(Element element, Domain domain);
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+
+/** Provides the value for a certain custom aspect attribute on an element. */
+@Data
+@RequiredArgsConstructor
+public class CustomAspectAttributeValueProvider implements InputProvider {
+  private final String customAspect;
+  private final String attribute;
+
+  @Override
+  public Object getValue(Element element, Domain domain) {
+    return element.getCustomAspects().stream()
+        .filter(ca -> ca.getType().equals(customAspect))
+        .findFirst()
+        .map(ca -> ca.getAttributes().get(attribute))
+        .orElse(null);
+  }
 }

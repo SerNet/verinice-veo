@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.decision;
+package org.veo.core.entity.condition;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
@@ -23,19 +23,18 @@ import org.veo.core.entity.Element;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-/** Provides the value for a certain custom aspect attribute on an element. */
+/** Configurable condition which checks elements using an injectable input provider and matcher. */
 @Data
 @RequiredArgsConstructor
-public class CustomAspectAttributeValueProvider implements InputProvider {
-  private final String customAspect;
-  private final String attribute;
+public class Condition {
+  private final InputProvider inputProvider;
+  private final InputMatcher inputMatcher;
 
-  @Override
-  public Object getValue(Element element, Domain domain) {
-    return element.getCustomAspects().stream()
-        .filter(ca -> ca.getType().equals(customAspect))
-        .findFirst()
-        .map(ca -> ca.getAttributes().get(attribute))
-        .orElse(null);
+  /**
+   * Determines whether the data provided by the {@link InputProvider} for given element is matched
+   * by the {@link InputMatcher}.
+   */
+  public boolean matches(Element element, Domain domain) {
+    return inputMatcher.matches(inputProvider.getValue(element, domain));
   }
 }

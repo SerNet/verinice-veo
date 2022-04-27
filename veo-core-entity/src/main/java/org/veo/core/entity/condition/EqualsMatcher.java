@@ -15,39 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.decision;
-
-import java.math.BigDecimal;
+package org.veo.core.entity.condition;
 
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-/**
- * Matches if the value is a greater number than an injectable comparison value. Only supports int,
- * long & decimal.
- */
+/** Matches if the value matches an injectable comparison value. */
 @Data
 @RequiredArgsConstructor
-public class GreaterThanMatcher implements InputMatcher {
-  @NotNull private final BigDecimal comparisonValue;
+public class EqualsMatcher implements InputMatcher {
+  @NotNull private final Object comparisonValue;
 
   @Override
   public boolean matches(Object value) {
-    if (value == null) {
-      return false;
-    }
-    if (value instanceof BigDecimal) {
-      return comparisonValue.compareTo((BigDecimal) value) < 0;
-    }
-    if (value instanceof Integer) {
-      return comparisonValue.compareTo(new BigDecimal((Integer) value)) < 0;
-    }
-    if (value instanceof Long) {
-      return comparisonValue.compareTo(new BigDecimal((Long) value)) < 0;
-    }
-    throw new IllegalArgumentException(
-        "Cannot compare BigDecimal to " + value.getClass().getSimpleName());
+    return comparisonValue.equals(value);
   }
 }

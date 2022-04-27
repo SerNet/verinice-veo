@@ -26,6 +26,13 @@ import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.condition.Condition;
+import org.veo.core.entity.condition.CustomAspectAttributeSizeProvider;
+import org.veo.core.entity.condition.CustomAspectAttributeValueProvider;
+import org.veo.core.entity.condition.EqualsMatcher;
+import org.veo.core.entity.condition.GreaterThanMatcher;
+import org.veo.core.entity.condition.IsNullMatcher;
+import org.veo.core.entity.condition.MaxRiskProvider;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +55,7 @@ public class Rule {
   @NotNull private final Map<String, String> description;
 
   /** The rule only matches an element if all these conditions match the element. */
-  private final List<RuleCondition> conditions = new ArrayList<>();
+  private final List<Condition> conditions = new ArrayList<>();
 
   /** Determines whether the element matches all rule conditions */
   public boolean matches(Element element, Domain domain) {
@@ -59,7 +66,7 @@ public class Rule {
   public Rule ifAttributeEquals(
       Object comparisonValue, String attributeType, String customAspectType) {
     conditions.add(
-        new RuleCondition(
+        new Condition(
             new CustomAspectAttributeValueProvider(customAspectType, attributeType),
             new EqualsMatcher(comparisonValue)));
     return this;
@@ -71,7 +78,7 @@ public class Rule {
    */
   public Rule ifAttributeSizeGreaterThan(int i, String attributeType, String customAspectType) {
     conditions.add(
-        new RuleCondition(
+        new Condition(
             new CustomAspectAttributeSizeProvider(customAspectType, attributeType),
             new GreaterThanMatcher(new BigDecimal(i))));
     return this;
@@ -81,13 +88,13 @@ public class Rule {
    * Add a condition that the maximum risk affecting the element must be greater than given value
    */
   public Rule ifMaxRiskGreaterThan(BigDecimal i) {
-    conditions.add(new RuleCondition(new MaxRiskProvider(), new GreaterThanMatcher(i)));
+    conditions.add(new Condition(new MaxRiskProvider(), new GreaterThanMatcher(i)));
     return this;
   }
 
   /** Add a condition that no risk values must affect the element. */
   public Rule ifNoRiskValuesPresent() {
-    conditions.add(new RuleCondition(new MaxRiskProvider(), new IsNullMatcher()));
+    conditions.add(new Condition(new MaxRiskProvider(), new IsNullMatcher()));
     return this;
   }
 

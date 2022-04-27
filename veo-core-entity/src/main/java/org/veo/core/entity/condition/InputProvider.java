@@ -15,18 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.decision;
+package org.veo.core.entity.condition;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-/** Checks a value in the context of a {@link RuleCondition} in a {@link Decision}. */
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
+
+/**
+ * Provides input value for a {@link Condition}. Takes an element and extracts a value from the
+ * element in the context of a given domain.
+ */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-  @JsonSubTypes.Type(value = EqualsMatcher.class, name = "equals"),
-  @JsonSubTypes.Type(value = GreaterThanMatcher.class, name = "greaterThan"),
-  @JsonSubTypes.Type(value = IsNullMatcher.class, name = "isNull"),
+  @Type(value = CustomAspectAttributeSizeProvider.class, name = "customAspectAttributeSize"),
+  @Type(value = CustomAspectAttributeValueProvider.class, name = "customAspectAttributeValue"),
+  @Type(value = MaxRiskProvider.class, name = "maxRisk"),
 })
-public interface InputMatcher {
-  boolean matches(Object value);
+public interface InputProvider {
+  public Object getValue(Element element, Domain domain);
 }
