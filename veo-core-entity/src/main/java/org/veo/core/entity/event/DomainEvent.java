@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Alexander Koderman.
+ * Copyright (C) 2022  Alexander Koderman
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,29 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.message;
+package org.veo.core.entity.event;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Service;
+import java.util.UUID;
 
-import org.veo.core.entity.event.RiskEvent;
-import org.veo.core.entity.event.StoredEvent;
-import org.veo.core.service.EventPublisher;
+import org.veo.core.entity.Key;
 
-/** Implementation of a domain event publisher using Spring's {@code ApplicationEventPublisher}. */
-@Service
-public class EventPublisherImpl implements EventPublisher {
+public interface DomainEvent {
 
-  @Autowired private ApplicationEventPublisher publisher;
+  Object UNKNOWN_SOURCE = RiskEvent.class;
 
-  @Override
-  public void publish(StoredEvent event) {
-    publisher.publishEvent(event);
-  }
+  /**
+   * The publisher of the event. Can be used to prevent read-your-own-writes during recursive
+   * calculations.
+   */
+  Object getSource();
 
-  @Override
-  public void publish(RiskEvent event) {
-    publisher.publishEvent(event);
-  }
+  /** The client in which the event occured. */
+  Key<UUID> getClientId();
 }

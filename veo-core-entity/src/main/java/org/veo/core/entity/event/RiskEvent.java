@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Alexander Koderman.
+ * Copyright (C) 2022  Alexander Koderman
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,29 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.message;
+package org.veo.core.entity.event;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Service;
+import java.util.Set;
 
-import org.veo.core.entity.event.RiskEvent;
-import org.veo.core.entity.event.StoredEvent;
-import org.veo.core.service.EventPublisher;
+public interface RiskEvent extends DomainEvent {
 
-/** Implementation of a domain event publisher using Spring's {@code ApplicationEventPublisher}. */
-@Service
-public class EventPublisherImpl implements EventPublisher {
+  /** The kind of values that were changed. */
+  enum ChangedValues {
+    /** Values on the probability provider were changed. */
+    PROBABILITY_VALUES_CHANGED,
 
-  @Autowired private ApplicationEventPublisher publisher;
+    /** Values on the (categorized) impact provider were changed. */
+    IMPACT_VALUES_CHANGED,
 
-  @Override
-  public void publish(StoredEvent event) {
-    publisher.publishEvent(event);
+    /** Values on the (categorized) risk values aspect were changed. */
+    RISK_VALUES_CHANGED,
+
+    RISK_CREATED,
+
+    RISK_DELETED
   }
 
-  @Override
-  public void publish(RiskEvent event) {
-    publisher.publishEvent(event);
-  }
+  /** Returns the kind of values that were affected. */
+  Set<ChangedValues> getChanges();
 }

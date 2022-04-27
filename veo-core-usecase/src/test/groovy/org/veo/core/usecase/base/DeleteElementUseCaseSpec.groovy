@@ -24,7 +24,7 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scope
-import org.veo.core.entity.event.RiskComponentChangeEvent
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent
 import org.veo.core.repository.AssetRepository
 import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.DocumentRepository
@@ -70,7 +70,7 @@ public class DeleteElementUseCaseSpec extends UseCaseSpec {
         then:
         1 * processRepository.findById(id) >> Optional.of(process)
         1 * processRepository.deleteById(id)
-        1 * eventPublisher.publish({RiskComponentChangeEvent event->
+        1 * eventPublisher.publish({ RiskAffectingElementChangeEvent event->
             event.entityType == Process
             event.entityId == id
         })

@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.event.RiskComponentChangeEvent;
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.repository.ControlRepository;
@@ -47,7 +47,7 @@ public class UpdateControlUseCase extends ModifyElementUseCase<Control> {
   @Override
   public OutputData<Control> execute(InputData<Control> input) {
     OutputData<Control> result = super.execute(input);
-    eventPublisher.publish(new RiskComponentChangeEvent(result.getEntity()));
+    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
     return result;
   }
 

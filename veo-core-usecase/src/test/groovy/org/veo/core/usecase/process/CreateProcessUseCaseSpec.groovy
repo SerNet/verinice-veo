@@ -20,7 +20,7 @@ package org.veo.core.usecase.process
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
-import org.veo.core.entity.event.RiskComponentChangeEvent
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.service.EventPublisher
 import org.veo.core.usecase.DesignatorService
@@ -54,7 +54,7 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
         1 * process.getOwningClient() >> Optional.of(existingClient)
         1 * processRepository.save(process) >> process
         1 * designatorService.assignDesignator(process, existingClient)
-        1 * eventPublisher.publish({RiskComponentChangeEvent event->
+        1 * eventPublisher.publish({ RiskAffectingElementChangeEvent event->
             event.entityType == Process
             event.entityId == id
         })

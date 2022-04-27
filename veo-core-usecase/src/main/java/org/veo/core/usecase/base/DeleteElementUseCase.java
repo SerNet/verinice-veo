@@ -26,7 +26,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
-import org.veo.core.entity.event.RiskComponentChangeEvent;
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.RepositoryProvider;
@@ -68,7 +68,7 @@ public class DeleteElementUseCase
     entity.remove();
     repository.deleteById(entity.getId());
     if (RELEVANT_CLASSES_FOR_RISK.contains(input.getEntityClass())) {
-      eventPublisher.publish(new RiskComponentChangeEvent(entity));
+      eventPublisher.publish(new RiskAffectingElementChangeEvent(entity, this));
     }
     return EmptyOutput.INSTANCE;
   }

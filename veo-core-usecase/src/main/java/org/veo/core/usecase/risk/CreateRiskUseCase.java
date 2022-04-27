@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.usecase.risk;
 
+import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_CREATED;
+
 import javax.transaction.Transactional;
 
 import org.veo.core.entity.AbstractRisk;
@@ -24,7 +26,8 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
-import org.veo.core.entity.event.RiskComponentChangeEvent;
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
+import org.veo.core.entity.event.RiskChangedEvent;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
@@ -73,9 +76,16 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
     }
 
     validateRiskValues(input.getRiskValues(), domains, riskAffected);
-    if (risk instanceof ProcessRisk) ((ProcessRisk) risk).defineRiskValues(input.getRiskValues());
-
-    eventPublisher.publish(new RiskComponentChangeEvent(riskAffected));
+    if (risk instanceof ProcessRisk) {
+      ((ProcessRisk) risk).defineRiskValues(input.getRiskValues());
+    }
+    publishEvents(riskAffected, risk);
     return new OutputData<>(risk, newRiskCreated);
+  }
+
+  private void publishEvents(T riskAffected, R risk) {
+    var riskEvent = new RiskChangedEvent(risk, this);
+    riskEvent.addChange(RISK_CREATED);
+    eventPublisher.publish(new RiskAffectingElementChangeEvent(riskAffected, this, riskEvent));
   }
 }

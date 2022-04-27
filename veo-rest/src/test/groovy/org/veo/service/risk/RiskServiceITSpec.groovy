@@ -17,13 +17,23 @@
  ******************************************************************************/
 package org.veo.service.risk
 
+
+import static org.veo.core.entity.event.RiskEvent.ChangedValues.PROBABILITY_VALUES_CHANGED
+import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_VALUES_CHANGED
+
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Bean
+import org.springframework.context.event.EventListener
 import org.springframework.security.test.context.support.WithUserDetails
+import org.springframework.test.context.ContextConfiguration
 
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Process
 import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.Scenario
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent
+import org.veo.core.entity.event.RiskChangedEvent
+import org.veo.core.entity.event.RiskEvent
 import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.ImpactRef
 import org.veo.core.entity.risk.PotentialProbabilityImpl
@@ -32,6 +42,7 @@ import org.veo.core.entity.risk.ProcessImpactValues
 import org.veo.core.entity.risk.RiskDefinitionRef
 
 @WithUserDetails("user@domain.example")
+@ContextConfiguration(classes = Config.class)
 class RiskServiceITSpec extends VeoSpringSpec {
 
     private static final String BETRAECHTLICH = 'beträchtlich'
@@ -42,9 +53,26 @@ class RiskServiceITSpec extends VeoSpringSpec {
     private static final String SEHR_HOCH = 'sehr hoch'
     private static final String VERNACHLAESSIGBAR = 'vernachlässigbar'
 
-
     @Autowired
     RiskService riskService
+    @Autowired
+    RiskEventListener listener
+
+    static class Config {
+        @Bean
+        public RiskEventListener listener() {
+            return new RiskEventListener()
+        }
+    }
+
+    static class RiskEventListener {
+        def receivedEvents = new ArrayList<RiskEvent>()
+
+        @EventListener
+        def listen(RiskEvent event) {
+            receivedEvents.add(event)
+        }
+    }
 
     def "Calculate risk values for process"() {
         given:
@@ -128,7 +156,33 @@ class RiskServiceITSpec extends VeoSpringSpec {
         }
         oldRiskVersion == 1
 
+        and: "events were published as required"
+        listener.receivedEvents.size() == 2
+
+        def riskValueEvent = listener.receivedEvents.find { it instanceof RiskChangedEvent }
+        with (riskValueEvent) {
+            def event = it as RiskChangedEvent
+            event.source.class == RiskService
+            event.riskAffectedId == process.id
+            event.scenarioId == scenario.id
+            event.changes ==~ [RISK_VALUES_CHANGED]
+            event.domainId == domain.id
+            event.riskDefinition == riskDefinitionRef
+            event.clientId == client.id
+        }
+
+        with (listener.receivedEvents.find { it instanceof RiskAffectingElementChangeEvent }) {
+            def event = it as RiskAffectingElementChangeEvent
+            event.entityType == Process
+            event.entityId == process.id
+            event.source.class == RiskService
+            event.hasChangedRisks()
+            event.clientId == client.id
+            event.changedRisks ==~ [riskValueEvent]
+        }
+
         when: "changing the scenario's potential probability and running the risk service"
+        listener.receivedEvents.clear()
         executeInTransaction {
             scenario = scenarioDataRepository.findById(scenario.idAsString).get().tap {
                 riskValuesAspects.first().potentialProbability[riskDefinitionRef].potentialProbability = probabilityOften
@@ -171,7 +225,36 @@ class RiskServiceITSpec extends VeoSpringSpec {
             }
         }
 
+        and: "events were published as required"
+        listener.receivedEvents.size() == 2
+
+        def riskProbabilityEvent = listener.receivedEvents.find { it instanceof RiskChangedEvent }
+        with (riskProbabilityEvent) {
+            def event = it as RiskChangedEvent
+            event.source.class == RiskService
+            event.changes ==~ [
+                PROBABILITY_VALUES_CHANGED,
+                RISK_VALUES_CHANGED
+            ]
+            event.riskAffectedId == process.id
+            event.scenarioId == scenario.id
+            event.domainId == domain.id
+            event.riskDefinition == riskDefinitionRef
+            event.clientId == client.id
+        }
+
+        with (listener.receivedEvents.find { it instanceof RiskAffectingElementChangeEvent }) {
+            def event = it as RiskAffectingElementChangeEvent
+            event.entityType == Process
+            event.entityId == process.id
+            event.source.class == RiskService
+            event.hasChangedRisks()
+            event.clientId == client.id
+            event.changedRisks ==~ [riskProbabilityEvent]
+        }
+
         when: "changing the risk's specific impact and running the risk service"
+        listener.receivedEvents.clear()
         risk.getImpactProvider(riskDefinitionRef).setSpecificImpact(availabilityRef, ImpactRef.from(highAvailabilityImpact))
         executeInTransaction {
             process = processDataRepository.save(process)
@@ -206,5 +289,33 @@ class RiskServiceITSpec extends VeoSpringSpec {
         }
         oldRiskVersion < risk.getVersion()
         risk.version == 3
+
+        and: "events were published as required"
+        listener.receivedEvents.size() == 2
+
+        def riskImpactEvent = listener.receivedEvents.find { it instanceof RiskChangedEvent }
+        with (riskImpactEvent) {
+            def event = it as RiskChangedEvent
+            event.source.class == RiskService
+            // Note: IMPACT_VALUES_CHANGED is not set here because that wasn't done by the risk service.
+            // The event with this type should have been published by the use-case that sets the specificImpact.
+            // TODO VEO-1361
+            event.changes ==~ [RISK_VALUES_CHANGED]
+            event.riskAffectedId == process.id
+            event.scenarioId == scenario.id
+            event.domainId == domain.id
+            event.riskDefinition == riskDefinitionRef
+            event.clientId == client.id
+        }
+
+        with (listener.receivedEvents.find { it instanceof RiskAffectingElementChangeEvent }) {
+            def event = it as RiskAffectingElementChangeEvent
+            event.entityType == Process
+            event.entityId == process.id
+            event.source.class == RiskService
+            event.hasChangedRisks()
+            event.clientId == client.id
+            event.changedRisks ==~ [riskImpactEvent]
+        }
     }
 }

@@ -876,8 +876,8 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public RiskService riskService(ProcessRepository processRepository) {
-    return new RiskService(processRepository);
+  public RiskService riskService(ProcessRepository processRepository, EventPublisher publisher) {
+    return new RiskService(processRepository, publisher);
   }
 
   @Bean

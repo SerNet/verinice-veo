@@ -22,10 +22,14 @@ import java.util.UUID;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.RiskAffected;
-import org.veo.core.entity.event.RiskComponentChangeEvent;
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
+import org.veo.core.entity.event.RiskChangedEvent;
+import org.veo.core.entity.event.RiskEvent;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -54,9 +58,16 @@ public class DeleteRiskUseCase
             .orElseThrow();
 
     riskAffected.checkSameClient(input.authenticatedClient);
-    riskAffected.getRisk(input.scenarioRef).orElseThrow().remove();
-    eventPublisher.publish(new RiskComponentChangeEvent(riskAffected));
+    var risk = riskAffected.getRisk(input.scenarioRef).orElseThrow();
+    risk.remove();
+    publishEvents(riskAffected, risk);
     return EmptyOutput.INSTANCE;
+  }
+
+  private void publishEvents(Element element, AbstractRisk<?, ?> risk) {
+    var riskEvent = new RiskChangedEvent(risk, this);
+    riskEvent.addChange(RiskEvent.ChangedValues.RISK_DELETED);
+    eventPublisher.publish(new RiskAffectingElementChangeEvent(element, this, riskEvent));
   }
 
   @Valid

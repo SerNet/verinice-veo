@@ -25,7 +25,8 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
-import org.veo.core.entity.event.RiskComponentChangeEvent;
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
+import org.veo.core.entity.event.RiskChangedEvent;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.common.ETag;
@@ -73,8 +74,14 @@ public abstract class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends 
     R result =
         riskAffected.updateRisk(
             risk, domains, mitigation.orElse(null), riskOwner.orElse(null), input.getRiskValues());
-    eventPublisher.publish(new RiskComponentChangeEvent(riskAffected));
+    publishEvents(riskAffected, result);
     return new OutputData<>(result);
+  }
+
+  private void publishEvents(T riskAffected, R risk) {
+    RiskChangedEvent riskEvent = new RiskChangedEvent(risk, this);
+    eventPublisher.publish(riskEvent);
+    eventPublisher.publish(new RiskAffectingElementChangeEvent(riskAffected, this, riskEvent));
   }
 
   private void checkETag(AbstractRisk<T, R> risk, InputData input) {

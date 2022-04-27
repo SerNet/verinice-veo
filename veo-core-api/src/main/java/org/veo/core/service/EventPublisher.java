@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.service;
 
-import org.veo.core.entity.event.RiskComponentChangeEvent;
+import org.veo.core.entity.event.RiskEvent;
 import org.veo.core.entity.event.StoredEvent;
 
 /**
@@ -27,5 +27,5 @@ import org.veo.core.entity.event.StoredEvent;
 public interface EventPublisher {
   void publish(StoredEvent event);
 
-  void publish(RiskComponentChangeEvent event);
+  void publish(RiskEvent event);
 }

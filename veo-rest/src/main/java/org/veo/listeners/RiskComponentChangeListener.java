@@ -23,26 +23,28 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import org.veo.core.entity.Element;
-import org.veo.core.entity.event.RiskComponentChangeEvent;
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.service.risk.RiskService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * Listens to {@link RiskComponentChangeEvent}s from the use-case layer and invokes the {@link
- * RiskService}.
+ * Listens to {@link RiskAffectingElementChangeEvent}s from the use-case layer and invokes the
+ * {@link RiskService}.
  */
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class RiskComponentChangeListener {
   private final RiskService riskService;
   private final RepositoryProvider repositoryProvider;
 
-  @TransactionalEventListener
+  @TransactionalEventListener(condition = "#event.source != @riskService")
   @Transactional(propagation = Propagation.REQUIRES_NEW)
-  public void handle(RiskComponentChangeEvent event) {
+  public void handle(RiskAffectingElementChangeEvent event) {
     ElementRepository<? extends Element> repository =
         repositoryProvider.getElementRepositoryFor(event.getEntityType());
     Element element = repository.findById(event.getEntityId()).orElseThrow();

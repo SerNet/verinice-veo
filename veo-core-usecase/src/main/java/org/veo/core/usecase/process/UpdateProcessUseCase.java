@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Process;
-import org.veo.core.entity.event.RiskComponentChangeEvent;
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.risk.ProcessImpactValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.repository.ProcessRepository;
@@ -48,7 +48,7 @@ public class UpdateProcessUseCase extends ModifyElementUseCase<Process> {
   @Override
   public OutputData<Process> execute(InputData<Process> input) {
     OutputData<Process> result = super.execute(input);
-    eventPublisher.publish(new RiskComponentChangeEvent(result.getEntity()));
+    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
     return result;
   }
 
