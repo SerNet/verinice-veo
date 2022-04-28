@@ -7,7 +7,6 @@ include ':veo-adapter'
 include ':veo-persistence'
 include ':veo-test'
 include ':veo-message'
-include ':gendocs'
 
 boolean isCiServer = System.getenv().containsKey("CI")
 

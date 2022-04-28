@@ -80,11 +80,11 @@ pipeline {
             steps {
                 unstash "classes"
                 sh './gradlew -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME build -x check'
-                archiveArtifacts artifacts: 'veo-rest/build/libs/*.jar,gendocs/build/libs/*.jar', fingerprint: true
+                archiveArtifacts artifacts: 'veo-rest/build/libs/*.jar', fingerprint: true
             }
             post {
                 always{
-                    sh 'rm veo-rest/build/libs/*.jar gendocs/build/libs/*.jar'
+                    sh 'rm veo-rest/build/libs/*.jar'
                 }
             }
         }
@@ -169,37 +169,6 @@ pipeline {
                         }
                     }
                 }
-                stage('Generate Domain Template docs') {
-                    agent any
-                    steps {
-                        script {
-
-                            docker.image(imageForGradleStages).inside {
-                                unarchive mapping: ["gendocs/build/libs/gendocs-${projectVersion}.jar": "gendocs/build/libs/gendocs-${projectVersion}.jar"]
-                                sh "java -jar gendocs/build/libs/gendocs-${projectVersion}.jar -d domaintemplates/dsgvo/ > dsgvo.adoc"
-                                archiveArtifacts artifacts: 'dsgvo.adoc', fingerprint: true
-                            }
-                            docker.image('asciidoctor/docker-asciidoctor').inside {
-                                sh 'asciidoctor --doctype book dsgvo.adoc'
-                                sh 'asciidoctor-pdf --doctype book dsgvo.adoc'
-                                archiveArtifacts artifacts: 'dsgvo.pdf', fingerprint: true
-                            }
-                            publishHTML([
-                                allowMissing: false,
-                                alwaysLinkToLastBuild: false,
-                                keepAll: true,
-                                reportDir: '.',
-                                reportFiles: 'dsgvo.html',
-                                reportName: 'DS-GVO domain template documentation'
-                            ])
-                        }
-                    }
-                    post {
-                        always{
-                            sh 'rm gendocs/build/libs/*.jar'
-                        }
-                    }
-                }
                 stage('Test') {
                     environment {
                         def tag = "${env.BUILD_TAG}".replaceAll("[^A-Za-z0-9]", "_")
@@ -231,8 +200,7 @@ pipeline {
                                                 'veo-core-usecase',
                                                 'veo-persistence',
                                                 'veo-rest',
-                                                'veo-test',
-                                                'gendocs'
+                                                'veo-test'
                                             ].each {
                                                 publishHTML([
                                                     allowMissing: false,
