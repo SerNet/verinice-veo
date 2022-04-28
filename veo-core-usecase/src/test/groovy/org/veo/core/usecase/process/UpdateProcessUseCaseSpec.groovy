@@ -57,9 +57,10 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
         when:
         def eTag = ETag.from(process.getId().uuidValue(), 0)
         def output = usecase.execute(new InputData(process, existingClient, eTag, "max"))
-        then:
 
+        then:
         1 * process.version("max", existingProcess)
+        1 * process.getOwningClient() >> Optional.of(existingClient)
         1 * processRepository.save(process) >> process
         1 * processRepository.findById(process.id) >> Optional.of(existingProcess)
         1 * eventPublisher.publish({RiskComponentChangeEvent event->

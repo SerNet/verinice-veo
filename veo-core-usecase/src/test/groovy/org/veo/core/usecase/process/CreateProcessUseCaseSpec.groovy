@@ -51,6 +51,7 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
         def output = usecase.execute(new CreateElementUseCase.InputData(process, existingClient))
         then:
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
+        1 * process.getOwningClient() >> Optional.of(existingClient)
         1 * processRepository.save(process) >> process
         1 * designatorService.assignDesignator(process, existingClient)
         1 * eventPublisher.publish({RiskComponentChangeEvent event->

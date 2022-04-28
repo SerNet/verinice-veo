@@ -63,6 +63,7 @@ public class DeleteElementUseCaseSpec extends UseCaseSpec {
             getOwner() >> existingUnit
             getId() >> id
             getModelInterface() >> Process
+            getOwningClient() >> Optional.of(existingClient)
         }
         when:
         usecase.execute(new InputData(Process,id, existingClient))
