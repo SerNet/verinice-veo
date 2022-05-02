@@ -29,22 +29,25 @@ import org.veo.core.usecase.risk.CreateRiskUseCase;
 
 public class CreateAssetRiskUseCase extends CreateRiskUseCase<Asset, AssetRisk> {
 
-    private final ScopeProvider scopeProvider;
+  private final ScopeProvider scopeProvider;
 
-    public CreateAssetRiskUseCase(RepositoryProvider repositoryProvider,
-            DesignatorService designatorService, EventPublisher eventPublisher,
-            ScopeProvider scopeProvider) {
-        super(Asset.class, repositoryProvider, designatorService, eventPublisher);
-        this.scopeProvider = scopeProvider;
-    }
+  public CreateAssetRiskUseCase(
+      RepositoryProvider repositoryProvider,
+      DesignatorService designatorService,
+      EventPublisher eventPublisher,
+      ScopeProvider scopeProvider) {
+    super(Asset.class, repositoryProvider, designatorService, eventPublisher);
+    this.scopeProvider = scopeProvider;
+  }
 
-    @Override
-    protected void validateRiskDefinition(Asset asset, RiskDefinitionRef riskDefinitionRef,
-            Domain domain) {
-        if (!scopeProvider.canUseRiskDefinition(asset, domain, riskDefinitionRef)) {
-            throw new IllegalArgumentException(
-                    String.format("Cannot define risk values for risk definition '%s' because the asset %s is not within a scope that uses that risk definition",
-                                  riskDefinitionRef.getIdRef(), asset.getIdAsString()));
-        }
+  @Override
+  protected void validateRiskDefinition(
+      Asset asset, RiskDefinitionRef riskDefinitionRef, Domain domain) {
+    if (!scopeProvider.canUseRiskDefinition(asset, domain, riskDefinitionRef)) {
+      throw new IllegalArgumentException(
+          String.format(
+              "Cannot define risk values for risk definition '%s' because the asset %s is not within a scope that uses that risk definition",
+              riskDefinitionRef.getIdRef(), asset.getIdAsString()));
     }
+  }
 }

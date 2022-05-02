@@ -39,51 +39,52 @@ import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
 public class ScenarioRepositoryImpl
-        extends AbstractCompositeEntityRepositoryImpl<Scenario, ScenarioData>
-        implements ScenarioRepository {
+    extends AbstractCompositeEntityRepositoryImpl<Scenario, ScenarioData>
+    implements ScenarioRepository {
 
-    private final AssetDataRepository assetDataRepository;
-    private final ProcessDataRepository processDataRepository;
+  private final AssetDataRepository assetDataRepository;
+  private final ProcessDataRepository processDataRepository;
 
-    public ScenarioRepositoryImpl(ScenarioDataRepository dataRepository,
-            ValidationService validation, CustomLinkDataRepository linkDataRepository,
-            ScopeDataRepository scopeDataRepository, AssetDataRepository assetDataRepository,
-            ProcessDataRepository processDataRepository) {
-        super(dataRepository, validation, linkDataRepository, scopeDataRepository);
-        this.assetDataRepository = assetDataRepository;
-        this.processDataRepository = processDataRepository;
-    }
+  public ScenarioRepositoryImpl(
+      ScenarioDataRepository dataRepository,
+      ValidationService validation,
+      CustomLinkDataRepository linkDataRepository,
+      ScopeDataRepository scopeDataRepository,
+      AssetDataRepository assetDataRepository,
+      ProcessDataRepository processDataRepository) {
+    super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+    this.assetDataRepository = assetDataRepository;
+    this.processDataRepository = processDataRepository;
+  }
 
-    @Override
-    public void delete(Scenario scenario) {
-        removeRisks(singleton((ScenarioData) scenario));
-        super.deleteById(scenario.getId());
-    }
+  @Override
+  public void delete(Scenario scenario) {
+    removeRisks(singleton((ScenarioData) scenario));
+    super.deleteById(scenario.getId());
+  }
 
-    private void removeRisks(Set<ScenarioData> scenarios) {
-        // remove risks associated with these scenarios:
-        var assets = assetDataRepository.findDistinctByRisks_ScenarioIn(scenarios);
-        assets.forEach(assetData -> scenarios.forEach(scenario -> assetData.getRisk(scenario)
-                                                                           .orElseThrow()
-                                                                           .remove()));
+  private void removeRisks(Set<ScenarioData> scenarios) {
+    // remove risks associated with these scenarios:
+    var assets = assetDataRepository.findDistinctByRisks_ScenarioIn(scenarios);
+    assets.forEach(
+        assetData ->
+            scenarios.forEach(scenario -> assetData.getRisk(scenario).orElseThrow().remove()));
 
-        var processes = processDataRepository.findRisksWithValue(scenarios);
-        processes.forEach(processData -> scenarios.forEach(scenario -> processData.getRisk(scenario)
-                                                                                  .orElseThrow()
-                                                                                  .remove()));
-    }
+    var processes = processDataRepository.findRisksWithValue(scenarios);
+    processes.forEach(
+        processData ->
+            scenarios.forEach(scenario -> processData.getRisk(scenario).orElseThrow().remove()));
+  }
 
-    @Override
-    public void deleteById(Key<UUID> id) {
-        delete(dataRepository.findById(id.uuidValue())
-                             .orElseThrow());
-    }
+  @Override
+  public void deleteById(Key<UUID> id) {
+    delete(dataRepository.findById(id.uuidValue()).orElseThrow());
+  }
 
-    @Override
-    @Transactional
-    public void deleteByUnit(Unit owner) {
-        removeRisks(dataRepository.findByUnits(singleton(owner.getId()
-                                                              .uuidValue())));
-        super.deleteByUnit(owner);
-    }
+  @Override
+  @Transactional
+  public void deleteByUnit(Unit owner) {
+    removeRisks(dataRepository.findByUnits(singleton(owner.getId().uuidValue())));
+    super.deleteByUnit(owner);
+  }
 }

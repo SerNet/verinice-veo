@@ -29,8 +29,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * This DTO is used to represent an ExternalTailoringRefrence it is primarily
- * used in the construction and serialization of a domain template.
+ * This DTO is used to represent an ExternalTailoringRefrence it is primarily used in the
+ * construction and serialization of a domain template.
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -38,11 +38,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TransformLinkTailoringReference extends AbstractTailoringReferenceDto {
 
-    private String linkType;
+  private String linkType;
 
-    @Schema(description = "The properties of the element described by the schema of the type attribute.",
-            example = " name: 'value'",
-            required = false)
-    private Map<String, Object> attributes = Collections.emptyMap();
-
+  @Schema(
+      description = "The properties of the element described by the schema of the type attribute.",
+      example = " name: 'value'",
+      required = false)
+  private Map<String, Object> attributes = Collections.emptyMap();
 }

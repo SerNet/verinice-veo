@@ -28,30 +28,38 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * This class is for documentation only.
- * <p>
- * It is only supposed to be used in OpenApi annotations and should not be
- * extended and implemented.
+ *
+ * <p>It is only supposed to be used in OpenApi annotations and should not be extended and
+ * implemented.
  */
 @Schema(name = "Probability", description = "A collection of probability values.")
 public interface ProbabilitySchema {
 
-    @Schema(description = "The probability of a scenario in a specific circumstance. A scalar value that matches a valid probability level from a risk-definition.",
-            example = "3")
-    @PositiveOrZero
-    BigDecimal getSpecificProbability();
+  @Schema(
+      description =
+          "The probability of a scenario in a specific circumstance. A scalar value that matches a valid probability level from a risk-definition.",
+      example = "3")
+  @PositiveOrZero
+  BigDecimal getSpecificProbability();
 
-    @Schema(description = "Either the potential probability or the specific probability where "
-            + "the latter takes precedence. A scalar value that matches a valid probability level from a risk-definition.",
-            example = "4")
-    @PositiveOrZero
-    BigDecimal getEffectiveProbability();
+  @Schema(
+      description =
+          "Either the potential probability or the specific probability where "
+              + "the latter takes precedence. A scalar value that matches a valid probability level from a risk-definition.",
+      example = "4")
+  @PositiveOrZero
+  BigDecimal getEffectiveProbability();
 
-    @Schema(description = "A user-defined explanation for the selection of the probability value.",
-            example = "No risk no fun.")
-    @Size(max = Probability.EXPLANATION_MAX_LENGTH)
-    String getSpecificProbabilityExplanation();
+  @Schema(
+      description = "A user-defined explanation for the selection of the probability value.",
+      example = "No risk no fun.")
+  @Size(max = Probability.EXPLANATION_MAX_LENGTH)
+  String getSpecificProbabilityExplanation();
 
-    @Schema(description = "The potential probability derived from the scenario associated with "
-            + "this risk.", example = "No risk no fun.", accessMode = Schema.AccessMode.READ_ONLY)
-    BigDecimal getPotentialProbability();
+  @Schema(
+      description =
+          "The potential probability derived from the scenario associated with " + "this risk.",
+      example = "No risk no fun.",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  BigDecimal getPotentialProbability();
 }

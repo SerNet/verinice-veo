@@ -29,49 +29,52 @@ import org.veo.core.entity.Client;
 import org.veo.rest.security.ApplicationUser;
 
 /**
- * Runs the given task with the system user account. The system user is always
- * bound to a specific client during execution. The security context is reset to
- * its previous state after the task was executed.
+ * Runs the given task with the system user account. The system user is always bound to a specific
+ * client during execution. The security context is reset to its previous state after the task was
+ * executed.
  */
 class AsSystemUser {
 
-    private static final String VEO_USER = "SCOPE_veo-user";
-    private static final String SYSTEMUSER_NAME = "system";
-    private static final String VEO_USER_SCOPE = "veo-user";
-    public static final String VEO_ADMIN_ROLE = "veo-admin";
-    public static final String VEO_CONTENT_CREATOR_ROLE = "veo-content-creator";
+  private static final String VEO_USER = "SCOPE_veo-user";
+  private static final String SYSTEMUSER_NAME = "system";
+  private static final String VEO_USER_SCOPE = "veo-user";
+  public static final String VEO_ADMIN_ROLE = "veo-admin";
+  public static final String VEO_CONTENT_CREATOR_ROLE = "veo-content-creator";
 
-    static void runAsAdmin(final Runnable function) {
-        var user = ApplicationUser.authenticatedUser(SYSTEMUSER_NAME, null, VEO_USER_SCOPE,
-                                                     List.of(VEO_ADMIN_ROLE));
-        run(function, user);
+  static void runAsAdmin(final Runnable function) {
+    var user =
+        ApplicationUser.authenticatedUser(
+            SYSTEMUSER_NAME, null, VEO_USER_SCOPE, List.of(VEO_ADMIN_ROLE));
+    run(function, user);
+  }
+
+  static void runAsContentCreator(final Runnable function) {
+    var user =
+        ApplicationUser.authenticatedUser(
+            SYSTEMUSER_NAME, null, VEO_USER_SCOPE, List.of(VEO_CONTENT_CREATOR_ROLE));
+    run(function, user);
+  }
+
+  static void runInClient(Client client, final Runnable function) {
+    var user =
+        ApplicationUser.authenticatedUser(
+            SYSTEMUSER_NAME, client.getIdAsString(),
+            VEO_USER_SCOPE, Collections.emptyList());
+    run(function, user);
+  }
+
+  private static void run(Runnable function, ApplicationUser user) {
+    final Authentication originalAuthentication =
+        SecurityContextHolder.getContext().getAuthentication();
+    var token =
+        new AnonymousAuthenticationToken(
+            SYSTEMUSER_NAME, user, List.of(new SimpleGrantedAuthority(VEO_USER)));
+
+    try {
+      SecurityContextHolder.getContext().setAuthentication(token);
+      function.run();
+    } finally {
+      SecurityContextHolder.getContext().setAuthentication(originalAuthentication);
     }
-
-    static void runAsContentCreator(final Runnable function) {
-        var user = ApplicationUser.authenticatedUser(SYSTEMUSER_NAME, null, VEO_USER_SCOPE,
-                                                     List.of(VEO_CONTENT_CREATOR_ROLE));
-        run(function, user);
-    }
-
-    static void runInClient(Client client, final Runnable function) {
-        var user = ApplicationUser.authenticatedUser(SYSTEMUSER_NAME, client.getIdAsString(),
-                                                     VEO_USER_SCOPE, Collections.emptyList());
-        run(function, user);
-    }
-
-    private static void run(Runnable function, ApplicationUser user) {
-        final Authentication originalAuthentication = SecurityContextHolder.getContext()
-                                                                           .getAuthentication();
-        var token = new AnonymousAuthenticationToken(SYSTEMUSER_NAME, user,
-                List.of(new SimpleGrantedAuthority(VEO_USER)));
-
-        try {
-            SecurityContextHolder.getContext()
-                                 .setAuthentication(token);
-            function.run();
-        } finally {
-            SecurityContextHolder.getContext()
-                                 .setAuthentication(originalAuthentication);
-        }
-    }
+  }
 }

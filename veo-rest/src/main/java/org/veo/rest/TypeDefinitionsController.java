@@ -37,12 +37,12 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @Schema(description = "Provides entity type meta information.")
 public class TypeDefinitionsController {
-    public static final String URL_BASE_PATH = "/types";
+  public static final String URL_BASE_PATH = "/types";
 
-    private final TypeDefinitionProvider provider;
+  private final TypeDefinitionProvider provider;
 
-    @GetMapping
-    public CompletableFuture<Map<String, TypeDefinition>> getAll() {
-        return CompletableFuture.supplyAsync(provider::getAll);
-    }
+  @GetMapping
+  public CompletableFuture<Map<String, TypeDefinition>> getAll() {
+    return CompletableFuture.supplyAsync(provider::getAll);
+  }
 }

@@ -31,32 +31,32 @@ import org.veo.core.usecase.UseCase.IdAndClient;
 import lombok.Value;
 
 public class GetDomainUseCase
-        implements TransactionalUseCase<IdAndClient, GetDomainUseCase.OutputData> {
-    private final DomainRepository repository;
+    implements TransactionalUseCase<IdAndClient, GetDomainUseCase.OutputData> {
+  private final DomainRepository repository;
 
-    public GetDomainUseCase(DomainRepository repository) {
-        this.repository = repository;
-    }
+  public GetDomainUseCase(DomainRepository repository) {
+    this.repository = repository;
+  }
 
-    @Override
-    public OutputData execute(IdAndClient input) {
-        Domain domain = repository.findById(input.getId())
-                                  .orElseThrow(() -> new NotFoundException(input.getId()
-                                                                                .uuidValue()));
-        Client client = input.getAuthenticatedClient();
-        if (!client.equals(domain.getOwner())) {
-            throw new ClientBoundaryViolationException(domain, client);
-        }
-        if (!domain.isActive()) {
-            throw new NotFoundException("Domain is inactive.");
-        }
-        return new OutputData(domain);
+  @Override
+  public OutputData execute(IdAndClient input) {
+    Domain domain =
+        repository
+            .findById(input.getId())
+            .orElseThrow(() -> new NotFoundException(input.getId().uuidValue()));
+    Client client = input.getAuthenticatedClient();
+    if (!client.equals(domain.getOwner())) {
+      throw new ClientBoundaryViolationException(domain, client);
     }
+    if (!domain.isActive()) {
+      throw new NotFoundException("Domain is inactive.");
+    }
+    return new OutputData(domain);
+  }
 
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        Domain domain;
-    }
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid Domain domain;
+  }
 }

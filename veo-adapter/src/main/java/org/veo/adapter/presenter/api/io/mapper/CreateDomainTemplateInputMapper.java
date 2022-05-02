@@ -27,29 +27,30 @@ import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
 
 /**
- * Maps between {@link TransformDomainTemplateDto} and
- * {@link CreateDomainTemplateUseCase.InputData}.
+ * Maps between {@link TransformDomainTemplateDto} and {@link
+ * CreateDomainTemplateUseCase.InputData}.
  */
 public class CreateDomainTemplateInputMapper {
-    public static CreateDomainTemplateUseCase.InputData map(
-            TransformDomainTemplateDto domainTemplateDto, IdentifiableFactory identifiableFactory,
-            EntityFactory entityFactory,
-            DomainAssociationTransformer domainAssociationTransformer) {
-        var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
+  public static CreateDomainTemplateUseCase.InputData map(
+      TransformDomainTemplateDto domainTemplateDto,
+      IdentifiableFactory identifiableFactory,
+      EntityFactory entityFactory,
+      DomainAssociationTransformer domainAssociationTransformer) {
+    var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
 
-        // Define an arbitrary temporary domain template ID and redirect any domain
-        // references to our domain template (so we can import not only domain templates
-        // but also domains).
-        domainTemplateDto.setId(Key.newUuid()
-                                   .uuidValue());
-        resolvingFactory.setGlobalDomainTemplate(domainTemplateDto.getId());
+    // Define an arbitrary temporary domain template ID and redirect any domain
+    // references to our domain template (so we can import not only domain templates
+    // but also domains).
+    domainTemplateDto.setId(Key.newUuid().uuidValue());
+    resolvingFactory.setGlobalDomainTemplate(domainTemplateDto.getId());
 
-        var transformer = new DtoToEntityTransformer(entityFactory, resolvingFactory,
-                domainAssociationTransformer);
+    var transformer =
+        new DtoToEntityTransformer(entityFactory, resolvingFactory, domainAssociationTransformer);
 
-        var newDomainTemplate = transformer.transformTransformDomainTemplateDto2DomainTemplate(domainTemplateDto,
-                                                                                               resolvingFactory);
+    var newDomainTemplate =
+        transformer.transformTransformDomainTemplateDto2DomainTemplate(
+            domainTemplateDto, resolvingFactory);
 
-        return new CreateDomainTemplateUseCase.InputData(newDomainTemplate);
-    }
+    return new CreateDomainTemplateUseCase.InputData(newDomainTemplate);
+  }
 }

@@ -18,29 +18,24 @@
 package org.veo.adapter.presenter.api.common;
 
 /**
- * A representation of a URI reference to an
- * {@link org.veo.core.entity.Identifiable} resource. Offers methods to retrieve
- * a resource identifier / resource locator to the resource itself and an
- * end-user friendly name that can be used when rendering the URI/URL. It also
- * features URIs that can be used to query or access the complete collection of
- * identifiable resources.
+ * A representation of a URI reference to an {@link org.veo.core.entity.Identifiable} resource.
+ * Offers methods to retrieve a resource identifier / resource locator to the resource itself and an
+ * end-user friendly name that can be used when rendering the URI/URL. It also features URIs that
+ * can be used to query or access the complete collection of identifiable resources.
  */
 public interface IIdRef extends Ref {
 
-    /**
-     * A user friendly name of the target object.
-     */
-    String getDisplayName();
+  /** A user friendly name of the target object. */
+  String getDisplayName();
 
-    /**
-     * Returns a URI of searches for the target type that can be used for discovery.
-     * It may be a URL.
-     */
-    String getSearchesUri();
+  /**
+   * Returns a URI of searches for the target type that can be used for discovery. It may be a URL.
+   */
+  String getSearchesUri();
 
-    /**
-     * Returns a URI of a collection of objects for the target type that may be used
-     * for discovery. It may be a URL.
-     */
-    String getResourcesUri();
+  /**
+   * Returns a URI of a collection of objects for the target type that may be used for discovery. It
+   * may be a URL.
+   */
+  String getResourcesUri();
 }

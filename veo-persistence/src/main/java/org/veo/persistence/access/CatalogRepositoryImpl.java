@@ -26,11 +26,11 @@ import org.veo.persistence.entity.jpa.CatalogData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
-public class CatalogRepositoryImpl extends
-        AbstractIdentifiableVersionedRepository<Catalog, CatalogData> implements CatalogRepository {
+public class CatalogRepositoryImpl
+    extends AbstractIdentifiableVersionedRepository<Catalog, CatalogData>
+    implements CatalogRepository {
 
-    public CatalogRepositoryImpl(CatalogDataRepository dataRepository,
-            ValidationService validator) {
-        super(dataRepository, validator);
-    }
+  public CatalogRepositoryImpl(CatalogDataRepository dataRepository, ValidationService validator) {
+    super(dataRepository, validator);
+  }
 }

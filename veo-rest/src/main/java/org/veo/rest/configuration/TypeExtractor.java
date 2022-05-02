@@ -39,104 +39,93 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Uses Spring's {@code RequestMappingHandlerMapping} to resolve a URI to the
- * DTO returned by the controller method that is mapped to the URI.
+ * Uses Spring's {@code RequestMappingHandlerMapping} to resolve a URI to the DTO returned by the
+ * controller method that is mapped to the URI.
  *
- * Unwraps the DTO type from the generic type parameter if it is returned via an
- * adapter or decorator, i.e. as a {@code CompletableFuture} or
- * {@code ResponseBody}.
+ * <p>Unwraps the DTO type from the generic type parameter if it is returned via an adapter or
+ * decorator, i.e. as a {@code CompletableFuture} or {@code ResponseBody}.
  */
 @Component
 @AllArgsConstructor
 @Slf4j
 public class TypeExtractor {
 
-    @Autowired
-    private ApplicationContext applicationContext;
+  @Autowired private ApplicationContext applicationContext;
 
-    @Autowired
-    private ServletContext servletContext;
+  @Autowired private ServletContext servletContext;
 
-    private RequestMappingHandlerMapping getRequestHandlerMapping() {
-        return applicationContext.getBean(RequestMappingHandlerMapping.class);
+  private RequestMappingHandlerMapping getRequestHandlerMapping() {
+    return applicationContext.getBean(RequestMappingHandlerMapping.class);
+  }
+
+  public Optional<Class<? extends ModelDto>> parseDtoType(String uriString) {
+    String pathComponent = UriComponentsBuilder.fromUriString(uriString).build().getPath();
+    if (pathComponent == null) return Optional.empty();
+
+    if (uriString.startsWith("/catalogitems")) {
+      return Optional.of(FullCatalogItemDto.class);
+    }
+    if (uriString.startsWith("/domaintemplates")) {
+      return Optional.of(TransformDomainTemplateDto.class);
     }
 
-    public Optional<Class<? extends ModelDto>> parseDtoType(String uriString) {
-        String pathComponent = UriComponentsBuilder.fromUriString(uriString)
-                                                   .build()
-                                                   .getPath();
-        if (pathComponent == null)
-            return Optional.empty();
+    log.debug("Reduced URI string {} to path component {}", uriString, pathComponent);
 
-        if (uriString.startsWith("/catalogitems")) {
-            return Optional.of(FullCatalogItemDto.class);
-        }
-        if (uriString.startsWith("/domaintemplates")) {
-            return Optional.of(TransformDomainTemplateDto.class);
-        }
+    var strippedPathComponent = removeServletContextPath(pathComponent);
 
-        log.debug("Reduced URI string {} to path component {}", uriString, pathComponent);
+    var pathContainer = PathContainer.parsePath(strippedPathComponent);
 
-        var strippedPathComponent = removeServletContextPath(pathComponent);
+    var returnValue =
+        getRequestHandlerMapping().getHandlerMethods().entrySet().stream()
+            .filter(
+                entry ->
+                    entry.getKey().getMethodsCondition().getMethods().stream()
+                        .anyMatch(m -> m == RequestMethod.GET))
+            .filter(e -> e.getKey().getPathPatternsCondition() != null)
+            .filter(
+                e ->
+                    e.getKey().getPathPatternsCondition().getPatterns().stream()
+                        .anyMatch(pattern -> pattern.matches(pathContainer)))
+            .peek(
+                a ->
+                    log.debug(
+                        "Found match for {} in {}",
+                        strippedPathComponent,
+                        a.getKey().getPathPatternsCondition().getPatterns()))
+            .map(e -> e.getValue().getReturnType())
+            .peek(
+                e ->
+                    log.debug(
+                        "Found return type {} for URI string {}",
+                        e.getGenericParameterType().getTypeName(),
+                        uriString))
+            .findFirst()
+            .orElseThrow(
+                () -> {
+                  log.warn("No mapping found for URI string {}", uriString);
+                  return new AssertionError(
+                      String.format("No mapping found for URI: %s", uriString));
+                });
 
-        var pathContainer = PathContainer.parsePath(strippedPathComponent);
+    return extractDtoType(returnValue.getGenericParameterType());
+  }
 
-        var returnValue = getRequestHandlerMapping().getHandlerMethods()
-                                                    .entrySet()
-                                                    .stream()
-                                                    .filter(entry -> entry.getKey()
-                                                                          .getMethodsCondition()
-                                                                          .getMethods()
-                                                                          .stream()
-                                                                          .anyMatch(m -> m == RequestMethod.GET))
-                                                    .filter(e -> e.getKey()
-                                                                  .getPathPatternsCondition() != null)
-                                                    .filter(e -> e.getKey()
-                                                                  .getPathPatternsCondition()
-                                                                  .getPatterns()
-                                                                  .stream()
-                                                                  .anyMatch(pattern -> pattern.matches(pathContainer)))
-                                                    .peek(a -> log.debug("Found match for {} in {}",
-                                                                         strippedPathComponent,
-                                                                         a.getKey()
-                                                                          .getPathPatternsCondition()
-                                                                          .getPatterns()))
-                                                    .map(e -> e.getValue()
-                                                               .getReturnType())
-                                                    .peek(e -> log.debug("Found return type {} for URI string {}",
-                                                                         e.getGenericParameterType()
-                                                                          .getTypeName(),
-                                                                         uriString))
-                                                    .findFirst()
-                                                    .orElseThrow(() -> {
-                                                        log.warn("No mapping found for URI string {}",
-                                                                 uriString);
-                                                        return new AssertionError(
-                                                                String.format("No mapping found for URI: %s",
-                                                                              uriString));
-                                                    });
+  private String removeServletContextPath(String pathComponent) {
+    var contextPath = servletContext.getContextPath();
+    if (pathComponent.startsWith(contextPath)) return pathComponent.substring(contextPath.length());
+    else return pathComponent;
+  }
 
-        return extractDtoType(returnValue.getGenericParameterType());
+  private Optional<Class<? extends ModelDto>> extractDtoType(Type type) {
+    if (type instanceof Class) {
+      return Optional.of((Class<? extends ModelDto>) type);
     }
-
-    private String removeServletContextPath(String pathComponent) {
-        var contextPath = servletContext.getContextPath();
-        if (pathComponent.startsWith(contextPath))
-            return pathComponent.substring(contextPath.length());
-        else
-            return pathComponent;
+    try {
+      var actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
+      return extractDtoType(actualTypeArguments[0]);
+    } catch (IndexOutOfBoundsException | ClassCastException e) {
+      log.warn("Could not extract DTO type from: {}", type);
     }
-
-    private Optional<Class<? extends ModelDto>> extractDtoType(Type type) {
-        if (type instanceof Class) {
-            return Optional.of((Class<? extends ModelDto>) type);
-        }
-        try {
-            var actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
-            return extractDtoType(actualTypeArguments[0]);
-        } catch (IndexOutOfBoundsException | ClassCastException e) {
-            log.warn("Could not extract DTO type from: {}", type);
-        }
-        return Optional.empty();
-    }
+    return Optional.empty();
+  }
 }

@@ -31,76 +31,72 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Configurable rule for a {@link Decision} with a list of conditions and an
- * output value that should become the decision's result value if the rule
- * matches the element (unless another rule takes precedence). An element only
- * matches the rule if all the rule conditions match.
+ * Configurable rule for a {@link Decision} with a list of conditions and an output value that
+ * should become the decision's result value if the rule matches the element (unless another rule
+ * takes precedence). An element only matches the rule if all the rule conditions match.
  */
 @Data
 @RequiredArgsConstructor
 public class Rule {
-    /**
-     * Should become the decision's result value if this rule matches (unless it is
-     * overruled). Can be null.
-     */
-    private final Boolean output;
+  /**
+   * Should become the decision's result value if this rule matches (unless it is overruled). Can be
+   * null.
+   */
+  private final Boolean output;
 
-    /** Translated human-readable texts. Key is ISO language code, value is text. */
-    @NotNull
-    private final Map<String, String> description;
+  /** Translated human-readable texts. Key is ISO language code, value is text. */
+  @NotNull private final Map<String, String> description;
 
-    /**
-     * The rule only matches an element if all these conditions match the element.
-     */
-    private final List<RuleCondition> conditions = new ArrayList<>();
+  /** The rule only matches an element if all these conditions match the element. */
+  private final List<RuleCondition> conditions = new ArrayList<>();
 
-    /** Determines whether the element matches all rule conditions */
-    public boolean matches(Element element, Domain domain) {
-        return conditions.stream()
-                         .allMatch(c -> c.matches(element, domain));
+  /** Determines whether the element matches all rule conditions */
+  public boolean matches(Element element, Domain domain) {
+    return conditions.stream().allMatch(c -> c.matches(element, domain));
+  }
+
+  /** Add a condition that a custom aspect attribute must equal given value */
+  public Rule ifAttributeEquals(
+      Object comparisonValue, String attributeType, String customAspectType) {
+    conditions.add(
+        new RuleCondition(
+            new CustomAspectAttributeValueProvider(customAspectType, attributeType),
+            new EqualsMatcher(comparisonValue)));
+    return this;
+  }
+
+  /**
+   * Add a condition that a custom aspect collection attribute must have a size greater than given
+   * integer
+   */
+  public Rule ifAttributeSizeGreaterThan(int i, String attributeType, String customAspectType) {
+    conditions.add(
+        new RuleCondition(
+            new CustomAspectAttributeSizeProvider(customAspectType, attributeType),
+            new GreaterThanMatcher(new BigDecimal(i))));
+    return this;
+  }
+
+  /**
+   * Add a condition that the maximum risk affecting the element must be greater than given value
+   */
+  public Rule ifMaxRiskGreaterThan(BigDecimal i) {
+    conditions.add(new RuleCondition(new MaxRiskProvider(), new GreaterThanMatcher(i)));
+    return this;
+  }
+
+  /** Add a condition that no risk values must affect the element. */
+  public Rule ifNoRiskValuesPresent() {
+    conditions.add(new RuleCondition(new MaxRiskProvider(), new IsNullMatcher()));
+    return this;
+  }
+
+  /** Compares the output of this rule to given value. */
+  public boolean outputEquals(Boolean value) {
+    // Equality in Java is tricky!
+    if (output == null) {
+      return value == null;
     }
-
-    /** Add a condition that a custom aspect attribute must equal given value */
-    public Rule ifAttributeEquals(Object comparisonValue, String attributeType,
-            String customAspectType) {
-        conditions.add(new RuleCondition(
-                new CustomAspectAttributeValueProvider(customAspectType, attributeType),
-                new EqualsMatcher(comparisonValue)));
-        return this;
-    }
-
-    /**
-     * Add a condition that a custom aspect collection attribute must have a size
-     * greater than given integer
-     */
-    public Rule ifAttributeSizeGreaterThan(int i, String attributeType, String customAspectType) {
-        conditions.add(new RuleCondition(
-                new CustomAspectAttributeSizeProvider(customAspectType, attributeType),
-                new GreaterThanMatcher(new BigDecimal(i))));
-        return this;
-    }
-
-    /**
-     * Add a condition that the maximum risk affecting the element must be greater
-     * than given value
-     */
-    public Rule ifMaxRiskGreaterThan(BigDecimal i) {
-        conditions.add(new RuleCondition(new MaxRiskProvider(), new GreaterThanMatcher(i)));
-        return this;
-    }
-
-    /** Add a condition that no risk values must affect the element. */
-    public Rule ifNoRiskValuesPresent() {
-        conditions.add(new RuleCondition(new MaxRiskProvider(), new IsNullMatcher()));
-        return this;
-    }
-
-    /** Compares the output of this rule to given value. */
-    public boolean outputEquals(Boolean value) {
-        // Equality in Java is tricky!
-        if (output == null) {
-            return value == null;
-        }
-        return output.equals(value);
-    }
+    return output.equals(value);
+  }
 }

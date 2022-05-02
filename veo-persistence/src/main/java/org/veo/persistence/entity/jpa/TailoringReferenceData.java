@@ -32,9 +32,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class TailoringReferenceData extends CatalogReferenceData
-        implements TailoringReference, CatalogReference {
+    implements TailoringReference, CatalogReference {
 
-    @Column(name = "referencetype")
-    @NotNull
-    private TailoringReferenceType referenceType;
+  @Column(name = "referencetype")
+  @NotNull
+  private TailoringReferenceType referenceType;
 }

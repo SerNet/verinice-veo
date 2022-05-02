@@ -25,25 +25,22 @@ import javax.transaction.Transactional;
 /**
  * A base-class for use-cases that require a transaction.
  *
- * @param <I>
- *            the inputdata type
- * @param <O>
- *            the output data type
+ * @param <I> the inputdata type
+ * @param <O> the output data type
  */
 public interface TransactionalUseCase<I extends UseCase.InputData, O extends UseCase.OutputData>
-        extends UseCase<I, O> {
+    extends UseCase<I, O> {
 
-    @Transactional(Transactional.TxType.REQUIRED)
-    @Override
-    default <R> R executeAndTransformResult(Supplier<I> inputSupplier,
-            Function<O, R> resultMapper) {
+  @Transactional(Transactional.TxType.REQUIRED)
+  @Override
+  default <R> R executeAndTransformResult(Supplier<I> inputSupplier, Function<O, R> resultMapper) {
 
-        return resultMapper.apply(execute(inputSupplier.get()));
-    }
+    return resultMapper.apply(execute(inputSupplier.get()));
+  }
 
-    @Transactional(Transactional.TxType.REQUIRED)
-    @Override
-    default <R> R executeAndTransformResult(I input, Function<O, R> resultMapper) {
-        return resultMapper.apply(execute(input));
-    }
+  @Transactional(Transactional.TxType.REQUIRED)
+  @Override
+  default <R> R executeAndTransformResult(I input, Function<O, R> resultMapper) {
+    return resultMapper.apply(execute(input));
+  }
 }

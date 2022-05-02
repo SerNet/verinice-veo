@@ -24,5 +24,4 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ConditionalOnProperty(value = "veo.scheduler.active", havingValue = "true")
 @Configuration
 @EnableScheduling
-public class SchedulingConfiguration {
-}
+public class SchedulingConfiguration {}

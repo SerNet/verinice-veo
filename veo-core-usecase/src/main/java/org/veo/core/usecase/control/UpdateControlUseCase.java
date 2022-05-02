@@ -31,43 +31,50 @@ import org.veo.core.usecase.base.ScopeProvider;
 import org.veo.core.usecase.decision.Decider;
 
 public class UpdateControlUseCase extends ModifyElementUseCase<Control> {
-    private final EventPublisher eventPublisher;
-    private final ScopeProvider scopeProvider;
+  private final EventPublisher eventPublisher;
+  private final ScopeProvider scopeProvider;
 
-    public UpdateControlUseCase(ControlRepository controlRepository, EventPublisher eventPublisher,
-            ScopeProvider scopeProvider, Decider decider) {
-        super(controlRepository, decider);
-        this.eventPublisher = eventPublisher;
-        this.scopeProvider = scopeProvider;
-    }
+  public UpdateControlUseCase(
+      ControlRepository controlRepository,
+      EventPublisher eventPublisher,
+      ScopeProvider scopeProvider,
+      Decider decider) {
+    super(controlRepository, decider);
+    this.eventPublisher = eventPublisher;
+    this.scopeProvider = scopeProvider;
+  }
 
-    @Override
-    public OutputData<Control> execute(InputData<Control> input) {
-        OutputData<Control> result = super.execute(input);
-        eventPublisher.publish(new RiskComponentChangeEvent(result.getEntity()));
-        return result;
-    }
+  @Override
+  public OutputData<Control> execute(InputData<Control> input) {
+    OutputData<Control> result = super.execute(input);
+    eventPublisher.publish(new RiskComponentChangeEvent(result.getEntity()));
+    return result;
+  }
 
-    @Override
-    protected void validate(Control oldElement, Control newElement) {
-        newElement.getDomains()
-                  .forEach(domain -> {
-                      newElement.getRiskValues(domain)
-                                .ifPresent(riskValueMap -> validateRiskValues(newElement, domain,
-                                                                              riskValueMap));
-                  });
-    }
+  @Override
+  protected void validate(Control oldElement, Control newElement) {
+    newElement
+        .getDomains()
+        .forEach(
+            domain -> {
+              newElement
+                  .getRiskValues(domain)
+                  .ifPresent(riskValueMap -> validateRiskValues(newElement, domain, riskValueMap));
+            });
+  }
 
-    private void validateRiskValues(Control control, Domain domain,
-            Map<RiskDefinitionRef, ControlRiskValues> riskValueMap) {
-        riskValueMap.keySet()
-                    .forEach(riskDefinitionRef -> {
-                        if (!scopeProvider.canUseRiskDefinition(control, domain,
-                                                                riskDefinitionRef)) {
-                            throw new IllegalArgumentException(
-                                    String.format("Cannot use risk definition '%s' because the element is not a member of a scope with that risk definition",
-                                                  riskDefinitionRef.getIdRef()));
-                        }
-                    });
-    }
+  private void validateRiskValues(
+      Control control, Domain domain, Map<RiskDefinitionRef, ControlRiskValues> riskValueMap) {
+    riskValueMap
+        .keySet()
+        .forEach(
+            riskDefinitionRef -> {
+              if (!scopeProvider.canUseRiskDefinition(control, domain, riskDefinitionRef)) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Cannot use risk definition '%s' because the element is not a member of a scope with that risk definition",
+                        riskDefinitionRef.getIdRef()));
+              }
+            });
+  }
 }

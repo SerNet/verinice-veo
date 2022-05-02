@@ -34,37 +34,31 @@ import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
 public class UnitRepositoryImpl extends AbstractIdentifiableVersionedRepository<Unit, UnitData>
-        implements UnitRepository {
+    implements UnitRepository {
 
-    private final UnitDataRepository dataRepository;
+  private final UnitDataRepository dataRepository;
 
-    public UnitRepositoryImpl(UnitDataRepository dataRepository, ValidationService validation) {
-        super(dataRepository, validation);
-        this.dataRepository = dataRepository;
-    }
+  public UnitRepositoryImpl(UnitDataRepository dataRepository, ValidationService validation) {
+    super(dataRepository, validation);
+    this.dataRepository = dataRepository;
+  }
 
-    @Override
-    public List<Unit> findByClient(Client client) {
-        return dataRepository.findByClientId(client.getId()
-                                                   .uuidValue())
-                             .stream()
-                             .map(e -> (Unit) e)
-                             .collect(Collectors.toList());
+  @Override
+  public List<Unit> findByClient(Client client) {
+    return dataRepository.findByClientId(client.getId().uuidValue()).stream()
+        .map(e -> (Unit) e)
+        .collect(Collectors.toList());
+  }
 
-    }
+  @Override
+  public List<Unit> findByParent(Unit parent) {
+    return dataRepository.findByParentId(parent.getId().uuidValue()).stream()
+        .map(e -> (Unit) e)
+        .collect(Collectors.toList());
+  }
 
-    @Override
-    public List<Unit> findByParent(Unit parent) {
-        return dataRepository.findByParentId(parent.getId()
-                                                   .uuidValue())
-                             .stream()
-                             .map(e -> (Unit) e)
-                             .collect(Collectors.toList());
-    }
-
-    @Override
-    public Optional<Unit> findByIdFetchClient(Key<UUID> id) {
-        return dataRepository.findWithClientByDbId(id.uuidValue())
-                             .map(Unit.class::cast);
-    }
+  @Override
+  public Optional<Unit> findByIdFetchClient(Key<UUID> id) {
+    return dataRepository.findWithClientByDbId(id.uuidValue()).map(Unit.class::cast);
+  }
 }

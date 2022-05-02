@@ -42,67 +42,66 @@ import lombok.ToString;
 @AllArgsConstructor
 public class StoredEventData implements StoredEvent {
 
-    /**
-     * This uses a sequence with a large increment to make ID generation more
-     * efficient. This can lead to gaps in the IDs if the application is restarted,
-     * so the consumer must not rely on IDs being consecutive.
-     *
-     * @see <a href=
-     *      "https://vladmihalcea.com/hibernate-hidden-gem-the-pooled-lo-optimizer">https://vladmihalcea.com/hibernate-hidden-gem-the-pooled-lo-optimizer</a>
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_events")
-    @SequenceGenerator(name = "seq_events", allocationSize = 50)
-    private Long id;
+  /**
+   * This uses a sequence with a large increment to make ID generation more efficient. This can lead
+   * to gaps in the IDs if the application is restarted, so the consumer must not rely on IDs being
+   * consecutive.
+   *
+   * @see <a href=
+   *     "https://vladmihalcea.com/hibernate-hidden-gem-the-pooled-lo-optimizer">https://vladmihalcea.com/hibernate-hidden-gem-the-pooled-lo-optimizer</a>
+   */
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_events")
+  @SequenceGenerator(name = "seq_events", allocationSize = 50)
+  private Long id;
 
-    @Column(length = 10000000)
-    private String content;
-    private String routingKey;
-    @Column(nullable = false)
-    private Boolean processed = false;
-    private Instant lockTime;
+  @Column(length = 10000000)
+  private String content;
 
-    private Instant timestamp;
+  private String routingKey;
 
-    @Override
-    public boolean markAsProcessed() {
-        if (processed)
-            return false;
-        processed = true;
-        return true;
-    }
+  @Column(nullable = false)
+  private Boolean processed = false;
 
-    @Override
-    public void lock() {
-        lockTime = Instant.now();
-    }
+  private Instant lockTime;
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null)
-            return false;
+  private Instant timestamp;
 
-        if (this == o)
-            return true;
+  @Override
+  public boolean markAsProcessed() {
+    if (processed) return false;
+    processed = true;
+    return true;
+  }
 
-        if (!(o instanceof StoredEventData))
-            return false;
+  @Override
+  public void lock() {
+    lockTime = Instant.now();
+  }
 
-        StoredEventData other = (StoredEventData) o;
-        // Transient (unmanaged) entities have an ID of 'null'. Only managed
-        // (persisted and detached) entities have an identity. JPA requires that
-        // an entity's identity remains the same over all state changes.
-        // Therefore a transient entity must never equal another entity.
-        Long dbId = getId();
-        return dbId != null && dbId.equals(other.getId());
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) return false;
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
+    if (this == o) return true;
 
-    public static StoredEventData newInstance(String content, String routingKey) {
-        return new StoredEventData(null, content, routingKey, false, null, Instant.now());
-    }
+    if (!(o instanceof StoredEventData)) return false;
+
+    StoredEventData other = (StoredEventData) o;
+    // Transient (unmanaged) entities have an ID of 'null'. Only managed
+    // (persisted and detached) entities have an identity. JPA requires that
+    // an entity's identity remains the same over all state changes.
+    // Therefore a transient entity must never equal another entity.
+    Long dbId = getId();
+    return dbId != null && dbId.equals(other.getId());
+  }
+
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
+  }
+
+  public static StoredEventData newInstance(String content, String routingKey) {
+    return new StoredEventData(null, content, routingKey, false, null, Instant.now());
+  }
 }

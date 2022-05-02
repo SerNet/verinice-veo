@@ -27,17 +27,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-/**
- * Base transfer object for CatalogItems. Contains common data for all
- * CatalogItem DTOs.
- */
+/** Base transfer object for CatalogItems. Contains common data for all CatalogItem DTOs. */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class ReferenceCatalogItemDto extends AbstractCatalogItemDto {
 
-    @Schema(implementation = IdRefCatalogItemElement.class)
-    private IdRef<Element> element;
-
+  @Schema(implementation = IdRefCatalogItemElement.class)
+  private IdRef<Element> element;
 }

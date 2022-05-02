@@ -29,12 +29,14 @@ import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
 public class DocumentRepositoryImpl
-        extends AbstractCompositeEntityRepositoryImpl<Document, DocumentData>
-        implements DocumentRepository {
+    extends AbstractCompositeEntityRepositoryImpl<Document, DocumentData>
+    implements DocumentRepository {
 
-    public DocumentRepositoryImpl(DocumentDataRepository dataRepository,
-            ValidationService validation, CustomLinkDataRepository linkDataRepository,
-            ScopeDataRepository scopeDataRepository) {
-        super(dataRepository, validation, linkDataRepository, scopeDataRepository);
-    }
+  public DocumentRepositoryImpl(
+      DocumentDataRepository dataRepository,
+      ValidationService validation,
+      CustomLinkDataRepository linkDataRepository,
+      ScopeDataRepository scopeDataRepository) {
+    super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+  }
 }

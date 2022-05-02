@@ -33,33 +33,57 @@ import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.usecase.process.GetProcessesUseCase;
 
 public class GetProcessesInputMapper {
-    public static GetProcessesUseCase.InputData map(Client client, String unitUuid,
-            String displayName, String subType, String status, List<String> childElementIds,
-            Boolean hasChildElements, Boolean hasParentElements, String description,
-            String designator, String name, String updatedBy,
-            PagingConfiguration pagingConfiguration, boolean embedRisks) {
-        return new GetProcessesUseCase.InputData(client, createUuidCondition(unitUuid),
-                createStringFilter(displayName), createNonEmptyCondition(subType),
-                createNonEmptyCondition(status), createUuidListCondition(childElementIds),
-                createSingleValueCondition(hasChildElements),
-                createSingleValueCondition(hasParentElements), createStringFilter(description),
-                createStringFilter(designator), createStringFilter(name),
-                createStringFilter(updatedBy), pagingConfiguration, embedRisks);
-    }
+  public static GetProcessesUseCase.InputData map(
+      Client client,
+      String unitUuid,
+      String displayName,
+      String subType,
+      String status,
+      List<String> childElementIds,
+      Boolean hasChildElements,
+      Boolean hasParentElements,
+      String description,
+      String designator,
+      String name,
+      String updatedBy,
+      PagingConfiguration pagingConfiguration,
+      boolean embedRisks) {
+    return new GetProcessesUseCase.InputData(
+        client,
+        createUuidCondition(unitUuid),
+        createStringFilter(displayName),
+        createNonEmptyCondition(subType),
+        createNonEmptyCondition(status),
+        createUuidListCondition(childElementIds),
+        createSingleValueCondition(hasChildElements),
+        createSingleValueCondition(hasParentElements),
+        createStringFilter(description),
+        createStringFilter(designator),
+        createStringFilter(name),
+        createStringFilter(updatedBy),
+        pagingConfiguration,
+        embedRisks);
+  }
 
-    public static GetProcessesUseCase.InputData map(Client client, SearchQueryDto searchQuery,
-            PagingConfiguration pagingConfiguration, boolean embedRisks) {
-        return new GetProcessesUseCase.InputData(client,
-                transformCondition(searchQuery.getUnitId()),
-                transformCondition(searchQuery.getDisplayName()),
-                transformCondition(searchQuery.getSubType()),
-                transformCondition(searchQuery.getStatus()),
-                transformUuidCondition(searchQuery.getChildElementIds()),
-                transformCondition(searchQuery.getHasChildElements()),
-                transformCondition(searchQuery.getHasParentElements()),
-                transformCondition(searchQuery.getDescription()),
-                transformCondition(searchQuery.getDesignator()),
-                transformCondition(searchQuery.getName()),
-                transformCondition(searchQuery.getUpdatedBy()), pagingConfiguration, embedRisks);
-    }
+  public static GetProcessesUseCase.InputData map(
+      Client client,
+      SearchQueryDto searchQuery,
+      PagingConfiguration pagingConfiguration,
+      boolean embedRisks) {
+    return new GetProcessesUseCase.InputData(
+        client,
+        transformCondition(searchQuery.getUnitId()),
+        transformCondition(searchQuery.getDisplayName()),
+        transformCondition(searchQuery.getSubType()),
+        transformCondition(searchQuery.getStatus()),
+        transformUuidCondition(searchQuery.getChildElementIds()),
+        transformCondition(searchQuery.getHasChildElements()),
+        transformCondition(searchQuery.getHasParentElements()),
+        transformCondition(searchQuery.getDescription()),
+        transformCondition(searchQuery.getDesignator()),
+        transformCondition(searchQuery.getName()),
+        transformCondition(searchQuery.getUpdatedBy()),
+        pagingConfiguration,
+        embedRisks);
+  }
 }

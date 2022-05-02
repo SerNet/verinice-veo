@@ -20,21 +20,21 @@ package org.veo.core.entity.definitions;
 import java.util.Map;
 
 public interface ElementTypeDefinition {
-    String getElementType();
+  String getElementType();
 
-    Map<String, SubTypeDefinition> getSubTypes();
+  Map<String, SubTypeDefinition> getSubTypes();
 
-    void setSubTypes(Map<String, SubTypeDefinition> definitions);
+  void setSubTypes(Map<String, SubTypeDefinition> definitions);
 
-    Map<String, CustomAspectDefinition> getCustomAspects();
+  Map<String, CustomAspectDefinition> getCustomAspects();
 
-    void setCustomAspects(Map<String, CustomAspectDefinition> definitions);
+  void setCustomAspects(Map<String, CustomAspectDefinition> definitions);
 
-    Map<String, LinkDefinition> getLinks();
+  Map<String, LinkDefinition> getLinks();
 
-    void setLinks(Map<String, LinkDefinition> definitions);
+  void setLinks(Map<String, LinkDefinition> definitions);
 
-    Map<String, Map<String, String>> getTranslations();
+  Map<String, Map<String, String>> getTranslations();
 
-    void setTranslations(Map<String, Map<String, String>> translations);
+  void setTranslations(Map<String, Map<String, String>> translations);
 }

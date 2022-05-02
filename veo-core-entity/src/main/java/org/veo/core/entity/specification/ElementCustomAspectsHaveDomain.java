@@ -22,21 +22,13 @@ import java.util.Set;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 
-/**
- * Checks that an element's custom aspects's domain is contained in the
- * element's domains.
- */
+/** Checks that an element's custom aspects's domain is contained in the element's domains. */
 public class ElementCustomAspectsHaveDomain implements EntitySpecification<Element> {
 
-    @Override
-    public boolean test(Element element) {
-        Set<Domain> domains = element.getDomains();
-        return element.getCustomAspects()
-                      .stream()
-                      .allMatch(ca -> domains.containsAll(ca.getDomains()))
-                && element.getLinks()
-                          .stream()
-                          .allMatch(l -> domains.containsAll(l.getDomains()));
-    }
-
+  @Override
+  public boolean test(Element element) {
+    Set<Domain> domains = element.getDomains();
+    return element.getCustomAspects().stream().allMatch(ca -> domains.containsAll(ca.getDomains()))
+        && element.getLinks().stream().allMatch(l -> domains.containsAll(l.getDomains()));
+  }
 }

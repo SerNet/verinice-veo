@@ -48,84 +48,103 @@ import lombok.Getter;
 import lombok.ToString;
 
 @Entity(name = "process")
-@NamedEntityGraph(name = ProcessData.FULL_AGGREGATE_GRAPH_WITH_RISKS,
-                  attributeNodes = { @NamedAttributeNode(value = "customAspects"),
-                          @NamedAttributeNode(value = "domains"),
-                          @NamedAttributeNode(value = "appliedCatalogItems"),
-                          @NamedAttributeNode(value = "links"),
-                          @NamedAttributeNode(value = "subTypeAspects"),
-                          @NamedAttributeNode(value = "risks", subgraph = "risk.entities"), },
-                  subgraphs = {
-                          @NamedSubgraph(name = "risk.entities",
-                                         attributeNodes = { @NamedAttributeNode(value = "scenario"),
-                                                 @NamedAttributeNode(value = "mitigation"),
-                                                 @NamedAttributeNode(value = "riskOwner"), }) },
-                  subclassSubgraphs = {
-                          @NamedSubgraph(name = "risk.entities",
-                                         type = ProcessRiskData.class,
-                                         attributeNodes = { @NamedAttributeNode(value = "scenario"),
-                                                 @NamedAttributeNode(value = "mitigation"),
-                                                 @NamedAttributeNode(value = "riskOwner"),
-                                                 @NamedAttributeNode(value = "riskAspects"), }) })
+@NamedEntityGraph(
+    name = ProcessData.FULL_AGGREGATE_GRAPH_WITH_RISKS,
+    attributeNodes = {
+      @NamedAttributeNode(value = "customAspects"),
+      @NamedAttributeNode(value = "domains"),
+      @NamedAttributeNode(value = "appliedCatalogItems"),
+      @NamedAttributeNode(value = "links"),
+      @NamedAttributeNode(value = "subTypeAspects"),
+      @NamedAttributeNode(value = "risks", subgraph = "risk.entities"),
+    },
+    subgraphs = {
+      @NamedSubgraph(
+          name = "risk.entities",
+          attributeNodes = {
+            @NamedAttributeNode(value = "scenario"),
+            @NamedAttributeNode(value = "mitigation"),
+            @NamedAttributeNode(value = "riskOwner"),
+          })
+    },
+    subclassSubgraphs = {
+      @NamedSubgraph(
+          name = "risk.entities",
+          type = ProcessRiskData.class,
+          attributeNodes = {
+            @NamedAttributeNode(value = "scenario"),
+            @NamedAttributeNode(value = "mitigation"),
+            @NamedAttributeNode(value = "riskOwner"),
+            @NamedAttributeNode(value = "riskAspects"),
+          })
+    })
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implements Process {
 
-    public static final String FULL_AGGREGATE_GRAPH_WITH_RISKS = "fullAggregateGraphWithRisks";
-    @ManyToMany(targetEntity = ProcessData.class,
-                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "process_parts",
-               joinColumns = @JoinColumn(name = "composite_id"),
-               inverseJoinColumns = @JoinColumn(name = "part_id"))
-    @Valid
-    @Getter
-    private final Set<Process> parts = new HashSet<>();
+  public static final String FULL_AGGREGATE_GRAPH_WITH_RISKS = "fullAggregateGraphWithRisks";
 
-    @ManyToMany(targetEntity = ProcessData.class, mappedBy = "parts", fetch = FetchType.LAZY)
-    @Getter
-    private final Set<Process> composites = new HashSet<>();
+  @ManyToMany(
+      targetEntity = ProcessData.class,
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JoinTable(
+      name = "process_parts",
+      joinColumns = @JoinColumn(name = "composite_id"),
+      inverseJoinColumns = @JoinColumn(name = "part_id"))
+  @Valid
+  @Getter
+  private final Set<Process> parts = new HashSet<>();
 
-    @Override
-    ProcessRisk createRisk(Scenario scenario) {
-        return new ProcessRiskData(this, scenario);
-    }
+  @ManyToMany(targetEntity = ProcessData.class, mappedBy = "parts", fetch = FetchType.LAZY)
+  @Getter
+  private final Set<Process> composites = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL,
-               orphanRemoval = true,
-               targetEntity = ProcessImpactValuesAspectData.class,
-               mappedBy = "owner",
-               fetch = FetchType.LAZY)
-    @Valid
-    private final Set<ProcessImpactValuesAspectData> riskValuesAspects = new HashSet<>();
+  @Override
+  ProcessRisk createRisk(Scenario scenario) {
+    return new ProcessRiskData(this, scenario);
+  }
 
-    @Override
-    public void setImpactValues(DomainTemplate domain,
-            Map<RiskDefinitionRef, ProcessImpactValues> riskValues) {
-        var aspect = findAspectByDomain(riskValuesAspects, domain).orElseGet(() -> {
-            var newAspect = new ProcessImpactValuesAspectData(domain, this);
-            riskValuesAspects.add(newAspect);
-            return newAspect;
-        });
-        aspect.setValues(riskValues);
-    }
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      targetEntity = ProcessImpactValuesAspectData.class,
+      mappedBy = "owner",
+      fetch = FetchType.LAZY)
+  @Valid
+  private final Set<ProcessImpactValuesAspectData> riskValuesAspects = new HashSet<>();
 
-    public Optional<Map<RiskDefinitionRef, ProcessImpactValues>> getImpactValues(
-            DomainTemplate domain) {
-        return findAspectByDomain(riskValuesAspects,
-                                  domain).map(ProcessImpactValuesAspectData::getValues);
-    }
+  @Override
+  public void setImpactValues(
+      DomainTemplate domain, Map<RiskDefinitionRef, ProcessImpactValues> riskValues) {
+    var aspect =
+        findAspectByDomain(riskValuesAspects, domain)
+            .orElseGet(
+                () -> {
+                  var newAspect = new ProcessImpactValuesAspectData(domain, this);
+                  riskValuesAspects.add(newAspect);
+                  return newAspect;
+                });
+    aspect.setValues(riskValues);
+  }
 
-    @Override
-    public Optional<ProcessImpactValues> getImpactValues(DomainTemplate domain,
-            RiskDefinitionRef riskDefinition) {
-        return getImpactValues(domain).map(impactValuesByRiskDefinition -> impactValuesByRiskDefinition.get(riskDefinition));
-    }
+  public Optional<Map<RiskDefinitionRef, ProcessImpactValues>> getImpactValues(
+      DomainTemplate domain) {
+    return findAspectByDomain(riskValuesAspects, domain)
+        .map(ProcessImpactValuesAspectData::getValues);
+  }
 
-    @Override
-    public void transferToDomain(Domain oldDomain, Domain newDomain) {
-        findAspectByDomain(riskValuesAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
-        getRisks().forEach(r -> r.transferToDomain(oldDomain, newDomain));
-        super.transferToDomain(oldDomain, newDomain);
-    }
+  @Override
+  public Optional<ProcessImpactValues> getImpactValues(
+      DomainTemplate domain, RiskDefinitionRef riskDefinition) {
+    return getImpactValues(domain)
+        .map(impactValuesByRiskDefinition -> impactValuesByRiskDefinition.get(riskDefinition));
+  }
+
+  @Override
+  public void transferToDomain(Domain oldDomain, Domain newDomain) {
+    findAspectByDomain(riskValuesAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
+    getRisks().forEach(r -> r.transferToDomain(oldDomain, newDomain));
+    super.transferToDomain(oldDomain, newDomain);
+  }
 }

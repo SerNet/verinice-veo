@@ -38,73 +38,71 @@ import org.veo.rest.security.ApplicationUser;
 @TestConfiguration
 public class WebMvcSecurityConfiguration {
 
-    // A randomly generated client id to use in tests.
-    // (The NIL UUID is not usable as client-ID because it's used as an 'undefined'
-    // key.)
-    public static final String TESTCLIENT_UUID = "274af105-8d21-4f07-8019-5c4573d503e5";
+  // A randomly generated client id to use in tests.
+  // (The NIL UUID is not usable as client-ID because it's used as an 'undefined'
+  // key.)
+  public static final String TESTCLIENT_UUID = "274af105-8d21-4f07-8019-5c4573d503e5";
 
-    @Bean
-    @Primary
-    public UserDetailsService userDetailsService() {
-        ApplicationUser basicUser = ApplicationUser.authenticatedUser("user@domain.example",
-                                                                      TESTCLIENT_UUID, "veo-user",
-                                                                      List.of("veo-user"));
-        basicUser.setAuthorities(List.of(new SimpleGrantedAuthority("ROLE_veo-user")));
+  @Bean
+  @Primary
+  public UserDetailsService userDetailsService() {
+    ApplicationUser basicUser =
+        ApplicationUser.authenticatedUser(
+            "user@domain.example", TESTCLIENT_UUID, "veo-user", List.of("veo-user"));
+    basicUser.setAuthorities(List.of(new SimpleGrantedAuthority("ROLE_veo-user")));
 
-        ApplicationUser adminUser = ApplicationUser.authenticatedUser("admin", TESTCLIENT_UUID,
-                                                                      "veo-admin",
-                                                                      List.of("veo-user",
-                                                                              "veo-admin"));
-        adminUser.setAuthorities(List.of(new SimpleGrantedAuthority("ROLE_veo-user"),
-                                         new SimpleGrantedAuthority("ROLE_veo-admin")));
+    ApplicationUser adminUser =
+        ApplicationUser.authenticatedUser(
+            "admin", TESTCLIENT_UUID, "veo-admin", List.of("veo-user", "veo-admin"));
+    adminUser.setAuthorities(
+        List.of(
+            new SimpleGrantedAuthority("ROLE_veo-user"),
+            new SimpleGrantedAuthority("ROLE_veo-admin")));
 
-        ApplicationUser contentCreatorUser = ApplicationUser.authenticatedUser("content-creator",
-                                                                               TESTCLIENT_UUID,
-                                                                               "veo-content-creator",
-                                                                               List.of("veo-user",
-                                                                                       "veo-content-creator"));
-        contentCreatorUser.setAuthorities(List.of(new SimpleGrantedAuthority(
-                "ROLE_veo-user"), new SimpleGrantedAuthority("ROLE_veo-content-creator")));
+    ApplicationUser contentCreatorUser =
+        ApplicationUser.authenticatedUser(
+            "content-creator",
+            TESTCLIENT_UUID,
+            "veo-content-creator",
+            List.of("veo-user", "veo-content-creator"));
+    contentCreatorUser.setAuthorities(
+        List.of(
+            new SimpleGrantedAuthority("ROLE_veo-user"),
+            new SimpleGrantedAuthority("ROLE_veo-content-creator")));
 
-        return new CustomUserDetailsManager(
-                Arrays.asList(basicUser, adminUser, contentCreatorUser));
+    return new CustomUserDetailsManager(Arrays.asList(basicUser, adminUser, contentCreatorUser));
+  }
+
+  /**
+   * In-memory implementation of a custom user details service for testing.
+   *
+   * <p>It returns ApplicationUser objects which hold information about the Client-ID in addition to
+   * credentials, enabled-status etc.
+   *
+   * <p>In production, this should use a user repository or even better a separate authorization
+   * (micro)service.
+   *
+   * @author akoderman
+   */
+  class CustomUserDetailsManager extends InMemoryUserDetailsManager {
+
+    // This would be a repository or service in production:
+    private final Map<String, ApplicationUser> users = new HashMap<String, ApplicationUser>();
+
+    public CustomUserDetailsManager(Collection<ApplicationUser> appUsers) {
+      super(appUsers.stream().map(u -> (UserDetails) u).collect(Collectors.toList()));
+      appUsers.stream().forEach(this::storeUser);
     }
 
-    /**
-     * In-memory implementation of a custom user details service for testing.
-     *
-     * It returns ApplicationUser objects which hold information about the Client-ID
-     * in addition to credentials, enabled-status etc.
-     *
-     * In production, this should use a user repository or even better a separate
-     * authorization (micro)service.
-     *
-     * @author akoderman
-     */
-    class CustomUserDetailsManager extends InMemoryUserDetailsManager {
-
-        // This would be a repository or service in production:
-        private final Map<String, ApplicationUser> users = new HashMap<String, ApplicationUser>();
-
-        public CustomUserDetailsManager(Collection<ApplicationUser> appUsers) {
-            super(appUsers.stream()
-                          .map(u -> (UserDetails) u)
-                          .collect(Collectors.toList()));
-            appUsers.stream()
-                    .forEach(this::storeUser);
-
-        }
-
-        @Override
-        public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-            ApplicationUser user = users.get(username);
-            if (user == null)
-                throw new UsernameNotFoundException(username);
-            return user;
-        }
-
-        private void storeUser(ApplicationUser user) {
-            users.put(user.getUsername(), user);
-        }
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+      ApplicationUser user = users.get(username);
+      if (user == null) throw new UsernameNotFoundException(username);
+      return user;
     }
+
+    private void storeUser(ApplicationUser user) {
+      users.put(user.getUsername(), user);
+    }
+  }
 }

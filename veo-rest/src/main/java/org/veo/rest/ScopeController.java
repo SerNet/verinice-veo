@@ -120,374 +120,443 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * REST service which provides methods to manage scopes.
- */
+/** REST service which provides methods to manage scopes. */
 @RestController
 @RequestMapping(ScopeController.URL_BASE_PATH)
 @Slf4j
 public class ScopeController extends AbstractEntityControllerWithDefaultSearch
-        implements ScopeRiskResource {
+    implements ScopeRiskResource {
 
-    public static final String URL_BASE_PATH = "/" + Scope.PLURAL_TERM;
+  public static final String URL_BASE_PATH = "/" + Scope.PLURAL_TERM;
 
-    protected static final String TYPE_PARAM = "type";
+  protected static final String TYPE_PARAM = "type";
 
-    private final UseCaseInteractor useCaseInteractor;
+  private final UseCaseInteractor useCaseInteractor;
 
-    private final CreateScopeUseCase createScopeUseCase;
-    private final GetScopeUseCase getScopeUseCase;
-    private final GetScopesUseCase getScopesUseCase;
-    private final UpdateScopeUseCase updateScopeUseCase;
-    private final DeleteElementUseCase deleteElementUseCase;
-    private final GetScopeRiskUseCase getScopeRiskUseCase;
-    private final CreateScopeRiskUseCase createScopeRiskUseCase;
-    private final GetScopeRisksUseCase getScopeRisksUseCase;
-    private final DeleteRiskUseCase deleteRiskUseCase;
-    private final UpdateScopeRiskUseCase updateScopeRiskUseCase;
+  private final CreateScopeUseCase createScopeUseCase;
+  private final GetScopeUseCase getScopeUseCase;
+  private final GetScopesUseCase getScopesUseCase;
+  private final UpdateScopeUseCase updateScopeUseCase;
+  private final DeleteElementUseCase deleteElementUseCase;
+  private final GetScopeRiskUseCase getScopeRiskUseCase;
+  private final CreateScopeRiskUseCase createScopeRiskUseCase;
+  private final GetScopeRisksUseCase getScopeRisksUseCase;
+  private final DeleteRiskUseCase deleteRiskUseCase;
+  private final UpdateScopeRiskUseCase updateScopeRiskUseCase;
 
-    public ScopeController(UseCaseInteractor useCaseInteractor,
-            CreateScopeUseCase createScopeUseCase, GetScopeUseCase getScopeUseCase,
-            GetScopesUseCase getScopesUseCase, UpdateScopeUseCase updateScopeUseCase,
-            DeleteElementUseCase deleteElementUseCase, GetScopeRiskUseCase getScopeRiskUseCase,
-            CreateScopeRiskUseCase createScopeRiskUseCase,
-            GetScopeRisksUseCase getScopeRisksUseCase, DeleteRiskUseCase deleteRiskUseCase,
-            UpdateScopeRiskUseCase updateScopeRiskUseCase) {
-        this.useCaseInteractor = useCaseInteractor;
-        this.createScopeUseCase = createScopeUseCase;
-        this.getScopeUseCase = getScopeUseCase;
-        this.getScopesUseCase = getScopesUseCase;
-        this.updateScopeUseCase = updateScopeUseCase;
-        this.deleteElementUseCase = deleteElementUseCase;
-        this.getScopeRiskUseCase = getScopeRiskUseCase;
-        this.createScopeRiskUseCase = createScopeRiskUseCase;
-        this.getScopeRisksUseCase = getScopeRisksUseCase;
-        this.deleteRiskUseCase = deleteRiskUseCase;
-        this.updateScopeRiskUseCase = updateScopeRiskUseCase;
+  public ScopeController(
+      UseCaseInteractor useCaseInteractor,
+      CreateScopeUseCase createScopeUseCase,
+      GetScopeUseCase getScopeUseCase,
+      GetScopesUseCase getScopesUseCase,
+      UpdateScopeUseCase updateScopeUseCase,
+      DeleteElementUseCase deleteElementUseCase,
+      GetScopeRiskUseCase getScopeRiskUseCase,
+      CreateScopeRiskUseCase createScopeRiskUseCase,
+      GetScopeRisksUseCase getScopeRisksUseCase,
+      DeleteRiskUseCase deleteRiskUseCase,
+      UpdateScopeRiskUseCase updateScopeRiskUseCase) {
+    this.useCaseInteractor = useCaseInteractor;
+    this.createScopeUseCase = createScopeUseCase;
+    this.getScopeUseCase = getScopeUseCase;
+    this.getScopesUseCase = getScopesUseCase;
+    this.updateScopeUseCase = updateScopeUseCase;
+    this.deleteElementUseCase = deleteElementUseCase;
+    this.getScopeRiskUseCase = getScopeRiskUseCase;
+    this.createScopeRiskUseCase = createScopeRiskUseCase;
+    this.getScopeRisksUseCase = getScopeRisksUseCase;
+    this.deleteRiskUseCase = deleteRiskUseCase;
+    this.updateScopeRiskUseCase = updateScopeRiskUseCase;
+  }
+
+  @GetMapping
+  @Operation(summary = "Loads all scopes")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Members loaded",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array = @ArraySchema(schema = @Schema(implementation = FullScopeDto.class)))),
+        @ApiResponse(responseCode = "404", description = "Scope not found")
+      })
+  public @Valid CompletableFuture<PageDto<FullScopeDto>> getScopes(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
+      @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
+      @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
+      @RequestParam(value = STATUS_PARAM, required = false) String status,
+      @RequestParam(value = CHILD_ELEMENT_IDS_PARAM, required = false) List<String> childElementIds,
+      @RequestParam(value = HAS_PARENT_ELEMENTS_PARAM, required = false) Boolean hasParentElements,
+      @RequestParam(value = HAS_CHILD_ELEMENTS_PARAM, required = false) Boolean hasChildElements,
+      @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
+      @RequestParam(value = DESIGNATOR_PARAM, required = false) String designator,
+      @RequestParam(value = NAME_PARAM, required = false) String name,
+      @RequestParam(value = UPDATED_BY_PARAM, required = false) String updatedBy,
+      @RequestParam(
+              value = PAGE_SIZE_PARAM,
+              required = false,
+              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          Integer pageSize,
+      @RequestParam(
+              value = PAGE_NUMBER_PARAM,
+              required = false,
+              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
+          Integer pageNumber,
+      @RequestParam(
+              value = SORT_COLUMN_PARAM,
+              required = false,
+              defaultValue = SORT_COLUMN_DEFAULT_VALUE)
+          String sortColumn,
+      @RequestParam(
+              value = SORT_ORDER_PARAM,
+              required = false,
+              defaultValue = SORT_ORDER_DEFAULT_VALUE)
+          @Pattern(regexp = SORT_ORDER_PATTERN)
+          String sortOrder) {
+    Client client;
+    try {
+      client = getAuthenticatedClient(auth);
+    } catch (NoSuchElementException e) {
+      return CompletableFuture.supplyAsync(PageDto::emptyPage);
     }
 
-    @GetMapping
-    @Operation(summary = "Loads all scopes")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Members loaded",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            array = @ArraySchema(schema = @Schema(implementation = FullScopeDto.class)))),
-            @ApiResponse(responseCode = "404", description = "Scope not found") })
-    public @Valid CompletableFuture<PageDto<FullScopeDto>> getScopes(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
-            @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
-            @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
-            @RequestParam(value = STATUS_PARAM, required = false) String status,
-            @RequestParam(value = CHILD_ELEMENT_IDS_PARAM,
-                          required = false) List<String> childElementIds,
-            @RequestParam(value = HAS_PARENT_ELEMENTS_PARAM,
-                          required = false) Boolean hasParentElements,
-            @RequestParam(value = HAS_CHILD_ELEMENTS_PARAM,
-                          required = false) Boolean hasChildElements,
-            @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
-            @RequestParam(value = DESIGNATOR_PARAM, required = false) String designator,
-            @RequestParam(value = NAME_PARAM, required = false) String name,
-            @RequestParam(value = UPDATED_BY_PARAM, required = false) String updatedBy,
-            @RequestParam(value = PAGE_SIZE_PARAM,
-                          required = false,
-                          defaultValue = PAGE_SIZE_DEFAULT_VALUE) Integer pageSize,
-            @RequestParam(value = PAGE_NUMBER_PARAM,
-                          required = false,
-                          defaultValue = PAGE_NUMBER_DEFAULT_VALUE) Integer pageNumber,
-            @RequestParam(value = SORT_COLUMN_PARAM,
-                          required = false,
-                          defaultValue = SORT_COLUMN_DEFAULT_VALUE) String sortColumn,
-            @RequestParam(value = SORT_ORDER_PARAM,
-                          required = false,
-                          defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
-        Client client;
-        try {
-            client = getAuthenticatedClient(auth);
-        } catch (NoSuchElementException e) {
-            return CompletableFuture.supplyAsync(PageDto::emptyPage);
-        }
+    final GetElementsUseCase.InputData inputData =
+        GetElementsInputMapper.map(
+            client,
+            unitUuid,
+            displayName,
+            subType,
+            status,
+            childElementIds,
+            hasChildElements,
+            hasParentElements,
+            description,
+            designator,
+            name,
+            updatedBy,
+            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder));
+    return getScopes(inputData);
+  }
 
-        final GetElementsUseCase.InputData inputData = GetElementsInputMapper.map(client, unitUuid,
-                                                                                  displayName,
-                                                                                  subType, status,
-                                                                                  childElementIds,
-                                                                                  hasChildElements,
-                                                                                  hasParentElements,
-                                                                                  description,
-                                                                                  designator, name,
-                                                                                  updatedBy,
-                                                                                  PagingMapper.toConfig(pageSize,
-                                                                                                        pageNumber,
-                                                                                                        sortColumn,
-                                                                                                        sortOrder));
-        return getScopes(inputData);
+  private CompletableFuture<PageDto<FullScopeDto>> getScopes(
+      GetElementsUseCase.InputData inputData) {
+    return useCaseInteractor.execute(
+        getScopesUseCase,
+        inputData,
+        output ->
+            PagingMapper.toPage(output.getElements(), entityToDtoTransformer::transformScope2Dto));
+  }
+
+  @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
+  @Operation(summary = "Loads a scope")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Scope loaded",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = FullScopeDto.class))),
+        @ApiResponse(responseCode = "404", description = "Scope not found")
+      })
+  public @Valid CompletableFuture<ResponseEntity<FullScopeDto>> getScope(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      WebRequest request) {
+    Client client = getAuthenticatedClient(auth);
+    if (getEtag(Scope.class, uuid).map(request::checkNotModified).orElse(false)) {
+      return null;
     }
+    CompletableFuture<FullScopeDto> scopeFuture =
+        useCaseInteractor.execute(
+            getScopeUseCase,
+            new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
+            output -> entityToDtoTransformer.transformScope2Dto(output.getScope()));
+    return scopeFuture.thenApply(
+        scopeDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(scopeDto));
+  }
 
-    private CompletableFuture<PageDto<FullScopeDto>> getScopes(
-            GetElementsUseCase.InputData inputData) {
-        return useCaseInteractor.execute(getScopesUseCase, inputData,
-                                         output -> PagingMapper.toPage(output.getElements(),
-                                                                       entityToDtoTransformer::transformScope2Dto));
+  @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/members")
+  @Operation(summary = "Loads the members of a scope")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Members loaded",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array = @ArraySchema(schema = @Schema(implementation = FullScopeDto.class)))),
+        @ApiResponse(responseCode = "404", description = "Scope not found")
+      })
+  public @Valid CompletableFuture<ResponseEntity<List<AbstractElementDto>>> getMembers(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      WebRequest request) {
+    Client client = getAuthenticatedClient(auth);
+    if (getEtag(Scope.class, uuid).map(request::checkNotModified).orElse(false)) {
+      return null;
     }
-
-    @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
-    @Operation(summary = "Loads a scope")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Scope loaded",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = FullScopeDto.class))),
-            @ApiResponse(responseCode = "404", description = "Scope not found") })
-    public @Valid CompletableFuture<ResponseEntity<FullScopeDto>> getScope(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @Parameter(required = true,
-                       example = UUID_EXAMPLE,
-                       description = UUID_DESCRIPTION) @PathVariable String uuid,
-            WebRequest request) {
-        Client client = getAuthenticatedClient(auth);
-        if (getEtag(Scope.class, uuid).map(request::checkNotModified)
-                                      .orElse(false)) {
-            return null;
-        }
-        CompletableFuture<FullScopeDto> scopeFuture = useCaseInteractor.execute(getScopeUseCase,
-                                                                                new UseCase.IdAndClient(
-                                                                                        Key.uuidFrom(uuid),
-                                                                                        client),
-                                                                                output -> entityToDtoTransformer.transformScope2Dto(output.getScope()));
-        return scopeFuture.thenApply(scopeDto -> ResponseEntity.ok()
-                                                               .cacheControl(defaultCacheControl)
-                                                               .body(scopeDto));
-    }
-
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/members")
-    @Operation(summary = "Loads the members of a scope")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Members loaded",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            array = @ArraySchema(schema = @Schema(implementation = FullScopeDto.class)))),
-            @ApiResponse(responseCode = "404", description = "Scope not found") })
-    public @Valid CompletableFuture<ResponseEntity<List<AbstractElementDto>>> getMembers(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @Parameter(required = true,
-                       example = UUID_EXAMPLE,
-                       description = UUID_DESCRIPTION) @PathVariable String uuid,
-            WebRequest request) {
-        Client client = getAuthenticatedClient(auth);
-        if (getEtag(Scope.class, uuid).map(request::checkNotModified)
-                                      .orElse(false)) {
-            return null;
-        }
-        return useCaseInteractor.execute(getScopeUseCase,
-                                         new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
-                                         output -> {
-                                             Scope scope = output.getScope();
-                                             return ResponseEntity.ok()
-                                                                  .cacheControl(defaultCacheControl)
-                                                                  .body(scope.getMembers()
-                                                                             .stream()
-                                                                             .map(member -> entityToDtoTransformer.transform2Dto(member))
-                                                                             .collect(Collectors.toList()));
-                                         });
-    }
-
-    @PostMapping()
-    @Operation(summary = "Creates a scope")
-    @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Scope created") })
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> createScope(
-            @Parameter(hidden = true) ApplicationUser user,
-            @Valid @NotNull @RequestBody @JsonSchemaValidation(Scope.SINGULAR_TERM) CreateScopeDto createScopeDto) {
-        return useCaseInteractor.execute(createScopeUseCase,
-                                         (Supplier<CreateElementUseCase.InputData<Scope>>) () -> {
-                                             Client client = getClient(user);
-                                             IdRefResolver idRefResolver = createIdRefResolver(client);
-                                             return new CreateElementUseCase.InputData<>(
-                                                     dtoToEntityTransformer.transformDto2Scope(createScopeDto,
-                                                                                               idRefResolver),
-                                                     client);
-                                         }, output -> {
-                                             Scope scope = output.getEntity();
-                                             Optional<String> scopeId = scope.getId() == null
-                                                     ? Optional.empty()
-                                                     : Optional.ofNullable(scope.getId()
-                                                                                .uuidValue());
-                                             ApiResponseBody apiResponseBody = new ApiResponseBody(
-                                                     true, scopeId, "Scope created successfully.");
-                                             return RestApiResponse.created(URL_BASE_PATH,
-                                                                            apiResponseBody);
-                                         });
-    }
-
-    @PutMapping(ControllerConstants.UUID_PARAM_SPEC)
-    @Operation(summary = "Updates a scope")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Scope updated"),
-            @ApiResponse(responseCode = "404", description = "Scope not found") })
-    public CompletableFuture<FullScopeDto> updateScope(
-            @Parameter(hidden = true) ApplicationUser user,
-            @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
-            @Parameter(required = true,
-                       example = UUID_EXAMPLE,
-                       description = UUID_DESCRIPTION) @PathVariable String uuid,
-            @Valid @NotNull @RequestBody @JsonSchemaValidation(Scope.SINGULAR_TERM) FullScopeDto scopeDto) {
-        scopeDto.applyResourceId(uuid);
-        return useCaseInteractor.execute(updateScopeUseCase,
-                                         (Supplier<ModifyElementUseCase.InputData<Scope>>) () -> {
-                                             Client client = getClient(user);
-                                             IdRefResolver idRefResolver = createIdRefResolver(client);
-                                             return new UpdateScopeUseCase.InputData<>(
-                                                     dtoToEntityTransformer.transformDto2Scope(scopeDto,
-                                                                                               idRefResolver),
-                                                     client, eTag, user.getUsername());
-                                         },
-                                         output -> entityToDtoTransformer.transformScope2Dto(output.getEntity()));
-    }
-
-    @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
-    @Operation(summary = "Deletes a scope")
-    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Scope deleted"),
-            @ApiResponse(responseCode = "404", description = "Scope not found") })
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteScope(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @Parameter(required = true,
-                       example = UUID_EXAMPLE,
-                       description = UUID_DESCRIPTION) @PathVariable String uuid) {
-        Client client = getAuthenticatedClient(auth);
-
-        return useCaseInteractor.execute(deleteElementUseCase,
-                                         new DeleteElementUseCase.InputData(Scope.class,
-                                                 Key.uuidFrom(uuid), client),
-                                         output -> ResponseEntity.noContent()
-                                                                 .build());
-    }
-
-    @Override
-    @SuppressFBWarnings("NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS")
-    protected String buildSearchUri(String id) {
-        return linkTo(methodOn(ScopeController.class).runSearch(ANY_AUTH, id, ANY_INT, ANY_INT,
-                                                                ANY_STRING, ANY_STRING))
-                                                                                        .withSelfRel()
-                                                                                        .getHref();
-    }
-
-    @GetMapping(value = "/searches/{searchId}")
-    @Operation(summary = "Finds scopes for the search.")
-    public @Valid CompletableFuture<PageDto<FullScopeDto>> runSearch(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @PathVariable String searchId,
-            @RequestParam(value = PAGE_SIZE_PARAM,
-                          required = false,
-                          defaultValue = PAGE_SIZE_DEFAULT_VALUE) Integer pageSize,
-            @RequestParam(value = PAGE_NUMBER_PARAM,
-                          required = false,
-                          defaultValue = PAGE_NUMBER_DEFAULT_VALUE) Integer pageNumber,
-            @RequestParam(value = SORT_COLUMN_PARAM,
-                          required = false,
-                          defaultValue = SORT_COLUMN_DEFAULT_VALUE) String sortColumn,
-            @RequestParam(value = SORT_ORDER_PARAM,
-                          required = false,
-                          defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
-        try {
-            return getScopes(GetElementsInputMapper.map(getAuthenticatedClient(auth),
-                                                        SearchQueryDto.decodeFromSearchId(searchId),
-                                                        PagingMapper.toConfig(pageSize, pageNumber,
-                                                                              sortColumn,
-                                                                              sortOrder)));
-        } catch (IOException e) {
-            log.error("Could not decode search URL: {}", e.getLocalizedMessage());
-            return null;
-        }
-    }
-
-    @Override
-    public @Valid CompletableFuture<List<ScopeRiskDto>> getRisks(
-            @Parameter(hidden = true) ApplicationUser user, String scopeId) {
-
-        Client client = getClient(user.getClientId());
-        var input = new GetScopeRisksUseCase.InputData(client, Key.uuidFrom(scopeId));
-
-        return useCaseInteractor.execute(getScopeRisksUseCase, input, output -> output.getRisks()
-                                                                                      .stream()
-                                                                                      .map(risk -> ScopeRiskDto.from(risk,
-                                                                                                                     referenceAssembler))
-                                                                                      .collect(Collectors.toList()));
-    }
-
-    @Override
-    public @Valid CompletableFuture<ResponseEntity<ScopeRiskDto>> getRisk(
-            @Parameter(hidden = true) ApplicationUser user, String scopeId, String scenarioId) {
-
-        Client client = getClient(user.getClientId());
-        var input = new GetScopeRiskUseCase.InputData(client, Key.uuidFrom(scopeId),
-                Key.uuidFrom(scenarioId));
-
-        var riskFuture = useCaseInteractor.execute(getScopeRiskUseCase, input,
-                                                   output -> ScopeRiskDto.from(output.getRisk(),
-                                                                               referenceAssembler));
-
-        return riskFuture.thenApply(riskDto -> ResponseEntity.ok()
-                                                             .eTag(ETag.from(riskDto.getScope()
-                                                                                    .getId(),
-                                                                             riskDto.getScenario()
-                                                                                    .getId(),
-                                                                             riskDto.getVersion()))
-                                                             .body(riskDto));
-    }
-
-    @Override
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(ApplicationUser user,
-            @Valid @NotNull ScopeRiskDto dto, String scopeId) {
-
-        var input = new CreateScopeRiskUseCase.InputData(getClient(user.getClientId()),
-                Key.uuidFrom(scopeId), urlAssembler.toKey(dto.getScenario()),
-                urlAssembler.toKeys(dto.getDomainReferences()),
-                urlAssembler.toKey(dto.getMitigation()), urlAssembler.toKey(dto.getRiskOwner()),
-                null);
-
-        return useCaseInteractor.execute(createScopeRiskUseCase, input, output -> {
-            if (!output.isNewlyCreatedRisk())
-                return RestApiResponse.noContent();
-
-            var url = String.format("%s/%s/%s", URL_BASE_PATH, output.getRisk()
-                                                                     .getEntity()
-                                                                     .getId()
-                                                                     .uuidValue(),
-                                    ScopeRiskResource.RESOURCE_NAME);
-            var body = new ApiResponseBody(true, Optional.of(output.getRisk()
-                                                                   .getScenario()
-                                                                   .getId()
-                                                                   .uuidValue()),
-                    "Scope risk created successfully.");
-            return RestApiResponse.created(url, body);
+    return useCaseInteractor.execute(
+        getScopeUseCase,
+        new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
+        output -> {
+          Scope scope = output.getScope();
+          return ResponseEntity.ok()
+              .cacheControl(defaultCacheControl)
+              .body(
+                  scope.getMembers().stream()
+                      .map(member -> entityToDtoTransformer.transform2Dto(member))
+                      .collect(Collectors.toList()));
         });
+  }
+
+  @PostMapping()
+  @Operation(summary = "Creates a scope")
+  @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Scope created")})
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> createScope(
+      @Parameter(hidden = true) ApplicationUser user,
+      @Valid @NotNull @RequestBody @JsonSchemaValidation(Scope.SINGULAR_TERM)
+          CreateScopeDto createScopeDto) {
+    return useCaseInteractor.execute(
+        createScopeUseCase,
+        (Supplier<CreateElementUseCase.InputData<Scope>>)
+            () -> {
+              Client client = getClient(user);
+              IdRefResolver idRefResolver = createIdRefResolver(client);
+              return new CreateElementUseCase.InputData<>(
+                  dtoToEntityTransformer.transformDto2Scope(createScopeDto, idRefResolver), client);
+            },
+        output -> {
+          Scope scope = output.getEntity();
+          Optional<String> scopeId =
+              scope.getId() == null
+                  ? Optional.empty()
+                  : Optional.ofNullable(scope.getId().uuidValue());
+          ApiResponseBody apiResponseBody =
+              new ApiResponseBody(true, scopeId, "Scope created successfully.");
+          return RestApiResponse.created(URL_BASE_PATH, apiResponseBody);
+        });
+  }
+
+  @PutMapping(ControllerConstants.UUID_PARAM_SPEC)
+  @Operation(summary = "Updates a scope")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Scope updated"),
+        @ApiResponse(responseCode = "404", description = "Scope not found")
+      })
+  public CompletableFuture<FullScopeDto> updateScope(
+      @Parameter(hidden = true) ApplicationUser user,
+      @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      @Valid @NotNull @RequestBody @JsonSchemaValidation(Scope.SINGULAR_TERM)
+          FullScopeDto scopeDto) {
+    scopeDto.applyResourceId(uuid);
+    return useCaseInteractor.execute(
+        updateScopeUseCase,
+        (Supplier<ModifyElementUseCase.InputData<Scope>>)
+            () -> {
+              Client client = getClient(user);
+              IdRefResolver idRefResolver = createIdRefResolver(client);
+              return new UpdateScopeUseCase.InputData<>(
+                  dtoToEntityTransformer.transformDto2Scope(scopeDto, idRefResolver),
+                  client,
+                  eTag,
+                  user.getUsername());
+            },
+        output -> entityToDtoTransformer.transformScope2Dto(output.getEntity()));
+  }
+
+  @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
+  @Operation(summary = "Deletes a scope")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "204", description = "Scope deleted"),
+        @ApiResponse(responseCode = "404", description = "Scope not found")
+      })
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteScope(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid) {
+    Client client = getAuthenticatedClient(auth);
+
+    return useCaseInteractor.execute(
+        deleteElementUseCase,
+        new DeleteElementUseCase.InputData(Scope.class, Key.uuidFrom(uuid), client),
+        output -> ResponseEntity.noContent().build());
+  }
+
+  @Override
+  @SuppressFBWarnings("NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS")
+  protected String buildSearchUri(String id) {
+    return linkTo(
+            methodOn(ScopeController.class)
+                .runSearch(ANY_AUTH, id, ANY_INT, ANY_INT, ANY_STRING, ANY_STRING))
+        .withSelfRel()
+        .getHref();
+  }
+
+  @GetMapping(value = "/searches/{searchId}")
+  @Operation(summary = "Finds scopes for the search.")
+  public @Valid CompletableFuture<PageDto<FullScopeDto>> runSearch(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @PathVariable String searchId,
+      @RequestParam(
+              value = PAGE_SIZE_PARAM,
+              required = false,
+              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          Integer pageSize,
+      @RequestParam(
+              value = PAGE_NUMBER_PARAM,
+              required = false,
+              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
+          Integer pageNumber,
+      @RequestParam(
+              value = SORT_COLUMN_PARAM,
+              required = false,
+              defaultValue = SORT_COLUMN_DEFAULT_VALUE)
+          String sortColumn,
+      @RequestParam(
+              value = SORT_ORDER_PARAM,
+              required = false,
+              defaultValue = SORT_ORDER_DEFAULT_VALUE)
+          @Pattern(regexp = SORT_ORDER_PATTERN)
+          String sortOrder) {
+    try {
+      return getScopes(
+          GetElementsInputMapper.map(
+              getAuthenticatedClient(auth),
+              SearchQueryDto.decodeFromSearchId(searchId),
+              PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
+    } catch (IOException e) {
+      log.error("Could not decode search URL: {}", e.getLocalizedMessage());
+      return null;
     }
+  }
 
-    @Override
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(ApplicationUser user,
-            String scopeId, String scenarioId) {
+  @Override
+  public @Valid CompletableFuture<List<ScopeRiskDto>> getRisks(
+      @Parameter(hidden = true) ApplicationUser user, String scopeId) {
 
-        Client client = getClient(user.getClientId());
-        var input = new DeleteRiskUseCase.InputData(Scope.class, client, Key.uuidFrom(scopeId),
-                Key.uuidFrom(scenarioId));
+    Client client = getClient(user.getClientId());
+    var input = new GetScopeRisksUseCase.InputData(client, Key.uuidFrom(scopeId));
 
-        return useCaseInteractor.execute(deleteRiskUseCase, input,
-                                         output -> ResponseEntity.noContent()
-                                                                 .build());
-    }
+    return useCaseInteractor.execute(
+        getScopeRisksUseCase,
+        input,
+        output ->
+            output.getRisks().stream()
+                .map(risk -> ScopeRiskDto.from(risk, referenceAssembler))
+                .collect(Collectors.toList()));
+  }
 
-    @Override
-    public @Valid CompletableFuture<ResponseEntity<ScopeRiskDto>> updateRisk(ApplicationUser user,
-            String scopeId, String scenarioId, @Valid @NotNull ScopeRiskDto dto, String eTag) {
+  @Override
+  public @Valid CompletableFuture<ResponseEntity<ScopeRiskDto>> getRisk(
+      @Parameter(hidden = true) ApplicationUser user, String scopeId, String scenarioId) {
 
-        var input = new UpdateScopeRiskUseCase.InputData(getClient(user.getClientId()),
-                Key.uuidFrom(scopeId), urlAssembler.toKey(dto.getScenario()),
-                urlAssembler.toKeys(dto.getDomainReferences()),
-                urlAssembler.toKey(dto.getMitigation()), urlAssembler.toKey(dto.getRiskOwner()),
-                eTag, null);
+    Client client = getClient(user.getClientId());
+    var input =
+        new GetScopeRiskUseCase.InputData(client, Key.uuidFrom(scopeId), Key.uuidFrom(scenarioId));
 
-        // update risk and return saved risk with updated ETag, timestamps etc.:
-        return useCaseInteractor.execute(updateScopeRiskUseCase, input, output -> null)
-                                .thenCompose(o -> this.getRisk(user, scopeId, scenarioId));
-    }
+    var riskFuture =
+        useCaseInteractor.execute(
+            getScopeRiskUseCase,
+            input,
+            output -> ScopeRiskDto.from(output.getRisk(), referenceAssembler));
+
+    return riskFuture.thenApply(
+        riskDto ->
+            ResponseEntity.ok()
+                .eTag(
+                    ETag.from(
+                        riskDto.getScope().getId(),
+                        riskDto.getScenario().getId(),
+                        riskDto.getVersion()))
+                .body(riskDto));
+  }
+
+  @Override
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
+      ApplicationUser user, @Valid @NotNull ScopeRiskDto dto, String scopeId) {
+
+    var input =
+        new CreateScopeRiskUseCase.InputData(
+            getClient(user.getClientId()),
+            Key.uuidFrom(scopeId),
+            urlAssembler.toKey(dto.getScenario()),
+            urlAssembler.toKeys(dto.getDomainReferences()),
+            urlAssembler.toKey(dto.getMitigation()),
+            urlAssembler.toKey(dto.getRiskOwner()),
+            null);
+
+    return useCaseInteractor.execute(
+        createScopeRiskUseCase,
+        input,
+        output -> {
+          if (!output.isNewlyCreatedRisk()) return RestApiResponse.noContent();
+
+          var url =
+              String.format(
+                  "%s/%s/%s",
+                  URL_BASE_PATH,
+                  output.getRisk().getEntity().getId().uuidValue(),
+                  ScopeRiskResource.RESOURCE_NAME);
+          var body =
+              new ApiResponseBody(
+                  true,
+                  Optional.of(output.getRisk().getScenario().getId().uuidValue()),
+                  "Scope risk created successfully.");
+          return RestApiResponse.created(url, body);
+        });
+  }
+
+  @Override
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(
+      ApplicationUser user, String scopeId, String scenarioId) {
+
+    Client client = getClient(user.getClientId());
+    var input =
+        new DeleteRiskUseCase.InputData(
+            Scope.class, client, Key.uuidFrom(scopeId), Key.uuidFrom(scenarioId));
+
+    return useCaseInteractor.execute(
+        deleteRiskUseCase, input, output -> ResponseEntity.noContent().build());
+  }
+
+  @Override
+  public @Valid CompletableFuture<ResponseEntity<ScopeRiskDto>> updateRisk(
+      ApplicationUser user,
+      String scopeId,
+      String scenarioId,
+      @Valid @NotNull ScopeRiskDto dto,
+      String eTag) {
+
+    var input =
+        new UpdateScopeRiskUseCase.InputData(
+            getClient(user.getClientId()),
+            Key.uuidFrom(scopeId),
+            urlAssembler.toKey(dto.getScenario()),
+            urlAssembler.toKeys(dto.getDomainReferences()),
+            urlAssembler.toKey(dto.getMitigation()),
+            urlAssembler.toKey(dto.getRiskOwner()),
+            eTag,
+            null);
+
+    // update risk and return saved risk with updated ETag, timestamps etc.:
+    return useCaseInteractor
+        .execute(updateScopeRiskUseCase, input, output -> null)
+        .thenCompose(o -> this.getRisk(user, scopeId, scenarioId));
+  }
 }

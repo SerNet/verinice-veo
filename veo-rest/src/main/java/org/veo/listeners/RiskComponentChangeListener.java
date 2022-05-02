@@ -31,21 +31,21 @@ import org.veo.service.risk.RiskService;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Listens to {@link RiskComponentChangeEvent}s from the use-case layer and
- * invokes the {@link RiskService}.
+ * Listens to {@link RiskComponentChangeEvent}s from the use-case layer and invokes the {@link
+ * RiskService}.
  */
 @Component
 @RequiredArgsConstructor
 public class RiskComponentChangeListener {
-    private final RiskService riskService;
-    private final RepositoryProvider repositoryProvider;
+  private final RiskService riskService;
+  private final RepositoryProvider repositoryProvider;
 
-    @TransactionalEventListener
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void handle(RiskComponentChangeEvent event) {
-        ElementRepository<? extends Element> repository = repositoryProvider.getElementRepositoryFor(event.getEntityType());
-        Element element = repository.findById(event.getEntityId())
-                                    .orElseThrow();
-        riskService.evaluateChangedRiskComponent(element);
-    }
+  @TransactionalEventListener
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  public void handle(RiskComponentChangeEvent event) {
+    ElementRepository<? extends Element> repository =
+        repositoryProvider.getElementRepositoryFor(event.getEntityType());
+    Element element = repository.findById(event.getEntityId()).orElseThrow();
+    riskService.evaluateChangedRiskComponent(element);
+  }
 }

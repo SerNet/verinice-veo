@@ -24,22 +24,24 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "A reference to a catalog item.")
 public interface IdRefCatalogItemDescriptionItem extends IIdRef {
 
-    @Schema(description = "A friendly human readable title of the catalog item to incarnate.",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @Override
-    String getDisplayName();
+  @Schema(
+      description = "A friendly human readable title of the catalog item to incarnate.",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  @Override
+  String getDisplayName();
 
-    @Schema(required = true,
-            description = "The resource URL of the referenced catalog item.",
-            example = "http://<api.example.org>/api/v1/catalogs/<00000000-0000-0000-0000-000000000000>/items/<00000000-0000-0000-0000-000000000000>",
-            format = "uri")
-    @Override
-    String getTargetUri();
+  @Schema(
+      required = true,
+      description = "The resource URL of the referenced catalog item.",
+      example =
+          "http://<api.example.org>/api/v1/catalogs/<00000000-0000-0000-0000-000000000000>/items/<00000000-0000-0000-0000-000000000000>",
+      format = "uri")
+  @Override
+  String getTargetUri();
 
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    String getSearchesUri();
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  String getSearchesUri();
 
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    String getResourcesUri();
-
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  String getResourcesUri();
 }

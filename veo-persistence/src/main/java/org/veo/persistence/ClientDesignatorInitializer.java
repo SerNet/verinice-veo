@@ -27,23 +27,23 @@ import org.veo.persistence.access.DesignatorSequenceRepositoryImpl;
 import lombok.AllArgsConstructor;
 
 /**
- * Creates designator sequences when a new client is created and removes them
- * when the client is removed.
+ * Creates designator sequences when a new client is created and removes them when the client is
+ * removed.
  */
 @Component
 @AllArgsConstructor
 public class ClientDesignatorInitializer {
-    private final DesignatorSequenceRepositoryImpl designatorSequenceRepository;
+  private final DesignatorSequenceRepositoryImpl designatorSequenceRepository;
 
-    @EventListener
-    public void handle(VersioningEvent versioningEvent) {
-        if (versioningEvent.getEntity() instanceof Client) {
-            var client = (Client) versioningEvent.getEntity();
-            if (versioningEvent.getType() == VersioningEvent.Type.PERSIST) {
-                designatorSequenceRepository.createSequences(client.getId());
-            } else if (versioningEvent.getType() == VersioningEvent.Type.REMOVE) {
-                designatorSequenceRepository.deleteSequences(client.getId());
-            }
-        }
+  @EventListener
+  public void handle(VersioningEvent versioningEvent) {
+    if (versioningEvent.getEntity() instanceof Client) {
+      var client = (Client) versioningEvent.getEntity();
+      if (versioningEvent.getType() == VersioningEvent.Type.PERSIST) {
+        designatorSequenceRepository.createSequences(client.getId());
+      } else if (versioningEvent.getType() == VersioningEvent.Type.REMOVE) {
+        designatorSequenceRepository.deleteSequences(client.getId());
+      }
     }
+  }
 }

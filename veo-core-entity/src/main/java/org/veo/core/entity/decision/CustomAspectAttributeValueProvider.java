@@ -23,24 +23,19 @@ import org.veo.core.entity.Element;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-/**
- * Provides the value for a certain custom aspect attribute on an element.
- */
+/** Provides the value for a certain custom aspect attribute on an element. */
 @Data
 @RequiredArgsConstructor
 public class CustomAspectAttributeValueProvider implements InputProvider {
-    private final String customAspect;
-    private final String attribute;
+  private final String customAspect;
+  private final String attribute;
 
-    @Override
-    public Object getValue(Element element, Domain domain) {
-        return element.getCustomAspects()
-                      .stream()
-                      .filter(ca -> ca.getType()
-                                      .equals(customAspect))
-                      .findFirst()
-                      .map(ca -> ca.getAttributes()
-                                   .get(attribute))
-                      .orElse(null);
-    }
+  @Override
+  public Object getValue(Element element, Domain domain) {
+    return element.getCustomAspects().stream()
+        .filter(ca -> ca.getType().equals(customAspect))
+        .findFirst()
+        .map(ca -> ca.getAttributes().get(attribute))
+        .orElse(null);
+  }
 }

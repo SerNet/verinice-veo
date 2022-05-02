@@ -43,49 +43,51 @@ import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
 public class ProcessRepositoryImpl
-        extends AbstractCompositeRiskAffectedRepository<Process, ProcessRisk, ProcessData>
-        implements ProcessRepository {
+    extends AbstractCompositeRiskAffectedRepository<Process, ProcessRisk, ProcessData>
+    implements ProcessRepository {
 
-    private final ProcessDataRepository processDataRepository;
+  private final ProcessDataRepository processDataRepository;
 
-    public ProcessRepositoryImpl(ProcessDataRepository dataRepository, ValidationService validation,
-            CustomLinkDataRepository linkDataRepository, ScopeDataRepository scopeDataRepository) {
-        super(dataRepository, validation, linkDataRepository, scopeDataRepository);
-        processDataRepository = dataRepository;
+  public ProcessRepositoryImpl(
+      ProcessDataRepository dataRepository,
+      ValidationService validation,
+      CustomLinkDataRepository linkDataRepository,
+      ScopeDataRepository scopeDataRepository) {
+    super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+    processDataRepository = dataRepository;
+  }
+
+  @Override
+  public Set<Process> findRisksWithValue(Scenario scenario) {
+    return new HashSet<>(
+        ((ProcessDataRepository) dataRepository)
+            .findRisksWithValue(singleton(((ScenarioData) scenario))));
+  }
+
+  @Override
+  public Optional<Process> findByIdWithRiskValues(Key<UUID> processId) {
+    var processes =
+        ((ProcessDataRepository) dataRepository)
+            .findByIdsWithRiskValues(singleton(processId.uuidValue()));
+    return processes.stream().findFirst().map(Process.class::cast);
+  }
+
+  @Override
+  public Set<Process> findAllHavingRisks(Client client) {
+    return processDataRepository.findAllHavingRisks(client).stream().collect(Collectors.toSet());
+  }
+
+  @Override
+  public ElementQuery<Process> query(Client client, boolean withRisks) {
+    return new ProcessQueryImpl((ProcessDataRepository) dataRepository, client, withRisks);
+  }
+
+  @Override
+  public Optional<Process> findById(Key<UUID> id, boolean shouldEmbedRisks) {
+    if (shouldEmbedRisks) {
+      return this.findByIdWithRiskValues(id);
+    } else {
+      return this.findById(id);
     }
-
-    @Override
-    public Set<Process> findRisksWithValue(Scenario scenario) {
-        return new HashSet<>(
-                ((ProcessDataRepository) dataRepository).findRisksWithValue(singleton(((ScenarioData) scenario))));
-    }
-
-    @Override
-    public Optional<Process> findByIdWithRiskValues(Key<UUID> processId) {
-        var processes = ((ProcessDataRepository) dataRepository).findByIdsWithRiskValues(singleton(processId.uuidValue()));
-        return processes.stream()
-                        .findFirst()
-                        .map(Process.class::cast);
-    }
-
-    @Override
-    public Set<Process> findAllHavingRisks(Client client) {
-        return processDataRepository.findAllHavingRisks(client)
-                                    .stream()
-                                    .collect(Collectors.toSet());
-    }
-
-    @Override
-    public ElementQuery<Process> query(Client client, boolean withRisks) {
-        return new ProcessQueryImpl((ProcessDataRepository) dataRepository, client, withRisks);
-    }
-
-    @Override
-    public Optional<Process> findById(Key<UUID> id, boolean shouldEmbedRisks) {
-        if (shouldEmbedRisks) {
-            return this.findByIdWithRiskValues(id);
-        } else {
-            return this.findById(id);
-        }
-    }
+  }
 }

@@ -24,6 +24,4 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public final class CreateDocumentDto extends AbstractDocumentDto {
-
-}
+public final class CreateDocumentDto extends AbstractDocumentDto {}

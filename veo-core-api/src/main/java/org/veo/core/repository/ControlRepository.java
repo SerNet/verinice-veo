@@ -22,10 +22,8 @@ import org.veo.core.entity.Control;
 /**
  * A repository for <code>Control</code> entities.
  *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
+ * <p>Implements basic CRUD operations from the superinterface and extends them with more specific
+ * methods - i.e. queries based on particular fields.
  */
 public interface ControlRepository
-        extends ElementRepository<Control>, CompositeElementRepository<Control> {
-
-}
+    extends ElementRepository<Control>, CompositeElementRepository<Control> {}

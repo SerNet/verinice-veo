@@ -23,13 +23,13 @@ import org.veo.core.repository.DocumentRepository;
 import org.veo.core.usecase.base.DefaultGetElementsUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 
-/**
- * Reinstantiate persisted document objects.
- */
+/** Reinstantiate persisted document objects. */
 public class GetDocumentsUseCase extends DefaultGetElementsUseCase<Document> {
 
-    public GetDocumentsUseCase(ClientRepository clientRepository,
-            DocumentRepository documentRepository, UnitHierarchyProvider unitHierarchyProvider) {
-        super(clientRepository, documentRepository, unitHierarchyProvider);
-    }
+  public GetDocumentsUseCase(
+      ClientRepository clientRepository,
+      DocumentRepository documentRepository,
+      UnitHierarchyProvider unitHierarchyProvider) {
+    super(clientRepository, documentRepository, unitHierarchyProvider);
+  }
 }

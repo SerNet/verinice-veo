@@ -56,51 +56,52 @@ import lombok.ToString;
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDto {
 
-    @Schema(description = "Compact human-readable identifier that is unique within the client.",
-            example = "A-155",
-            required = true,
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @ToString.Include
-    private String designator;
+  @Schema(
+      description = "Compact human-readable identifier that is unique within the client.",
+      example = "A-155",
+      required = true,
+      accessMode = Schema.AccessMode.READ_ONLY)
+  @ToString.Include
+  private String designator;
 
-    @Valid
-    @ArraySchema(schema = @Schema(implementation = IdRefDomains.class))
-    @JsonIgnore
-    @Singular
-    private Set<IdRef<Domain>> domains = Collections.emptySet();
+  @Valid
+  @ArraySchema(schema = @Schema(implementation = IdRefDomains.class))
+  @JsonIgnore
+  @Singular
+  private Set<IdRef<Domain>> domains = Collections.emptySet();
 
-    @JsonGetter(value = "domains")
-    public Map<String, RiskDomainAssociationDto> getDomains() {
-        return domains.stream()
-                      .collect(Collectors.toMap(IdRef::getId, RiskDomainAssociationDto::new));
-    }
+  @JsonGetter(value = "domains")
+  public Map<String, RiskDomainAssociationDto> getDomains() {
+    return domains.stream().collect(Collectors.toMap(IdRef::getId, RiskDomainAssociationDto::new));
+  }
 
-    @JsonSetter(value = "domains")
-    public void setDomains(Map<String, RiskDomainAssociationDto> domainMap) {
-        this.domains = domainMap.values()
-                                .stream()
-                                .map(RiskDomainAssociationDto::getReference)
-                                .collect(Collectors.toSet());
-    }
+  @JsonSetter(value = "domains")
+  public void setDomains(Map<String, RiskDomainAssociationDto> domainMap) {
+    this.domains =
+        domainMap.values().stream()
+            .map(RiskDomainAssociationDto::getReference)
+            .collect(Collectors.toSet());
+  }
 
-    @JsonIgnore
-    public Set<IdRef<Domain>> getDomainReferences() {
-        return domains;
-    }
+  @JsonIgnore
+  public Set<IdRef<Domain>> getDomainReferences() {
+    return domains;
+  }
 
-    @Valid
-    @NotNull(message = "A scenario must be present.")
-    @Schema(required = true, implementation = IdRefOwner.class)
-    private IdRef<Scenario> scenario;
+  @Valid
+  @NotNull(message = "A scenario must be present.")
+  @Schema(required = true, implementation = IdRefOwner.class)
+  private IdRef<Scenario> scenario;
 
-    @Valid
-    @Schema(implementation = IdRefEntity.class,
-            description = "This risk is mitigated by this control or control-composite.")
-    private IdRef<Control> mitigation;
+  @Valid
+  @Schema(
+      implementation = IdRefEntity.class,
+      description = "This risk is mitigated by this control or control-composite.")
+  private IdRef<Control> mitigation;
 
-    @Valid
-    @Schema(implementation = IdRefEntity.class,
-            description = "The accountable point-of-contact for this risk.")
-    private IdRef<Person> riskOwner;
-
+  @Valid
+  @Schema(
+      implementation = IdRefEntity.class,
+      description = "The accountable point-of-contact for this risk.")
+  private IdRef<Person> riskOwner;
 }

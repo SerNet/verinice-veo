@@ -24,6 +24,4 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public final class CreateControlDto extends AbstractControlDto {
-
-}
+public final class CreateControlDto extends AbstractControlDto {}

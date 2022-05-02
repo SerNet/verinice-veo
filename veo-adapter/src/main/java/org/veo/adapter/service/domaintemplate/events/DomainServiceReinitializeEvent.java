@@ -19,8 +19,5 @@ package org.veo.adapter.service.domaintemplate.events;
 
 import org.veo.core.service.DomainTemplateService;
 
-/**
- * Indicate to the {@link DomainTemplateService} to reread the domaintemplates.
- */
-public class DomainServiceReinitializeEvent {
-}
+/** Indicate to the {@link DomainTemplateService} to reread the domaintemplates. */
+public class DomainServiceReinitializeEvent {}

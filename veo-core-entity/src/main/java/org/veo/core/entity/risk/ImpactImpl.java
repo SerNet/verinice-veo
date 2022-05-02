@@ -33,34 +33,32 @@ import lombok.Setter;
 @Valid
 public class ImpactImpl implements Impact {
 
-    @Setter(AccessLevel.NONE)
-    @NonNull
-    private CategoryRef category;
+  @Setter(AccessLevel.NONE)
+  @NonNull
+  private CategoryRef category;
 
-    private ImpactRef potentialImpact;
+  private ImpactRef potentialImpact;
 
-    private ImpactRef specificImpact;
+  private ImpactRef specificImpact;
 
-    @Setter(AccessLevel.NONE)
-    private ImpactRef effectiveImpact;
+  @Setter(AccessLevel.NONE)
+  private ImpactRef effectiveImpact;
 
-    @Size(max = Impact.EXPLANATION_MAX_LENGTH)
-    private String specificImpactExplanation;
+  @Size(max = Impact.EXPLANATION_MAX_LENGTH)
+  private String specificImpactExplanation;
 
-    public void setPotentialImpact(ImpactRef potentialImpact) {
-        this.potentialImpact = potentialImpact;
-        updateEffectiveImpact();
-    }
+  public void setPotentialImpact(ImpactRef potentialImpact) {
+    this.potentialImpact = potentialImpact;
+    updateEffectiveImpact();
+  }
 
-    public void setSpecificImpact(ImpactRef specificImpact) {
-        this.specificImpact = specificImpact;
-        updateEffectiveImpact();
-    }
+  public void setSpecificImpact(ImpactRef specificImpact) {
+    this.specificImpact = specificImpact;
+    updateEffectiveImpact();
+  }
 
-    private void updateEffectiveImpact() {
-        if (specificImpact != null)
-            effectiveImpact = specificImpact;
-        else
-            effectiveImpact = potentialImpact;
-    }
+  private void updateEffectiveImpact() {
+    if (specificImpact != null) effectiveImpact = specificImpact;
+    else effectiveImpact = potentialImpact;
+  }
 }

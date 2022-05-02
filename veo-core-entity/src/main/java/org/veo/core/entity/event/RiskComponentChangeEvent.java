@@ -24,27 +24,24 @@ import org.veo.core.entity.Key;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * An event that is triggered when a risk-relevant change it made to an entity
- */
+/** An event that is triggered when a risk-relevant change it made to an entity */
 @RequiredArgsConstructor
 public class RiskComponentChangeEvent {
 
-    /**
-     * This allows events to be published for entities that have not yet been
-     * persisted and whose ID is therefore {@code null}. The ID will have been
-     * initialized however when the event listener accesses it. NOTE: this requires
-     * that event listeners run only after successful commit. This is the default
-     * for {@code TransactionalEventListener}.
-     */
-    private final Element entity;
+  /**
+   * This allows events to be published for entities that have not yet been persisted and whose ID
+   * is therefore {@code null}. The ID will have been initialized however when the event listener
+   * accesses it. NOTE: this requires that event listeners run only after successful commit. This is
+   * the default for {@code TransactionalEventListener}.
+   */
+  private final Element entity;
 
-    public Key<UUID> getEntityId() {
-        return entity.getId();
-    }
+  public Key<UUID> getEntityId() {
+    return entity.getId();
+  }
 
-    @SuppressWarnings("unchecked")
-    public Class<? extends Element> getEntityType() {
-        return (Class<? extends Element>) entity.getModelInterface();
-    }
+  @SuppressWarnings("unchecked")
+  public Class<? extends Element> getEntityType() {
+    return (Class<? extends Element>) entity.getModelInterface();
+  }
 }

@@ -32,41 +32,43 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * The base dto class for all catalog references like {@link TailoringReference}
- * or {@link UpdateReference}. As long as we do not have an editor, (see
- * VEO-399) it is only used internally. Therefore all schema annotations are
- * quite useless as these are not part of any client api.
+ * The base dto class for all catalog references like {@link TailoringReference} or {@link
+ * UpdateReference}. As long as we do not have an editor, (see VEO-399) it is only used internally.
+ * Therefore all schema annotations are quite useless as these are not part of any client api.
  */
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AbstractCatalogReferenceDto implements VersionedDto {
 
-    @Schema(implementation = IdRefCatalogReferenceCatalogItem.class)
-    private IdRef<CatalogItem> catalogItem;
+  @Schema(implementation = IdRefCatalogReferenceCatalogItem.class)
+  private IdRef<CatalogItem> catalogItem;
 
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
-            example = "1990-12-31T23:59:60Z",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @Pattern(regexp = Patterns.DATETIME)
-    private String createdAt;
+  @Schema(
+      description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      example = "1990-12-31T23:59:60Z",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  @Pattern(regexp = Patterns.DATETIME)
+  private String createdAt;
 
-    @Schema(description = "The username of the user who created this object.",
-            example = "jane_doe",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private String createdBy;
+  @Schema(
+      description = "The username of the user who created this object.",
+      example = "jane_doe",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  private String createdBy;
 
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.",
-            example = "1990-12-31T23:59:60Z",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @Pattern(regexp = Patterns.DATETIME)
-    private String updatedAt;
+  @Schema(
+      description =
+          "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.",
+      example = "1990-12-31T23:59:60Z",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  @Pattern(regexp = Patterns.DATETIME)
+  private String updatedAt;
 
-    @Schema(description = "The username of the user who last updated this object.",
-            example = "jane_doe",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private String updatedBy;
+  @Schema(
+      description = "The username of the user who last updated this object.",
+      example = "jane_doe",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  private String updatedBy;
 
-    @JsonIgnore
-    private long version;
-
+  @JsonIgnore private long version;
 }

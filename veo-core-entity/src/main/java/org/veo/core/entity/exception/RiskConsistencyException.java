@@ -20,11 +20,11 @@ package org.veo.core.entity.exception;
 import org.veo.core.entity.DomainException;
 
 /**
- * Runtime exception that is thrown when a reference could not be resolved to a
- * risk value valid in the available domains/risk-definitions.
+ * Runtime exception that is thrown when a reference could not be resolved to a risk value valid in
+ * the available domains/risk-definitions.
  */
 public class RiskConsistencyException extends DomainException {
-    public RiskConsistencyException(String message) {
-        super(message);
-    }
+  public RiskConsistencyException(String message) {
+    super(message);
+  }
 }

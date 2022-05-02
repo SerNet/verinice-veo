@@ -32,32 +32,31 @@ import org.veo.core.usecase.UseCaseTools;
 import lombok.Value;
 
 public class GetDomainTemplateUseCase
-        implements TransactionalUseCase<IdAndClient, GetDomainTemplateUseCase.OutputData> {
-    private final DomainTemplateService templateService;
-    private final ClientRepository clientRepository;
+    implements TransactionalUseCase<IdAndClient, GetDomainTemplateUseCase.OutputData> {
+  private final DomainTemplateService templateService;
+  private final ClientRepository clientRepository;
 
-    public GetDomainTemplateUseCase(DomainTemplateService templateService,
-            ClientRepository clientRepository) {
-        this.templateService = templateService;
-        this.clientRepository = clientRepository;
-    }
+  public GetDomainTemplateUseCase(
+      DomainTemplateService templateService, ClientRepository clientRepository) {
+    this.templateService = templateService;
+    this.clientRepository = clientRepository;
+  }
 
-    @Override
-    public OutputData execute(IdAndClient input) {
-        Client client = UseCaseTools.checkClientExists(input.getAuthenticatedClient()
-                                                            .getId(),
-                                                       clientRepository);
+  @Override
+  public OutputData execute(IdAndClient input) {
+    Client client =
+        UseCaseTools.checkClientExists(input.getAuthenticatedClient().getId(), clientRepository);
 
-        DomainTemplate domainTemplate = templateService.getTemplate(client, input.getId())
-                                                       .orElseThrow(() -> new NotFoundException(
-                                                               "Invalid domain template"));
-        return new OutputData(domainTemplate);
-    }
+    DomainTemplate domainTemplate =
+        templateService
+            .getTemplate(client, input.getId())
+            .orElseThrow(() -> new NotFoundException("Invalid domain template"));
+    return new OutputData(domainTemplate);
+  }
 
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        DomainTemplate domainTemplate;
-    }
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid DomainTemplate domainTemplate;
+  }
 }

@@ -27,6 +27,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ControlDomainAssociationDto extends DomainAssociationDto {
-    @Schema(description = "Key is risk definition ID, value contains risk values in the context of that risk definition.")
-    Map<String, ControlRiskValuesDto> riskValues = new HashMap<>();
+  @Schema(
+      description =
+          "Key is risk definition ID, value contains risk values in the context of that risk definition.")
+  Map<String, ControlRiskValuesDto> riskValues = new HashMap<>();
 }

@@ -26,8 +26,8 @@ import org.veo.core.entity.decision.DecisionRuleRef;
 
 /** Configures OpenAPI schema types globally. */
 public class SchemaReplacer {
-    public SchemaReplacer() {
-        replaceWithClass(DecisionResult.class, DecisionResultsSchema.class);
-        replaceWithClass(DecisionRuleRef.class, DecisionRuleRefSchema.class);
-    }
+  public SchemaReplacer() {
+    replaceWithClass(DecisionResult.class, DecisionResultsSchema.class);
+    replaceWithClass(DecisionRuleRef.class, DecisionRuleRefSchema.class);
+  }
 }

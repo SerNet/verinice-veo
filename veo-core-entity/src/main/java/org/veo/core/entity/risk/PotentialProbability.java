@@ -17,12 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
-/**
- * The default probability defined for the scenario.
- */
+/** The default probability defined for the scenario. */
 public interface PotentialProbability {
 
-    ProbabilityRef getPotentialProbability();
+  ProbabilityRef getPotentialProbability();
 
-    void setPotentialProbability(ProbabilityRef potential);
+  void setPotentialProbability(ProbabilityRef potential);
 }

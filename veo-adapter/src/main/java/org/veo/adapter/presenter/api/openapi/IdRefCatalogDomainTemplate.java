@@ -22,31 +22,34 @@ import org.veo.adapter.presenter.api.common.IIdRef;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
- * This class is for documentation only. It specifies type-specific comments and
- * examples for a reference to a domain template.
+ * This class is for documentation only. It specifies type-specific comments and examples for a
+ * reference to a domain template.
  *
- * It is only supposed to be used in OpenApi annotations and should not be
- * extended and implemented.
+ * <p>It is only supposed to be used in OpenApi annotations and should not be extended and
+ * implemented.
  */
 @Schema(name = "DomaintemplateReference", description = "The reference to a domaintemplate.")
 public interface IdRefCatalogDomainTemplate extends IIdRef {
 
-    @Schema(description = "A friendly human readable title of the referenced domaintemplate.",
-            example = "EU GDPR 2016-05-04",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @Override
-    String getDisplayName();
+  @Schema(
+      description = "A friendly human readable title of the referenced domaintemplate.",
+      example = "EU GDPR 2016-05-04",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  @Override
+  String getDisplayName();
 
-    @Schema(required = true,
-            description = "The resource URL of the referenced domain.",
-            example = "http://<api.example.org>/api/v1/domaintemplates/<00000000-0000-0000-0000-000000000000>",
-            format = "uri")
-    @Override
-    String getTargetUri();
+  @Schema(
+      required = true,
+      description = "The resource URL of the referenced domain.",
+      example =
+          "http://<api.example.org>/api/v1/domaintemplates/<00000000-0000-0000-0000-000000000000>",
+      format = "uri")
+  @Override
+  String getTargetUri();
 
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    String getSearchesUri();
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  String getSearchesUri();
 
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    String getResourcesUri();
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  String getResourcesUri();
 }

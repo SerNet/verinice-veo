@@ -34,18 +34,21 @@ import lombok.Data;
 @Valid
 public class ProbabilityDto implements Probability {
 
-    ProbabilityRef potentialProbability;
+  ProbabilityRef potentialProbability;
 
-    ProbabilityRef specificProbability;
+  ProbabilityRef specificProbability;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    ProbabilityRef effectiveProbability;
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  ProbabilityRef effectiveProbability;
 
-    @Size(max = Probability.EXPLANATION_MAX_LENGTH)
-    String specificProbabilityExplanation;
+  @Size(max = Probability.EXPLANATION_MAX_LENGTH)
+  String specificProbabilityExplanation;
 
-    public static ProbabilityDto from(ProbabilityValueProvider from) {
-        return new ProbabilityDto(from.getPotentialProbability(), from.getSpecificProbability(),
-                from.getEffectiveProbability(), from.getSpecificProbabilityExplanation());
-    }
+  public static ProbabilityDto from(ProbabilityValueProvider from) {
+    return new ProbabilityDto(
+        from.getPotentialProbability(),
+        from.getSpecificProbability(),
+        from.getEffectiveProbability(),
+        from.getSpecificProbabilityExplanation());
+  }
 }

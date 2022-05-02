@@ -40,51 +40,46 @@ import lombok.ToString;
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AspectData implements Aspect {
 
-    public AspectData(DomainTemplate domain, Element owner) {
-        this.domain = domain;
-        this.owner = owner;
-    }
+  public AspectData(DomainTemplate domain, Element owner) {
+    this.domain = domain;
+    this.owner = owner;
+  }
 
-    protected AspectData() {
-    }
+  protected AspectData() {}
 
-    @Id
-    @ToString.Include
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private String dbId;
+  @Id
+  @ToString.Include
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  private String dbId;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainTemplateData.class, optional = false)
-    @JoinColumn(name = "domain_id")
-    private DomainTemplate domain;
+  @NotNull
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainTemplateData.class, optional = false)
+  @JoinColumn(name = "domain_id")
+  private DomainTemplate domain;
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = false)
-    private Element owner;
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = false)
+  private Element owner;
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null)
-            return false;
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) return false;
 
-        if (this == o)
-            return true;
+    if (this == o) return true;
 
-        if (!(o instanceof AspectData))
-            return false;
+    if (!(o instanceof AspectData)) return false;
 
-        AspectData other = (AspectData) o;
-        // Transient (unmanaged) entities have an ID of 'null'. Only managed
-        // (persisted and detached) entities have an identity. JPA requires that
-        // an entity's identity remains the same over all state changes.
-        // Therefore a transient entity must never equal another entity.
-        String dbId = getDbId();
-        return dbId != null && dbId.equals(other.getDbId());
-    }
+    AspectData other = (AspectData) o;
+    // Transient (unmanaged) entities have an ID of 'null'. Only managed
+    // (persisted and detached) entities have an identity. JPA requires that
+    // an entity's identity remains the same over all state changes.
+    // Therefore a transient entity must never equal another entity.
+    String dbId = getDbId();
+    return dbId != null && dbId.equals(other.getDbId());
+  }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
+  }
 }

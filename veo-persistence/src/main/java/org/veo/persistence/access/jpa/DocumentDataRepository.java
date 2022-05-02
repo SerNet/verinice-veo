@@ -19,5 +19,4 @@ package org.veo.persistence.access.jpa;
 
 import org.veo.persistence.entity.jpa.DocumentData;
 
-public interface DocumentDataRepository extends CompositeEntityDataRepository<DocumentData> {
-}
+public interface DocumentDataRepository extends CompositeEntityDataRepository<DocumentData> {}

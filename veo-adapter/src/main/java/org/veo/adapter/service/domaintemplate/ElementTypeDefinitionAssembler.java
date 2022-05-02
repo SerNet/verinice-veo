@@ -32,46 +32,41 @@ import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.SubTypeDefinition;
 
 public class ElementTypeDefinitionAssembler {
-    private final ObjectMapper om = new ObjectMapper();
+  private final ObjectMapper om = new ObjectMapper();
 
-    public Map<String, ElementTypeDefinitionDto> loadDefinitions(File typesDir) {
-        return Arrays.stream(typesDir.listFiles())
-                     .filter(File::isDirectory)
-                     .collect(Collectors.toMap(File::getName, this::loadDefinition));
-    }
+  public Map<String, ElementTypeDefinitionDto> loadDefinitions(File typesDir) {
+    return Arrays.stream(typesDir.listFiles())
+        .filter(File::isDirectory)
+        .collect(Collectors.toMap(File::getName, this::loadDefinition));
+  }
 
-    private ElementTypeDefinitionDto loadDefinition(File dir) {
-        var definition = new ElementTypeDefinitionDto();
-        definition.setCustomAspects(readMap(dir, "customAspects", CustomAspectDefinition.class));
-        definition.setLinks(readMap(dir, "links", LinkDefinition.class));
-        definition.setSubTypes(readMap(dir, "subTypes", SubTypeDefinition.class));
-        definition.setTranslations(parse(new File(dir, "lang.json"), Map.class));
-        return definition;
-    }
+  private ElementTypeDefinitionDto loadDefinition(File dir) {
+    var definition = new ElementTypeDefinitionDto();
+    definition.setCustomAspects(readMap(dir, "customAspects", CustomAspectDefinition.class));
+    definition.setLinks(readMap(dir, "links", LinkDefinition.class));
+    definition.setSubTypes(readMap(dir, "subTypes", SubTypeDefinition.class));
+    definition.setTranslations(parse(new File(dir, "lang.json"), Map.class));
+    return definition;
+  }
 
-    private <T> Map<String, T> readMap(File directory, String subDir, Class<T> type) {
-        return getSubDirFiles(directory, subDir).stream()
-                                                .collect(Collectors.toMap(f -> f.getName()
-                                                                                .replace(".json",
-                                                                                         ""),
-                                                                          f -> parse(f, type)));
-    }
+  private <T> Map<String, T> readMap(File directory, String subDir, Class<T> type) {
+    return getSubDirFiles(directory, subDir).stream()
+        .collect(Collectors.toMap(f -> f.getName().replace(".json", ""), f -> parse(f, type)));
+  }
 
-    private <T> T parse(File f, Class<T> type) {
-        try {
-            return om.readValue(f, type);
-        } catch (IOException e) {
-            throw new DomainTemplateSnippetException(f, e);
-        }
+  private <T> T parse(File f, Class<T> type) {
+    try {
+      return om.readValue(f, type);
+    } catch (IOException e) {
+      throw new DomainTemplateSnippetException(f, e);
     }
+  }
 
-    private List<File> getSubDirFiles(File root, String subDirName) {
-        var subDir = root.toPath()
-                         .resolve(subDirName)
-                         .toFile();
-        if (subDir.exists()) {
-            return List.of(subDir.listFiles());
-        }
-        return List.of();
+  private List<File> getSubDirFiles(File root, String subDirName) {
+    var subDir = root.toPath().resolve(subDirName).toFile();
+    if (subDir.exists()) {
+      return List.of(subDir.listFiles());
     }
+    return List.of();
+  }
 }

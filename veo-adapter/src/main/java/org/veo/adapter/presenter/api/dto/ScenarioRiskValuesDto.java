@@ -24,9 +24,11 @@ import lombok.Data;
 
 @Data
 public class ScenarioRiskValuesDto {
-    @PositiveOrZero
-    @Schema(description = "The potential probability for occurrence of the scenario, a reference to a probability "
-            + "level in the risk definition. Enter the ordinal value of a probability level.",
-            example = "2")
-    int potentialProbability;
+  @PositiveOrZero
+  @Schema(
+      description =
+          "The potential probability for occurrence of the scenario, a reference to a probability "
+              + "level in the risk definition. Enter the ordinal value of a probability level.",
+      example = "2")
+  int potentialProbability;
 }

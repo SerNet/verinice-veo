@@ -25,16 +25,15 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 
 /**
- * Provides input value for a {@link RuleCondition} in a {@link Decision}. Takes
- * an element and extracts a value from the element in the context of a given
- * domain.
+ * Provides input value for a {@link RuleCondition} in a {@link Decision}. Takes an element and
+ * extracts a value from the element in the context of a given domain.
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @Type(value = CustomAspectAttributeSizeProvider.class, name = "customAspectAttributeSize"),
-        @Type(value = CustomAspectAttributeValueProvider.class,
-              name = "customAspectAttributeValue"),
-        @Type(value = MaxRiskProvider.class, name = "maxRisk"), })
+  @Type(value = CustomAspectAttributeSizeProvider.class, name = "customAspectAttributeSize"),
+  @Type(value = CustomAspectAttributeValueProvider.class, name = "customAspectAttributeValue"),
+  @Type(value = MaxRiskProvider.class, name = "maxRisk"),
+})
 public interface InputProvider {
-    public Object getValue(Element element, Domain domain);
+  public Object getValue(Element element, Domain domain);
 }

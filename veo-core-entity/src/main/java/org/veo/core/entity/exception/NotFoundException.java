@@ -20,19 +20,18 @@ package org.veo.core.entity.exception;
 import org.veo.core.entity.DomainException;
 
 /**
- * Runtime exception thrown when a requested object could not be found, i.e.
- * during an update operation. This could be caused by concurrent editing of an
- * object - since the version number of the object has been changed between \
- * the beginning of a user's editing and the attempted save operation.
+ * Runtime exception thrown when a requested object could not be found, i.e. during an update
+ * operation. This could be caused by concurrent editing of an object - since the version number of
+ * the object has been changed between \ the beginning of a user's editing and the attempted save
+ * operation.
  *
- * This exception must be caught by the controller and an appropriate status
- * code and message must be returned to the caller. The caller will need to
- * remediate the situation, i.e. by temporarily noting down all changes, then
- * reloading the object and applying the changes again.
+ * <p>This exception must be caught by the controller and an appropriate status code and message
+ * must be returned to the caller. The caller will need to remediate the situation, i.e. by
+ * temporarily noting down all changes, then reloading the object and applying the changes again.
  */
 public class NotFoundException extends DomainException {
 
-    public NotFoundException(String messageTemplate, Object... arguments) {
-        super(String.format(messageTemplate, arguments));
-    }
+  public NotFoundException(String messageTemplate, Object... arguments) {
+    super(String.format(messageTemplate, arguments));
+  }
 }

@@ -35,43 +35,44 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Listens to JPA events on {@link VersionedData} objects and delegates them to
- * the {@link ApplicationEventPublisher} as {@link VersioningEvent}s.
+ * Listens to JPA events on {@link VersionedData} objects and delegates them to the {@link
+ * ApplicationEventPublisher} as {@link VersioningEvent}s.
  */
 @Slf4j
 @AllArgsConstructor
 public class VersionedEntityListener {
-    private final ApplicationEventPublisher publisher;
-    private final CurrentUserProvider currentUserProvider;
+  private final ApplicationEventPublisher publisher;
+  private final CurrentUserProvider currentUserProvider;
 
-    @PrePersist
-    public void prePersist(Versioned entity) {
-        log.debug("Publishing PrePersist event for {}", entity);
-        if (entity instanceof Identifiable) {
-            // We need to fire this one a little later (after the entity's ID has been
-            // generated).
-            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-                @Override
-                public void beforeCommit(boolean readOnly) {
-                    publisher.publishEvent(new VersioningEvent(entity, Type.PERSIST,
-                            currentUserProvider.getUsername()));
-                }
-            });
-        } else {
-            publisher.publishEvent(new VersioningEvent(entity, Type.PERSIST,
-                    currentUserProvider.getUsername()));
-        }
+  @PrePersist
+  public void prePersist(Versioned entity) {
+    log.debug("Publishing PrePersist event for {}", entity);
+    if (entity instanceof Identifiable) {
+      // We need to fire this one a little later (after the entity's ID has been
+      // generated).
+      TransactionSynchronizationManager.registerSynchronization(
+          new TransactionSynchronization() {
+            @Override
+            public void beforeCommit(boolean readOnly) {
+              publisher.publishEvent(
+                  new VersioningEvent(entity, Type.PERSIST, currentUserProvider.getUsername()));
+            }
+          });
+    } else {
+      publisher.publishEvent(
+          new VersioningEvent(entity, Type.PERSIST, currentUserProvider.getUsername()));
     }
+  }
 
-    @PreUpdate
-    public void preUpdate(Versioned entity) {
-        publisher.publishEvent(new VersioningEvent(entity, Type.UPDATE,
-                currentUserProvider.getUsername()));
-    }
+  @PreUpdate
+  public void preUpdate(Versioned entity) {
+    publisher.publishEvent(
+        new VersioningEvent(entity, Type.UPDATE, currentUserProvider.getUsername()));
+  }
 
-    @PreRemove
-    public void preRemove(Versioned entity) {
-        publisher.publishEvent(new VersioningEvent(entity, Type.REMOVE,
-                currentUserProvider.getUsername()));
-    }
+  @PreRemove
+  public void preRemove(Versioned entity) {
+    publisher.publishEvent(
+        new VersioningEvent(entity, Type.REMOVE, currentUserProvider.getUsername()));
+  }
 }

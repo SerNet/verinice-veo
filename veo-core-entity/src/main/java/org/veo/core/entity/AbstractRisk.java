@@ -26,80 +26,76 @@ import javax.validation.constraints.NotEmpty;
 import lombok.NonNull;
 
 /**
- * Defines the behaviour of a risk object that is generic enough to be usable in
- * different standards such as ISO 27001:2013, NIST 800-30 and others.
+ * Defines the behaviour of a risk object that is generic enough to be usable in different standards
+ * such as ISO 27001:2013, NIST 800-30 and others.
+ *
  * <p>
- * <p>
- * The 'scenario' object may either represent a single discrete threat event or
- * a group of discrete threat events that together form a 'threat scenario' (as
- * defined by NIST 800-30).
- * <p>
- * A risk may be mitigated by a control or a set of controls. This is optional.
- * <p>
- * A risk may have an appointed risk owner as defined in ISO/IEC 27000: "a
- * person or entity with the accountability and authority to manage a risk". (In
- * NIST 800-30 terms this would be the information owner - not the risk
- * assessor). This is also optional.
- * <p>
- * Unlike many other entities, risks are no {@link Identifiable}s, because they
- * are no aggregate roots but are owned by their {@link RiskAffected} entity
- * (hence why risks have no ID of their own).
+ *
+ * <p>The 'scenario' object may either represent a single discrete threat event or a group of
+ * discrete threat events that together form a 'threat scenario' (as defined by NIST 800-30).
+ *
+ * <p>A risk may be mitigated by a control or a set of controls. This is optional.
+ *
+ * <p>A risk may have an appointed risk owner as defined in ISO/IEC 27000: "a person or entity with
+ * the accountability and authority to manage a risk". (In NIST 800-30 terms this would be the
+ * information owner - not the risk assessor). This is also optional.
+ *
+ * <p>Unlike many other entities, risks are no {@link Identifiable}s, because they are no aggregate
+ * roots but are owned by their {@link RiskAffected} entity (hence why risks have no ID of their
+ * own).
  */
 public interface AbstractRisk<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-        extends ClientOwned, CompoundKeyEntity, Designated, Versioned {
+    extends ClientOwned, CompoundKeyEntity, Designated, Versioned {
 
-    String TYPE_DESIGNATOR = "RSK";
+  String TYPE_DESIGNATOR = "RSK";
 
-    @Override
-    default String getTypeDesignator() {
-        return TYPE_DESIGNATOR;
-    }
+  @Override
+  default String getTypeDesignator() {
+    return TYPE_DESIGNATOR;
+  }
 
-    Set<Domain> getDomains();
+  Set<Domain> getDomains();
 
-    boolean addToDomains(Domain aDomain);
+  boolean addToDomains(Domain aDomain);
 
-    void setDomains(@NonNull @NotEmpty Set<Domain> newDomains);
+  void setDomains(@NonNull @NotEmpty Set<Domain> newDomains);
 
-    boolean removeFromDomains(Domain aDomain);
+  boolean removeFromDomains(Domain aDomain);
 
-    Control getMitigation();
+  Control getMitigation();
 
-    /**
-     * Mitigate this risk by applying the effects of a control.
-     *
-     * @param control
-     *            the mitigating control or {@code null} for no control.
-     */
-    R mitigate(@Nullable Control control);
+  /**
+   * Mitigate this risk by applying the effects of a control.
+   *
+   * @param control the mitigating control or {@code null} for no control.
+   */
+  R mitigate(@Nullable Control control);
 
-    Scenario getScenario();
+  Scenario getScenario();
 
-    Person getRiskOwner();
+  Person getRiskOwner();
 
-    /**
-     * Appoint a person or entity with the accountability and authority to manage a
-     * risk.
-     *
-     * @param riskOwner
-     *            the person who should be the new risk owner for this risk or
-     *            {@code null} to appoint no one.
-     */
-    R appoint(@Nullable Person riskOwner);
+  /**
+   * Appoint a person or entity with the accountability and authority to manage a risk.
+   *
+   * @param riskOwner the person who should be the new risk owner for this risk or {@code null} to
+   *     appoint no one.
+   */
+  R appoint(@Nullable Person riskOwner);
 
-    /**
-     * Remove this risk from its associated entity.
-     *
-     * @return {@code true} if the risk could be removed. {@code false} otherwise.
-     */
-    default boolean remove() {
-        return getEntity().removeRisk(this);
-    }
+  /**
+   * Remove this risk from its associated entity.
+   *
+   * @return {@code true} if the risk could be removed. {@code false} otherwise.
+   */
+  default boolean remove() {
+    return getEntity().removeRisk(this);
+  }
 
-    T getEntity();
+  T getEntity();
 
-    @Override
-    default Optional<Client> getOwningClient() {
-        return getEntity().getOwningClient();
-    }
+  @Override
+  default Optional<Client> getOwningClient() {
+    return getEntity().getOwningClient();
+  }
 }

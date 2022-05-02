@@ -29,33 +29,31 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Listens to JPA events on {@link ElementTypeDefinitionData} objects and
- * publishes {@link ElementTypeDefinitionUpdateEvent}s using the
- * {@link ApplicationEventPublisher}.
+ * Listens to JPA events on {@link ElementTypeDefinitionData} objects and publishes {@link
+ * ElementTypeDefinitionUpdateEvent}s using the {@link ApplicationEventPublisher}.
  */
 @Slf4j
 @AllArgsConstructor
 public class ElementTypeDefintionEntityListener {
-    private final ApplicationEventPublisher publisher;
+  private final ApplicationEventPublisher publisher;
 
-    @PrePersist
-    public void prePersist(ElementTypeDefinitionData definition) {
-        // When an existing element type definition is replaced, PrePersist is triggered
-        // instead of PreUpdate. But we can use the owner's version to detect if it is a
-        // creation or an update (assuming that element type definitions are always
-        // created in the same transaction as their owner).
-        if (definition.getOwner() instanceof Domain && definition.getOwner()
-                                                                 .getVersion() > 0) {
-            publisher.publishEvent(new ElementTypeDefinitionUpdateEvent(definition,
-                    (Domain) definition.getOwner()));
-        }
+  @PrePersist
+  public void prePersist(ElementTypeDefinitionData definition) {
+    // When an existing element type definition is replaced, PrePersist is triggered
+    // instead of PreUpdate. But we can use the owner's version to detect if it is a
+    // creation or an update (assuming that element type definitions are always
+    // created in the same transaction as their owner).
+    if (definition.getOwner() instanceof Domain && definition.getOwner().getVersion() > 0) {
+      publisher.publishEvent(
+          new ElementTypeDefinitionUpdateEvent(definition, (Domain) definition.getOwner()));
     }
+  }
 
-    @PreUpdate
-    public void preUpdate(ElementTypeDefinitionData definition) {
-        if (definition.getOwner() instanceof Domain) {
-            publisher.publishEvent(new ElementTypeDefinitionUpdateEvent(definition,
-                    (Domain) definition.getOwner()));
-        }
+  @PreUpdate
+  public void preUpdate(ElementTypeDefinitionData definition) {
+    if (definition.getOwner() instanceof Domain) {
+      publisher.publishEvent(
+          new ElementTypeDefinitionUpdateEvent(definition, (Domain) definition.getOwner()));
     }
+  }
 }

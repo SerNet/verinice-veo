@@ -21,28 +21,29 @@ import org.veo.adapter.presenter.api.common.IIdRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-/**
- * Swagger documentation for the reference 'owner' of 'Asset':
- */
+/** Swagger documentation for the reference 'owner' of 'Asset': */
 @Schema(name = "EntityReference", description = "A reference to an entity.")
 public interface IdRefEntity extends IIdRef {
 
-    @Schema(description = "A friendly human readable title of the referenced entity.",
-            example = "Example title",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @Override
-    String getDisplayName();
+  @Schema(
+      description = "A friendly human readable title of the referenced entity.",
+      example = "Example title",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  @Override
+  String getDisplayName();
 
-    @Schema(required = true,
-            description = "The resource URL of the referenced entity.",
-            example = "http://<api.example.org>/api/v1/<entitytype>/<00000000-0000-0000-0000-000000000000>",
-            format = "uri")
-    @Override
-    String getTargetUri();
+  @Schema(
+      required = true,
+      description = "The resource URL of the referenced entity.",
+      example =
+          "http://<api.example.org>/api/v1/<entitytype>/<00000000-0000-0000-0000-000000000000>",
+      format = "uri")
+  @Override
+  String getTargetUri();
 
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    String getSearchesUri();
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  String getSearchesUri();
 
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    String getResourcesUri();
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  String getResourcesUri();
 }

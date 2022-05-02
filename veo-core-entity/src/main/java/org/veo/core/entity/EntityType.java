@@ -25,76 +25,73 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * This class contains translations from/to all known resource collections to
- * their names & types.
- * <p>
- * This should be maintained to be the only place where new resource types must
- * be added.
+ * This class contains translations from/to all known resource collections to their names & types.
+ *
+ * <p>This should be maintained to be the only place where new resource types must be added.
  */
 @AllArgsConstructor
 public enum EntityType {
-    // @formatter:off
-    ASSET(Asset.class, Asset.SINGULAR_TERM, Asset.PLURAL_TERM),
-    CLIENT(Client.class, Client.SINGULAR_TERM, Client.PLURAL_TERM),
-    CONTROL(Control.class, Control.SINGULAR_TERM, Control.PLURAL_TERM),
-    CATALOG(Catalog.class, Catalog.SINGULAR_TERM, Catalog.PLURAL_TERM),
-    CATALOGITEM(CatalogItem.class, CatalogItem.SINGULAR_TERM, CatalogItem.PLURAL_TERM),
-    DOCUMENT(Document.class, Document.SINGULAR_TERM, Document.PLURAL_TERM),
-    DOMAIN(Domain.class, Domain.SINGULAR_TERM, Domain.PLURAL_TERM),
-    DOMAINTEMPLATE(DomainTemplate.class, DomainTemplate.SINGULAR_TERM, DomainTemplate.PLURAL_TERM),
-    INCIDENT(Incident.class, Incident.SINGULAR_TERM, Incident.PLURAL_TERM),
-    PERSON(Person.class, Person.SINGULAR_TERM, Person.PLURAL_TERM),
-    PROCESS(Process.class, Process.SINGULAR_TERM, Process.PLURAL_TERM),
-    UNIT(Unit.class, Unit.SINGULAR_TERM, Unit.PLURAL_TERM),
-    SCENARIO(Scenario.class, Scenario.SINGULAR_TERM, Scenario.PLURAL_TERM),
-    SCOPE(Scope.class, Scope.SINGULAR_TERM, Scope.PLURAL_TERM);
-    // @formatter:on
+  // @formatter:off
+  ASSET(Asset.class, Asset.SINGULAR_TERM, Asset.PLURAL_TERM),
+  CLIENT(Client.class, Client.SINGULAR_TERM, Client.PLURAL_TERM),
+  CONTROL(Control.class, Control.SINGULAR_TERM, Control.PLURAL_TERM),
+  CATALOG(Catalog.class, Catalog.SINGULAR_TERM, Catalog.PLURAL_TERM),
+  CATALOGITEM(CatalogItem.class, CatalogItem.SINGULAR_TERM, CatalogItem.PLURAL_TERM),
+  DOCUMENT(Document.class, Document.SINGULAR_TERM, Document.PLURAL_TERM),
+  DOMAIN(Domain.class, Domain.SINGULAR_TERM, Domain.PLURAL_TERM),
+  DOMAINTEMPLATE(DomainTemplate.class, DomainTemplate.SINGULAR_TERM, DomainTemplate.PLURAL_TERM),
+  INCIDENT(Incident.class, Incident.SINGULAR_TERM, Incident.PLURAL_TERM),
+  PERSON(Person.class, Person.SINGULAR_TERM, Person.PLURAL_TERM),
+  PROCESS(Process.class, Process.SINGULAR_TERM, Process.PLURAL_TERM),
+  UNIT(Unit.class, Unit.SINGULAR_TERM, Unit.PLURAL_TERM),
+  SCENARIO(Scenario.class, Scenario.SINGULAR_TERM, Scenario.PLURAL_TERM),
+  SCOPE(Scope.class, Scope.SINGULAR_TERM, Scope.PLURAL_TERM);
+  // @formatter:on
 
-    @Getter
-    private final Class<? extends Identifiable> type;
-    @Getter
-    private final String singularTerm;
-    @Getter
-    private final String pluralTerm;
+  @Getter private final Class<? extends Identifiable> type;
+  @Getter private final String singularTerm;
+  @Getter private final String pluralTerm;
 
-    public static final Set<String> PLURAL_TERMS = Stream.of(values())
-                                                         .map(et -> et.pluralTerm)
-                                                         .collect(Collectors.toUnmodifiableSet());
+  public static final Set<String> PLURAL_TERMS =
+      Stream.of(values()).map(et -> et.pluralTerm).collect(Collectors.toUnmodifiableSet());
 
-    public static final Set<Class<? extends Identifiable>> TYPES = Stream.of(values())
-                                                                         .map(et -> et.type)
-                                                                         .collect(Collectors.toUnmodifiableSet());
+  public static final Set<Class<? extends Identifiable>> TYPES =
+      Stream.of(values()).map(et -> et.type).collect(Collectors.toUnmodifiableSet());
 
-    public static final Set<EntityType> ELEMENT_TYPES = Stream.of(values())
-                                                              .filter(type -> Element.class.isAssignableFrom(type.type))
-                                                              .collect(Collectors.toUnmodifiableSet());
+  public static final Set<EntityType> ELEMENT_TYPES =
+      Stream.of(values())
+          .filter(type -> Element.class.isAssignableFrom(type.type))
+          .collect(Collectors.toUnmodifiableSet());
 
-    public static final Set<Class<? extends Element>> ELEMENT_TYPE_CLASSES = ELEMENT_TYPES.stream()
-                                                                                          .map(t -> (Class<? extends Element>) t.type)
-                                                                                          .collect(Collectors.toUnmodifiableSet());
+  public static final Set<Class<? extends Element>> ELEMENT_TYPE_CLASSES =
+      ELEMENT_TYPES.stream()
+          .map(t -> (Class<? extends Element>) t.type)
+          .collect(Collectors.toUnmodifiableSet());
 
-    public static final Set<String> TYPE_DESIGNATORS = Set.of(AbstractRisk.TYPE_DESIGNATOR,
-                                                              Asset.TYPE_DESIGNATOR,
-                                                              Control.TYPE_DESIGNATOR,
-                                                              Document.TYPE_DESIGNATOR,
-                                                              Incident.TYPE_DESIGNATOR,
-                                                              Person.TYPE_DESIGNATOR,
-                                                              Process.TYPE_DESIGNATOR,
-                                                              Scenario.TYPE_DESIGNATOR,
-                                                              Scope.TYPE_DESIGNATOR);
+  public static final Set<String> TYPE_DESIGNATORS =
+      Set.of(
+          AbstractRisk.TYPE_DESIGNATOR,
+          Asset.TYPE_DESIGNATOR,
+          Control.TYPE_DESIGNATOR,
+          Document.TYPE_DESIGNATOR,
+          Incident.TYPE_DESIGNATOR,
+          Person.TYPE_DESIGNATOR,
+          Process.TYPE_DESIGNATOR,
+          Scenario.TYPE_DESIGNATOR,
+          Scope.TYPE_DESIGNATOR);
 
-    public static Class<? extends Identifiable> getTypeForPluralTerm(String pluralTerm) {
-        return Stream.of(values())
-                     .filter(et -> et.pluralTerm.equals(pluralTerm))
-                     .map(et -> et.type)
-                     .findFirst()
-                     .orElseThrow();
-    }
+  public static Class<? extends Identifiable> getTypeForPluralTerm(String pluralTerm) {
+    return Stream.of(values())
+        .filter(et -> et.pluralTerm.equals(pluralTerm))
+        .map(et -> et.type)
+        .findFirst()
+        .orElseThrow();
+  }
 
-    public static EntityType getBySingularTerm(String singularTerm) {
-        return Stream.of(values())
-                     .filter(et -> et.singularTerm.equals(singularTerm))
-                     .findFirst()
-                     .orElseThrow();
-    }
+  public static EntityType getBySingularTerm(String singularTerm) {
+    return Stream.of(values())
+        .filter(et -> et.singularTerm.equals(singularTerm))
+        .findFirst()
+        .orElseThrow();
+  }
 }

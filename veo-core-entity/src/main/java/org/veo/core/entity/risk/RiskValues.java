@@ -28,26 +28,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-/**
- * Risk values to be used as input for a use case.
- */
+/** Risk values to be used as input for a use case. */
 @Data
 @AllArgsConstructor
 @Builder
 public class RiskValues implements RiskValuesProvider {
 
-    @Valid
-    private Probability probability;
+  @Valid private Probability probability;
 
-    @Valid
-    private List<Impact> impactCategories;
+  @Valid private List<Impact> impactCategories;
 
-    @Valid
-    private List<DeterminedRisk> categorizedRisks;
+  @Valid private List<DeterminedRisk> categorizedRisks;
 
-    @Valid
-    private Key<String> riskDefinitionId;
+  @Valid private Key<String> riskDefinitionId;
 
-    @Valid
-    private Key<UUID> domainId;
+  @Valid private Key<UUID> domainId;
 }

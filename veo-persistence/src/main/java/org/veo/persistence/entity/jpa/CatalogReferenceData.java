@@ -36,17 +36,16 @@ import lombok.ToString;
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class CatalogReferenceData extends IdentifiableVersionedData
-        implements CatalogReference {
-    @Id
-    @ToString.Include
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private String dbId;
+    implements CatalogReference {
+  @Id
+  @ToString.Include
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  private String dbId;
 
-    @ManyToOne(targetEntity = CatalogItemData.class)
-    private CatalogItem catalogItem;
+  @ManyToOne(targetEntity = CatalogItemData.class)
+  private CatalogItem catalogItem;
 
-    @ManyToOne(targetEntity = CatalogItemData.class, optional = false)
-    private CatalogItem owner;
-
+  @ManyToOne(targetEntity = CatalogItemData.class, optional = false)
+  private CatalogItem owner;
 }

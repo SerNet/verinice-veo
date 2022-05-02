@@ -17,12 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.common;
 
-/**
- * References a veo resource using a URI.
- */
+/** References a veo resource using a URI. */
 public interface Ref {
-    /**
-     * Returns a URI of the target object which may be a URL.
-     */
-    String getTargetUri();
+  /** Returns a URI of the target object which may be a URL. */
+  String getTargetUri();
 }

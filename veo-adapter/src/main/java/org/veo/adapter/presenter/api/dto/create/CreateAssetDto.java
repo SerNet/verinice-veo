@@ -24,6 +24,4 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public final class CreateAssetDto extends AbstractAssetDto {
-
-}
+public final class CreateAssetDto extends AbstractAssetDto {}

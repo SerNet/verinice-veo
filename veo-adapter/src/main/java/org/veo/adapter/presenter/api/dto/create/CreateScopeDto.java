@@ -24,6 +24,4 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public final class CreateScopeDto extends AbstractScopeDto {
-
-}
+public final class CreateScopeDto extends AbstractScopeDto {}

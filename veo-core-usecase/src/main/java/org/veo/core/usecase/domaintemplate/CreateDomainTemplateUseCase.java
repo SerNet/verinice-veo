@@ -30,51 +30,49 @@ import org.veo.core.usecase.UseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
-/**
- * Creates given new domain template. Will never update existing domain
- * templates.
- */
+/** Creates given new domain template. Will never update existing domain templates. */
 @RequiredArgsConstructor
-public class CreateDomainTemplateUseCase implements
-        TransactionalUseCase<CreateDomainTemplateUseCase.InputData, CreateDomainTemplateUseCase.OutputData> {
-    private final DomainTemplateRepository domainTemplateRepository;
-    private final DomainTemplateIdGenerator domainTemplateIdGenerator;
+public class CreateDomainTemplateUseCase
+    implements TransactionalUseCase<
+        CreateDomainTemplateUseCase.InputData, CreateDomainTemplateUseCase.OutputData> {
+  private final DomainTemplateRepository domainTemplateRepository;
+  private final DomainTemplateIdGenerator domainTemplateIdGenerator;
 
-    @Override
-    public OutputData execute(InputData input) {
-        var domainTemplate = input.domainTemplate;
+  @Override
+  public OutputData execute(InputData input) {
+    var domainTemplate = input.domainTemplate;
 
-        // Generate domain template UUID (ID from input is ignored).
-        domainTemplate.setId(Key.uuidFrom(domainTemplateIdGenerator.createDomainTemplateId(domainTemplate.getName(),
-                                                                                           domainTemplate.getTemplateVersion(),
-                                                                                           domainTemplate.getRevision())));
+    // Generate domain template UUID (ID from input is ignored).
+    domainTemplate.setId(
+        Key.uuidFrom(
+            domainTemplateIdGenerator.createDomainTemplateId(
+                domainTemplate.getName(),
+                domainTemplate.getTemplateVersion(),
+                domainTemplate.getRevision())));
 
-        if (domainTemplateRepository.exists(domainTemplate.getId())) {
-            throw new EntityAlreadyExistsException(domainTemplate);
-        }
-
-        domainTemplate.getCatalogs()
-                      .stream()
-                      .flatMap(c -> c.getCatalogItems()
-                                     .stream())
-                      .map(CatalogItem::getElement)
-                      .forEach(element -> element.setDesignator("NO_DESIGNATOR"));
-
-        domainTemplate = domainTemplateRepository.save(domainTemplate);
-
-        return new OutputData(domainTemplate);
+    if (domainTemplateRepository.exists(domainTemplate.getId())) {
+      throw new EntityAlreadyExistsException(domainTemplate);
     }
 
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        DomainTemplate domainTemplate;
-    }
+    domainTemplate.getCatalogs().stream()
+        .flatMap(c -> c.getCatalogItems().stream())
+        .map(CatalogItem::getElement)
+        .forEach(element -> element.setDesignator("NO_DESIGNATOR"));
 
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        DomainTemplate domainTemplate;
-    }
+    domainTemplate = domainTemplateRepository.save(domainTemplate);
 
+    return new OutputData(domainTemplate);
+  }
+
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
+    DomainTemplate domainTemplate;
+  }
+
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    DomainTemplate domainTemplate;
+  }
 }

@@ -22,23 +22,19 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.aspects.Aspect;
 
-/**
- * Checks that an aspect's domain is contained in its owner's domains.
- */
+/** Checks that an aspect's domain is contained in its owner's domains. */
 class AspectsHaveOwnerDomain implements EntitySpecification<Aspect> {
 
-    @SuppressWarnings("rawtypes")
-    @Override
-    public boolean test(Aspect aspect) {
-        Versioned owner = aspect.getOwner();
-        if (owner instanceof Element) {
-            return ((Element) owner).getDomains()
-                                    .contains(aspect.getDomain());
-        } else if (owner instanceof AbstractRisk) {
-            return ((AbstractRisk) owner).getDomains()
-                                         .contains(aspect.getDomain());
-        }
-        throw new IllegalArgumentException("Unable to check domains of aspect " + aspect
-                + ", unhandled type " + aspect.getClass());
+  @SuppressWarnings("rawtypes")
+  @Override
+  public boolean test(Aspect aspect) {
+    Versioned owner = aspect.getOwner();
+    if (owner instanceof Element) {
+      return ((Element) owner).getDomains().contains(aspect.getDomain());
+    } else if (owner instanceof AbstractRisk) {
+      return ((AbstractRisk) owner).getDomains().contains(aspect.getDomain());
     }
+    throw new IllegalArgumentException(
+        "Unable to check domains of aspect " + aspect + ", unhandled type " + aspect.getClass());
+  }
 }

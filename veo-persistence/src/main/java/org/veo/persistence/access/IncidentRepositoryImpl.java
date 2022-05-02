@@ -29,12 +29,14 @@ import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
 public class IncidentRepositoryImpl
-        extends AbstractCompositeEntityRepositoryImpl<Incident, IncidentData>
-        implements IncidentRepository {
+    extends AbstractCompositeEntityRepositoryImpl<Incident, IncidentData>
+    implements IncidentRepository {
 
-    public IncidentRepositoryImpl(IncidentDataRepository dataRepository,
-            ValidationService validation, CustomLinkDataRepository linkDataRepository,
-            ScopeDataRepository scopeDataRepository) {
-        super(dataRepository, validation, linkDataRepository, scopeDataRepository);
-    }
+  public IncidentRepositoryImpl(
+      IncidentDataRepository dataRepository,
+      ValidationService validation,
+      CustomLinkDataRepository linkDataRepository,
+      ScopeDataRepository scopeDataRepository) {
+    super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+  }
 }

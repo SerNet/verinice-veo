@@ -35,34 +35,37 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class DeleteClientUseCase
-        implements TransactionalUseCase<DeleteClientUseCase.InputData, UseCase.EmptyOutput> {
-    private final AccountProvider accountProvider;
-    private final ClientRepository clientRepository;
-    private final DeleteUnitUseCase deleteUnitUseCase;
-    private final UnitRepository unitRepository;
+    implements TransactionalUseCase<DeleteClientUseCase.InputData, UseCase.EmptyOutput> {
+  private final AccountProvider accountProvider;
+  private final ClientRepository clientRepository;
+  private final DeleteUnitUseCase deleteUnitUseCase;
+  private final UnitRepository unitRepository;
 
-    @Override
-    public EmptyOutput execute(InputData input) {
-        if (!accountProvider.getCurrentUserAccount()
-                            .isAdmin()) {
-            throw new MissingAdminPrivilegesException();
-        }
-        var client = clientRepository.findById(input.clientId)
-                                     .orElseThrow(() -> new NotFoundException(
-                                             String.format("Client %s does not exist",
-                                                           input.clientId)));
-        unitRepository.findByClient(client)
-                      .forEach(unit -> {
-                          deleteUnitUseCase.execute(new DeleteUnitUseCase.InputData(unit.getId(),
-                                  client));
-                      });
-        clientRepository.delete(client);
-        return EmptyOutput.INSTANCE;
+  @Override
+  public EmptyOutput execute(InputData input) {
+    if (!accountProvider.getCurrentUserAccount().isAdmin()) {
+      throw new MissingAdminPrivilegesException();
     }
+    var client =
+        clientRepository
+            .findById(input.clientId)
+            .orElseThrow(
+                () ->
+                    new NotFoundException(
+                        String.format("Client %s does not exist", input.clientId)));
+    unitRepository
+        .findByClient(client)
+        .forEach(
+            unit -> {
+              deleteUnitUseCase.execute(new DeleteUnitUseCase.InputData(unit.getId(), client));
+            });
+    clientRepository.delete(client);
+    return EmptyOutput.INSTANCE;
+  }
 
-    @AllArgsConstructor
-    @Getter
-    public static class InputData implements UseCase.InputData {
-        public Key<UUID> clientId;
-    }
+  @AllArgsConstructor
+  @Getter
+  public static class InputData implements UseCase.InputData {
+    public Key<UUID> clientId;
+  }
 }

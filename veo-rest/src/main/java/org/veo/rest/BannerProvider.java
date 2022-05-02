@@ -25,37 +25,40 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class BannerProvider {
-    public static String getBanner() {
-        try {
-            return render();
-        } catch (Exception ex) {
-            log.error("Banner rendering failed", ex);
-            return "VEO";
-        }
+  public static String getBanner() {
+    try {
+      return render();
+    } catch (Exception ex) {
+      log.error("Banner rendering failed", ex);
+      return "VEO";
     }
+  }
 
-    private static String render() {
-        return "<=====================================================================>\n\n"
-                + "    __/\\\\\\________/\\\\\\__/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\_______/\\\\\\\\\\______        \n"
-                + "     _\\/\\\\\\_______\\/\\\\\\_\\/\\\\\\///////////______/\\\\\\///\\\\\\____       \n"
-                + "      _\\//\\\\\\______/\\\\\\__\\/\\\\\\_______________/\\\\\\/__\\///\\\\\\__      \n"
-                + "       __\\//\\\\\\____/\\\\\\___\\/\\\\\\\\\\\\\\\\\\\\\\______/\\\\\\______\\//\\\\\\_     \n"
-                + "        ___\\//\\\\\\__/\\\\\\____\\/\\\\\\///////______\\/\\\\\\_______\\/\\\\\\_    \n"
-                + "         ____\\//\\\\\\/\\\\\\_____\\/\\\\\\_____________\\//\\\\\\______/\\\\\\__   \n"
-                + "          _____\\//\\\\\\\\\\______\\/\\\\\\______________\\///\\\\\\__/\\\\\\____  \n"
-                + "           ______\\//\\\\\\_______\\/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\____\\///\\\\\\\\\\/_____ \n"
-                + "            _______\\///________\\///////////////_______\\/////_______    \n\n"
-                + getCenteredRandomTitle(72) + "\n\n"
-                + "<=====================================================================>";
-    }
+  private static String render() {
+    return "<=====================================================================>\n\n"
+        + "    __/\\\\\\________/\\\\\\__/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\_______/\\\\\\\\\\______        \n"
+        + "     _\\/\\\\\\_______\\/\\\\\\_\\/\\\\\\///////////______/\\\\\\///\\\\\\____       \n"
+        + "      _\\//\\\\\\______/\\\\\\__\\/\\\\\\_______________/\\\\\\/__\\///\\\\\\__      \n"
+        + "       __\\//\\\\\\____/\\\\\\___\\/\\\\\\\\\\\\\\\\\\\\\\______/\\\\\\______\\//\\\\\\_     \n"
+        + "        ___\\//\\\\\\__/\\\\\\____\\/\\\\\\///////______\\/\\\\\\_______\\/\\\\\\_    \n"
+        + "         ____\\//\\\\\\/\\\\\\_____\\/\\\\\\_____________\\//\\\\\\______/\\\\\\__   \n"
+        + "          _____\\//\\\\\\\\\\______\\/\\\\\\______________\\///\\\\\\__/\\\\\\____  \n"
+        + "           ______\\//\\\\\\_______\\/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\____\\///\\\\\\\\\\/_____ \n"
+        + "            _______\\///________\\///////////////_______\\/////_______    \n\n"
+        + getCenteredRandomTitle(72)
+        + "\n\n"
+        + "<=====================================================================>";
+  }
 
-    @SuppressFBWarnings({ "SECPR", "DMI_RANDOM_USED_ONLY_ONCE" })
-    private static String getCenteredRandomTitle(int artWidth) {
-        var descriptions = List.of("Very Effective Organizer", "Valuable Entity Office",
-                                   "Vinegar & Eggplant Omelet", "Verified Elephant Orphanage",
-                                   "Very Elegant Orangutan", "Valued Electric Outlet");
-        var description = descriptions.get(new Random().nextInt(descriptions.size()));
-        var leftMarginWidth = Math.max(0, artWidth - description.length()) / 2;
-        return " ".repeat(leftMarginWidth) + description;
-    }
+  @SuppressFBWarnings({"SECPR", "DMI_RANDOM_USED_ONLY_ONCE"})
+  private static String getCenteredRandomTitle(int artWidth) {
+    var descriptions =
+        List.of(
+            "Very Effective Organizer", "Valuable Entity Office",
+            "Vinegar & Eggplant Omelet", "Verified Elephant Orphanage",
+            "Very Elegant Orangutan", "Valued Electric Outlet");
+    var description = descriptions.get(new Random().nextInt(descriptions.size()));
+    var leftMarginWidth = Math.max(0, artWidth - description.length()) / 2;
+    return " ".repeat(leftMarginWidth) + description;
+  }
 }

@@ -24,21 +24,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 /**
- * References a {@link Rule} on a {@link Decision} using the index the rule has
- * in the decision's list of rules.
+ * References a {@link Rule} on a {@link Decision} using the index the rule has in the decision's
+ * list of rules.
  */
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 @Value
 public class DecisionRuleRef {
-    @Getter
-    private final int index;
+  @Getter private final int index;
 
-    public DecisionRuleRef(int index, Decision decision) {
-        this(index);
-        if (decision.getRules()
-                    .size() <= index) {
-            throw new IllegalArgumentException();
-        }
+  public DecisionRuleRef(int index, Decision decision) {
+    this(index);
+    if (decision.getRules().size() <= index) {
+      throw new IllegalArgumentException();
     }
+  }
 }

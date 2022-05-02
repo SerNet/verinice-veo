@@ -34,12 +34,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 
 public abstract class AbstractEntityControllerWithDefaultSearch extends AbstractEntityController {
 
-    @PostMapping(value = "/searches")
-    @Operation(summary = "Creates a new search with the given search criteria.")
-    public @Valid CompletableFuture<ResponseEntity<SearchResponse>> createSearch(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @Valid @RequestBody SearchQueryDto search) {
-        return CompletableFuture.supplyAsync(() -> createSearchResponseBody(search));
-    }
-
+  @PostMapping(value = "/searches")
+  @Operation(summary = "Creates a new search with the given search criteria.")
+  public @Valid CompletableFuture<ResponseEntity<SearchResponse>> createSearch(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @Valid @RequestBody SearchQueryDto search) {
+    return CompletableFuture.supplyAsync(() -> createSearchResponseBody(search));
+  }
 }

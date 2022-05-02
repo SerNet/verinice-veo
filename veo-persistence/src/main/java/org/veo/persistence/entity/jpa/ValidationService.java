@@ -33,28 +33,26 @@ import org.veo.core.entity.specification.EntityValidator;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Validation Service that uses an injected JSR380 validator to check all
- * annotated validation rules before validating model invariants.
+ * Validation Service that uses an injected JSR380 validator to check all annotated validation rules
+ * before validating model invariants.
  */
 @Service
 @RequiredArgsConstructor
 public class ValidationService {
 
-    private final Validator beanValidator;
-    private final EntityValidator entityValidator;
+  private final Validator beanValidator;
+  private final EntityValidator entityValidator;
 
-    public void validate(Identifiable identifiable)
-            throws EntityValidationException, ConstraintViolationException {
-        // execute JSR 380 validations on model entities:
-        Set<ConstraintViolation<Identifiable>> violations = beanValidator.validate(identifiable);
-        if (!violations.isEmpty())
-            throw new ConstraintViolationException(violations);
+  public void validate(Identifiable identifiable)
+      throws EntityValidationException, ConstraintViolationException {
+    // execute JSR 380 validations on model entities:
+    Set<ConstraintViolation<Identifiable>> violations = beanValidator.validate(identifiable);
+    if (!violations.isEmpty()) throw new ConstraintViolationException(violations);
 
-        if (!(identifiable instanceof Element))
-            return;
+    if (!(identifiable instanceof Element)) return;
 
-        if (entityValidator != null) {
-            entityValidator.validate(identifiable);
-        }
+    if (entityValidator != null) {
+      entityValidator.validate(identifiable);
     }
+  }
 }

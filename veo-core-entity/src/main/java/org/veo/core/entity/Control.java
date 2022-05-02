@@ -23,26 +23,24 @@ import java.util.Optional;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
-/**
- * A control represents something with can be applied to an entity.
- */
+/** A control represents something with can be applied to an entity. */
 public interface Control extends Element, CompositeElement<Control> {
 
-    String SINGULAR_TERM = "control";
-    String PLURAL_TERM = "controls";
-    String TYPE_DESIGNATOR = "CTL";
+  String SINGULAR_TERM = "control";
+  String PLURAL_TERM = "controls";
+  String TYPE_DESIGNATOR = "CTL";
 
-    @Override
-    default String getModelType() {
-        return SINGULAR_TERM;
-    }
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
 
-    @Override
-    default String getTypeDesignator() {
-        return TYPE_DESIGNATOR;
-    }
+  @Override
+  default String getTypeDesignator() {
+    return TYPE_DESIGNATOR;
+  }
 
-    Optional<Map<RiskDefinitionRef, ControlRiskValues>> getRiskValues(DomainTemplate domain);
+  Optional<Map<RiskDefinitionRef, ControlRiskValues>> getRiskValues(DomainTemplate domain);
 
-    void setRiskValues(DomainTemplate domain, Map<RiskDefinitionRef, ControlRiskValues> riskValues);
+  void setRiskValues(DomainTemplate domain, Map<RiskDefinitionRef, ControlRiskValues> riskValues);
 }

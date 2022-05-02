@@ -48,45 +48,49 @@ import lombok.Singular;
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public class ScopeRiskDto extends AbstractRiskDto {
 
-    @Valid
-    private IdRef<Scope> scope;
+  @Valid private IdRef<Scope> scope;
 
-    @Builder
-    public ScopeRiskDto(@Valid @Singular Set<IdRef<Domain>> domains,
-            @Valid @NotNull(message = "A scenario must be present.") IdRef<Scenario> scenario,
-            @Valid IdRef<Control> mitigatedBy, @Valid IdRef<Person> riskOwner,
-            @Pattern(regexp = Patterns.DATETIME) String createdAt, String createdBy,
-            @Pattern(regexp = Patterns.DATETIME) String updatedAt, String updatedBy,
-            @Valid IdRef<Scope> scope, RiskRef selfRef, long version, String designator) {
-        super(designator, domains, scenario, mitigatedBy, riskOwner);
-        this.scope = scope;
-        setSelfRef(selfRef);
-        setCreatedAt(createdAt);
-        setCreatedBy(createdBy);
-        setUpdatedAt(updatedAt);
-        setUpdatedBy(updatedBy);
-        setVersion(version);
-    }
+  @Builder
+  public ScopeRiskDto(
+      @Valid @Singular Set<IdRef<Domain>> domains,
+      @Valid @NotNull(message = "A scenario must be present.") IdRef<Scenario> scenario,
+      @Valid IdRef<Control> mitigatedBy,
+      @Valid IdRef<Person> riskOwner,
+      @Pattern(regexp = Patterns.DATETIME) String createdAt,
+      String createdBy,
+      @Pattern(regexp = Patterns.DATETIME) String updatedAt,
+      String updatedBy,
+      @Valid IdRef<Scope> scope,
+      RiskRef selfRef,
+      long version,
+      String designator) {
+    super(designator, domains, scenario, mitigatedBy, riskOwner);
+    this.scope = scope;
+    setSelfRef(selfRef);
+    setCreatedAt(createdAt);
+    setCreatedBy(createdBy);
+    setUpdatedAt(updatedAt);
+    setUpdatedBy(updatedBy);
+    setVersion(version);
+  }
 
-    public static ScopeRiskDto from(@Valid ScopeRisk risk, ReferenceAssembler referenceAssembler) {
-        return ScopeRiskDto.builder()
-                           .designator(risk.getDesignator())
-                           .scope(IdRef.from(risk.getEntity(), referenceAssembler))
-                           .scenario(IdRef.from(risk.getScenario(), referenceAssembler))
-                           .riskOwner(IdRef.from(risk.getRiskOwner(), referenceAssembler))
-                           .mitigatedBy(IdRef.from(risk.getMitigation(), referenceAssembler))
-                           .createdAt(risk.getCreatedAt()
-                                          .toString())
-                           .createdBy(risk.getCreatedBy())
-                           .updatedAt(risk.getUpdatedAt()
-                                          .toString())
-                           .updatedBy(risk.getUpdatedBy())
-                           .version(risk.getVersion())
-                           .domains(risk.getDomains()
-                                        .stream()
-                                        .map(o -> IdRef.from(o, referenceAssembler))
-                                        .collect(Collectors.toSet()))
-                           .selfRef(new RiskRef(referenceAssembler, risk))
-                           .build();
-    }
+  public static ScopeRiskDto from(@Valid ScopeRisk risk, ReferenceAssembler referenceAssembler) {
+    return ScopeRiskDto.builder()
+        .designator(risk.getDesignator())
+        .scope(IdRef.from(risk.getEntity(), referenceAssembler))
+        .scenario(IdRef.from(risk.getScenario(), referenceAssembler))
+        .riskOwner(IdRef.from(risk.getRiskOwner(), referenceAssembler))
+        .mitigatedBy(IdRef.from(risk.getMitigation(), referenceAssembler))
+        .createdAt(risk.getCreatedAt().toString())
+        .createdBy(risk.getCreatedBy())
+        .updatedAt(risk.getUpdatedAt().toString())
+        .updatedBy(risk.getUpdatedBy())
+        .version(risk.getVersion())
+        .domains(
+            risk.getDomains().stream()
+                .map(o -> IdRef.from(o, referenceAssembler))
+                .collect(Collectors.toSet()))
+        .selfRef(new RiskRef(referenceAssembler, risk))
+        .build();
+  }
 }

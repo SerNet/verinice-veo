@@ -19,5 +19,4 @@ package org.veo.persistence.access.jpa;
 
 import org.veo.persistence.entity.jpa.ScenarioData;
 
-public interface ScenarioDataRepository extends CompositeEntityDataRepository<ScenarioData> {
-}
+public interface ScenarioDataRepository extends CompositeEntityDataRepository<ScenarioData> {}

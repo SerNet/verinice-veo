@@ -43,7 +43,7 @@ allprojects  {
         }
         java {
             target 'src/**/*.java', 'buildSrc/**/*.java'
-            eclipse().configFile(rootProject.file('misc/eclipse/java-format.xml'))
+            googleJavaFormat()
             importOrderFile(rootProject.file('misc/eclipse/java.importorder'))
             addStep org.veo.LicenseHeaderStep.create(currentUserName)
             addStep org.veo.NoWildcardImportsStep.create()

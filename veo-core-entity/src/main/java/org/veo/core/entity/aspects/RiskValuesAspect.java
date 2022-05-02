@@ -19,6 +19,4 @@ package org.veo.core.entity.aspects;
 
 import org.veo.core.entity.risk.RiskValuesProvider;
 
-public interface RiskValuesAspect extends Aspect, RiskValuesProvider {
-
-}
+public interface RiskValuesAspect extends Aspect, RiskValuesProvider {}

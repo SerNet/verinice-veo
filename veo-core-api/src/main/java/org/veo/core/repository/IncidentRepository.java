@@ -22,9 +22,7 @@ import org.veo.core.entity.Incident;
 /**
  * A repository for <code>Incident</code> entities.
  *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
+ * <p>Implements basic CRUD operations from the superinterface and extends them with more specific
+ * methods - i.e. queries based on particular fields.
  */
-public interface IncidentRepository extends ElementRepository<Incident> {
-
-}
+public interface IncidentRepository extends ElementRepository<Incident> {}

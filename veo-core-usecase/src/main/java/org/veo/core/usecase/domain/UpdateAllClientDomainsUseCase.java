@@ -46,66 +46,72 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class UpdateAllClientDomainsUseCase
-        implements TransactionalUseCase<UpdateAllClientDomainsUseCase.InputData, EmptyOutput> {
+    implements TransactionalUseCase<UpdateAllClientDomainsUseCase.InputData, EmptyOutput> {
 
-    private final DomainRepository domainRepository;
-    private final RepositoryProvider repositoryProvider;
-    private final UnitRepository unitRepository;
-    private final ElementMigrationService elementMigrationService;
+  private final DomainRepository domainRepository;
+  private final RepositoryProvider repositoryProvider;
+  private final UnitRepository unitRepository;
+  private final ElementMigrationService elementMigrationService;
 
-    @Override
-    public EmptyOutput execute(InputData input) {
-        Set<Domain> newDomains = domainRepository.findAllByTemplateId(input.domainTemplateId);
-        for (Domain newDomain : newDomains) {
-            Client client = newDomain.getOwner();
+  @Override
+  public EmptyOutput execute(InputData input) {
+    Set<Domain> newDomains = domainRepository.findAllByTemplateId(input.domainTemplateId);
+    for (Domain newDomain : newDomains) {
+      Client client = newDomain.getOwner();
 
-            Set<Domain> clientActiveDomains = client.getDomains()
-                                                    .stream()
-                                                    .filter(Domain::isActive)
-                                                    .filter(d -> d.getName()
-                                                                  .equals(newDomain.getName()))
-                                                    .collect(Collectors.toSet());
-            if (clientActiveDomains.size() != 2) {
-                log.warn("Skipping client {}, found {} active domains instead of 2", client,
-                         clientActiveDomains.size());
-                continue;
-            }
-            Domain domainToUpdate = clientActiveDomains.stream()
-                                                       .filter(Predicate.not(newDomain::equals))
-                                                       .findAny()
-                                                       .orElseThrow();
-            performMigration(client, domainToUpdate, newDomain);
-            domainToUpdate.setActive(false);
-        }
-
-        return EmptyOutput.INSTANCE;
+      Set<Domain> clientActiveDomains =
+          client.getDomains().stream()
+              .filter(Domain::isActive)
+              .filter(d -> d.getName().equals(newDomain.getName()))
+              .collect(Collectors.toSet());
+      if (clientActiveDomains.size() != 2) {
+        log.warn(
+            "Skipping client {}, found {} active domains instead of 2",
+            client,
+            clientActiveDomains.size());
+        continue;
+      }
+      Domain domainToUpdate =
+          clientActiveDomains.stream()
+              .filter(Predicate.not(newDomain::equals))
+              .findAny()
+              .orElseThrow();
+      performMigration(client, domainToUpdate, newDomain);
+      domainToUpdate.setActive(false);
     }
 
-    private void performMigration(Client client, Domain domainToUpdate, Domain newDomain) {
-        log.info("Performing migration for domain {}->{}", domainToUpdate, newDomain);
-        List<Unit> unitsToUpdate = unitRepository.findByClient(client);
-        for (Unit unit : unitsToUpdate) {
-            if (unit.removeFromDomains(domainToUpdate)) {
-                unit.addToDomains(newDomain);
-            }
-        }
-        EntityType.ELEMENT_TYPES.stream()
-                                .forEach(type -> {
-                                    Set<? extends Element> elements = repositoryProvider.getElementRepositoryFor((Class<Element>) type.getType())
-                                                                                        .findByDomain(domainToUpdate);
-                                    elements.forEach(element -> {
-                                        element.transferToDomain(domainToUpdate, newDomain);
-                                        elementMigrationService.migrate(element,
-                                                                        newDomain.getElementTypeDefinition(type.getSingularTerm())
-                                                                                 .orElseThrow(),
-                                                                        newDomain);
-                                    });
-                                });
-    }
+    return EmptyOutput.INSTANCE;
+  }
 
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Key<UUID> domainTemplateId;
+  private void performMigration(Client client, Domain domainToUpdate, Domain newDomain) {
+    log.info("Performing migration for domain {}->{}", domainToUpdate, newDomain);
+    List<Unit> unitsToUpdate = unitRepository.findByClient(client);
+    for (Unit unit : unitsToUpdate) {
+      if (unit.removeFromDomains(domainToUpdate)) {
+        unit.addToDomains(newDomain);
+      }
     }
+    EntityType.ELEMENT_TYPES.stream()
+        .forEach(
+            type -> {
+              Set<? extends Element> elements =
+                  repositoryProvider
+                      .getElementRepositoryFor((Class<Element>) type.getType())
+                      .findByDomain(domainToUpdate);
+              elements.forEach(
+                  element -> {
+                    element.transferToDomain(domainToUpdate, newDomain);
+                    elementMigrationService.migrate(
+                        element,
+                        newDomain.getElementTypeDefinition(type.getSingularTerm()).orElseThrow(),
+                        newDomain);
+                  });
+            });
+  }
+
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
+    Key<UUID> domainTemplateId;
+  }
 }

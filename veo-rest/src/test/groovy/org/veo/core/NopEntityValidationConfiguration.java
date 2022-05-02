@@ -26,14 +26,14 @@ import org.veo.core.entity.specification.EntityValidator;
 
 @TestConfiguration
 public class NopEntityValidationConfiguration {
-    @Bean
-    @Primary
-    EntityValidator nopEntityValidator() {
-        return new EntityValidator(null) {
-            @Override
-            public void validate(Object entity) throws EntityValidationException {
-                // ok
-            }
-        };
-    }
+  @Bean
+  @Primary
+  EntityValidator nopEntityValidator() {
+    return new EntityValidator(null) {
+      @Override
+      public void validate(Object entity) throws EntityValidationException {
+        // ok
+      }
+    };
+  }
 }

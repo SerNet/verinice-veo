@@ -31,46 +31,45 @@ import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.service.CatalogItemService;
 
 public class CatalogItemServiceImpl implements CatalogItemService {
-    private final DtoToEntityTransformer entityTransformer;
-    private final EntityToDtoTransformer dtoTransformer;
-    private final CatalogItemPrepareStrategy preparations;
+  private final DtoToEntityTransformer entityTransformer;
+  private final EntityToDtoTransformer dtoTransformer;
+  private final CatalogItemPrepareStrategy preparations;
 
-    public CatalogItemServiceImpl(EntityToDtoTransformer dtoTransformer, EntityFactory factory,
-            IdentifiableFactory identifiableFactory,
-            DomainAssociationTransformer domainAssociationTransformer,
-            CatalogItemPrepareStrategy preparations) {
-        this.dtoTransformer = dtoTransformer;
-        this.preparations = preparations;
+  public CatalogItemServiceImpl(
+      EntityToDtoTransformer dtoTransformer,
+      EntityFactory factory,
+      IdentifiableFactory identifiableFactory,
+      DomainAssociationTransformer domainAssociationTransformer,
+      CatalogItemPrepareStrategy preparations) {
+    this.dtoTransformer = dtoTransformer;
+    this.preparations = preparations;
 
-        this.entityTransformer = new DtoToEntityTransformer(factory, identifiableFactory,
-                domainAssociationTransformer);
-    }
+    this.entityTransformer =
+        new DtoToEntityTransformer(factory, identifiableFactory, domainAssociationTransformer);
+  }
 
-    @Override
-    public Element createInstance(CatalogItem item, Domain domain) {
-        Element catalogElement = item.getElement();
-        AbstractElementDto dto = dtoTransformer.transform2Dto(catalogElement);
-        prepareDto(dto);
-        PlaceholderResolver placeholderResolver = new PlaceholderResolver(entityTransformer);
-        Element newElement = entityTransformer.transformDto2Element(dto, placeholderResolver);
-        preparations.prepareElement(domain, newElement, false);
-        catalogElement.getSubTypeAspects()
-                      .forEach(st -> newElement.setSubType(domain, st.getSubType(),
-                                                           st.getStatus()));
-        // TODO: VEO-612 handle parts
-        newElement.setAppliedCatalogItems(Collections.singleton(item));
-        return newElement;
-    }
+  @Override
+  public Element createInstance(CatalogItem item, Domain domain) {
+    Element catalogElement = item.getElement();
+    AbstractElementDto dto = dtoTransformer.transform2Dto(catalogElement);
+    prepareDto(dto);
+    PlaceholderResolver placeholderResolver = new PlaceholderResolver(entityTransformer);
+    Element newElement = entityTransformer.transformDto2Element(dto, placeholderResolver);
+    preparations.prepareElement(domain, newElement, false);
+    catalogElement
+        .getSubTypeAspects()
+        .forEach(st -> newElement.setSubType(domain, st.getSubType(), st.getStatus()));
+    // TODO: VEO-612 handle parts
+    newElement.setAppliedCatalogItems(Collections.singleton(item));
+    return newElement;
+  }
 
-    /**
-     * Prepare the dto for transformation by removing references, like links and
-     * clears the domain.
-     */
-    private void prepareDto(AbstractElementDto dto) {
-        dto.setOwner(null);
-        dto.clearDomains();
-        dto.getLinks()
-           .clear();
-    }
-
+  /**
+   * Prepare the dto for transformation by removing references, like links and clears the domain.
+   */
+  private void prepareDto(AbstractElementDto dto) {
+    dto.setOwner(null);
+    dto.clearDomains();
+    dto.getLinks().clear();
+  }
 }

@@ -26,17 +26,20 @@ import org.veo.persistence.entity.jpa.ClientData;
 
 public interface ClientDataRepository extends IdentifiableVersionedDataRepository<ClientData> {
 
-    @Query("select c from #{#entityName} c left join fetch c.domains where c.dbId = ?1")
-    Optional<ClientData> findById(String id);
+  @Query("select c from #{#entityName} c left join fetch c.domains where c.dbId = ?1")
+  Optional<ClientData> findById(String id);
 
-    @EntityGraph(attributePaths = { "domains.catalogs.catalogItems",
-            "domains.catalogs.catalogItems.element" })
-    Optional<ClientData> findWithCatalogsAndItemsByDbId(String id);
+  @EntityGraph(
+      attributePaths = {"domains.catalogs.catalogItems", "domains.catalogs.catalogItems.element"})
+  Optional<ClientData> findWithCatalogsAndItemsByDbId(String id);
 
-    @EntityGraph(attributePaths = { "domains.catalogs.catalogItems.element",
-            "domains.catalogs.catalogItems.tailoringReferences" })
-    Optional<ClientData> findWithCatalogsAndItemsAndTailoringReferencesByDbId(String id);
+  @EntityGraph(
+      attributePaths = {
+        "domains.catalogs.catalogItems.element",
+        "domains.catalogs.catalogItems.tailoringReferences"
+      })
+  Optional<ClientData> findWithCatalogsAndItemsAndTailoringReferencesByDbId(String id);
 
-    @EntityGraph(attributePaths = { "domains.elementTypeDefinitions.translations" })
-    Optional<ClientData> findWithTranslationsByDbId(String id);
+  @EntityGraph(attributePaths = {"domains.elementTypeDefinitions.translations"})
+  Optional<ClientData> findWithTranslationsByDbId(String id);
 }

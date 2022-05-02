@@ -47,62 +47,63 @@ import lombok.ToString;
 @Data
 public class UnitData extends ElementOwnerData implements NameableData, Unit {
 
-    @NotNull
-    @Column(name = "name")
-    @ToString.Include
-    private String name;
+  @NotNull
+  @Column(name = "name")
+  @ToString.Include
+  private String name;
 
-    @Column(name = "abbreviation")
-    private String abbreviation;
+  @Column(name = "abbreviation")
+  private String abbreviation;
 
-    @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
-    private String description;
+  @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
+  private String description;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = ClientData.class)
-    @JoinColumn(name = "client_id")
-    private Client client;
+  @NotNull
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ClientData.class)
+  @JoinColumn(name = "client_id")
+  private Client client;
 
-    @OneToMany(mappedBy = "parent",
-               fetch = FetchType.LAZY,
-               targetEntity = UnitData.class,
-               cascade = CascadeType.ALL)
-    @Valid
-    private final Set<Unit> units = new HashSet<>();
+  @OneToMany(
+      mappedBy = "parent",
+      fetch = FetchType.LAZY,
+      targetEntity = UnitData.class,
+      cascade = CascadeType.ALL)
+  @Valid
+  private final Set<Unit> units = new HashSet<>();
 
-    @ManyToOne(targetEntity = UnitData.class)
-    private Unit parent;
+  @ManyToOne(targetEntity = UnitData.class)
+  private Unit parent;
 
-    @Column(name = "domains")
-    @ManyToMany(targetEntity = DomainData.class)
-    private Set<Domain> domains = new HashSet<>();
+  @Column(name = "domains")
+  @ManyToMany(targetEntity = DomainData.class)
+  private Set<Domain> domains = new HashSet<>();
 
-    @Override
-    public void setUnits(Set<Unit> units) {
-        units.forEach(u -> u.setParent(this));
-        this.units.clear();
-        this.units.addAll(units);
-    }
+  @Override
+  public void setUnits(Set<Unit> units) {
+    units.forEach(u -> u.setParent(this));
+    this.units.clear();
+    this.units.addAll(units);
+  }
 
-    public void setDomains(Set<Domain> newDomains) {
-        domains.clear();
-        domains.addAll(newDomains);
-    }
+  public void setDomains(Set<Domain> newDomains) {
+    domains.clear();
+    domains.addAll(newDomains);
+  }
 
-    public boolean addToDomains(Domain aDomain) {
-        return this.domains.add(aDomain);
-    }
+  public boolean addToDomains(Domain aDomain) {
+    return this.domains.add(aDomain);
+  }
 
-    public boolean addToDomains(@NotNull @NonNull Set<Domain> domains) {
-        return this.domains.addAll(domains);
-    }
+  public boolean addToDomains(@NotNull @NonNull Set<Domain> domains) {
+    return this.domains.addAll(domains);
+  }
 
-    /**
-     * Remove the given Domain from the collection domains.
-     *
-     * @return true if removed
-     */
-    public boolean removeFromDomains(Domain aDomain) {
-        return this.domains.remove(aDomain);
-    }
+  /**
+   * Remove the given Domain from the collection domains.
+   *
+   * @return true if removed
+   */
+  public boolean removeFromDomains(Domain aDomain) {
+    return this.domains.remove(aDomain);
+  }
 }

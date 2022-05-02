@@ -31,42 +31,37 @@ import org.veo.persistence.entity.jpa.StoredEventData;
 @Repository
 public class StoredEventRepositoryImpl implements StoredEventRepository {
 
-    private final StoredEventDataRepository dataRepository;
+  private final StoredEventDataRepository dataRepository;
 
-    public StoredEventRepositoryImpl(StoredEventDataRepository dataRepository) {
-        this.dataRepository = dataRepository;
-    }
+  public StoredEventRepositoryImpl(StoredEventDataRepository dataRepository) {
+    this.dataRepository = dataRepository;
+  }
 
-    @Override
-    public StoredEvent save(StoredEvent entity) {
-        return dataRepository.save((StoredEventData) entity);
-    }
+  @Override
+  public StoredEvent save(StoredEvent entity) {
+    return dataRepository.save((StoredEventData) entity);
+  }
 
-    @Override
-    public Set<StoredEvent> findAll() {
-        return dataRepository.findAll()
-                             .stream()
-                             .map(e -> (StoredEvent) e)
-                             .collect(Collectors.toSet());
-    }
+  @Override
+  public Set<StoredEvent> findAll() {
+    return dataRepository.findAll().stream().map(e -> (StoredEvent) e).collect(Collectors.toSet());
+  }
 
-    @Override
-    public void remove(StoredEvent event) {
-        dataRepository.delete((StoredEventData) event);
-    }
+  @Override
+  public void remove(StoredEvent event) {
+    dataRepository.delete((StoredEventData) event);
+  }
 
-    @Override
-    public List<StoredEvent> findPendingEvents(Instant maxLockTime) {
-        return dataRepository.findPendingEvents(maxLockTime);
-    }
+  @Override
+  public List<StoredEvent> findPendingEvents(Instant maxLockTime) {
+    return dataRepository.findPendingEvents(maxLockTime);
+  }
 
-    @Override
-    public List<StoredEvent> saveAll(List<StoredEvent> pendingEvents) {
-        var all = dataRepository.saveAll(pendingEvents.stream()
-                                                      .map(StoredEventData.class::cast)
-                                                      .collect(Collectors.toSet()));
-        return all.stream()
-                  .map(StoredEvent.class::cast)
-                  .collect(Collectors.toList());
-    }
+  @Override
+  public List<StoredEvent> saveAll(List<StoredEvent> pendingEvents) {
+    var all =
+        dataRepository.saveAll(
+            pendingEvents.stream().map(StoredEventData.class::cast).collect(Collectors.toSet()));
+    return all.stream().map(StoredEvent.class::cast).collect(Collectors.toList());
+  }
 }

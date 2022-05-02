@@ -22,26 +22,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.domain.AuditorAware;
 
-/**
- * Customize JPA test environment.
- */
+/** Customize JPA test environment. */
 @TestConfiguration
 public class JpaTestConfig {
 
-    @Bean
-    public DummyAuthAwareImpl authAwareImpl() {
-        return new DummyAuthAwareImpl();
-    }
+  @Bean
+  public DummyAuthAwareImpl authAwareImpl() {
+    return new DummyAuthAwareImpl();
+  }
 
-    @Bean
-    public CurrentUserProvider testCurrentUserProvider(AuditorAware<String> auditorAware) {
-        return new LenientCurrentUserProviderImpl(auditorAware);
-    }
+  @Bean
+  public CurrentUserProvider testCurrentUserProvider(AuditorAware<String> auditorAware) {
+    return new LenientCurrentUserProviderImpl(auditorAware);
+  }
 
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        PropertySourcesPlaceholderConfigurer p = new PropertySourcesPlaceholderConfigurer();
-        p.setIgnoreResourceNotFound(true);
-        return p;
-    }
+  @Bean
+  public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+    PropertySourcesPlaceholderConfigurer p = new PropertySourcesPlaceholderConfigurer();
+    p.setIgnoreResourceNotFound(true);
+    return p;
+  }
 }

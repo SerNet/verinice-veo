@@ -27,97 +27,89 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Versioned;
 
 /**
- * Defines the behavior to prepare {@link CatalogItem} or {@link Element} for
- * reuse as catalogElement or incarnation. All subparts are associated with the
- * given domain.
+ * Defines the behavior to prepare {@link CatalogItem} or {@link Element} for reuse as
+ * catalogElement or incarnation. All subparts are associated with the given domain.
  */
 public class CatalogItemPrepareStrategy {
-    private static final String NO_DESIGNATOR = "NO_DESIGNATOR";
-    public static final String SYSTEM_USER = "system";
+  private static final String NO_DESIGNATOR = "NO_DESIGNATOR";
+  public static final String SYSTEM_USER = "system";
 
-    /**
-     * Clean up and relink a catalogItem. Add the domain to each sub element.
-     */
-    public void prepareCatalogItem(Domain domain, Catalog catalog, CatalogItem item) {
-        item.setId(null);
-        item.setCatalog(catalog);
-        Element element = item.getElement();
-        if (element != null) {
-            prepareElement(domain, element, true);
-        }
+  /** Clean up and relink a catalogItem. Add the domain to each sub element. */
+  public void prepareCatalogItem(Domain domain, Catalog catalog, CatalogItem item) {
+    item.setId(null);
+    item.setCatalog(catalog);
+    Element element = item.getElement();
+    if (element != null) {
+      prepareElement(domain, element, true);
     }
+  }
 
-    public void prepareCatalogItem(DomainTemplate domain, Catalog catalog, CatalogItem item) {
-        item.setId(null);
-        item.setCatalog(catalog);
-        updateVersion(item);
-        item.getTailoringReferences()
-            .forEach(CatalogItemPrepareStrategy::updateVersion);
-        Element element = item.getElement();
-        if (element != null) {
-            prepareElement(domain, element, true);
-        }
+  public void prepareCatalogItem(DomainTemplate domain, Catalog catalog, CatalogItem item) {
+    item.setId(null);
+    item.setCatalog(catalog);
+    updateVersion(item);
+    item.getTailoringReferences().forEach(CatalogItemPrepareStrategy::updateVersion);
+    Element element = item.getElement();
+    if (element != null) {
+      prepareElement(domain, element, true);
     }
+  }
 
-    /**
-     * Clean up and relink a {@link Element}. Add the domain to each sub element.
-     * Prepare the {@link Element} for usage in a catalog or as an incarnation.
-     */
-    public void prepareElement(DomainTemplate domain, Element element, boolean isCatalogElement) {
-        element.setId(null);
-        element.setDesignator(isCatalogElement ? NO_DESIGNATOR : null);
-        element.getDomains()
-               .clear();
-        processSubTypes(domain, element);
-        processLinks(null, element);
-        processCustomAspects(null, element);
-        updateVersion(element);
-        // TODO: VEO-612 add parts from CompositeEntity
-    }
+  /**
+   * Clean up and relink a {@link Element}. Add the domain to each sub element. Prepare the {@link
+   * Element} for usage in a catalog or as an incarnation.
+   */
+  public void prepareElement(DomainTemplate domain, Element element, boolean isCatalogElement) {
+    element.setId(null);
+    element.setDesignator(isCatalogElement ? NO_DESIGNATOR : null);
+    element.getDomains().clear();
+    processSubTypes(domain, element);
+    processLinks(null, element);
+    processCustomAspects(null, element);
+    updateVersion(element);
+    // TODO: VEO-612 add parts from CompositeEntity
+  }
 
-    /**
-     * Clean up and relink a {@link Element}. Add the domain to each sub element.
-     * Prepare the {@link Element} for usage in a catalog or as an incarnation.
-     */
-    public void prepareElement(Domain domain, Element element, boolean isCatalogElement) {
-        element.setId(null);
-        element.setDesignator(isCatalogElement ? NO_DESIGNATOR : null);
-        element.getDomains()
-               .clear();
-        element.addToDomains(domain);
-        processSubTypes(domain, element);
-        processLinks(domain, element);
-        processCustomAspects(domain, element);
-        // TODO: VEO-612 add parts from CompositeEntity
-    }
+  /**
+   * Clean up and relink a {@link Element}. Add the domain to each sub element. Prepare the {@link
+   * Element} for usage in a catalog or as an incarnation.
+   */
+  public void prepareElement(Domain domain, Element element, boolean isCatalogElement) {
+    element.setId(null);
+    element.setDesignator(isCatalogElement ? NO_DESIGNATOR : null);
+    element.getDomains().clear();
+    element.addToDomains(domain);
+    processSubTypes(domain, element);
+    processLinks(domain, element);
+    processCustomAspects(domain, element);
+    // TODO: VEO-612 add parts from CompositeEntity
+  }
 
-    public static void updateVersion(Versioned v) {
-        v.setCreatedBy(SYSTEM_USER);
-        v.setUpdatedBy(SYSTEM_USER);
-        v.setCreatedAt(Instant.now());
-    }
+  public static void updateVersion(Versioned v) {
+    v.setCreatedBy(SYSTEM_USER);
+    v.setUpdatedBy(SYSTEM_USER);
+    v.setCreatedAt(Instant.now());
+  }
 
-    private void processCustomAspects(Domain domain, Element est) {
-        est.getCustomAspects()
-           .forEach(ca -> {
-               ca.getDomains()
-                 .clear();
-               ca.addToDomains(domain);
-           });
-    }
+  private void processCustomAspects(Domain domain, Element est) {
+    est.getCustomAspects()
+        .forEach(
+            ca -> {
+              ca.getDomains().clear();
+              ca.addToDomains(domain);
+            });
+  }
 
-    private void processLinks(Domain domain, Element est) {
-        est.getLinks()
-           .forEach(link -> {
-               link.getDomains()
-                   .clear();
-               link.addToDomains(domain);
-           });
-    }
+  private void processLinks(Domain domain, Element est) {
+    est.getLinks()
+        .forEach(
+            link -> {
+              link.getDomains().clear();
+              link.addToDomains(domain);
+            });
+  }
 
-    private void processSubTypes(DomainTemplate domain, Element est) {
-        est.getSubTypeAspects()
-           .forEach(oldAspect -> oldAspect.setDomain(domain));
-    }
-
+  private void processSubTypes(DomainTemplate domain, Element est) {
+    est.getSubTypeAspects().forEach(oldAspect -> oldAspect.setDomain(domain));
+  }
 }

@@ -21,21 +21,21 @@ import java.util.List;
 
 public interface CategorizedImpactValueProvider {
 
-    List<Impact> getCategorizedImpacts();
+  List<Impact> getCategorizedImpacts();
 
-    List<CategoryRef> getAvailableCategories();
+  List<CategoryRef> getAvailableCategories();
 
-    void setSpecificImpact(CategoryRef impactCategory, ImpactRef specific);
+  void setSpecificImpact(CategoryRef impactCategory, ImpactRef specific);
 
-    ImpactRef getPotentialImpact(CategoryRef impactCategory);
+  ImpactRef getPotentialImpact(CategoryRef impactCategory);
 
-    ImpactRef getSpecificImpact(CategoryRef impactCategory);
+  ImpactRef getSpecificImpact(CategoryRef impactCategory);
 
-    ImpactRef getEffectiveImpact(CategoryRef impactCategory);
+  ImpactRef getEffectiveImpact(CategoryRef impactCategory);
 
-    String getSpecificImpactExplanation(CategoryRef impactCategory);
+  String getSpecificImpactExplanation(CategoryRef impactCategory);
 
-    void setPotentialImpact(CategoryRef impactCategory, ImpactRef potential);
+  void setPotentialImpact(CategoryRef impactCategory, ImpactRef potential);
 
-    void setSpecificImpactExplanation(CategoryRef impactCategory, String explanation);
+  void setSpecificImpactExplanation(CategoryRef impactCategory, String explanation);
 }

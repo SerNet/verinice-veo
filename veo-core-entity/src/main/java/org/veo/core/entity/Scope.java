@@ -24,83 +24,80 @@ import java.util.Set;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
 /**
- * A group of {@link Element} objects that form a logical unit. An object may
- * belong to zero, one or multiple scopes. Scopes can contain scopes.
+ * A group of {@link Element} objects that form a logical unit. An object may belong to zero, one or
+ * multiple scopes. Scopes can contain scopes.
  */
 public interface Scope extends Element, RiskAffected<Scope, ScopeRisk> {
 
-    String SINGULAR_TERM = "scope";
-    String PLURAL_TERM = "scopes";
-    String TYPE_DESIGNATOR = "SCP";
+  String SINGULAR_TERM = "scope";
+  String PLURAL_TERM = "scopes";
+  String TYPE_DESIGNATOR = "SCP";
 
-    @Override
-    default String getModelType() {
-        return SINGULAR_TERM;
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
+
+  @Override
+  default Class<? extends Identifiable> getModelInterface() {
+    return Scope.class;
+  }
+
+  Set<Element> getMembers();
+
+  default boolean addMember(Element member) {
+    member.getScopes().add(this);
+    return getMembers().add(member);
+  }
+
+  default boolean addMembers(Set<Element> members) {
+    var added = false;
+    for (var member : members) {
+      if (addMember(member)) {
+        added = true;
+      }
     }
+    return added;
+  }
 
-    @Override
-    default Class<? extends Identifiable> getModelInterface() {
-        return Scope.class;
+  default boolean removeMember(Element member) {
+    // Members may be proxies - make sure they are hydrated by calling a method on
+    // them.
+    if (getMembers().removeIf((m) -> m.getId().equals(member.getId()))) {
+      member.getScopes().remove(this);
+      return true;
     }
+    return false;
+  }
 
-    Set<Element> getMembers();
-
-    default boolean addMember(Element member) {
-        member.getScopes()
-              .add(this);
-        return getMembers().add(member);
+  default boolean removeMembers(Set<Element> members) {
+    var removed = false;
+    for (var member : new HashSet<>(members)) {
+      if (removeMember(member)) {
+        removed = true;
+      }
     }
+    return removed;
+  }
 
-    default boolean addMembers(Set<Element> members) {
-        var added = false;
-        for (var member : members) {
-            if (addMember(member)) {
-                added = true;
-            }
-        }
-        return added;
-    }
+  default void setMembers(Set<Element> members) {
+    removeMembers(getMembers());
+    addMembers(members);
+  }
 
-    default boolean removeMember(Element member) {
-        // Members may be proxies - make sure they are hydrated by calling a method on
-        // them.
-        if (getMembers().removeIf((m) -> m.getId()
-                                          .equals(member.getId()))) {
-            member.getScopes()
-                  .remove(this);
-            return true;
-        }
-        return false;
-    }
+  @Override
+  default String getTypeDesignator() {
+    return TYPE_DESIGNATOR;
+  }
 
-    default boolean removeMembers(Set<Element> members) {
-        var removed = false;
-        for (var member : new HashSet<>(members)) {
-            if (removeMember(member)) {
-                removed = true;
-            }
-        }
-        return removed;
-    }
+  Optional<RiskDefinitionRef> getRiskDefinition(DomainTemplate domain);
 
-    default void setMembers(Set<Element> members) {
-        removeMembers(getMembers());
-        addMembers(members);
-    }
+  void setRiskDefinition(DomainTemplate domain, RiskDefinitionRef riskDefinition);
 
-    @Override
-    default String getTypeDesignator() {
-        return TYPE_DESIGNATOR;
-    }
-
-    Optional<RiskDefinitionRef> getRiskDefinition(DomainTemplate domain);
-
-    void setRiskDefinition(DomainTemplate domain, RiskDefinitionRef riskDefinition);
-
-    @Override
-    default void remove() {
-        setMembers(new HashSet<>());
-        // Work with copy of parent element list to avoid concurrent modifications
-        new HashSet<>(getScopes()).forEach(s -> s.removeMember(this));
-    }
+  @Override
+  default void remove() {
+    setMembers(new HashSet<>());
+    // Work with copy of parent element list to avoid concurrent modifications
+    new HashSet<>(getScopes()).forEach(s -> s.removeMember(this));
+  }
 }

@@ -38,22 +38,22 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class DomainData extends DomainTemplateData implements NameableData, Domain {
 
-    @Column(name = "active")
-    @ToString.Include
-    private boolean active = true;
-    // one to one
-    @ManyToOne(targetEntity = DomainTemplateData.class)
-    @Valid
-    private DomainTemplate domainTemplate;
+  @Column(name = "active")
+  @ToString.Include
+  private boolean active = true;
+  // one to one
+  @ManyToOne(targetEntity = DomainTemplateData.class)
+  @Valid
+  private DomainTemplate domainTemplate;
 
-    // This enforces the composition association Client-Domain
-    @ManyToOne(targetEntity = ClientData.class, optional = false, fetch = FetchType.LAZY)
-    @NotNull
-    @Valid
-    private Client owner;
+  // This enforces the composition association Client-Domain
+  @ManyToOne(targetEntity = ClientData.class, optional = false, fetch = FetchType.LAZY)
+  @NotNull
+  @Valid
+  private Client owner;
 
-    @Override
-    public boolean isActive() {
-        return active;
-    }
+  @Override
+  public boolean isActive() {
+    return active;
+  }
 }

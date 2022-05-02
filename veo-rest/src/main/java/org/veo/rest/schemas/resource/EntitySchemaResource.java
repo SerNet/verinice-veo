@@ -48,10 +48,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 /**
- * REST service which provides methods to query schemas for business entities.
- * The schemas that are delivered will be generated according to: - the entity,
- * i.e. "Process" - the domain, i.e. "GDPR" - the user's granted authorities (to
- * be determined - currently all properties are returned regardless of the user)
+ * REST service which provides methods to query schemas for business entities. The schemas that are
+ * delivered will be generated according to: - the entity, i.e. "Process" - the domain, i.e. "GDPR"
+ * - the user's granted authorities (to be determined - currently all properties are returned
+ * regardless of the user)
  */
 @RestController
 @RequestMapping(EntitySchemaResource.URL_BASE_PATH)
@@ -60,44 +60,54 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 // Other scopes could be used to secure individual methods.
 public interface EntitySchemaResource {
 
-    String URL_BASE_PATH = "/schemas";
+  String URL_BASE_PATH = "/schemas";
 
-    // @formatter:off
-    @GetMapping(value = "/{type:[\\w]+}")
-    @Operation(summary = "Retrieves an entity schema.")
-    @ApiResponses(value = {
-            // TODO reference new metaschema here (not yet available):
-            @ApiResponse(responseCode = "200",
-                         description = "Schema loaded",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
-            @ApiResponse(responseCode = "404", description = "Schema not found")
-    })
-    CompletableFuture<ResponseEntity<String>> getSchema(
-
-            @Parameter(hidden = true) Authentication auth,
-
-            @Parameter(required = true,
-                description = "The entity for which the schema will be returned.",
-                example = Process.SINGULAR_TERM,
-                schema = @Schema(
-                    type = "string",
-                    allowableValues = { Asset.SINGULAR_TERM, Control.SINGULAR_TERM, Document.SINGULAR_TERM,
-                            Incident.SINGULAR_TERM, Person.SINGULAR_TERM, Process.SINGULAR_TERM, Scenario.SINGULAR_TERM,
-                            Scope.SINGULAR_TERM },
-                    description = "A valid entity type identifier."
-                )
-            )
-            @PathVariable String type,
-
-            @Parameter(required = true,
-                description = "A list of domain IDs. Attributes of these domains will be returned for the given entity type.",
-                example = "15f58e45-48b7-409e-a32f-48d208aac5d5,7592f0d7-740f-4f4c-838e-1af88bf3c414",
-                schema = @Schema(
-                    type = "string",
-                    description = "List of domain identifiers - must not contain any reserved characters "
-                            + "defined in RFC 3986."
-                )
-            )
-            @RequestParam(value = "domains") List<String> domainIDs);
-    // @formatter:on
+  // @formatter:off
+  @GetMapping(value = "/{type:[\\w]+}")
+  @Operation(summary = "Retrieves an entity schema.")
+  @ApiResponses(
+      value = {
+        // TODO reference new metaschema here (not yet available):
+        @ApiResponse(
+            responseCode = "200",
+            description = "Schema loaded",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
+        @ApiResponse(responseCode = "404", description = "Schema not found")
+      })
+  CompletableFuture<ResponseEntity<String>> getSchema(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(
+              required = true,
+              description = "The entity for which the schema will be returned.",
+              example = Process.SINGULAR_TERM,
+              schema =
+                  @Schema(
+                      type = "string",
+                      allowableValues = {
+                        Asset.SINGULAR_TERM,
+                        Control.SINGULAR_TERM,
+                        Document.SINGULAR_TERM,
+                        Incident.SINGULAR_TERM,
+                        Person.SINGULAR_TERM,
+                        Process.SINGULAR_TERM,
+                        Scenario.SINGULAR_TERM,
+                        Scope.SINGULAR_TERM
+                      },
+                      description = "A valid entity type identifier."))
+          @PathVariable
+          String type,
+      @Parameter(
+              required = true,
+              description =
+                  "A list of domain IDs. Attributes of these domains will be returned for the given entity type.",
+              example = "15f58e45-48b7-409e-a32f-48d208aac5d5,7592f0d7-740f-4f4c-838e-1af88bf3c414",
+              schema =
+                  @Schema(
+                      type = "string",
+                      description =
+                          "List of domain identifiers - must not contain any reserved characters "
+                              + "defined in RFC 3986."))
+          @RequestParam(value = "domains")
+          List<String> domainIDs);
+  // @formatter:on
 }

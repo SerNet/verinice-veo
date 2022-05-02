@@ -17,27 +17,25 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-/**
- * Something that happened.
- */
+/** Something that happened. */
 public interface Incident extends Element, CompositeElement<Incident> {
 
-    String SINGULAR_TERM = "incident";
-    String PLURAL_TERM = "incidents";
-    String TYPE_DESIGNATOR = "INC";
+  String SINGULAR_TERM = "incident";
+  String PLURAL_TERM = "incidents";
+  String TYPE_DESIGNATOR = "INC";
 
-    @Override
-    default String getModelType() {
-        return SINGULAR_TERM;
-    }
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
 
-    @Override
-    default Class<? extends Identifiable> getModelInterface() {
-        return Incident.class;
-    }
+  @Override
+  default Class<? extends Identifiable> getModelInterface() {
+    return Incident.class;
+  }
 
-    @Override
-    default String getTypeDesignator() {
-        return TYPE_DESIGNATOR;
-    }
+  @Override
+  default String getTypeDesignator() {
+    return TYPE_DESIGNATOR;
+  }
 }

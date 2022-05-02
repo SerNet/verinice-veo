@@ -24,22 +24,20 @@ import org.apache.commons.lang3.EnumUtils;
 import lombok.AllArgsConstructor;
 
 /**
- * Spring Boot's default String->Enum converter considers case, so it won't
- * convert "scope" to org.veo.core.entity.EntityType.SCOPE for example. This
- * converter converts the String to upper-case before trying to find an enum
- * value with the specified name.
+ * Spring Boot's default String->Enum converter considers case, so it won't convert "scope" to
+ * org.veo.core.entity.EntityType.SCOPE for example. This converter converts the String to
+ * upper-case before trying to find an enum value with the specified name.
  *
  * @see DomainController#updateDomainWithSchema(org.springframework.security.core.Authentication,
- *      String, org.veo.core.entity.EntityType,
- *      com.fasterxml.jackson.databind.JsonNode)
+ *     String, org.veo.core.entity.EntityType, com.fasterxml.jackson.databind.JsonNode)
  */
 @AllArgsConstructor
 public class IgnoreCaseEnumConverter<E extends Enum<E>> extends PropertyEditorSupport {
 
-    private Class<E> type;
+  private Class<E> type;
 
-    @Override
-    public void setAsText(String text) {
-        setValue(EnumUtils.getEnum(type, text.toUpperCase()));
-    }
+  @Override
+  public void setAsText(String text) {
+    setValue(EnumUtils.getEnum(type, text.toUpperCase()));
+  }
 }

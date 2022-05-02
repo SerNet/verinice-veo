@@ -34,40 +34,40 @@ import org.veo.persistence.entity.jpa.ClientData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
-public class ClientRepositoryImpl extends
-        AbstractIdentifiableVersionedRepository<Client, ClientData> implements ClientRepository {
+public class ClientRepositoryImpl
+    extends AbstractIdentifiableVersionedRepository<Client, ClientData>
+    implements ClientRepository {
 
-    private final ClientDataRepository clientDataRepository;
+  private final ClientDataRepository clientDataRepository;
 
-    public ClientRepositoryImpl(ClientDataRepository dataRepository, ValidationService validator) {
-        super(dataRepository, validator);
-        clientDataRepository = dataRepository;
-    }
+  public ClientRepositoryImpl(ClientDataRepository dataRepository, ValidationService validator) {
+    super(dataRepository, validator);
+    clientDataRepository = dataRepository;
+  }
 
-    @Override
-    public Optional<Client> findByIdFetchCatalogsAndItems(Key<UUID> id) {
-        return clientDataRepository.findWithCatalogsAndItemsByDbId(id.uuidValue())
-                                   .map(Client.class::cast);
-    }
+  @Override
+  public Optional<Client> findByIdFetchCatalogsAndItems(Key<UUID> id) {
+    return clientDataRepository
+        .findWithCatalogsAndItemsByDbId(id.uuidValue())
+        .map(Client.class::cast);
+  }
 
-    @Override
-    public Optional<Client> findByIdFetchCatalogsAndItemsAndTailoringReferences(Key<UUID> id) {
-        return clientDataRepository.findWithCatalogsAndItemsAndTailoringReferencesByDbId(id.uuidValue())
-                                   .map(Client.class::cast);
-    }
+  @Override
+  public Optional<Client> findByIdFetchCatalogsAndItemsAndTailoringReferences(Key<UUID> id) {
+    return clientDataRepository
+        .findWithCatalogsAndItemsAndTailoringReferencesByDbId(id.uuidValue())
+        .map(Client.class::cast);
+  }
 
-    @Override
-    public Optional<Client> findByIdFetchTranslations(Key<UUID> id) {
-        return clientDataRepository.findWithTranslationsByDbId(id.uuidValue())
-                                   .map(Client.class::cast);
-    }
+  @Override
+  public Optional<Client> findByIdFetchTranslations(Key<UUID> id) {
+    return clientDataRepository.findWithTranslationsByDbId(id.uuidValue()).map(Client.class::cast);
+  }
 
-    @Override
-    public List<Client> findAll() {
-        return stream(clientDataRepository.findAll()
-                                          .spliterator(),
-                      false).map(Client.class::cast)
-                            .collect(toList());
-
-    }
+  @Override
+  public List<Client> findAll() {
+    return stream(clientDataRepository.findAll().spliterator(), false)
+        .map(Client.class::cast)
+        .collect(toList());
+  }
 }

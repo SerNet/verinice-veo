@@ -35,10 +35,9 @@ import lombok.ToString;
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class ElementOwnerData extends IdentifiableVersionedData implements ElementOwner {
-    @Id
-    @ToString.Include
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private String dbId;
-
+  @Id
+  @ToString.Include
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  private String dbId;
 }

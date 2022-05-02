@@ -19,22 +19,17 @@ package org.veo.core.entity.specification;
 
 import org.veo.core.entity.Element;
 
-/**
- * Checks that an element belongs only to domains that are available in its
- * client
- */
+/** Checks that an element belongs only to domains that are available in its client */
 public class ElementBelongsOnlyToClientDomains implements EntitySpecification<Element> {
 
-    @Override
-    public boolean test(Element element) {
-        if (element.getOwningClient()
-                   .isEmpty()) {
-            return true;
-        }
-        return element.getOwningClient()
-                      .map(client -> client.getDomains()
-                                           .containsAll(element.getDomains()))
-                      .orElse(true);
+  @Override
+  public boolean test(Element element) {
+    if (element.getOwningClient().isEmpty()) {
+      return true;
     }
-
+    return element
+        .getOwningClient()
+        .map(client -> client.getDomains().containsAll(element.getDomains()))
+        .orElse(true);
+  }
 }

@@ -29,10 +29,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
 @AllArgsConstructor
-/**
- * Contains the element together with the relevant tailoringreferences.
- */
+/** Contains the element together with the relevant tailoringreferences. */
 public class IncarnateCatalogItemDescription {
-    private CatalogItem item;
-    private List<TailoringReferenceParameter> references = new ArrayList<>();
+  private CatalogItem item;
+  private List<TailoringReferenceParameter> references = new ArrayList<>();
 }

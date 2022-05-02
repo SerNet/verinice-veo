@@ -34,26 +34,25 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public abstract class AbstractCatalogDto extends AbstractVersionedSelfReferencingDto
-        implements NameableDto {
-    @NotNull(message = "A name must be present.")
-    @Schema(description = "The name for the Catalog.", required = true)
-    @Size(max = Nameable.NAME_MAX_LENGTH)
-    private String name;
+    implements NameableDto {
+  @NotNull(message = "A name must be present.")
+  @Schema(description = "The name for the Catalog.", required = true)
+  @Size(max = Nameable.NAME_MAX_LENGTH)
+  private String name;
 
-    @Schema(description = "The abbreviation for the Catalog.")
-    @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
-    private String abbreviation;
+  @Schema(description = "The abbreviation for the Catalog.")
+  @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
+  private String abbreviation;
 
-    @Schema(description = "The description for the Catalog.")
-    @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
-    private String description;
+  @Schema(description = "The description for the Catalog.")
+  @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
+  private String description;
 
-    @Schema(implementation = IdRefCatalogDomainTemplate.class)
-    private IdRef<DomainTemplate> domainTemplate;
+  @Schema(implementation = IdRefCatalogDomainTemplate.class)
+  private IdRef<DomainTemplate> domainTemplate;
 
-    @Override
-    public Class<? extends Identifiable> getModelInterface() {
-        return Catalog.class;
-    }
-
+  @Override
+  public Class<? extends Identifiable> getModelInterface() {
+    return Catalog.class;
+  }
 }

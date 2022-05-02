@@ -44,69 +44,64 @@ import org.veo.persistence.entity.jpa.ValidationService;
 
 @Transactional(readOnly = true)
 abstract class AbstractElementRepository<T extends Element, S extends ElementData>
-        extends AbstractIdentifiableVersionedRepository<T, S> implements ElementRepository<T> {
+    extends AbstractIdentifiableVersionedRepository<T, S> implements ElementRepository<T> {
 
-    protected final ElementDataRepository<S> dataRepository;
-    private final CustomLinkDataRepository linkDataRepository;
+  protected final ElementDataRepository<S> dataRepository;
+  private final CustomLinkDataRepository linkDataRepository;
 
-    final ScopeDataRepository scopeDataRepository;
+  final ScopeDataRepository scopeDataRepository;
 
-    AbstractElementRepository(ElementDataRepository<S> dataRepository, ValidationService validation,
-            CustomLinkDataRepository linkDataRepository, ScopeDataRepository scopeDataRepository) {
-        super(dataRepository, validation);
-        this.dataRepository = dataRepository;
-        this.linkDataRepository = linkDataRepository;
-        this.scopeDataRepository = scopeDataRepository;
-    }
+  AbstractElementRepository(
+      ElementDataRepository<S> dataRepository,
+      ValidationService validation,
+      CustomLinkDataRepository linkDataRepository,
+      ScopeDataRepository scopeDataRepository) {
+    super(dataRepository, validation);
+    this.dataRepository = dataRepository;
+    this.linkDataRepository = linkDataRepository;
+    this.scopeDataRepository = scopeDataRepository;
+  }
 
-    @Override
-    public ElementQuery<T> query(Client client) {
-        return new ElementQueryImpl<>(dataRepository, client);
-    }
+  @Override
+  public ElementQuery<T> query(Client client) {
+    return new ElementQueryImpl<>(dataRepository, client);
+  }
 
-    @Override
-    public Set<T> findByDomain(Domain domain) {
-        return dataRepository.findByDomain(domain.getId()
-                                                 .uuidValue())
-                             .stream()
-                             .map(el -> (T) el)
-                             .collect(Collectors.toSet());
-    }
+  @Override
+  public Set<T> findByDomain(Domain domain) {
+    return dataRepository.findByDomain(domain.getId().uuidValue()).stream()
+        .map(el -> (T) el)
+        .collect(Collectors.toSet());
+  }
 
-    @Transactional
-    public void deleteByUnit(Unit owner) {
-        var elements = dataRepository.findByUnits(singleton(owner.getId()
-                                                                 .uuidValue()));
-        var entityIDs = elements.stream()
-                                .map(IdentifiableVersionedData::getDbId)
-                                .collect(Collectors.toSet());
-        var links = linkDataRepository.findLinksByTargetIds(entityIDs);
+  @Transactional
+  public void deleteByUnit(Unit owner) {
+    var elements = dataRepository.findByUnits(singleton(owner.getId().uuidValue()));
+    var entityIDs =
+        elements.stream().map(IdentifiableVersionedData::getDbId).collect(Collectors.toSet());
+    var links = linkDataRepository.findLinksByTargetIds(entityIDs);
 
-        // using deleteAll() to utilize batching and optimistic locking:
-        elements.forEach(e -> e.getLinks()
-                               .clear());
-        links.forEach(CustomLink::remove);
-        linkDataRepository.deleteAll(links);
+    // using deleteAll() to utilize batching and optimistic locking:
+    elements.forEach(e -> e.getLinks().clear());
+    links.forEach(CustomLink::remove);
+    linkDataRepository.deleteAll(links);
 
-        elements.forEach(Element::remove);
+    elements.forEach(Element::remove);
 
-        dataRepository.deleteAll(elements);
-    }
+    dataRepository.deleteAll(elements);
+  }
 
-    @Override
-    @Transactional
-    public void deleteById(Key<UUID> id) {
-        // remove links to element:
-        var links = linkDataRepository.findLinksByTargetIds(singleton(id.uuidValue()));
-        linkDataRepository.deleteAll(links);
+  @Override
+  @Transactional
+  public void deleteById(Key<UUID> id) {
+    // remove links to element:
+    var links = linkDataRepository.findLinksByTargetIds(singleton(id.uuidValue()));
+    linkDataRepository.deleteAll(links);
 
-        // remove element from scope members:
-        Set<Scope> scopes = scopeDataRepository.findDistinctByMemberIds(singleton(id.uuidValue()));
-        scopes.stream()
-              .map(ScopeData.class::cast)
-              .forEach(scopeData -> scopeData.removeMemberById(id));
+    // remove element from scope members:
+    Set<Scope> scopes = scopeDataRepository.findDistinctByMemberIds(singleton(id.uuidValue()));
+    scopes.stream().map(ScopeData.class::cast).forEach(scopeData -> scopeData.removeMemberById(id));
 
-        dataRepository.deleteById(id.uuidValue());
-    }
-
+    dataRepository.deleteById(id.uuidValue());
+  }
 }

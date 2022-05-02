@@ -40,37 +40,45 @@ import lombok.NoArgsConstructor;
 @Schema(description = "Describes the incarnation parameters of one catalogitem.")
 public class IncarnateCatalogItemDescriptionDto {
 
-    @Schema(title = "Reference the catalogitem to be incarnated.",
-            required = true,
-            implementation = IdRefCatalogItemDescriptionItem.class)
-    private IdRef<CatalogItem> item;
+  @Schema(
+      title = "Reference the catalogitem to be incarnated.",
+      required = true,
+      implementation = IdRefCatalogItemDescriptionItem.class)
+  private IdRef<CatalogItem> item;
 
-    @ArraySchema(schema = @Schema(title = "A list of references this element needs to set.",
-                                  implementation = TailoringReferenceParameterDto.class))
-    private List<TailoringReferenceParameterDto> references;
+  @ArraySchema(
+      schema =
+          @Schema(
+              title = "A list of references this element needs to set.",
+              implementation = TailoringReferenceParameterDto.class))
+  private List<TailoringReferenceParameterDto> references;
 
-    public IncarnateCatalogItemDescriptionDto(IncarnateCatalogItemDescription p,
-            ReferenceAssembler urlAssembler) {
-        item = IdRef.from(p.getItem(), urlAssembler);
-        references = p.getReferences()
-                      .stream()
-                      .map(r -> new TailoringReferenceParameterDto(
-                              IdRef.from(r.getReferencedElement(), urlAssembler),
-                              r.getReferenceKey(), r.getReferenceType()))
-                      .collect(Collectors.toList());
+  public IncarnateCatalogItemDescriptionDto(
+      IncarnateCatalogItemDescription p, ReferenceAssembler urlAssembler) {
+    item = IdRef.from(p.getItem(), urlAssembler);
+    references =
+        p.getReferences().stream()
+            .map(
+                r ->
+                    new TailoringReferenceParameterDto(
+                        IdRef.from(r.getReferencedElement(), urlAssembler),
+                        r.getReferenceKey(),
+                        r.getReferenceType()))
+            .collect(Collectors.toList());
+  }
 
-    }
-
-    public IncarnateCatalogItemDescription dto2Model(IdRefResolver idRefResolver) {
-        List<TailoringReferenceParameter> list = getReferences().stream()
-                                                                .map(t -> new TailoringReferenceParameter(
-                                                                        t.getReferencedElement() == null
-                                                                                ? null
-                                                                                : idRefResolver.resolve(t.getReferencedElement()),
-                                                                        t.getReferenceType(),
-                                                                        t.getReferenceKey()))
-                                                                .collect(Collectors.toList());
-        return new IncarnateCatalogItemDescription(idRefResolver.resolve(item), list);
-    }
-
+  public IncarnateCatalogItemDescription dto2Model(IdRefResolver idRefResolver) {
+    List<TailoringReferenceParameter> list =
+        getReferences().stream()
+            .map(
+                t ->
+                    new TailoringReferenceParameter(
+                        t.getReferencedElement() == null
+                            ? null
+                            : idRefResolver.resolve(t.getReferencedElement()),
+                        t.getReferenceType(),
+                        t.getReferenceKey()))
+            .collect(Collectors.toList());
+    return new IncarnateCatalogItemDescription(idRefResolver.resolve(item), list);
+  }
 }

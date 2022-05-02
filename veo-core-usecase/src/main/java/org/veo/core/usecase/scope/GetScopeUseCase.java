@@ -29,27 +29,27 @@ import org.veo.core.usecase.UseCase.IdAndClient;
 import lombok.Value;
 
 public class GetScopeUseCase
-        implements TransactionalUseCase<IdAndClient, GetScopeUseCase.OutputData> {
+    implements TransactionalUseCase<IdAndClient, GetScopeUseCase.OutputData> {
 
-    private final ScopeRepository scopeRepository;
+  private final ScopeRepository scopeRepository;
 
-    public GetScopeUseCase(ScopeRepository scopeRepository) {
-        this.scopeRepository = scopeRepository;
-    }
+  public GetScopeUseCase(ScopeRepository scopeRepository) {
+    this.scopeRepository = scopeRepository;
+  }
 
-    @Override
-    public OutputData execute(IdAndClient input) {
-        Scope scope = scopeRepository.findById(input.getId())
-                                     .orElseThrow(() -> new NotFoundException(input.getId()
-                                                                                   .uuidValue()));
-        scope.checkSameClient(input.getAuthenticatedClient());
-        return new OutputData(scope);
-    }
+  @Override
+  public OutputData execute(IdAndClient input) {
+    Scope scope =
+        scopeRepository
+            .findById(input.getId())
+            .orElseThrow(() -> new NotFoundException(input.getId().uuidValue()));
+    scope.checkSameClient(input.getAuthenticatedClient());
+    return new OutputData(scope);
+  }
 
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        Scope scope;
-    }
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid Scope scope;
+  }
 }

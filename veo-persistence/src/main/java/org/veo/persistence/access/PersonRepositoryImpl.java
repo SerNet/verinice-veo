@@ -39,53 +39,51 @@ import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
 public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<Person, PersonData>
-        implements PersonRepository {
+    implements PersonRepository {
 
-    private final AssetDataRepository assetDataRepository;
-    private final ProcessDataRepository processDataRepository;
+  private final AssetDataRepository assetDataRepository;
+  private final ProcessDataRepository processDataRepository;
 
-    public PersonRepositoryImpl(PersonDataRepository dataRepository, ValidationService validation,
-            CustomLinkDataRepository linkDataRepository, ScopeDataRepository scopeDataRepository,
-            AssetDataRepository assetDataRepository, ProcessDataRepository processDataRepository) {
-        super(dataRepository, validation, linkDataRepository, scopeDataRepository);
-        this.assetDataRepository = assetDataRepository;
-        this.processDataRepository = processDataRepository;
-    }
+  public PersonRepositoryImpl(
+      PersonDataRepository dataRepository,
+      ValidationService validation,
+      CustomLinkDataRepository linkDataRepository,
+      ScopeDataRepository scopeDataRepository,
+      AssetDataRepository assetDataRepository,
+      ProcessDataRepository processDataRepository) {
+    super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+    this.assetDataRepository = assetDataRepository;
+    this.processDataRepository = processDataRepository;
+  }
 
-    @Override
-    public void deleteById(Key<UUID> id) {
-        delete(dataRepository.findById(id.uuidValue())
-                             .orElseThrow());
-    }
+  @Override
+  public void deleteById(Key<UUID> id) {
+    delete(dataRepository.findById(id.uuidValue()).orElseThrow());
+  }
 
-    @Override
-    public void delete(Person person) {
-        removeFromRisks(singleton((PersonData) person));
-        super.deleteById(person.getId());
-    }
+  @Override
+  public void delete(Person person) {
+    removeFromRisks(singleton((PersonData) person));
+    super.deleteById(person.getId());
+  }
 
-    private void removeFromRisks(Set<PersonData> persons) {
-        // remove association to person from risks:
-        assetDataRepository.findDistinctByRisks_RiskOwner_In(persons)
-                           .stream()
-                           .flatMap(assetData -> assetData.getRisks()
-                                                          .stream())
-                           .filter(risk -> persons.contains(risk.getRiskOwner()))
-                           .forEach(risk -> risk.appoint(null));
+  private void removeFromRisks(Set<PersonData> persons) {
+    // remove association to person from risks:
+    assetDataRepository.findDistinctByRisks_RiskOwner_In(persons).stream()
+        .flatMap(assetData -> assetData.getRisks().stream())
+        .filter(risk -> persons.contains(risk.getRiskOwner()))
+        .forEach(risk -> risk.appoint(null));
 
-        processDataRepository.findDistinctByRisks_RiskOwner_In(persons)
-                             .stream()
-                             .flatMap(processData -> processData.getRisks()
-                                                                .stream())
-                             .filter(risk -> persons.contains(risk.getRiskOwner()))
-                             .forEach(risk -> risk.appoint(null));
-    }
+    processDataRepository.findDistinctByRisks_RiskOwner_In(persons).stream()
+        .flatMap(processData -> processData.getRisks().stream())
+        .filter(risk -> persons.contains(risk.getRiskOwner()))
+        .forEach(risk -> risk.appoint(null));
+  }
 
-    @Override
-    @Transactional
-    public void deleteByUnit(Unit owner) {
-        removeFromRisks(dataRepository.findByUnits(singleton(owner.getId()
-                                                                  .uuidValue())));
-        super.deleteByUnit(owner);
-    }
+  @Override
+  @Transactional
+  public void deleteByUnit(Unit owner) {
+    removeFromRisks(dataRepository.findByUnits(singleton(owner.getId().uuidValue())));
+    super.deleteByUnit(owner);
+  }
 }

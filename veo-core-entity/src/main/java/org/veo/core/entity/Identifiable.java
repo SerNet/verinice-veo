@@ -20,27 +20,23 @@ package org.veo.core.entity;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Base type for entities that act as aggregate roots and have a UUID
- */
+/** Base type for entities that act as aggregate roots and have a UUID */
 public interface Identifiable {
-    Key<UUID> getId();
+  Key<UUID> getId();
 
-    default String getIdAsString() {
-        return Optional.ofNullable(getId())
-                       .map(Key::uuidValue)
-                       .orElse(null);
-    }
+  default String getIdAsString() {
+    return Optional.ofNullable(getId()).map(Key::uuidValue).orElse(null);
+  }
 
-    /**
-     * @return Lowercase singular name for the specific type of {@link Identifiable}
-     */
-    String getModelType();
+  /**
+   * @return Lowercase singular name for the specific type of {@link Identifiable}
+   */
+  String getModelType();
 
-    void setId(Key<UUID> id);
+  void setId(Key<UUID> id);
 
-    /**
-     * @return The specific interface for this type of {@link Identifiable}
-     */
-    Class<? extends Identifiable> getModelInterface();
+  /**
+   * @return The specific interface for this type of {@link Identifiable}
+   */
+  Class<? extends Identifiable> getModelInterface();
 }

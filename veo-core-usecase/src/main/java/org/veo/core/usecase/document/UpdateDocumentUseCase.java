@@ -24,12 +24,12 @@ import org.veo.core.usecase.decision.Decider;
 
 public class UpdateDocumentUseCase extends ModifyElementUseCase<Document> {
 
-    public UpdateDocumentUseCase(DocumentRepository documentRepository, Decider decider) {
-        super(documentRepository, decider);
-    }
+  public UpdateDocumentUseCase(DocumentRepository documentRepository, Decider decider) {
+    super(documentRepository, decider);
+  }
 
-    @Override
-    protected void validate(Document oldElement, Document newElement) {
-        // GNDN
-    }
+  @Override
+  protected void validate(Document oldElement, Document newElement) {
+    // GNDN
+  }
 }

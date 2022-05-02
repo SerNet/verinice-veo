@@ -40,9 +40,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-/**
- * Holds risk related info for a control in a specific domain.
- */
+/** Holds risk related info for a control in a specific domain. */
 @Entity(name = "control_risk_values_aspect")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
@@ -50,14 +48,14 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class ControlRiskValuesAspectData extends AspectData {
 
-    public ControlRiskValuesAspectData(DomainTemplate domain, Control owner) {
-        super(domain, owner);
-    }
+  public ControlRiskValuesAspectData(DomainTemplate domain, Control owner) {
+    super(domain, owner);
+  }
 
-    @Getter
-    @Setter
-    @NotNull
-    @Column(columnDefinition = "jsonb", name = "control_risk_values")
-    @Type(type = "json")
-    Map<RiskDefinitionRef, ControlRiskValues> values;
+  @Getter
+  @Setter
+  @NotNull
+  @Column(columnDefinition = "jsonb", name = "control_risk_values")
+  @Type(type = "json")
+  Map<RiskDefinitionRef, ControlRiskValues> values;
 }

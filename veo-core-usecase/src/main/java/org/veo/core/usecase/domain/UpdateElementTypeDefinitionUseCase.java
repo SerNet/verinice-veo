@@ -36,52 +36,56 @@ import org.veo.core.usecase.UseCase.EmptyOutput;
 import lombok.Value;
 
 public class UpdateElementTypeDefinitionUseCase
-        implements TransactionalUseCase<UpdateElementTypeDefinitionUseCase.InputData, EmptyOutput> {
+    implements TransactionalUseCase<UpdateElementTypeDefinitionUseCase.InputData, EmptyOutput> {
 
-    private final DomainRepository repository;
+  private final DomainRepository repository;
 
-    public UpdateElementTypeDefinitionUseCase(DomainRepository repository) {
-        this.repository = repository;
+  public UpdateElementTypeDefinitionUseCase(DomainRepository repository) {
+    this.repository = repository;
+  }
+
+  @Override
+  public EmptyOutput execute(InputData input) {
+    Domain domain =
+        repository
+            .findById(input.getDomainId())
+            .orElseThrow(() -> new NotFoundException(input.getDomainId().uuidValue()));
+    Client client = input.getAuthenticatedClient();
+    if (!client.equals(domain.getOwner())) {
+      throw new ClientBoundaryViolationException(domain, client);
+    }
+    if (!domain.isActive()) {
+      throw new NotFoundException("Domain is inactive.");
     }
 
-    @Override
-    public EmptyOutput execute(InputData input) {
-        Domain domain = repository.findById(input.getDomainId())
-                                  .orElseThrow(() -> new NotFoundException(input.getDomainId()
-                                                                                .uuidValue()));
-        Client client = input.getAuthenticatedClient();
-        if (!client.equals(domain.getOwner())) {
-            throw new ClientBoundaryViolationException(domain, client);
-        }
-        if (!domain.isActive()) {
-            throw new NotFoundException("Domain is inactive.");
-        }
+    ElementTypeDefinition existingDefinition =
+        domain
+            .getElementTypeDefinition(input.entityType.getSingularTerm())
+            .orElseThrow(
+                () ->
+                    new NotFoundException(
+                        "Domain has no definition for entity type "
+                            + input.entityType.getSingularTerm()));
+    ElementTypeDefinition updatedDefinition = input.elementTypeDefinition;
 
-        ElementTypeDefinition existingDefinition = domain.getElementTypeDefinition(input.entityType.getSingularTerm())
-                                                         .orElseThrow(() -> new NotFoundException(
-                                                                 "Domain has no definition for entity type "
-                                                                         + input.entityType.getSingularTerm()));
-        ElementTypeDefinition updatedDefinition = input.elementTypeDefinition;
+    existingDefinition.setCustomAspects(updatedDefinition.getCustomAspects());
+    existingDefinition.setLinks(updatedDefinition.getLinks());
+    existingDefinition.setSubTypes(updatedDefinition.getSubTypes());
+    existingDefinition.setTranslations(updatedDefinition.getTranslations());
 
-        existingDefinition.setCustomAspects(updatedDefinition.getCustomAspects());
-        existingDefinition.setLinks(updatedDefinition.getLinks());
-        existingDefinition.setSubTypes(updatedDefinition.getSubTypes());
-        existingDefinition.setTranslations(updatedDefinition.getTranslations());
+    return EmptyOutput.INSTANCE;
+  }
 
-        return EmptyOutput.INSTANCE;
-    }
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
 
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
+    @Valid Client authenticatedClient;
 
-        @Valid
-        Client authenticatedClient;
+    Key<UUID> domainId;
 
-        Key<UUID> domainId;
+    EntityType entityType;
 
-        EntityType entityType;
-
-        ElementTypeDefinition elementTypeDefinition;
-    }
+    ElementTypeDefinition elementTypeDefinition;
+  }
 }

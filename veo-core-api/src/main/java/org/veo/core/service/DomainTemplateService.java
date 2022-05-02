@@ -29,26 +29,25 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 
 /**
- * A {@link DomainTemplate} exist in the system space and is not directly bound
- * to any client. This service manages the access rights. It is responsible for
- * creating a client domain from a domain template.
+ * A {@link DomainTemplate} exist in the system space and is not directly bound to any client. This
+ * service manages the access rights. It is responsible for creating a client domain from a domain
+ * template.
  */
 public interface DomainTemplateService {
 
-    List<DomainTemplate> getTemplates(Client client);
+  List<DomainTemplate> getTemplates(Client client);
 
-    Optional<DomainTemplate> getTemplate(Client client, Key<UUID> templateId);
+  Optional<DomainTemplate> getTemplate(Client client, Key<UUID> templateId);
 
-    /**
-     * Creates a domain from the given templateId for the given client. The client
-     * is used check the rights. No modification on the client is done.
-     *
-     * @throws NotFoundException
-     *             when the template doesn't exist
-     */
-    Domain createDomain(Client client, String templateId);
+  /**
+   * Creates a domain from the given templateId for the given client. The client is used check the
+   * rights. No modification on the client is done.
+   *
+   * @throws NotFoundException when the template doesn't exist
+   */
+  Domain createDomain(Client client, String templateId);
 
-    ExportDto exportDomain(Domain domain);
+  ExportDto exportDomain(Domain domain);
 
-    DomainTemplate createDomainTemplateFromDomain(Domain domain);
+  DomainTemplate createDomainTemplateFromDomain(Domain domain);
 }

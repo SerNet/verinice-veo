@@ -33,20 +33,21 @@ import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
 public class ScopeRepositoryImpl extends AbstractScopeRiskAffectedRepository
-        implements ScopeRepository {
+    implements ScopeRepository {
 
-    public ScopeRepositoryImpl(ScopeDataRepository dataRepository, ValidationService validation,
-            CustomLinkDataRepository linkDataRepository, ScopeDataRepository scopeDataRepository) {
-        super(dataRepository, validation, linkDataRepository, scopeDataRepository);
-    }
+  public ScopeRepositoryImpl(
+      ScopeDataRepository dataRepository,
+      ValidationService validation,
+      CustomLinkDataRepository linkDataRepository,
+      ScopeDataRepository scopeDataRepository) {
+    super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+  }
 
-    @Override
-    public Boolean canUseRiskDefinition(Set<? extends Element> members,
-            RiskDefinitionRef riskDefinitionRef, Domain domain) {
-        var memberIds = members.stream()
-                               .map(Identifiable::getIdAsString)
-                               .collect(Collectors.toSet());
-        return scopeDataRepository.canUseRiskDefinition(memberIds, riskDefinitionRef,
-                                                        domain.getIdAsString());
-    }
+  @Override
+  public Boolean canUseRiskDefinition(
+      Set<? extends Element> members, RiskDefinitionRef riskDefinitionRef, Domain domain) {
+    var memberIds = members.stream().map(Identifiable::getIdAsString).collect(Collectors.toSet());
+    return scopeDataRepository.canUseRiskDefinition(
+        memberIds, riskDefinitionRef, domain.getIdAsString());
+  }
 }

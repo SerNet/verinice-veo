@@ -32,46 +32,43 @@ import org.veo.core.usecase.UseCase;
 
 import lombok.Value;
 
-public class GetCatalogItemUseCase implements
-        TransactionalUseCase<GetCatalogItemUseCase.InputData, GetCatalogItemUseCase.OutputData> {
+public class GetCatalogItemUseCase
+    implements TransactionalUseCase<
+        GetCatalogItemUseCase.InputData, GetCatalogItemUseCase.OutputData> {
 
-    @Override
-    public OutputData execute(InputData input) {
+  @Override
+  public OutputData execute(InputData input) {
 
-        CatalogItem catalogItem = input.getAuthenticatedClient()
-                                       .getDomains()
-                                       .stream()
-                                       .filter(EntitySpecifications.isActive())
-                                       .filter(input.domainId.map(EntitySpecifications::hasId)
-                                                             .orElse(EntitySpecifications.matchAll()))
-                                       .flatMap(d -> d.getCatalogs()
-                                                      .stream())
-                                       .filter(EntitySpecifications.hasId(input.catalogId))
+    CatalogItem catalogItem =
+        input.getAuthenticatedClient().getDomains().stream()
+            .filter(EntitySpecifications.isActive())
+            .filter(
+                input
+                    .domainId
+                    .map(EntitySpecifications::hasId)
+                    .orElse(EntitySpecifications.matchAll()))
+            .flatMap(d -> d.getCatalogs().stream())
+            .filter(EntitySpecifications.hasId(input.catalogId))
+            .flatMap(c -> c.getCatalogItems().stream())
+            .filter(item -> item.getId().equals(input.itemId))
+            .findFirst()
+            .orElseThrow(() -> new NotFoundException(input.itemId.uuidValue()));
 
-                                       .flatMap(c -> c.getCatalogItems()
-                                                      .stream())
-                                       .filter(item -> item.getId()
-                                                           .equals(input.itemId))
-                                       .findFirst()
-                                       .orElseThrow(() -> new NotFoundException(
-                                               input.itemId.uuidValue()));
+    return new OutputData(catalogItem);
+  }
 
-        return new OutputData(catalogItem);
-    }
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
+    Key<UUID> itemId;
+    Key<UUID> catalogId;
+    Optional<Key<UUID>> domainId;
+    Client authenticatedClient;
+  }
 
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Key<UUID> itemId;
-        Key<UUID> catalogId;
-        Optional<Key<UUID>> domainId;
-        Client authenticatedClient;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        CatalogItem catalogItem;
-    }
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid CatalogItem catalogItem;
+  }
 }

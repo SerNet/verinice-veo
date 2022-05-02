@@ -31,12 +31,12 @@ import org.veo.rest.common.SpringResourceWrapper;
 @Component
 public class DomainTemplateResource {
 
-    @Value("${veo.domain.file.selector:classpath:domaintemplates/*.json}")
-    private Resource[] springDomainResources;
+  @Value("${veo.domain.file.selector:classpath:domaintemplates/*.json}")
+  private Resource[] springDomainResources;
 
-    public List<VeoInputStreamResource> getResources() {
-        return Arrays.stream(springDomainResources)
-                     .map(SpringResourceWrapper::new)
-                     .collect(Collectors.toList());
-    }
+  public List<VeoInputStreamResource> getResources() {
+    return Arrays.stream(springDomainResources)
+        .map(SpringResourceWrapper::new)
+        .collect(Collectors.toList());
+  }
 }

@@ -24,28 +24,36 @@ import org.veo.core.entity.decision.DecisionRuleRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "Result of a decision that was evaluated on an element",
-        accessMode = Schema.AccessMode.READ_ONLY)
-abstract public class DecisionResultsSchema extends DecisionResult {
-    @Override
-    @Schema(description = "Final result value of the decision. Can be null if result is undetermined.",
-            nullable = true)
-    abstract public Boolean getValue();
+@Schema(
+    description = "Result of a decision that was evaluated on an element",
+    accessMode = Schema.AccessMode.READ_ONLY)
+public abstract class DecisionResultsSchema extends DecisionResult {
+  @Override
+  @Schema(
+      description = "Final result value of the decision. Can be null if result is undetermined.",
+      nullable = true)
+  public abstract Boolean getValue();
 
-    @Override
-    @Schema(description = "Decision rule that matched first and therefore determined the result value. Can be null if none of the rules matched.",
-            nullable = true)
-    abstract public DecisionRuleRef getDecisiveRule();
+  @Override
+  @Schema(
+      description =
+          "Decision rule that matched first and therefore determined the result value. Can be null if none of the rules matched.",
+      nullable = true)
+  public abstract DecisionRuleRef getDecisiveRule();
 
-    @Override
-    @Schema(description = "All decision rules that matched. Some of them may have been overruled by rules with a higher priority and therefore had no effect on the final result value.")
-    public List<DecisionRuleRef> getMatchingRules() {
-        return super.getMatchingRules();
-    }
+  @Override
+  @Schema(
+      description =
+          "All decision rules that matched. Some of them may have been overruled by rules with a higher priority and therefore had no effect on the final result value.")
+  public List<DecisionRuleRef> getMatchingRules() {
+    return super.getMatchingRules();
+  }
 
-    @Override
-    @Schema(description = "All matching decision rules that support the final result value. They matched and have output values that are identical to what became the final result value of the decision.")
-    public List<DecisionRuleRef> getAgreeingRules() {
-        return super.getAgreeingRules();
-    }
+  @Override
+  @Schema(
+      description =
+          "All matching decision rules that support the final result value. They matched and have output values that are identical to what became the final result value of the decision.")
+  public List<DecisionRuleRef> getAgreeingRules() {
+    return super.getAgreeingRules();
+  }
 }

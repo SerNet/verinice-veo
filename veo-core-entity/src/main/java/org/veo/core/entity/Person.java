@@ -18,22 +18,22 @@
 package org.veo.core.entity;
 
 /**
- * Person represents a natural person such as an employee. Persons will have
- * responsibilities assigned for other domain objects.
+ * Person represents a natural person such as an employee. Persons will have responsibilities
+ * assigned for other domain objects.
  */
 public interface Person extends Element, CompositeElement<Person> {
 
-    String SINGULAR_TERM = "person";
-    String PLURAL_TERM = "persons";
-    String TYPE_DESIGNATOR = "PER";
+  String SINGULAR_TERM = "person";
+  String PLURAL_TERM = "persons";
+  String TYPE_DESIGNATOR = "PER";
 
-    @Override
-    default String getModelType() {
-        return SINGULAR_TERM;
-    }
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
 
-    @Override
-    default String getTypeDesignator() {
-        return TYPE_DESIGNATOR;
-    }
+  @Override
+  default String getTypeDesignator() {
+    return TYPE_DESIGNATOR;
+  }
 }

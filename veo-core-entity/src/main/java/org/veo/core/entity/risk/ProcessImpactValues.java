@@ -24,12 +24,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Holds risk related info for a process. A {@link ProcessImpactValues} object
- * is only valid for a certain risk definition.
+ * Holds risk related info for a process. A {@link ProcessImpactValues} object is only valid for a
+ * certain risk definition.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProcessImpactValues {
-    private Map<CategoryRef, ImpactRef> potentialImpacts;
+  private Map<CategoryRef, ImpactRef> potentialImpacts;
 }

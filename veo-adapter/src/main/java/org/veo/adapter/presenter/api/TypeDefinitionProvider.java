@@ -30,23 +30,23 @@ import lombok.Data;
 
 @AllArgsConstructor
 public class TypeDefinitionProvider {
-    private final ReferenceAssembler referenceAssembler;
+  private final ReferenceAssembler referenceAssembler;
 
-    public Map<String, TypeDefinition> getAll() {
-        return EntityType.ELEMENT_TYPES.stream()
-                                       .collect(Collectors.toMap(EntityType::getSingularTerm,
-                                                                 this::buildDefinition));
-    }
+  public Map<String, TypeDefinition> getAll() {
+    return EntityType.ELEMENT_TYPES.stream()
+        .collect(Collectors.toMap(EntityType::getSingularTerm, this::buildDefinition));
+  }
 
-    private TypeDefinition buildDefinition(EntityType type) {
-        return new TypeDefinition(referenceAssembler.resourcesReferenceOf(type.getType()),
-                referenceAssembler.searchesReferenceOf(type.getType()),
-                referenceAssembler.schemaReferenceOf(type.getSingularTerm()));
-    }
+  private TypeDefinition buildDefinition(EntityType type) {
+    return new TypeDefinition(
+        referenceAssembler.resourcesReferenceOf(type.getType()),
+        referenceAssembler.searchesReferenceOf(type.getType()),
+        referenceAssembler.schemaReferenceOf(type.getSingularTerm()));
+  }
 
-    @Data
-    @AllArgsConstructor
-    public static class OutputData implements UseCase.OutputData {
-        List<TypeDefinition> types;
-    }
+  @Data
+  @AllArgsConstructor
+  public static class OutputData implements UseCase.OutputData {
+    List<TypeDefinition> types;
+  }
 }

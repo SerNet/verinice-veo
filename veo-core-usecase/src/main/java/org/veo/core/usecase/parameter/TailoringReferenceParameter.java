@@ -29,24 +29,21 @@ import lombok.EqualsAndHashCode;
 @Data
 @AllArgsConstructor
 /**
- * The {@link TailoringReferenceParameter} describes the concrete values to
- * apply a defined {@link TailoringReference}.
+ * The {@link TailoringReferenceParameter} describes the concrete values to apply a defined {@link
+ * TailoringReference}.
  */
 public class TailoringReferenceParameter extends CatalogReferenceParameter
-        implements TailoringReferenceTyped {
-    @EqualsAndHashCode.Include
-    private TailoringReferenceType referenceType;
-    /**
-     * The translatable Key of the described reference. Currently only CustomLinks
-     * are supported and in this case the referenceKey is the type of the
-     * customLink.
-     */
-    @EqualsAndHashCode.Include
-    private String referenceKey;
+    implements TailoringReferenceTyped {
+  @EqualsAndHashCode.Include private TailoringReferenceType referenceType;
+  /**
+   * The translatable Key of the described reference. Currently only CustomLinks are supported and
+   * in this case the referenceKey is the type of the customLink.
+   */
+  @EqualsAndHashCode.Include private String referenceKey;
 
-    public TailoringReferenceParameter(Element linkedElement, TailoringReferenceType referenceType,
-            String referenceName) {
-        this(referenceType, referenceName);
-        setReferencedElement(linkedElement);
-    }
+  public TailoringReferenceParameter(
+      Element linkedElement, TailoringReferenceType referenceType, String referenceName) {
+    this(referenceType, referenceName);
+    setReferencedElement(linkedElement);
+  }
 }

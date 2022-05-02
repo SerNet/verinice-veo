@@ -26,13 +26,16 @@ import org.veo.core.usecase.decision.Decider;
 
 public class CreateAssetUseCase extends CreateElementUseCase<Asset> {
 
-    public CreateAssetUseCase(UnitRepository unitRepository, AssetRepository entityRepo,
-            DesignatorService designatorService, Decider decider) {
-        super(unitRepository, entityRepo, designatorService, decider);
-    }
+  public CreateAssetUseCase(
+      UnitRepository unitRepository,
+      AssetRepository entityRepo,
+      DesignatorService designatorService,
+      Decider decider) {
+    super(unitRepository, entityRepo, designatorService, decider);
+  }
 
-    @Override
-    protected void validate(Asset asset) {
-        // GNDN
-    }
+  @Override
+  protected void validate(Asset asset) {
+    // GNDN
+  }
 }

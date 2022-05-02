@@ -31,66 +31,66 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-/**
- * Base transfer object for scenarios. Contains common data for all scenario
- * DTOs.
- */
+/** Base transfer object for scenarios. Contains common data for all scenario DTOs. */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "scenario", description = "Schema for scenario")
 public abstract class AbstractScenarioDto extends CompositeEntityDto<Scenario> {
 
-    @Override
-    @Schema(description = "The name for the scenario.", example = "Flood")
-    public String getName() {
-        return super.getName();
-    }
+  @Override
+  @Schema(description = "The name for the scenario.", example = "Flood")
+  public String getName() {
+    return super.getName();
+  }
 
-    @Override
-    @Schema(description = "The abbreviation for the scenario.", example = "FL")
-    public String getAbbreviation() {
-        return super.getAbbreviation();
-    }
+  @Override
+  @Schema(description = "The abbreviation for the scenario.", example = "FL")
+  public String getAbbreviation() {
+    return super.getAbbreviation();
+  }
 
-    @Override
-    @Schema(description = "The description for the scenario.",
-            example = "A flood is an overflow of water that submerges land that is usually dry.")
-    public String getDescription() {
-        return super.getDescription();
-    }
+  @Override
+  @Schema(
+      description = "The description for the scenario.",
+      example = "A flood is an overflow of water that submerges land that is usually dry.")
+  public String getDescription() {
+    return super.getDescription();
+  }
 
-    @Override
-    @Schema(description = "The links for the scenario.")
-    public Map<String, List<CustomLinkDto>> getLinks() {
-        return super.getLinks();
-    }
+  @Override
+  @Schema(description = "The links for the scenario.")
+  public Map<String, List<CustomLinkDto>> getLinks() {
+    return super.getLinks();
+  }
 
-    @Schema(description = "The customAspects for the scenario.")
-    @Override
-    public Map<String, CustomAspectDto> getCustomAspects() {
-        return super.getCustomAspects();
-    }
+  @Schema(description = "The customAspects for the scenario.")
+  @Override
+  public Map<String, CustomAspectDto> getCustomAspects() {
+    return super.getCustomAspects();
+  }
 
-    @Override
-    public Class<? extends Identifiable> getModelInterface() {
-        return Scenario.class;
-    }
+  @Override
+  public Class<? extends Identifiable> getModelInterface() {
+    return Scenario.class;
+  }
 
-    @Override
-    public void associateWithTargetDomain(String id) {
-        setDomains(Map.of(id, getDomains().values()
-                                          .stream()
-                                          .findFirst()
-                                          .orElse(new ScenarioDomainAssociationDto())));
-    }
+  @Override
+  public void associateWithTargetDomain(String id) {
+    setDomains(
+        Map.of(
+            id,
+            getDomains().values().stream().findFirst().orElse(new ScenarioDomainAssociationDto())));
+  }
 
-    @Override
-    public void clearDomains() {
-        domains.clear();
-    }
+  @Override
+  public void clearDomains() {
+    domains.clear();
+  }
 
-    @Valid
-    @Schema(description = "Details about this element's association with domains. Domain ID is key, association object is value.")
-    private Map<String, ScenarioDomainAssociationDto> domains = new HashMap<>();
+  @Valid
+  @Schema(
+      description =
+          "Details about this element's association with domains. Domain ID is key, association object is value.")
+  private Map<String, ScenarioDomainAssociationDto> domains = new HashMap<>();
 }

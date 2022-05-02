@@ -58,66 +58,66 @@ import org.veo.persistence.entity.jpa.UnitData;
 import org.veo.persistence.entity.jpa.UpdateReferenceData;
 
 public class IdentifiableDataFactory implements IdentifiableFactory {
-    @Override
-    public <T extends Identifiable> T create(Class<T> type, Key<UUID> id) {
-        var entity = create(type);
-        entity.setId(id);
-        return entity;
-    }
+  @Override
+  public <T extends Identifiable> T create(Class<T> type, Key<UUID> id) {
+    var entity = create(type);
+    entity.setId(id);
+    return entity;
+  }
 
-    private <T extends Identifiable> T create(Class<T> type) {
-        // TODO VEO-963 use superior java 17 switch
-        if (type == Person.class) {
-            return (T) new PersonData();
-        }
-        if (type == Process.class) {
-            return (T) new ProcessData();
-        }
-        if (type == Client.class) {
-            return (T) new ClientData();
-        }
-        if (type == Asset.class) {
-            return (T) new AssetData();
-        }
-        if (type == Control.class) {
-            return (T) new ControlData();
-        }
-        if (type == Incident.class) {
-            return (T) new IncidentData();
-        }
-        if (type == Scenario.class) {
-            return (T) new ScenarioData();
-        }
-        if (type == Unit.class) {
-            return (T) new UnitData();
-        }
-        if (type == Document.class) {
-            return (T) new DocumentData();
-        }
-        if (type == Domain.class) {
-            return (T) new DomainData();
-        }
-        if (type == Scope.class) {
-            return (T) new ScopeData();
-        }
-        if (type == Catalog.class) {
-            return (T) new CatalogData();
-        }
-        if (type == DomainTemplate.class) {
-            return (T) new DomainTemplateData();
-        }
-        if (type == CatalogItem.class) {
-            return (T) new CatalogItemData();
-        }
-        if (type == TailoringReference.class) {
-            return (T) new TailoringReferenceData();
-        }
-        if (type == UpdateReference.class) {
-            return (T) new UpdateReferenceData();
-        }
-        if (type == LinkTailoringReference.class) {
-            return (T) new LinkTailoringReferenceData();
-        }
-        throw new UnsupportedOperationException("Unsupported type " + type);
+  private <T extends Identifiable> T create(Class<T> type) {
+    // TODO VEO-963 use superior java 17 switch
+    if (type == Person.class) {
+      return (T) new PersonData();
     }
+    if (type == Process.class) {
+      return (T) new ProcessData();
+    }
+    if (type == Client.class) {
+      return (T) new ClientData();
+    }
+    if (type == Asset.class) {
+      return (T) new AssetData();
+    }
+    if (type == Control.class) {
+      return (T) new ControlData();
+    }
+    if (type == Incident.class) {
+      return (T) new IncidentData();
+    }
+    if (type == Scenario.class) {
+      return (T) new ScenarioData();
+    }
+    if (type == Unit.class) {
+      return (T) new UnitData();
+    }
+    if (type == Document.class) {
+      return (T) new DocumentData();
+    }
+    if (type == Domain.class) {
+      return (T) new DomainData();
+    }
+    if (type == Scope.class) {
+      return (T) new ScopeData();
+    }
+    if (type == Catalog.class) {
+      return (T) new CatalogData();
+    }
+    if (type == DomainTemplate.class) {
+      return (T) new DomainTemplateData();
+    }
+    if (type == CatalogItem.class) {
+      return (T) new CatalogItemData();
+    }
+    if (type == TailoringReference.class) {
+      return (T) new TailoringReferenceData();
+    }
+    if (type == UpdateReference.class) {
+      return (T) new UpdateReferenceData();
+    }
+    if (type == LinkTailoringReference.class) {
+      return (T) new LinkTailoringReferenceData();
+    }
+    throw new UnsupportedOperationException("Unsupported type " + type);
+  }
 }

@@ -70,188 +70,184 @@ import org.veo.persistence.entity.jpa.UpdateReferenceData;
 
 public class EntityDataFactory implements EntityFactory {
 
-    @Override
-    public CustomAspect createCustomAspect(String type) {
-        var aspect = new CustomAspectData();
-        aspect.setType(type);
-        return aspect;
+  @Override
+  public CustomAspect createCustomAspect(String type) {
+    var aspect = new CustomAspectData();
+    aspect.setType(type);
+    return aspect;
+  }
+
+  @Override
+  public Person createPerson(String name, ElementOwner unit) {
+    Person person = new PersonData();
+    setElementData(person, name, unit);
+    return person;
+  }
+
+  @Override
+  public Process createProcess(String name, ElementOwner unit) {
+    Process process = new ProcessData();
+    setElementData(process, name, unit);
+    return process;
+  }
+
+  @Override
+  public Client createClient(Key<UUID> id, String name) {
+    Client client = new ClientData();
+    client.setId(id);
+    client.setName(name);
+    client.setDomains(new HashSet<>());
+    return client;
+  }
+
+  @Override
+  public Asset createAsset(String name, ElementOwner unit) {
+    Asset asset = new AssetData();
+    setElementData(asset, name, unit);
+    return asset;
+  }
+
+  @Override
+  public Control createControl(String name, ElementOwner unit) {
+    Control control = new ControlData();
+    setElementData(control, name, unit);
+    return control;
+  }
+
+  @Override
+  public Incident createIncident(String name, ElementOwner unit) {
+    Incident incident = new IncidentData();
+    setElementData(incident, name, unit);
+    return incident;
+  }
+
+  @Override
+  public Scenario createScenario(String name, ElementOwner unit) {
+    Scenario scenario = new ScenarioData();
+    setElementData(scenario, name, unit);
+    return scenario;
+  }
+
+  @Override
+  public Unit createUnit(String name, Unit parent) {
+    Unit unit = new UnitData();
+    unit.setName(name);
+    unit.setParent(parent);
+    if (parent != null) {
+      unit.setClient(parent.getClient());
     }
+    unit.setDomains(new HashSet<>());
+    return unit;
+  }
 
-    @Override
-    public Person createPerson(String name, ElementOwner unit) {
-        Person person = new PersonData();
-        setElementData(person, name, unit);
-        return person;
-    }
+  @Override
+  public Document createDocument(String name, ElementOwner parent) {
+    Document document = new DocumentData();
+    setElementData(document, name, parent);
+    return document;
+  }
 
-    @Override
-    public Process createProcess(String name, ElementOwner unit) {
-        Process process = new ProcessData();
-        setElementData(process, name, unit);
-        return process;
-    }
+  @Override
+  public Domain createDomain(
+      String name, String authority, String templateVersion, String revision) {
+    Domain domain = new DomainData();
+    domain.setId(Key.newUuid());
+    domain.setName(name);
+    domain.setAuthority(authority);
+    domain.setTemplateVersion(templateVersion);
+    domain.setRevision(revision);
 
-    @Override
-    public Client createClient(Key<UUID> id, String name) {
-        Client client = new ClientData();
-        client.setId(id);
-        client.setName(name);
-        client.setDomains(new HashSet<>());
-        return client;
-    }
+    return domain;
+  }
 
-    @Override
-    public Asset createAsset(String name, ElementOwner unit) {
-        Asset asset = new AssetData();
-        setElementData(asset, name, unit);
-        return asset;
-    }
+  @Override
+  public CustomLink createCustomLink(Element linkTarget, Element linkSource, String type) {
+    CustomLink link = new CustomLinkData();
+    link.setType(type);
+    link.setTarget(linkTarget);
+    link.setSource(linkSource);
+    return link;
+  }
 
-    @Override
-    public Control createControl(String name, ElementOwner unit) {
-        Control control = new ControlData();
-        setElementData(control, name, unit);
-        return control;
-    }
+  @Override
+  public Scope createScope(String name, ElementOwner owner) {
+    var group = new ScopeData();
+    group.setName(name);
+    group.setOwnerOrContainingCatalogItem(owner);
+    return group;
+  }
 
-    @Override
-    public Incident createIncident(String name, ElementOwner unit) {
-        Incident incident = new IncidentData();
-        setElementData(incident, name, unit);
-        return incident;
-    }
+  private void setElementData(Element element, String name, ElementOwner unit) {
+    element.setName(name);
+    element.setOwnerOrContainingCatalogItem(unit);
+  }
 
-    @Override
-    public Scenario createScenario(String name, ElementOwner unit) {
-        Scenario scenario = new ScenarioData();
-        setElementData(scenario, name, unit);
-        return scenario;
-    }
+  @Override
+  public Catalog createCatalog(DomainTemplate owner) {
+    Catalog catalog = new CatalogData();
+    catalog.setDomainTemplate(owner);
+    owner.addToCatalogs(catalog);
+    return catalog;
+  }
 
-    @Override
-    public Unit createUnit(String name, Unit parent) {
-        Unit unit = new UnitData();
-        unit.setName(name);
-        unit.setParent(parent);
-        if (parent != null) {
-            unit.setClient(parent.getClient());
-        }
-        unit.setDomains(new HashSet<>());
-        return unit;
-    }
+  @Override
+  public DomainTemplate createDomainTemplate(
+      String name, String authority, String templateVersion, String revision, Key<UUID> id) {
+    DomainTemplate domainTemplate = new DomainTemplateData();
+    domainTemplate.setId(id);
+    domainTemplate.setName(name);
+    domainTemplate.setAuthority(authority);
+    domainTemplate.setTemplateVersion(templateVersion);
+    domainTemplate.setRevision(revision);
 
-    @Override
-    public Document createDocument(String name, ElementOwner parent) {
-        Document document = new DocumentData();
-        setElementData(document, name, parent);
-        return document;
-    }
+    return domainTemplate;
+  }
 
-    @Override
-    public Domain createDomain(String name, String authority, String templateVersion,
-            String revision) {
-        Domain domain = new DomainData();
-        domain.setId(Key.newUuid());
-        domain.setName(name);
-        domain.setAuthority(authority);
-        domain.setTemplateVersion(templateVersion);
-        domain.setRevision(revision);
+  @Override
+  public CatalogItem createCatalogItem(
+      Catalog catalog, Function<CatalogItem, Element> elementFactory) {
+    CatalogItem catalogItem = new CatalogItemData();
+    catalogItem.setCatalog(catalog);
+    Element element = elementFactory.apply(catalogItem);
+    catalogItem.setElement(element);
+    return catalogItem;
+  }
 
-        return domain;
-    }
+  @Override
+  public TailoringReference createTailoringReference(
+      CatalogItem catalogItem, TailoringReferenceType referenceType) {
+    TailoringReferenceData tailoringReference = new TailoringReferenceData();
+    tailoringReference.setOwner(catalogItem);
+    tailoringReference.setReferenceType(referenceType);
+    catalogItem.getTailoringReferences().add(tailoringReference);
+    return tailoringReference;
+  }
 
-    @Override
-    public CustomLink createCustomLink(Element linkTarget, Element linkSource, String type) {
-        CustomLink link = new CustomLinkData();
-        link.setType(type);
-        link.setTarget(linkTarget);
-        link.setSource(linkSource);
-        return link;
-    }
+  @Override
+  public LinkTailoringReference createLinkTailoringReference(
+      CatalogItem catalogItem, TailoringReferenceType referenceType) {
+    LinkTailoringReference tailoringReference = new LinkTailoringReferenceData();
+    tailoringReference.setOwner(catalogItem);
+    tailoringReference.setReferenceType(referenceType);
+    catalogItem.getTailoringReferences().add(tailoringReference);
+    return tailoringReference;
+  }
 
-    @Override
-    public Scope createScope(String name, ElementOwner owner) {
-        var group = new ScopeData();
-        group.setName(name);
-        group.setOwnerOrContainingCatalogItem(owner);
-        return group;
-    }
+  @Override
+  public ElementTypeDefinition createElementTypeDefinition(
+      String elementType, DomainTemplate owner) {
+    var definition = new ElementTypeDefinitionData();
+    definition.setElementType(elementType);
+    definition.setOwner(owner);
+    return definition;
+  }
 
-    private void setElementData(Element element, String name, ElementOwner unit) {
-        element.setName(name);
-        element.setOwnerOrContainingCatalogItem(unit);
-    }
-
-    @Override
-    public Catalog createCatalog(DomainTemplate owner) {
-        Catalog catalog = new CatalogData();
-        catalog.setDomainTemplate(owner);
-        owner.addToCatalogs(catalog);
-        return catalog;
-    }
-
-    @Override
-    public DomainTemplate createDomainTemplate(String name, String authority,
-            String templateVersion, String revision, Key<UUID> id) {
-        DomainTemplate domainTemplate = new DomainTemplateData();
-        domainTemplate.setId(id);
-        domainTemplate.setName(name);
-        domainTemplate.setAuthority(authority);
-        domainTemplate.setTemplateVersion(templateVersion);
-        domainTemplate.setRevision(revision);
-
-        return domainTemplate;
-    }
-
-    @Override
-    public CatalogItem createCatalogItem(Catalog catalog,
-            Function<CatalogItem, Element> elementFactory) {
-        CatalogItem catalogItem = new CatalogItemData();
-        catalogItem.setCatalog(catalog);
-        Element element = elementFactory.apply(catalogItem);
-        catalogItem.setElement(element);
-        return catalogItem;
-    }
-
-    @Override
-    public TailoringReference createTailoringReference(CatalogItem catalogItem,
-            TailoringReferenceType referenceType) {
-        TailoringReferenceData tailoringReference = new TailoringReferenceData();
-        tailoringReference.setOwner(catalogItem);
-        tailoringReference.setReferenceType(referenceType);
-        catalogItem.getTailoringReferences()
-                   .add(tailoringReference);
-        return tailoringReference;
-    }
-
-    @Override
-    public LinkTailoringReference createLinkTailoringReference(CatalogItem catalogItem,
-            TailoringReferenceType referenceType) {
-        LinkTailoringReference tailoringReference = new LinkTailoringReferenceData();
-        tailoringReference.setOwner(catalogItem);
-        tailoringReference.setReferenceType(referenceType);
-        catalogItem.getTailoringReferences()
-                   .add(tailoringReference);
-        return tailoringReference;
-    }
-
-    @Override
-    public ElementTypeDefinition createElementTypeDefinition(String elementType,
-            DomainTemplate owner) {
-        var definition = new ElementTypeDefinitionData();
-        definition.setElementType(elementType);
-        definition.setOwner(owner);
-        return definition;
-    }
-
-    @Override
-    public UpdateReference createUpdateReference(CatalogItem catalogItem,
-            ItemUpdateType updateType) {
-        UpdateReferenceData updateReference = new UpdateReferenceData();
-        updateReference.setOwner(catalogItem);
-        updateReference.setUpdateType(updateType);
-        catalogItem.getUpdateReferences()
-                   .add(updateReference);
-        return updateReference;
-    }
+  @Override
+  public UpdateReference createUpdateReference(CatalogItem catalogItem, ItemUpdateType updateType) {
+    UpdateReferenceData updateReference = new UpdateReferenceData();
+    updateReference.setOwner(catalogItem);
+    updateReference.setUpdateType(updateType);
+    catalogItem.getUpdateReferences().add(updateReference);
+    return updateReference;
+  }
 }

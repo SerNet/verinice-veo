@@ -17,22 +17,20 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-/**
- * A Document is a specification, a contract or a reference.
- */
+/** A Document is a specification, a contract or a reference. */
 public interface Document extends Element, CompositeElement<Document> {
 
-    String SINGULAR_TERM = "document";
-    String PLURAL_TERM = "documents";
-    String TYPE_DESIGNATOR = "DOC";
+  String SINGULAR_TERM = "document";
+  String PLURAL_TERM = "documents";
+  String TYPE_DESIGNATOR = "DOC";
 
-    @Override
-    default String getModelType() {
-        return SINGULAR_TERM;
-    }
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
 
-    @Override
-    default String getTypeDesignator() {
-        return TYPE_DESIGNATOR;
-    }
+  @Override
+  default String getTypeDesignator() {
+    return TYPE_DESIGNATOR;
+  }
 }

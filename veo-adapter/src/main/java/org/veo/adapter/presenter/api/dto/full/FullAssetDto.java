@@ -32,11 +32,11 @@ import lombok.ToString;
 @Data
 public class FullAssetDto extends AbstractAssetDto implements IdentifiableDto {
 
-    @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
-    @Schema(description = "ID must be a valid UUID string following RFC 4122.",
-            example = "adf037f1-0089-48ad-9177-92269918758b",
-            format = "uuid")
-    @ToString.Include
-    private String id;
-
+  @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
+  @Schema(
+      description = "ID must be a valid UUID string following RFC 4122.",
+      example = "adf037f1-0089-48ad-9177-92269918758b",
+      format = "uuid")
+  @ToString.Include
+  private String id;
 }

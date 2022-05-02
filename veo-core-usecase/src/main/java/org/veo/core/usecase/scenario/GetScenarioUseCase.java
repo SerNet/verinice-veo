@@ -21,13 +21,10 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.repository.ScenarioRepository;
 import org.veo.core.usecase.base.GetElementUseCase;
 
-/**
- * Reinstantiate a persisted scenario object.
- */
+/** Reinstantiate a persisted scenario object. */
 public class GetScenarioUseCase extends GetElementUseCase<Scenario> {
 
-    public GetScenarioUseCase(ScenarioRepository repository) {
-        super(repository);
-    }
-
+  public GetScenarioUseCase(ScenarioRepository repository) {
+    super(repository);
+  }
 }

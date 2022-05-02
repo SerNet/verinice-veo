@@ -39,112 +39,110 @@ import org.veo.rest.VeoRestConfiguration;
 
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Forwards new {@link StoredEvent}s to the external message queue.
- */
+/** Forwards new {@link StoredEvent}s to the external message queue. */
 @Component
 @Slf4j
 @Profile(PROFILE_BACKGROUND_TASKS)
 public class MessagingJob {
 
-    /**
-     * Keep transaction open and wait until all events are acknowledged - but no
-     * longer than the configured wait time. Unacknowledged events will be sent
-     * again during the next publication after their established lock time.
-     */
-    @Value("${veo.messages.publishing.confirmationWaitMs:2000}")
-    public int confirmationWaitMs;
+  /**
+   * Keep transaction open and wait until all events are acknowledged - but no longer than the
+   * configured wait time. Unacknowledged events will be sent again during the next publication
+   * after their established lock time.
+   */
+  @Value("${veo.messages.publishing.confirmationWaitMs:2000}")
+  public int confirmationWaitMs;
 
-    private final StoredEventRepository storedEventRepository;
+  private final StoredEventRepository storedEventRepository;
 
-    private final VeoRestConfiguration config;
+  private final VeoRestConfiguration config;
 
-    private final EventDispatcher eventDispatcher;
+  private final EventDispatcher eventDispatcher;
 
-    public MessagingJob(StoredEventRepository storedEventRepository, VeoRestConfiguration config,
-            EventDispatcher eventDispatcher) {
-        this.storedEventRepository = storedEventRepository;
-        this.config = config;
-        this.eventDispatcher = eventDispatcher;
-    }
+  public MessagingJob(
+      StoredEventRepository storedEventRepository,
+      VeoRestConfiguration config,
+      EventDispatcher eventDispatcher) {
+    this.storedEventRepository = storedEventRepository;
+    this.config = config;
+    this.eventDispatcher = eventDispatcher;
+  }
 
-    @Scheduled(fixedRateString = "${veo.messages.publishing.rateMs:2000}")
-    public void sendMessages() {
-        var sender = new EventSender();
-        var retriever = new EventRetriever();
-        sender.send(retriever.retrievePendingEvents());
-    }
+  @Scheduled(fixedRateString = "${veo.messages.publishing.rateMs:2000}")
+  public void sendMessages() {
+    var sender = new EventSender();
+    var retriever = new EventRetriever();
+    sender.send(retriever.retrievePendingEvents());
+  }
 
-    /**
-     * An inner class is used to wrap the event sender in a dedicated transaction.
-     * This is due to limitations of Spring AOP:
-     * <p>
-     * "In proxy mode (which is the default), only external method calls coming in
-     * through the proxy are intercepted. This means that self-invocation, in
-     * effect, a method within the target object calling another method of the
-     * target object, will not lead to an actual transaction at runtime even if the
-     * invoked method is marked with @Transactional."
-     */
-    public class EventSender {
-        @Transactional
-        public void send(List<StoredEvent> pendingEvents) {
-            if (pendingEvents.isEmpty())
-                return;
+  /**
+   * An inner class is used to wrap the event sender in a dedicated transaction. This is due to
+   * limitations of Spring AOP:
+   *
+   * <p>"In proxy mode (which is the default), only external method calls coming in through the
+   * proxy are intercepted. This means that self-invocation, in effect, a method within the target
+   * object calling another method of the target object, will not lead to an actual transaction at
+   * runtime even if the invoked method is marked with @Transactional."
+   */
+  public class EventSender {
+    @Transactional
+    public void send(List<StoredEvent> pendingEvents) {
+      if (pendingEvents.isEmpty()) return;
 
-            log.debug("Dispatching messages for {} stored events.", pendingEvents.size());
-            var latch = new CountDownLatch(pendingEvents.size());
-            var pending = pendingEvents.stream()
-                                       .collect(Collectors.toMap(StoredEvent::getId,
-                                                                 event -> event));
+      log.debug("Dispatching messages for {} stored events.", pendingEvents.size());
+      var latch = new CountDownLatch(pendingEvents.size());
+      var pending =
+          pendingEvents.stream().collect(Collectors.toMap(StoredEvent::getId, event -> event));
 
-            eventDispatcher.sendAsync(messagesFrom(pendingEvents), (e, ack) -> {
-                if (ack) {
-                    var storedEvent = pending.get(e.getId());
-                    if (storedEvent != null && storedEvent.markAsProcessed()) {
-                        latch.countDown();
-                    } else
-                        log.warn("Stored event {} was already processed", e.getId());
-                } else
-                    log.warn("Dispatch unsuccessful for stored event {}.", e.getId());
-            });
+      eventDispatcher.sendAsync(
+          messagesFrom(pendingEvents),
+          (e, ack) -> {
+            if (ack) {
+              var storedEvent = pending.get(e.getId());
+              if (storedEvent != null && storedEvent.markAsProcessed()) {
+                latch.countDown();
+              } else log.warn("Stored event {} was already processed", e.getId());
+            } else log.warn("Dispatch unsuccessful for stored event {}.", e.getId());
+          });
 
-            // keep this transaction open until all messages are confirmed - but no longer
-            // than CONFIRMATION_WAIT:
-            try {
-                if (!latch.await(confirmationWaitMs, TimeUnit.MILLISECONDS)) {
-                    log.warn("Timeout reached before receiving ACK for all dispatched messages. "
-                            + "{} remaining messages will not be marked as processed and "
-                            + "re-sent during the next scheduled publication after the "
-                            + "lock period of {} seconds", latch.getCount(),
-                             config.getMessagePublishingLockExpiration()
-                                   .getSeconds());
-                } else {
-                    log.debug("Success! Received ACK for all dispatched messages.");
-                }
-            } catch (InterruptedException e) {
-                log.warn("Interrupted while waiting for confirmation from published events.", e);
-            }
-            storedEventRepository.saveAll(pendingEvents);
+      // keep this transaction open until all messages are confirmed - but no longer
+      // than CONFIRMATION_WAIT:
+      try {
+        if (!latch.await(confirmationWaitMs, TimeUnit.MILLISECONDS)) {
+          log.warn(
+              "Timeout reached before receiving ACK for all dispatched messages. "
+                  + "{} remaining messages will not be marked as processed and "
+                  + "re-sent during the next scheduled publication after the "
+                  + "lock period of {} seconds",
+              latch.getCount(),
+              config.getMessagePublishingLockExpiration().getSeconds());
+        } else {
+          log.debug("Success! Received ACK for all dispatched messages.");
         }
+      } catch (InterruptedException e) {
+        log.warn("Interrupted while waiting for confirmation from published events.", e);
+      }
+      storedEventRepository.saveAll(pendingEvents);
     }
+  }
 
-    /**
-     * An inner class is used to wrap the event sender in a dedicated transaction.
-     * See the remarks on the EventSender class for a more detailed explanation.
-     * <p>
-     * The event retrieval needs to run in its own read-write transaction because
-     * the retrieved events are time-locked to prevent another MessagingJob from
-     * working on the same retrieved events. This needs to be an atomic transaction
-     * that is committed before this MessagingJob begins working on the retrieved
-     * events.
-     */
-    public class EventRetriever {
-        @Transactional
-        public List<StoredEvent> retrievePendingEvents() {
-            var events = storedEventRepository.findPendingEvents(Instant.now()
-                                                                        .minus(config.getMessagePublishingLockExpiration()));
-            events.forEach(StoredEvent::lock);
-            return events;
-        }
+  /**
+   * An inner class is used to wrap the event sender in a dedicated transaction. See the remarks on
+   * the EventSender class for a more detailed explanation.
+   *
+   * <p>The event retrieval needs to run in its own read-write transaction because the retrieved
+   * events are time-locked to prevent another MessagingJob from working on the same retrieved
+   * events. This needs to be an atomic transaction that is committed before this MessagingJob
+   * begins working on the retrieved events.
+   */
+  public class EventRetriever {
+    @Transactional
+    public List<StoredEvent> retrievePendingEvents() {
+      var events =
+          storedEventRepository.findPendingEvents(
+              Instant.now().minus(config.getMessagePublishingLockExpiration()));
+      events.forEach(StoredEvent::lock);
+      return events;
     }
+  }
 }

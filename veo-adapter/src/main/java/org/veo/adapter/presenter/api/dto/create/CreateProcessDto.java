@@ -24,6 +24,4 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public final class CreateProcessDto extends AbstractProcessDto {
-
-}
+public final class CreateProcessDto extends AbstractProcessDto {}

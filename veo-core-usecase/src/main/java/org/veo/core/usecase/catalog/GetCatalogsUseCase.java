@@ -33,35 +33,35 @@ import org.veo.core.usecase.UseCase;
 
 import lombok.Value;
 
-public class GetCatalogsUseCase implements
-        TransactionalUseCase<GetCatalogsUseCase.InputData, GetCatalogsUseCase.OutputData> {
+public class GetCatalogsUseCase
+    implements TransactionalUseCase<GetCatalogsUseCase.InputData, GetCatalogsUseCase.OutputData> {
 
-    @Override
-    public OutputData execute(InputData input) {
-        List<Catalog> list = input.authenticatedClient.getDomains()
-                                                      .stream()
-                                                      .filter(EntitySpecifications.isActive())
-                                                      .filter(input.domainId.map(EntitySpecifications::hasId)
-                                                                            .orElse(EntitySpecifications.matchAll()))
-                                                      .flatMap(d -> d.getCatalogs()
-                                                                     .stream())
-                                                      .collect(Collectors.toList());
-        // TODO: VEO-500 Implement Catalog Search
-        return new OutputData(list);
-    }
+  @Override
+  public OutputData execute(InputData input) {
+    List<Catalog> list =
+        input.authenticatedClient.getDomains().stream()
+            .filter(EntitySpecifications.isActive())
+            .filter(
+                input
+                    .domainId
+                    .map(EntitySpecifications::hasId)
+                    .orElse(EntitySpecifications.matchAll()))
+            .flatMap(d -> d.getCatalogs().stream())
+            .collect(Collectors.toList());
+    // TODO: VEO-500 Implement Catalog Search
+    return new OutputData(list);
+  }
 
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Optional<Key<UUID>> domainId;
-        Client authenticatedClient;
-    }
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
+    Optional<Key<UUID>> domainId;
+    Client authenticatedClient;
+  }
 
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        List<Catalog> catalogs;
-    }
-
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid List<Catalog> catalogs;
+  }
 }

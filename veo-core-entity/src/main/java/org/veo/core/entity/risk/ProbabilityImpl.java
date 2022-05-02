@@ -28,31 +28,28 @@ import lombok.Setter;
 @Valid
 public class ProbabilityImpl implements Probability {
 
-    private ProbabilityRef potentialProbability;
+  private ProbabilityRef potentialProbability;
 
-    private ProbabilityRef specificProbability;
+  private ProbabilityRef specificProbability;
 
-    @Setter(AccessLevel.NONE)
-    private ProbabilityRef effectiveProbability;
+  @Setter(AccessLevel.NONE)
+  private ProbabilityRef effectiveProbability;
 
-    @Size(max = Probability.EXPLANATION_MAX_LENGTH)
-    private String specificProbabilityExplanation;
+  @Size(max = Probability.EXPLANATION_MAX_LENGTH)
+  private String specificProbabilityExplanation;
 
-    public void setPotentialProbability(ProbabilityRef potentialProbability) {
-        this.potentialProbability = potentialProbability;
-        updateEffectiveProbability();
-    }
+  public void setPotentialProbability(ProbabilityRef potentialProbability) {
+    this.potentialProbability = potentialProbability;
+    updateEffectiveProbability();
+  }
 
-    public void setSpecificProbability(ProbabilityRef specificProbability) {
-        this.specificProbability = specificProbability;
-        updateEffectiveProbability();
-    }
+  public void setSpecificProbability(ProbabilityRef specificProbability) {
+    this.specificProbability = specificProbability;
+    updateEffectiveProbability();
+  }
 
-    private void updateEffectiveProbability() {
-        if (specificProbability != null)
-            effectiveProbability = specificProbability;
-        else
-            effectiveProbability = potentialProbability;
-    }
-
+  private void updateEffectiveProbability() {
+    if (specificProbability != null) effectiveProbability = specificProbability;
+    else effectiveProbability = potentialProbability;
+  }
 }

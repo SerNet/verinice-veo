@@ -22,9 +22,7 @@ import lombok.Value;
 
 @Schema(accessMode = Schema.AccessMode.READ_ONLY)
 @Value
-/**
- * API response when a new search is created for a resource endpoint.
- */
+/** API response when a new search is created for a resource endpoint. */
 public class SearchResponse {
-    String searchUrl;
+  String searchUrl;
 }

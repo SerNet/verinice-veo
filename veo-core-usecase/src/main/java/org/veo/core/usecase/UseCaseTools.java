@@ -28,43 +28,37 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.repository.ClientRepository;
 
-/**
- * A collection of methods used by use cases.
- */
+/** A collection of methods used by use cases. */
 public final class UseCaseTools {
 
-    private UseCaseTools() {
-    }
+  private UseCaseTools() {}
 
-    /**
-     * Check if the client exists.
-     *
-     * @throws NotFoundException
-     */
-    public static Client checkClientExists(Key<UUID> clientId, ClientRepository clientRepository) {
-        Client client = clientRepository.findById(clientId)
-                                        .orElseThrow(() -> new NotFoundException(
-                                                "Invalid client ID"));
-        return client;
-    }
+  /**
+   * Check if the client exists.
+   *
+   * @throws NotFoundException
+   */
+  public static Client checkClientExists(Key<UUID> clientId, ClientRepository clientRepository) {
+    Client client =
+        clientRepository
+            .findById(clientId)
+            .orElseThrow(() -> new NotFoundException("Invalid client ID"));
+    return client;
+  }
 
-    /**
-     * Checks if the given domain is owned by the client.
-     *
-     * @throws IllegalArgumentException
-     *             when used with a Domaintemplate instance, as Domaintemplate can
-     *             not be owned by a client.
-     * @throws ModelConsistencyException
-     *             when the domain is not owned by the client.
-     */
-    public static void checkDomainBelongsToClient(Client client, DomainTemplate domaintemplate) {
-        if (!Domain.class.isAssignableFrom(domaintemplate.getClass())) {
-            throw new IllegalArgumentException("A DomainTemplate never belongs to a client");
-        }
-        if (!client.getDomains()
-                   .contains(domaintemplate)) {
-            throw new ClientBoundaryViolationException(domaintemplate, client);
-        }
+  /**
+   * Checks if the given domain is owned by the client.
+   *
+   * @throws IllegalArgumentException when used with a Domaintemplate instance, as Domaintemplate
+   *     can not be owned by a client.
+   * @throws ModelConsistencyException when the domain is not owned by the client.
+   */
+  public static void checkDomainBelongsToClient(Client client, DomainTemplate domaintemplate) {
+    if (!Domain.class.isAssignableFrom(domaintemplate.getClass())) {
+      throw new IllegalArgumentException("A DomainTemplate never belongs to a client");
     }
-
+    if (!client.getDomains().contains(domaintemplate)) {
+      throw new ClientBoundaryViolationException(domaintemplate, client);
+    }
+  }
 }

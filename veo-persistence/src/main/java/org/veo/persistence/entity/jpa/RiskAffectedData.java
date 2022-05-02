@@ -39,35 +39,36 @@ import lombok.ToString;
 @Data
 @Entity
 public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-        extends ElementData implements RiskAffected<T, R> {
+    extends ElementData implements RiskAffected<T, R> {
 
-    @OneToMany(cascade = CascadeType.ALL,
-               orphanRemoval = true,
-               targetEntity = AbstractRiskData.class,
-               mappedBy = "entity",
-               fetch = FetchType.LAZY)
-    private final Set<R> risks = new HashSet<>();
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      targetEntity = AbstractRiskData.class,
+      mappedBy = "entity",
+      fetch = FetchType.LAZY)
+  private final Set<R> risks = new HashSet<>();
 
-    @Override
-    public Set<R> getRisks() {
-        return risks;
-    }
+  @Override
+  public Set<R> getRisks() {
+    return risks;
+  }
 
-    @Override
-    public R obtainRisk(Scenario scenario, Domain domain) {
-        scenario.checkSameClient(this);
-        isDomainValid(domain);
-        return risks.stream()
-                    .filter(r -> r.getScenario()
-                                  .equals(scenario))
-                    .findAny()
-                    .orElseGet(() -> {
-                        var riskData = createRisk(scenario);
-                        riskData.addToDomains(domain);
-                        addRisk(riskData);
-                        return riskData;
-                    });
-    }
+  @Override
+  public R obtainRisk(Scenario scenario, Domain domain) {
+    scenario.checkSameClient(this);
+    isDomainValid(domain);
+    return risks.stream()
+        .filter(r -> r.getScenario().equals(scenario))
+        .findAny()
+        .orElseGet(
+            () -> {
+              var riskData = createRisk(scenario);
+              riskData.addToDomains(domain);
+              addRisk(riskData);
+              return riskData;
+            });
+  }
 
-    abstract R createRisk(Scenario scenario);
+  abstract R createRisk(Scenario scenario);
 }

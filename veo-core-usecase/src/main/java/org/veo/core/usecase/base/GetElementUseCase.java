@@ -28,26 +28,26 @@ import org.veo.core.usecase.UseCase;
 import lombok.Value;
 
 public class GetElementUseCase<T extends CompositeElement<T>>
-        implements TransactionalUseCase<UseCase.IdAndClient, GetElementUseCase.OutputData<T>> {
+    implements TransactionalUseCase<UseCase.IdAndClient, GetElementUseCase.OutputData<T>> {
 
-    private final ElementRepository<T> repository;
+  private final ElementRepository<T> repository;
 
-    public GetElementUseCase(ElementRepository<T> repository) {
-        this.repository = repository;
-    }
+  public GetElementUseCase(ElementRepository<T> repository) {
+    this.repository = repository;
+  }
 
-    public OutputData<T> execute(IdAndClient input) {
-        T element = repository.findById(input.getId())
-                              .orElseThrow(() -> new NotFoundException(input.getId()
-                                                                            .uuidValue()));
-        element.checkSameClient(input.getAuthenticatedClient());
-        return new OutputData<>(element);
-    }
+  public OutputData<T> execute(IdAndClient input) {
+    T element =
+        repository
+            .findById(input.getId())
+            .orElseThrow(() -> new NotFoundException(input.getId().uuidValue()));
+    element.checkSameClient(input.getAuthenticatedClient());
+    return new OutputData<>(element);
+  }
 
-    @Valid
-    @Value
-    public static class OutputData<T> implements UseCase.OutputData {
-        @Valid
-        T element;
-    }
+  @Valid
+  @Value
+  public static class OutputData<T> implements UseCase.OutputData {
+    @Valid T element;
+  }
 }

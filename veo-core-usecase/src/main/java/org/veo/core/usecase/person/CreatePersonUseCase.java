@@ -26,13 +26,16 @@ import org.veo.core.usecase.decision.Decider;
 
 public class CreatePersonUseCase extends CreateElementUseCase<Person> {
 
-    public CreatePersonUseCase(UnitRepository unitRepository, PersonRepository entityRepo,
-            DesignatorService designatorService, Decider decider) {
-        super(unitRepository, entityRepo, designatorService, decider);
-    }
+  public CreatePersonUseCase(
+      UnitRepository unitRepository,
+      PersonRepository entityRepo,
+      DesignatorService designatorService,
+      Decider decider) {
+    super(unitRepository, entityRepo, designatorService, decider);
+  }
 
-    @Override
-    protected void validate(Person person) {
-        // GNDN
-    }
+  @Override
+  protected void validate(Person person) {
+    // GNDN
+  }
 }

@@ -18,22 +18,19 @@
 package org.veo.core.entity;
 
 public interface Designated {
-    /**
-     * @return A compact human-readable identifier that is unique within the client.
-     */
-    String getDesignator();
+  /**
+   * @return A compact human-readable identifier that is unique within the client.
+   */
+  String getDesignator();
 
-    /**
-     * @param designator
-     *            A compact human-readable identifier that is unique within the
-     *            client.
-     */
-    void setDesignator(String designator);
+  /**
+   * @param designator A compact human-readable identifier that is unique within the client.
+   */
+  void setDesignator(String designator);
 
-    /**
-     * @return A 3-character designator that is constant for the entity type (or
-     *         family of entity types) and acts as a prefix to the individual object
-     *         designators.
-     */
-    String getTypeDesignator();
+  /**
+   * @return A 3-character designator that is constant for the entity type (or family of entity
+   *     types) and acts as a prefix to the individual object designators.
+   */
+  String getTypeDesignator();
 }

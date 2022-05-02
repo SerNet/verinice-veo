@@ -50,55 +50,51 @@ import org.veo.core.entity.definitions.ElementTypeDefinition;
  * @author urszeidler
  */
 public interface EntityFactory {
-    CustomAspect createCustomAspect(String type);
+  CustomAspect createCustomAspect(String type);
 
-    Person createPerson(String name, ElementOwner unit);
+  Person createPerson(String name, ElementOwner unit);
 
-    Process createProcess(String name, ElementOwner unit);
+  Process createProcess(String name, ElementOwner unit);
 
-    Client createClient(Key<UUID> id, String name);
+  Client createClient(Key<UUID> id, String name);
 
-    Asset createAsset(String name, ElementOwner unit);
+  Asset createAsset(String name, ElementOwner unit);
 
-    Control createControl(String name, ElementOwner unit);
+  Control createControl(String name, ElementOwner unit);
 
-    Incident createIncident(String name, ElementOwner unit);
+  Incident createIncident(String name, ElementOwner unit);
 
-    Scenario createScenario(String name, ElementOwner unit);
+  Scenario createScenario(String name, ElementOwner unit);
 
-    Unit createUnit(String name, Unit unit);
+  Unit createUnit(String name, Unit unit);
 
-    Document createDocument(String name, ElementOwner parent);
+  Document createDocument(String name, ElementOwner parent);
 
-    /**
-     * Reconstitutes a domain without the reference to its owning client. Adding it
-     * to a client is the caller's responsibility.
-     */
-    Domain createDomain(String name, String authority, String templateVersion, String revision);
+  /**
+   * Reconstitutes a domain without the reference to its owning client. Adding it to a client is the
+   * caller's responsibility.
+   */
+  Domain createDomain(String name, String authority, String templateVersion, String revision);
 
-    CustomLink createCustomLink(Element linkTarget, Element linkSource, String type);
+  CustomLink createCustomLink(Element linkTarget, Element linkSource, String type);
 
-    Scope createScope(String name, ElementOwner owner);
+  Scope createScope(String name, ElementOwner owner);
 
-    Catalog createCatalog(DomainTemplate owner);
+  Catalog createCatalog(DomainTemplate owner);
 
-    DomainTemplate createDomainTemplate(String name, String authority, String templateVersion,
-            String revision, Key<UUID> id);
+  DomainTemplate createDomainTemplate(
+      String name, String authority, String templateVersion, String revision, Key<UUID> id);
 
-    /**
-     * Creates a catalogItem and add it to the catalog. Careful this changes the
-     * catalog entity.
-     */
-    CatalogItem createCatalogItem(Catalog catalog, Function<CatalogItem, Element> elementFactory);
+  /** Creates a catalogItem and add it to the catalog. Careful this changes the catalog entity. */
+  CatalogItem createCatalogItem(Catalog catalog, Function<CatalogItem, Element> elementFactory);
 
-    TailoringReference createTailoringReference(CatalogItem catalogItem,
-            TailoringReferenceType referenceType);
+  TailoringReference createTailoringReference(
+      CatalogItem catalogItem, TailoringReferenceType referenceType);
 
-    UpdateReference createUpdateReference(CatalogItem catalogItem, ItemUpdateType updateType);
+  UpdateReference createUpdateReference(CatalogItem catalogItem, ItemUpdateType updateType);
 
-    LinkTailoringReference createLinkTailoringReference(CatalogItem catalogItem,
-            TailoringReferenceType referenceType);
+  LinkTailoringReference createLinkTailoringReference(
+      CatalogItem catalogItem, TailoringReferenceType referenceType);
 
-    ElementTypeDefinition createElementTypeDefinition(String elementType, DomainTemplate owner);
-
+  ElementTypeDefinition createElementTypeDefinition(String elementType, DomainTemplate owner);
 }

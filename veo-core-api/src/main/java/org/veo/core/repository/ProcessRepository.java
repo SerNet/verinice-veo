@@ -30,25 +30,21 @@ import org.veo.core.entity.Scenario;
 /**
  * A repository for <code>Process</code> entities.
  *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
+ * <p>Implements basic CRUD operations from the superinterface and extends them with more specific
+ * methods - i.e. queries based on particular fields.
  */
 public interface ProcessRepository
-        extends RiskAffectedRepository<Process, ProcessRisk>, CompositeElementRepository<Process> {
+    extends RiskAffectedRepository<Process, ProcessRisk>, CompositeElementRepository<Process> {
 
-    /**
-     * Returns risks with initialized risk value aspects.
-     */
-    Set<Process> findRisksWithValue(Scenario scenario);
+  /** Returns risks with initialized risk value aspects. */
+  Set<Process> findRisksWithValue(Scenario scenario);
 
-    Optional<Process> findByIdWithRiskValues(Key<UUID> processId);
+  Optional<Process> findByIdWithRiskValues(Key<UUID> processId);
 
-    /**
-     * Find elements that have risks associated to them.
-     */
-    Set<Process> findAllHavingRisks(Client client);
+  /** Find elements that have risks associated to them. */
+  Set<Process> findAllHavingRisks(Client client);
 
-    ElementQuery<Process> query(Client client, boolean withRisks);
+  ElementQuery<Process> query(Client client, boolean withRisks);
 
-    Optional<Process> findById(Key<UUID> id, boolean shouldEmbedRisks);
+  Optional<Process> findById(Key<UUID> id, boolean shouldEmbedRisks);
 }

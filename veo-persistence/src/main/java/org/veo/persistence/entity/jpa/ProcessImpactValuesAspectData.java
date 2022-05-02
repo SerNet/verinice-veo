@@ -43,9 +43,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-/**
- * Holds risk related info for a process in a specific domain.
- */
+/** Holds risk related info for a process in a specific domain. */
 @Entity(name = "process_impact_values_aspect")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
@@ -53,108 +51,90 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class ProcessImpactValuesAspectData extends AspectData {
 
-    public ProcessImpactValuesAspectData(DomainTemplate domain, Process owner) {
-        super(domain, owner);
+  public ProcessImpactValuesAspectData(DomainTemplate domain, Process owner) {
+    super(domain, owner);
+  }
+
+  @Getter
+  @NotNull
+  @Column(columnDefinition = "jsonb", name = "process_impact_values")
+  @Type(type = "json")
+  Map<RiskDefinitionRef, ProcessImpactValues> values;
+
+  public void setValues(Map<RiskDefinitionRef, ProcessImpactValues> values) {
+    if (values == null) {
+      throw new IllegalArgumentException("The impact values need to be set.");
     }
+    validateRiskDefinitionExist(values);
+    validateAllCategoriesExist(values);
+    validateAllImpactsExist(values);
+    this.values = values;
+  }
 
-    @Getter
-    @NotNull
-    @Column(columnDefinition = "jsonb", name = "process_impact_values")
-    @Type(type = "json")
-    Map<RiskDefinitionRef, ProcessImpactValues> values;
+  private void validateAllImpactsExist(Map<RiskDefinitionRef, ProcessImpactValues> values) {
+    values
+        .entrySet()
+        .forEach(
+            e -> {
+              RiskDefinition riskDefinition =
+                  this.getDomain().getRiskDefinitions().get(e.getKey().getIdRef());
+              ProcessImpactValues impactValues = e.getValue();
+              impactValues.getPotentialImpacts().entrySet().stream()
+                  .forEach(
+                      impacts -> {
+                        CategoryDefinition categoryDefinition =
+                            riskDefinition.getCategory(impacts.getKey().getIdRef()).orElseThrow();
+                        int impactValueId = impacts.getValue().getIdRef().intValue();
+                        if (impactValueId < 0
+                            || impactValueId
+                                > categoryDefinition.getPotentialImpacts().size() - 1) {
+                          throw new IllegalArgumentException(
+                              "Impact value for category '"
+                                  + categoryDefinition.getId()
+                                  + "' is out of range "
+                                  + impactValueId);
+                        }
+                      });
+            });
+  }
 
-    public void setValues(Map<RiskDefinitionRef, ProcessImpactValues> values) {
-        if (values == null) {
-            throw new IllegalArgumentException("The impact values need to be set.");
-        }
-        validateRiskDefinitionExist(values);
-        validateAllCategoriesExist(values);
-        validateAllImpactsExist(values);
-        this.values = values;
+  /** Validates that all defined Impact Categories exist in the referenced risk definition. */
+  private void validateAllCategoriesExist(Map<RiskDefinitionRef, ProcessImpactValues> values) {
+    values
+        .entrySet()
+        .forEach(
+            e -> {
+              RiskDefinition riskDefinition =
+                  this.getDomain().getRiskDefinitions().get(e.getKey().getIdRef());
+
+              Set<String> categoryIds =
+                  riskDefinition.getCategories().stream()
+                      .map(c -> c.getId())
+                      .collect(Collectors.toSet());
+              Set<String> usedCatIds =
+                  e.getValue().getPotentialImpacts().keySet().stream()
+                      .map(c -> c.getIdRef())
+                      .collect(Collectors.toSet());
+
+              usedCatIds.removeAll(categoryIds);
+              if (!usedCatIds.isEmpty()) {
+                throw new IllegalArgumentException(
+                    "Undefined categorie definitions: " + usedCatIds);
+              }
+            });
+  }
+
+  /** Validates that the risk definition is part of associated domain. */
+  private void validateRiskDefinitionExist(Map<RiskDefinitionRef, ProcessImpactValues> values) {
+    Set<String> idSet =
+        this.getDomain().getRiskDefinitions().entrySet().stream()
+            .map(e -> e.getValue().getId())
+            .collect(Collectors.toSet());
+    Set<String> usedIds =
+        values.entrySet().stream().map(e -> e.getKey().getIdRef()).collect(Collectors.toSet());
+    usedIds.removeAll(idSet);
+    if (!usedIds.isEmpty()) {
+      throw new IllegalArgumentException("Undefined risk definitions: " + usedIds);
     }
-
-    private void validateAllImpactsExist(Map<RiskDefinitionRef, ProcessImpactValues> values) {
-        values.entrySet()
-              .forEach(e -> {
-                  RiskDefinition riskDefinition = this.getDomain()
-                                                      .getRiskDefinitions()
-                                                      .get(e.getKey()
-                                                            .getIdRef());
-                  ProcessImpactValues impactValues = e.getValue();
-                  impactValues.getPotentialImpacts()
-                              .entrySet()
-                              .stream()
-                              .forEach(impacts -> {
-                                  CategoryDefinition categoryDefinition = riskDefinition.getCategory(impacts.getKey()
-                                                                                                            .getIdRef())
-                                                                                        .orElseThrow();
-                                  int impactValueId = impacts.getValue()
-                                                             .getIdRef()
-                                                             .intValue();
-                                  if (impactValueId < 0
-                                          || impactValueId > categoryDefinition.getPotentialImpacts()
-                                                                               .size()
-                                                  - 1) {
-                                      throw new IllegalArgumentException(
-                                              "Impact value for category '"
-                                                      + categoryDefinition.getId()
-                                                      + "' is out of range " + impactValueId);
-                                  }
-                              });
-              });
-    }
-
-    /**
-     * Validates that all defined Impact Categories exist in the referenced risk
-     * definition.
-     */
-    private void validateAllCategoriesExist(Map<RiskDefinitionRef, ProcessImpactValues> values) {
-        values.entrySet()
-              .forEach(e -> {
-                  RiskDefinition riskDefinition = this.getDomain()
-                                                      .getRiskDefinitions()
-                                                      .get(e.getKey()
-                                                            .getIdRef());
-
-                  Set<String> categoryIds = riskDefinition.getCategories()
-                                                          .stream()
-                                                          .map(c -> c.getId())
-                                                          .collect(Collectors.toSet());
-                  Set<String> usedCatIds = e.getValue()
-                                            .getPotentialImpacts()
-                                            .keySet()
-                                            .stream()
-                                            .map(c -> c.getIdRef())
-                                            .collect(Collectors.toSet());
-
-                  usedCatIds.removeAll(categoryIds);
-                  if (!usedCatIds.isEmpty()) {
-                      throw new IllegalArgumentException(
-                              "Undefined categorie definitions: " + usedCatIds);
-                  }
-              });
-    }
-
-    /**
-     * Validates that the risk definition is part of associated domain.
-     */
-    private void validateRiskDefinitionExist(Map<RiskDefinitionRef, ProcessImpactValues> values) {
-        Set<String> idSet = this.getDomain()
-                                .getRiskDefinitions()
-                                .entrySet()
-                                .stream()
-                                .map(e -> e.getValue()
-                                           .getId())
-                                .collect(Collectors.toSet());
-        Set<String> usedIds = values.entrySet()
-                                    .stream()
-                                    .map(e -> e.getKey()
-                                               .getIdRef())
-                                    .collect(Collectors.toSet());
-        usedIds.removeAll(idSet);
-        if (!usedIds.isEmpty()) {
-            throw new IllegalArgumentException("Undefined risk definitions: " + usedIds);
-        }
-    }
-
+  }
 }

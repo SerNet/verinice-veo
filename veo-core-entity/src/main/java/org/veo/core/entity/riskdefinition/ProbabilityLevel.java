@@ -27,8 +27,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true)
 public class ProbabilityLevel extends DiscreteValue {
-    public ProbabilityLevel(String name, String abbreviation, String description,
-            String htmlColor) {
-        super(name, abbreviation, description, htmlColor);
-    }
+  public ProbabilityLevel(String name, String abbreviation, String description, String htmlColor) {
+    super(name, abbreviation, description, htmlColor);
+  }
 }

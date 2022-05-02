@@ -30,26 +30,25 @@ import org.veo.core.usecase.UseCase;
 import lombok.Value;
 
 public class GetDomainsUseCase
-        implements TransactionalUseCase<GetDomainsUseCase.InputData, GetDomainsUseCase.OutputData> {
+    implements TransactionalUseCase<GetDomainsUseCase.InputData, GetDomainsUseCase.OutputData> {
 
-    @Override
-    public OutputData execute(InputData input) {
-        return new OutputData(input.authenticatedClient.getDomains()
-                                                       .stream()
-                                                       .filter(d -> d.isActive())
-                                                       .collect(Collectors.toList()));
-    }
+  @Override
+  public OutputData execute(InputData input) {
+    return new OutputData(
+        input.authenticatedClient.getDomains().stream()
+            .filter(d -> d.isActive())
+            .collect(Collectors.toList()));
+  }
 
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Client authenticatedClient;
-    }
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
+    Client authenticatedClient;
+  }
 
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        List<Domain> objects;
-    }
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid List<Domain> objects;
+  }
 }

@@ -21,8 +21,9 @@ import java.io.File;
 import java.io.IOException;
 
 class DomainTemplateSnippetException extends RuntimeException {
-    public DomainTemplateSnippetException(File file, IOException inner) {
-        super(String.format("Failed loading domain template snippet at %s", file.getAbsolutePath()),
-                inner);
-    }
+  public DomainTemplateSnippetException(File file, IOException inner) {
+    super(
+        String.format("Failed loading domain template snippet at %s", file.getAbsolutePath()),
+        inner);
+  }
 }

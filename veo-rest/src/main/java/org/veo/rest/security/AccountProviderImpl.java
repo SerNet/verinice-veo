@@ -33,18 +33,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AccountProviderImpl implements AccountProvider {
 
-    private final ClientReadOnlyRepository clientRepository;
+  private final ClientReadOnlyRepository clientRepository;
 
-    @Override
-    public Account getCurrentUserAccount() {
-        var user = ApplicationUser.authenticatedUser(SecurityContextHolder.getContext()
-                                                                          .getAuthentication()
-                                                                          .getPrincipal());
-        var client = Optional.ofNullable(user.getClientId())
-                             .map(Key::uuidFrom)
-                             .flatMap(clientRepository::findById)
-                             .orElse(null);
+  @Override
+  public Account getCurrentUserAccount() {
+    var user =
+        ApplicationUser.authenticatedUser(
+            SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    var client =
+        Optional.ofNullable(user.getClientId())
+            .map(Key::uuidFrom)
+            .flatMap(clientRepository::findById)
+            .orElse(null);
 
-        return new AccountImpl(user.isAdmin(), client);
-    }
+    return new AccountImpl(user.isAdmin(), client);
+  }
 }

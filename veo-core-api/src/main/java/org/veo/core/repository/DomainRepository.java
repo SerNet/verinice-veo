@@ -28,16 +28,16 @@ import org.veo.core.entity.Key;
 /**
  * A repository for <code>Domain</code> entities.
  *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
+ * <p>Implements basic CRUD operations from the superinterface and extends them with more specific
+ * methods - i.e. queries based on particular fields.
  */
 public interface DomainRepository extends IdentifiableVersionedRepository<Domain> {
 
-    Set<Domain> findAllByClient(Key<UUID> clientId);
+  Set<Domain> findAllByClient(Key<UUID> clientId);
 
-    Set<Domain> findAllByTemplateId(Key<UUID> domainTemplateId);
+  Set<Domain> findAllByTemplateId(Key<UUID> domainTemplateId);
 
-    Optional<Domain> findByCatalogItem(CatalogItem catalogItem);
+  Optional<Domain> findByCatalogItem(CatalogItem catalogItem);
 
-    Optional<Domain> findById(Key<UUID> domainId, Key<UUID> clientId);
+  Optional<Domain> findById(Key<UUID> domainId, Key<UUID> clientId);
 }

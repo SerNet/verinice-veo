@@ -38,41 +38,39 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-/**
- * Base transfer object for Units. Contains common data for all Unit DTOs.
- */
+/** Base transfer object for Units. Contains common data for all Unit DTOs. */
 @Data
 public abstract class AbstractUnitDto extends AbstractVersionedSelfReferencingDto
-        implements NameableDto {
+    implements NameableDto {
 
-    @NotNull(message = "A name must be present.")
-    @Schema(description = "The name for the Unit.", example = "My unit", required = true)
-    @Size(max = Nameable.NAME_MAX_LENGTH)
-    private String name;
+  @NotNull(message = "A name must be present.")
+  @Schema(description = "The name for the Unit.", example = "My unit", required = true)
+  @Size(max = Nameable.NAME_MAX_LENGTH)
+  private String name;
 
-    @Schema(description = "The abbreviation for the Unit.", example = "U-96")
-    @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
-    private String abbreviation;
+  @Schema(description = "The abbreviation for the Unit.", example = "U-96")
+  @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
+  private String abbreviation;
 
-    @Schema(description = "The description for the Unit.",
-            example = "This is currently the main and only unit for our organization.")
-    @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
-    private String description;
+  @Schema(
+      description = "The description for the Unit.",
+      example = "This is currently the main and only unit for our organization.")
+  @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
+  private String description;
 
-    @JsonIgnore
-    private IdRef<Client> client;
+  @JsonIgnore private IdRef<Client> client;
 
-    @Schema(description = "The sub units for the Unit.", accessMode = Schema.AccessMode.READ_ONLY)
-    private Set<IdRef<Unit>> units = Collections.emptySet();
+  @Schema(description = "The sub units for the Unit.", accessMode = Schema.AccessMode.READ_ONLY)
+  private Set<IdRef<Unit>> units = Collections.emptySet();
 
-    @Schema(implementation = IdRefUnitParent.class)
-    private IdRef<Unit> parent;
+  @Schema(implementation = IdRefUnitParent.class)
+  private IdRef<Unit> parent;
 
-    @ArraySchema(schema = @Schema(implementation = IdRefDomains.class))
-    private Set<IdRef<Domain>> domains = Collections.emptySet();
+  @ArraySchema(schema = @Schema(implementation = IdRefDomains.class))
+  private Set<IdRef<Domain>> domains = Collections.emptySet();
 
-    @Override
-    public Class<? extends Identifiable> getModelInterface() {
-        return Unit.class;
-    }
+  @Override
+  public Class<? extends Identifiable> getModelInterface() {
+    return Unit.class;
+  }
 }

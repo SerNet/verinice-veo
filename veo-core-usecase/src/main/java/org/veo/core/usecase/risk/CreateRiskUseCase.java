@@ -30,52 +30,52 @@ import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
 
 public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-        extends AbstractRiskUseCase<T, R> {
+    extends AbstractRiskUseCase<T, R> {
 
-    private final DesignatorService designatorService;
-    private final Class<T> entityClass;
-    private final EventPublisher eventPublisher;
+  private final DesignatorService designatorService;
+  private final Class<T> entityClass;
+  private final EventPublisher eventPublisher;
 
-    public CreateRiskUseCase(Class<T> entityClass, RepositoryProvider repositoryProvider,
-            DesignatorService designatorService, EventPublisher eventPublisher) {
-        super(repositoryProvider);
-        this.entityClass = entityClass;
-        this.designatorService = designatorService;
-        this.eventPublisher = eventPublisher;
+  public CreateRiskUseCase(
+      Class<T> entityClass,
+      RepositoryProvider repositoryProvider,
+      DesignatorService designatorService,
+      EventPublisher eventPublisher) {
+    super(repositoryProvider);
+    this.entityClass = entityClass;
+    this.designatorService = designatorService;
+    this.eventPublisher = eventPublisher;
+  }
+
+  @Transactional
+  @Override
+  public OutputData<R> execute(InputData input) {
+    boolean newRiskCreated = false;
+    // Retrieve the necessary entities for the requested operation:
+    var riskAffected = findEntity(entityClass, input.getRiskAffectedRef()).orElseThrow();
+
+    var scenario = findEntity(Scenario.class, input.getScenarioRef()).orElseThrow();
+
+    var domains = findEntities(Domain.class, input.getDomainRefs());
+
+    // Validate security constraints:
+    riskAffected.checkSameClient(input.getAuthenticatedClient());
+    scenario.checkSameClient(input.getAuthenticatedClient());
+    checkDomainOwnership(input.getAuthenticatedClient(), domains);
+
+    // Apply requested operation:
+    var risk = riskAffected.obtainRisk(scenario, domains);
+
+    risk = applyOptionalInput(input, risk);
+    if (risk.getDesignator() == null || risk.getDesignator().isEmpty()) {
+      designatorService.assignDesignator(risk, input.getAuthenticatedClient());
+      newRiskCreated = true;
     }
 
-    @Transactional
-    @Override
-    public OutputData<R> execute(InputData input) {
-        boolean newRiskCreated = false;
-        // Retrieve the necessary entities for the requested operation:
-        var riskAffected = findEntity(entityClass, input.getRiskAffectedRef()).orElseThrow();
+    validateRiskValues(input.getRiskValues(), domains, riskAffected);
+    if (risk instanceof ProcessRisk) ((ProcessRisk) risk).defineRiskValues(input.getRiskValues());
 
-        var scenario = findEntity(Scenario.class, input.getScenarioRef()).orElseThrow();
-
-        var domains = findEntities(Domain.class, input.getDomainRefs());
-
-        // Validate security constraints:
-        riskAffected.checkSameClient(input.getAuthenticatedClient());
-        scenario.checkSameClient(input.getAuthenticatedClient());
-        checkDomainOwnership(input.getAuthenticatedClient(), domains);
-
-        // Apply requested operation:
-        var risk = riskAffected.obtainRisk(scenario, domains);
-
-        risk = applyOptionalInput(input, risk);
-        if (risk.getDesignator() == null || risk.getDesignator()
-                                                .isEmpty()) {
-            designatorService.assignDesignator(risk, input.getAuthenticatedClient());
-            newRiskCreated = true;
-        }
-
-        validateRiskValues(input.getRiskValues(), domains, riskAffected);
-        if (risk instanceof ProcessRisk)
-            ((ProcessRisk) risk).defineRiskValues(input.getRiskValues());
-
-        eventPublisher.publish(new RiskComponentChangeEvent(riskAffected));
-        return new OutputData<>(risk, newRiskCreated);
-    }
-
+    eventPublisher.publish(new RiskComponentChangeEvent(riskAffected));
+    return new OutputData<>(risk, newRiskCreated);
+  }
 }

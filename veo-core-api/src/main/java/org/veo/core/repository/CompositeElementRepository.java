@@ -21,9 +21,7 @@ import java.util.Set;
 
 import org.veo.core.entity.CompositeElement;
 
-/**
- * Generic repository for {@link CompositeElement}s.
- */
+/** Generic repository for {@link CompositeElement}s. */
 public interface CompositeElementRepository<T extends CompositeElement<?>> {
-    Set<T> findCompositesByParts(Set<T> part);
+  Set<T> findCompositesByParts(Set<T> part);
 }

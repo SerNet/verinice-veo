@@ -28,8 +28,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
- * References a complete risk definition. Each {@code Scope} must have 0..1
- * references to a risk definition of a domain known to it.
+ * References a complete risk definition. Each {@code Scope} must have 0..1 references to a risk
+ * definition of a domain known to it.
  *
  * @see org.veo.core.entity.Scope
  */
@@ -37,11 +37,11 @@ import lombok.Getter;
 @Valid
 @EqualsAndHashCode
 public class RiskDefinitionRef {
-    @Getter
-    @Size(max = RiskDefinition.MAX_ID_SIZE)
-    String idRef;
+  @Getter
+  @Size(max = RiskDefinition.MAX_ID_SIZE)
+  String idRef;
 
-    public static RiskDefinitionRef from(RiskDefinition rd) {
-        return rd == null ? null : new RiskDefinitionRef(rd.getId());
-    }
+  public static RiskDefinitionRef from(RiskDefinition rd) {
+    return rd == null ? null : new RiskDefinitionRef(rd.getId());
+  }
 }

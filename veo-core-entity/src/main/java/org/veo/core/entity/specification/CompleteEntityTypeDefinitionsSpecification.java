@@ -20,14 +20,11 @@ package org.veo.core.entity.specification;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
 
-/**
- * A domain must contain a definition for each supported element type.
- */
+/** A domain must contain a definition for each supported element type. */
 public class CompleteEntityTypeDefinitionsSpecification implements EntitySpecification<Domain> {
-    @Override
-    public boolean test(Domain entity) {
-        return EntityType.ELEMENT_TYPES.stream()
-                                       .allMatch(t -> entity.getElementTypeDefinition(t.getSingularTerm())
-                                                            .isPresent());
-    }
+  @Override
+  public boolean test(Domain entity) {
+    return EntityType.ELEMENT_TYPES.stream()
+        .allMatch(t -> entity.getElementTypeDefinition(t.getSingularTerm()).isPresent());
+  }
 }

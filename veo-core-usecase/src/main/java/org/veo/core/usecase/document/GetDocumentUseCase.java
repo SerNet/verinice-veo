@@ -21,13 +21,10 @@ import org.veo.core.entity.Document;
 import org.veo.core.repository.DocumentRepository;
 import org.veo.core.usecase.base.GetElementUseCase;
 
-/**
- * Reinstantiate a persisted document object.
- */
+/** Reinstantiate a persisted document object. */
 public class GetDocumentUseCase extends GetElementUseCase<Document> {
 
-    public GetDocumentUseCase(DocumentRepository repository) {
-        super(repository);
-    }
-
+  public GetDocumentUseCase(DocumentRepository repository) {
+    super(repository);
+  }
 }

@@ -25,118 +25,102 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * CatalogItem The catalog item contains an element and/other related catalog
- * item. It describes currently two different abstract use cases: 1. Apply the
- * contained element: defined by KEa.1 and KEa.2 2. Update an entity from an old
- * to a new version of the domainTemplate to the new one. Usecase 1 is defined
- * by the element and a set of TailoringReferences. Usecase 2 is defined by a
+ * CatalogItem The catalog item contains an element and/other related catalog item. It describes
+ * currently two different abstract use cases: 1. Apply the contained element: defined by KEa.1 and
+ * KEa.2 2. Update an entity from an old to a new version of the domainTemplate to the new one.
+ * Usecase 1 is defined by the element and a set of TailoringReferences. Usecase 2 is defined by a
  * set of UpdateReferences.
  */
 public interface CatalogItem extends ElementOwner {
-    String SINGULAR_TERM = "catalogitem";
-    String PLURAL_TERM = "catalogitems";
+  String SINGULAR_TERM = "catalogitem";
+  String PLURAL_TERM = "catalogitems";
 
-    int NAMESPACE_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
+  int NAMESPACE_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
 
-    Comparator<? super CatalogItem> BY_CATALOGITEMS = (ci1, ci2) -> ci1.getId()
-                                                                       .uuidValue()
-                                                                       .compareTo(ci2.getId()
-                                                                                     .uuidValue());
+  Comparator<? super CatalogItem> BY_CATALOGITEMS =
+      (ci1, ci2) -> ci1.getId().uuidValue().compareTo(ci2.getId().uuidValue());
 
-    /**
-     * Includes itself together with {@link this.getElementsToCreate()}. This list
-     * is ordered. The item itself is at the first position.
-     */
-    default List<CatalogItem> getAllElementsToCreate() {
-        List<CatalogItem> result = this.getElementsToCreate()
-                                       .stream()
-                                       .sorted(BY_CATALOGITEMS)
-                                       .distinct()
-                                       .collect(Collectors.toList());
-        result.add(0, this);
-        return result;
-    }
+  /**
+   * Includes itself together with {@link this.getElementsToCreate()}. This list is ordered. The
+   * item itself is at the first position.
+   */
+  default List<CatalogItem> getAllElementsToCreate() {
+    List<CatalogItem> result =
+        this.getElementsToCreate().stream()
+            .sorted(BY_CATALOGITEMS)
+            .distinct()
+            .collect(Collectors.toList());
+    result.add(0, this);
+    return result;
+  }
 
-    /**
-     * Return the set additional elements to create. These elements are defined by
-     * {@link TailoringReference} of type {@link TailoringReferenceType#COPY} or
-     * {@link TailoringReferenceType#COPY_ALWAYS}.
-     */
-    default Set<CatalogItem> getElementsToCreate() {
-        Set<CatalogItem> elementsToCreate = new HashSet<>();
-        this.getTailoringReferences()
-            .stream()
-            .filter(TailoringReferenceTyped.IS_COPY_PREDICATE)
-            .forEach(r -> addElementsToCopy(r, elementsToCreate));
-        return elementsToCreate;
-    }
+  /**
+   * Return the set additional elements to create. These elements are defined by {@link
+   * TailoringReference} of type {@link TailoringReferenceType#COPY} or {@link
+   * TailoringReferenceType#COPY_ALWAYS}.
+   */
+  default Set<CatalogItem> getElementsToCreate() {
+    Set<CatalogItem> elementsToCreate = new HashSet<>();
+    this.getTailoringReferences().stream()
+        .filter(TailoringReferenceTyped.IS_COPY_PREDICATE)
+        .forEach(r -> addElementsToCopy(r, elementsToCreate));
+    return elementsToCreate;
+  }
 
-    default void addElementsToCopy(TailoringReference reference, Set<CatalogItem> itemList) {
-        itemList.add(reference.getCatalogItem());
-        reference.getCatalogItem()
-                 .getTailoringReferences()
-                 .stream()
-                 .filter(TailoringReferenceTyped.IS_COPY_PREDICATE)
-                 .forEach(rr -> addElementsToCopy(rr, itemList));
-    }
+  default void addElementsToCopy(TailoringReference reference, Set<CatalogItem> itemList) {
+    itemList.add(reference.getCatalogItem());
+    reference.getCatalogItem().getTailoringReferences().stream()
+        .filter(TailoringReferenceTyped.IS_COPY_PREDICATE)
+        .forEach(rr -> addElementsToCopy(rr, itemList));
+  }
 
-    /**
-     * The owner of this is a catalog.
-     */
-    Catalog getCatalog();
+  /** The owner of this is a catalog. */
+  Catalog getCatalog();
 
-    void setCatalog(Catalog aCatalog);
+  void setCatalog(Catalog aCatalog);
 
-    /**
-     * All the tailoring references for this catalog item.
-     */
-    Set<TailoringReference> getTailoringReferences();
+  /** All the tailoring references for this catalog item. */
+  Set<TailoringReference> getTailoringReferences();
 
-    default void setTailoringReferences(Set<TailoringReference> tailoringReferences) {
-        getTailoringReferences().clear();
-        tailoringReferences.forEach(tailoringReference -> tailoringReference.setOwner(this));
-        getTailoringReferences().addAll(tailoringReferences);
-    }
+  default void setTailoringReferences(Set<TailoringReference> tailoringReferences) {
+    getTailoringReferences().clear();
+    tailoringReferences.forEach(tailoringReference -> tailoringReference.setOwner(this));
+    getTailoringReferences().addAll(tailoringReferences);
+  }
 
-    /**
-     * The template element which will be applied. A copy of the object will be
-     * inserted.
-     */
-    Element getElement();
+  /** The template element which will be applied. A copy of the object will be inserted. */
+  Element getElement();
 
-    void setElement(Element element);
+  void setElement(Element element);
 
-    /**
-     * All the update refreneces for this catalog item.
-     */
-    Set<UpdateReference> getUpdateReferences();
+  /** All the update refreneces for this catalog item. */
+  Set<UpdateReference> getUpdateReferences();
 
-    default void setUpdateReferences(Set<UpdateReference> updateReferences) {
-        getUpdateReferences().clear();
-        updateReferences.forEach(updateReference -> updateReference.setOwner(this));
-        getUpdateReferences().addAll(updateReferences);
-    }
+  default void setUpdateReferences(Set<UpdateReference> updateReferences) {
+    getUpdateReferences().clear();
+    updateReferences.forEach(updateReference -> updateReference.setOwner(this));
+    getUpdateReferences().addAll(updateReferences);
+  }
 
-    String getNamespace();
+  String getNamespace();
 
-    void setNamespace(String aNamespace);
+  void setNamespace(String aNamespace);
 
-    @Override
-    default Class<? extends Identifiable> getModelInterface() {
-        return CatalogItem.class;
-    }
+  @Override
+  default Class<? extends Identifiable> getModelInterface() {
+    return CatalogItem.class;
+  }
 
-    @Override
-    default String getModelType() {
-        return SINGULAR_TERM;
-    }
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
 
-    default String getDisplayName() {
-        return getElement().getDisplayName();
-    }
+  default String getDisplayName() {
+    return getElement().getDisplayName();
+  }
 
-    default Optional<Client> getOwningClient() {
-        return Optional.ofNullable(getCatalog())
-                       .flatMap(Catalog::getOwningClient);
-    }
+  default Optional<Client> getOwningClient() {
+    return Optional.ofNullable(getCatalog()).flatMap(Catalog::getOwningClient);
+  }
 }

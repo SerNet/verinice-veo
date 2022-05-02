@@ -34,37 +34,37 @@ import org.veo.core.usecase.UseCase;
 import lombok.Value;
 
 public class DeleteRiskUseCase
-        implements TransactionalUseCase<DeleteRiskUseCase.InputData, UseCase.EmptyOutput> {
+    implements TransactionalUseCase<DeleteRiskUseCase.InputData, UseCase.EmptyOutput> {
 
-    private final RepositoryProvider repositoryProvider;
-    private final EventPublisher eventPublisher;
+  private final RepositoryProvider repositoryProvider;
+  private final EventPublisher eventPublisher;
 
-    public DeleteRiskUseCase(RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {
-        this.repositoryProvider = repositoryProvider;
-        this.eventPublisher = eventPublisher;
-    }
+  public DeleteRiskUseCase(RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {
+    this.repositoryProvider = repositoryProvider;
+    this.eventPublisher = eventPublisher;
+  }
 
-    @Transactional
-    @Override
-    public EmptyOutput execute(InputData input) {
-        var riskAffected = repositoryProvider.getRepositoryFor(input.entityClass)
-                                             .findById(input.getRiskAffectedRef())
-                                             .orElseThrow();
+  @Transactional
+  @Override
+  public EmptyOutput execute(InputData input) {
+    var riskAffected =
+        repositoryProvider
+            .getRepositoryFor(input.entityClass)
+            .findById(input.getRiskAffectedRef())
+            .orElseThrow();
 
-        riskAffected.checkSameClient(input.authenticatedClient);
-        riskAffected.getRisk(input.scenarioRef)
-                    .orElseThrow()
-                    .remove();
-        eventPublisher.publish(new RiskComponentChangeEvent(riskAffected));
-        return EmptyOutput.INSTANCE;
-    }
+    riskAffected.checkSameClient(input.authenticatedClient);
+    riskAffected.getRisk(input.scenarioRef).orElseThrow().remove();
+    eventPublisher.publish(new RiskComponentChangeEvent(riskAffected));
+    return EmptyOutput.INSTANCE;
+  }
 
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Class<? extends RiskAffected<?, ?>> entityClass;
-        Client authenticatedClient;
-        Key<UUID> riskAffectedRef;
-        Key<UUID> scenarioRef;
-    }
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
+    Class<? extends RiskAffected<?, ?>> entityClass;
+    Client authenticatedClient;
+    Key<UUID> riskAffectedRef;
+    Key<UUID> scenarioRef;
+  }
 }

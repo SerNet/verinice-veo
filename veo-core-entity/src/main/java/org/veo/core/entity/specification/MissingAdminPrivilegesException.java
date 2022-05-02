@@ -17,5 +17,4 @@
  ******************************************************************************/
 package org.veo.core.entity.specification;
 
-public class MissingAdminPrivilegesException extends RuntimeException {
-}
+public class MissingAdminPrivilegesException extends RuntimeException {}

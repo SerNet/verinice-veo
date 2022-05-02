@@ -24,7 +24,8 @@ import lombok.Data;
 
 @Data
 public class ProcessRiskValuesDto {
-    @Schema(description = "Potential impacts for a set of risk categories",
-            example = "{\"C\":2,\n\"I\":3}")
-    private Map<String, String> potentialImpacts;
+  @Schema(
+      description = "Potential impacts for a set of risk categories",
+      example = "{\"C\":2,\n\"I\":3}")
+  private Map<String, String> potentialImpacts;
 }

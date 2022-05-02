@@ -21,13 +21,10 @@ import org.veo.core.entity.Person;
 import org.veo.core.repository.PersonRepository;
 import org.veo.core.usecase.base.GetElementUseCase;
 
-/**
- * Reinstantiate a persisted person object.
- */
+/** Reinstantiate a persisted person object. */
 public class GetPersonUseCase extends GetElementUseCase<Person> {
 
-    public GetPersonUseCase(PersonRepository repository) {
-        super(repository);
-    }
-
+  public GetPersonUseCase(PersonRepository repository) {
+    super(repository);
+  }
 }

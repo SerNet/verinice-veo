@@ -36,45 +36,49 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.ToString;
 
-/**
- * Transfer object for {@link CustomAspect}s.
- */
+/** Transfer object for {@link CustomAspect}s. */
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class CustomAspectDto {
 
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
-            example = "1990-12-31T23:59:60Z",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @Pattern(regexp = Patterns.DATETIME)
-    private String createdAt;
-    @Schema(description = "The username of the user who created this object.",
-            example = "jane_doe",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private String createdBy;
+  @Schema(
+      description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      example = "1990-12-31T23:59:60Z",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  @Pattern(regexp = Patterns.DATETIME)
+  private String createdAt;
 
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.",
-            example = "1990-12-31T23:59:60Z",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @Pattern(regexp = Patterns.DATETIME)
-    private String updatedAt;
+  @Schema(
+      description = "The username of the user who created this object.",
+      example = "jane_doe",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  private String createdBy;
 
-    @Schema(description = "The username of the user who last updated this object.",
-            example = "jane_doe",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private String updatedBy;
+  @Schema(
+      description =
+          "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.",
+      example = "1990-12-31T23:59:60Z",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  @Pattern(regexp = Patterns.DATETIME)
+  private String updatedAt;
 
-    @ArraySchema(schema = @Schema(implementation = IdRefDomains.class))
+  @Schema(
+      description = "The username of the user who last updated this object.",
+      example = "jane_doe",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  private String updatedBy;
 
-    private Set<IdRef<Domain>> domains = Collections.emptySet();
+  @ArraySchema(schema = @Schema(implementation = IdRefDomains.class))
+  private Set<IdRef<Domain>> domains = Collections.emptySet();
 
-    public static CustomAspectDto from(@Valid CustomAspect control,
-            EntityToDtoTransformer entityToDtoTransformer) {
-        return entityToDtoTransformer.transformCustomAspect2Dto(control);
-    }
+  public static CustomAspectDto from(
+      @Valid CustomAspect control, EntityToDtoTransformer entityToDtoTransformer) {
+    return entityToDtoTransformer.transformCustomAspect2Dto(control);
+  }
 
-    @Schema(description = "The properties of the element described by the schema of the type attribute.",
-            example = " name: 'value'",
-            required = false)
-    private Map<String, Object> attributes = Collections.emptyMap();
+  @Schema(
+      description = "The properties of the element described by the schema of the type attribute.",
+      example = " name: 'value'",
+      required = false)
+  private Map<String, Object> attributes = Collections.emptyMap();
 }

@@ -22,25 +22,25 @@ import java.util.Set;
 
 public interface CategorizedRiskValueProvider {
 
-    List<DeterminedRisk> getCategorizedRisks();
+  List<DeterminedRisk> getCategorizedRisks();
 
-    List<CategoryRef> getAvailableCategories();
+  List<CategoryRef> getAvailableCategories();
 
-    void setRiskTreatmentExplanation(CategoryRef impactCategory, String riskTreatmentExplanation);
+  void setRiskTreatmentExplanation(CategoryRef impactCategory, String riskTreatmentExplanation);
 
-    RiskRef getInherentRisk(CategoryRef impactCategory);
+  RiskRef getInherentRisk(CategoryRef impactCategory);
 
-    RiskRef getResidualRisk(CategoryRef impactCategory);
+  RiskRef getResidualRisk(CategoryRef impactCategory);
 
-    void setResidualRiskExplanation(CategoryRef impactCategory, String residualRiskExplanation);
+  void setResidualRiskExplanation(CategoryRef impactCategory, String residualRiskExplanation);
 
-    String getResidualRiskExplanation(CategoryRef impactCategory);
+  String getResidualRiskExplanation(CategoryRef impactCategory);
 
-    Set<RiskTreatmentOption> getRiskTreatments(CategoryRef impactCategory);
+  Set<RiskTreatmentOption> getRiskTreatments(CategoryRef impactCategory);
 
-    String getRiskTreatmentExplanation(CategoryRef impactCategory);
+  String getRiskTreatmentExplanation(CategoryRef impactCategory);
 
-    void setResidualRisk(CategoryRef impactCategory, RiskRef residualRisk);
+  void setResidualRisk(CategoryRef impactCategory, RiskRef residualRisk);
 
-    void setRiskTreatments(CategoryRef impactCategory, Set<RiskTreatmentOption> riskTreatments);
+  void setRiskTreatments(CategoryRef impactCategory, Set<RiskTreatmentOption> riskTreatments);
 }

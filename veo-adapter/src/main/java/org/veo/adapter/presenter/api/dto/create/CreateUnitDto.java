@@ -22,11 +22,7 @@ import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- * The CreateUnitDto is a special snowflake (it can have an ID).
- */
+/** The CreateUnitDto is a special snowflake (it can have an ID). */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public final class CreateUnitDto extends FullUnitDto {
-
-}
+public final class CreateUnitDto extends FullUnitDto {}

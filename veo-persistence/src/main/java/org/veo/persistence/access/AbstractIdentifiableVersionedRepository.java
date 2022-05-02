@@ -35,67 +35,64 @@ import org.veo.persistence.entity.jpa.IdentifiableVersionedData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
 @Transactional(readOnly = true)
-abstract class AbstractIdentifiableVersionedRepository<T extends Identifiable & Versioned, S extends IdentifiableVersionedData>
-        implements IdentifiableVersionedRepository<T> {
-    protected final IdentifiableVersionedDataRepository<S> dataRepository;
-    protected final ValidationService validation;
+abstract class AbstractIdentifiableVersionedRepository<
+        T extends Identifiable & Versioned, S extends IdentifiableVersionedData>
+    implements IdentifiableVersionedRepository<T> {
+  protected final IdentifiableVersionedDataRepository<S> dataRepository;
+  protected final ValidationService validation;
 
-    protected AbstractIdentifiableVersionedRepository(
-            IdentifiableVersionedDataRepository<S> dataRepository, ValidationService validation) {
-        this.dataRepository = dataRepository;
-        this.validation = validation;
-    }
+  protected AbstractIdentifiableVersionedRepository(
+      IdentifiableVersionedDataRepository<S> dataRepository, ValidationService validation) {
+    this.dataRepository = dataRepository;
+    this.validation = validation;
+  }
 
-    @Override
-    @Transactional
-    public T save(T entity) {
-        validation.validate(entity);
-        return (T) dataRepository.save((S) entity);
-    }
+  @Override
+  @Transactional
+  public T save(T entity) {
+    validation.validate(entity);
+    return (T) dataRepository.save((S) entity);
+  }
 
-    @Override
-    @Transactional
-    public List<T> saveAll(Set<T> entities) {
-        entities.forEach(validation::validate);
-        return (List<T>) dataRepository.saveAll((Set<S>) entities);
-    }
+  @Override
+  @Transactional
+  public List<T> saveAll(Set<T> entities) {
+    entities.forEach(validation::validate);
+    return (List<T>) dataRepository.saveAll((Set<S>) entities);
+  }
 
-    @Override
-    public Optional<T> findById(Key<UUID> id) {
-        return (Optional<T>) dataRepository.findById(id.uuidValue());
-    }
+  @Override
+  public Optional<T> findById(Key<UUID> id) {
+    return (Optional<T>) dataRepository.findById(id.uuidValue());
+  }
 
-    @Override
-    @Transactional
-    public void delete(T entity) {
-        deleteById(entity.getId());
-    }
+  @Override
+  @Transactional
+  public void delete(T entity) {
+    deleteById(entity.getId());
+  }
 
-    @Override
-    @Transactional
-    public void deleteById(Key<UUID> id) {
-        dataRepository.deleteById(id.uuidValue());
-    }
+  @Override
+  @Transactional
+  public void deleteById(Key<UUID> id) {
+    dataRepository.deleteById(id.uuidValue());
+  }
 
-    @Override
-    public boolean exists(Key<UUID> id) {
-        return dataRepository.existsById(id.uuidValue());
-    }
+  @Override
+  public boolean exists(Key<UUID> id) {
+    return dataRepository.existsById(id.uuidValue());
+  }
 
-    @Override
-    public Set<T> getByIds(Set<Key<UUID>> ids) {
-        var idStrings = ids.stream()
-                           .map(Key::uuidValue)
-                           .collect(Collectors.toList());
-        return StreamSupport.stream(dataRepository.findAllById(idStrings)
-                                                  .spliterator(),
-                                    false)
-                            .map(e -> (T) e)
-                            .collect(Collectors.toSet());
-    }
+  @Override
+  public Set<T> getByIds(Set<Key<UUID>> ids) {
+    var idStrings = ids.stream().map(Key::uuidValue).collect(Collectors.toList());
+    return StreamSupport.stream(dataRepository.findAllById(idStrings).spliterator(), false)
+        .map(e -> (T) e)
+        .collect(Collectors.toSet());
+  }
 
-    @Override
-    public Optional<Long> getVersion(Key<UUID> id) {
-        return dataRepository.getVersion(id.uuidValue());
-    }
+  @Override
+  public Optional<Long> getVersion(Key<UUID> id) {
+    return dataRepository.getVersion(id.uuidValue());
+  }
 }

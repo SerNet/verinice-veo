@@ -49,11 +49,11 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 /**
  * Main application class for the REST service. Uses JPA repositories.
  *
- * Supports asynchronous method execution by the Spring environment. The
- * taskExecutor bean allows configuring the thread pool that is being used.
+ * <p>Supports asynchronous method execution by the Spring environment. The taskExecutor bean allows
+ * configuring the thread pool that is being used.
  *
  * @see <a href=
- *      "https://spring.io/guides/gs/async-method/">https://spring.io/guides/gs/async-method/</a>
+ *     "https://spring.io/guides/gs/async-method/">https://spring.io/guides/gs/async-method/</a>
  */
 @SpringBootApplication()
 @EnableAsync
@@ -72,56 +72,66 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 // + "}\n" + "```\n"
 // + "The returned JWT must be provided in the HTTP-Bearer fields. You can
 // copy-and-paste it into the following form field:")
-@SecurityScheme(name = RestApplication.SECURITY_SCHEME_OAUTH,
-                type = SecuritySchemeType.OAUTH2,
-                in = SecuritySchemeIn.HEADER,
-                description = "openidconnect Login",
-                flows = @OAuthFlows(implicit = @OAuthFlow(authorizationUrl = "${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/auth",
-                                                          scopes = @OAuthScope(name = "veo-datenschutz",
-                                                                               description = "Optional scope for access to specific content."))))
-@OpenAPIDefinition(info = @Info(title = "verinice.VEO REST API",
-                                description = "OpenAPI documentation for verinice.VEO.",
-                                license = @License(name = "GNU Lesser General Public License",
-                                                   url = "https://www.gnu.org/licenses/lgpl-3.0.de.html"),
-                                contact = @Contact(url = "http://verinice.com",
-                                                   email = "verinice@sernet.de")))
+@SecurityScheme(
+    name = RestApplication.SECURITY_SCHEME_OAUTH,
+    type = SecuritySchemeType.OAUTH2,
+    in = SecuritySchemeIn.HEADER,
+    description = "openidconnect Login",
+    flows =
+        @OAuthFlows(
+            implicit =
+                @OAuthFlow(
+                    authorizationUrl =
+                        "${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/auth",
+                    scopes =
+                        @OAuthScope(
+                            name = "veo-datenschutz",
+                            description = "Optional scope for access to specific content."))))
+@OpenAPIDefinition(
+    info =
+        @Info(
+            title = "verinice.VEO REST API",
+            description = "OpenAPI documentation for verinice.VEO.",
+            license =
+                @License(
+                    name = "GNU Lesser General Public License",
+                    url = "https://www.gnu.org/licenses/lgpl-3.0.de.html"),
+            contact = @Contact(url = "http://verinice.com", email = "verinice@sernet.de")))
 public class RestApplication {
 
-    public static final String SECURITY_SCHEME_OAUTH = "OAuth2";
-    private static final Logger LOGGER = LoggerFactory.getLogger("veo-rest application properties");
-    public static final String THREAD_NAME_PREFIX = "Verinice.VEO-Worker-";
+  public static final String SECURITY_SCHEME_OAUTH = "OAuth2";
+  private static final Logger LOGGER = LoggerFactory.getLogger("veo-rest application properties");
+  public static final String THREAD_NAME_PREFIX = "Verinice.VEO-Worker-";
 
-    @Autowired
-    private ApplicationContext appContext;
+  @Autowired private ApplicationContext appContext;
 
-    public static void main(String[] args) {
-        var app = new SpringApplication(RestApplication.class);
-        app.setBanner((env, sourceClass, out) -> out.println(BannerProvider.getBanner()));
-        app.run(args);
-    }
+  public static void main(String[] args) {
+    var app = new SpringApplication(RestApplication.class);
+    app.setBanner((env, sourceClass, out) -> out.println(BannerProvider.getBanner()));
+    app.run(args);
+  }
 
-    @Bean
-    public TaskExecutor threadPoolTaskExecutor(
-            @Value("${veo.threads.corePoolSize:2}") int corePoolSize,
-            @Value("${veo.threads.maxPoolSize:4}") int maxPoolSize,
-            @Value("${veo.threads.queueCapacity:500}") int queueCapacity) {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(corePoolSize);
-        executor.setMaxPoolSize(maxPoolSize);
-        executor.setQueueCapacity(queueCapacity);
-        executor.setThreadNamePrefix(THREAD_NAME_PREFIX);
-        executor.initialize();
-        return executor;
-    }
+  @Bean
+  public TaskExecutor threadPoolTaskExecutor(
+      @Value("${veo.threads.corePoolSize:2}") int corePoolSize,
+      @Value("${veo.threads.maxPoolSize:4}") int maxPoolSize,
+      @Value("${veo.threads.queueCapacity:500}") int queueCapacity) {
+    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    executor.setCorePoolSize(corePoolSize);
+    executor.setMaxPoolSize(maxPoolSize);
+    executor.setQueueCapacity(queueCapacity);
+    executor.setThreadNamePrefix(THREAD_NAME_PREFIX);
+    executor.initialize();
+    return executor;
+  }
 
-    @Bean
-    public DelegatingSecurityContextAsyncTaskExecutor taskExecutor(
-            ThreadPoolTaskExecutor delegate) {
-        return new DelegatingSecurityContextAsyncTaskExecutor(delegate);
-    }
+  @Bean
+  public DelegatingSecurityContextAsyncTaskExecutor taskExecutor(ThreadPoolTaskExecutor delegate) {
+    return new DelegatingSecurityContextAsyncTaskExecutor(delegate);
+  }
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void logSpringProperties() {
-        SpringPropertyLogger.logProperties(LOGGER, appContext.getEnvironment());
-    }
+  @EventListener(ApplicationReadyEvent.class)
+  public void logSpringProperties() {
+    SpringPropertyLogger.logProperties(LOGGER, appContext.getEnvironment());
+  }
 }

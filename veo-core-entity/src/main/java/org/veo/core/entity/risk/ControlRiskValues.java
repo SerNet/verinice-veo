@@ -22,12 +22,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Holds risk related info for a control. A {@link ControlRiskValues} object is
- * only valid for a certain risk definition.
+ * Holds risk related info for a control. A {@link ControlRiskValues} object is only valid for a
+ * certain risk definition.
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ControlRiskValues {
-    private ImplementationStatusRef implementationStatus;
+  private ImplementationStatusRef implementationStatus;
 }

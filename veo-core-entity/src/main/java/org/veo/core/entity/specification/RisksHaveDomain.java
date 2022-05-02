@@ -19,17 +19,12 @@ package org.veo.core.entity.specification;
 
 import org.veo.core.entity.AbstractRisk;
 
-/**
- * Checks that a risk's domains are contained in the element's domains
- */
+/** Checks that a risk's domains are contained in the element's domains */
 @SuppressWarnings("rawtypes")
 class RisksHaveDomain implements EntitySpecification<AbstractRisk> {
 
-    @Override
-    public boolean test(AbstractRisk risk) {
-        return risk.getEntity()
-                   .getDomains()
-                   .containsAll(risk.getDomains());
-    }
-
+  @Override
+  public boolean test(AbstractRisk risk) {
+    return risk.getEntity().getDomains().containsAll(risk.getDomains());
+  }
 }

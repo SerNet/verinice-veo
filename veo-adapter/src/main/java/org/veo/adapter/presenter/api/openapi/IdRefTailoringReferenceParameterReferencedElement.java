@@ -22,23 +22,24 @@ import org.veo.adapter.presenter.api.common.IIdRef;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public interface IdRefTailoringReferenceParameterReferencedElement extends IIdRef {
-    @Schema(description = "A friendly human readable title of the element which will be linked.",
-            example = "CTL_1",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @Override
-    String getDisplayName();
+  @Schema(
+      description = "A friendly human readable title of the element which will be linked.",
+      example = "CTL_1",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  @Override
+  String getDisplayName();
 
-    @Schema(required = true,
-            description = "The resource URL of the referenced element.",
-            example = "http://<api.example.org>/api/v1/controls/<00000000-0000-0000-0000-000000000000>",
-            format = "uri")
-    @Override
-    String getTargetUri();
+  @Schema(
+      required = true,
+      description = "The resource URL of the referenced element.",
+      example = "http://<api.example.org>/api/v1/controls/<00000000-0000-0000-0000-000000000000>",
+      format = "uri")
+  @Override
+  String getTargetUri();
 
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    String getSearchesUri();
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  String getSearchesUri();
 
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    String getResourcesUri();
-
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  String getResourcesUri();
 }

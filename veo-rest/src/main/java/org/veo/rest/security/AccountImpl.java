@@ -27,7 +27,6 @@ import lombok.Getter;
 @Getter
 public class AccountImpl implements Account {
 
-    private final boolean isAdmin;
-    private final Client client;
-
+  private final boolean isAdmin;
+  private final Client client;
 }

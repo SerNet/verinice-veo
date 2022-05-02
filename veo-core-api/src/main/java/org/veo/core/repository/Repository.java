@@ -22,30 +22,29 @@ import java.util.Optional;
 import java.util.Set;
 
 /*
-* The repository provides access to business entities through a well-known interface.
-*
-* It provides methods to add, remove or reconstitute objects and encapsulates
-* the actual interaction with the data store.
-*
-* The repository guarantees all invariants of the entities entity to maintain
-* the integrity of the entities and all references. More than a simple data gateway,
-* the repository does not just offer CRUD operations but
-* uses factories and builders to build entities to specification.
-* */
+ * The repository provides access to business entities through a well-known interface.
+ *
+ * It provides methods to add, remove or reconstitute objects and encapsulates
+ * the actual interaction with the data store.
+ *
+ * The repository guarantees all invariants of the entities entity to maintain
+ * the integrity of the entities and all references. More than a simple data gateway,
+ * the repository does not just offer CRUD operations but
+ * uses factories and builders to build entities to specification.
+ * */
 public interface Repository<T, K> {
 
-    T save(T entity);
+  T save(T entity);
 
-    List<T> saveAll(Set<T> entities);
+  List<T> saveAll(Set<T> entities);
 
-    Optional<T> findById(K id);
+  Optional<T> findById(K id);
 
-    Set<T> getByIds(Set<K> ids);
+  Set<T> getByIds(Set<K> ids);
 
-    void delete(T entity);
+  void delete(T entity);
 
-    void deleteById(K id);
+  void deleteById(K id);
 
-    boolean exists(K id);
-
+  boolean exists(K id);
 }

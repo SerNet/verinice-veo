@@ -40,21 +40,23 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class DocumentData extends ElementData implements Document {
 
-    @Override
-    public Class<? extends Identifiable> getModelInterface() {
-        return Document.class;
-    }
+  @Override
+  public Class<? extends Identifiable> getModelInterface() {
+    return Document.class;
+  }
 
-    @ManyToMany(targetEntity = DocumentData.class,
-                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "document_parts",
-               joinColumns = @JoinColumn(name = "composite_id"),
-               inverseJoinColumns = @JoinColumn(name = "part_id"))
-    @Valid
-    @Getter
-    private final Set<Document> parts = new HashSet<>();
+  @ManyToMany(
+      targetEntity = DocumentData.class,
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JoinTable(
+      name = "document_parts",
+      joinColumns = @JoinColumn(name = "composite_id"),
+      inverseJoinColumns = @JoinColumn(name = "part_id"))
+  @Valid
+  @Getter
+  private final Set<Document> parts = new HashSet<>();
 
-    @ManyToMany(targetEntity = DocumentData.class, mappedBy = "parts", fetch = FetchType.LAZY)
-    @Getter
-    private final Set<Document> composites = new HashSet<>();
+  @ManyToMany(targetEntity = DocumentData.class, mappedBy = "parts", fetch = FetchType.LAZY)
+  @Getter
+  private final Set<Document> composites = new HashSet<>();
 }

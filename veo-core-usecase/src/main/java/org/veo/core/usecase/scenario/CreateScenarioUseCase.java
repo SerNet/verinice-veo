@@ -26,13 +26,16 @@ import org.veo.core.usecase.decision.Decider;
 
 public class CreateScenarioUseCase extends CreateElementUseCase<Scenario> {
 
-    public CreateScenarioUseCase(UnitRepository unitRepository, ScenarioRepository entityRepo,
-            DesignatorService designatorService, Decider decider) {
-        super(unitRepository, entityRepo, designatorService, decider);
-    }
+  public CreateScenarioUseCase(
+      UnitRepository unitRepository,
+      ScenarioRepository entityRepo,
+      DesignatorService designatorService,
+      Decider decider) {
+    super(unitRepository, entityRepo, designatorService, decider);
+  }
 
-    @Override
-    protected void validate(Scenario scenario) {
-        // GNDN
-    }
+  @Override
+  protected void validate(Scenario scenario) {
+    // GNDN
+  }
 }

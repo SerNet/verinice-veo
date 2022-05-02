@@ -39,76 +39,71 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class IdRef<T extends Identifiable> implements IIdRef {
 
-    @JsonIgnore
-    @ToString.Include
-    @EqualsAndHashCode.Include
-    private final String id;
+  @JsonIgnore @ToString.Include @EqualsAndHashCode.Include private final String id;
 
-    @ToString.Include
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    private final String displayName;
+  @ToString.Include
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  private final String displayName;
 
-    @JsonIgnore
-    @EqualsAndHashCode.Include
-    private final Class<T> type;
+  @JsonIgnore @EqualsAndHashCode.Include private final Class<T> type;
 
-    @JsonIgnore
-    private final ReferenceAssembler urlAssembler;
+  @JsonIgnore private final ReferenceAssembler urlAssembler;
 
-    @JsonIgnore
-    @Setter(AccessLevel.NONE)
-    private String uri;
+  @JsonIgnore
+  @Setter(AccessLevel.NONE)
+  private String uri;
 
-    @JsonIgnore
-    private final Identifiable entity;
+  @JsonIgnore private final Identifiable entity;
 
-    private IdRef(Identifiable entity, String id, String displayName, Class<T> type,
-            ReferenceAssembler referenceAssembler) {
-        this(id, displayName, type, referenceAssembler, null, entity);
+  private IdRef(
+      Identifiable entity,
+      String id,
+      String displayName,
+      Class<T> type,
+      ReferenceAssembler referenceAssembler) {
+    this(id, displayName, type, referenceAssembler, null, entity);
+  }
+
+  private IdRef(String uri, String id, Class<T> type, ReferenceAssembler referenceAssembler) {
+    this(id, null, type, referenceAssembler, uri, null);
+  }
+
+  /** Create a IdRef for the given entity. */
+  public static <T extends Identifiable> IdRef<T> from(
+      T entity, @NonNull ReferenceAssembler urlAssembler) {
+    if (entity == null) return null;
+    return new IdRef<>(
+        entity,
+        entity.getId().uuidValue(),
+        ((Displayable) entity).getDisplayName(),
+        (Class<T>) entity.getModelInterface(),
+        urlAssembler);
+  }
+
+  public static <T extends Identifiable> IdRef<T> fromUri(
+      String uri, @NonNull ReferenceAssembler urlAssembler) {
+    return new IdRef<>(
+        uri, urlAssembler.parseId(uri), (Class<T>) urlAssembler.parseType(uri), urlAssembler);
+  }
+
+  @Override
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  public String getTargetUri() {
+    if (uri == null) {
+      uri = urlAssembler.targetReferenceOf(entity);
     }
+    return uri;
+  }
 
-    private IdRef(String uri, String id, Class<T> type, ReferenceAssembler referenceAssembler) {
-        this(id, null, type, referenceAssembler, uri, null);
-    }
+  @Override
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  public String getSearchesUri() {
+    return urlAssembler.searchesReferenceOf(type);
+  }
 
-    /**
-     * Create a IdRef for the given entity.
-     */
-    public static <T extends Identifiable> IdRef<T> from(T entity,
-            @NonNull ReferenceAssembler urlAssembler) {
-        if (entity == null)
-            return null;
-        return new IdRef<>(entity, entity.getId()
-                                         .uuidValue(),
-                ((Displayable) entity).getDisplayName(), (Class<T>) entity.getModelInterface(),
-                urlAssembler);
-    }
-
-    public static <T extends Identifiable> IdRef<T> fromUri(String uri,
-            @NonNull ReferenceAssembler urlAssembler) {
-        return new IdRef<>(uri, urlAssembler.parseId(uri), (Class<T>) urlAssembler.parseType(uri),
-                urlAssembler);
-    }
-
-    @Override
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    public String getTargetUri() {
-        if (uri == null) {
-            uri = urlAssembler.targetReferenceOf(entity);
-        }
-        return uri;
-
-    }
-
-    @Override
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    public String getSearchesUri() {
-        return urlAssembler.searchesReferenceOf(type);
-    }
-
-    @Override
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    public String getResourcesUri() {
-        return urlAssembler.resourcesReferenceOf(type);
-    }
+  @Override
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  public String getResourcesUri() {
+    return urlAssembler.resourcesReferenceOf(type);
+  }
 }

@@ -49,77 +49,70 @@ import lombok.ToString;
 @TypeDef(name = "json", typeClass = JsonType.class)
 public class CustomAspectData implements CustomAspect {
 
-    @Id
-    @ToString.Include
-    private String dbId = UUID.randomUUID()
-                              .toString();
+  @Id @ToString.Include private String dbId = UUID.randomUUID().toString();
 
-    @NotNull
-    @ToString.Include
-    private String type;
+  @NotNull @ToString.Include private String type;
 
-    @ManyToOne(fetch = FetchType.LAZY,
-               targetEntity = ElementData.class,
-               // 'links' are also custom aspects, saved in the same table but mapped by
-               // 'source'
-               // column, due to the single-table inheritance mapping used here.
-               // 'owner' must therefore be nullable for these entities:
-               optional = true)
-    private Element owner;
+  @ManyToOne(
+      fetch = FetchType.LAZY,
+      targetEntity = ElementData.class,
+      // 'links' are also custom aspects, saved in the same table but mapped by
+      // 'source'
+      // column, due to the single-table inheritance mapping used here.
+      // 'owner' must therefore be nullable for these entities:
+      optional = true)
+  private Element owner;
 
-    @ManyToMany(targetEntity = DomainData.class)
-    final protected Set<Domain> domains = new HashSet<>();
+  @ManyToMany(targetEntity = DomainData.class)
+  protected final Set<Domain> domains = new HashSet<>();
 
-    @Type(type = "json")
-    @Column(columnDefinition = "jsonb")
-    private Map<String, Object> attributes = new HashMap<>();
+  @Type(type = "json")
+  @Column(columnDefinition = "jsonb")
+  private Map<String, Object> attributes = new HashMap<>();
 
-    /**
-     * Add the given Domain to the collection domains.
-     *
-     * @return true if added
-     */
-    public boolean addToDomains(Domain aDomain) {
-        return this.domains.add(aDomain);
-    }
+  /**
+   * Add the given Domain to the collection domains.
+   *
+   * @return true if added
+   */
+  public boolean addToDomains(Domain aDomain) {
+    return this.domains.add(aDomain);
+  }
 
-    /**
-     * Remove the given Domain from the collection domains.
-     *
-     * @return true if removed
-     */
-    public boolean removeFromDomains(Domain aDomain) {
-        return this.domains.remove(aDomain);
-    }
+  /**
+   * Remove the given Domain from the collection domains.
+   *
+   * @return true if removed
+   */
+  public boolean removeFromDomains(Domain aDomain) {
+    return this.domains.remove(aDomain);
+  }
 
-    @Override
-    public void setDomains(Set<Domain> newDomains) {
-        domains.clear();
-        domains.addAll(newDomains);
-    }
+  @Override
+  public void setDomains(Set<Domain> newDomains) {
+    domains.clear();
+    domains.addAll(newDomains);
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null)
-            return false;
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) return false;
 
-        if (this == o)
-            return true;
+    if (this == o) return true;
 
-        if (!(o instanceof CustomAspectData))
-            return false;
+    if (!(o instanceof CustomAspectData)) return false;
 
-        CustomAspectData other = (CustomAspectData) o;
-        // Transient (unmanaged) entities have an ID of 'null'. Only managed
-        // (persisted and detached) entities have an identity. JPA requires that
-        // an entity's identity remains the same over all state changes.
-        // Therefore a transient entity must never equal another entity.
-        String dbId = getDbId();
-        return dbId != null && dbId.equals(other.getDbId());
-    }
+    CustomAspectData other = (CustomAspectData) o;
+    // Transient (unmanaged) entities have an ID of 'null'. Only managed
+    // (persisted and detached) entities have an identity. JPA requires that
+    // an entity's identity remains the same over all state changes.
+    // Therefore a transient entity must never equal another entity.
+    String dbId = getDbId();
+    return dbId != null && dbId.equals(other.getDbId());
+  }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
+  }
 }

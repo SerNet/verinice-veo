@@ -29,21 +29,20 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DecisionReferenceFactoryImpl extends DecisionReferenceFactory {
-    private static DecisionReferenceFactoryImpl instance = new DecisionReferenceFactoryImpl();
+  private static DecisionReferenceFactoryImpl instance = new DecisionReferenceFactoryImpl();
 
-    public static DecisionReferenceFactoryImpl getInstance() {
-        if (instance == null)
-            instance = new DecisionReferenceFactoryImpl();
-        return instance;
-    }
+  public static DecisionReferenceFactoryImpl getInstance() {
+    if (instance == null) instance = new DecisionReferenceFactoryImpl();
+    return instance;
+  }
 
-    @Override
-    protected DecisionRef createDecisionRef(String key) {
-        return super.createDecisionRef(key);
-    }
+  @Override
+  protected DecisionRef createDecisionRef(String key) {
+    return super.createDecisionRef(key);
+  }
 
-    @Override
-    protected DecisionRuleRef createDecisionRuleRef(Integer intValue) {
-        return super.createDecisionRuleRef(intValue);
-    }
+  @Override
+  protected DecisionRuleRef createDecisionRuleRef(Integer intValue) {
+    return super.createDecisionRuleRef(intValue);
+  }
 }

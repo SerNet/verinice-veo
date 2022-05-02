@@ -23,8 +23,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString(onlyExplicitlyIncluded = true)
 public class CategoryLevel extends DiscreteValue {
-    public CategoryLevel(String name, String abbreviation, String description, String htmlColor) {
-        super(name, abbreviation, description, htmlColor);
-    }
-
+  public CategoryLevel(String name, String abbreviation, String description, String htmlColor) {
+    super(name, abbreviation, description, htmlColor);
+  }
 }

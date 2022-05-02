@@ -23,26 +23,23 @@ import org.veo.core.entity.ClientOwned;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Clients must be strictly separated. All references from one object to another
- * including composite relationships must be references to objects that belong
- * to the same client.
+ * Clients must be strictly separated. All references from one object to another including composite
+ * relationships must be references to objects that belong to the same client.
  *
- * Provides methods to check for equality of client and unit objects and
- * collections in addition to the entity checks from the interface
- * <code>IEntitySecification</code>.
+ * <p>Provides methods to check for equality of client and unit objects and collections in addition
+ * to the entity checks from the interface <code>IEntitySecification</code>.
  */
 @RequiredArgsConstructor
 public class SameClientSpecification implements EntitySpecification<ClientOwned> {
 
-    private final Client client;
+  private final Client client;
 
-    @Override
-    public boolean test(ClientOwned entity) {
-        return isSatisfiedBy(entity.getOwningClient()
-                                   .orElse(null));
-    }
+  @Override
+  public boolean test(ClientOwned entity) {
+    return isSatisfiedBy(entity.getOwningClient().orElse(null));
+  }
 
-    public boolean isSatisfiedBy(Client otherClient) {
-        return client.equals(otherClient);
-    }
+  public boolean isSatisfiedBy(Client otherClient) {
+    return client.equals(otherClient);
+  }
 }

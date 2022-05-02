@@ -26,17 +26,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-/**
- * Base class for all TailoringReferenceDto.
- */
+/** Base class for all TailoringReferenceDto. */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 @JsonIgnoreProperties(value = "linkTailoringReferences")
 public abstract class AbstractTailoringReferenceDto extends AbstractCatalogReferenceDto
-        implements TailoringReferenceTyped {
+    implements TailoringReferenceTyped {
 
-    private TailoringReferenceType referenceType;
-
+  private TailoringReferenceType referenceType;
 }

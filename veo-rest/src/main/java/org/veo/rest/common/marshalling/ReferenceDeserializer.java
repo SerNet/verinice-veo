@@ -32,22 +32,19 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 
 /**
- * Deserializes resource references from JSON. Uses {@link ReferenceAssembler}
- * to deconstruct URLs.
+ * Deserializes resource references from JSON. Uses {@link ReferenceAssembler} to deconstruct URLs.
  */
 @JsonComponent
 public class ReferenceDeserializer extends JsonDeserializer<IdRef<?>> {
 
-    public static final String TARGET_URI = "targetUri";
+  public static final String TARGET_URI = "targetUri";
 
-    @Autowired
-    ReferenceAssembler urlAssembler;
+  @Autowired ReferenceAssembler urlAssembler;
 
-    @Override
-    public IdRef<?> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        TreeNode treeNode = p.getCodec()
-                             .readTree(p);
-        TextNode targetUri = (TextNode) treeNode.get(TARGET_URI);
-        return IdRef.fromUri(targetUri.asText(), urlAssembler);
-    }
+  @Override
+  public IdRef<?> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+    TreeNode treeNode = p.getCodec().readTree(p);
+    TextNode targetUri = (TextNode) treeNode.get(TARGET_URI);
+    return IdRef.fromUri(targetUri.asText(), urlAssembler);
+  }
 }

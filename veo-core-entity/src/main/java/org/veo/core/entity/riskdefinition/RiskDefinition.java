@@ -36,8 +36,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
- * Defines the {@link CategoryDefinition}'s and possible {@link RiskValue}'s for
- * a matrix based risk determination.
+ * Defines the {@link CategoryDefinition}'s and possible {@link RiskValue}'s for a matrix based risk
+ * determination.
  */
 @EqualsAndHashCode()
 @Data()
@@ -46,92 +46,74 @@ import lombok.ToString;
 @NoArgsConstructor
 public class RiskDefinition {
 
-    public static final int MAX_ID_SIZE = Constraints.DEFAULT_CONSTANT_MAX_LENGTH;
+  public static final int MAX_ID_SIZE = Constraints.DEFAULT_CONSTANT_MAX_LENGTH;
 
-    @NotNull(message = "An id must be present.")
-    @Size(max = MAX_ID_SIZE)
-    @ToString.Include
-    private String id;
-    private ProbabilityDefinition probability;
-    @NotNull
-    private ImplementationStateDefinition implementationStateDefinition;
-    @NotNull
-    private List<CategoryDefinition> categories = new ArrayList<>();
-    @NotNull
-    private List<RiskValue> riskValues = new ArrayList<>();
-    @NotNull
-    private RiskMethod riskMethod;
+  @NotNull(message = "An id must be present.")
+  @Size(max = MAX_ID_SIZE)
+  @ToString.Include
+  private String id;
 
-    public Optional<CategoryDefinition> getCategory(String categoryId) {
-        return categories.stream()
-                         .filter(c -> c.getId()
-                                       .equals(categoryId))
-                         .findAny();
+  private ProbabilityDefinition probability;
+  @NotNull private ImplementationStateDefinition implementationStateDefinition;
+  @NotNull private List<CategoryDefinition> categories = new ArrayList<>();
+  @NotNull private List<RiskValue> riskValues = new ArrayList<>();
+  @NotNull private RiskMethod riskMethod;
+
+  public Optional<CategoryDefinition> getCategory(String categoryId) {
+    return categories.stream().filter(c -> c.getId().equals(categoryId)).findAny();
+  }
+
+  public void setRiskValues(List<RiskValue> values) {
+    this.riskValues = values;
+    initLevel(values);
+  }
+
+  /**
+   * A {@link RiskDefinition} is valid if the {@link RiskDefinition#probability} is set and not
+   * empty, the id of the {@link CategoryDefinition} in {@link RiskDefinition#categories} is unique
+   * and not empty. All {@link RiskDefinition#riskValues} {@link RiskValue#getSymbolicRisk()} need
+   * to be unique. Each {@link CategoryDefinition} in {@link RiskDefinition#categories} need to be
+   * valid.
+   */
+  public void validateRiskDefinition() {
+    if (probability == null) {
+      throw new IllegalArgumentException("Probability unset.");
     }
 
-    public void setRiskValues(List<RiskValue> values) {
-        this.riskValues = values;
-        initLevel(values);
+    if (probability.getLevels().isEmpty()) {
+      throw new IllegalArgumentException("Probability level is empty.");
     }
-
-    /**
-     * A {@link RiskDefinition} is valid if the {@link RiskDefinition#probability}
-     * is set and not empty, the id of the {@link CategoryDefinition} in
-     * {@link RiskDefinition#categories} is unique and not empty. All
-     * {@link RiskDefinition#riskValues} {@link RiskValue#getSymbolicRisk()} need to
-     * be unique. Each {@link CategoryDefinition} in
-     * {@link RiskDefinition#categories} need to be valid.
-     */
-    public void validateRiskDefinition() {
-        if (probability == null) {
-            throw new IllegalArgumentException("Probability unset.");
-        }
-
-        if (probability.getLevels()
-                       .isEmpty()) {
-            throw new IllegalArgumentException("Probability level is empty.");
-        }
-        if (categories.isEmpty()) {
-            throw new IllegalArgumentException("Categories are empty.");
-        }
-        validateCategoryUniqueness();
-        validateSymbolicRiskUniqueness();
-        categories.stream()
-                  .forEach(cd -> cd.validateRiskCategory(riskValues, probability));
+    if (categories.isEmpty()) {
+      throw new IllegalArgumentException("Categories are empty.");
     }
+    validateCategoryUniqueness();
+    validateSymbolicRiskUniqueness();
+    categories.stream().forEach(cd -> cd.validateRiskCategory(riskValues, probability));
+  }
 
-    private void validateSymbolicRiskUniqueness() {
-        List<String> ids = riskValues.stream()
-                                     .map(RiskValue::getSymbolicRisk)
-                                     .collect(Collectors.toList());
-        if (ids.size() > ids.stream()
-                            .distinct()
-                            .count()) {
-            throw new IllegalArgumentException("SymbolicRisk not unique.");
-        }
+  private void validateSymbolicRiskUniqueness() {
+    List<String> ids =
+        riskValues.stream().map(RiskValue::getSymbolicRisk).collect(Collectors.toList());
+    if (ids.size() > ids.stream().distinct().count()) {
+      throw new IllegalArgumentException("SymbolicRisk not unique.");
     }
+  }
 
-    private void validateCategoryUniqueness() {
-        List<String> ids = categories.stream()
-                                     .map(CategoryDefinition::getId)
-                                     .collect(Collectors.toList());
-        if (ids.size() > ids.stream()
-                            .distinct()
-                            .count()) {
-            throw new IllegalArgumentException("Categories not unique.");
-        }
+  private void validateCategoryUniqueness() {
+    List<String> ids =
+        categories.stream().map(CategoryDefinition::getId).collect(Collectors.toList());
+    if (ids.size() > ids.stream().distinct().count()) {
+      throw new IllegalArgumentException("Categories not unique.");
     }
+  }
 
-    public Optional<RiskValue> getRiskValue(String symbolicRiskId) {
-        return riskValues.stream()
-                         .filter(rv -> rv.getSymbolicRisk()
-                                         .equals(symbolicRiskId))
-                         .findFirst();
-    }
+  public Optional<RiskValue> getRiskValue(String symbolicRiskId) {
+    return riskValues.stream()
+        .filter(rv -> rv.getSymbolicRisk().equals(symbolicRiskId))
+        .findFirst();
+  }
 
-    public Optional<RiskValue> getRiskValue(int ordinalValue) {
-        return riskValues.stream()
-                         .filter(rv -> rv.getOrdinalValue() == ordinalValue)
-                         .findFirst();
-    }
+  public Optional<RiskValue> getRiskValue(int ordinalValue) {
+    return riskValues.stream().filter(rv -> rv.getOrdinalValue() == ordinalValue).findFirst();
+  }
 }

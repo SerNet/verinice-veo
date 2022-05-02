@@ -39,120 +39,112 @@ import org.veo.core.usecase.UseCaseTools;
 import lombok.Value;
 import lombok.experimental.NonFinal;
 
-/**
- * Reinstantiate persisted entity objects.
- */
+/** Reinstantiate persisted entity objects. */
 public abstract class GetElementsUseCase<T extends Element, I extends GetElementsUseCase.InputData>
-        implements TransactionalUseCase<I, GetElementsUseCase.OutputData<T>> {
+    implements TransactionalUseCase<I, GetElementsUseCase.OutputData<T>> {
 
-    private final ElementRepository<T> repository;
-    protected final ClientRepository clientRepository;
-    private final UnitHierarchyProvider unitHierarchyProvider;
+  private final ElementRepository<T> repository;
+  protected final ClientRepository clientRepository;
+  private final UnitHierarchyProvider unitHierarchyProvider;
 
-    public GetElementsUseCase(ClientRepository clientRepository, ElementRepository<T> repository,
-            UnitHierarchyProvider unitHierarchyProvider) {
-        this.clientRepository = clientRepository;
-        this.repository = repository;
-        this.unitHierarchyProvider = unitHierarchyProvider;
+  public GetElementsUseCase(
+      ClientRepository clientRepository,
+      ElementRepository<T> repository,
+      UnitHierarchyProvider unitHierarchyProvider) {
+    this.clientRepository = clientRepository;
+    this.repository = repository;
+    this.unitHierarchyProvider = unitHierarchyProvider;
+  }
+
+  /**
+   * Find persisted control objects and reinstantiate them. Throws a domain exception if the
+   * (optional) requested parent unit was not found in the repository.
+   */
+  @Override
+  public OutputData<T> execute(I input) {
+    Client client =
+        UseCaseTools.checkClientExists(input.getAuthenticatedClient().getId(), clientRepository);
+
+    var query = createQuery(client);
+    applyDefaultQueryParameters(input, query);
+    return new OutputData<>(query.execute(input.getPagingConfiguration()));
+  }
+
+  protected ElementQuery<T> createQuery(Client client) {
+    return repository.query(client);
+  }
+
+  protected void applyDefaultQueryParameters(I input, ElementQuery<T> query) {
+    if (input.getUnitUuid() != null) {
+      query.whereUnitIn(
+          input.getUnitUuid().getValues().stream()
+              .flatMap(
+                  (Key<UUID> rootUnitId) ->
+                      unitHierarchyProvider.findAllInRoot(rootUnitId).stream())
+              .collect(Collectors.toSet()));
+    }
+    if (input.getSubType() != null) {
+      query.whereSubTypeMatches(input.getSubType());
     }
 
-    /**
-     * Find persisted control objects and reinstantiate them. Throws a domain
-     * exception if the (optional) requested parent unit was not found in the
-     * repository.
-     */
-    @Override
-    public OutputData<T> execute(I input) {
-        Client client = UseCaseTools.checkClientExists(input.getAuthenticatedClient()
-                                                            .getId(),
-                                                       clientRepository);
-
-        var query = createQuery(client);
-        applyDefaultQueryParameters(input, query);
-        return new OutputData<>(query.execute(input.getPagingConfiguration()));
+    if (input.getStatus() != null) {
+      query.whereStatusMatches(input.getStatus());
     }
 
-    protected ElementQuery<T> createQuery(Client client) {
-        return repository.query(client);
+    if (input.getDisplayName() != null) {
+      query.whereDisplayNameMatchesIgnoringCase(input.getDisplayName());
+    }
+    if (input.getDescription() != null) {
+      query.whereDescriptionMatchesIgnoreCase(input.getDescription());
     }
 
-    protected void applyDefaultQueryParameters(I input, ElementQuery<T> query) {
-        if (input.getUnitUuid() != null) {
-            query.whereUnitIn(input.getUnitUuid()
-                                   .getValues()
-                                   .stream()
-                                   .flatMap((
-                                           Key<UUID> rootUnitId) -> unitHierarchyProvider.findAllInRoot(rootUnitId)
-                                                                                         .stream())
-                                   .collect(Collectors.toSet()));
-        }
-        if (input.getSubType() != null) {
-            query.whereSubTypeMatches(input.getSubType());
-        }
-
-        if (input.getStatus() != null) {
-            query.whereStatusMatches(input.getStatus());
-        }
-
-        if (input.getDisplayName() != null) {
-            query.whereDisplayNameMatchesIgnoringCase(input.getDisplayName());
-        }
-        if (input.getDescription() != null) {
-            query.whereDescriptionMatchesIgnoreCase(input.getDescription());
-        }
-
-        if (input.getDesignator() != null) {
-            query.whereDesignatorMatchesIgnoreCase(input.getDesignator());
-        }
-
-        if (input.getName() != null) {
-            query.whereNameMatchesIgnoreCase(input.getName());
-        }
-
-        if (input.getUpdatedBy() != null) {
-            query.whereUpdatedByContainsIgnoreCase(input.getUpdatedBy());
-        }
-
-        if (input.getChildElementIds() != null) {
-            query.whereChildElementIn(input.getChildElementIds());
-        }
-
-        if (input.getHasChildElements() != null) {
-            query.whereChildElementsPresent(input.getHasChildElements()
-                                                 .getValue()
-                                                 .booleanValue());
-        }
-
-        if (input.getHasParentElements() != null) {
-            query.whereParentElementPresent(input.getHasParentElements()
-                                                 .getValue()
-                                                 .booleanValue());
-        }
+    if (input.getDesignator() != null) {
+      query.whereDesignatorMatchesIgnoreCase(input.getDesignator());
     }
 
-    @Valid
-    @Value
-    @NonFinal
-    public static class InputData implements UseCase.InputData {
-        Client authenticatedClient;
-        QueryCondition<Key<UUID>> unitUuid;
-        QueryCondition<String> displayName;
-        QueryCondition<String> subType;
-        QueryCondition<String> status;
-        QueryCondition<Key<UUID>> childElementIds;
-        SingleValueQueryCondition<Boolean> hasChildElements;
-        SingleValueQueryCondition<Boolean> hasParentElements;
-        QueryCondition<String> description;
-        QueryCondition<String> designator;
-        QueryCondition<String> name;
-        QueryCondition<String> updatedBy;
-        PagingConfiguration pagingConfiguration;
+    if (input.getName() != null) {
+      query.whereNameMatchesIgnoreCase(input.getName());
     }
 
-    @Valid
-    @Value
-    public static class OutputData<T> implements UseCase.OutputData {
-        @Valid
-        PagedResult<T> elements;
+    if (input.getUpdatedBy() != null) {
+      query.whereUpdatedByContainsIgnoreCase(input.getUpdatedBy());
     }
+
+    if (input.getChildElementIds() != null) {
+      query.whereChildElementIn(input.getChildElementIds());
+    }
+
+    if (input.getHasChildElements() != null) {
+      query.whereChildElementsPresent(input.getHasChildElements().getValue().booleanValue());
+    }
+
+    if (input.getHasParentElements() != null) {
+      query.whereParentElementPresent(input.getHasParentElements().getValue().booleanValue());
+    }
+  }
+
+  @Valid
+  @Value
+  @NonFinal
+  public static class InputData implements UseCase.InputData {
+    Client authenticatedClient;
+    QueryCondition<Key<UUID>> unitUuid;
+    QueryCondition<String> displayName;
+    QueryCondition<String> subType;
+    QueryCondition<String> status;
+    QueryCondition<Key<UUID>> childElementIds;
+    SingleValueQueryCondition<Boolean> hasChildElements;
+    SingleValueQueryCondition<Boolean> hasParentElements;
+    QueryCondition<String> description;
+    QueryCondition<String> designator;
+    QueryCondition<String> name;
+    QueryCondition<String> updatedBy;
+    PagingConfiguration pagingConfiguration;
+  }
+
+  @Valid
+  @Value
+  public static class OutputData<T> implements UseCase.OutputData {
+    @Valid PagedResult<T> elements;
+  }
 }

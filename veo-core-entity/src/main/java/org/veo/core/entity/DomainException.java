@@ -18,19 +18,18 @@
 package org.veo.core.entity;
 
 /**
- * Unrecoverable violations against business rules extend and throw this
- * exception. This must not be used for any preventable condition that can be
- * caught using validation and type checking.
+ * Unrecoverable violations against business rules extend and throw this exception. This must not be
+ * used for any preventable condition that can be caught using validation and type checking.
  *
  * @author akoderman
  */
 public abstract class DomainException extends RuntimeException {
 
-    public DomainException(String message) {
-        super(message);
-    }
+  public DomainException(String message) {
+    super(message);
+  }
 
-    public DomainException(String message, Exception inner) {
-        super(message, inner);
-    }
+  public DomainException(String message, Exception inner) {
+    super(message, inner);
+  }
 }

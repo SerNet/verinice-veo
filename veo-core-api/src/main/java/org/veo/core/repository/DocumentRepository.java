@@ -22,9 +22,7 @@ import org.veo.core.entity.Document;
 /**
  * A repository for <code>Document</code> entities.
  *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
+ * <p>Implements basic CRUD operations from the superinterface and extends them with more specific
+ * methods - i.e. queries based on particular fields.
  */
-public interface DocumentRepository extends ElementRepository<Document> {
-
-}
+public interface DocumentRepository extends ElementRepository<Document> {}

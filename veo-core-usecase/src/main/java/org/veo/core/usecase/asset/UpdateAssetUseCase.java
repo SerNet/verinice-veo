@@ -26,21 +26,21 @@ import org.veo.core.usecase.decision.Decider;
  * @author urszeidler
  */
 public class UpdateAssetUseCase extends ModifyElementUseCase<Asset> {
-    public UpdateAssetUseCase(AssetRepository assetRepository, Decider decider) {
-        super(assetRepository, decider);
-    }
+  public UpdateAssetUseCase(AssetRepository assetRepository, Decider decider) {
+    super(assetRepository, decider);
+  }
 
-    @Override
-    protected void validate(Asset oldElement, Asset newElement) {
-        // GNDN
-    }
+  @Override
+  protected void validate(Asset oldElement, Asset newElement) {
+    // GNDN
+  }
 
-    @Override
-    protected void evaluateDecisions(Asset entity, Asset storedEntity) {
-        // FIXME VEO-839
-        // Transfer risks from stored element because they may be relevant for risk
-        // evaluation
-        entity.setRisks(storedEntity.getRisks());
-        super.evaluateDecisions(entity, storedEntity);
-    }
+  @Override
+  protected void evaluateDecisions(Asset entity, Asset storedEntity) {
+    // FIXME VEO-839
+    // Transfer risks from stored element because they may be relevant for risk
+    // evaluation
+    entity.setRisks(storedEntity.getRisks());
+    super.evaluateDecisions(entity, storedEntity);
+  }
 }

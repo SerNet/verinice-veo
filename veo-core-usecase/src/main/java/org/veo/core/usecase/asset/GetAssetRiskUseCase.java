@@ -23,7 +23,7 @@ import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.risk.GetRiskUseCase;
 
 public class GetAssetRiskUseCase extends GetRiskUseCase<Asset, AssetRisk> {
-    public GetAssetRiskUseCase(RepositoryProvider repositoryProvider) {
-        super(repositoryProvider, Asset.class);
-    }
+  public GetAssetRiskUseCase(RepositoryProvider repositoryProvider) {
+    super(repositoryProvider, Asset.class);
+  }
 }

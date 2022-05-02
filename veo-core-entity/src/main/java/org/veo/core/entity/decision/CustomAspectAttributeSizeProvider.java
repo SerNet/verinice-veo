@@ -26,28 +26,30 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Provides the size/length of a collection value for a certain custom aspect
- * attribute on an element.
+ * Provides the size/length of a collection value for a certain custom aspect attribute on an
+ * element.
  */
 @Data
 @RequiredArgsConstructor
 public class CustomAspectAttributeSizeProvider implements InputProvider {
-    private final String customAspectType;
-    private final String attributeType;
+  private final String customAspectType;
+  private final String attributeType;
 
-    @Override
-    public Object getValue(Element element, Domain domain) {
-        var value = new CustomAspectAttributeValueProvider(customAspectType,
-                attributeType).getValue(element, domain);
+  @Override
+  public Object getValue(Element element, Domain domain) {
+    var value =
+        new CustomAspectAttributeValueProvider(customAspectType, attributeType)
+            .getValue(element, domain);
 
-        if (value == null) {
-            return 0;
-        }
-        if (value instanceof Collection<?>) {
-            return ((Collection) value).size();
-        }
-        throw new IllegalArgumentException(
-                String.format("Cannot determine size for custom aspect %s attribute %s because the value is not a collection",
-                              customAspectType, attributeType));
+    if (value == null) {
+      return 0;
     }
+    if (value instanceof Collection<?>) {
+      return ((Collection) value).size();
+    }
+    throw new IllegalArgumentException(
+        String.format(
+            "Cannot determine size for custom aspect %s attribute %s because the value is not a collection",
+            customAspectType, attributeType));
+  }
 }

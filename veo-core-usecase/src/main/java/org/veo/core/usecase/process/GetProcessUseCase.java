@@ -33,42 +33,41 @@ import org.veo.core.usecase.base.GetElementUseCase;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
-/**
- * Reinstantiate a persisted process object.
- */
-public class GetProcessUseCase implements
-        TransactionalUseCase<UseCase.IdAndClient, GetElementUseCase.OutputData<Process>> {
+/** Reinstantiate a persisted process object. */
+public class GetProcessUseCase
+    implements TransactionalUseCase<UseCase.IdAndClient, GetElementUseCase.OutputData<Process>> {
 
-    private final ProcessRepository processRepository;
+  private final ProcessRepository processRepository;
 
-    public GetProcessUseCase(ProcessRepository repository) {
-        processRepository = repository;
+  public GetProcessUseCase(ProcessRepository repository) {
+    processRepository = repository;
+  }
+
+  public GetElementUseCase.OutputData<Process> execute(IdAndClient input) {
+    var process =
+        processRepository
+            .findById(input.getId(), shouldEmbedRisks(input))
+            .orElseThrow(() -> new NotFoundException(input.getId().uuidValue()));
+    process.checkSameClient(input.getAuthenticatedClient());
+    return new GetElementUseCase.OutputData<>(process);
+  }
+
+  private boolean shouldEmbedRisks(IdAndClient input) {
+    if (input instanceof InputData) {
+      return ((InputData) input).embedRisks;
     }
+    return false;
+  }
 
-    public GetElementUseCase.OutputData<Process> execute(IdAndClient input) {
-        var process = processRepository.findById(input.getId(), shouldEmbedRisks(input))
-                                       .orElseThrow(() -> new NotFoundException(input.getId()
-                                                                                     .uuidValue()));
-        process.checkSameClient(input.getAuthenticatedClient());
-        return new GetElementUseCase.OutputData<>(process);
+  @Value
+  @EqualsAndHashCode(callSuper = true)
+  @Valid
+  public static class InputData extends IdAndClient {
+    boolean embedRisks;
+
+    public InputData(Key<UUID> id, Client authenticatedClient, boolean embedRisks) {
+      super(id, authenticatedClient);
+      this.embedRisks = embedRisks;
     }
-
-    private boolean shouldEmbedRisks(IdAndClient input) {
-        if (input instanceof InputData) {
-            return ((InputData) input).embedRisks;
-        }
-        return false;
-    }
-
-    @Value
-    @EqualsAndHashCode(callSuper = true)
-    @Valid
-    public static class InputData extends IdAndClient {
-        boolean embedRisks;
-
-        public InputData(Key<UUID> id, Client authenticatedClient, boolean embedRisks) {
-            super(id, authenticatedClient);
-            this.embedRisks = embedRisks;
-        }
-    }
+  }
 }

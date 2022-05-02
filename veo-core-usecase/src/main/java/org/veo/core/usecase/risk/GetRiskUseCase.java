@@ -35,50 +35,59 @@ import org.veo.core.usecase.UseCase;
 import lombok.Value;
 
 public class GetRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-        implements TransactionalUseCase<GetRiskUseCase.InputData, GetRiskUseCase.OutputData<R>> {
+    implements TransactionalUseCase<GetRiskUseCase.InputData, GetRiskUseCase.OutputData<R>> {
 
-    private final Class<T> entityClass;
-    private final RepositoryProvider repositoryProvider;
+  private final Class<T> entityClass;
+  private final RepositoryProvider repositoryProvider;
 
-    public GetRiskUseCase(RepositoryProvider repositoryProvider, Class<T> entityClass) {
-        this.entityClass = entityClass;
-        this.repositoryProvider = repositoryProvider;
-    }
+  public GetRiskUseCase(RepositoryProvider repositoryProvider, Class<T> entityClass) {
+    this.entityClass = entityClass;
+    this.repositoryProvider = repositoryProvider;
+  }
 
-    @Transactional
-    public OutputData<R> execute(InputData input) {
-        var entity = repositoryProvider.getRepositoryFor(entityClass)
-                                       .findById(input.entityRef)
-                                       .orElseThrow(() -> new NotFoundException(
-                                               "Entity with UUID %s not found",
-                                               input.entityRef.uuidValue()));
-        var scenario = repositoryProvider.getRepositoryFor(Scenario.class)
-                                         .findById(input.scenarioRef)
-                                         .orElseThrow(() -> new NotFoundException(
-                                                 "Scenario with UUID %s not found",
-                                                 input.scenarioRef.uuidValue()));
+  @Transactional
+  public OutputData<R> execute(InputData input) {
+    var entity =
+        repositoryProvider
+            .getRepositoryFor(entityClass)
+            .findById(input.entityRef)
+            .orElseThrow(
+                () ->
+                    new NotFoundException(
+                        "Entity with UUID %s not found", input.entityRef.uuidValue()));
+    var scenario =
+        repositoryProvider
+            .getRepositoryFor(Scenario.class)
+            .findById(input.scenarioRef)
+            .orElseThrow(
+                () ->
+                    new NotFoundException(
+                        "Scenario with UUID %s not found", input.scenarioRef.uuidValue()));
 
-        entity.checkSameClient(input.authenticatedClient);
-        scenario.checkSameClient(input.authenticatedClient);
+    entity.checkSameClient(input.authenticatedClient);
+    scenario.checkSameClient(input.authenticatedClient);
 
-        return new OutputData<>(entity.getRisk(scenario)
-                                      .orElseThrow(() -> new NotFoundException(
-                                              "No risk found for entity %s and scenario %s",
-                                              entity.getDisplayName(), scenario.getDisplayName())));
-    }
+    return new OutputData<>(
+        entity
+            .getRisk(scenario)
+            .orElseThrow(
+                () ->
+                    new NotFoundException(
+                        "No risk found for entity %s and scenario %s",
+                        entity.getDisplayName(), scenario.getDisplayName())));
+  }
 
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Client authenticatedClient;
-        Key<UUID> entityRef;
-        Key<UUID> scenarioRef;
-    }
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
+    Client authenticatedClient;
+    Key<UUID> entityRef;
+    Key<UUID> scenarioRef;
+  }
 
-    @Valid
-    @Value
-    public static class OutputData<R> implements UseCase.OutputData {
-        @Valid
-        R risk;
-    }
+  @Valid
+  @Value
+  public static class OutputData<R> implements UseCase.OutputData {
+    @Valid R risk;
+  }
 }

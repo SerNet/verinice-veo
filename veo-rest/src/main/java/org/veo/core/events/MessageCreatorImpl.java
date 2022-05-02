@@ -41,108 +41,106 @@ import org.veo.persistence.entity.jpa.StoredEventData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/** @see MessageCreator */
+/**
+ * @see MessageCreator
+ */
 @RequiredArgsConstructor
 @Slf4j
 public class MessageCreatorImpl implements MessageCreator {
-    private final StoredEventRepository storedEventRepository;
-    private final ObjectMapper objectMapper;
-    private final ReferenceAssembler referenceAssembler;
-    private final EntityToDtoTransformer entityToDtoTransformer;
+  private final StoredEventRepository storedEventRepository;
+  private final ObjectMapper objectMapper;
+  private final ReferenceAssembler referenceAssembler;
+  private final EntityToDtoTransformer entityToDtoTransformer;
 
-    // TODO VEO-1084 rename routing keys
-    public static final String ROUTING_KEY_DOMAIN_CREATION = "domain_creation_event";
-    public static final String ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE = "element_type_definition_update";
-    public static final String ROUTING_KEY_ENTITY_REVISION = "versioning_event";
+  // TODO VEO-1084 rename routing keys
+  public static final String ROUTING_KEY_DOMAIN_CREATION = "domain_creation_event";
+  public static final String ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE =
+      "element_type_definition_update";
+  public static final String ROUTING_KEY_ENTITY_REVISION = "versioning_event";
 
-    @Value("${veo.message.dispatch.routing-key-prefix}")
-    private String routingKeyPrefix;
+  @Value("${veo.message.dispatch.routing-key-prefix}")
+  private String routingKeyPrefix;
 
-    @Override
-    public void createEntityRevisionMessage(VersioningEvent versioningEvent, Client client) {
-        var json = createEntityRevisionJson(versioningEvent.getEntity(), versioningEvent.getType(),
-                                            versioningEvent.getAuthor(), client);
-        storeMessage(ROUTING_KEY_ENTITY_REVISION, json);
+  @Override
+  public void createEntityRevisionMessage(VersioningEvent versioningEvent, Client client) {
+    var json =
+        createEntityRevisionJson(
+            versioningEvent.getEntity(),
+            versioningEvent.getType(),
+            versioningEvent.getAuthor(),
+            client);
+    storeMessage(ROUTING_KEY_ENTITY_REVISION, json);
+  }
+
+  @Override
+  public void createDomainCreationMessage(Domain domain) {
+    var json = objectMapper.createObjectNode();
+    json.put("domainId", domain.getId().uuidValue());
+    json.put("clientId", domain.getOwner().getId().uuidValue());
+    if (domain.getDomainTemplate() != null) {
+      json.put("domainTemplateId", domain.getDomainTemplate().getId().uuidValue());
     }
 
-    @Override
-    public void createDomainCreationMessage(Domain domain) {
-        var json = objectMapper.createObjectNode();
-        json.put("domainId", domain.getId()
-                                   .uuidValue());
-        json.put("clientId", domain.getOwner()
-                                   .getId()
-                                   .uuidValue());
-        if (domain.getDomainTemplate() != null) {
-            json.put("domainTemplateId", domain.getDomainTemplate()
-                                               .getId()
-                                               .uuidValue());
-        }
+    storeMessage(ROUTING_KEY_DOMAIN_CREATION, json);
+  }
 
-        storeMessage(ROUTING_KEY_DOMAIN_CREATION, json);
-    }
+  @Override
+  public void createElementTypeDefinitionUpdateMessage(Domain domain, EntityType entityType) {
+    var json = objectMapper.createObjectNode();
+    json.put("domainId", domain.getId().uuidValue());
+    json.put("elementType", entityType.getSingularTerm());
+    storeMessage(ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE, json);
+  }
 
-    @Override
-    public void createElementTypeDefinitionUpdateMessage(Domain domain, EntityType entityType) {
-        var json = objectMapper.createObjectNode();
-        json.put("domainId", domain.getId()
-                                   .uuidValue());
-        json.put("elementType", entityType.getSingularTerm());
-        storeMessage(ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE, json);
-    }
+  private void storeMessage(String routingKey, JsonNode content) {
+    storedEventRepository.save(
+        StoredEventData.newInstance(content.toString(), routingKeyPrefix + routingKey));
+  }
 
-    private void storeMessage(String routingKey, JsonNode content) {
-        storedEventRepository.save(StoredEventData.newInstance(content.toString(),
-                                                               routingKeyPrefix + routingKey));
-    }
+  private JsonNode createEntityRevisionJson(
+      Versioned entity, VersioningEvent.Type type, String author, Client client) {
+    var tree = objectMapper.createObjectNode();
+    tree.put("uri", getUri(entity));
+    tree.put("type", convertType(type));
+    tree.put("changeNumber", getChangeNumber(entity, type));
+    tree.put("time", Instant.now().toString());
+    tree.put("author", author);
+    tree.put("clientId", client.getId().uuidValue());
+    tree.set("content", objectMapper.valueToTree(entityToDtoTransformer.transform2Dto(entity)));
+    return tree;
+  }
 
-    private JsonNode createEntityRevisionJson(Versioned entity, VersioningEvent.Type type,
-            String author, Client client) {
-        var tree = objectMapper.createObjectNode();
-        tree.put("uri", getUri(entity));
-        tree.put("type", convertType(type));
-        tree.put("changeNumber", getChangeNumber(entity, type));
-        tree.put("time", Instant.now()
-                                .toString());
-        tree.put("author", author);
-        tree.put("clientId", client.getId()
-                                   .uuidValue());
-        tree.set("content", objectMapper.valueToTree(entityToDtoTransformer.transform2Dto(entity)));
-        return tree;
+  private long getChangeNumber(Versioned entity, VersioningEvent.Type type) {
+    // We use the JPA version number as a base for our continuous change number.
+    // When updating an entity, JPA increments the version number after this message
+    // creation, so we must add 1 to the version number. We must also add 1 in case
+    // of a deletion, because JPA won't assign a new number for a deleted entity.
+    var changeNumber = entity.getVersion();
+    if (type != VersioningEvent.Type.PERSIST) {
+      changeNumber++;
     }
+    return changeNumber;
+  }
 
-    private long getChangeNumber(Versioned entity, VersioningEvent.Type type) {
-        // We use the JPA version number as a base for our continuous change number.
-        // When updating an entity, JPA increments the version number after this message
-        // creation, so we must add 1 to the version number. We must also add 1 in case
-        // of a deletion, because JPA won't assign a new number for a deleted entity.
-        var changeNumber = entity.getVersion();
-        if (type != VersioningEvent.Type.PERSIST) {
-            changeNumber++;
-        }
-        return changeNumber;
+  private String getUri(Versioned entity) {
+    if (entity instanceof Identifiable) {
+      return referenceAssembler.targetReferenceOf((Identifiable) entity);
     }
+    if (entity instanceof AbstractRisk) {
+      return referenceAssembler.targetReferenceOf((AbstractRisk<?, ?>) entity);
+    }
+    throw new NotImplementedException("Can't build URI for object of type " + entity.getClass());
+  }
 
-    private String getUri(Versioned entity) {
-        if (entity instanceof Identifiable) {
-            return referenceAssembler.targetReferenceOf((Identifiable) entity);
-        }
-        if (entity instanceof AbstractRisk) {
-            return referenceAssembler.targetReferenceOf((AbstractRisk<?, ?>) entity);
-        }
-        throw new NotImplementedException(
-                "Can't build URI for object of type " + entity.getClass());
+  private String convertType(VersioningEvent.Type type) {
+    switch (type) {
+      case PERSIST:
+        return "CREATION";
+      case UPDATE:
+        return "MODIFICATION";
+      case REMOVE:
+        return "HARD_DELETION";
     }
-
-    private String convertType(VersioningEvent.Type type) {
-        switch (type) {
-        case PERSIST:
-            return "CREATION";
-        case UPDATE:
-            return "MODIFICATION";
-        case REMOVE:
-            return "HARD_DELETION";
-        }
-        throw new NotImplementedException("Event type " + type + " not supported.");
-    }
+    throw new NotImplementedException("Event type " + type + " not supported.");
+  }
 }

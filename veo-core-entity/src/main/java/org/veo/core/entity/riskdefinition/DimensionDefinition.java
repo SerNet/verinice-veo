@@ -31,8 +31,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
- * The basic class for a dimension definition. A dimension definition has an
- * unique id and can work with {@link DiscreteValue} as level.
+ * The basic class for a dimension definition. A dimension definition has an unique id and can work
+ * with {@link DiscreteValue} as level.
  */
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -40,29 +40,28 @@ import lombok.ToString;
 @AllArgsConstructor
 @Data
 public class DimensionDefinition {
-    protected static final String DIMENSION_PROBABILITY = "Prob";
-    protected static final String DIMENSION_IMPLEMENTATION_STATE = "Ctr";
+  protected static final String DIMENSION_PROBABILITY = "Prob";
+  protected static final String DIMENSION_IMPLEMENTATION_STATE = "Ctr";
 
-    @NotNull(message = "An id must be present.")
-    @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
-    @EqualsAndHashCode.Include
-    @ToString.Include
-    private String id;
-    @NotNull(message = "A name must be present.")
-    @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
-    @ToString.Include
-    private String name;
-    @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
-    private String abbreviation;
-    @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
-    private String description;
+  @NotNull(message = "An id must be present.")
+  @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
+  @EqualsAndHashCode.Include
+  @ToString.Include
+  private String id;
 
-    /**
-     * Initialize the ordinal value of each DiscreteValue in the list.
-     */
-    static void initLevel(List<? extends DiscreteValue> discretValues) {
-        discretValues.stream()
-                     .forEachOrdered(cl -> cl.setOrdinalValue(discretValues.indexOf(cl)));
-    }
+  @NotNull(message = "A name must be present.")
+  @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
+  @ToString.Include
+  private String name;
 
+  @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
+  private String abbreviation;
+
+  @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
+  private String description;
+
+  /** Initialize the ordinal value of each DiscreteValue in the list. */
+  static void initLevel(List<? extends DiscreteValue> discretValues) {
+    discretValues.stream().forEachOrdered(cl -> cl.setOrdinalValue(discretValues.indexOf(cl)));
+  }
 }

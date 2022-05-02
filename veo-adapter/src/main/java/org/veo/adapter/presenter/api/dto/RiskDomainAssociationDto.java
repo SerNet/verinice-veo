@@ -31,19 +31,21 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Schema(description = "References a domain and its available risk-definitions in a map of "
-        + "risk-definition-ID to riskDefinition")
+@Schema(
+    description =
+        "References a domain and its available risk-definitions in a map of "
+            + "risk-definition-ID to riskDefinition")
 public class RiskDomainAssociationDto {
-    IdRef<Domain> reference;
-    Map<String, RiskValuesDto> riskDefinitions = new HashMap<>();
+  IdRef<Domain> reference;
+  Map<String, RiskValuesDto> riskDefinitions = new HashMap<>();
 
-    public RiskDomainAssociationDto(IdRef<Domain> domainRef) {
-        this.reference = domainRef;
-    }
+  public RiskDomainAssociationDto(IdRef<Domain> domainRef) {
+    this.reference = domainRef;
+  }
 
-    public RiskDomainAssociationDto(IdRef<Domain> domainRef,
-            Map<String, RiskValuesDto> riskDefinitions) {
-        this.reference = domainRef;
-        this.riskDefinitions = riskDefinitions;
-    }
+  public RiskDomainAssociationDto(
+      IdRef<Domain> domainRef, Map<String, RiskValuesDto> riskDefinitions) {
+    this.reference = domainRef;
+    this.riskDefinitions = riskDefinitions;
+  }
 }

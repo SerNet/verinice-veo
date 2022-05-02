@@ -28,17 +28,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-/**
- * Transfer object for CustomLinks.
- */
+/** Transfer object for CustomLinks. */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class CustomLinkDto extends CustomAspectDto {
 
-    @NotNull(message = "A target must be present.")
-    @ToString.Include
-    @Schema(required = true, implementation = IdRefCustomLinkTarget.class)
-    private IdRef<Element> target;
-
+  @NotNull(message = "A target must be present.")
+  @ToString.Include
+  @Schema(required = true, implementation = IdRefCustomLinkTarget.class)
+  private IdRef<Element> target;
 }

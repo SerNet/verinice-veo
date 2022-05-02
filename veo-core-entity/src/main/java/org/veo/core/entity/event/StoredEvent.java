@@ -19,60 +19,55 @@ package org.veo.core.entity.event;
 
 import java.time.Instant;
 
-/**
- * An event to be forwarded to an external message queue.
- */
+/** An event to be forwarded to an external message queue. */
 public interface StoredEvent {
 
-    /**
-     * @return Sequential identifier of this event.
-     */
-    Long getId();
+  /**
+   * @return Sequential identifier of this event.
+   */
+  Long getId();
 
-    /**
-     * @return Message payload.
-     */
-    String getContent();
+  /**
+   * @return Message payload.
+   */
+  String getContent();
 
-    /**
-     * @return The timestamp of this event
-     */
-    Instant getTimestamp();
+  /**
+   * @return The timestamp of this event
+   */
+  Instant getTimestamp();
 
-    /**
-     * @return Message queue routing key.
-     */
-    String getRoutingKey();
+  /**
+   * @return Message queue routing key.
+   */
+  String getRoutingKey();
 
-    /**
-     * @return Whether this event has already been forwarded.
-     */
-    Boolean getProcessed();
+  /**
+   * @return Whether this event has already been forwarded.
+   */
+  Boolean getProcessed();
 
-    /**
-     * Tag this event as having been processed. This usually means that it was
-     * successfully forwarded to a message queue and that publication was confirmed
-     * by the message broker. Events that are marked as processed should be ignored
-     * by workers.
-     *
-     * @return {@code true} if the event was marked as processed by this call.
-     *         Returns {@code false} if the event was already marked as processed
-     *         before.
-     */
-    boolean markAsProcessed();
+  /**
+   * Tag this event as having been processed. This usually means that it was successfully forwarded
+   * to a message queue and that publication was confirmed by the message broker. Events that are
+   * marked as processed should be ignored by workers.
+   *
+   * @return {@code true} if the event was marked as processed by this call. Returns {@code false}
+   *     if the event was already marked as processed before.
+   */
+  boolean markAsProcessed();
 
-    /**
-     * Lock this event for processing so other workers don't process it redundantly.
-     * This sets the lock time to now.
-     */
-    void lock();
+  /**
+   * Lock this event for processing so other workers don't process it redundantly. This sets the
+   * lock time to now.
+   */
+  void lock();
 
-    /**
-     * @return Moment when a worker locked this event for processing or null if it
-     *         isn't locked. Locks on an event prevent multiple workers from
-     *         processing the same event redundantly. Unprocessed events that have
-     *         been locked a long time ago are probably stuck and should be locked
-     *         and processed by another worker.
-     */
-    Instant getLockTime();
+  /**
+   * @return Moment when a worker locked this event for processing or null if it isn't locked. Locks
+   *     on an event prevent multiple workers from processing the same event redundantly.
+   *     Unprocessed events that have been locked a long time ago are probably stuck and should be
+   *     locked and processed by another worker.
+   */
+  Instant getLockTime();
 }

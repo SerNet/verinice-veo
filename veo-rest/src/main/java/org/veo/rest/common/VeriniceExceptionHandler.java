@@ -41,54 +41,54 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class VeriniceExceptionHandler {
 
-    @ExceptionHandler({ DomainException.class })
-    protected ResponseEntity<ApiResponseBody> handle(DomainException exception) {
-        return handle(exception, HttpStatus.BAD_REQUEST);
-    }
+  @ExceptionHandler({DomainException.class})
+  protected ResponseEntity<ApiResponseBody> handle(DomainException exception) {
+    return handle(exception, HttpStatus.BAD_REQUEST);
+  }
 
-    @ExceptionHandler({ IllegalArgumentException.class })
-    protected ResponseEntity<ApiResponseBody> handle(IllegalArgumentException exception) {
-        return handle(exception, HttpStatus.BAD_REQUEST);
-    }
+  @ExceptionHandler({IllegalArgumentException.class})
+  protected ResponseEntity<ApiResponseBody> handle(IllegalArgumentException exception) {
+    return handle(exception, HttpStatus.BAD_REQUEST);
+  }
 
-    @ExceptionHandler({ EntityAlreadyExistsException.class })
-    protected ResponseEntity<ApiResponseBody> handle(EntityAlreadyExistsException exception) {
-        return handle(exception, HttpStatus.CONFLICT);
-    }
+  @ExceptionHandler({EntityAlreadyExistsException.class})
+  protected ResponseEntity<ApiResponseBody> handle(EntityAlreadyExistsException exception) {
+    return handle(exception, HttpStatus.CONFLICT);
+  }
 
-    @ExceptionHandler({ DeviatingIdException.class })
-    protected ResponseEntity<ApiResponseBody> handle(DeviatingIdException exception) {
-        return handle(exception, HttpStatus.BAD_REQUEST);
-    }
+  @ExceptionHandler({DeviatingIdException.class})
+  protected ResponseEntity<ApiResponseBody> handle(DeviatingIdException exception) {
+    return handle(exception, HttpStatus.BAD_REQUEST);
+  }
 
-    @ExceptionHandler({ JsonSchemaValidationException.class })
-    protected ResponseEntity<ApiResponseBody> handle(JsonSchemaValidationException exception) {
-        return handle(exception, HttpStatus.BAD_REQUEST);
-    }
+  @ExceptionHandler({JsonSchemaValidationException.class})
+  protected ResponseEntity<ApiResponseBody> handle(JsonSchemaValidationException exception) {
+    return handle(exception, HttpStatus.BAD_REQUEST);
+  }
 
-    @ExceptionHandler({ NotFoundException.class })
-    protected ResponseEntity<ApiResponseBody> handle(NotFoundException exception) {
-        return handle(exception, HttpStatus.NOT_FOUND);
-    }
+  @ExceptionHandler({NotFoundException.class})
+  protected ResponseEntity<ApiResponseBody> handle(NotFoundException exception) {
+    return handle(exception, HttpStatus.NOT_FOUND);
+  }
 
-    @ExceptionHandler({ NotImplementedException.class })
-    protected ResponseEntity<ApiResponseBody> handle(NotImplementedException exception) {
-        return handle(exception, HttpStatus.NOT_IMPLEMENTED);
-    }
+  @ExceptionHandler({NotImplementedException.class})
+  protected ResponseEntity<ApiResponseBody> handle(NotImplementedException exception) {
+    return handle(exception, HttpStatus.NOT_IMPLEMENTED);
+  }
 
-    @ExceptionHandler(ETagMismatchException.class)
-    protected ResponseEntity<ApiResponseBody> handle(ETagMismatchException exception) {
-        return handle(exception, HttpStatus.PRECONDITION_FAILED);
-    }
+  @ExceptionHandler(ETagMismatchException.class)
+  protected ResponseEntity<ApiResponseBody> handle(ETagMismatchException exception) {
+    return handle(exception, HttpStatus.PRECONDITION_FAILED);
+  }
 
-    @ExceptionHandler({ MissingAdminPrivilegesException.class })
-    protected ResponseEntity<ApiResponseBody> handle(MissingAdminPrivilegesException exception) {
-        return handle(exception, HttpStatus.FORBIDDEN);
-    }
+  @ExceptionHandler({MissingAdminPrivilegesException.class})
+  protected ResponseEntity<ApiResponseBody> handle(MissingAdminPrivilegesException exception) {
+    return handle(exception, HttpStatus.FORBIDDEN);
+  }
 
-    private ResponseEntity<ApiResponseBody> handle(Throwable exception, HttpStatus status) {
-        log.error("Error handling request", exception);
-        return new ResponseEntity<>(
-                new ApiResponseBody(false, Optional.empty(), exception.getMessage()), status);
-    }
+  private ResponseEntity<ApiResponseBody> handle(Throwable exception, HttpStatus status) {
+    log.error("Error handling request", exception);
+    return new ResponseEntity<>(
+        new ApiResponseBody(false, Optional.empty(), exception.getMessage()), status);
+  }
 }

@@ -24,20 +24,19 @@ import java.util.Set;
 import org.veo.core.entity.event.StoredEvent;
 
 public interface StoredEventRepository {
-    StoredEvent save(StoredEvent event);
+  StoredEvent save(StoredEvent event);
 
-    Set<StoredEvent> findAll();
+  Set<StoredEvent> findAll();
 
-    void remove(StoredEvent event);
+  void remove(StoredEvent event);
 
-    /**
-     * Retrieves unprocessed stored events, oldest first.
-     *
-     * @param maxLockTime
-     *            Locked events are only included if they've been locked before this
-     *            point in time.
-     */
-    List<StoredEvent> findPendingEvents(Instant maxLockTime);
+  /**
+   * Retrieves unprocessed stored events, oldest first.
+   *
+   * @param maxLockTime Locked events are only included if they've been locked before this point in
+   *     time.
+   */
+  List<StoredEvent> findPendingEvents(Instant maxLockTime);
 
-    List<StoredEvent> saveAll(List<StoredEvent> pendingEvents);
+  List<StoredEvent> saveAll(List<StoredEvent> pendingEvents);
 }

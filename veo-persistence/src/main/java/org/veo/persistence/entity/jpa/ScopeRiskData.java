@@ -39,10 +39,9 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ScopeRiskData extends AbstractRiskData<Scope, ScopeRisk> implements ScopeRisk {
 
-    // see https://github.com/rzwitserloot/lombok/issues/1134
-    @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
-    ScopeRiskData(@NotNull @NonNull Scope scope, @NotNull Scenario scenario) {
-        super(scenario, scope);
-    }
-
+  // see https://github.com/rzwitserloot/lombok/issues/1134
+  @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
+  ScopeRiskData(@NotNull @NonNull Scope scope, @NotNull Scenario scenario) {
+    super(scenario, scope);
+  }
 }

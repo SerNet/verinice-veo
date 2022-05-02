@@ -20,5 +20,4 @@ package org.veo.adapter.presenter.api.openapi;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Index of a rule in a decision's rules list", type = "integer")
-public interface DecisionRuleRefSchema {
-}
+public interface DecisionRuleRefSchema {}

@@ -20,20 +20,17 @@ package org.veo.core.entity;
 import java.util.Map;
 
 /**
- * This reference type is used to describe the {@link CustomLink} of an
- * {@link EntityLayerSupertype} which will be added to it when this
- * {@link CatalogItem} is applied. There are currently two kinds
- * {@link TailoringReferenceType#LINK} and
- * {@link TailoringReferenceType#LINK_EXTERNAL}.
+ * This reference type is used to describe the {@link CustomLink} of an {@link EntityLayerSupertype}
+ * which will be added to it when this {@link CatalogItem} is applied. There are currently two kinds
+ * {@link TailoringReferenceType#LINK} and {@link TailoringReferenceType#LINK_EXTERNAL}.
  */
 public interface LinkTailoringReference extends TailoringReference {
 
-    String getLinkType();
+  String getLinkType();
 
-    void setLinkType(String aType);
+  void setLinkType(String aType);
 
-    Map<String, Object> getAttributes();
+  Map<String, Object> getAttributes();
 
-    void setAttributes(Map<String, Object> attributes);
-
+  void setAttributes(Map<String, Object> attributes);
 }

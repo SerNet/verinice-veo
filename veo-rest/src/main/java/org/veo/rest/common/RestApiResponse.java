@@ -28,26 +28,23 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class RestApiResponse {
 
-    @Schema(description = "A response body that corresponds to the performed API call. "
-            + "Will include the 'Location'-header for POST requests but may be empty for other methods. ")
-    public static ResponseEntity<ApiResponseBody> created(String urlBasePath,
-            ApiResponseBody body) {
-        String resourceId = body.getResourceId()
-                                .orElse("");
-        URI location = URI.create(urlBasePath + "/" + resourceId);
-        BodyBuilder bodyBuilder = ResponseEntity.created(location);
-        ResponseEntity<ApiResponseBody> body2 = bodyBuilder.body(body);
-        return body2;
-    }
+  @Schema(
+      description =
+          "A response body that corresponds to the performed API call. "
+              + "Will include the 'Location'-header for POST requests but may be empty for other methods. ")
+  public static ResponseEntity<ApiResponseBody> created(String urlBasePath, ApiResponseBody body) {
+    String resourceId = body.getResourceId().orElse("");
+    URI location = URI.create(urlBasePath + "/" + resourceId);
+    BodyBuilder bodyBuilder = ResponseEntity.created(location);
+    ResponseEntity<ApiResponseBody> body2 = bodyBuilder.body(body);
+    return body2;
+  }
 
-    public static ResponseEntity<ApiResponseBody> noContent() {
-        return ResponseEntity.noContent()
-                             .build();
-    }
+  public static ResponseEntity<ApiResponseBody> noContent() {
+    return ResponseEntity.noContent().build();
+  }
 
-    public static ResponseEntity<ApiResponseBody> badRequest() {
-        return ResponseEntity.badRequest()
-                             .build();
-    }
-
+  public static ResponseEntity<ApiResponseBody> badRequest() {
+    return ResponseEntity.badRequest().build();
+  }
 }

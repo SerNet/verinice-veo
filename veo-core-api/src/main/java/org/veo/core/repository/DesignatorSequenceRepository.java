@@ -22,9 +22,9 @@ import java.util.UUID;
 import org.veo.core.entity.Key;
 
 /**
- * Provides sequential numbers for designator creation. There is a separate
- * sequence for each combination of client and type designator.
+ * Provides sequential numbers for designator creation. There is a separate sequence for each
+ * combination of client and type designator.
  */
 public interface DesignatorSequenceRepository {
-    Long getNext(Key<UUID> clientId, String typeDesignator);
+  Long getNext(Key<UUID> clientId, String typeDesignator);
 }

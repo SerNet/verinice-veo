@@ -22,14 +22,12 @@ import java.util.Optional;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 
-/**
- * Provides an auditor in absence of the authentication context during testing.
- */
+/** Provides an auditor in absence of the authentication context during testing. */
 @Component
 public class DummyAuthAwareImpl implements AuditorAware<String> {
 
-    @Override
-    public Optional<String> getCurrentAuditor() {
-        return Optional.empty();
-    }
+  @Override
+  public Optional<String> getCurrentAuditor() {
+    return Optional.empty();
+  }
 }

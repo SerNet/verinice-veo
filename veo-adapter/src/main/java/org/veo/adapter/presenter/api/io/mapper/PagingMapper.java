@@ -27,26 +27,24 @@ import org.veo.core.repository.PagingConfiguration;
 
 public class PagingMapper {
 
-    public static <TDto, TElement extends Element> PageDto<TDto> toPage(PagedResult<TElement> input,
-            Function<TElement, TDto> mapper) {
-        return new PageDto<TDto>(input.getResultPage()
-                                      .stream()
-                                      .map(mapper)
-                                      .collect(Collectors.toList()),
-                input.getTotalResults(), input.getTotalPages(), input.getPagingConfiguration()
-                                                                     .getPageNumber());
-    }
+  public static <TDto, TElement extends Element> PageDto<TDto> toPage(
+      PagedResult<TElement> input, Function<TElement, TDto> mapper) {
+    return new PageDto<TDto>(
+        input.getResultPage().stream().map(mapper).collect(Collectors.toList()),
+        input.getTotalResults(),
+        input.getTotalPages(),
+        input.getPagingConfiguration().getPageNumber());
+  }
 
-    public static PagingConfiguration toConfig(int pageSize, int pageNumber, String sortColumn,
-            String sortOrder) {
-        return new PagingConfiguration(pageSize, pageNumber, sortColumn, getSortOrder(sortOrder));
-    }
+  public static PagingConfiguration toConfig(
+      int pageSize, int pageNumber, String sortColumn, String sortOrder) {
+    return new PagingConfiguration(pageSize, pageNumber, sortColumn, getSortOrder(sortOrder));
+  }
 
-    private static PagingConfiguration.SortOrder getSortOrder(String sortOrder) {
-        if (sortOrder.toUpperCase()
-                     .equals("DESC")) {
-            return PagingConfiguration.SortOrder.DESCENDING;
-        }
-        return PagingConfiguration.SortOrder.ASCENDING;
+  private static PagingConfiguration.SortOrder getSortOrder(String sortOrder) {
+    if (sortOrder.toUpperCase().equals("DESC")) {
+      return PagingConfiguration.SortOrder.DESCENDING;
     }
+    return PagingConfiguration.SortOrder.ASCENDING;
+  }
 }

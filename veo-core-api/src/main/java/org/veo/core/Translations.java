@@ -17,6 +17,4 @@
  ******************************************************************************/
 package org.veo.core;
 
-public interface Translations {
-
-}
+public interface Translations {}

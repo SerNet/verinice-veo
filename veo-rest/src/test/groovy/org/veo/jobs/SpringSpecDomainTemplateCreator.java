@@ -46,82 +46,83 @@ import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Creates test domain templates from resource files using injected application
- * services. File contents are cached.
+ * Creates test domain templates from resource files using injected application services. File
+ * contents are cached.
  */
 @RequiredArgsConstructor
 @Component
 public class SpringSpecDomainTemplateCreator {
-    private final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver(
-            getClass().getClassLoader());
-    private final ObjectMapper objectMapper;
-    private final DomainTemplateRepository domainTemplateRepository;
-    private Map<String, TransformDomainTemplateDto> domainTemplateDtos;
-    private final IdentifiableFactory identifiableFactory;
-    private final EntityFactory entityFactory;
-    private final DomainAssociationTransformer domainAssociationTransformer;
-    private final CreateDomainTemplateUseCase createDomainTemplateUseCase;
-    private final CreateDomainUseCase createDomainUseCase;
-    private final DomainRepository domainRepository;
+  private final ResourcePatternResolver resourceResolver =
+      new PathMatchingResourcePatternResolver(getClass().getClassLoader());
+  private final ObjectMapper objectMapper;
+  private final DomainTemplateRepository domainTemplateRepository;
+  private Map<String, TransformDomainTemplateDto> domainTemplateDtos;
+  private final IdentifiableFactory identifiableFactory;
+  private final EntityFactory entityFactory;
+  private final DomainAssociationTransformer domainAssociationTransformer;
+  private final CreateDomainTemplateUseCase createDomainTemplateUseCase;
+  private final CreateDomainUseCase createDomainUseCase;
+  private final DomainRepository domainRepository;
 
-    /**
-     * Creates a new domain from given domain template ID. If the domain template
-     * does not exist, it is attempted to create the domain template from the
-     * corresponding test domain template resource file first.
-     */
-    public Domain createDomainFromTemplate(String templateId, Client client) {
-        if (!domainTemplateRepository.exists(Key.uuidFrom(templateId))) {
-            createTestTemplate(templateId);
-        }
-        AsSystemUser.runAsAdmin(() -> {
-            createDomainUseCase.execute(new CreateDomainUseCase.InputData(templateId,
-                    Optional.of(List.of(client.getIdAsString()))));
+  /**
+   * Creates a new domain from given domain template ID. If the domain template does not exist, it
+   * is attempted to create the domain template from the corresponding test domain template resource
+   * file first.
+   */
+  public Domain createDomainFromTemplate(String templateId, Client client) {
+    if (!domainTemplateRepository.exists(Key.uuidFrom(templateId))) {
+      createTestTemplate(templateId);
+    }
+    AsSystemUser.runAsAdmin(
+        () -> {
+          createDomainUseCase.execute(
+              new CreateDomainUseCase.InputData(
+                  templateId, Optional.of(List.of(client.getIdAsString()))));
         });
-        return domainRepository.findAllByClient(client.getId())
-                               .stream()
-                               .filter(d -> d.getDomainTemplate()
-                                             .getId()
-                                             .uuidValue()
-                                             .equals(templateId))
-                               .findFirst()
-                               .orElseThrow();
-    }
+    return domainRepository.findAllByClient(client.getId()).stream()
+        .filter(d -> d.getDomainTemplate().getId().uuidValue().equals(templateId))
+        .findFirst()
+        .orElseThrow();
+  }
 
-    /**
-     * Creates domain template with given ID from the corresponding test domain
-     * template resource file.
-     */
-    public void createTestTemplate(String templateId) {
-        var dto = getTestTemplateDto(templateId);
-        AsSystemUser.runAsContentCreator(() -> {
-            var input = CreateDomainTemplateInputMapper.map(dto, identifiableFactory, entityFactory,
-                                                            domainAssociationTransformer);
-            createDomainTemplateUseCase.execute(input);
+  /**
+   * Creates domain template with given ID from the corresponding test domain template resource
+   * file.
+   */
+  public void createTestTemplate(String templateId) {
+    var dto = getTestTemplateDto(templateId);
+    AsSystemUser.runAsContentCreator(
+        () -> {
+          var input =
+              CreateDomainTemplateInputMapper.map(
+                  dto, identifiableFactory, entityFactory, domainAssociationTransformer);
+          createDomainTemplateUseCase.execute(input);
         });
+  }
 
+  private TransformDomainTemplateDto getTestTemplateDto(String templateId) {
+    if (domainTemplateDtos == null) {
+      try {
+        domainTemplateDtos =
+            Arrays.stream(resourceResolver.getResources("classpath*:/testdomaintemplates/*.json"))
+                .map(
+                    r -> {
+                      try {
+                        return objectMapper.readValue(
+                            r.getInputStream(), TransformDomainTemplateDto.class);
+                      } catch (IOException e) {
+                        throw new RuntimeException(e);
+                      }
+                    })
+                .collect(Collectors.toMap(dto -> dto.getId(), dto -> dto));
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
     }
-
-    private TransformDomainTemplateDto getTestTemplateDto(String templateId) {
-        if (domainTemplateDtos == null) {
-            try {
-                domainTemplateDtos = Arrays.stream(resourceResolver.getResources("classpath*:/testdomaintemplates/*.json"))
-                                           .map(r -> {
-                                               try {
-                                                   return objectMapper.readValue(r.getInputStream(),
-                                                                                 TransformDomainTemplateDto.class);
-                                               } catch (IOException e) {
-                                                   throw new RuntimeException(e);
-                                               }
-                                           })
-                                           .collect(Collectors.toMap(dto -> dto.getId(),
-                                                                     dto -> dto));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return Optional.ofNullable(domainTemplateDtos.get(templateId))
-                       .orElseThrow(() -> new IllegalArgumentException(
-                               String.format("No test domain template found with ID %s",
-                                             templateId)));
-    }
+    return Optional.ofNullable(domainTemplateDtos.get(templateId))
+        .orElseThrow(
+            () ->
+                new IllegalArgumentException(
+                    String.format("No test domain template found with ID %s", templateId)));
+  }
 }

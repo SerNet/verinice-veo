@@ -33,14 +33,14 @@ import lombok.ToString;
 @Data
 public class FullCatalogItemDto extends ReferenceCatalogItemDto implements IdentifiableDto {
 
-    @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
-    @Schema(description = "ID must be a valid UUID string following RFC 4122.",
-            example = "adf037f1-0089-48ad-9177-92269918758b",
-            format = "uuid")
-    @ToString.Include
-    private String id;
+  @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
+  @Schema(
+      description = "ID must be a valid UUID string following RFC 4122.",
+      example = "adf037f1-0089-48ad-9177-92269918758b",
+      format = "uuid")
+  @ToString.Include
+  private String id;
 
-    @Schema(description = "The actual element's desciption", accessMode = AccessMode.READ_ONLY)
-    private String description;
-
+  @Schema(description = "The actual element's desciption", accessMode = AccessMode.READ_ONLY)
+  private String description;
 }

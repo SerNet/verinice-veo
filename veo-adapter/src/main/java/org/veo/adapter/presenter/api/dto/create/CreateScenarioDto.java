@@ -24,6 +24,4 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public final class CreateScenarioDto extends AbstractScenarioDto {
-
-}
+public final class CreateScenarioDto extends AbstractScenarioDto {}

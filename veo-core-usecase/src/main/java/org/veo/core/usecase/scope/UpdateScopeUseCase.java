@@ -24,38 +24,47 @@ import org.veo.core.usecase.decision.Decider;
 
 public class UpdateScopeUseCase extends ModifyElementUseCase<Scope> {
 
-    public UpdateScopeUseCase(ScopeRepository scopeRepository, Decider decider) {
-        super(scopeRepository, decider);
-    }
+  public UpdateScopeUseCase(ScopeRepository scopeRepository, Decider decider) {
+    super(scopeRepository, decider);
+  }
 
-    @Override
-    protected void validate(Scope oldElement, Scope newElement) {
-        oldElement.getDomains()
-                  .forEach(domain -> {
-                      oldElement.getRiskDefinition(domain)
-                                .ifPresent(oldRiskDef -> {
-                                    newElement.getRiskDefinition(domain)
-                                              .ifPresentOrElse(newRiskDef -> {
-                                                  if (!oldRiskDef.equals(newRiskDef)) {
-                                                      throw new IllegalArgumentException(
-                                                              String.format("Cannot update existing risk definition reference from scope %s",
-                                                                            oldElement.getIdAsString()));
-                                                  }
-                                              }, () -> {
-                                                  throw new IllegalArgumentException(
-                                                          String.format("Cannot remove existing risk definition reference from scope %s",
-                                                                        oldElement.getIdAsString()));
-                                              });
+  @Override
+  protected void validate(Scope oldElement, Scope newElement) {
+    oldElement
+        .getDomains()
+        .forEach(
+            domain -> {
+              oldElement
+                  .getRiskDefinition(domain)
+                  .ifPresent(
+                      oldRiskDef -> {
+                        newElement
+                            .getRiskDefinition(domain)
+                            .ifPresentOrElse(
+                                newRiskDef -> {
+                                  if (!oldRiskDef.equals(newRiskDef)) {
+                                    throw new IllegalArgumentException(
+                                        String.format(
+                                            "Cannot update existing risk definition reference from scope %s",
+                                            oldElement.getIdAsString()));
+                                  }
+                                },
+                                () -> {
+                                  throw new IllegalArgumentException(
+                                      String.format(
+                                          "Cannot remove existing risk definition reference from scope %s",
+                                          oldElement.getIdAsString()));
                                 });
-                  });
-    }
+                      });
+            });
+  }
 
-    @Override
-    protected void evaluateDecisions(Scope entity, Scope storedEntity) {
-        // FIXME VEO-839
-        // Transfer risks from stored element because they may be relevant for risk
-        // evaluation
-        entity.setRisks(storedEntity.getRisks());
-        super.evaluateDecisions(entity, storedEntity);
-    }
+  @Override
+  protected void evaluateDecisions(Scope entity, Scope storedEntity) {
+    // FIXME VEO-839
+    // Transfer risks from stored element because they may be relevant for risk
+    // evaluation
+    entity.setRisks(storedEntity.getRisks());
+    super.evaluateDecisions(entity, storedEntity);
+  }
 }

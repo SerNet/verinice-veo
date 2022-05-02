@@ -21,30 +21,29 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 /**
- * Provides value objects with references to risk definition items. This should
- * remain the only way to create these references.
- * <p>
- * The implementing provider must make sure that the requested reference object
- * is valid in each context.
+ * Provides value objects with references to risk definition items. This should remain the only way
+ * to create these references.
+ *
+ * <p>The implementing provider must make sure that the requested reference object is valid in each
+ * context.
  */
 public abstract class RiskReferenceProvider extends RiskReferenceFactory {
-    /**
-     * Returns a valid risk reference. Implementations must respect a valid risk
-     * definition for the context.
-     */
-    public abstract Optional<RiskRef> getRiskRef(String riskDefinitionId, BigDecimal riskId);
+  /**
+   * Returns a valid risk reference. Implementations must respect a valid risk definition for the
+   * context.
+   */
+  public abstract Optional<RiskRef> getRiskRef(String riskDefinitionId, BigDecimal riskId);
 
-    public abstract Optional<ProbabilityRef> getProbabilityRef(String riskDefinitionId,
-            BigDecimal probabilityId);
+  public abstract Optional<ProbabilityRef> getProbabilityRef(
+      String riskDefinitionId, BigDecimal probabilityId);
 
-    public abstract Optional<ImpactRef> getImpactRef(String riskDefinitionId, String category,
-            BigDecimal probabilityId);
+  public abstract Optional<ImpactRef> getImpactRef(
+      String riskDefinitionId, String category, BigDecimal probabilityId);
 
-    public abstract Optional<CategoryRef> getCategoryRef(String riskDefinitionId,
-            String categoryId);
+  public abstract Optional<CategoryRef> getCategoryRef(String riskDefinitionId, String categoryId);
 
-    public abstract Optional<ImplementationStatusRef> getImplementationStatus(
-            String riskDefinitionId, int ordinalValue);
+  public abstract Optional<ImplementationStatusRef> getImplementationStatus(
+      String riskDefinitionId, int ordinalValue);
 
-    public abstract Optional<RiskDefinitionRef> getRiskDefinitionRef(String riskDefinitionId);
+  public abstract Optional<RiskDefinitionRef> getRiskDefinitionRef(String riskDefinitionId);
 }

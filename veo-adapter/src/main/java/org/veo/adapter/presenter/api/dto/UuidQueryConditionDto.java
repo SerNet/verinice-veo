@@ -25,9 +25,9 @@ import org.veo.adapter.presenter.api.Patterns;
 
 public class UuidQueryConditionDto extends QueryConditionDto<String> {
 
-    @Override
-    @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
-    public Set<String> getValues() {
-        return super.getValues();
-    }
+  @Override
+  @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
+  public Set<String> getValues() {
+    return super.getValues();
+  }
 }

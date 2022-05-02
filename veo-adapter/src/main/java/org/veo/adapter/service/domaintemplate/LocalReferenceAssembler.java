@@ -28,50 +28,48 @@ import org.veo.core.entity.Key;
 
 public class LocalReferenceAssembler implements ReferenceAssembler {
 
-    @Override
-    public String targetReferenceOf(Identifiable identifiable) {
-        return SyntheticIdRef.toUrl(identifiable.getModelInterface(), identifiable.getId()
-                                                                                  .uuidValue());
-    }
+  @Override
+  public String targetReferenceOf(Identifiable identifiable) {
+    return SyntheticIdRef.toUrl(identifiable.getModelInterface(), identifiable.getId().uuidValue());
+  }
 
-    @Override
-    public String targetReferenceOf(AbstractRisk<?, ?> risk) {
-        return null;
-    }
+  @Override
+  public String targetReferenceOf(AbstractRisk<?, ?> risk) {
+    return null;
+  }
 
-    @Override
-    public String searchesReferenceOf(Class<? extends Identifiable> type) {
-        return null;
-    }
+  @Override
+  public String searchesReferenceOf(Class<? extends Identifiable> type) {
+    return null;
+  }
 
-    @Override
-    public String resourcesReferenceOf(Class<? extends Identifiable> type) {
-        return null;
-    }
+  @Override
+  public String resourcesReferenceOf(Class<? extends Identifiable> type) {
+    return null;
+  }
 
-    @Override
-    public Class<? extends Identifiable> parseType(String uri) {
-        return null;
-    }
+  @Override
+  public Class<? extends Identifiable> parseType(String uri) {
+    return null;
+  }
 
-    @Override
-    public String parseId(String uri) {
-        return null;
-    }
+  @Override
+  public String parseId(String uri) {
+    return null;
+  }
 
-    @Override
-    public Key<UUID> toKey(IdRef<? extends Identifiable> reference) {
-        return null;
-    }
+  @Override
+  public Key<UUID> toKey(IdRef<? extends Identifiable> reference) {
+    return null;
+  }
 
-    @Override
-    public Set<Key<UUID>> toKeys(Set<? extends IdRef<?>> references) {
-        throw new UnsupportedOperationException("not implemented");
-    }
+  @Override
+  public Set<Key<UUID>> toKeys(Set<? extends IdRef<?>> references) {
+    throw new UnsupportedOperationException("not implemented");
+  }
 
-    @Override
-    public String schemaReferenceOf(String typeSingularTerm) {
-        return null;
-    }
-
+  @Override
+  public String schemaReferenceOf(String typeSingularTerm) {
+    return null;
+  }
 }

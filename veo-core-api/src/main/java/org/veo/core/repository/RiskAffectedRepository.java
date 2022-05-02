@@ -28,24 +28,17 @@ import org.veo.core.entity.Scenario;
 /**
  * A repository for <code>RiskAffected</code> entities like Asset and Process.
  *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
+ * <p>Implements basic CRUD operations from the superinterface and extends them with more specific
+ * methods - i.e. queries based on particular fields.
  */
 public interface RiskAffectedRepository<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-        extends ElementRepository<T> {
-    /**
-     * Retrieves elements that have risks resulting from the given scenario.
-     */
-    Set<T> findByRisk(Scenario cause);
+    extends ElementRepository<T> {
+  /** Retrieves elements that have risks resulting from the given scenario. */
+  Set<T> findByRisk(Scenario cause);
 
-    /**
-     * Retrieves elements that have risks that are mitigated by the given control.
-     */
-    Set<T> findByRisk(Control mitigatedBy);
+  /** Retrieves elements that have risks that are mitigated by the given control. */
+  Set<T> findByRisk(Control mitigatedBy);
 
-    /**
-     * Retrieves elements that have risks for which the given person is the risk
-     * owner.
-     */
-    Set<T> findByRisk(Person riskOwner);
+  /** Retrieves elements that have risks for which the given person is the risk owner. */
+  Set<T> findByRisk(Person riskOwner);
 }

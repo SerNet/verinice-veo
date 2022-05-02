@@ -37,59 +37,62 @@ import lombok.AllArgsConstructor;
 @Repository
 @AllArgsConstructor
 public class DesignatorSequenceRepositoryImpl implements DesignatorSequenceRepository {
-    private final EntityManager em;
+  private final EntityManager em;
 
-    /**
-     * Creates all required designator sequences for a new client. This must be
-     * called before fetching any sequence vales for that client.
-     */
-    public void createSequences(Key<UUID> clientId) {
-        EntityType.TYPE_DESIGNATORS.forEach(new Consumer<String>() {
-            @Override
-            @SuppressFBWarnings("SQL_INJECTION_JPA")
-            public void accept(String typeDesignator) {
-                em.createNativeQuery("CREATE SEQUENCE IF NOT EXISTS "
-                        + DesignatorSequenceRepositoryImpl.this.getSequenceName(clientId,
-                                                                                typeDesignator))
-                  .executeUpdate();
-            }
+  /**
+   * Creates all required designator sequences for a new client. This must be called before fetching
+   * any sequence vales for that client.
+   */
+  public void createSequences(Key<UUID> clientId) {
+    EntityType.TYPE_DESIGNATORS.forEach(
+        new Consumer<String>() {
+          @Override
+          @SuppressFBWarnings("SQL_INJECTION_JPA")
+          public void accept(String typeDesignator) {
+            em.createNativeQuery(
+                    "CREATE SEQUENCE IF NOT EXISTS "
+                        + DesignatorSequenceRepositoryImpl.this.getSequenceName(
+                            clientId, typeDesignator))
+                .executeUpdate();
+          }
         });
-    }
+  }
 
-    /**
-     * @return The next sequential designator number for given client & entity type,
-     *         starting with 1.
-     */
-    @Override
-    @SuppressFBWarnings("SQL_INJECTION_JPA")
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Long getNext(Key<UUID> clientId, String typeDesignator) {
-        var next = (BigInteger) em.createNativeQuery("SELECT nextval('"
-                + getSequenceName(clientId, typeDesignator) + "')")
-                                  .getSingleResult();
-        return next.longValue();
-    }
+  /**
+   * @return The next sequential designator number for given client & entity type, starting with 1.
+   */
+  @Override
+  @SuppressFBWarnings("SQL_INJECTION_JPA")
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  public Long getNext(Key<UUID> clientId, String typeDesignator) {
+    var next =
+        (BigInteger)
+            em.createNativeQuery(
+                    "SELECT nextval('" + getSequenceName(clientId, typeDesignator) + "')")
+                .getSingleResult();
+    return next.longValue();
+  }
 
-    /**
-     * Removes all designator sequences for given client from DB. This should be
-     * performed as a cleanup when the client is removed.
-     */
-    public void deleteSequences(Key<UUID> clientId) {
-        EntityType.TYPE_DESIGNATORS.forEach(new Consumer<String>() {
-            @Override
-            @SuppressFBWarnings("SQL_INJECTION_JPA")
-            public void accept(String typeDesignator) {
-                em.createNativeQuery("DROP SEQUENCE IF EXISTS "
-                        + DesignatorSequenceRepositoryImpl.this.getSequenceName(clientId,
-                                                                                typeDesignator))
-                  .executeUpdate();
-            }
+  /**
+   * Removes all designator sequences for given client from DB. This should be performed as a
+   * cleanup when the client is removed.
+   */
+  public void deleteSequences(Key<UUID> clientId) {
+    EntityType.TYPE_DESIGNATORS.forEach(
+        new Consumer<String>() {
+          @Override
+          @SuppressFBWarnings("SQL_INJECTION_JPA")
+          public void accept(String typeDesignator) {
+            em.createNativeQuery(
+                    "DROP SEQUENCE IF EXISTS "
+                        + DesignatorSequenceRepositoryImpl.this.getSequenceName(
+                            clientId, typeDesignator))
+                .executeUpdate();
+          }
         });
-    }
+  }
 
-    private String getSequenceName(Key<UUID> clientId, String typeDesignator) {
-        return "designator_" + clientId.uuidValue()
-                                       .replace("-", "")
-                + "_" + typeDesignator;
-    }
+  private String getSequenceName(Key<UUID> clientId, String typeDesignator) {
+    return "designator_" + clientId.uuidValue().replace("-", "") + "_" + typeDesignator;
+  }
 }

@@ -28,53 +28,50 @@ import org.veo.core.entity.risk.RiskRef;
 import org.veo.core.entity.risk.RiskReferenceProvider;
 
 /**
- * Simple factory for reference objects to be used by JPA converters. Should not
- * be used outside the package by converters - use a {@code ReferenceProvider}
- * instead which ensures that references cannot be created outside their valid
- * scope.
+ * Simple factory for reference objects to be used by JPA converters. Should not be used outside the
+ * package by converters - use a {@code ReferenceProvider} instead which ensures that references
+ * cannot be created outside their valid scope.
  *
  * @see RiskReferenceProvider
  */
 final class RiskReferenceFactoryImpl extends org.veo.core.entity.risk.RiskReferenceFactory {
 
-    private static RiskReferenceFactoryImpl instance = new RiskReferenceFactoryImpl();
+  private static RiskReferenceFactoryImpl instance = new RiskReferenceFactoryImpl();
 
-    private RiskReferenceFactoryImpl() {
-    }
+  private RiskReferenceFactoryImpl() {}
 
-    public static RiskReferenceFactoryImpl getInstance() {
-        if (instance == null)
-            instance = new RiskReferenceFactoryImpl();
-        return instance;
-    }
+  public static RiskReferenceFactoryImpl getInstance() {
+    if (instance == null) instance = new RiskReferenceFactoryImpl();
+    return instance;
+  }
 
-    @Override
-    protected RiskRef createRiskRef(BigDecimal id) {
-        return super.createRiskRef(id);
-    }
+  @Override
+  protected RiskRef createRiskRef(BigDecimal id) {
+    return super.createRiskRef(id);
+  }
 
-    @Override
-    protected ProbabilityRef createProbabilityRef(BigDecimal id) {
-        return super.createProbabilityRef(id);
-    }
+  @Override
+  protected ProbabilityRef createProbabilityRef(BigDecimal id) {
+    return super.createProbabilityRef(id);
+  }
 
-    @Override
-    protected ImpactRef createImpactRef(BigDecimal id) {
-        return super.createImpactRef(id);
-    }
+  @Override
+  protected ImpactRef createImpactRef(BigDecimal id) {
+    return super.createImpactRef(id);
+  }
 
-    @Override
-    protected CategoryRef createCategoryRef(String id) {
-        return super.createCategoryRef(id);
-    }
+  @Override
+  protected CategoryRef createCategoryRef(String id) {
+    return super.createCategoryRef(id);
+  }
 
-    @Override
-    protected RiskDefinitionRef createRiskDefinitionRef(String dbData) {
-        return super.createRiskDefinitionRef(dbData);
-    }
+  @Override
+  protected RiskDefinitionRef createRiskDefinitionRef(String dbData) {
+    return super.createRiskDefinitionRef(dbData);
+  }
 
-    @Override
-    protected ImplementationStatusRef createImplementationStatusRef(int ordinalValue) {
-        return super.createImplementationStatusRef(ordinalValue);
-    }
+  @Override
+  protected ImplementationStatusRef createImplementationStatusRef(int ordinalValue) {
+    return super.createImplementationStatusRef(ordinalValue);
+  }
 }

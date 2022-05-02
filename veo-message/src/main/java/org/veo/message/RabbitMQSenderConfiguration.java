@@ -27,14 +27,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQSenderConfiguration {
 
-    @Bean
-    public TopicExchange veoEntityExchange(@Value("${veo.message.dispatch.exchange}") String name) {
-        return new TopicExchange(name);
-    }
+  @Bean
+  public TopicExchange veoEntityExchange(@Value("${veo.message.dispatch.exchange}") String name) {
+    return new TopicExchange(name);
+  }
 
-    @Bean
-    public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
-        return new RabbitAdmin(connectionFactory);
-    }
-
+  @Bean
+  public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
+    return new RabbitAdmin(connectionFactory);
+  }
 }

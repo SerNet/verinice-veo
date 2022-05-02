@@ -31,10 +31,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
- * A RiskValue is a specific type of {@link DiscreteValue}. It has a symbolic
- * risk which needs to be unique and is used to define the values of the
- * {@link RiskDefinition#getRiskValues()} and the values of the
- * {@link CategoryDefinition#getValueMatrix()}
+ * A RiskValue is a specific type of {@link DiscreteValue}. It has a symbolic risk which needs to be
+ * unique and is used to define the values of the {@link RiskDefinition#getRiskValues()} and the
+ * values of the {@link CategoryDefinition#getValueMatrix()}
  */
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,16 +42,22 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 public class RiskValue extends DiscreteValue {
 
-    public RiskValue(int ordinalValue, String name, String abbreviation, String description,
-            String htmlColor,
-            @NotNull(message = "A symbolic risk value must be present.") @Size(max = DEFAULT_CONSTANT_MAX_LENGTH) String symbolicRisk) {
-        super(name, abbreviation, description, htmlColor);
-        this.symbolicRisk = symbolicRisk;
-        setOrdinalValue(ordinalValue);
-    }
+  public RiskValue(
+      int ordinalValue,
+      String name,
+      String abbreviation,
+      String description,
+      String htmlColor,
+      @NotNull(message = "A symbolic risk value must be present.")
+          @Size(max = DEFAULT_CONSTANT_MAX_LENGTH)
+          String symbolicRisk) {
+    super(name, abbreviation, description, htmlColor);
+    this.symbolicRisk = symbolicRisk;
+    setOrdinalValue(ordinalValue);
+  }
 
-    @NotNull(message = "A symbolic risk value must be present.")
-    @Size(max = Nameable.NAME_MAX_LENGTH)
-    @ToString.Include
-    private String symbolicRisk;
+  @NotNull(message = "A symbolic risk value must be present.")
+  @Size(max = Nameable.NAME_MAX_LENGTH)
+  @ToString.Include
+  private String symbolicRisk;
 }

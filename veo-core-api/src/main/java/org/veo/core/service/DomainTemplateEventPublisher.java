@@ -18,5 +18,5 @@
 package org.veo.core.service;
 
 public interface DomainTemplateEventPublisher {
-    void domainServiceReinitialize();
+  void domainServiceReinitialize();
 }

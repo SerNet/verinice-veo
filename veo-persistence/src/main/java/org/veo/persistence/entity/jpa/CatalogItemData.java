@@ -49,68 +49,68 @@ import lombok.ToString;
 @Data
 public class CatalogItemData extends ElementOwnerData implements CatalogItem, ElementOwner {
 
-    @ManyToOne(targetEntity = CatalogData.class, optional = false)
-    private Catalog catalog;
+  @ManyToOne(targetEntity = CatalogData.class, optional = false)
+  private Catalog catalog;
 
-    public void setCatalog(Catalog catalog) {
-        this.catalog = catalog;
-        catalog.getCatalogItems()
-               .add(this);
+  public void setCatalog(Catalog catalog) {
+    this.catalog = catalog;
+    catalog.getCatalogItems().add(this);
+  }
+
+  @Column(name = "tailoringreferences")
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      targetEntity = TailoringReferenceData.class,
+      mappedBy = "owner",
+      fetch = FetchType.LAZY)
+  @Valid
+  private Set<TailoringReference> tailoringReferences = new HashSet<>();
+
+  @OneToOne(
+      targetEntity = ElementData.class,
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      mappedBy = "containingCatalogItem",
+      fetch = FetchType.LAZY)
+  // Note: 'optional = false' would not be validated because the relation is
+  // mapped from the targetEntity. We have to rely on javax.validation here:
+  @NotNull
+  @Valid
+  private Element element;
+
+  /**
+   * Sets this item's element. This item is removed from its previous element (if there is one) and
+   * this is set as the catalog item on the new element.
+   */
+  public void setElement(Element element) {
+    if (this.element != null) {
+      this.element.setContainingCatalogItem(null);
     }
-
-    @Column(name = "tailoringreferences")
-    @OneToMany(cascade = CascadeType.ALL,
-               orphanRemoval = true,
-               targetEntity = TailoringReferenceData.class,
-               mappedBy = "owner",
-               fetch = FetchType.LAZY)
-    @Valid
-    private Set<TailoringReference> tailoringReferences = new HashSet<>();
-
-    @OneToOne(targetEntity = ElementData.class,
-              cascade = CascadeType.ALL,
-              orphanRemoval = true,
-              mappedBy = "containingCatalogItem",
-              fetch = FetchType.LAZY)
-    // Note: 'optional = false' would not be validated because the relation is
-    // mapped from the targetEntity. We have to rely on javax.validation here:
-    @NotNull
-    @Valid
-    private Element element;
-
-    /**
-     * Sets this item's element. This item is removed from its previous element (if
-     * there is one) and this is set as the catalog item on the new element.
-     */
-    public void setElement(Element element) {
-        if (this.element != null) {
-            this.element.setContainingCatalogItem(null);
-        }
-        this.element = element;
-        if (element != null) {
-            element.setContainingCatalogItem(this);
-        }
+    this.element = element;
+    if (element != null) {
+      element.setContainingCatalogItem(this);
     }
+  }
 
-    @Column(name = "updatereferences")
-    @OneToMany(cascade = CascadeType.ALL,
-               orphanRemoval = true,
-               targetEntity = UpdateReferenceData.class,
-               mappedBy = "owner",
-               fetch = FetchType.LAZY)
-    @Valid
-    private Set<UpdateReference> updateReferences = new HashSet<>();
+  @Column(name = "updatereferences")
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      targetEntity = UpdateReferenceData.class,
+      mappedBy = "owner",
+      fetch = FetchType.LAZY)
+  @Valid
+  private Set<UpdateReference> updateReferences = new HashSet<>();
 
-    @ToString.Include
-    @Column(name = "namespace")
-    private String namespace;
+  @ToString.Include
+  @Column(name = "namespace")
+  private String namespace;
 
-    @Override
-    public Client getClient() {
-        if (Domain.class.isAssignableFrom(getCatalog().getDomainTemplate()
-                                                      .getModelInterface()))
-            return ((Domain) getCatalog().getDomainTemplate()).getOwner();
-        else
-            return null;
-    }
+  @Override
+  public Client getClient() {
+    if (Domain.class.isAssignableFrom(getCatalog().getDomainTemplate().getModelInterface()))
+      return ((Domain) getCatalog().getDomainTemplate()).getOwner();
+    else return null;
+  }
 }

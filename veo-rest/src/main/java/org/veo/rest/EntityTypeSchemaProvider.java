@@ -45,35 +45,35 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EntityTypeSchemaProvider implements JsonSchemaProvider {
 
-    private final DomainRepository domainRepository;
-    private final EntitySchemaService schemaService;
+  private final DomainRepository domainRepository;
+  private final EntitySchemaService schemaService;
 
-    private final JsonSchemaFactory jsonSchemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909);
+  private final JsonSchemaFactory jsonSchemaFactory =
+      JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909);
 
-    @Override
-    @Transactional
-    public JsonSchema loadSchema(String type) {
-        var user = ApplicationUser.authenticatedUser(SecurityContextHolder.getContext()
-                                                                          .getAuthentication()
-                                                                          .getPrincipal());
-        var domains = domainRepository.findAllByClient(Key.uuidFrom(user.getClientId()));
-        final String schema = schemaService.findSchema(type, domains);
-        return jsonSchemaFactory.getSchema(schema, getSchemaValidatorsConfig());
+  @Override
+  @Transactional
+  public JsonSchema loadSchema(String type) {
+    var user =
+        ApplicationUser.authenticatedUser(
+            SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    var domains = domainRepository.findAllByClient(Key.uuidFrom(user.getClientId()));
+    final String schema = schemaService.findSchema(type, domains);
+    return jsonSchemaFactory.getSchema(schema, getSchemaValidatorsConfig());
+  }
+
+  @Override
+  public void handleValidationMessages(Collection<ValidationMessage> validationMessages) {
+    if (!validationMessages.isEmpty()) {
+      throw new JsonSchemaValidationException(validationMessages);
     }
+  }
 
-    @Override
-    public void handleValidationMessages(Collection<ValidationMessage> validationMessages) {
-        if (!validationMessages.isEmpty()) {
-            throw new JsonSchemaValidationException(validationMessages);
-        }
-    }
-
-    protected SchemaValidatorsConfig getSchemaValidatorsConfig() {
-        final SchemaValidatorsConfig config = new SchemaValidatorsConfig();
-        config.setFailFast(false);
-        config.setTypeLoose(true);
-        config.setHandleNullableField(true);
-        return config;
-    }
-
+  protected SchemaValidatorsConfig getSchemaValidatorsConfig() {
+    final SchemaValidatorsConfig config = new SchemaValidatorsConfig();
+    config.setFailFast(false);
+    config.setTypeLoose(true);
+    config.setHandleNullableField(true);
+    return config;
+  }
 }

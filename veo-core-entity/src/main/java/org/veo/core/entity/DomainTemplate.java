@@ -29,137 +29,141 @@ import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 /**
- * DomainTemplate The domaintemplare are managed by the system itself. The uuid
- * is a named uui generated as following:
- * https://v.de/veo/domain-templates/DOMAIN-NAME/VERSION DOMAIN-NAME:
+ * DomainTemplate The domaintemplare are managed by the system itself. The uuid is a named uui
+ * generated as following: https://v.de/veo/domain-templates/DOMAIN-NAME/VERSION DOMAIN-NAME:
  * authority-name VERSION: version.revision
  */
 public interface DomainTemplate extends Nameable, Identifiable, Versioned {
-    String SINGULAR_TERM = "domaintemplate";
-    String PLURAL_TERM = "domaintemplates";
+  String SINGULAR_TERM = "domaintemplate";
+  String PLURAL_TERM = "domaintemplates";
 
-    int AUTHORITY_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
-    int REVISION_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
-    int TEMPLATE_VERSION_MAX_LENGTH = 10;
+  int AUTHORITY_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
+  int REVISION_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
+  int TEMPLATE_VERSION_MAX_LENGTH = 10;
 
-    /**
-     * The authority of this domaintemplate.
-     */
-    String getAuthority();
+  /** The authority of this domaintemplate. */
+  String getAuthority();
 
-    void setAuthority(String aAuthority);
+  void setAuthority(String aAuthority);
 
-    /**
-     * The version
-     */
-    String getTemplateVersion();
+  /** The version */
+  String getTemplateVersion();
 
-    void setTemplateVersion(String aTemplateVersion);
+  void setTemplateVersion(String aTemplateVersion);
 
-    /**
-     * The revision of the version.
-     */
-    String getRevision();
+  /** The revision of the version. */
+  String getRevision();
 
-    void setRevision(String aRevision);
+  void setRevision(String aRevision);
 
-    /**
-     * The catalog describing the template element of this domaintemplate.
-     */
-    Set<Catalog> getCatalogs();
+  /** The catalog describing the template element of this domaintemplate. */
+  Set<Catalog> getCatalogs();
 
-    default void setCatalogs(Set<Catalog> catalogs) {
-        getCatalogs().clear();
-        catalogs.forEach(catalog -> catalog.setDomainTemplate(this));
-        getCatalogs().addAll(catalogs);
-    }
+  default void setCatalogs(Set<Catalog> catalogs) {
+    getCatalogs().clear();
+    catalogs.forEach(catalog -> catalog.setDomainTemplate(this));
+    getCatalogs().addAll(catalogs);
+  }
 
-    boolean addToCatalogs(Catalog aCatalog);
+  boolean addToCatalogs(Catalog aCatalog);
 
-    void removeFromCatalog(Catalog aCatalog);
+  void removeFromCatalog(Catalog aCatalog);
 
-    @Override
-    default Class<? extends Identifiable> getModelInterface() {
-        return DomainTemplate.class;
-    }
+  @Override
+  default Class<? extends Identifiable> getModelInterface() {
+    return DomainTemplate.class;
+  }
 
-    @Override
-    default String getModelType() {
-        return SINGULAR_TERM;
-    }
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
 
-    Set<ElementTypeDefinition> getElementTypeDefinitions();
+  Set<ElementTypeDefinition> getElementTypeDefinitions();
 
-    void setElementTypeDefinitions(Set<ElementTypeDefinition> elementTypeDefinitions);
+  void setElementTypeDefinitions(Set<ElementTypeDefinition> elementTypeDefinitions);
 
-    default Optional<ElementTypeDefinition> getElementTypeDefinition(String type) {
-        return getElementTypeDefinitions().stream()
-                                          .filter(d -> d.getElementType()
-                                                        .equals(type))
-                                          .findFirst();
-    }
+  default Optional<ElementTypeDefinition> getElementTypeDefinition(String type) {
+    return getElementTypeDefinitions().stream()
+        .filter(d -> d.getElementType().equals(type))
+        .findFirst();
+  }
 
-    /**
-     * Returns a map of risk definitions grouped by their ID.
-     */
-    Map<String, RiskDefinition> getRiskDefinitions();
+  /** Returns a map of risk definitions grouped by their ID. */
+  Map<String, RiskDefinition> getRiskDefinitions();
 
-    Optional<RiskDefinition> getRiskDefinition(String riskDefinitionId);
+  Optional<RiskDefinition> getRiskDefinition(String riskDefinitionId);
 
-    default Optional<RiskDefinition> getRiskDefinition(Key<String> riskDefinitionId) {
-        return getRiskDefinition(riskDefinitionId.value());
-    }
+  default Optional<RiskDefinition> getRiskDefinition(Key<String> riskDefinitionId) {
+    return getRiskDefinition(riskDefinitionId.value());
+  }
 
-    void setRiskDefinitions(Map<String, RiskDefinition> definitions);
+  void setRiskDefinitions(Map<String, RiskDefinition> definitions);
 
-    default Map<String, Decision> getDecisions() {
-        // TODO VEO-1294 use configurable persisted decisions
-        // @formatter:off
-        final var piaCa = "process_privacyImpactAssessment";
-        return Map.of("piaMandatory", new Decision(Map.of(
+  default Map<String, Decision> getDecisions() {
+    // TODO VEO-1294 use configurable persisted decisions
+    // @formatter:off
+    final var piaCa = "process_privacyImpactAssessment";
+    return Map.of(
+        "piaMandatory",
+        new Decision(
+            Map.of(
                 "en", "PIA mandatory",
-                "de", "DSFA erforderlich"
-        ),Process.SINGULAR_TERM, "PRO_DataProcessing", List.of(
-                new Rule(null, Map.of(
-                    "en", "Risk analysis not carried out",
-                        "de", "Risikoanalyse VT nicht durchgeführt"
-                )).ifNoRiskValuesPresent(),
+                "de", "DSFA erforderlich"),
+            Process.SINGULAR_TERM,
+            "PRO_DataProcessing",
+            List.of(
+                new Rule(
+                        null,
+                        Map.of(
+                            "en",
+                            "Risk analysis not carried out",
+                            "de",
+                            "Risikoanalyse VT nicht durchgeführt"))
+                    .ifNoRiskValuesPresent(),
+                new Rule(
+                        false,
+                        Map.of(
+                            "en",
+                                "Processing on list of the kinds of processing operations not subject to a DPIA",
+                            "de", "VT auf Negativliste"))
+                    .ifAttributeEquals(piaCa + "_listed_negative", piaCa + "_listed", piaCa),
+                new Rule(
+                        false,
+                        Map.of(
+                            "en", "Part of a joint processing",
+                            "de", "Gemeinsame VT"))
+                    .ifAttributeEquals(true, piaCa + "_processingOperationAccordingArt35", piaCa),
+                new Rule(
+                        false,
+                        Map.of(
+                            "en", "Other exclusions",
+                            "de", "Anderer Ausschlusstatbestand"))
+                    .ifAttributeEquals(true, piaCa + "_otherExclusions", piaCa),
+                new Rule(
+                        true,
+                        Map.of(
+                            "en", "High risk present",
+                            "de", "Hohes Risiko vorhanden"))
+                    .ifMaxRiskGreaterThan(BigDecimal.valueOf(1)),
+                new Rule(
+                        true,
+                        Map.of(
+                            "en",
+                                "Processing on list of the kinds of processing operations subject to a DPIA",
+                            "de", "VT auf Positivliste"))
+                    .ifAttributeEquals(piaCa + "_listed_positive", piaCa + "_listed", piaCa),
+                new Rule(
+                        true,
+                        Map.of(
+                            "en", "Two or more criteria apply",
+                            "de", "Mehrere Kriterien treffen zu"))
+                    .ifAttributeSizeGreaterThan(1, piaCa + "_processingCriteria", piaCa))));
 
-                new Rule(false, Map.of(
-                        "en", "Processing on list of the kinds of processing operations not subject to a DPIA",
-                        "de", "VT auf Negativliste"
-                )).ifAttributeEquals(piaCa + "_listed_negative", piaCa + "_listed", piaCa),
+    // @formatter:on
+  }
 
-                new Rule(false, Map.of(
-                        "en", "Part of a joint processing",
-                        "de", "Gemeinsame VT"
-                )).ifAttributeEquals(true, piaCa + "_processingOperationAccordingArt35", piaCa),
-
-                new Rule(false, Map.of(
-                        "en", "Other exclusions",
-                        "de", "Anderer Ausschlusstatbestand"
-                )).ifAttributeEquals(true, piaCa + "_otherExclusions", piaCa),
-
-                new Rule(true, Map.of(
-                        "en", "High risk present",
-                        "de", "Hohes Risiko vorhanden"
-                )).ifMaxRiskGreaterThan(BigDecimal.valueOf(1)),
-
-                new Rule(true, Map.of(
-                        "en", "Processing on list of the kinds of processing operations subject to a DPIA",
-                        "de", "VT auf Positivliste"
-                )).ifAttributeEquals(piaCa + "_listed_positive", piaCa + "_listed", piaCa),
-
-                new Rule(true, Map.of(
-                        "en", "Two or more criteria apply",
-                        "de", "Mehrere Kriterien treffen zu"
-                )).ifAttributeSizeGreaterThan(1, piaCa + "_processingCriteria", piaCa)
-
-        )));
-        // @formatter:on
-    }
-
-    default Optional<Decision> getDecision(String decisionKey) {
-        return Optional.ofNullable(getDecisions().get(decisionKey));
-    }
+  default Optional<Decision> getDecision(String decisionKey) {
+    return Optional.ofNullable(getDecisions().get(decisionKey));
+  }
 }

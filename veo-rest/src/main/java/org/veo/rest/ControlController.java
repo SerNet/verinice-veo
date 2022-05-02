@@ -116,242 +116,295 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * REST service which provides methods to manage controls.
- */
+/** REST service which provides methods to manage controls. */
 @RestController
 @RequestMapping(ControlController.URL_BASE_PATH)
 @Slf4j
 public class ControlController extends AbstractElementController<Control, FullControlDto> {
 
-    public static final String URL_BASE_PATH = "/" + Control.PLURAL_TERM;
+  public static final String URL_BASE_PATH = "/" + Control.PLURAL_TERM;
 
-    private final CreateControlUseCase createControlUseCase;
-    private final GetControlsUseCase getControlsUseCase;
-    private final UpdateControlUseCase updateControlUseCase;
-    private final DeleteElementUseCase deleteElementUseCase;
+  private final CreateControlUseCase createControlUseCase;
+  private final GetControlsUseCase getControlsUseCase;
+  private final UpdateControlUseCase updateControlUseCase;
+  private final DeleteElementUseCase deleteElementUseCase;
 
-    public ControlController(CreateControlUseCase createControlUseCase,
-            GetControlUseCase getControlUseCase, GetControlsUseCase getControlsUseCase,
-            UpdateControlUseCase updateControlUseCase, DeleteElementUseCase deleteElementUseCase,
-            EvaluateDecisionUseCase evaluateDecisionUseCase) {
-        super(Control.class, getControlUseCase, evaluateDecisionUseCase);
-        this.createControlUseCase = createControlUseCase;
-        this.getControlsUseCase = getControlsUseCase;
-        this.updateControlUseCase = updateControlUseCase;
-        this.deleteElementUseCase = deleteElementUseCase;
+  public ControlController(
+      CreateControlUseCase createControlUseCase,
+      GetControlUseCase getControlUseCase,
+      GetControlsUseCase getControlsUseCase,
+      UpdateControlUseCase updateControlUseCase,
+      DeleteElementUseCase deleteElementUseCase,
+      EvaluateDecisionUseCase evaluateDecisionUseCase) {
+    super(Control.class, getControlUseCase, evaluateDecisionUseCase);
+    this.createControlUseCase = createControlUseCase;
+    this.getControlsUseCase = getControlsUseCase;
+    this.updateControlUseCase = updateControlUseCase;
+    this.deleteElementUseCase = deleteElementUseCase;
+  }
+
+  @GetMapping
+  @Operation(summary = "Loads all controls")
+  public @Valid CompletableFuture<PageDto<FullControlDto>> getControls(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
+      @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
+      @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
+      @RequestParam(value = STATUS_PARAM, required = false) String status,
+      @RequestParam(value = CHILD_ELEMENT_IDS_PARAM, required = false) List<String> childElementIds,
+      @RequestParam(value = HAS_PARENT_ELEMENTS_PARAM, required = false) Boolean hasParentElements,
+      @RequestParam(value = HAS_CHILD_ELEMENTS_PARAM, required = false) Boolean hasChildElements,
+      @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
+      @RequestParam(value = DESIGNATOR_PARAM, required = false) String designator,
+      @RequestParam(value = NAME_PARAM, required = false) String name,
+      @RequestParam(value = UPDATED_BY_PARAM, required = false) String updatedBy,
+      @RequestParam(
+              value = PAGE_SIZE_PARAM,
+              required = false,
+              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          Integer pageSize,
+      @RequestParam(
+              value = PAGE_NUMBER_PARAM,
+              required = false,
+              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
+          Integer pageNumber,
+      @RequestParam(
+              value = SORT_COLUMN_PARAM,
+              required = false,
+              defaultValue = SORT_COLUMN_DEFAULT_VALUE)
+          String sortColumn,
+      @RequestParam(
+              value = SORT_ORDER_PARAM,
+              required = false,
+              defaultValue = SORT_ORDER_DEFAULT_VALUE)
+          @Pattern(regexp = SORT_ORDER_PATTERN)
+          String sortOrder) {
+    Client client = null;
+    try {
+      client = getAuthenticatedClient(auth);
+    } catch (NoSuchElementException e) {
+      return CompletableFuture.supplyAsync(PageDto::emptyPage);
     }
 
-    @GetMapping
-    @Operation(summary = "Loads all controls")
-    public @Valid CompletableFuture<PageDto<FullControlDto>> getControls(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
-            @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
-            @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
-            @RequestParam(value = STATUS_PARAM, required = false) String status,
-            @RequestParam(value = CHILD_ELEMENT_IDS_PARAM,
-                          required = false) List<String> childElementIds,
-            @RequestParam(value = HAS_PARENT_ELEMENTS_PARAM,
-                          required = false) Boolean hasParentElements,
-            @RequestParam(value = HAS_CHILD_ELEMENTS_PARAM,
-                          required = false) Boolean hasChildElements,
-            @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
-            @RequestParam(value = DESIGNATOR_PARAM, required = false) String designator,
-            @RequestParam(value = NAME_PARAM, required = false) String name,
-            @RequestParam(value = UPDATED_BY_PARAM, required = false) String updatedBy,
-            @RequestParam(value = PAGE_SIZE_PARAM,
-                          required = false,
-                          defaultValue = PAGE_SIZE_DEFAULT_VALUE) Integer pageSize,
-            @RequestParam(value = PAGE_NUMBER_PARAM,
-                          required = false,
-                          defaultValue = PAGE_NUMBER_DEFAULT_VALUE) Integer pageNumber,
-            @RequestParam(value = SORT_COLUMN_PARAM,
-                          required = false,
-                          defaultValue = SORT_COLUMN_DEFAULT_VALUE) String sortColumn,
-            @RequestParam(value = SORT_ORDER_PARAM,
-                          required = false,
-                          defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
-        Client client = null;
-        try {
-            client = getAuthenticatedClient(auth);
-        } catch (NoSuchElementException e) {
-            return CompletableFuture.supplyAsync(PageDto::emptyPage);
-        }
+    return getControls(
+        GetElementsInputMapper.map(
+            client,
+            unitUuid,
+            displayName,
+            subType,
+            status,
+            childElementIds,
+            hasChildElements,
+            hasParentElements,
+            description,
+            designator,
+            name,
+            updatedBy,
+            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
+  }
 
-        return getControls(GetElementsInputMapper.map(client, unitUuid, displayName, subType,
-                                                      status, childElementIds, hasChildElements,
-                                                      hasParentElements, description, designator,
-                                                      name, updatedBy,
-                                                      PagingMapper.toConfig(pageSize, pageNumber,
-                                                                            sortColumn,
-                                                                            sortOrder)));
-    }
+  private CompletableFuture<PageDto<FullControlDto>> getControls(
+      GetElementsUseCase.InputData inputData) {
+    return useCaseInteractor.execute(
+        getControlsUseCase,
+        inputData,
+        output ->
+            PagingMapper.toPage(
+                output.getElements(), entityToDtoTransformer::transformControl2Dto));
+  }
 
-    private CompletableFuture<PageDto<FullControlDto>> getControls(
-            GetElementsUseCase.InputData inputData) {
-        return useCaseInteractor.execute(getControlsUseCase, inputData,
-                                         output -> PagingMapper.toPage(output.getElements(),
-                                                                       entityToDtoTransformer::transformControl2Dto));
-    }
+  @Override
+  @Operation(summary = "Loads a control")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Control loaded",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = AbstractControlDto.class))),
+        @ApiResponse(responseCode = "404", description = "Control not found")
+      })
+  @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
+  public @Valid CompletableFuture<ResponseEntity<FullControlDto>> getElement(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      WebRequest request) {
+    return super.getElement(auth, uuid, request);
+  }
 
-    @Override
-    @Operation(summary = "Loads a control")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Control loaded",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = AbstractControlDto.class))),
-            @ApiResponse(responseCode = "404", description = "Control not found") })
-    @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
-    public @Valid CompletableFuture<ResponseEntity<FullControlDto>> getElement(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @Parameter(required = true,
-                       example = UUID_EXAMPLE,
-                       description = UUID_DESCRIPTION) @PathVariable String uuid,
-            WebRequest request) {
-        return super.getElement(auth, uuid, request);
-    }
+  @Override
+  @Operation(summary = "Loads the parts of a control")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Parts loaded",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array = @ArraySchema(schema = @Schema(implementation = FullControlDto.class)))),
+        @ApiResponse(responseCode = "404", description = "Control not found")
+      })
+  @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+  public @Valid CompletableFuture<ResponseEntity<List<FullControlDto>>> getElementParts(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      WebRequest request) {
+    return super.getElementParts(auth, uuid, request);
+  }
 
-    @Override
-    @Operation(summary = "Loads the parts of a control")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Parts loaded",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            array = @ArraySchema(schema = @Schema(implementation = FullControlDto.class)))),
-            @ApiResponse(responseCode = "404", description = "Control not found") })
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
-    public @Valid CompletableFuture<ResponseEntity<List<FullControlDto>>> getElementParts(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @Parameter(required = true,
-                       example = UUID_EXAMPLE,
-                       description = UUID_DESCRIPTION) @PathVariable String uuid,
-            WebRequest request) {
-        return super.getElementParts(auth, uuid, request);
-    }
+  @PostMapping()
+  @Operation(summary = "Creates a control")
+  @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Control created")})
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> createControl(
+      @Parameter(hidden = true) ApplicationUser user,
+      @Valid @NotNull @RequestBody @JsonSchemaValidation(Control.SINGULAR_TERM)
+          CreateControlDto dto) {
+    return useCaseInteractor.execute(
+        createControlUseCase,
+        (Supplier<CreateElementUseCase.InputData<Control>>)
+            () -> {
+              Client client = getClient(user);
+              IdRefResolver idRefResolver = createIdRefResolver(client);
+              return new CreateElementUseCase.InputData<>(
+                  dtoToEntityTransformer.transformDto2Control(dto, idRefResolver), client);
+            },
+        output -> {
+          ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
+          return RestApiResponse.created(URL_BASE_PATH, body);
+        });
+  }
 
-    @PostMapping()
-    @Operation(summary = "Creates a control")
-    @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Control created") })
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> createControl(
-            @Parameter(hidden = true) ApplicationUser user,
-            @Valid @NotNull @RequestBody @JsonSchemaValidation(Control.SINGULAR_TERM) CreateControlDto dto) {
-        return useCaseInteractor.execute(createControlUseCase,
-                                         (Supplier<CreateElementUseCase.InputData<Control>>) () -> {
-
-                                             Client client = getClient(user);
-                                             IdRefResolver idRefResolver = createIdRefResolver(client);
-                                             return new CreateElementUseCase.InputData<>(
-                                                     dtoToEntityTransformer.transformDto2Control(dto,
-                                                                                                 idRefResolver),
-                                                     client);
-                                         }, output -> {
-                                             ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
-                                             return RestApiResponse.created(URL_BASE_PATH, body);
-                                         });
-    }
-
-    @PutMapping(ControllerConstants.UUID_PARAM_SPEC)
-    @Operation(summary = "Updates a control")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Control updated"),
-            @ApiResponse(responseCode = "404", description = "Control not found") })
-    public CompletableFuture<FullControlDto> updateControl(
-            @Parameter(hidden = true) ApplicationUser user,
-            @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
-            @Parameter(required = true,
-                       example = UUID_EXAMPLE,
-                       description = UUID_DESCRIPTION) @PathVariable String uuid,
-            @Valid @NotNull @RequestBody @JsonSchemaValidation(Control.SINGULAR_TERM) FullControlDto controlDto) {
-        controlDto.applyResourceId(uuid);
-        return useCaseInteractor.execute(updateControlUseCase, new Supplier<InputData<Control>>() {
-            @Override
-            public InputData<Control> get() {
-                Client client = getClient(user);
-                IdRefResolver idRefResolver = createIdRefResolver(client);
-                return new ModifyElementUseCase.InputData<>(
-                        dtoToEntityTransformer.transformDto2Control(controlDto, idRefResolver),
-                        client, eTag, user.getUsername());
-            }
+  @PutMapping(ControllerConstants.UUID_PARAM_SPEC)
+  @Operation(summary = "Updates a control")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Control updated"),
+        @ApiResponse(responseCode = "404", description = "Control not found")
+      })
+  public CompletableFuture<FullControlDto> updateControl(
+      @Parameter(hidden = true) ApplicationUser user,
+      @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      @Valid @NotNull @RequestBody @JsonSchemaValidation(Control.SINGULAR_TERM)
+          FullControlDto controlDto) {
+    controlDto.applyResourceId(uuid);
+    return useCaseInteractor.execute(
+        updateControlUseCase,
+        new Supplier<InputData<Control>>() {
+          @Override
+          public InputData<Control> get() {
+            Client client = getClient(user);
+            IdRefResolver idRefResolver = createIdRefResolver(client);
+            return new ModifyElementUseCase.InputData<>(
+                dtoToEntityTransformer.transformDto2Control(controlDto, idRefResolver),
+                client,
+                eTag,
+                user.getUsername());
+          }
         },
+        output -> entityToDtoTransformer.transformControl2Dto(output.getEntity()));
+  }
 
-                                         output -> entityToDtoTransformer.transformControl2Dto(output.getEntity()));
-    }
+  @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
+  @Operation(summary = "Deletes a control")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "204", description = "Control deleted"),
+        @ApiResponse(responseCode = "404", description = "Control not found")
+      })
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteControl(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid) {
+    Client client = getAuthenticatedClient(auth);
+    return useCaseInteractor.execute(
+        deleteElementUseCase,
+        new DeleteElementUseCase.InputData(Control.class, Key.uuidFrom(uuid), client),
+        output -> ResponseEntity.noContent().build());
+  }
 
-    @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
-    @Operation(summary = "Deletes a control")
-    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Control deleted"),
-            @ApiResponse(responseCode = "404", description = "Control not found") })
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteControl(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @Parameter(required = true,
-                       example = UUID_EXAMPLE,
-                       description = UUID_DESCRIPTION) @PathVariable String uuid) {
-        Client client = getAuthenticatedClient(auth);
-        return useCaseInteractor.execute(deleteElementUseCase,
-                                         new DeleteElementUseCase.InputData(Control.class,
-                                                 Key.uuidFrom(uuid), client),
-                                         output -> ResponseEntity.noContent()
-                                                                 .build());
-    }
+  @Override
+  @SuppressFBWarnings("NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS")
+  protected String buildSearchUri(String id) {
+    return linkTo(
+            methodOn(ControlController.class)
+                .runSearch(ANY_AUTH, id, ANY_INT, ANY_INT, ANY_STRING, ANY_STRING))
+        .withSelfRel()
+        .getHref();
+  }
 
-    @Override
-    @SuppressFBWarnings("NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS")
-    protected String buildSearchUri(String id) {
-        return linkTo(methodOn(ControlController.class).runSearch(ANY_AUTH, id, ANY_INT, ANY_INT,
-                                                                  ANY_STRING, ANY_STRING))
-                                                                                          .withSelfRel()
-                                                                                          .getHref();
+  @GetMapping(value = "/searches/{searchId}")
+  @Operation(summary = "Finds controls for the search.")
+  public @Valid CompletableFuture<PageDto<FullControlDto>> runSearch(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @PathVariable String searchId,
+      @RequestParam(
+              value = PAGE_SIZE_PARAM,
+              required = false,
+              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          Integer pageSize,
+      @RequestParam(
+              value = PAGE_NUMBER_PARAM,
+              required = false,
+              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
+          Integer pageNumber,
+      @RequestParam(
+              value = SORT_COLUMN_PARAM,
+              required = false,
+              defaultValue = SORT_COLUMN_DEFAULT_VALUE)
+          String sortColumn,
+      @RequestParam(
+              value = SORT_ORDER_PARAM,
+              required = false,
+              defaultValue = SORT_ORDER_DEFAULT_VALUE)
+          @Pattern(regexp = SORT_ORDER_PATTERN)
+          String sortOrder) {
+    try {
+      return getControls(
+          GetElementsInputMapper.map(
+              getAuthenticatedClient(auth),
+              SearchQueryDto.decodeFromSearchId(searchId),
+              PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
+    } catch (IOException e) {
+      log.error("Could not decode search URL: {}", e.getLocalizedMessage());
+      return null;
     }
+  }
 
-    @GetMapping(value = "/searches/{searchId}")
-    @Operation(summary = "Finds controls for the search.")
-    public @Valid CompletableFuture<PageDto<FullControlDto>> runSearch(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @PathVariable String searchId,
-            @RequestParam(value = PAGE_SIZE_PARAM,
-                          required = false,
-                          defaultValue = PAGE_SIZE_DEFAULT_VALUE) Integer pageSize,
-            @RequestParam(value = PAGE_NUMBER_PARAM,
-                          required = false,
-                          defaultValue = PAGE_NUMBER_DEFAULT_VALUE) Integer pageNumber,
-            @RequestParam(value = SORT_COLUMN_PARAM,
-                          required = false,
-                          defaultValue = SORT_COLUMN_DEFAULT_VALUE) String sortColumn,
-            @RequestParam(value = SORT_ORDER_PARAM,
-                          required = false,
-                          defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
-        try {
-            return getControls(GetElementsInputMapper.map(getAuthenticatedClient(auth),
-                                                          SearchQueryDto.decodeFromSearchId(searchId),
-                                                          PagingMapper.toConfig(pageSize,
-                                                                                pageNumber,
-                                                                                sortColumn,
-                                                                                sortOrder)));
-        } catch (IOException e) {
-            log.error("Could not decode search URL: {}", e.getLocalizedMessage());
-            return null;
-        }
-    }
+  @Operation(summary = "Evaluates a decision on a transient control without persisting anything")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Decision evaluated",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array = @ArraySchema(schema = @Schema(implementation = FullControlDto.class)))),
+        @ApiResponse(responseCode = "404", description = "Decision not found")
+      })
+  @PostMapping(value = "/decision-evaluation")
+  public @Valid CompletableFuture<ResponseEntity<DecisionResult>> evaluateDecision(
+      @Parameter(required = true, hidden = true) Authentication auth,
+      @Valid @RequestBody FullControlDto element,
+      @Parameter(description = DECISION_KEY_DESCRIPTION) @RequestParam(value = DECISION_KEY_PARAM)
+          String decisionKey,
+      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+    return super.evaluateDecision(auth, element, decisionKey, domainId);
+  }
 
-    @Operation(summary = "Evaluates a decision on a transient control without persisting anything")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Decision evaluated",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            array = @ArraySchema(schema = @Schema(implementation = FullControlDto.class)))),
-            @ApiResponse(responseCode = "404", description = "Decision not found") })
-    @PostMapping(value = "/decision-evaluation")
-    public @Valid CompletableFuture<ResponseEntity<DecisionResult>> evaluateDecision(
-            @Parameter(required = true, hidden = true) Authentication auth,
-            @Valid @RequestBody FullControlDto element,
-            @Parameter(description = DECISION_KEY_DESCRIPTION) @RequestParam(value = DECISION_KEY_PARAM) String decisionKey,
-            @RequestParam(value = DOMAIN_PARAM) String domainId) {
-        return super.evaluateDecision(auth, element, decisionKey, domainId);
-    }
-
-    @Override
-    protected FullControlDto entity2Dto(Control entity) {
-        return entityToDtoTransformer.transformControl2Dto(entity);
-    }
+  @Override
+  protected FullControlDto entity2Dto(Control entity) {
+    return entityToDtoTransformer.transformControl2Dto(entity);
+  }
 }

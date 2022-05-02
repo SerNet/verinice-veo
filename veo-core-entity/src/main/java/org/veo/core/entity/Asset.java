@@ -18,28 +18,27 @@
 package org.veo.core.entity;
 
 /**
- * An asset describes a part in the unit. It could be a physical element like a
- * computer, but also something not physical like a software for example.
+ * An asset describes a part in the unit. It could be a physical element like a computer, but also
+ * something not physical like a software for example.
  */
 public interface Asset extends Element, CompositeElement<Asset>, RiskAffected<Asset, AssetRisk> {
 
-    String SINGULAR_TERM = "asset";
-    String PLURAL_TERM = "assets";
-    String TYPE_DESIGNATOR = "AST";
+  String SINGULAR_TERM = "asset";
+  String PLURAL_TERM = "assets";
+  String TYPE_DESIGNATOR = "AST";
 
-    @Override
-    default String getModelType() {
-        return SINGULAR_TERM;
-    }
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
 
-    @Override
-    default Class<? extends Identifiable> getModelInterface() {
-        return Asset.class;
-    }
+  @Override
+  default Class<? extends Identifiable> getModelInterface() {
+    return Asset.class;
+  }
 
-    @Override
-    default String getTypeDesignator() {
-        return TYPE_DESIGNATOR;
-    }
-
+  @Override
+  default String getTypeDesignator() {
+    return TYPE_DESIGNATOR;
+  }
 }

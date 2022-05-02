@@ -30,32 +30,41 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "Impact", description = "A collection of impact values for a risk category.")
 public interface ImpactSchema {
 
-    @Schema(description = "The impact of a scenario in a particular circumstance. A scalar value that matches a valid impact level from a risk-definition.",
-            example = "2")
-    @PositiveOrZero
-    BigDecimal getSpecificImpact();
+  @Schema(
+      description =
+          "The impact of a scenario in a particular circumstance. A scalar value that matches a valid impact level from a risk-definition.",
+      example = "2")
+  @PositiveOrZero
+  BigDecimal getSpecificImpact();
 
-    @Schema(description = "The effective impact where a specific impact takes precedence over a potential impact. A scalar value that matches a valid probability level from a risk-definition.",
-            example = "3",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @PositiveOrZero
-    BigDecimal getEffectiveImpact();
+  @Schema(
+      description =
+          "The effective impact where a specific impact takes precedence over a potential impact. A scalar value that matches a valid probability level from a risk-definition.",
+      example = "3",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  @PositiveOrZero
+  BigDecimal getEffectiveImpact();
 
-    @Schema(description = "A user-provided explanation for the choice of specific impact.",
-            example = "While a fire will usually damage a computer in a serious way, our server cases are made out of asbestos.")
-    @Size(max = Impact.EXPLANATION_MAX_LENGTH)
-    String getSpecificImpactExplanation();
+  @Schema(
+      description = "A user-provided explanation for the choice of specific impact.",
+      example =
+          "While a fire will usually damage a computer in a serious way, our server cases are made out of asbestos.")
+  @Size(max = Impact.EXPLANATION_MAX_LENGTH)
+  String getSpecificImpactExplanation();
 
-    @Schema(description = "A scalar value that matches a valid risk category from a risk-definition, such as confidentiality, integrity, availability...",
-            example = "C")
-    @Size(max = CategoryRef.MAX_ID_LENGTH)
-    String getCategory();
+  @Schema(
+      description =
+          "A scalar value that matches a valid risk category from a risk-definition, such as confidentiality, integrity, availability...",
+      example = "C")
+  @Size(max = CategoryRef.MAX_ID_LENGTH)
+  String getCategory();
 
-    @Schema(description = "The potential impact value derived from the entity associated with "
-            + "this risk. A scalar value that matches a valid impact level from a risk-definition.",
-            example = "3",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @PositiveOrZero
-    BigDecimal getPotentialImpact();
-
+  @Schema(
+      description =
+          "The potential impact value derived from the entity associated with "
+              + "this risk. A scalar value that matches a valid impact level from a risk-definition.",
+      example = "3",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  @PositiveOrZero
+  BigDecimal getPotentialImpact();
 }

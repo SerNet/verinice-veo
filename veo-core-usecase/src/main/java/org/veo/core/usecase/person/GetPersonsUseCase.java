@@ -23,13 +23,13 @@ import org.veo.core.repository.PersonRepository;
 import org.veo.core.usecase.base.DefaultGetElementsUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 
-/**
- * Reinstantiate persisted person objects.
- */
+/** Reinstantiate persisted person objects. */
 public class GetPersonsUseCase extends DefaultGetElementsUseCase<Person> {
 
-    public GetPersonsUseCase(ClientRepository clientRepository, PersonRepository personRepository,
-            UnitHierarchyProvider unitHierarchyProvider) {
-        super(clientRepository, personRepository, unitHierarchyProvider);
-    }
+  public GetPersonsUseCase(
+      ClientRepository clientRepository,
+      PersonRepository personRepository,
+      UnitHierarchyProvider unitHierarchyProvider) {
+    super(clientRepository, personRepository, unitHierarchyProvider);
+  }
 }

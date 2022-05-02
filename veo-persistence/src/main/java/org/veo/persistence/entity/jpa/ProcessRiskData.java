@@ -68,203 +68,223 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> implements ProcessRisk {
 
-    // see https://github.com/rzwitserloot/lombok/issues/1134
-    @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
-    ProcessRiskData(@NotNull @NonNull Process process, @NotNull Scenario scenario) {
-        super(scenario, process);
-    }
+  // see https://github.com/rzwitserloot/lombok/issues/1134
+  @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
+  ProcessRiskData(@NotNull @NonNull Process process, @NotNull Scenario scenario) {
+    super(scenario, process);
+  }
 
-    private ProcessRiskValuesAspectData getOrCreateRiskAspect(Domain domain,
-            RiskDefinitionRef riskDefinitionRef) {
-        return riskAspects.stream()
-                          .filter(ra -> ra.getDomain()
-                                          .equals(domain))
-                          .filter(ra -> ra.getRiskDefinition()
-                                          .equals(riskDefinitionRef))
-                          .findFirst()
-                          .orElseGet(() -> {
-                              var riskAspect = new ProcessRiskValuesAspectData(domain, this,
-                                      riskDefinitionRef);
-                              getScenario().getPotentialProbability(domain)
-                                           .map(probablities -> probablities.get(riskDefinitionRef))
-                                           .map(PotentialProbabilityImpl::getPotentialProbability)
-                                           .ifPresent(riskAspect::setPotentialProbability);
-                              getEntity().getImpactValues(domain, riskDefinitionRef)
-                                         .ifPresent(impactValues -> impactValues.getPotentialImpacts()
-                                                                                .forEach(riskAspect::setPotentialImpact));
-                              riskAspects.add(riskAspect);
-                              return riskAspect;
-                          });
-    }
+  private ProcessRiskValuesAspectData getOrCreateRiskAspect(
+      Domain domain, RiskDefinitionRef riskDefinitionRef) {
+    return riskAspects.stream()
+        .filter(ra -> ra.getDomain().equals(domain))
+        .filter(ra -> ra.getRiskDefinition().equals(riskDefinitionRef))
+        .findFirst()
+        .orElseGet(
+            () -> {
+              var riskAspect = new ProcessRiskValuesAspectData(domain, this, riskDefinitionRef);
+              getScenario()
+                  .getPotentialProbability(domain)
+                  .map(probablities -> probablities.get(riskDefinitionRef))
+                  .map(PotentialProbabilityImpl::getPotentialProbability)
+                  .ifPresent(riskAspect::setPotentialProbability);
+              getEntity()
+                  .getImpactValues(domain, riskDefinitionRef)
+                  .ifPresent(
+                      impactValues ->
+                          impactValues
+                              .getPotentialImpacts()
+                              .forEach(riskAspect::setPotentialImpact));
+              riskAspects.add(riskAspect);
+              return riskAspect;
+            });
+  }
 
-    /**
-     * There may be different risk aspects for different risk-definitions. NOTE:
-     * this risk object is scoped to a list of domains, so the risk aspects in this
-     * {@code riskAspects} set must all belong to one of these domains.
-     */
-    @Column(name = "risk_aspects")
-    @OneToMany(cascade = CascadeType.ALL,
-               orphanRemoval = true,
-               targetEntity = ProcessRiskValuesAspectData.class,
-               mappedBy = "owner",
-               fetch = FetchType.LAZY)
-    @Valid
-    private Set<ProcessRiskValuesAspectData> riskAspects = new HashSet<>();
+  /**
+   * There may be different risk aspects for different risk-definitions. NOTE: this risk object is
+   * scoped to a list of domains, so the risk aspects in this {@code riskAspects} set must all
+   * belong to one of these domains.
+   */
+  @Column(name = "risk_aspects")
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      targetEntity = ProcessRiskValuesAspectData.class,
+      mappedBy = "owner",
+      fetch = FetchType.LAZY)
+  @Valid
+  private Set<ProcessRiskValuesAspectData> riskAspects = new HashSet<>();
 
-    @Override
-    public ProbabilityValueProvider getProbabilityProvider(RiskDefinitionRef riskDefinition) {
-        return findRiskAspectForDefinition(riskDefinition).orElseThrow(() -> new NotFoundException(
-                "No probability values found for process" + " %s and scenario %s with "
-                        + "risk-definition" + " %s",
-                getEntity().getDisplayName(), getScenario().getDisplayName(),
-                riskDefinition.getIdRef()));
-    }
+  @Override
+  public ProbabilityValueProvider getProbabilityProvider(RiskDefinitionRef riskDefinition) {
+    return findRiskAspectForDefinition(riskDefinition)
+        .orElseThrow(
+            () ->
+                new NotFoundException(
+                    "No probability values found for process"
+                        + " %s and scenario %s with "
+                        + "risk-definition"
+                        + " %s",
+                    getEntity().getDisplayName(),
+                    getScenario().getDisplayName(),
+                    riskDefinition.getIdRef()));
+  }
 
-    @Override
-    public CategorizedImpactValueProvider getImpactProvider(RiskDefinitionRef riskDefinition) {
-        return findRiskAspectForDefinition(riskDefinition).orElseThrow(() -> new NotFoundException(
-                "No risk impacts found for process %s " + "and scenario %s with "
+  @Override
+  public CategorizedImpactValueProvider getImpactProvider(RiskDefinitionRef riskDefinition) {
+    return findRiskAspectForDefinition(riskDefinition)
+        .orElseThrow(
+            () ->
+                new NotFoundException(
+                    "No risk impacts found for process %s "
+                        + "and scenario %s with "
                         + "risk-definition %s",
-                getEntity().getDisplayName(), getScenario().getDisplayName(),
-                riskDefinition.getIdRef()));
-    }
+                    getEntity().getDisplayName(),
+                    getScenario().getDisplayName(),
+                    riskDefinition.getIdRef()));
+  }
 
-    private Optional<ProcessRiskValuesAspectData> findRiskAspectForDefinition(
-            RiskDefinitionRef riskDefinition) {
-        return riskAspects.stream()
-                          .filter(a -> a.getRiskDefinition()
-                                        .equals(riskDefinition))
-                          .findFirst();
-    }
+  private Optional<ProcessRiskValuesAspectData> findRiskAspectForDefinition(
+      RiskDefinitionRef riskDefinition) {
+    return riskAspects.stream()
+        .filter(a -> a.getRiskDefinition().equals(riskDefinition))
+        .findFirst();
+  }
 
-    @Override
-    public CategorizedRiskValueProvider getRiskProvider(RiskDefinitionRef riskDefinition) {
-        return findRiskAspectForDefinition(riskDefinition).orElseThrow(() -> new NotFoundException(
-                "No risk values found for process %s " + "and scenario %s with "
+  @Override
+  public CategorizedRiskValueProvider getRiskProvider(RiskDefinitionRef riskDefinition) {
+    return findRiskAspectForDefinition(riskDefinition)
+        .orElseThrow(
+            () ->
+                new NotFoundException(
+                    "No risk values found for process %s "
+                        + "and scenario %s with "
                         + "risk-definition %s",
-                getEntity().getDisplayName(), getScenario().getDisplayName(),
-                riskDefinition.getIdRef()));
-    }
+                    getEntity().getDisplayName(),
+                    getScenario().getDisplayName(),
+                    riskDefinition.getIdRef()));
+  }
 
-    @Override
-    public Set<RiskDefinitionRef> getRiskDefinitions() {
-        return riskAspects.stream()
-                          .map(ProcessRiskValuesAspectData::getRiskDefinition)
-                          .collect(toSet());
-    }
+  @Override
+  public Set<RiskDefinitionRef> getRiskDefinitions() {
+    return riskAspects.stream()
+        .map(ProcessRiskValuesAspectData::getRiskDefinition)
+        .collect(toSet());
+  }
 
-    @Override
-    public Set<RiskDefinitionRef> getRiskDefinitions(Domain domain) {
-        return riskAspects.stream()
-                          .filter(ra -> ra.getDomain()
-                                          .equals(domain))
-                          .map(ProcessRiskValuesAspectData::getRiskDefinition)
-                          .collect(toSet());
-    }
+  @Override
+  public Set<RiskDefinitionRef> getRiskDefinitions(Domain domain) {
+    return riskAspects.stream()
+        .filter(ra -> ra.getDomain().equals(domain))
+        .map(ProcessRiskValuesAspectData::getRiskDefinition)
+        .collect(toSet());
+  }
 
-    @Override
-    public void defineRiskValues(Set<RiskValues> newValuesSet) {
-        newValuesSet.forEach(newValues -> {
-            var domain = getDomains().stream()
-                                     .filter(d -> d.getId()
-                                                   .equals(newValues.getDomainId()))
-                                     .findFirst()
-                                     .orElseThrow();
-            var riskDefinition = domain.getRiskDefinition(newValues.getRiskDefinitionId()
-                                                                   .value())
-                                       .map(RiskDefinitionRef::from)
-                                       .orElseThrow();
+  @Override
+  public void defineRiskValues(Set<RiskValues> newValuesSet) {
+    newValuesSet.forEach(
+        newValues -> {
+          var domain =
+              getDomains().stream()
+                  .filter(d -> d.getId().equals(newValues.getDomainId()))
+                  .findFirst()
+                  .orElseThrow();
+          var riskDefinition =
+              domain
+                  .getRiskDefinition(newValues.getRiskDefinitionId().value())
+                  .map(RiskDefinitionRef::from)
+                  .orElseThrow();
 
-            var ra = getOrCreateRiskAspect(domain, riskDefinition);
-            var validator = new DomainRiskReferenceValidator(
-                    DomainRiskReferenceProvider.referencesForDomain(domain), riskDefinition);
+          var ra = getOrCreateRiskAspect(domain, riskDefinition);
+          var validator =
+              new DomainRiskReferenceValidator(
+                  DomainRiskReferenceProvider.referencesForDomain(domain), riskDefinition);
 
-            var probability = ra.getProbability();
-            updateProbability(probability, newValues, validator);
+          var probability = ra.getProbability();
+          updateProbability(probability, newValues, validator);
 
-            var impacts = ra.getImpactCategories();
-            updateImpacts(impacts, newValues, validator);
+          var impacts = ra.getImpactCategories();
+          updateImpacts(impacts, newValues, validator);
 
-            var risks = ra.getCategorizedRisks();
-            updateRisks(risks, newValues, validator);
+          var risks = ra.getCategorizedRisks();
+          updateRisks(risks, newValues, validator);
         });
 
-        // increase optimistic locking version:
-        if (!newValuesSet.isEmpty()) {
-            this.setUpdatedAt(Instant.now());
-        }
+    // increase optimistic locking version:
+    if (!newValuesSet.isEmpty()) {
+      this.setUpdatedAt(Instant.now());
     }
+  }
 
-    private void updateRisks(List<DeterminedRisk> risks, RiskValues newRiskValues,
-            DomainRiskReferenceValidator validator) {
-        risks.forEach(risk -> {
-            var category = risk.getCategory();
-            // handle partial inputs correctly - if not all categories are present in the
-            // new value set, leave the existing categories as they are:
-            if (newRiskValues.getCategorizedRisks() != null
-                    && newRiskValues.categoryExists(category)) {
-                risk.setResidualRisk(validator.validate(category,
-                                                        newRiskValues.getResidualRisk(category)));
-                risk.setResidualRiskExplanation(newRiskValues.getResidualRiskExplanation(category));
-                risk.setRiskTreatments(newRiskValues.getRiskTreatments(category));
-                risk.setRiskTreatmentExplanation(newRiskValues.getRiskTreatmentExplanation(category));
-            }
+  private void updateRisks(
+      List<DeterminedRisk> risks,
+      RiskValues newRiskValues,
+      DomainRiskReferenceValidator validator) {
+    risks.forEach(
+        risk -> {
+          var category = risk.getCategory();
+          // handle partial inputs correctly - if not all categories are present in the
+          // new value set, leave the existing categories as they are:
+          if (newRiskValues.getCategorizedRisks() != null
+              && newRiskValues.categoryExists(category)) {
+            risk.setResidualRisk(
+                validator.validate(category, newRiskValues.getResidualRisk(category)));
+            risk.setResidualRiskExplanation(newRiskValues.getResidualRiskExplanation(category));
+            risk.setRiskTreatments(newRiskValues.getRiskTreatments(category));
+            risk.setRiskTreatmentExplanation(newRiskValues.getRiskTreatmentExplanation(category));
+          }
         });
-    }
+  }
 
-    private void updateProbability(ProbabilityImpl probability, RiskValues newAspect,
-            DomainRiskReferenceValidator validator) {
-        // only change existing probability values if they are present in the input:
-        if (newAspect.getProbability() == null)
-            return;
-        probability.setSpecificProbability(validator.validate(newAspect.getSpecificProbability()));
-        probability.setSpecificProbabilityExplanation(newAspect.getSpecificProbabilityExplanation());
-    }
+  private void updateProbability(
+      ProbabilityImpl probability, RiskValues newAspect, DomainRiskReferenceValidator validator) {
+    // only change existing probability values if they are present in the input:
+    if (newAspect.getProbability() == null) return;
+    probability.setSpecificProbability(validator.validate(newAspect.getSpecificProbability()));
+    probability.setSpecificProbabilityExplanation(newAspect.getSpecificProbabilityExplanation());
+  }
 
-    private void updateImpacts(List<Impact> impacts, RiskValues newImpactValues,
-            DomainRiskReferenceValidator validator) {
-        impacts.forEach(impact -> {
-            var category = impact.getCategory();
-            // handle partial inputs correctly - if not all categories are present in the
-            // new value set, leave the existing categories as they are:
-            if (newImpactValues.getImpactCategories() != null
-                    && newImpactValues.categoryExists(category)) {
-                impact.setSpecificImpact(validator.validate(category,
-                                                            newImpactValues.getSpecificImpact(category)));
-                impact.setSpecificImpactExplanation(newImpactValues.getSpecificImpactExplanation(category));
-            }
+  private void updateImpacts(
+      List<Impact> impacts, RiskValues newImpactValues, DomainRiskReferenceValidator validator) {
+    impacts.forEach(
+        impact -> {
+          var category = impact.getCategory();
+          // handle partial inputs correctly - if not all categories are present in the
+          // new value set, leave the existing categories as they are:
+          if (newImpactValues.getImpactCategories() != null
+              && newImpactValues.categoryExists(category)) {
+            impact.setSpecificImpact(
+                validator.validate(category, newImpactValues.getSpecificImpact(category)));
+            impact.setSpecificImpactExplanation(
+                newImpactValues.getSpecificImpactExplanation(category));
+          }
         });
-    }
+  }
 
-    private Optional<RiskValues> getRiskValuesForRiskDefinition(Set<RiskValues> newValues,
-            DomainTemplate domain, RiskDefinitionRef riskDefinition) {
-        return newValues.stream()
-                        .filter(nv -> nv.getDomainId()
-                                        .equals(domain.getId()))
-                        .filter(nv -> nv.getRiskDefinitionId()
-                                        .value()
-                                        .equals(riskDefinition.getIdRef()))
-                        .findFirst();
-    }
+  private Optional<RiskValues> getRiskValuesForRiskDefinition(
+      Set<RiskValues> newValues, DomainTemplate domain, RiskDefinitionRef riskDefinition) {
+    return newValues.stream()
+        .filter(nv -> nv.getDomainId().equals(domain.getId()))
+        .filter(nv -> nv.getRiskDefinitionId().value().equals(riskDefinition.getIdRef()))
+        .findFirst();
+  }
 
-    @Override
-    public boolean removeFromDomains(Domain aDomain) {
-        var success = super.removeFromDomains(aDomain);
-        removeRiskAspects(aDomain);
-        return success;
-    }
+  @Override
+  public boolean removeFromDomains(Domain aDomain) {
+    var success = super.removeFromDomains(aDomain);
+    removeRiskAspects(aDomain);
+    return success;
+  }
 
-    private void removeRiskAspects(Domain aDomain) {
-        riskAspects.removeIf(ra -> ra.getDomain()
-                                     .equals(aDomain));
-    }
+  private void removeRiskAspects(Domain aDomain) {
+    riskAspects.removeIf(ra -> ra.getDomain().equals(aDomain));
+  }
 
-    @Override
-    public void transferToDomain(Domain oldDomain, Domain newDomain) {
-        // TODO VEO-1351 Validate compatibility of risk-definitions before migration
-        this.riskAspects.stream()
-                        .filter(ra -> ra.getDomain()
-                                        .equals(oldDomain))
-                        .forEach(ra -> ra.setDomain(newDomain));
-    }
+  @Override
+  public void transferToDomain(Domain oldDomain, Domain newDomain) {
+    // TODO VEO-1351 Validate compatibility of risk-definitions before migration
+    this.riskAspects.stream()
+        .filter(ra -> ra.getDomain().equals(oldDomain))
+        .forEach(ra -> ra.setDomain(newDomain));
+  }
 }

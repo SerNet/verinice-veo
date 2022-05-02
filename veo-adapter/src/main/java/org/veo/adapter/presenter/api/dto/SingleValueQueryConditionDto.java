@@ -21,8 +21,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-@Schema(description = "A condition for a search query with a single value. Search results match if their tested property is equal to the value in this search condition.")
+@Schema(
+    description =
+        "A condition for a search query with a single value. Search results match if their tested property is equal to the value in this search condition.")
 public class SingleValueQueryConditionDto<T> {
-    @Schema(description = "Search results must match any of these values.")
-    public T value;
+  @Schema(description = "Search results must match any of these values.")
+  public T value;
 }

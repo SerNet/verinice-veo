@@ -32,26 +32,22 @@ import org.veo.core.entity.Constraints;
 @Valid
 public interface Probability extends PotentialProbability {
 
-    int EXPLANATION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
+  int EXPLANATION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
 
-    /**
-     * The corrected value for a specific case of a scenario interfering with a
-     * risk-affected entity.
-     */
-    ProbabilityRef getSpecificProbability();
+  /**
+   * The corrected value for a specific case of a scenario interfering with a risk-affected entity.
+   */
+  ProbabilityRef getSpecificProbability();
 
-    /**
-     * The result of combining the potential and specific probability.
-     */
-    ProbabilityRef getEffectiveProbability();
+  /** The result of combining the potential and specific probability. */
+  ProbabilityRef getEffectiveProbability();
 
-    String getSpecificProbabilityExplanation();
+  String getSpecificProbabilityExplanation();
 
-    /**
-     * The corrected value for a specific case of a scenario interfering with a
-     * risk-affected entity.
-     */
-    void setSpecificProbability(ProbabilityRef specific);
+  /**
+   * The corrected value for a specific case of a scenario interfering with a risk-affected entity.
+   */
+  void setSpecificProbability(ProbabilityRef specific);
 
-    void setSpecificProbabilityExplanation(@Size(max = DESCRIPTION_MAX_LENGTH) String explanation);
+  void setSpecificProbabilityExplanation(@Size(max = DESCRIPTION_MAX_LENGTH) String explanation);
 }

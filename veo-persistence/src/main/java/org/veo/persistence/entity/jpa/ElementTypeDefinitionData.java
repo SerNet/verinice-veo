@@ -47,61 +47,57 @@ import lombok.ToString;
 @Entity(name = "element_type_definition")
 @Data()
 @TypeDef(name = "json", typeClass = JsonType.class, defaultForType = Map.class)
-@EntityListeners({ ElementTypeDefintionEntityListener.class })
+@EntityListeners({ElementTypeDefintionEntityListener.class})
 public class ElementTypeDefinitionData implements ElementTypeDefinition {
 
-    @Id
-    @ToString.Include
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private String dbId;
+  @Id
+  @ToString.Include
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  private String dbId;
 
-    @NotNull
-    private String elementType;
+  @NotNull private String elementType;
 
-    @ManyToOne(targetEntity = DomainTemplateData.class, optional = false, fetch = FetchType.LAZY)
-    @NotNull
-    @Valid
-    private DomainTemplate owner;
+  @ManyToOne(targetEntity = DomainTemplateData.class, optional = false, fetch = FetchType.LAZY)
+  @NotNull
+  @Valid
+  private DomainTemplate owner;
 
-    @Column(columnDefinition = "jsonb")
-    @NotNull
-    private Map<String, SubTypeDefinition> subTypes = new HashMap<>();
+  @Column(columnDefinition = "jsonb")
+  @NotNull
+  private Map<String, SubTypeDefinition> subTypes = new HashMap<>();
 
-    @Column(columnDefinition = "jsonb")
-    @NotNull
-    private Map<String, CustomAspectDefinition> customAspects = new HashMap<>();
+  @Column(columnDefinition = "jsonb")
+  @NotNull
+  private Map<String, CustomAspectDefinition> customAspects = new HashMap<>();
 
-    @Column(columnDefinition = "jsonb")
-    @NotNull
-    private Map<String, LinkDefinition> links = new HashMap<>();
+  @Column(columnDefinition = "jsonb")
+  @NotNull
+  private Map<String, LinkDefinition> links = new HashMap<>();
 
-    @Column(columnDefinition = "jsonb")
-    @NotNull
-    private Map<String, Map<String, String>> translations = new HashMap<>();
+  @Column(columnDefinition = "jsonb")
+  @NotNull
+  private Map<String, Map<String, String>> translations = new HashMap<>();
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null)
-            return false;
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) return false;
 
-        if (this == o)
-            return true;
+    if (this == o) return true;
 
-        if (!(o instanceof ElementTypeDefinitionData))
-            return false;
+    if (!(o instanceof ElementTypeDefinitionData)) return false;
 
-        ElementTypeDefinitionData other = (ElementTypeDefinitionData) o;
-        // Transient (unmanaged) entities have an ID of 'null'. Only managed
-        // (persisted and detached) entities have an identity. JPA requires that
-        // an entity's identity remains the same over all state changes.
-        // Therefore a transient entity must never equal another entity.
-        String dbId = getDbId();
-        return dbId != null && dbId.equals(other.getDbId());
-    }
+    ElementTypeDefinitionData other = (ElementTypeDefinitionData) o;
+    // Transient (unmanaged) entities have an ID of 'null'. Only managed
+    // (persisted and detached) entities have an identity. JPA requires that
+    // an entity's identity remains the same over all state changes.
+    // Therefore a transient entity must never equal another entity.
+    String dbId = getDbId();
+    return dbId != null && dbId.equals(other.getDbId());
+  }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
+  }
 }

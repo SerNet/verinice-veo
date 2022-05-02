@@ -24,5 +24,5 @@ import lombok.Data;
 
 @Data
 public class CustomAspectDefinition {
-    Map<String, Object> attributeSchemas = new HashMap<>();
+  Map<String, Object> attributeSchemas = new HashMap<>();
 }

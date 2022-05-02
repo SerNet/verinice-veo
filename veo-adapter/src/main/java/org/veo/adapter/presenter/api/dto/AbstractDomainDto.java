@@ -41,62 +41,64 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-/**
- * Base transfer object for Domains. Contains common data for all Domain DTOs.
- */
+/** Base transfer object for Domains. Contains common data for all Domain DTOs. */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencingDto
-        implements NameableDto {
+    implements NameableDto {
 
-    @NotNull(message = "A name must be present.")
-    @Schema(description = "The name for the Domain.", example = "Data protection", required = true)
-    @Size(max = Nameable.NAME_MAX_LENGTH)
-    @ToString.Include
-    private String name;
+  @NotNull(message = "A name must be present.")
+  @Schema(description = "The name for the Domain.", example = "Data protection", required = true)
+  @Size(max = Nameable.NAME_MAX_LENGTH)
+  @ToString.Include
+  private String name;
 
-    @Schema(description = "The abbreviation for the Domain.", example = "Data prot.")
-    @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
-    private String abbreviation;
+  @Schema(description = "The abbreviation for the Domain.", example = "Data prot.")
+  @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
+  private String abbreviation;
 
-    @Schema(description = "The description for the Domain.",
-            example = "Everything around data protection.")
-    @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
-    private String description;
+  @Schema(
+      description = "The description for the Domain.",
+      example = "Everything around data protection.")
+  @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
+  private String description;
 
-    @NotNull(message = "An authority must be present.")
-    @Schema(description = "The orgnization that published a standard",
-            example = "ISO",
-            required = true,
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private String authority;
+  @NotNull(message = "An authority must be present.")
+  @Schema(
+      description = "The orgnization that published a standard",
+      example = "ISO",
+      required = true,
+      accessMode = Schema.AccessMode.READ_ONLY)
+  private String authority;
 
-    @NotNull(message = "A templateVersion must be present.")
-    @Schema(description = "Template version in semver format",
-            example = "1.0",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private String templateVersion;
+  @NotNull(message = "A templateVersion must be present.")
+  @Schema(
+      description = "Template version in semver format",
+      example = "1.0",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  private String templateVersion;
 
-    @NotNull(message = "A revision must be present.")
-    @Schema(description = "Addition version info",
-            example = "latest",
-            required = true,
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private String revision;
+  @NotNull(message = "A revision must be present.")
+  @Schema(
+      description = "Addition version info",
+      example = "latest",
+      required = true,
+      accessMode = Schema.AccessMode.READ_ONLY)
+  private String revision;
 
-    @ArraySchema(schema = @Schema(implementation = IdRefDomainCatalogs.class))
-    private Set<IdRef<Catalog>> catalogs = new HashSet<>();
+  @ArraySchema(schema = @Schema(implementation = IdRefDomainCatalogs.class))
+  private Set<IdRef<Catalog>> catalogs = new HashSet<>();
 
-    @Schema(description = "A list of risk definitions belonging to the DomainTemplate.")
-    private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
+  @Schema(description = "A list of risk definitions belonging to the DomainTemplate.")
+  private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
 
-    private IdRef<DomainTemplate> domainTemplate;
+  private IdRef<DomainTemplate> domainTemplate;
 
-    private Map<String, Decision> decisions;
+  private Map<String, Decision> decisions;
 
-    @Override
-    public Class<? extends Identifiable> getModelInterface() {
-        return Domain.class;
-    }
+  @Override
+  public Class<? extends Identifiable> getModelInterface() {
+    return Domain.class;
+  }
 }

@@ -24,5 +24,5 @@ import lombok.Data;
 
 @Data
 public class SubTypeDefinition {
-    private List<String> statuses = new ArrayList<>();
+  private List<String> statuses = new ArrayList<>();
 }

@@ -26,24 +26,23 @@ import org.veo.core.usecase.decision.Decider;
 
 public class UpdateScenarioUseCase extends ModifyElementUseCase<Scenario> {
 
-    private final EventPublisher eventPublisher;
+  private final EventPublisher eventPublisher;
 
-    public UpdateScenarioUseCase(ScenarioRepository scenarioRepository,
-            EventPublisher eventPublisher, Decider decider) {
-        super(scenarioRepository, decider);
-        this.eventPublisher = eventPublisher;
-    }
+  public UpdateScenarioUseCase(
+      ScenarioRepository scenarioRepository, EventPublisher eventPublisher, Decider decider) {
+    super(scenarioRepository, decider);
+    this.eventPublisher = eventPublisher;
+  }
 
-    @Override
-    public OutputData<Scenario> execute(InputData<Scenario> input) {
-        OutputData<Scenario> result = super.execute(input);
-        eventPublisher.publish(new RiskComponentChangeEvent(result.getEntity()));
-        return result;
-    }
+  @Override
+  public OutputData<Scenario> execute(InputData<Scenario> input) {
+    OutputData<Scenario> result = super.execute(input);
+    eventPublisher.publish(new RiskComponentChangeEvent(result.getEntity()));
+    return result;
+  }
 
-    @Override
-    protected void validate(Scenario oldElement, Scenario newElement) {
-        // GNDN
-    }
-
+  @Override
+  protected void validate(Scenario oldElement, Scenario newElement) {
+    // GNDN
+  }
 }

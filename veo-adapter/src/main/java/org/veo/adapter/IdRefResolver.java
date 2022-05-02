@@ -24,41 +24,31 @@ import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.exception.NotFoundException;
 
 /**
- * Resolves references to {@link Identifiable} entities ({@link IdRef}s) by
- * returning the target entity.
+ * Resolves references to {@link Identifiable} entities ({@link IdRef}s) by returning the target
+ * entity.
  */
 public interface IdRefResolver {
 
-    /**
-     * Resolves the given reference by fetching the target entity from a cache or a
-     * repository.
-     *
-     * @param objectReference
-     *            referencing the desired entity
-     * @param <TEntity>
-     *            target entity type
-     * @throws NotFoundException
-     *             when entity does not exist in the repository.
-     * @throws org.veo.core.entity.specification.ClientBoundaryViolationException
-     *             when entity does not belong to this resolver's client.
-     */
-    <TEntity extends Identifiable> TEntity resolve(IdRef<TEntity> objectReference)
-            throws NotFoundException;
+  /**
+   * Resolves the given reference by fetching the target entity from a cache or a repository.
+   *
+   * @param objectReference referencing the desired entity
+   * @param <TEntity> target entity type
+   * @throws NotFoundException when entity does not exist in the repository.
+   * @throws org.veo.core.entity.specification.ClientBoundaryViolationException when entity does not
+   *     belong to this resolver's client.
+   */
+  <TEntity extends Identifiable> TEntity resolve(IdRef<TEntity> objectReference)
+      throws NotFoundException;
 
-    /**
-     * Resolves the given references by fetching the target entities from a cache or
-     * a repository.
-     *
-     * @param objectReferences
-     *            referencing the desired entity
-     * @param <TEntity>
-     *            target entity type
-     * @throws NotFoundException
-     *             when one or more references cannot be resolved from the
-     *             repository.
-     * @throws org.veo.core.entity.specification.ClientBoundaryViolationException
-     *             when one or more entities do not belong to this resolver's
-     *             client.
-     */
-    <TEntity extends Identifiable> Set<TEntity> resolve(Set<IdRef<TEntity>> objectReferences);
+  /**
+   * Resolves the given references by fetching the target entities from a cache or a repository.
+   *
+   * @param objectReferences referencing the desired entity
+   * @param <TEntity> target entity type
+   * @throws NotFoundException when one or more references cannot be resolved from the repository.
+   * @throws org.veo.core.entity.specification.ClientBoundaryViolationException when one or more
+   *     entities do not belong to this resolver's client.
+   */
+  <TEntity extends Identifiable> Set<TEntity> resolve(Set<IdRef<TEntity>> objectReferences);
 }

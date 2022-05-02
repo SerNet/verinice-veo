@@ -20,12 +20,12 @@ package org.veo.core.usecase.domaintemplate;
 import org.veo.core.entity.DomainException;
 import org.veo.core.entity.Identifiable;
 
-/**
- * Thrown when trying to create an entity that already exists.
- */
+/** Thrown when trying to create an entity that already exists. */
 public class EntityAlreadyExistsException extends DomainException {
-    public EntityAlreadyExistsException(Identifiable entity) {
-        super(String.format("%s %s already exists and can't be modified.", entity.getModelType(),
-                            entity.getIdAsString()));
-    }
+  public EntityAlreadyExistsException(Identifiable entity) {
+    super(
+        String.format(
+            "%s %s already exists and can't be modified.",
+            entity.getModelType(), entity.getIdAsString()));
+  }
 }

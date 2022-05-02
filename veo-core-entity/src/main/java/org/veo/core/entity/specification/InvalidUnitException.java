@@ -21,12 +21,11 @@ import org.veo.core.entity.DomainException;
 
 public class InvalidUnitException extends DomainException {
 
-    public InvalidUnitException(String message) {
-        super(message);
-    }
+  public InvalidUnitException(String message) {
+    super(message);
+  }
 
-    public InvalidUnitException(String messageTemplate, Object... arguments) {
-        super(String.format(messageTemplate, arguments));
-    }
-
+  public InvalidUnitException(String messageTemplate, Object... arguments) {
+    super(String.format(messageTemplate, arguments));
+  }
 }

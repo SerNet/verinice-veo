@@ -35,55 +35,54 @@ import lombok.EqualsAndHashCode;
 @Data
 public class CustomLinkData extends CustomAspectData implements CustomLink {
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = true) // due to
-                                                                                          // the
-                                                                                          // single-table
-                                                                                          // inheritance
-                                                                                          // mapping,
-                                                                                          // this
-                                                                                          // must be
-                                                                                          // nullable
-    @JoinColumn(name = "target_id")
-    private Element target;
+  @NotNull
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = true) // due to
+  // the
+  // single-table
+  // inheritance
+  // mapping,
+  // this
+  // must be
+  // nullable
+  @JoinColumn(name = "target_id")
+  private Element target;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = true) // due to
-                                                                                          // the
-                                                                                          // single-table
-                                                                                          // inheritance
-                                                                                          // mapping,
-                                                                                          // this
-                                                                                          // must be
-                                                                                          // nullable
-    @JoinColumn(name = "source_id")
-    private Element source;
+  @NotNull
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = true) // due to
+  // the
+  // single-table
+  // inheritance
+  // mapping,
+  // this
+  // must be
+  // nullable
+  @JoinColumn(name = "source_id")
+  private Element source;
 
-    /**
-     * Add the given Domain to the collection domains.
-     *
-     * @return true if added
-     */
-    public boolean addToDomains(Domain aDomain) {
-        return this.domains.add(aDomain);
-    }
+  /**
+   * Add the given Domain to the collection domains.
+   *
+   * @return true if added
+   */
+  public boolean addToDomains(Domain aDomain) {
+    return this.domains.add(aDomain);
+  }
 
-    /**
-     * Remove the given Domain from the collection domains.
-     *
-     * @return true if removed
-     */
-    public boolean removeFromDomains(Domain aDomain) {
-        return this.domains.remove(aDomain);
-    }
+  /**
+   * Remove the given Domain from the collection domains.
+   *
+   * @return true if removed
+   */
+  public boolean removeFromDomains(Domain aDomain) {
+    return this.domains.remove(aDomain);
+  }
 
-    public void setSource(Element aSource) {
-        this.source = aSource;
-    }
+  public void setSource(Element aSource) {
+    this.source = aSource;
+  }
 
-    @Override
-    public void remove() {
-        this.getSource()
-            .removeFromLinks(this);
-    }
+  @Override
+  public void remove() {
+    this.getSource().removeFromLinks(this);
+  }
 }

@@ -32,21 +32,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-/**
- * Holds risk related info for a scope in a specific domain.
- */
+/** Holds risk related info for a scope in a specific domain. */
 @Entity(name = "scope_risk_values_aspect")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ScopeRiskValuesAspectData extends AspectData {
 
-    public ScopeRiskValuesAspectData(DomainTemplate domain, Scope owner) {
-        super(domain, owner);
-    }
+  public ScopeRiskValuesAspectData(DomainTemplate domain, Scope owner) {
+    super(domain, owner);
+  }
 
-    @Getter
-    @Setter
-    @Column(name = "risk_definition", length = RiskDefinition.MAX_ID_SIZE)
-    RiskDefinitionRef riskDefinitionRef;
+  @Getter
+  @Setter
+  @Column(name = "risk_definition", length = RiskDefinition.MAX_ID_SIZE)
+  RiskDefinitionRef riskDefinitionRef;
 }

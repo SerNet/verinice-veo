@@ -18,11 +18,11 @@
 package org.veo.core.entity;
 
 public class EntitySchemaException extends DomainException {
-    public EntitySchemaException(String message) {
-        super(message);
-    }
+  public EntitySchemaException(String message) {
+    super(message);
+  }
 
-    public EntitySchemaException(String s, Exception inner) {
-        super(s, inner);
-    }
+  public EntitySchemaException(String s, Exception inner) {
+    super(s, inner);
+  }
 }

@@ -23,38 +23,35 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * Returns the response body for methods that only provide status messages
- * instead of entity data.
+ * Returns the response body for methods that only provide status messages instead of entity data.
  */
 @Data
 @Schema(accessMode = Schema.AccessMode.READ_ONLY)
 public class ApiResponseBody {
 
-    private final boolean success;
-    private Optional<String> resourceId;
-    private final String message;
+  private final boolean success;
+  private Optional<String> resourceId;
+  private final String message;
 
-    public ApiResponseBody(boolean success, Optional<String> resourceId, String messageTemplate,
-            Object... arguments) {
-        this.success = success;
-        this.resourceId = resourceId;
-        this.message = createMessage(messageTemplate, arguments);
-    }
+  public ApiResponseBody(
+      boolean success, Optional<String> resourceId, String messageTemplate, Object... arguments) {
+    this.success = success;
+    this.resourceId = resourceId;
+    this.message = createMessage(messageTemplate, arguments);
+  }
 
-    private String createMessage(String messageTemplate, Object[] arguments) {
-        if (arguments == null || arguments.length == 0)
-            return messageTemplate;
-        else
-            return String.format(messageTemplate, arguments);
-    }
+  private String createMessage(String messageTemplate, Object[] arguments) {
+    if (arguments == null || arguments.length == 0) return messageTemplate;
+    else return String.format(messageTemplate, arguments);
+  }
 
-    public ApiResponseBody(boolean success, String messageTemplate, Object... arguments) {
-        this.success = success;
-        this.message = createMessage(messageTemplate, arguments);
-    }
+  public ApiResponseBody(boolean success, String messageTemplate, Object... arguments) {
+    this.success = success;
+    this.message = createMessage(messageTemplate, arguments);
+  }
 
-    public ApiResponseBody(boolean success, String message) {
-        this.success = success;
-        this.message = message;
-    }
+  public ApiResponseBody(boolean success, String message) {
+    this.success = success;
+    this.message = message;
+  }
 }

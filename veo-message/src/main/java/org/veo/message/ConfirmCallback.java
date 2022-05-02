@@ -18,33 +18,30 @@
 package org.veo.message;
 
 /**
- * An interface to receive confirmations for dispatched messages. The semantics
- * are those from the AMQP publisher confirms. For the callback to occur,
- * publisher confirms have to be enabled in the application properties.
- * <p>
- * Confirmation behaviour will be as follows:
+ * An interface to receive confirmations for dispatched messages. The semantics are those from the
+ * AMQP publisher confirms. For the callback to occur, publisher confirms have to be enabled in the
+ * application properties.
+ *
+ * <p>Confirmation behaviour will be as follows:
+ *
  * <ul>
- * <li>an un-routable mandatory or immediate message is confirmed right after
- * the basic.return
- * <li>a transient message is confirmed the moment it is enqueued
- * <li>a persistent message is confirmed when it is persisted to disk or when it
- * is consumed on every queue
+ *   <li>an un-routable mandatory or immediate message is confirmed right after the basic.return
+ *   <li>a transient message is confirmed the moment it is enqueued
+ *   <li>a persistent message is confirmed when it is persisted to disk or when it is consumed on
+ *       every queue
  * </ul>
  */
 @FunctionalInterface
 public interface ConfirmCallback {
 
-    /**
-     * Called when a positive or negative confirmation from the broker was received.
-     * Please note there are cases where this method will never be called. This may
-     * happen in case of a timeout, rejection, network failure, server malfunction
-     * or other events not addressed by publisher-confirms.
-     *
-     * @param event
-     *            the original message that was sent
-     * @param ack
-     *            {@code true} if the message was published, {@code false} otherwise
-     */
-    void confirm(EventMessage event, boolean ack);
-
+  /**
+   * Called when a positive or negative confirmation from the broker was received. Please note there
+   * are cases where this method will never be called. This may happen in case of a timeout,
+   * rejection, network failure, server malfunction or other events not addressed by
+   * publisher-confirms.
+   *
+   * @param event the original message that was sent
+   * @param ack {@code true} if the message was published, {@code false} otherwise
+   */
+  void confirm(EventMessage event, boolean ack);
 }

@@ -51,32 +51,37 @@ import lombok.NoArgsConstructor;
 @Schema(description = "A set of risk values")
 public class RiskValuesDto {
 
-    @Valid
-    @JsonDeserialize(as = ProbabilityImpl.class)
-    @Schema(description = "Values describing the probability of this risk occurring",
-            implementation = ProbabilitySchema.class)
-    private Probability probability;
+  @Valid
+  @JsonDeserialize(as = ProbabilityImpl.class)
+  @Schema(
+      description = "Values describing the probability of this risk occurring",
+      implementation = ProbabilitySchema.class)
+  private Probability probability;
 
-    @Valid
-    @JsonDeserialize(contentAs = ImpactImpl.class)
-    @ArraySchema(schema = @Schema(description = "Values describing the impacts of this risk in different risk "
-            + "categories", implementation = ImpactSchema.class))
-    private List<Impact> impactValues;
+  @Valid
+  @JsonDeserialize(contentAs = ImpactImpl.class)
+  @ArraySchema(
+      schema =
+          @Schema(
+              description =
+                  "Values describing the impacts of this risk in different risk " + "categories",
+              implementation = ImpactSchema.class))
+  private List<Impact> impactValues;
 
-    @Valid
-    @JsonDeserialize(contentAs = DeterminedRiskImpl.class)
-    @ArraySchema(schema = @Schema(description = "Values describing the evaluated risk "
-            + "in different categories", implementation = DeterminedRiskSchema.class))
-    private List<DeterminedRisk> riskValues;
+  @Valid
+  @JsonDeserialize(contentAs = DeterminedRiskImpl.class)
+  @ArraySchema(
+      schema =
+          @Schema(
+              description = "Values describing the evaluated risk " + "in different categories",
+              implementation = DeterminedRiskSchema.class))
+  private List<DeterminedRisk> riskValues;
 
-    public static RiskValuesDto from(ProcessRisk risk, RiskDefinitionRef rd) {
-        return RiskValuesDto.builder()
-                            .probability(risk.getProbabilityProvider(rd)
-                                             .getProbability())
-                            .impactValues(risk.getImpactProvider(rd)
-                                              .getCategorizedImpacts())
-                            .riskValues(risk.getRiskProvider(rd)
-                                            .getCategorizedRisks())
-                            .build();
-    }
+  public static RiskValuesDto from(ProcessRisk risk, RiskDefinitionRef rd) {
+    return RiskValuesDto.builder()
+        .probability(risk.getProbabilityProvider(rd).getProbability())
+        .impactValues(risk.getImpactProvider(rd).getCategorizedImpacts())
+        .riskValues(risk.getRiskProvider(rd).getCategorizedRisks())
+        .build();
+  }
 }

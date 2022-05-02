@@ -30,90 +30,76 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Superclass for all use cases. Each use case must provide an implementation of
- * input and output data structures.
+ * Superclass for all use cases. Each use case must provide an implementation of input and output
+ * data structures.
  *
  * @author akoderman
- *
- * @param <I>
- *            the inputdata type
- * @param <O>
- *            the output data type
+ * @param <I> the inputdata type
+ * @param <O> the output data type
  */
 public interface UseCase<I extends UseCase.InputData, O extends UseCase.OutputData> {
 
-    O execute(I input);
+  O execute(I input);
 
-    /**
-     * Uses the inputSupplier to get the Input, execute the usecase with the input,
-     * use the result resultMapper to produce a R.
-     *
-     * Override this Method and annotate it with @Transactional in the concrete
-     * usescase when you need to transform the input and/or the output.
-     */
-    default <R> R executeAndTransformResult(Supplier<I> inputSupplier,
-            Function<O, R> resultMapper) {
-        return resultMapper.apply(execute(inputSupplier.get()));
-    }
+  /**
+   * Uses the inputSupplier to get the Input, execute the usecase with the input, use the result
+   * resultMapper to produce a R.
+   *
+   * <p>Override this Method and annotate it with @Transactional in the concrete usescase when you
+   * need to transform the input and/or the output.
+   */
+  default <R> R executeAndTransformResult(Supplier<I> inputSupplier, Function<O, R> resultMapper) {
+    return resultMapper.apply(execute(inputSupplier.get()));
+  }
 
-    /**
-     * Execute the usecase with the input, use the result resultMapper to produce a
-     * R.
-     *
-     * Override this Method and annotate it with @Transactional in the concrete use
-     * case when you need to transform only the output.
-     */
-    default <R> R executeAndTransformResult(I input, Function<O, R> resultMapper) {
-        return resultMapper.apply(execute(input));
-    }
+  /**
+   * Execute the usecase with the input, use the result resultMapper to produce a R.
+   *
+   * <p>Override this Method and annotate it with @Transactional in the concrete use case when you
+   * need to transform only the output.
+   */
+  default <R> R executeAndTransformResult(I input, Function<O, R> resultMapper) {
+    return resultMapper.apply(execute(input));
+  }
 
-    /**
-     * The input data structure that is particular to this use case.
-     *
-     * InputData should be an immutable value object.
-     */
-    interface InputData {
+  /**
+   * The input data structure that is particular to this use case.
+   *
+   * <p>InputData should be an immutable value object.
+   */
+  interface InputData {}
 
-    }
+  /**
+   * The output data structure that is particular to this use case.
+   *
+   * <p>OutputData should be an immutable value object.
+   */
+  interface OutputData {}
 
-    /**
-     * The output data structure that is particular to this use case.
-     *
-     * OutputData should be an immutable value object.
-     */
-    interface OutputData {
+  final class EmptyOutput implements OutputData {
 
-    }
+    public static final EmptyOutput INSTANCE = new EmptyOutput();
 
-    final class EmptyOutput implements OutputData {
+    private EmptyOutput() {}
+  }
 
-        public static final EmptyOutput INSTANCE = new EmptyOutput();
+  final class EmptyInput implements InputData {
 
-        private EmptyOutput() {
+    public static final EmptyInput INSTANCE = new EmptyInput();
 
-        }
-    }
+    private EmptyInput() {}
+  }
 
-    final class EmptyInput implements InputData {
-
-        public static final EmptyInput INSTANCE = new EmptyInput();
-
-        private EmptyInput() {
-
-        }
-    }
-
-    /**
-     * A combination of an entity ID and a Client. This is used to specify an
-     * element that is to be loaded in a client's context. The Client object is used
-     * to check if the given ID is valid in the client.
-     */
-    @Valid
-    @AllArgsConstructor
-    @Getter
-    class IdAndClient implements UseCase.InputData {
-        private final Key<UUID> id;
-        private final Client authenticatedClient;
-    }
-
+  /**
+   * A combination of an entity ID and a Client. This is used to specify an element that is to be
+   * loaded in a client's context. The Client object is used to check if the given ID is valid in
+   * the client.
+   */
+  @Valid
+  @AllArgsConstructor
+  @Getter
+  class IdAndClient implements UseCase.InputData {
+    private final Key<UUID> id;
+    private final Client authenticatedClient;
+  }
 }

@@ -60,83 +60,68 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class AbstractEntityController {
 
-    @Autowired
-    protected ClientRepository clientRepository;
+  @Autowired protected ClientRepository clientRepository;
 
-    @Autowired
-    private RepositoryProvider repositoryProvider;
+  @Autowired private RepositoryProvider repositoryProvider;
 
-    @Autowired
-    ReferenceAssemblerImpl referenceAssembler;
+  @Autowired ReferenceAssemblerImpl referenceAssembler;
 
-    @Autowired
-    EntityToDtoTransformer entityToDtoTransformer;
+  @Autowired EntityToDtoTransformer entityToDtoTransformer;
 
-    @Autowired
-    DtoToEntityTransformer dtoToEntityTransformer;
+  @Autowired DtoToEntityTransformer dtoToEntityTransformer;
 
-    @Autowired
-    ReferenceAssembler urlAssembler;
+  @Autowired ReferenceAssembler urlAssembler;
 
-    @Autowired
-    protected UseCaseInteractor useCaseInteractor;
+  @Autowired protected UseCaseInteractor useCaseInteractor;
 
-    @Autowired
-    protected EtagService etagService;
+  @Autowired protected EtagService etagService;
 
-    protected AbstractEntityController() {
+  protected AbstractEntityController() {}
 
+  protected CacheControl defaultCacheControl = CacheControl.noCache();
+
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    log.error("Error validating request", ex);
+    return ex.getBindingResult().getAllErrors().stream()
+        .map(FieldError.class::cast)
+        .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+  }
+
+  protected Client getClient(String clientId) {
+    Key<UUID> id = Key.uuidFrom(clientId);
+    return clientRepository.findById(id).orElseThrow();
+  }
+
+  protected Client getAuthenticatedClient(Authentication auth) {
+    ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
+    return getClient(user);
+  }
+
+  protected Client getClient(ApplicationUser user) {
+    return getClient(user.getClientId());
+  }
+
+  protected IdRefResolver createIdRefResolver(Client client) {
+    return new DbIdRefResolver(repositoryProvider, client);
+  }
+
+  protected abstract String buildSearchUri(String searchId);
+
+  protected ResponseEntity<SearchResponse> createSearchResponseBody(SearchQueryDto search) {
+    try {
+      // Build search URI and remove optional request param placeholders.
+      var searchUri = buildSearchUri(search.getSearchId()).replaceFirst("\\{[^}]*}", "");
+      return ResponseEntity.created(new URI(searchUri)).body(new SearchResponse(searchUri));
+    } catch (IOException | URISyntaxException e) {
+      log.error("Could not create search.", e);
+      throw new IllegalArgumentException(String.format("Could not create search %s", search));
     }
+  }
 
-    protected CacheControl defaultCacheControl = CacheControl.noCache();
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        log.error("Error validating request", ex);
-        return ex.getBindingResult()
-                 .getAllErrors()
-                 .stream()
-                 .map(FieldError.class::cast)
-                 .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
-    }
-
-    protected Client getClient(String clientId) {
-        Key<UUID> id = Key.uuidFrom(clientId);
-        return clientRepository.findById(id)
-                               .orElseThrow();
-    }
-
-    protected Client getAuthenticatedClient(Authentication auth) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        return getClient(user);
-    }
-
-    protected Client getClient(ApplicationUser user) {
-        return getClient(user.getClientId());
-    }
-
-    protected IdRefResolver createIdRefResolver(Client client) {
-        return new DbIdRefResolver(repositoryProvider, client);
-    }
-
-    protected abstract String buildSearchUri(String searchId);
-
-    protected ResponseEntity<SearchResponse> createSearchResponseBody(SearchQueryDto search) {
-        try {
-            // Build search URI and remove optional request param placeholders.
-            var searchUri = buildSearchUri(search.getSearchId()).replaceFirst("\\{[^}]*}", "");
-            return ResponseEntity.created(new URI(searchUri))
-                                 .body(new SearchResponse(searchUri));
-        } catch (IOException | URISyntaxException e) {
-            log.error("Could not create search.", e);
-            throw new IllegalArgumentException(String.format("Could not create search %s", search));
-        }
-    }
-
-    protected <T extends Identifiable & Versioned> Optional<String> getEtag(Class<T> entityClass,
-            String id) {
-        return etagService.getEtag(entityClass, id);
-    }
-
+  protected <T extends Identifiable & Versioned> Optional<String> getEtag(
+      Class<T> entityClass, String id) {
+    return etagService.getEtag(entityClass, id);
+  }
 }

@@ -35,57 +35,57 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.ToString;
 
-/**
- * Base transfer object for Elements. Contains common data for all Element DTOs.
- */
+/** Base transfer object for Elements. Contains common data for all Element DTOs. */
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AbstractElementDto extends AbstractVersionedSelfReferencingDto
-        implements NameableDto {
+    implements NameableDto {
 
-    abstract public Class<? extends Identifiable> getModelInterface();
+  public abstract Class<? extends Identifiable> getModelInterface();
 
-    @NotNull(message = "A name must be present.")
-    @Schema(description = "The name for the Element.", example = "Lock doors", required = true)
-    @Size(max = Nameable.NAME_MAX_LENGTH)
-    @ToString.Include
-    private String name;
+  @NotNull(message = "A name must be present.")
+  @Schema(description = "The name for the Element.", example = "Lock doors", required = true)
+  @Size(max = Nameable.NAME_MAX_LENGTH)
+  @ToString.Include
+  private String name;
 
-    @Schema(description = "Compact human-readable identifier that is unique within the client.",
-            example = "A-155",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @ToString.Include
-    private String designator;
+  @Schema(
+      description = "Compact human-readable identifier that is unique within the client.",
+      example = "A-155",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  @ToString.Include
+  private String designator;
 
-    @Schema(description = "The abbreviation for the Element.", example = "Lock doors")
-    @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
-    private String abbreviation;
+  @Schema(description = "The abbreviation for the Element.", example = "Lock doors")
+  @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
+  private String abbreviation;
 
-    @Schema(description = "The description for the Element.",
-            example = "Lock doors",
-            required = false)
-    @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
-    private String description;
+  @Schema(
+      description = "The description for the Element.",
+      example = "Lock doors",
+      required = false)
+  @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
+  private String description;
 
-    @NotNull(message = "An owner must be present.")
-    @Schema(required = true, implementation = IdRefOwner.class)
-    private IdRef<ElementOwner> owner;
+  @NotNull(message = "An owner must be present.")
+  @Schema(required = true, implementation = IdRefOwner.class)
+  private IdRef<ElementOwner> owner;
 
-    @Valid
-    @Schema(description = "Custom relations which do not affect the behavior.",
-            title = "CustomLink")
-    private Map<String, List<CustomLinkDto>> links = Collections.emptyMap();
+  @Valid
+  @Schema(description = "Custom relations which do not affect the behavior.", title = "CustomLink")
+  private Map<String, List<CustomLinkDto>> links = Collections.emptyMap();
 
-    @Valid
-    @Schema(description = "Groups of customizable attributes - see '/schemas'",
-            title = "CustomAspect")
-    private Map<String, CustomAspectDto> customAspects = Collections.emptyMap();
+  @Valid
+  @Schema(
+      description = "Groups of customizable attributes - see '/schemas'",
+      title = "CustomAspect")
+  private Map<String, CustomAspectDto> customAspects = Collections.emptyMap();
 
-    @Schema(description = "Entity type identifier", accessMode = Schema.AccessMode.READ_ONLY)
-    private String type;
+  @Schema(description = "Entity type identifier", accessMode = Schema.AccessMode.READ_ONLY)
+  private String type;
 
-    public abstract void associateWithTargetDomain(String id);
+  public abstract void associateWithTargetDomain(String id);
 
-    public abstract void clearDomains();
+  public abstract void clearDomains();
 }

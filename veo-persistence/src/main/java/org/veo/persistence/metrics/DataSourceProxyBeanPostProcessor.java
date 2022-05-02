@@ -38,76 +38,76 @@ import net.ttddyy.dsproxy.listener.logging.SLF4JLogLevel;
 import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 
 @Component
-@Profile({ "stats", "test" })
+@Profile({"stats", "test"})
 @Slf4j
 /**
- * A data source proxy that can be configured to log slow and/or all generated
- * queries at the level of the SQL datasource. It can be used for simple logging
- * or to query the exact number of generated SQL queries at flush time in tests.
+ * A data source proxy that can be configured to log slow and/or all generated queries at the level
+ * of the SQL datasource. It can be used for simple logging or to query the exact number of
+ * generated SQL queries at flush time in tests.
  *
- * Based on the example in "Leonard, A. (2020): Spring Boot Persistence Best
- * Practices. Apress Media."
+ * <p>Based on the example in "Leonard, A. (2020): Spring Boot Persistence Best Practices. Apress
+ * Media."
  */
 public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
 
-    @Value("${veo.logging.datasource.slow_threshold_ms:1000}")
-    private long slowThresholdMs;
+  @Value("${veo.logging.datasource.slow_threshold_ms:1000}")
+  private long slowThresholdMs;
 
-    @Value("${veo.logging.datasource.all_queries:false}")
-    private boolean logAll;
+  @Value("${veo.logging.datasource.all_queries:false}")
+  private boolean logAll;
 
-    @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) {
-        if (bean instanceof DataSource) {
-            String jdbcUrl = "unknown";
-            if (bean instanceof HikariDataSource) {
-                HikariDataSource hikariData = (HikariDataSource) bean;
-                jdbcUrl = hikariData.getJdbcUrl();
-            }
-            log.info("DataSource has been found: {}. Logging queries and slow queries (> {}ms)",
-                     jdbcUrl, slowThresholdMs);
-            final ProxyFactory proxyFactory = new ProxyFactory(bean);
-            proxyFactory.setProxyTargetClass(true);
-            proxyFactory.addAdvice(new ProxyDataSourceInterceptor((DataSource) bean,
-                    slowThresholdMs, logAll));
-            return proxyFactory.getProxy();
-        }
-        return bean;
+  @Override
+  public Object postProcessAfterInitialization(Object bean, String beanName) {
+    if (bean instanceof DataSource) {
+      String jdbcUrl = "unknown";
+      if (bean instanceof HikariDataSource) {
+        HikariDataSource hikariData = (HikariDataSource) bean;
+        jdbcUrl = hikariData.getJdbcUrl();
+      }
+      log.info(
+          "DataSource has been found: {}. Logging queries and slow queries (> {}ms)",
+          jdbcUrl,
+          slowThresholdMs);
+      final ProxyFactory proxyFactory = new ProxyFactory(bean);
+      proxyFactory.setProxyTargetClass(true);
+      proxyFactory.addAdvice(
+          new ProxyDataSourceInterceptor((DataSource) bean, slowThresholdMs, logAll));
+      return proxyFactory.getProxy();
+    }
+    return bean;
+  }
+
+  @Override
+  public Object postProcessBeforeInitialization(Object bean, String beanName) {
+    return bean;
+  }
+
+  private static class ProxyDataSourceInterceptor implements MethodInterceptor {
+
+    private final DataSource dataSource;
+
+    public ProxyDataSourceInterceptor(DataSource dataSource, long slowThreshold, boolean logAll) {
+      super();
+      var dataSourceBuilder =
+          ProxyDataSourceBuilder.create(dataSource)
+              .countQuery()
+              .name("DATA_SOURCE_PROXY")
+              .logSlowQueryBySlf4j(slowThreshold, TimeUnit.MILLISECONDS)
+              .multiline();
+      if (logAll) {
+        dataSourceBuilder.logQueryBySlf4j(SLF4JLogLevel.INFO);
+      }
+      this.dataSource = dataSourceBuilder.build();
     }
 
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) {
-        return bean;
+    public Object invoke(final MethodInvocation invocation) throws Throwable {
+      final Method proxyMethod =
+          ReflectionUtils.findMethod(this.dataSource.getClass(), invocation.getMethod().getName());
+      if (proxyMethod != null) {
+        return proxyMethod.invoke(this.dataSource, invocation.getArguments());
+      }
+      return invocation.proceed();
     }
-
-    private static class ProxyDataSourceInterceptor implements MethodInterceptor {
-
-        private final DataSource dataSource;
-
-        public ProxyDataSourceInterceptor(DataSource dataSource, long slowThreshold,
-                boolean logAll) {
-            super();
-            var dataSourceBuilder = ProxyDataSourceBuilder.create(dataSource)
-                                                          .countQuery()
-                                                          .name("DATA_SOURCE_PROXY")
-                                                          .logSlowQueryBySlf4j(slowThreshold,
-                                                                               TimeUnit.MILLISECONDS)
-                                                          .multiline();
-            if (logAll) {
-                dataSourceBuilder.logQueryBySlf4j(SLF4JLogLevel.INFO);
-            }
-            this.dataSource = dataSourceBuilder.build();
-        }
-
-        @Override
-        public Object invoke(final MethodInvocation invocation) throws Throwable {
-            final Method proxyMethod = ReflectionUtils.findMethod(this.dataSource.getClass(),
-                                                                  invocation.getMethod()
-                                                                            .getName());
-            if (proxyMethod != null) {
-                return proxyMethod.invoke(this.dataSource, invocation.getArguments());
-            }
-            return invocation.proceed();
-        }
-    }
+  }
 }

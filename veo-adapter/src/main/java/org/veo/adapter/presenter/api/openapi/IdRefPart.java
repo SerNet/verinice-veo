@@ -21,28 +21,28 @@ import org.veo.adapter.presenter.api.common.IIdRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-/**
- * Swagger documentation for a rerefence to a composite element's part:
- */
+/** Swagger documentation for a rerefence to a composite element's part: */
 @Schema(name = "PartReference", description = "A reference to an entity's part")
 public interface IdRefPart extends IIdRef {
 
-    @Schema(description = "A friendly human readable title of the referenced entity.",
-            example = "My Entity",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @Override
-    String getDisplayName();
+  @Schema(
+      description = "A friendly human readable title of the referenced entity.",
+      example = "My Entity",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  @Override
+  String getDisplayName();
 
-    @Schema(required = true,
-            description = "The resource URL of the referenced entity.",
-            example = "http://<api.example.org>/api/v1/asset/<00000000-0000-0000-0000-000000000000>",
-            format = "uri")
-    @Override
-    String getTargetUri();
+  @Schema(
+      required = true,
+      description = "The resource URL of the referenced entity.",
+      example = "http://<api.example.org>/api/v1/asset/<00000000-0000-0000-0000-000000000000>",
+      format = "uri")
+  @Override
+  String getTargetUri();
 
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    String getSearchesUri();
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  String getSearchesUri();
 
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    String getResourcesUri();
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  String getResourcesUri();
 }

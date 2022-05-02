@@ -26,35 +26,32 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.UnitRepository;
 
-/**
- * Provides data from within unit hierarchies.
- */
+/** Provides data from within unit hierarchies. */
 public class UnitHierarchyProvider {
-    private final UnitRepository unitRepository;
+  private final UnitRepository unitRepository;
 
-    public UnitHierarchyProvider(UnitRepository unitRepository) {
-        this.unitRepository = unitRepository;
-    }
+  public UnitHierarchyProvider(UnitRepository unitRepository) {
+    this.unitRepository = unitRepository;
+  }
 
-    /**
-     * Recursively finds all descendant units of given unit.
-     *
-     * @param rootUnitId
-     *            ID of the unit whose descendants should be found.
-     * @return A flat collection containing the root unit and all its descendants.
-     */
-    public Set<Unit> findAllInRoot(Key<UUID> rootUnitId) {
-        Unit root = unitRepository.findById(rootUnitId)
-                                  .orElseThrow(() -> new NotFoundException(
-                                          "No Unit found with ID %s", rootUnitId));
-        var units = new HashSet<Unit>();
-        addUnitHierarchyToSet(root, units);
-        return units;
-    }
+  /**
+   * Recursively finds all descendant units of given unit.
+   *
+   * @param rootUnitId ID of the unit whose descendants should be found.
+   * @return A flat collection containing the root unit and all its descendants.
+   */
+  public Set<Unit> findAllInRoot(Key<UUID> rootUnitId) {
+    Unit root =
+        unitRepository
+            .findById(rootUnitId)
+            .orElseThrow(() -> new NotFoundException("No Unit found with ID %s", rootUnitId));
+    var units = new HashSet<Unit>();
+    addUnitHierarchyToSet(root, units);
+    return units;
+  }
 
-    private void addUnitHierarchyToSet(Unit root, Set<Unit> target) {
-        target.add(root);
-        unitRepository.findByParent(root)
-                      .forEach(child -> addUnitHierarchyToSet(child, target));
-    }
+  private void addUnitHierarchyToSet(Unit root, Set<Unit> target) {
+    target.add(root);
+    unitRepository.findByParent(root).forEach(child -> addUnitHierarchyToSet(child, target));
+  }
 }

@@ -18,50 +18,44 @@
 package org.veo.core.entity.risk;
 
 /**
- * Offers functionality to validate provided reference objects against a
- * risk-definition.
- * <p>
- * The implementing provider must make sure that the requested reference object
- * is valid in each context.
+ * Offers functionality to validate provided reference objects against a risk-definition.
+ *
+ * <p>The implementing provider must make sure that the requested reference object is valid in each
+ * context.
  */
 public abstract class ReferenceValidator extends RiskReferenceFactory {
-    /**
-     * Validates the given reference against the risk-definition.
-     *
-     * @param probabilityRef
-     *            a probability reference to validate
-     * @return the same probability-reference if it is valid. Returns {@code null}
-     *         if the input is {@code null}.
-     * @throws org.veo.core.entity.code.EntityValidationException
-     *             if the reference is not valid for the context
-     */
-    public abstract ProbabilityRef validate(ProbabilityRef probabilityRef);
+  /**
+   * Validates the given reference against the risk-definition.
+   *
+   * @param probabilityRef a probability reference to validate
+   * @return the same probability-reference if it is valid. Returns {@code null} if the input is
+   *     {@code null}.
+   * @throws org.veo.core.entity.code.EntityValidationException if the reference is not valid for
+   *     the context
+   */
+  public abstract ProbabilityRef validate(ProbabilityRef probabilityRef);
 
-    /**
-     * Validates the given reference against the risk-definition.
-     *
-     * @param category
-     *            the impact category in which the level is defined
-     * @param impactRef
-     *            an impact reference to validate
-     * @return the same impact-reference if it is valid. Returns {@code null} if the
-     *         input is {@code null}.
-     * @throws org.veo.core.entity.code.EntityValidationException
-     *             if the reference is not valid for the context
-     */
-    public abstract ImpactRef validate(CategoryRef category, ImpactRef impactRef);
+  /**
+   * Validates the given reference against the risk-definition.
+   *
+   * @param category the impact category in which the level is defined
+   * @param impactRef an impact reference to validate
+   * @return the same impact-reference if it is valid. Returns {@code null} if the input is {@code
+   *     null}.
+   * @throws org.veo.core.entity.code.EntityValidationException if the reference is not valid for
+   *     the context
+   */
+  public abstract ImpactRef validate(CategoryRef category, ImpactRef impactRef);
 
-    /**
-     * Validates the given reference against the risk-definition.
-     *
-     * @param category
-     *            the impact category in which the level is defined
-     * @param riskRef
-     *            a risk-reference to validate
-     * @return the same risk-reference if it is valid. Returns {@code null} if the
-     *         input is {@code null}.
-     * @throws org.veo.core.entity.code.EntityValidationException
-     *             if the reference is not valid for the context
-     */
-    public abstract RiskRef validate(CategoryRef category, RiskRef riskRef);
+  /**
+   * Validates the given reference against the risk-definition.
+   *
+   * @param category the impact category in which the level is defined
+   * @param riskRef a risk-reference to validate
+   * @return the same risk-reference if it is valid. Returns {@code null} if the input is {@code
+   *     null}.
+   * @throws org.veo.core.entity.code.EntityValidationException if the reference is not valid for
+   *     the context
+   */
+  public abstract RiskRef validate(CategoryRef category, RiskRef riskRef);
 }

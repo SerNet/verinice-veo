@@ -25,9 +25,11 @@ import java.lang.annotation.Target;
 
 import io.swagger.v3.oas.annotations.Parameter;
 
-@Parameter(description = "UUID of the containing unit conforming to RFC4122 in canonical textual "
-        + "representation.", example = "f35b982c-8ad4-4515-96ee-df5fdd4247b9")
+@Parameter(
+    description =
+        "UUID of the containing unit conforming to RFC4122 in canonical textual "
+            + "representation.",
+    example = "f35b982c-8ad4-4515-96ee-df5fdd4247b9")
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ PARAMETER })
-public @interface UnitUuidParam {
-}
+@Target({PARAMETER})
+public @interface UnitUuidParam {}

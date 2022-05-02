@@ -32,9 +32,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class UpdateReferenceData extends CatalogReferenceData
-        implements UpdateReference, CatalogReference {
+    implements UpdateReference, CatalogReference {
 
-    @Column(name = "updatetype")
-    @NotNull
-    private ItemUpdateType updateType;
+  @Column(name = "updatetype")
+  @NotNull
+  private ItemUpdateType updateType;
 }

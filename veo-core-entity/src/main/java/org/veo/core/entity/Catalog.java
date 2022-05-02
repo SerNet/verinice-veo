@@ -21,51 +21,46 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * A catalog is owned by a domain or domain Template. It contains a set of
- * predefined elements for this specific domain which can be applied to the
- * model. <br>
- * usecase: KEa.1 and KEa.2 These applied elements can be updated when a new
- * catalogitem in a new version of the domain says so.<br>
- * usecase: Update These applied elements can be compared with or transformed to
- * template elements from other domainTemplates. <br>
+ * A catalog is owned by a domain or domain Template. It contains a set of predefined elements for
+ * this specific domain which can be applied to the model. <br>
+ * usecase: KEa.1 and KEa.2 These applied elements can be updated when a new catalogitem in a new
+ * version of the domain says so.<br>
+ * usecase: Update These applied elements can be compared with or transformed to template elements
+ * from other domainTemplates. <br>
  * usecase: compliance mapping
  */
 public interface Catalog extends Identifiable, Nameable, ClientOwned, Versioned {
-    String SINGULAR_TERM = "catalog";
-    String PLURAL_TERM = "catalogs";
+  String SINGULAR_TERM = "catalog";
+  String PLURAL_TERM = "catalogs";
 
-    /**
-     * All the template elements of this catalog.
-     */
-    Set<CatalogItem> getCatalogItems();
+  /** All the template elements of this catalog. */
+  Set<CatalogItem> getCatalogItems();
 
-    default void setCatalogItems(Set<CatalogItem> catalogItems) {
-        getCatalogItems().clear();
-        catalogItems.forEach(catalogitem -> catalogitem.setCatalog(this));
-        getCatalogItems().addAll(catalogItems);
-    }
+  default void setCatalogItems(Set<CatalogItem> catalogItems) {
+    getCatalogItems().clear();
+    catalogItems.forEach(catalogitem -> catalogitem.setCatalog(this));
+    getCatalogItems().addAll(catalogItems);
+  }
 
-    /**
-     * The owner of the catalog is always a domain template.
-     */
-    DomainTemplate getDomainTemplate();
+  /** The owner of the catalog is always a domain template. */
+  DomainTemplate getDomainTemplate();
 
-    void setDomainTemplate(DomainTemplate aDomaintemplate);
+  void setDomainTemplate(DomainTemplate aDomaintemplate);
 
-    @Override
-    default Class<? extends Identifiable> getModelInterface() {
-        return Catalog.class;
-    }
+  @Override
+  default Class<? extends Identifiable> getModelInterface() {
+    return Catalog.class;
+  }
 
-    @Override
-    default String getModelType() {
-        return SINGULAR_TERM;
-    }
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
 
-    default Optional<Client> getOwningClient() {
-        return Optional.ofNullable(getDomainTemplate())
-                       .filter(ClientOwned.class::isInstance)
-                       .map(ClientOwned.class::cast)
-                       .flatMap(ClientOwned::getOwningClient);
-    }
+  default Optional<Client> getOwningClient() {
+    return Optional.ofNullable(getDomainTemplate())
+        .filter(ClientOwned.class::isInstance)
+        .map(ClientOwned.class::cast)
+        .flatMap(ClientOwned::getOwningClient);
+  }
 }

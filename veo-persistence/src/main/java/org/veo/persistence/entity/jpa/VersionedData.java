@@ -41,26 +41,24 @@ import lombok.ToString;
 @MappedSuperclass
 @ToString(onlyExplicitlyIncluded = true)
 @Data
-@EntityListeners({ AuditingEntityListener.class, VersionedEntityListener.class })
+@EntityListeners({AuditingEntityListener.class, VersionedEntityListener.class})
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod") // PMD does not see Lombok's methods
 public abstract class VersionedData implements Versioned {
-    @ToString.Include
-    @Version
-    private long version;
+  @ToString.Include @Version private long version;
 
-    @Column(name = "created_at", nullable = false)
-    @CreatedDate
-    private Instant createdAt;
+  @Column(name = "created_at", nullable = false)
+  @CreatedDate
+  private Instant createdAt;
 
-    @Column(name = "updated_at", nullable = false)
-    @LastModifiedDate
-    private Instant updatedAt;
+  @Column(name = "updated_at", nullable = false)
+  @LastModifiedDate
+  private Instant updatedAt;
 
-    @Column(name = "created_by", nullable = false)
-    @CreatedBy
-    private String createdBy;
+  @Column(name = "created_by", nullable = false)
+  @CreatedBy
+  private String createdBy;
 
-    @Column(name = "updated_by", nullable = false)
-    @LastModifiedBy
-    private String updatedBy;
+  @Column(name = "updated_by", nullable = false)
+  @LastModifiedBy
+  private String updatedBy;
 }

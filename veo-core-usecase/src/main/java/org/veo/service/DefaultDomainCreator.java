@@ -27,31 +27,36 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Looks up latest default domain templates and incarnates them in clients. The
- * names of the default domain templates are injected.
+ * Looks up latest default domain templates and incarnates them in clients. The names of the default
+ * domain templates are injected.
  */
 @RequiredArgsConstructor
 @Slf4j
 public class DefaultDomainCreator {
-    private final Set<String> defaultDomainTemplateNames;
-    private final DomainTemplateService domainService;
-    private final DomainTemplateRepository domainTemplateRepository;
+  private final Set<String> defaultDomainTemplateNames;
+  private final DomainTemplateService domainService;
+  private final DomainTemplateRepository domainTemplateRepository;
 
-    public void addDefaultDomains(Client client) {
-        if (!client.getDomains()
-                   .isEmpty()) {
-            throw new IllegalArgumentException("The client already owns domains.");
-        }
-        defaultDomainTemplateNames.forEach(name -> {
-            domainTemplateRepository.getLatestDomainTemplateId(name)
-                                    .ifPresentOrElse(templateId -> {
-                                        log.debug("Adding default domain {} ({}) to client {}",
-                                                  templateId, name, client.getIdAsString());
-                                        client.addToDomains(domainService.createDomain(client,
-                                                                                       templateId.uuidValue()));
-                                    }, () -> {
-                                        log.warn("Default domain template {} not found.", name);
-                                    });
-        });
+  public void addDefaultDomains(Client client) {
+    if (!client.getDomains().isEmpty()) {
+      throw new IllegalArgumentException("The client already owns domains.");
     }
+    defaultDomainTemplateNames.forEach(
+        name -> {
+          domainTemplateRepository
+              .getLatestDomainTemplateId(name)
+              .ifPresentOrElse(
+                  templateId -> {
+                    log.debug(
+                        "Adding default domain {} ({}) to client {}",
+                        templateId,
+                        name,
+                        client.getIdAsString());
+                    client.addToDomains(domainService.createDomain(client, templateId.uuidValue()));
+                  },
+                  () -> {
+                    log.warn("Default domain template {} not found.", name);
+                  });
+        });
+  }
 }

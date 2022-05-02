@@ -28,65 +28,62 @@ import org.veo.core.entity.Constraints;
 
 /**
  * A risk value as determined by a risk service.
+ *
  * <p>
- * <p>
- * The risk value will be determined based on a method defined in the risk
- * definition (i.e. risk matrix, high-water-mark, sum, product, ...)
+ *
+ * <p>The risk value will be determined based on a method defined in the risk definition (i.e. risk
+ * matrix, high-water-mark, sum, product, ...)
  *
  * @see org.veo.core.entity.riskdefinition.RiskDefinition
  */
 @Valid
 public interface DeterminedRisk {
 
-    int EXPLANATION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
+  int EXPLANATION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
 
-    void setRiskTreatmentExplanation(
-            @Size(max = EXPLANATION_MAX_LENGTH) String riskTreatmentExplanation);
+  void setRiskTreatmentExplanation(
+      @Size(max = EXPLANATION_MAX_LENGTH) String riskTreatmentExplanation);
 
-    /**
-     * A risk value that is determined by the risk service according to the method
-     * defined in the risk definition.
-     *
-     * @return inherent risk or null
-     * @see Probability
-     * @see Impact
-     */
-    RiskRef getInherentRisk();
+  /**
+   * A risk value that is determined by the risk service according to the method defined in the risk
+   * definition.
+   *
+   * @return inherent risk or null
+   * @see Probability
+   * @see Impact
+   */
+  RiskRef getInherentRisk();
 
-    /**
-     * The residual risk (aka net risk) entered manually by the user as result of
-     * taking control effects into account.
-     */
-    RiskRef getResidualRisk();
+  /**
+   * The residual risk (aka net risk) entered manually by the user as result of taking control
+   * effects into account.
+   */
+  RiskRef getResidualRisk();
 
-    /**
-     * The inherent risk becomes the effective risk - unless it is overruled by the
-     * user-defined residual risk.
-     *
-     * @return effective risk or null (if there is no residual risk and no inherent
-     *         risk)
-     */
-    @Transient
-    default RiskRef getEffectiveRisk() {
-        return Optional.ofNullable(getResidualRisk())
-                       .orElse(getInherentRisk());
-    }
+  /**
+   * The inherent risk becomes the effective risk - unless it is overruled by the user-defined
+   * residual risk.
+   *
+   * @return effective risk or null (if there is no residual risk and no inherent risk)
+   */
+  @Transient
+  default RiskRef getEffectiveRisk() {
+    return Optional.ofNullable(getResidualRisk()).orElse(getInherentRisk());
+  }
 
-    void setResidualRiskExplanation(
-            @Size(max = EXPLANATION_MAX_LENGTH) String residualRiskExplanation);
+  void setResidualRiskExplanation(
+      @Size(max = EXPLANATION_MAX_LENGTH) String residualRiskExplanation);
 
-    String getResidualRiskExplanation();
+  String getResidualRiskExplanation();
 
-    Set<RiskTreatmentOption> getRiskTreatments();
+  Set<RiskTreatmentOption> getRiskTreatments();
 
-    String getRiskTreatmentExplanation();
+  String getRiskTreatmentExplanation();
 
-    /**
-     * The risk after existing controls have been taken into account.
-     */
-    void setResidualRisk(RiskRef residualRisk);
+  /** The risk after existing controls have been taken into account. */
+  void setResidualRisk(RiskRef residualRisk);
 
-    void setRiskTreatments(Set<RiskTreatmentOption> riskTreatments);
+  void setRiskTreatments(Set<RiskTreatmentOption> riskTreatments);
 
-    CategoryRef getCategory();
+  CategoryRef getCategory();
 }

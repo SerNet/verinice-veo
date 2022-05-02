@@ -28,8 +28,8 @@ import lombok.Data;
 
 @Data
 public class ElementTypeDefinitionDto {
-    Map<String, SubTypeDefinition> subTypes = new HashMap<>();
-    Map<String, CustomAspectDefinition> customAspects = new HashMap<>();
-    Map<String, LinkDefinition> links = new HashMap<>();
-    Map<String, Map<String, String>> translations = new HashMap<>();
+  Map<String, SubTypeDefinition> subTypes = new HashMap<>();
+  Map<String, CustomAspectDefinition> customAspects = new HashMap<>();
+  Map<String, LinkDefinition> links = new HashMap<>();
+  Map<String, Map<String, String>> translations = new HashMap<>();
 }

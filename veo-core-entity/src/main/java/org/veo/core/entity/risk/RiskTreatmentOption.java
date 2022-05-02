@@ -18,9 +18,13 @@
 package org.veo.core.entity.risk;
 
 /**
- * Common options for the treatment of risks as defined in most risk analysis
- * standards and best practices.
+ * Common options for the treatment of risks as defined in most risk analysis standards and best
+ * practices.
  */
 public enum RiskTreatmentOption {
-    RISK_TREATMENT_NONE, RISK_TREATMENT_AVOIDANCE, RISK_TREATMENT_ACCEPTANCE, RISK_TREATMENT_TRANSFER, RISK_TREATMENT_REDUCTION
+  RISK_TREATMENT_NONE,
+  RISK_TREATMENT_AVOIDANCE,
+  RISK_TREATMENT_ACCEPTANCE,
+  RISK_TREATMENT_TRANSFER,
+  RISK_TREATMENT_REDUCTION
 }

@@ -20,27 +20,27 @@ package org.veo.core.entity.risk;
 import java.math.BigDecimal;
 
 public abstract class RiskReferenceFactory {
-    protected RiskRef createRiskRef(BigDecimal id) {
-        return id == null ? null : new RiskRef(id);
-    }
+  protected RiskRef createRiskRef(BigDecimal id) {
+    return id == null ? null : new RiskRef(id);
+  }
 
-    protected ProbabilityRef createProbabilityRef(BigDecimal id) {
-        return id == null ? null : new ProbabilityRef(id);
-    }
+  protected ProbabilityRef createProbabilityRef(BigDecimal id) {
+    return id == null ? null : new ProbabilityRef(id);
+  }
 
-    protected ImpactRef createImpactRef(BigDecimal id) {
-        return id == null ? null : new ImpactRef(id);
-    }
+  protected ImpactRef createImpactRef(BigDecimal id) {
+    return id == null ? null : new ImpactRef(id);
+  }
 
-    protected CategoryRef createCategoryRef(String id) {
-        return id == null ? null : new CategoryRef(id);
-    }
+  protected CategoryRef createCategoryRef(String id) {
+    return id == null ? null : new CategoryRef(id);
+  }
 
-    protected ImplementationStatusRef createImplementationStatusRef(int ordinalValue) {
-        return new ImplementationStatusRef(ordinalValue);
-    }
+  protected ImplementationStatusRef createImplementationStatusRef(int ordinalValue) {
+    return new ImplementationStatusRef(ordinalValue);
+  }
 
-    protected RiskDefinitionRef createRiskDefinitionRef(String id) {
-        return id == null ? null : new RiskDefinitionRef(id);
-    }
+  protected RiskDefinitionRef createRiskDefinitionRef(String id) {
+    return id == null ? null : new RiskDefinitionRef(id);
+  }
 }

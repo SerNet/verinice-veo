@@ -26,23 +26,26 @@ import org.veo.core.usecase.decision.Decider;
 
 public class CreateControlUseCase extends CreateElementUseCase<Control> {
 
-    public CreateControlUseCase(UnitRepository unitRepository, ControlRepository entityRepo,
-            DesignatorService designatorService, Decider decider) {
-        super(unitRepository, entityRepo, designatorService, decider);
-    }
+  public CreateControlUseCase(
+      UnitRepository unitRepository,
+      ControlRepository entityRepo,
+      DesignatorService designatorService,
+      Decider decider) {
+    super(unitRepository, entityRepo, designatorService, decider);
+  }
 
-    @Override
-    protected void validate(Control control) {
-        // TODO VEO-1244 The same kind of validation as in UpdateControlUseCase should
-        // be used here as soon as it is possible to create an element within a scope.
-        control.getDomains()
-               .forEach(domain -> {
-                   if (control.getRiskValues(domain)
-                              .map(rv -> !rv.isEmpty())
-                              .orElse(false)) {
-                       throw new IllegalArgumentException(
-                               "Cannot create control with risk values, because it must a member of a scope with a risk definition first");
-                   }
-               });
-    }
+  @Override
+  protected void validate(Control control) {
+    // TODO VEO-1244 The same kind of validation as in UpdateControlUseCase should
+    // be used here as soon as it is possible to create an element within a scope.
+    control
+        .getDomains()
+        .forEach(
+            domain -> {
+              if (control.getRiskValues(domain).map(rv -> !rv.isEmpty()).orElse(false)) {
+                throw new IllegalArgumentException(
+                    "Cannot create control with risk values, because it must a member of a scope with a risk definition first");
+              }
+            });
+  }
 }

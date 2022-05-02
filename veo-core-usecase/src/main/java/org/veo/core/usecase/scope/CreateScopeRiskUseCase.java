@@ -28,25 +28,32 @@ import org.veo.core.usecase.risk.CreateRiskUseCase;
 
 public class CreateScopeRiskUseCase extends CreateRiskUseCase<Scope, ScopeRisk> {
 
-    public CreateScopeRiskUseCase(RepositoryProvider repositoryProvider,
-            DesignatorService designatorService, EventPublisher eventPublisher) {
-        super(Scope.class, repositoryProvider, designatorService, eventPublisher);
-    }
+  public CreateScopeRiskUseCase(
+      RepositoryProvider repositoryProvider,
+      DesignatorService designatorService,
+      EventPublisher eventPublisher) {
+    super(Scope.class, repositoryProvider, designatorService, eventPublisher);
+  }
 
-    @Override
-    protected void validateRiskDefinition(Scope scope, RiskDefinitionRef riskDefinitionRef,
-            Domain domain) {
-        scope.getRiskDefinition(domain)
-             .ifPresentOrElse(scopeRiskDefinitionRef -> {
-                 if (!scopeRiskDefinitionRef.equals(riskDefinitionRef)) {
-                     throw new IllegalArgumentException(
-                             String.format("Cannot define risk values for risk definition '%s' because the scope uses risk definition '%s'",
-                                           riskDefinitionRef.getIdRef(), scopeRiskDefinitionRef));
-                 }
-             }, () -> {
-                 throw new IllegalArgumentException(
-                         String.format("Cannot define risk values for risk definition '%s' because the scope has no risk definition",
-                                       riskDefinitionRef.getIdRef()));
-             });
-    }
+  @Override
+  protected void validateRiskDefinition(
+      Scope scope, RiskDefinitionRef riskDefinitionRef, Domain domain) {
+    scope
+        .getRiskDefinition(domain)
+        .ifPresentOrElse(
+            scopeRiskDefinitionRef -> {
+              if (!scopeRiskDefinitionRef.equals(riskDefinitionRef)) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Cannot define risk values for risk definition '%s' because the scope uses risk definition '%s'",
+                        riskDefinitionRef.getIdRef(), scopeRiskDefinitionRef));
+              }
+            },
+            () -> {
+              throw new IllegalArgumentException(
+                  String.format(
+                      "Cannot define risk values for risk definition '%s' because the scope has no risk definition",
+                      riskDefinitionRef.getIdRef()));
+            });
+  }
 }

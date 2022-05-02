@@ -36,60 +36,60 @@ import org.veo.core.repository.ScopeRepository;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * Provides information about the {@link Scope} memberships of {@link Element}s.
- */
+/** Provides information about the {@link Scope} memberships of {@link Element}s. */
 @RequiredArgsConstructor
 public class ScopeProvider {
-    private final AssetRepository assetRepository;
-    private final ControlRepository controlRepository;
-    private final ProcessRepository processRepository;
-    private final ScopeRepository scopeRepository;
+  private final AssetRepository assetRepository;
+  private final ControlRepository controlRepository;
+  private final ProcessRepository processRepository;
+  private final ScopeRepository scopeRepository;
 
-    /**
-     * Determines whether given asset may use given risk definition due to its
-     * (direct or indirect) scope memberships.
-     */
-    public boolean canUseRiskDefinition(Asset element, Domain domain,
-            RiskDefinitionRef riskDefinitionRef) {
-        return canUseRiskDefinition(element, domain, riskDefinitionRef, assetRepository);
-    }
+  /**
+   * Determines whether given asset may use given risk definition due to its (direct or indirect)
+   * scope memberships.
+   */
+  public boolean canUseRiskDefinition(
+      Asset element, Domain domain, RiskDefinitionRef riskDefinitionRef) {
+    return canUseRiskDefinition(element, domain, riskDefinitionRef, assetRepository);
+  }
 
-    /**
-     * Determines whether given process may use given risk definition due to its
-     * (direct or indirect) scope memberships.
-     */
-    public boolean canUseRiskDefinition(Process element, Domain domain,
-            RiskDefinitionRef riskDefinitionRef) {
-        return canUseRiskDefinition(element, domain, riskDefinitionRef, processRepository);
-    }
+  /**
+   * Determines whether given process may use given risk definition due to its (direct or indirect)
+   * scope memberships.
+   */
+  public boolean canUseRiskDefinition(
+      Process element, Domain domain, RiskDefinitionRef riskDefinitionRef) {
+    return canUseRiskDefinition(element, domain, riskDefinitionRef, processRepository);
+  }
 
-    /**
-     * Determines whether given control may use given risk definition due to its
-     * (direct or indirect) scope memberships.
-     */
-    public boolean canUseRiskDefinition(Control element, Domain domain,
-            RiskDefinitionRef riskDefinitionRef) {
-        return canUseRiskDefinition(element, domain, riskDefinitionRef, controlRepository);
-    }
+  /**
+   * Determines whether given control may use given risk definition due to its (direct or indirect)
+   * scope memberships.
+   */
+  public boolean canUseRiskDefinition(
+      Control element, Domain domain, RiskDefinitionRef riskDefinitionRef) {
+    return canUseRiskDefinition(element, domain, riskDefinitionRef, controlRepository);
+  }
 
-    private <TElement extends CompositeElement<TElement>> boolean canUseRiskDefinition(
-            TElement element, Domain domain, RiskDefinitionRef riskDef,
-            CompositeElementRepository<TElement> repo) {
-        // Traverse element's composite hierarchy upwards to find its superordinate
-        // composite elements
-        var encounteredElements = new HashSet<Element>();
-        var elementsOnCurrentLevel = Set.of(element);
-        do {
-            if (scopeRepository.canUseRiskDefinition(elementsOnCurrentLevel, riskDef, domain)) {
-                return true;
-            }
-            encounteredElements.addAll(elementsOnCurrentLevel);
-            elementsOnCurrentLevel = repo.findCompositesByParts(elementsOnCurrentLevel);
-            // Ignore elements that have already been encountered (to handle circular
-            // structures).
-            elementsOnCurrentLevel.removeIf(encounteredElements::contains);
-        } while (!elementsOnCurrentLevel.isEmpty());
-        return false;
-    }
+  private <TElement extends CompositeElement<TElement>> boolean canUseRiskDefinition(
+      TElement element,
+      Domain domain,
+      RiskDefinitionRef riskDef,
+      CompositeElementRepository<TElement> repo) {
+    // Traverse element's composite hierarchy upwards to find its superordinate
+    // composite elements
+    var encounteredElements = new HashSet<Element>();
+    var elementsOnCurrentLevel = Set.of(element);
+    do {
+      if (scopeRepository.canUseRiskDefinition(elementsOnCurrentLevel, riskDef, domain)) {
+        return true;
+      }
+      encounteredElements.addAll(elementsOnCurrentLevel);
+      elementsOnCurrentLevel = repo.findCompositesByParts(elementsOnCurrentLevel);
+      // Ignore elements that have already been encountered (to handle circular
+      // structures).
+      elementsOnCurrentLevel.removeIf(encounteredElements::contains);
+    } while (!elementsOnCurrentLevel.isEmpty());
+    return false;
+  }
 }

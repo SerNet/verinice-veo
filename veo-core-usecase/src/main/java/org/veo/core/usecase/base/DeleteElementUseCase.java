@@ -38,43 +38,45 @@ import org.veo.core.usecase.UseCase.EmptyOutput;
 import lombok.Value;
 
 public class DeleteElementUseCase
-        implements TransactionalUseCase<DeleteElementUseCase.InputData, EmptyOutput> {
+    implements TransactionalUseCase<DeleteElementUseCase.InputData, EmptyOutput> {
 
-    private final RepositoryProvider repositoryProvider;
-    private final EventPublisher eventPublisher;
+  private final RepositoryProvider repositoryProvider;
+  private final EventPublisher eventPublisher;
 
-    private static final Set<Class<?>> RELEVANT_CLASSES_FOR_RISK = Set.of(Process.class,
-                                                                          Scenario.class,
-                                                                          Control.class);
+  private static final Set<Class<?>> RELEVANT_CLASSES_FOR_RISK =
+      Set.of(Process.class, Scenario.class, Control.class);
 
-    public DeleteElementUseCase(RepositoryProvider repositoryProvider,
-            EventPublisher eventPublisher) {
-        this.repositoryProvider = repositoryProvider;
-        this.eventPublisher = eventPublisher;
+  public DeleteElementUseCase(
+      RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {
+    this.repositoryProvider = repositoryProvider;
+    this.eventPublisher = eventPublisher;
+  }
+
+  @Override
+  public EmptyOutput execute(InputData input) {
+    ElementRepository<? extends Element> repository =
+        repositoryProvider.getElementRepositoryFor(input.entityClass);
+    Element entity =
+        repository
+            .findById(input.getId())
+            .orElseThrow(
+                () ->
+                    new NotFoundException(
+                        "%s %s was not found.",
+                        input.entityClass.getSimpleName(), input.getId().uuidValue()));
+    entity.checkSameClient(input.authenticatedClient);
+    entity.remove();
+    repository.deleteById(entity.getId());
+    if (RELEVANT_CLASSES_FOR_RISK.contains(input.getEntityClass())) {
+      eventPublisher.publish(new RiskComponentChangeEvent(entity));
     }
+    return EmptyOutput.INSTANCE;
+  }
 
-    @Override
-    public EmptyOutput execute(InputData input) {
-        ElementRepository<? extends Element> repository = repositoryProvider.getElementRepositoryFor(input.entityClass);
-        Element entity = repository.findById(input.getId())
-                                   .orElseThrow(() -> new NotFoundException("%s %s was not found.",
-                                           input.entityClass.getSimpleName(), input.getId()
-                                                                                   .uuidValue()));
-        entity.checkSameClient(input.authenticatedClient);
-        entity.remove();
-        repository.deleteById(entity.getId());
-        if (RELEVANT_CLASSES_FOR_RISK.contains(input.getEntityClass())) {
-            eventPublisher.publish(new RiskComponentChangeEvent(entity));
-        }
-        return EmptyOutput.INSTANCE;
-    }
-
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Class<? extends Element> entityClass;
-        Key<UUID> id;
-        Client authenticatedClient;
-
-    }
-
+  @Value
+  public static class InputData implements UseCase.InputData {
+    Class<? extends Element> entityClass;
+    Key<UUID> id;
+    Client authenticatedClient;
+  }
 }

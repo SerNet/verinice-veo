@@ -35,42 +35,40 @@ import org.veo.persistence.entity.jpa.ValidationService;
 import lombok.NonNull;
 
 @Repository
-public class DomainRepositoryImpl extends
-        AbstractIdentifiableVersionedRepository<Domain, DomainData> implements DomainRepository {
+public class DomainRepositoryImpl
+    extends AbstractIdentifiableVersionedRepository<Domain, DomainData>
+    implements DomainRepository {
 
-    private final DomainDataRepository dataRepository;
+  private final DomainDataRepository dataRepository;
 
-    public DomainRepositoryImpl(DomainDataRepository dataRepository, ValidationService validator) {
-        super(dataRepository, validator);
-        this.dataRepository = dataRepository;
-    }
+  public DomainRepositoryImpl(DomainDataRepository dataRepository, ValidationService validator) {
+    super(dataRepository, validator);
+    this.dataRepository = dataRepository;
+  }
 
-    @Override
-    public Set<Domain> findAllByClient(Key<UUID> clientId) {
-        return dataRepository.findAllByClient(clientId.uuidValue())
-                             .stream()
-                             .map(Domain.class::cast)
-                             .collect(Collectors.toSet());
-    }
+  @Override
+  public Set<Domain> findAllByClient(Key<UUID> clientId) {
+    return dataRepository.findAllByClient(clientId.uuidValue()).stream()
+        .map(Domain.class::cast)
+        .collect(Collectors.toSet());
+  }
 
-    @Override
-    public Set<Domain> findAllByTemplateId(Key<UUID> domainTemplateId) {
-        return dataRepository.findAllByDomainTemplateId(domainTemplateId.uuidValue())
-                             .stream()
-                             .map(Domain.class::cast)
-                             .collect(Collectors.toSet());
-    }
+  @Override
+  public Set<Domain> findAllByTemplateId(Key<UUID> domainTemplateId) {
+    return dataRepository.findAllByDomainTemplateId(domainTemplateId.uuidValue()).stream()
+        .map(Domain.class::cast)
+        .collect(Collectors.toSet());
+  }
 
-    @Override
-    public Optional<Domain> findByCatalogItem(CatalogItem catalogItem) {
-        return dataRepository.findByCatalogsCatalogItemsId(catalogItem.getId()
-                                                                      .uuidValue())
-                             .map(Domain.class::cast);
-    }
+  @Override
+  public Optional<Domain> findByCatalogItem(CatalogItem catalogItem) {
+    return dataRepository
+        .findByCatalogsCatalogItemsId(catalogItem.getId().uuidValue())
+        .map(Domain.class::cast);
+  }
 
-    @Override
-    public Optional<Domain> findById(@NonNull Key<UUID> domainId, @NonNull Key<UUID> clientId) {
-        return dataRepository.findById(domainId.uuidValue(), clientId.uuidValue());
-    }
-
+  @Override
+  public Optional<Domain> findById(@NonNull Key<UUID> domainId, @NonNull Key<UUID> clientId) {
+    return dataRepository.findById(domainId.uuidValue(), clientId.uuidValue());
+  }
 }

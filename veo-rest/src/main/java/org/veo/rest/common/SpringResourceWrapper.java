@@ -28,15 +28,15 @@ import lombok.Value;
 
 @Value
 public class SpringResourceWrapper implements VeoInputStreamResource {
-    Resource resource;
+  Resource resource;
 
-    @Override
-    public InputStream getInputStream() throws IOException {
-        return resource.getInputStream();
-    }
+  @Override
+  public InputStream getInputStream() throws IOException {
+    return resource.getInputStream();
+  }
 
-    @Override
-    public String getDescription() {
-        return resource.getDescription();
-    }
+  @Override
+  public String getDescription() {
+    return resource.getDescription();
+  }
 }

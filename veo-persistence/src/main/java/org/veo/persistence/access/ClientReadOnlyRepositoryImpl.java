@@ -35,11 +35,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ClientReadOnlyRepositoryImpl implements ClientReadOnlyRepository {
 
-    private final ClientDataRepository clientDataRepository;
+  private final ClientDataRepository clientDataRepository;
 
-    @Override
-    public Optional<Client> findById(Key<UUID> id) {
-        return clientDataRepository.findById(id.uuidValue())
-                                   .map(Client.class::cast);
-    }
+  @Override
+  public Optional<Client> findById(Key<UUID> id) {
+    return clientDataRepository.findById(id.uuidValue()).map(Client.class::cast);
+  }
 }

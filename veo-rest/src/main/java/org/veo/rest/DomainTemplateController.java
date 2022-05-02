@@ -54,12 +54,12 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * REST service which provides methods to manage domain templates.
- * <p>
- * Uses async calls with {@code CompletableFuture} to parallelize long running
- * operations (i.e. network calls to the database or to other HTTP services).
+ *
+ * <p>Uses async calls with {@code CompletableFuture} to parallelize long running operations (i.e.
+ * network calls to the database or to other HTTP services).
  *
  * @see <a href=
- *      "https://spring.io/guides/gs/async-method">https://spring.io/guides/gs/async-method/</a>
+ *     "https://spring.io/guides/gs/async-method">https://spring.io/guides/gs/async-method/</a>
  */
 @RestController
 @RequestMapping(DomainTemplateController.URL_BASE_PATH)
@@ -67,42 +67,48 @@ import lombok.RequiredArgsConstructor;
 @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
 public class DomainTemplateController {
 
-    public static final String URL_BASE_PATH = "/" + DomainTemplate.PLURAL_TERM;
+  public static final String URL_BASE_PATH = "/" + DomainTemplate.PLURAL_TERM;
 
-    private final UseCaseInteractor useCaseInteractor;
-    private final CreateDomainUseCase createDomainUseCase;
-    private final CreateDomainTemplateUseCase createDomainTemplatesUseCase;
-    private final EntityFactory entityFactory;
-    private final IdentifiableFactory identifiableFactory;
-    private final DomainAssociationTransformer domainAssociationTransformer;
+  private final UseCaseInteractor useCaseInteractor;
+  private final CreateDomainUseCase createDomainUseCase;
+  private final CreateDomainTemplateUseCase createDomainTemplatesUseCase;
+  private final EntityFactory entityFactory;
+  private final IdentifiableFactory identifiableFactory;
+  private final DomainAssociationTransformer domainAssociationTransformer;
 
-    @PostMapping(value = "/{id}/createdomains")
-    @Operation(summary = "Creates domains from a domain template")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Domain(s) created") })
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomainFromTemplate(
-            Authentication auth, @PathVariable String id,
-            @RequestParam(value = "clientids", required = false) List<String> clientIds) {
-        return useCaseInteractor.execute(createDomainUseCase,
-                                         new CreateDomainUseCase.InputData(id,
-                                                 Optional.ofNullable(clientIds)),
-                                         out -> ResponseEntity.noContent()
-                                                              .build());
-    }
+  @PostMapping(value = "/{id}/createdomains")
+  @Operation(summary = "Creates domains from a domain template")
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Domain(s) created")})
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomainFromTemplate(
+      Authentication auth,
+      @PathVariable String id,
+      @RequestParam(value = "clientids", required = false) List<String> clientIds) {
+    return useCaseInteractor.execute(
+        createDomainUseCase,
+        new CreateDomainUseCase.InputData(id, Optional.ofNullable(clientIds)),
+        out -> ResponseEntity.noContent().build());
+  }
 
-    @PostMapping()
-    @Operation(summary = "Creates domain template")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Domain template created"),
-            @ApiResponse(responseCode = "409",
-                         description = "Domain template with given ID already exists") })
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomainTemplate(
-            @Valid @NotNull @RequestBody TransformDomainTemplateDto domainTemplateDto) {
-        var input = CreateDomainTemplateInputMapper.map(domainTemplateDto, identifiableFactory,
-                                                        entityFactory,
-                                                        domainAssociationTransformer);
-        return useCaseInteractor.execute(createDomainTemplatesUseCase, input, out -> {
-            var body = CreateOutputMapper.map(out.getDomainTemplate());
-            return RestApiResponse.created(URL_BASE_PATH, body);
+  @PostMapping()
+  @Operation(summary = "Creates domain template")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "201", description = "Domain template created"),
+        @ApiResponse(
+            responseCode = "409",
+            description = "Domain template with given ID already exists")
+      })
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomainTemplate(
+      @Valid @NotNull @RequestBody TransformDomainTemplateDto domainTemplateDto) {
+    var input =
+        CreateDomainTemplateInputMapper.map(
+            domainTemplateDto, identifiableFactory, entityFactory, domainAssociationTransformer);
+    return useCaseInteractor.execute(
+        createDomainTemplatesUseCase,
+        input,
+        out -> {
+          var body = CreateOutputMapper.map(out.getDomainTemplate());
+          return RestApiResponse.created(URL_BASE_PATH, body);
         });
-    }
+  }
 }

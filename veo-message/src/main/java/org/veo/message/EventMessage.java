@@ -35,10 +35,11 @@ import lombok.Setter;
 /**
  * A message about stored events.
  *
- * Receivers should bear in mind that:
+ * <p>Receivers should bear in mind that:
+ *
  * <ul>
- * <li>messages may be send in another order than the original events occurred
- * <li>messages may be duplicated (use de-duplication in receivers)
+ *   <li>messages may be send in another order than the original events occurred
+ *   <li>messages may be duplicated (use de-duplication in receivers)
  * </ul>
  *
  * @see StoredEvent
@@ -51,24 +52,23 @@ import lombok.Setter;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class EventMessage {
 
-    String routingKey;
+  String routingKey;
 
-    String content;
+  String content;
 
-    @EqualsAndHashCode.Include
-    Long id;
+  @EqualsAndHashCode.Include Long id;
 
-    Instant timestamp;
+  Instant timestamp;
 
-    public static EventMessage from(StoredEvent event) {
-        return new EventMessage(event.getRoutingKey(), event.getContent(), event.getId(),
-                event.getTimestamp() != null ? event.getTimestamp() : Instant.now());
-    }
+  public static EventMessage from(StoredEvent event) {
+    return new EventMessage(
+        event.getRoutingKey(),
+        event.getContent(),
+        event.getId(),
+        event.getTimestamp() != null ? event.getTimestamp() : Instant.now());
+  }
 
-    public static Set<EventMessage> messagesFrom(Collection<StoredEvent> events) {
-        return events.stream()
-                     .map(EventMessage::from)
-                     .collect(Collectors.toSet());
-    }
-
+  public static Set<EventMessage> messagesFrom(Collection<StoredEvent> events) {
+    return events.stream().map(EventMessage::from).collect(Collectors.toSet());
+  }
 }

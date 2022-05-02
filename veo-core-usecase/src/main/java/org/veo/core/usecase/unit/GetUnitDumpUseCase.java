@@ -39,45 +39,45 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class GetUnitDumpUseCase implements
-        TransactionalUseCase<GetUnitDumpUseCase.InputData, GetUnitDumpUseCase.OutputData> {
-    private final AccountProvider accountProvider;
-    private final RepositoryProvider repositoryProvider;
-    private final UnitRepository unitRepository;
+public class GetUnitDumpUseCase
+    implements TransactionalUseCase<GetUnitDumpUseCase.InputData, GetUnitDumpUseCase.OutputData> {
+  private final AccountProvider accountProvider;
+  private final RepositoryProvider repositoryProvider;
+  private final UnitRepository unitRepository;
 
-    @Override
-    public OutputData execute(InputData input) {
-        if (!accountProvider.getCurrentUserAccount()
-                            .isAdmin()) {
-            throw new MissingAdminPrivilegesException();
-        }
-        var unit = unitRepository.findById(input.unitId)
-                                 .orElseThrow(() -> new NotFoundException(
-                                         String.format("Unit %s does not exist.", input.unitId)));
-        return new OutputData(unit, getElements(unit));
+  @Override
+  public OutputData execute(InputData input) {
+    if (!accountProvider.getCurrentUserAccount().isAdmin()) {
+      throw new MissingAdminPrivilegesException();
     }
+    var unit =
+        unitRepository
+            .findById(input.unitId)
+            .orElseThrow(
+                () ->
+                    new NotFoundException(String.format("Unit %s does not exist.", input.unitId)));
+    return new OutputData(unit, getElements(unit));
+  }
 
-    private Set<Element> getElements(Unit unit) {
-        return EntityType.ELEMENT_TYPE_CLASSES.stream()
-                                              .map(repositoryProvider::getElementRepositoryFor)
-                                              .map(repo -> repo.query(unit.getClient()))
-                                              .map(query -> query.whereUnitIn(Set.of(unit)))
-                                              .flatMap(query -> query.execute(PagingConfiguration.UNPAGED)
-                                                                     .getResultPage()
-                                                                     .stream())
-                                              .collect(Collectors.toSet());
-    }
+  private Set<Element> getElements(Unit unit) {
+    return EntityType.ELEMENT_TYPE_CLASSES.stream()
+        .map(repositoryProvider::getElementRepositoryFor)
+        .map(repo -> repo.query(unit.getClient()))
+        .map(query -> query.whereUnitIn(Set.of(unit)))
+        .flatMap(query -> query.execute(PagingConfiguration.UNPAGED).getResultPage().stream())
+        .collect(Collectors.toSet());
+  }
 
-    @Data
-    @AllArgsConstructor
-    public static class InputData implements UseCase.InputData {
-        private Key<UUID> unitId;
-    }
+  @Data
+  @AllArgsConstructor
+  public static class InputData implements UseCase.InputData {
+    private Key<UUID> unitId;
+  }
 
-    @Data
-    @AllArgsConstructor
-    public static class OutputData implements UseCase.OutputData {
-        private Unit unit;
-        private Set<Element> elements;
-    }
+  @Data
+  @AllArgsConstructor
+  public static class OutputData implements UseCase.OutputData {
+    private Unit unit;
+    private Set<Element> elements;
+  }
 }

@@ -34,57 +34,56 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-/**
- * Base transfer object for DomainTemplates. Contains common data for all
- * DomainTemplate DTOs.
- */
+/** Base transfer object for DomainTemplates. Contains common data for all DomainTemplate DTOs. */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfReferencingDto
-        implements NameableDto {
+    implements NameableDto {
 
-    @NotNull(message = "A name must be present.")
-    @Schema(description = "The name for the DomainTemplate.",
-            example = "Data protection",
-            required = true)
-    @Size(max = Nameable.NAME_MAX_LENGTH)
-    private String name;
+  @NotNull(message = "A name must be present.")
+  @Schema(
+      description = "The name for the DomainTemplate.",
+      example = "Data protection",
+      required = true)
+  @Size(max = Nameable.NAME_MAX_LENGTH)
+  private String name;
 
-    @Schema(description = "The abbreviation for the DomainTemplate.", example = "DSGVO")
-    @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
-    private String abbreviation;
+  @Schema(description = "The abbreviation for the DomainTemplate.", example = "DSGVO")
+  @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
+  private String abbreviation;
 
-    @Schema(description = "The description for the DomainTemplate.")
-    @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
-    private String description;
+  @Schema(description = "The description for the DomainTemplate.")
+  @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
+  private String description;
 
-    @NotNull(message = "A authority must be present.")
-    @Schema(description = "The authority for the DomainTemplate.", example = "ISO", required = true)
-    @Size(min = 1, max = DomainTemplate.AUTHORITY_MAX_LENGTH)
-    private String authority;
+  @NotNull(message = "A authority must be present.")
+  @Schema(description = "The authority for the DomainTemplate.", example = "ISO", required = true)
+  @Size(min = 1, max = DomainTemplate.AUTHORITY_MAX_LENGTH)
+  private String authority;
 
-    @NotNull(message = "A templateVersion must be present.")
-    @Schema(description = "The templateVersion for the DomainTemplate.",
-            example = "1.0",
-            required = true)
-    @Size(min = 1, max = DomainTemplate.TEMPLATE_VERSION_MAX_LENGTH)
-    private String templateVersion;
+  @NotNull(message = "A templateVersion must be present.")
+  @Schema(
+      description = "The templateVersion for the DomainTemplate.",
+      example = "1.0",
+      required = true)
+  @Size(min = 1, max = DomainTemplate.TEMPLATE_VERSION_MAX_LENGTH)
+  private String templateVersion;
 
-    @NotNull(message = "A revision must be present.")
-    @Schema(description = "The revision for the DomainTemplate.", example = "0", required = true)
-    @Size(min = 1, max = DomainTemplate.REVISION_MAX_LENGTH)
-    private String revision;
+  @NotNull(message = "A revision must be present.")
+  @Schema(description = "The revision for the DomainTemplate.", example = "0", required = true)
+  @Size(min = 1, max = DomainTemplate.REVISION_MAX_LENGTH)
+  private String revision;
 
-    @Schema(description = "A list of catalogs belonging to the DomainTemplate.")
-    private Set<AbstractCatalogDto> catalogs;
+  @Schema(description = "A list of catalogs belonging to the DomainTemplate.")
+  private Set<AbstractCatalogDto> catalogs;
 
-    @Schema(description = "A list of risk definitions belonging to the DomainTemplate.")
-    private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
+  @Schema(description = "A list of risk definitions belonging to the DomainTemplate.")
+  private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
 
-    @Override
-    public Class<? extends Identifiable> getModelInterface() {
-        return DomainTemplate.class;
-    }
+  @Override
+  public Class<? extends Identifiable> getModelInterface() {
+    return DomainTemplate.class;
+  }
 }

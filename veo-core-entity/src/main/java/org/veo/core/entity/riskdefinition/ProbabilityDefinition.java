@@ -26,28 +26,23 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-/**
- * A special dimension defining the probability levels.
- */
+/** A special dimension defining the probability levels. */
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
 public class ProbabilityDefinition extends DimensionDefinition {
 
-    public ProbabilityDefinition(String name, String abbreviation, String description,
-            List<ProbabilityLevel> levels) {
-        super(DIMENSION_PROBABILITY, name, abbreviation, description);
-        this.levels = levels;
-        initLevel(levels);
-    }
+  public ProbabilityDefinition(
+      String name, String abbreviation, String description, List<ProbabilityLevel> levels) {
+    super(DIMENSION_PROBABILITY, name, abbreviation, description);
+    this.levels = levels;
+    initLevel(levels);
+  }
 
-    @EqualsAndHashCode.Include
-    private List<ProbabilityLevel> levels = new ArrayList<>();
+  @EqualsAndHashCode.Include private List<ProbabilityLevel> levels = new ArrayList<>();
 
-    public Optional<ProbabilityLevel> getLevel(int ordinalValue) {
-        return levels.stream()
-                     .filter(l -> l.getOrdinalValue() == ordinalValue)
-                     .findFirst();
-    }
+  public Optional<ProbabilityLevel> getLevel(int ordinalValue) {
+    return levels.stream().filter(l -> l.getOrdinalValue() == ordinalValue).findFirst();
+  }
 }

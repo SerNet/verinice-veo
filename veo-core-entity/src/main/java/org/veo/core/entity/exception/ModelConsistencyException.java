@@ -20,11 +20,11 @@ package org.veo.core.entity.exception;
 import org.veo.core.entity.DomainException;
 
 /**
- * Runtime exception that is thrown when an attempted operation would violate
- * the consistency rules of the domain model.
+ * Runtime exception that is thrown when an attempted operation would violate the consistency rules
+ * of the domain model.
  */
 public class ModelConsistencyException extends DomainException {
-    public ModelConsistencyException(String messageTemplate, Object... arguments) {
-        super(String.format(messageTemplate, arguments));
-    }
+  public ModelConsistencyException(String messageTemplate, Object... arguments) {
+    super(String.format(messageTemplate, arguments));
+  }
 }

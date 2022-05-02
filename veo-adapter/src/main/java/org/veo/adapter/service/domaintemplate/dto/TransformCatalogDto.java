@@ -37,17 +37,17 @@ import lombok.ToString;
 @Data
 public class TransformCatalogDto extends CompositeCatalogDto implements IdentifiableDto {
 
-    @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
-    @Schema(description = "ID must be a valid UUID string following RFC 4122.",
-            example = "adf037f1-0089-48ad-9177-92269918758b",
-            format = "uuid")
-    @ToString.Include
-    private String id;
+  @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
+  @Schema(
+      description = "ID must be a valid UUID string following RFC 4122.",
+      example = "adf037f1-0089-48ad-9177-92269918758b",
+      format = "uuid")
+  @ToString.Include
+  private String id;
 
-    @JsonDeserialize(contentAs = TransformCatalogItemDto.class)
-    @Override
-    public void setCatalogItems(Set<CompositeCatalogItemDto> catalogItems) {
-        super.setCatalogItems(catalogItems);
-    }
-
+  @JsonDeserialize(contentAs = TransformCatalogItemDto.class)
+  @Override
+  public void setCatalogItems(Set<CompositeCatalogItemDto> catalogItems) {
+    super.setCatalogItems(catalogItems);
+  }
 }

@@ -33,46 +33,57 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "DeterminedRisk", description = "A collection of risk values for a risk category.")
 public interface DeterminedRiskSchema {
 
-    @Schema(description = "The risk that was determined from the combination of impact and "
-            + "probability. Does not take existing controls into account (gross risk). "
-            + "A scalar value that matches a valid probability level from a risk-definition.",
-            example = "3",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @PositiveOrZero
-    BigDecimal getInherentRisk();
+  @Schema(
+      description =
+          "The risk that was determined from the combination of impact and "
+              + "probability. Does not take existing controls into account (gross risk). "
+              + "A scalar value that matches a valid probability level from a risk-definition.",
+      example = "3",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  @PositiveOrZero
+  BigDecimal getInherentRisk();
 
-    @Schema(description = "The risk that remains after taking controls into account as entered by"
-            + " the user. A scalar value that matches a valid risk level from a risk-definition.",
-            example = "3")
-    @PositiveOrZero
-    BigDecimal getResidualRisk();
+  @Schema(
+      description =
+          "The risk that remains after taking controls into account as entered by"
+              + " the user. A scalar value that matches a valid risk level from a risk-definition.",
+      example = "3")
+  @PositiveOrZero
+  BigDecimal getResidualRisk();
 
-    @Schema(description = "The inherent risk becomes the effective risk - unless it is "
-            + "overruled by  the user-defined residual risk. A scalar value that matches a valid "
-            + "risk level from  a risk-definition.",
-            example = "3",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @PositiveOrZero
-    BigDecimal getEffectiveRisk();
+  @Schema(
+      description =
+          "The inherent risk becomes the effective risk - unless it is "
+              + "overruled by  the user-defined residual risk. A scalar value that matches a valid "
+              + "risk level from  a risk-definition.",
+      example = "3",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  @PositiveOrZero
+  BigDecimal getEffectiveRisk();
 
-    @Schema(description = "An explanation for the user's choice of residual risk.",
-            example = "Our controls are so good, even our controls are controlled by "
-                    + "controls.")
-    @Size(max = DeterminedRisk.EXPLANATION_MAX_LENGTH)
-    String getResidualRiskExplanation();
+  @Schema(
+      description = "An explanation for the user's choice of residual risk.",
+      example = "Our controls are so good, even our controls are controlled by " + "controls.")
+  @Size(max = DeterminedRisk.EXPLANATION_MAX_LENGTH)
+  String getResidualRiskExplanation();
 
-    @ArraySchema(schema = @Schema(description = "A choice of risk-treatment options as selected by the user.",
-                                  example = "RISK_TREATMENT_ACCEPTANCE"))
-    Set<RiskTreatmentOption> getRiskTreatments();
+  @ArraySchema(
+      schema =
+          @Schema(
+              description = "A choice of risk-treatment options as selected by the user.",
+              example = "RISK_TREATMENT_ACCEPTANCE"))
+  Set<RiskTreatmentOption> getRiskTreatments();
 
-    @Schema(description = "The user's explanation for her choice of risk treatment methods.",
-            example = "3")
-    @Size(max = DeterminedRisk.EXPLANATION_MAX_LENGTH)
-    String getRiskTreatmentExplanation();
+  @Schema(
+      description = "The user's explanation for her choice of risk treatment methods.",
+      example = "3")
+  @Size(max = DeterminedRisk.EXPLANATION_MAX_LENGTH)
+  String getRiskTreatmentExplanation();
 
-    @Schema(description = "A scalar value that matches a valid risk category from a risk-definition, such as confidentiality, integrity, availability...",
-            example = "C")
-    @Size(max = CategoryRef.MAX_ID_LENGTH)
-    String getCategory();
-
+  @Schema(
+      description =
+          "A scalar value that matches a valid risk category from a risk-definition, such as confidentiality, integrity, availability...",
+      example = "C")
+  @Size(max = CategoryRef.MAX_ID_LENGTH)
+  String getCategory();
 }

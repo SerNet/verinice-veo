@@ -46,37 +46,37 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
 public class AdminController {
-    private final UseCaseInteractor useCaseInteractor;
-    private final DeleteClientUseCase deleteClientUseCase;
-    private final GetUnitDumpUseCase getUnitDumpUseCase;
-    private final UpdateAllClientDomainsUseCase updateAllClientDomainsUseCase;
-    private final EntityToDtoTransformer entityToDtoTransformer;
+  private final UseCaseInteractor useCaseInteractor;
+  private final DeleteClientUseCase deleteClientUseCase;
+  private final GetUnitDumpUseCase getUnitDumpUseCase;
+  private final UpdateAllClientDomainsUseCase updateAllClientDomainsUseCase;
+  private final EntityToDtoTransformer entityToDtoTransformer;
 
-    public static final String URL_BASE_PATH = "/admin";
+  public static final String URL_BASE_PATH = "/admin";
 
-    @DeleteMapping("/client/{clientId}")
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteClient(
-            @PathVariable String clientId) {
-        return useCaseInteractor.execute(deleteClientUseCase, new DeleteClientUseCase.InputData(
-                Key.uuidFrom(clientId)), out -> ResponseEntity.noContent()
-                                                              .build());
-    }
+  @DeleteMapping("/client/{clientId}")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteClient(
+      @PathVariable String clientId) {
+    return useCaseInteractor.execute(
+        deleteClientUseCase,
+        new DeleteClientUseCase.InputData(Key.uuidFrom(clientId)),
+        out -> ResponseEntity.noContent().build());
+  }
 
-    @GetMapping("/unit-dump/{unitId}")
-    public CompletableFuture<UnitDumpDto> getUnitDump(@PathVariable String unitId) {
-        return useCaseInteractor.execute(getUnitDumpUseCase,
-                                         (Supplier<GetUnitDumpUseCase.InputData>) () -> UnitDumpMapper.mapInput(unitId),
-                                         out -> UnitDumpMapper.mapOutput(out,
-                                                                         entityToDtoTransformer));
-    }
+  @GetMapping("/unit-dump/{unitId}")
+  public CompletableFuture<UnitDumpDto> getUnitDump(@PathVariable String unitId) {
+    return useCaseInteractor.execute(
+        getUnitDumpUseCase,
+        (Supplier<GetUnitDumpUseCase.InputData>) () -> UnitDumpMapper.mapInput(unitId),
+        out -> UnitDumpMapper.mapOutput(out, entityToDtoTransformer));
+  }
 
-    @PostMapping("domaintemplates/{id}/allclientsupdate")
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> updateAllClientDomains(
-            @PathVariable String id) {
-        return useCaseInteractor.execute(updateAllClientDomainsUseCase,
-                                         new UpdateAllClientDomainsUseCase.InputData(
-                                                 Key.uuidFrom(id)),
-                                         out -> ResponseEntity.noContent()
-                                                              .build());
-    }
+  @PostMapping("domaintemplates/{id}/allclientsupdate")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> updateAllClientDomains(
+      @PathVariable String id) {
+    return useCaseInteractor.execute(
+        updateAllClientDomainsUseCase,
+        new UpdateAllClientDomainsUseCase.InputData(Key.uuidFrom(id)),
+        out -> ResponseEntity.noContent().build());
+  }
 }

@@ -38,34 +38,33 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class ReferenceDeserializer extends JsonDeserializer<SyntheticIdRef<?>> {
-    private static final String UUID_REGEX = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
+  private static final String UUID_REGEX =
+      "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
 
-    public static final String TARGET_URI = "targetUri";
-    private final ReferenceAssembler urlAssembler;
+  public static final String TARGET_URI = "targetUri";
+  private final ReferenceAssembler urlAssembler;
 
-    public ReferenceDeserializer(ReferenceAssembler urlAssembler) {
-        this.urlAssembler = urlAssembler;
+  public ReferenceDeserializer(ReferenceAssembler urlAssembler) {
+    this.urlAssembler = urlAssembler;
+  }
+
+  @Override
+  public SyntheticIdRef<?> deserialize(JsonParser p, DeserializationContext ctxt)
+      throws IOException, JsonProcessingException {
+    TreeNode treeNode = p.getCodec().readTree(p);
+    TextNode targetUri = (TextNode) treeNode.get(TARGET_URI);
+    String asText = targetUri.asText();
+
+    Pattern compile = Pattern.compile(".*\\/([a-z]*)\\/(" + UUID_REGEX + ")");
+
+    Matcher matcher = compile.matcher(asText);
+    if (matcher.matches()) {
+      String term = matcher.group(1);
+      Class<Identifiable> type = (Class<Identifiable>) EntityType.getTypeForPluralTerm(term);
+      String id = matcher.group(2);
+      return new SyntheticIdRef<Identifiable>(id, type, urlAssembler);
     }
 
-    @Override
-    public SyntheticIdRef<?> deserialize(JsonParser p, DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
-        TreeNode treeNode = p.getCodec()
-                             .readTree(p);
-        TextNode targetUri = (TextNode) treeNode.get(TARGET_URI);
-        String asText = targetUri.asText();
-
-        Pattern compile = Pattern.compile(".*\\/([a-z]*)\\/(" + UUID_REGEX + ")");
-
-        Matcher matcher = compile.matcher(asText);
-        if (matcher.matches()) {
-            String term = matcher.group(1);
-            Class<Identifiable> type = (Class<Identifiable>) EntityType.getTypeForPluralTerm(term);
-            String id = matcher.group(2);
-            return new SyntheticIdRef<Identifiable>(id, type, urlAssembler);
-        }
-
-        return null;
-    }
-
+    return null;
+  }
 }

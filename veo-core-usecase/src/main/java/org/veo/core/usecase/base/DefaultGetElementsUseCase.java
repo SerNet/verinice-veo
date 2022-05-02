@@ -22,15 +22,15 @@ import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.ElementRepository;
 
 /**
- * Base class for get-elements use cases that use the default
- * {@link GetElementsUseCase.InputData}
+ * Base class for get-elements use cases that use the default {@link GetElementsUseCase.InputData}
  */
 public abstract class DefaultGetElementsUseCase<T extends Element>
-        extends GetElementsUseCase<T, GetElementsUseCase.InputData> {
+    extends GetElementsUseCase<T, GetElementsUseCase.InputData> {
 
-    protected DefaultGetElementsUseCase(ClientRepository clientRepository,
-            ElementRepository<T> repository, UnitHierarchyProvider unitHierarchyProvider) {
-        super(clientRepository, repository, unitHierarchyProvider);
-    }
-
+  protected DefaultGetElementsUseCase(
+      ClientRepository clientRepository,
+      ElementRepository<T> repository,
+      UnitHierarchyProvider unitHierarchyProvider) {
+    super(clientRepository, repository, unitHierarchyProvider);
+  }
 }

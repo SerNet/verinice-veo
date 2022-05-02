@@ -19,6 +19,4 @@ package org.veo.persistence.access.jpa;
 
 import org.veo.persistence.entity.jpa.ControlData;
 
-public interface ControlDataRepository extends CompositeEntityDataRepository<ControlData> {
-
-}
+public interface ControlDataRepository extends CompositeEntityDataRepository<ControlData> {}

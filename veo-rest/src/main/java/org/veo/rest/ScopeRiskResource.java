@@ -51,56 +51,74 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
 public interface ScopeRiskResource {
 
-    String RESOURCE_NAME = "risks";
+  String RESOURCE_NAME = "risks";
 
-    String RELPATH = "/{scopeId}/" + RESOURCE_NAME;
+  String RELPATH = "/{scopeId}/" + RESOURCE_NAME;
 
-    @GetMapping(value = RELPATH, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Returns all risks for this scope")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Risks returned",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)) })
-    @Valid
-    CompletableFuture<List<ScopeRiskDto>> getRisks(@Parameter(hidden = true) ApplicationUser user,
-            @PathVariable String scopeId);
+  @GetMapping(value = RELPATH, produces = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Returns all risks for this scope")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Risks returned",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+      })
+  @Valid
+  CompletableFuture<List<ScopeRiskDto>> getRisks(
+      @Parameter(hidden = true) ApplicationUser user, @PathVariable String scopeId);
 
-    @GetMapping(value = RELPATH + "/{scenarioId}")
-    @Operation(summary = "Retrieves an scope risk")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Risk retrieved",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = ScopeRiskDto.class))),
-            @ApiResponse(responseCode = "404", description = "Risk not found") })
-    @Valid
-    CompletableFuture<ResponseEntity<ScopeRiskDto>> getRisk(
-            @Parameter(hidden = true) ApplicationUser user, @PathVariable String scopeId,
-            @PathVariable String scenarioId);
+  @GetMapping(value = RELPATH + "/{scenarioId}")
+  @Operation(summary = "Retrieves an scope risk")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Risk retrieved",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ScopeRiskDto.class))),
+        @ApiResponse(responseCode = "404", description = "Risk not found")
+      })
+  @Valid
+  CompletableFuture<ResponseEntity<ScopeRiskDto>> getRisk(
+      @Parameter(hidden = true) ApplicationUser user,
+      @PathVariable String scopeId,
+      @PathVariable String scenarioId);
 
-    @Operation(summary = "Creates a risk")
-    @PostMapping(value = RELPATH)
-    @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Risk created") })
-    CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
-            @Parameter(hidden = true) ApplicationUser user,
-            @Valid @NotNull @RequestBody ScopeRiskDto dto, @PathVariable String scopeId);
+  @Operation(summary = "Creates a risk")
+  @PostMapping(value = RELPATH)
+  @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Risk created")})
+  CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
+      @Parameter(hidden = true) ApplicationUser user,
+      @Valid @NotNull @RequestBody ScopeRiskDto dto,
+      @PathVariable String scopeId);
 
-    @PutMapping(value = RELPATH + "/{scenarioId}")
-    @Operation(summary = "Updates a risk")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Risk updated"),
-            @ApiResponse(responseCode = "404", description = "Risk not found") })
-    @Valid
-    CompletableFuture<ResponseEntity<ScopeRiskDto>> updateRisk(
-            @Parameter(hidden = true) ApplicationUser user, @PathVariable String scopeId,
-            @PathVariable String scenarioId, @Valid @NotNull @RequestBody ScopeRiskDto scopeDto,
-            @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag);
+  @PutMapping(value = RELPATH + "/{scenarioId}")
+  @Operation(summary = "Updates a risk")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Risk updated"),
+        @ApiResponse(responseCode = "404", description = "Risk not found")
+      })
+  @Valid
+  CompletableFuture<ResponseEntity<ScopeRiskDto>> updateRisk(
+      @Parameter(hidden = true) ApplicationUser user,
+      @PathVariable String scopeId,
+      @PathVariable String scenarioId,
+      @Valid @NotNull @RequestBody ScopeRiskDto scopeDto,
+      @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag);
 
-    @DeleteMapping(value = RELPATH + "/{scenarioId}")
-    @Operation(summary = "Removes a risk")
-    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Risk deleted"),
-            @ApiResponse(responseCode = "404", description = "Risk not found") })
-    CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(
-            @Parameter(hidden = true) ApplicationUser user, @PathVariable String scopeId,
-            @PathVariable String scenarioId);
-
+  @DeleteMapping(value = RELPATH + "/{scenarioId}")
+  @Operation(summary = "Removes a risk")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "204", description = "Risk deleted"),
+        @ApiResponse(responseCode = "404", description = "Risk not found")
+      })
+  CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(
+      @Parameter(hidden = true) ApplicationUser user,
+      @PathVariable String scopeId,
+      @PathVariable String scenarioId);
 }

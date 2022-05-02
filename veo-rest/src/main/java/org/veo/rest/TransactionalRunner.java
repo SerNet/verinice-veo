@@ -24,15 +24,15 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Executes actions within a new DB transaction. Can be called from controllers.
- * This can be used when the transaction boundaries for the usecase execution
- * and the DTO transformation are separated.
+ * Executes actions within a new DB transaction. Can be called from controllers. This can be used
+ * when the transaction boundaries for the usecase execution and the DTO transformation are
+ * separated.
  */
 @Component
 public class TransactionalRunner {
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public <T> T run(Supplier<T> action) {
-        return action.get();
-    }
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  public <T> T run(Supplier<T> action) {
+    return action.get();
+  }
 }

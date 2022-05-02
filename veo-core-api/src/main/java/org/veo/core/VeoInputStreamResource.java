@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public interface VeoInputStreamResource {
-    InputStream getInputStream() throws IOException;
+  InputStream getInputStream() throws IOException;
 
-    String getDescription();
+  String getDescription();
 }

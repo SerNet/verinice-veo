@@ -28,15 +28,14 @@ import lombok.Value;
 @Schema(description = "Translations for an entity type in a specific language")
 public class TranslationDto {
 
-    private Map<String, String> translations;
+  private Map<String, String> translations;
 
-    public static TranslationDto of(Map<String, String> value) {
-        return new TranslationDto(value);
-    }
+  public static TranslationDto of(Map<String, String> value) {
+    return new TranslationDto(value);
+  }
 
-    @JsonAnyGetter
-    Map<String, String> getTranslations() {
-        return translations;
-    }
-
+  @JsonAnyGetter
+  Map<String, String> getTranslations() {
+    return translations;
+  }
 }

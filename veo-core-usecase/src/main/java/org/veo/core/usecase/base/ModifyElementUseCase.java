@@ -32,94 +32,98 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 @RequiredArgsConstructor
-public abstract class ModifyElementUseCase<T extends Element> implements
-        TransactionalUseCase<ModifyElementUseCase.InputData<T>, ModifyElementUseCase.OutputData<T>> {
+public abstract class ModifyElementUseCase<T extends Element>
+    implements TransactionalUseCase<
+        ModifyElementUseCase.InputData<T>, ModifyElementUseCase.OutputData<T>> {
 
-    private final ElementRepository<T> repo;
-    private final Decider decider;
+  private final ElementRepository<T> repo;
+  private final Decider decider;
 
-    @Override
-    public OutputData<T> execute(InputData<T> input) {
-        T entity = input.getElement();
-        entity.checkSameClient(input.getAuthenticatedClient());
-        var storedEntity = repo.findById(input.element.getId())
-                               .orElseThrow();
-        checkETag(storedEntity, input);
-        entity.version(input.username, storedEntity);
-        checkClientBoundaries(input, storedEntity);
-        checkSubTypeChange(entity, storedEntity);
-        // The designator is read-only so it must stay the same.
-        entity.setDesignator(storedEntity.getDesignator());
-        evaluateDecisions(entity, storedEntity);
-        validate(storedEntity, entity);
-        DomainSensitiveElementValidator.validate(entity);
-        return new OutputData<T>(repo.save(entity));
+  @Override
+  public OutputData<T> execute(InputData<T> input) {
+    T entity = input.getElement();
+    entity.checkSameClient(input.getAuthenticatedClient());
+    var storedEntity = repo.findById(input.element.getId()).orElseThrow();
+    checkETag(storedEntity, input);
+    entity.version(input.username, storedEntity);
+    checkClientBoundaries(input, storedEntity);
+    checkSubTypeChange(entity, storedEntity);
+    // The designator is read-only so it must stay the same.
+    entity.setDesignator(storedEntity.getDesignator());
+    evaluateDecisions(entity, storedEntity);
+    validate(storedEntity, entity);
+    DomainSensitiveElementValidator.validate(entity);
+    return new OutputData<T>(repo.save(entity));
+  }
+
+  protected void evaluateDecisions(T entity, T storedEntity) {
+    entity
+        .getDomains()
+        .forEach(
+            domain -> {
+              entity.setDecisionResults(decider.decide(entity, domain), domain);
+            });
+  }
+
+  protected abstract void validate(T oldElement, T newElement);
+
+  private void checkSubTypeChange(T newElement, T oldElement) {
+    oldElement
+        .getDomains()
+        .forEach(
+            domain -> {
+              oldElement
+                  .getSubType(domain)
+                  .ifPresent(
+                      oldSubType -> {
+                        var newSubType =
+                            newElement
+                                .getSubType(domain)
+                                .orElseThrow(
+                                    (() ->
+                                        new IllegalArgumentException(
+                                            "Cannot remove a sub type from an existing element")));
+                        if (!newSubType.equals(oldSubType)) {
+                          throw new IllegalArgumentException(
+                              "Cannot change a sub type on an existing element");
+                        }
+                      });
+            });
+  }
+
+  private void checkETag(Element storedElement, InputData<? extends Element> input) {
+    if (!ETag.matches(
+        storedElement.getId().uuidValue(), storedElement.getVersion(), input.getETag())) {
+      throw new ETagMismatchException(
+          String.format(
+              "The eTag does not match for the element with the ID %s",
+              storedElement.getId().uuidValue()));
     }
+  }
 
-    protected void evaluateDecisions(T entity, T storedEntity) {
-        entity.getDomains()
-              .forEach(domain -> {
-                  entity.setDecisionResults(decider.decide(entity, domain), domain);
-              });
-    }
+  protected void checkClientBoundaries(InputData<? extends Element> input, Element storedEntity) {
+    Element entity = input.getElement();
+    entity.checkSameClient(storedEntity.getOwner().getClient());
+    entity.checkSameClient(input.getAuthenticatedClient());
+  }
 
-    protected abstract void validate(T oldElement, T newElement);
+  @Valid
+  @Value
+  public static class InputData<T> implements UseCase.InputData {
 
-    private void checkSubTypeChange(T newElement, T oldElement) {
-        oldElement.getDomains()
-                  .forEach(domain -> {
-                      oldElement.getSubType(domain)
-                                .ifPresent(oldSubType -> {
-                                    var newSubType = newElement.getSubType(domain)
-                                                               .orElseThrow((() -> new IllegalArgumentException(
-                                                                       "Cannot remove a sub type from an existing element")));
-                                    if (!newSubType.equals(oldSubType)) {
-                                        throw new IllegalArgumentException(
-                                                "Cannot change a sub type on an existing element");
-                                    }
-                                });
-                  });
-    }
+    @Valid T element;
 
-    private void checkETag(Element storedElement, InputData<? extends Element> input) {
-        if (!ETag.matches(storedElement.getId()
-                                       .uuidValue(),
-                          storedElement.getVersion(), input.getETag())) {
-            throw new ETagMismatchException(
-                    String.format("The eTag does not match for the element with the ID %s",
-                                  storedElement.getId()
-                                               .uuidValue()));
-        }
-    }
+    @Valid Client authenticatedClient;
 
-    protected void checkClientBoundaries(InputData<? extends Element> input, Element storedEntity) {
-        Element entity = input.getElement();
-        entity.checkSameClient(storedEntity.getOwner()
-                                           .getClient());
-        entity.checkSameClient(input.getAuthenticatedClient());
-    }
+    String eTag;
 
-    @Valid
-    @Value
-    public static class InputData<T> implements UseCase.InputData {
+    String username;
+  }
 
-        @Valid
-        T element;
+  @Valid
+  @Value
+  public static class OutputData<T> implements UseCase.OutputData {
 
-        @Valid
-        Client authenticatedClient;
-
-        String eTag;
-
-        String username;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData<T> implements UseCase.OutputData {
-
-        @Valid
-        T entity;
-
-    }
+    @Valid T entity;
+  }
 }

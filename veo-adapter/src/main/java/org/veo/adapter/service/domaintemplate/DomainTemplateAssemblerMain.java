@@ -45,99 +45,98 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * A simple domaintemplate builder. This is used by the assembleDomainTemplates
- * Gradle task and should not be called from anywhere else. This is a temporary
- * solution until VEO-399 is implemented.
+ * A simple domaintemplate builder. This is used by the assembleDomainTemplates Gradle task and
+ * should not be called from anywhere else. This is a temporary solution until VEO-399 is
+ * implemented.
  */
 @Slf4j
 @Deprecated
 // TODO VEO-399 remove this class
 public class DomainTemplateAssemblerMain {
-    private static final ReferenceAssembler REFERENCE_ASSEMBLER = new LocalReferenceAssembler();
-    private static final ReferenceDeserializer DESERIALIZER = new ReferenceDeserializer(
-            REFERENCE_ASSEMBLER);
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().addMixIn(AbstractElementDto.class,
-                                                                                  TransformElementDto.class)
-                                                                        .registerModule(new SimpleModule().addDeserializer(IdRef.class,
-                                                                                                                           DESERIALIZER))
-                                                                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-                                                                                   false)
-                                                                        .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+  private static final ReferenceAssembler REFERENCE_ASSEMBLER = new LocalReferenceAssembler();
+  private static final ReferenceDeserializer DESERIALIZER =
+      new ReferenceDeserializer(REFERENCE_ASSEMBLER);
+  private static final ObjectMapper OBJECT_MAPPER =
+      new ObjectMapper()
+          .addMixIn(AbstractElementDto.class, TransformElementDto.class)
+          .registerModule(new SimpleModule().addDeserializer(IdRef.class, DESERIALIZER))
+          .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+          .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-    public static void main(String[] args) {
-        try {
-            var snippetPath = Path.of(System.getenv("domaintemplate.dir"));
-            var name = System.getenv("domaintemplate.name");
-            var version = System.getenv("domaintemplate.templateVersion");
-            var revision = System.getenv("domaintemplate.revision");
-            var id = new DomainTemplateIdGeneratorImpl().createDomainTemplateId(name, version,
-                                                                                revision);
-            DomainTemplateAssembler assembler = new DomainTemplateAssembler(REFERENCE_ASSEMBLER, id,
-                    name, System.getenv("domaintemplate.abbreviation"),
-                    System.getenv("domaintemplate.description"),
-                    System.getenv("domaintemplate.authority"), version, revision);
+  public static void main(String[] args) {
+    try {
+      var snippetPath = Path.of(System.getenv("domaintemplate.dir"));
+      var name = System.getenv("domaintemplate.name");
+      var version = System.getenv("domaintemplate.templateVersion");
+      var revision = System.getenv("domaintemplate.revision");
+      var id = new DomainTemplateIdGeneratorImpl().createDomainTemplateId(name, version, revision);
+      DomainTemplateAssembler assembler =
+          new DomainTemplateAssembler(
+              REFERENCE_ASSEMBLER,
+              id,
+              name,
+              System.getenv("domaintemplate.abbreviation"),
+              System.getenv("domaintemplate.description"),
+              System.getenv("domaintemplate.authority"),
+              version,
+              revision);
 
-            var typeAssembler = new ElementTypeDefinitionAssembler();
-            assembler.setElementTypeDefinitions(typeAssembler.loadDefinitions(snippetPath.resolve("types")
-                                                                                         .toFile()));
+      var typeAssembler = new ElementTypeDefinitionAssembler();
+      assembler.setElementTypeDefinitions(
+          typeAssembler.loadDefinitions(snippetPath.resolve("types").toFile()));
 
-            for (var prefix : System.getenv("domaintemplate.catalogPrefixes")
-                                    .split(",")) {
-                assembler.addCatalog(System.getenv(prefix + ".catalog.name"),
-                                     System.getenv(prefix + ".prefix"),
-                                     readCatalogItems(snippetPath.resolve(prefix)));
-            }
+      for (var prefix : System.getenv("domaintemplate.catalogPrefixes").split(",")) {
+        assembler.addCatalog(
+            System.getenv(prefix + ".catalog.name"),
+            System.getenv(prefix + ".prefix"),
+            readCatalogItems(snippetPath.resolve(prefix)));
+      }
 
-            assembler.setRiskDefinitions(readRiskDefinitions(snippetPath.resolve("riskdefinitions")));
-            TransformDomainTemplateDto templateDto = assembler.createDomainTemplateDto();
-            OBJECT_MAPPER.writerFor(TransformDomainTemplateDto.class)
-                         .writeValue(new File(System.getenv("domaintemplate.out.file")),
-                                     templateDto);
-        } catch (Exception e) {
-            log.error("Error writing domain", e);
-            System.exit(1);
-        }
+      assembler.setRiskDefinitions(readRiskDefinitions(snippetPath.resolve("riskdefinitions")));
+      TransformDomainTemplateDto templateDto = assembler.createDomainTemplateDto();
+      OBJECT_MAPPER
+          .writerFor(TransformDomainTemplateDto.class)
+          .writeValue(new File(System.getenv("domaintemplate.out.file")), templateDto);
+    } catch (Exception e) {
+      log.error("Error writing domain", e);
+      System.exit(1);
     }
+  }
 
-    private static Map<String, RiskDefinition> readRiskDefinitions(Path riskDefinitionPath) {
-        Map<String, RiskDefinition> m = new HashMap<>();
+  private static Map<String, RiskDefinition> readRiskDefinitions(Path riskDefinitionPath) {
+    Map<String, RiskDefinition> m = new HashMap<>();
 
-        File[] files = riskDefinitionPath.toFile()
-                                         .listFiles((f, name) -> name.endsWith(".json"));
-        if (files != null) {
-            for (File file : files) {
-                RiskDefinition def = readInstanceFile(file, RiskDefinition.class);
-                m.put(def.getId(), def);
-            }
-        }
-        return m;
+    File[] files = riskDefinitionPath.toFile().listFiles((f, name) -> name.endsWith(".json"));
+    if (files != null) {
+      for (File file : files) {
+        RiskDefinition def = readInstanceFile(file, RiskDefinition.class);
+        m.put(def.getId(), def);
+      }
     }
+    return m;
+  }
 
-    @SuppressFBWarnings("PATH_TRAVERSAL_IN")
-    private static Map<String, AbstractElementDto> readCatalogItems(Path dir)
-            throws DomainTemplateSnippetException {
-        return readElements(dir.toFile()
-                               .listFiles(f -> f.getName()
-                                                .endsWith(".json")));
-    }
+  @SuppressFBWarnings("PATH_TRAVERSAL_IN")
+  private static Map<String, AbstractElementDto> readCatalogItems(Path dir)
+      throws DomainTemplateSnippetException {
+    return readElements(dir.toFile().listFiles(f -> f.getName().endsWith(".json")));
+  }
 
-    private static Map<String, AbstractElementDto> readElements(File[] resources)
-            throws DomainTemplateSnippetException {
-        return Arrays.stream(resources)
-                     .map(r -> DomainTemplateAssemblerMain.readInstanceFile(r,
-                                                                            AbstractElementDto.class))
-                     .filter(IdentifiableDto.class::isInstance)
-                     .collect(Collectors.toMap(e -> ((IdentifiableDto) e).getId(), e -> e));
-    }
+  private static Map<String, AbstractElementDto> readElements(File[] resources)
+      throws DomainTemplateSnippetException {
+    return Arrays.stream(resources)
+        .map(r -> DomainTemplateAssemblerMain.readInstanceFile(r, AbstractElementDto.class))
+        .filter(IdentifiableDto.class::isInstance)
+        .collect(Collectors.toMap(e -> ((IdentifiableDto) e).getId(), e -> e));
+  }
 
-    private static <T> T readInstanceFile(File resource, Class<T> dtoType)
-            throws DomainTemplateSnippetException {
-        log.info("process file: {}", resource);
-        try (BufferedReader br = Files.newBufferedReader(resource.toPath(),
-                                                         StandardCharsets.UTF_8)) {
-            return OBJECT_MAPPER.readValue(br, dtoType);
-        } catch (IOException ex) {
-            throw new DomainTemplateSnippetException(resource, ex);
-        }
+  private static <T> T readInstanceFile(File resource, Class<T> dtoType)
+      throws DomainTemplateSnippetException {
+    log.info("process file: {}", resource);
+    try (BufferedReader br = Files.newBufferedReader(resource.toPath(), StandardCharsets.UTF_8)) {
+      return OBJECT_MAPPER.readValue(br, dtoType);
+    } catch (IOException ex) {
+      throw new DomainTemplateSnippetException(resource, ex);
     }
+  }
 }

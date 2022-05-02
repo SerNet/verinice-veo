@@ -26,24 +26,22 @@ import org.veo.service.ElementMigrationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Handles parsed incoming messages.
- */
+/** Handles parsed incoming messages. */
 @RequiredArgsConstructor
 @Slf4j
 public class IncomingMessageHandler {
-    private final RepositoryProvider repositoryProvider;
-    private final ElementMigrationService elementMigrationService;
+  private final RepositoryProvider repositoryProvider;
+  private final ElementMigrationService elementMigrationService;
 
-    public void handleElementTypeDefinitionUpdate(Domain domain, EntityType elementType) {
-        var definition = domain.getElementTypeDefinition(elementType.getSingularTerm())
-                               .orElseThrow();
+  public void handleElementTypeDefinitionUpdate(Domain domain, EntityType elementType) {
+    var definition = domain.getElementTypeDefinition(elementType.getSingularTerm()).orElseThrow();
 
-        repositoryProvider.getElementRepositoryFor((Class<? extends Element>) elementType.getType())
-                          .findByDomain(domain)
-                          .forEach(element -> {
-                              elementMigrationService.migrate(element, definition, domain);
-                          });
-    }
-
+    repositoryProvider
+        .getElementRepositoryFor((Class<? extends Element>) elementType.getType())
+        .findByDomain(domain)
+        .forEach(
+            element -> {
+              elementMigrationService.migrate(element, definition, domain);
+            });
+  }
 }

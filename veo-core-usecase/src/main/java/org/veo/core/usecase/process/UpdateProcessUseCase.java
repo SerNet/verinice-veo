@@ -30,56 +30,61 @@ import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.base.ScopeProvider;
 import org.veo.core.usecase.decision.Decider;
 
-/**
- * Update a persisted process object.
- */
+/** Update a persisted process object. */
 public class UpdateProcessUseCase extends ModifyElementUseCase<Process> {
-    private final EventPublisher eventPublisher;
-    private final ScopeProvider scopeProvider;
+  private final EventPublisher eventPublisher;
+  private final ScopeProvider scopeProvider;
 
-    public UpdateProcessUseCase(ProcessRepository processRepository, EventPublisher eventPublisher,
-            ScopeProvider scopeProvider, Decider decider) {
-        super(processRepository, decider);
-        this.eventPublisher = eventPublisher;
-        this.scopeProvider = scopeProvider;
-    }
+  public UpdateProcessUseCase(
+      ProcessRepository processRepository,
+      EventPublisher eventPublisher,
+      ScopeProvider scopeProvider,
+      Decider decider) {
+    super(processRepository, decider);
+    this.eventPublisher = eventPublisher;
+    this.scopeProvider = scopeProvider;
+  }
 
-    @Override
-    public OutputData<Process> execute(InputData<Process> input) {
-        OutputData<Process> result = super.execute(input);
-        eventPublisher.publish(new RiskComponentChangeEvent(result.getEntity()));
-        return result;
-    }
+  @Override
+  public OutputData<Process> execute(InputData<Process> input) {
+    OutputData<Process> result = super.execute(input);
+    eventPublisher.publish(new RiskComponentChangeEvent(result.getEntity()));
+    return result;
+  }
 
-    @Override
-    protected void validate(Process oldElement, Process newElement) {
-        newElement.getDomains()
-                  .forEach(domain -> {
-                      newElement.getImpactValues(domain)
-                                .ifPresent(impactMap -> validateRiskValues(newElement, domain,
-                                                                           impactMap));
-                  });
-    }
+  @Override
+  protected void validate(Process oldElement, Process newElement) {
+    newElement
+        .getDomains()
+        .forEach(
+            domain -> {
+              newElement
+                  .getImpactValues(domain)
+                  .ifPresent(impactMap -> validateRiskValues(newElement, domain, impactMap));
+            });
+  }
 
-    private void validateRiskValues(Process control, Domain domain,
-            Map<RiskDefinitionRef, ProcessImpactValues> riskValueMap) {
-        riskValueMap.keySet()
-                    .forEach(riskDefinitionRef -> {
-                        if (!scopeProvider.canUseRiskDefinition(control, domain,
-                                                                riskDefinitionRef)) {
-                            throw new IllegalArgumentException(
-                                    String.format("Cannot use risk definition '%s' because the element is not a member of a scope with that risk definition",
-                                                  riskDefinitionRef.getIdRef()));
-                        }
-                    });
-    }
+  private void validateRiskValues(
+      Process control, Domain domain, Map<RiskDefinitionRef, ProcessImpactValues> riskValueMap) {
+    riskValueMap
+        .keySet()
+        .forEach(
+            riskDefinitionRef -> {
+              if (!scopeProvider.canUseRiskDefinition(control, domain, riskDefinitionRef)) {
+                throw new IllegalArgumentException(
+                    String.format(
+                        "Cannot use risk definition '%s' because the element is not a member of a scope with that risk definition",
+                        riskDefinitionRef.getIdRef()));
+              }
+            });
+  }
 
-    @Override
-    protected void evaluateDecisions(Process entity, Process storedEntity) {
-        // FIXME VEO-839
-        // Transfer risks from stored element because they may be relevant for risk
-        // evaluation
-        entity.setRisks(storedEntity.getRisks());
-        super.evaluateDecisions(entity, storedEntity);
-    }
+  @Override
+  protected void evaluateDecisions(Process entity, Process storedEntity) {
+    // FIXME VEO-839
+    // Transfer risks from stored element because they may be relevant for risk
+    // evaluation
+    entity.setRisks(storedEntity.getRisks());
+    super.evaluateDecisions(entity, storedEntity);
+  }
 }

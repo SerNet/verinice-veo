@@ -21,11 +21,11 @@ import org.veo.core.entity.event.RiskComponentChangeEvent;
 import org.veo.core.entity.event.StoredEvent;
 
 /**
- * Provides a mechanism for domain events to be published. Processes events from
- * use cases and aggregate roots.
+ * Provides a mechanism for domain events to be published. Processes events from use cases and
+ * aggregate roots.
  */
 public interface EventPublisher {
-    void publish(StoredEvent event);
+  void publish(StoredEvent event);
 
-    void publish(RiskComponentChangeEvent event);
+  void publish(RiskComponentChangeEvent event);
 }

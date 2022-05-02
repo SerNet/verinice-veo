@@ -34,58 +34,54 @@ import org.veo.core.usecase.UseCase;
 
 import lombok.Value;
 
-/**
- * Reinstantiate a persisted unit object.
- */
+/** Reinstantiate a persisted unit object. */
 public class GetUnitsUseCase
-        implements TransactionalUseCase<GetUnitsUseCase.InputData, GetUnitsUseCase.OutputData> {
+    implements TransactionalUseCase<GetUnitsUseCase.InputData, GetUnitsUseCase.OutputData> {
 
-    private final ClientRepository repository;
-    private final UnitRepository unitRepository;
+  private final ClientRepository repository;
+  private final UnitRepository unitRepository;
 
-    public GetUnitsUseCase(ClientRepository repository, UnitRepository unitRepository) {
-        this.repository = repository;
-        this.unitRepository = unitRepository;
+  public GetUnitsUseCase(ClientRepository repository, UnitRepository unitRepository) {
+    this.repository = repository;
+    this.unitRepository = unitRepository;
+  }
+
+  /**
+   * Find a persisted unit object and reinstantiate it. Throws a domain exception if the requested
+   * unit object was not found in the repository.
+   */
+  @Override
+  public OutputData execute(InputData input) {
+    Client client =
+        repository
+            .findById(input.getAuthenticatedClient().getId())
+            .orElseThrow(() -> new NotFoundException("Invalid client-ID"));
+
+    ;
+
+    if (input.getParentUuid().isEmpty()) return new OutputData(unitRepository.findByClient(client));
+    else {
+      Key<UUID> parentId = Key.uuidFrom(input.getParentUuid().get());
+      Unit parentUnit =
+          unitRepository
+              .findById(parentId)
+              .orElseThrow(
+                  () ->
+                      new NotFoundException("Invalid parent ID: %s", input.getParentUuid().get()));
+      return new OutputData(unitRepository.findByParent(parentUnit));
     }
+  }
 
-    /**
-     * Find a persisted unit object and reinstantiate it. Throws a domain exception
-     * if the requested unit object was not found in the repository.
-     */
-    @Override
-    public OutputData execute(InputData input) {
-        Client client = repository.findById(input.getAuthenticatedClient()
-                                                 .getId())
-                                  .orElseThrow(() -> new NotFoundException("Invalid client-ID"));
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
+    Client authenticatedClient;
+    Optional<String> parentUuid;
+  }
 
-        ;
-
-        if (input.getParentUuid()
-                 .isEmpty())
-            return new OutputData(unitRepository.findByClient(client));
-        else {
-            Key<UUID> parentId = Key.uuidFrom(input.getParentUuid()
-                                                   .get());
-            Unit parentUnit = unitRepository.findById(parentId)
-                                            .orElseThrow(() -> new NotFoundException(
-                                                    "Invalid parent ID: %s", input.getParentUuid()
-                                                                                  .get()));
-            return new OutputData(unitRepository.findByParent(parentUnit));
-        }
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Client authenticatedClient;
-        Optional<String> parentUuid;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        List<Unit> units;
-
-    }
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid List<Unit> units;
+  }
 }

@@ -23,24 +23,20 @@ import org.veo.core.entity.TailoringReference;
 
 public final class TailoringReferenceComparators {
 
-    private TailoringReferenceComparators() {
-    }
+  private TailoringReferenceComparators() {}
 
-    public static final Comparator<? super TailoringReference> BY_CATALOGITEM_ELEMENT = (c1,
-            c2) -> c1.getCatalogItem()
-                     .getElement()
-                     .getId()
-                     .uuidValue()
-                     .compareTo(c2.getCatalogItem()
-                                  .getElement()
-                                  .getId()
-                                  .uuidValue());
-    /**
-     * Orders {@link TailoringReference}s for application. They are sorted first
-     * alphabetically by their reference type and then by their catalog-item's
-     * element UUID string value.
-     */
-    public static final Comparator<? super TailoringReference> BY_EXECUTION = Comparator.comparing(TailoringReference::getReferenceType)
-                                                                                        .thenComparing(BY_CATALOGITEM_ELEMENT);
-
+  public static final Comparator<? super TailoringReference> BY_CATALOGITEM_ELEMENT =
+      (c1, c2) ->
+          c1.getCatalogItem()
+              .getElement()
+              .getId()
+              .uuidValue()
+              .compareTo(c2.getCatalogItem().getElement().getId().uuidValue());
+  /**
+   * Orders {@link TailoringReference}s for application. They are sorted first alphabetically by
+   * their reference type and then by their catalog-item's element UUID string value.
+   */
+  public static final Comparator<? super TailoringReference> BY_EXECUTION =
+      Comparator.comparing(TailoringReference::getReferenceType)
+          .thenComparing(BY_CATALOGITEM_ELEMENT);
 }

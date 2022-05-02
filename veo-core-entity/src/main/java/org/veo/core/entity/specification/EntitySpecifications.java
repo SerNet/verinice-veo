@@ -25,37 +25,32 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 
-/**
- * Utility class to create entity specifications
- */
+/** Utility class to create entity specifications */
 public final class EntitySpecifications {
 
-    public static <T extends Identifiable> EntitySpecification<T> matchAll() {
-        return i -> true;
-    }
+  public static <T extends Identifiable> EntitySpecification<T> matchAll() {
+    return i -> true;
+  }
 
-    public static EntitySpecification<Domain> isActive() {
-        return Domain::isActive;
-    }
+  public static EntitySpecification<Domain> isActive() {
+    return Domain::isActive;
+  }
 
-    public static EntitySpecification<Identifiable> hasId(Key<UUID> id) {
-        return o -> o.getId()
-                     .equals(id);
-    }
+  public static EntitySpecification<Identifiable> hasId(Key<UUID> id) {
+    return o -> o.getId().equals(id);
+  }
 
-    public static EntitySpecification<CatalogItem> hasNamespace(String namespace) {
-        return catalogItem -> namespace.equals(catalogItem.getNamespace());
-    }
+  public static EntitySpecification<CatalogItem> hasNamespace(String namespace) {
+    return catalogItem -> namespace.equals(catalogItem.getNamespace());
+  }
 
-    public static SameClientSpecification hasSameClient(Client client) {
-        return new SameClientSpecification(client);
-    }
+  public static SameClientSpecification hasSameClient(Client client) {
+    return new SameClientSpecification(client);
+  }
 
-    public static ValidUnitSpecification hasValidUnit() {
-        return ValidUnitSpecification.INSTANCE;
-    }
+  public static ValidUnitSpecification hasValidUnit() {
+    return ValidUnitSpecification.INSTANCE;
+  }
 
-    private EntitySpecifications() {
-
-    }
+  private EntitySpecifications() {}
 }

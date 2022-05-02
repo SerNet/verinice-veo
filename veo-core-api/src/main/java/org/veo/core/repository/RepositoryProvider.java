@@ -24,16 +24,13 @@ import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Versioned;
 
-/**
- * A service that helps to retrieve the correct {@link Repository} for a given
- * type
- */
+/** A service that helps to retrieve the correct {@link Repository} for a given type */
 public interface RepositoryProvider {
 
-    <T extends Element> ElementRepository<T> getElementRepositoryFor(Class<T> entityType);
+  <T extends Element> ElementRepository<T> getElementRepositoryFor(Class<T> entityType);
 
-    <T extends Identifiable & Versioned> IdentifiableVersionedRepository<T> getVersionedIdentifiableRepositoryFor(
-            Class<T> entityType);
+  <T extends Identifiable & Versioned>
+      IdentifiableVersionedRepository<T> getVersionedIdentifiableRepositoryFor(Class<T> entityType);
 
-    <T extends Identifiable> Repository<T, Key<UUID>> getRepositoryFor(Class<T> entityType);
+  <T extends Identifiable> Repository<T, Key<UUID>> getRepositoryFor(Class<T> entityType);
 }

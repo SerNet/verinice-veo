@@ -27,48 +27,42 @@ import org.veo.core.entity.Element;
 /**
  * An intention-revealing interface for business rule specifications.
  *
- * Specifications are used by entity builders and constructors to ensure that
- * all entities are built to spec.
+ * <p>Specifications are used by entity builders and constructors to ensure that all entities are
+ * built to spec.
  *
- * Specifications are also used by setter-methods and other state-changing
- * operations to ensure that the overall business model stays valid.
+ * <p>Specifications are also used by setter-methods and other state-changing operations to ensure
+ * that the overall business model stays valid.
  *
- * If a repositories is given a specification it can implement its own version
- * that can based on database-queries.
+ * <p>If a repositories is given a specification it can implement its own version that can based on
+ * database-queries.
  */
 public interface EntitySpecification<T> extends Predicate<T> {
 
-    /**
-     * Determines if this specification is fulfilled by the provided entity.
-     *
-     * @param entity
-     *            The entity to test.
-     * @return {@literal true} if the entity fulfills the specification.
-     *         {@literal false} otherwise.
-     */
-    @Override
-    boolean test(T entity);
+  /**
+   * Determines if this specification is fulfilled by the provided entity.
+   *
+   * @param entity The entity to test.
+   * @return {@literal true} if the entity fulfills the specification. {@literal false} otherwise.
+   */
+  @Override
+  boolean test(T entity);
 
-    /**
-     * @deprecated use {@link #test(Element)}
-     */
-    @Deprecated
-    default boolean isSatisfiedBy(T entity) {
-        return test(entity);
-    }
+  /**
+   * @deprecated use {@link #test(Element)}
+   */
+  @Deprecated
+  default boolean isSatisfiedBy(T entity) {
+    return test(entity);
+  }
 
-    /**
-     * Return only those entities from a collection that fulfill the
-     * {@code isSatisfiedBy()} condition.
-     *
-     * @param collection
-     *            a collection of elements to filter by the specification's
-     *            condition
-     * @return all entities fulfilling the specification
-     */
-    default Set<T> selectSatisfyingElementsFrom(Collection<T> collection) {
-        return collection.stream()
-                         .filter(this::test)
-                         .collect(Collectors.toSet());
-    }
+  /**
+   * Return only those entities from a collection that fulfill the {@code isSatisfiedBy()}
+   * condition.
+   *
+   * @param collection a collection of elements to filter by the specification's condition
+   * @return all entities fulfilling the specification
+   */
+  default Set<T> selectSatisfyingElementsFrom(Collection<T> collection) {
+    return collection.stream().filter(this::test).collect(Collectors.toSet());
+  }
 }

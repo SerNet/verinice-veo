@@ -38,11 +38,10 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public abstract class CompositeEntityDto<T extends Element> extends AbstractElementDto {
 
-    private Set<IdRef<T>> parts = Collections.emptySet();
+  private Set<IdRef<T>> parts = Collections.emptySet();
 
-    @ArraySchema(schema = @Schema(implementation = IdRefPart.class))
-    public Set<IdRef<T>> getParts() {
-        return parts;
-    }
-
+  @ArraySchema(schema = @Schema(implementation = IdRefPart.class))
+  public Set<IdRef<T>> getParts() {
+    return parts;
+  }
 }

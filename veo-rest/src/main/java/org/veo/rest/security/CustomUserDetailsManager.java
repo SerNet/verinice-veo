@@ -30,36 +30,31 @@ import org.springframework.stereotype.Component;
 /**
  * In-memory implementation of a custom user details service for testing.
  *
- * It returns ApplicationUser objects which hold information about the Client-ID
- * in addition to credentials, enabled-status etc.
+ * <p>It returns ApplicationUser objects which hold information about the Client-ID in addition to
+ * credentials, enabled-status etc.
  *
- * In production, this should use a user repository or even better a separate
- * authorization (micro)service.
+ * <p>In production, this should use a user repository or even better a separate authorization
+ * (micro)service.
  */
 @Component
 public class CustomUserDetailsManager extends InMemoryUserDetailsManager {
 
-    // This would be a repository or service in production:
-    private final Map<String, ApplicationUser> users = new HashMap<String, ApplicationUser>();
+  // This would be a repository or service in production:
+  private final Map<String, ApplicationUser> users = new HashMap<String, ApplicationUser>();
 
-    public CustomUserDetailsManager(Collection<ApplicationUser> appUsers) {
-        super(appUsers.stream()
-                      .map(u -> (UserDetails) u)
-                      .collect(Collectors.toList()));
-        appUsers.stream()
-                .forEach(this::storeUser);
+  public CustomUserDetailsManager(Collection<ApplicationUser> appUsers) {
+    super(appUsers.stream().map(u -> (UserDetails) u).collect(Collectors.toList()));
+    appUsers.stream().forEach(this::storeUser);
+  }
 
-    }
+  @Override
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    ApplicationUser user = users.get(username);
+    if (user == null) throw new UsernameNotFoundException(username);
+    return user;
+  }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        ApplicationUser user = users.get(username);
-        if (user == null)
-            throw new UsernameNotFoundException(username);
-        return user;
-    }
-
-    private void storeUser(ApplicationUser user) {
-        users.put(user.getUsername(), user);
-    }
+  private void storeUser(ApplicationUser user) {
+    users.put(user.getUsername(), user);
+  }
 }

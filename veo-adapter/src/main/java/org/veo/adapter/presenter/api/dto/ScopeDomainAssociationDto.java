@@ -26,13 +26,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- * Contains a {@link Scope}'s domain-specific information.
- */
+/** Contains a {@link Scope}'s domain-specific information. */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ScopeDomainAssociationDto extends DomainAssociationDto {
-    @Schema(description = "The ID of a risk definition in the domain")
-    @Size(max = RiskDefinition.MAX_ID_SIZE)
-    String riskDefinition;
+  @Schema(description = "The ID of a risk definition in the domain")
+  @Size(max = RiskDefinition.MAX_ID_SIZE)
+  String riskDefinition;
 }

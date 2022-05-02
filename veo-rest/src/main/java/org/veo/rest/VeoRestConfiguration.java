@@ -32,18 +32,18 @@ import lombok.Getter;
 @Configuration
 @ComponentScan("org.veo")
 public class VeoRestConfiguration {
-    public static final String PROFILE_BACKGROUND_TASKS = "background-tasks";
-    public static final String PROFILE_DEVELOPMENT = "development";
+  public static final String PROFILE_BACKGROUND_TASKS = "background-tasks";
+  public static final String PROFILE_DEVELOPMENT = "development";
 
-    @Value("${veo.etag.salt}")
-    private String eTagSalt;
+  @Value("${veo.etag.salt}")
+  private String eTagSalt;
 
-    @Value("${veo.messages.publishing.lockExpirationMs:20000}")
-    @Getter
-    private Duration messagePublishingLockExpiration;
+  @Value("${veo.messages.publishing.lockExpirationMs:20000}")
+  @Getter
+  private Duration messagePublishingLockExpiration;
 
-    @PostConstruct
-    public void configureETagSalt() {
-        ETag.setSalt(eTagSalt);
-    }
+  @PostConstruct
+  public void configureETagSalt() {
+    ETag.setSalt(eTagSalt);
+  }
 }

@@ -23,9 +23,10 @@ import org.veo.core.entity.Identifiable;
 
 public class ClientBoundaryViolationException extends DomainException {
 
-    public ClientBoundaryViolationException(Identifiable entity, Client unauthorizedClient) {
-        super(String.format("The client boundary would be violated by the attempted operation on element: %s by client: %s",
-                            entity.getId(), unauthorizedClient.getId()));
-    }
-
+  public ClientBoundaryViolationException(Identifiable entity, Client unauthorizedClient) {
+    super(
+        String.format(
+            "The client boundary would be violated by the attempted operation on element: %s by client: %s",
+            entity.getId(), unauthorizedClient.getId()));
+  }
 }

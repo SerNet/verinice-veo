@@ -19,14 +19,10 @@ package org.veo.core.entity.specification;
 
 import org.veo.core.entity.DomainException;
 
-/**
- * Thrown when an entity is used in the context of a domain that the entity does
- * not belong to.
- */
+/** Thrown when an entity is used in the context of a domain that the entity does not belong to. */
 public class DomainBoundaryViolationException extends DomainException {
 
-    public DomainBoundaryViolationException(String message) {
-        super(message);
-    }
-
+  public DomainBoundaryViolationException(String message) {
+    super(message);
+  }
 }

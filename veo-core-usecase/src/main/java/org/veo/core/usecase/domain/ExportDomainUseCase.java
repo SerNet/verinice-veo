@@ -35,30 +35,30 @@ import lombok.Value;
 
 @RequiredArgsConstructor
 public class ExportDomainUseCase
-        implements TransactionalUseCase<IdAndClient, ExportDomainUseCase.OutputData> {
-    private final DomainRepository repository;
-    private final DomainTemplateService templateService;
+    implements TransactionalUseCase<IdAndClient, ExportDomainUseCase.OutputData> {
+  private final DomainRepository repository;
+  private final DomainTemplateService templateService;
 
-    @Override
-    public OutputData execute(IdAndClient input) {
-        Domain domain = repository.findById(input.getId())
-                                  .orElseThrow(() -> new NotFoundException(input.getId()
-                                                                                .uuidValue()));
-        Client client = input.getAuthenticatedClient();
-        if (!client.equals(domain.getOwner())) {
-            throw new ClientBoundaryViolationException(domain, client);
-        }
-        if (!domain.isActive()) {
-            throw new NotFoundException("Domain is inactive.");
-        }
-
-        return new OutputData(templateService.exportDomain(domain));
+  @Override
+  public OutputData execute(IdAndClient input) {
+    Domain domain =
+        repository
+            .findById(input.getId())
+            .orElseThrow(() -> new NotFoundException(input.getId().uuidValue()));
+    Client client = input.getAuthenticatedClient();
+    if (!client.equals(domain.getOwner())) {
+      throw new ClientBoundaryViolationException(domain, client);
+    }
+    if (!domain.isActive()) {
+      throw new NotFoundException("Domain is inactive.");
     }
 
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        ExportDto exportDomain;
-    }
+    return new OutputData(templateService.exportDomain(domain));
+  }
+
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid ExportDto exportDomain;
+  }
 }

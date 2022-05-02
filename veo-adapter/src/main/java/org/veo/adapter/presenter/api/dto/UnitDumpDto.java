@@ -28,8 +28,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class UnitDumpDto {
-    private final FullUnitDto unit;
-    private final Set<FullDomainDto> domains;
-    private final Set<AbstractElementDto> elements;
-    private final Set<AbstractRiskDto> risks;
+  private final FullUnitDto unit;
+  private final Set<FullDomainDto> domains;
+  private final Set<AbstractElementDto> elements;
+  private final Set<AbstractRiskDto> risks;
 }

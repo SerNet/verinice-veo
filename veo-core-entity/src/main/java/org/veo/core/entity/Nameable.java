@@ -20,39 +20,35 @@ package org.veo.core.entity;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * Defines the basic properties of nameable elements.
- */
+/** Defines the basic properties of nameable elements. */
 public interface Nameable extends Displayable {
 
-    int NAME_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
-    int ABBREVIATION_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
-    int DESCRIPTION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
+  int NAME_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
+  int ABBREVIATION_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
+  int DESCRIPTION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
 
-    String getName();
+  String getName();
 
-    void setName(String aName);
+  void setName(String aName);
 
-    String getAbbreviation();
+  String getAbbreviation();
 
-    void setAbbreviation(String aAbbreviation);
+  void setAbbreviation(String aAbbreviation);
 
-    String getDescription();
+  String getDescription();
 
-    void setDescription(String aDescription);
+  void setDescription(String aDescription);
 
-    /**
-     * A default implementation to render a user friendly display name.
-     */
-    default String getDisplayName() {
-        Stream<String> parts = Stream.of(getName());
-        String abbreviation = getAbbreviation();
-        if (abbreviation != null) {
-            parts = Stream.concat(Stream.of(abbreviation), parts);
-        }
-        if (this instanceof Designated) {
-            parts = Stream.concat(Stream.of(((Designated) this).getDesignator()), parts);
-        }
-        return parts.collect(Collectors.joining(" "));
+  /** A default implementation to render a user friendly display name. */
+  default String getDisplayName() {
+    Stream<String> parts = Stream.of(getName());
+    String abbreviation = getAbbreviation();
+    if (abbreviation != null) {
+      parts = Stream.concat(Stream.of(abbreviation), parts);
     }
+    if (this instanceof Designated) {
+      parts = Stream.concat(Stream.of(((Designated) this).getDesignator()), parts);
+    }
+    return parts.collect(Collectors.joining(" "));
+  }
 }

@@ -23,13 +23,13 @@ import org.veo.core.repository.ClientRepository;
 import org.veo.core.usecase.base.DefaultGetElementsUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 
-/**
- * Reinstantiate persisted asset objects.
- */
+/** Reinstantiate persisted asset objects. */
 public class GetAssetsUseCase extends DefaultGetElementsUseCase<Asset> {
 
-    public GetAssetsUseCase(ClientRepository clientRepository, AssetRepository assetRepository,
-            UnitHierarchyProvider unitHierarchyProvider) {
-        super(clientRepository, assetRepository, unitHierarchyProvider);
-    }
+  public GetAssetsUseCase(
+      ClientRepository clientRepository,
+      AssetRepository assetRepository,
+      UnitHierarchyProvider unitHierarchyProvider) {
+    super(clientRepository, assetRepository, unitHierarchyProvider);
+  }
 }

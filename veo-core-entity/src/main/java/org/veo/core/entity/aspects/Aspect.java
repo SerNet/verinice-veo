@@ -21,14 +21,13 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Versioned;
 
 /**
- * An aspect is a set of properties or functions defining a specialized function
- * of the software.
+ * An aspect is a set of properties or functions defining a specialized function of the software.
  */
 public interface Aspect {
 
-    DomainTemplate getDomain();
+  DomainTemplate getDomain();
 
-    void setDomain(DomainTemplate domain);
+  void setDomain(DomainTemplate domain);
 
-    Versioned getOwner();
+  Versioned getOwner();
 }

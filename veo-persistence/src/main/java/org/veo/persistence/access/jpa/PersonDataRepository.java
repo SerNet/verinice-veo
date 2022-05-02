@@ -19,5 +19,4 @@ package org.veo.persistence.access.jpa;
 
 import org.veo.persistence.entity.jpa.PersonData;
 
-public interface PersonDataRepository extends CompositeEntityDataRepository<PersonData> {
-}
+public interface PersonDataRepository extends CompositeEntityDataRepository<PersonData> {}

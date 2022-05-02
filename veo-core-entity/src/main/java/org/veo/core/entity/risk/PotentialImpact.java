@@ -18,18 +18,18 @@
 package org.veo.core.entity.risk;
 
 /**
- * The potential impact on one of the information security properties of an
- * asset (or a process/scope).
- * <p>
- * This is taken from the risk-affected entity (i.e. process) and does not yet
- * take individual scenarios into account. It is solely based on evaluation the
- * data processed by/on the process/the asset.
+ * The potential impact on one of the information security properties of an asset (or a
+ * process/scope).
+ *
+ * <p>This is taken from the risk-affected entity (i.e. process) and does not yet take individual
+ * scenarios into account. It is solely based on evaluation the data processed by/on the process/the
+ * asset.
  */
 public interface PotentialImpact {
 
-    ImpactRef getPotentialImpact();
+  ImpactRef getPotentialImpact();
 
-    void setPotentialImpact(ImpactRef potential);
+  void setPotentialImpact(ImpactRef potential);
 
-    CategoryRef getCategory();
+  CategoryRef getCategory();
 }

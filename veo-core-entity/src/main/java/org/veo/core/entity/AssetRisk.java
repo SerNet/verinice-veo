@@ -19,17 +19,14 @@ package org.veo.core.entity;
 
 /**
  * Based on the definition of the term 'risk' from NIST 800-37:
- * <p>
- * "Risk: A measure of the extent to which an entity is threatened by a
- * potential circumstance or event, [...]",
- * <p>
- * this class links an asset ('entity' in the above definition) to a scenario
- * ('circumstance or event').
- * <p>
- * The asset may be representing a single asset or a group of assets to
- * facilitate modelling the system-of-systems / system-of-interest (SoI) for the
- * observed risk.
+ *
+ * <p>"Risk: A measure of the extent to which an entity is threatened by a potential circumstance or
+ * event, [...]",
+ *
+ * <p>this class links an asset ('entity' in the above definition) to a scenario ('circumstance or
+ * event').
+ *
+ * <p>The asset may be representing a single asset or a group of assets to facilitate modelling the
+ * system-of-systems / system-of-interest (SoI) for the observed risk.
  */
-public interface AssetRisk extends AbstractRisk<Asset, AssetRisk> {
-
-}
+public interface AssetRisk extends AbstractRisk<Asset, AssetRisk> {}

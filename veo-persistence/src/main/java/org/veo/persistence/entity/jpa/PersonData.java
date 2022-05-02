@@ -40,21 +40,23 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class PersonData extends ElementData implements Person {
 
-    @Override
-    public Class<? extends Identifiable> getModelInterface() {
-        return Person.class;
-    }
+  @Override
+  public Class<? extends Identifiable> getModelInterface() {
+    return Person.class;
+  }
 
-    @ManyToMany(targetEntity = PersonData.class,
-                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "person_parts",
-               joinColumns = @JoinColumn(name = "composite_id"),
-               inverseJoinColumns = @JoinColumn(name = "part_id"))
-    @Getter
-    @Valid
-    private final Set<Person> parts = new HashSet<>();
+  @ManyToMany(
+      targetEntity = PersonData.class,
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JoinTable(
+      name = "person_parts",
+      joinColumns = @JoinColumn(name = "composite_id"),
+      inverseJoinColumns = @JoinColumn(name = "part_id"))
+  @Getter
+  @Valid
+  private final Set<Person> parts = new HashSet<>();
 
-    @ManyToMany(targetEntity = PersonData.class, mappedBy = "parts", fetch = FetchType.LAZY)
-    @Getter
-    private final Set<Person> composites = new HashSet<>();
+  @ManyToMany(targetEntity = PersonData.class, mappedBy = "parts", fetch = FetchType.LAZY)
+  @Getter
+  private final Set<Person> composites = new HashSet<>();
 }

@@ -26,13 +26,16 @@ import org.veo.core.usecase.decision.Decider;
 
 public class CreateScopeUseCase extends CreateElementUseCase<Scope> {
 
-    public CreateScopeUseCase(UnitRepository unitRepository, ScopeRepository scopeRepository,
-            DesignatorService designatorService, Decider decider) {
-        super(unitRepository, scopeRepository, designatorService, decider);
-    }
+  public CreateScopeUseCase(
+      UnitRepository unitRepository,
+      ScopeRepository scopeRepository,
+      DesignatorService designatorService,
+      Decider decider) {
+    super(unitRepository, scopeRepository, designatorService, decider);
+  }
 
-    @Override
-    protected void validate(Scope scope) {
-        // GNDN
-    }
+  @Override
+  protected void validate(Scope scope) {
+    // GNDN
+  }
 }

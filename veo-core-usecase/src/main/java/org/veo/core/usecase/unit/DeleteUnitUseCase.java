@@ -46,61 +46,66 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class DeleteUnitUseCase
-        implements TransactionalUseCase<DeleteUnitUseCase.InputData, EmptyOutput> {
+    implements TransactionalUseCase<DeleteUnitUseCase.InputData, EmptyOutput> {
 
-    private final ClientRepository clientRepository;
-    private final RepositoryProvider repositoryProvider;
-    private final UnitRepository unitRepository;
+  private final ClientRepository clientRepository;
+  private final RepositoryProvider repositoryProvider;
+  private final UnitRepository unitRepository;
 
-    public DeleteUnitUseCase(ClientRepository clientRepository, UnitRepository unitRepository,
-            RepositoryProvider repositoryProvider) {
-        this.clientRepository = clientRepository;
-        this.repositoryProvider = repositoryProvider;
-        this.unitRepository = unitRepository;
-    }
+  public DeleteUnitUseCase(
+      ClientRepository clientRepository,
+      UnitRepository unitRepository,
+      RepositoryProvider repositoryProvider) {
+    this.clientRepository = clientRepository;
+    this.repositoryProvider = repositoryProvider;
+    this.unitRepository = unitRepository;
+  }
 
-    @Override
-    public EmptyOutput execute(InputData input) {
-        Client client = clientRepository.findById(input.getAuthenticatedClient()
-                                                       .getId())
-                                        .orElseThrow(() -> new NotFoundException(
-                                                "Invalid client ID"));
+  @Override
+  public EmptyOutput execute(InputData input) {
+    Client client =
+        clientRepository
+            .findById(input.getAuthenticatedClient().getId())
+            .orElseThrow(() -> new NotFoundException("Invalid client ID"));
 
-        Unit unit = unitRepository.findById(input.unitId)
-                                  .orElseThrow(() -> new NotFoundException("Invalid unit ID"));
-        unit.checkSameClient(client);
+    Unit unit =
+        unitRepository
+            .findById(input.unitId)
+            .orElseThrow(() -> new NotFoundException("Invalid unit ID"));
+    unit.checkSameClient(client);
 
-        removeObjectsInUnit(unit);
-        unitRepository.delete(unit);
-        return EmptyOutput.INSTANCE;
-    }
+    removeObjectsInUnit(unit);
+    unitRepository.delete(unit);
+    return EmptyOutput.INSTANCE;
+  }
 
-    void removeObjectsInUnit(Unit unit) {
-        // delete scope and risk-affected elements first to prevent FK constraint
-        // violations
-        // FIXME VEO-1124 remove all relations first, then elements
-        var associationOwners = List.of(Scope.class, Process.class, Asset.class, Scenario.class);
-        associationOwners.forEach((type) -> {
-            log.debug("Step 1: First remove the owning side of bi-directional associations "
-                    + "members / risks on {}.", type.getSimpleName());
-            repositoryProvider.getElementRepositoryFor(type)
-                              .deleteByUnit(unit);
+  void removeObjectsInUnit(Unit unit) {
+    // delete scope and risk-affected elements first to prevent FK constraint
+    // violations
+    // FIXME VEO-1124 remove all relations first, then elements
+    var associationOwners = List.of(Scope.class, Process.class, Asset.class, Scenario.class);
+    associationOwners.forEach(
+        (type) -> {
+          log.debug(
+              "Step 1: First remove the owning side of bi-directional associations "
+                  + "members / risks on {}.",
+              type.getSimpleName());
+          repositoryProvider.getElementRepositoryFor(type).deleteByUnit(unit);
         });
 
-        EntityType.ELEMENT_TYPE_CLASSES.stream()
-                                       .filter(not(associationOwners::contains))
-                                       .sorted(Comparator.comparing(Class::getSimpleName))
-                                       .peek((e) -> log.debug("Step 2:Deleting all unit members "
-                                               + "of type {}.", e.getSimpleName()))
-                                       .forEach(clazz -> repositoryProvider.getElementRepositoryFor(clazz)
-                                                                           .deleteByUnit(unit));
-    }
+    EntityType.ELEMENT_TYPE_CLASSES.stream()
+        .filter(not(associationOwners::contains))
+        .sorted(Comparator.comparing(Class::getSimpleName))
+        .peek(
+            (e) ->
+                log.debug("Step 2:Deleting all unit members " + "of type {}.", e.getSimpleName()))
+        .forEach(clazz -> repositoryProvider.getElementRepositoryFor(clazz).deleteByUnit(unit));
+  }
 
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Key<UUID> unitId;
-        Client authenticatedClient;
-    }
-
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
+    Key<UUID> unitId;
+    Client authenticatedClient;
+  }
 }

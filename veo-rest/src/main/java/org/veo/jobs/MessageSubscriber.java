@@ -41,8 +41,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Subscribes to incoming messages from the external RabbitMQ, parses the
- * messages and forwards them to the {@link IncomingMessageHandler}.
+ * Subscribes to incoming messages from the external RabbitMQ, parses the messages and forwards them
+ * to the {@link IncomingMessageHandler}.
  */
 @Component
 @Profile(PROFILE_BACKGROUND_TASKS)
@@ -50,33 +50,41 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Transactional
 public class MessageSubscriber {
-    private final ObjectMapper objectMapper;
-    private final DomainRepository domainRepository;
-    private final IncomingMessageHandler incomingMessageHandler;
+  private final ObjectMapper objectMapper;
+  private final DomainRepository domainRepository;
+  private final IncomingMessageHandler incomingMessageHandler;
 
-    @RabbitListener(bindings = @QueueBinding(value = @Queue(value = "${veo.message.consume.queue}",
-                                                            exclusive = "false",
-                                                            durable = "true",
-                                                            autoDelete = "false"),
-                                             exchange = @Exchange(value = "${veo.message.dispatch.exchange}",
-                                                                  type = "topic"),
-                                             key = "${veo.message.dispatch.routing-key-prefix}"
-                                                     + ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE))
-    public void handleElementTypeDefinitionUpdate(EventMessage event)
-            throws JsonProcessingException {
-        var content = objectMapper.readTree(event.getContent());
-        var domainId = Key.uuidFrom(content.get("domainId")
-                                           .asText());
-        var elementType = EntityType.getBySingularTerm(content.get("elementType")
-                                                              .asText());
-        log.info("Received {} message for element type {} in domain {}",
-                 ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE, elementType, domainId.uuidValue());
-        domainRepository.findById(domainId)
-                        .ifPresent(domain -> {
-                            AsSystemUser.runInClient(domain.getOwner(), () -> {
-                                incomingMessageHandler.handleElementTypeDefinitionUpdate(domain,
-                                                                                         elementType);
-                            });
-                        });
-    }
+  @RabbitListener(
+      bindings =
+          @QueueBinding(
+              value =
+                  @Queue(
+                      value = "${veo.message.consume.queue}",
+                      exclusive = "false",
+                      durable = "true",
+                      autoDelete = "false"),
+              exchange = @Exchange(value = "${veo.message.dispatch.exchange}", type = "topic"),
+              key =
+                  "${veo.message.dispatch.routing-key-prefix}"
+                      + ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE))
+  public void handleElementTypeDefinitionUpdate(EventMessage event) throws JsonProcessingException {
+    var content = objectMapper.readTree(event.getContent());
+    var domainId = Key.uuidFrom(content.get("domainId").asText());
+    var elementType = EntityType.getBySingularTerm(content.get("elementType").asText());
+    log.info(
+        "Received {} message for element type {} in domain {}",
+        ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE,
+        elementType,
+        domainId.uuidValue());
+    domainRepository
+        .findById(domainId)
+        .ifPresent(
+            domain -> {
+              AsSystemUser.runInClient(
+                  domain.getOwner(),
+                  () -> {
+                    incomingMessageHandler.handleElementTypeDefinitionUpdate(domain, elementType);
+                  });
+            });
+  }
 }

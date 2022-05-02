@@ -43,65 +43,60 @@ import lombok.ToString;
 @Data
 public class ClientData extends IdentifiableVersionedData implements Client, Nameable {
 
-    @Id
-    @ToString.Include
-    private String dbId;
+  @Id @ToString.Include private String dbId;
 
-    @Column(name = "name")
-    @ToString.Include
-    private String name;
+  @Column(name = "name")
+  @ToString.Include
+  private String name;
 
-    @Column(name = "abbreviation")
-    private String abbreviation;
+  @Column(name = "abbreviation")
+  private String abbreviation;
 
-    @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
-    private String description;
+  @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
+  private String description;
 
-    @Column(name = "domains")
-    @OneToMany(mappedBy = "owner",
-               cascade = CascadeType.ALL,
-               orphanRemoval = true,
-               targetEntity = DomainData.class)
-    @Valid
-    final private Set<Domain> domains = new HashSet<>();
+  @Column(name = "domains")
+  @OneToMany(
+      mappedBy = "owner",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      targetEntity = DomainData.class)
+  @Valid
+  private final Set<Domain> domains = new HashSet<>();
 
-    public void setDomains(Set<Domain> newDomains) {
-        domains.clear();
-        newDomains.forEach(domain -> domain.setOwner(this));
-        domains.addAll(newDomains);
-    }
+  public void setDomains(Set<Domain> newDomains) {
+    domains.clear();
+    newDomains.forEach(domain -> domain.setOwner(this));
+    domains.addAll(newDomains);
+  }
 
-    // Only return active domains
-    public Set<Domain> getDomains() {
-        return domains.stream()
-                      .filter(Domain::isActive)
-                      .collect(Collectors.toSet());
-    }
+  // Only return active domains
+  public Set<Domain> getDomains() {
+    return domains.stream().filter(Domain::isActive).collect(Collectors.toSet());
+  }
 
-    public Set<Domain> getAllDomains() {
-        return domains;
-    }
+  public Set<Domain> getAllDomains() {
+    return domains;
+  }
 
-    /**
-     * Add the given Domain to the collection domains.
-     *
-     * @return true if added
-     */
-    public boolean addToDomains(Domain aDomain) {
-        aDomain.setOwner(this);
-        return this.domains.add(aDomain);
-    }
+  /**
+   * Add the given Domain to the collection domains.
+   *
+   * @return true if added
+   */
+  public boolean addToDomains(Domain aDomain) {
+    aDomain.setOwner(this);
+    return this.domains.add(aDomain);
+  }
 
-    /**
-     * Remove the given Domain from the collection domains.
-     *
-     * @return true if removed
-     */
-    public boolean removeFromDomains(Domain aDomain) {
-        if (aDomain.getOwner()
-                   .equals(this))
-            throw new ClientBoundaryViolationException(aDomain, this);
-        aDomain.setOwner(null);
-        return this.domains.remove(aDomain);
-    }
+  /**
+   * Remove the given Domain from the collection domains.
+   *
+   * @return true if removed
+   */
+  public boolean removeFromDomains(Domain aDomain) {
+    if (aDomain.getOwner().equals(this)) throw new ClientBoundaryViolationException(aDomain, this);
+    aDomain.setOwner(null);
+    return this.domains.remove(aDomain);
+  }
 }

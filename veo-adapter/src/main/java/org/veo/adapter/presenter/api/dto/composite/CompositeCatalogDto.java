@@ -29,6 +29,5 @@ import lombok.EqualsAndHashCode;
 @Data
 public class CompositeCatalogDto extends AbstractCatalogDto {
 
-    private Set<CompositeCatalogItemDto> catalogItems = new HashSet<>();
-
+  private Set<CompositeCatalogItemDto> catalogItems = new HashSet<>();
 }

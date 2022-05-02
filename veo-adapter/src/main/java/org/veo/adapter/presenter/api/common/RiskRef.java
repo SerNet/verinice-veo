@@ -23,19 +23,15 @@ import org.veo.core.entity.AbstractRisk;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * Points to an {@link AbstractRisk} resource.
- */
+/** Points to an {@link AbstractRisk} resource. */
 @RequiredArgsConstructor
 public class RiskRef implements Ref {
 
-    @JsonIgnore
-    private final ReferenceAssembler assembler;
-    @JsonIgnore
-    private final AbstractRisk target;
+  @JsonIgnore private final ReferenceAssembler assembler;
+  @JsonIgnore private final AbstractRisk target;
 
-    @Override
-    public String getTargetUri() {
-        return assembler.targetReferenceOf(target);
-    }
+  @Override
+  public String getTargetUri() {
+    return assembler.targetReferenceOf(target);
+  }
 }

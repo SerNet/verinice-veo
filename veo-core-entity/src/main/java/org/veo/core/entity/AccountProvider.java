@@ -18,5 +18,5 @@
 package org.veo.core.entity;
 
 public interface AccountProvider {
-    Account getCurrentUserAccount();
+  Account getCurrentUserAccount();
 }

@@ -35,39 +35,36 @@ import org.veo.core.usecase.UseCase;
 import lombok.Value;
 
 public class GetRisksUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-        implements TransactionalUseCase<GetRisksUseCase.InputData, GetRisksUseCase.OutputData<R>> {
+    implements TransactionalUseCase<GetRisksUseCase.InputData, GetRisksUseCase.OutputData<R>> {
 
-    private final RepositoryProvider repositoryProvider;
-    private final Class<T> entityClass;
+  private final RepositoryProvider repositoryProvider;
+  private final Class<T> entityClass;
 
-    public GetRisksUseCase(RepositoryProvider repositoryProvider, Class<T> entityClass) {
-        this.repositoryProvider = repositoryProvider;
-        this.entityClass = entityClass;
-    }
+  public GetRisksUseCase(RepositoryProvider repositoryProvider, Class<T> entityClass) {
+    this.repositoryProvider = repositoryProvider;
+    this.entityClass = entityClass;
+  }
 
-    @Transactional
-    public OutputData<R> execute(InputData input) {
-        Repository<T, Key<UUID>> repositoryFor = repositoryProvider.getRepositoryFor(entityClass);
-        var riskAffected = repositoryFor.findById(input.riskAffectedRef)
+  @Transactional
+  public OutputData<R> execute(InputData input) {
+    Repository<T, Key<UUID>> repositoryFor = repositoryProvider.getRepositoryFor(entityClass);
+    var riskAffected = repositoryFor.findById(input.riskAffectedRef).orElseThrow();
 
-                                        .orElseThrow();
+    riskAffected.checkSameClient(input.authenticatedClient);
 
-        riskAffected.checkSameClient(input.authenticatedClient);
+    return new OutputData<>(riskAffected.getRisks());
+  }
 
-        return new OutputData<>(riskAffected.getRisks());
-    }
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
+    Client authenticatedClient;
+    Key<UUID> riskAffectedRef;
+  }
 
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Client authenticatedClient;
-        Key<UUID> riskAffectedRef;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData<R> implements UseCase.OutputData {
-        @Valid
-        Collection<R> risks;
-    }
+  @Valid
+  @Value
+  public static class OutputData<R> implements UseCase.OutputData {
+    @Valid Collection<R> risks;
+  }
 }

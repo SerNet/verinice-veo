@@ -22,17 +22,14 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-/**
- * Matches if the value matches an injectable comparison value.
- */
+/** Matches if the value matches an injectable comparison value. */
 @Data
 @RequiredArgsConstructor
 public class EqualsMatcher implements InputMatcher {
-    @NotNull
-    private final Object comparisonValue;
+  @NotNull private final Object comparisonValue;
 
-    @Override
-    public boolean matches(Object value) {
-        return comparisonValue.equals(value);
-    }
+  @Override
+  public boolean matches(Object value) {
+    return comparisonValue.equals(value);
+  }
 }

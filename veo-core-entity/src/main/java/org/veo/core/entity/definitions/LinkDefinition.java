@@ -28,9 +28,10 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class LinkDefinition extends CustomAspectDefinition {
-    @NotNull
-    @Size(min = 1, max = 32)
-    private String targetType;
-    @Size(min = 1, max = SUB_TYPE_MAX_LENGTH)
-    private String targetSubType;
+  @NotNull
+  @Size(min = 1, max = 32)
+  private String targetType;
+
+  @Size(min = 1, max = SUB_TYPE_MAX_LENGTH)
+  private String targetSubType;
 }

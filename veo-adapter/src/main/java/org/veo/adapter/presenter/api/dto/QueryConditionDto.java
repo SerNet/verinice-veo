@@ -23,8 +23,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-@Schema(description = "A condition for a search query with a set of values. Search results match if their tested property is equal to one of the values in this search condition.")
+@Schema(
+    description =
+        "A condition for a search query with a set of values. Search results match if their tested property is equal to one of the values in this search condition.")
 public class QueryConditionDto<T> {
-    @Schema(description = "Search results must match any of these values.")
-    public Set<T> values;
+  @Schema(description = "Search results must match any of these values.")
+  public Set<T> values;
 }

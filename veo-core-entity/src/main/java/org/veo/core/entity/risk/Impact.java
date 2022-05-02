@@ -23,37 +23,33 @@ import javax.validation.constraints.Size;
 import org.veo.core.entity.Constraints;
 
 /**
- * The effects of a threat event interfering with an asset / a process / a
- * scope.
+ * The effects of a threat event interfering with an asset / a process / a scope.
  *
  * @see org.veo.core.entity.riskdefinition.RiskDefinition
  */
 @Valid
 public interface Impact extends PotentialImpact {
 
-    int EXPLANATION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
+  int EXPLANATION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
 
-    /**
-     * The impact for a specific combination of scenario and process/asset/scope. It
-     * may be higher or lower (but usually should not be higher) than the potential
-     * impact that was initially estimated.
-     */
-    void setSpecificImpact(ImpactRef specific);
+  /**
+   * The impact for a specific combination of scenario and process/asset/scope. It may be higher or
+   * lower (but usually should not be higher) than the potential impact that was initially
+   * estimated.
+   */
+  void setSpecificImpact(ImpactRef specific);
 
-    /**
-     * The impact for a specific combination of scenario and process/asset/scope. It
-     * may be higher or lower (but usually should not be higher) than the potential
-     * impact that was initially estimated.
-     */
-    ImpactRef getSpecificImpact();
+  /**
+   * The impact for a specific combination of scenario and process/asset/scope. It may be higher or
+   * lower (but usually should not be higher) than the potential impact that was initially
+   * estimated.
+   */
+  ImpactRef getSpecificImpact();
 
-    /**
-     * The result of taking both the potential and the specific impact into account.
-     */
-    ImpactRef getEffectiveImpact();
+  /** The result of taking both the potential and the specific impact into account. */
+  ImpactRef getEffectiveImpact();
 
-    String getSpecificImpactExplanation();
+  String getSpecificImpactExplanation();
 
-    void setSpecificImpactExplanation(@Size(max = EXPLANATION_MAX_LENGTH) String explanation);
-
+  void setSpecificImpactExplanation(@Size(max = EXPLANATION_MAX_LENGTH) String explanation);
 }

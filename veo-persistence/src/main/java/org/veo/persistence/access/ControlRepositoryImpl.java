@@ -38,54 +38,53 @@ import org.veo.persistence.entity.jpa.ControlData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
-public class ControlRepositoryImpl extends
-        AbstractCompositeEntityRepositoryImpl<Control, ControlData> implements ControlRepository {
+public class ControlRepositoryImpl
+    extends AbstractCompositeEntityRepositoryImpl<Control, ControlData>
+    implements ControlRepository {
 
-    private final AssetDataRepository assetDataRepository;
-    private final ProcessDataRepository processDataRepository;
+  private final AssetDataRepository assetDataRepository;
+  private final ProcessDataRepository processDataRepository;
 
-    public ControlRepositoryImpl(ControlDataRepository dataRepository, ValidationService validation,
-            CustomLinkDataRepository linkDataRepository, ScopeDataRepository scopeDataRepository,
-            AssetDataRepository assetDataRepository, ProcessDataRepository processDataRepository) {
-        super(dataRepository, validation, linkDataRepository, scopeDataRepository);
-        this.assetDataRepository = assetDataRepository;
-        this.processDataRepository = processDataRepository;
-    }
+  public ControlRepositoryImpl(
+      ControlDataRepository dataRepository,
+      ValidationService validation,
+      CustomLinkDataRepository linkDataRepository,
+      ScopeDataRepository scopeDataRepository,
+      AssetDataRepository assetDataRepository,
+      ProcessDataRepository processDataRepository) {
+    super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+    this.assetDataRepository = assetDataRepository;
+    this.processDataRepository = processDataRepository;
+  }
 
-    @Override
-    public void deleteById(Key<UUID> id) {
-        delete(dataRepository.findById(id.uuidValue())
-                             .orElseThrow());
-    }
+  @Override
+  public void deleteById(Key<UUID> id) {
+    delete(dataRepository.findById(id.uuidValue()).orElseThrow());
+  }
 
-    @Override
-    public void delete(Control control) {
-        removeFromRisks(singleton((ControlData) control));
-        super.deleteById(control.getId());
-    }
+  @Override
+  public void delete(Control control) {
+    removeFromRisks(singleton((ControlData) control));
+    super.deleteById(control.getId());
+  }
 
-    private void removeFromRisks(Set<ControlData> controls) {
-        // remove association to control from risks:
-        assetDataRepository.findDistinctByRisks_Mitigation_In(controls)
-                           .stream()
-                           .flatMap(assetData -> assetData.getRisks()
-                                                          .stream())
-                           .filter(risk -> controls.contains(risk.getMitigation()))
-                           .forEach(risk -> risk.mitigate(null));
+  private void removeFromRisks(Set<ControlData> controls) {
+    // remove association to control from risks:
+    assetDataRepository.findDistinctByRisks_Mitigation_In(controls).stream()
+        .flatMap(assetData -> assetData.getRisks().stream())
+        .filter(risk -> controls.contains(risk.getMitigation()))
+        .forEach(risk -> risk.mitigate(null));
 
-        processDataRepository.findDistinctByRisks_Mitigation_In(controls)
-                             .stream()
-                             .flatMap(processData -> processData.getRisks()
-                                                                .stream())
-                             .filter(risk -> controls.contains(risk.getMitigation()))
-                             .forEach(risk -> risk.mitigate(null));
-    }
+    processDataRepository.findDistinctByRisks_Mitigation_In(controls).stream()
+        .flatMap(processData -> processData.getRisks().stream())
+        .filter(risk -> controls.contains(risk.getMitigation()))
+        .forEach(risk -> risk.mitigate(null));
+  }
 
-    @Override
-    @Transactional
-    public void deleteByUnit(Unit owner) {
-        removeFromRisks(dataRepository.findByUnits(singleton(owner.getId()
-                                                                  .uuidValue())));
-        super.deleteByUnit(owner);
-    }
+  @Override
+  @Transactional
+  public void deleteByUnit(Unit owner) {
+    removeFromRisks(dataRepository.findByUnits(singleton(owner.getId().uuidValue())));
+    super.deleteByUnit(owner);
+  }
 }

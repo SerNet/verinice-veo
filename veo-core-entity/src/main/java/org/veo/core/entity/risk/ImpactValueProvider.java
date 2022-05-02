@@ -18,5 +18,5 @@
 package org.veo.core.entity.risk;
 
 public interface ImpactValueProvider extends Impact {
-    Impact getImpact();
+  Impact getImpact();
 }

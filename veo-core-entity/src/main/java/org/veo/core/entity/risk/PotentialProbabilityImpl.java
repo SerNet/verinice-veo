@@ -22,13 +22,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * This class contains a reference to a potential probability. The referenced
- * probability must be defined in a risk definition.
+ * This class contains a reference to a potential probability. The referenced probability must be
+ * defined in a risk definition.
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PotentialProbabilityImpl implements PotentialProbability {
 
-    private ProbabilityRef potentialProbability;
+  private ProbabilityRef potentialProbability;
 }

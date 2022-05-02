@@ -18,7 +18,7 @@
 package org.veo.core.entity;
 
 public interface Account {
-    boolean isAdmin();
+  boolean isAdmin();
 
-    Client getClient();
+  Client getClient();
 }

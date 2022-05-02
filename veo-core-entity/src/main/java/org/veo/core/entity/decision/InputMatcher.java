@@ -20,14 +20,13 @@ package org.veo.core.entity.decision;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-/**
- * Checks a value in the context of a {@link RuleCondition} in a
- * {@link Decision}.
- */
+/** Checks a value in the context of a {@link RuleCondition} in a {@link Decision}. */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-@JsonSubTypes({ @JsonSubTypes.Type(value = EqualsMatcher.class, name = "equals"),
-        @JsonSubTypes.Type(value = GreaterThanMatcher.class, name = "greaterThan"),
-        @JsonSubTypes.Type(value = IsNullMatcher.class, name = "isNull"), })
+@JsonSubTypes({
+  @JsonSubTypes.Type(value = EqualsMatcher.class, name = "equals"),
+  @JsonSubTypes.Type(value = GreaterThanMatcher.class, name = "greaterThan"),
+  @JsonSubTypes.Type(value = IsNullMatcher.class, name = "isNull"),
+})
 public interface InputMatcher {
-    boolean matches(Object value);
+  boolean matches(Object value);
 }

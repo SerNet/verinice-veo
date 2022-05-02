@@ -47,35 +47,36 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class CatalogData extends IdentifiableVersionedData implements Catalog, NameableData {
-    @Id
-    @ToString.Include
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private String dbId;
+  @Id
+  @ToString.Include
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  private String dbId;
 
-    @NotNull
-    @Column(name = "name")
-    private String name;
+  @NotNull
+  @Column(name = "name")
+  private String name;
 
-    @Column(name = "abbreviation")
-    private String abbreviation;
+  @Column(name = "abbreviation")
+  private String abbreviation;
 
-    @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
-    private String description;
+  @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
+  private String description;
 
-    @ToString.Exclude
-    @Column(name = "catalogitems")
-    @OneToMany(cascade = CascadeType.ALL,
-               orphanRemoval = true,
-               targetEntity = CatalogItemData.class,
-               mappedBy = "catalog",
-               fetch = FetchType.LAZY)
-    @Valid
-    private Set<CatalogItem> catalogItems = new HashSet<>();
+  @ToString.Exclude
+  @Column(name = "catalogitems")
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      targetEntity = CatalogItemData.class,
+      mappedBy = "catalog",
+      fetch = FetchType.LAZY)
+  @Valid
+  private Set<CatalogItem> catalogItems = new HashSet<>();
 
-    @ToString.Exclude
-    @ManyToOne(targetEntity = DomainTemplateData.class, optional = false)
-    @JoinColumn(name = "domaintemplate_id")
-    @Valid
-    private DomainTemplate domainTemplate;
+  @ToString.Exclude
+  @ManyToOne(targetEntity = DomainTemplateData.class, optional = false)
+  @JoinColumn(name = "domaintemplate_id")
+  @Valid
+  private DomainTemplate domainTemplate;
 }

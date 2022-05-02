@@ -26,12 +26,12 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class PageDto<T> {
-    private List<T> items;
-    private Long totalItemCount;
-    private int pageCount;
-    private int page;
+  private List<T> items;
+  private Long totalItemCount;
+  private int pageCount;
+  private int page;
 
-    public static <T> PageDto<T> emptyPage() {
-        return new PageDto<T>(Collections.emptyList(), 0l, 1, 0);
-    }
+  public static <T> PageDto<T> emptyPage() {
+    return new PageDto<T>(Collections.emptyList(), 0l, 1, 0);
+  }
 }

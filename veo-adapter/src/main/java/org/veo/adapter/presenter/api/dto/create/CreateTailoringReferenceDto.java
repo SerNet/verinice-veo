@@ -22,11 +22,7 @@ import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- * This DTO is primarily used in the domainTemplateassembler.
- */
+/** This DTO is primarily used in the domainTemplateassembler. */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public final class CreateTailoringReferenceDto extends AbstractTailoringReferenceDto {
-
-}
+public final class CreateTailoringReferenceDto extends AbstractTailoringReferenceDto {}

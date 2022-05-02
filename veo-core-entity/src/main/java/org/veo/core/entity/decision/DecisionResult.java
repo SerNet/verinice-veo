@@ -30,34 +30,30 @@ import org.veo.core.entity.Element;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-/**
- * Result of a {@link Decision} for an {@link Element}
- */
+/** Result of a {@link Decision} for an {@link Element} */
 @Getter
 @JsonAutoDetect(fieldVisibility = ANY)
 @RequiredArgsConstructor
 public class DecisionResult {
-    public DecisionResult() {
-        this(null, null, List.of(), List.of());
-    }
+  public DecisionResult() {
+    this(null, null, List.of(), List.of());
+  }
 
-    /** Actual decision result value */
-    final Boolean value;
+  /** Actual decision result value */
+  final Boolean value;
 
-    /**
-     * Index of the rule on the decision that caused this decision result (i.e. the
-     * matching rule with the highest priority)
-     */
-    final DecisionRuleRef decisiveRule;
+  /**
+   * Index of the rule on the decision that caused this decision result (i.e. the matching rule with
+   * the highest priority)
+   */
+  final DecisionRuleRef decisiveRule;
 
-    /** Indexes of all rules that matched. */
-    @NotNull
-    final List<DecisionRuleRef> matchingRules;
+  /** Indexes of all rules that matched. */
+  @NotNull final List<DecisionRuleRef> matchingRules;
 
-    /**
-     * Indexes of all rules that matched and would have caused the same decision
-     * result value as the decisive rule.
-     */
-    @NotNull
-    final List<DecisionRuleRef> agreeingRules;
+  /**
+   * Indexes of all rules that matched and would have caused the same decision result value as the
+   * decisive rule.
+   */
+  @NotNull final List<DecisionRuleRef> agreeingRules;
 }

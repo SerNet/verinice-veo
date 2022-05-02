@@ -19,30 +19,31 @@ package org.veo.core.entity;
 
 import java.util.function.Predicate;
 
-/**
- * All what provides a {@link TailoringReferenceType}.
- */
+/** All what provides a {@link TailoringReferenceType}. */
 public interface TailoringReferenceTyped {
-    /**
-     * Predicate to filter {@link TailoringReferenceType#COPY} or
-     * {@link TailoringReferenceType#COPY_ALWAYS}.
-     */
-    Predicate<? super TailoringReferenceTyped> IS_COPY_PREDICATE = r -> r.getReferenceType() == TailoringReferenceType.COPY
-            || r.getReferenceType() == TailoringReferenceType.COPY_ALWAYS;
-    Predicate<? super TailoringReferenceTyped> IS_ALL_LINK_PREDICATE = r -> r.getReferenceType() == TailoringReferenceType.LINK
-            || r.getReferenceType() == TailoringReferenceType.LINK_EXTERNAL;
-    Predicate<? super TailoringReferenceTyped> IS_EXTERNALLINK_PREDICATE = r -> r.getReferenceType() == TailoringReferenceType.LINK_EXTERNAL;
-    /**
-     * Predicate to filter {@link TailoringReferenceType#LINK}
-     */
-    Predicate<? super TailoringReferenceTyped> IS_LINK_PREDICATE = r -> r.getReferenceType() == TailoringReferenceType.LINK;
+  /**
+   * Predicate to filter {@link TailoringReferenceType#COPY} or {@link
+   * TailoringReferenceType#COPY_ALWAYS}.
+   */
+  Predicate<? super TailoringReferenceTyped> IS_COPY_PREDICATE =
+      r ->
+          r.getReferenceType() == TailoringReferenceType.COPY
+              || r.getReferenceType() == TailoringReferenceType.COPY_ALWAYS;
 
-    /**
-     * Is any kind of link References.
-     */
-    default boolean isLinkTailoringReferences() {
-        return IS_ALL_LINK_PREDICATE.test(this);
-    }
+  Predicate<? super TailoringReferenceTyped> IS_ALL_LINK_PREDICATE =
+      r ->
+          r.getReferenceType() == TailoringReferenceType.LINK
+              || r.getReferenceType() == TailoringReferenceType.LINK_EXTERNAL;
+  Predicate<? super TailoringReferenceTyped> IS_EXTERNALLINK_PREDICATE =
+      r -> r.getReferenceType() == TailoringReferenceType.LINK_EXTERNAL;
+  /** Predicate to filter {@link TailoringReferenceType#LINK} */
+  Predicate<? super TailoringReferenceTyped> IS_LINK_PREDICATE =
+      r -> r.getReferenceType() == TailoringReferenceType.LINK;
 
-    TailoringReferenceType getReferenceType();
+  /** Is any kind of link References. */
+  default boolean isLinkTailoringReferences() {
+    return IS_ALL_LINK_PREDICATE.test(this);
+  }
+
+  TailoringReferenceType getReferenceType();
 }

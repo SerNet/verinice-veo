@@ -30,28 +30,24 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
- * Depending on the category definition, a ProbabilityRef can either be a
- * reference to a pre-defined level in the category definition (i.e. a discrete
- * integer that corresponds to a predefined CategoryLevel's ordinal value) or an
- * arbitrary number that lies within the category definition's boundaries (i.e.
- * a decimal).
+ * Depending on the category definition, a ProbabilityRef can either be a reference to a pre-defined
+ * level in the category definition (i.e. a discrete integer that corresponds to a predefined
+ * CategoryLevel's ordinal value) or an arbitrary number that lies within the category definition's
+ * boundaries (i.e. a decimal).
  *
- * This is because probabilities can be defined as either discrete predefined
- * levels or as a continuous value such as a percentage for likelihood of
- * occurrence.
+ * <p>This is because probabilities can be defined as either discrete predefined levels or as a
+ * continuous value such as a percentage for likelihood of occurrence.
  *
- * As of now, only discrete reference values are supported.
+ * <p>As of now, only discrete reference values are supported.
  */
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Valid
 @EqualsAndHashCode
 public class ProbabilityRef {
 
-    @Getter
-    @PositiveOrZero
-    BigDecimal idRef;
+  @Getter @PositiveOrZero BigDecimal idRef;
 
-    public static ProbabilityRef from(ProbabilityLevel pl) {
-        return new ProbabilityRef(new BigDecimal(pl.getOrdinalValue()));
-    }
+  public static ProbabilityRef from(ProbabilityLevel pl) {
+    return new ProbabilityRef(new BigDecimal(pl.getOrdinalValue()));
+  }
 }

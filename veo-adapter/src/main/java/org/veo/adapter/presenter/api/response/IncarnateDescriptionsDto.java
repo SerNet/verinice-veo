@@ -32,26 +32,30 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "The incarnationDescriptions describe a set of catalog elements and their relations"
-        + " when they get applied from the catalog to a unit. Such incarnationDescriptions contain all information on how to model "
-        + " the specific catalog element.")
+@Schema(
+    description =
+        "The incarnationDescriptions describe a set of catalog elements and their relations"
+            + " when they get applied from the catalog to a unit. Such incarnationDescriptions contain all information on how to model "
+            + " the specific catalog element.")
 public class IncarnateDescriptionsDto {
 
-    @Schema(description = "A list of CatalogItemDescription defining the structure of each catalog item to create.",
-            required = true)
-    private List<IncarnateCatalogItemDescriptionDto> parameters;
+  @Schema(
+      description =
+          "A list of CatalogItemDescription defining the structure of each catalog item to create.",
+      required = true)
+  private List<IncarnateCatalogItemDescriptionDto> parameters;
 
-    public IncarnateDescriptionsDto(List<IncarnateCatalogItemDescription> references,
-            ReferenceAssembler urlAssembler) {
-        this.parameters = references.stream()
-                                    .map(p -> new IncarnateCatalogItemDescriptionDto(p,
-                                            urlAssembler))
-                                    .collect(Collectors.toList());
-    }
+  public IncarnateDescriptionsDto(
+      List<IncarnateCatalogItemDescription> references, ReferenceAssembler urlAssembler) {
+    this.parameters =
+        references.stream()
+            .map(p -> new IncarnateCatalogItemDescriptionDto(p, urlAssembler))
+            .collect(Collectors.toList());
+  }
 
-    public List<IncarnateCatalogItemDescription> dto2Model(IdRefResolver idRefResolver) {
-        return getParameters().stream()
-                              .map(a -> a.dto2Model(idRefResolver))
-                              .collect(Collectors.toList());
-    }
+  public List<IncarnateCatalogItemDescription> dto2Model(IdRefResolver idRefResolver) {
+    return getParameters().stream()
+        .map(a -> a.dto2Model(idRefResolver))
+        .collect(Collectors.toList());
+  }
 }

@@ -22,10 +22,7 @@ import java.util.UUID;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 
-/**
- * Creates {@link Identifiable} instances generically (based on a type and a
- * UUID).
- */
+/** Creates {@link Identifiable} instances generically (based on a type and a UUID). */
 public interface IdentifiableFactory {
-    <T extends Identifiable> T create(Class<T> type, Key<UUID> id);
+  <T extends Identifiable> T create(Class<T> type, Key<UUID> id);
 }

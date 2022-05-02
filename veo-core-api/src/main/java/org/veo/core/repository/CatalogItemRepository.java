@@ -26,11 +26,10 @@ import org.veo.core.entity.Key;
 /**
  * A repository for <code>CatalogItem</code> entities.
  *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
+ * <p>Implements basic CRUD operations from the superinterface and extends them with more specific
+ * methods - i.e. queries based on particular fields.
  */
 public interface CatalogItemRepository extends IdentifiableVersionedRepository<CatalogItem> {
 
-    Set<CatalogItem> getByIdsFetchElementData(Set<Key<UUID>> ids);
-
+  Set<CatalogItem> getByIdsFetchElementData(Set<Key<UUID>> ids);
 }

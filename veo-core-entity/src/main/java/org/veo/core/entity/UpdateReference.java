@@ -18,32 +18,28 @@
 package org.veo.core.entity;
 
 /**
- * An update reference refers a catalog item of another catalog or version of
- * the catalog. It describes how the previous calalog item need to be modified
- * to comply to the new version. The following constrains applies to the update
- * refs: 1. The reference catalogItem point to a catalogitem in the previous
- * catalog when: The update type is upate, replace, split or join 2. The
- * reference catalogItem point to a catalogitem in this catalog when: The update
- * type is add
+ * An update reference refers a catalog item of another catalog or version of the catalog. It
+ * describes how the previous calalog item need to be modified to comply to the new version. The
+ * following constrains applies to the update refs: 1. The reference catalogItem point to a
+ * catalogitem in the previous catalog when: The update type is upate, replace, split or join 2. The
+ * reference catalogItem point to a catalogitem in this catalog when: The update type is add
  */
 public interface UpdateReference extends CatalogReference {
-    String SINGULAR_TERM = "updatereference";
-    String PLURAL_TERM = "updatereferences";
+  String SINGULAR_TERM = "updatereference";
+  String PLURAL_TERM = "updatereferences";
 
-    /**
-     * The type of action for the update reference.
-     */
-    ItemUpdateType getUpdateType();
+  /** The type of action for the update reference. */
+  ItemUpdateType getUpdateType();
 
-    void setUpdateType(ItemUpdateType aUpdateType);
+  void setUpdateType(ItemUpdateType aUpdateType);
 
-    @Override
-    default Class<? extends Identifiable> getModelInterface() {
-        return UpdateReference.class;
-    }
+  @Override
+  default Class<? extends Identifiable> getModelInterface() {
+    return UpdateReference.class;
+  }
 
-    @Override
-    default String getModelType() {
-        return SINGULAR_TERM;
-    }
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
 }

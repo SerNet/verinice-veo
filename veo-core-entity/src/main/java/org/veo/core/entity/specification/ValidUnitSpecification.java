@@ -30,25 +30,23 @@ import org.veo.core.entity.Unit;
  * </pre>
  *
  * @author akoderman
- *
  * @param <T>
  */
 final class ValidUnitSpecification implements EntitySpecification<Element> {
 
-    private ValidUnitSpecification() {
-    }
+  private ValidUnitSpecification() {}
 
-    static final ValidUnitSpecification INSTANCE = new ValidUnitSpecification();
+  static final ValidUnitSpecification INSTANCE = new ValidUnitSpecification();
 
-    @Override
-    public boolean test(Element entity) {
-        return isSatisfiedBy(entity.getOwner());
-    }
+  @Override
+  public boolean test(Element entity) {
+    return isSatisfiedBy(entity.getOwner());
+  }
 
-    public boolean isSatisfiedBy(Unit unit) {
-        return (unit != null && !unit.getId()
-                                     .isUndefined()
-                && unit.getName() != null && !unit.getName()
-                                                  .isEmpty());
-    }
+  public boolean isSatisfiedBy(Unit unit) {
+    return (unit != null
+        && !unit.getId().isUndefined()
+        && unit.getName() != null
+        && !unit.getName().isEmpty());
+  }
 }

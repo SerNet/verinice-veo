@@ -46,46 +46,53 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class ScenarioData extends ElementData implements Scenario {
 
-    @ManyToMany(targetEntity = ScenarioData.class,
-                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "scenario_parts",
-               joinColumns = @JoinColumn(name = "composite_id"),
-               inverseJoinColumns = @JoinColumn(name = "part_id"))
-    @Valid
-    @Getter
-    private final Set<Scenario> parts = new HashSet<>();
+  @ManyToMany(
+      targetEntity = ScenarioData.class,
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JoinTable(
+      name = "scenario_parts",
+      joinColumns = @JoinColumn(name = "composite_id"),
+      inverseJoinColumns = @JoinColumn(name = "part_id"))
+  @Valid
+  @Getter
+  private final Set<Scenario> parts = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL,
-               orphanRemoval = true,
-               targetEntity = ScenarioRiskValuesAspectData.class,
-               mappedBy = "owner",
-               fetch = FetchType.LAZY)
-    @Valid
-    private final Set<ScenarioRiskValuesAspectData> riskValuesAspects = new HashSet<>();
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      targetEntity = ScenarioRiskValuesAspectData.class,
+      mappedBy = "owner",
+      fetch = FetchType.LAZY)
+  @Valid
+  private final Set<ScenarioRiskValuesAspectData> riskValuesAspects = new HashSet<>();
 
-    @ManyToMany(targetEntity = ScenarioData.class, mappedBy = "parts", fetch = FetchType.LAZY)
-    @Valid
-    @Getter
-    private final Set<Scenario> composites = new HashSet<>();
+  @ManyToMany(targetEntity = ScenarioData.class, mappedBy = "parts", fetch = FetchType.LAZY)
+  @Valid
+  @Getter
+  private final Set<Scenario> composites = new HashSet<>();
 
-    public void setPotentialProbability(DomainTemplate domain,
-            Map<RiskDefinitionRef, PotentialProbabilityImpl> potentialProbability) {
-        var aspect = findAspectByDomain(this.riskValuesAspects, domain).orElseGet(() -> {
-            var newRiskValues = new ScenarioRiskValuesAspectData(domain, this);
-            this.riskValuesAspects.add(newRiskValues);
-            return newRiskValues;
-        });
-        aspect.setPotentialProbability(potentialProbability);
-    }
+  public void setPotentialProbability(
+      DomainTemplate domain,
+      Map<RiskDefinitionRef, PotentialProbabilityImpl> potentialProbability) {
+    var aspect =
+        findAspectByDomain(this.riskValuesAspects, domain)
+            .orElseGet(
+                () -> {
+                  var newRiskValues = new ScenarioRiskValuesAspectData(domain, this);
+                  this.riskValuesAspects.add(newRiskValues);
+                  return newRiskValues;
+                });
+    aspect.setPotentialProbability(potentialProbability);
+  }
 
-    public Optional<Map<RiskDefinitionRef, PotentialProbabilityImpl>> getPotentialProbability(
-            DomainTemplate domain) {
-        return findAspectByDomain(riskValuesAspects, domain).map(a -> a.getPotentialProbability());
-    }
+  public Optional<Map<RiskDefinitionRef, PotentialProbabilityImpl>> getPotentialProbability(
+      DomainTemplate domain) {
+    return findAspectByDomain(riskValuesAspects, domain).map(a -> a.getPotentialProbability());
+  }
 
-    @Override
-    public void transferToDomain(Domain oldDomain, Domain newDomain) {
-        findAspectByDomain(riskValuesAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
-        super.transferToDomain(oldDomain, newDomain);
-    }
+  @Override
+  public void transferToDomain(Domain oldDomain, Domain newDomain) {
+    findAspectByDomain(riskValuesAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
+    super.transferToDomain(oldDomain, newDomain);
+  }
 }

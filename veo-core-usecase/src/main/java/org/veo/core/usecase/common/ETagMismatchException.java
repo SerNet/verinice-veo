@@ -17,13 +17,10 @@
  ******************************************************************************/
 package org.veo.core.usecase.common;
 
-/**
- * This exception is thrown if a difference is found between two ETags.
- */
+/** This exception is thrown if a difference is found between two ETags. */
 public class ETagMismatchException extends RuntimeException {
 
-    public ETagMismatchException(String message) {
-        super(message);
-    }
-
+  public ETagMismatchException(String message) {
+    super(message);
+  }
 }

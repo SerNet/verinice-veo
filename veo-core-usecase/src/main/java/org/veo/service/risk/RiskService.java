@@ -50,90 +50,95 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class RiskService {
 
-    private final ProcessRepository processRepository;
+  private final ProcessRepository processRepository;
 
-    public void evaluateChangedRiskComponent(Element element) {
-        Class<? extends Identifiable> type = element.getModelInterface();
-        if (Process.class.isAssignableFrom(type) || Scenario.class.isAssignableFrom(type)) {
-            determineAllRiskValues(element.getOwningClient()
-                                          .orElseThrow());
-        }
+  public void evaluateChangedRiskComponent(Element element) {
+    Class<? extends Identifiable> type = element.getModelInterface();
+    if (Process.class.isAssignableFrom(type) || Scenario.class.isAssignableFrom(type)) {
+      determineAllRiskValues(element.getOwningClient().orElseThrow());
     }
+  }
 
-    private void determineAllRiskValues(Client client) {
-        log.info("Determine all risk values for {}", client);
-        Set<Process> processes = processRepository.findAllHavingRisks(client);
-        log.debug("Select {} processes for risk calculation in client {}.", processes.size(),
-                  client.getIdAsString());
+  private void determineAllRiskValues(Client client) {
+    log.info("Determine all risk values for {}", client);
+    Set<Process> processes = processRepository.findAllHavingRisks(client);
+    log.debug(
+        "Select {} processes for risk calculation in client {}.",
+        processes.size(),
+        client.getIdAsString());
 
-        for (Process process : processes) {
+    for (Process process : processes) {
 
-            for (ProcessRisk risk : process.getRisks()) {
-                Scenario scenario = risk.getScenario();
+      for (ProcessRisk risk : process.getRisks()) {
+        Scenario scenario = risk.getScenario();
 
-                for (Domain domain : risk.getDomains()) {
-                    log.info("Determine values for {} of {} in {}", risk, process, domain);
+        for (Domain domain : risk.getDomains()) {
+          log.info("Determine values for {} of {} in {}", risk, process, domain);
 
-                    for (RiskDefinition riskDefinition : domain.getRiskDefinitions()
-                                                               .values()) {
-                        RiskDefinitionRef rdr = RiskDefinitionRef.from(riskDefinition);
-                        if (!risk.getRiskDefinitions()
-                                 .contains(rdr)) {
-                            log.debug("Skipping the domain's risk definition {} because it is "
-                                    + "unused in the risk for process {} / scenario {}.",
-                                      rdr.getIdRef(), risk.getEntity()
-                                                          .getIdAsString(),
-                                      risk.getScenario()
-                                          .getIdAsString());
-                            continue;
-                        }
-
-                        // Setting values does not increase the risk's (aggregate root's) version,
-                        // we have to do it manually:
-                        risk.setUpdatedAt(Instant.now());
-
-                        // Transfer potentialProbability from scenario to riskValues if present:
-                        ProbabilityValueProvider riskValueProbability = risk.getProbabilityProvider(rdr);
-                        riskValueProbability.setPotentialProbability(scenario.getPotentialProbability(domain,
-                                                                                                      rdr)
-                                                                             .map(PotentialProbabilityImpl::getPotentialProbability)
-                                                                             .orElse(null));
-
-                        // Retrieve the resulting effective probability:
-                        ProbabilityRef riskValueEffectiveProbability = riskValueProbability.getEffectiveProbability();
-
-                        // Iterate over impact categories:
-                        CategorizedImpactValueProvider riskValueImpact = risk.getImpactProvider(rdr);
-                        for (CategoryDefinition categoryDefinition : riskDefinition.getCategories()) {
-                            CategoryRef cr = CategoryRef.from(categoryDefinition);
-
-                            // Transfer potentialImpact from process to riskValues if present:
-                            riskValueImpact.setPotentialImpact(cr,
-                                                               process.getImpactValues(domain, rdr)
-                                                                      .map(ProcessImpactValues::getPotentialImpacts)
-                                                                      .map(it -> it.get(cr))
-                                                                      .orElse(null));
-
-                            // Retrieve the resulting effectiveImpact:
-                            ImpactRef effectiveImpact = riskValueImpact.getEffectiveImpact(cr);
-
-                            // Cast to implementing classes to gain package-private access to field
-                            // 'inherentRisk':
-                            DeterminedRiskImpl riskForCategory = (DeterminedRiskImpl) ((RiskValuesProvider) risk.getRiskProvider(rdr)).riskCategoryById(cr);
-
-                            // Calculate riskValue using the riskDefinition and set it
-                            // as the inherentRisk:
-                            if (riskValueEffectiveProbability != null && effectiveImpact != null) {
-                                RiskValue riskValue = categoryDefinition.getRiskValue(riskValueEffectiveProbability,
-                                                                                      effectiveImpact);
-                                riskForCategory.setInherentRisk(RiskRef.from(riskValue));
-                            } else {
-                                riskForCategory.setInherentRisk(null);
-                            }
-                        }
-                    }
-                }
+          for (RiskDefinition riskDefinition : domain.getRiskDefinitions().values()) {
+            RiskDefinitionRef rdr = RiskDefinitionRef.from(riskDefinition);
+            if (!risk.getRiskDefinitions().contains(rdr)) {
+              log.debug(
+                  "Skipping the domain's risk definition {} because it is "
+                      + "unused in the risk for process {} / scenario {}.",
+                  rdr.getIdRef(),
+                  risk.getEntity().getIdAsString(),
+                  risk.getScenario().getIdAsString());
+              continue;
             }
+
+            // Setting values does not increase the risk's (aggregate root's) version,
+            // we have to do it manually:
+            risk.setUpdatedAt(Instant.now());
+
+            // Transfer potentialProbability from scenario to riskValues if present:
+            ProbabilityValueProvider riskValueProbability = risk.getProbabilityProvider(rdr);
+            riskValueProbability.setPotentialProbability(
+                scenario
+                    .getPotentialProbability(domain, rdr)
+                    .map(PotentialProbabilityImpl::getPotentialProbability)
+                    .orElse(null));
+
+            // Retrieve the resulting effective probability:
+            ProbabilityRef riskValueEffectiveProbability =
+                riskValueProbability.getEffectiveProbability();
+
+            // Iterate over impact categories:
+            CategorizedImpactValueProvider riskValueImpact = risk.getImpactProvider(rdr);
+            for (CategoryDefinition categoryDefinition : riskDefinition.getCategories()) {
+              CategoryRef cr = CategoryRef.from(categoryDefinition);
+
+              // Transfer potentialImpact from process to riskValues if present:
+              riskValueImpact.setPotentialImpact(
+                  cr,
+                  process
+                      .getImpactValues(domain, rdr)
+                      .map(ProcessImpactValues::getPotentialImpacts)
+                      .map(it -> it.get(cr))
+                      .orElse(null));
+
+              // Retrieve the resulting effectiveImpact:
+              ImpactRef effectiveImpact = riskValueImpact.getEffectiveImpact(cr);
+
+              // Cast to implementing classes to gain package-private access to field
+              // 'inherentRisk':
+              DeterminedRiskImpl riskForCategory =
+                  (DeterminedRiskImpl)
+                      ((RiskValuesProvider) risk.getRiskProvider(rdr)).riskCategoryById(cr);
+
+              // Calculate riskValue using the riskDefinition and set it
+              // as the inherentRisk:
+              if (riskValueEffectiveProbability != null && effectiveImpact != null) {
+                RiskValue riskValue =
+                    categoryDefinition.getRiskValue(riskValueEffectiveProbability, effectiveImpact);
+                riskForCategory.setInherentRisk(RiskRef.from(riskValue));
+              } else {
+                riskForCategory.setInherentRisk(null);
+              }
+            }
+          }
         }
+      }
     }
+  }
 }

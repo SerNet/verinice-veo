@@ -19,5 +19,5 @@ package org.veo.core.entity.risk;
 
 public interface ProbabilityValueProvider extends Probability {
 
-    Probability getProbability();
+  Probability getProbability();
 }

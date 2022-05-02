@@ -28,20 +28,19 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-/**
- * Defines the method to determine a risk value from the {@link RiskDefinition}.
- */
+/** Defines the method to determine a risk value from the {@link RiskDefinition}. */
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class RiskMethod {
-    @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
-    @NotNull
-    @ToString.Include
-    @EqualsAndHashCode.Include
-    private String impactMethod;
-    @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
-    private String description;
+  @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
+  @NotNull
+  @ToString.Include
+  @EqualsAndHashCode.Include
+  private String impactMethod;
+
+  @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
+  private String description;
 }

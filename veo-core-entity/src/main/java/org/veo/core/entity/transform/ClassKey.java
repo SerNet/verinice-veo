@@ -20,11 +20,11 @@ package org.veo.core.entity.transform;
 import lombok.Data;
 
 /**
- * The type mapping key. It is used in the transform process to map the id
- * together with the type to a single key.
+ * The type mapping key. It is used in the transform process to map the id together with the type to
+ * a single key.
  */
 @Data
 public class ClassKey<A> {
-    private final Class<?> c;
-    private final A k;
+  private final Class<?> c;
+  private final A k;
 }

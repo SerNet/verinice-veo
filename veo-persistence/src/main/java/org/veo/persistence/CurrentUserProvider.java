@@ -18,5 +18,5 @@
 package org.veo.persistence;
 
 public interface CurrentUserProvider {
-    String getUsername();
+  String getUsername();
 }

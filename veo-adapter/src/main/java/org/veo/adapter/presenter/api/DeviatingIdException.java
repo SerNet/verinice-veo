@@ -18,13 +18,12 @@
 package org.veo.adapter.presenter.api;
 
 /**
- * Exception that should be thrown when a PUT request body contains an ID that
- * deviates from the ID URL parameter.
+ * Exception that should be thrown when a PUT request body contains an ID that deviates from the ID
+ * URL parameter.
  */
 public class DeviatingIdException extends RuntimeException {
 
-    public DeviatingIdException(String message) {
-        super(message);
-    }
-
+  public DeviatingIdException(String message) {
+    super(message);
+  }
 }

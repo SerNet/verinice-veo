@@ -38,52 +38,55 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 @AllArgsConstructor
-public abstract class CreateElementUseCase<TEntity extends Element> implements
-        TransactionalUseCase<CreateElementUseCase.InputData<TEntity>, CreateElementUseCase.OutputData<TEntity>> {
-    private final UnitRepository unitRepository;
-    private final Repository<TEntity, Key<UUID>> entityRepo;
-    private final DesignatorService designatorService;
-    private final Decider decider;
+public abstract class CreateElementUseCase<TEntity extends Element>
+    implements TransactionalUseCase<
+        CreateElementUseCase.InputData<TEntity>, CreateElementUseCase.OutputData<TEntity>> {
+  private final UnitRepository unitRepository;
+  private final Repository<TEntity, Key<UUID>> entityRepo;
+  private final DesignatorService designatorService;
+  private final Decider decider;
 
-    @Override
-    @Transactional(Transactional.TxType.REQUIRED)
-    public CreateElementUseCase.OutputData<TEntity> execute(
-            CreateElementUseCase.InputData<TEntity> input) {
-        var entity = input.getNewEntity();
-        Unit unit = unitRepository.findById(entity.getOwner()
-                                                  .getId())
-                                  .orElseThrow(() -> new NotFoundException("Unit %s not found.",
-                                          entity.getOwner()
-                                                .getId()
-                                                .uuidValue()));
-        unit.checkSameClient(input.authenticatedClient);
-        DomainSensitiveElementValidator.validate(entity);
-        designatorService.assignDesignator(entity, input.authenticatedClient);
-        evaluateDecisions(entity);
-        validate(entity);
-        return new CreateElementUseCase.OutputData<>(entityRepo.save(entity));
-    }
+  @Override
+  @Transactional(Transactional.TxType.REQUIRED)
+  public CreateElementUseCase.OutputData<TEntity> execute(
+      CreateElementUseCase.InputData<TEntity> input) {
+    var entity = input.getNewEntity();
+    Unit unit =
+        unitRepository
+            .findById(entity.getOwner().getId())
+            .orElseThrow(
+                () ->
+                    new NotFoundException(
+                        "Unit %s not found.", entity.getOwner().getId().uuidValue()));
+    unit.checkSameClient(input.authenticatedClient);
+    DomainSensitiveElementValidator.validate(entity);
+    designatorService.assignDesignator(entity, input.authenticatedClient);
+    evaluateDecisions(entity);
+    validate(entity);
+    return new CreateElementUseCase.OutputData<>(entityRepo.save(entity));
+  }
 
-    private void evaluateDecisions(TEntity entity) {
-        entity.getDomains()
-              .forEach(domain -> {
-                  entity.setDecisionResults(decider.decide(entity, domain), domain);
-              });
-    }
+  private void evaluateDecisions(TEntity entity) {
+    entity
+        .getDomains()
+        .forEach(
+            domain -> {
+              entity.setDecisionResults(decider.decide(entity, domain), domain);
+            });
+  }
 
-    protected abstract void validate(TEntity entity);
+  protected abstract void validate(TEntity entity);
 
-    @Valid
-    @Value
-    public static class InputData<TEntity> implements UseCase.InputData {
-        TEntity newEntity;
-        Client authenticatedClient;
-    }
+  @Valid
+  @Value
+  public static class InputData<TEntity> implements UseCase.InputData {
+    TEntity newEntity;
+    Client authenticatedClient;
+  }
 
-    @Valid
-    @Value
-    public static class OutputData<TEntity> implements UseCase.OutputData {
-        @Valid
-        TEntity entity;
-    }
+  @Valid
+  @Value
+  public static class OutputData<TEntity> implements UseCase.OutputData {
+    @Valid TEntity entity;
+  }
 }

@@ -31,19 +31,17 @@ import lombok.Value;
 @Schema(description = "Translations for an entity type")
 public class TranslationsDto implements Translations {
 
-    private final Map<String, TranslationDto> translationsByLanguage = new HashMap<>();
+  private final Map<String, TranslationDto> translationsByLanguage = new HashMap<>();
 
-    public void add(String lang, Map<String, String> translations) {
-        TranslationDto translationsForLanguage = translationsByLanguage.computeIfAbsent(lang,
-                                                                                        k -> new TranslationDto(
-                                                                                                new HashMap<>()));
-        translationsForLanguage.getTranslations()
-                               .putAll(translations);
-    }
+  public void add(String lang, Map<String, String> translations) {
+    TranslationDto translationsForLanguage =
+        translationsByLanguage.computeIfAbsent(lang, k -> new TranslationDto(new HashMap<>()));
+    translationsForLanguage.getTranslations().putAll(translations);
+  }
 
-    @JsonProperty("lang")
-    @Schema(description = "The keys are language codes, the values are the translations")
-    public Map<String, TranslationDto> getTranslationsByLanguage() {
-        return translationsByLanguage;
-    }
+  @JsonProperty("lang")
+  @Schema(description = "The keys are language codes, the values are the translations")
+  public Map<String, TranslationDto> getTranslationsByLanguage() {
+    return translationsByLanguage;
+  }
 }

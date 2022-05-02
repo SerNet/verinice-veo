@@ -23,11 +23,11 @@ import javax.validation.ConstraintValidatorContext;
 import org.veo.persistence.entity.jpa.ElementData;
 
 public class HasOwnerOrContainingCatalogItemValidator
-        implements ConstraintValidator<HasOwnerOrContainingCatalogItem, ElementData> {
+    implements ConstraintValidator<HasOwnerOrContainingCatalogItem, ElementData> {
 
-    @Override
-    public boolean isValid(ElementData element, ConstraintValidatorContext context) {
-        // that's an XOR
-        return element.getOwner() != null ^ element.getContainingCatalogItem() != null;
-    }
+  @Override
+  public boolean isValid(ElementData element, ConstraintValidatorContext context) {
+    // that's an XOR
+    return element.getOwner() != null ^ element.getContainingCatalogItem() != null;
+  }
 }

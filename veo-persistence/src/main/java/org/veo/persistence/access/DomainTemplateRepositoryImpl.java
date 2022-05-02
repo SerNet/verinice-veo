@@ -34,28 +34,25 @@ import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
 public class DomainTemplateRepositoryImpl
-        extends AbstractIdentifiableVersionedRepository<DomainTemplate, DomainTemplateData>
-        implements DomainTemplateRepository {
+    extends AbstractIdentifiableVersionedRepository<DomainTemplate, DomainTemplateData>
+    implements DomainTemplateRepository {
 
-    private final DomainTemplateDataRepository dataRepository;
+  private final DomainTemplateDataRepository dataRepository;
 
-    public DomainTemplateRepositoryImpl(DomainTemplateDataRepository dataRepository,
-            ValidationService validator) {
-        super(dataRepository, validator);
-        this.dataRepository = dataRepository;
-    }
+  public DomainTemplateRepositoryImpl(
+      DomainTemplateDataRepository dataRepository, ValidationService validator) {
+    super(dataRepository, validator);
+    this.dataRepository = dataRepository;
+  }
 
-    public List<DomainTemplate> getAll() {
-        return StreamSupport.stream(dataRepository.findAll()
-                                                  .spliterator(),
-                                    false)
-                            .map(e -> (DomainTemplate) e)
-                            .collect(Collectors.toList());
-    }
+  public List<DomainTemplate> getAll() {
+    return StreamSupport.stream(dataRepository.findAll().spliterator(), false)
+        .map(e -> (DomainTemplate) e)
+        .collect(Collectors.toList());
+  }
 
-    @Override
-    public Optional<Key<UUID>> getLatestDomainTemplateId(String name) {
-        return dataRepository.findLatestTemplateIdByName(name)
-                             .map(Key::uuidFrom);
-    }
+  @Override
+  public Optional<Key<UUID>> getLatestDomainTemplateId(String name) {
+    return dataRepository.findLatestTemplateIdByName(name).map(Key::uuidFrom);
+  }
 }

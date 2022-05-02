@@ -31,8 +31,7 @@ import lombok.Value;
 @Value
 public class CreateElementInputData<T extends Element> {
 
-    Key<UUID> unitId;
-    T element;
-    Client authenticatedClient;
-
+  Key<UUID> unitId;
+  T element;
+  Client authenticatedClient;
 }

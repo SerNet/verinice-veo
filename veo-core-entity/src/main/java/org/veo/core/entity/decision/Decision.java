@@ -35,54 +35,52 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Configurable logic for a specific decision on a type of element. Accepts an
- * element and checks it against a list of rules to determine a boolean result
- * value. The first rule (i.e. with the highest priority) that matches
- * determines the result (first hit policy).
+ * Configurable logic for a specific decision on a type of element. Accepts an element and checks it
+ * against a list of rules to determine a boolean result value. The first rule (i.e. with the
+ * highest priority) that matches determines the result (first hit policy).
  */
 @Data
 @RequiredArgsConstructor
 public class Decision {
-    /** Translated human-readable text. Key is ISO language code, value is text. */
-    @NotNull
-    private final Map<String, String> name;
-    @Size(max = ELEMENT_TYPE_MAX_LENGTH)
-    private final String elementType;
-    @Size(max = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
-    private final String elementSubType;
-    /**
-     * Rules ordered by priority (descending).
-     */
-    private final List<Rule> rules;
+  /** Translated human-readable text. Key is ISO language code, value is text. */
+  @NotNull private final Map<String, String> name;
 
-    public DecisionResult evaluate(Element element, Domain domain) {
-        // Find all matching rules
-        var matchingRules = new ArrayList<DecisionRuleRef>();
-        for (var i = 0; i < rules.size(); i++) {
-            var rule = rules.get(i);
-            if (rule.matches(element, domain)) {
-                matchingRules.add(new DecisionRuleRef(i, this));
-            }
-        }
+  @Size(max = ELEMENT_TYPE_MAX_LENGTH)
+  private final String elementType;
 
-        // The first matching rule determines the result.
-        return matchingRules.stream()
-                            .findFirst()
-                            .map(decisiveRuleRef -> buildResult(decisiveRuleRef, matchingRules))
-                            .orElse(new DecisionResult());
+  @Size(max = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
+  private final String elementSubType;
+  /** Rules ordered by priority (descending). */
+  private final List<Rule> rules;
+
+  public DecisionResult evaluate(Element element, Domain domain) {
+    // Find all matching rules
+    var matchingRules = new ArrayList<DecisionRuleRef>();
+    for (var i = 0; i < rules.size(); i++) {
+      var rule = rules.get(i);
+      if (rule.matches(element, domain)) {
+        matchingRules.add(new DecisionRuleRef(i, this));
+      }
     }
 
-    public Rule getRule(DecisionRuleRef ref) {
-        return rules.get(ref.getIndex());
-    }
+    // The first matching rule determines the result.
+    return matchingRules.stream()
+        .findFirst()
+        .map(decisiveRuleRef -> buildResult(decisiveRuleRef, matchingRules))
+        .orElse(new DecisionResult());
+  }
 
-    private DecisionResult buildResult(DecisionRuleRef decisiveRuleRef,
-            List<DecisionRuleRef> matchingRules) {
-        var value = getRule(decisiveRuleRef).getOutput();
-        var agreeingRules = matchingRules.stream()
-                                         .filter(ref -> getRule(ref).outputEquals(value))
-                                         .collect(Collectors.toList());
-        return new DecisionResult(value, decisiveRuleRef, matchingRules, agreeingRules);
-    }
+  public Rule getRule(DecisionRuleRef ref) {
+    return rules.get(ref.getIndex());
+  }
 
+  private DecisionResult buildResult(
+      DecisionRuleRef decisiveRuleRef, List<DecisionRuleRef> matchingRules) {
+    var value = getRule(decisiveRuleRef).getOutput();
+    var agreeingRules =
+        matchingRules.stream()
+            .filter(ref -> getRule(ref).outputEquals(value))
+            .collect(Collectors.toList());
+    return new DecisionResult(value, decisiveRuleRef, matchingRules, agreeingRules);
+  }
 }

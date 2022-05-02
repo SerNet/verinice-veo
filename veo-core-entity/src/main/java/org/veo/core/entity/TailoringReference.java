@@ -18,28 +18,26 @@
 package org.veo.core.entity;
 
 /**
- * TailoringReference Refers another catalog item in this catalog which are
- * connected and need to be applied also. Like a set of controls connected to a
- * scenario. The following constrains applies to the tailoring refs: 1. The
- * reference catalogItem always point to a catalogitem in the same catalog. 2.1.
- * All references defined by the element need to refer to an element of a
- * catalogitem in the same catalog. 2.2. For each such reference a coresponding
- * tailref of type LINK must exist, pointing to the catalogItem which holds the
- * refered element.
+ * TailoringReference Refers another catalog item in this catalog which are connected and need to be
+ * applied also. Like a set of controls connected to a scenario. The following constrains applies to
+ * the tailoring refs: 1. The reference catalogItem always point to a catalogitem in the same
+ * catalog. 2.1. All references defined by the element need to refer to an element of a catalogitem
+ * in the same catalog. 2.2. For each such reference a coresponding tailref of type LINK must exist,
+ * pointing to the catalogItem which holds the refered element.
  */
 public interface TailoringReference extends CatalogReference, TailoringReferenceTyped {
-    String SINGULAR_TERM = "tailoringreference";
-    String PLURAL_TERM = "tailoringreferences";
+  String SINGULAR_TERM = "tailoringreference";
+  String PLURAL_TERM = "tailoringreferences";
 
-    void setReferenceType(TailoringReferenceType aReferenceType);
+  void setReferenceType(TailoringReferenceType aReferenceType);
 
-    @Override
-    default Class<? extends Identifiable> getModelInterface() {
-        return TailoringReference.class;
-    }
+  @Override
+  default Class<? extends Identifiable> getModelInterface() {
+    return TailoringReference.class;
+  }
 
-    @Override
-    default String getModelType() {
-        return SINGULAR_TERM;
-    }
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
 }

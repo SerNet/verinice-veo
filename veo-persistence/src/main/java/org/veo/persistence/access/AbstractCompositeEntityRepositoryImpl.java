@@ -33,35 +33,35 @@ import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.ElementData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
-abstract class AbstractCompositeEntityRepositoryImpl<S extends CompositeElement<?>, T extends ElementData & CompositeElement<?>>
-        extends AbstractElementRepository<S, T> implements CompositeElementRepository<S> {
+abstract class AbstractCompositeEntityRepositoryImpl<
+        S extends CompositeElement<?>, T extends ElementData & CompositeElement<?>>
+    extends AbstractElementRepository<S, T> implements CompositeElementRepository<S> {
 
-    private final CompositeEntityDataRepository<T> compositeRepo;
+  private final CompositeEntityDataRepository<T> compositeRepo;
 
-    AbstractCompositeEntityRepositoryImpl(CompositeEntityDataRepository<T> dataRepository,
-            ValidationService validation, CustomLinkDataRepository linkDataRepository,
-            ScopeDataRepository scopeDataRepository) {
-        super(dataRepository, validation, linkDataRepository, scopeDataRepository);
-        this.compositeRepo = dataRepository;
-    }
+  AbstractCompositeEntityRepositoryImpl(
+      CompositeEntityDataRepository<T> dataRepository,
+      ValidationService validation,
+      CustomLinkDataRepository linkDataRepository,
+      ScopeDataRepository scopeDataRepository) {
+    super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+    this.compositeRepo = dataRepository;
+  }
 
-    @Override
-    public void deleteById(Key<UUID> id) {
-        // remove element from composite parts:
-        var composites = compositeRepo.findDistinctByParts_DbId_In(singleton(id.uuidValue()));
-        composites.forEach(assetComposite -> assetComposite.removePartById(id));
+  @Override
+  public void deleteById(Key<UUID> id) {
+    // remove element from composite parts:
+    var composites = compositeRepo.findDistinctByParts_DbId_In(singleton(id.uuidValue()));
+    composites.forEach(assetComposite -> assetComposite.removePartById(id));
 
-        super.deleteById(id);
-    }
+    super.deleteById(id);
+  }
 
-    @Override
-    public Set<S> findCompositesByParts(Set<S> parts) {
-        var partIds = parts.stream()
-                           .map(Identifiable::getIdAsString)
-                           .collect(Collectors.toSet());
-        return compositeRepo.findDistinctByParts_DbId_In(partIds)
-                            .stream()
-                            .map(data -> (S) data)
-                            .collect(Collectors.toSet());
-    }
+  @Override
+  public Set<S> findCompositesByParts(Set<S> parts) {
+    var partIds = parts.stream().map(Identifiable::getIdAsString).collect(Collectors.toSet());
+    return compositeRepo.findDistinctByParts_DbId_In(partIds).stream()
+        .map(data -> (S) data)
+        .collect(Collectors.toSet());
+  }
 }

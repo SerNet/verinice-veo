@@ -29,39 +29,35 @@ import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase.InputData;
 
 /**
- * Map between the request DTO received from a client and the input expected by
- * the data source. (This is not needed for simple input data. In these cases
- * the constructor of InputData can be called directly.)
+ * Map between the request DTO received from a client and the input expected by the data source.
+ * (This is not needed for simple input data. In these cases the constructor of InputData can be
+ * called directly.)
  *
- * The request DTO is not mapped to a unit object in this case because a new
- * unit is created from the input values. All values from the DTO that are not
- * relevant for this operation are ignored. Illegal values should cause an
- * IllegalArgumentException.
+ * <p>The request DTO is not mapped to a unit object in this case because a new unit is created from
+ * the input values. All values from the DTO that are not relevant for this operation are ignored.
+ * Illegal values should cause an IllegalArgumentException.
  *
- * If the client provided a UUID it is used to create the new unit. If not, a
- * new one is generated.
+ * <p>If the client provided a UUID it is used to create the new unit. If not, a new one is
+ * generated.
  *
- * The newly created unit is then returned by the use case:
+ * <p>The newly created unit is then returned by the use case:
  *
  * @see CreateOutputMapper
  */
 public final class CreateUnitInputMapper {
 
-    public static CreateUnitUseCase.InputData map(CreateUnitDto dto, String clientId) {
-        Optional<Key<UUID>> parentId = Optional.ofNullable(dto.getParent())
-                                               .map(IdRef::getId)
-                                               .map(Key::uuidFrom);
+  public static CreateUnitUseCase.InputData map(CreateUnitDto dto, String clientId) {
+    Optional<Key<UUID>> parentId =
+        Optional.ofNullable(dto.getParent()).map(IdRef::getId).map(Key::uuidFrom);
 
-        Optional<Key<UUID>> newUnitId = Optional.ofNullable(dto.getId())
-                                                .map(Key::uuidFrom);
+    Optional<Key<UUID>> newUnitId = Optional.ofNullable(dto.getId()).map(Key::uuidFrom);
 
-        NameableInputData namedInput = new NameableInputData();
-        namedInput.setId(newUnitId);
-        namedInput.setName(dto.getName());
-        namedInput.setAbbreviation(dto.getAbbreviation());
-        namedInput.setDescription(dto.getDescription());
+    NameableInputData namedInput = new NameableInputData();
+    namedInput.setId(newUnitId);
+    namedInput.setName(dto.getName());
+    namedInput.setAbbreviation(dto.getAbbreviation());
+    namedInput.setDescription(dto.getDescription());
 
-        return new InputData(namedInput, Key.uuidFrom(clientId), parentId);
-    }
-
+    return new InputData(namedInput, Key.uuidFrom(clientId), parentId);
+  }
 }

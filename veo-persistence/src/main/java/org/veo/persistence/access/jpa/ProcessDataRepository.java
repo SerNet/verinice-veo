@@ -32,32 +32,39 @@ import org.veo.persistence.entity.jpa.ScenarioData;
 
 public interface ProcessDataRepository extends CompositeRiskAffectedDataRepository<ProcessData> {
 
-    // @formatter:off
-    @Query("select distinct p from process p " + "left join fetch p.risks risks "
-            + "left join fetch risks.riskAspects " + "where risks.scenario in ?1")
-    // @formatter:on
-    Set<ProcessData> findRisksWithValue(Collection<ScenarioData> causes);
+  // @formatter:off
+  @Query(
+      "select distinct p from process p "
+          + "left join fetch p.risks risks "
+          + "left join fetch risks.riskAspects "
+          + "where risks.scenario in ?1")
+  // @formatter:on
+  Set<ProcessData> findRisksWithValue(Collection<ScenarioData> causes);
 
-    // @formatter:off
-    @Query("select distinct p from process p " + "left join fetch p.risks risks "
-            + "left join fetch risks.riskAspects " + "where p.dbId IN ?1")
-    // @formatter:on
-    Set<ProcessData> findByIdsWithRiskValues(Set<String> dbIds);
+  // @formatter:off
+  @Query(
+      "select distinct p from process p "
+          + "left join fetch p.risks risks "
+          + "left join fetch risks.riskAspects "
+          + "where p.dbId IN ?1")
+  // @formatter:on
+  Set<ProcessData> findByIdsWithRiskValues(Set<String> dbIds);
 
-    // @formatter:off
-    @Query("select distinct e from #{#entityName} e "
-            + "left join fetch e.owner o "
-            + "left join fetch e.riskValuesAspects "
-            + "inner join fetch e.risks r "
-            + "left join fetch r.riskAspects "
-            + "inner join fetch r.domains "
-            + "inner join fetch r.scenario s "
-            + "left join fetch s.riskValuesAspects "
-            + " where o.client = ?1")
-    // @formatter:on
-    Set<ProcessData> findAllHavingRisks(Client client);
+  // @formatter:off
+  @Query(
+      "select distinct e from #{#entityName} e "
+          + "left join fetch e.owner o "
+          + "left join fetch e.riskValuesAspects "
+          + "inner join fetch e.risks r "
+          + "left join fetch r.riskAspects "
+          + "inner join fetch r.domains "
+          + "inner join fetch r.scenario s "
+          + "left join fetch s.riskValuesAspects "
+          + " where o.client = ?1")
+  // @formatter:on
+  Set<ProcessData> findAllHavingRisks(Client client);
 
-    @Nonnull
-    @EntityGraph(ProcessData.FULL_AGGREGATE_GRAPH_WITH_RISKS)
-    List<ProcessData> findAllWithRisksByDbIdIn(Iterable<String> ids);
+  @Nonnull
+  @EntityGraph(ProcessData.FULL_AGGREGATE_GRAPH_WITH_RISKS)
+  List<ProcessData> findAllWithRisksByDbIdIn(Iterable<String> ids);
 }

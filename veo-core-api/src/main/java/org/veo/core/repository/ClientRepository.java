@@ -27,17 +27,16 @@ import org.veo.core.entity.Key;
 /**
  * A repository for <code>Client</code> entities.
  *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
+ * <p>Implements basic CRUD operations from the superinterface and extends them with more specific
+ * methods - i.e. queries based on particular fields.
  */
 public interface ClientRepository extends IdentifiableVersionedRepository<Client> {
 
-    Optional<Client> findByIdFetchCatalogsAndItems(Key<UUID> id);
+  Optional<Client> findByIdFetchCatalogsAndItems(Key<UUID> id);
 
-    Optional<Client> findByIdFetchCatalogsAndItemsAndTailoringReferences(Key<UUID> id);
+  Optional<Client> findByIdFetchCatalogsAndItemsAndTailoringReferences(Key<UUID> id);
 
-    Optional<Client> findByIdFetchTranslations(Key<UUID> id);
+  Optional<Client> findByIdFetchTranslations(Key<UUID> id);
 
-    List<Client> findAll();
-
+  List<Client> findAll();
 }

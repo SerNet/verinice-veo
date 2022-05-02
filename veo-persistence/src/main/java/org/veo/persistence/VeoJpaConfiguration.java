@@ -22,12 +22,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-/**
- * Configure repositories and persistence entities for Spring-Data.
- */
+/** Configure repositories and persistence entities for Spring-Data. */
 @Configuration
-@EntityScan(basePackages = { "org.veo.persistence.entity.jpa" })
-@EnableJpaRepositories(basePackages = { "org.veo.persistence.access" })
+@EntityScan(basePackages = {"org.veo.persistence.entity.jpa"})
+@EnableJpaRepositories(basePackages = {"org.veo.persistence.access"})
 @EnableJpaAuditing(auditorAwareRef = "authAwareImpl")
-public class VeoJpaConfiguration {
-}
+public class VeoJpaConfiguration {}

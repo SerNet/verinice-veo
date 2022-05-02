@@ -23,37 +23,34 @@ import java.util.Optional;
 import org.veo.core.entity.risk.ProcessImpactValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
-/**
- * A process is a series of business activities that use specific assets.
- */
+/** A process is a series of business activities that use specific assets. */
 public interface Process
-        extends Element, CompositeElement<Process>, RiskAffected<Process, ProcessRisk> {
+    extends Element, CompositeElement<Process>, RiskAffected<Process, ProcessRisk> {
 
-    String SINGULAR_TERM = "process";
-    String PLURAL_TERM = "processes";
-    String TYPE_DESIGNATOR = "PRO";
+  String SINGULAR_TERM = "process";
+  String PLURAL_TERM = "processes";
+  String TYPE_DESIGNATOR = "PRO";
 
-    @Override
-    default Class<? extends Identifiable> getModelInterface() {
-        return Process.class;
-    }
+  @Override
+  default Class<? extends Identifiable> getModelInterface() {
+    return Process.class;
+  }
 
-    @Override
-    default String getModelType() {
-        return SINGULAR_TERM;
-    }
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
 
-    @Override
-    default String getTypeDesignator() {
-        return TYPE_DESIGNATOR;
-    }
+  @Override
+  default String getTypeDesignator() {
+    return TYPE_DESIGNATOR;
+  }
 
-    Optional<Map<RiskDefinitionRef, ProcessImpactValues>> getImpactValues(DomainTemplate domain);
+  Optional<Map<RiskDefinitionRef, ProcessImpactValues>> getImpactValues(DomainTemplate domain);
 
-    Optional<ProcessImpactValues> getImpactValues(DomainTemplate domain,
-            RiskDefinitionRef riskDefinition);
+  Optional<ProcessImpactValues> getImpactValues(
+      DomainTemplate domain, RiskDefinitionRef riskDefinition);
 
-    void setImpactValues(DomainTemplate domain,
-            Map<RiskDefinitionRef, ProcessImpactValues> riskValues);
-
+  void setImpactValues(
+      DomainTemplate domain, Map<RiskDefinitionRef, ProcessImpactValues> riskValues);
 }

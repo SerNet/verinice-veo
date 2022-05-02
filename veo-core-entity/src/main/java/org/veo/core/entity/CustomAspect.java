@@ -21,40 +21,39 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A custom aspect - it describes a subset of an {@link Element} object's
- * attributes in a set of domains. Attributes must conform to the dynamic object
- * schema. A custom aspect is for documentation purposes only - it may be edited
- * by humans and presented to humans (e.g. in a web form or generated report),
- * but must never be used for any other computations such as risk calculations.
+ * A custom aspect - it describes a subset of an {@link Element} object's attributes in a set of
+ * domains. Attributes must conform to the dynamic object schema. A custom aspect is for
+ * documentation purposes only - it may be edited by humans and presented to humans (e.g. in a web
+ * form or generated report), but must never be used for any other computations such as risk
+ * calculations.
  */
 public interface CustomAspect {
 
-    int TYPE_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
+  int TYPE_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
 
-    String getType();
+  String getType();
 
-    void setType(String aType);
+  void setType(String aType);
 
-    /**
-     * Add the given Domain to the collection domains.
-     *
-     * @return true if added
-     */
-    boolean addToDomains(Domain aDomain);
+  /**
+   * Add the given Domain to the collection domains.
+   *
+   * @return true if added
+   */
+  boolean addToDomains(Domain aDomain);
 
-    /**
-     * Remove the given Domain from the collection domains.
-     *
-     * @return true if removed
-     */
-    boolean removeFromDomains(Domain aDomain);
+  /**
+   * Remove the given Domain from the collection domains.
+   *
+   * @return true if removed
+   */
+  boolean removeFromDomains(Domain aDomain);
 
-    Set<Domain> getDomains();
+  Set<Domain> getDomains();
 
-    void setDomains(Set<Domain> aDomains);
+  void setDomains(Set<Domain> aDomains);
 
-    Map<String, Object> getAttributes();
+  Map<String, Object> getAttributes();
 
-    void setAttributes(Map<String, Object> attributes);
-
+  void setAttributes(Map<String, Object> attributes);
 }

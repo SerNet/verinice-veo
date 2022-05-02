@@ -35,43 +35,47 @@ import org.veo.core.usecase.UseCase;
 
 import lombok.Value;
 
-public class GetCatalogItemsUseCase implements
-        TransactionalUseCase<GetCatalogItemsUseCase.InputData, GetCatalogItemsUseCase.OutputData> {
+public class GetCatalogItemsUseCase
+    implements TransactionalUseCase<
+        GetCatalogItemsUseCase.InputData, GetCatalogItemsUseCase.OutputData> {
 
-    @Override
-    public OutputData execute(InputData input) {
-        Catalog catalog = input.authenticatedClient.getDomains()
-                                                   .stream()
-                                                   .filter(EntitySpecifications.isActive())
-                                                   .filter(input.domainId.map(EntitySpecifications::hasId)
-                                                                         .orElse(EntitySpecifications.matchAll()))
-                                                   .flatMap(d -> d.getCatalogs()
-                                                                  .stream())
-                                                   .filter(EntitySpecifications.hasId(input.catalogId))
-                                                   .findFirst()
-                                                   .orElseThrow(() -> new NotFoundException(
-                                                           input.catalogId.uuidValue()));
-        List<CatalogItem> list = catalog.getCatalogItems()
-                                        .stream()
-                                        .filter(input.namespace.map(EntitySpecifications::hasNamespace)
-                                                               .orElse(EntitySpecifications.matchAll()))
-                                        .collect(Collectors.toList());
-        return new OutputData(list);
-    }
+  @Override
+  public OutputData execute(InputData input) {
+    Catalog catalog =
+        input.authenticatedClient.getDomains().stream()
+            .filter(EntitySpecifications.isActive())
+            .filter(
+                input
+                    .domainId
+                    .map(EntitySpecifications::hasId)
+                    .orElse(EntitySpecifications.matchAll()))
+            .flatMap(d -> d.getCatalogs().stream())
+            .filter(EntitySpecifications.hasId(input.catalogId))
+            .findFirst()
+            .orElseThrow(() -> new NotFoundException(input.catalogId.uuidValue()));
+    List<CatalogItem> list =
+        catalog.getCatalogItems().stream()
+            .filter(
+                input
+                    .namespace
+                    .map(EntitySpecifications::hasNamespace)
+                    .orElse(EntitySpecifications.matchAll()))
+            .collect(Collectors.toList());
+    return new OutputData(list);
+  }
 
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Optional<String> namespace;
-        Key<UUID> catalogId;
-        Optional<Key<UUID>> domainId;
-        Client authenticatedClient;
-    }
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
+    Optional<String> namespace;
+    Key<UUID> catalogId;
+    Optional<Key<UUID>> domainId;
+    Client authenticatedClient;
+  }
 
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        List<CatalogItem> catalogItems;
-    }
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid List<CatalogItem> catalogItems;
+  }
 }

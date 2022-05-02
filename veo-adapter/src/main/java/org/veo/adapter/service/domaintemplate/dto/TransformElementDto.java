@@ -55,30 +55,33 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * This DTO represent the contained {@link Element} defined by a FullXXXDto. It
- * uses the 'type' property in the json to determine the actual type.
+ * This DTO represent the contained {@link Element} defined by a FullXXXDto. It uses the 'type'
+ * property in the json to determine the actual type.
  */
 @Data
 @EqualsAndHashCode
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = As.EXISTING_PROPERTY, property = "type")
-@JsonSubTypes({ @JsonSubTypes.Type(value = FullAssetDto.class, name = Asset.SINGULAR_TERM),
-        @JsonSubTypes.Type(value = FullControlDto.class, name = Control.SINGULAR_TERM),
-        @JsonSubTypes.Type(value = FullDocumentDto.class, name = Document.SINGULAR_TERM),
-        @JsonSubTypes.Type(value = FullIncidentDto.class, name = Incident.SINGULAR_TERM),
-        @JsonSubTypes.Type(value = FullPersonDto.class, name = Person.SINGULAR_TERM),
-        @JsonSubTypes.Type(value = FullProcessDto.class, name = Process.SINGULAR_TERM),
-        @JsonSubTypes.Type(value = FullScopeDto.class, name = Scope.SINGULAR_TERM),
-        @JsonSubTypes.Type(value = FullScenarioDto.class, name = Scenario.SINGULAR_TERM) })
+@JsonSubTypes({
+  @JsonSubTypes.Type(value = FullAssetDto.class, name = Asset.SINGULAR_TERM),
+  @JsonSubTypes.Type(value = FullControlDto.class, name = Control.SINGULAR_TERM),
+  @JsonSubTypes.Type(value = FullDocumentDto.class, name = Document.SINGULAR_TERM),
+  @JsonSubTypes.Type(value = FullIncidentDto.class, name = Incident.SINGULAR_TERM),
+  @JsonSubTypes.Type(value = FullPersonDto.class, name = Person.SINGULAR_TERM),
+  @JsonSubTypes.Type(value = FullProcessDto.class, name = Process.SINGULAR_TERM),
+  @JsonSubTypes.Type(value = FullScopeDto.class, name = Scope.SINGULAR_TERM),
+  @JsonSubTypes.Type(value = FullScenarioDto.class, name = Scenario.SINGULAR_TERM)
+})
 public class TransformElementDto implements IdentifiableDto {
 
-    @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
-    @Schema(description = "ID must be a valid UUID string following RFC 4122.",
-            example = "adf037f1-0089-48ad-9177-92269918758b",
-            format = "uuid")
-    @ToString.Include
-    private String id;
+  @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
+  @Schema(
+      description = "ID must be a valid UUID string following RFC 4122.",
+      example = "adf037f1-0089-48ad-9177-92269918758b",
+      format = "uuid")
+  @ToString.Include
+  private String id;
 
-    private IdRef<ElementOwner> owner;
+  private IdRef<ElementOwner> owner;
 
-    private Set<IdRef<Domain>> domains = new HashSet<>();
+  private Set<IdRef<Domain>> domains = new HashSet<>();
 }

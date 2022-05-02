@@ -30,27 +30,24 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
- * Depending on the category definition, an ImpactRef can either be a reference
- * to a pre-defined level in the category definition (i.e. a discrete integer
- * that corresponds to a predefined CategoryLevel's ordinal value) or an
- * arbitrary number that lies within the category definition's boundaries (i.e.
- * a decimal).
+ * Depending on the category definition, an ImpactRef can either be a reference to a pre-defined
+ * level in the category definition (i.e. a discrete integer that corresponds to a predefined
+ * CategoryLevel's ordinal value) or an arbitrary number that lies within the category definition's
+ * boundaries (i.e. a decimal).
  *
- * This is because impacts can be defined as either discrete predefined levels
- * or as a continuous value such as a monetary loss.
+ * <p>This is because impacts can be defined as either discrete predefined levels or as a continuous
+ * value such as a monetary loss.
  *
- * As of now, only discrete reference values are supported.
+ * <p>As of now, only discrete reference values are supported.
  */
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Valid
 @EqualsAndHashCode
 public class ImpactRef {
 
-    @Getter
-    @PositiveOrZero
-    BigDecimal idRef;
+  @Getter @PositiveOrZero BigDecimal idRef;
 
-    public static ImpactRef from(CategoryLevel cl) {
-        return new ImpactRef(new BigDecimal(cl.getOrdinalValue()));
-    }
+  public static ImpactRef from(CategoryLevel cl) {
+    return new ImpactRef(new BigDecimal(cl.getOrdinalValue()));
+  }
 }

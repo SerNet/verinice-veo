@@ -31,13 +31,12 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class EtagService {
 
-    private final RepositoryProvider repositoryProvider;
+  private final RepositoryProvider repositoryProvider;
 
-    public <T extends Identifiable & Versioned> Optional<String> getEtag(Class<T> entityClass,
-            String id) {
-        IdentifiableVersionedRepository<T> repo = repositoryProvider.getVersionedIdentifiableRepositoryFor(entityClass);
-        return repo.getVersion(Key.uuidFrom(id))
-                   .map(version -> ETag.from(id, version));
-    }
-
+  public <T extends Identifiable & Versioned> Optional<String> getEtag(
+      Class<T> entityClass, String id) {
+    IdentifiableVersionedRepository<T> repo =
+        repositoryProvider.getVersionedIdentifiableRepositoryFor(entityClass);
+    return repo.getVersion(Key.uuidFrom(id)).map(version -> ETag.from(id, version));
+  }
 }

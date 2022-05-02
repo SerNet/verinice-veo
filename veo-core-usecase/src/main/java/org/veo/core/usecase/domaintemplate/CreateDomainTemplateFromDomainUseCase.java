@@ -35,59 +35,62 @@ import org.veo.core.usecase.UseCase;
 
 import lombok.Value;
 
-public class CreateDomainTemplateFromDomainUseCase implements
-        TransactionalUseCase<CreateDomainTemplateFromDomainUseCase.InputData, CreateDomainTemplateFromDomainUseCase.OutputData> {
-    private final DomainTemplateService domainTemplateService;
-    private final DomainRepository repository;
-    private final DomainTemplateRepository domainTemplateRepository;
+public class CreateDomainTemplateFromDomainUseCase
+    implements TransactionalUseCase<
+        CreateDomainTemplateFromDomainUseCase.InputData,
+        CreateDomainTemplateFromDomainUseCase.OutputData> {
+  private final DomainTemplateService domainTemplateService;
+  private final DomainRepository repository;
+  private final DomainTemplateRepository domainTemplateRepository;
 
-    public CreateDomainTemplateFromDomainUseCase(DomainTemplateService domainTemplateService,
-            DomainRepository repository, DomainTemplateRepository domainTemplateRepository) {
-        super();
-        this.domainTemplateService = domainTemplateService;
-        this.repository = repository;
-        this.domainTemplateRepository = domainTemplateRepository;
+  public CreateDomainTemplateFromDomainUseCase(
+      DomainTemplateService domainTemplateService,
+      DomainRepository repository,
+      DomainTemplateRepository domainTemplateRepository) {
+    super();
+    this.domainTemplateService = domainTemplateService;
+    this.repository = repository;
+    this.domainTemplateRepository = domainTemplateRepository;
+  }
+
+  @Override
+  public OutputData execute(InputData input) {
+    Domain domain =
+        repository
+            .findById(input.getId())
+            .orElseThrow(
+                () -> new NotFoundException("Domain with id %s not found.", input.getId()));
+    Client client = input.getAuthenticatedClient();
+    if (!client.equals(domain.getOwner())) {
+      throw new ClientBoundaryViolationException(domain, client);
+    }
+    if (!domain.isActive()) {
+      throw new NotFoundException("Domain is inactive.");
     }
 
-    @Override
-    public OutputData execute(InputData input) {
-        Domain domain = repository.findById(input.getId())
-                                  .orElseThrow(() -> new NotFoundException(
-                                          "Domain with id %s not found.", input.getId()));
-        Client client = input.getAuthenticatedClient();
-        if (!client.equals(domain.getOwner())) {
-            throw new ClientBoundaryViolationException(domain, client);
-        }
-        if (!domain.isActive()) {
-            throw new NotFoundException("Domain is inactive.");
-        }
+    domain = updateRevision(domain, input.revision);
+    DomainTemplate domainTemplateFromDomain =
+        domainTemplateService.createDomainTemplateFromDomain(domain);
+    return new OutputData(domainTemplateRepository.save(domainTemplateFromDomain));
+  }
 
-        domain = updateRevision(domain, input.revision);
-        DomainTemplate domainTemplateFromDomain = domainTemplateService.createDomainTemplateFromDomain(domain);
-        return new OutputData(domainTemplateRepository.save(domainTemplateFromDomain));
-    }
+  /** Increase the revision field if the content is a number. */
+  private Domain updateRevision(Domain domain, String revision) {
+    domain.setRevision(revision);
+    return repository.save(domain);
+  }
 
-    /**
-     * Increase the revision field if the content is a number.
-     */
-    private Domain updateRevision(Domain domain, String revision) {
-        domain.setRevision(revision);
-        return repository.save(domain);
-    }
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
+    Key<UUID> id;
+    String revision;
+    Client authenticatedClient;
+  }
 
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Key<UUID> id;
-        String revision;
-        Client authenticatedClient;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        DomainTemplate newDomainTemplate;
-    }
-
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid DomainTemplate newDomainTemplate;
+  }
 }

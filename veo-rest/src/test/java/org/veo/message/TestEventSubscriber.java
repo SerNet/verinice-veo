@@ -30,43 +30,42 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Use this event subscriber in tests to assert received events.
- */
+/** Use this event subscriber in tests to assert received events. */
 // @Component
 @Slf4j
 // @Profile(value = { "testrabbit" })
 public class TestEventSubscriber {
 
-    @Getter
-    List<EventMessage> receivedEvents = new ArrayList<>();
+  @Getter List<EventMessage> receivedEvents = new ArrayList<>();
 
-    @Getter
-    CountDownLatch latch = new CountDownLatch(0);
+  @Getter CountDownLatch latch = new CountDownLatch(0);
 
-    @RabbitListener(bindings = @QueueBinding(value = @Queue(value = "${veo.message.consume.queue}_TestEventSubscriber",
-                                                            exclusive = "false",
-                                                            durable = "false",
-                                                            autoDelete = "true"),
-                                             exchange = @Exchange(value = "${veo.message.dispatch.exchange}",
-                                                                  type = "topic"),
-                                             key = "${veo.message.dispatch.routing-key-prefix}veo.testmessage"))
-    void handleEntityEvent(EventMessage event) {
-        log.debug("Consumed test event with content: {}", event.getContent());
-        try {
-            // save received events for assertions:
-            this.receivedEvents.add(event);
-            latch.countDown();
-        } catch (Exception e) {
-            log.error("Error while consuming event {}: {}", event.getId(), event.getContent());
-            // prevent re-queue and reprocessing:
-            // replace with DLX for failing messages if retry, log or alert are required
-            throw new AmqpRejectAndDontRequeueException(e);
-        }
+  @RabbitListener(
+      bindings =
+          @QueueBinding(
+              value =
+                  @Queue(
+                      value = "${veo.message.consume.queue}_TestEventSubscriber",
+                      exclusive = "false",
+                      durable = "false",
+                      autoDelete = "true"),
+              exchange = @Exchange(value = "${veo.message.dispatch.exchange}", type = "topic"),
+              key = "${veo.message.dispatch.routing-key-prefix}veo.testmessage"))
+  void handleEntityEvent(EventMessage event) {
+    log.debug("Consumed test event with content: {}", event.getContent());
+    try {
+      // save received events for assertions:
+      this.receivedEvents.add(event);
+      latch.countDown();
+    } catch (Exception e) {
+      log.error("Error while consuming event {}: {}", event.getId(), event.getContent());
+      // prevent re-queue and reprocessing:
+      // replace with DLX for failing messages if retry, log or alert are required
+      throw new AmqpRejectAndDontRequeueException(e);
     }
+  }
 
-    public void setExpectedEvents(int count) {
-        latch = new CountDownLatch(count);
-    }
-
+  public void setExpectedEvents(int count) {
+    latch = new CountDownLatch(count);
+  }
 }

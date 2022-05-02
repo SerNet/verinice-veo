@@ -114,238 +114,294 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * REST service which provides methods to manage documents.
- */
+/** REST service which provides methods to manage documents. */
 @RestController
 @RequestMapping(DocumentController.URL_BASE_PATH)
 @Slf4j
 public class DocumentController extends AbstractElementController<Document, FullDocumentDto> {
 
-    public DocumentController(GetDocumentUseCase getDocumentUseCase,
-            GetDocumentsUseCase getDocumentsUseCase, CreateDocumentUseCase createDocumentUseCase,
-            UpdateDocumentUseCase updateDocumentUseCase, DeleteElementUseCase deleteElementUseCase,
-            EvaluateDecisionUseCase evaluateDecisionUseCase) {
-        super(Document.class, getDocumentUseCase, evaluateDecisionUseCase);
-        this.getDocumentsUseCase = getDocumentsUseCase;
-        this.createDocumentUseCase = createDocumentUseCase;
-        this.updateDocumentUseCase = updateDocumentUseCase;
-        this.deleteElementUseCase = deleteElementUseCase;
+  public DocumentController(
+      GetDocumentUseCase getDocumentUseCase,
+      GetDocumentsUseCase getDocumentsUseCase,
+      CreateDocumentUseCase createDocumentUseCase,
+      UpdateDocumentUseCase updateDocumentUseCase,
+      DeleteElementUseCase deleteElementUseCase,
+      EvaluateDecisionUseCase evaluateDecisionUseCase) {
+    super(Document.class, getDocumentUseCase, evaluateDecisionUseCase);
+    this.getDocumentsUseCase = getDocumentsUseCase;
+    this.createDocumentUseCase = createDocumentUseCase;
+    this.updateDocumentUseCase = updateDocumentUseCase;
+    this.deleteElementUseCase = deleteElementUseCase;
+  }
+
+  public static final String URL_BASE_PATH = "/" + Document.PLURAL_TERM;
+
+  private final CreateDocumentUseCase createDocumentUseCase;
+  private final UpdateDocumentUseCase updateDocumentUseCase;
+  private final GetDocumentsUseCase getDocumentsUseCase;
+  private final DeleteElementUseCase deleteElementUseCase;
+
+  @GetMapping
+  @Operation(summary = "Loads all documents")
+  public @Valid CompletableFuture<PageDto<FullDocumentDto>> getDocuments(
+      @Parameter(hidden = true) Authentication auth,
+      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
+      @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
+      @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
+      @RequestParam(value = STATUS_PARAM, required = false) String status,
+      @RequestParam(value = CHILD_ELEMENT_IDS_PARAM, required = false) List<String> childElementIds,
+      @RequestParam(value = HAS_PARENT_ELEMENTS_PARAM, required = false) Boolean hasParentElements,
+      @RequestParam(value = HAS_CHILD_ELEMENTS_PARAM, required = false) Boolean hasChildElements,
+      @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
+      @RequestParam(value = DESIGNATOR_PARAM, required = false) String designator,
+      @RequestParam(value = NAME_PARAM, required = false) String name,
+      @RequestParam(value = UPDATED_BY_PARAM, required = false) String updatedBy,
+      @RequestParam(
+              value = PAGE_SIZE_PARAM,
+              required = false,
+              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          Integer pageSize,
+      @RequestParam(
+              value = PAGE_NUMBER_PARAM,
+              required = false,
+              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
+          Integer pageNumber,
+      @RequestParam(
+              value = SORT_COLUMN_PARAM,
+              required = false,
+              defaultValue = SORT_COLUMN_DEFAULT_VALUE)
+          String sortColumn,
+      @RequestParam(
+              value = SORT_ORDER_PARAM,
+              required = false,
+              defaultValue = SORT_ORDER_DEFAULT_VALUE)
+          @Pattern(regexp = SORT_ORDER_PATTERN)
+          String sortOrder) {
+    Client client;
+    try {
+      client = getAuthenticatedClient(auth);
+    } catch (NoSuchElementException e) {
+      return CompletableFuture.supplyAsync(PageDto::emptyPage);
     }
 
-    public static final String URL_BASE_PATH = "/" + Document.PLURAL_TERM;
+    return getDocuments(
+        GetElementsInputMapper.map(
+            client,
+            unitUuid,
+            displayName,
+            subType,
+            status,
+            childElementIds,
+            hasChildElements,
+            hasParentElements,
+            description,
+            designator,
+            name,
+            updatedBy,
+            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
+  }
 
-    private final CreateDocumentUseCase createDocumentUseCase;
-    private final UpdateDocumentUseCase updateDocumentUseCase;
-    private final GetDocumentsUseCase getDocumentsUseCase;
-    private final DeleteElementUseCase deleteElementUseCase;
+  private CompletableFuture<PageDto<FullDocumentDto>> getDocuments(
+      GetElementsUseCase.InputData inputData) {
+    return useCaseInteractor.execute(
+        getDocumentsUseCase,
+        inputData,
+        output ->
+            PagingMapper.toPage(
+                output.getElements(), entityToDtoTransformer::transformDocument2Dto));
+  }
 
-    @GetMapping
-    @Operation(summary = "Loads all documents")
-    public @Valid CompletableFuture<PageDto<FullDocumentDto>> getDocuments(
-            @Parameter(hidden = true) Authentication auth,
-            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
-            @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
-            @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
-            @RequestParam(value = STATUS_PARAM, required = false) String status,
-            @RequestParam(value = CHILD_ELEMENT_IDS_PARAM,
-                          required = false) List<String> childElementIds,
-            @RequestParam(value = HAS_PARENT_ELEMENTS_PARAM,
-                          required = false) Boolean hasParentElements,
-            @RequestParam(value = HAS_CHILD_ELEMENTS_PARAM,
-                          required = false) Boolean hasChildElements,
-            @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
-            @RequestParam(value = DESIGNATOR_PARAM, required = false) String designator,
-            @RequestParam(value = NAME_PARAM, required = false) String name,
-            @RequestParam(value = UPDATED_BY_PARAM, required = false) String updatedBy,
-            @RequestParam(value = PAGE_SIZE_PARAM,
-                          required = false,
-                          defaultValue = PAGE_SIZE_DEFAULT_VALUE) Integer pageSize,
-            @RequestParam(value = PAGE_NUMBER_PARAM,
-                          required = false,
-                          defaultValue = PAGE_NUMBER_DEFAULT_VALUE) Integer pageNumber,
-            @RequestParam(value = SORT_COLUMN_PARAM,
-                          required = false,
-                          defaultValue = SORT_COLUMN_DEFAULT_VALUE) String sortColumn,
-            @RequestParam(value = SORT_ORDER_PARAM,
-                          required = false,
-                          defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
-        Client client;
-        try {
-            client = getAuthenticatedClient(auth);
-        } catch (NoSuchElementException e) {
-            return CompletableFuture.supplyAsync(PageDto::emptyPage);
-        }
+  @Override
+  @Operation(summary = "Loads a document")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Document loaded",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = FullDocumentDto.class))),
+        @ApiResponse(responseCode = "404", description = "Document not found")
+      })
+  @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
+  public @Valid CompletableFuture<ResponseEntity<FullDocumentDto>> getElement(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      WebRequest request) {
+    return super.getElement(auth, uuid, request);
+  }
 
-        return getDocuments(GetElementsInputMapper.map(client, unitUuid, displayName, subType,
-                                                       status, childElementIds, hasChildElements,
-                                                       hasParentElements, description, designator,
-                                                       name, updatedBy,
-                                                       PagingMapper.toConfig(pageSize, pageNumber,
-                                                                             sortColumn,
-                                                                             sortOrder)));
+  @Override
+  @Operation(summary = "Loads the parts of a document")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Parts loaded",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array =
+                        @ArraySchema(schema = @Schema(implementation = FullDocumentDto.class)))),
+        @ApiResponse(responseCode = "404", description = "Document not found")
+      })
+  @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+  public @Valid CompletableFuture<ResponseEntity<List<FullDocumentDto>>> getElementParts(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      WebRequest request) {
+    return super.getElementParts(auth, uuid, request);
+  }
+
+  @PostMapping()
+  @Operation(summary = "Creates a document")
+  @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Document created")})
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> createDocument(
+      @Parameter(hidden = true) ApplicationUser user,
+      @Valid @NotNull @RequestBody @JsonSchemaValidation(Document.SINGULAR_TERM)
+          CreateDocumentDto dto) {
+    return useCaseInteractor.execute(
+        createDocumentUseCase,
+        (Supplier<CreateElementUseCase.InputData<Document>>)
+            () -> {
+              Client client = getClient(user);
+              IdRefResolver idRefResolver = createIdRefResolver(client);
+              return new CreateElementUseCase.InputData<>(
+                  dtoToEntityTransformer.transformDto2Document(dto, idRefResolver), client);
+            },
+        output -> {
+          ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
+          return RestApiResponse.created(URL_BASE_PATH, body);
+        });
+  }
+
+  @PutMapping(value = "/{id}")
+  @Operation(summary = "Updates a document")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Document updated"),
+        @ApiResponse(responseCode = "404", description = "Document not found")
+      })
+  public CompletableFuture<FullDocumentDto> updateDocument(
+      @Parameter(hidden = true) ApplicationUser user,
+      @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
+      @PathVariable String id,
+      @Valid @NotNull @RequestBody @JsonSchemaValidation(Document.SINGULAR_TERM)
+          FullDocumentDto documentDto) {
+    documentDto.applyResourceId(id);
+    return useCaseInteractor.execute(
+        updateDocumentUseCase,
+        (Supplier<InputData<Document>>)
+            () -> {
+              Client client = getClient(user);
+              IdRefResolver idRefResolver = createIdRefResolver(client);
+              return new InputData<>(
+                  dtoToEntityTransformer.transformDto2Document(documentDto, idRefResolver),
+                  client,
+                  eTag,
+                  user.getUsername());
+            },
+        output -> entityToDtoTransformer.transformDocument2Dto(output.getEntity()));
+  }
+
+  @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
+  @Operation(summary = "Deletes a document")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "204", description = "Document deleted"),
+        @ApiResponse(responseCode = "404", description = "Document not found")
+      })
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteDocument(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid) {
+    ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
+    Client client = getClient(user.getClientId());
+    return useCaseInteractor.execute(
+        deleteElementUseCase,
+        new DeleteElementUseCase.InputData(Document.class, Key.uuidFrom(uuid), client),
+        output -> ResponseEntity.noContent().build());
+  }
+
+  @Override
+  @SuppressFBWarnings("NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS")
+  protected String buildSearchUri(String id) {
+    return linkTo(
+            methodOn(DocumentController.class)
+                .runSearch(ANY_AUTH, id, ANY_INT, ANY_INT, ANY_STRING, ANY_STRING))
+        .withSelfRel()
+        .getHref();
+  }
+
+  @GetMapping(value = "/searches/{searchId}")
+  @Operation(summary = "Finds documents for the search.")
+  public @Valid CompletableFuture<PageDto<FullDocumentDto>> runSearch(
+      @Parameter(hidden = true) Authentication auth,
+      @PathVariable String searchId,
+      @RequestParam(
+              value = PAGE_SIZE_PARAM,
+              required = false,
+              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          Integer pageSize,
+      @RequestParam(
+              value = PAGE_NUMBER_PARAM,
+              required = false,
+              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
+          Integer pageNumber,
+      @RequestParam(
+              value = SORT_COLUMN_PARAM,
+              required = false,
+              defaultValue = SORT_COLUMN_DEFAULT_VALUE)
+          String sortColumn,
+      @RequestParam(
+              value = SORT_ORDER_PARAM,
+              required = false,
+              defaultValue = SORT_ORDER_DEFAULT_VALUE)
+          @Pattern(regexp = SORT_ORDER_PATTERN)
+          String sortOrder) {
+    try {
+      return getDocuments(
+          GetElementsInputMapper.map(
+              getAuthenticatedClient(auth),
+              SearchQueryDto.decodeFromSearchId(searchId),
+              PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
+    } catch (IOException e) {
+      log.error("Could not decode search URL: {}", e.getLocalizedMessage());
+      return null;
     }
+  }
 
-    private CompletableFuture<PageDto<FullDocumentDto>> getDocuments(
-            GetElementsUseCase.InputData inputData) {
-        return useCaseInteractor.execute(getDocumentsUseCase, inputData,
-                                         output -> PagingMapper.toPage(output.getElements(),
-                                                                       entityToDtoTransformer::transformDocument2Dto));
-    }
+  @Operation(summary = "Evaluates a decision on a transient document without persisting anything")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Decision evaluated",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array =
+                        @ArraySchema(schema = @Schema(implementation = FullDocumentDto.class)))),
+        @ApiResponse(responseCode = "404", description = "Decision not found")
+      })
+  @PostMapping(value = "/decision-evaluation")
+  public @Valid CompletableFuture<ResponseEntity<DecisionResult>> evaluateDecision(
+      @Parameter(required = true, hidden = true) Authentication auth,
+      @Valid @RequestBody FullDocumentDto element,
+      @Parameter(description = DECISION_KEY_DESCRIPTION) @RequestParam(value = DECISION_KEY_PARAM)
+          String decisionKey,
+      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+    return super.evaluateDecision(auth, element, decisionKey, domainId);
+  }
 
-    @Override
-    @Operation(summary = "Loads a document")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Document loaded",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = FullDocumentDto.class))),
-            @ApiResponse(responseCode = "404", description = "Document not found") })
-    @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
-    public @Valid CompletableFuture<ResponseEntity<FullDocumentDto>> getElement(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @Parameter(required = true,
-                       example = UUID_EXAMPLE,
-                       description = UUID_DESCRIPTION) @PathVariable String uuid,
-            WebRequest request) {
-        return super.getElement(auth, uuid, request);
-    }
-
-    @Override
-    @Operation(summary = "Loads the parts of a document")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Parts loaded",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            array = @ArraySchema(schema = @Schema(implementation = FullDocumentDto.class)))),
-            @ApiResponse(responseCode = "404", description = "Document not found") })
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
-    public @Valid CompletableFuture<ResponseEntity<List<FullDocumentDto>>> getElementParts(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @Parameter(required = true,
-                       example = UUID_EXAMPLE,
-                       description = UUID_DESCRIPTION) @PathVariable String uuid,
-            WebRequest request) {
-        return super.getElementParts(auth, uuid, request);
-    }
-
-    @PostMapping()
-    @Operation(summary = "Creates a document")
-    @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Document created") })
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> createDocument(
-            @Parameter(hidden = true) ApplicationUser user,
-            @Valid @NotNull @RequestBody @JsonSchemaValidation(Document.SINGULAR_TERM) CreateDocumentDto dto) {
-        return useCaseInteractor.execute(createDocumentUseCase,
-                                         (Supplier<CreateElementUseCase.InputData<Document>>) () -> {
-                                             Client client = getClient(user);
-                                             IdRefResolver idRefResolver = createIdRefResolver(client);
-                                             return new CreateElementUseCase.InputData<>(
-                                                     dtoToEntityTransformer.transformDto2Document(dto,
-                                                                                                  idRefResolver),
-                                                     client);
-                                         }, output -> {
-                                             ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
-                                             return RestApiResponse.created(URL_BASE_PATH, body);
-                                         });
-    }
-
-    @PutMapping(value = "/{id}")
-    @Operation(summary = "Updates a document")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Document updated"),
-            @ApiResponse(responseCode = "404", description = "Document not found") })
-    public CompletableFuture<FullDocumentDto> updateDocument(
-            @Parameter(hidden = true) ApplicationUser user,
-            @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
-            @PathVariable String id,
-            @Valid @NotNull @RequestBody @JsonSchemaValidation(Document.SINGULAR_TERM) FullDocumentDto documentDto) {
-        documentDto.applyResourceId(id);
-        return useCaseInteractor.execute(updateDocumentUseCase,
-                                         (Supplier<InputData<Document>>) () -> {
-                                             Client client = getClient(user);
-                                             IdRefResolver idRefResolver = createIdRefResolver(client);
-                                             return new InputData<>(
-                                                     dtoToEntityTransformer.transformDto2Document(documentDto,
-                                                                                                  idRefResolver),
-                                                     client, eTag, user.getUsername());
-                                         },
-                                         output -> entityToDtoTransformer.transformDocument2Dto(output.getEntity()));
-    }
-
-    @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
-    @Operation(summary = "Deletes a document")
-    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Document deleted"),
-            @ApiResponse(responseCode = "404", description = "Document not found") })
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteDocument(
-            @Parameter(hidden = true) Authentication auth,
-            @Parameter(required = true,
-                       example = UUID_EXAMPLE,
-                       description = UUID_DESCRIPTION) @PathVariable String uuid) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
-        return useCaseInteractor.execute(deleteElementUseCase,
-                                         new DeleteElementUseCase.InputData(Document.class,
-                                                 Key.uuidFrom(uuid), client),
-                                         output -> ResponseEntity.noContent()
-                                                                 .build());
-    }
-
-    @Override
-    @SuppressFBWarnings("NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS")
-    protected String buildSearchUri(String id) {
-        return linkTo(methodOn(DocumentController.class).runSearch(ANY_AUTH, id, ANY_INT, ANY_INT,
-                                                                   ANY_STRING, ANY_STRING))
-                                                                                           .withSelfRel()
-                                                                                           .getHref();
-    }
-
-    @GetMapping(value = "/searches/{searchId}")
-    @Operation(summary = "Finds documents for the search.")
-    public @Valid CompletableFuture<PageDto<FullDocumentDto>> runSearch(
-            @Parameter(hidden = true) Authentication auth, @PathVariable String searchId,
-            @RequestParam(value = PAGE_SIZE_PARAM,
-                          required = false,
-                          defaultValue = PAGE_SIZE_DEFAULT_VALUE) Integer pageSize,
-            @RequestParam(value = PAGE_NUMBER_PARAM,
-                          required = false,
-                          defaultValue = PAGE_NUMBER_DEFAULT_VALUE) Integer pageNumber,
-            @RequestParam(value = SORT_COLUMN_PARAM,
-                          required = false,
-                          defaultValue = SORT_COLUMN_DEFAULT_VALUE) String sortColumn,
-            @RequestParam(value = SORT_ORDER_PARAM,
-                          required = false,
-                          defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
-        try {
-            return getDocuments(GetElementsInputMapper.map(getAuthenticatedClient(auth),
-                                                           SearchQueryDto.decodeFromSearchId(searchId),
-                                                           PagingMapper.toConfig(pageSize,
-                                                                                 pageNumber,
-                                                                                 sortColumn,
-                                                                                 sortOrder)));
-        } catch (IOException e) {
-            log.error("Could not decode search URL: {}", e.getLocalizedMessage());
-            return null;
-        }
-    }
-
-    @Operation(summary = "Evaluates a decision on a transient document without persisting anything")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Decision evaluated",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            array = @ArraySchema(schema = @Schema(implementation = FullDocumentDto.class)))),
-            @ApiResponse(responseCode = "404", description = "Decision not found") })
-    @PostMapping(value = "/decision-evaluation")
-    public @Valid CompletableFuture<ResponseEntity<DecisionResult>> evaluateDecision(
-            @Parameter(required = true, hidden = true) Authentication auth,
-            @Valid @RequestBody FullDocumentDto element,
-            @Parameter(description = DECISION_KEY_DESCRIPTION) @RequestParam(value = DECISION_KEY_PARAM) String decisionKey,
-            @RequestParam(value = DOMAIN_PARAM) String domainId) {
-        return super.evaluateDecision(auth, element, decisionKey, domainId);
-    }
-
-    @Override
-    protected FullDocumentDto entity2Dto(Document entity) {
-        return entityToDtoTransformer.transformDocument2Dto(entity);
-    }
-
+  @Override
+  protected FullDocumentDto entity2Dto(Document entity) {
+    return entityToDtoTransformer.transformDocument2Dto(entity);
+  }
 }

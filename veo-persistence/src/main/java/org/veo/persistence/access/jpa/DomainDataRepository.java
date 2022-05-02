@@ -28,18 +28,19 @@ import org.veo.persistence.entity.jpa.DomainData;
 
 public interface DomainDataRepository extends IdentifiableVersionedDataRepository<DomainData> {
 
-    @Query("select e from #{#entityName} as e join e.catalogs as c join c.catalogItems as i where i.dbId = ?1")
-    Optional<DomainData> findByCatalogsCatalogItemsId(String catalogItemId);
+  @Query(
+      "select e from #{#entityName} as e join e.catalogs as c join c.catalogItems as i where i.dbId = ?1")
+  Optional<DomainData> findByCatalogsCatalogItemsId(String catalogItemId);
 
-    @Query("select e from #{#entityName} as e join e.domainTemplate as t where t.dbId = ?1")
-    Collection<Domain> findAllByDomainTemplateId(String domainTemplateId);
+  @Query("select e from #{#entityName} as e join e.domainTemplate as t where t.dbId = ?1")
+  Collection<Domain> findAllByDomainTemplateId(String domainTemplateId);
 
-    @Query("select d from #{#entityName} d left join fetch d.elementTypeDefinitions where d.owner.id = ?1")
-    Set<DomainData> findAllByClient(String clientId);
+  @Query(
+      "select d from #{#entityName} d left join fetch d.elementTypeDefinitions where d.owner.id = ?1")
+  Set<DomainData> findAllByClient(String clientId);
 
-    // @formatter:off
-    @Query("select d from #{#entityName} d " +
-            "where d.dbId = ?1 and d.owner.dbId = ?2")
-    // @formatter:on
-    Optional<Domain> findById(String domainId, String clientId);
+  // @formatter:off
+  @Query("select d from #{#entityName} d " + "where d.dbId = ?1 and d.owner.dbId = ?2")
+  // @formatter:on
+  Optional<Domain> findById(String domainId, String clientId);
 }

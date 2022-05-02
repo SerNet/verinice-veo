@@ -29,64 +29,57 @@ import org.veo.core.entity.Unit;
 /**
  * A dynamic database query for retrieving {@link Element} objects.
  *
- * @param <T>
- *            Entity type
+ * @param <T> Entity type
  */
 public interface ElementQuery<T extends Element> {
 
-    ElementQuery<T> whereUnitIn(Set<Unit> units);
+  ElementQuery<T> whereUnitIn(Set<Unit> units);
 
-    ElementQuery<T> whereSubTypeMatches(QueryCondition<String> values);
+  ElementQuery<T> whereSubTypeMatches(QueryCondition<String> values);
 
-    /**
-     * Only include elements where at least one of its child elements (members or
-     * parts) has one of the given IDs.
-     *
-     * @param elementIds
-     *            elements IDs to be matched against the child element IDs. UUIDs
-     *            are assumed to be unique across different types of elements.
-     * @return this
-     */
-    ElementQuery<T> whereChildElementIn(QueryCondition<Key<UUID>> elementIds);
+  /**
+   * Only include elements where at least one of its child elements (members or parts) has one of
+   * the given IDs.
+   *
+   * @param elementIds elements IDs to be matched against the child element IDs. UUIDs are assumed
+   *     to be unique across different types of elements.
+   * @return this
+   */
+  ElementQuery<T> whereChildElementIn(QueryCondition<Key<UUID>> elementIds);
 
-    /**
-     * Only include elements with / without at least one child element (member or
-     * part).
-     *
-     * @param present
-     *            pass true to only include elements with child elements, pass false
-     *            to only include elements without child elements
-     * @return this
-     */
-    ElementQuery<T> whereChildElementsPresent(boolean present);
+  /**
+   * Only include elements with / without at least one child element (member or part).
+   *
+   * @param present pass true to only include elements with child elements, pass false to only
+   *     include elements without child elements
+   * @return this
+   */
+  ElementQuery<T> whereChildElementsPresent(boolean present);
 
-    /**
-     * Only include elements with / without at leat one parent element (scope or
-     * composite).
-     *
-     * @param present
-     *            pass true only include elements with parent elements, pass false
-     *            to only include elements without parent elements.
-     * @return this
-     */
-    ElementQuery<T> whereParentElementPresent(boolean present);
+  /**
+   * Only include elements with / without at leat one parent element (scope or composite).
+   *
+   * @param present pass true only include elements with parent elements, pass false to only include
+   *     elements without parent elements.
+   * @return this
+   */
+  ElementQuery<T> whereParentElementPresent(boolean present);
 
-    ElementQuery<T> whereStatusMatches(QueryCondition<String> values);
+  ElementQuery<T> whereStatusMatches(QueryCondition<String> values);
 
-    ElementQuery<T> whereDisplayNameMatchesIgnoringCase(QueryCondition<String> values);
+  ElementQuery<T> whereDisplayNameMatchesIgnoringCase(QueryCondition<String> values);
 
-    ElementQuery<T> whereDescriptionMatchesIgnoreCase(QueryCondition<String> values);
+  ElementQuery<T> whereDescriptionMatchesIgnoreCase(QueryCondition<String> values);
 
-    ElementQuery<T> whereDesignatorMatchesIgnoreCase(QueryCondition<String> values);
+  ElementQuery<T> whereDesignatorMatchesIgnoreCase(QueryCondition<String> values);
 
-    ElementQuery<T> whereNameMatchesIgnoreCase(QueryCondition<String> values);
+  ElementQuery<T> whereNameMatchesIgnoreCase(QueryCondition<String> values);
 
-    ElementQuery<T> whereUpdatedByContainsIgnoreCase(QueryCondition<String> values);
+  ElementQuery<T> whereUpdatedByContainsIgnoreCase(QueryCondition<String> values);
 
-    ElementQuery<T> whereAppliedItemsContain(Collection<CatalogItem> items);
+  ElementQuery<T> whereAppliedItemsContain(Collection<CatalogItem> items);
 
-    ElementQuery<T> whereOwnerIs(Unit unit);
+  ElementQuery<T> whereOwnerIs(Unit unit);
 
-    PagedResult<T> execute(PagingConfiguration pagingConfiguration);
-
+  PagedResult<T> execute(PagingConfiguration pagingConfiguration);
 }

@@ -27,8 +27,8 @@ import org.veo.persistence.entity.jpa.ReferenceSerializationModule;
 @Configuration
 public class RiskReferencesSerialization {
 
-    @Bean
-    public Module getReferenceSerializationModule() {
-        return new ReferenceSerializationModule();
-    }
+  @Bean
+  public Module getReferenceSerializationModule() {
+    return new ReferenceSerializationModule();
+  }
 }

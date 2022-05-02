@@ -31,69 +31,67 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-/**
- * Base transfer object for assets. Contains common data for all asset DTOs.
- */
+/** Base transfer object for assets. Contains common data for all asset DTOs. */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "asset", description = "Schema for asset")
 public abstract class AbstractAssetDto extends CompositeEntityDto<Asset> {
 
-    @Override
-    @Schema(description = "The name for the asset.", example = "Mail Server")
-    public String getName() {
-        return super.getName();
-    }
+  @Override
+  @Schema(description = "The name for the asset.", example = "Mail Server")
+  public String getName() {
+    return super.getName();
+  }
 
-    @Override
-    @Schema(description = "The abbreviation for the asset.", example = "MS")
-    public String getAbbreviation() {
-        return super.getAbbreviation();
-    }
+  @Override
+  @Schema(description = "The abbreviation for the asset.", example = "MS")
+  public String getAbbreviation() {
+    return super.getAbbreviation();
+  }
 
-    @Override
-    @Schema(description = "The description for the asset.", example = "A server handling e-mail.")
-    public String getDescription() {
-        return super.getDescription();
-    }
+  @Override
+  @Schema(description = "The description for the asset.", example = "A server handling e-mail.")
+  public String getDescription() {
+    return super.getDescription();
+  }
 
-    @Override
-    @Schema(description = "The links for the asset.")
-    public Map<String, List<CustomLinkDto>> getLinks() {
-        return super.getLinks();
-    }
+  @Override
+  @Schema(description = "The links for the asset.")
+  public Map<String, List<CustomLinkDto>> getLinks() {
+    return super.getLinks();
+  }
 
-    @Schema(description = "The customAspects for the asset.")
-    @Override
-    public Map<String, CustomAspectDto> getCustomAspects() {
-        return super.getCustomAspects();
-    }
+  @Schema(description = "The customAspects for the asset.")
+  @Override
+  public Map<String, CustomAspectDto> getCustomAspects() {
+    return super.getCustomAspects();
+  }
 
-    @Override
-    public Class<? extends Identifiable> getModelInterface() {
-        return Asset.class;
-    }
+  @Override
+  public Class<? extends Identifiable> getModelInterface() {
+    return Asset.class;
+  }
 
-    /* This method is called to associate the DTO that was made from the CatalogItem
-     * with the new domain template. */
-    // FIXME VEO-661 this method will break as soon as there are multiple domains in
-    // a client
-    // and we create a domain template from one of these domains.
-    @Override
-    public void associateWithTargetDomain(String id) {
-        setDomains(Map.of(id, getDomains().values()
-                                          .stream()
-                                          .findFirst()
-                                          .orElse(new DomainAssociationDto())));
-    }
+  /* This method is called to associate the DTO that was made from the CatalogItem
+   * with the new domain template. */
+  // FIXME VEO-661 this method will break as soon as there are multiple domains in
+  // a client
+  // and we create a domain template from one of these domains.
+  @Override
+  public void associateWithTargetDomain(String id) {
+    setDomains(
+        Map.of(id, getDomains().values().stream().findFirst().orElse(new DomainAssociationDto())));
+  }
 
-    @Override
-    public void clearDomains() {
-        domains.clear();
-    }
+  @Override
+  public void clearDomains() {
+    domains.clear();
+  }
 
-    @Valid
-    @Schema(description = "Details about this element's association with domains. Domain ID is key, association object is value.")
-    private Map<String, DomainAssociationDto> domains = new HashMap<>();
+  @Valid
+  @Schema(
+      description =
+          "Details about this element's association with domains. Domain ID is key, association object is value.")
+  private Map<String, DomainAssociationDto> domains = new HashMap<>();
 }

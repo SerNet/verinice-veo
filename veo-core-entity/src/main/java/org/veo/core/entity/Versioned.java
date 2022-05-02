@@ -20,53 +20,49 @@ package org.veo.core.entity;
 import java.time.Instant;
 
 /**
- * A versioned entity with a sequential version number and some metadata (time &
- * author of creation and last modification).
+ * A versioned entity with a sequential version number and some metadata (time & author of creation
+ * and last modification).
  */
 public interface Versioned {
-    Instant getCreatedAt();
+  Instant getCreatedAt();
 
-    void setCreatedAt(Instant createdAt);
+  void setCreatedAt(Instant createdAt);
 
-    Instant getUpdatedAt();
+  Instant getUpdatedAt();
 
-    void setUpdatedAt(Instant updatedAt);
+  void setUpdatedAt(Instant updatedAt);
 
-    String getCreatedBy();
+  String getCreatedBy();
 
-    void setCreatedBy(String username);
+  void setCreatedBy(String username);
 
-    String getUpdatedBy();
+  String getUpdatedBy();
 
-    void setUpdatedBy(String username);
+  void setUpdatedBy(String username);
 
-    /**
-     * The version number starts at 0 for a new object and is increased whenever the
-     * entity is edited by the user and saved.
-     */
-    long getVersion();
+  /**
+   * The version number starts at 0 for a new object and is increased whenever the entity is edited
+   * by the user and saved.
+   */
+  long getVersion();
 
-    void setVersion(long version);
+  void setVersion(long version);
 
-    /**
-     * Copy versioning properties from another entity. This needs to be used when
-     * trying to update an entity with a new instance, which should generally be
-     * avoided, so this method is deprecated.
-     *
-     * @param username
-     *            User who authors this creation / update.
-     * @param storedEntity
-     *            The old existing version of this entity, must not be null
-     * @deprecated deprecated to encourage usage of the proper entity update
-     *             strategy
-     */
-    @Deprecated
-    default void version(String username, Versioned storedEntity) {
-        var now = Instant.now();
-        setUpdatedAt(now);
-        setUpdatedBy(username);
-        setCreatedAt(storedEntity.getCreatedAt());
-        setCreatedBy(storedEntity.getCreatedBy());
-        setVersion(storedEntity.getVersion());
-    }
+  /**
+   * Copy versioning properties from another entity. This needs to be used when trying to update an
+   * entity with a new instance, which should generally be avoided, so this method is deprecated.
+   *
+   * @param username User who authors this creation / update.
+   * @param storedEntity The old existing version of this entity, must not be null
+   * @deprecated deprecated to encourage usage of the proper entity update strategy
+   */
+  @Deprecated
+  default void version(String username, Versioned storedEntity) {
+    var now = Instant.now();
+    setUpdatedAt(now);
+    setUpdatedBy(username);
+    setCreatedAt(storedEntity.getCreatedAt());
+    setCreatedBy(storedEntity.getCreatedBy());
+    setVersion(storedEntity.getVersion());
+  }
 }

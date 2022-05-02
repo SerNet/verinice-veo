@@ -25,23 +25,19 @@ import org.veo.core.entity.event.RiskComponentChangeEvent;
 import org.veo.core.entity.event.StoredEvent;
 import org.veo.core.service.EventPublisher;
 
-/**
- * Implementation of a domain event publisher using Spring's
- * {@code ApplicationEventPublisher}.
- */
+/** Implementation of a domain event publisher using Spring's {@code ApplicationEventPublisher}. */
 @Service
 public class EventPublisherImpl implements EventPublisher {
 
-    @Autowired
-    private ApplicationEventPublisher publisher;
+  @Autowired private ApplicationEventPublisher publisher;
 
-    @Override
-    public void publish(StoredEvent event) {
-        publisher.publishEvent(event);
-    }
+  @Override
+  public void publish(StoredEvent event) {
+    publisher.publishEvent(event);
+  }
 
-    @Override
-    public void publish(RiskComponentChangeEvent event) {
-        publisher.publishEvent(event);
-    }
+  @Override
+  public void publish(RiskComponentChangeEvent event) {
+    publisher.publishEvent(event);
+  }
 }

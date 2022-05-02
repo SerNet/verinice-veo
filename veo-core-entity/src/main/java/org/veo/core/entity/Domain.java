@@ -20,46 +20,45 @@ package org.veo.core.entity;
 import java.util.Optional;
 
 /**
- * The domain should be referenced by the domain objects if applicable. It
- * defines a standard, a best practice or a company-specific context. It can be
- * bound to a domain template, which represent a 'offical' standart. The domain
- * references the avaliable customAspects, the forms and other stuff needed to
- * define a specific view on the data. For example the risk definition, which
+ * The domain should be referenced by the domain objects if applicable. It defines a standard, a
+ * best practice or a company-specific context. It can be bound to a domain template, which
+ * represent a 'offical' standart. The domain references the avaliable customAspects, the forms and
+ * other stuff needed to define a specific view on the data. For example the risk definition, which
  * describes what risk values exist and how they relates to each other.
  */
 public interface Domain extends DomainTemplate, ClientOwned {
 
-    String SINGULAR_TERM = "domain";
-    String PLURAL_TERM = "domains";
+  String SINGULAR_TERM = "domain";
+  String PLURAL_TERM = "domains";
 
-    boolean isActive();
+  boolean isActive();
 
-    void setActive(boolean aActive);
+  void setActive(boolean aActive);
 
-    DomainTemplate getDomainTemplate();
+  DomainTemplate getDomainTemplate();
 
-    void setDomainTemplate(DomainTemplate aDomaintemplate);
+  void setDomainTemplate(DomainTemplate aDomaintemplate);
 
-    @Override
-    default Class<? extends Identifiable> getModelInterface() {
-        return Domain.class;
-    }
+  @Override
+  default Class<? extends Identifiable> getModelInterface() {
+    return Domain.class;
+  }
 
-    @Override
-    default String getModelType() {
-        return SINGULAR_TERM;
-    }
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
 
-    void setOwner(Client owner);
+  void setOwner(Client owner);
 
-    Client getOwner();
+  Client getOwner();
 
-    default Optional<Client> getOwningClient() {
-        return Optional.of(getOwner());
-    }
+  default Optional<Client> getOwningClient() {
+    return Optional.of(getOwner());
+  }
 
-    default void validateSubType(Class<? extends Identifiable> entityType, String subType)
-            throws InvalidSubTypeException {
-        // TODO VEO-516: validate subtype
-    }
+  default void validateSubType(Class<? extends Identifiable> entityType, String subType)
+      throws InvalidSubTypeException {
+    // TODO VEO-516: validate subtype
+  }
 }

@@ -60,122 +60,110 @@ import org.veo.core.repository.UnitRepository;
 @Service
 public class RepositoryProviderImpl implements RepositoryProvider {
 
-    @Autowired
-    private PersonRepository personRepository;
+  @Autowired private PersonRepository personRepository;
 
-    @Autowired
-    private AssetRepository assetRepository;
+  @Autowired private AssetRepository assetRepository;
 
-    @Autowired
-    private IncidentRepository incidentRepository;
+  @Autowired private IncidentRepository incidentRepository;
 
-    @Autowired
-    private ScenarioRepository scenarioRepository;
+  @Autowired private ScenarioRepository scenarioRepository;
 
-    @Autowired
-    private ProcessRepository processRepository;
+  @Autowired private ProcessRepository processRepository;
 
-    @Autowired
-    private DocumentRepository documentRepository;
+  @Autowired private DocumentRepository documentRepository;
 
-    @Autowired
-    private ControlRepository controlRepository;
+  @Autowired private ControlRepository controlRepository;
 
-    @Autowired
-    private ClientRepository clientRepository;
+  @Autowired private ClientRepository clientRepository;
 
-    @Autowired
-    private DomainRepository domainRepository;
-    @Autowired
-    private CatalogRepository catalogRepository;
+  @Autowired private DomainRepository domainRepository;
+  @Autowired private CatalogRepository catalogRepository;
 
-    @Autowired
-    private UnitRepository unitRepository;
+  @Autowired private UnitRepository unitRepository;
 
-    @Autowired
-    private ScopeRepository scopeRepository;
+  @Autowired private ScopeRepository scopeRepository;
 
-    @Autowired
-    private CatalogItemRepository catalogItemRepository;
+  @Autowired private CatalogItemRepository catalogItemRepository;
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T extends Identifiable> Repository<T, Key<UUID>> getRepositoryFor(Class<T> entityType) {
-        if (Element.class.isAssignableFrom(entityType)) {
-            return (Repository<T, Key<UUID>>) getElementRepositoryFor((Class<Element>) entityType);
-        }
-        if (Client.class.isAssignableFrom(entityType)) {
-            return (Repository<T, Key<UUID>>) clientRepository;
-        }
-        if (Domain.class.isAssignableFrom(entityType)) {
-            return (Repository<T, Key<UUID>>) domainRepository;
-        }
-        if (Unit.class.isAssignableFrom(entityType)) {
-            return (Repository<T, Key<UUID>>) unitRepository;
-        }
-        if (Catalog.class.isAssignableFrom(entityType)) {
-            return (Repository<T, Key<UUID>>) catalogRepository;
-        }
-        if (CatalogItem.class.isAssignableFrom(entityType)) {
-            return (Repository<T, Key<UUID>>) catalogItemRepository;
-        }
-        throw new IllegalArgumentException("Unsupported entity type " + entityType);
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T extends Identifiable> Repository<T, Key<UUID>> getRepositoryFor(Class<T> entityType) {
+    if (Element.class.isAssignableFrom(entityType)) {
+      return (Repository<T, Key<UUID>>) getElementRepositoryFor((Class<Element>) entityType);
+    }
+    if (Client.class.isAssignableFrom(entityType)) {
+      return (Repository<T, Key<UUID>>) clientRepository;
+    }
+    if (Domain.class.isAssignableFrom(entityType)) {
+      return (Repository<T, Key<UUID>>) domainRepository;
+    }
+    if (Unit.class.isAssignableFrom(entityType)) {
+      return (Repository<T, Key<UUID>>) unitRepository;
+    }
+    if (Catalog.class.isAssignableFrom(entityType)) {
+      return (Repository<T, Key<UUID>>) catalogRepository;
+    }
+    if (CatalogItem.class.isAssignableFrom(entityType)) {
+      return (Repository<T, Key<UUID>>) catalogItemRepository;
+    }
+    throw new IllegalArgumentException("Unsupported entity type " + entityType);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T extends Identifiable & Versioned>
+      IdentifiableVersionedRepository<T> getVersionedIdentifiableRepositoryFor(
+          Class<T> entityType) {
+    if (Element.class.isAssignableFrom(entityType)) {
+      return (IdentifiableVersionedRepository<T>)
+          getElementRepositoryFor((Class<Element>) entityType);
+    }
+    if (Client.class.isAssignableFrom(entityType)) {
+      return (IdentifiableVersionedRepository<T>) clientRepository;
+    }
+    if (Domain.class.isAssignableFrom(entityType)) {
+      return (IdentifiableVersionedRepository<T>) domainRepository;
+    }
+    if (Unit.class.isAssignableFrom(entityType)) {
+      return (IdentifiableVersionedRepository<T>) unitRepository;
+    }
+    if (Catalog.class.isAssignableFrom(entityType)) {
+      return (IdentifiableVersionedRepository<T>) catalogRepository;
+    }
+    if (CatalogItem.class.isAssignableFrom(entityType)) {
+      return (IdentifiableVersionedRepository<T>) catalogItemRepository;
+    }
+    throw new IllegalArgumentException("Unsupported entity type " + entityType);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T extends Element> ElementRepository<T> getElementRepositoryFor(Class<T> entityType) {
+    if (Scope.class.isAssignableFrom(entityType)) {
+      return (ElementRepository<T>) scopeRepository;
+    }
+    if (Person.class.isAssignableFrom(entityType)) {
+      return (ElementRepository<T>) personRepository;
+    }
+    if (Asset.class.isAssignableFrom(entityType)) {
+      return (ElementRepository<T>) assetRepository;
+    }
+    if (Incident.class.isAssignableFrom(entityType)) {
+      return (ElementRepository<T>) incidentRepository;
+    }
+    if (Scenario.class.isAssignableFrom(entityType)) {
+      return (ElementRepository<T>) scenarioRepository;
+    }
+    if (Process.class.isAssignableFrom(entityType)) {
+      return (ElementRepository<T>) processRepository;
+    }
+    if (Document.class.isAssignableFrom(entityType)) {
+      return (ElementRepository<T>) documentRepository;
+    }
+    if (Control.class.isAssignableFrom(entityType)) {
+      return (ElementRepository<T>) controlRepository;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T extends Identifiable & Versioned> IdentifiableVersionedRepository<T> getVersionedIdentifiableRepositoryFor(
-            Class<T> entityType) {
-        if (Element.class.isAssignableFrom(entityType)) {
-            return (IdentifiableVersionedRepository<T>) getElementRepositoryFor((Class<Element>) entityType);
-        }
-        if (Client.class.isAssignableFrom(entityType)) {
-            return (IdentifiableVersionedRepository<T>) clientRepository;
-        }
-        if (Domain.class.isAssignableFrom(entityType)) {
-            return (IdentifiableVersionedRepository<T>) domainRepository;
-        }
-        if (Unit.class.isAssignableFrom(entityType)) {
-            return (IdentifiableVersionedRepository<T>) unitRepository;
-        }
-        if (Catalog.class.isAssignableFrom(entityType)) {
-            return (IdentifiableVersionedRepository<T>) catalogRepository;
-        }
-        if (CatalogItem.class.isAssignableFrom(entityType)) {
-            return (IdentifiableVersionedRepository<T>) catalogItemRepository;
-        }
-        throw new IllegalArgumentException("Unsupported entity type " + entityType);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T extends Element> ElementRepository<T> getElementRepositoryFor(Class<T> entityType) {
-        if (Scope.class.isAssignableFrom(entityType)) {
-            return (ElementRepository<T>) scopeRepository;
-        }
-        if (Person.class.isAssignableFrom(entityType)) {
-            return (ElementRepository<T>) personRepository;
-        }
-        if (Asset.class.isAssignableFrom(entityType)) {
-            return (ElementRepository<T>) assetRepository;
-        }
-        if (Incident.class.isAssignableFrom(entityType)) {
-            return (ElementRepository<T>) incidentRepository;
-        }
-        if (Scenario.class.isAssignableFrom(entityType)) {
-            return (ElementRepository<T>) scenarioRepository;
-        }
-        if (Process.class.isAssignableFrom(entityType)) {
-            return (ElementRepository<T>) processRepository;
-        }
-        if (Document.class.isAssignableFrom(entityType)) {
-            return (ElementRepository<T>) documentRepository;
-        }
-        if (Control.class.isAssignableFrom(entityType)) {
-            return (ElementRepository<T>) controlRepository;
-        }
-
-        throw new IllegalArgumentException("Unsupported entity type " + entityType);
-    }
-
+    throw new IllegalArgumentException("Unsupported entity type " + entityType);
+  }
 }

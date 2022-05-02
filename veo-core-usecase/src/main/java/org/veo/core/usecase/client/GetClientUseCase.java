@@ -32,41 +32,38 @@ import org.veo.core.usecase.UseCase;
 
 import lombok.Value;
 
-/**
- * Reinstantiate a persisted client object.
- */
+/** Reinstantiate a persisted client object. */
 public class GetClientUseCase
-        implements TransactionalUseCase<GetClientUseCase.InputData, GetClientUseCase.OutputData> {
+    implements TransactionalUseCase<GetClientUseCase.InputData, GetClientUseCase.OutputData> {
 
-    private final ClientRepository repository;
+  private final ClientRepository repository;
 
-    public GetClientUseCase(ClientRepository repository) {
-        this.repository = repository;
-    }
+  public GetClientUseCase(ClientRepository repository) {
+    this.repository = repository;
+  }
 
-    /**
-     * Find a persisted client object and reinstantiate it. Throws a domain
-     * exception if the requested client object was not found in the repository.
-     */
-    @Override
-    @Transactional(TxType.SUPPORTS)
-    public OutputData execute(InputData input) {
-        return repository.findById(input.getClientId())
-                         .map(OutputData::new)
-                         .orElseThrow(() -> new NotFoundException(input.getClientId()
-                                                                       .uuidValue()));
-    }
+  /**
+   * Find a persisted client object and reinstantiate it. Throws a domain exception if the requested
+   * client object was not found in the repository.
+   */
+  @Override
+  @Transactional(TxType.SUPPORTS)
+  public OutputData execute(InputData input) {
+    return repository
+        .findById(input.getClientId())
+        .map(OutputData::new)
+        .orElseThrow(() -> new NotFoundException(input.getClientId().uuidValue()));
+  }
 
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Key<UUID> clientId;
-    }
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
+    Key<UUID> clientId;
+  }
 
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        Client client;
-    }
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid Client client;
+  }
 }

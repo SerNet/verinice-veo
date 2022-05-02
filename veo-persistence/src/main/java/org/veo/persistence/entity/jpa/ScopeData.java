@@ -50,56 +50,61 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Scope {
 
-    @ManyToMany(targetEntity = ElementData.class,
-                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "scope_members",
-               joinColumns = @JoinColumn(name = "scope_id"),
-               inverseJoinColumns = @JoinColumn(name = "member_id"))
-    @Valid
-    @Getter
-    private final Set<Element> members = new HashSet<>();
+  @ManyToMany(
+      targetEntity = ElementData.class,
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JoinTable(
+      name = "scope_members",
+      joinColumns = @JoinColumn(name = "scope_id"),
+      inverseJoinColumns = @JoinColumn(name = "member_id"))
+  @Valid
+  @Getter
+  private final Set<Element> members = new HashSet<>();
 
-    @Override
-    public Class<? extends Identifiable> getModelInterface() {
-        return Scope.class;
-    }
+  @Override
+  public Class<? extends Identifiable> getModelInterface() {
+    return Scope.class;
+  }
 
-    public boolean removeMemberById(Key<UUID> id) {
-        return members.removeIf(compositeEntity -> compositeEntity.getId()
-                                                                  .equals(id));
-    }
+  public boolean removeMemberById(Key<UUID> id) {
+    return members.removeIf(compositeEntity -> compositeEntity.getId().equals(id));
+  }
 
-    @Override
-    ScopeRisk createRisk(Scenario scenario) {
-        return new ScopeRiskData(this, scenario);
-    }
+  @Override
+  ScopeRisk createRisk(Scenario scenario) {
+    return new ScopeRiskData(this, scenario);
+  }
 
-    @OneToMany(cascade = CascadeType.ALL,
-               orphanRemoval = true,
-               targetEntity = ScopeRiskValuesAspectData.class,
-               mappedBy = "owner",
-               fetch = FetchType.LAZY)
-    @Valid
-    private final Set<ScopeRiskValuesAspectData> riskValuesAspects = new HashSet<>();
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      targetEntity = ScopeRiskValuesAspectData.class,
+      mappedBy = "owner",
+      fetch = FetchType.LAZY)
+  @Valid
+  private final Set<ScopeRiskValuesAspectData> riskValuesAspects = new HashSet<>();
 
-    @Override
-    public void setRiskDefinition(DomainTemplate domain, RiskDefinitionRef riskDefinition) {
-        var aspect = findAspectByDomain(riskValuesAspects, domain).orElseGet(() -> {
-            var newAspect = new ScopeRiskValuesAspectData(domain, this);
-            riskValuesAspects.add(newAspect);
-            return newAspect;
-        });
-        aspect.setRiskDefinitionRef(riskDefinition);
-    }
+  @Override
+  public void setRiskDefinition(DomainTemplate domain, RiskDefinitionRef riskDefinition) {
+    var aspect =
+        findAspectByDomain(riskValuesAspects, domain)
+            .orElseGet(
+                () -> {
+                  var newAspect = new ScopeRiskValuesAspectData(domain, this);
+                  riskValuesAspects.add(newAspect);
+                  return newAspect;
+                });
+    aspect.setRiskDefinitionRef(riskDefinition);
+  }
 
-    public Optional<RiskDefinitionRef> getRiskDefinition(DomainTemplate domain) {
-        return findAspectByDomain(riskValuesAspects,
-                                  domain).map(ScopeRiskValuesAspectData::getRiskDefinitionRef);
-    }
+  public Optional<RiskDefinitionRef> getRiskDefinition(DomainTemplate domain) {
+    return findAspectByDomain(riskValuesAspects, domain)
+        .map(ScopeRiskValuesAspectData::getRiskDefinitionRef);
+  }
 
-    @Override
-    public void transferToDomain(Domain oldDomain, Domain newDomain) {
-        findAspectByDomain(riskValuesAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
-        super.transferToDomain(oldDomain, newDomain);
-    }
+  @Override
+  public void transferToDomain(Domain oldDomain, Domain newDomain) {
+    findAspectByDomain(riskValuesAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
+    super.transferToDomain(oldDomain, newDomain);
+  }
 }

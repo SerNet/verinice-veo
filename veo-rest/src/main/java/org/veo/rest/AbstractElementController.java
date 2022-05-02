@@ -43,82 +43,74 @@ import org.veo.rest.security.ApplicationUser;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public abstract class AbstractElementController<T extends CompositeElement<T>, E extends CompositeEntityDto<T>>
-        extends AbstractEntityControllerWithDefaultSearch {
+public abstract class AbstractElementController<
+        T extends CompositeElement<T>, E extends CompositeEntityDto<T>>
+    extends AbstractEntityControllerWithDefaultSearch {
 
-    private final Class<T> modelType;
+  private final Class<T> modelType;
 
-    private final TransactionalUseCase<UseCase.IdAndClient, GetElementUseCase.OutputData<T>> getElementUseCase;
-    private final EvaluateDecisionUseCase evaluateDecisionUseCase;
+  private final TransactionalUseCase<UseCase.IdAndClient, GetElementUseCase.OutputData<T>>
+      getElementUseCase;
+  private final EvaluateDecisionUseCase evaluateDecisionUseCase;
 
-    @Autowired
-    private TransactionalRunner runner;
+  @Autowired private TransactionalRunner runner;
 
-    /**
-     * Load the element for the given id. The result is provided asynchronously by
-     * the executed use case.
-     *
-     * @param auth
-     *            the authentication in whose context the element is loaded
-     * @param uuid
-     *            an ID in the UUID format as specified in RFC 4122
-     * @param request
-     *            the corresponding web request
-     * @return the element for the given ID if one was found. Null otherwise.
-     */
-    public @Valid CompletableFuture<ResponseEntity<E>> getElement(Authentication auth, String uuid,
-            WebRequest request) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
-        if (getEtag(modelType, uuid).map(request::checkNotModified)
-                                    .orElse(false)) {
-            return null;
-        }
-        CompletableFuture<E> entityFuture = useCaseInteractor.execute(getElementUseCase,
-                                                                      new UseCase.IdAndClient(
-                                                                              Key.uuidFrom(uuid),
-                                                                              client),
-                                                                      output -> entity2Dto(output.getElement()));
-        return entityFuture.thenApply(dto -> ResponseEntity.ok()
-                                                           .cacheControl(defaultCacheControl)
-                                                           .body(dto));
+  /**
+   * Load the element for the given id. The result is provided asynchronously by the executed use
+   * case.
+   *
+   * @param auth the authentication in whose context the element is loaded
+   * @param uuid an ID in the UUID format as specified in RFC 4122
+   * @param request the corresponding web request
+   * @return the element for the given ID if one was found. Null otherwise.
+   */
+  public @Valid CompletableFuture<ResponseEntity<E>> getElement(
+      Authentication auth, String uuid, WebRequest request) {
+    ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
+    Client client = getClient(user.getClientId());
+    if (getEtag(modelType, uuid).map(request::checkNotModified).orElse(false)) {
+      return null;
     }
+    CompletableFuture<E> entityFuture =
+        useCaseInteractor.execute(
+            getElementUseCase,
+            new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
+            output -> entity2Dto(output.getElement()));
+    return entityFuture.thenApply(
+        dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
+  }
 
-    public @Valid CompletableFuture<ResponseEntity<List<E>>> getElementParts(Authentication auth,
-            String uuid, WebRequest request) {
-        Client client = getAuthenticatedClient(auth);
-        if (getEtag(modelType, uuid).map(request::checkNotModified)
-                                    .orElse(false)) {
-            return null;
-        }
-        return useCaseInteractor.execute(getElementUseCase,
-                                         new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
-                                         output -> {
-                                             T element = output.getElement();
-                                             return ResponseEntity.ok()
-                                                                  .cacheControl(defaultCacheControl)
-                                                                  .body(element.getParts()
-                                                                               .stream()
-                                                                               .map(this::entity2Dto)
-                                                                               .collect(Collectors.toList()));
-                                         });
+  public @Valid CompletableFuture<ResponseEntity<List<E>>> getElementParts(
+      Authentication auth, String uuid, WebRequest request) {
+    Client client = getAuthenticatedClient(auth);
+    if (getEtag(modelType, uuid).map(request::checkNotModified).orElse(false)) {
+      return null;
     }
-
-    public @Valid CompletableFuture<ResponseEntity<DecisionResult>> evaluateDecision(
-            Authentication auth, @Valid AbstractElementDto dto, String decisionKey,
-            String domainId) {
-        var client = getAuthenticatedClient(auth);
-
-        var element = runner.run(() -> {
-            return dtoToEntityTransformer.transformDto2Element(dto, createIdRefResolver(client));
+    return useCaseInteractor.execute(
+        getElementUseCase,
+        new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
+        output -> {
+          T element = output.getElement();
+          return ResponseEntity.ok()
+              .cacheControl(defaultCacheControl)
+              .body(element.getParts().stream().map(this::entity2Dto).collect(Collectors.toList()));
         });
-        return useCaseInteractor.execute(evaluateDecisionUseCase,
-                                         new EvaluateDecisionUseCase.InputData(client,
-                                                 Key.uuidFrom(domainId), decisionKey, element),
-                                         output -> ResponseEntity.ok()
-                                                                 .body(output.getDecisionResult()));
-    }
+  }
 
-    protected abstract E entity2Dto(T entity);
+  public @Valid CompletableFuture<ResponseEntity<DecisionResult>> evaluateDecision(
+      Authentication auth, @Valid AbstractElementDto dto, String decisionKey, String domainId) {
+    var client = getAuthenticatedClient(auth);
 
+    var element =
+        runner.run(
+            () -> {
+              return dtoToEntityTransformer.transformDto2Element(dto, createIdRefResolver(client));
+            });
+    return useCaseInteractor.execute(
+        evaluateDecisionUseCase,
+        new EvaluateDecisionUseCase.InputData(client, Key.uuidFrom(domainId), decisionKey, element),
+        output -> ResponseEntity.ok().body(output.getDecisionResult()));
+  }
+
+  protected abstract E entity2Dto(T entity);
 }

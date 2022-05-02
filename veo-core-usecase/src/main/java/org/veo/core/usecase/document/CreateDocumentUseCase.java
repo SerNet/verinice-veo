@@ -26,13 +26,16 @@ import org.veo.core.usecase.decision.Decider;
 
 public class CreateDocumentUseCase extends CreateElementUseCase<Document> {
 
-    public CreateDocumentUseCase(UnitRepository unitRepository, DocumentRepository entityRepo,
-            DesignatorService designatorService, Decider decider) {
-        super(unitRepository, entityRepo, designatorService, decider);
-    }
+  public CreateDocumentUseCase(
+      UnitRepository unitRepository,
+      DocumentRepository entityRepo,
+      DesignatorService designatorService,
+      Decider decider) {
+    super(unitRepository, entityRepo, designatorService, decider);
+  }
 
-    @Override
-    protected void validate(Document document) {
-        // GNDN
-    }
+  @Override
+  protected void validate(Document document) {
+    // GNDN
+  }
 }

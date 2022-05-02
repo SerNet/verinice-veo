@@ -31,47 +31,40 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
 /**
- * Common base class that can be used by all use cases. It includes a repository
- * provider to retrieve references to required repositories for each entity type
- * as well as convenience methods for entity retrieval and assertions that are
- * used in most use cases.
+ * Common base class that can be used by all use cases. It includes a repository provider to
+ * retrieve references to required repositories for each entity type as well as convenience methods
+ * for entity retrieval and assertions that are used in most use cases.
  */
 public abstract class AbstractUseCase<I extends UseCase.InputData, O extends UseCase.OutputData>
-        implements TransactionalUseCase<I, O> {
+    implements TransactionalUseCase<I, O> {
 
-    protected final RepositoryProvider repositoryProvider;
+  protected final RepositoryProvider repositoryProvider;
 
-    public AbstractUseCase(RepositoryProvider repositoryProvider) {
-        this.repositoryProvider = repositoryProvider;
-    }
+  public AbstractUseCase(RepositoryProvider repositoryProvider) {
+    this.repositoryProvider = repositoryProvider;
+  }
 
-    /**
-     * Makes sure that all domains belong to the given Client.
-     *
-     * @param authenticatedClient
-     *            the client which must be the owner of the domains
-     * @param domains
-     *            the list of the domains for which to ensure the ownership
-     * @throws ClientBoundaryViolationException
-     *             when any of the domains does not belong to the client.
-     */
-    protected void checkDomainOwnership(Client authenticatedClient, Set<Domain> domains) {
-        domains.forEach(domain -> checkSameClient(authenticatedClient, domain));
-    }
+  /**
+   * Makes sure that all domains belong to the given Client.
+   *
+   * @param authenticatedClient the client which must be the owner of the domains
+   * @param domains the list of the domains for which to ensure the ownership
+   * @throws ClientBoundaryViolationException when any of the domains does not belong to the client.
+   */
+  protected void checkDomainOwnership(Client authenticatedClient, Set<Domain> domains) {
+    domains.forEach(domain -> checkSameClient(authenticatedClient, domain));
+  }
 
-    private void checkSameClient(Client authenticatedClient, Domain domain) {
-        if (!domain.getOwner()
-                   .equals(authenticatedClient))
-            throw new ClientBoundaryViolationException(domain, authenticatedClient);
-    }
+  private void checkSameClient(Client authenticatedClient, Domain domain) {
+    if (!domain.getOwner().equals(authenticatedClient))
+      throw new ClientBoundaryViolationException(domain, authenticatedClient);
+  }
 
-    protected <M extends Identifiable> Optional<M> findEntity(Class<M> clazz, Key<UUID> id) {
-        return repositoryProvider.getRepositoryFor(clazz)
-                                 .findById(id);
-    }
+  protected <M extends Identifiable> Optional<M> findEntity(Class<M> clazz, Key<UUID> id) {
+    return repositoryProvider.getRepositoryFor(clazz).findById(id);
+  }
 
-    protected <M extends Identifiable> Set<M> findEntities(Class<M> clazz, Set<Key<UUID>> ids) {
-        return repositoryProvider.getRepositoryFor(clazz)
-                                 .getByIds(ids);
-    }
+  protected <M extends Identifiable> Set<M> findEntities(Class<M> clazz, Set<Key<UUID>> ids) {
+    return repositoryProvider.getRepositoryFor(clazz).getByIds(ids);
+  }
 }

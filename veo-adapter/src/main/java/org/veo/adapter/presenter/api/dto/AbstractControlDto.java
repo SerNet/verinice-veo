@@ -31,65 +31,66 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-/**
- * Base transfer object for controls. Contains common data for all control DTOs.
- */
+/** Base transfer object for controls. Contains common data for all control DTOs. */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "control", description = "Schema for control")
 public abstract class AbstractControlDto extends CompositeEntityDto<Control> {
 
-    @Override
-    @Schema(description = "The name for the control.", example = "Install sensors")
-    public String getName() {
-        return super.getName();
-    }
+  @Override
+  @Schema(description = "The name for the control.", example = "Install sensors")
+  public String getName() {
+    return super.getName();
+  }
 
-    @Override
-    @Schema(description = "The abbreviation for the control.", example = "Sensors")
-    public String getAbbreviation() {
-        return super.getAbbreviation();
-    }
+  @Override
+  @Schema(description = "The abbreviation for the control.", example = "Sensors")
+  public String getAbbreviation() {
+    return super.getAbbreviation();
+  }
 
-    @Override
-    @Schema(description = "The description for the control.",
-            example = "Install sensors. Sensors must be installed correctly.")
-    public String getDescription() {
-        return super.getDescription();
-    }
+  @Override
+  @Schema(
+      description = "The description for the control.",
+      example = "Install sensors. Sensors must be installed correctly.")
+  public String getDescription() {
+    return super.getDescription();
+  }
 
-    @Override
-    @Schema(description = "The links for the control.")
-    public Map<String, List<CustomLinkDto>> getLinks() {
-        return super.getLinks();
-    }
+  @Override
+  @Schema(description = "The links for the control.")
+  public Map<String, List<CustomLinkDto>> getLinks() {
+    return super.getLinks();
+  }
 
-    @Schema(description = "The customAspects for the control.")
-    @Override
-    public Map<String, CustomAspectDto> getCustomAspects() {
-        return super.getCustomAspects();
-    }
+  @Schema(description = "The customAspects for the control.")
+  @Override
+  public Map<String, CustomAspectDto> getCustomAspects() {
+    return super.getCustomAspects();
+  }
 
-    @Override
-    public Class<? extends Identifiable> getModelInterface() {
-        return Control.class;
-    }
+  @Override
+  public Class<? extends Identifiable> getModelInterface() {
+    return Control.class;
+  }
 
-    @Override
-    public void associateWithTargetDomain(String id) {
-        setDomains(Map.of(id, getDomains().values()
-                                          .stream()
-                                          .findFirst()
-                                          .orElse(new ControlDomainAssociationDto())));
-    }
+  @Override
+  public void associateWithTargetDomain(String id) {
+    setDomains(
+        Map.of(
+            id,
+            getDomains().values().stream().findFirst().orElse(new ControlDomainAssociationDto())));
+  }
 
-    @Override
-    public void clearDomains() {
-        domains.clear();
-    }
+  @Override
+  public void clearDomains() {
+    domains.clear();
+  }
 
-    @Valid
-    @Schema(description = "Details about this element's association with domains. Domain ID is key, association object is value.")
-    private Map<String, ControlDomainAssociationDto> domains = new HashMap<>();
+  @Valid
+  @Schema(
+      description =
+          "Details about this element's association with domains. Domain ID is key, association object is value.")
+  private Map<String, ControlDomainAssociationDto> domains = new HashMap<>();
 }

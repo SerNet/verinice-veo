@@ -22,21 +22,19 @@ import javax.persistence.Converter;
 
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
-/**
- * JPA converter mapping {@link RiskDefinitionRef} values to varchar columns.
- */
+/** JPA converter mapping {@link RiskDefinitionRef} values to varchar columns. */
 @Converter(autoApply = true)
 class RiskDefinitionRefConverter implements AttributeConverter<RiskDefinitionRef, String> {
 
-    @Override
-    public String convertToDatabaseColumn(RiskDefinitionRef attribute) {
-        return attribute == null ? null : attribute.getIdRef();
-    }
+  @Override
+  public String convertToDatabaseColumn(RiskDefinitionRef attribute) {
+    return attribute == null ? null : attribute.getIdRef();
+  }
 
-    @Override
-    public RiskDefinitionRef convertToEntityAttribute(String dbData) {
-        return dbData == null ? null
-                : RiskReferenceFactoryImpl.getInstance()
-                                          .createRiskDefinitionRef(dbData);
-    }
+  @Override
+  public RiskDefinitionRef convertToEntityAttribute(String dbData) {
+    return dbData == null
+        ? null
+        : RiskReferenceFactoryImpl.getInstance().createRiskDefinitionRef(dbData);
+  }
 }

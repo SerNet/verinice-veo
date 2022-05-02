@@ -31,33 +31,33 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class EntityValidator {
-    private final AccountProvider accountProvider;
+  private final AccountProvider accountProvider;
 
-    public void validate(Object entity) throws EntityValidationException {
-        List.of(new TypedValidator<>(ClientOwned.class,
-                new SameClientSpecification(accountProvider.getCurrentUserAccount()
-                                                           .getClient())),
-                new TypedValidator<>(Domain.class,
-                        new CompleteEntityTypeDefinitionsSpecification()),
-                new TypedValidator<>(Element.class, new ElementCustomAspectsHaveDomain()),
-                new TypedValidator<>(Element.class, new ElementBelongsOnlyToClientDomains()),
-                new TypedValidator<>(Aspect.class, new AspectsHaveOwnerDomain()),
-                new TypedValidator<>(AbstractRisk.class, new RisksHaveDomain()))
-            .forEach(v -> v.validateIfApplicable(entity));
-    }
+  public void validate(Object entity) throws EntityValidationException {
+    List.of(
+            new TypedValidator<>(
+                ClientOwned.class,
+                new SameClientSpecification(accountProvider.getCurrentUserAccount().getClient())),
+            new TypedValidator<>(Domain.class, new CompleteEntityTypeDefinitionsSpecification()),
+            new TypedValidator<>(Element.class, new ElementCustomAspectsHaveDomain()),
+            new TypedValidator<>(Element.class, new ElementBelongsOnlyToClientDomains()),
+            new TypedValidator<>(Aspect.class, new AspectsHaveOwnerDomain()),
+            new TypedValidator<>(AbstractRisk.class, new RisksHaveDomain()))
+        .forEach(v -> v.validateIfApplicable(entity));
+  }
 
-    @RequiredArgsConstructor
-    static class TypedValidator<T> {
-        private final Class<T> type;
-        private final EntitySpecification<T> specification;
+  @RequiredArgsConstructor
+  static class TypedValidator<T> {
+    private final Class<T> type;
+    private final EntitySpecification<T> specification;
 
-        public void validateIfApplicable(Object entity) {
-            if (type.isAssignableFrom(entity.getClass())) {
-                var castEntity = type.cast(entity);
-                if (!specification.test(castEntity)) {
-                    throw new EntityValidationException(castEntity, specification);
-                }
-            }
+    public void validateIfApplicable(Object entity) {
+      if (type.isAssignableFrom(entity.getClass())) {
+        var castEntity = type.cast(entity);
+        if (!specification.test(castEntity)) {
+          throw new EntityValidationException(castEntity, specification);
         }
+      }
     }
+  }
 }

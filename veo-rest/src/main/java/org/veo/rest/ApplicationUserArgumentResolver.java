@@ -26,21 +26,20 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import org.veo.rest.security.ApplicationUser;
 
-/**
- * Resolves {@link ApplicationUser} controller method parameters.
- */
+/** Resolves {@link ApplicationUser} controller method parameters. */
 public class ApplicationUserArgumentResolver implements HandlerMethodArgumentResolver {
-    @Override
-    public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterType()
-                        .isAssignableFrom(ApplicationUser.class);
-    }
+  @Override
+  public boolean supportsParameter(MethodParameter parameter) {
+    return parameter.getParameterType().isAssignableFrom(ApplicationUser.class);
+  }
 
-    @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-            NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        var auth = SecurityContextHolder.getContext()
-                                        .getAuthentication();
-        return ApplicationUser.authenticatedUser(auth.getPrincipal());
-    }
+  @Override
+  public Object resolveArgument(
+      MethodParameter parameter,
+      ModelAndViewContainer mavContainer,
+      NativeWebRequest webRequest,
+      WebDataBinderFactory binderFactory) {
+    var auth = SecurityContextHolder.getContext().getAuthentication();
+    return ApplicationUser.authenticatedUser(auth.getPrincipal());
+  }
 }

@@ -27,21 +27,21 @@ import org.veo.persistence.entity.jpa.ProcessData;
 
 public class ProcessQueryImpl extends ElementQueryImpl<Process, ProcessData> {
 
-    private final boolean withRisks;
-    private final ProcessDataRepository processRepository;
+  private final boolean withRisks;
+  private final ProcessDataRepository processRepository;
 
-    public ProcessQueryImpl(ProcessDataRepository repo, Client client, boolean withRisks) {
-        super(repo, client);
-        this.withRisks = withRisks;
-        this.processRepository = repo;
-    }
+  public ProcessQueryImpl(ProcessDataRepository repo, Client client, boolean withRisks) {
+    super(repo, client);
+    this.withRisks = withRisks;
+    this.processRepository = repo;
+  }
 
-    @Override
-    protected List<ProcessData> fullyLoadItems(List<String> ids) {
-        if (withRisks) {
-            return new ArrayList<>(processRepository.findAllWithRisksByDbIdIn(ids));
-        } else {
-            return super.fullyLoadItems(ids);
-        }
+  @Override
+  protected List<ProcessData> fullyLoadItems(List<String> ids) {
+    if (withRisks) {
+      return new ArrayList<>(processRepository.findAllWithRisksByDbIdIn(ids));
+    } else {
+      return super.fullyLoadItems(ids);
     }
+  }
 }

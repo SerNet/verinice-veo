@@ -171,635 +171,726 @@ import org.veo.service.EtagService;
 import org.veo.service.risk.RiskService;
 
 /**
- * This configuration takes care of wiring classes from core modules
- * (Entity-Layer, Use-Case-Layer) that have no dependency to the Spring
- * framework. They are therefore not picked up and autowired by Spring.
+ * This configuration takes care of wiring classes from core modules (Entity-Layer, Use-Case-Layer)
+ * that have no dependency to the Spring framework. They are therefore not picked up and autowired
+ * by Spring.
  */
 @Configuration
 public class ModuleConfiguration {
 
-    @Bean
-    public CreateAssetUseCase createAssetUseCase(UnitRepositoryImpl unitRepository,
-            AssetRepositoryImpl assetRepository, DesignatorService designatorService,
-            Decider decider) {
-        return new CreateAssetUseCase(unitRepository, assetRepository, designatorService, decider);
-    }
-
-    @Bean
-    public CreateAssetRiskUseCase createAssetRiskUseCase(RepositoryProvider repositoryProvider,
-            DesignatorService designatorService, EventPublisher eventPublisher,
-            ScopeProvider scopeProvider) {
-        return new CreateAssetRiskUseCase(repositoryProvider, designatorService, eventPublisher,
-                scopeProvider);
-    }
-
-    @Bean
-    public UpdateAssetRiskUseCase updateAssetRiskUseCase(RepositoryProvider repositoryProvider,
-            EventPublisher eventPublisher, ScopeProvider scopeProvider) {
-        return new UpdateAssetRiskUseCase(repositoryProvider, eventPublisher, scopeProvider);
-    }
-
-    @Bean
-    public GetAssetUseCase getAssetUseCase(AssetRepositoryImpl assetRepository) {
-        return new GetAssetUseCase(assetRepository);
-    }
-
-    @Bean
-    public GetAssetsUseCase getAssetsUseCase(ClientRepositoryImpl clientRepository,
-            AssetRepositoryImpl assetRepository, UnitHierarchyProvider unitHierarchyProvider) {
-        return new GetAssetsUseCase(clientRepository, assetRepository, unitHierarchyProvider);
-    }
-
-    @Bean
-    public UpdateAssetUseCase updateAssetUseCase(AssetRepositoryImpl assetRepository,
-            Decider decider) {
-        return new UpdateAssetUseCase(assetRepository, decider);
-    }
-
-    @Bean
-    public CreateControlUseCase createControlUseCase(UnitRepositoryImpl unitRepository,
-            ControlRepositoryImpl controlRepository, DesignatorService designatorService,
-            Decider decider) {
-        return new CreateControlUseCase(unitRepository, controlRepository, designatorService,
-                decider);
-    }
-
-    @Bean
-    public GetControlUseCase getControlUseCase(ControlRepositoryImpl controlRepository) {
-        return new GetControlUseCase(controlRepository);
-    }
-
-    @Bean
-    public GetControlsUseCase getControlsUseCase(ClientRepositoryImpl clientRepository,
-            ControlRepositoryImpl controlRepository, UnitHierarchyProvider unitHierarchyProvider) {
-        return new GetControlsUseCase(clientRepository, controlRepository, unitHierarchyProvider);
-    }
-
-    @Bean
-    public UpdateControlUseCase updateControlUseCase(ControlRepositoryImpl controlRepository,
-            EventPublisher eventPublisher, ScopeProvider scopeProvider, Decider decider) {
-        return new UpdateControlUseCase(controlRepository, eventPublisher, scopeProvider, decider);
-    }
-
-    @Bean
-    public CreateDocumentUseCase createDocumentUseCase(UnitRepositoryImpl unitRepository,
-            DocumentRepositoryImpl documentRepository, DesignatorService designatorService,
-            Decider decider) {
-        return new CreateDocumentUseCase(unitRepository, documentRepository, designatorService,
-                decider);
-    }
-
-    @Bean
-    public GetDocumentUseCase getDocumentUseCase(DocumentRepositoryImpl documentRepository) {
-        return new GetDocumentUseCase(documentRepository);
-    }
-
-    @Bean
-    public GetDocumentsUseCase getDocumentsUseCase(ClientRepositoryImpl clientRepository,
-            DocumentRepositoryImpl documentRepository,
-            UnitHierarchyProvider unitHierarchyProvider) {
-        return new GetDocumentsUseCase(clientRepository, documentRepository, unitHierarchyProvider);
-    }
-
-    @Bean
-    public UpdateDocumentUseCase updateDocumentUseCase(DocumentRepositoryImpl documentRepository,
-            Decider decider) {
-        return new UpdateDocumentUseCase(documentRepository, decider);
-    }
-
-    @Bean
-    public CreateScenarioUseCase createScenarioUseCase(UnitRepositoryImpl unitRepository,
-            ScenarioRepositoryImpl scenarioRepository, DesignatorService designatorService,
-            Decider decider) {
-        return new CreateScenarioUseCase(unitRepository, scenarioRepository, designatorService,
-                decider);
-    }
-
-    @Bean
-    public GetScenarioUseCase getScenarioUseCase(ScenarioRepositoryImpl scenarioRepository) {
-        return new GetScenarioUseCase(scenarioRepository);
-    }
-
-    @Bean
-    public GetScenariosUseCase getScenariosUseCase(ClientRepositoryImpl clientRepository,
-            ScenarioRepositoryImpl scenarioRepository,
-            UnitHierarchyProvider unitHierarchyProvider) {
-        return new GetScenariosUseCase(clientRepository, scenarioRepository, unitHierarchyProvider);
-    }
-
-    @Bean
-    public UpdateScenarioUseCase updateScenarioUseCase(ScenarioRepositoryImpl scenarioRepository,
-            EventPublisher eventPublisher, Decider decider) {
-        return new UpdateScenarioUseCase(scenarioRepository, eventPublisher, decider);
-    }
-
-    @Bean
-    public CreateIncidentUseCase createIncidentUseCase(UnitRepositoryImpl unitRepository,
-            IncidentRepositoryImpl incidentRepository, DesignatorService designatorService,
-            Decider decider) {
-        return new CreateIncidentUseCase(unitRepository, incidentRepository, designatorService,
-                decider);
-    }
-
-    @Bean
-    public GetIncidentUseCase getIncidentUseCase(IncidentRepositoryImpl incidentRepository) {
-        return new GetIncidentUseCase(incidentRepository);
-    }
-
-    @Bean
-    public GetIncidentsUseCase getIncidentsUseCase(ClientRepositoryImpl clientRepository,
-            IncidentRepositoryImpl incidentRepository,
-            UnitHierarchyProvider unitHierarchyProvider) {
-        return new GetIncidentsUseCase(clientRepository, incidentRepository, unitHierarchyProvider);
-    }
-
-    @Bean
-    public UpdateIncidentUseCase updateIncidentUseCase(IncidentRepositoryImpl incidentRepository,
-            Decider decider) {
-        return new UpdateIncidentUseCase(incidentRepository, decider);
-    }
-
-    @Bean
-    public CreateProcessUseCase createProcessUseCase(UnitRepositoryImpl unitRepository,
-            ProcessRepositoryImpl processRepository, DesignatorService designatorService,
-            EventPublisher eventPublisher, Decider decider) {
-        return new CreateProcessUseCase(unitRepository, processRepository, designatorService,
-                eventPublisher, decider);
-    }
-
-    @Bean
-    public CreateProcessRiskUseCase createProcessRiskUseCase(RepositoryProvider repositoryProvider,
-            DesignatorService designatorService, EventPublisher eventPublisher,
-            ScopeProvider scopeProvider) {
-        return new CreateProcessRiskUseCase(repositoryProvider, designatorService, eventPublisher,
-                scopeProvider);
-    }
-
-    @Bean
-    public GetProcessUseCase getProcessUseCase(ProcessRepositoryImpl processRepository) {
-        return new GetProcessUseCase(processRepository);
-    }
-
-    @Bean
-    public GetProcessRiskUseCase getProcessRiskUseCase(RepositoryProvider repositoryProvider) {
-        return new GetProcessRiskUseCase(repositoryProvider);
-    }
-
-    @Bean
-    public GetProcessRisksUseCase getProcessRisksUseCase(RepositoryProvider repositoryProvider,
-            ProcessRepository processRepository) {
-        return new GetProcessRisksUseCase(repositoryProvider, processRepository);
-    }
-
-    @Bean
-    public UpdateProcessRiskUseCase updateProcessRiskUseCase(RepositoryProvider repositoryProvider,
-            EventPublisher eventPublisher, ScopeProvider scopeProvider) {
-        return new UpdateProcessRiskUseCase(repositoryProvider, eventPublisher, scopeProvider);
-    }
-
-    @Bean
-    public UpdateProcessUseCase putProcessUseCase(ProcessRepositoryImpl processRepository,
-            EventPublisher eventPublisher, ScopeProvider scopeProvider, Decider decider) {
-        return new UpdateProcessUseCase(processRepository, eventPublisher, scopeProvider, decider);
-    }
-
-    @Bean
-    public GetUnitUseCase getUnitUseCase(UnitRepositoryImpl repository) {
-        return new GetUnitUseCase(repository);
-    }
-
-    @Bean
-    public GetUnitsUseCase getUnitsUseCase(ClientRepository repository,
-            UnitRepositoryImpl unitRepository) {
-        return new GetUnitsUseCase(repository, unitRepository);
-    }
-
-    @Bean
-    public GetProcessesUseCase getProcessesUseCase(ClientRepository clientRepository,
-            ProcessRepository processRepository, UnitHierarchyProvider unitHierarchyProvider) {
-        return new GetProcessesUseCase(clientRepository, processRepository, unitHierarchyProvider);
-    }
-
-    @Bean
-    public UpdateUnitUseCase getPutUnitUseCase(UnitRepositoryImpl repository) {
-        return new UpdateUnitUseCase(repository);
-    }
-
-    @Bean
-    public CreateUnitUseCase getCreateUnitUseCase(ClientRepositoryImpl clientRepository,
-            UnitRepositoryImpl unitRepository, DefaultDomainCreator defaultDomainCreator) {
-        return new CreateUnitUseCase(clientRepository, unitRepository, getEntityFactory(),
-                defaultDomainCreator);
-    }
-
-    @Bean
-    public DeleteUnitUseCase getDeleteUnitUseCase(ClientRepositoryImpl clientRepository,
-            UnitRepositoryImpl unitRepository, RepositoryProvider repositoryProvider) {
-        return new DeleteUnitUseCase(clientRepository, unitRepository, repositoryProvider);
-    }
-
-    @Bean
-    public CreatePersonUseCase createPersonUseCase(UnitRepositoryImpl unitRepository,
-            PersonRepositoryImpl personRepository, DesignatorService designatorService,
-            Decider decider) {
-        return new CreatePersonUseCase(unitRepository, personRepository, designatorService,
-                decider);
-    }
-
-    @Bean
-    public GetPersonUseCase getPersonUseCase(PersonRepositoryImpl personRepository) {
-        return new GetPersonUseCase(personRepository);
-    }
-
-    @Bean
-    public GetPersonsUseCase getPersonsUseCase(ClientRepositoryImpl clientRepository,
-            PersonRepositoryImpl personRepository, UnitHierarchyProvider unitHierarchyProvider) {
-        return new GetPersonsUseCase(clientRepository, personRepository, unitHierarchyProvider);
-    }
-
-    @Bean
-    public UpdatePersonUseCase updatePersonUseCase(PersonRepositoryImpl personRepository,
-            Decider decider) {
-        return new UpdatePersonUseCase(personRepository, decider);
-    }
-
-    @Bean
-    public CreateScopeUseCase createScopeUseCase(UnitRepositoryImpl unitRepository,
-            ScopeRepositoryImpl scopeRepository, DesignatorService designatorService,
-            Decider decider) {
-        return new CreateScopeUseCase(unitRepository, scopeRepository, designatorService, decider);
-    }
-
-    @Bean
-    public GetScopeUseCase getScopeUseCase(ScopeRepositoryImpl scopeRepository) {
-        return new GetScopeUseCase(scopeRepository);
-    }
-
-    @Bean
-    public GetScopesUseCase getScopesUseCase(ClientRepositoryImpl clientRepository,
-            ScopeRepositoryImpl scopeRepository, UnitHierarchyProvider unitHierarchyProvider) {
-        return new GetScopesUseCase(clientRepository, scopeRepository, unitHierarchyProvider);
-    }
-
-    @Bean
-    public UpdateScopeUseCase updateScopeUseCase(ScopeRepositoryImpl scopeRepository,
-            Decider decider) {
-        return new UpdateScopeUseCase(scopeRepository, decider);
-    }
-
-    @Bean
-    public DeleteElementUseCase deleteElementUseCase(RepositoryProvider repositoryProvider,
-            EventPublisher eventPublisher) {
-        return new DeleteElementUseCase(repositoryProvider, eventPublisher);
-    }
-
-    @Bean
-    public DeleteRiskUseCase deleteRiskUseCase(RepositoryProvider repositoryProvider,
-            EventPublisher eventPublisher) {
-        return new DeleteRiskUseCase(repositoryProvider, eventPublisher);
-    }
-
-    @Bean
-    public SchemaExtender schemaExtender() {
-        return new SchemaExtender();
-    }
-
-    @Bean
-    public EntitySchemaGenerator entitySchemaGenerator(SchemaExtender schemaExtender) {
-        return new EntitySchemaGenerator(schemaExtender);
-    }
-
-    @Bean
-    public EntitySchemaService getSchemaService(EntitySchemaGenerator generateEntitytSchema) {
-        return new EntitySchemaServiceImpl(generateEntitytSchema);
-    }
-
-    @Bean
-    public EntityFactory getEntityFactory() {
-        return new EntityDataFactory();
-    }
-
-    @Bean
-    public IdentifiableFactory identifiableFactory() {
-        return new IdentifiableDataFactory();
-    }
-
-    @Bean
-    public UnitHierarchyProvider unitHierarchyProvider(UnitRepository unitRepository) {
-        return new UnitHierarchyProvider(unitRepository);
-    }
-
-    @Bean
-    public ScopeProvider scopeProvider(AssetRepository assetRepository,
-            ControlRepository controlRepository, ProcessRepository processRepository,
-            ScopeRepository scopeRepository) {
-        return new ScopeProvider(assetRepository, controlRepository, processRepository,
-                scopeRepository);
-    }
-
-    @Bean
-    public DomainAssociationTransformer domainAssociationTransformer() {
-        return new DomainAssociationTransformer();
-    }
-
-    @Bean
-    public GetAssetRiskUseCase getAssetRiskUseCase(RepositoryProvider repositoryProvider) {
-        return new GetAssetRiskUseCase(repositoryProvider);
-    }
-
-    @Bean
-    public GetAssetRisksUseCase getAssetRisksUseCase(RepositoryProvider repositoryProvider) {
-        return new GetAssetRisksUseCase(repositoryProvider);
-    }
-
-    @Bean
-    public CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase(
-            DomainTemplateService domainTemplateService, DomainRepository domainRepository,
-            DomainTemplateRepository domainTemplateRepository) {
-        return new CreateDomainTemplateFromDomainUseCase(domainTemplateService, domainRepository,
-                domainTemplateRepository);
-    }
-
-    @Bean
-    public GetDomainUseCase getDomainUseCase(DomainRepository domainRepository) {
-        return new GetDomainUseCase(domainRepository);
-    }
-
-    @Bean
-    public GetDomainsUseCase getDomainsUseCase() {
-        return new GetDomainsUseCase();
-    }
-
-    @Bean
-    public ExportDomainUseCase exportDomainUseCase(DomainRepository domainRepository,
-            DomainTemplateService domainTemplateService) {
-        return new ExportDomainUseCase(domainRepository, domainTemplateService);
-    }
-
-    @Bean
-    public GetCatalogUseCase getCatalogUseCase(CatalogRepository catalogRepository) {
-        return new GetCatalogUseCase(catalogRepository);
-    }
-
-    @Bean
-    public GetCatalogsUseCase getCatalogsUseCase() {
-        return new GetCatalogsUseCase();
-    }
-
-    @Bean
-    public GetCatalogItemUseCase getCatalogItemUseCase() {
-        return new GetCatalogItemUseCase();
-    }
-
-    @Bean
-    public GetCatalogItemsUseCase getCatalogItemsUseCase() {
-        return new GetCatalogItemsUseCase();
-    }
-
-    @Bean
-    public StoredEventRepository storedEventRepository(
-            StoredEventDataRepository storedEventDataRepository) {
-        return new StoredEventRepositoryImpl(storedEventDataRepository);
-    }
-
-    @Bean
-    public AuthAwareImpl authAwareImpl() {
-        return new AuthAwareImpl();
-    }
-
-    @Bean
-    public EntityToDtoTransformer entityToDtoTransformer(ReferenceAssembler referenceAssembler,
-            DomainAssociationTransformer domainAssociationTransformer) {
-        return new EntityToDtoTransformer(referenceAssembler, domainAssociationTransformer);
-    }
-
-    @Bean
-    public DtoToEntityTransformer dtoToEntityTransformer(EntityFactory entityFactory,
-            IdentifiableFactory identifiableFactory, EntitySchemaService entitySchemaService,
-            DomainAssociationTransformer domainAssociationTransformer) {
-        return new DtoToEntityTransformer(entityFactory, identifiableFactory,
-                domainAssociationTransformer);
-    }
-
-    @Primary
-    @Bean(name = "applicationEventMulticaster")
-    public ApplicationEventMulticaster simpleApplicationEventMulticaster() {
-        SimpleApplicationEventMulticaster eventMulticaster = new SimpleApplicationEventMulticaster();
-        eventMulticaster.setTaskExecutor(new SyncTaskExecutor());
-        return eventMulticaster;
-    }
-
-    @Bean
-    public CurrentUserProvider currentUserProvider(AuditorAware<String> auditorAware) {
-        return new CurrentUserProviderImpl(auditorAware);
-    }
-
-    @Bean
-    public DesignatorService designatorService(
-            DesignatorSequenceRepository designatorSequenceRepository) {
-        return new DesignatorService(designatorSequenceRepository);
-    }
-
-    @Bean
-    public MessageConverter jsonMessageConverter() {
-        ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        return new Jackson2JsonMessageConverter(mapper);
-    }
-
-    @Bean
-    public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
-        RabbitTemplate template = new RabbitTemplate(connectionFactory);
-        template.setMessageConverter(jsonMessageConverter());
-        template.setChannelTransacted(false);
-        template.setMandatory(true);
-        return template;
-    }
-
-    @Bean
-    public DomainTemplateServiceImpl domainTemplateService(
-            DomainTemplateRepository domainTemplateRepository, EntityFactory factory,
-            IdentifiableFactory identifiableFactory, DomainTemplateResource domainTemplateResource,
-            DomainAssociationTransformer domainAssociationTransformer,
-            CatalogItemPrepareStrategy prepareStrategy,
-            DomainTemplateIdGenerator domainTemplateIdGenerator) {
-        return new DomainTemplateServiceImpl(domainTemplateRepository, factory,
-                domainTemplateResource.getResources(), domainAssociationTransformer,
-                identifiableFactory, prepareStrategy, domainTemplateIdGenerator);
-    }
-
-    @Bean
-    public CatalogItemService catalogItemService(EntityToDtoTransformer dtoTransformer,
-            EntityFactory factory, DomainAssociationTransformer domainAssociationTransformer,
-            CatalogItemPrepareStrategy prepareStrategy, IdentifiableFactory identifiableFactory) {
-        return new CatalogItemServiceImpl(dtoTransformer, factory, identifiableFactory,
-                domainAssociationTransformer, prepareStrategy);
-    }
-
-    @Bean
-    public CatalogItemPrepareStrategy catalogItemPrepareStrategy() {
-        return new CatalogItemPrepareStrategy();
-    }
-
-    @Bean
-    public TypeDefinitionProvider getTypeDefinitionProvider(ReferenceAssembler referenceAssembler) {
-        return new TypeDefinitionProvider(referenceAssembler);
-    }
-
-    @Bean
-    public GetIncarnationDescriptionUseCase getIncarnationDescriptionUseCase(
-            UnitRepository unitRepository, DomainRepository domainRepository,
-            CatalogItemRepository catalogItemRepository, RepositoryProvider repositoryProvider) {
-        return new GetIncarnationDescriptionUseCase(unitRepository, catalogItemRepository,
-                domainRepository, repositoryProvider);
-    }
-
-    @Bean
-    GetClientUseCase getClientUseCase(ClientRepository clientRepository) {
-        return new GetClientUseCase(clientRepository);
-    }
-
-    @Bean
-    public DeleteClientUseCase deleteClientUseCase(AccountProvider accountProvider,
-            ClientRepository clientRepository, UnitRepository unitRepository,
-            DeleteUnitUseCase deleteUnitUseCase) {
-        return new DeleteClientUseCase(accountProvider, clientRepository, deleteUnitUseCase,
-                unitRepository);
-    }
-
-    @Bean
-    public GetUnitDumpUseCase getUnitDumpUseCase(AccountProvider accountProvider,
-            RepositoryProvider repositoryProvider, UnitRepository unitRepository) {
-        return new GetUnitDumpUseCase(accountProvider, repositoryProvider, unitRepository);
-    }
-
-    @Bean
-    public EntityValidator entityValidator(AccountProvider accountProvider) {
-        return new EntityValidator(accountProvider);
-    }
-
-    @Bean
-    public ApplyIncarnationDescriptionUseCase applyIncarnationDescriptionUseCase(
-            UnitRepository unitRepository, CatalogItemRepository catalogItemRepository,
-            DomainRepository domainRepository, RepositoryProvider repositoryProvider,
-            DesignatorService designatorService, CatalogItemService catalogItemService,
-            EntityFactory factory) {
-        return new ApplyIncarnationDescriptionUseCase(unitRepository, catalogItemRepository,
-                domainRepository, repositoryProvider, designatorService, catalogItemService,
-                factory);
-    }
-
-    @Bean
-    public GetScopeRiskUseCase getScopeRiskUseCase(RepositoryProvider repositoryProvider) {
-        return new GetScopeRiskUseCase(repositoryProvider);
-    }
-
-    @Bean
-    public GetScopeRisksUseCase getScopeRisksUseCase(RepositoryProvider repositoryProvider) {
-        return new GetScopeRisksUseCase(repositoryProvider);
-    }
-
-    @Bean
-    public CreateScopeRiskUseCase createScopeRiskUseCase(RepositoryProvider repositoryProvider,
-            DesignatorService designatorService, EventPublisher eventPublisher) {
-        return new CreateScopeRiskUseCase(repositoryProvider, designatorService, eventPublisher);
-    }
-
-    @Bean
-    public UpdateScopeRiskUseCase updateScopeRiskUseCase(RepositoryProvider repositoryProvider,
-            EventPublisher eventPublisher) {
-        return new UpdateScopeRiskUseCase(repositoryProvider, eventPublisher);
-    }
-
-    @Bean
-    public EtagService etagService(RepositoryProvider repositoryProvider) {
-        return new EtagService(repositoryProvider);
-    }
-
-    @Bean
-    public ObjectSchemaParser objectSchemaParser(EntityFactory entityFactory) {
-        return new ObjectSchemaParser(entityFactory);
-    }
-
-    @Bean
-    public UpdateElementTypeDefinitionUseCase getUpdateElementTypeDefinitionUseCase(
-            DomainRepository domainRepository) {
-        return new UpdateElementTypeDefinitionUseCase(domainRepository);
-    }
-
-    @Bean
-    public CreateDomainUseCase getCreateDomainUseCase(AccountProvider accountProvider,
-            ClientRepository clientRepository, DomainTemplateService domainTemplateService) {
-        return new CreateDomainUseCase(accountProvider, clientRepository, domainTemplateService);
-    }
-
-    @Bean
-    public MessageCreator messageCreator(StoredEventRepository storedEventRepository,
-            ObjectMapper objectMapper, ReferenceAssembler referenceAssembler,
-            EntityToDtoTransformer entityToDtoTransformer) {
-        return new MessageCreatorImpl(storedEventRepository, objectMapper, referenceAssembler,
-                entityToDtoTransformer);
-    }
-
-    @Bean
-    public IncomingMessageHandler incomingMessageHandler(RepositoryProvider repositoryProvider,
-            ElementMigrationService elementMigrationService, RiskService riskService) {
-        return new IncomingMessageHandler(repositoryProvider, elementMigrationService);
-    }
-
-    @Bean
-    public ElementMigrationService elementMigrationService() {
-        return new ElementMigrationService();
-    }
-
-    @Bean
-    public UpdateAllClientDomainsUseCase getUpdateAllClientDomainsUseCase(
-            DomainRepository domainRepository, RepositoryProvider repositoryProvider,
-            UnitRepository unitRepository, ElementMigrationService elementMigrationService) {
-        return new UpdateAllClientDomainsUseCase(domainRepository, repositoryProvider,
-                unitRepository, elementMigrationService);
-    }
-
-    @Bean
-    public DomainTemplateIdGenerator domainTemplateIdGenerator() {
-        return new DomainTemplateIdGeneratorImpl();
-    }
-
-    @Bean
-    public DefaultDomainCreator defaultDomainTemplateProvider(
-            @Value("${veo.default.domaintemplate.names}") String[] defaultDomainTemplateIds,
-            DomainTemplateService domainService,
-            DomainTemplateRepository domainTemplateRepository) {
-        return new DefaultDomainCreator(Arrays.stream(defaultDomainTemplateIds)
-                                              .collect(Collectors.toSet()),
-                domainService, domainTemplateRepository);
-    }
-
-    @Bean
-    public CreateDomainTemplateUseCase createDomainTemplateUseCase(
-            DomainTemplateRepository domainTemplateRepository,
-            DomainTemplateIdGenerator domainTemplateIdGenerator) {
-        return new CreateDomainTemplateUseCase(domainTemplateRepository, domainTemplateIdGenerator);
-    }
-
-    @Bean
-    public RiskService riskService(ProcessRepository processRepository) {
-        return new RiskService(processRepository);
-    }
-
-    @Bean
-    public Decider decider() {
-        return new Decider();
-    }
-
-    @Bean
-    public SchemaReplacer schemaReplacer() {
-        return new SchemaReplacer();
-    }
-
-    @Bean
-    public EvaluateDecisionUseCase evaluateDecisionUseCase(DomainRepository domainRepository,
-            RepositoryProvider repositoryProvider) {
-        return new EvaluateDecisionUseCase(domainRepository, repositoryProvider);
-    }
+  @Bean
+  public CreateAssetUseCase createAssetUseCase(
+      UnitRepositoryImpl unitRepository,
+      AssetRepositoryImpl assetRepository,
+      DesignatorService designatorService,
+      Decider decider) {
+    return new CreateAssetUseCase(unitRepository, assetRepository, designatorService, decider);
+  }
+
+  @Bean
+  public CreateAssetRiskUseCase createAssetRiskUseCase(
+      RepositoryProvider repositoryProvider,
+      DesignatorService designatorService,
+      EventPublisher eventPublisher,
+      ScopeProvider scopeProvider) {
+    return new CreateAssetRiskUseCase(
+        repositoryProvider, designatorService, eventPublisher, scopeProvider);
+  }
+
+  @Bean
+  public UpdateAssetRiskUseCase updateAssetRiskUseCase(
+      RepositoryProvider repositoryProvider,
+      EventPublisher eventPublisher,
+      ScopeProvider scopeProvider) {
+    return new UpdateAssetRiskUseCase(repositoryProvider, eventPublisher, scopeProvider);
+  }
+
+  @Bean
+  public GetAssetUseCase getAssetUseCase(AssetRepositoryImpl assetRepository) {
+    return new GetAssetUseCase(assetRepository);
+  }
+
+  @Bean
+  public GetAssetsUseCase getAssetsUseCase(
+      ClientRepositoryImpl clientRepository,
+      AssetRepositoryImpl assetRepository,
+      UnitHierarchyProvider unitHierarchyProvider) {
+    return new GetAssetsUseCase(clientRepository, assetRepository, unitHierarchyProvider);
+  }
+
+  @Bean
+  public UpdateAssetUseCase updateAssetUseCase(
+      AssetRepositoryImpl assetRepository, Decider decider) {
+    return new UpdateAssetUseCase(assetRepository, decider);
+  }
+
+  @Bean
+  public CreateControlUseCase createControlUseCase(
+      UnitRepositoryImpl unitRepository,
+      ControlRepositoryImpl controlRepository,
+      DesignatorService designatorService,
+      Decider decider) {
+    return new CreateControlUseCase(unitRepository, controlRepository, designatorService, decider);
+  }
+
+  @Bean
+  public GetControlUseCase getControlUseCase(ControlRepositoryImpl controlRepository) {
+    return new GetControlUseCase(controlRepository);
+  }
+
+  @Bean
+  public GetControlsUseCase getControlsUseCase(
+      ClientRepositoryImpl clientRepository,
+      ControlRepositoryImpl controlRepository,
+      UnitHierarchyProvider unitHierarchyProvider) {
+    return new GetControlsUseCase(clientRepository, controlRepository, unitHierarchyProvider);
+  }
+
+  @Bean
+  public UpdateControlUseCase updateControlUseCase(
+      ControlRepositoryImpl controlRepository,
+      EventPublisher eventPublisher,
+      ScopeProvider scopeProvider,
+      Decider decider) {
+    return new UpdateControlUseCase(controlRepository, eventPublisher, scopeProvider, decider);
+  }
+
+  @Bean
+  public CreateDocumentUseCase createDocumentUseCase(
+      UnitRepositoryImpl unitRepository,
+      DocumentRepositoryImpl documentRepository,
+      DesignatorService designatorService,
+      Decider decider) {
+    return new CreateDocumentUseCase(
+        unitRepository, documentRepository, designatorService, decider);
+  }
+
+  @Bean
+  public GetDocumentUseCase getDocumentUseCase(DocumentRepositoryImpl documentRepository) {
+    return new GetDocumentUseCase(documentRepository);
+  }
+
+  @Bean
+  public GetDocumentsUseCase getDocumentsUseCase(
+      ClientRepositoryImpl clientRepository,
+      DocumentRepositoryImpl documentRepository,
+      UnitHierarchyProvider unitHierarchyProvider) {
+    return new GetDocumentsUseCase(clientRepository, documentRepository, unitHierarchyProvider);
+  }
+
+  @Bean
+  public UpdateDocumentUseCase updateDocumentUseCase(
+      DocumentRepositoryImpl documentRepository, Decider decider) {
+    return new UpdateDocumentUseCase(documentRepository, decider);
+  }
+
+  @Bean
+  public CreateScenarioUseCase createScenarioUseCase(
+      UnitRepositoryImpl unitRepository,
+      ScenarioRepositoryImpl scenarioRepository,
+      DesignatorService designatorService,
+      Decider decider) {
+    return new CreateScenarioUseCase(
+        unitRepository, scenarioRepository, designatorService, decider);
+  }
+
+  @Bean
+  public GetScenarioUseCase getScenarioUseCase(ScenarioRepositoryImpl scenarioRepository) {
+    return new GetScenarioUseCase(scenarioRepository);
+  }
+
+  @Bean
+  public GetScenariosUseCase getScenariosUseCase(
+      ClientRepositoryImpl clientRepository,
+      ScenarioRepositoryImpl scenarioRepository,
+      UnitHierarchyProvider unitHierarchyProvider) {
+    return new GetScenariosUseCase(clientRepository, scenarioRepository, unitHierarchyProvider);
+  }
+
+  @Bean
+  public UpdateScenarioUseCase updateScenarioUseCase(
+      ScenarioRepositoryImpl scenarioRepository, EventPublisher eventPublisher, Decider decider) {
+    return new UpdateScenarioUseCase(scenarioRepository, eventPublisher, decider);
+  }
+
+  @Bean
+  public CreateIncidentUseCase createIncidentUseCase(
+      UnitRepositoryImpl unitRepository,
+      IncidentRepositoryImpl incidentRepository,
+      DesignatorService designatorService,
+      Decider decider) {
+    return new CreateIncidentUseCase(
+        unitRepository, incidentRepository, designatorService, decider);
+  }
+
+  @Bean
+  public GetIncidentUseCase getIncidentUseCase(IncidentRepositoryImpl incidentRepository) {
+    return new GetIncidentUseCase(incidentRepository);
+  }
+
+  @Bean
+  public GetIncidentsUseCase getIncidentsUseCase(
+      ClientRepositoryImpl clientRepository,
+      IncidentRepositoryImpl incidentRepository,
+      UnitHierarchyProvider unitHierarchyProvider) {
+    return new GetIncidentsUseCase(clientRepository, incidentRepository, unitHierarchyProvider);
+  }
+
+  @Bean
+  public UpdateIncidentUseCase updateIncidentUseCase(
+      IncidentRepositoryImpl incidentRepository, Decider decider) {
+    return new UpdateIncidentUseCase(incidentRepository, decider);
+  }
+
+  @Bean
+  public CreateProcessUseCase createProcessUseCase(
+      UnitRepositoryImpl unitRepository,
+      ProcessRepositoryImpl processRepository,
+      DesignatorService designatorService,
+      EventPublisher eventPublisher,
+      Decider decider) {
+    return new CreateProcessUseCase(
+        unitRepository, processRepository, designatorService, eventPublisher, decider);
+  }
+
+  @Bean
+  public CreateProcessRiskUseCase createProcessRiskUseCase(
+      RepositoryProvider repositoryProvider,
+      DesignatorService designatorService,
+      EventPublisher eventPublisher,
+      ScopeProvider scopeProvider) {
+    return new CreateProcessRiskUseCase(
+        repositoryProvider, designatorService, eventPublisher, scopeProvider);
+  }
+
+  @Bean
+  public GetProcessUseCase getProcessUseCase(ProcessRepositoryImpl processRepository) {
+    return new GetProcessUseCase(processRepository);
+  }
+
+  @Bean
+  public GetProcessRiskUseCase getProcessRiskUseCase(RepositoryProvider repositoryProvider) {
+    return new GetProcessRiskUseCase(repositoryProvider);
+  }
+
+  @Bean
+  public GetProcessRisksUseCase getProcessRisksUseCase(
+      RepositoryProvider repositoryProvider, ProcessRepository processRepository) {
+    return new GetProcessRisksUseCase(repositoryProvider, processRepository);
+  }
+
+  @Bean
+  public UpdateProcessRiskUseCase updateProcessRiskUseCase(
+      RepositoryProvider repositoryProvider,
+      EventPublisher eventPublisher,
+      ScopeProvider scopeProvider) {
+    return new UpdateProcessRiskUseCase(repositoryProvider, eventPublisher, scopeProvider);
+  }
+
+  @Bean
+  public UpdateProcessUseCase putProcessUseCase(
+      ProcessRepositoryImpl processRepository,
+      EventPublisher eventPublisher,
+      ScopeProvider scopeProvider,
+      Decider decider) {
+    return new UpdateProcessUseCase(processRepository, eventPublisher, scopeProvider, decider);
+  }
+
+  @Bean
+  public GetUnitUseCase getUnitUseCase(UnitRepositoryImpl repository) {
+    return new GetUnitUseCase(repository);
+  }
+
+  @Bean
+  public GetUnitsUseCase getUnitsUseCase(
+      ClientRepository repository, UnitRepositoryImpl unitRepository) {
+    return new GetUnitsUseCase(repository, unitRepository);
+  }
+
+  @Bean
+  public GetProcessesUseCase getProcessesUseCase(
+      ClientRepository clientRepository,
+      ProcessRepository processRepository,
+      UnitHierarchyProvider unitHierarchyProvider) {
+    return new GetProcessesUseCase(clientRepository, processRepository, unitHierarchyProvider);
+  }
+
+  @Bean
+  public UpdateUnitUseCase getPutUnitUseCase(UnitRepositoryImpl repository) {
+    return new UpdateUnitUseCase(repository);
+  }
+
+  @Bean
+  public CreateUnitUseCase getCreateUnitUseCase(
+      ClientRepositoryImpl clientRepository,
+      UnitRepositoryImpl unitRepository,
+      DefaultDomainCreator defaultDomainCreator) {
+    return new CreateUnitUseCase(
+        clientRepository, unitRepository, getEntityFactory(), defaultDomainCreator);
+  }
+
+  @Bean
+  public DeleteUnitUseCase getDeleteUnitUseCase(
+      ClientRepositoryImpl clientRepository,
+      UnitRepositoryImpl unitRepository,
+      RepositoryProvider repositoryProvider) {
+    return new DeleteUnitUseCase(clientRepository, unitRepository, repositoryProvider);
+  }
+
+  @Bean
+  public CreatePersonUseCase createPersonUseCase(
+      UnitRepositoryImpl unitRepository,
+      PersonRepositoryImpl personRepository,
+      DesignatorService designatorService,
+      Decider decider) {
+    return new CreatePersonUseCase(unitRepository, personRepository, designatorService, decider);
+  }
+
+  @Bean
+  public GetPersonUseCase getPersonUseCase(PersonRepositoryImpl personRepository) {
+    return new GetPersonUseCase(personRepository);
+  }
+
+  @Bean
+  public GetPersonsUseCase getPersonsUseCase(
+      ClientRepositoryImpl clientRepository,
+      PersonRepositoryImpl personRepository,
+      UnitHierarchyProvider unitHierarchyProvider) {
+    return new GetPersonsUseCase(clientRepository, personRepository, unitHierarchyProvider);
+  }
+
+  @Bean
+  public UpdatePersonUseCase updatePersonUseCase(
+      PersonRepositoryImpl personRepository, Decider decider) {
+    return new UpdatePersonUseCase(personRepository, decider);
+  }
+
+  @Bean
+  public CreateScopeUseCase createScopeUseCase(
+      UnitRepositoryImpl unitRepository,
+      ScopeRepositoryImpl scopeRepository,
+      DesignatorService designatorService,
+      Decider decider) {
+    return new CreateScopeUseCase(unitRepository, scopeRepository, designatorService, decider);
+  }
+
+  @Bean
+  public GetScopeUseCase getScopeUseCase(ScopeRepositoryImpl scopeRepository) {
+    return new GetScopeUseCase(scopeRepository);
+  }
+
+  @Bean
+  public GetScopesUseCase getScopesUseCase(
+      ClientRepositoryImpl clientRepository,
+      ScopeRepositoryImpl scopeRepository,
+      UnitHierarchyProvider unitHierarchyProvider) {
+    return new GetScopesUseCase(clientRepository, scopeRepository, unitHierarchyProvider);
+  }
+
+  @Bean
+  public UpdateScopeUseCase updateScopeUseCase(
+      ScopeRepositoryImpl scopeRepository, Decider decider) {
+    return new UpdateScopeUseCase(scopeRepository, decider);
+  }
+
+  @Bean
+  public DeleteElementUseCase deleteElementUseCase(
+      RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {
+    return new DeleteElementUseCase(repositoryProvider, eventPublisher);
+  }
+
+  @Bean
+  public DeleteRiskUseCase deleteRiskUseCase(
+      RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {
+    return new DeleteRiskUseCase(repositoryProvider, eventPublisher);
+  }
+
+  @Bean
+  public SchemaExtender schemaExtender() {
+    return new SchemaExtender();
+  }
+
+  @Bean
+  public EntitySchemaGenerator entitySchemaGenerator(SchemaExtender schemaExtender) {
+    return new EntitySchemaGenerator(schemaExtender);
+  }
+
+  @Bean
+  public EntitySchemaService getSchemaService(EntitySchemaGenerator generateEntitytSchema) {
+    return new EntitySchemaServiceImpl(generateEntitytSchema);
+  }
+
+  @Bean
+  public EntityFactory getEntityFactory() {
+    return new EntityDataFactory();
+  }
+
+  @Bean
+  public IdentifiableFactory identifiableFactory() {
+    return new IdentifiableDataFactory();
+  }
+
+  @Bean
+  public UnitHierarchyProvider unitHierarchyProvider(UnitRepository unitRepository) {
+    return new UnitHierarchyProvider(unitRepository);
+  }
+
+  @Bean
+  public ScopeProvider scopeProvider(
+      AssetRepository assetRepository,
+      ControlRepository controlRepository,
+      ProcessRepository processRepository,
+      ScopeRepository scopeRepository) {
+    return new ScopeProvider(
+        assetRepository, controlRepository, processRepository, scopeRepository);
+  }
+
+  @Bean
+  public DomainAssociationTransformer domainAssociationTransformer() {
+    return new DomainAssociationTransformer();
+  }
+
+  @Bean
+  public GetAssetRiskUseCase getAssetRiskUseCase(RepositoryProvider repositoryProvider) {
+    return new GetAssetRiskUseCase(repositoryProvider);
+  }
+
+  @Bean
+  public GetAssetRisksUseCase getAssetRisksUseCase(RepositoryProvider repositoryProvider) {
+    return new GetAssetRisksUseCase(repositoryProvider);
+  }
+
+  @Bean
+  public CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase(
+      DomainTemplateService domainTemplateService,
+      DomainRepository domainRepository,
+      DomainTemplateRepository domainTemplateRepository) {
+    return new CreateDomainTemplateFromDomainUseCase(
+        domainTemplateService, domainRepository, domainTemplateRepository);
+  }
+
+  @Bean
+  public GetDomainUseCase getDomainUseCase(DomainRepository domainRepository) {
+    return new GetDomainUseCase(domainRepository);
+  }
+
+  @Bean
+  public GetDomainsUseCase getDomainsUseCase() {
+    return new GetDomainsUseCase();
+  }
+
+  @Bean
+  public ExportDomainUseCase exportDomainUseCase(
+      DomainRepository domainRepository, DomainTemplateService domainTemplateService) {
+    return new ExportDomainUseCase(domainRepository, domainTemplateService);
+  }
+
+  @Bean
+  public GetCatalogUseCase getCatalogUseCase(CatalogRepository catalogRepository) {
+    return new GetCatalogUseCase(catalogRepository);
+  }
+
+  @Bean
+  public GetCatalogsUseCase getCatalogsUseCase() {
+    return new GetCatalogsUseCase();
+  }
+
+  @Bean
+  public GetCatalogItemUseCase getCatalogItemUseCase() {
+    return new GetCatalogItemUseCase();
+  }
+
+  @Bean
+  public GetCatalogItemsUseCase getCatalogItemsUseCase() {
+    return new GetCatalogItemsUseCase();
+  }
+
+  @Bean
+  public StoredEventRepository storedEventRepository(
+      StoredEventDataRepository storedEventDataRepository) {
+    return new StoredEventRepositoryImpl(storedEventDataRepository);
+  }
+
+  @Bean
+  public AuthAwareImpl authAwareImpl() {
+    return new AuthAwareImpl();
+  }
+
+  @Bean
+  public EntityToDtoTransformer entityToDtoTransformer(
+      ReferenceAssembler referenceAssembler,
+      DomainAssociationTransformer domainAssociationTransformer) {
+    return new EntityToDtoTransformer(referenceAssembler, domainAssociationTransformer);
+  }
+
+  @Bean
+  public DtoToEntityTransformer dtoToEntityTransformer(
+      EntityFactory entityFactory,
+      IdentifiableFactory identifiableFactory,
+      EntitySchemaService entitySchemaService,
+      DomainAssociationTransformer domainAssociationTransformer) {
+    return new DtoToEntityTransformer(
+        entityFactory, identifiableFactory, domainAssociationTransformer);
+  }
+
+  @Primary
+  @Bean(name = "applicationEventMulticaster")
+  public ApplicationEventMulticaster simpleApplicationEventMulticaster() {
+    SimpleApplicationEventMulticaster eventMulticaster = new SimpleApplicationEventMulticaster();
+    eventMulticaster.setTaskExecutor(new SyncTaskExecutor());
+    return eventMulticaster;
+  }
+
+  @Bean
+  public CurrentUserProvider currentUserProvider(AuditorAware<String> auditorAware) {
+    return new CurrentUserProviderImpl(auditorAware);
+  }
+
+  @Bean
+  public DesignatorService designatorService(
+      DesignatorSequenceRepository designatorSequenceRepository) {
+    return new DesignatorService(designatorSequenceRepository);
+  }
+
+  @Bean
+  public MessageConverter jsonMessageConverter() {
+    ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
+    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    return new Jackson2JsonMessageConverter(mapper);
+  }
+
+  @Bean
+  public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
+    RabbitTemplate template = new RabbitTemplate(connectionFactory);
+    template.setMessageConverter(jsonMessageConverter());
+    template.setChannelTransacted(false);
+    template.setMandatory(true);
+    return template;
+  }
+
+  @Bean
+  public DomainTemplateServiceImpl domainTemplateService(
+      DomainTemplateRepository domainTemplateRepository,
+      EntityFactory factory,
+      IdentifiableFactory identifiableFactory,
+      DomainTemplateResource domainTemplateResource,
+      DomainAssociationTransformer domainAssociationTransformer,
+      CatalogItemPrepareStrategy prepareStrategy,
+      DomainTemplateIdGenerator domainTemplateIdGenerator) {
+    return new DomainTemplateServiceImpl(
+        domainTemplateRepository,
+        factory,
+        domainTemplateResource.getResources(),
+        domainAssociationTransformer,
+        identifiableFactory,
+        prepareStrategy,
+        domainTemplateIdGenerator);
+  }
+
+  @Bean
+  public CatalogItemService catalogItemService(
+      EntityToDtoTransformer dtoTransformer,
+      EntityFactory factory,
+      DomainAssociationTransformer domainAssociationTransformer,
+      CatalogItemPrepareStrategy prepareStrategy,
+      IdentifiableFactory identifiableFactory) {
+    return new CatalogItemServiceImpl(
+        dtoTransformer,
+        factory,
+        identifiableFactory,
+        domainAssociationTransformer,
+        prepareStrategy);
+  }
+
+  @Bean
+  public CatalogItemPrepareStrategy catalogItemPrepareStrategy() {
+    return new CatalogItemPrepareStrategy();
+  }
+
+  @Bean
+  public TypeDefinitionProvider getTypeDefinitionProvider(ReferenceAssembler referenceAssembler) {
+    return new TypeDefinitionProvider(referenceAssembler);
+  }
+
+  @Bean
+  public GetIncarnationDescriptionUseCase getIncarnationDescriptionUseCase(
+      UnitRepository unitRepository,
+      DomainRepository domainRepository,
+      CatalogItemRepository catalogItemRepository,
+      RepositoryProvider repositoryProvider) {
+    return new GetIncarnationDescriptionUseCase(
+        unitRepository, catalogItemRepository, domainRepository, repositoryProvider);
+  }
+
+  @Bean
+  GetClientUseCase getClientUseCase(ClientRepository clientRepository) {
+    return new GetClientUseCase(clientRepository);
+  }
+
+  @Bean
+  public DeleteClientUseCase deleteClientUseCase(
+      AccountProvider accountProvider,
+      ClientRepository clientRepository,
+      UnitRepository unitRepository,
+      DeleteUnitUseCase deleteUnitUseCase) {
+    return new DeleteClientUseCase(
+        accountProvider, clientRepository, deleteUnitUseCase, unitRepository);
+  }
+
+  @Bean
+  public GetUnitDumpUseCase getUnitDumpUseCase(
+      AccountProvider accountProvider,
+      RepositoryProvider repositoryProvider,
+      UnitRepository unitRepository) {
+    return new GetUnitDumpUseCase(accountProvider, repositoryProvider, unitRepository);
+  }
+
+  @Bean
+  public EntityValidator entityValidator(AccountProvider accountProvider) {
+    return new EntityValidator(accountProvider);
+  }
+
+  @Bean
+  public ApplyIncarnationDescriptionUseCase applyIncarnationDescriptionUseCase(
+      UnitRepository unitRepository,
+      CatalogItemRepository catalogItemRepository,
+      DomainRepository domainRepository,
+      RepositoryProvider repositoryProvider,
+      DesignatorService designatorService,
+      CatalogItemService catalogItemService,
+      EntityFactory factory) {
+    return new ApplyIncarnationDescriptionUseCase(
+        unitRepository,
+        catalogItemRepository,
+        domainRepository,
+        repositoryProvider,
+        designatorService,
+        catalogItemService,
+        factory);
+  }
+
+  @Bean
+  public GetScopeRiskUseCase getScopeRiskUseCase(RepositoryProvider repositoryProvider) {
+    return new GetScopeRiskUseCase(repositoryProvider);
+  }
+
+  @Bean
+  public GetScopeRisksUseCase getScopeRisksUseCase(RepositoryProvider repositoryProvider) {
+    return new GetScopeRisksUseCase(repositoryProvider);
+  }
+
+  @Bean
+  public CreateScopeRiskUseCase createScopeRiskUseCase(
+      RepositoryProvider repositoryProvider,
+      DesignatorService designatorService,
+      EventPublisher eventPublisher) {
+    return new CreateScopeRiskUseCase(repositoryProvider, designatorService, eventPublisher);
+  }
+
+  @Bean
+  public UpdateScopeRiskUseCase updateScopeRiskUseCase(
+      RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {
+    return new UpdateScopeRiskUseCase(repositoryProvider, eventPublisher);
+  }
+
+  @Bean
+  public EtagService etagService(RepositoryProvider repositoryProvider) {
+    return new EtagService(repositoryProvider);
+  }
+
+  @Bean
+  public ObjectSchemaParser objectSchemaParser(EntityFactory entityFactory) {
+    return new ObjectSchemaParser(entityFactory);
+  }
+
+  @Bean
+  public UpdateElementTypeDefinitionUseCase getUpdateElementTypeDefinitionUseCase(
+      DomainRepository domainRepository) {
+    return new UpdateElementTypeDefinitionUseCase(domainRepository);
+  }
+
+  @Bean
+  public CreateDomainUseCase getCreateDomainUseCase(
+      AccountProvider accountProvider,
+      ClientRepository clientRepository,
+      DomainTemplateService domainTemplateService) {
+    return new CreateDomainUseCase(accountProvider, clientRepository, domainTemplateService);
+  }
+
+  @Bean
+  public MessageCreator messageCreator(
+      StoredEventRepository storedEventRepository,
+      ObjectMapper objectMapper,
+      ReferenceAssembler referenceAssembler,
+      EntityToDtoTransformer entityToDtoTransformer) {
+    return new MessageCreatorImpl(
+        storedEventRepository, objectMapper, referenceAssembler, entityToDtoTransformer);
+  }
+
+  @Bean
+  public IncomingMessageHandler incomingMessageHandler(
+      RepositoryProvider repositoryProvider,
+      ElementMigrationService elementMigrationService,
+      RiskService riskService) {
+    return new IncomingMessageHandler(repositoryProvider, elementMigrationService);
+  }
+
+  @Bean
+  public ElementMigrationService elementMigrationService() {
+    return new ElementMigrationService();
+  }
+
+  @Bean
+  public UpdateAllClientDomainsUseCase getUpdateAllClientDomainsUseCase(
+      DomainRepository domainRepository,
+      RepositoryProvider repositoryProvider,
+      UnitRepository unitRepository,
+      ElementMigrationService elementMigrationService) {
+    return new UpdateAllClientDomainsUseCase(
+        domainRepository, repositoryProvider, unitRepository, elementMigrationService);
+  }
+
+  @Bean
+  public DomainTemplateIdGenerator domainTemplateIdGenerator() {
+    return new DomainTemplateIdGeneratorImpl();
+  }
+
+  @Bean
+  public DefaultDomainCreator defaultDomainTemplateProvider(
+      @Value("${veo.default.domaintemplate.names}") String[] defaultDomainTemplateIds,
+      DomainTemplateService domainService,
+      DomainTemplateRepository domainTemplateRepository) {
+    return new DefaultDomainCreator(
+        Arrays.stream(defaultDomainTemplateIds).collect(Collectors.toSet()),
+        domainService,
+        domainTemplateRepository);
+  }
+
+  @Bean
+  public CreateDomainTemplateUseCase createDomainTemplateUseCase(
+      DomainTemplateRepository domainTemplateRepository,
+      DomainTemplateIdGenerator domainTemplateIdGenerator) {
+    return new CreateDomainTemplateUseCase(domainTemplateRepository, domainTemplateIdGenerator);
+  }
+
+  @Bean
+  public RiskService riskService(ProcessRepository processRepository) {
+    return new RiskService(processRepository);
+  }
+
+  @Bean
+  public Decider decider() {
+    return new Decider();
+  }
+
+  @Bean
+  public SchemaReplacer schemaReplacer() {
+    return new SchemaReplacer();
+  }
+
+  @Bean
+  public EvaluateDecisionUseCase evaluateDecisionUseCase(
+      DomainRepository domainRepository, RepositoryProvider repositoryProvider) {
+    return new EvaluateDecisionUseCase(domainRepository, repositoryProvider);
+  }
 }

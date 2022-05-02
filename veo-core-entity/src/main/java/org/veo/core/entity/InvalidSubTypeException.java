@@ -17,15 +17,13 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-/**
- * Thrown when assigning an invalid sub type to an entity.
- */
+/** Thrown when assigning an invalid sub type to an entity. */
 public class InvalidSubTypeException extends DomainException {
-    public InvalidSubTypeException(String message) {
-        super(message);
-    }
+  public InvalidSubTypeException(String message) {
+    super(message);
+  }
 
-    public InvalidSubTypeException(String message, Exception inner) {
-        super(message, inner);
-    }
+  public InvalidSubTypeException(String message, Exception inner) {
+    super(message, inner);
+  }
 }

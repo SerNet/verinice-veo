@@ -37,21 +37,21 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public abstract class AbstractCatalogItemDto extends AbstractVersionedSelfReferencingDto
-        implements ModelDto {
-    @NotNull(message = "A catalog must be present.")
-    @Schema(implementation = IdRefCatalogItemCatalog.class)
-    private IdRef<Catalog> catalog;
-    @Schema(description = "The tailoring references of this catalog item.")
-    private Set<AbstractTailoringReferenceDto> tailoringReferences = new HashSet<>();
+    implements ModelDto {
+  @NotNull(message = "A catalog must be present.")
+  @Schema(implementation = IdRefCatalogItemCatalog.class)
+  private IdRef<Catalog> catalog;
 
-    @ToString.Include
-    @Schema(description = "The namespace for the catalogitem.", example = "A1.B2")
-    @Size(max = CatalogItem.NAMESPACE_MAX_LENGTH)
-    private String namespace;
+  @Schema(description = "The tailoring references of this catalog item.")
+  private Set<AbstractTailoringReferenceDto> tailoringReferences = new HashSet<>();
 
-    @Override
-    public Class<? extends Identifiable> getModelInterface() {
-        return CatalogItem.class;
-    }
+  @ToString.Include
+  @Schema(description = "The namespace for the catalogitem.", example = "A1.B2")
+  @Size(max = CatalogItem.NAMESPACE_MAX_LENGTH)
+  private String namespace;
 
+  @Override
+  public Class<? extends Identifiable> getModelInterface() {
+    return CatalogItem.class;
+  }
 }

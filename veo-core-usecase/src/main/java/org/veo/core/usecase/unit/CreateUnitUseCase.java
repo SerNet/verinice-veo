@@ -39,90 +39,83 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Create a new unit for a client. If a parentId is given, the unit will be
- * created as a subunit of an existing unit.
+ * Create a new unit for a client. If a parentId is given, the unit will be created as a subunit of
+ * an existing unit.
  *
- * If no client exists for the given client-ID it will be created. Users of this
- * class must ensure that a clientID belongs to a valid client - i.e. this class
- * is NOT the authoritative source to determine if a clientID is valid or not.
+ * <p>If no client exists for the given client-ID it will be created. Users of this class must
+ * ensure that a clientID belongs to a valid client - i.e. this class is NOT the authoritative
+ * source to determine if a clientID is valid or not.
  *
- * Instead, this task should be carried out by an authentication service which
- * provides a valid clientID to this use case.
+ * <p>Instead, this task should be carried out by an authentication service which provides a valid
+ * clientID to this use case.
  *
  * @author akoderman
  */
 @RequiredArgsConstructor
 @Slf4j
 public class CreateUnitUseCase
-        implements TransactionalUseCase<CreateUnitUseCase.InputData, CreateUnitUseCase.OutputData> {
+    implements TransactionalUseCase<CreateUnitUseCase.InputData, CreateUnitUseCase.OutputData> {
 
-    private final ClientRepository clientRepository;
-    private final UnitRepository unitRepository;
-    private final EntityFactory entityFactory;
-    private final DefaultDomainCreator defaultDomainCreator;
+  private final ClientRepository clientRepository;
+  private final UnitRepository unitRepository;
+  private final EntityFactory entityFactory;
+  private final DefaultDomainCreator defaultDomainCreator;
 
-    @Override
-    public OutputData execute(InputData input) {
-        Client client = clientRepository.findById(input.getClientId())
-                                        .orElseGet(() -> createNewClient(input));
+  @Override
+  public OutputData execute(InputData input) {
+    Client client =
+        clientRepository.findById(input.getClientId()).orElseGet(() -> createNewClient(input));
 
-        // Note: the new client will get the name of the new unit by default.
-        // If we want to get a client name we would have to do a REST call to
-        // get it
-        // from the auth server. Alternatively, the auth server could publish a
-        // name
-        // change event
-        // which we listen to. This would require messaging middleware.
+    // Note: the new client will get the name of the new unit by default.
+    // If we want to get a client name we would have to do a REST call to
+    // get it
+    // from the auth server. Alternatively, the auth server could publish a
+    // name
+    // change event
+    // which we listen to. This would require messaging middleware.
 
-        Unit newUnit;
-        if (input.getParentUnitId()
-                 .isEmpty()) {
-            newUnit = entityFactory.createUnit(input.getNameableInput()
-                                                    .getName(),
-                                               null);
-        } else {
-            Unit parentUnit = unitRepository.findById(input.getParentUnitId()
-                                                           .get())
-                                            .orElseThrow(() -> new NotFoundException(
-                                                    "Parent unit %s was not found",
-                                                    input.getParentUnitId()
-                                                         .get()));
-            newUnit = entityFactory.createUnit(input.getNameableInput()
-                                                    .getName(),
-                                               parentUnit);
-        }
-        newUnit.setAbbreviation(input.getNameableInput()
-                                     .getAbbreviation());
-        newUnit.setDescription(input.getNameableInput()
-                                    .getDescription());
-        newUnit.setClient(client);
-        newUnit.addToDomains(client.getDomains());
-        Unit save = unitRepository.save(newUnit);
-        return new OutputData(save);
+    Unit newUnit;
+    if (input.getParentUnitId().isEmpty()) {
+      newUnit = entityFactory.createUnit(input.getNameableInput().getName(), null);
+    } else {
+      Unit parentUnit =
+          unitRepository
+              .findById(input.getParentUnitId().get())
+              .orElseThrow(
+                  () ->
+                      new NotFoundException(
+                          "Parent unit %s was not found", input.getParentUnitId().get()));
+      newUnit = entityFactory.createUnit(input.getNameableInput().getName(), parentUnit);
     }
+    newUnit.setAbbreviation(input.getNameableInput().getAbbreviation());
+    newUnit.setDescription(input.getNameableInput().getDescription());
+    newUnit.setClient(client);
+    newUnit.addToDomains(client.getDomains());
+    Unit save = unitRepository.save(newUnit);
+    return new OutputData(save);
+  }
 
-    private Client createNewClient(InputData input) {
-        // By default, the client is created with the unit's name, description,
-        // and abbreviation:
-        Client client = entityFactory.createClient(input.getClientId(), input.getNameableInput()
-                                                                             .getName());
-        defaultDomainCreator.addDefaultDomains(client);
-        Client savedClient = clientRepository.save(client);
-        return savedClient;
-    }
+  private Client createNewClient(InputData input) {
+    // By default, the client is created with the unit's name, description,
+    // and abbreviation:
+    Client client =
+        entityFactory.createClient(input.getClientId(), input.getNameableInput().getName());
+    defaultDomainCreator.addDefaultDomains(client);
+    Client savedClient = clientRepository.save(client);
+    return savedClient;
+  }
 
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        NameableInputData nameableInput;
-        Key<UUID> clientId;
-        Optional<Key<UUID>> parentUnitId;
-    }
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
+    NameableInputData nameableInput;
+    Key<UUID> clientId;
+    Optional<Key<UUID>> parentUnitId;
+  }
 
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        Unit unit;
-    }
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid Unit unit;
+  }
 }

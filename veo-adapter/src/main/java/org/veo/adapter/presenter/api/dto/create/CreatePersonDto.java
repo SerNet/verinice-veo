@@ -24,6 +24,4 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public final class CreatePersonDto extends AbstractPersonDto {
-
-}
+public final class CreatePersonDto extends AbstractPersonDto {}

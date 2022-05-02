@@ -24,12 +24,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * This event should be triggered by the persistence layer when an
- * {@link ElementTypeDefinition} is updated.
+ * This event should be triggered by the persistence layer when an {@link ElementTypeDefinition} is
+ * updated.
  */
 @Getter
 @RequiredArgsConstructor
 public class ElementTypeDefinitionUpdateEvent {
-    private final ElementTypeDefinition elementTypeDefinition;
-    private final Domain domain;
+  private final ElementTypeDefinition elementTypeDefinition;
+  private final Domain domain;
 }

@@ -20,15 +20,14 @@ package org.veo.core.usecase.common;
 import org.veo.core.entity.DomainException;
 
 /**
- * Runtime exception thrown when an object could not be created and saved into
- * persistent storage.
+ * Runtime exception thrown when an object could not be created and saved into persistent storage.
  *
- * This exception must be caught by the controller and an appropriate status
- * code and message must be returned to the caller.
+ * <p>This exception must be caught by the controller and an appropriate status code and message
+ * must be returned to the caller.
  */
 public class CreationFailedException extends DomainException {
 
-    public CreationFailedException(String messageTemplate, Object... arguments) {
-        super(String.format(messageTemplate, arguments));
-    }
+  public CreationFailedException(String messageTemplate, Object... arguments) {
+    super(String.format(messageTemplate, arguments));
+  }
 }

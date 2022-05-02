@@ -25,30 +25,29 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Matches if the value is a greater number than an injectable comparison value.
- * Only supports int, long & decimal.
+ * Matches if the value is a greater number than an injectable comparison value. Only supports int,
+ * long & decimal.
  */
 @Data
 @RequiredArgsConstructor
 public class GreaterThanMatcher implements InputMatcher {
-    @NotNull
-    private final BigDecimal comparisonValue;
+  @NotNull private final BigDecimal comparisonValue;
 
-    @Override
-    public boolean matches(Object value) {
-        if (value == null) {
-            return false;
-        }
-        if (value instanceof BigDecimal) {
-            return comparisonValue.compareTo((BigDecimal) value) < 0;
-        }
-        if (value instanceof Integer) {
-            return comparisonValue.compareTo(new BigDecimal((Integer) value)) < 0;
-        }
-        if (value instanceof Long) {
-            return comparisonValue.compareTo(new BigDecimal((Long) value)) < 0;
-        }
-        throw new IllegalArgumentException("Cannot compare BigDecimal to " + value.getClass()
-                                                                                  .getSimpleName());
+  @Override
+  public boolean matches(Object value) {
+    if (value == null) {
+      return false;
     }
+    if (value instanceof BigDecimal) {
+      return comparisonValue.compareTo((BigDecimal) value) < 0;
+    }
+    if (value instanceof Integer) {
+      return comparisonValue.compareTo(new BigDecimal((Integer) value)) < 0;
+    }
+    if (value instanceof Long) {
+      return comparisonValue.compareTo(new BigDecimal((Long) value)) < 0;
+    }
+    throw new IllegalArgumentException(
+        "Cannot compare BigDecimal to " + value.getClass().getSimpleName());
+  }
 }

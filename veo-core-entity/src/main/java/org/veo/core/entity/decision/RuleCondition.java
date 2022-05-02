@@ -24,16 +24,16 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Configurable condition for a {@link Rule} in a {@link Decision} which checks
- * elements using an injectable input provider and matcher.
+ * Configurable condition for a {@link Rule} in a {@link Decision} which checks elements using an
+ * injectable input provider and matcher.
  */
 @Data
 @RequiredArgsConstructor
 public class RuleCondition {
-    private final InputProvider inputProvider;
-    private final InputMatcher inputMatcher;
+  private final InputProvider inputProvider;
+  private final InputMatcher inputMatcher;
 
-    public boolean matches(Element element, Domain domain) {
-        return inputMatcher.matches(inputProvider.getValue(element, domain));
-    }
+  public boolean matches(Element element, Domain domain) {
+    return inputMatcher.matches(inputProvider.getValue(element, domain));
+  }
 }

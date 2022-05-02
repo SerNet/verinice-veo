@@ -19,5 +19,4 @@ package org.veo.persistence.access.jpa;
 
 import org.veo.persistence.entity.jpa.IncidentData;
 
-public interface IncidentDataRepository extends CompositeEntityDataRepository<IncidentData> {
-}
+public interface IncidentDataRepository extends CompositeEntityDataRepository<IncidentData> {}

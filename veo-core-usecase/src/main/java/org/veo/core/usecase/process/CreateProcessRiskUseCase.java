@@ -28,22 +28,25 @@ import org.veo.core.usecase.base.ScopeProvider;
 import org.veo.core.usecase.risk.CreateRiskUseCase;
 
 public class CreateProcessRiskUseCase extends CreateRiskUseCase<Process, ProcessRisk> {
-    private final ScopeProvider scopeProvider;
+  private final ScopeProvider scopeProvider;
 
-    public CreateProcessRiskUseCase(RepositoryProvider repositoryProvider,
-            DesignatorService designatorService, EventPublisher eventPublisher,
-            ScopeProvider scopeProvider) {
-        super(Process.class, repositoryProvider, designatorService, eventPublisher);
-        this.scopeProvider = scopeProvider;
-    }
+  public CreateProcessRiskUseCase(
+      RepositoryProvider repositoryProvider,
+      DesignatorService designatorService,
+      EventPublisher eventPublisher,
+      ScopeProvider scopeProvider) {
+    super(Process.class, repositoryProvider, designatorService, eventPublisher);
+    this.scopeProvider = scopeProvider;
+  }
 
-    @Override
-    protected void validateRiskDefinition(Process process, RiskDefinitionRef riskDefinitionRef,
-            Domain domain) {
-        if (!scopeProvider.canUseRiskDefinition(process, domain, riskDefinitionRef)) {
-            throw new IllegalArgumentException(
-                    String.format("Cannot define risk values for risk definition '%s' because the process %s is not within a scope that uses that risk definition",
-                                  riskDefinitionRef.getIdRef(), process.getIdAsString()));
-        }
+  @Override
+  protected void validateRiskDefinition(
+      Process process, RiskDefinitionRef riskDefinitionRef, Domain domain) {
+    if (!scopeProvider.canUseRiskDefinition(process, domain, riskDefinitionRef)) {
+      throw new IllegalArgumentException(
+          String.format(
+              "Cannot define risk values for risk definition '%s' because the process %s is not within a scope that uses that risk definition",
+              riskDefinitionRef.getIdRef(), process.getIdAsString()));
     }
+  }
 }

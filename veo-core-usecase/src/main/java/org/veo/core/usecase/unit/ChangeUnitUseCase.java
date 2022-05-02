@@ -32,107 +32,96 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Abstract superclass for all operations that change an asset. The
- * <code>update()</code> method must be overwritten to make all necessary
- * changes to the asset.
+ * Abstract superclass for all operations that change an asset. The <code>update()</code> method
+ * must be overwritten to make all necessary changes to the asset.
  */
 @Slf4j
 public abstract class ChangeUnitUseCase
-        implements TransactionalUseCase<ChangeUnitUseCase.InputData, ChangeUnitUseCase.OutputData> {
+    implements TransactionalUseCase<ChangeUnitUseCase.InputData, ChangeUnitUseCase.OutputData> {
 
-    private final UnitRepository unitRepository;
+  private final UnitRepository unitRepository;
 
-    public ChangeUnitUseCase(UnitRepository repository) {
-        this.unitRepository = repository;
+  public ChangeUnitUseCase(UnitRepository repository) {
+    this.unitRepository = repository;
+  }
+
+  /**
+   * Find a persisted unit object and reinstantiate it. Throws a domain exception if the requested
+   * unit object was not found in the repository.
+   */
+  @Override
+  public OutputData execute(InputData input) {
+    log.info("Updating unit with id {}", input.getChangedUnit().getId().uuidValue());
+
+    var storedUnit =
+        unitRepository
+            .findById(input.getChangedUnit().getId())
+            .orElseThrow(
+                () ->
+                    new NotFoundException(
+                        "Unit %s was not found.", input.getChangedUnit().getId().uuidValue()));
+    checkSameClient(storedUnit, input);
+    checkETag(storedUnit, input);
+    var updatedUnit = update(storedUnit, input);
+    updatedUnit.version(input.username, storedUnit);
+    return output(save(updatedUnit, input));
+  }
+
+  protected abstract Unit update(Unit storedUnit, InputData input);
+
+  protected Unit save(Unit unit, InputData input) {
+    // Notice: by changing the context here it would be possible to change the view
+    // of the entity that is being
+    // returned after the save.
+    // i.e. to exclude all references and collections:
+    // "dataToEntityContext.partialUnit();"
+    unit.setClient(input.getAuthenticatedClient());
+    return this.unitRepository.save(unit);
+  }
+
+  private OutputData output(Unit unit) {
+    return new OutputData(unit);
+  }
+
+  /**
+   * Without this check, it would be possible to overwrite objects from other clients with our own
+   * clientID, thereby hijacking these objects!
+   *
+   * @throws ClientBoundaryViolationException, if the client in the input and in the stored unit is
+   *     not the same as in the authentication object
+   */
+  private void checkSameClient(Unit storedUnit, InputData input) {
+    log.info(
+        "Comparing clients {} and {}",
+        input.getAuthenticatedClient().getId().uuidValue(),
+        storedUnit.getClient().getId().uuidValue());
+    storedUnit.checkSameClient(input.getAuthenticatedClient());
+    if (input.getChangedUnit().getClient() != null) {
+      input.getChangedUnit().checkSameClient(input.getAuthenticatedClient());
     }
+  }
 
-    /**
-     * Find a persisted unit object and reinstantiate it. Throws a domain exception
-     * if the requested unit object was not found in the repository.
-     */
-    @Override
-    public OutputData execute(InputData input) {
-        log.info("Updating unit with id {}", input.getChangedUnit()
-                                                  .getId()
-                                                  .uuidValue());
-
-        var storedUnit = unitRepository.findById(input.getChangedUnit()
-                                                      .getId())
-                                       .orElseThrow(() -> new NotFoundException(
-                                               "Unit %s was not found.", input.getChangedUnit()
-                                                                              .getId()
-                                                                              .uuidValue()));
-        checkSameClient(storedUnit, input);
-        checkETag(storedUnit, input);
-        var updatedUnit = update(storedUnit, input);
-        updatedUnit.version(input.username, storedUnit);
-        return output(save(updatedUnit, input));
+  private void checkETag(Unit storedUnit, InputData input) {
+    if (!ETag.matches(storedUnit.getId().uuidValue(), storedUnit.getVersion(), input.getETag())) {
+      throw new ETagMismatchException(
+          String.format(
+              "The eTag does not match for the unit with the ID %s",
+              storedUnit.getId().uuidValue()));
     }
+  }
 
-    protected abstract Unit update(Unit storedUnit, InputData input);
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
+    Unit changedUnit;
+    Client authenticatedClient;
+    String eTag;
+    String username;
+  }
 
-    protected Unit save(Unit unit, InputData input) {
-        // Notice: by changing the context here it would be possible to change the view
-        // of the entity that is being
-        // returned after the save.
-        // i.e. to exclude all references and collections:
-        // "dataToEntityContext.partialUnit();"
-        unit.setClient(input.getAuthenticatedClient());
-        return this.unitRepository.save(unit);
-    }
-
-    private OutputData output(Unit unit) {
-        return new OutputData(unit);
-    }
-
-    /**
-     * Without this check, it would be possible to overwrite objects from other
-     * clients with our own clientID, thereby hijacking these objects!
-     *
-     * @throws ClientBoundaryViolationException,
-     *             if the client in the input and in the stored unit is not the same
-     *             as in the authentication object
-     */
-    private void checkSameClient(Unit storedUnit, InputData input) {
-        log.info("Comparing clients {} and {}", input.getAuthenticatedClient()
-                                                     .getId()
-                                                     .uuidValue(),
-                 storedUnit.getClient()
-                           .getId()
-                           .uuidValue());
-        storedUnit.checkSameClient(input.getAuthenticatedClient());
-        if (input.getChangedUnit()
-                 .getClient() != null) {
-            input.getChangedUnit()
-                 .checkSameClient(input.getAuthenticatedClient());
-        }
-    }
-
-    private void checkETag(Unit storedUnit, InputData input) {
-        if (!ETag.matches(storedUnit.getId()
-                                    .uuidValue(),
-                          storedUnit.getVersion(), input.getETag())) {
-            throw new ETagMismatchException(
-                    String.format("The eTag does not match for the unit with the ID %s",
-                                  storedUnit.getId()
-                                            .uuidValue()));
-        }
-    }
-
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Unit changedUnit;
-        Client authenticatedClient;
-        String eTag;
-        String username;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        Unit unit;
-
-    }
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid Unit unit;
+  }
 }

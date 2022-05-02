@@ -32,64 +32,59 @@ import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.common.ETagMismatchException;
 
 public abstract class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-        extends AbstractRiskUseCase<T, R> {
+    extends AbstractRiskUseCase<T, R> {
 
-    private final Class<T> entityClass;
-    private final EventPublisher eventPublisher;
+  private final Class<T> entityClass;
+  private final EventPublisher eventPublisher;
 
-    public UpdateRiskUseCase(RepositoryProvider repositoryProvider, Class<T> entityClass,
-            EventPublisher eventPublisher) {
-        super(repositoryProvider);
-        this.entityClass = entityClass;
-        this.eventPublisher = eventPublisher;
+  public UpdateRiskUseCase(
+      RepositoryProvider repositoryProvider, Class<T> entityClass, EventPublisher eventPublisher) {
+    super(repositoryProvider);
+    this.entityClass = entityClass;
+    this.eventPublisher = eventPublisher;
+  }
+
+  @Transactional
+  @Override
+  public OutputData<R> execute(InputData input) {
+    // Retrieve required elements for operation:
+    var riskAffected = findEntity(entityClass, input.getRiskAffectedRef()).orElseThrow();
+
+    var scenario = findEntity(Scenario.class, input.getScenarioRef()).orElseThrow();
+
+    var domains = findEntities(Domain.class, input.getDomainRefs());
+
+    var mitigation = input.getControlRef().flatMap(id -> findEntity(Control.class, id));
+
+    var riskOwner = input.getRiskOwnerRef().flatMap(id -> findEntity(Person.class, id));
+
+    var risk = riskAffected.getRisk(input.getScenarioRef()).orElseThrow();
+
+    // Validate input:
+    checkETag(risk, input);
+    riskAffected.checkSameClient(input.getAuthenticatedClient());
+    scenario.checkSameClient(input.getAuthenticatedClient());
+    checkDomainOwnership(input.getAuthenticatedClient(), domains);
+    mitigation.ifPresent(control -> control.checkSameClient(input.getAuthenticatedClient()));
+    riskOwner.ifPresent(person -> person.checkSameClient(input.getAuthenticatedClient()));
+    validateRiskValues(input.getRiskValues(), domains, riskAffected);
+
+    // Execute requested operation:
+    R result =
+        riskAffected.updateRisk(
+            risk, domains, mitigation.orElse(null), riskOwner.orElse(null), input.getRiskValues());
+    eventPublisher.publish(new RiskComponentChangeEvent(riskAffected));
+    return new OutputData<>(result);
+  }
+
+  private void checkETag(AbstractRisk<T, R> risk, InputData input) {
+    var riskAffectedId = risk.getEntity().getId().uuidValue();
+    var scenarioId = risk.getScenario().getId().uuidValue();
+    if (!ETag.matches(riskAffectedId, scenarioId, risk.getVersion(), input.getETag())) {
+      throw new ETagMismatchException(
+          String.format(
+              "The eTag does not match for the element with the ID %s_%s",
+              riskAffectedId, scenarioId));
     }
-
-    @Transactional
-    @Override
-    public OutputData<R> execute(InputData input) {
-        // Retrieve required elements for operation:
-        var riskAffected = findEntity(entityClass, input.getRiskAffectedRef()).orElseThrow();
-
-        var scenario = findEntity(Scenario.class, input.getScenarioRef()).orElseThrow();
-
-        var domains = findEntities(Domain.class, input.getDomainRefs());
-
-        var mitigation = input.getControlRef()
-                              .flatMap(id -> findEntity(Control.class, id));
-
-        var riskOwner = input.getRiskOwnerRef()
-                             .flatMap(id -> findEntity(Person.class, id));
-
-        var risk = riskAffected.getRisk(input.getScenarioRef())
-                               .orElseThrow();
-
-        // Validate input:
-        checkETag(risk, input);
-        riskAffected.checkSameClient(input.getAuthenticatedClient());
-        scenario.checkSameClient(input.getAuthenticatedClient());
-        checkDomainOwnership(input.getAuthenticatedClient(), domains);
-        mitigation.ifPresent(control -> control.checkSameClient(input.getAuthenticatedClient()));
-        riskOwner.ifPresent(person -> person.checkSameClient(input.getAuthenticatedClient()));
-        validateRiskValues(input.getRiskValues(), domains, riskAffected);
-
-        // Execute requested operation:
-        R result = riskAffected.updateRisk(risk, domains, mitigation.orElse(null),
-                                           riskOwner.orElse(null), input.getRiskValues());
-        eventPublisher.publish(new RiskComponentChangeEvent(riskAffected));
-        return new OutputData<>(result);
-    }
-
-    private void checkETag(AbstractRisk<T, R> risk, InputData input) {
-        var riskAffectedId = risk.getEntity()
-                                 .getId()
-                                 .uuidValue();
-        var scenarioId = risk.getScenario()
-                             .getId()
-                             .uuidValue();
-        if (!ETag.matches(riskAffectedId, scenarioId, risk.getVersion(), input.getETag())) {
-            throw new ETagMismatchException(
-                    String.format("The eTag does not match for the element with the ID %s_%s",
-                                  riskAffectedId, scenarioId));
-        }
-    }
+  }
 }

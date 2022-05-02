@@ -39,22 +39,23 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class TransformDomainTemplateDto extends AbstractDomainTemplateDto
-        implements IdentifiableDto {
+    implements IdentifiableDto {
 
-    @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
-    @Schema(description = "ID must be a valid UUID string following RFC 4122. "
-            + " Offical templates should have a name base uuid defined in sec. 4.3",
-            example = "f8ed22b1-b277-56ec-a2ce-0dbd94e24824",
-            format = "uuid")
-    @ToString.Include
-    private String id;
+  @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
+  @Schema(
+      description =
+          "ID must be a valid UUID string following RFC 4122. "
+              + " Offical templates should have a name base uuid defined in sec. 4.3",
+      example = "f8ed22b1-b277-56ec-a2ce-0dbd94e24824",
+      format = "uuid")
+  @ToString.Include
+  private String id;
 
-    @JsonDeserialize(contentAs = TransformCatalogDto.class)
-    @Override
-    public void setCatalogs(Set<AbstractCatalogDto> catalogs) {
-        super.setCatalogs(catalogs);
-    }
+  @JsonDeserialize(contentAs = TransformCatalogDto.class)
+  @Override
+  public void setCatalogs(Set<AbstractCatalogDto> catalogs) {
+    super.setCatalogs(catalogs);
+  }
 
-    private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions = new HashMap<>();
-
+  private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions = new HashMap<>();
 }

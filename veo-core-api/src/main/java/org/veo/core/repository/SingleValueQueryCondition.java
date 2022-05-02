@@ -21,11 +21,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * A value to be matched against in a query. The condition is true if the tested
- * value is equal to the value in this condition.
+ * A value to be matched against in a query. The condition is true if the tested value is equal to
+ * the value in this condition.
  */
 @Data
 @AllArgsConstructor
 public class SingleValueQueryCondition<TValue> {
-    private final TValue value;
+  private final TValue value;
 }

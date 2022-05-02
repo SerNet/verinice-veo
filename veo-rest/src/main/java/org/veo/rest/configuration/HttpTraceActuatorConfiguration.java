@@ -31,9 +31,8 @@ import org.springframework.context.annotation.Profile;
 @ConditionalOnProperty(value = "veo.dev.dangerous.httptrace", havingValue = "true")
 public class HttpTraceActuatorConfiguration {
 
-    @Bean
-    public HttpTraceRepository httpTraceRepository() {
-        return new InMemoryHttpTraceRepository();
-    }
-
+  @Bean
+  public HttpTraceRepository httpTraceRepository() {
+    return new InMemoryHttpTraceRepository();
+  }
 }

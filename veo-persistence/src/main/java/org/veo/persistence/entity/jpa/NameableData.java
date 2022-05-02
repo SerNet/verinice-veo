@@ -18,15 +18,15 @@
 package org.veo.persistence.entity.jpa;
 
 public interface NameableData {
-    String getName();
+  String getName();
 
-    void setName(String aName);
+  void setName(String aName);
 
-    String getAbbreviation();
+  String getAbbreviation();
 
-    void setAbbreviation(String aAbbreviation);
+  void setAbbreviation(String aAbbreviation);
 
-    String getDescription();
+  String getDescription();
 
-    void setDescription(String aDescription);
+  void setDescription(String aDescription);
 }

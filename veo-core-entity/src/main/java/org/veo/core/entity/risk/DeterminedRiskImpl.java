@@ -36,27 +36,25 @@ import lombok.Setter;
 @Valid
 public class DeterminedRiskImpl implements DeterminedRisk {
 
-    @NonNull
-    @Setter(AccessLevel.NONE)
-    private CategoryRef category;
+  @NonNull
+  @Setter(AccessLevel.NONE)
+  private CategoryRef category;
 
-    private RiskRef inherentRisk;
+  private RiskRef inherentRisk;
 
-    private RiskRef residualRisk;
+  private RiskRef residualRisk;
 
-    @Size(max = DeterminedRisk.EXPLANATION_MAX_LENGTH)
-    private String residualRiskExplanation;
+  @Size(max = DeterminedRisk.EXPLANATION_MAX_LENGTH)
+  private String residualRiskExplanation;
 
-    /**
-     * A collection of selected risk treatment options.
-     */
-    private Set<RiskTreatmentOption> riskTreatments = new HashSet<>();
+  /** A collection of selected risk treatment options. */
+  private Set<RiskTreatmentOption> riskTreatments = new HashSet<>();
 
-    @Size(max = DeterminedRisk.EXPLANATION_MAX_LENGTH)
-    private String riskTreatmentExplanation;
+  @Size(max = DeterminedRisk.EXPLANATION_MAX_LENGTH)
+  private String riskTreatmentExplanation;
 
-    public void setRiskTreatments(Set<RiskTreatmentOption> riskTreatments) {
-        this.riskTreatments.clear();
-        this.riskTreatments.addAll(riskTreatments);
-    }
+  public void setRiskTreatments(Set<RiskTreatmentOption> riskTreatments) {
+    this.riskTreatments.clear();
+    this.riskTreatments.addAll(riskTreatments);
+  }
 }

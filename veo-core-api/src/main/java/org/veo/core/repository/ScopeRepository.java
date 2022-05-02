@@ -28,14 +28,14 @@ import org.veo.core.entity.risk.RiskDefinitionRef;
 /**
  * A repository for <code>Scope</code> entities.
  *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
+ * <p>Implements basic CRUD operations from the superinterface and extends them with more specific
+ * methods - i.e. queries based on particular fields.
  */
 public interface ScopeRepository extends RiskAffectedRepository<Scope, ScopeRisk> {
-    /**
-     * Select if any of the given elements is a direct member of a scope with given
-     * risk definition and domain.
-     */
-    Boolean canUseRiskDefinition(Set<? extends Element> members,
-            RiskDefinitionRef riskDefinitionRef, Domain domain);
+  /**
+   * Select if any of the given elements is a direct member of a scope with given risk definition
+   * and domain.
+   */
+  Boolean canUseRiskDefinition(
+      Set<? extends Element> members, RiskDefinitionRef riskDefinitionRef, Domain domain);
 }

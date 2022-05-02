@@ -41,21 +41,23 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class AssetData extends RiskAffectedData<Asset, AssetRisk> implements Asset {
 
-    @ManyToMany(targetEntity = AssetData.class,
-                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "asset_parts",
-               joinColumns = @JoinColumn(name = "composite_id"),
-               inverseJoinColumns = @JoinColumn(name = "part_id"))
-    @Valid
-    @Getter
-    private final Set<Asset> parts = new HashSet<>();
+  @ManyToMany(
+      targetEntity = AssetData.class,
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JoinTable(
+      name = "asset_parts",
+      joinColumns = @JoinColumn(name = "composite_id"),
+      inverseJoinColumns = @JoinColumn(name = "part_id"))
+  @Valid
+  @Getter
+  private final Set<Asset> parts = new HashSet<>();
 
-    @Override
-    AssetRisk createRisk(Scenario scenario) {
-        return new AssetRiskData(this, scenario);
-    }
+  @Override
+  AssetRisk createRisk(Scenario scenario) {
+    return new AssetRiskData(this, scenario);
+  }
 
-    @ManyToMany(targetEntity = AssetData.class, mappedBy = "parts", fetch = FetchType.LAZY)
-    @Getter
-    private final Set<Asset> composites = new HashSet<>();
+  @ManyToMany(targetEntity = AssetData.class, mappedBy = "parts", fetch = FetchType.LAZY)
+  @Getter
+  private final Set<Asset> composites = new HashSet<>();
 }

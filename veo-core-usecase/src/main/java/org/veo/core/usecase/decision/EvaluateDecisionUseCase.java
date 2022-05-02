@@ -40,61 +40,63 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 /**
- * Evaluates a decision for a transient element and returns the decision result.
- * Does not persist any changes. This must NOT run in a transaction, so JPA does
- * not automatically persist anything. Therefore, it does not implement
- * {@link TransactionalUseCase}
+ * Evaluates a decision for a transient element and returns the decision result. Does not persist
+ * any changes. This must NOT run in a transaction, so JPA does not automatically persist anything.
+ * Therefore, it does not implement {@link TransactionalUseCase}
  */
 @RequiredArgsConstructor
 public class EvaluateDecisionUseCase
-        implements UseCase<EvaluateDecisionUseCase.InputData, EvaluateDecisionUseCase.OutputData> {
-    private final DomainRepository domainRepository;
-    private final RepositoryProvider repositoryProvider;
+    implements UseCase<EvaluateDecisionUseCase.InputData, EvaluateDecisionUseCase.OutputData> {
+  private final DomainRepository domainRepository;
+  private final RepositoryProvider repositoryProvider;
 
-    @Override
-    @Transactional(NEVER)
-    public OutputData execute(InputData input) {
-        var domain = domainRepository.findById(input.getDomainId(), input.getAuthenticatedClient()
-                                                                         .getId())
-                                     .orElseThrow(() -> new NotFoundException("Domain {} not found",
-                                             input.getDomainId()
-                                                  .uuidValue()));
-        var decision = domain.getDecision(input.decisionKey)
-                             .orElseThrow(() -> new NotFoundException(
-                                     "Decision {} not found in domain {}", input.decisionKey,
-                                     input.domainId));
+  @Override
+  @Transactional(NEVER)
+  public OutputData execute(InputData input) {
+    var domain =
+        domainRepository
+            .findById(input.getDomainId(), input.getAuthenticatedClient().getId())
+            .orElseThrow(
+                () ->
+                    new NotFoundException("Domain {} not found", input.getDomainId().uuidValue()));
+    var decision =
+        domain
+            .getDecision(input.decisionKey)
+            .orElseThrow(
+                () ->
+                    new NotFoundException(
+                        "Decision {} not found in domain {}", input.decisionKey, input.domainId));
 
-        // FIXME VEO-209 support risk values on all risk affected types
-        if (input.element.getId() != null && input.element instanceof Process) {
-            loadRisks((Process) input.element);
-        }
-
-        return new OutputData(decision.evaluate(input.element, domain));
+    // FIXME VEO-209 support risk values on all risk affected types
+    if (input.element.getId() != null && input.element instanceof Process) {
+      loadRisks((Process) input.element);
     }
 
-    /** Load persisted risks and add them to element */
-    private void loadRisks(Process element) {
-        var repo = repositoryProvider.getRepositoryFor(element.getModelInterface());
-        if (repo instanceof ProcessRepository) {
-            var riskAffectedRepo = (ProcessRepository) repo;
-            var storedElement = riskAffectedRepo.findByIdWithRiskValues(element.getId())
-                                                .get();
-            element.setRisks(storedElement.getRisks());
-        }
-    }
+    return new OutputData(decision.evaluate(input.element, domain));
+  }
 
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Client authenticatedClient;
-        Key<UUID> domainId;
-        String decisionKey;
-        Element element;
+  /** Load persisted risks and add them to element */
+  private void loadRisks(Process element) {
+    var repo = repositoryProvider.getRepositoryFor(element.getModelInterface());
+    if (repo instanceof ProcessRepository) {
+      var riskAffectedRepo = (ProcessRepository) repo;
+      var storedElement = riskAffectedRepo.findByIdWithRiskValues(element.getId()).get();
+      element.setRisks(storedElement.getRisks());
     }
+  }
 
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        DecisionResult decisionResult;
-    }
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
+    Client authenticatedClient;
+    Key<UUID> domainId;
+    String decisionKey;
+    Element element;
+  }
+
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    DecisionResult decisionResult;
+  }
 }

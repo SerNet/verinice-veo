@@ -27,64 +27,66 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SyntheticIdRef<T extends Identifiable> extends IdRef<T> {
-    public SyntheticIdRef(String id, Class<T> type, ReferenceAssembler urlAssembler) {
-        super(id, null, type, null, null, null);
-    }
+  public SyntheticIdRef(String id, Class<T> type, ReferenceAssembler urlAssembler) {
+    super(id, null, type, null, null, null);
+  }
 
-    @Override
-    public String getSearchesUri() {
-        return null;
-    }
+  @Override
+  public String getSearchesUri() {
+    return null;
+  }
 
-    @Override
-    public String getDisplayName() {
-        return null;
-    }
+  @Override
+  public String getDisplayName() {
+    return null;
+  }
 
-    @Override
-    public String getResourcesUri() {
-        return null;
-    }
+  @Override
+  public String getResourcesUri() {
+    return null;
+  }
 
-    @Override
-    public String getTargetUri() {
-        return toUrl(getType(), getId());
-    }
+  @Override
+  public String getTargetUri() {
+    return toUrl(getType(), getId());
+  }
 
-    public static <T extends Identifiable> SyntheticIdRef<T> from(String id, Class<T> type) {
-        return new SyntheticIdRef<>(id, type, null);
-    }
+  public static <T extends Identifiable> SyntheticIdRef<T> from(String id, Class<T> type) {
+    return new SyntheticIdRef<>(id, type, null);
+  }
 
-    public static <T extends Identifiable> SyntheticIdRef<T> from(String id, Class<T> declaredType,
-            Class<?> realType) {
-        return new SyntheticIdRef<T>(id, (Class<T>) realType, null);
-    }
+  public static <T extends Identifiable> SyntheticIdRef<T> from(
+      String id, Class<T> declaredType, Class<?> realType) {
+    return new SyntheticIdRef<T>(id, (Class<T>) realType, null);
+  }
 
-    public static <T extends Identifiable> String toUrl(Class<T> type, String id) {
-        try {
-            return "/" + toPluralTerm(type) + "/" + id;
-        } catch (SecurityException | NoSuchFieldException | IllegalAccessException e) {
-            log.error("Error generating target uri", e);
-        }
-        return null;
+  public static <T extends Identifiable> String toUrl(Class<T> type, String id) {
+    try {
+      return "/" + toPluralTerm(type) + "/" + id;
+    } catch (SecurityException | NoSuchFieldException | IllegalAccessException e) {
+      log.error("Error generating target uri", e);
     }
+    return null;
+  }
 
-    public static <T extends Identifiable> String toPluralTerm(Class<T> type)
-            throws NoSuchFieldException, IllegalAccessException {
-        Field field = type.getField("PLURAL_TERM");
-        Object object = field.get(type);
-        return (String) object;
-    }
+  public static <T extends Identifiable> String toPluralTerm(Class<T> type)
+      throws NoSuchFieldException, IllegalAccessException {
+    Field field = type.getField("PLURAL_TERM");
+    Object object = field.get(type);
+    return (String) object;
+  }
 
-    public static <T extends Identifiable> String toSingularTerm(Class<T> type) {
-        try {
-            Field field = type.getField("SINGULAR_TERM");
-            Object object = field.get(type);
-            return (String) object;
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException
-                | IllegalAccessException e) {
-            log.error("Error toSingularTerm", e);
-        }
-        return null;
+  public static <T extends Identifiable> String toSingularTerm(Class<T> type) {
+    try {
+      Field field = type.getField("SINGULAR_TERM");
+      Object object = field.get(type);
+      return (String) object;
+    } catch (NoSuchFieldException
+        | SecurityException
+        | IllegalArgumentException
+        | IllegalAccessException e) {
+      log.error("Error toSingularTerm", e);
     }
+    return null;
+  }
 }

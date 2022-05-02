@@ -31,38 +31,37 @@ import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 
 public class UnitDumpMapper {
 
-    public static GetUnitDumpUseCase.InputData mapInput(String unitId) {
-        return new GetUnitDumpUseCase.InputData(Key.uuidFrom(unitId));
-    }
+  public static GetUnitDumpUseCase.InputData mapInput(String unitId) {
+    return new GetUnitDumpUseCase.InputData(Key.uuidFrom(unitId));
+  }
 
-    public static UnitDumpDto mapOutput(GetUnitDumpUseCase.OutputData useCaseOutput,
-            EntityToDtoTransformer entityToDtoTransformer) {
-        var elementDtos = useCaseOutput.getElements()
-                                       .stream()
-                                       .map(entityToDtoTransformer::transform2Dto)
-                                       .collect(Collectors.toSet());
-        return new UnitDumpDto(entityToDtoTransformer.transformUnit2Dto(useCaseOutput.getUnit()),
-                mapDomains(useCaseOutput, entityToDtoTransformer), elementDtos,
-                getRisks(useCaseOutput.getElements(), entityToDtoTransformer));
-    }
+  public static UnitDumpDto mapOutput(
+      GetUnitDumpUseCase.OutputData useCaseOutput, EntityToDtoTransformer entityToDtoTransformer) {
+    var elementDtos =
+        useCaseOutput.getElements().stream()
+            .map(entityToDtoTransformer::transform2Dto)
+            .collect(Collectors.toSet());
+    return new UnitDumpDto(
+        entityToDtoTransformer.transformUnit2Dto(useCaseOutput.getUnit()),
+        mapDomains(useCaseOutput, entityToDtoTransformer),
+        elementDtos,
+        getRisks(useCaseOutput.getElements(), entityToDtoTransformer));
+  }
 
-    private static Set<AbstractRiskDto> getRisks(Set<Element> elements,
-            EntityToDtoTransformer transformer) {
-        return elements.stream()
-                       .filter(i -> i instanceof RiskAffected)
-                       .map(i -> (RiskAffected<?, ?>) i)
-                       .flatMap(a -> a.getRisks()
-                                      .stream())
-                       .map(transformer::transform2Dto)
-                       .collect(Collectors.toSet());
-    }
+  private static Set<AbstractRiskDto> getRisks(
+      Set<Element> elements, EntityToDtoTransformer transformer) {
+    return elements.stream()
+        .filter(i -> i instanceof RiskAffected)
+        .map(i -> (RiskAffected<?, ?>) i)
+        .flatMap(a -> a.getRisks().stream())
+        .map(transformer::transform2Dto)
+        .collect(Collectors.toSet());
+  }
 
-    private static Set<FullDomainDto> mapDomains(GetUnitDumpUseCase.OutputData useCaseOutput,
-            EntityToDtoTransformer entityToDtoTransformer) {
-        return useCaseOutput.getUnit()
-                            .getDomains()
-                            .stream()
-                            .map(entityToDtoTransformer::transformDomain2Dto)
-                            .collect(Collectors.toSet());
-    }
+  private static Set<FullDomainDto> mapDomains(
+      GetUnitDumpUseCase.OutputData useCaseOutput, EntityToDtoTransformer entityToDtoTransformer) {
+    return useCaseOutput.getUnit().getDomains().stream()
+        .map(entityToDtoTransformer::transformDomain2Dto)
+        .collect(Collectors.toSet());
+  }
 }

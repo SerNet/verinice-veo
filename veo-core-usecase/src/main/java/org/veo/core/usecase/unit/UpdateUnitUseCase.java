@@ -22,14 +22,13 @@ import org.veo.core.repository.UnitRepository;
 
 public class UpdateUnitUseCase extends ChangeUnitUseCase {
 
-    public UpdateUnitUseCase(UnitRepository repository) {
-        super(repository);
-    }
+  public UpdateUnitUseCase(UnitRepository repository) {
+    super(repository);
+  }
 
-    @Override
-    protected Unit update(Unit storedUnit, ChangeUnitUseCase.InputData input) {
-        // replace stored unit with changed unit:
-        return input.getChangedUnit();
-    }
-
+  @Override
+  protected Unit update(Unit storedUnit, ChangeUnitUseCase.InputData input) {
+    // replace stored unit with changed unit:
+    return input.getChangedUnit();
+  }
 }

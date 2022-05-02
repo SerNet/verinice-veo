@@ -18,23 +18,23 @@
 package org.veo.adapter.presenter.api.dto;
 
 public interface VersionedDto {
-    String getCreatedAt();
+  String getCreatedAt();
 
-    void setCreatedAt(String createdAt);
+  void setCreatedAt(String createdAt);
 
-    String getCreatedBy();
+  String getCreatedBy();
 
-    void setCreatedBy(String createdBy);
+  void setCreatedBy(String createdBy);
 
-    String getUpdatedAt();
+  String getUpdatedAt();
 
-    void setUpdatedAt(String updatedAt);
+  void setUpdatedAt(String updatedAt);
 
-    String getUpdatedBy();
+  String getUpdatedBy();
 
-    void setUpdatedBy(String updatedBy);
+  void setUpdatedBy(String updatedBy);
 
-    long getVersion();
+  long getVersion();
 
-    void setVersion(long version);
+  void setVersion(long version);
 }

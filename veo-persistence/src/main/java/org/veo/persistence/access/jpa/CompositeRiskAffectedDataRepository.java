@@ -31,14 +31,14 @@ import org.veo.persistence.entity.jpa.ScenarioData;
 @Transactional(readOnly = true)
 @NoRepositoryBean
 public interface CompositeRiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
-        extends CompositeEntityDataRepository<T> {
+    extends CompositeEntityDataRepository<T> {
 
-    @SuppressWarnings("PMD.MethodNamingConventions")
-    Set<T> findDistinctByRisks_ScenarioIn(Collection<ScenarioData> causes);
+  @SuppressWarnings("PMD.MethodNamingConventions")
+  Set<T> findDistinctByRisks_ScenarioIn(Collection<ScenarioData> causes);
 
-    @SuppressWarnings("PMD.MethodNamingConventions")
-    Set<T> findDistinctByRisks_Mitigation_In(Collection<ControlData> controls);
+  @SuppressWarnings("PMD.MethodNamingConventions")
+  Set<T> findDistinctByRisks_Mitigation_In(Collection<ControlData> controls);
 
-    @SuppressWarnings("PMD.MethodNamingConventions")
-    Set<T> findDistinctByRisks_RiskOwner_In(Collection<PersonData> persons);
+  @SuppressWarnings("PMD.MethodNamingConventions")
+  Set<T> findDistinctByRisks_RiskOwner_In(Collection<PersonData> persons);
 }

@@ -27,23 +27,20 @@ import org.veo.core.entity.decision.DecisionResult;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * Runs all applicable decisions for an element and gathers the results.
- */
+/** Runs all applicable decisions for an element and gathers the results. */
 @RequiredArgsConstructor
 public class Decider {
-    public Map<DecisionRef, DecisionResult> decide(Element element, Domain domain) {
-        var results = new HashMap<DecisionRef, DecisionResult>();
-        domain.getDecisions()
-              .forEach((key, decision) -> {
-                  if (decision.getElementType()
-                              .equals(element.getModelType())
-                          && decision.getElementSubType()
-                                     .equals(element.getSubType(domain)
-                                                    .orElse(null))) {
-                      results.put(new DecisionRef(key, domain), decision.evaluate(element, domain));
-                  }
-              });
-        return results;
-    }
+  public Map<DecisionRef, DecisionResult> decide(Element element, Domain domain) {
+    var results = new HashMap<DecisionRef, DecisionResult>();
+    domain
+        .getDecisions()
+        .forEach(
+            (key, decision) -> {
+              if (decision.getElementType().equals(element.getModelType())
+                  && decision.getElementSubType().equals(element.getSubType(domain).orElse(null))) {
+                results.put(new DecisionRef(key, domain), decision.evaluate(element, domain));
+              }
+            });
+    return results;
+  }
 }

@@ -22,9 +22,7 @@ import org.veo.core.entity.Catalog;
 /**
  * A repository for <code>Catalog</code> entities.
  *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
+ * <p>Implements basic CRUD operations from the superinterface and extends them with more specific
+ * methods - i.e. queries based on particular fields.
  */
-public interface CatalogRepository extends IdentifiableVersionedRepository<Catalog> {
-
-}
+public interface CatalogRepository extends IdentifiableVersionedRepository<Catalog> {}

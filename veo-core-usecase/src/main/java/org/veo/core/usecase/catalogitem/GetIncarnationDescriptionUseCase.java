@@ -59,151 +59,145 @@ import lombok.extern.slf4j.Slf4j;
 
 @AllArgsConstructor
 @Slf4j
-public class GetIncarnationDescriptionUseCase implements
-        TransactionalUseCase<GetIncarnationDescriptionUseCase.InputData, GetIncarnationDescriptionUseCase.OutputData> {
-    private final UnitRepository unitRepository;
-    private final CatalogItemRepository catalogItemRepository;
-    private final DomainRepository domainRepository;
-    private final org.veo.core.repository.RepositoryProvider repositoryProvider;
+public class GetIncarnationDescriptionUseCase
+    implements TransactionalUseCase<
+        GetIncarnationDescriptionUseCase.InputData, GetIncarnationDescriptionUseCase.OutputData> {
+  private final UnitRepository unitRepository;
+  private final CatalogItemRepository catalogItemRepository;
+  private final DomainRepository domainRepository;
+  private final org.veo.core.repository.RepositoryProvider repositoryProvider;
 
-    @Override
-    public OutputData execute(InputData input) {
-        log.info("GetIncarnationDescriptionUseCase: {}", input);
-        Unit unit = unitRepository.findByIdFetchClient(input.getContainerId())
-                                  .orElseThrow(() -> new NotFoundException("Unit %s not found.",
-                                          input.getContainerId()));
-        unit.checkSameClient(input.authenticatedClient);
-        validateInput(input);
-        List<Key<UUID>> catalogItemIds = input.getCatalogItemIds();
-        Map<Key<UUID>, CatalogItem> catalogItemsbyId = catalogItemRepository.getByIdsFetchElementData(Set.copyOf(catalogItemIds))
-                                                                            .stream()
-                                                                            .collect(Collectors.toMap(CatalogItem::getId,
-                                                                                                      Function.identity()));
-        List<CatalogItem> itemsToCreate = input.getCatalogItemIds()
-                                               .stream()
-                                               .map(id -> {
-                                                   CatalogItem catalogItem = catalogItemsbyId.get(id);
-                                                   if (catalogItem == null) {
-                                                       throw new NotFoundException(
-                                                               "CatalogItem not found %s", id);
-                                                   }
-                                                   return catalogItem;
-                                               })
-                                               .flatMap(ci -> ci.getAllElementsToCreate()
-                                                                .stream())
-                                               .collect(Collectors.toList());
+  @Override
+  public OutputData execute(InputData input) {
+    log.info("GetIncarnationDescriptionUseCase: {}", input);
+    Unit unit =
+        unitRepository
+            .findByIdFetchClient(input.getContainerId())
+            .orElseThrow(() -> new NotFoundException("Unit %s not found.", input.getContainerId()));
+    unit.checkSameClient(input.authenticatedClient);
+    validateInput(input);
+    List<Key<UUID>> catalogItemIds = input.getCatalogItemIds();
+    Map<Key<UUID>, CatalogItem> catalogItemsbyId =
+        catalogItemRepository.getByIdsFetchElementData(Set.copyOf(catalogItemIds)).stream()
+            .collect(Collectors.toMap(CatalogItem::getId, Function.identity()));
+    List<CatalogItem> itemsToCreate =
+        input.getCatalogItemIds().stream()
+            .map(
+                id -> {
+                  CatalogItem catalogItem = catalogItemsbyId.get(id);
+                  if (catalogItem == null) {
+                    throw new NotFoundException("CatalogItem not found %s", id);
+                  }
+                  return catalogItem;
+                })
+            .flatMap(ci -> ci.getAllElementsToCreate().stream())
+            .collect(Collectors.toList());
 
-        Stream<CatalogItem> linkedCatalogItems = itemsToCreate.stream()
-                                                              .flatMap(catalogItem -> catalogItem.getTailoringReferences()
-                                                                                                 .stream()
-                                                                                                 .filter(TailoringReferenceTyped.IS_ALL_LINK_PREDICATE)
-                                                                                                 .map(LinkTailoringReference.class::cast)
-                                                                                                 .map(LinkTailoringReference::getCatalogItem));
+    Stream<CatalogItem> linkedCatalogItems =
+        itemsToCreate.stream()
+            .flatMap(
+                catalogItem ->
+                    catalogItem.getTailoringReferences().stream()
+                        .filter(TailoringReferenceTyped.IS_ALL_LINK_PREDICATE)
+                        .map(LinkTailoringReference.class::cast)
+                        .map(LinkTailoringReference::getCatalogItem));
 
-        Map<Key<UUID>, Element> referencedItemsByCatalogItemId = new HashMap<>();
-        Map<Class<? extends Identifiable>, List<CatalogItem>> linkedItemsByElementType = linkedCatalogItems.collect(Collectors.groupingBy(item -> item.getElement()
-                                                                                                                                                      .getModelInterface()));
-        linkedItemsByElementType.forEach((elementType,
-                items) -> findReferencedAppliedItems(unit,
-                                                     items).forEach(element -> element.getAppliedCatalogItems()
-                                                                                      .forEach(appliedItem -> referencedItemsByCatalogItemId.put(appliedItem.getId(),
-                                                                                                                                                 element))));
+    Map<Key<UUID>, Element> referencedItemsByCatalogItemId = new HashMap<>();
+    Map<Class<? extends Identifiable>, List<CatalogItem>> linkedItemsByElementType =
+        linkedCatalogItems.collect(
+            Collectors.groupingBy(item -> item.getElement().getModelInterface()));
+    linkedItemsByElementType.forEach(
+        (elementType, items) ->
+            findReferencedAppliedItems(unit, items)
+                .forEach(
+                    element ->
+                        element
+                            .getAppliedCatalogItems()
+                            .forEach(
+                                appliedItem ->
+                                    referencedItemsByCatalogItemId.put(
+                                        appliedItem.getId(), element))));
 
-        Domain domain = domainRepository.findByCatalogItem(itemsToCreate.iterator()
-                                                                        .next())
-                                        .orElseThrow();
+    Domain domain =
+        domainRepository.findByCatalogItem(itemsToCreate.iterator().next()).orElseThrow();
 
-        UseCaseTools.checkDomainBelongsToClient(input.getAuthenticatedClient(), domain);
+    UseCaseTools.checkDomainBelongsToClient(input.getAuthenticatedClient(), domain);
 
-        List<IncarnateCatalogItemDescription> incarnationDescriptions = itemsToCreate.stream()
-                                                                                     .map(catalogItem -> {
-                                                                                         List<TailoringReferenceParameter> parameters = toTailorreferenceParameters(catalogItem,
-                                                                                                                                                                    referencedItemsByCatalogItemId);
-                                                                                         return new IncarnateCatalogItemDescription(
-                                                                                                 catalogItem,
-                                                                                                 parameters);
+    List<IncarnateCatalogItemDescription> incarnationDescriptions =
+        itemsToCreate.stream()
+            .map(
+                catalogItem -> {
+                  List<TailoringReferenceParameter> parameters =
+                      toTailorreferenceParameters(catalogItem, referencedItemsByCatalogItemId);
+                  return new IncarnateCatalogItemDescription(catalogItem, parameters);
+                })
+            .collect(Collectors.toList());
+    log.info(
+        "GetIncarnationDescriptionUseCase IncarnationDescription: {}", incarnationDescriptions);
+    return new OutputData(incarnationDescriptions, unit);
+  }
 
-                                                                                     })
-                                                                                     .collect(Collectors.toList());
-        log.info("GetIncarnationDescriptionUseCase IncarnationDescription: {}",
-                 incarnationDescriptions);
-        return new OutputData(incarnationDescriptions, unit);
+  private void validateInput(InputData input) {
+    if (input.catalogItemIds.stream().collect(Collectors.toSet()).size()
+        != input.catalogItemIds.size()) {
+      throw new IllegalArgumentException("Provided catalogitems are not unique.");
     }
+  }
 
-    private void validateInput(InputData input) {
-        if (input.catalogItemIds.stream()
-                                .collect(Collectors.toSet())
-                                .size() != input.catalogItemIds.size()) {
-            throw new IllegalArgumentException("Provided catalogitems are not unique.");
-        }
+  private List<TailoringReferenceParameter> toTailorreferenceParameters(
+      CatalogItem catalogItem, Map<Key<UUID>, Element> referencedItemsByCatalogItemId) {
+    return catalogItem.getTailoringReferences().stream()
+        .filter(TailoringReferenceTyped.IS_ALL_LINK_PREDICATE)
+        .sorted(TailoringReferenceComparators.BY_EXECUTION)
+        .map(LinkTailoringReference.class::cast)
+        .map(lr -> toParameter(lr, referencedItemsByCatalogItemId.get(lr.getCatalogItem().getId())))
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Create the parameter object for this {@link LinkTailoringReference} it also adds the suggestion
+   * found by {@link #findReferencedAppliedItem(Unit, CatalogItem)} in the reference.
+   */
+  private TailoringReferenceParameter toParameter(
+      LinkTailoringReference linkReference, Element element) {
+    if (linkReference.getLinkType() == null) {
+      throw new RuntimeModelException(
+          "LinkType should not be null affected TailoringReferences: " + linkReference.getId());
     }
-
-    private List<TailoringReferenceParameter> toTailorreferenceParameters(CatalogItem catalogItem,
-            Map<Key<UUID>, Element> referencedItemsByCatalogItemId) {
-        return catalogItem.getTailoringReferences()
-                          .stream()
-                          .filter(TailoringReferenceTyped.IS_ALL_LINK_PREDICATE)
-                          .sorted(TailoringReferenceComparators.BY_EXECUTION)
-                          .map(LinkTailoringReference.class::cast)
-                          .map(lr -> toParameter(lr,
-                                                 referencedItemsByCatalogItemId.get(lr.getCatalogItem()
-                                                                                      .getId())))
-                          .collect(Collectors.toList());
+    TailoringReferenceParameter tailoringReferenceParameter =
+        new TailoringReferenceParameter(
+            linkReference.getReferenceType(), linkReference.getLinkType());
+    if (element != null) {
+      tailoringReferenceParameter.setReferencedElement(element);
     }
+    return tailoringReferenceParameter;
+  }
 
-    /**
-     * Create the parameter object for this {@link LinkTailoringReference} it also
-     * adds the suggestion found by
-     * {@link #findReferencedAppliedItem(Unit, CatalogItem)} in the reference.
-     */
-    private TailoringReferenceParameter toParameter(LinkTailoringReference linkReference,
-            Element element) {
-        if (linkReference.getLinkType() == null) {
-            throw new RuntimeModelException(
-                    "LinkType should not be null affected TailoringReferences: "
-                            + linkReference.getId());
-        }
-        TailoringReferenceParameter tailoringReferenceParameter = new TailoringReferenceParameter(
-                linkReference.getReferenceType(), linkReference.getLinkType());
-        if (element != null) {
-            tailoringReferenceParameter.setReferencedElement(element);
-        }
-        return tailoringReferenceParameter;
-    }
+  /** Searches for {@link Element}s in the unit which have the given catalogItems applied. */
+  private List<Element> findReferencedAppliedItems(
+      Unit unit, Collection<CatalogItem> catalogItems) {
+    Class<Element> entityType =
+        (Class<Element>) catalogItems.iterator().next().getElement().getModelInterface();
 
-    /**
-     * Searches for {@link Element}s in the unit which have the given catalogItems
-     * applied.
-     */
-    private List<Element> findReferencedAppliedItems(Unit unit,
-            Collection<CatalogItem> catalogItems) {
-        Class<Element> entityType = (Class<Element>) catalogItems.iterator()
-                                                                 .next()
-                                                                 .getElement()
-                                                                 .getModelInterface();
+    ElementRepository<Element> repository = repositoryProvider.getElementRepositoryFor(entityType);
+    ElementQuery<Element> query = repository.query(unit.getClient());
+    query.whereOwnerIs(unit);
+    query.whereAppliedItemsContain(catalogItems);
+    return query.execute(PagingConfiguration.UNPAGED).getResultPage();
+  }
 
-        ElementRepository<Element> repository = repositoryProvider.getElementRepositoryFor(entityType);
-        ElementQuery<Element> query = repository.query(unit.getClient());
-        query.whereOwnerIs(unit);
-        query.whereAppliedItemsContain(catalogItems);
-        return query.execute(PagingConfiguration.UNPAGED)
-                    .getResultPage();
-    }
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
+    Client authenticatedClient;
+    Key<UUID> containerId;
+    List<Key<UUID>> catalogItemIds;
+  }
 
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Client authenticatedClient;
-        Key<UUID> containerId;
-        List<Key<UUID>> catalogItemIds;
-    }
-
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        List<IncarnateCatalogItemDescription> references;
-        Unit container;
-    }
-
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid List<IncarnateCatalogItemDescription> references;
+    Unit container;
+  }
 }

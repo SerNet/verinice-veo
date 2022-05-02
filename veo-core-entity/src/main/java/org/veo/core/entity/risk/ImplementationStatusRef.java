@@ -27,19 +27,14 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-/**
- * References an implementation status with a certain key. This should provide
- * some type safety.
- */
+/** References an implementation status with a certain key. This should provide some type safety. */
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @EqualsAndHashCode
 @Valid
 public class ImplementationStatusRef {
-    @Getter
-    @PositiveOrZero
-    private int ordinalValue;
+  @Getter @PositiveOrZero private int ordinalValue;
 
-    public static ImplementationStatusRef from(CategoryLevel cl) {
-        return new ImplementationStatusRef(cl.getOrdinalValue());
-    }
+  public static ImplementationStatusRef from(CategoryLevel cl) {
+    return new ImplementationStatusRef(cl.getOrdinalValue());
+  }
 }

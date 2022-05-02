@@ -26,10 +26,10 @@ import org.veo.core.entity.Key;
 /**
  * A repository for {@link Client} entities.
  *
- * Only implements operations that do not modify or create clients. Therefore it
- * does not need a validator service. It should be used during authentication
- * operations that do not require write access to clients.
+ * <p>Only implements operations that do not modify or create clients. Therefore it does not need a
+ * validator service. It should be used during authentication operations that do not require write
+ * access to clients.
  */
 public interface ClientReadOnlyRepository {
-    Optional<Client> findById(Key<UUID> id);
+  Optional<Client> findById(Key<UUID> id);
 }

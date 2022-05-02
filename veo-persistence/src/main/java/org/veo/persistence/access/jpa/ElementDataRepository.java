@@ -34,51 +34,62 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.persistence.entity.jpa.ElementData;
 
-public interface ElementDataRepository<T extends ElementData> extends JpaRepository<T, String>,
-        JpaSpecificationExecutor<T>, IdentifiableVersionedDataRepository<T> {
+public interface ElementDataRepository<T extends ElementData>
+    extends JpaRepository<T, String>,
+        JpaSpecificationExecutor<T>,
+        IdentifiableVersionedDataRepository<T> {
 
-    @Query("select e from #{#entityName} as e " + "left join fetch e.customAspects "
-            + "left join fetch e.domains " + "left join fetch e.decisionResultsAspects "
-            + "left join fetch e.subTypeAspects " + "left join fetch e.appliedCatalogItems "
-            + "left join fetch e.links " + "where e.dbId = ?1")
-    @Override
-    @Nonnull
-    Optional<T> findById(@Nonnull String id);
+  @Query(
+      "select e from #{#entityName} as e "
+          + "left join fetch e.customAspects "
+          + "left join fetch e.domains "
+          + "left join fetch e.decisionResultsAspects "
+          + "left join fetch e.subTypeAspects "
+          + "left join fetch e.appliedCatalogItems "
+          + "left join fetch e.links "
+          + "where e.dbId = ?1")
+  @Override
+  @Nonnull
+  Optional<T> findById(@Nonnull String id);
 
-    @Override
-    @Nonnull
-    @Transactional(readOnly = true)
-    @EntityGraph(ElementData.FULL_AGGREGATE_GRAPH)
-    List<T> findAllById(Iterable<String> ids);
+  @Override
+  @Nonnull
+  @Transactional(readOnly = true)
+  @EntityGraph(ElementData.FULL_AGGREGATE_GRAPH)
+  List<T> findAllById(Iterable<String> ids);
 
-    @Override
-    @Nonnull
-    @Transactional(readOnly = true)
-    // TODO use a projection to return only the IDs once
-    // https://github.com/spring-projects/spring-data-jpa/issues/1378 is fixed
-    Page<T> findAll(Specification<T> specification, Pageable pageable);
+  @Override
+  @Nonnull
+  @Transactional(readOnly = true)
+  // TODO use a projection to return only the IDs once
+  // https://github.com/spring-projects/spring-data-jpa/issues/1378 is fixed
+  Page<T> findAll(Specification<T> specification, Pageable pageable);
 
-    /**
-     * Find all elements of the repository's type in the given units. (This includes
-     * composites.)
-     *
-     * @param unitIds
-     *            a list of units' UUIDs
-     */
-    // @formatter:off
-    @Query("select e from #{#entityName} as e " +
-            "left join fetch e.customAspects " +
-            "left join fetch e.links " +
-            "left join fetch e.appliedCatalogItems " +
-            "left join fetch e.decisionResultsAspects " +
-            "left join fetch e.subTypeAspects " +
-            "where e.owner.dbId IN ?1")
-    // @formatter:on
-    @Transactional(readOnly = true)
-    Set<T> findByUnits(Set<String> unitIds);
+  /**
+   * Find all elements of the repository's type in the given units. (This includes composites.)
+   *
+   * @param unitIds a list of units' UUIDs
+   */
+  // @formatter:off
+  @Query(
+      "select e from #{#entityName} as e "
+          + "left join fetch e.customAspects "
+          + "left join fetch e.links "
+          + "left join fetch e.appliedCatalogItems "
+          + "left join fetch e.decisionResultsAspects "
+          + "left join fetch e.subTypeAspects "
+          + "where e.owner.dbId IN ?1")
+  // @formatter:on
+  @Transactional(readOnly = true)
+  Set<T> findByUnits(Set<String> unitIds);
 
-    @Query("select distinct e from #{#entityName} as e " + "left join fetch e.links "
-            + "left join fetch e.customAspects " + "left join fetch e.decisionResultsAspects "
-            + "left join fetch e.subTypeAspects " + "join e.domains d " + "where d.id = ?1")
-    Set<T> findByDomain(String domainId);
+  @Query(
+      "select distinct e from #{#entityName} as e "
+          + "left join fetch e.links "
+          + "left join fetch e.customAspects "
+          + "left join fetch e.decisionResultsAspects "
+          + "left join fetch e.subTypeAspects "
+          + "join e.domains d "
+          + "where d.id = ?1")
+  Set<T> findByDomain(String domainId);
 }

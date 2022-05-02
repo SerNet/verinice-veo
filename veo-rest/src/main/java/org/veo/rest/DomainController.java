@@ -81,190 +81,203 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * REST service which provides methods to manage domains.
- * <p>
- * Uses async calls with {@code CompletableFuture} to parallelize long running
- * operations (i.e. network calls to the database or to other HTTP services).
+ *
+ * <p>Uses async calls with {@code CompletableFuture} to parallelize long running operations (i.e.
+ * network calls to the database or to other HTTP services).
  *
  * @see <a href=
- *      "https://spring.io/guides/gs/async-method">https://spring.io/guides/gs/async-method/</a>
+ *     "https://spring.io/guides/gs/async-method">https://spring.io/guides/gs/async-method/</a>
  */
 @RestController
 @RequestMapping(DomainController.URL_BASE_PATH)
 @Slf4j
 public class DomainController extends AbstractEntityControllerWithDefaultSearch {
 
-    public static final String URL_BASE_PATH = "/" + Domain.PLURAL_TERM;
+  public static final String URL_BASE_PATH = "/" + Domain.PLURAL_TERM;
 
-    private final UseCaseInteractor useCaseInteractor;
-    private final ObjectSchemaParser objectSchemaParser;
-    private final GetDomainUseCase getDomainUseCase;
-    private final GetDomainsUseCase getDomainsUseCase;
-    private final ExportDomainUseCase exportDomainUseCase;
-    private final UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase;
-    private final CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase;
+  private final UseCaseInteractor useCaseInteractor;
+  private final ObjectSchemaParser objectSchemaParser;
+  private final GetDomainUseCase getDomainUseCase;
+  private final GetDomainsUseCase getDomainsUseCase;
+  private final ExportDomainUseCase exportDomainUseCase;
+  private final UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase;
+  private final CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase;
 
-    public DomainController(UseCaseInteractor useCaseInteractor,
-            ObjectSchemaParser objectSchemaParser, GetDomainUseCase getDomainUseCase,
-            GetDomainsUseCase getDomainsUseCase,
-            UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase,
-            ExportDomainUseCase exportDomainUseCase,
-            CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase) {
-        this.useCaseInteractor = useCaseInteractor;
-        this.objectSchemaParser = objectSchemaParser;
-        this.getDomainUseCase = getDomainUseCase;
-        this.getDomainsUseCase = getDomainsUseCase;
-        this.exportDomainUseCase = exportDomainUseCase;
-        this.updateElementTypeDefinitionUseCase = updateElementTypeDefinitionUseCase;
-        this.createDomainTemplateFromDomainUseCase = createDomainTemplateFromDomainUseCase;
+  public DomainController(
+      UseCaseInteractor useCaseInteractor,
+      ObjectSchemaParser objectSchemaParser,
+      GetDomainUseCase getDomainUseCase,
+      GetDomainsUseCase getDomainsUseCase,
+      UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase,
+      ExportDomainUseCase exportDomainUseCase,
+      CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase) {
+    this.useCaseInteractor = useCaseInteractor;
+    this.objectSchemaParser = objectSchemaParser;
+    this.getDomainUseCase = getDomainUseCase;
+    this.getDomainsUseCase = getDomainsUseCase;
+    this.exportDomainUseCase = exportDomainUseCase;
+    this.updateElementTypeDefinitionUseCase = updateElementTypeDefinitionUseCase;
+    this.createDomainTemplateFromDomainUseCase = createDomainTemplateFromDomainUseCase;
+  }
+
+  @GetMapping
+  @Operation(summary = "Loads all domains")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Domains loaded",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array = @ArraySchema(schema = @Schema(implementation = FullDomainDto.class))))
+      })
+  public @Valid CompletableFuture<List<FullDomainDto>> getDomains(
+      @Parameter(required = false, hidden = true) Authentication auth) {
+
+    Client client = null;
+    try {
+      client = getAuthenticatedClient(auth);
+    } catch (NoSuchElementException e) {
+      return CompletableFuture.supplyAsync(Collections::emptyList);
     }
 
-    @GetMapping
-    @Operation(summary = "Loads all domains")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Domains loaded",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            array = @ArraySchema(schema = @Schema(implementation = FullDomainDto.class)))) })
-
-    public @Valid CompletableFuture<List<FullDomainDto>> getDomains(
-            @Parameter(required = false, hidden = true) Authentication auth) {
-
-        Client client = null;
-        try {
-            client = getAuthenticatedClient(auth);
-        } catch (NoSuchElementException e) {
-            return CompletableFuture.supplyAsync(Collections::emptyList);
-        }
-
-        final GetDomainsUseCase.InputData inputData = new GetDomainsUseCase.InputData(client);
-        return useCaseInteractor.execute(getDomainsUseCase, inputData, output -> {
-            return output.getObjects()
-                         .stream()
-                         .map(u -> entityToDtoTransformer.transformDomain2Dto(u))
-                         .collect(Collectors.toList());
+    final GetDomainsUseCase.InputData inputData = new GetDomainsUseCase.InputData(client);
+    return useCaseInteractor.execute(
+        getDomainsUseCase,
+        inputData,
+        output -> {
+          return output.getObjects().stream()
+              .map(u -> entityToDtoTransformer.transformDomain2Dto(u))
+              .collect(Collectors.toList());
         });
+  }
 
+  @GetMapping(value = "/{id}")
+  @Operation(summary = "Loads a domain")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Domain loaded",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = FullDomainDto.class))),
+        @ApiResponse(responseCode = "404", description = "Domain not found")
+      })
+  public @Valid CompletableFuture<ResponseEntity<FullDomainDto>> getDomain(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @PathVariable String id,
+      WebRequest request) {
+    Client client = getAuthenticatedClient(auth);
+    if (getEtag(Domain.class, id).map(request::checkNotModified).orElse(false)) {
+      return null;
     }
+    CompletableFuture<FullDomainDto> domainFuture =
+        useCaseInteractor.execute(
+            getDomainUseCase,
+            new UseCase.IdAndClient(Key.uuidFrom(id), client),
+            output -> entityToDtoTransformer.transformDomain2Dto(output.getDomain()));
+    return domainFuture.thenApply(
+        domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
+  }
 
-    @GetMapping(value = "/{id}")
-    @Operation(summary = "Loads a domain")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Domain loaded",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = FullDomainDto.class))),
-            @ApiResponse(responseCode = "404", description = "Domain not found") })
-    public @Valid CompletableFuture<ResponseEntity<FullDomainDto>> getDomain(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @PathVariable String id, WebRequest request) {
-        Client client = getAuthenticatedClient(auth);
-        if (getEtag(Domain.class, id).map(request::checkNotModified)
-                                     .orElse(false)) {
-            return null;
-        }
-        CompletableFuture<FullDomainDto> domainFuture = useCaseInteractor.execute(getDomainUseCase,
-                                                                                  new UseCase.IdAndClient(
-                                                                                          Key.uuidFrom(id),
-                                                                                          client),
-                                                                                  output -> entityToDtoTransformer.transformDomain2Dto(output.getDomain()));
-        return domainFuture.thenApply(domainDto -> ResponseEntity.ok()
-                                                                 .cacheControl(defaultCacheControl)
-                                                                 .body(domainDto));
+  @GetMapping(value = "/{id}/export")
+  @Operation(summary = "Export a domain")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Domain exported",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = FullDomainDto.class))),
+        @ApiResponse(responseCode = "404", description = "Domain not found")
+      })
+  public @Valid CompletableFuture<ResponseEntity<ExportDto>> exportDomain(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @PathVariable String id,
+      WebRequest request) {
+    Client client = getAuthenticatedClient(auth);
+    CompletableFuture<ExportDto> domainFuture =
+        useCaseInteractor.execute(
+            exportDomainUseCase,
+            new UseCase.IdAndClient(Key.uuidFrom(id), client),
+            output -> output.getExportDomain());
+    return domainFuture.thenApply(
+        domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
+  }
+
+  @PostMapping(value = "/{id}/createdomaintemplate/{revision}")
+  @Operation(summary = "Creates a domaintemplate from a domain")
+  @ApiResponses(
+      value = {@ApiResponse(responseCode = "200", description = "DomainTemplate created")})
+  public CompletableFuture<ResponseEntity<IdRef<DomainTemplate>>> createDomainTemplatefromDomain(
+      Authentication auth,
+      @Pattern(
+              regexp = Patterns.UUID,
+              message = "ID must be a valid UUID string following RFC 4122.")
+          @PathVariable
+          String id,
+      @Size(max = 255) @PathVariable String revision) {
+    Client client = getAuthenticatedClient(auth);
+    CompletableFuture<IdRef<DomainTemplate>> completableFuture =
+        useCaseInteractor.execute(
+            createDomainTemplateFromDomainUseCase,
+            new CreateDomainTemplateFromDomainUseCase.InputData(Key.uuidFrom(id), revision, client),
+            out -> IdRef.from(out.getNewDomainTemplate(), referenceAssembler));
+    return completableFuture.thenApply(result -> ResponseEntity.status(201).body(result));
+  }
+
+  @Override
+  @SuppressFBWarnings // ignore warning on call to method proxy factory
+  protected String buildSearchUri(String id) {
+    return linkTo(methodOn(DomainController.class).runSearch(ANY_AUTH, id)).withSelfRel().getHref();
+  }
+
+  @GetMapping(value = "/searches/{searchId}")
+  @Operation(summary = "Finds domains for the search.")
+  public @Valid CompletableFuture<List<FullDomainDto>> runSearch(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @PathVariable String searchId) {
+    // TODO: VEO-498 Implement Domain Search
+    try {
+      SearchQueryDto.decodeFromSearchId(searchId);
+      return getDomains(auth);
+    } catch (IOException e) {
+      log.error("Could not decode search URL: {}", e.getLocalizedMessage());
+      throw new IllegalArgumentException("Could not decode search URL.");
     }
+  }
 
-    @GetMapping(value = "/{id}/export")
-    @Operation(summary = "Export a domain")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Domain exported",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = FullDomainDto.class))),
-            @ApiResponse(responseCode = "404", description = "Domain not found") })
-    public @Valid CompletableFuture<ResponseEntity<ExportDto>> exportDomain(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @PathVariable String id, WebRequest request) {
-        Client client = getAuthenticatedClient(auth);
-        CompletableFuture<ExportDto> domainFuture = useCaseInteractor.execute(exportDomainUseCase,
-                                                                              new UseCase.IdAndClient(
-                                                                                      Key.uuidFrom(id),
-                                                                                      client),
-                                                                              output -> output.getExportDomain());
-        return domainFuture.thenApply(domainDto -> ResponseEntity.ok()
-                                                                 .cacheControl(defaultCacheControl)
-                                                                 .body(domainDto));
+  @PostMapping(value = "/{id}/elementtypedefinitions/{type:[\\w]+}/updatefromobjectschema")
+  @Operation(summary = "Updates a domain with an entity schema.")
+  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Schema updated")})
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> updateDomainWithSchema(
+      Authentication auth,
+      @PathVariable String id,
+      @PathVariable EntityType type,
+      @RequestBody JsonNode schemaNode) {
+    Client client = getAuthenticatedClient(auth);
+    try {
+      ElementTypeDefinition typeDefinition =
+          objectSchemaParser.parseTypeDefinitionFromObjectSchema(type, schemaNode);
+      return useCaseInteractor.execute(
+          updateElementTypeDefinitionUseCase,
+          new UpdateElementTypeDefinitionUseCase.InputData(
+              client, Key.uuidFrom(id), type, typeDefinition),
+          out -> ResponseEntity.noContent().build());
+    } catch (JsonProcessingException e) {
+      log.error("Cannot parse object schema: {}", e.getLocalizedMessage());
+      throw new IllegalArgumentException("Cannot parse object schema.");
     }
+  }
 
-    @PostMapping(value = "/{id}/createdomaintemplate/{revision}")
-    @Operation(summary = "Creates a domaintemplate from a domain")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "DomainTemplate created") })
-    public CompletableFuture<ResponseEntity<IdRef<DomainTemplate>>> createDomainTemplatefromDomain(
-            Authentication auth,
-            @Pattern(regexp = Patterns.UUID,
-                     message = "ID must be a valid UUID string following RFC 4122.") @PathVariable String id,
-            @Size(max = 255) @PathVariable String revision) {
-        Client client = getAuthenticatedClient(auth);
-        CompletableFuture<IdRef<DomainTemplate>> completableFuture = useCaseInteractor.execute(createDomainTemplateFromDomainUseCase,
-                                                                                               new CreateDomainTemplateFromDomainUseCase.InputData(
-                                                                                                       Key.uuidFrom(id),
-                                                                                                       revision,
-                                                                                                       client),
-                                                                                               out -> IdRef.from(out.getNewDomainTemplate(),
-                                                                                                                 referenceAssembler));
-        return completableFuture.thenApply(result -> ResponseEntity.status(201)
-                                                                   .body(result));
-    }
-
-    @Override
-    @SuppressFBWarnings // ignore warning on call to method proxy factory
-    protected String buildSearchUri(String id) {
-        return linkTo(methodOn(DomainController.class).runSearch(ANY_AUTH, id)).withSelfRel()
-                                                                               .getHref();
-    }
-
-    @GetMapping(value = "/searches/{searchId}")
-    @Operation(summary = "Finds domains for the search.")
-    public @Valid CompletableFuture<List<FullDomainDto>> runSearch(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @PathVariable String searchId) {
-        // TODO: VEO-498 Implement Domain Search
-        try {
-            SearchQueryDto.decodeFromSearchId(searchId);
-            return getDomains(auth);
-        } catch (IOException e) {
-            log.error("Could not decode search URL: {}", e.getLocalizedMessage());
-            throw new IllegalArgumentException("Could not decode search URL.");
-        }
-    }
-
-    @PostMapping(value = "/{id}/elementtypedefinitions/{type:[\\w]+}/updatefromobjectschema")
-    @Operation(summary = "Updates a domain with an entity schema.")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Schema updated") })
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> updateDomainWithSchema(
-            Authentication auth, @PathVariable String id, @PathVariable EntityType type,
-            @RequestBody JsonNode schemaNode) {
-        Client client = getAuthenticatedClient(auth);
-        try {
-            ElementTypeDefinition typeDefinition = objectSchemaParser.parseTypeDefinitionFromObjectSchema(type,
-                                                                                                          schemaNode);
-            return useCaseInteractor.execute(updateElementTypeDefinitionUseCase,
-                                             new UpdateElementTypeDefinitionUseCase.InputData(
-                                                     client, Key.uuidFrom(id), type,
-                                                     typeDefinition),
-                                             out -> ResponseEntity.noContent()
-                                                                  .build());
-        } catch (
-
-        JsonProcessingException e) {
-            log.error("Cannot parse object schema: {}", e.getLocalizedMessage());
-            throw new IllegalArgumentException("Cannot parse object schema.");
-        }
-    }
-
-    @InitBinder
-    public void initBinder(WebDataBinder dataBinder) {
-        dataBinder.registerCustomEditor(EntityType.class,
-                                        new IgnoreCaseEnumConverter<>(EntityType.class));
-    }
-
+  @InitBinder
+  public void initBinder(WebDataBinder dataBinder) {
+    dataBinder.registerCustomEditor(
+        EntityType.class, new IgnoreCaseEnumConverter<>(EntityType.class));
+  }
 }

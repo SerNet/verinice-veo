@@ -23,11 +23,9 @@ import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 
 import lombok.Data;
 
-/**
- * Represents a unit dump
- */
+/** Represents a unit dump */
 @Data
 public class TransformUnitDumpDto {
 
-    private Set<AbstractElementDto> elements;
+  private Set<AbstractElementDto> elements;
 }

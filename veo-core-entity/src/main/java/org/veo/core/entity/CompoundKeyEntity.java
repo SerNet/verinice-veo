@@ -18,8 +18,7 @@
 package org.veo.core.entity;
 
 /**
- * Marker interface for entities that use a compound key. Can be used to achieve
- * type safety in methods that map entity IDs between layers.
+ * Marker interface for entities that use a compound key. Can be used to achieve type safety in
+ * methods that map entity IDs between layers.
  */
-public interface CompoundKeyEntity {
-}
+public interface CompoundKeyEntity {}

@@ -31,59 +31,57 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class KeyDto {
 
-    @Pattern(regexp = Patterns.UUID,
-             message = "ID can be null (for new entities) or a valid UUID string following RFC 4122. If a UUID is"
-                     + "given during creation of a new entity, it will be used as ID for the generated object. "
-                     + "When the same UUID is already present in the system an error will be raised instead.")
-    @Schema(description = "The UUID of the entity",
-            example = "f35b982c-8ad4-4515-96ee-df5fdd4247b9",
-            required = false)
-    private String id;
+  @Pattern(
+      regexp = Patterns.UUID,
+      message =
+          "ID can be null (for new entities) or a valid UUID string following RFC 4122. If a UUID is"
+              + "given during creation of a new entity, it will be used as ID for the generated object. "
+              + "When the same UUID is already present in the system an error will be raised instead.")
+  @Schema(
+      description = "The UUID of the entity",
+      example = "f35b982c-8ad4-4515-96ee-df5fdd4247b9",
+      required = false)
+  private String id;
 
-    public KeyDto(String id) {
-        super();
-        this.id = id;
-    }
+  public KeyDto(String id) {
+    super();
+    this.id = id;
+  }
 
-    /**
-     * Map a set of KeyDTOs to a set of UUID-Keys.
-     */
-    public static Set<Key<UUID>> mapKeys(Set<KeyDto> keys) {
-        return keys.stream()
-                   .map(KeyDto::getId)
-                   .map(Key::uuidFrom)
-                   .collect(Collectors.toSet());
-    }
+  /** Map a set of KeyDTOs to a set of UUID-Keys. */
+  public static Set<Key<UUID>> mapKeys(Set<KeyDto> keys) {
+    return keys.stream().map(KeyDto::getId).map(Key::uuidFrom).collect(Collectors.toSet());
+  }
 
-    public Key<UUID> toKey() {
-        return id != null ? Key.uuidFrom(id) : null;
-    }
+  public Key<UUID> toKey() {
+    return id != null ? Key.uuidFrom(id) : null;
+  }
 
-    public String getId() {
-        return id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        KeyDto other = (KeyDto) obj;
-        return Objects.equals(id, other.id);
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
     }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    KeyDto other = (KeyDto) obj;
+    return Objects.equals(id, other.id);
+  }
 }

@@ -23,11 +23,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * A set of values to be matched against in a query. The condition is true if
- * the tested value is equal to any of the values in the set.
+ * A set of values to be matched against in a query. The condition is true if the tested value is
+ * equal to any of the values in the set.
  */
 @Data
 @AllArgsConstructor
 public class QueryCondition<TValue> {
-    private final Set<TValue> values;
+  private final Set<TValue> values;
 }

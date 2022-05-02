@@ -24,7 +24,7 @@ import org.veo.core.usecase.risk.GetRiskUseCase;
 
 public class GetProcessRiskUseCase extends GetRiskUseCase<Process, ProcessRisk> {
 
-    public GetProcessRiskUseCase(RepositoryProvider repositoryProvider) {
-        super(repositoryProvider, Process.class);
-    }
+  public GetProcessRiskUseCase(RepositoryProvider repositoryProvider) {
+    super(repositoryProvider, Process.class);
+  }
 }

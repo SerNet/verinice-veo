@@ -21,31 +21,30 @@ import org.veo.adapter.presenter.api.common.IIdRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-/**
- * Swagger documentation for the reference 'domains': The domains the entity is
- * part of.
- */
+/** Swagger documentation for the reference 'domains': The domains the entity is part of. */
 @Schema(name = "DomainsReference", description = "A reference to a domain")
 public interface IdRefDomains extends IIdRef {
 
-    // TODO: update reference doc for DomainsReference
+  // TODO: update reference doc for DomainsReference
 
-    @Schema(description = "A friendly human readable title of the referenced domain.",
-            example = "ISO 27001:2013",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @Override
-    String getDisplayName();
+  @Schema(
+      description = "A friendly human readable title of the referenced domain.",
+      example = "ISO 27001:2013",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  @Override
+  String getDisplayName();
 
-    @Schema(required = true,
-            description = "The resource URL of the referenced domains.",
-            example = "http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>",
-            format = "uri")
-    @Override
-    String getTargetUri();
+  @Schema(
+      required = true,
+      description = "The resource URL of the referenced domains.",
+      example = "http://<api.example.org>/api/v1/domain/<00000000-0000-0000-0000-000000000000>",
+      format = "uri")
+  @Override
+  String getTargetUri();
 
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    String getSearchesUri();
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  String getSearchesUri();
 
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    String getResourcesUri();
+  @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+  String getResourcesUri();
 }

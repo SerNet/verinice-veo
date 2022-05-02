@@ -22,23 +22,23 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Provides current user or a fallback value.
- */
+/** Provides current user or a fallback value. */
 @Component
 @Slf4j
 public class LenientCurrentUserProviderImpl implements CurrentUserProvider {
 
-    private final AuditorAware<String> auditorAware;
+  private final AuditorAware<String> auditorAware;
 
-    public LenientCurrentUserProviderImpl(AuditorAware<String> auditorAware) {
-        this.auditorAware = auditorAware;
-    }
+  public LenientCurrentUserProviderImpl(AuditorAware<String> auditorAware) {
+    this.auditorAware = auditorAware;
+  }
 
-    @Override
-    public String getUsername() {
-        return auditorAware.getCurrentAuditor()
-                           .orElse("MISSING - You're bypassing the controller and "
-                                   + "accessing repositories directly, aren't you?");
-    }
+  @Override
+  public String getUsername() {
+    return auditorAware
+        .getCurrentAuditor()
+        .orElse(
+            "MISSING - You're bypassing the controller and "
+                + "accessing repositories directly, aren't you?");
+  }
 }

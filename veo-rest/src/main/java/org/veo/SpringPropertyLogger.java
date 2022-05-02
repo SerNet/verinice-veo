@@ -23,21 +23,24 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.springframework.core.env.Environment;
 
-final public class SpringPropertyLogger {
+public final class SpringPropertyLogger {
 
-    public static void logProperties(final Logger logger, Environment env) {
-        if (logger.isDebugEnabled()) {
-            Optional.ofNullable(env.getProperty("veo.logging.properties"))
-                    .map(it -> it.split(","))
-                    .map(Arrays::stream)
-                    .ifPresent(it -> it.forEach(propertyToLog -> {
-                        logger.debug("spring property {}: {}", propertyToLog,
-                                     Optional.ofNullable(env.getProperty(propertyToLog))
-                                             .orElse(""));
-                    }));
-        }
+  public static void logProperties(final Logger logger, Environment env) {
+    if (logger.isDebugEnabled()) {
+      Optional.ofNullable(env.getProperty("veo.logging.properties"))
+          .map(it -> it.split(","))
+          .map(Arrays::stream)
+          .ifPresent(
+              it ->
+                  it.forEach(
+                      propertyToLog -> {
+                        logger.debug(
+                            "spring property {}: {}",
+                            propertyToLog,
+                            Optional.ofNullable(env.getProperty(propertyToLog)).orElse(""));
+                      }));
     }
+  }
 
-    private SpringPropertyLogger() {
-    }
+  private SpringPropertyLogger() {}
 }

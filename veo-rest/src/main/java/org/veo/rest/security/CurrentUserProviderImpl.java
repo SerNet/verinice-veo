@@ -22,20 +22,18 @@ import org.springframework.data.domain.AuditorAware;
 import org.veo.persistence.CurrentUserProvider;
 
 /**
- * Strict {@link CurrentUserProvider} implementation that throws an exception
- * when there is no user.
+ * Strict {@link CurrentUserProvider} implementation that throws an exception when there is no user.
  */
 public class CurrentUserProviderImpl implements CurrentUserProvider {
 
-    private final AuditorAware<String> auditorAware;
+  private final AuditorAware<String> auditorAware;
 
-    public CurrentUserProviderImpl(AuditorAware<String> auditorAware) {
-        this.auditorAware = auditorAware;
-    }
+  public CurrentUserProviderImpl(AuditorAware<String> auditorAware) {
+    this.auditorAware = auditorAware;
+  }
 
-    @Override
-    public String getUsername() {
-        return auditorAware.getCurrentAuditor()
-                           .orElseThrow();
-    }
+  @Override
+  public String getUsername() {
+    return auditorAware.getCurrentAuditor().orElseThrow();
+  }
 }

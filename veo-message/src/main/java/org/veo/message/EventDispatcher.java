@@ -32,50 +32,57 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EventDispatcher {
 
-    private final RabbitTemplate rabbitTemplate;
+  private final RabbitTemplate rabbitTemplate;
 
-    private final String exchange;
+  private final String exchange;
 
-    public static final ConfirmCallback NOP_CALLBACK = (event, ack) -> {
+  public static final ConfirmCallback NOP_CALLBACK =
+      (event, ack) -> {
         /* NOP */
-    };
+      };
 
-    @Autowired
-    EventDispatcher(RabbitTemplate rabbitTemplate,
-            @Value("${veo.message.dispatch.exchange}") String exchange) {
-        this.rabbitTemplate = rabbitTemplate;
-        this.exchange = exchange;
-    }
+  @Autowired
+  EventDispatcher(
+      RabbitTemplate rabbitTemplate, @Value("${veo.message.dispatch.exchange}") String exchange) {
+    this.rabbitTemplate = rabbitTemplate;
+    this.exchange = exchange;
+  }
 
-    private void send(EventMessage event, ConfirmCallback callback) {
-        log.debug("Sending event id: {}, timestamp: {}, routing-key: {}", event.getId(),
-                  event.getTimestamp(), event.getRoutingKey());
-        var correlationData = new CorrelationData(event.getId()
-                                                       .toString());
-        correlationData.getFuture()
-                       .addCallback(confirm -> {
-                           var returnedMessage = correlationData.getReturned();
-                           if (returnedMessage != null) {
-                               log.warn("Message for event {} returned with code {}: {}",
-                                        event.getId(), returnedMessage.getReplyCode(),
-                                        returnedMessage.getMessage());
-                               callback.confirm(event, false);
-                           } else {
-                               callback.confirm(event, confirm != null && confirm.isAck());
-                           }
-                       }, fail -> log.error("Failed to confirm event: {}",
-                                            fail.getLocalizedMessage()));
+  private void send(EventMessage event, ConfirmCallback callback) {
+    log.debug(
+        "Sending event id: {}, timestamp: {}, routing-key: {}",
+        event.getId(),
+        event.getTimestamp(),
+        event.getRoutingKey());
+    var correlationData = new CorrelationData(event.getId().toString());
+    correlationData
+        .getFuture()
+        .addCallback(
+            confirm -> {
+              var returnedMessage = correlationData.getReturned();
+              if (returnedMessage != null) {
+                log.warn(
+                    "Message for event {} returned with code {}: {}",
+                    event.getId(),
+                    returnedMessage.getReplyCode(),
+                    returnedMessage.getMessage());
+                callback.confirm(event, false);
+              } else {
+                callback.confirm(event, confirm != null && confirm.isAck());
+              }
+            },
+            fail -> log.error("Failed to confirm event: {}", fail.getLocalizedMessage()));
 
-        rabbitTemplate.convertAndSend(exchange, event.getRoutingKey(), event, correlationData);
-    }
+    rabbitTemplate.convertAndSend(exchange, event.getRoutingKey(), event, correlationData);
+  }
 
-    @Async
-    public void sendAsync(EventMessage event, ConfirmCallback callback) {
-        this.sendAsync(Set.of(event), callback);
-    }
+  @Async
+  public void sendAsync(EventMessage event, ConfirmCallback callback) {
+    this.sendAsync(Set.of(event), callback);
+  }
 
-    @Async
-    public void sendAsync(Set<EventMessage> events, ConfirmCallback callback) {
-        events.forEach((e -> this.send(e, callback)));
-    }
+  @Async
+  public void sendAsync(Set<EventMessage> events, ConfirmCallback callback) {
+    events.forEach((e -> this.send(e, callback)));
+  }
 }

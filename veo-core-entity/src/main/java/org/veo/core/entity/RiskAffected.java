@@ -30,156 +30,140 @@ import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.risk.RiskValues;
 
-/**
- * An entity that is affected by risks resulting from association with
- * scenarios.
- */
+/** An entity that is affected by risks resulting from association with scenarios. */
 public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-        extends Element {
+    extends Element {
 
-    default void setRisks(Set<R> newRisks) {
-        getRisks().clear();
-        getRisks().addAll(newRisks);
+  default void setRisks(Set<R> newRisks) {
+    getRisks().clear();
+    getRisks().addAll(newRisks);
+  }
+
+  Set<R> getRisks();
+
+  default boolean addRisk(R risk) {
+    checkRisk(risk);
+    return getRisks().add(risk);
+  }
+
+  default boolean removeRisk(AbstractRisk<T, R> abstractRisk) {
+    return getRisks().remove(abstractRisk);
+  }
+
+  default void removeRisks(Set<R> risks) {
+    getRisks().removeAll(risks);
+  }
+
+  default void checkRisk(R risk) {
+    if (!risk.getEntity().equals(this)) throw new IllegalArgumentException();
+  }
+
+  /**
+   * Obtain a risk object for the given scenario in the provided domain. If the risk for this
+   * scenario does not yet exist, it will be created, otherwise, the existing risk will be returned.
+   * This behavior makes this method idempotent. It can be called with the same parameters multiple
+   * times. Subsequent calls after the first one will have no effect.
+   *
+   * @param scenario the scenario that causes the risk
+   * @param domain the domain in which this risk is relevant
+   * @return the newly created risk object or the existing one if it was previously created for the
+   *     scenario in this domain
+   */
+  R obtainRisk(Scenario scenario, Domain domain);
+
+  default Set<R> obtainRisks(
+      Set<Scenario> scenarios, Domain domain, Set<RiskDefinitionRef> riskDefinitions) {
+    return getOrCreateRisks(scenarios, singleton(domain), riskDefinitions);
+  }
+
+  default R obtainRisk(Scenario scenario, Set<Domain> domains) {
+    if (domains.isEmpty())
+      throw new IllegalArgumentException("Need at least one domain to create a risk.");
+
+    var risk = obtainRisk(scenario, domains.stream().findFirst().orElseThrow());
+    domains.forEach(risk::addToDomains);
+    return risk;
+  }
+
+  default Set<R> getOrCreateRisks(
+      Set<Scenario> scenarios, Set<Domain> domains, Set<RiskDefinitionRef> riskDefinitions) {
+    scenarios.forEach(s -> s.checkSameClient(this));
+    domains.forEach(this::isDomainValid);
+
+    return scenarios.stream().map(s -> obtainRisk(s, domains)).collect(Collectors.toSet());
+  }
+
+  default Optional<R> getRisk(Scenario scenario) {
+    return getRisks().stream().filter(risk -> risk.getScenario().equals(scenario)).findFirst();
+  }
+
+  default Optional<R> getRisk(Key<UUID> scenarioRef) {
+    return getRisks().stream()
+        .filter(risk -> risk.getScenario().getId().equals(scenarioRef))
+        .findFirst();
+  }
+
+  /**
+   * Updates an existing risk with new values. Increases the version number of the risk.
+   *
+   * @param existingRisk the existing risk value that will be updated with new values
+   * @param domains the new domain list
+   * @param mitigation the new control to mitigate this risk
+   * @param riskOwner the new person to appoint the risk to
+   * @return the updated risk entity
+   */
+  default R updateRisk(
+      R existingRisk,
+      Set<Domain> domains,
+      @Nullable Control mitigation,
+      @Nullable Person riskOwner,
+      Set<RiskValues> riskValuesSet) {
+
+    var riskToUpdate =
+        getRisk(existingRisk.getScenario())
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        String.format("The risk is not know to this object: %s", existingRisk)));
+
+    riskToUpdate.setDomains(domains);
+
+    // TODO VEO-209 remove the if-statement when risk values are supported for all
+    // risk-affected entities
+    if (riskToUpdate instanceof ProcessRisk) {
+      var processRisk = (ProcessRisk) riskToUpdate;
+      processRisk.defineRiskValues(riskValuesSet);
     }
 
-    Set<R> getRisks();
+    return riskToUpdate.mitigate(mitigation).appoint(riskOwner);
+  }
 
-    default boolean addRisk(R risk) {
-        checkRisk(risk);
-        return getRisks().add(risk);
+  default void isDomainValid(Domain domain) {
+    if (!getDomains().contains(domain))
+      throw new ModelConsistencyException(
+          "The provided domain '%s' is not yet known to this object. ", domain.getDisplayName());
+  }
+
+  @Override
+  default boolean removeFromDomains(Domain aDomain) {
+    boolean removed = Element.super.removeFromDomains(aDomain);
+    if (removed) {
+      getRisks().forEach(r -> r.removeFromDomains(aDomain));
     }
+    return removed;
+  }
 
-    default boolean removeRisk(AbstractRisk<T, R> abstractRisk) {
-        return getRisks().remove(abstractRisk);
+  @Override
+  default boolean addToDomains(Domain aDomain) {
+    boolean added = Element.super.addToDomains(aDomain);
+    if (added) {
+      getRisks().forEach(r -> r.addToDomains(aDomain));
     }
+    return added;
+  }
 
-    default void removeRisks(Set<R> risks) {
-        getRisks().removeAll(risks);
-    }
-
-    default void checkRisk(R risk) {
-        if (!risk.getEntity()
-                 .equals(this))
-            throw new IllegalArgumentException();
-    }
-
-    /**
-     * Obtain a risk object for the given scenario in the provided domain. If the
-     * risk for this scenario does not yet exist, it will be created, otherwise, the
-     * existing risk will be returned. This behavior makes this method idempotent.
-     * It can be called with the same parameters multiple times. Subsequent calls
-     * after the first one will have no effect.
-     *
-     * @param scenario
-     *            the scenario that causes the risk
-     * @param domain
-     *            the domain in which this risk is relevant
-     * @return the newly created risk object or the existing one if it was
-     *         previously created for the scenario in this domain
-     */
-    R obtainRisk(Scenario scenario, Domain domain);
-
-    default Set<R> obtainRisks(Set<Scenario> scenarios, Domain domain,
-            Set<RiskDefinitionRef> riskDefinitions) {
-        return getOrCreateRisks(scenarios, singleton(domain), riskDefinitions);
-    }
-
-    default R obtainRisk(Scenario scenario, Set<Domain> domains) {
-        if (domains.isEmpty())
-            throw new IllegalArgumentException("Need at least one domain to create a risk.");
-
-        var risk = obtainRisk(scenario, domains.stream()
-                                               .findFirst()
-                                               .orElseThrow());
-        domains.forEach(risk::addToDomains);
-        return risk;
-    }
-
-    default Set<R> getOrCreateRisks(Set<Scenario> scenarios, Set<Domain> domains,
-            Set<RiskDefinitionRef> riskDefinitions) {
-        scenarios.forEach(s -> s.checkSameClient(this));
-        domains.forEach(this::isDomainValid);
-
-        return scenarios.stream()
-                        .map(s -> obtainRisk(s, domains))
-                        .collect(Collectors.toSet());
-    }
-
-    default Optional<R> getRisk(Scenario scenario) {
-        return getRisks().stream()
-                         .filter(risk -> risk.getScenario()
-                                             .equals(scenario))
-                         .findFirst();
-    }
-
-    default Optional<R> getRisk(Key<UUID> scenarioRef) {
-        return getRisks().stream()
-                         .filter(risk -> risk.getScenario()
-                                             .getId()
-                                             .equals(scenarioRef))
-                         .findFirst();
-    }
-
-    /**
-     * Updates an existing risk with new values. Increases the version number of the
-     * risk.
-     *
-     * @param existingRisk
-     *            the existing risk value that will be updated with new values
-     * @param domains
-     *            the new domain list
-     * @param mitigation
-     *            the new control to mitigate this risk
-     * @param riskOwner
-     *            the new person to appoint the risk to
-     * @return the updated risk entity
-     */
-    default R updateRisk(R existingRisk, Set<Domain> domains, @Nullable Control mitigation,
-            @Nullable Person riskOwner, Set<RiskValues> riskValuesSet) {
-
-        var riskToUpdate = getRisk(existingRisk.getScenario()).orElseThrow(() -> new IllegalArgumentException(
-                String.format("The risk is not know to this object: %s", existingRisk)));
-
-        riskToUpdate.setDomains(domains);
-
-        // TODO VEO-209 remove the if-statement when risk values are supported for all
-        // risk-affected entities
-        if (riskToUpdate instanceof ProcessRisk) {
-            var processRisk = (ProcessRisk) riskToUpdate;
-            processRisk.defineRiskValues(riskValuesSet);
-        }
-
-        return riskToUpdate.mitigate(mitigation)
-                           .appoint(riskOwner);
-    }
-
-    default void isDomainValid(Domain domain) {
-        if (!getDomains().contains(domain))
-            throw new ModelConsistencyException(
-                    "The provided domain '%s' is not yet known to this object. ",
-                    domain.getDisplayName());
-    }
-
-    @Override
-    default boolean removeFromDomains(Domain aDomain) {
-        boolean removed = Element.super.removeFromDomains(aDomain);
-        if (removed) {
-            getRisks().forEach(r -> r.removeFromDomains(aDomain));
-        }
-        return removed;
-    }
-
-    @Override
-    default boolean addToDomains(Domain aDomain) {
-        boolean added = Element.super.addToDomains(aDomain);
-        if (added) {
-            getRisks().forEach(r -> r.addToDomains(aDomain));
-        }
-        return added;
-    }
-
-    @Override
-    default void transferToDomain(Domain oldDomain, Domain newDomain) {
-        Element.super.transferToDomain(oldDomain, newDomain);
-    }
+  @Override
+  default void transferToDomain(Domain oldDomain, Domain newDomain) {
+    Element.super.transferToDomain(oldDomain, newDomain);
+  }
 }

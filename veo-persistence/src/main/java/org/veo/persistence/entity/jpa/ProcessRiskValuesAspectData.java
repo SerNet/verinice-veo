@@ -67,109 +67,100 @@ import lombok.ToString;
 @TypeDef(name = "json", typeClass = JsonType.class)
 public class ProcessRiskValuesAspectData implements RiskValuesAspect {
 
-    ProcessRiskValuesAspectData(Domain domain, ProcessRiskData owner,
-            RiskDefinitionRef riskDefinition) {
-        this.domain = domain;
-        this.owner = owner;
-        this.riskDefinition = riskDefinition;
+  ProcessRiskValuesAspectData(
+      Domain domain, ProcessRiskData owner, RiskDefinitionRef riskDefinition) {
+    this.domain = domain;
+    this.owner = owner;
+    this.riskDefinition = riskDefinition;
 
-        this.probability = new ProbabilityImpl();
+    this.probability = new ProbabilityImpl();
 
-        var domainRiskDefinition = domain.getRiskDefinition(riskDefinition.getIdRef())
-                                         .orElseThrow(() -> new NotFoundException("Risk "
-                                                 + "definition ID %s not found in domain ID %s.",
-                                                 riskDefinition.getIdRef(), domain.getId()));
+    var domainRiskDefinition =
+        domain
+            .getRiskDefinition(riskDefinition.getIdRef())
+            .orElseThrow(
+                () ->
+                    new NotFoundException(
+                        "Risk " + "definition ID %s not found in domain ID %s.",
+                        riskDefinition.getIdRef(), domain.getId()));
 
-        var categoryRefs = domainRiskDefinition.getCategories()
-                                               .stream()
-                                               .map(CategoryRef::from)
-                                               .collect(toSet());
+    var categoryRefs =
+        domainRiskDefinition.getCategories().stream().map(CategoryRef::from).collect(toSet());
 
-        this.impactCategories = categoryRefs.stream()
-                                            .map(ImpactImpl::new)
-                                            .collect(toList());
+    this.impactCategories = categoryRefs.stream().map(ImpactImpl::new).collect(toList());
 
-        this.riskCategories = categoryRefs.stream()
-                                          .map(DeterminedRiskImpl::new)
-                                          .collect(toList());
-    }
+    this.riskCategories = categoryRefs.stream().map(DeterminedRiskImpl::new).collect(toList());
+  }
 
-    @Id
-    @ToString.Include
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private String dbId;
+  @Id
+  @ToString.Include
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  private String dbId;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainTemplateData.class, optional = false)
-    @JoinColumn(name = "domain_id")
-    private DomainTemplate domain;
+  @NotNull
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainTemplateData.class, optional = false)
+  @JoinColumn(name = "domain_id")
+  private DomainTemplate domain;
 
-    @Setter(AccessLevel.NONE)
-    @Column(length = RiskDefinition.MAX_ID_SIZE)
-    private RiskDefinitionRef riskDefinition;
+  @Setter(AccessLevel.NONE)
+  @Column(length = RiskDefinition.MAX_ID_SIZE)
+  private RiskDefinitionRef riskDefinition;
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = ProcessRiskData.class, optional = false)
-    @Setter(AccessLevel.NONE)
-    private ProcessRiskData owner;
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ProcessRiskData.class, optional = false)
+  @Setter(AccessLevel.NONE)
+  private ProcessRiskData owner;
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null)
-            return false;
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) return false;
 
-        if (this == o)
-            return true;
+    if (this == o) return true;
 
-        if (!(o instanceof ProcessRiskValuesAspectData))
-            return false;
+    if (!(o instanceof ProcessRiskValuesAspectData)) return false;
 
-        ProcessRiskValuesAspectData other = (ProcessRiskValuesAspectData) o;
-        // Transient (unmanaged) entities have an ID of 'null'. Only managed
-        // (persisted and detached) entities have an identity. JPA requires that
-        // an entity's identity remains the same over all state changes.
-        // Therefore a transient entity must never equal another entity.
-        String dbId = getDbId();
-        return dbId != null && dbId.equals(other.getDbId());
-    }
+    ProcessRiskValuesAspectData other = (ProcessRiskValuesAspectData) o;
+    // Transient (unmanaged) entities have an ID of 'null'. Only managed
+    // (persisted and detached) entities have an identity. JPA requires that
+    // an entity's identity remains the same over all state changes.
+    // Therefore a transient entity must never equal another entity.
+    String dbId = getDbId();
+    return dbId != null && dbId.equals(other.getDbId());
+  }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
+  }
 
-    @Column(columnDefinition = "jsonb")
-    @Type(type = "json")
-    private ProbabilityImpl probability;
+  @Column(columnDefinition = "jsonb")
+  @Type(type = "json")
+  private ProbabilityImpl probability;
 
-    @Column(columnDefinition = "jsonb")
-    @Type(type = "json")
-    private List<ImpactImpl> impactCategories = new ArrayList<>();
+  @Column(columnDefinition = "jsonb")
+  @Type(type = "json")
+  private List<ImpactImpl> impactCategories = new ArrayList<>();
 
-    @Column(columnDefinition = "jsonb")
-    @Type(type = "json")
-    private List<DeterminedRiskImpl> riskCategories = new ArrayList<>();
+  @Column(columnDefinition = "jsonb")
+  @Type(type = "json")
+  private List<DeterminedRiskImpl> riskCategories = new ArrayList<>();
 
-    @Override
-    public Key<UUID> getDomainId() {
-        return domain.getId();
-    }
+  @Override
+  public Key<UUID> getDomainId() {
+    return domain.getId();
+  }
 
-    @Override
-    public Key<String> getRiskDefinitionId() {
-        return new Key<>(riskDefinition.getIdRef());
-    }
+  @Override
+  public Key<String> getRiskDefinitionId() {
+    return new Key<>(riskDefinition.getIdRef());
+  }
 
-    public List<Impact> getImpactCategories() {
-        return impactCategories.stream()
-                               .map(Impact.class::cast)
-                               .collect(toList());
-    }
+  public List<Impact> getImpactCategories() {
+    return impactCategories.stream().map(Impact.class::cast).collect(toList());
+  }
 
-    @Override
-    public List<DeterminedRisk> getCategorizedRisks() {
-        return riskCategories.stream()
-                             .map(DeterminedRisk.class::cast)
-                             .collect(toList());
-    }
+  @Override
+  public List<DeterminedRisk> getCategorizedRisks() {
+    return riskCategories.stream().map(DeterminedRisk.class::cast).collect(toList());
+  }
 }

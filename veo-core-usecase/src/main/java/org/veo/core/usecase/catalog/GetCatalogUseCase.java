@@ -32,30 +32,30 @@ import org.veo.core.usecase.UseCaseTools;
 import lombok.Value;
 
 public class GetCatalogUseCase
-        implements TransactionalUseCase<IdAndClient, GetCatalogUseCase.OutputData> {
-    private final CatalogRepository repository;
+    implements TransactionalUseCase<IdAndClient, GetCatalogUseCase.OutputData> {
+  private final CatalogRepository repository;
 
-    public GetCatalogUseCase(CatalogRepository repository) {
-        this.repository = repository;
-    }
+  public GetCatalogUseCase(CatalogRepository repository) {
+    this.repository = repository;
+  }
 
-    @Override
-    public OutputData execute(IdAndClient input) {
-        Catalog catalog = repository.findById(input.getId())
-                                    .orElseThrow(() -> new NotFoundException(input.getId()
-                                                                                  .uuidValue()));
-        DomainTemplate domaintemplate = catalog.getDomainTemplate();
-        UseCaseTools.checkDomainBelongsToClient(input.getAuthenticatedClient(), domaintemplate);
-        if (!((Domain) domaintemplate).isActive()) {
-            throw new NotFoundException("Domain is inactive.");
-        }
-        return new OutputData(catalog);
+  @Override
+  public OutputData execute(IdAndClient input) {
+    Catalog catalog =
+        repository
+            .findById(input.getId())
+            .orElseThrow(() -> new NotFoundException(input.getId().uuidValue()));
+    DomainTemplate domaintemplate = catalog.getDomainTemplate();
+    UseCaseTools.checkDomainBelongsToClient(input.getAuthenticatedClient(), domaintemplate);
+    if (!((Domain) domaintemplate).isActive()) {
+      throw new NotFoundException("Domain is inactive.");
     }
+    return new OutputData(catalog);
+  }
 
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        Catalog catalog;
-    }
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid Catalog catalog;
+  }
 }

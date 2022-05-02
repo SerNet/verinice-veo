@@ -25,37 +25,31 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 
 /**
- * Builds and returns an entity JSON-schema that matches the requestes entity
- * type and domain(s).
+ * Builds and returns an entity JSON-schema that matches the requestes entity type and domain(s).
  */
 public interface EntitySchemaService {
 
-    /**
-     * Build and return a schema JSON as a simple string.
-     *
-     * @param type
-     *            the entity type, i.e. 'process'
-     * @param domains
-     *            the domains to use, i.e. 'GDPR', 'ISO_27001'
-     * @return a JSON schema document dynamically generated for the above parameters
-     */
-    String findSchema(String type, Set<Domain> domains);
+  /**
+   * Build and return a schema JSON as a simple string.
+   *
+   * @param type the entity type, i.e. 'process'
+   * @param domains the domains to use, i.e. 'GDPR', 'ISO_27001'
+   * @return a JSON schema document dynamically generated for the above parameters
+   */
+  String findSchema(String type, Set<Domain> domains);
 
-    /**
-     * Returns a translations for the given language identifiers. If no translation
-     * is present for any identifier, it will be ignored.
-     */
-    Translations findTranslations(Client client, Set<String> languages);
+  /**
+   * Returns a translations for the given language identifiers. If no translation is present for any
+   * identifier, it will be ignored.
+   */
+  Translations findTranslations(Client client, Set<String> languages);
 
-    /**
-     * Filter the inputSchema to remove attributes that do not match the given user
-     * roles
-     *
-     * @param roles
-     *            the role identifiers that the user is allowed to see
-     * @param inputSchema
-     *            the input schema from which certain attributes will be removed
-     * @return the reduced JSON-schema document
-     */
-    String roleFilter(List<String> roles, String inputSchema);
+  /**
+   * Filter the inputSchema to remove attributes that do not match the given user roles
+   *
+   * @param roles the role identifiers that the user is allowed to see
+   * @param inputSchema the input schema from which certain attributes will be removed
+   * @return the reduced JSON-schema document
+   */
+  String roleFilter(List<String> roles, String inputSchema);
 }

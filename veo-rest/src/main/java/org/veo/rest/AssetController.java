@@ -123,343 +123,424 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * REST service which provides methods to manage assets.
- */
+/** REST service which provides methods to manage assets. */
 @RestController
 @RequestMapping(AssetController.URL_BASE_PATH)
 @Slf4j
 public class AssetController extends AbstractElementController<Asset, FullAssetDto>
-        implements AssetRiskResource {
+    implements AssetRiskResource {
 
-    private final DeleteRiskUseCase deleteRiskUseCase;
-    private final UpdateAssetRiskUseCase updateAssetRiskUseCase;
-    private final GetAssetRisksUseCase getAssetRisksUseCase;
+  private final DeleteRiskUseCase deleteRiskUseCase;
+  private final UpdateAssetRiskUseCase updateAssetRiskUseCase;
+  private final GetAssetRisksUseCase getAssetRisksUseCase;
 
-    public AssetController(GetAssetUseCase getAssetUseCase, GetAssetsUseCase getAssetsUseCase,
-            CreateAssetUseCase createAssetUseCase, UpdateAssetUseCase updateAssetUseCase,
-            DeleteElementUseCase deleteElementUseCase,
-            CreateAssetRiskUseCase createAssetRiskUseCase, GetAssetRiskUseCase getAssetRiskUseCase,
-            DeleteRiskUseCase deleteRiskUseCase, UpdateAssetRiskUseCase updateAssetRiskUseCase,
-            GetAssetRisksUseCase getAssetRisksUseCase,
-            EvaluateDecisionUseCase evaluateDecisionUseCase) {
-        super(Asset.class, getAssetUseCase, evaluateDecisionUseCase);
-        this.getAssetsUseCase = getAssetsUseCase;
-        this.createAssetUseCase = createAssetUseCase;
-        this.updateAssetUseCase = updateAssetUseCase;
-        this.deleteElementUseCase = deleteElementUseCase;
-        this.createAssetRiskUseCase = createAssetRiskUseCase;
-        this.getAssetRiskUseCase = getAssetRiskUseCase;
-        this.deleteRiskUseCase = deleteRiskUseCase;
-        this.updateAssetRiskUseCase = updateAssetRiskUseCase;
-        this.getAssetRisksUseCase = getAssetRisksUseCase;
+  public AssetController(
+      GetAssetUseCase getAssetUseCase,
+      GetAssetsUseCase getAssetsUseCase,
+      CreateAssetUseCase createAssetUseCase,
+      UpdateAssetUseCase updateAssetUseCase,
+      DeleteElementUseCase deleteElementUseCase,
+      CreateAssetRiskUseCase createAssetRiskUseCase,
+      GetAssetRiskUseCase getAssetRiskUseCase,
+      DeleteRiskUseCase deleteRiskUseCase,
+      UpdateAssetRiskUseCase updateAssetRiskUseCase,
+      GetAssetRisksUseCase getAssetRisksUseCase,
+      EvaluateDecisionUseCase evaluateDecisionUseCase) {
+    super(Asset.class, getAssetUseCase, evaluateDecisionUseCase);
+    this.getAssetsUseCase = getAssetsUseCase;
+    this.createAssetUseCase = createAssetUseCase;
+    this.updateAssetUseCase = updateAssetUseCase;
+    this.deleteElementUseCase = deleteElementUseCase;
+    this.createAssetRiskUseCase = createAssetRiskUseCase;
+    this.getAssetRiskUseCase = getAssetRiskUseCase;
+    this.deleteRiskUseCase = deleteRiskUseCase;
+    this.updateAssetRiskUseCase = updateAssetRiskUseCase;
+    this.getAssetRisksUseCase = getAssetRisksUseCase;
+  }
+
+  public static final String URL_BASE_PATH = "/" + Asset.PLURAL_TERM;
+
+  private final CreateAssetUseCase createAssetUseCase;
+  private final UpdateAssetUseCase updateAssetUseCase;
+  private final GetAssetsUseCase getAssetsUseCase;
+  private final DeleteElementUseCase deleteElementUseCase;
+  private final CreateAssetRiskUseCase createAssetRiskUseCase;
+  private final GetAssetRiskUseCase getAssetRiskUseCase;
+
+  @GetMapping
+  @Operation(summary = "Loads all assets")
+  public @Valid CompletableFuture<PageDto<FullAssetDto>> getAssets(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
+      @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
+      @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
+      @RequestParam(value = STATUS_PARAM, required = false) String status,
+      @RequestParam(value = CHILD_ELEMENT_IDS_PARAM, required = false) List<String> childElementIds,
+      @RequestParam(value = HAS_PARENT_ELEMENTS_PARAM, required = false) Boolean hasParentElements,
+      @RequestParam(value = HAS_CHILD_ELEMENTS_PARAM, required = false) Boolean hasChildElements,
+      @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
+      @RequestParam(value = DESIGNATOR_PARAM, required = false) String designator,
+      @RequestParam(value = NAME_PARAM, required = false) String name,
+      @RequestParam(value = UPDATED_BY_PARAM, required = false) String updatedBy,
+      @RequestParam(
+              value = PAGE_SIZE_PARAM,
+              required = false,
+              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          Integer pageSize,
+      @RequestParam(
+              value = PAGE_NUMBER_PARAM,
+              required = false,
+              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
+          Integer pageNumber,
+      @RequestParam(
+              value = SORT_COLUMN_PARAM,
+              required = false,
+              defaultValue = SORT_COLUMN_DEFAULT_VALUE)
+          String sortColumn,
+      @RequestParam(
+              value = SORT_ORDER_PARAM,
+              required = false,
+              defaultValue = SORT_ORDER_DEFAULT_VALUE)
+          @Pattern(regexp = SORT_ORDER_PATTERN)
+          String sortOrder) {
+    Client client;
+    try {
+      client = getAuthenticatedClient(auth);
+    } catch (NoSuchElementException e) {
+      return CompletableFuture.supplyAsync(PageDto::emptyPage);
     }
 
-    public static final String URL_BASE_PATH = "/" + Asset.PLURAL_TERM;
+    return getAssets(
+        GetElementsInputMapper.map(
+            client,
+            unitUuid,
+            displayName,
+            subType,
+            status,
+            childElementIds,
+            hasChildElements,
+            hasParentElements,
+            description,
+            designator,
+            name,
+            updatedBy,
+            PagingMapper.toConfig(
+                pageSize, pageNumber,
+                sortColumn, sortOrder)));
+  }
 
-    private final CreateAssetUseCase createAssetUseCase;
-    private final UpdateAssetUseCase updateAssetUseCase;
-    private final GetAssetsUseCase getAssetsUseCase;
-    private final DeleteElementUseCase deleteElementUseCase;
-    private final CreateAssetRiskUseCase createAssetRiskUseCase;
-    private final GetAssetRiskUseCase getAssetRiskUseCase;
+  private CompletableFuture<PageDto<FullAssetDto>> getAssets(
+      GetElementsUseCase.InputData inputData) {
+    return useCaseInteractor.execute(
+        getAssetsUseCase,
+        inputData,
+        output ->
+            PagingMapper.toPage(output.getElements(), entityToDtoTransformer::transformAsset2Dto));
+  }
 
-    @GetMapping
-    @Operation(summary = "Loads all assets")
-    public @Valid CompletableFuture<PageDto<FullAssetDto>> getAssets(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
-            @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
-            @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
-            @RequestParam(value = STATUS_PARAM, required = false) String status,
-            @RequestParam(value = CHILD_ELEMENT_IDS_PARAM,
-                          required = false) List<String> childElementIds,
-            @RequestParam(value = HAS_PARENT_ELEMENTS_PARAM,
-                          required = false) Boolean hasParentElements,
-            @RequestParam(value = HAS_CHILD_ELEMENTS_PARAM,
-                          required = false) Boolean hasChildElements,
-            @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
-            @RequestParam(value = DESIGNATOR_PARAM, required = false) String designator,
-            @RequestParam(value = NAME_PARAM, required = false) String name,
-            @RequestParam(value = UPDATED_BY_PARAM, required = false) String updatedBy,
-            @RequestParam(value = PAGE_SIZE_PARAM,
-                          required = false,
-                          defaultValue = PAGE_SIZE_DEFAULT_VALUE) Integer pageSize,
-            @RequestParam(value = PAGE_NUMBER_PARAM,
-                          required = false,
-                          defaultValue = PAGE_NUMBER_DEFAULT_VALUE) Integer pageNumber,
-            @RequestParam(value = SORT_COLUMN_PARAM,
-                          required = false,
-                          defaultValue = SORT_COLUMN_DEFAULT_VALUE) String sortColumn,
-            @RequestParam(value = SORT_ORDER_PARAM,
-                          required = false,
-                          defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
-        Client client;
-        try {
-            client = getAuthenticatedClient(auth);
-        } catch (NoSuchElementException e) {
-            return CompletableFuture.supplyAsync(PageDto::emptyPage);
-        }
+  @Override
+  @Operation(summary = "Loads an asset")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Asset loaded",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = FullAssetDto.class))),
+        @ApiResponse(responseCode = "404", description = "Asset not found")
+      })
+  @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
+  public @Valid CompletableFuture<ResponseEntity<FullAssetDto>> getElement(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      WebRequest request) {
+    return super.getElement(auth, uuid, request);
+  }
 
-        return getAssets(GetElementsInputMapper.map(client, unitUuid, displayName, subType, status,
-                                                    childElementIds, hasChildElements,
-                                                    hasParentElements, description, designator,
-                                                    name, updatedBy,
-                                                    PagingMapper.toConfig(pageSize, pageNumber,
-                                                                          sortColumn, sortOrder)));
-    }
+  @Override
+  @Operation(summary = "Loads the parts of an asset")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Parts loaded",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array = @ArraySchema(schema = @Schema(implementation = FullAssetDto.class)))),
+        @ApiResponse(responseCode = "404", description = "Asset not found")
+      })
+  @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+  public @Valid CompletableFuture<ResponseEntity<List<FullAssetDto>>> getElementParts(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      WebRequest request) {
+    return super.getElementParts(auth, uuid, request);
+  }
 
-    private CompletableFuture<PageDto<FullAssetDto>> getAssets(
-            GetElementsUseCase.InputData inputData) {
-        return useCaseInteractor.execute(getAssetsUseCase, inputData,
-                                         output -> PagingMapper.toPage(output.getElements(),
-                                                                       entityToDtoTransformer::transformAsset2Dto));
-    }
+  @PostMapping()
+  @Operation(summary = "Creates an asset")
+  @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Asset created")})
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> createAsset(
+      @Parameter(hidden = true) ApplicationUser user,
+      @Valid @NotNull @RequestBody @JsonSchemaValidation(Asset.SINGULAR_TERM) CreateAssetDto dto) {
 
-    @Override
-    @Operation(summary = "Loads an asset")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Asset loaded",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = FullAssetDto.class))),
-            @ApiResponse(responseCode = "404", description = "Asset not found") })
-    @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
-    public @Valid CompletableFuture<ResponseEntity<FullAssetDto>> getElement(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @Parameter(required = true,
-                       example = UUID_EXAMPLE,
-                       description = UUID_DESCRIPTION) @PathVariable String uuid,
-            WebRequest request) {
-        return super.getElement(auth, uuid, request);
-    }
-
-    @Override
-    @Operation(summary = "Loads the parts of an asset")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Parts loaded",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            array = @ArraySchema(schema = @Schema(implementation = FullAssetDto.class)))),
-            @ApiResponse(responseCode = "404", description = "Asset not found") })
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
-    public @Valid CompletableFuture<ResponseEntity<List<FullAssetDto>>> getElementParts(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @Parameter(required = true,
-                       example = UUID_EXAMPLE,
-                       description = UUID_DESCRIPTION) @PathVariable String uuid,
-            WebRequest request) {
-        return super.getElementParts(auth, uuid, request);
-    }
-
-    @PostMapping()
-    @Operation(summary = "Creates an asset")
-    @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Asset created") })
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> createAsset(
-            @Parameter(hidden = true) ApplicationUser user,
-            @Valid @NotNull @RequestBody @JsonSchemaValidation(Asset.SINGULAR_TERM) CreateAssetDto dto) {
-
-        return useCaseInteractor.execute(createAssetUseCase,
-                                         (Supplier<CreateElementUseCase.InputData<Asset>>) () -> {
-                                             Client client = getClient(user);
-                                             IdRefResolver idRefResolver = createIdRefResolver(client);
-                                             return new CreateElementUseCase.InputData<>(
-                                                     dtoToEntityTransformer.transformDto2Asset(dto,
-                                                                                               idRefResolver),
-                                                     client);
-                                         }, output -> {
-                                             ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
-                                             return RestApiResponse.created(URL_BASE_PATH, body);
-                                         });
-    }
-
-    @PutMapping(value = "/{id}")
-    @Operation(summary = "Updates an asset")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Asset updated"),
-            @ApiResponse(responseCode = "404", description = "Asset not found") })
-    public CompletableFuture<FullAssetDto> updateAsset(
-            @Parameter(hidden = true) ApplicationUser user,
-            @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
-            @PathVariable String id,
-            @Valid @NotNull @RequestBody @JsonSchemaValidation(Asset.SINGULAR_TERM) FullAssetDto assetDto) {
-        assetDto.applyResourceId(id);
-        return useCaseInteractor.execute(updateAssetUseCase,
-                                         (Supplier<ModifyElementUseCase.InputData<Asset>>) () -> {
-                                             Client client = getClient(user);
-                                             IdRefResolver idRefResolver = createIdRefResolver(client);
-                                             return new ModifyElementUseCase.InputData<>(
-                                                     dtoToEntityTransformer.transformDto2Asset(assetDto,
-                                                                                               idRefResolver),
-                                                     client, eTag, user.getUsername());
-                                         },
-                                         output -> entityToDtoTransformer.transformAsset2Dto(output.getEntity()));
-    }
-
-    @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
-    @Operation(summary = "Deletes an asset")
-    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Asset deleted"),
-            @ApiResponse(responseCode = "404", description = "Asset not found") })
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteAsset(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @Parameter(required = true,
-                       example = UUID_EXAMPLE,
-                       description = UUID_DESCRIPTION) @PathVariable String uuid) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
-        return useCaseInteractor.execute(deleteElementUseCase,
-                                         new DeleteElementUseCase.InputData(Asset.class,
-                                                 Key.uuidFrom(uuid), client),
-                                         output -> ResponseEntity.noContent()
-                                                                 .build());
-    }
-
-    @Override
-    @SuppressFBWarnings("NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS")
-    protected String buildSearchUri(String id) {
-        return linkTo(methodOn(AssetController.class).runSearch(ANY_AUTH, id, ANY_INT, ANY_INT,
-                                                                ANY_STRING, ANY_STRING))
-                                                                                        .withSelfRel()
-                                                                                        .getHref();
-    }
-
-    @GetMapping(value = "/searches/{searchId}")
-    @Operation(summary = "Finds assets for the search.")
-    public @Valid CompletableFuture<PageDto<FullAssetDto>> runSearch(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @PathVariable String searchId,
-            @RequestParam(value = PAGE_SIZE_PARAM,
-                          required = false,
-                          defaultValue = PAGE_SIZE_DEFAULT_VALUE) Integer pageSize,
-            @RequestParam(value = PAGE_NUMBER_PARAM,
-                          required = false,
-                          defaultValue = PAGE_NUMBER_DEFAULT_VALUE) Integer pageNumber,
-            @RequestParam(value = SORT_COLUMN_PARAM,
-                          required = false,
-                          defaultValue = SORT_COLUMN_DEFAULT_VALUE) String sortColumn,
-            @RequestParam(value = SORT_ORDER_PARAM,
-                          required = false,
-                          defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
-        try {
-            return getAssets(GetElementsInputMapper.map(getAuthenticatedClient(auth),
-                                                        SearchQueryDto.decodeFromSearchId(searchId),
-                                                        PagingMapper.toConfig(pageSize, pageNumber,
-                                                                              sortColumn,
-                                                                              sortOrder)));
-        } catch (IOException e) {
-            log.error("Could not decode search URL: {}", e.getLocalizedMessage());
-            return null;
-        }
-    }
-
-    @Operation(summary = "Evaluates a decision on a transient asset without persisting anything")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Decision evaluated",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            array = @ArraySchema(schema = @Schema(implementation = FullAssetDto.class)))),
-            @ApiResponse(responseCode = "404", description = "Decision not found") })
-    @PostMapping(value = "/decision-evaluation")
-    public @Valid CompletableFuture<ResponseEntity<DecisionResult>> evaluateDecision(
-            @Parameter(required = true, hidden = true) Authentication auth,
-            @Valid @RequestBody FullAssetDto element,
-            @Parameter(description = DECISION_KEY_DESCRIPTION) @RequestParam(value = DECISION_KEY_PARAM) String decisionKey,
-            @RequestParam(value = DOMAIN_PARAM) String domainId) {
-        return super.evaluateDecision(auth, element, decisionKey, domainId);
-    }
-
-    @Override
-    public @Valid CompletableFuture<List<AssetRiskDto>> getRisks(
-            @Parameter(hidden = true) ApplicationUser user, String assetId) {
-
-        Client client = getClient(user.getClientId());
-        var input = new GetAssetRisksUseCase.InputData(client, Key.uuidFrom(assetId));
-
-        return useCaseInteractor.execute(getAssetRisksUseCase, input, output -> output.getRisks()
-                                                                                      .stream()
-                                                                                      .map(risk -> AssetRiskDto.from(risk,
-                                                                                                                     referenceAssembler))
-                                                                                      .collect(Collectors.toList()));
-    }
-
-    @Override
-    public @Valid CompletableFuture<ResponseEntity<AssetRiskDto>> getRisk(
-            @Parameter(hidden = true) ApplicationUser user, String assetId, String scenarioId) {
-
-        Client client = getClient(user.getClientId());
-        var input = new GetAssetRiskUseCase.InputData(client, Key.uuidFrom(assetId),
-                Key.uuidFrom(scenarioId));
-
-        var riskFuture = useCaseInteractor.execute(getAssetRiskUseCase, input,
-                                                   output -> AssetRiskDto.from(output.getRisk(),
-                                                                               referenceAssembler));
-
-        return riskFuture.thenApply(riskDto -> ResponseEntity.ok()
-                                                             .eTag(ETag.from(riskDto.getAsset()
-                                                                                    .getId(),
-                                                                             riskDto.getScenario()
-                                                                                    .getId(),
-                                                                             riskDto.getVersion()))
-                                                             .body(riskDto));
-    }
-
-    @Override
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(ApplicationUser user,
-            @Valid @NotNull AssetRiskDto dto, String assetId) {
-
-        var input = new CreateAssetRiskUseCase.InputData(getClient(user.getClientId()),
-                Key.uuidFrom(assetId), urlAssembler.toKey(dto.getScenario()),
-                urlAssembler.toKeys(dto.getDomainReferences()),
-                urlAssembler.toKey(dto.getMitigation()), urlAssembler.toKey(dto.getRiskOwner()),
-                null);
-
-        return useCaseInteractor.execute(createAssetRiskUseCase, input, output -> {
-            if (!output.isNewlyCreatedRisk())
-                return RestApiResponse.noContent();
-
-            var url = String.format("%s/%s/%s", URL_BASE_PATH, output.getRisk()
-                                                                     .getEntity()
-                                                                     .getId()
-                                                                     .uuidValue(),
-                                    AssetRiskResource.RESOURCE_NAME);
-            var body = new ApiResponseBody(true, Optional.of(output.getRisk()
-                                                                   .getScenario()
-                                                                   .getId()
-                                                                   .uuidValue()),
-                    "Asset risk created successfully.");
-            return RestApiResponse.created(url, body);
+    return useCaseInteractor.execute(
+        createAssetUseCase,
+        (Supplier<CreateElementUseCase.InputData<Asset>>)
+            () -> {
+              Client client = getClient(user);
+              IdRefResolver idRefResolver = createIdRefResolver(client);
+              return new CreateElementUseCase.InputData<>(
+                  dtoToEntityTransformer.transformDto2Asset(dto, idRefResolver), client);
+            },
+        output -> {
+          ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
+          return RestApiResponse.created(URL_BASE_PATH, body);
         });
+  }
+
+  @PutMapping(value = "/{id}")
+  @Operation(summary = "Updates an asset")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Asset updated"),
+        @ApiResponse(responseCode = "404", description = "Asset not found")
+      })
+  public CompletableFuture<FullAssetDto> updateAsset(
+      @Parameter(hidden = true) ApplicationUser user,
+      @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
+      @PathVariable String id,
+      @Valid @NotNull @RequestBody @JsonSchemaValidation(Asset.SINGULAR_TERM)
+          FullAssetDto assetDto) {
+    assetDto.applyResourceId(id);
+    return useCaseInteractor.execute(
+        updateAssetUseCase,
+        (Supplier<ModifyElementUseCase.InputData<Asset>>)
+            () -> {
+              Client client = getClient(user);
+              IdRefResolver idRefResolver = createIdRefResolver(client);
+              return new ModifyElementUseCase.InputData<>(
+                  dtoToEntityTransformer.transformDto2Asset(assetDto, idRefResolver),
+                  client,
+                  eTag,
+                  user.getUsername());
+            },
+        output -> entityToDtoTransformer.transformAsset2Dto(output.getEntity()));
+  }
+
+  @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
+  @Operation(summary = "Deletes an asset")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "204", description = "Asset deleted"),
+        @ApiResponse(responseCode = "404", description = "Asset not found")
+      })
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteAsset(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid) {
+    ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
+    Client client = getClient(user.getClientId());
+    return useCaseInteractor.execute(
+        deleteElementUseCase,
+        new DeleteElementUseCase.InputData(Asset.class, Key.uuidFrom(uuid), client),
+        output -> ResponseEntity.noContent().build());
+  }
+
+  @Override
+  @SuppressFBWarnings("NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS")
+  protected String buildSearchUri(String id) {
+    return linkTo(
+            methodOn(AssetController.class)
+                .runSearch(ANY_AUTH, id, ANY_INT, ANY_INT, ANY_STRING, ANY_STRING))
+        .withSelfRel()
+        .getHref();
+  }
+
+  @GetMapping(value = "/searches/{searchId}")
+  @Operation(summary = "Finds assets for the search.")
+  public @Valid CompletableFuture<PageDto<FullAssetDto>> runSearch(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @PathVariable String searchId,
+      @RequestParam(
+              value = PAGE_SIZE_PARAM,
+              required = false,
+              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          Integer pageSize,
+      @RequestParam(
+              value = PAGE_NUMBER_PARAM,
+              required = false,
+              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
+          Integer pageNumber,
+      @RequestParam(
+              value = SORT_COLUMN_PARAM,
+              required = false,
+              defaultValue = SORT_COLUMN_DEFAULT_VALUE)
+          String sortColumn,
+      @RequestParam(
+              value = SORT_ORDER_PARAM,
+              required = false,
+              defaultValue = SORT_ORDER_DEFAULT_VALUE)
+          @Pattern(regexp = SORT_ORDER_PATTERN)
+          String sortOrder) {
+    try {
+      return getAssets(
+          GetElementsInputMapper.map(
+              getAuthenticatedClient(auth),
+              SearchQueryDto.decodeFromSearchId(searchId),
+              PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
+    } catch (IOException e) {
+      log.error("Could not decode search URL: {}", e.getLocalizedMessage());
+      return null;
     }
+  }
 
-    @Override
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(ApplicationUser user,
-            String assetId, String scenarioId) {
+  @Operation(summary = "Evaluates a decision on a transient asset without persisting anything")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Decision evaluated",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array = @ArraySchema(schema = @Schema(implementation = FullAssetDto.class)))),
+        @ApiResponse(responseCode = "404", description = "Decision not found")
+      })
+  @PostMapping(value = "/decision-evaluation")
+  public @Valid CompletableFuture<ResponseEntity<DecisionResult>> evaluateDecision(
+      @Parameter(required = true, hidden = true) Authentication auth,
+      @Valid @RequestBody FullAssetDto element,
+      @Parameter(description = DECISION_KEY_DESCRIPTION) @RequestParam(value = DECISION_KEY_PARAM)
+          String decisionKey,
+      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+    return super.evaluateDecision(auth, element, decisionKey, domainId);
+  }
 
-        Client client = getClient(user.getClientId());
-        var input = new DeleteRiskUseCase.InputData(Asset.class, client, Key.uuidFrom(assetId),
-                Key.uuidFrom(scenarioId));
+  @Override
+  public @Valid CompletableFuture<List<AssetRiskDto>> getRisks(
+      @Parameter(hidden = true) ApplicationUser user, String assetId) {
 
-        return useCaseInteractor.execute(deleteRiskUseCase, input,
-                                         output -> ResponseEntity.noContent()
-                                                                 .build());
-    }
+    Client client = getClient(user.getClientId());
+    var input = new GetAssetRisksUseCase.InputData(client, Key.uuidFrom(assetId));
 
-    @Override
-    public @Valid CompletableFuture<ResponseEntity<AssetRiskDto>> updateRisk(ApplicationUser user,
-            String assetId, String scenarioId, @Valid @NotNull AssetRiskDto dto, String eTag) {
+    return useCaseInteractor.execute(
+        getAssetRisksUseCase,
+        input,
+        output ->
+            output.getRisks().stream()
+                .map(risk -> AssetRiskDto.from(risk, referenceAssembler))
+                .collect(Collectors.toList()));
+  }
 
-        var input = new UpdateAssetRiskUseCase.InputData(getClient(user.getClientId()),
-                Key.uuidFrom(assetId), urlAssembler.toKey(dto.getScenario()),
-                urlAssembler.toKeys(dto.getDomainReferences()),
-                urlAssembler.toKey(dto.getMitigation()), urlAssembler.toKey(dto.getRiskOwner()),
-                eTag, null);
+  @Override
+  public @Valid CompletableFuture<ResponseEntity<AssetRiskDto>> getRisk(
+      @Parameter(hidden = true) ApplicationUser user, String assetId, String scenarioId) {
 
-        // update risk and return saved risk with updated ETag, timestamps etc.:
-        return useCaseInteractor.execute(updateAssetRiskUseCase, input, output -> null)
-                                .thenCompose(o -> this.getRisk(user, assetId, scenarioId));
-    }
+    Client client = getClient(user.getClientId());
+    var input =
+        new GetAssetRiskUseCase.InputData(client, Key.uuidFrom(assetId), Key.uuidFrom(scenarioId));
 
-    @Override
-    protected FullAssetDto entity2Dto(Asset entity) {
-        return entityToDtoTransformer.transformAsset2Dto(entity);
-    }
+    var riskFuture =
+        useCaseInteractor.execute(
+            getAssetRiskUseCase,
+            input,
+            output -> AssetRiskDto.from(output.getRisk(), referenceAssembler));
+
+    return riskFuture.thenApply(
+        riskDto ->
+            ResponseEntity.ok()
+                .eTag(
+                    ETag.from(
+                        riskDto.getAsset().getId(),
+                        riskDto.getScenario().getId(),
+                        riskDto.getVersion()))
+                .body(riskDto));
+  }
+
+  @Override
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
+      ApplicationUser user, @Valid @NotNull AssetRiskDto dto, String assetId) {
+
+    var input =
+        new CreateAssetRiskUseCase.InputData(
+            getClient(user.getClientId()),
+            Key.uuidFrom(assetId),
+            urlAssembler.toKey(dto.getScenario()),
+            urlAssembler.toKeys(dto.getDomainReferences()),
+            urlAssembler.toKey(dto.getMitigation()),
+            urlAssembler.toKey(dto.getRiskOwner()),
+            null);
+
+    return useCaseInteractor.execute(
+        createAssetRiskUseCase,
+        input,
+        output -> {
+          if (!output.isNewlyCreatedRisk()) return RestApiResponse.noContent();
+
+          var url =
+              String.format(
+                  "%s/%s/%s",
+                  URL_BASE_PATH,
+                  output.getRisk().getEntity().getId().uuidValue(),
+                  AssetRiskResource.RESOURCE_NAME);
+          var body =
+              new ApiResponseBody(
+                  true,
+                  Optional.of(output.getRisk().getScenario().getId().uuidValue()),
+                  "Asset risk created successfully.");
+          return RestApiResponse.created(url, body);
+        });
+  }
+
+  @Override
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(
+      ApplicationUser user, String assetId, String scenarioId) {
+
+    Client client = getClient(user.getClientId());
+    var input =
+        new DeleteRiskUseCase.InputData(
+            Asset.class, client, Key.uuidFrom(assetId), Key.uuidFrom(scenarioId));
+
+    return useCaseInteractor.execute(
+        deleteRiskUseCase, input, output -> ResponseEntity.noContent().build());
+  }
+
+  @Override
+  public @Valid CompletableFuture<ResponseEntity<AssetRiskDto>> updateRisk(
+      ApplicationUser user,
+      String assetId,
+      String scenarioId,
+      @Valid @NotNull AssetRiskDto dto,
+      String eTag) {
+
+    var input =
+        new UpdateAssetRiskUseCase.InputData(
+            getClient(user.getClientId()),
+            Key.uuidFrom(assetId),
+            urlAssembler.toKey(dto.getScenario()),
+            urlAssembler.toKeys(dto.getDomainReferences()),
+            urlAssembler.toKey(dto.getMitigation()),
+            urlAssembler.toKey(dto.getRiskOwner()),
+            eTag,
+            null);
+
+    // update risk and return saved risk with updated ETag, timestamps etc.:
+    return useCaseInteractor
+        .execute(updateAssetRiskUseCase, input, output -> null)
+        .thenCompose(o -> this.getRisk(user, assetId, scenarioId));
+  }
+
+  @Override
+  protected FullAssetDto entity2Dto(Asset entity) {
+    return entityToDtoTransformer.transformAsset2Dto(entity);
+  }
 }

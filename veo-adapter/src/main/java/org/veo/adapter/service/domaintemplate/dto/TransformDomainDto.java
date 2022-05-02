@@ -27,5 +27,5 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class TransformDomainDto extends TransformDomainTemplateDto implements ExportDto {
-    private IdRef<DomainTemplate> domainTemplate;
+  private IdRef<DomainTemplate> domainTemplate;
 }

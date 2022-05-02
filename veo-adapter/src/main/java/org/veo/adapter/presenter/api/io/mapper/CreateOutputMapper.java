@@ -23,24 +23,21 @@ import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 
-/**
- * Returns just the id of the newly created {@link Identifiable} as output.
- */
+/** Returns just the id of the newly created {@link Identifiable} as output. */
 public final class CreateOutputMapper {
 
-    public static ApiResponseBody map(Identifiable identifiable) {
-        Optional<String> id = Optional.ofNullable(identifiable.getId())
-                                      .map(Key::uuidValue);
-        return new ApiResponseBody(true, id,
-                String.format("%s created successfully.", upperFirst(identifiable.getModelType())));
-    }
+  public static ApiResponseBody map(Identifiable identifiable) {
+    Optional<String> id = Optional.ofNullable(identifiable.getId()).map(Key::uuidValue);
+    return new ApiResponseBody(
+        true,
+        id,
+        String.format("%s created successfully.", upperFirst(identifiable.getModelType())));
+  }
 
-    private static String upperFirst(String in) {
-        if (in.isEmpty()) {
-            return "";
-        }
-        return in.substring(0, 1)
-                 .toUpperCase()
-                + in.substring(1);
+  private static String upperFirst(String in) {
+    if (in.isEmpty()) {
+      return "";
     }
+    return in.substring(0, 1).toUpperCase() + in.substring(1);
+  }
 }

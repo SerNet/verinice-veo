@@ -28,12 +28,15 @@ import lombok.Data;
 
 @Data
 public class DomainAssociationDto {
-    @Schema(minLength = 1, maxLength = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
-    String subType;
-    @Schema(minLength = 1, maxLength = SubTypeAspect.STATUS_MAX_LENGTH)
-    String status;
+  @Schema(minLength = 1, maxLength = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
+  String subType;
 
-    @Schema(description = "Results of all decisions concerning this element within this domain. Key is decision key, value is results.",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private Map<DecisionRef, DecisionResult> decisionResults;
+  @Schema(minLength = 1, maxLength = SubTypeAspect.STATUS_MAX_LENGTH)
+  String status;
+
+  @Schema(
+      description =
+          "Results of all decisions concerning this element within this domain. Key is decision key, value is results.",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  private Map<DecisionRef, DecisionResult> decisionResults;
 }

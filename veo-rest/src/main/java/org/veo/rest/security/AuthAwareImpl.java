@@ -30,15 +30,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AuthAwareImpl implements AuditorAware<String> {
 
-    @Override
-    public @Nonnull Optional<String> getCurrentAuditor() {
-        var currentUser = Optional.ofNullable(SecurityContextHolder.getContext()
-                                                                   .getAuthentication())
-                                  .map(Authentication::getPrincipal)
-                                  .map(ApplicationUser::authenticatedUser)
-                                  .map(ApplicationUser::getUsername);
-        log.debug("Current auditor determined from SecurityContext as {}",
-                  currentUser.orElse("-MISSING-"));
-        return currentUser;
-    }
+  @Override
+  public @Nonnull Optional<String> getCurrentAuditor() {
+    var currentUser =
+        Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+            .map(Authentication::getPrincipal)
+            .map(ApplicationUser::authenticatedUser)
+            .map(ApplicationUser::getUsername);
+    log.debug(
+        "Current auditor determined from SecurityContext as {}", currentUser.orElse("-MISSING-"));
+    return currentUser;
+  }
 }

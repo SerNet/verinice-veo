@@ -22,10 +22,15 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.veo.persistence.entity.jpa.CatalogItemData;
 
 public interface CatalogItemDataRepository
-        extends IdentifiableVersionedDataRepository<CatalogItemData> {
+    extends IdentifiableVersionedDataRepository<CatalogItemData> {
 
-    @EntityGraph(attributePaths = { "element", "element.links", "element.customAspects",
-            "element.subTypeAspects", "tailoringReferences" })
-    Iterable<CatalogItemData> findAllWithElementDataByDbIdIn(Iterable<String> ids);
-
+  @EntityGraph(
+      attributePaths = {
+        "element",
+        "element.links",
+        "element.customAspects",
+        "element.subTypeAspects",
+        "tailoringReferences"
+      })
+  Iterable<CatalogItemData> findAllWithElementDataByDbIdIn(Iterable<String> ids);
 }

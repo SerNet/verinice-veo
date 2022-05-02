@@ -26,21 +26,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 /**
- * References a decision on a domain using the decision's key (in the domain's
- * map of decisions). A decision key is only unique within a specific domain.
+ * References a decision on a domain using the decision's key (in the domain's map of decisions). A
+ * decision key is only unique within a specific domain.
  */
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 @Value
 public class DecisionRef {
-    @Getter
-    private final String keyRef;
+  @Getter private final String keyRef;
 
-    public DecisionRef(String keyRef, Domain domain) {
-        this(keyRef);
-        if (!domain.getDecisions()
-                   .containsKey(keyRef)) {
-            throw new IllegalArgumentException();
-        }
+  public DecisionRef(String keyRef, Domain domain) {
+    this(keyRef);
+    if (!domain.getDecisions().containsKey(keyRef)) {
+      throw new IllegalArgumentException();
     }
+  }
 }

@@ -26,27 +26,22 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-/**
- * A special dimension defining the implementation levels.
- */
+/** A special dimension defining the implementation levels. */
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
 public class ImplementationStateDefinition extends DimensionDefinition {
-    public ImplementationStateDefinition(String name, String abbreviation, String description,
-            List<CategoryLevel> levels) {
-        super(DIMENSION_IMPLEMENTATION_STATE, name, abbreviation, description);
-        this.levels = levels;
-        initLevel(levels);
-    }
+  public ImplementationStateDefinition(
+      String name, String abbreviation, String description, List<CategoryLevel> levels) {
+    super(DIMENSION_IMPLEMENTATION_STATE, name, abbreviation, description);
+    this.levels = levels;
+    initLevel(levels);
+  }
 
-    @EqualsAndHashCode.Include
-    private List<CategoryLevel> levels = new ArrayList<>();
+  @EqualsAndHashCode.Include private List<CategoryLevel> levels = new ArrayList<>();
 
-    public Optional<CategoryLevel> getLevel(int ordinalValue) {
-        return levels.stream()
-                     .filter(l -> l.getOrdinalValue() == ordinalValue)
-                     .findFirst();
-    }
+  public Optional<CategoryLevel> getLevel(int ordinalValue) {
+    return levels.stream().filter(l -> l.getOrdinalValue() == ordinalValue).findFirst();
+  }
 }

@@ -32,13 +32,13 @@ import lombok.Getter;
 @EqualsAndHashCode
 @Valid
 public class CategoryRef {
-    public static final int MAX_ID_LENGTH = Constraints.DEFAULT_CONSTANT_MAX_LENGTH;
+  public static final int MAX_ID_LENGTH = Constraints.DEFAULT_CONSTANT_MAX_LENGTH;
 
-    @Getter
-    @Size(max = MAX_ID_LENGTH)
-    String idRef;
+  @Getter
+  @Size(max = MAX_ID_LENGTH)
+  String idRef;
 
-    public static CategoryRef from(CategoryDefinition cd) {
-        return new CategoryRef(cd.getId());
-    }
+  public static CategoryRef from(CategoryDefinition cd) {
+    return new CategoryRef(cd.getId());
+  }
 }

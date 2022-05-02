@@ -37,50 +37,49 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Provides a use case interactor with asynchronous callback.
  *
- * Input is provided in the format expected by the use case. A mapper can be
- * used to transform the input before this method is called.
+ * <p>Input is provided in the format expected by the use case. A mapper can be used to transform
+ * the input before this method is called.
  *
- * The output is provided in the format produced by the use case. The mapping
- * function given as the last parameter will be called asynchronously to
- * transform the result and return it to the caller.
+ * <p>The output is provided in the format produced by the use case. The mapping function given as
+ * the last parameter will be called asynchronously to transform the result and return it to the
+ * caller.
  */
 @Service
 @Validated
 @Slf4j
 public class UseCaseInteractorImpl implements UseCaseInteractor {
 
-    @Override
-    @Async
-    public <R, I extends InputData, O extends OutputData> CompletableFuture<R> execute(
-            UseCase<I, O> useCase, Supplier<I> inputSupplier, Function<O, R> outputMapper) {
-        log.info("Executing {} with {}", useCase, inputSupplier);
-        return CompletableFuture.completedFuture(useCase.executeAndTransformResult(inputSupplier,
-                                                                                   outputMapper));
-    }
+  @Override
+  @Async
+  public <R, I extends InputData, O extends OutputData> CompletableFuture<R> execute(
+      UseCase<I, O> useCase, Supplier<I> inputSupplier, Function<O, R> outputMapper) {
+    log.info("Executing {} with {}", useCase, inputSupplier);
+    return CompletableFuture.completedFuture(
+        useCase.executeAndTransformResult(inputSupplier, outputMapper));
+  }
 
-    @Override
-    @Async
-    public <R, I extends InputData, O extends OutputData> CompletableFuture<R> execute(
-            UseCase<I, O> useCase, @Valid I input, // TODO implement test to make sure all marked
-                                                   // complex types in fields are validated
-            Function<O, R> outputMapper) {
-        log.info("Executing {}", useCase);
-        log.debug("Input: {}", input);
-        return CompletableFuture.completedFuture(useCase.executeAndTransformResult(input,
-                                                                                   outputMapper));
-    }
+  @Override
+  @Async
+  public <R, I extends InputData, O extends OutputData> CompletableFuture<R> execute(
+      UseCase<I, O> useCase,
+      @Valid I input, // TODO implement test to make sure all marked
+      // complex types in fields are validated
+      Function<O, R> outputMapper) {
+    log.info("Executing {}", useCase);
+    log.debug("Input: {}", input);
+    return CompletableFuture.completedFuture(
+        useCase.executeAndTransformResult(input, outputMapper));
+  }
 
-    @Override
-    /**
-     * Validation of the use case input is accomplished using JSR-380 annotations
-     * and the validator provided by the spring application context (see above).
-     *
-     * Therefore this method does not need to be implemented here. Instead of
-     * passing "validated(input)" we annotate the method parameter: "@Valid I
-     * input".
-     */
-    public <I extends InputData> void validated(I input) {
-        // implementation not required, see JavaDoc
-    }
-
+  @Override
+  /**
+   * Validation of the use case input is accomplished using JSR-380 annotations and the validator
+   * provided by the spring application context (see above).
+   *
+   * <p>Therefore this method does not need to be implemented here. Instead of passing
+   * "validated(input)" we annotate the method parameter: "@Valid I input".
+   */
+  public <I extends InputData> void validated(I input) {
+    // implementation not required, see JavaDoc
+  }
 }

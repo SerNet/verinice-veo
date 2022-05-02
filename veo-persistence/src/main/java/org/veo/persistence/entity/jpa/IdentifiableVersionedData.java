@@ -40,45 +40,39 @@ import lombok.ToString;
 @RequiredArgsConstructor
 public abstract class IdentifiableVersionedData extends VersionedData implements Identifiable {
 
-    public abstract String getDbId();
+  public abstract String getDbId();
 
-    public abstract void setDbId(String id);
+  public abstract void setDbId(String id);
 
-    @Override
-    public Key<UUID> getId() {
-        return Key.uuidFrom(getDbId());
-    }
+  @Override
+  public Key<UUID> getId() {
+    return Key.uuidFrom(getDbId());
+  }
 
-    @Override
-    public void setId(Key<UUID> id) {
-        setDbId(Optional.ofNullable(id)
-                        .map(Key::uuidValue)
-                        .orElse(null));
-    }
+  @Override
+  public void setId(Key<UUID> id) {
+    setDbId(Optional.ofNullable(id).map(Key::uuidValue).orElse(null));
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null)
-            return false;
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) return false;
 
-        if (this == o)
-            return true;
+    if (this == o) return true;
 
-        if (!(o instanceof IdentifiableVersionedData))
-            return false;
+    if (!(o instanceof IdentifiableVersionedData)) return false;
 
-        IdentifiableVersionedData other = (IdentifiableVersionedData) o;
-        // Transient (unmanaged) entities have an ID of 'null'. Only managed
-        // (persisted and detached) entities have an identity. JPA requires that
-        // an entity's identity remains the same over all state changes.
-        // Therefore a transient entity must never equal another entity.
-        String dbId = getDbId();
-        return dbId != null && dbId.equals(other.getDbId());
-    }
+    IdentifiableVersionedData other = (IdentifiableVersionedData) o;
+    // Transient (unmanaged) entities have an ID of 'null'. Only managed
+    // (persisted and detached) entities have an identity. JPA requires that
+    // an entity's identity remains the same over all state changes.
+    // Therefore a transient entity must never equal another entity.
+    String dbId = getDbId();
+    return dbId != null && dbId.equals(other.getDbId());
+  }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
+  }
 }

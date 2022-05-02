@@ -40,10 +40,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-/**
- * Holds references to potential probabilities of a scenario defined in a risk
- * definition.
- */
+/** Holds references to potential probabilities of a scenario defined in a risk definition. */
 @Entity(name = "scenario_risk_values_aspect")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
@@ -51,14 +48,14 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class ScenarioRiskValuesAspectData extends AspectData {
 
-    public ScenarioRiskValuesAspectData(DomainTemplate domain, Scenario owner) {
-        super(domain, owner);
-    }
+  public ScenarioRiskValuesAspectData(DomainTemplate domain, Scenario owner) {
+    super(domain, owner);
+  }
 
-    @Getter
-    @Setter
-    @NotNull
-    @Column(columnDefinition = "jsonb", name = "probability")
-    @Type(type = "json")
-    Map<RiskDefinitionRef, PotentialProbabilityImpl> potentialProbability;
+  @Getter
+  @Setter
+  @NotNull
+  @Column(columnDefinition = "jsonb", name = "probability")
+  @Type(type = "json")
+  Map<RiskDefinitionRef, PotentialProbabilityImpl> potentialProbability;
 }

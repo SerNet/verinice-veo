@@ -35,13 +35,11 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class LinkTailoringReferenceData extends TailoringReferenceData
-        implements LinkTailoringReference {
+    implements LinkTailoringReference {
 
-    @ToString.Include
-    private String linkType;
+  @ToString.Include private String linkType;
 
-    @Type(type = "json")
-    @Column(columnDefinition = "jsonb")
-    private Map<String, Object> attributes = new HashMap<>();
-
+  @Type(type = "json")
+  @Column(columnDefinition = "jsonb")
+  private Map<String, Object> attributes = new HashMap<>();
 }

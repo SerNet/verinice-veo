@@ -47,15 +47,16 @@ import lombok.EqualsAndHashCode;
 @Data
 public class CompositeCatalogItemDto extends AbstractCatalogItemDto {
 
-    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = As.EXISTING_PROPERTY, property = "type")
-    @JsonSubTypes({ @JsonSubTypes.Type(value = FullAssetDto.class, name = Asset.SINGULAR_TERM),
-            @JsonSubTypes.Type(value = FullControlDto.class, name = Control.SINGULAR_TERM),
-            @JsonSubTypes.Type(value = FullDocumentDto.class, name = Document.SINGULAR_TERM),
-            @JsonSubTypes.Type(value = FullIncidentDto.class, name = Incident.SINGULAR_TERM),
-            @JsonSubTypes.Type(value = FullPersonDto.class, name = Person.SINGULAR_TERM),
-            @JsonSubTypes.Type(value = FullProcessDto.class, name = Process.SINGULAR_TERM),
-            @JsonSubTypes.Type(value = FullScenarioDto.class, name = Scenario.SINGULAR_TERM),
-            @JsonSubTypes.Type(value = FullScopeDto.class, name = Scope.SINGULAR_TERM) })
-    private AbstractElementDto element;
-
+  @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = As.EXISTING_PROPERTY, property = "type")
+  @JsonSubTypes({
+    @JsonSubTypes.Type(value = FullAssetDto.class, name = Asset.SINGULAR_TERM),
+    @JsonSubTypes.Type(value = FullControlDto.class, name = Control.SINGULAR_TERM),
+    @JsonSubTypes.Type(value = FullDocumentDto.class, name = Document.SINGULAR_TERM),
+    @JsonSubTypes.Type(value = FullIncidentDto.class, name = Incident.SINGULAR_TERM),
+    @JsonSubTypes.Type(value = FullPersonDto.class, name = Person.SINGULAR_TERM),
+    @JsonSubTypes.Type(value = FullProcessDto.class, name = Process.SINGULAR_TERM),
+    @JsonSubTypes.Type(value = FullScenarioDto.class, name = Scenario.SINGULAR_TERM),
+    @JsonSubTypes.Type(value = FullScopeDto.class, name = Scope.SINGULAR_TERM)
+  })
+  private AbstractElementDto element;
 }

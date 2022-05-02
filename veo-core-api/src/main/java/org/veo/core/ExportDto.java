@@ -17,6 +17,4 @@
  ******************************************************************************/
 package org.veo.core;
 
-public interface ExportDto {
-
-}
+public interface ExportDto {}

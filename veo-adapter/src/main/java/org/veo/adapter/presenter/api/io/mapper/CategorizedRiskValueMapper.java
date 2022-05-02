@@ -32,38 +32,34 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public final class CategorizedRiskValueMapper {
 
-    /**
-     * Converts data from DTOs to a format required by the use-case.
-     * <p>
-     * Source: a map of domain-IDs and domain-associations. Domain-associations
-     * include a Map of risk-definition-IDs to risk values.
-     * <p>
-     * Target: a Set of risk values as required by a use case.
-     */
-    public static Set<RiskValues> map(Map<String, RiskDomainAssociationDto> domainsWithRiskValues) {
-        return domainsWithRiskValues.entrySet()
-                                    .stream()
-                                    .flatMap(e -> toRiskValues(e.getKey(), e.getValue()
-                                                                            .getRiskDefinitions()))
-                                    .collect(Collectors.toSet());
-    }
+  /**
+   * Converts data from DTOs to a format required by the use-case.
+   *
+   * <p>Source: a map of domain-IDs and domain-associations. Domain-associations include a Map of
+   * risk-definition-IDs to risk values.
+   *
+   * <p>Target: a Set of risk values as required by a use case.
+   */
+  public static Set<RiskValues> map(Map<String, RiskDomainAssociationDto> domainsWithRiskValues) {
+    return domainsWithRiskValues.entrySet().stream()
+        .flatMap(e -> toRiskValues(e.getKey(), e.getValue().getRiskDefinitions()))
+        .collect(Collectors.toSet());
+  }
 
-    private static Stream<RiskValues> toRiskValues(String domainId,
-            Map<String, RiskValuesDto> riskDefinitions) {
-        return riskDefinitions.entrySet()
-                              .stream()
-                              .map(e -> toRiskValues(domainId, e.getKey(), e.getValue()));
-    }
+  private static Stream<RiskValues> toRiskValues(
+      String domainId, Map<String, RiskValuesDto> riskDefinitions) {
+    return riskDefinitions.entrySet().stream()
+        .map(e -> toRiskValues(domainId, e.getKey(), e.getValue()));
+  }
 
-    private static RiskValues toRiskValues(String domainId, String riskDefinitionId,
-            RiskValuesDto dto) {
-        return RiskValues.builder()
-                         .probability(dto.getProbability())
-                         .impactCategories(dto.getImpactValues())
-                         .categorizedRisks(dto.getRiskValues())
-                         .domainId(Key.uuidFrom(domainId))
-                         .riskDefinitionId(new Key<>(riskDefinitionId))
-                         .build();
-    }
-
+  private static RiskValues toRiskValues(
+      String domainId, String riskDefinitionId, RiskValuesDto dto) {
+    return RiskValues.builder()
+        .probability(dto.getProbability())
+        .impactCategories(dto.getImpactValues())
+        .categorizedRisks(dto.getRiskValues())
+        .domainId(Key.uuidFrom(domainId))
+        .riskDefinitionId(new Key<>(riskDefinitionId))
+        .build();
+  }
 }

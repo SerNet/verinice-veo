@@ -114,243 +114,296 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * REST service which provides methods to manage scenarios.
- */
+/** REST service which provides methods to manage scenarios. */
 @RestController
 @RequestMapping(ScenarioController.URL_BASE_PATH)
 @Slf4j
 public class ScenarioController extends AbstractElementController<Scenario, FullScenarioDto> {
 
-    public ScenarioController(GetScenarioUseCase getScenarioUseCase,
-            GetScenariosUseCase getScenariosUseCase, CreateScenarioUseCase createScenarioUseCase,
-            UpdateScenarioUseCase updateScenarioUseCase, DeleteElementUseCase deleteElementUseCase,
-            EvaluateDecisionUseCase evaluateDecisionUseCase) {
-        super(Scenario.class, getScenarioUseCase, evaluateDecisionUseCase);
-        this.getScenariosUseCase = getScenariosUseCase;
-        this.createScenarioUseCase = createScenarioUseCase;
-        this.updateScenarioUseCase = updateScenarioUseCase;
-        this.deleteElementUseCase = deleteElementUseCase;
+  public ScenarioController(
+      GetScenarioUseCase getScenarioUseCase,
+      GetScenariosUseCase getScenariosUseCase,
+      CreateScenarioUseCase createScenarioUseCase,
+      UpdateScenarioUseCase updateScenarioUseCase,
+      DeleteElementUseCase deleteElementUseCase,
+      EvaluateDecisionUseCase evaluateDecisionUseCase) {
+    super(Scenario.class, getScenarioUseCase, evaluateDecisionUseCase);
+    this.getScenariosUseCase = getScenariosUseCase;
+    this.createScenarioUseCase = createScenarioUseCase;
+    this.updateScenarioUseCase = updateScenarioUseCase;
+    this.deleteElementUseCase = deleteElementUseCase;
+  }
+
+  public static final String URL_BASE_PATH = "/" + Scenario.PLURAL_TERM;
+
+  private final CreateScenarioUseCase createScenarioUseCase;
+  private final UpdateScenarioUseCase updateScenarioUseCase;
+  private final GetScenariosUseCase getScenariosUseCase;
+  private final DeleteElementUseCase deleteElementUseCase;
+
+  @GetMapping
+  @Operation(summary = "Loads all scenarios")
+  public @Valid CompletableFuture<PageDto<FullScenarioDto>> getScenarios(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
+      @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
+      @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
+      @RequestParam(value = STATUS_PARAM, required = false) String status,
+      @RequestParam(value = CHILD_ELEMENT_IDS_PARAM, required = false) List<String> childElementIds,
+      @RequestParam(value = HAS_PARENT_ELEMENTS_PARAM, required = false) Boolean hasParentElements,
+      @RequestParam(value = HAS_CHILD_ELEMENTS_PARAM, required = false) Boolean hasChildElements,
+      @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
+      @RequestParam(value = DESIGNATOR_PARAM, required = false) String designator,
+      @RequestParam(value = NAME_PARAM, required = false) String name,
+      @RequestParam(value = UPDATED_BY_PARAM, required = false) String updatedBy,
+      @RequestParam(
+              value = PAGE_SIZE_PARAM,
+              required = false,
+              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          Integer pageSize,
+      @RequestParam(
+              value = PAGE_NUMBER_PARAM,
+              required = false,
+              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
+          Integer pageNumber,
+      @RequestParam(
+              value = SORT_COLUMN_PARAM,
+              required = false,
+              defaultValue = SORT_COLUMN_DEFAULT_VALUE)
+          String sortColumn,
+      @RequestParam(
+              value = SORT_ORDER_PARAM,
+              required = false,
+              defaultValue = SORT_ORDER_DEFAULT_VALUE)
+          @Pattern(regexp = SORT_ORDER_PATTERN)
+          String sortOrder) {
+    Client client = null;
+    try {
+      client = getAuthenticatedClient(auth);
+    } catch (NoSuchElementException e) {
+      return CompletableFuture.supplyAsync(PageDto::emptyPage);
     }
 
-    public static final String URL_BASE_PATH = "/" + Scenario.PLURAL_TERM;
+    return getScenarios(
+        GetElementsInputMapper.map(
+            client,
+            unitUuid,
+            displayName,
+            subType,
+            status,
+            childElementIds,
+            hasChildElements,
+            hasParentElements,
+            description,
+            designator,
+            name,
+            updatedBy,
+            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
+  }
 
-    private final CreateScenarioUseCase createScenarioUseCase;
-    private final UpdateScenarioUseCase updateScenarioUseCase;
-    private final GetScenariosUseCase getScenariosUseCase;
-    private final DeleteElementUseCase deleteElementUseCase;
+  private CompletableFuture<PageDto<FullScenarioDto>> getScenarios(
+      GetElementsUseCase.InputData inputData) {
+    return useCaseInteractor.execute(
+        getScenariosUseCase,
+        inputData,
+        output ->
+            PagingMapper.toPage(
+                output.getElements(), entityToDtoTransformer::transformScenario2Dto));
+  }
 
-    @GetMapping
-    @Operation(summary = "Loads all scenarios")
-    public @Valid CompletableFuture<PageDto<FullScenarioDto>> getScenarios(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
-            @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
-            @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
-            @RequestParam(value = STATUS_PARAM, required = false) String status,
-            @RequestParam(value = CHILD_ELEMENT_IDS_PARAM,
-                          required = false) List<String> childElementIds,
-            @RequestParam(value = HAS_PARENT_ELEMENTS_PARAM,
-                          required = false) Boolean hasParentElements,
-            @RequestParam(value = HAS_CHILD_ELEMENTS_PARAM,
-                          required = false) Boolean hasChildElements,
-            @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
-            @RequestParam(value = DESIGNATOR_PARAM, required = false) String designator,
-            @RequestParam(value = NAME_PARAM, required = false) String name,
-            @RequestParam(value = UPDATED_BY_PARAM, required = false) String updatedBy,
-            @RequestParam(value = PAGE_SIZE_PARAM,
-                          required = false,
-                          defaultValue = PAGE_SIZE_DEFAULT_VALUE) Integer pageSize,
-            @RequestParam(value = PAGE_NUMBER_PARAM,
-                          required = false,
-                          defaultValue = PAGE_NUMBER_DEFAULT_VALUE) Integer pageNumber,
-            @RequestParam(value = SORT_COLUMN_PARAM,
-                          required = false,
-                          defaultValue = SORT_COLUMN_DEFAULT_VALUE) String sortColumn,
-            @RequestParam(value = SORT_ORDER_PARAM,
-                          required = false,
-                          defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
-        Client client = null;
-        try {
-            client = getAuthenticatedClient(auth);
-        } catch (NoSuchElementException e) {
-            return CompletableFuture.supplyAsync(PageDto::emptyPage);
-        }
+  @Override
+  @Operation(summary = "Loads a scenario")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Scenario loaded",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = FullScenarioDto.class))),
+        @ApiResponse(responseCode = "404", description = "Scenario not found")
+      })
+  @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
+  public @Valid CompletableFuture<ResponseEntity<FullScenarioDto>> getElement(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      WebRequest request) {
+    return super.getElement(auth, uuid, request);
+  }
 
-        return getScenarios(GetElementsInputMapper.map(client, unitUuid, displayName, subType,
-                                                       status, childElementIds, hasChildElements,
-                                                       hasParentElements, description, designator,
-                                                       name, updatedBy,
-                                                       PagingMapper.toConfig(pageSize, pageNumber,
-                                                                             sortColumn,
-                                                                             sortOrder)));
+  @Override
+  @Operation(summary = "Loads the parts of a scenario")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Parts loaded",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array =
+                        @ArraySchema(schema = @Schema(implementation = FullScenarioDto.class)))),
+        @ApiResponse(responseCode = "404", description = "Scenario not found")
+      })
+  @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+  public @Valid CompletableFuture<ResponseEntity<List<FullScenarioDto>>> getElementParts(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      WebRequest request) {
+    return super.getElementParts(auth, uuid, request);
+  }
+
+  @PostMapping()
+  @Operation(summary = "Creates a scenario")
+  @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Scenario created")})
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> createScenario(
+      @Parameter(hidden = true) ApplicationUser user,
+      @Valid @NotNull @RequestBody @JsonSchemaValidation(Scenario.SINGULAR_TERM)
+          CreateScenarioDto dto) {
+    return useCaseInteractor.execute(
+        createScenarioUseCase,
+        (Supplier<CreateElementUseCase.InputData<Scenario>>)
+            () -> {
+              Client client = getClient(user);
+              IdRefResolver idRefResolver = createIdRefResolver(client);
+              return new CreateElementUseCase.InputData<>(
+                  dtoToEntityTransformer.transformDto2Scenario(dto, idRefResolver), client);
+            },
+        output -> {
+          ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
+          return RestApiResponse.created(URL_BASE_PATH, body);
+        });
+  }
+
+  @PutMapping(value = "/{id}")
+  @Operation(summary = "Updates a scenario")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200", description = "Scenario updated"),
+        @ApiResponse(responseCode = "404", description = "Scenario not found")
+      })
+  public CompletableFuture<FullScenarioDto> updateScenario(
+      @Parameter(hidden = true) ApplicationUser user,
+      @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
+      @PathVariable String id,
+      @Valid @NotNull @RequestBody @JsonSchemaValidation(Scenario.SINGULAR_TERM)
+          FullScenarioDto scenarioDto) {
+    scenarioDto.applyResourceId(id);
+    return useCaseInteractor.execute(
+        updateScenarioUseCase,
+        new Supplier<InputData<Scenario>>() {
+          @Override
+          public InputData<Scenario> get() {
+            Client client = getClient(user);
+            IdRefResolver idRefResolver = createIdRefResolver(client);
+            return new InputData<>(
+                dtoToEntityTransformer.transformDto2Scenario(scenarioDto, idRefResolver),
+                client,
+                eTag,
+                user.getUsername());
+          }
+        },
+        output -> entityToDtoTransformer.transformScenario2Dto(output.getEntity()));
+  }
+
+  @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
+  @Operation(summary = "Deletes a scenario")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "204", description = "Scenario deleted"),
+        @ApiResponse(responseCode = "404", description = "Scenario not found")
+      })
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteScenario(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid) {
+    ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
+    Client client = getClient(user.getClientId());
+    return useCaseInteractor.execute(
+        deleteElementUseCase,
+        new DeleteElementUseCase.InputData(Scenario.class, Key.uuidFrom(uuid), client),
+        output -> ResponseEntity.noContent().build());
+  }
+
+  @Override
+  @SuppressFBWarnings("NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS")
+  protected String buildSearchUri(String id) {
+    return linkTo(
+            methodOn(ScenarioController.class)
+                .runSearch(ANY_AUTH, id, ANY_INT, ANY_INT, ANY_STRING, ANY_STRING))
+        .withSelfRel()
+        .getHref();
+  }
+
+  @GetMapping(value = "/searches/{searchId}")
+  @Operation(summary = "Finds scenarios for the search.")
+  public @Valid CompletableFuture<PageDto<FullScenarioDto>> runSearch(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @PathVariable String searchId,
+      @RequestParam(
+              value = PAGE_SIZE_PARAM,
+              required = false,
+              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          Integer pageSize,
+      @RequestParam(
+              value = PAGE_NUMBER_PARAM,
+              required = false,
+              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
+          Integer pageNumber,
+      @RequestParam(
+              value = SORT_COLUMN_PARAM,
+              required = false,
+              defaultValue = SORT_COLUMN_DEFAULT_VALUE)
+          String sortColumn,
+      @RequestParam(
+              value = SORT_ORDER_PARAM,
+              required = false,
+              defaultValue = SORT_ORDER_DEFAULT_VALUE)
+          @Pattern(regexp = SORT_ORDER_PATTERN)
+          String sortOrder) {
+    try {
+      return getScenarios(
+          GetElementsInputMapper.map(
+              getAuthenticatedClient(auth),
+              SearchQueryDto.decodeFromSearchId(searchId),
+              PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
+    } catch (IOException e) {
+      log.error("Could not decode search URL: {}", e.getLocalizedMessage());
+      return null;
     }
+  }
 
-    private CompletableFuture<PageDto<FullScenarioDto>> getScenarios(
-            GetElementsUseCase.InputData inputData) {
-        return useCaseInteractor.execute(getScenariosUseCase, inputData,
-                                         output -> PagingMapper.toPage(output.getElements(),
-                                                                       entityToDtoTransformer::transformScenario2Dto));
-    }
+  @Operation(summary = "Evaluates a decision on a transient scenario without persisting anything")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Decision evaluated",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array =
+                        @ArraySchema(schema = @Schema(implementation = FullScenarioDto.class)))),
+        @ApiResponse(responseCode = "404", description = "Decision not found")
+      })
+  @PostMapping(value = "/decision-evaluation")
+  public @Valid CompletableFuture<ResponseEntity<DecisionResult>> evaluateDecision(
+      @Parameter(required = true, hidden = true) Authentication auth,
+      @Valid @RequestBody FullScenarioDto element,
+      @Parameter(description = DECISION_KEY_DESCRIPTION) @RequestParam(value = DECISION_KEY_PARAM)
+          String decisionKey,
+      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+    return super.evaluateDecision(auth, element, decisionKey, domainId);
+  }
 
-    @Override
-    @Operation(summary = "Loads a scenario")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Scenario loaded",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = FullScenarioDto.class))),
-            @ApiResponse(responseCode = "404", description = "Scenario not found") })
-    @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
-    public @Valid CompletableFuture<ResponseEntity<FullScenarioDto>> getElement(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @Parameter(required = true,
-                       example = UUID_EXAMPLE,
-                       description = UUID_DESCRIPTION) @PathVariable String uuid,
-            WebRequest request) {
-        return super.getElement(auth, uuid, request);
-    }
-
-    @Override
-    @Operation(summary = "Loads the parts of a scenario")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Parts loaded",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            array = @ArraySchema(schema = @Schema(implementation = FullScenarioDto.class)))),
-            @ApiResponse(responseCode = "404", description = "Scenario not found") })
-    @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
-    public @Valid CompletableFuture<ResponseEntity<List<FullScenarioDto>>> getElementParts(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @Parameter(required = true,
-                       example = UUID_EXAMPLE,
-                       description = UUID_DESCRIPTION) @PathVariable String uuid,
-            WebRequest request) {
-        return super.getElementParts(auth, uuid, request);
-    }
-
-    @PostMapping()
-    @Operation(summary = "Creates a scenario")
-    @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Scenario created") })
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> createScenario(
-            @Parameter(hidden = true) ApplicationUser user,
-            @Valid @NotNull @RequestBody @JsonSchemaValidation(Scenario.SINGULAR_TERM) CreateScenarioDto dto) {
-        return useCaseInteractor.execute(createScenarioUseCase,
-                                         (Supplier<CreateElementUseCase.InputData<Scenario>>) () -> {
-                                             Client client = getClient(user);
-                                             IdRefResolver idRefResolver = createIdRefResolver(client);
-                                             return new CreateElementUseCase.InputData<>(
-                                                     dtoToEntityTransformer.transformDto2Scenario(dto,
-                                                                                                  idRefResolver),
-                                                     client);
-                                         }, output -> {
-                                             ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
-                                             return RestApiResponse.created(URL_BASE_PATH, body);
-                                         });
-    }
-
-    @PutMapping(value = "/{id}")
-    @Operation(summary = "Updates a scenario")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Scenario updated"),
-            @ApiResponse(responseCode = "404", description = "Scenario not found") })
-    public CompletableFuture<FullScenarioDto> updateScenario(
-            @Parameter(hidden = true) ApplicationUser user,
-            @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
-            @PathVariable String id,
-            @Valid @NotNull @RequestBody @JsonSchemaValidation(Scenario.SINGULAR_TERM) FullScenarioDto scenarioDto) {
-        scenarioDto.applyResourceId(id);
-        return useCaseInteractor.execute(updateScenarioUseCase,
-                                         new Supplier<InputData<Scenario>>() {
-                                             @Override
-                                             public InputData<Scenario> get() {
-                                                 Client client = getClient(user);
-                                                 IdRefResolver idRefResolver = createIdRefResolver(client);
-                                                 return new InputData<>(
-                                                         dtoToEntityTransformer.transformDto2Scenario(scenarioDto,
-                                                                                                      idRefResolver),
-                                                         client, eTag, user.getUsername());
-                                             }
-                                         }
-
-                                         ,
-                                         output -> entityToDtoTransformer.transformScenario2Dto(output.getEntity()));
-    }
-
-    @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
-    @Operation(summary = "Deletes a scenario")
-    @ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Scenario deleted"),
-            @ApiResponse(responseCode = "404", description = "Scenario not found") })
-    public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteScenario(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @Parameter(required = true,
-                       example = UUID_EXAMPLE,
-                       description = UUID_DESCRIPTION) @PathVariable String uuid) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
-        return useCaseInteractor.execute(deleteElementUseCase,
-                                         new DeleteElementUseCase.InputData(Scenario.class,
-                                                 Key.uuidFrom(uuid), client),
-                                         output -> ResponseEntity.noContent()
-                                                                 .build());
-    }
-
-    @Override
-    @SuppressFBWarnings("NP_NULL_PARAM_DEREF_ALL_TARGETS_DANGEROUS")
-    protected String buildSearchUri(String id) {
-        return linkTo(methodOn(ScenarioController.class).runSearch(ANY_AUTH, id, ANY_INT, ANY_INT,
-                                                                   ANY_STRING, ANY_STRING))
-                                                                                           .withSelfRel()
-                                                                                           .getHref();
-    }
-
-    @GetMapping(value = "/searches/{searchId}")
-    @Operation(summary = "Finds scenarios for the search.")
-    public @Valid CompletableFuture<PageDto<FullScenarioDto>> runSearch(
-            @Parameter(required = false, hidden = true) Authentication auth,
-            @PathVariable String searchId,
-            @RequestParam(value = PAGE_SIZE_PARAM,
-                          required = false,
-                          defaultValue = PAGE_SIZE_DEFAULT_VALUE) Integer pageSize,
-            @RequestParam(value = PAGE_NUMBER_PARAM,
-                          required = false,
-                          defaultValue = PAGE_NUMBER_DEFAULT_VALUE) Integer pageNumber,
-            @RequestParam(value = SORT_COLUMN_PARAM,
-                          required = false,
-                          defaultValue = SORT_COLUMN_DEFAULT_VALUE) String sortColumn,
-            @RequestParam(value = SORT_ORDER_PARAM,
-                          required = false,
-                          defaultValue = SORT_ORDER_DEFAULT_VALUE) @Pattern(regexp = SORT_ORDER_PATTERN) String sortOrder) {
-        try {
-            return getScenarios(GetElementsInputMapper.map(getAuthenticatedClient(auth),
-                                                           SearchQueryDto.decodeFromSearchId(searchId),
-                                                           PagingMapper.toConfig(pageSize,
-                                                                                 pageNumber,
-                                                                                 sortColumn,
-                                                                                 sortOrder)));
-        } catch (IOException e) {
-            log.error("Could not decode search URL: {}", e.getLocalizedMessage());
-            return null;
-        }
-    }
-
-    @Operation(summary = "Evaluates a decision on a transient scenario without persisting anything")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                         description = "Decision evaluated",
-                         content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            array = @ArraySchema(schema = @Schema(implementation = FullScenarioDto.class)))),
-            @ApiResponse(responseCode = "404", description = "Decision not found") })
-    @PostMapping(value = "/decision-evaluation")
-    public @Valid CompletableFuture<ResponseEntity<DecisionResult>> evaluateDecision(
-            @Parameter(required = true, hidden = true) Authentication auth,
-            @Valid @RequestBody FullScenarioDto element,
-            @Parameter(description = DECISION_KEY_DESCRIPTION) @RequestParam(value = DECISION_KEY_PARAM) String decisionKey,
-            @RequestParam(value = DOMAIN_PARAM) String domainId) {
-        return super.evaluateDecision(auth, element, decisionKey, domainId);
-    }
-
-    @Override
-    protected FullScenarioDto entity2Dto(Scenario entity) {
-        return entityToDtoTransformer.transformScenario2Dto(entity);
-    }
+  @Override
+  protected FullScenarioDto entity2Dto(Scenario entity) {
+    return entityToDtoTransformer.transformScenario2Dto(entity);
+  }
 }

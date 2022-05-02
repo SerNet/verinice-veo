@@ -38,39 +38,42 @@ import org.veo.persistence.entity.jpa.ScopeData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
 abstract class AbstractScopeRiskAffectedRepository
-        extends AbstractElementRepository<Scope, ScopeData>
-        implements RiskAffectedRepository<Scope, ScopeRisk> {
+    extends AbstractElementRepository<Scope, ScopeData>
+    implements RiskAffectedRepository<Scope, ScopeRisk> {
 
-    private final ScopeRiskAffectedDataRepository riskAffectedRepo;
+  private final ScopeRiskAffectedDataRepository riskAffectedRepo;
 
-    AbstractScopeRiskAffectedRepository(ScopeRiskAffectedDataRepository riskAffectedRepo,
-            ValidationService validation, CustomLinkDataRepository linkDataRepository,
-            ScopeDataRepository scopeDataRepository) {
-        super(riskAffectedRepo, validation, linkDataRepository, scopeDataRepository);
-        this.riskAffectedRepo = riskAffectedRepo;
-    }
+  AbstractScopeRiskAffectedRepository(
+      ScopeRiskAffectedDataRepository riskAffectedRepo,
+      ValidationService validation,
+      CustomLinkDataRepository linkDataRepository,
+      ScopeDataRepository scopeDataRepository) {
+    super(riskAffectedRepo, validation, linkDataRepository, scopeDataRepository);
+    this.riskAffectedRepo = riskAffectedRepo;
+  }
 
-    @Override
-    public Set<Scope> findByRisk(Scenario cause) {
-        return riskAffectedRepo.findDistinctByRisks_ScenarioIn(singleton((ScenarioData) cause))
-                               .stream()
-                               .map(riskAffectedData -> (Scope) riskAffectedData)
-                               .collect(Collectors.toSet());
-    }
+  @Override
+  public Set<Scope> findByRisk(Scenario cause) {
+    return riskAffectedRepo.findDistinctByRisks_ScenarioIn(singleton((ScenarioData) cause)).stream()
+        .map(riskAffectedData -> (Scope) riskAffectedData)
+        .collect(Collectors.toSet());
+  }
 
-    @Override
-    public Set<Scope> findByRisk(Control mitigatedBy) {
-        return riskAffectedRepo.findDistinctByRisks_Mitigation_In(singleton((ControlData) mitigatedBy))
-                               .stream()
-                               .map(riskAffectedData -> (Scope) riskAffectedData)
-                               .collect(Collectors.toSet());
-    }
+  @Override
+  public Set<Scope> findByRisk(Control mitigatedBy) {
+    return riskAffectedRepo
+        .findDistinctByRisks_Mitigation_In(singleton((ControlData) mitigatedBy))
+        .stream()
+        .map(riskAffectedData -> (Scope) riskAffectedData)
+        .collect(Collectors.toSet());
+  }
 
-    @Override
-    public Set<Scope> findByRisk(Person riskOwner) {
-        return riskAffectedRepo.findDistinctByRisks_RiskOwner_In(singleton((PersonData) riskOwner))
-                               .stream()
-                               .map(riskAffectedData -> (Scope) riskAffectedData)
-                               .collect(Collectors.toSet());
-    }
+  @Override
+  public Set<Scope> findByRisk(Person riskOwner) {
+    return riskAffectedRepo
+        .findDistinctByRisks_RiskOwner_In(singleton((PersonData) riskOwner))
+        .stream()
+        .map(riskAffectedData -> (Scope) riskAffectedData)
+        .collect(Collectors.toSet());
+  }
 }

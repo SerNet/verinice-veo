@@ -55,80 +55,79 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 @Data
 public class DomainTemplateData extends IdentifiableVersionedData
-        implements DomainTemplate, Nameable {
-    @Id
-    @ToString.Include
-    private String dbId;
+    implements DomainTemplate, Nameable {
+  @Id @ToString.Include private String dbId;
 
-    @NotNull
-    @Column(name = "name")
-    @ToString.Include
-    private String name;
+  @NotNull
+  @Column(name = "name")
+  @ToString.Include
+  private String name;
 
-    @Column(name = "abbreviation")
-    private String abbreviation;
+  @Column(name = "abbreviation")
+  private String abbreviation;
 
-    @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
-    private String description;
+  @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
+  private String description;
 
-    @NotNull
-    @Column(name = "authority")
-    @ToString.Include
-    private String authority;
+  @NotNull
+  @Column(name = "authority")
+  @ToString.Include
+  private String authority;
 
-    @NotNull
-    @Column(name = "templateversion")
-    @ToString.Include
-    private String templateVersion;
+  @NotNull
+  @Column(name = "templateversion")
+  @ToString.Include
+  private String templateVersion;
 
-    @OneToMany(cascade = CascadeType.ALL,
-               orphanRemoval = true,
-               targetEntity = CatalogData.class,
-               mappedBy = "domainTemplate",
-               fetch = FetchType.EAGER)
-    @Valid
-    private Set<Catalog> catalogs = new HashSet<>();
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      targetEntity = CatalogData.class,
+      mappedBy = "domainTemplate",
+      fetch = FetchType.EAGER)
+  @Valid
+  private Set<Catalog> catalogs = new HashSet<>();
 
-    @NotNull
-    @Column(name = "revision")
-    @ToString.Include
-    private String revision;
+  @NotNull
+  @Column(name = "revision")
+  @ToString.Include
+  private String revision;
 
-    @Override
-    public boolean addToCatalogs(Catalog aCatalog) {
-        aCatalog.setDomainTemplate(this);
-        return catalogs.add(aCatalog);
-    }
+  @Override
+  public boolean addToCatalogs(Catalog aCatalog) {
+    aCatalog.setDomainTemplate(this);
+    return catalogs.add(aCatalog);
+  }
 
-    @Override
-    public void removeFromCatalog(Catalog aCatalog) {
-        catalogs.remove(aCatalog);
-        aCatalog.setDomainTemplate(null);
-    }
+  @Override
+  public void removeFromCatalog(Catalog aCatalog) {
+    catalogs.remove(aCatalog);
+    aCatalog.setDomainTemplate(null);
+  }
 
-    @OneToMany(cascade = CascadeType.ALL,
-               orphanRemoval = true,
-               targetEntity = ElementTypeDefinitionData.class,
-               mappedBy = "owner")
-    private Set<ElementTypeDefinition> elementTypeDefinitions = new HashSet<>();
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      targetEntity = ElementTypeDefinitionData.class,
+      mappedBy = "owner")
+  private Set<ElementTypeDefinition> elementTypeDefinitions = new HashSet<>();
 
-    @Column(columnDefinition = "jsonb")
-    private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
+  @Column(columnDefinition = "jsonb")
+  private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
 
-    public void setRiskDefinitions(Map<String, RiskDefinition> riskDefinitions) {
-        this.riskDefinitions.clear();
-        this.riskDefinitions.putAll(riskDefinitions);
-    }
+  public void setRiskDefinitions(Map<String, RiskDefinition> riskDefinitions) {
+    this.riskDefinitions.clear();
+    this.riskDefinitions.putAll(riskDefinitions);
+  }
 
-    public void setElementTypeDefinitions(Set<ElementTypeDefinition> elementTypeDefinitions) {
-        elementTypeDefinitions.forEach(d -> ((ElementTypeDefinitionData) d).setOwner(this));
-        this.elementTypeDefinitions.clear();
-        this.elementTypeDefinitions.addAll(elementTypeDefinitions);
-    }
+  public void setElementTypeDefinitions(Set<ElementTypeDefinition> elementTypeDefinitions) {
+    elementTypeDefinitions.forEach(d -> ((ElementTypeDefinitionData) d).setOwner(this));
+    this.elementTypeDefinitions.clear();
+    this.elementTypeDefinitions.addAll(elementTypeDefinitions);
+  }
 
-    @Override
-    public Optional<RiskDefinition> getRiskDefinition(String riskDefinitionId) {
-        return Optional.ofNullable(getRiskDefinitions().get(riskDefinitionId));
-
-    }
+  @Override
+  public Optional<RiskDefinition> getRiskDefinition(String riskDefinitionId) {
+    return Optional.ofNullable(getRiskDefinitions().get(riskDefinitionId));
+  }
 }

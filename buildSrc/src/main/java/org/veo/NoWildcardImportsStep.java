@@ -25,27 +25,25 @@ import com.diffplug.spotless.FormatterStep;
 
 /** Ensures that files do not contain wildcard imports. */
 public final class NoWildcardImportsStep implements Serializable {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private static final String NAME = "noWildCardImpors";
+  private static final String NAME = "noWildCardImpors";
 
-    private static final Pattern WILDCARD_IMPORT = Pattern.compile("^import[^\n]+\\*;$",
-                                                                   Pattern.MULTILINE);
+  private static final Pattern WILDCARD_IMPORT =
+      Pattern.compile("^import[^\n]+\\*;$", Pattern.MULTILINE);
 
-    /**
-     * Creates a FormatterStep which forbids wildcard imports.
-     */
-    public static FormatterStep create() {
-        return FormatterStep.create(NoWildcardImportsStep.NAME, new NoWildcardImportsStep(),
-                                    step -> step::format);
+  /** Creates a FormatterStep which forbids wildcard imports. */
+  public static FormatterStep create() {
+    return FormatterStep.create(
+        NoWildcardImportsStep.NAME, new NoWildcardImportsStep(), step -> step::format);
+  }
+
+  /** Formats the given string. */
+  public String format(String raw) {
+    Matcher m = WILDCARD_IMPORT.matcher(raw);
+    if (m.find()) {
+      throw new AssertionError("Found wildcard import: " + m.group(0));
     }
-
-    /** Formats the given string. */
-    public String format(String raw) {
-        Matcher m = WILDCARD_IMPORT.matcher(raw);
-        if (m.find()) {
-            throw new AssertionError("Found wildcard import: " + m.group(0));
-        }
-        return raw;
-    }
+    return raw;
+  }
 }

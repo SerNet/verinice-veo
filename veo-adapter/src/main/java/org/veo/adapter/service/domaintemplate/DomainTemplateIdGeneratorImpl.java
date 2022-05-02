@@ -29,15 +29,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DomainTemplateIdGeneratorImpl implements DomainTemplateIdGenerator {
 
-    private static final String SERNET_VERNDOR_URL = "https://v.de/veo/domain-templates/";
+  private static final String SERNET_VERNDOR_URL = "https://v.de/veo/domain-templates/";
 
-    @Override
-    public String createDomainTemplateId(String name, String version, String revision) {
-        String url = SERNET_VERNDOR_URL + name + "/" + version + "." + revision;
-        UUID namebaseUUID = Generators.nameBasedGenerator(NameBasedGenerator.NAMESPACE_URL)
-                                      .generate(url);
-        log.info("generated domain template id url:{} UUID:{}", url, namebaseUUID);
-        return namebaseUUID.toString();
-    }
-
+  @Override
+  public String createDomainTemplateId(String name, String version, String revision) {
+    String url = SERNET_VERNDOR_URL + name + "/" + version + "." + revision;
+    UUID namebaseUUID =
+        Generators.nameBasedGenerator(NameBasedGenerator.NAMESPACE_URL).generate(url);
+    log.info("generated domain template id url:{} UUID:{}", url, namebaseUUID);
+    return namebaseUUID.toString();
+  }
 }

@@ -26,9 +26,9 @@ import org.veo.core.entity.Unit;
 
 public interface ElementRepository<T extends Element> extends IdentifiableVersionedRepository<T> {
 
-    void deleteByUnit(Unit owner);
+  void deleteByUnit(Unit owner);
 
-    ElementQuery<T> query(Client client);
+  ElementQuery<T> query(Client client);
 
-    Set<T> findByDomain(Domain domain);
+  Set<T> findByDomain(Domain domain);
 }

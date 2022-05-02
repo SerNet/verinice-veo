@@ -31,42 +31,40 @@ import org.veo.core.usecase.UseCaseTools;
 
 import lombok.Value;
 
-public class GetDomainTemplatesUseCase implements
-        TransactionalUseCase<GetDomainTemplatesUseCase.InputData, GetDomainTemplatesUseCase.OutputData> {
+public class GetDomainTemplatesUseCase
+    implements TransactionalUseCase<
+        GetDomainTemplatesUseCase.InputData, GetDomainTemplatesUseCase.OutputData> {
 
-    private final ClientRepository clientRepository;
-    private final DomainTemplateService templateService;
+  private final ClientRepository clientRepository;
+  private final DomainTemplateService templateService;
 
-    public GetDomainTemplatesUseCase(DomainTemplateService templateService,
-            ClientRepository clientRepository) {
-        this.clientRepository = clientRepository;
-        this.templateService = templateService;
-    }
+  public GetDomainTemplatesUseCase(
+      DomainTemplateService templateService, ClientRepository clientRepository) {
+    this.clientRepository = clientRepository;
+    this.templateService = templateService;
+  }
 
-    /**
-     * Find persisted control objects and reinstantiate them. Throws a domain
-     * exception if the (optional) requested parent unit was not found in the
-     * repository.
-     */
-    @Override
-    public OutputData execute(InputData input) {
-        Client client = UseCaseTools.checkClientExists(input.getAuthenticatedClient()
-                                                            .getId(),
-                                                       clientRepository);
+  /**
+   * Find persisted control objects and reinstantiate them. Throws a domain exception if the
+   * (optional) requested parent unit was not found in the repository.
+   */
+  @Override
+  public OutputData execute(InputData input) {
+    Client client =
+        UseCaseTools.checkClientExists(input.getAuthenticatedClient().getId(), clientRepository);
 
-        return new OutputData(templateService.getTemplates(client));
-    }
+    return new OutputData(templateService.getTemplates(client));
+  }
 
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        Client authenticatedClient;
-    }
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
+    Client authenticatedClient;
+  }
 
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        List<DomainTemplate> objects;
-    }
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid List<DomainTemplate> objects;
+  }
 }

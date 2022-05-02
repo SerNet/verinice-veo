@@ -37,32 +37,29 @@ import org.veo.rest.security.ApplicationUser;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * REST service which provides methods to UI translations in JSON format.
- */
+/** REST service which provides methods to UI translations in JSON format. */
 @Component
 @RequiredArgsConstructor
 public class TranslationController implements TranslationsResource {
 
-    private final EntitySchemaService schemaService;
+  private final EntitySchemaService schemaService;
 
-    private final ClientRepository clientRepository;
+  private final ClientRepository clientRepository;
 
-    @Override
-    public CompletableFuture<ResponseEntity<TranslationsDto>> getSchema(Authentication auth,
-            @RequestParam(value = "languages") Set<String> languages) {
-        ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-        Client client = getClient(user.getClientId());
-        return CompletableFuture.supplyAsync(() -> {
-            Translations t10n = schemaService.findTranslations(client, languages);
-            return ResponseEntity.ok()
-                                 .body((TranslationsDto) t10n);
+  @Override
+  public CompletableFuture<ResponseEntity<TranslationsDto>> getSchema(
+      Authentication auth, @RequestParam(value = "languages") Set<String> languages) {
+    ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
+    Client client = getClient(user.getClientId());
+    return CompletableFuture.supplyAsync(
+        () -> {
+          Translations t10n = schemaService.findTranslations(client, languages);
+          return ResponseEntity.ok().body((TranslationsDto) t10n);
         });
-    }
+  }
 
-    protected Client getClient(String clientId) {
-        Key<UUID> id = Key.uuidFrom(clientId);
-        return clientRepository.findByIdFetchTranslations(id)
-                               .orElseThrow();
-    }
+  protected Client getClient(String clientId) {
+    Key<UUID> id = Key.uuidFrom(clientId);
+    return clientRepository.findByIdFetchTranslations(id).orElseThrow();
+  }
 }

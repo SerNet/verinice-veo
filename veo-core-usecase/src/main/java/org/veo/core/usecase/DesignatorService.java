@@ -25,21 +25,20 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class DesignatorService {
-    private final DesignatorSequenceRepository designatorSequenceRepository;
+  private final DesignatorSequenceRepository designatorSequenceRepository;
 
-    /**
-     * Assigns a designator to a new entity. Use before persisting the target.
-     *
-     * @throws IllegalStateException
-     *             when the target already has a designator.
-     */
-    public void assignDesignator(Designated target, Client client) {
-        if (target.getDesignator() != null) {
-            throw new IllegalStateException(
-                    "Cannot reassign designator on target " + target.getDesignator());
-        }
-        String typeDesignator = target.getTypeDesignator();
-        var number = designatorSequenceRepository.getNext(client.getId(), typeDesignator);
-        target.setDesignator(typeDesignator + "-" + number);
+  /**
+   * Assigns a designator to a new entity. Use before persisting the target.
+   *
+   * @throws IllegalStateException when the target already has a designator.
+   */
+  public void assignDesignator(Designated target, Client client) {
+    if (target.getDesignator() != null) {
+      throw new IllegalStateException(
+          "Cannot reassign designator on target " + target.getDesignator());
     }
+    String typeDesignator = target.getTypeDesignator();
+    var number = designatorSequenceRepository.getNext(client.getId(), typeDesignator);
+    target.setDesignator(typeDesignator + "-" + number);
+  }
 }

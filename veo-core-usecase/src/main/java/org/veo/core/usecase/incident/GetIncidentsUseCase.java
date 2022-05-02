@@ -23,13 +23,13 @@ import org.veo.core.repository.IncidentRepository;
 import org.veo.core.usecase.base.DefaultGetElementsUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 
-/**
- * Reinstantiate persisted incident objects.
- */
+/** Reinstantiate persisted incident objects. */
 public class GetIncidentsUseCase extends DefaultGetElementsUseCase<Incident> {
 
-    public GetIncidentsUseCase(ClientRepository clientRepository,
-            IncidentRepository incidentRepository, UnitHierarchyProvider unitHierarchyProvider) {
-        super(clientRepository, incidentRepository, unitHierarchyProvider);
-    }
+  public GetIncidentsUseCase(
+      ClientRepository clientRepository,
+      IncidentRepository incidentRepository,
+      UnitHierarchyProvider unitHierarchyProvider) {
+    super(clientRepository, incidentRepository, unitHierarchyProvider);
+  }
 }

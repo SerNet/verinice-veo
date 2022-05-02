@@ -33,36 +33,39 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Listens to {@link VersioningEvent}s from the persistence layer and saves them
- * as {@link StoredEvent}s.
+ * Listens to {@link VersioningEvent}s from the persistence layer and saves them as {@link
+ * StoredEvent}s.
  */
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class VersioningEventListener {
-    private final MessageCreator messageCreator;
+  private final MessageCreator messageCreator;
 
-    @EventListener
-    @Transactional(propagation = Propagation.MANDATORY)
-    void handle(VersioningEvent event) {
-        var entity = event.getEntity();
+  @EventListener
+  @Transactional(propagation = Propagation.MANDATORY)
+  void handle(VersioningEvent event) {
+    var entity = event.getEntity();
 
-        if (entity instanceof Domain && event.getType() == Type.PERSIST) {
-            var domain = (Domain) entity;
-            log.debug("Creating domain creation message for domain {}}", domain.getIdAsString());
-            messageCreator.createDomainCreationMessage(domain);
-        }
-
-        if (entity instanceof ClientOwned) {
-            ((ClientOwned) entity).getOwningClient()
-                                  .ifPresent(client -> {
-                                      log.debug("Creating entity revision message for {} event for entity {} modified by user {}",
-                                                event.getType(), entity, event.getAuthor());
-                                      messageCreator.createEntityRevisionMessage(event,
-                                                                                 ((ClientOwned) entity).getOwningClient()
-                                                                                                       .get());
-                                  });
-        }
+    if (entity instanceof Domain && event.getType() == Type.PERSIST) {
+      var domain = (Domain) entity;
+      log.debug("Creating domain creation message for domain {}}", domain.getIdAsString());
+      messageCreator.createDomainCreationMessage(domain);
     }
 
+    if (entity instanceof ClientOwned) {
+      ((ClientOwned) entity)
+          .getOwningClient()
+          .ifPresent(
+              client -> {
+                log.debug(
+                    "Creating entity revision message for {} event for entity {} modified by user {}",
+                    event.getType(),
+                    entity,
+                    event.getAuthor());
+                messageCreator.createEntityRevisionMessage(
+                    event, ((ClientOwned) entity).getOwningClient().get());
+              });
+    }
+  }
 }

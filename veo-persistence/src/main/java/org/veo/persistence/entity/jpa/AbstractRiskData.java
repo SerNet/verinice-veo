@@ -57,116 +57,110 @@ import lombok.ToString;
 @RequiredArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
 public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-        extends VersionedData implements AbstractRisk<T, R> {
+    extends VersionedData implements AbstractRisk<T, R> {
 
-    @Id
-    @ToString.Include
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private String dbId;
+  @Id
+  @ToString.Include
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  private String dbId;
 
-    @NotNull
-    @Column(name = "designator")
-    @ToString.Include
-    private String designator;
+  @NotNull
+  @Column(name = "designator")
+  @ToString.Include
+  private String designator;
 
-    @Column(name = "domains")
-    @ManyToMany(targetEntity = DomainData.class, fetch = FetchType.LAZY)
-    @ToString.Exclude
-    final private Set<Domain> domains = new HashSet<>();
+  @Column(name = "domains")
+  @ManyToMany(targetEntity = DomainData.class, fetch = FetchType.LAZY)
+  @ToString.Exclude
+  private final Set<Domain> domains = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = ControlData.class)
-    @JoinColumn(name = "control_id")
-    @Setter(AccessLevel.PRIVATE)
-    @ToString.Exclude
-    private Control mitigation;
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ControlData.class)
+  @JoinColumn(name = "control_id")
+  @Setter(AccessLevel.PRIVATE)
+  @ToString.Exclude
+  private Control mitigation;
 
-    @NotNull
-    @NonNull
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = ScenarioData.class, optional = false)
-    @Setter(AccessLevel.PROTECTED)
-    @ToString.Exclude
-    private Scenario scenario;
+  @NotNull
+  @NonNull
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ScenarioData.class, optional = false)
+  @Setter(AccessLevel.PROTECTED)
+  @ToString.Exclude
+  private Scenario scenario;
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = PersonData.class)
-    @JoinColumn(name = "person_id")
-    @Setter(AccessLevel.PRIVATE)
-    @ToString.Exclude
-    private Person riskOwner;
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = PersonData.class)
+  @JoinColumn(name = "person_id")
+  @Setter(AccessLevel.PRIVATE)
+  @ToString.Exclude
+  private Person riskOwner;
 
-    @NotNull
-    @NonNull
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = RiskAffectedData.class, optional = false)
-    @Setter(AccessLevel.PRIVATE)
-    @ToString.Exclude
-    private T entity;
+  @NotNull
+  @NonNull
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = RiskAffectedData.class, optional = false)
+  @Setter(AccessLevel.PRIVATE)
+  @ToString.Exclude
+  private T entity;
 
-    @Override
-    public boolean addToDomains(Domain aDomain) {
-        checkDomain(aDomain);
-        return domains.add(aDomain);
+  @Override
+  public boolean addToDomains(Domain aDomain) {
+    checkDomain(aDomain);
+    return domains.add(aDomain);
+  }
+
+  private void checkDomain(Domain aDomain) {
+    if (!getEntity().getDomains().contains(aDomain)) {
+      throw new ModelConsistencyException(
+          "The provided domain '%s' is not yet known to the entity", aDomain.getDisplayName());
     }
+  }
 
-    private void checkDomain(Domain aDomain) {
-        if (!getEntity().getDomains()
-                        .contains(aDomain)) {
-            throw new ModelConsistencyException(
-                    "The provided domain '%s' is not yet known to the entity",
-                    aDomain.getDisplayName());
-        }
+  @Override
+  public boolean removeFromDomains(Domain aDomain) {
+    if (domains.size() < 2) {
+      throw new ModelConsistencyException(
+          "Could not remove domain '%s': cannot remove last domain from risk.", aDomain);
     }
+    return domains.remove(aDomain);
+  }
 
-    @Override
-    public boolean removeFromDomains(Domain aDomain) {
-        if (domains.size() < 2) {
-            throw new ModelConsistencyException(
-                    "Could not remove domain '%s': cannot remove last domain from risk.", aDomain);
-        }
-        return domains.remove(aDomain);
-    }
+  public void setDomains(@NonNull @NotEmpty Set<Domain> newDomains) {
+    if (newDomains.size() < 1)
+      throw new IllegalArgumentException("There must be at least one domain for the risk.");
+    this.domains.clear();
+    this.domains.addAll(newDomains);
+  }
 
-    public void setDomains(@NonNull @NotEmpty Set<Domain> newDomains) {
-        if (newDomains.size() < 1)
-            throw new IllegalArgumentException("There must be at least one domain for the risk.");
-        this.domains.clear();
-        this.domains.addAll(newDomains);
-    }
+  @Override
+  public R mitigate(@Nullable Control control) {
+    setMitigation(control);
+    return (R) this;
+  }
 
-    @Override
-    public R mitigate(@Nullable Control control) {
-        setMitigation(control);
-        return (R) this;
-    }
+  @Override
+  public R appoint(@Nullable Person riskOwner) {
+    setRiskOwner(riskOwner);
+    return (R) this;
+  }
 
-    @Override
-    public R appoint(@Nullable Person riskOwner) {
-        setRiskOwner(riskOwner);
-        return (R) this;
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) return false;
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null)
-            return false;
+    if (this == o) return true;
 
-        if (this == o)
-            return true;
+    if (!(o instanceof AbstractRiskData)) return false;
 
-        if (!(o instanceof AbstractRiskData))
-            return false;
+    AbstractRiskData other = (AbstractRiskData) o;
+    // Transient (unmanaged) entities have an ID of 'null'. Only managed
+    // (persisted and detached) entities have an identity. JPA requires that
+    // an entity's identity remains the same over all state changes.
+    // Therefore a transient entity must never equal another entity.
+    String dbId = getDbId();
+    return dbId != null && dbId.equals(other.getDbId());
+  }
 
-        AbstractRiskData other = (AbstractRiskData) o;
-        // Transient (unmanaged) entities have an ID of 'null'. Only managed
-        // (persisted and detached) entities have an identity. JPA requires that
-        // an entity's identity remains the same over all state changes.
-        // Therefore a transient entity must never equal another entity.
-        String dbId = getDbId();
-        return dbId != null && dbId.equals(other.getDbId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
+  }
 }

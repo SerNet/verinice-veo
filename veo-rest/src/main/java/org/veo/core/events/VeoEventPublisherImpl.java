@@ -26,17 +26,14 @@ import org.veo.core.service.DomainTemplateEventPublisher;
 
 import lombok.Data;
 
-/**
- * Publish veo related events.
- */
+/** Publish veo related events. */
 @Component
 @Data
 public class VeoEventPublisherImpl implements DomainTemplateEventPublisher {
 
-    @Autowired
-    ApplicationEventPublisher publisher;
+  @Autowired ApplicationEventPublisher publisher;
 
-    public void domainServiceReinitialize() {
-        publisher.publishEvent(new DomainServiceReinitializeEvent());
-    }
+  public void domainServiceReinitialize() {
+    publisher.publishEvent(new DomainServiceReinitializeEvent());
+  }
 }

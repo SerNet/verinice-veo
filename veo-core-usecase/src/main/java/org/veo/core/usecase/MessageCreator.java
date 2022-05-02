@@ -23,13 +23,13 @@ import org.veo.core.entity.EntityType;
 import org.veo.core.entity.event.VersioningEvent;
 
 /**
- * Creates outgoing messages and persists them so they can be sent to the
- * message queue by a background task.
+ * Creates outgoing messages and persists them so they can be sent to the message queue by a
+ * background task.
  */
 public interface MessageCreator {
-    void createEntityRevisionMessage(VersioningEvent event, Client client);
+  void createEntityRevisionMessage(VersioningEvent event, Client client);
 
-    void createDomainCreationMessage(Domain domain);
+  void createDomainCreationMessage(Domain domain);
 
-    void createElementTypeDefinitionUpdateMessage(Domain domain, EntityType entityType);
+  void createElementTypeDefinitionUpdateMessage(Domain domain, EntityType entityType);
 }

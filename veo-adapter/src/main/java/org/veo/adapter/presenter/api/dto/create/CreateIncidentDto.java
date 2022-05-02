@@ -24,6 +24,4 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public final class CreateIncidentDto extends AbstractIncidentDto {
-
-}
+public final class CreateIncidentDto extends AbstractIncidentDto {}

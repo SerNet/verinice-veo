@@ -21,15 +21,12 @@ import java.util.List;
 
 import lombok.Data;
 
-/**
- * A page of results from a repository query
- */
+/** A page of results from a repository query */
 @Data
 public class PagedResult<T> {
 
-    private final PagingConfiguration pagingConfiguration;
-    private final List<T> resultPage;
-    private final long totalResults;
-    private final int totalPages;
-
+  private final PagingConfiguration pagingConfiguration;
+  private final List<T> resultPage;
+  private final long totalResults;
+  private final int totalPages;
 }

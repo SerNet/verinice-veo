@@ -28,36 +28,33 @@ import org.veo.core.usecase.UseCase.IdAndClient;
 
 import lombok.Value;
 
-/**
- * Reinstantiate a persisted unit object.
- */
+/** Reinstantiate a persisted unit object. */
 public class GetUnitUseCase
-        implements TransactionalUseCase<IdAndClient, GetUnitUseCase.OutputData> {
+    implements TransactionalUseCase<IdAndClient, GetUnitUseCase.OutputData> {
 
-    private final UnitRepository repository;
+  private final UnitRepository repository;
 
-    public GetUnitUseCase(UnitRepository repository) {
-        this.repository = repository;
-    }
+  public GetUnitUseCase(UnitRepository repository) {
+    this.repository = repository;
+  }
 
-    /**
-     * Find a persisted unit object and reinstantiate it. Throws a domain exception
-     * if the requested unit object was not found in the repository.
-     */
-    @Override
-    public OutputData execute(IdAndClient input) {
-        Unit unit = repository.findById(input.getId())
-                              .orElseThrow(() -> new NotFoundException(input.getId()
-                                                                            .uuidValue()));
-        unit.checkSameClient(input.getAuthenticatedClient());
-        return new OutputData(unit);
-    }
+  /**
+   * Find a persisted unit object and reinstantiate it. Throws a domain exception if the requested
+   * unit object was not found in the repository.
+   */
+  @Override
+  public OutputData execute(IdAndClient input) {
+    Unit unit =
+        repository
+            .findById(input.getId())
+            .orElseThrow(() -> new NotFoundException(input.getId().uuidValue()));
+    unit.checkSameClient(input.getAuthenticatedClient());
+    return new OutputData(unit);
+  }
 
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        Unit unit;
-
-    }
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid Unit unit;
+  }
 }

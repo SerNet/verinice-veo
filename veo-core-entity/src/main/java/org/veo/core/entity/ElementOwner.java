@@ -18,9 +18,9 @@
 package org.veo.core.entity;
 
 /**
- * Something that can own an element, and therefore can be used as the owner of
- * an element. Unit and CatalogItems are examples.
+ * Something that can own an element, and therefore can be used as the owner of an element. Unit and
+ * CatalogItems are examples.
  */
 public interface ElementOwner extends Identifiable, Displayable, ClientOwned, Versioned {
-    Client getClient();
+  Client getClient();
 }

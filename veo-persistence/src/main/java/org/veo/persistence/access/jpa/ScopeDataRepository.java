@@ -29,31 +29,36 @@ import org.veo.persistence.entity.jpa.ScopeData;
 
 public interface ScopeDataRepository extends ScopeRiskAffectedDataRepository {
 
-    <T extends ElementData> Set<Scope> findDistinctByMembersIn(Set<T> elements);
+  <T extends ElementData> Set<Scope> findDistinctByMembersIn(Set<T> elements);
 
-    @Query("select distinct e from #{#entityName} as e " + "inner join e.members m "
-            + "where m.dbId IN ?1")
-    Set<Scope> findDistinctByMemberIds(Set<String> dbIds);
+  @Query(
+      "select distinct e from #{#entityName} as e "
+          + "inner join e.members m "
+          + "where m.dbId IN ?1")
+  Set<Scope> findDistinctByMemberIds(Set<String> dbIds);
 
-    // @formatter:off
-    @Query("select e from #{#entityName} as e " +
-            "left join fetch e.customAspects " +
-            "left join fetch e.links " +
-            "left join fetch e.decisionResultsAspects " +
-            "left join fetch e.subTypeAspects " +
-            "left join fetch e.members " +
-            "left join fetch e.domains " +
-            "left join fetch e.scopes as s " +
-            "left join fetch s.members " +
-            "where e.owner.dbId IN ?1")
-    // @formatter:on
-    @Transactional(readOnly = true)
-    @Override
-    Set<ScopeData> findByUnits(Set<String> unitIds);
+  // @formatter:off
+  @Query(
+      "select e from #{#entityName} as e "
+          + "left join fetch e.customAspects "
+          + "left join fetch e.links "
+          + "left join fetch e.decisionResultsAspects "
+          + "left join fetch e.subTypeAspects "
+          + "left join fetch e.members "
+          + "left join fetch e.domains "
+          + "left join fetch e.scopes as s "
+          + "left join fetch s.members "
+          + "where e.owner.dbId IN ?1")
+  // @formatter:on
+  @Transactional(readOnly = true)
+  @Override
+  Set<ScopeData> findByUnits(Set<String> unitIds);
 
-    @Query("select count(s) > 0 from #{#entityName} as s " + "inner join s.riskValuesAspects r "
-            + "inner join s.members m "
-            + "where m.dbId in ?1 and r.riskDefinitionRef = ?2 and r.domain.dbId = ?3")
-    Boolean canUseRiskDefinition(Set<String> elementIds, RiskDefinitionRef riskDefinitionRef,
-            String domainId);
+  @Query(
+      "select count(s) > 0 from #{#entityName} as s "
+          + "inner join s.riskValuesAspects r "
+          + "inner join s.members m "
+          + "where m.dbId in ?1 and r.riskDefinitionRef = ?2 and r.domain.dbId = ?3")
+  Boolean canUseRiskDefinition(
+      Set<String> elementIds, RiskDefinitionRef riskDefinitionRef, String domainId);
 }

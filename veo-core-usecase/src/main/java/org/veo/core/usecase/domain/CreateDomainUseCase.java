@@ -42,49 +42,43 @@ import lombok.Value;
 
 @RequiredArgsConstructor
 public class CreateDomainUseCase
-        implements TransactionalUseCase<CreateDomainUseCase.InputData, EmptyOutput> {
+    implements TransactionalUseCase<CreateDomainUseCase.InputData, EmptyOutput> {
 
-    private final AccountProvider accountProvider;
-    private final ClientRepository clientRepository;
-    private final DomainTemplateService domainTemplateService;
+  private final AccountProvider accountProvider;
+  private final ClientRepository clientRepository;
+  private final DomainTemplateService domainTemplateService;
 
-    @Override
-    public EmptyOutput execute(InputData input) {
-        if (!accountProvider.getCurrentUserAccount()
-                            .isAdmin()) {
-            throw new MissingAdminPrivilegesException();
-        }
-        Collection<Client> clients;
-        if (input.getClientIDs()
-                 .isPresent()) {
-            Set<Key<UUID>> clientIDs = input.getClientIDs()
-                                            .get()
-                                            .stream()
-                                            .map(Key::uuidFrom)
-                                            .collect(Collectors.toSet());
-            clients = clientRepository.getByIds(clientIDs);
-        } else {
-            clients = clientRepository.findAll();
-        }
-
-        for (Client client : clients) {
-            domainTemplateService.createDomain(client, input.domainTemplateId);
-            clientRepository.save(client);
-        }
-        return EmptyOutput.INSTANCE;
+  @Override
+  public EmptyOutput execute(InputData input) {
+    if (!accountProvider.getCurrentUserAccount().isAdmin()) {
+      throw new MissingAdminPrivilegesException();
+    }
+    Collection<Client> clients;
+    if (input.getClientIDs().isPresent()) {
+      Set<Key<UUID>> clientIDs =
+          input.getClientIDs().get().stream().map(Key::uuidFrom).collect(Collectors.toSet());
+      clients = clientRepository.getByIds(clientIDs);
+    } else {
+      clients = clientRepository.findAll();
     }
 
-    @Valid
-    @Value
-    public static class InputData implements UseCase.InputData {
-        String domainTemplateId;
-        Optional<List<String>> clientIDs;
+    for (Client client : clients) {
+      domainTemplateService.createDomain(client, input.domainTemplateId);
+      clientRepository.save(client);
     }
+    return EmptyOutput.INSTANCE;
+  }
 
-    @Valid
-    @Value
-    public static class OutputData implements UseCase.OutputData {
-        @Valid
-        Domain domain;
-    }
+  @Valid
+  @Value
+  public static class InputData implements UseCase.InputData {
+    String domainTemplateId;
+    Optional<List<String>> clientIDs;
+  }
+
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid Domain domain;
+  }
 }

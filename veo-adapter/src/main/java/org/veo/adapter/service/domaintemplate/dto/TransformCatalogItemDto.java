@@ -37,32 +37,33 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * This DTO represent a complete catalogItem, i.e. it contains a FullCXXXDto for
- * the element of this item, it is primarily used in the construction and
- * serialization of a domain template.
+ * This DTO represent a complete catalogItem, i.e. it contains a FullCXXXDto for the element of this
+ * item, it is primarily used in the construction and serialization of a domain template.
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class TransformCatalogItemDto extends CompositeCatalogItemDto implements IdentifiableDto {
 
-    @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
-    @Schema(description = "ID must be a valid UUID string following RFC 4122.",
-            example = "adf037f1-0089-48ad-9177-92269918758b",
-            format = "uuid")
-    @ToString.Include
-    private String id;
+  @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
+  @Schema(
+      description = "ID must be a valid UUID string following RFC 4122.",
+      example = "adf037f1-0089-48ad-9177-92269918758b",
+      format = "uuid")
+  @ToString.Include
+  private String id;
 
-    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
-                  visible = true,
-                  defaultImpl = CreateTailoringReferenceDto.class,
-                  include = As.EXISTING_PROPERTY,
-                  property = "referenceType")
-    @JsonSubTypes({
-            @JsonSubTypes.Type(value = TransformLinkTailoringReference.class,
-                               name = "LINK_EXTERNAL"),
-            @JsonSubTypes.Type(value = TransformLinkTailoringReference.class, name = "LINK") })
-    @Override
-    public void setTailoringReferences(Set<AbstractTailoringReferenceDto> tailoringReferences) {
-        super.setTailoringReferences(tailoringReferences);
-    }
+  @JsonTypeInfo(
+      use = JsonTypeInfo.Id.NAME,
+      visible = true,
+      defaultImpl = CreateTailoringReferenceDto.class,
+      include = As.EXISTING_PROPERTY,
+      property = "referenceType")
+  @JsonSubTypes({
+    @JsonSubTypes.Type(value = TransformLinkTailoringReference.class, name = "LINK_EXTERNAL"),
+    @JsonSubTypes.Type(value = TransformLinkTailoringReference.class, name = "LINK")
+  })
+  @Override
+  public void setTailoringReferences(Set<AbstractTailoringReferenceDto> tailoringReferences) {
+    super.setTailoringReferences(tailoringReferences);
+  }
 }

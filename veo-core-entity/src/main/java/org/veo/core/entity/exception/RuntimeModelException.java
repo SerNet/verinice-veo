@@ -22,27 +22,26 @@ package org.veo.core.entity.exception;
  */
 public class RuntimeModelException extends RuntimeException {
 
-    private static final long serialVersionUID = -4909523663112766890L;
+  private static final long serialVersionUID = -4909523663112766890L;
 
-    public RuntimeModelException() {
-        super();
-    }
+  public RuntimeModelException() {
+    super();
+  }
 
-    public RuntimeModelException(String message, Throwable cause, boolean enableSuppression,
-            boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
+  public RuntimeModelException(
+      String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    super(message, cause, enableSuppression, writableStackTrace);
+  }
 
-    public RuntimeModelException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public RuntimeModelException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-    public RuntimeModelException(String message) {
-        super(message);
-    }
+  public RuntimeModelException(String message) {
+    super(message);
+  }
 
-    public RuntimeModelException(Throwable cause) {
-        super(cause);
-    }
-
+  public RuntimeModelException(Throwable cause) {
+    super(cause);
+  }
 }

@@ -57,90 +57,94 @@ import lombok.Singular;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-
 public class ProcessRiskDto extends AbstractRiskDto {
 
-    @Valid
-    private IdRef<Process> process;
+  @Valid private IdRef<Process> process;
 
-    @Valid
-    @JsonIgnore
-    private Map<String, RiskDomainAssociationDto> domainsWithRiskValues;
+  @Valid @JsonIgnore private Map<String, RiskDomainAssociationDto> domainsWithRiskValues;
 
-    @JsonGetter(value = "domains")
-    @Schema(description = "Key is a domain-ID, values are the reference to the "
-            + "domain and its available risk definitions")
-    public Map<String, RiskDomainAssociationDto> getDomains() {
-        return domainsWithRiskValues;
-    }
+  @JsonGetter(value = "domains")
+  @Schema(
+      description =
+          "Key is a domain-ID, values are the reference to the "
+              + "domain and its available risk definitions")
+  public Map<String, RiskDomainAssociationDto> getDomains() {
+    return domainsWithRiskValues;
+  }
 
-    @JsonSetter(value = "domains")
-    public void setDomains(Map<String, RiskDomainAssociationDto> domainMap) {
-        super.setDomains(domainMap);
-        this.domainsWithRiskValues = domainMap;
-    }
+  @JsonSetter(value = "domains")
+  public void setDomains(Map<String, RiskDomainAssociationDto> domainMap) {
+    super.setDomains(domainMap);
+    this.domainsWithRiskValues = domainMap;
+  }
 
-    @Builder
-    public ProcessRiskDto(@Valid @Singular Set<IdRef<Domain>> domains,
-            @Valid @NotNull(message = "A scenario must be present.") IdRef<Scenario> scenario,
-            @Valid IdRef<Control> mitigatedBy, @Valid IdRef<Person> riskOwner,
-            @Pattern(regexp = Patterns.DATETIME) String createdAt, String createdBy,
-            @Pattern(regexp = Patterns.DATETIME) String updatedAt, String updatedBy,
-            @Valid IdRef<Process> process, RiskRef selfRef, long version, String designator,
-            @Valid Map<String, RiskDomainAssociationDto> domainsWithRiskValues) {
-        super(designator, domains, scenario, mitigatedBy, riskOwner);
-        this.process = process;
-        setSelfRef(selfRef);
-        setCreatedAt(createdAt);
-        setCreatedBy(createdBy);
-        setUpdatedAt(updatedAt);
-        setUpdatedBy(updatedBy);
-        setVersion(version);
-        setDomainsWithRiskValues(domainsWithRiskValues);
-    }
+  @Builder
+  public ProcessRiskDto(
+      @Valid @Singular Set<IdRef<Domain>> domains,
+      @Valid @NotNull(message = "A scenario must be present.") IdRef<Scenario> scenario,
+      @Valid IdRef<Control> mitigatedBy,
+      @Valid IdRef<Person> riskOwner,
+      @Pattern(regexp = Patterns.DATETIME) String createdAt,
+      String createdBy,
+      @Pattern(regexp = Patterns.DATETIME) String updatedAt,
+      String updatedBy,
+      @Valid IdRef<Process> process,
+      RiskRef selfRef,
+      long version,
+      String designator,
+      @Valid Map<String, RiskDomainAssociationDto> domainsWithRiskValues) {
+    super(designator, domains, scenario, mitigatedBy, riskOwner);
+    this.process = process;
+    setSelfRef(selfRef);
+    setCreatedAt(createdAt);
+    setCreatedBy(createdBy);
+    setUpdatedAt(updatedAt);
+    setUpdatedBy(updatedBy);
+    setVersion(version);
+    setDomainsWithRiskValues(domainsWithRiskValues);
+  }
 
-    public static ProcessRiskDto from(@Valid ProcessRisk risk,
-            ReferenceAssembler referenceAssembler) {
-        return ProcessRiskDto.builder()
-                             .designator(risk.getDesignator())
-                             .process(IdRef.from(risk.getEntity(), referenceAssembler))
-                             .scenario(IdRef.from(risk.getScenario(), referenceAssembler))
-                             .riskOwner(IdRef.from(risk.getRiskOwner(), referenceAssembler))
-                             .mitigatedBy(IdRef.from(risk.getMitigation(), referenceAssembler))
-                             .createdAt(risk.getCreatedAt()
-                                            .toString())
-                             .createdBy(risk.getCreatedBy())
-                             .updatedAt(risk.getUpdatedAt()
-                                            .toString())
-                             .updatedBy(risk.getUpdatedBy())
-                             .version(risk.getVersion())
-                             .domains(toDomainReferences(risk, referenceAssembler))
-                             .selfRef(new RiskRef(referenceAssembler, risk))
-                             .domainsWithRiskValues(toDomainRiskDefinitions(risk,
-                                                                            referenceAssembler))
-                             .build();
-    }
+  public static ProcessRiskDto from(
+      @Valid ProcessRisk risk, ReferenceAssembler referenceAssembler) {
+    return ProcessRiskDto.builder()
+        .designator(risk.getDesignator())
+        .process(IdRef.from(risk.getEntity(), referenceAssembler))
+        .scenario(IdRef.from(risk.getScenario(), referenceAssembler))
+        .riskOwner(IdRef.from(risk.getRiskOwner(), referenceAssembler))
+        .mitigatedBy(IdRef.from(risk.getMitigation(), referenceAssembler))
+        .createdAt(risk.getCreatedAt().toString())
+        .createdBy(risk.getCreatedBy())
+        .updatedAt(risk.getUpdatedAt().toString())
+        .updatedBy(risk.getUpdatedBy())
+        .version(risk.getVersion())
+        .domains(toDomainReferences(risk, referenceAssembler))
+        .selfRef(new RiskRef(referenceAssembler, risk))
+        .domainsWithRiskValues(toDomainRiskDefinitions(risk, referenceAssembler))
+        .build();
+  }
 
-    private static Set<IdRef<Domain>> toDomainReferences(ProcessRisk risk,
-            ReferenceAssembler referenceAssembler) {
-        return risk.getDomains()
-                   .stream()
-                   .map(o -> IdRef.from(o, referenceAssembler))
-                   .collect(Collectors.toSet());
-    }
+  private static Set<IdRef<Domain>> toDomainReferences(
+      ProcessRisk risk, ReferenceAssembler referenceAssembler) {
+    return risk.getDomains().stream()
+        .map(o -> IdRef.from(o, referenceAssembler))
+        .collect(Collectors.toSet());
+  }
 
-    private static Map<String, RiskDomainAssociationDto> toDomainRiskDefinitions(ProcessRisk risk,
-            ReferenceAssembler referenceAssembler) {
-        HashMap<String, RiskDomainAssociationDto> result = new HashMap<>();
-        risk.getDomains()
-            .forEach(d -> result.put(d.getIdAsString(), new RiskDomainAssociationDto(
-                    IdRef.from(d, referenceAssembler), valuesGroupedByRiskDefinition(risk))));
-        return result;
-    }
+  private static Map<String, RiskDomainAssociationDto> toDomainRiskDefinitions(
+      ProcessRisk risk, ReferenceAssembler referenceAssembler) {
+    HashMap<String, RiskDomainAssociationDto> result = new HashMap<>();
+    risk.getDomains()
+        .forEach(
+            d ->
+                result.put(
+                    d.getIdAsString(),
+                    new RiskDomainAssociationDto(
+                        IdRef.from(d, referenceAssembler), valuesGroupedByRiskDefinition(risk))));
+    return result;
+  }
 
-    private static Map<String, RiskValuesDto> valuesGroupedByRiskDefinition(ProcessRisk risk) {
-        return risk.getRiskDefinitions()
-                   .stream()
-                   .collect(toMap(RiskDefinitionRef::getIdRef, rd -> RiskValuesDto.from(risk, rd)));
-    }
+  private static Map<String, RiskValuesDto> valuesGroupedByRiskDefinition(ProcessRisk risk) {
+    return risk.getRiskDefinitions().stream()
+        .collect(toMap(RiskDefinitionRef::getIdRef, rd -> RiskValuesDto.from(risk, rd)));
+  }
 }

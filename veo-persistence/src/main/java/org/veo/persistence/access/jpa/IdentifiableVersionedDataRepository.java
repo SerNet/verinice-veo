@@ -29,9 +29,9 @@ import org.veo.persistence.entity.jpa.IdentifiableVersionedData;
 
 @NoRepositoryBean
 public interface IdentifiableVersionedDataRepository<T extends IdentifiableVersionedData>
-        extends CrudRepository<T, String> {
+    extends CrudRepository<T, String> {
 
-    @Query("select version from #{#entityName} where dbId = ?1")
-    @Nonnull
-    Optional<Long> getVersion(@Nonnull String id);
+  @Query("select version from #{#entityName} where dbId = ?1")
+  @Nonnull
+  Optional<Long> getVersion(@Nonnull String id);
 }

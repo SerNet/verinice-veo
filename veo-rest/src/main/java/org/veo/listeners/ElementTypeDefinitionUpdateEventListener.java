@@ -31,21 +31,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Listens to {@link ElementTypeDefinitionUpdateEvent}s from the persistence
- * layer and forwards them to the {@link MessageCreator}.
+ * Listens to {@link ElementTypeDefinitionUpdateEvent}s from the persistence layer and forwards them
+ * to the {@link MessageCreator}.
  */
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class ElementTypeDefinitionUpdateEventListener {
-    private final MessageCreator messageCreator;
+  private final MessageCreator messageCreator;
 
-    @EventListener
-    @Transactional(propagation = MANDATORY)
-    void handle(ElementTypeDefinitionUpdateEvent event) {
-        var entityType = EntityType.getBySingularTerm(event.getElementTypeDefinition()
-                                                           .getElementType());
-        messageCreator.createElementTypeDefinitionUpdateMessage(event.getDomain(), entityType);
-    }
-
+  @EventListener
+  @Transactional(propagation = MANDATORY)
+  void handle(ElementTypeDefinitionUpdateEvent event) {
+    var entityType =
+        EntityType.getBySingularTerm(event.getElementTypeDefinition().getElementType());
+    messageCreator.createElementTypeDefinitionUpdateMessage(event.getDomain(), entityType);
+  }
 }

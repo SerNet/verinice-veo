@@ -17,10 +17,12 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-/**
- * Actiontype for Updatereference
- */
+/** Actiontype for Updatereference */
 public enum ItemUpdateType {
-
-    UPDATE, REPLACE, REMOVE, ADD, SPLIT, JOIN;
+  UPDATE,
+  REPLACE,
+  REMOVE,
+  ADD,
+  SPLIT,
+  JOIN;
 }

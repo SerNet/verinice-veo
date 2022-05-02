@@ -47,46 +47,51 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class EntitySchemaGenerator {
-    private final SchemaExtender schemaExtender;
+  private final SchemaExtender schemaExtender;
 
-    public String createSchema(String baseName, Set<Domain> domains) {
-        String packageName = "org.veo.adapter.presenter.api.dto.full";
-        CustomPrettyPrinter prettyPrinter = new CustomPrettyPrinter();
-        prettyPrinter.indentArraysWith(new DefaultIndenter());
-        ObjectWriter writer = new ObjectMapper().writer(prettyPrinter);
+  public String createSchema(String baseName, Set<Domain> domains) {
+    String packageName = "org.veo.adapter.presenter.api.dto.full";
+    CustomPrettyPrinter prettyPrinter = new CustomPrettyPrinter();
+    prettyPrinter.indentArraysWith(new DefaultIndenter());
+    ObjectWriter writer = new ObjectMapper().writer(prettyPrinter);
 
-        SchemaGenerator generator = createSchemaGenerator();
+    SchemaGenerator generator = createSchemaGenerator();
 
-        Class<?> clazz = null;
-        try {
-            clazz = Class.forName(packageName + ".Full" + capitalize(baseName) + "Dto");
-            JsonNode jsonSchema = generator.generateSchema(clazz);
-            schemaExtender.extendSchema(generator, jsonSchema, baseName, domains);
+    Class<?> clazz = null;
+    try {
+      clazz = Class.forName(packageName + ".Full" + capitalize(baseName) + "Dto");
+      JsonNode jsonSchema = generator.generateSchema(clazz);
+      schemaExtender.extendSchema(generator, jsonSchema, baseName, domains);
 
-            return writer.writeValueAsString(jsonSchema);
-        } catch (ClassNotFoundException | JsonProcessingException e) {
-            throw new EntitySchemaException("Schema creation failed", e);
-        }
+      return writer.writeValueAsString(jsonSchema);
+    } catch (ClassNotFoundException | JsonProcessingException e) {
+      throw new EntitySchemaException("Schema creation failed", e);
     }
+  }
 
-    protected static SchemaGenerator createSchemaGenerator() {
-        JacksonModule jacksonModule = new JacksonModule();
-        JavaxValidationModule javaxValidationModule = new JavaxValidationModule(
-                JavaxValidationOption.NOT_NULLABLE_FIELD_IS_REQUIRED);
-        Module swagger2Module = new Swagger2Module();
+  protected static SchemaGenerator createSchemaGenerator() {
+    JacksonModule jacksonModule = new JacksonModule();
+    JavaxValidationModule javaxValidationModule =
+        new JavaxValidationModule(JavaxValidationOption.NOT_NULLABLE_FIELD_IS_REQUIRED);
+    Module swagger2Module = new Swagger2Module();
 
-        SchemaGeneratorConfigBuilder configBuilder = new SchemaGeneratorConfigBuilder(
-                SchemaVersion.DRAFT_2019_09, OptionPreset.PLAIN_JSON).with(jacksonModule)
-                                                                     .with(swagger2Module)
-                                                                     .with(javaxValidationModule)
-                                                                     .with(Option.INLINE_ALL_SCHEMAS,
-                                                                           Option.NONSTATIC_NONVOID_NONGETTER_METHODS,
-                                                                           Option.FIELDS_DERIVED_FROM_ARGUMENTFREE_METHODS);
-        configBuilder.forMethods()
-                     .withIgnoreCheck(method -> method.getAnnotation(JsonProperty.class) == null
-                             && method.getAnnotation(Schema.class) == null);
+    SchemaGeneratorConfigBuilder configBuilder =
+        new SchemaGeneratorConfigBuilder(SchemaVersion.DRAFT_2019_09, OptionPreset.PLAIN_JSON)
+            .with(jacksonModule)
+            .with(swagger2Module)
+            .with(javaxValidationModule)
+            .with(
+                Option.INLINE_ALL_SCHEMAS,
+                Option.NONSTATIC_NONVOID_NONGETTER_METHODS,
+                Option.FIELDS_DERIVED_FROM_ARGUMENTFREE_METHODS);
+    configBuilder
+        .forMethods()
+        .withIgnoreCheck(
+            method ->
+                method.getAnnotation(JsonProperty.class) == null
+                    && method.getAnnotation(Schema.class) == null);
 
-        SchemaGeneratorConfig config = configBuilder.build();
-        return new SchemaGenerator(config);
-    }
+    SchemaGeneratorConfig config = configBuilder.build();
+    return new SchemaGenerator(config);
+  }
 }

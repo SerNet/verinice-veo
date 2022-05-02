@@ -25,85 +25,72 @@ import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 
 /**
- * Construct and deconstruct references to {@link Identifiable} &
- * {@link AbstractRisk} objects.
+ * Construct and deconstruct references to {@link Identifiable} & {@link AbstractRisk} objects.
  *
- * These may be HTTP-URLs in a REST application with the correct hostname based
- * on the received request.
+ * <p>These may be HTTP-URLs in a REST application with the correct hostname based on the received
+ * request.
  */
 public interface ReferenceAssembler {
 
-    /**
-     * Returns an absolute reference to the target object of this reference.
-     *
-     * @param identifiable
-     *            the {@link Identifiable} object
-     * @return the URI of the specific target object
-     */
-    String targetReferenceOf(Identifiable identifiable);
+  /**
+   * Returns an absolute reference to the target object of this reference.
+   *
+   * @param identifiable the {@link Identifiable} object
+   * @return the URI of the specific target object
+   */
+  String targetReferenceOf(Identifiable identifiable);
 
-    /**
-     * Returns an absolute reference to the target object, where the target object
-     * is identified using a compound key.
-     *
-     * I.e. the URI to an object with a compound ID could look like this
-     * "/risks/<ASSET-UUID>/<SCENARIO-UUID>"
-     *
-     * @param risk
-     *            target risk
-     *
-     * @return the URI of the specific target object
-     */
-    String targetReferenceOf(AbstractRisk<?, ?> risk);
+  /**
+   * Returns an absolute reference to the target object, where the target object is identified using
+   * a compound key.
+   *
+   * <p>I.e. the URI to an object with a compound ID could look like this
+   * "/risks/<ASSET-UUID>/<SCENARIO-UUID>"
+   *
+   * @param risk target risk
+   * @return the URI of the specific target object
+   */
+  String targetReferenceOf(AbstractRisk<?, ?> risk);
 
-    /**
-     * Returns a reference to a collection of searches for the target type. Searches
-     * are a ressource so they can be created, requested and deleted (think: "named
-     * search").
-     *
-     * @param type
-     *            the {@link Identifiable} type
-     * @return the URI of the resource collection for searches or {@code null} if
-     *         the resource does not support searches.
-     */
-    String searchesReferenceOf(Class<? extends Identifiable> type);
+  /**
+   * Returns a reference to a collection of searches for the target type. Searches are a ressource
+   * so they can be created, requested and deleted (think: "named search").
+   *
+   * @param type the {@link Identifiable} type
+   * @return the URI of the resource collection for searches or {@code null} if the resource does
+   *     not support searches.
+   */
+  String searchesReferenceOf(Class<? extends Identifiable> type);
 
-    /**
-     * Returns a reference to the resource collection of the target type.
-     *
-     * @param type
-     *            the {@link Identifiable}
-     * @return the URI of the resource collection or {@code null} if no resource
-     *         collection for the type is exposed.
-     */
-    String resourcesReferenceOf(Class<? extends Identifiable> type);
+  /**
+   * Returns a reference to the resource collection of the target type.
+   *
+   * @param type the {@link Identifiable}
+   * @return the URI of the resource collection or {@code null} if no resource collection for the
+   *     type is exposed.
+   */
+  String resourcesReferenceOf(Class<? extends Identifiable> type);
 
-    /**
-     * Extract the objects type from the given URI.
-     *
-     * @param uri
-     *            the URI which may be a URL.
-     * @return The class of the specific {@link Identifiable} type.
-     */
-    Class<? extends Identifiable> parseType(String uri);
+  /**
+   * Extract the objects type from the given URI.
+   *
+   * @param uri the URI which may be a URL.
+   * @return The class of the specific {@link Identifiable} type.
+   */
+  Class<? extends Identifiable> parseType(String uri);
 
-    /**
-     * Extract the objects ID from the given URI.
-     *
-     * @param uri
-     *            the URI which may be a URL
-     */
-    String parseId(String uri);
+  /**
+   * Extract the objects ID from the given URI.
+   *
+   * @param uri the URI which may be a URL
+   */
+  String parseId(String uri);
 
-    /**
-     * Transforms the given adapter layer reference to an entity key.
-     */
-    Key<UUID> toKey(IdRef<? extends Identifiable> reference);
+  /** Transforms the given adapter layer reference to an entity key. */
+  Key<UUID> toKey(IdRef<? extends Identifiable> reference);
 
-    /**
-     * Transforms the given adapter layer references to entity keys.
-     */
-    Set<Key<UUID>> toKeys(Set<? extends IdRef<?>> references);
+  /** Transforms the given adapter layer references to entity keys. */
+  Set<Key<UUID>> toKeys(Set<? extends IdRef<?>> references);
 
-    String schemaReferenceOf(String typeSingularTerm);
+  String schemaReferenceOf(String typeSingularTerm);
 }

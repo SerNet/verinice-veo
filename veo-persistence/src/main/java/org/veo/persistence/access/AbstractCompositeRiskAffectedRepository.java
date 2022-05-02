@@ -38,40 +38,45 @@ import org.veo.persistence.entity.jpa.RiskAffectedData;
 import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
-abstract class AbstractCompositeRiskAffectedRepository<S extends CompositeElement<S> & RiskAffected<S, R>, R extends AbstractRisk<S, R>, T extends RiskAffectedData<S, R> & CompositeElement<S>>
-        extends AbstractCompositeEntityRepositoryImpl<S, T>
-        implements RiskAffectedRepository<S, R> {
+abstract class AbstractCompositeRiskAffectedRepository<
+        S extends CompositeElement<S> & RiskAffected<S, R>,
+        R extends AbstractRisk<S, R>,
+        T extends RiskAffectedData<S, R> & CompositeElement<S>>
+    extends AbstractCompositeEntityRepositoryImpl<S, T> implements RiskAffectedRepository<S, R> {
 
-    private final CompositeRiskAffectedDataRepository<T> riskAffectedRepo;
+  private final CompositeRiskAffectedDataRepository<T> riskAffectedRepo;
 
-    AbstractCompositeRiskAffectedRepository(CompositeRiskAffectedDataRepository<T> riskAffectedRepo,
-            ValidationService validation, CustomLinkDataRepository linkDataRepository,
-            ScopeDataRepository scopeDataRepository) {
-        super(riskAffectedRepo, validation, linkDataRepository, scopeDataRepository);
-        this.riskAffectedRepo = riskAffectedRepo;
-    }
+  AbstractCompositeRiskAffectedRepository(
+      CompositeRiskAffectedDataRepository<T> riskAffectedRepo,
+      ValidationService validation,
+      CustomLinkDataRepository linkDataRepository,
+      ScopeDataRepository scopeDataRepository) {
+    super(riskAffectedRepo, validation, linkDataRepository, scopeDataRepository);
+    this.riskAffectedRepo = riskAffectedRepo;
+  }
 
-    @Override
-    public Set<S> findByRisk(Scenario cause) {
-        return riskAffectedRepo.findDistinctByRisks_ScenarioIn(singleton((ScenarioData) cause))
-                               .stream()
-                               .map(riskAffectedData -> (S) riskAffectedData)
-                               .collect(Collectors.toSet());
-    }
+  @Override
+  public Set<S> findByRisk(Scenario cause) {
+    return riskAffectedRepo.findDistinctByRisks_ScenarioIn(singleton((ScenarioData) cause)).stream()
+        .map(riskAffectedData -> (S) riskAffectedData)
+        .collect(Collectors.toSet());
+  }
 
-    @Override
-    public Set<S> findByRisk(Control mitigatedBy) {
-        return riskAffectedRepo.findDistinctByRisks_Mitigation_In(singleton((ControlData) mitigatedBy))
-                               .stream()
-                               .map(riskAffectedData -> (S) riskAffectedData)
-                               .collect(Collectors.toSet());
-    }
+  @Override
+  public Set<S> findByRisk(Control mitigatedBy) {
+    return riskAffectedRepo
+        .findDistinctByRisks_Mitigation_In(singleton((ControlData) mitigatedBy))
+        .stream()
+        .map(riskAffectedData -> (S) riskAffectedData)
+        .collect(Collectors.toSet());
+  }
 
-    @Override
-    public Set<S> findByRisk(Person riskOwner) {
-        return riskAffectedRepo.findDistinctByRisks_RiskOwner_In(singleton((PersonData) riskOwner))
-                               .stream()
-                               .map(riskAffectedData -> (S) riskAffectedData)
-                               .collect(Collectors.toSet());
-    }
+  @Override
+  public Set<S> findByRisk(Person riskOwner) {
+    return riskAffectedRepo
+        .findDistinctByRisks_RiskOwner_In(singleton((PersonData) riskOwner))
+        .stream()
+        .map(riskAffectedData -> (S) riskAffectedData)
+        .collect(Collectors.toSet());
+  }
 }

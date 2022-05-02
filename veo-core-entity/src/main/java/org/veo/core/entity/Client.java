@@ -20,44 +20,43 @@ package org.veo.core.entity;
 import java.util.Set;
 
 /**
- * A client is the root object of the organizational structure. Usually a client
- * is a company or other large closed organizational entity. The client could be
- * used for high level authorization.
+ * A client is the root object of the organizational structure. Usually a client is a company or
+ * other large closed organizational entity. The client could be used for high level authorization.
  */
 public interface Client extends Identifiable, Versioned {
 
-    String SINGULAR_TERM = "client";
-    String PLURAL_TERM = "clients";
+  String SINGULAR_TERM = "client";
+  String PLURAL_TERM = "clients";
 
-    String getName();
+  String getName();
 
-    void setName(String aName);
+  void setName(String aName);
 
-    /**
-     * Add the given Domain to the collection domains.
-     *
-     * @return true if added
-     */
-    boolean addToDomains(Domain aDomain);
+  /**
+   * Add the given Domain to the collection domains.
+   *
+   * @return true if added
+   */
+  boolean addToDomains(Domain aDomain);
 
-    /**
-     * Remove the given Domain from the collection domains.
-     *
-     * @return true if removed
-     */
-    boolean removeFromDomains(Domain aDomain);
+  /**
+   * Remove the given Domain from the collection domains.
+   *
+   * @return true if removed
+   */
+  boolean removeFromDomains(Domain aDomain);
 
-    Set<Domain> getDomains();
+  Set<Domain> getDomains();
 
-    void setDomains(Set<Domain> aDomains);
+  void setDomains(Set<Domain> aDomains);
 
-    @Override
-    default Class<? extends Identifiable> getModelInterface() {
-        return Client.class;
-    }
+  @Override
+  default Class<? extends Identifiable> getModelInterface() {
+    return Client.class;
+  }
 
-    @Override
-    default String getModelType() {
-        return SINGULAR_TERM;
-    }
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
 }

@@ -26,82 +26,76 @@ import org.veo.core.entity.specification.EntitySpecification;
 /**
  * An element whose parts can optionally be modeled as well
  *
- * @param <T>
- *            the type of the entity and its parts
+ * @param <T> the type of the entity and its parts
  */
 public interface CompositeElement<T extends CompositeElement> extends Element {
 
-    Set<T> getParts();
+  Set<T> getParts();
 
-    Set<T> getComposites();
+  Set<T> getComposites();
 
-    default Set<T> findPartsFulfilling(EntitySpecification<T> specification) {
-        return specification.selectSatisfyingElementsFrom(getParts());
+  default Set<T> findPartsFulfilling(EntitySpecification<T> specification) {
+    return specification.selectSatisfyingElementsFrom(getParts());
+  }
+
+  default boolean addPart(T part) {
+    if (getOwningClient().isPresent()) {
+      checkSameClient(part);
     }
+    part.getComposites().add(this);
+    return getParts().add(part);
+  }
 
-    default boolean addPart(T part) {
-        if (getOwningClient().isPresent()) {
-            checkSameClient(part);
-        }
-        part.getComposites()
-            .add(this);
-        return getParts().add(part);
+  default boolean addParts(Set<T> parts) {
+    if (getOwningClient().isPresent()) {
+      parts.forEach(CompositeElement.this::checkSameClient);
     }
+    var added = false;
+    for (var part : parts) {
+      if (addPart(part)) {
+        added = true;
+      }
+    }
+    return added;
+  }
 
-    default boolean addParts(Set<T> parts) {
-        if (getOwningClient().isPresent()) {
-            parts.forEach(CompositeElement.this::checkSameClient);
-        }
-        var added = false;
-        for (var part : parts) {
-            if (addPart(part)) {
-                added = true;
-            }
-        }
-        return added;
+  default boolean removePart(T part) {
+    // Parts may be proxies - make sure they are hydrated by calling a method on
+    // them.
+    if (getParts().removeIf((p) -> p.getId().equals(part.getId()))) {
+      part.getComposites().remove(this);
+      return true;
     }
+    return false;
+  }
 
-    default boolean removePart(T part) {
-        // Parts may be proxies - make sure they are hydrated by calling a method on
-        // them.
-        if (getParts().removeIf((p) -> p.getId()
-                                        .equals(part.getId()))) {
-            part.getComposites()
-                .remove(this);
-            return true;
-        }
-        return false;
+  default boolean removeParts(Set<T> parts) {
+    var removed = false;
+    for (var part : new HashSet<>(parts)) {
+      if (removePart(part)) {
+        removed = true;
+      }
     }
+    return removed;
+  }
 
-    default boolean removeParts(Set<T> parts) {
-        var removed = false;
-        for (var part : new HashSet<>(parts)) {
-            if (removePart(part)) {
-                removed = true;
-            }
-        }
-        return removed;
+  default void setParts(Set<T> parts) {
+    if (getOwningClient().isPresent()) {
+      parts.stream().forEach(CompositeElement.this::checkSameClient);
     }
+    removeParts(getParts());
+    addParts(parts);
+  }
 
-    default void setParts(Set<T> parts) {
-        if (getOwningClient().isPresent()) {
-            parts.stream()
-                 .forEach(CompositeElement.this::checkSameClient);
-        }
-        removeParts(getParts());
-        addParts(parts);
-    }
+  default boolean removePartById(Key<UUID> id) {
+    return getParts().removeIf(part -> part.getId().equals(id));
+  }
 
-    default boolean removePartById(Key<UUID> id) {
-        return getParts().removeIf(part -> part.getId()
-                                               .equals(id));
-    }
-
-    @Override
-    default void remove() {
-        setParts(new HashSet<>());
-        // Work with copies of parent element lists to avoid concurrent modifications
-        new HashSet<>(getComposites()).forEach(c -> c.removePart(this));
-        new HashSet<>(getScopes()).forEach(s -> s.removeMember(this));
-    }
+  @Override
+  default void remove() {
+    setParts(new HashSet<>());
+    // Work with copies of parent element lists to avoid concurrent modifications
+    new HashSet<>(getComposites()).forEach(c -> c.removePart(this));
+    new HashSet<>(getScopes()).forEach(s -> s.removeMember(this));
+  }
 }

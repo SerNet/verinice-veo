@@ -18,5 +18,7 @@
 package org.veo.rest.test;
 
 public enum UserType {
-    DEFAULT, ADMIN, CONTENT_CREATOR
+  DEFAULT,
+  ADMIN,
+  CONTENT_CREATOR
 }

@@ -28,14 +28,14 @@ import org.veo.core.entity.Unit;
 /**
  * A repository for <code>Unit</code> entities.
  *
- * Implements basic CRUD operations from the superinterface and extends them
- * with more specific methods - i.e. queries based on particular fields.
+ * <p>Implements basic CRUD operations from the superinterface and extends them with more specific
+ * methods - i.e. queries based on particular fields.
  */
 public interface UnitRepository extends IdentifiableVersionedRepository<Unit> {
 
-    List<Unit> findByClient(Client client);
+  List<Unit> findByClient(Client client);
 
-    List<Unit> findByParent(Unit parent);
+  List<Unit> findByParent(Unit parent);
 
-    Optional<Unit> findByIdFetchClient(Key<UUID> id);
+  Optional<Unit> findByIdFetchClient(Key<UUID> id);
 }

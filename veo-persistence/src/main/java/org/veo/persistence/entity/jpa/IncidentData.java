@@ -38,15 +38,17 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class IncidentData extends ElementData implements Incident {
 
-    @ManyToMany(targetEntity = IncidentData.class,
-                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "incident_parts",
-               joinColumns = @JoinColumn(name = "composite_id"),
-               inverseJoinColumns = @JoinColumn(name = "part_id"))
-    @Getter
-    private final Set<Incident> parts = new HashSet<>();
+  @ManyToMany(
+      targetEntity = IncidentData.class,
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JoinTable(
+      name = "incident_parts",
+      joinColumns = @JoinColumn(name = "composite_id"),
+      inverseJoinColumns = @JoinColumn(name = "part_id"))
+  @Getter
+  private final Set<Incident> parts = new HashSet<>();
 
-    @ManyToMany(targetEntity = IncidentData.class, mappedBy = "parts", fetch = FetchType.LAZY)
-    @Getter
-    private final Set<Incident> composites = new HashSet<>();
+  @ManyToMany(targetEntity = IncidentData.class, mappedBy = "parts", fetch = FetchType.LAZY)
+  @Getter
+  private final Set<Incident> composites = new HashSet<>();
 }

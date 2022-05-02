@@ -26,38 +26,40 @@ import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.decision.Decider;
 
-/**
- * Creates a persistent new process object.
- */
+/** Creates a persistent new process object. */
 public class CreateProcessUseCase extends CreateElementUseCase<Process> {
 
-    private final EventPublisher eventPublisher;
+  private final EventPublisher eventPublisher;
 
-    public CreateProcessUseCase(UnitRepository unitRepository, ProcessRepository entityRepo,
-            DesignatorService designatorService, EventPublisher eventPublisher, Decider decider) {
-        super(unitRepository, entityRepo, designatorService, decider);
-        this.eventPublisher = eventPublisher;
-    }
+  public CreateProcessUseCase(
+      UnitRepository unitRepository,
+      ProcessRepository entityRepo,
+      DesignatorService designatorService,
+      EventPublisher eventPublisher,
+      Decider decider) {
+    super(unitRepository, entityRepo, designatorService, decider);
+    this.eventPublisher = eventPublisher;
+  }
 
-    @Override
-    public OutputData<Process> execute(InputData<Process> input) {
-        OutputData<Process> result = super.execute(input);
-        eventPublisher.publish(new RiskComponentChangeEvent(result.getEntity()));
-        return result;
-    }
+  @Override
+  public OutputData<Process> execute(InputData<Process> input) {
+    OutputData<Process> result = super.execute(input);
+    eventPublisher.publish(new RiskComponentChangeEvent(result.getEntity()));
+    return result;
+  }
 
-    @Override
-    protected void validate(Process process) {
-        // TODO VEO-1244 The same kind of validation as in UpdateControlUseCase should
-        // be used here as soon as it is possible to create an element within a scope.
-        process.getDomains()
-               .forEach(domain -> {
-                   if (process.getImpactValues(domain)
-                              .map(rv -> !rv.isEmpty())
-                              .orElse(false)) {
-                       throw new IllegalArgumentException(
-                               "Cannot create process with risk values, because it must a member of a scope with a risk definition first");
-                   }
-               });
-    }
+  @Override
+  protected void validate(Process process) {
+    // TODO VEO-1244 The same kind of validation as in UpdateControlUseCase should
+    // be used here as soon as it is possible to create an element within a scope.
+    process
+        .getDomains()
+        .forEach(
+            domain -> {
+              if (process.getImpactValues(domain).map(rv -> !rv.isEmpty()).orElse(false)) {
+                throw new IllegalArgumentException(
+                    "Cannot create process with risk values, because it must a member of a scope with a risk definition first");
+              }
+            });
+  }
 }

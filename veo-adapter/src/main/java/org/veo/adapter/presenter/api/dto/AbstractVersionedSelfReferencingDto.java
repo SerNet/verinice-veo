@@ -35,47 +35,48 @@ import lombok.Getter;
 /**
  * Implements all members of {@link Versioned} and has a self reference.
  *
- * TODO VEO-902 rename back to AbstractVersionedDto when all Versioned types can
- * have a self reference.
+ * <p>TODO VEO-902 rename back to AbstractVersionedDto when all Versioned types can have a self
+ * reference.
  */
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AbstractVersionedSelfReferencingDto implements VersionedDto {
 
-    @JsonIgnore
-    @Getter(AccessLevel.NONE)
-    private Ref selfRef;
+  @JsonIgnore
+  @Getter(AccessLevel.NONE)
+  private Ref selfRef;
 
-    @JsonProperty(value = "_self", access = JsonProperty.Access.READ_ONLY)
-    @Schema(description = "A valid reference to this resource.", format = "uri")
-    public String getSelf() {
-        return Optional.ofNullable(selfRef)
-                       .map(Ref::getTargetUri)
-                       .orElse(null);
-    }
+  @JsonProperty(value = "_self", access = JsonProperty.Access.READ_ONLY)
+  @Schema(description = "A valid reference to this resource.", format = "uri")
+  public String getSelf() {
+    return Optional.ofNullable(selfRef).map(Ref::getTargetUri).orElse(null);
+  }
 
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
-            example = "1990-12-31T23:59:60Z",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @Pattern(regexp = Patterns.DATETIME)
-    private String createdAt;
+  @Schema(
+      description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      example = "1990-12-31T23:59:60Z",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  @Pattern(regexp = Patterns.DATETIME)
+  private String createdAt;
 
-    @Schema(description = "The username of the user who created this object.",
-            example = "jane_doe",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private String createdBy;
+  @Schema(
+      description = "The username of the user who created this object.",
+      example = "jane_doe",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  private String createdBy;
 
-    @Schema(description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
-            example = "1990-12-31T23:59:60Z",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    @Pattern(regexp = Patterns.DATETIME)
-    private String updatedAt;
+  @Schema(
+      description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      example = "1990-12-31T23:59:60Z",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  @Pattern(regexp = Patterns.DATETIME)
+  private String updatedAt;
 
-    @Schema(description = "The username of the user who last updated this object.",
-            example = "jane_doe",
-            accessMode = Schema.AccessMode.READ_ONLY)
-    private String updatedBy;
+  @Schema(
+      description = "The username of the user who last updated this object.",
+      example = "jane_doe",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  private String updatedBy;
 
-    @JsonIgnore
-    private long version;
+  @JsonIgnore private long version;
 }

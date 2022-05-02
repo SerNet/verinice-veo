@@ -24,38 +24,39 @@ import org.veo.core.entity.risk.PotentialProbabilityImpl;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
 /**
- * NIST: Threat Scenario: A set of discrete threat events, associated with a
- * specific threat source or multiple threat sources, partially ordered in time.
+ * NIST: Threat Scenario: A set of discrete threat events, associated with a specific threat source
+ * or multiple threat sources, partially ordered in time.
  */
 public interface Scenario extends Element, CompositeElement<Scenario> {
 
-    String SINGULAR_TERM = "scenario";
-    String PLURAL_TERM = "scenarios";
-    String TYPE_DESIGNATOR = "SCN";
+  String SINGULAR_TERM = "scenario";
+  String PLURAL_TERM = "scenarios";
+  String TYPE_DESIGNATOR = "SCN";
 
-    @Override
-    default String getModelType() {
-        return SINGULAR_TERM;
-    }
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
 
-    @Override
-    default Class<? extends Identifiable> getModelInterface() {
-        return Scenario.class;
-    }
+  @Override
+  default Class<? extends Identifiable> getModelInterface() {
+    return Scenario.class;
+  }
 
-    @Override
-    default String getTypeDesignator() {
-        return TYPE_DESIGNATOR;
-    }
+  @Override
+  default String getTypeDesignator() {
+    return TYPE_DESIGNATOR;
+  }
 
-    Optional<Map<RiskDefinitionRef, PotentialProbabilityImpl>> getPotentialProbability(
-            DomainTemplate domain);
+  Optional<Map<RiskDefinitionRef, PotentialProbabilityImpl>> getPotentialProbability(
+      DomainTemplate domain);
 
-    default Optional<PotentialProbabilityImpl> getPotentialProbability(DomainTemplate domain,
-            RiskDefinitionRef riskDefinition) {
-        return getPotentialProbability(domain).map(probabilityByRiskDefinition -> probabilityByRiskDefinition.get((riskDefinition)));
-    }
+  default Optional<PotentialProbabilityImpl> getPotentialProbability(
+      DomainTemplate domain, RiskDefinitionRef riskDefinition) {
+    return getPotentialProbability(domain)
+        .map(probabilityByRiskDefinition -> probabilityByRiskDefinition.get((riskDefinition)));
+  }
 
-    void setPotentialProbability(DomainTemplate domain,
-            Map<RiskDefinitionRef, PotentialProbabilityImpl> potentialProbability);
+  void setPotentialProbability(
+      DomainTemplate domain, Map<RiskDefinitionRef, PotentialProbabilityImpl> potentialProbability);
 }

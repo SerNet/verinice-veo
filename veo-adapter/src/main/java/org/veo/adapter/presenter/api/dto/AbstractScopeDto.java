@@ -40,28 +40,30 @@ import lombok.ToString;
 @Schema(title = "scope", description = "Schema for scope")
 public abstract class AbstractScopeDto extends AbstractElementDto {
 
-    @Schema(description = "The scope's members")
-    private Set<IdRef<Element>> members = Collections.emptySet();
+  @Schema(description = "The scope's members")
+  private Set<IdRef<Element>> members = Collections.emptySet();
 
-    @Override
-    public Class<? extends Identifiable> getModelInterface() {
-        return Scope.class;
-    }
+  @Override
+  public Class<? extends Identifiable> getModelInterface() {
+    return Scope.class;
+  }
 
-    @Override
-    public void associateWithTargetDomain(String id) {
-        setDomains(Map.of(id, getDomains().values()
-                                          .stream()
-                                          .findFirst()
-                                          .orElse(new ScopeDomainAssociationDto())));
-    }
+  @Override
+  public void associateWithTargetDomain(String id) {
+    setDomains(
+        Map.of(
+            id,
+            getDomains().values().stream().findFirst().orElse(new ScopeDomainAssociationDto())));
+  }
 
-    @Override
-    public void clearDomains() {
-        domains.clear();
-    }
+  @Override
+  public void clearDomains() {
+    domains.clear();
+  }
 
-    @Valid
-    @Schema(description = "Details about this element's association with domains. Domain ID is key, association object is value.")
-    private Map<String, ScopeDomainAssociationDto> domains = new HashMap<>();
+  @Valid
+  @Schema(
+      description =
+          "Details about this element's association with domains. Domain ID is key, association object is value.")
+  private Map<String, ScopeDomainAssociationDto> domains = new HashMap<>();
 }

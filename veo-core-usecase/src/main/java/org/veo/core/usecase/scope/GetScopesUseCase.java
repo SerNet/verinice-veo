@@ -23,13 +23,13 @@ import org.veo.core.repository.ScopeRepository;
 import org.veo.core.usecase.base.DefaultGetElementsUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 
-/**
- * Reinstantiate persisted scope objects.
- */
+/** Reinstantiate persisted scope objects. */
 public class GetScopesUseCase extends DefaultGetElementsUseCase<Scope> {
 
-    public GetScopesUseCase(ClientRepository clientRepository, ScopeRepository scopeRepository,
-            UnitHierarchyProvider unitHierarchyProvider) {
-        super(clientRepository, scopeRepository, unitHierarchyProvider);
-    }
+  public GetScopesUseCase(
+      ClientRepository clientRepository,
+      ScopeRepository scopeRepository,
+      UnitHierarchyProvider unitHierarchyProvider) {
+    super(clientRepository, scopeRepository, unitHierarchyProvider);
+  }
 }

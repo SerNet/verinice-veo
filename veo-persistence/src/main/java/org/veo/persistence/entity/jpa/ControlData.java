@@ -47,51 +47,56 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class ControlData extends ElementData implements Control {
 
-    @Override
-    public Class<? extends Identifiable> getModelInterface() {
-        return Control.class;
-    }
+  @Override
+  public Class<? extends Identifiable> getModelInterface() {
+    return Control.class;
+  }
 
-    @ManyToMany(targetEntity = ControlData.class,
-                cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(name = "control_parts",
-               joinColumns = @JoinColumn(name = "composite_id"),
-               inverseJoinColumns = @JoinColumn(name = "part_id"))
-    @Valid
-    @Getter
-    private final Set<Control> parts = new HashSet<>();
+  @ManyToMany(
+      targetEntity = ControlData.class,
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @JoinTable(
+      name = "control_parts",
+      joinColumns = @JoinColumn(name = "composite_id"),
+      inverseJoinColumns = @JoinColumn(name = "part_id"))
+  @Valid
+  @Getter
+  private final Set<Control> parts = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL,
-               orphanRemoval = true,
-               targetEntity = ControlRiskValuesAspectData.class,
-               mappedBy = "owner",
-               fetch = FetchType.LAZY)
-    @Valid
-    private final Set<ControlRiskValuesAspectData> riskValuesAspects = new HashSet<>();
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      targetEntity = ControlRiskValuesAspectData.class,
+      mappedBy = "owner",
+      fetch = FetchType.LAZY)
+  @Valid
+  private final Set<ControlRiskValuesAspectData> riskValuesAspects = new HashSet<>();
 
-    @ManyToMany(targetEntity = ControlData.class, mappedBy = "parts", fetch = FetchType.LAZY)
-    @Getter
-    private final Set<Control> composites = new HashSet<>();
+  @ManyToMany(targetEntity = ControlData.class, mappedBy = "parts", fetch = FetchType.LAZY)
+  @Getter
+  private final Set<Control> composites = new HashSet<>();
 
-    @Override
-    public void setRiskValues(DomainTemplate domain,
-            Map<RiskDefinitionRef, ControlRiskValues> riskValues) {
-        var aspect = findAspectByDomain(riskValuesAspects, domain).orElseGet(() -> {
-            var newAspect = new ControlRiskValuesAspectData(domain, this);
-            riskValuesAspects.add(newAspect);
-            return newAspect;
-        });
-        aspect.setValues(riskValues);
-    }
+  @Override
+  public void setRiskValues(
+      DomainTemplate domain, Map<RiskDefinitionRef, ControlRiskValues> riskValues) {
+    var aspect =
+        findAspectByDomain(riskValuesAspects, domain)
+            .orElseGet(
+                () -> {
+                  var newAspect = new ControlRiskValuesAspectData(domain, this);
+                  riskValuesAspects.add(newAspect);
+                  return newAspect;
+                });
+    aspect.setValues(riskValues);
+  }
 
-    public Optional<Map<RiskDefinitionRef, ControlRiskValues>> getRiskValues(
-            DomainTemplate domain) {
-        return findAspectByDomain(riskValuesAspects, domain).map(a -> a.getValues());
-    }
+  public Optional<Map<RiskDefinitionRef, ControlRiskValues>> getRiskValues(DomainTemplate domain) {
+    return findAspectByDomain(riskValuesAspects, domain).map(a -> a.getValues());
+  }
 
-    @Override
-    public void transferToDomain(Domain oldDomain, Domain newDomain) {
-        findAspectByDomain(riskValuesAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
-        super.transferToDomain(oldDomain, newDomain);
-    }
+  @Override
+  public void transferToDomain(Domain oldDomain, Domain newDomain) {
+    findAspectByDomain(riskValuesAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
+    super.transferToDomain(oldDomain, newDomain);
+  }
 }

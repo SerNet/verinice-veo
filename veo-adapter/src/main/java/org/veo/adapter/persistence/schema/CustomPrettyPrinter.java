@@ -25,43 +25,43 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 
 class CustomPrettyPrinter extends DefaultPrettyPrinter {
 
-    private static final long serialVersionUID = -838025542289234422L;
-    private int depth = 0;
+  private static final long serialVersionUID = -838025542289234422L;
+  private int depth = 0;
 
-    @Override
-    public void writeObjectFieldValueSeparator(JsonGenerator g) throws IOException {
-        g.writeRaw(": ");
-    }
+  @Override
+  public void writeObjectFieldValueSeparator(JsonGenerator g) throws IOException {
+    g.writeRaw(": ");
+  }
 
-    @Override
-    public DefaultPrettyPrinter createInstance() {
-        CustomPrettyPrinter instance = new CustomPrettyPrinter();
-        instance.indentArraysWith(new DefaultIndenter());
-        return instance;
-    }
+  @Override
+  public DefaultPrettyPrinter createInstance() {
+    CustomPrettyPrinter instance = new CustomPrettyPrinter();
+    instance.indentArraysWith(new DefaultIndenter());
+    return instance;
+  }
 
-    @Override
-    public void writeStartObject(JsonGenerator jg) throws IOException {
-        super.writeStartObject(jg);
-        ++depth;
-    }
+  @Override
+  public void writeStartObject(JsonGenerator jg) throws IOException {
+    super.writeStartObject(jg);
+    ++depth;
+  }
 
-    @Override
-    public void writeEndObject(JsonGenerator g, int nrOfEntries) throws IOException {
-        if (nrOfEntries == 0) {
-            g.writeRaw("\n");
-            for (int i = 0; i < depth; i++) {
-                g.writeRaw("  ");
-            }
-            g.writeRaw("\n");
-            for (int i = 0; i < depth - 2; i++) {
-                g.writeRaw("  ");
-            }
-            g.writeRaw(" ");
-        }
-        super.writeEndObject(g, nrOfEntries);
-        if (--depth == 0) {
-            g.writeRaw('\n');
-        }
+  @Override
+  public void writeEndObject(JsonGenerator g, int nrOfEntries) throws IOException {
+    if (nrOfEntries == 0) {
+      g.writeRaw("\n");
+      for (int i = 0; i < depth; i++) {
+        g.writeRaw("  ");
+      }
+      g.writeRaw("\n");
+      for (int i = 0; i < depth - 2; i++) {
+        g.writeRaw("  ");
+      }
+      g.writeRaw(" ");
     }
+    super.writeEndObject(g, nrOfEntries);
+    if (--depth == 0) {
+      g.writeRaw('\n');
+    }
+  }
 }

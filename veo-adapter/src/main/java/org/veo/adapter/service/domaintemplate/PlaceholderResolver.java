@@ -34,54 +34,45 @@ import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.exception.NotFoundException;
 
 class PlaceholderResolver extends DbIdRefResolver {
-    Map<String, Identifiable> cache = new HashMap<>();
-    Map<String, IdentifiableDto> dtoCache = new HashMap<>();
+  Map<String, Identifiable> cache = new HashMap<>();
+  Map<String, IdentifiableDto> dtoCache = new HashMap<>();
 
-    private final DtoToEntityTransformer entityTransformer;
+  private final DtoToEntityTransformer entityTransformer;
 
-    PlaceholderResolver(DtoToEntityTransformer entityTransformer) {
-        super(null, null);
-        this.entityTransformer = entityTransformer;
+  PlaceholderResolver(DtoToEntityTransformer entityTransformer) {
+    super(null, null);
+    this.entityTransformer = entityTransformer;
+  }
+
+  @Override
+  public <TEntity extends Identifiable> TEntity resolve(IdRef<TEntity> objectReference)
+      throws NotFoundException {
+    if (objectReference == null) {
+      return null;
     }
+    String id = objectReference.getId();
+    Identifiable identifiable =
+        cache.computeIfAbsent(id, a -> createElement(id, objectReference.getType()));
+    return (TEntity) identifiable;
+  }
 
-    @Override
-    public <TEntity extends Identifiable> TEntity resolve(IdRef<TEntity> objectReference)
-            throws NotFoundException {
-        if (objectReference == null) {
-            return null;
-        }
-        String id = objectReference.getId();
-        Identifiable identifiable = cache.computeIfAbsent(id,
-                                                          a -> createElement(id,
-                                                                             objectReference.getType()));
-        return (TEntity) identifiable;
+  @Override
+  public <TEntity extends Identifiable> Set<TEntity> resolve(Set<IdRef<TEntity>> objectReferences) {
+
+    return objectReferences.stream().map(o -> resolve(o)).collect(Collectors.toSet());
+  }
+
+  /** Creates the missing element from the dto in the cache. */
+  private Identifiable createElement(String id, Class<? extends Identifiable> type) {
+    IdentifiableDto elementDto = dtoCache.get(id);
+    if (elementDto != null) {
+      AbstractElementDto es = (AbstractElementDto) elementDto;
+      HashMap<String, List<CustomLinkDto>> hashMap = new HashMap<>(es.getLinks());
+      es.getLinks().clear();
+      Element element = entityTransformer.transformDto2Element(es, this);
+      es.getLinks().putAll(hashMap);
+      return element;
     }
-
-    @Override
-    public <TEntity extends Identifiable> Set<TEntity> resolve(
-            Set<IdRef<TEntity>> objectReferences) {
-
-        return objectReferences.stream()
-                               .map(o -> resolve(o))
-                               .collect(Collectors.toSet());
-    }
-
-    /**
-     * Creates the missing element from the dto in the cache.
-     */
-    private Identifiable createElement(String id, Class<? extends Identifiable> type) {
-        IdentifiableDto elementDto = dtoCache.get(id);
-        if (elementDto != null) {
-            AbstractElementDto es = (AbstractElementDto) elementDto;
-            HashMap<String, List<CustomLinkDto>> hashMap = new HashMap<>(es.getLinks());
-            es.getLinks()
-              .clear();
-            Element element = entityTransformer.transformDto2Element(es, this);
-            es.getLinks()
-              .putAll(hashMap);
-            return element;
-        }
-        throw new IllegalArgumentException("Unknown type (not dtoCached):" + type + "  id:" + id);
-    }
-
+    throw new IllegalArgumentException("Unknown type (not dtoCached):" + type + "  id:" + id);
+  }
 }

@@ -33,26 +33,24 @@ import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
 public class CatalogItemRepositoryImpl
-        extends AbstractIdentifiableVersionedRepository<CatalogItem, CatalogItemData>
-        implements CatalogItemRepository {
+    extends AbstractIdentifiableVersionedRepository<CatalogItem, CatalogItemData>
+    implements CatalogItemRepository {
 
-    private final CatalogItemDataRepository catalogItemDataRepository;
+  private final CatalogItemDataRepository catalogItemDataRepository;
 
-    public CatalogItemRepositoryImpl(CatalogItemDataRepository dataRepository,
-            ValidationService validator) {
-        super(dataRepository, validator);
-        catalogItemDataRepository = dataRepository;
-    }
+  public CatalogItemRepositoryImpl(
+      CatalogItemDataRepository dataRepository, ValidationService validator) {
+    super(dataRepository, validator);
+    catalogItemDataRepository = dataRepository;
+  }
 
-    @Override
-    public Set<CatalogItem> getByIdsFetchElementData(Set<Key<UUID>> ids) {
-        var idStrings = ids.stream()
-                           .map(Key::uuidValue)
-                           .collect(Collectors.toList());
-        return StreamSupport.stream(catalogItemDataRepository.findAllWithElementDataByDbIdIn(idStrings)
-                                                             .spliterator(),
-                                    false)
-                            .map(e -> (CatalogItem) e)
-                            .collect(Collectors.toSet());
-    }
+  @Override
+  public Set<CatalogItem> getByIdsFetchElementData(Set<Key<UUID>> ids) {
+    var idStrings = ids.stream().map(Key::uuidValue).collect(Collectors.toList());
+    return StreamSupport.stream(
+            catalogItemDataRepository.findAllWithElementDataByDbIdIn(idStrings).spliterator(),
+            false)
+        .map(e -> (CatalogItem) e)
+        .collect(Collectors.toSet());
+  }
 }

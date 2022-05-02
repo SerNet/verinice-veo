@@ -43,13 +43,13 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @TypeDef(name = "json", typeClass = JsonType.class, defaultForType = Map.class)
 public class DecisionResultsAspectData extends AspectData {
-    public DecisionResultsAspectData(DomainTemplate domain, Element owner,
-            Map<DecisionRef, DecisionResult> results) {
-        super(domain, owner);
-        this.results = results;
-    }
+  public DecisionResultsAspectData(
+      DomainTemplate domain, Element owner, Map<DecisionRef, DecisionResult> results) {
+    super(domain, owner);
+    this.results = results;
+  }
 
-    @Column(columnDefinition = "jsonb")
-    @Getter
-    private Map<DecisionRef, DecisionResult> results;
+  @Column(columnDefinition = "jsonb")
+  @Getter
+  private Map<DecisionRef, DecisionResult> results;
 }

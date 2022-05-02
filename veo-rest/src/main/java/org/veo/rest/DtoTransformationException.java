@@ -17,14 +17,10 @@
  ******************************************************************************/
 package org.veo.rest;
 
-/**
- * Exception that should be thrown when a PUT request body cannot be transformed
- * into a Dto.
- */
+/** Exception that should be thrown when a PUT request body cannot be transformed into a Dto. */
 public class DtoTransformationException extends RuntimeException {
 
-    public DtoTransformationException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
+  public DtoTransformationException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

@@ -47,123 +47,125 @@ import org.veo.persistence.LenientCurrentUserProviderImpl;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * This class bundles custom API security configurations.
- */
+/** This class bundles custom API security configurations. */
 @EnableWebSecurity
 @Slf4j
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
-    @Value("${veo.cors.origins}")
-    private String[] origins;
+  @Value("${veo.cors.origins}")
+  private String[] origins;
 
-    @Value("${veo.cors.headers}")
-    private String[] allowedHeaders;
+  @Value("${veo.cors.headers}")
+  private String[] allowedHeaders;
 
-    @SuppressFBWarnings("SPRING_CSRF_PROTECTION_DISABLED")
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf()
-            .disable();
-        http.cors();
-        http.headers()
-            .cacheControl()
-            .disable();
+  @SuppressFBWarnings("SPRING_CSRF_PROTECTION_DISABLED")
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http.csrf().disable();
+    http.cors();
+    http.headers().cacheControl().disable();
 
-        // Anonymous access (a user with role "ROLE_ANONYMOUS" must be enabled for
-        // swagger-ui). We cannot disable it.
-        // Make sure that no critical API can be accessed by an anonymous user!
-        // .anonymous().disable()
+    // Anonymous access (a user with role "ROLE_ANONYMOUS" must be enabled for
+    // swagger-ui). We cannot disable it.
+    // Make sure that no critical API can be accessed by an anonymous user!
+    // .anonymous().disable()
 
-        http.authorizeRequests()
-            .antMatchers("/actuator/**")
-            .permitAll();
+    http.authorizeRequests().antMatchers("/actuator/**").permitAll();
 
-        http.sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.authorizeRequests()
-            .antMatchers(HttpMethod.GET, "/", "/v2/api-docs/**", "/v3/api-docs/**", "/swagger.json",
-                         "/swagger-ui.html", "/swagger-resources/**", "/webjars/**",
-                         "/swagger-ui/**")
-            .permitAll()
+    http.authorizeRequests()
+        .antMatchers(
+            HttpMethod.GET,
+            "/",
+            "/v2/api-docs/**",
+            "/v3/api-docs/**",
+            "/swagger.json",
+            "/swagger-ui.html",
+            "/swagger-resources/**",
+            "/webjars/**",
+            "/swagger-ui/**")
+        .permitAll()
+        .antMatchers(HttpMethod.POST, "/domains/**", "/domaintemplates", "/domaintemplates/")
+        .hasRole("veo-content-creator")
+        .antMatchers(
+            "/units/**",
+            "/assets/**",
+            "/controls/**",
+            "/scopes/**",
+            "/persons/**",
+            "/processes/**",
+            "/schemas/**",
+            "/translations/**",
+            "/domains/**")
+        .hasRole("veo-user")
+        .antMatchers("/admin/**", "/domaintemplates/*/createdomains")
+        .hasRole("veo-admin")
+        .anyRequest()
+        .authenticated(); // CAUTION:
+    // this includes anonymous users,
+    // see above
 
-            .antMatchers(HttpMethod.POST, "/domains/**", "/domaintemplates", "/domaintemplates/")
-            .hasRole("veo-content-creator")
+    http.oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter());
+  }
 
-            .antMatchers("/units/**", "/assets/**", "/controls/**", "/scopes/**", "/persons/**",
-                         "/processes/**", "/schemas/**", "/translations/**", "/domains/**")
-            .hasRole("veo-user")
+  private JwtAuthenticationConverter jwtAuthenticationConverter() {
+    JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter =
+        new JwtGrantedAuthoritiesConverter();
+    jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
+    jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
 
-            .antMatchers("/admin/**", "/domaintemplates/*/createdomains")
-            .hasRole("veo-admin")
+    JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+    jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+    return jwtAuthenticationConverter;
+  }
 
-            .anyRequest()
-            .authenticated(); // CAUTION:
-                              // this includes anonymous users,
-                              // see above
+  @Override
+  public void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth.userDetailsService(inMemoryUserDetailsManager());
+  }
 
-        http.oauth2ResourceServer()
-            .jwt()
-            .jwtAuthenticationConverter(jwtAuthenticationConverter());
-    }
+  @Bean
+  CorsConfigurationSource corsConfigurationSource() {
+    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    CorsConfiguration corsConfig = new CorsConfiguration();
+    corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    // Some basic headers are always needed, additional headers are
+    // configurable:
+    corsConfig.addAllowedHeader(HttpHeaders.AUTHORIZATION);
+    corsConfig.addAllowedHeader(HttpHeaders.CONTENT_TYPE);
+    corsConfig.addAllowedHeader(HttpHeaders.IF_MATCH);
+    corsConfig.addAllowedHeader(HttpHeaders.IF_NONE_MATCH);
+    Arrays.stream(allowedHeaders)
+        .peek(s -> log.debug("Added CORS allowed header: {}", s))
+        .forEach(corsConfig::addAllowedHeader);
+    Arrays.stream(origins)
+        .peek(s -> log.debug("Added CORS origin pattern: {}", s))
+        .forEach(corsConfig::addAllowedOriginPattern);
+    corsConfig.setMaxAge(Duration.ofMinutes(30));
+    corsConfig.addExposedHeader(HttpHeaders.ETAG);
+    source.registerCorsConfiguration("/**", corsConfig);
+    return source;
+  }
 
-    private JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
-        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+  @Bean
+  public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
+    final String nilUUID = "00000000-0000-0000-0000-000000000000";
 
-        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
-        return jwtAuthenticationConverter;
-    }
+    ApplicationUser basicUser =
+        ApplicationUser.authenticatedUser("user", nilUUID, "veo-user", Collections.emptyList());
+    basicUser.setAuthorities(List.of(new SimpleGrantedAuthority("SCOPE_veo-user")));
 
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(inMemoryUserDetailsManager());
-    }
+    ApplicationUser adminUser =
+        ApplicationUser.authenticatedUser("admin", nilUUID, "veo-admin", Collections.emptyList());
+    adminUser.setAuthorities(List.of(new SimpleGrantedAuthority("SCOPE_veo-admin")));
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        // Some basic headers are always needed, additional headers are
-        // configurable:
-        corsConfig.addAllowedHeader(HttpHeaders.AUTHORIZATION);
-        corsConfig.addAllowedHeader(HttpHeaders.CONTENT_TYPE);
-        corsConfig.addAllowedHeader(HttpHeaders.IF_MATCH);
-        corsConfig.addAllowedHeader(HttpHeaders.IF_NONE_MATCH);
-        Arrays.stream(allowedHeaders)
-              .peek(s -> log.debug("Added CORS allowed header: {}", s))
-              .forEach(corsConfig::addAllowedHeader);
-        Arrays.stream(origins)
-              .peek(s -> log.debug("Added CORS origin pattern: {}", s))
-              .forEach(corsConfig::addAllowedOriginPattern);
-        corsConfig.setMaxAge(Duration.ofMinutes(30));
-        corsConfig.addExposedHeader(HttpHeaders.ETAG);
-        source.registerCorsConfiguration("/**", corsConfig);
-        return source;
-    }
+    return new CustomUserDetailsManager(List.of(basicUser, adminUser));
+  }
 
-    @Bean
-    public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
-        final String nilUUID = "00000000-0000-0000-0000-000000000000";
-
-        ApplicationUser basicUser = ApplicationUser.authenticatedUser("user", nilUUID, "veo-user",
-                                                                      Collections.emptyList());
-        basicUser.setAuthorities(List.of(new SimpleGrantedAuthority("SCOPE_veo-user")));
-
-        ApplicationUser adminUser = ApplicationUser.authenticatedUser("admin", nilUUID, "veo-admin",
-                                                                      Collections.emptyList());
-        adminUser.setAuthorities(List.of(new SimpleGrantedAuthority("SCOPE_veo-admin")));
-
-        return new CustomUserDetailsManager(List.of(basicUser, adminUser));
-    }
-
-    @Bean
-    @Primary
-    public CurrentUserProvider testCurrentUserProvider(AuditorAware<String> auditorAware) {
-        return new LenientCurrentUserProviderImpl(auditorAware);
-    }
+  @Bean
+  @Primary
+  public CurrentUserProvider testCurrentUserProvider(AuditorAware<String> auditorAware) {
+    return new LenientCurrentUserProviderImpl(auditorAware);
+  }
 }

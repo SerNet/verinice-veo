@@ -18,16 +18,15 @@
 package org.veo.core.entity.decision;
 
 /**
- * Simple factory for reference objects to be used by JPA converters. Should not
- * be used outside the package by converters - use one of the public
- * constructors of the reference types instead.
+ * Simple factory for reference objects to be used by JPA converters. Should not be used outside the
+ * package by converters - use one of the public constructors of the reference types instead.
  */
 public abstract class DecisionReferenceFactory {
-    protected DecisionRef createDecisionRef(String key) {
-        return key == null ? null : new DecisionRef(key);
-    }
+  protected DecisionRef createDecisionRef(String key) {
+    return key == null ? null : new DecisionRef(key);
+  }
 
-    protected DecisionRuleRef createDecisionRuleRef(Integer intValue) {
-        return intValue == null ? null : new DecisionRuleRef(intValue);
-    }
+  protected DecisionRuleRef createDecisionRuleRef(Integer intValue) {
+    return intValue == null ? null : new DecisionRuleRef(intValue);
+  }
 }
