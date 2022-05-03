@@ -33,7 +33,7 @@ import lombok.Value;
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 @Value
 public class DecisionRef {
-  @Getter private final String keyRef;
+  @Getter String keyRef;
 
   public DecisionRef(String keyRef, Domain domain) {
     this(keyRef);
