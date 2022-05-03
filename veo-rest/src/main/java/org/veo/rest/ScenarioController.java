@@ -91,6 +91,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.decision.DecisionResult;
+import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
@@ -126,8 +127,9 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
       CreateScenarioUseCase createScenarioUseCase,
       UpdateScenarioUseCase updateScenarioUseCase,
       DeleteElementUseCase deleteElementUseCase,
-      EvaluateDecisionUseCase evaluateDecisionUseCase) {
-    super(Scenario.class, getScenarioUseCase, evaluateDecisionUseCase);
+      EvaluateDecisionUseCase evaluateDecisionUseCase,
+      InspectElementUseCase inspectElementUseCase) {
+    super(Scenario.class, getScenarioUseCase, evaluateDecisionUseCase, inspectElementUseCase);
     this.getScenariosUseCase = getScenariosUseCase;
     this.createScenarioUseCase = createScenarioUseCase;
     this.updateScenarioUseCase = updateScenarioUseCase;

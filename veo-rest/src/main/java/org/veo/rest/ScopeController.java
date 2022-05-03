@@ -26,6 +26,7 @@ import static org.veo.rest.ControllerConstants.CHILD_ELEMENT_IDS_PARAM;
 import static org.veo.rest.ControllerConstants.DESCRIPTION_PARAM;
 import static org.veo.rest.ControllerConstants.DESIGNATOR_PARAM;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
+import static org.veo.rest.ControllerConstants.DOMAIN_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_CHILD_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_PARENT_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.NAME_PARAM;
@@ -45,12 +46,14 @@ import static org.veo.rest.ControllerConstants.UPDATED_BY_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
+import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -90,6 +93,8 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.inspection.Finding;
+import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateElementUseCase;
@@ -118,11 +123,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /** REST service which provides methods to manage scopes. */
 @RestController
 @RequestMapping(ScopeController.URL_BASE_PATH)
+@RequiredArgsConstructor
 @Slf4j
 public class ScopeController extends AbstractEntityControllerWithDefaultSearch
     implements ScopeRiskResource {
@@ -143,31 +150,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
   private final GetScopeRisksUseCase getScopeRisksUseCase;
   private final DeleteRiskUseCase deleteRiskUseCase;
   private final UpdateScopeRiskUseCase updateScopeRiskUseCase;
-
-  public ScopeController(
-      UseCaseInteractor useCaseInteractor,
-      CreateScopeUseCase createScopeUseCase,
-      GetScopeUseCase getScopeUseCase,
-      GetScopesUseCase getScopesUseCase,
-      UpdateScopeUseCase updateScopeUseCase,
-      DeleteElementUseCase deleteElementUseCase,
-      GetScopeRiskUseCase getScopeRiskUseCase,
-      CreateScopeRiskUseCase createScopeRiskUseCase,
-      GetScopeRisksUseCase getScopeRisksUseCase,
-      DeleteRiskUseCase deleteRiskUseCase,
-      UpdateScopeRiskUseCase updateScopeRiskUseCase) {
-    this.useCaseInteractor = useCaseInteractor;
-    this.createScopeUseCase = createScopeUseCase;
-    this.getScopeUseCase = getScopeUseCase;
-    this.getScopesUseCase = getScopesUseCase;
-    this.updateScopeUseCase = updateScopeUseCase;
-    this.deleteElementUseCase = deleteElementUseCase;
-    this.getScopeRiskUseCase = getScopeRiskUseCase;
-    this.createScopeRiskUseCase = createScopeRiskUseCase;
-    this.getScopeRisksUseCase = getScopeRisksUseCase;
-    this.deleteRiskUseCase = deleteRiskUseCase;
-    this.updateScopeRiskUseCase = updateScopeRiskUseCase;
-  }
+  private final InspectElementUseCase inspectElementUseCase;
 
   @GetMapping
   @Operation(summary = "Loads all scopes")
@@ -250,7 +233,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
             PagingMapper.toPage(output.getElements(), entityToDtoTransformer::transformScope2Dto));
   }
 
-  @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
+  @GetMapping(UUID_PARAM_SPEC)
   @Operation(summary = "Loads a scope")
   @ApiResponses(
       value = {
@@ -347,7 +330,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
         });
   }
 
-  @PutMapping(ControllerConstants.UUID_PARAM_SPEC)
+  @PutMapping(UUID_PARAM_SPEC)
   @Operation(summary = "Updates a scope")
   @ApiResponses(
       value = {
@@ -378,7 +361,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
         output -> entityToDtoTransformer.transformScope2Dto(output.getEntity()));
   }
 
-  @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
+  @DeleteMapping(UUID_PARAM_SPEC)
   @Operation(summary = "Deletes a scope")
   @ApiResponses(
       value = {
@@ -533,6 +516,33 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
 
     return useCaseInteractor.execute(
         deleteRiskUseCase, input, output -> ResponseEntity.noContent().build());
+  }
+
+  @Operation(summary = "Runs inspections on a persisted scope")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Inspections have run",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array = @ArraySchema(schema = @Schema(implementation = Finding.class)))),
+        @ApiResponse(responseCode = "404", description = "Scope not found")
+      })
+  @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
+  public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
+      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+    var client = getAuthenticatedClient(auth);
+    return useCaseInteractor.execute(
+        inspectElementUseCase,
+        new InspectElementUseCase.InputData(
+            client, Scope.class, Key.uuidFrom(uuid), Key.uuidFrom(domainId)),
+        output -> ResponseEntity.ok().body(output.getFindings()));
   }
 
   @Override

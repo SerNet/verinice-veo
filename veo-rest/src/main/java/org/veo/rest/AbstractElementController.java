@@ -18,6 +18,7 @@
 package org.veo.rest;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -32,8 +33,11 @@ import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.decision.DecisionResult;
+import org.veo.core.entity.inspection.Finding;
+import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
@@ -52,6 +56,7 @@ public abstract class AbstractElementController<
   private final TransactionalUseCase<UseCase.IdAndClient, GetElementUseCase.OutputData<T>>
       getElementUseCase;
   private final EvaluateDecisionUseCase evaluateDecisionUseCase;
+  private final InspectElementUseCase inspectElementUseCase;
 
   @Autowired private TransactionalRunner runner;
 
@@ -110,6 +115,19 @@ public abstract class AbstractElementController<
         evaluateDecisionUseCase,
         new EvaluateDecisionUseCase.InputData(client, Key.uuidFrom(domainId), decisionKey, element),
         output -> ResponseEntity.ok().body(output.getDecisionResult()));
+  }
+
+  public CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
+      Authentication auth,
+      String elementId,
+      String domainId,
+      Class<? extends Element> elementType) {
+    var client = getAuthenticatedClient(auth);
+    return useCaseInteractor.execute(
+        inspectElementUseCase,
+        new InspectElementUseCase.InputData(
+            client, elementType, Key.uuidFrom(elementId), Key.uuidFrom(domainId)),
+        output -> ResponseEntity.ok().body(output.getFindings()));
   }
 
   protected abstract E entity2Dto(T entity);

@@ -48,11 +48,13 @@ import static org.veo.rest.ControllerConstants.UPDATED_BY_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
+import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -92,6 +94,8 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.decision.DecisionResult;
+import org.veo.core.entity.inspection.Finding;
+import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
@@ -135,8 +139,9 @@ public class ControlController extends AbstractElementController<Control, FullCo
       GetControlsUseCase getControlsUseCase,
       UpdateControlUseCase updateControlUseCase,
       DeleteElementUseCase deleteElementUseCase,
-      EvaluateDecisionUseCase evaluateDecisionUseCase) {
-    super(Control.class, getControlUseCase, evaluateDecisionUseCase);
+      EvaluateDecisionUseCase evaluateDecisionUseCase,
+      InspectElementUseCase inspectElementUseCase) {
+    super(Control.class, getControlUseCase, evaluateDecisionUseCase, inspectElementUseCase);
     this.createControlUseCase = createControlUseCase;
     this.getControlsUseCase = getControlsUseCase;
     this.updateControlUseCase = updateControlUseCase;
@@ -401,6 +406,28 @@ public class ControlController extends AbstractElementController<Control, FullCo
           String decisionKey,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
     return super.evaluateDecision(auth, element, decisionKey, domainId);
+  }
+
+  @Operation(summary = "Runs inspections on a persisted control")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Inspections have run",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array = @ArraySchema(schema = @Schema(implementation = Finding.class)))),
+        @ApiResponse(responseCode = "404", description = "Control not found")
+      })
+  @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
+  public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
+      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+    return inspect(auth, uuid, domainId, Control.class);
   }
 
   @Override

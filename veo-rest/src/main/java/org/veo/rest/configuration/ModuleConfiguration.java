@@ -74,6 +74,7 @@ import org.veo.core.service.EntitySchemaService;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.IncomingMessageHandler;
+import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.MessageCreator;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
 import org.veo.core.usecase.asset.CreateAssetUseCase;
@@ -116,6 +117,7 @@ import org.veo.core.usecase.incident.CreateIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentsUseCase;
 import org.veo.core.usecase.incident.UpdateIncidentUseCase;
+import org.veo.core.usecase.inspection.Inspector;
 import org.veo.core.usecase.person.CreatePersonUseCase;
 import org.veo.core.usecase.person.GetPersonUseCase;
 import org.veo.core.usecase.person.GetPersonsUseCase;
@@ -892,5 +894,18 @@ public class ModuleConfiguration {
   public EvaluateDecisionUseCase evaluateDecisionUseCase(
       DomainRepository domainRepository, RepositoryProvider repositoryProvider) {
     return new EvaluateDecisionUseCase(domainRepository, repositoryProvider);
+  }
+
+  @Bean
+  public Inspector inspector() {
+    return new Inspector();
+  }
+
+  @Bean
+  InspectElementUseCase inspectElementUseCase(
+      DomainRepository domainRepository,
+      RepositoryProvider repositoryProvider,
+      Inspector inspector) {
+    return new InspectElementUseCase(domainRepository, repositoryProvider, inspector);
   }
 }

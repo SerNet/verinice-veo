@@ -15,26 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.condition;
+package org.veo.adapter.presenter.api.openapi;
 
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.Element;
+import org.veo.core.entity.inspection.Suggestion;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
+import io.swagger.v3.oas.annotations.media.Schema;
 
-/** Configurable condition which checks elements using an injectable input provider and matcher. */
-@Data
-@RequiredArgsConstructor
-public class Condition {
-  private final InputProvider inputProvider;
-  private final InputMatcher inputMatcher;
-
-  /**
-   * Determines whether the data provided by the {@link InputProvider} for the given element is
-   * matched by the {@link InputMatcher}.
-   */
-  public boolean matches(Element element, Domain domain) {
-    return inputMatcher.matches(inputProvider.getValue(element, domain));
-  }
-}
+@Schema(
+    description = "Suggests an action to the user that would fix an inspection finding",
+    discriminatorProperty = "type",
+    discriminatorMapping =
+        @DiscriminatorMapping(
+            value = AddPartSuggestionSchema.NAME,
+            schema = AddPartSuggestionSchema.class))
+public class SuggestionSchema extends Suggestion {}

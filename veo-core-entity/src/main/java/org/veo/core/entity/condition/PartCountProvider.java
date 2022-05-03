@@ -17,24 +17,34 @@
  ******************************************************************************/
 package org.veo.core.entity.condition;
 
+import java.util.stream.Collectors;
+
+import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
-/** Configurable condition which checks elements using an injectable input provider and matcher. */
+/** Provides the amount of a composite element's parts. */
+@AllArgsConstructor
 @Data
-@RequiredArgsConstructor
-public class Condition {
-  private final InputProvider inputProvider;
-  private final InputMatcher inputMatcher;
+public class PartCountProvider implements InputProvider {
+  /** Define this to only count parts of a certain subtype */
+  private final String partSubType;
 
-  /**
-   * Determines whether the data provided by the {@link InputProvider} for the given element is
-   * matched by the {@link InputMatcher}.
-   */
-  public boolean matches(Element element, Domain domain) {
-    return inputMatcher.matches(inputProvider.getValue(element, domain));
+  @Override
+  public Object getValue(Element element, Domain domain) {
+    if (element instanceof CompositeElement) {
+      var parts = ((CompositeElement<?>) element).getParts();
+      if (partSubType != null) {
+        parts =
+            parts.stream()
+                .filter(c -> partSubType.equals(c.getSubType(domain).orElse(null)))
+                .collect(Collectors.toSet());
+      }
+      return parts.size();
+    }
+    return 0;
   }
 }

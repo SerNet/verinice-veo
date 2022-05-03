@@ -50,6 +50,8 @@ import org.veo.core.entity.Unit
 import org.veo.core.entity.UpdateReference
 import org.veo.core.entity.Versioned
 import org.veo.core.entity.definitions.ElementTypeDefinition
+import org.veo.core.entity.inspection.Inspection
+import org.veo.core.entity.inspection.Severity
 import org.veo.core.entity.risk.ProbabilityImpl
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.risk.RiskValues
@@ -373,7 +375,14 @@ abstract class VeoSpec extends Specification {
 
     static RiskValues newRiskValues(RiskDefinitionRef riskDefinitionRef, Domain domain, @DelegatesTo(value = RiskValues.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.risk.RiskValues") Closure init = null) {
-        return new RiskValues(new ProbabilityImpl(), [], [], new Key<String>(riskDefinitionRef.idRef), domain.id).tap{
+        return new RiskValues(new ProbabilityImpl(), [], [], new Key<String>(riskDefinitionRef.idRef), domain.id).tap {
+            VeoSpec.execute(it, init)
+        }
+    }
+
+    static Inspection newInspection(@DelegatesTo(value = Inspection.class)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.inspection.Inspection") Closure init = null) {
+        return new Inspection(Severity.HINT, [:]).tap {
             VeoSpec.execute(it, init)
         }
     }

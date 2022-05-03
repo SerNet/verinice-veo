@@ -19,15 +19,24 @@ package org.veo.adapter;
 
 import static org.springdoc.core.converters.AdditionalModelsConverter.replaceWithClass;
 
+import org.veo.adapter.presenter.api.openapi.AddPartSuggestionSchema;
 import org.veo.adapter.presenter.api.openapi.DecisionResultsSchema;
 import org.veo.adapter.presenter.api.openapi.DecisionRuleRefSchema;
+import org.veo.adapter.presenter.api.openapi.FindingSchema;
+import org.veo.adapter.presenter.api.openapi.SuggestionSchema;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.decision.DecisionRuleRef;
+import org.veo.core.entity.inspection.AddPartSuggestion;
+import org.veo.core.entity.inspection.Finding;
+import org.veo.core.entity.inspection.Suggestion;
 
 /** Configures OpenAPI schema types globally. */
 public class SchemaReplacer {
   public SchemaReplacer() {
     replaceWithClass(DecisionResult.class, DecisionResultsSchema.class);
     replaceWithClass(DecisionRuleRef.class, DecisionRuleRefSchema.class);
+    replaceWithClass(Finding.class, FindingSchema.class);
+    replaceWithClass(Suggestion.class, SuggestionSchema.class);
+    replaceWithClass(AddPartSuggestion.class, AddPartSuggestionSchema.class);
   }
 }

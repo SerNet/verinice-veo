@@ -48,11 +48,13 @@ import static org.veo.rest.ControllerConstants.UPDATED_BY_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
+import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -91,6 +93,8 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.decision.DecisionResult;
+import org.veo.core.entity.inspection.Finding;
+import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
@@ -134,8 +138,9 @@ public class PersonController extends AbstractElementController<Person, FullPers
       GetPersonsUseCase getPersonsUseCase,
       UpdatePersonUseCase updatePersonUseCase,
       DeleteElementUseCase deleteElementUseCase,
-      EvaluateDecisionUseCase evaluateDecisionUseCase) {
-    super(Person.class, getPersonUseCase, evaluateDecisionUseCase);
+      EvaluateDecisionUseCase evaluateDecisionUseCase,
+      InspectElementUseCase inspectElementUseCase) {
+    super(Person.class, getPersonUseCase, evaluateDecisionUseCase, inspectElementUseCase);
     this.createPersonUseCase = createPersonUseCase;
     this.getPersonsUseCase = getPersonsUseCase;
     this.updatePersonUseCase = updatePersonUseCase;
@@ -226,7 +231,7 @@ public class PersonController extends AbstractElementController<Person, FullPers
                     schema = @Schema(implementation = FullPersonDto.class))),
         @ApiResponse(responseCode = "404", description = "Person not found")
       })
-  @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
+  @GetMapping(UUID_PARAM_SPEC)
   public @Valid CompletableFuture<ResponseEntity<FullPersonDto>> getElement(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -281,7 +286,7 @@ public class PersonController extends AbstractElementController<Person, FullPers
         });
   }
 
-  @PutMapping(ControllerConstants.UUID_PARAM_SPEC)
+  @PutMapping(UUID_PARAM_SPEC)
   @Operation(summary = "Updates a person")
   @ApiResponses(
       value = {
@@ -314,7 +319,7 @@ public class PersonController extends AbstractElementController<Person, FullPers
         output -> entityToDtoTransformer.transformPerson2Dto(output.getEntity()));
   }
 
-  @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
+  @DeleteMapping(UUID_PARAM_SPEC)
   @Operation(summary = "Deletes a person")
   @ApiResponses(
       value = {
@@ -401,6 +406,28 @@ public class PersonController extends AbstractElementController<Person, FullPers
           String decisionKey,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
     return super.evaluateDecision(auth, element, decisionKey, domainId);
+  }
+
+  @Operation(summary = "Runs inspections on a persisted person")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Inspections have run",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array = @ArraySchema(schema = @Schema(implementation = Finding.class)))),
+        @ApiResponse(responseCode = "404", description = "Person not found")
+      })
+  @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
+  public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
+      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+    return inspect(auth, uuid, domainId, Person.class);
   }
 
   @Override

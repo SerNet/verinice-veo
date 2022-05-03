@@ -32,7 +32,9 @@ import org.veo.core.entity.Element;
 @JsonSubTypes({
   @Type(value = CustomAspectAttributeSizeProvider.class, name = "customAspectAttributeSize"),
   @Type(value = CustomAspectAttributeValueProvider.class, name = "customAspectAttributeValue"),
+  @Type(value = DecisionResultValueProvider.class, name = "decisionResultValue"),
   @Type(value = MaxRiskProvider.class, name = "maxRisk"),
+  @Type(value = PartCountProvider.class, name = "partCount"),
 })
 public interface InputProvider {
   public Object getValue(Element element, Domain domain);

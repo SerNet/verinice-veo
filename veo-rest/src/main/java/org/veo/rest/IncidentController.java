@@ -48,11 +48,13 @@ import static org.veo.rest.ControllerConstants.UPDATED_BY_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_PARAM;
+import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -91,6 +93,8 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.decision.DecisionResult;
+import org.veo.core.entity.inspection.Finding;
+import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
@@ -126,8 +130,9 @@ public class IncidentController extends AbstractElementController<Incident, Full
       CreateIncidentUseCase createIncidentUseCase,
       UpdateIncidentUseCase updateIncidentUseCase,
       DeleteElementUseCase deleteElementUseCase,
-      EvaluateDecisionUseCase evaluateDecisionUseCase) {
-    super(Incident.class, getIncidentUseCase, evaluateDecisionUseCase);
+      EvaluateDecisionUseCase evaluateDecisionUseCase,
+      InspectElementUseCase inspectElementUseCase) {
+    super(Incident.class, getIncidentUseCase, evaluateDecisionUseCase, inspectElementUseCase);
     this.getIncidentsUseCase = getIncidentsUseCase;
     this.createIncidentUseCase = createIncidentUseCase;
     this.updateIncidentUseCase = updateIncidentUseCase;
@@ -224,7 +229,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
                     schema = @Schema(implementation = FullIncidentDto.class))),
         @ApiResponse(responseCode = "404", description = "Incident not found")
       })
-  @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
+  @GetMapping(UUID_PARAM_SPEC)
   public @Valid CompletableFuture<ResponseEntity<FullIncidentDto>> getElement(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -311,7 +316,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
         output -> entityToDtoTransformer.transformIncident2Dto(output.getEntity()));
   }
 
-  @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
+  @DeleteMapping(UUID_PARAM_SPEC)
   @Operation(summary = "Deletes an incident")
   @ApiResponses(
       value = {
@@ -400,6 +405,28 @@ public class IncidentController extends AbstractElementController<Incident, Full
           String decisionKey,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
     return super.evaluateDecision(auth, element, decisionKey, domainId);
+  }
+
+  @Operation(summary = "Runs inspections on a persisted incident")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Inspections have run",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    array = @ArraySchema(schema = @Schema(implementation = Finding.class)))),
+        @ApiResponse(responseCode = "404", description = "Incident not found")
+      })
+  @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
+  public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
+      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+    return inspect(auth, uuid, domainId, Incident.class);
   }
 
   @Override

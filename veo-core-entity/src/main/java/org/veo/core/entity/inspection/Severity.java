@@ -15,26 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.condition;
+package org.veo.core.entity.inspection;
 
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.Element;
-
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-
-/** Configurable condition which checks elements using an injectable input provider and matcher. */
-@Data
-@RequiredArgsConstructor
-public class Condition {
-  private final InputProvider inputProvider;
-  private final InputMatcher inputMatcher;
-
-  /**
-   * Determines whether the data provided by the {@link InputProvider} for the given element is
-   * matched by the {@link InputMatcher}.
-   */
-  public boolean matches(Element element, Domain domain) {
-    return inputMatcher.matches(inputProvider.getValue(element, domain));
-  }
+public enum Severity {
+  HINT,
+  WARNING
 }

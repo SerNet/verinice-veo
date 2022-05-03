@@ -19,22 +19,23 @@ package org.veo.core.entity.condition;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.decision.DecisionRef;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
-/** Configurable condition which checks elements using an injectable input provider and matcher. */
+/** Provides the element's result value of a certain type of decision. */
+@AllArgsConstructor
 @Data
-@RequiredArgsConstructor
-public class Condition {
-  private final InputProvider inputProvider;
-  private final InputMatcher inputMatcher;
+public class DecisionResultValueProvider implements InputProvider {
+  DecisionRef decision;
 
-  /**
-   * Determines whether the data provided by the {@link InputProvider} for the given element is
-   * matched by the {@link InputMatcher}.
-   */
-  public boolean matches(Element element, Domain domain) {
-    return inputMatcher.matches(inputProvider.getValue(element, domain));
+  @Override
+  public Object getValue(Element element, Domain domain) {
+    var result = element.getDecisionResults(domain).get(decision);
+    if (result == null) {
+      return null;
+    }
+    return result.getValue();
   }
 }

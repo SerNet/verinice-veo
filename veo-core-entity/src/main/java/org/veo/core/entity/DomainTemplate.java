@@ -24,8 +24,11 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.veo.core.entity.decision.Decision;
+import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.Rule;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
+import org.veo.core.entity.inspection.Inspection;
+import org.veo.core.entity.inspection.Severity;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 /**
@@ -165,5 +168,23 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
 
   default Optional<Decision> getDecision(String decisionKey) {
     return Optional.ofNullable(getDecisions().get(decisionKey));
+  }
+
+  default Map<String, Inspection> getInspections() {
+    // TODO VEO-1355 use configurable persisted inspections
+    return Map.of(
+        "dpiaMissing",
+        new Inspection(
+                Severity.WARNING,
+                Map.of(
+                    "de",
+                    "DSFA wurde nicht durchgeführt, sie ist aber erforderlich.",
+                    "en",
+                    "DPIA was not carried out, but it is mandatory."),
+                Process.SINGULAR_TERM,
+                "PRO_DataProcessing")
+            .ifDecisionResultEquals(true, new DecisionRef("piaMandatory", this))
+            .ifPartAbsent("PRO_DPIA")
+            .suggestAddingPart("PRO_DPIA"));
   }
 }

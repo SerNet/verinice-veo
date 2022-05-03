@@ -68,7 +68,7 @@ class DecisionRestTest extends VeoRestTest {
             customAspects: [
                 (PIA): [
                     attributes: [
-                        ("${PIA}_listed"): "${PIA}_listed_negative",
+                        ("${PIA}_listed"): "${PIA}_listed_positive",
                         ("${PIA}_processingCriteria"): [
                             "${PIA}_processingCriteria_automated",
                             "${PIA}_processingCriteria_specialCategories",
@@ -87,15 +87,30 @@ class DecisionRestTest extends VeoRestTest {
 
         then: "added risk and attributes are taken into consideration"
         with(get("/processes/$processId").body.domains[domainId].decisionResults.piaMandatory) {
-            value == false
-            decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations not subject to a DPIA"
+            value == true
+            decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations subject to a DPIA"
             matchingRules.collect { decision.rules[it].description.en } ==~ [
-                "Processing on list of the kinds of processing operations not subject to a DPIA",
-                "Two or more criteria apply"
+                "Processing on list of the kinds of processing operations subject to a DPIA",
+                "Two or more criteria apply",
             ]
             agreeingRules.collect { decision.rules[it].description.en } ==~ [
-                "Processing on list of the kinds of processing operations not subject to a DPIA"
+                "Processing on list of the kinds of processing operations subject to a DPIA",
+                "Two or more criteria apply",
             ]
+        }
+
+        and: "inspection suggests creating a DPIA part"
+        with(get("/processes/$processId/inspection?domain=$domainId").body) {
+            size() == 1
+            with(it[0]) {
+                description.en == "DPIA was not carried out, but it is mandatory."
+                severity == "WARNING"
+                suggestions.size() == 1
+                with(suggestions[0]) {
+                    type == "addPart"
+                    partSubType == "PRO_DPIA"
+                }
+            }
         }
     }
 
