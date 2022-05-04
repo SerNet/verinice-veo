@@ -22,7 +22,9 @@ import static org.veo.core.entity.event.RiskEvent.ChangedValues.PROBABILITY_VALU
 import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_VALUES_CHANGED;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import org.veo.core.entity.Client;
@@ -77,105 +79,193 @@ public class RiskService {
         client.getIdAsString());
 
     for (Process process : processes) {
-      boolean publishEntityEvent = false;
-      var entityEvent = new RiskAffectingElementChangeEvent(process, this);
-
-      for (ProcessRisk risk : process.getRisks()) {
-        Scenario scenario = risk.getScenario();
-
-        for (Domain domain : risk.getDomains()) {
-          log.info("Determine values for {} of {} in {}", risk, process, domain);
-
-          for (RiskDefinition riskDefinition : domain.getRiskDefinitions().values()) {
-
-            RiskDefinitionRef rdr = RiskDefinitionRef.from(riskDefinition);
-            if (!risk.getRiskDefinitions().contains(rdr)) {
-              log.debug(
-                  "Skipping the domain's risk definition {} because it is "
-                      + "unused in the risk for process {} / scenario {}.",
-                  rdr.getIdRef(),
-                  risk.getEntity().getIdAsString(),
-                  risk.getScenario().getIdAsString());
-              continue;
-            }
-            publishEntityEvent = true;
-            var riskEvent = new RiskChangedEvent(risk, this);
-            riskEvent = riskEvent.withDomainId(domain.getId()).withRiskDefinition(rdr);
-
-            // Setting values does not increase the risk's (aggregate root's) version,
-            // we have to do it manually:
-            risk.setUpdatedAt(Instant.now());
-
-            // Transfer potentialProbability from scenario to riskValues if present:
-            ProbabilityValueProvider riskValueProbability = risk.getProbabilityProvider(rdr);
-
-            ProbabilityRef newProbability =
-                scenario
-                    .getPotentialProbability(domain, rdr)
-                    .map(PotentialProbabilityImpl::getPotentialProbability)
-                    .orElse(null);
-            if (!Objects.equals(newProbability, riskValueProbability.getPotentialProbability())) {
-              riskEvent.addChange(PROBABILITY_VALUES_CHANGED);
-            }
-
-            riskValueProbability.setPotentialProbability(newProbability);
-
-            // Retrieve the resulting effective probability:
-            ProbabilityRef riskValueEffectiveProbability =
-                riskValueProbability.getEffectiveProbability();
-
-            // Iterate over impact categories:
-            CategorizedImpactValueProvider riskValueImpact = risk.getImpactProvider(rdr);
-            for (CategoryDefinition categoryDefinition : riskDefinition.getCategories()) {
-              CategoryRef cr = CategoryRef.from(categoryDefinition);
-
-              // Transfer potentialImpact from process to riskValues if present:
-              ImpactRef newImpact =
-                  process
-                      .getImpactValues(domain, rdr)
-                      .map(ProcessImpactValues::getPotentialImpacts)
-                      .map(it -> it.get(cr))
-                      .orElse(null);
-              if (!Objects.equals(newImpact, riskValueImpact.getPotentialImpact(cr))) {
-                riskEvent.addChange(IMPACT_VALUES_CHANGED);
-              }
-              riskValueImpact.setPotentialImpact(cr, newImpact);
-
-              // Retrieve the resulting effectiveImpact:
-              ImpactRef effectiveImpact = riskValueImpact.getEffectiveImpact(cr);
-
-              // Cast to implementing classes to gain package-private access to field
-              // 'inherentRisk':
-              DeterminedRiskImpl riskForCategory =
-                  (DeterminedRiskImpl)
-                      ((RiskValuesProvider) risk.getRiskProvider(rdr)).riskCategoryById(cr);
-
-              // Calculate riskValue using the riskDefinition and set it
-              // as the inherentRisk:
-              if (riskValueEffectiveProbability != null && effectiveImpact != null) {
-                RiskRef newRiskValue =
-                    RiskRef.from(
-                        categoryDefinition.getRiskValue(
-                            riskValueEffectiveProbability, effectiveImpact));
-                if (!Objects.equals(riskForCategory.getInherentRisk(), newRiskValue)) {
-                  riskEvent.addChange(RISK_VALUES_CHANGED);
-                }
-                riskForCategory.setInherentRisk(newRiskValue);
-              } else {
-                if (riskForCategory.getInherentRisk() != null) {
-                  riskEvent.addChange(RISK_VALUES_CHANGED);
-                }
-                riskForCategory.setInherentRisk(null);
-              }
-            }
-            if (!riskEvent.getChanges().isEmpty()) {
-              entityEvent.addChangedRisk(riskEvent);
-              eventPublisher.publish(riskEvent);
-            }
-          }
-        }
-      }
-      if (publishEntityEvent) eventPublisher.publish(entityEvent);
+      calculateValuesForProcess(process);
     }
+  }
+
+  private void calculateValuesForProcess(Process process) {
+    var entityEvent = new RiskAffectingElementChangeEvent(process, this);
+    for (ProcessRisk risk : process.getRisks()) {
+      var events = calculateValuesForRisk(process, risk);
+      events.forEach(entityEvent::addChangedRisk);
+    }
+    if (entityEvent.hasChangedRisks()) {
+      eventPublisher.publish(entityEvent);
+    }
+  }
+
+  private Set<RiskChangedEvent> calculateValuesForRisk(Process process, ProcessRisk risk) {
+    Set<RiskChangedEvent> riskEvents = new HashSet<>();
+    Scenario scenario = risk.getScenario();
+    for (Domain domain : risk.getDomains()) {
+      riskEvents.addAll(calculateValuesForDomain(process, risk, scenario, domain));
+    }
+    return riskEvents;
+  }
+
+  private Set<RiskChangedEvent> calculateValuesForDomain(
+      Process process, ProcessRisk risk, Scenario scenario, Domain domain) {
+    log.info("Determine values for {} of {} in {}", risk, process, domain);
+    Set<RiskChangedEvent> riskEvents = new HashSet<>();
+
+    for (RiskDefinition riskDefinition : domain.getRiskDefinitions().values()) {
+      RiskDefinitionRef rdr = RiskDefinitionRef.from(riskDefinition);
+      if (risk.getRiskDefinitions().contains(rdr)) {
+        var riskEvent =
+            calculateValuesForRiskDefinition(process, risk, scenario, domain, riskDefinition);
+        riskEvent.ifPresent(riskEvents::add);
+      } else {
+        log.debug(
+            "Skipping the domain's risk definition {} because it is "
+                + "unused in the risk for process {} / scenario {}.",
+            rdr.getIdRef(),
+            risk.getEntity().getIdAsString(),
+            risk.getScenario().getIdAsString());
+      }
+    }
+    return riskEvents;
+  }
+
+  private Optional<RiskChangedEvent> calculateValuesForRiskDefinition(
+      Process process,
+      ProcessRisk risk,
+      Scenario scenario,
+      Domain domain,
+      RiskDefinition riskDefinition) {
+    var riskEvent = new RiskChangedEvent(risk, this);
+    var riskDefRef = RiskDefinitionRef.from(riskDefinition);
+    riskEvent = riskEvent.withDomainId(domain.getId()).withRiskDefinition(riskDefRef);
+
+    // Setting values does not increase the risk's (aggregate root's) version,
+    // we have to do it manually:
+    risk.setUpdatedAt(Instant.now());
+
+    ProbabilityRef riskValueEffectiveProbability =
+        calculateProbability(risk, scenario, domain, riskDefRef, riskEvent);
+
+    // Iterate over impact categories:
+    for (CategoryDefinition categoryDefinition : riskDefinition.getCategories()) {
+      calculateValuesForCategory(
+          process,
+          risk,
+          domain,
+          riskDefRef,
+          riskEvent,
+          riskValueEffectiveProbability,
+          categoryDefinition);
+    }
+
+    if (!riskEvent.getChanges().isEmpty()) {
+      eventPublisher.publish(riskEvent);
+      return Optional.of(riskEvent);
+    }
+    return Optional.empty();
+  }
+
+  /** Transfers potentialProbability from scenario to riskValues if present */
+  private ProbabilityRef calculateProbability(
+      ProcessRisk risk,
+      Scenario scenario,
+      Domain domain,
+      RiskDefinitionRef rdr,
+      RiskChangedEvent riskEvent) {
+    ProbabilityValueProvider riskValueProbability = risk.getProbabilityProvider(rdr);
+
+    ProbabilityRef newProbability =
+        scenario
+            .getPotentialProbability(domain, rdr)
+            .map(PotentialProbabilityImpl::getPotentialProbability)
+            .orElse(null);
+    if (!Objects.equals(newProbability, riskValueProbability.getPotentialProbability())) {
+      riskEvent.addChange(PROBABILITY_VALUES_CHANGED);
+    }
+
+    riskValueProbability.setPotentialProbability(newProbability);
+
+    // Retrieve the resulting effective probability:
+    return riskValueProbability.getEffectiveProbability();
+  }
+
+  private void calculateValuesForCategory(
+      Process process,
+      ProcessRisk risk,
+      Domain domain,
+      RiskDefinitionRef riskDefinitionRef,
+      RiskChangedEvent riskEvent,
+      ProbabilityRef riskValueEffectiveProbability,
+      CategoryDefinition categoryDefinition) {
+    CategoryRef categoryRef = CategoryRef.from(categoryDefinition);
+    var riskValueImpact = risk.getImpactProvider(riskDefinitionRef);
+
+    ImpactRef effectiveImpact =
+        calculateImpact(
+            process, domain, riskDefinitionRef, riskEvent, riskValueImpact, categoryRef);
+
+    calculateRisk(
+        risk,
+        riskDefinitionRef,
+        riskEvent,
+        riskValueEffectiveProbability,
+        categoryDefinition,
+        effectiveImpact);
+  }
+
+  /* Calculates riskValue using the riskDefinition and sets it as the inherentRisk. */
+  private void calculateRisk(
+      ProcessRisk risk,
+      RiskDefinitionRef riskDefinitionRef,
+      RiskChangedEvent riskEvent,
+      ProbabilityRef riskValueEffectiveProbability,
+      CategoryDefinition categoryDefinition,
+      ImpactRef effectiveImpact) {
+    var category = CategoryRef.from(categoryDefinition);
+
+    // Cast to implementing classes to gain package-private access to field
+    // 'inherentRisk':
+    DeterminedRiskImpl riskForCategory =
+        (DeterminedRiskImpl)
+            ((RiskValuesProvider) risk.getRiskProvider(riskDefinitionRef))
+                .riskCategoryById(category);
+
+    RiskRef inherentRisk =
+        determineInherentRisk(categoryDefinition, riskValueEffectiveProbability, effectiveImpact);
+    if (!Objects.equals(riskForCategory.getInherentRisk(), inherentRisk)) {
+      riskEvent.addChange(RISK_VALUES_CHANGED);
+      riskForCategory.setInherentRisk(inherentRisk);
+    }
+  }
+
+  private RiskRef determineInherentRisk(
+      CategoryDefinition categoryDefinition,
+      ProbabilityRef riskValueEffectiveProbability,
+      ImpactRef effectiveImpact) {
+    if (riskValueEffectiveProbability != null && effectiveImpact != null) {
+      return RiskRef.from(
+          categoryDefinition.getRiskValue(riskValueEffectiveProbability, effectiveImpact));
+    }
+    return null;
+  }
+
+  /* Transfers potentialImpact from process to riskValues if present. */
+  private ImpactRef calculateImpact(
+      Process process,
+      Domain domain,
+      RiskDefinitionRef riskDefinitionRef,
+      RiskChangedEvent riskEvent,
+      CategorizedImpactValueProvider riskValueImpact,
+      CategoryRef categoryRef) {
+    ImpactRef newImpact =
+        process
+            .getImpactValues(domain, riskDefinitionRef)
+            .map(ProcessImpactValues::getPotentialImpacts)
+            .map(it -> it.get(categoryRef))
+            .orElse(null);
+    if (!Objects.equals(newImpact, riskValueImpact.getPotentialImpact(categoryRef))) {
+      riskEvent.addChange(IMPACT_VALUES_CHANGED);
+    }
+    riskValueImpact.setPotentialImpact(categoryRef, newImpact);
+
+    // Retrieve the resulting effectiveImpact:
+    return riskValueImpact.getEffectiveImpact(categoryRef);
   }
 }
