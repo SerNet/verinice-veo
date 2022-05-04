@@ -49,7 +49,6 @@ public interface TranslationsResource {
 
   String URL_BASE_PATH = "/translations";
 
-  // @formatter:off
   @GetMapping()
   @Operation(
       summary = "Retrieves a map of UI translation key-value pairs.",
@@ -80,6 +79,4 @@ public interface TranslationsResource {
               schema = @Schema(type = "string", description = "IANA language subtag"))
           @RequestParam(value = "languages", required = true)
           Set<String> languages);
-
-  // @formatter:on
 }

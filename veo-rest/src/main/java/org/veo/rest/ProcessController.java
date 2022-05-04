@@ -512,8 +512,6 @@ public class ProcessController extends AbstractElementController<Process, FullPr
   @Override
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createRisk(
       ApplicationUser user, @Valid @NotNull ProcessRiskDto dto, String processId) {
-
-    // @formatter:off
     var input =
         new CreateProcessRiskUseCase.InputData(
             getClient(user.getClientId()),
@@ -523,7 +521,6 @@ public class ProcessController extends AbstractElementController<Process, FullPr
             urlAssembler.toKey(dto.getMitigation()),
             urlAssembler.toKey(dto.getRiskOwner()),
             CategorizedRiskValueMapper.map(dto.getDomainsWithRiskValues()));
-    // @formatter:on
 
     return useCaseInteractor.execute(
         createProcessRiskUseCase,
@@ -566,8 +563,6 @@ public class ProcessController extends AbstractElementController<Process, FullPr
       String scenarioId,
       @Valid @NotNull ProcessRiskDto dto,
       String eTag) {
-
-    // @formatter:off
     var input =
         new UpdateProcessRiskUseCase.InputData(
             getClient(user.getClientId()),
@@ -578,7 +573,6 @@ public class ProcessController extends AbstractElementController<Process, FullPr
             urlAssembler.toKey(dto.getRiskOwner()),
             eTag,
             CategorizedRiskValueMapper.map(dto.getDomainsWithRiskValues()));
-    // @formatter:on
 
     // update risk and return saved risk with updated ETag, timestamps etc.:
     return useCaseInteractor

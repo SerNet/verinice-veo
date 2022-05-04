@@ -62,7 +62,6 @@ public interface EntitySchemaResource {
 
   String URL_BASE_PATH = "/schemas";
 
-  // @formatter:off
   @GetMapping(value = "/{type:[\\w]+}")
   @Operation(summary = "Retrieves an entity schema.")
   @ApiResponses(
@@ -109,5 +108,4 @@ public interface EntitySchemaResource {
                               + "defined in RFC 3986."))
           @RequestParam(value = "domains")
           List<String> domainIDs);
-  // @formatter:on
 }

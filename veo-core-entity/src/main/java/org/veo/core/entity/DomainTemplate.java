@@ -105,7 +105,6 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
 
   default Map<String, Decision> getDecisions() {
     // TODO VEO-1294 use configurable persisted decisions
-    // @formatter:off
     final var piaCa = "process_privacyImpactAssessment";
     return Map.of(
         "piaMandatory",
@@ -162,8 +161,6 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
                             "en", "Two or more criteria apply",
                             "de", "Mehrere Kriterien treffen zu"))
                     .ifAttributeSizeGreaterThan(1, piaCa + "_processingCriteria", piaCa))));
-
-    // @formatter:on
   }
 
   default Optional<Decision> getDecision(String decisionKey) {

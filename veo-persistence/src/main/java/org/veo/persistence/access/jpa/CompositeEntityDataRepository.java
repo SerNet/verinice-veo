@@ -29,20 +29,15 @@ import org.veo.persistence.entity.jpa.ElementData;
 @NoRepositoryBean
 public interface CompositeEntityDataRepository<T extends ElementData>
     extends ElementDataRepository<T> {
-
-  // @formatter:off
   @Query(
       "select distinct e from #{#entityName} as e "
           + "inner join e.parts p "
           + "where p.dbId IN ?1")
-  // @formatter:on
   @SuppressWarnings("PMD.MethodNamingConventions")
   List<T> findDistinctByParts_DbId_In(Set<String> dbIds);
 
   // TODO VEO-448 override findAll(Specification<> spec) using an entity graph
   // that fetches parts.
-
-  // @formatter:off
   @Query(
       "select e from #{#entityName} as e "
           + "left join fetch e.customAspects "
@@ -57,7 +52,6 @@ public interface CompositeEntityDataRepository<T extends ElementData>
           + "left join fetch s.members "
           + "left join fetch e.domains "
           + "where e.owner.dbId IN ?1")
-  // @formatter:on
   @Transactional(readOnly = true)
   @Override
   Set<T> findByUnits(Set<String> unitIds);

@@ -37,7 +37,6 @@ public interface ScopeDataRepository extends ScopeRiskAffectedDataRepository {
           + "where m.dbId IN ?1")
   Set<Scope> findDistinctByMemberIds(Set<String> dbIds);
 
-  // @formatter:off
   @Query(
       "select e from #{#entityName} as e "
           + "left join fetch e.customAspects "
@@ -49,7 +48,6 @@ public interface ScopeDataRepository extends ScopeRiskAffectedDataRepository {
           + "left join fetch e.scopes as s "
           + "left join fetch s.members "
           + "where e.owner.dbId IN ?1")
-  // @formatter:on
   @Transactional(readOnly = true)
   @Override
   Set<ScopeData> findByUnits(Set<String> unitIds);

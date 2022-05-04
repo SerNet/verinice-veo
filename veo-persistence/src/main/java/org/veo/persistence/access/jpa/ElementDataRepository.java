@@ -70,7 +70,6 @@ public interface ElementDataRepository<T extends ElementData>
    *
    * @param unitIds a list of units' UUIDs
    */
-  // @formatter:off
   @Query(
       "select e from #{#entityName} as e "
           + "left join fetch e.customAspects "
@@ -79,7 +78,6 @@ public interface ElementDataRepository<T extends ElementData>
           + "left join fetch e.decisionResultsAspects "
           + "left join fetch e.subTypeAspects "
           + "where e.owner.dbId IN ?1")
-  // @formatter:on
   @Transactional(readOnly = true)
   Set<T> findByUnits(Set<String> unitIds);
 

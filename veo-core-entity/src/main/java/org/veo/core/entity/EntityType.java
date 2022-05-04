@@ -31,7 +31,6 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 public enum EntityType {
-  // @formatter:off
   ASSET(Asset.class, Asset.SINGULAR_TERM, Asset.PLURAL_TERM),
   CLIENT(Client.class, Client.SINGULAR_TERM, Client.PLURAL_TERM),
   CONTROL(Control.class, Control.SINGULAR_TERM, Control.PLURAL_TERM),
@@ -46,7 +45,6 @@ public enum EntityType {
   UNIT(Unit.class, Unit.SINGULAR_TERM, Unit.PLURAL_TERM),
   SCENARIO(Scenario.class, Scenario.SINGULAR_TERM, Scenario.PLURAL_TERM),
   SCOPE(Scope.class, Scope.SINGULAR_TERM, Scope.PLURAL_TERM);
-  // @formatter:on
 
   @Getter private final Class<? extends Identifiable> type;
   @Getter private final String singularTerm;
