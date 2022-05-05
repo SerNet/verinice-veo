@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.event.ElementEvent;
 
 /**
  * Provides input value for a {@link Condition}. Takes an element and extracts a value from the
@@ -38,4 +39,9 @@ import org.veo.core.entity.Element;
 })
 public interface InputProvider {
   public Object getValue(Element element, Domain domain);
+
+  /** Determines whether this provider may yield a different value after given event. */
+  default boolean isAffectedByEvent(ElementEvent event, Domain domain) {
+    return false;
+  }
 }

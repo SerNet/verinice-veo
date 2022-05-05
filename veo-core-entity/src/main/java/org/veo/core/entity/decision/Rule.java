@@ -33,6 +33,7 @@ import org.veo.core.entity.condition.EqualsMatcher;
 import org.veo.core.entity.condition.GreaterThanMatcher;
 import org.veo.core.entity.condition.IsNullMatcher;
 import org.veo.core.entity.condition.MaxRiskProvider;
+import org.veo.core.entity.event.ElementEvent;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -105,5 +106,10 @@ public class Rule {
       return value == null;
     }
     return output.equals(value);
+  }
+
+  /** Determines whether this rule may yield a different result after given event. */
+  public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
+    return conditions.stream().anyMatch(c -> c.isAffectedByEvent(event, domain));
   }
 }

@@ -881,8 +881,8 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public Decider decider() {
-    return new Decider();
+  public Decider decider(ClientRepository clientRepository, RepositoryProvider repositoryProvider) {
+    return new Decider(clientRepository, repositoryProvider);
   }
 
   @Bean

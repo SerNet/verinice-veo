@@ -17,12 +17,18 @@
  ******************************************************************************/
 package org.veo.core.entity.condition;
 
+import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_CREATED;
+import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_DELETED;
+import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_VALUES_CHANGED;
+
 import java.math.BigDecimal;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.event.ElementEvent;
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.risk.RiskRef;
 
 import lombok.Data;
@@ -39,6 +45,29 @@ public class MaxRiskProvider implements InputProvider {
       return getMaxRisk((RiskAffected) element, domain);
     }
     return null;
+  }
+
+  @Override
+  public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
+    if (event instanceof RiskAffectingElementChangeEvent) {
+      var elementRiskEvent = (RiskAffectingElementChangeEvent) event;
+      return elementRiskEvent.getChangedRisks().stream()
+          .anyMatch(
+              riskChangedEvent -> {
+                var changes = riskChangedEvent.getChanges();
+                // Reevaluate max risk if a risk has been created or removed.
+                if (changes.contains(RISK_CREATED) || changes.contains(RISK_DELETED)) {
+                  return true;
+                }
+                // Reevaluate max risk if a risk value has been changed in the domain.
+                if (changes.contains(RISK_VALUES_CHANGED)
+                    && riskChangedEvent.getDomainId().equals(domain.getId())) {
+                  return true;
+                }
+                return false;
+              });
+    }
+    return false;
   }
 
   private BigDecimal getMaxRisk(RiskAffected<?, ?> element, Domain domain) {

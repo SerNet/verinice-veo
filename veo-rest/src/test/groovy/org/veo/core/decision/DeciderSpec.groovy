@@ -30,12 +30,14 @@ import org.veo.core.entity.risk.DeterminedRiskImpl
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.risk.RiskRef
 import org.veo.core.entity.riskdefinition.RiskValue
+import org.veo.core.repository.ClientRepository
+import org.veo.core.repository.RepositoryProvider
 import org.veo.core.usecase.decision.Decider
 import org.veo.test.VeoSpec
 
 class DeciderSpec extends VeoSpec {
     def piaMandatoryRef = new DecisionRef("piaMandatory")
-    Decider decider = new Decider()
+    Decider decider = new Decider(Mock(ClientRepository), Mock(RepositoryProvider))
 
     Unit unit
     Domain domain

@@ -19,6 +19,7 @@ package org.veo.core.entity.condition;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.event.ElementEvent;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -36,5 +37,10 @@ public class Condition {
    */
   public boolean matches(Element element, Domain domain) {
     return inputMatcher.matches(inputProvider.getValue(element, domain));
+  }
+
+  /** Determines whether this condition may yield a different result after given event. */
+  public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
+    return inputProvider.isAffectedByEvent(event, domain);
   }
 }

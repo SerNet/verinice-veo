@@ -217,4 +217,10 @@ public interface Element
   Map<DecisionRef, DecisionResult> getDecisionResults(DomainTemplate domain);
 
   void setDecisionResults(Map<DecisionRef, DecisionResult> decisionResults, Domain domain);
+
+  default void setDecisionResult(DecisionRef decisionRef, DecisionResult result, Domain domain) {
+    var domainResults = getDecisionResults(domain);
+    domainResults.put(decisionRef, result);
+    setDecisionResults(domainResults, domain);
+  }
 }

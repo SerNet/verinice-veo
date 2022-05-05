@@ -30,6 +30,7 @@ import javax.validation.constraints.Size;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.aspects.SubTypeAspect;
+import org.veo.core.entity.event.ElementEvent;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -82,5 +83,15 @@ public class Decision {
             .filter(ref -> getRule(ref).outputEquals(value))
             .collect(Collectors.toList());
     return new DecisionResult(value, decisiveRuleRef, matchingRules, agreeingRules);
+  }
+
+  public boolean isApplicableToElement(Element element, Domain domain) {
+    return getElementType().equals(element.getModelType())
+        && getElementSubType().equals(element.getSubType(domain).orElse(null));
+  }
+
+  /** Determines whether this decision may yield a different result after given event. */
+  public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
+    return rules.stream().anyMatch(r -> r.isAffectedByEvent(event, domain));
   }
 }

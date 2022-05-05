@@ -37,9 +37,19 @@ class DecisionRestTest extends VeoRestTest {
         given:
         def decision = decisions.piaMandatory
 
-        when: "creating a blank data processing"
+        when: "creating a data processing with two criteria"
         def processId = post("/processes", [
-            name: "blank process",
+            name: "data processing",
+            customAspects: [
+                (PIA): [
+                    attributes: [
+                        ("${PIA}_processingCriteria"): [
+                            "${PIA}_processingCriteria_automated",
+                            "${PIA}_processingCriteria_specialCategories",
+                        ],
+                    ]
+                ]
+            ],
             domains: [
                 (domainId): [
                     subType: "PRO_DataProcessing",
@@ -49,22 +59,37 @@ class DecisionRestTest extends VeoRestTest {
             owner: [targetUri: unitUri]
         ]).body.resourceId
 
-        then:
+        then: "result is undetermined due to missing risks"
         with(get("/processes/$processId").body.domains[domainId].decisionResults.piaMandatory) {
             value == null
             decision.rules[decisiveRule].description.en == "Risk analysis not carried out"
-            matchingRules == [decisiveRule]
-            agreeingRules == [decisiveRule]
+            matchingRules.collect { decision.rules[it].description.en } ==~ [
+                "Risk analysis not carried out",
+                "Two or more criteria apply"
+            ]
+            agreeingRules.collect { decision.rules[it].description.en } ==~ [
+                "Risk analysis not carried out"
+            ]
         }
 
         when: "adding a risk"
         addRiskValue(processId, 1)
 
-        // TODO VEO-1282 assert that the decision has already changed based on the added risk
+        then: "the result has changed"
+        with(get("/processes/$processId").body.domains[domainId].decisionResults.piaMandatory) {
+            value == true
+            decision.rules[decisiveRule].description.en == "Two or more criteria apply"
+            matchingRules.collect { decision.rules[it].description.en } ==~ [
+                "Two or more criteria apply"
+            ]
+            agreeingRules.collect { decision.rules[it].description.en } ==~ [
+                "Two or more criteria apply"
+            ]
+        }
 
-        and: "adding PIA related attributes"
+        when: "adding PIA related attributes"
         put("/processes/$processId", [
-            name: "blank process",
+            name: "data processing",
             customAspects: [
                 (PIA): [
                     attributes: [
@@ -85,7 +110,7 @@ class DecisionRestTest extends VeoRestTest {
             owner: [targetUri: unitUri]
         ], get("/processes/$processId").parseETag())
 
-        then: "added risk and attributes are taken into consideration"
+        then: "added attribute is taken into consideration"
         with(get("/processes/$processId").body.domains[domainId].decisionResults.piaMandatory) {
             value == true
             decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations subject to a DPIA"
@@ -237,6 +262,4 @@ class DecisionRestTest extends VeoRestTest {
             scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
         ])
     }
-
-
 }
