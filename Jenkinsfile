@@ -61,7 +61,7 @@ pipeline {
             }
             steps {
                 sh './gradlew -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME classes generateLicenseReport'
-                stash name: "classes", includes: "*/build/**"
+                stash name: "classes", includes: "*/build/classes/*/main/**,*/build/resources/main/**,*/build/lombok/**,veo-adapter/build/domain_templates/**"
             }
             post {
                 always {
@@ -127,7 +127,7 @@ pipeline {
             steps {
                 unstash "classes"
                 sh './gradlew -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME veo-rest:testClasses'
-                stash name: "test-classes", includes: "veo-rest/build/**"
+                stash name: "test-classes", includes: "veo-rest/build/classes/*/test/**,veo-rest/build/resources/test/**"
             }
         }
         stage('Post-build steps') {
