@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.veo.core.usecase.document;
 
+import java.util.Set;
+
 import org.veo.core.entity.Document;
+import org.veo.core.entity.Scope;
 import org.veo.core.repository.DocumentRepository;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
@@ -37,7 +40,7 @@ public class CreateDocumentUseCase extends CreateElementUseCase<Document> {
   }
 
   @Override
-  protected void validate(Document document) {
+  protected void validate(Document document, Set<Scope> scopes) {
     // GNDN
   }
 }

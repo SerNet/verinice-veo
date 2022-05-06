@@ -27,14 +27,16 @@ import org.veo.core.usecase.base.ModifyElementUseCase.InputData
 import org.veo.core.usecase.base.ScopeProvider
 import org.veo.core.usecase.common.ETag
 import org.veo.core.usecase.decision.Decider
+import org.veo.core.usecase.risk.RiskValueValidator
 
 public class UpdateProcessUseCaseSpec extends UseCaseSpec {
 
     ProcessRepository processRepository = Mock()
     EventPublisher eventPublisher = Mock()
     Decider decider = Mock()
+    RiskValueValidator riskValueValidator = Mock()
 
-    UpdateProcessUseCase usecase = new UpdateProcessUseCase(processRepository, eventPublisher, Mock(ScopeProvider), decider)
+    UpdateProcessUseCase usecase = new UpdateProcessUseCase(processRepository, eventPublisher, decider, riskValueValidator)
     def "update a process"() {
         given:
         def id = Key.newUuid()
@@ -67,6 +69,7 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
             event.entityType == Process
             event.entityId == id
         })
+        1 * riskValueValidator.validate(process)
         output.entity != null
         output.entity.name == "Updated process"
     }

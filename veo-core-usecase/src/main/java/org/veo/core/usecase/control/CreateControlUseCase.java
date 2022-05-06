@@ -17,37 +17,34 @@
  ******************************************************************************/
 package org.veo.core.usecase.control;
 
+import java.util.Set;
+
 import org.veo.core.entity.Control;
+import org.veo.core.entity.Scope;
 import org.veo.core.repository.ControlRepository;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.decision.Decider;
+import org.veo.core.usecase.risk.RiskValueValidator;
 
 public class CreateControlUseCase extends CreateElementUseCase<Control> {
+  private final RiskValueValidator riskValueValidator;
 
   public CreateControlUseCase(
       UnitRepository unitRepository,
       ScopeRepository scopeRepository,
       ControlRepository entityRepo,
       DesignatorService designatorService,
-      Decider decider) {
+      Decider decider,
+      RiskValueValidator riskValueValidator) {
     super(unitRepository, scopeRepository, entityRepo, designatorService, decider);
+    this.riskValueValidator = riskValueValidator;
   }
 
   @Override
-  protected void validate(Control control) {
-    // TODO VEO-1244 The same kind of validation as in UpdateControlUseCase should
-    // be used here as soon as it is possible to create an element within a scope.
-    control
-        .getDomains()
-        .forEach(
-            domain -> {
-              if (control.getRiskValues(domain).map(rv -> !rv.isEmpty()).orElse(false)) {
-                throw new IllegalArgumentException(
-                    "Cannot create control with risk values, because it must a member of a scope with a risk definition first");
-              }
-            });
+  protected void validate(Control control, Set<Scope> scopes) {
+    riskValueValidator.validate(control, scopes);
   }
 }

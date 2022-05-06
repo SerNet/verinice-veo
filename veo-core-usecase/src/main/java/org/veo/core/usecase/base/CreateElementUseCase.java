@@ -26,6 +26,7 @@ import javax.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.Repository;
@@ -64,20 +65,20 @@ public abstract class CreateElementUseCase<TEntity extends Element>
     unit.checkSameClient(input.authenticatedClient);
     DomainSensitiveElementValidator.validate(entity);
     designatorService.assignDesignator(entity, input.authenticatedClient);
-    addToScopes(entity, input.scopeIds, input.authenticatedClient);
+    var scopes = addToScopes(entity, input.scopeIds, input.authenticatedClient);
     evaluateDecisions(entity);
-    validate(entity);
+    validate(entity, scopes);
     return new CreateElementUseCase.OutputData<>(entityRepo.save(entity));
   }
 
-  private void addToScopes(TEntity element, Set<Key<UUID>> scopeIds, Client client) {
-    scopeRepository
-        .getByIds(scopeIds)
-        .forEach(
-            scope -> {
-              scope.checkSameClient(client);
-              scope.addMember(element);
-            });
+  private Set<Scope> addToScopes(TEntity element, Set<Key<UUID>> scopeIds, Client client) {
+    var scopes = scopeRepository.getByIds(scopeIds);
+    scopes.forEach(
+        scope -> {
+          scope.checkSameClient(client);
+          scope.addMember(element);
+        });
+    return scopes;
   }
 
   private void evaluateDecisions(TEntity entity) {
@@ -89,7 +90,7 @@ public abstract class CreateElementUseCase<TEntity extends Element>
             });
   }
 
-  protected abstract void validate(TEntity entity);
+  protected abstract void validate(TEntity entity, Set<Scope> scopes);
 
   @Valid
   @Value

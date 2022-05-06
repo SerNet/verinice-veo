@@ -32,16 +32,18 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
     ScopeRepository scopeRepository = Mock()
     PersonRepository personRepository = Mock()
     DesignatorService designatorService = Mock()
-    Person person = Mock()
     Decider decider = Mock()
+    Person person
 
     CreatePersonUseCase usecase = new CreatePersonUseCase(unitRepository,scopeRepository, personRepository, designatorService, decider)
 
     def setup() {
-        person.name >> "John"
-        person.owner >> existingUnit
-        person.links >> []
-        person.domains >> []
+        person = Mock() {
+            name >> "John"
+            owner >> existingUnit
+            links >> []
+            domains >> []
+        }
 
         unitRepository.findById(_) >> Optional.of(existingUnit)
         scopeRepository.getByIds([] as Set) >> []

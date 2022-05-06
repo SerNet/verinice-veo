@@ -55,11 +55,9 @@ import org.veo.core.entity.specification.EntityValidator;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.events.MessageCreatorImpl;
-import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.CatalogRepository;
 import org.veo.core.repository.ClientRepository;
-import org.veo.core.repository.ControlRepository;
 import org.veo.core.repository.DesignatorSequenceRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
@@ -131,6 +129,7 @@ import org.veo.core.usecase.process.GetProcessesUseCase;
 import org.veo.core.usecase.process.UpdateProcessRiskUseCase;
 import org.veo.core.usecase.process.UpdateProcessUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
+import org.veo.core.usecase.risk.RiskValueValidator;
 import org.veo.core.usecase.scenario.CreateScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenariosUseCase;
@@ -235,9 +234,15 @@ public class ModuleConfiguration {
       ScopeRepositoryImpl scopeRepository,
       ControlRepositoryImpl controlRepository,
       DesignatorService designatorService,
-      Decider decider) {
+      Decider decider,
+      RiskValueValidator riskValueValidator) {
     return new CreateControlUseCase(
-        unitRepository, scopeRepository, controlRepository, designatorService, decider);
+        unitRepository,
+        scopeRepository,
+        controlRepository,
+        designatorService,
+        decider,
+        riskValueValidator);
   }
 
   @Bean
@@ -257,9 +262,9 @@ public class ModuleConfiguration {
   public UpdateControlUseCase updateControlUseCase(
       ControlRepositoryImpl controlRepository,
       EventPublisher eventPublisher,
-      ScopeProvider scopeProvider,
+      RiskValueValidator riskValueValidator,
       Decider decider) {
-    return new UpdateControlUseCase(controlRepository, eventPublisher, scopeProvider, decider);
+    return new UpdateControlUseCase(controlRepository, eventPublisher, riskValueValidator, decider);
   }
 
   @Bean
@@ -359,12 +364,14 @@ public class ModuleConfiguration {
       ProcessRepositoryImpl processRepository,
       DesignatorService designatorService,
       EventPublisher eventPublisher,
-      Decider decider) {
+      Decider decider,
+      RiskValueValidator riskValueValidator) {
     return new CreateProcessUseCase(
         unitRepository,
         scopeRepository,
         processRepository,
         designatorService,
+        riskValueValidator,
         eventPublisher,
         decider);
   }
@@ -407,9 +414,9 @@ public class ModuleConfiguration {
   public UpdateProcessUseCase putProcessUseCase(
       ProcessRepositoryImpl processRepository,
       EventPublisher eventPublisher,
-      ScopeProvider scopeProvider,
-      Decider decider) {
-    return new UpdateProcessUseCase(processRepository, eventPublisher, scopeProvider, decider);
+      Decider decider,
+      RiskValueValidator riskValueValidator) {
+    return new UpdateProcessUseCase(processRepository, eventPublisher, decider, riskValueValidator);
   }
 
   @Bean
@@ -574,12 +581,8 @@ public class ModuleConfiguration {
 
   @Bean
   public ScopeProvider scopeProvider(
-      AssetRepository assetRepository,
-      ControlRepository controlRepository,
-      ProcessRepository processRepository,
-      ScopeRepository scopeRepository) {
-    return new ScopeProvider(
-        assetRepository, controlRepository, processRepository, scopeRepository);
+      ScopeRepository scopeRepository, RepositoryProvider repositoryProvider) {
+    return new ScopeProvider(repositoryProvider, scopeRepository);
   }
 
   @Bean
@@ -942,5 +945,10 @@ public class ModuleConfiguration {
       RepositoryProvider repositoryProvider,
       Inspector inspector) {
     return new InspectElementUseCase(domainRepository, repositoryProvider, inspector);
+  }
+
+  @Bean
+  RiskValueValidator riskValueValidator(ScopeProvider scopeProvider) {
+    return new RiskValueValidator(scopeProvider);
   }
 }

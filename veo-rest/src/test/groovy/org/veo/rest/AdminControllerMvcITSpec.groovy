@@ -313,29 +313,17 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
             owner  : owner
         ])
 
-        def processId = parseJson(post("/processes", [
-            domains: [
-                (domainId): [ : ]
-            ],
-            name   : "process",
-            owner  : owner
-        ])).resourceId
-        def eTag = parseETag(get("/processes/$processId"))
-
-        post("/scopes", [
+        def scopeId = parseJson(post("/scopes", [
             name: "DSRA scope",
             domains: [
                 (domainId): [
                     riskDefinition: "DSRA"
                 ]
             ],
-            members: [
-                [targetUri: "http://localhost/processes/$processId"]
-            ],
             owner: owner
-        ])
+        ])).resourceId
 
-        parseJson(put("/processes/${processId}", [
+        def processId = parseJson(post("/processes?scopes=$scopeId", [
             domains: [
                 (domainId): [
                     riskValues: [
@@ -350,7 +338,7 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
             ],
             name   : "updated process",
             owner  : owner
-        ], ['If-Match': eTag]))
+        ])).resourceId
 
         def scenarioId = parseJson(post("/scenarios", [
             name   : "scenario",

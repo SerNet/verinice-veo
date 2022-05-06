@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.veo.core.usecase.incident;
 
+import java.util.Set;
+
 import org.veo.core.entity.Incident;
+import org.veo.core.entity.Scope;
 import org.veo.core.repository.IncidentRepository;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
@@ -37,7 +40,7 @@ public class CreateIncidentUseCase extends CreateElementUseCase<Incident> {
   }
 
   @Override
-  protected void validate(Incident incident) {
+  protected void validate(Incident incident, Set<Scope> scopes) {
     // GNDN
   }
 }

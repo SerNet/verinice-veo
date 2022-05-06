@@ -34,29 +34,16 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
 
     def "create and update process risk values"() {
         given: "a composite process and a scenario"
-        def processId = post("/processes", [
-            domains: [
-                (domainId): [ : ]
-            ],
-            name: "risk test process",
-            owner: [targetUri: "$baseUrl/units/$unitId"]
-        ]).body.resourceId
-        def processETag = get("/processes/$processId").parseETag()
-
-        post("/scopes", [
+        def scopeId = post("/scopes", [
             name: "DSRA scope",
             domains: [
                 (domainId): [
                     riskDefinition: "DSRA"
                 ]
             ],
-            members: [
-                [targetUri: "$baseUrl/processes/$processId"]
-            ],
             owner: [targetUri: "$baseUrl/units/$unitId"],
-        ])
-
-        put("/processes/$processId", [
+        ]).body.resourceId
+        def processId = post("/processes?scopes=$scopeId", [
             domains: [
                 (domainId): [
                     riskValues: [
@@ -71,7 +58,7 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
             ],
             name: "risk test process",
             owner: [targetUri: "$baseUrl/units/$unitId"]
-        ], processETag)
+        ]).body.resourceId
 
         def scenarioId = post("/scenarios", [
             name: "process risk test scenario",

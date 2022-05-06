@@ -190,4 +190,31 @@ class ScopeProviderITSpec extends VeoSpringSpec{
         expect: "process to be unable to use risk def 2"
         !scopeProvider.canUseRiskDefinition(process, domain, rd2)
     }
+
+    def "element with transient scope memberships can use risk definition"() {
+        given: "scopes for rd1 & rd2 and a process"
+        def rd1Scope = scopeRepository.save(newScope(unit) {
+            setRiskDefinition(domain, rd1)
+        })
+        def rd2Scope = scopeRepository.save(newScope(unit) {
+            setRiskDefinition(domain, rd2)
+        })
+        def process = processRepo.save(newProcess(unit))
+
+        expect: "the process to be able to use rd2 with transient memberships in both scopes"
+        scopeProvider.canUseRiskDefinition(process, domain, rd2, [rd1Scope, rd2Scope] as Set)
+
+        and: "the process to be unable to use rd2 with transient membership in the rd1 scope"
+        !scopeProvider.canUseRiskDefinition(process, domain, rd2, [rd1Scope] as Set)
+
+        and:  "the process to be unable to use rd2 without transient memberships"
+        !scopeProvider.canUseRiskDefinition(process, domain, rd2, [] as Set)
+
+        when: "persisting a membership to the rd1 scope"
+        rd2Scope.addMember(process)
+        rd2Scope = scopeDataRepository.save(rd2Scope)
+
+        then: "the process is able to use rd2 regardless of transient memberships"
+        scopeProvider.canUseRiskDefinition(process, domain, rd2, [rd1Scope] as Set)
+    }
 }

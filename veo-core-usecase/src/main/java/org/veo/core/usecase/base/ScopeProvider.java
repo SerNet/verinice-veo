@@ -20,18 +20,13 @@ package org.veo.core.usecase.base;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.veo.core.entity.Asset;
 import org.veo.core.entity.CompositeElement;
-import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Process;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.risk.RiskDefinitionRef;
-import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.CompositeElementRepository;
-import org.veo.core.repository.ControlRepository;
-import org.veo.core.repository.ProcessRepository;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.ScopeRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -39,43 +34,44 @@ import lombok.RequiredArgsConstructor;
 /** Provides information about the {@link Scope} memberships of {@link Element}s. */
 @RequiredArgsConstructor
 public class ScopeProvider {
-  private final AssetRepository assetRepository;
-  private final ControlRepository controlRepository;
-  private final ProcessRepository processRepository;
+  private final RepositoryProvider repositoryProvider;
   private final ScopeRepository scopeRepository;
 
   /**
-   * Determines whether given asset may use given risk definition due to its (direct or indirect)
-   * scope memberships.
+   * Determines whether given process may use given risk definition due to its persisted (direct or
+   * indirect) scope memberships.
    */
-  public boolean canUseRiskDefinition(
-      Asset element, Domain domain, RiskDefinitionRef riskDefinitionRef) {
-    return canUseRiskDefinition(element, domain, riskDefinitionRef, assetRepository);
+  public <T extends CompositeElement<T>> boolean canUseRiskDefinition(
+      T element, Domain domain, RiskDefinitionRef riskDefinitionRef) {
+    return canUseRiskDefinition(element, domain, riskDefinitionRef, Set.of());
   }
 
   /**
-   * Determines whether given process may use given risk definition due to its (direct or indirect)
-   * scope memberships.
+   * Determines whether given process may use given risk definition due to its transient or
+   * persisted (direct or indirect) scope memberships.
+   *
+   * @param uncommittedScopes transient scope memberships that are yet to be persisted
    */
-  public boolean canUseRiskDefinition(
-      Process element, Domain domain, RiskDefinitionRef riskDefinitionRef) {
-    return canUseRiskDefinition(element, domain, riskDefinitionRef, processRepository);
-  }
-
-  /**
-   * Determines whether given control may use given risk definition due to its (direct or indirect)
-   * scope memberships.
-   */
-  public boolean canUseRiskDefinition(
-      Control element, Domain domain, RiskDefinitionRef riskDefinitionRef) {
-    return canUseRiskDefinition(element, domain, riskDefinitionRef, controlRepository);
+  public <T extends CompositeElement<T>> boolean canUseRiskDefinition(
+      T element, Domain domain, RiskDefinitionRef riskDefinitionRef, Set<Scope> uncommittedScopes) {
+    var repo =
+        (CompositeElementRepository<T>)
+            repositoryProvider.getRepositoryFor(element.getModelInterface());
+    return canUseRiskDefinition(element, domain, riskDefinitionRef, repo, uncommittedScopes);
   }
 
   private <TElement extends CompositeElement<TElement>> boolean canUseRiskDefinition(
       TElement element,
       Domain domain,
       RiskDefinitionRef riskDef,
-      CompositeElementRepository<TElement> repo) {
+      CompositeElementRepository<TElement> repo,
+      Set<Scope> uncommittedScopes) {
+    // Check if any of the transient scope memberships allow the element to use the risk definition
+    if (uncommittedScopes.stream()
+        .map(s -> s.getRiskDefinition(domain).orElse(null))
+        .anyMatch(riskDef::equals)) {
+      return true;
+    }
     // Traverse element's composite hierarchy upwards to find its superordinate
     // composite elements
     var encounteredElements = new HashSet<Element>();

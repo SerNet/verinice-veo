@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.veo.core.usecase.process;
 
+import java.util.Set;
+
 import org.veo.core.entity.Process;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.ScopeRepository;
@@ -26,10 +29,11 @@ import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.decision.Decider;
+import org.veo.core.usecase.risk.RiskValueValidator;
 
 /** Creates a persistent new process object. */
 public class CreateProcessUseCase extends CreateElementUseCase<Process> {
-
+  private final RiskValueValidator riskValueValidator;
   private final EventPublisher eventPublisher;
 
   public CreateProcessUseCase(
@@ -37,9 +41,11 @@ public class CreateProcessUseCase extends CreateElementUseCase<Process> {
       ScopeRepository scopeRepository,
       ProcessRepository entityRepo,
       DesignatorService designatorService,
+      RiskValueValidator riskValueValidator,
       EventPublisher eventPublisher,
       Decider decider) {
     super(unitRepository, scopeRepository, entityRepo, designatorService, decider);
+    this.riskValueValidator = riskValueValidator;
     this.eventPublisher = eventPublisher;
   }
 
@@ -51,17 +57,7 @@ public class CreateProcessUseCase extends CreateElementUseCase<Process> {
   }
 
   @Override
-  protected void validate(Process process) {
-    // TODO VEO-1244 The same kind of validation as in UpdateControlUseCase should
-    // be used here as soon as it is possible to create an element within a scope.
-    process
-        .getDomains()
-        .forEach(
-            domain -> {
-              if (process.getImpactValues(domain).map(rv -> !rv.isEmpty()).orElse(false)) {
-                throw new IllegalArgumentException(
-                    "Cannot create process with risk values, because it must a member of a scope with a risk definition first");
-              }
-            });
+  protected void validate(Process process, Set<Scope> scopes) {
+    riskValueValidator.validate(process, scopes);
   }
 }
