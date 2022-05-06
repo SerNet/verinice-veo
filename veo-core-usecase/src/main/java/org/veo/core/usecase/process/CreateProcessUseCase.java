@@ -20,6 +20,7 @@ package org.veo.core.usecase.process;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.ProcessRepository;
+import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
@@ -33,11 +34,12 @@ public class CreateProcessUseCase extends CreateElementUseCase<Process> {
 
   public CreateProcessUseCase(
       UnitRepository unitRepository,
+      ScopeRepository scopeRepository,
       ProcessRepository entityRepo,
       DesignatorService designatorService,
       EventPublisher eventPublisher,
       Decider decider) {
-    super(unitRepository, entityRepo, designatorService, decider);
+    super(unitRepository, scopeRepository, entityRepo, designatorService, decider);
     this.eventPublisher = eventPublisher;
   }
 

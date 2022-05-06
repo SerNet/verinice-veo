@@ -36,6 +36,8 @@ import static org.veo.rest.ControllerConstants.PAGE_NUMBER_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_PARAM;
 import static org.veo.rest.ControllerConstants.PAGE_SIZE_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_SIZE_PARAM;
+import static org.veo.rest.ControllerConstants.SCOPE_IDS_DESCRIPTION;
+import static org.veo.rest.ControllerConstants.SCOPE_IDS_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_COLUMN_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.SORT_COLUMN_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_DEFAULT_VALUE;
@@ -87,6 +89,7 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateControlDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
+import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
@@ -270,15 +273,20 @@ public class ControlController extends AbstractElementController<Control, FullCo
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createControl(
       @Parameter(hidden = true) ApplicationUser user,
       @Valid @NotNull @RequestBody @JsonSchemaValidation(Control.SINGULAR_TERM)
-          CreateControlDto dto) {
+          CreateControlDto dto,
+      @Parameter(description = SCOPE_IDS_DESCRIPTION)
+          @RequestParam(name = SCOPE_IDS_PARAM, required = false)
+          List<String> scopeIds) {
     return useCaseInteractor.execute(
         createControlUseCase,
         (Supplier<CreateElementUseCase.InputData<Control>>)
             () -> {
               Client client = getClient(user);
               IdRefResolver idRefResolver = createIdRefResolver(client);
-              return new CreateElementUseCase.InputData<>(
-                  dtoToEntityTransformer.transformDto2Control(dto, idRefResolver), client);
+              return CreateElementInputMapper.map(
+                  dtoToEntityTransformer.transformDto2Control(dto, idRefResolver),
+                  client,
+                  scopeIds);
             },
         output -> {
           ApiResponseBody body = CreateOutputMapper.map(output.getEntity());

@@ -34,6 +34,8 @@ import static org.veo.rest.ControllerConstants.PAGE_NUMBER_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_PARAM;
 import static org.veo.rest.ControllerConstants.PAGE_SIZE_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_SIZE_PARAM;
+import static org.veo.rest.ControllerConstants.SCOPE_IDS_DESCRIPTION;
+import static org.veo.rest.ControllerConstants.SCOPE_IDS_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_COLUMN_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.SORT_COLUMN_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_DEFAULT_VALUE;
@@ -88,6 +90,7 @@ import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateScopeDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
+import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
@@ -308,15 +311,20 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createScope(
       @Parameter(hidden = true) ApplicationUser user,
       @Valid @NotNull @RequestBody @JsonSchemaValidation(Scope.SINGULAR_TERM)
-          CreateScopeDto createScopeDto) {
+          CreateScopeDto createScopeDto,
+      @Parameter(description = SCOPE_IDS_DESCRIPTION)
+          @RequestParam(name = SCOPE_IDS_PARAM, required = false)
+          List<String> scopeIds) {
     return useCaseInteractor.execute(
         createScopeUseCase,
         (Supplier<CreateElementUseCase.InputData<Scope>>)
             () -> {
               Client client = getClient(user);
               IdRefResolver idRefResolver = createIdRefResolver(client);
-              return new CreateElementUseCase.InputData<>(
-                  dtoToEntityTransformer.transformDto2Scope(createScopeDto, idRefResolver), client);
+              return CreateElementInputMapper.map(
+                  dtoToEntityTransformer.transformDto2Scope(createScopeDto, idRefResolver),
+                  client,
+                  scopeIds);
             },
         output -> {
           Scope scope = output.getEntity();

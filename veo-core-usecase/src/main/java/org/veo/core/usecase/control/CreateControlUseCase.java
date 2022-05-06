@@ -19,6 +19,7 @@ package org.veo.core.usecase.control;
 
 import org.veo.core.entity.Control;
 import org.veo.core.repository.ControlRepository;
+import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.base.CreateElementUseCase;
@@ -28,10 +29,11 @@ public class CreateControlUseCase extends CreateElementUseCase<Control> {
 
   public CreateControlUseCase(
       UnitRepository unitRepository,
+      ScopeRepository scopeRepository,
       ControlRepository entityRepo,
       DesignatorService designatorService,
       Decider decider) {
-    super(unitRepository, entityRepo, designatorService, decider);
+    super(unitRepository, scopeRepository, entityRepo, designatorService, decider);
   }
 
   @Override

@@ -17,35 +17,57 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
+import org.veo.core.entity.Key
 import org.veo.core.entity.Person
+import org.veo.core.entity.Scope
+import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.repository.PersonRepository
+import org.veo.core.repository.ScopeRepository
 import org.veo.core.usecase.base.CreateElementUseCase
 import org.veo.core.usecase.decision.Decider
 import org.veo.core.usecase.person.CreatePersonUseCase
 
 class CreatePersonUseCaseSpec extends UseCaseSpec {
 
+    ScopeRepository scopeRepository = Mock()
     PersonRepository personRepository = Mock()
     DesignatorService designatorService = Mock()
+    Person person = Mock()
     Decider decider = Mock()
 
-    CreatePersonUseCase usecase = new CreatePersonUseCase(unitRepository, personRepository, designatorService, decider)
+    CreatePersonUseCase usecase = new CreatePersonUseCase(unitRepository,scopeRepository, personRepository, designatorService, decider)
+
+    def setup() {
+        person.name >> "John"
+        person.owner >> existingUnit
+        person.links >> []
+        person.domains >> []
+
+        unitRepository.findById(_) >> Optional.of(existingUnit)
+        scopeRepository.getByIds([] as Set) >> []
+    }
 
     def "create a person"() {
-        given:
-        Person p = Mock()
-        p.name >> "John"
-        p.owner >> existingUnit
-        p.links >> []
-        p.domains >> []
-
         when:
-        def output = usecase.execute(new CreateElementUseCase.InputData(p, existingClient))
+        def output = usecase.execute(new CreateElementUseCase.InputData(person, existingClient, [] as Set))
         then:
-        1 * unitRepository.findById(_) >> Optional.of(existingUnit)
-        1 * personRepository.save(p) >> p
-        1 * designatorService.assignDesignator(p, existingClient)
+        1 * personRepository.save(person) >> person
+        1 * designatorService.assignDesignator(person, existingClient)
         output.entity != null
         output.entity.name == "John"
+    }
+
+    def "validates scope client"() {
+        given: "a scope for another client"
+        def scope = Mock(Scope)
+        scope.id >> Key.newUuid()
+        scope.checkSameClient(existingClient) >> { throw new ClientBoundaryViolationException(scope, existingClient) }
+        scopeRepository.getByIds([scope.id] as Set) >> [scope]
+
+        when: "creating the new process inside the scope"
+        usecase.execute(new CreateElementUseCase.InputData(person, existingClient, [scope.id] as Set))
+
+        then: "an exception is thrown"
+        thrown(ClientBoundaryViolationException)
     }
 }

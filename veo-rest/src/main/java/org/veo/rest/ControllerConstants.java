@@ -39,7 +39,9 @@ public final class ControllerConstants {
   public static final List<String> ANY_STRING_LIST = null;
   public static final Boolean ANY_BOOLEAN = null;
   public static final WebRequest ANY_REQUEST = null;
-
+  public static final String SCOPE_IDS_PARAM = "scopes";
+  public static final String SCOPE_IDS_DESCRIPTION =
+      "IDs of scopes that the new element should be a member of";
   static final String PARENT_PARAM = "parent";
   static final String UUID_PARAM = "uuid";
   static final String UUID_REGEX = "[a-fA-F\\d]{8}(?:-[a-fA-F\\d]{4}){3}-[a-fA-F\\d]{12}";

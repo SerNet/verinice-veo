@@ -38,6 +38,8 @@ import static org.veo.rest.ControllerConstants.PAGE_NUMBER_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_PARAM;
 import static org.veo.rest.ControllerConstants.PAGE_SIZE_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_SIZE_PARAM;
+import static org.veo.rest.ControllerConstants.SCOPE_IDS_DESCRIPTION;
+import static org.veo.rest.ControllerConstants.SCOPE_IDS_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_COLUMN_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.SORT_COLUMN_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_DEFAULT_VALUE;
@@ -92,6 +94,7 @@ import org.veo.adapter.presenter.api.dto.create.CreateProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
+import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetProcessesInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
@@ -252,7 +255,10 @@ public class ProcessController extends AbstractElementController<Process, FullPr
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createProcess(
       @Parameter(hidden = true) ApplicationUser user,
       @Valid @NotNull @RequestBody @JsonSchemaValidation(Process.SINGULAR_TERM)
-          CreateProcessDto dto) {
+          CreateProcessDto dto,
+      @Parameter(description = SCOPE_IDS_DESCRIPTION)
+          @RequestParam(name = SCOPE_IDS_PARAM, required = false)
+          List<String> scopeIds) {
 
     return useCaseInteractor.execute(
         createProcessUseCase,
@@ -260,8 +266,10 @@ public class ProcessController extends AbstractElementController<Process, FullPr
             () -> {
               Client client = getClient(user);
               IdRefResolver idRefResolver = createIdRefResolver(client);
-              return new CreateElementUseCase.InputData<>(
-                  dtoToEntityTransformer.transformDto2Process(dto, idRefResolver), client);
+              return CreateElementInputMapper.map(
+                  dtoToEntityTransformer.transformDto2Process(dto, idRefResolver),
+                  client,
+                  scopeIds);
             },
         output -> {
           ApiResponseBody body = CreateOutputMapper.map(output.getEntity());

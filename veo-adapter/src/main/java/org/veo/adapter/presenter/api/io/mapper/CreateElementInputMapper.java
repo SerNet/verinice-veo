@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jonas Jordan.
+ * Copyright (C) 2022  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,29 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.document;
+package org.veo.adapter.presenter.api.io.mapper;
 
-import org.veo.core.entity.Document;
-import org.veo.core.repository.DocumentRepository;
-import org.veo.core.repository.ScopeRepository;
-import org.veo.core.repository.UnitRepository;
-import org.veo.core.usecase.DesignatorService;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.veo.core.entity.Client;
+import org.veo.core.entity.Key;
 import org.veo.core.usecase.base.CreateElementUseCase;
-import org.veo.core.usecase.decision.Decider;
 
-public class CreateDocumentUseCase extends CreateElementUseCase<Document> {
-
-  public CreateDocumentUseCase(
-      UnitRepository unitRepository,
-      ScopeRepository scopeRepository,
-      DocumentRepository entityRepo,
-      DesignatorService designatorService,
-      Decider decider) {
-    super(unitRepository, scopeRepository, entityRepo, designatorService, decider);
+public class CreateElementInputMapper {
+  /** Creates input data for element creation. */
+  public static <T> CreateElementUseCase.InputData<T> map(
+      T element, Client client, List<String> scopeIds) {
+    return new CreateElementUseCase.InputData<>(element, client, mapIds(scopeIds));
   }
 
-  @Override
-  protected void validate(Document document) {
-    // GNDN
+  private static Set<Key<UUID>> mapIds(List<String> ids) {
+    if (ids == null) {
+      return Set.of();
+    }
+    return ids.stream().map(Key::uuidFrom).collect(Collectors.toSet());
   }
 }

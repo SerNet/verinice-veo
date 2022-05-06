@@ -17,8 +17,10 @@
  ******************************************************************************/
 package org.veo.core.usecase.scope
 
+import org.veo.core.entity.Key
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
+import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.repository.ScopeRepository
 import org.veo.core.usecase.DesignatorService
 import org.veo.core.usecase.UseCaseSpec
@@ -27,35 +29,52 @@ import org.veo.core.usecase.decision.Decider
 
 class CreateScopeUseCaseSpec extends UseCaseSpec {
 
-    ScopeRepository entityScopeRepository = Mock()
+    ScopeRepository scopeRepository = Mock()
     DesignatorService designatorService = Mock()
+    Scope scope = Mock()
     Decider decider = Mock()
 
-    CreateScopeUseCase usecase = new CreateScopeUseCase(unitRepository, entityScopeRepository, designatorService, decider)
+    CreateScopeUseCase usecase = new CreateScopeUseCase(unitRepository, scopeRepository, designatorService, decider)
     Unit unit = Mock()
 
-    def "create a scope"() {
-        given:
-
-        Scope scope = Mock()
+    def setup() {
         scope.name >> "My scope"
         scope.owner >> unit
         scope.links >> []
         scope.domains >> []
 
+        unitRepository.findById(_) >> Optional.of(existingUnit)
+        scopeRepository.getByIds([] as Set) >> []
+    }
+
+    def "create a scope"() {
         when:
-        def output = usecase.execute(new CreateElementUseCase.InputData( scope, existingClient))
+        def output = usecase.execute(new CreateElementUseCase.InputData( scope, existingClient, [] as Set))
 
         then:
-        1 * unitRepository.findById(_) >> Optional.of(existingUnit)
-        1 * entityScopeRepository.save(_) >> { it[0] }
+        1 * scopeRepository.save(_) >> { it[0] }
         1 * designatorService.assignDesignator(scope, existingClient)
         when:
         def scope1 = output.entity
 
-
         then:
         scope1 != null
         scope1.name == "My scope"
+    }
+
+    def "validates super scope client"() {
+        given: "a scope for another client"
+        def superScope = Mock(Scope)
+        superScope.id >> Key.newUuid()
+        superScope.checkSameClient(existingClient) >> {
+            throw new ClientBoundaryViolationException(superScope, existingClient)
+        }
+        scopeRepository.getByIds([superScope.id] as Set) >> [superScope]
+
+        when: "creating the new process inside the scope"
+        usecase.execute(new CreateElementUseCase.InputData(scope, existingClient, [superScope.id] as Set))
+
+        then: "an exception is thrown"
+        thrown(ClientBoundaryViolationException)
     }
 }

@@ -19,9 +19,12 @@ package org.veo.core.usecase.process
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
+import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent
+import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.repository.ProcessRepository
+import org.veo.core.repository.ScopeRepository
 import org.veo.core.service.EventPublisher
 import org.veo.core.usecase.DesignatorService
 import org.veo.core.usecase.UseCaseSpec
@@ -30,6 +33,7 @@ import org.veo.core.usecase.decision.Decider
 
 class CreateProcessUseCaseSpec extends UseCaseSpec {
 
+    ScopeRepository scopeRepository = Mock()
     ProcessRepository processRepository = Mock()
     Process process = Mock()
     Unit unit = Mock()
@@ -37,8 +41,9 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
     EventPublisher eventPublisher = Mock()
     Decider decider = Mock()
 
-    CreateProcessUseCase usecase = new CreateProcessUseCase(unitRepository, processRepository, designatorService, eventPublisher, decider)
-    def "create a process"() {
+    CreateProcessUseCase usecase = new CreateProcessUseCase(unitRepository,scopeRepository, processRepository, designatorService, eventPublisher, decider)
+
+    def setup() {
         def id = Key.newUuid()
         process.domains >> []
         process.owner >> unit
@@ -46,19 +51,37 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
         process.modelInterface >> Process
         process.id >> id
         process.links >> []
+        process.owningClient >> Optional.of(existingClient)
 
+        unitRepository.findById(_) >> Optional.of(existingUnit)
+        scopeRepository.getByIds([] as Set) >> []
+    }
+
+    def "create a process"() {
         when:
-        def output = usecase.execute(new CreateElementUseCase.InputData(process, existingClient))
+        def output = usecase.execute(new CreateElementUseCase.InputData(process, existingClient, [] as Set))
         then:
-        1 * unitRepository.findById(_) >> Optional.of(existingUnit)
-        1 * process.getOwningClient() >> Optional.of(existingClient)
         1 * processRepository.save(process) >> process
         1 * designatorService.assignDesignator(process, existingClient)
         1 * eventPublisher.publish({ RiskAffectingElementChangeEvent event->
             event.entityType == Process
-            event.entityId == id
+            event.entityId == process.id
         })
         output.entity != null
         output.entity.name == "John's process"
+    }
+
+    def "validates scope client"() {
+        given: "a scope for another client"
+        def scope = Mock(Scope)
+        scope.id >> Key.newUuid()
+        scope.checkSameClient(existingClient) >> { throw new ClientBoundaryViolationException(scope, existingClient) }
+        scopeRepository.getByIds([scope.id] as Set) >> [scope]
+
+        when: "creating the new process inside the scope"
+        usecase.execute(new CreateElementUseCase.InputData(process, existingClient, [scope.id] as Set))
+
+        then: "an exception is thrown"
+        thrown(ClientBoundaryViolationException)
     }
 }

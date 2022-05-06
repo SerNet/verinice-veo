@@ -19,6 +19,7 @@ package org.veo.core.usecase.incident;
 
 import org.veo.core.entity.Incident;
 import org.veo.core.repository.IncidentRepository;
+import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.base.CreateElementUseCase;
@@ -28,10 +29,11 @@ public class CreateIncidentUseCase extends CreateElementUseCase<Incident> {
 
   public CreateIncidentUseCase(
       UnitRepository unitRepository,
+      ScopeRepository scopeRepository,
       IncidentRepository entityRepo,
       DesignatorService designatorService,
       Decider decider) {
-    super(unitRepository, entityRepo, designatorService, decider);
+    super(unitRepository, scopeRepository, entityRepo, designatorService, decider);
   }
 
   @Override

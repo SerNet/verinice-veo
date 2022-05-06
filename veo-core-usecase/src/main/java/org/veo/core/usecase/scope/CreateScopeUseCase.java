@@ -31,7 +31,7 @@ public class CreateScopeUseCase extends CreateElementUseCase<Scope> {
       ScopeRepository scopeRepository,
       DesignatorService designatorService,
       Decider decider) {
-    super(unitRepository, scopeRepository, designatorService, decider);
+    super(unitRepository, scopeRepository, scopeRepository, designatorService, decider);
   }
 
   @Override

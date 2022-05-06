@@ -184,10 +184,12 @@ public class ModuleConfiguration {
   @Bean
   public CreateAssetUseCase createAssetUseCase(
       UnitRepositoryImpl unitRepository,
+      ScopeRepositoryImpl scopeRepository,
       AssetRepositoryImpl assetRepository,
       DesignatorService designatorService,
       Decider decider) {
-    return new CreateAssetUseCase(unitRepository, assetRepository, designatorService, decider);
+    return new CreateAssetUseCase(
+        unitRepository, scopeRepository, assetRepository, designatorService, decider);
   }
 
   @Bean
@@ -230,10 +232,12 @@ public class ModuleConfiguration {
   @Bean
   public CreateControlUseCase createControlUseCase(
       UnitRepositoryImpl unitRepository,
+      ScopeRepositoryImpl scopeRepository,
       ControlRepositoryImpl controlRepository,
       DesignatorService designatorService,
       Decider decider) {
-    return new CreateControlUseCase(unitRepository, controlRepository, designatorService, decider);
+    return new CreateControlUseCase(
+        unitRepository, scopeRepository, controlRepository, designatorService, decider);
   }
 
   @Bean
@@ -261,11 +265,12 @@ public class ModuleConfiguration {
   @Bean
   public CreateDocumentUseCase createDocumentUseCase(
       UnitRepositoryImpl unitRepository,
+      ScopeRepository scopeRepository,
       DocumentRepositoryImpl documentRepository,
       DesignatorService designatorService,
       Decider decider) {
     return new CreateDocumentUseCase(
-        unitRepository, documentRepository, designatorService, decider);
+        unitRepository, scopeRepository, documentRepository, designatorService, decider);
   }
 
   @Bean
@@ -290,11 +295,12 @@ public class ModuleConfiguration {
   @Bean
   public CreateScenarioUseCase createScenarioUseCase(
       UnitRepositoryImpl unitRepository,
+      ScopeRepositoryImpl scopeRepository,
       ScenarioRepositoryImpl scenarioRepository,
       DesignatorService designatorService,
       Decider decider) {
     return new CreateScenarioUseCase(
-        unitRepository, scenarioRepository, designatorService, decider);
+        unitRepository, scopeRepository, scenarioRepository, designatorService, decider);
   }
 
   @Bean
@@ -319,11 +325,12 @@ public class ModuleConfiguration {
   @Bean
   public CreateIncidentUseCase createIncidentUseCase(
       UnitRepositoryImpl unitRepository,
+      ScopeRepositoryImpl scopeRepository,
       IncidentRepositoryImpl incidentRepository,
       DesignatorService designatorService,
       Decider decider) {
     return new CreateIncidentUseCase(
-        unitRepository, incidentRepository, designatorService, decider);
+        unitRepository, scopeRepository, incidentRepository, designatorService, decider);
   }
 
   @Bean
@@ -348,12 +355,18 @@ public class ModuleConfiguration {
   @Bean
   public CreateProcessUseCase createProcessUseCase(
       UnitRepositoryImpl unitRepository,
+      ScopeRepositoryImpl scopeRepository,
       ProcessRepositoryImpl processRepository,
       DesignatorService designatorService,
       EventPublisher eventPublisher,
       Decider decider) {
     return new CreateProcessUseCase(
-        unitRepository, processRepository, designatorService, eventPublisher, decider);
+        unitRepository,
+        scopeRepository,
+        processRepository,
+        designatorService,
+        eventPublisher,
+        decider);
   }
 
   @Bean
@@ -462,10 +475,12 @@ public class ModuleConfiguration {
   @Bean
   public CreatePersonUseCase createPersonUseCase(
       UnitRepositoryImpl unitRepository,
+      ScopeRepositoryImpl scopeRepository,
       PersonRepositoryImpl personRepository,
       DesignatorService designatorService,
       Decider decider) {
-    return new CreatePersonUseCase(unitRepository, personRepository, designatorService, decider);
+    return new CreatePersonUseCase(
+        unitRepository, scopeRepository, personRepository, designatorService, decider);
   }
 
   @Bean
