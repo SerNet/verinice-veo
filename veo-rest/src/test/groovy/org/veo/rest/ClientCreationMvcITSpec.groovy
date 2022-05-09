@@ -24,6 +24,7 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Key
 import org.veo.core.repository.ClientRepository
+import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 /**
@@ -54,10 +55,11 @@ class ClientCreationMvcITSpec extends VeoMvcSpec {
 
         when: "we get the units"
         def units = parseJson(get("/units"))
+        def unitId = units[0].id
 
-
-        then: "one unit was created"
-        units.size() == 1
-        units[0].id != null
+        then:"the demo unit is also created"
+        units.size() == 2
+        unitId != null
+        units*.name.contains(CreateDemoUnitUseCase.DEMO_UNIT_NAME)
     }
 }

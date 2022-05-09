@@ -22,6 +22,7 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.repository.RepositoryProvider
 import org.veo.core.usecase.common.NameableInputData
+import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.core.usecase.unit.CreateUnitUseCase
 import org.veo.core.usecase.unit.CreateUnitUseCase.InputData
 import org.veo.service.DefaultDomainCreator
@@ -29,7 +30,9 @@ import org.veo.service.DefaultDomainCreator
 public class CreateUnitUseCaseSpec extends UseCaseSpec {
     DefaultDomainCreator defaultDomainCreator = Mock()
     RepositoryProvider repositoryProvider = Mock()
-    CreateUnitUseCase usecase = new CreateUnitUseCase(clientRepository, unitRepository, entityFactory, defaultDomainCreator)
+    CreateDemoUnitUseCase createDemoUnitUseCase = Mock()
+    CreateUnitUseCase usecase = new CreateUnitUseCase(clientRepository, unitRepository, entityFactory, defaultDomainCreator,
+    createDemoUnitUseCase)
 
     def "Create new unit in a new client" () {
         Unit newUnit1 = Mock()
@@ -58,6 +61,9 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         and: "a new client was then correctly created and stored"
         1 * unitRepository.save(newUnit1) >> newUnit1
         1 * clientRepository.save(_) >> existingClient
+
+        and: 'a demo unit was created for the new client'
+        1 * createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(existingClient.id))
 
         and: "a new unit was created and stored"
         newUnit != null

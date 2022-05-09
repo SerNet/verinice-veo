@@ -24,6 +24,7 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.DocumentRepository
 import org.veo.core.repository.UnitRepository
+import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 
 @WithUserDetails("admin")
 class AdminControllerMvcITSpec extends VeoMvcSpec {
@@ -35,6 +36,8 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
     private UnitRepository unitRepo
     @Autowired
     private DocumentRepository documentRepo
+    @Autowired
+    private CreateDemoUnitUseCase createDemoUnitUseCase
 
     public static final String PROBLEM = "In computer science, there are only three hard problems: " +
     "Cache invalidation, naming things, and off-by-one errors."

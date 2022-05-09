@@ -60,6 +60,7 @@ public class CreateUnitUseCase
   private final UnitRepository unitRepository;
   private final EntityFactory entityFactory;
   private final DefaultDomainCreator defaultDomainCreator;
+  private final CreateDemoUnitUseCase createDemoUnitUseCase;
 
   @Override
   public OutputData execute(InputData input) {
@@ -102,7 +103,12 @@ public class CreateUnitUseCase
         entityFactory.createClient(input.getClientId(), input.getNameableInput().getName());
     defaultDomainCreator.addDefaultDomains(client);
     Client savedClient = clientRepository.save(client);
+    createDemoUnitForClient(savedClient);
     return savedClient;
+  }
+
+  private void createDemoUnitForClient(Client savedClient) {
+    createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(savedClient.getId()));
   }
 
   @Valid
