@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
@@ -39,6 +41,7 @@ import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformLinkTailoringReference;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.Key;
@@ -206,5 +209,23 @@ class DomainTemplateAssembler {
               currentItem.getTailoringReferences().add(referenceDto);
               referenceDto.setReferenceType(TailoringReferenceType.COPY);
             });
+  }
+
+  public Set<AbstractElementDto> processDemoUnit(Set<AbstractElementDto> readDemoUnitElements) {
+    SyntheticIdRef<Domain> domainRef = new SyntheticIdRef<>(id, Domain.class, assembler);
+    Set<IdRef<Domain>> domainsToApply = Collections.singleton(domainRef);
+    readDemoUnitElements.forEach(e -> processDemoUnitElement(e, domainsToApply));
+    return readDemoUnitElements;
+  }
+
+  private void processDemoUnitElement(
+      AbstractElementDto element, Set<IdRef<Domain>> domainsToApply) {
+    element.associateWithTargetDomain(id);
+    element.setType(SyntheticIdRef.toSingularTerm(element.getModelInterface()));
+    element.getCustomAspects().values().forEach(c -> c.setDomains(domainsToApply));
+    element
+        .getLinks()
+        .values()
+        .forEach(links -> links.forEach(link -> link.setDomains(domainsToApply)));
   }
 }

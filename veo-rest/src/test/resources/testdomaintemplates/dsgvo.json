@@ -3193,6 +3193,281 @@
     }
   },
   "id": "e96dd67f-090e-52be-8b76-f66b75624b45",
+  "demoUnitElements": [
+    {
+      "name": "Data GmbH",
+      "designator": "DMO-63",
+      "description": "Die Data GmbH ist ein IT-Dienstleister, spezialisiert auf Netzwerksicherheit und Informationssicherheit und in unserer Demo die Verantwortliche Stelle nach DS-GVO.",
+      "owner": {
+        "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
+      },
+      "links": {
+        "scope_informationSecurityOfficer": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "http://localhost/persons/164f3943-d327-48f7-a5c9-a68d52b2331a"
+            }
+          }
+        ],
+        "scope_headOfDataProcessing": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "http://localhost/persons/e667fcb4-5b6e-4569-962f-b9408fb7fd28"
+            }
+          }
+        ]
+      },
+      "customAspects": {
+        "scope_thirdCountry": {
+          "domains": [],
+          "attributes": {
+            "scope_thirdCountry_status": false
+          }
+        },
+        "scope_address": {
+          "domains": [],
+          "attributes": {
+            "scope_address_city": "Göttingen",
+            "scope_address_state": "Niedersachsen",
+            "scope_address_country": "Deutschland",
+            "scope_address_address1": "Bahnhofsplatz 1",
+            "scope_address_postcode": "56081"
+          }
+        },
+        "scope_regulatoryAuthority": {
+          "domains": [],
+          "attributes": {
+            "scope_regulatoryAuthority_fax": "0511120 45 99",
+            "scope_regulatoryAuthority_city": "Hannover",
+            "scope_regulatoryAuthority_name": "Die Landesbeauftragte für den Datenschutz Niedersachsen",
+            "scope_regulatoryAuthority_email": "poststelle@lfd.niedersachsen.de",
+            "scope_regulatoryAuthority_phone": "0511 120 45 00",
+            "scope_regulatoryAuthority_website": "https://lfd.niedersachsen.de/startseite/",
+            "scope_regulatoryAuthority_address1": "Prinzenstraße 5",
+            "scope_regulatoryAuthority_postcode": "30159 ",
+            "scope_regulatoryAuthority_description": "Frau Barbara Thiel"
+          }
+        },
+        "scope_contactInformation": {
+          "domains": [],
+          "attributes": {
+            "scope_contactInformation_email": "kontakt@data.de",
+            "scope_contactInformation_phone": "0523 7006000",
+            "scope_contactInformation_website": "www.data.de"
+          }
+        }
+      },
+      "type": "scope",
+      "members": [
+        {
+          "targetUri": "http://localhost/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
+        }
+      ],
+      "domains": {
+        "e96dd67f-090e-52be-8b76-f66b75624b45": {
+          "subType": "SCP_ResponsibleBody",
+          "status": "IN_PROGRESS",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "8c98ee3f-7402-4399-bf85-905abc92f17f"
+    },
+    {
+      "name": "Durchführung Befragungen",
+      "designator": "DMO-65",
+      "abbreviation": "",
+      "description": "Befragungsaktionen und deren Auswertungen werden von der Data GmbH durchgeführt.",
+      "owner": {
+        "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
+      },
+      "links": {
+        
+      },
+      "customAspects": {
+        "process_processingDetails": {
+          "domains": [],
+          "attributes": {
+            "process_processingDetails_typeOfSurvey": "process_processingDetails_typeOfSurvey_new",
+            "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation",
+            "process_processingDetails_surveyConductedOn": "2021-09-27",
+            "process_processingDetails_responsibleDepartment": "Marketing "
+          }
+        },
+        "process_accessAuthorization": {
+          "domains": [],
+          "attributes": {
+            "process_accessAuthorization_concept": false,
+            "process_accessAuthorization_description": "Kein Berechtigungskonzept"
+          }
+        },
+        "process_processing": {
+          "domains": [],
+          "attributes": {
+            "process_processing_asProcessor": true
+          }
+        },
+        "process_dataProcessing": {
+          "domains": [],
+          "attributes": {
+            "process_dataProcessing_legalBasis": [
+              "process_dataProcessing_legalBasis_Art6Abs1litaDSGVO",
+              "process_dataProcessing_legalBasis_Art6Abs1litfDSGVO"
+            ]
+          }
+        },
+        "process_opinionDPO": {
+          "domains": [],
+          "attributes": {
+            "process_opinionDPO_findings": "Verwendung der Telefonnummer problematisch\nKein Berechtigungskonzept",
+            "process_opinionDPO_recommendations": "Überprüfung durch Rechtsabteilung erforderlich\n",
+            "process_opinionDPO_consultationRequired": false,
+            "process_opinionDPO_consultationConducted": false
+          }
+        },
+        "process_dataSubjects": {
+          "domains": [],
+          "attributes": {
+            "process_dataSubjects_dataSubjects": [
+              "process_dataSubjects_dataSubjects_controllers",
+              "process_dataSubjects_dataSubjects_customers"
+            ]
+          }
+        },
+        "process_intendedPurpose": {
+          "domains": [],
+          "attributes": {
+            "process_intendedPurpose_intendedPurpose": "Kundenzufriedenheit"
+          }
+        },
+        "process_informationsObligations": {
+          "domains": [],
+          "attributes": {
+            "process_informationsObligations_status": true,
+            "process_informationsObligations_explanation": "Siehe Webseite"
+          }
+        }
+      },
+      "type": "process",
+      "parts": [],
+      "domains": {
+        "e96dd67f-090e-52be-8b76-f66b75624b45": {
+          "subType": "PRO_DataProcessing",
+          "status": "NEW",
+          "decisionResults": {
+            "piaMandatory": {
+              "decisiveRule": 0,
+              "matchingRules": [
+                0
+              ],
+              "agreeingRules": [
+                0
+              ]
+            }
+          }
+        }
+      },
+      "id": "ecb458fb-0c56-48ef-9f74-36c47be2b11b"
+    },
+    {
+      "name": "Jürgen Toast",
+      "designator": "DMO-42",
+      "description": "Der Informationssicherheitsbeauftrage der Data GmbH.",
+      "owner": {
+        "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
+      },
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "person",
+      "parts": [],
+      "domains": {
+        "e96dd67f-090e-52be-8b76-f66b75624b45": {
+          "subType": "PER_Person",
+          "status": "NEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "164f3943-d327-48f7-a5c9-a68d52b2331a"
+    },
+    {
+      "name": "Hans Meiser",
+      "designator": "DMO-48",
+      "description": "Der IT-Leiter der Data GmbH.",
+      "owner": {
+        "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
+      },
+      "links": {
+        
+      },
+      "customAspects": {
+        "person_generalInformation": {
+          "domains": [
+            {
+              "targetUri": "http://localhost/domains/e96dd67f-090e-52be-8b76-f66b75624b45"
+            }
+          ],
+          "attributes": {
+            "person_generalInformation_givenName": "Hans",
+            "person_generalInformation_familyName": "Meiser",
+            "person_generalInformation_salutation": "Herr "
+          }
+        },
+        "person_address": {
+          "domains": [
+            {
+              "targetUri": "http://localhost/domains/e96dd67f-090e-52be-8b76-f66b75624b45"
+            }
+          ],
+          "attributes": {
+            "person_address_city": "Göttingen",
+            "person_address_state": "Niedersachsen",
+            "person_address_country": "D",
+            "person_address_address1": "Bahnhofsallee 1b",
+            "person_address_postcode": "37081"
+          }
+        },
+        "person_contactInformation": {
+          "domains": [
+            {
+              "targetUri": "http://localhost/domains/e96dd67f-090e-52be-8b76-f66b75624b45"
+            }
+          ],
+          "attributes": {
+            "person_contactInformation_email": "hm@data.de",
+            "person_contactInformation_mobile": "0551 370000-9",
+            "person_contactInformation_office": "0551 370000-0"
+          }
+        }
+      },
+      "type": "person",
+      "parts": [],
+      "domains": {
+        "e96dd67f-090e-52be-8b76-f66b75624b45": {
+          "subType": "PER_Person",
+          "status": "NEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "e667fcb4-5b6e-4569-962f-b9408fb7fd28"
+    }
+  ],
   "elementTypeDefinitions": {
     "process": {
       "subTypes": {
