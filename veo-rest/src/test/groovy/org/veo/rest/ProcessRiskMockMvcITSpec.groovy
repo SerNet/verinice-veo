@@ -144,12 +144,12 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                 (domainId): [
                     riskValues: [
                         myFirstRiskDefinition: [
-                            potentialImpacts: [ "C": "1",
+                            potentialImpacts: [ "C": 1,
                                 "I": 2
                             ]
                         ],
                         myThirdRiskDefinition: [
-                            potentialImpacts: [ "C": "1",
+                            potentialImpacts: [ "C": 1,
                                 "I": 2
                             ]
                         ]

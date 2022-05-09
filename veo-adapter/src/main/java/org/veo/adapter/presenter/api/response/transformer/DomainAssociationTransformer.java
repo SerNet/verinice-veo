@@ -177,28 +177,15 @@ public class DomainAssociationTransformer {
         value.getPotentialImpacts().entrySet().stream()
             .collect(
                 Collectors.toMap(
-                    e -> toCategoryRef(riskDefinitionId, referenceProvider, e),
-                    e -> toImpactRef(riskDefinitionId, referenceProvider, e)));
+                    e -> toCategoryRef(riskDefinitionId, referenceProvider, e), e -> e.getValue()));
     riskValues.setPotentialImpacts(potentialImpacts);
     return riskValues;
-  }
-
-  private ImpactRef toImpactRef(
-      String riskDefinitionId,
-      DomainRiskReferenceProvider referenceProvider,
-      Entry<String, Integer> e) {
-    return referenceProvider
-        .getImpactRef(riskDefinitionId, e.getKey(), new BigDecimal(e.getValue()))
-        .orElseThrow(
-            () ->
-                new IllegalArgumentException(
-                    "Impact: '" + e.getValue() + "' not defined in " + riskDefinitionId));
   }
 
   private CategoryRef toCategoryRef(
       String riskDefinitionId,
       DomainRiskReferenceProvider referenceProvider,
-      Entry<String, Integer> e) {
+      Entry<String, ImpactRef> e) {
     return referenceProvider
         .getCategoryRef(riskDefinitionId, e.getKey())
         .orElseThrow(
@@ -301,11 +288,9 @@ public class DomainAssociationTransformer {
       Map.Entry<RiskDefinitionRef, ProcessImpactValues> entry) {
     var riskValuesDto = new ProcessRiskValuesDto();
     Map<CategoryRef, ImpactRef> potentialImpacts = entry.getValue().getPotentialImpacts();
-    Map<String, Integer> riskValues =
+    Map<String, ImpactRef> riskValues =
         potentialImpacts.entrySet().stream()
-            .collect(
-                Collectors.toMap(
-                    e -> e.getKey().getIdRef(), e -> e.getValue().getIdRef().intValue()));
+            .collect(Collectors.toMap(e -> e.getKey().getIdRef(), e -> e.getValue()));
     riskValuesDto.setPotentialImpacts(riskValues);
     return riskValuesDto;
   }
