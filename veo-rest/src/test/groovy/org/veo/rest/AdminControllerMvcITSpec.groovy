@@ -131,8 +131,8 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
             with(elements.find{it.id == processId}) {
                 name == "updated process"
                 domains.(newDomainId).riskValues.DSRA.potentialImpacts.size() == 2
-                domains.(newDomainId).riskValues.DSRA.potentialImpacts.C == "0"
-                domains.(newDomainId).riskValues.DSRA.potentialImpacts.I == "1"
+                domains.(newDomainId).riskValues.DSRA.potentialImpacts.C == 0
+                domains.(newDomainId).riskValues.DSRA.potentialImpacts.I == 1
             }
 
             // scenario is present with risk values:
@@ -328,8 +328,8 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
                     riskValues: [
                         DSRA: [
                             potentialImpacts: [
-                                "C": "0",
-                                "I": "1"
+                                "C": 0,
+                                "I": 1
                             ]
                         ]
                     ]

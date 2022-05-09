@@ -74,8 +74,8 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                     riskValues: [
                         myFirstRiskDefinition: [
                             potentialImpacts: [
-                                "C": "0",
-                                "I": "1"
+                                "C": 0,
+                                "I": 1
                             ]
                         ],
                     ]
@@ -111,13 +111,13 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                     riskValues: [
                         myFirstRiskDefinition: [
                             potentialImpacts: [
-                                "C": "0",
-                                "I": "1"
+                                "C": 0,
+                                "I": 1
                             ]
                         ],
                         mySecondRiskDefinition: [
                             potentialImpacts: [
-                                "C": "1"
+                                "C": 1
                             ]
                         ]
                     ]
@@ -132,9 +132,9 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
 
         then: "the retrieved risk values are complete"
         retrievedProcess.domains[domainId].riskValues.myFirstRiskDefinition.potentialImpacts.size() == 2
-        retrievedProcess.domains[domainId].riskValues.myFirstRiskDefinition.potentialImpacts.C == "0"
-        retrievedProcess.domains[domainId].riskValues.myFirstRiskDefinition.potentialImpacts.I == "1"
-        retrievedProcess.domains[domainId].riskValues.mySecondRiskDefinition.potentialImpacts.C == "1"
+        retrievedProcess.domains[domainId].riskValues.myFirstRiskDefinition.potentialImpacts.C == 0
+        retrievedProcess.domains[domainId].riskValues.myFirstRiskDefinition.potentialImpacts.I == 1
+        retrievedProcess.domains[domainId].riskValues.mySecondRiskDefinition.potentialImpacts.C == 1
 
         when: "updating the risk values on the process"
         put("/processes/$processId", [
@@ -145,12 +145,12 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                     riskValues: [
                         myFirstRiskDefinition: [
                             potentialImpacts: [ "C": "1",
-                                "I": "2"
+                                "I": 2
                             ]
                         ],
                         myThirdRiskDefinition: [
                             potentialImpacts: [ "C": "1",
-                                "I": "2"
+                                "I": 2
                             ]
                         ]
                     ]
@@ -162,10 +162,10 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         def updatedProcess = parseJson(get("/processes/$processId"))
 
         then: "the changes have been applied"
-        updatedProcess.domains[domainId].riskValues.myFirstRiskDefinition.potentialImpacts.C == "1"
+        updatedProcess.domains[domainId].riskValues.myFirstRiskDefinition.potentialImpacts.C == 1
         updatedProcess.domains[domainId].riskValues.mySecondRiskDefinition == null
-        updatedProcess.domains[domainId].riskValues.myThirdRiskDefinition.potentialImpacts.C == "1"
-        updatedProcess.domains[domainId].riskValues.myThirdRiskDefinition.potentialImpacts.I == "2"
+        updatedProcess.domains[domainId].riskValues.myThirdRiskDefinition.potentialImpacts.C == 1
+        updatedProcess.domains[domainId].riskValues.myThirdRiskDefinition.potentialImpacts.I == 2
     }
 
     def "process must be in a scope with the used risk definition"() {
@@ -189,8 +189,8 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                     riskValues: [
                         mySecondRiskDefinition: [
                             potentialImpacts: [
-                                "C": "1",
-                                "I": "2",
+                                "C": 1,
+                                "I": 2,
                             ]
                         ]
                     ]
@@ -224,8 +224,8 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                     riskValues: [
                         mySecondRiskDefinition: [
                             potentialImpacts: [
-                                "C": "1",
-                                "I": "2",
+                                "C": 1,
+                                "I": 2,
                             ]
                         ]
                     ]
@@ -260,13 +260,13 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                     riskValues: [
                         myFirstWrongDefinition: [
                             potentialImpacts: [
-                                "E": "0",
-                                "GGG": "1"
+                                "E": 0,
+                                "GGG": 1
                             ]
                         ],
                         mySecondRiskDefinition: [
                             potentialImpacts: [
-                                "C": "1"
+                                "C": 1
                             ]
                         ]
                     ]
@@ -301,13 +301,13 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                     riskValues: [
                         myFirstRiskDefinition: [
                             potentialImpacts: [
-                                "E": "0",
-                                "GGG": "1"
+                                "E": 0,
+                                "GGG": 1
                             ]
                         ],
                         mySecondRiskDefinition: [
                             potentialImpacts: [
-                                "C": "1"
+                                "C": 1
                             ]
                         ]
                     ]
@@ -341,7 +341,7 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                     riskValues: [
                         mySecondRiskDefinition: [
                             potentialImpacts: [
-                                "C": "10"
+                                "C": 10
                             ]
                         ]
                     ]

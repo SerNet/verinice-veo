@@ -371,7 +371,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         validateNewElementAgainstCatalogItem(processResult, processImpactExample, domain)
         processResult.owner.displayName == 'Test unit'
-        processResult.domains[domain.id.uuidValue()].riskValues.id.potentialImpacts.C == "2"
+        processResult.domains[domain.id.uuidValue()].riskValues.id.potentialImpacts.C == 2
     }
 
     @WithUserDetails("user@domain.example")

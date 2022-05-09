@@ -186,7 +186,7 @@ public class DomainAssociationTransformer {
   private ImpactRef toImpactRef(
       String riskDefinitionId,
       DomainRiskReferenceProvider referenceProvider,
-      Entry<String, String> e) {
+      Entry<String, Integer> e) {
     return referenceProvider
         .getImpactRef(riskDefinitionId, e.getKey(), new BigDecimal(e.getValue()))
         .orElseThrow(
@@ -198,7 +198,7 @@ public class DomainAssociationTransformer {
   private CategoryRef toCategoryRef(
       String riskDefinitionId,
       DomainRiskReferenceProvider referenceProvider,
-      Entry<String, String> e) {
+      Entry<String, Integer> e) {
     return referenceProvider
         .getCategoryRef(riskDefinitionId, e.getKey())
         .orElseThrow(
@@ -301,11 +301,11 @@ public class DomainAssociationTransformer {
       Map.Entry<RiskDefinitionRef, ProcessImpactValues> entry) {
     var riskValuesDto = new ProcessRiskValuesDto();
     Map<CategoryRef, ImpactRef> potentialImpacts = entry.getValue().getPotentialImpacts();
-    Map<String, String> riskValues =
+    Map<String, Integer> riskValues =
         potentialImpacts.entrySet().stream()
             .collect(
                 Collectors.toMap(
-                    e -> e.getKey().getIdRef(), e -> e.getValue().getIdRef().toString()));
+                    e -> e.getKey().getIdRef(), e -> e.getValue().getIdRef().intValue()));
     riskValuesDto.setPotentialImpacts(riskValues);
     return riskValuesDto;
   }

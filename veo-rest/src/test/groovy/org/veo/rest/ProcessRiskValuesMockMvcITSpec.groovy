@@ -737,7 +737,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
         then: "process contains impact"
         def retrievedProcess = parseJson(get("/processes/$processId"))
-        retrievedProcess.domains.(domainId).riskValues.r1d1.potentialImpacts.A == "2"
+        retrievedProcess.domains.(domainId).riskValues.r1d1.potentialImpacts.A == 2
 
         and: "scenario contains probability"
         def retrievedScenario = parseJson(get("/scenarios/$scenarioId"))
@@ -793,7 +793,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
                     riskValues: [
                         r1d1 : [
                             potentialImpacts: [
-                                "A": "2",
+                                "A": 2,
                             ]
                         ]
                     ]
@@ -842,7 +842,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
         then: "process contains impact"
         def retrievedProcess = parseJson(get("/processes/$processId"))
-        retrievedProcess.domains.(r1d1DomainId).riskValues.r1d1.potentialImpacts.A == "2"
+        retrievedProcess.domains.(r1d1DomainId).riskValues.r1d1.potentialImpacts.A == 2
 
         and: "scenario contains probability"
         def retrievedScenario = parseJson(get("/scenarios/$scenarioId"))
