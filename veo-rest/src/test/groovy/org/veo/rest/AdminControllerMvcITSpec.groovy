@@ -26,7 +26,10 @@ import org.veo.core.repository.DocumentRepository
 import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 
+import groovy.util.logging.Log
+
 @WithUserDetails("admin")
+@Log
 class AdminControllerMvcITSpec extends VeoMvcSpec {
 
     public static final String DSGVO_NAME = "DS-GVO DS-GVO"
@@ -105,9 +108,16 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
         def oldRiskValues = risk.domains.(domainId).riskDefinitions.DSRA.riskValues
         def oldImpactValues = risk.domains.(domainId).riskDefinitions.DSRA.impactValues
         def oldProbability = risk.domains.(domainId).riskDefinitions.DSRA.probability
+        def result = parseJson(get("/domains"))
+        def unitCount = result.size()
 
         and: 'updating all clients'
         post("/admin/domaintemplates/${DSGVO_DOMAINTEMPLATE_V2_UUID}/allclientsupdate", [:], 204)
+
+        while ((parseJson(get("/domains")).size() == unitCount)) {
+            log.info("Wait for domains: " + unitCount)
+            sleep(100)
+        }
 
         then: 'the elements and risks are transferred to the new domain'
         with(parseJson(get("/admin/unit-dump/$unitId"))) {
