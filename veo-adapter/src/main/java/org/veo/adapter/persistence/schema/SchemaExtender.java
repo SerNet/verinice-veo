@@ -61,7 +61,6 @@ public class SchemaExtender {
   public void extendSchema(
       SchemaGenerator generator, JsonNode schema, String elementType, Set<Domain> domains) {
     var domainsRoot = (ObjectNode) schema.get(PROPS).get("domains");
-    domainsRoot.put(ADDITIONAL_PROPERTIES, false);
     var domainProps = domainsRoot.putObject(PROPS);
 
     var linksRoot = (ObjectNode) schema.findValue("links");

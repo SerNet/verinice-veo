@@ -18,6 +18,7 @@
 package org.veo.adapter.persistence.schema
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.node.ObjectNode
 import com.networknt.schema.JsonMetaSchema
 import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
@@ -55,6 +56,17 @@ class EntitySchemaServiceITSpec extends Specification {
         def schema = getSchema(Set.of(getTestDomain()), "asset")
         expect:
         schema201909.validate(schema).empty
+    }
+
+    def "schema for a single domain allows other domains"() {
+        given:
+        def schema = getSchema(Set.of(testDomain), "asset")
+        expect:
+        with(schema.get(PROPS).get("domains")) {
+            get(PROPS).size() == 1
+            // additional properties are allowed by default
+            additionalProperties == null
+        }
     }
 
     def "designator is marked read-only in entity schema #schema.title"() {

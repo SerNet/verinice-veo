@@ -336,6 +336,25 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         thrown(ClientBoundaryViolationException)
     }
 
+    @WithUserDetails("user@domain.example")
+    def "cannot use a another client's domain"() {
+        given: "a domain for another client"
+        def otherClient = clientRepository.save(newClient {})
+        def otherClientsDomainId = domainDataRepository.save(newDomain(otherClient)).idAsString
+
+        when: "trying to assign a new document to the other client's domain"
+        post("/documents/", [
+            name: "bad document",
+            owner: [targetUri: "http://localhost/units/$unit.idAsString"],
+            domains: [
+                (otherClientsDomainId): [:]
+            ]
+        ], 400)
+
+        then:
+        thrown(ClientBoundaryViolationException)
+    }
+
     def postEntityInAnotherUnit(String url) {
         post(url, [
             name: 'entity-in-another client',
