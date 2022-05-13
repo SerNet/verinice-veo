@@ -266,8 +266,11 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             riskValues.find { it.category == "C" }.size() == 2
 
             // risk values are calculated in first risk definition:
-            riskValues.find{it.category == "A"}.size() == 3
-            riskValues.find{it.category == "A"}.inherentRisk == 3
+            with(riskValues.find{it.category == "A"}) {
+                size() == 4
+                inherentRisk == 3
+                effectiveRisk == 3
+            }
         }
 
         and: "Second risk, second risk definition: all values are correct"
@@ -279,8 +282,11 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             }
 
             // all manually set risk values are present in second risk definition:
-            riskValues.find { it.category == "A" }.size() == 3
-            riskValues.find { it.category == "A" }.residualRisk == 3
+            with(riskValues.find { it.category == "A" }) {
+                size() == 4
+                residualRisk == 3
+                effectiveRisk == 3
+            }
         }
     }
 
@@ -404,7 +410,10 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         process1Risks.find{it.designator=="RSK-1"}.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=="A"}.effectiveImpact != null
 
         def process2Risks = result.items.find { it.id == process2.idAsString }.risks
-        process2Risks.find{it.designator=="RSK-4"}.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=="A"}.inherentRisk != null
+        with(process2Risks.find{it.designator=="RSK-4"}.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=="A"}) {
+            inherentRisk != null
+            effectiveRisk != null
+        }
     }
 
 
@@ -462,7 +471,10 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         process1Risks.find{it.designator=="RSK-1"}.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=="A"}.effectiveImpact != null
 
         def process2Risks = result.items.find { it.id == process2.idAsString }.risks
-        process2Risks.find{it.designator=="RSK-4"}.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=="A"}.inherentRisk != null
+        with(process2Risks.find{it.designator=="RSK-4"}.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=="A"}) {
+            inherentRisk != null
+            effectiveRisk != null
+        }
     }
 
     def "cannot create risk with risk values for illegal risk definition"() {
@@ -652,7 +664,11 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
         and: "the risk was calculated"
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.size == 4
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}.inherentRisk == 0
+        with(
+                retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}) {
+                    inherentRisk == 0
+                    effectiveRisk == 0
+                }
     }
 
     def "Creating a risk with potential values calculates risk value"() {
@@ -757,7 +773,11 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
         and: "the risk was calculated"
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.size == 4
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}.inherentRisk == 0
+        with(
+                retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}) {
+                    inherentRisk == 0
+                    effectiveRisk == 0
+                }
     }
 
     def "Creating a risk with potential values calculates risk value (with only one risk definition in the domain)"() {
@@ -862,7 +882,10 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
         and: "the risk was calculated"
         retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.riskValues.size == 4
-        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}.inherentRisk == 0
+        with(retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}) {
+            inherentRisk == 0
+            effectiveRisk == 0
+        }
     }
 
 

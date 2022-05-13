@@ -17,12 +17,14 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
-import java.beans.Transient;
 import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import org.veo.core.entity.Constraints;
 
@@ -66,7 +68,7 @@ public interface DeterminedRisk {
    *
    * @return effective risk or null (if there is no residual risk and no inherent risk)
    */
-  @Transient
+  @JsonProperty(access = Access.READ_ONLY)
   default RiskRef getEffectiveRisk() {
     return Optional.ofNullable(getResidualRisk()).orElse(getInherentRisk());
   }
