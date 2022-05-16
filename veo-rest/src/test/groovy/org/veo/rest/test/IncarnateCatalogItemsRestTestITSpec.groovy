@@ -236,6 +236,65 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         newElements.size() == catalog.catalogItems.size()
     }
 
+    def "Create a unit and one tom, then add the tom again and again"() {
+        when: "We create one element"
+        def domainDto = getDomains().find { it.name == "DS-GVO" }
+        def catalogId = uriToId(domainDto.catalogs[0].targetUri)
+        def catalogDsgvo = getCatalog(catalogId)
+
+        def tomi = uriToId(catalogDsgvo.catalogItems.find { it.displayName.contains("TOM-I") }.targetUri)
+        def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${tomi}").body
+        incarnate(incarnationDescription)
+
+        and: "We add the same control from the catalog"
+
+        def idTom = get("/units/${unitId}/incarnations?itemIds=${tomi}").body
+        def toms = incarnate(idTom)
+        def tom1 = get(toms[0].targetUri).body
+
+        then: "we check some basic data"
+        toms.size() == 1
+        tom1.abbreviation == "TOM-I"
+
+        when: "We add the same element again"
+        idTom = get("/units/${unitId}/incarnations?itemIds=${tomi}").body
+        toms = incarnate(idTom)
+        tom1 = get(toms[0].targetUri).body
+
+        then: "we check some basic data"
+        toms.size() == 1
+        tom1.abbreviation == "TOM-I"
+    }
+
+    def "Create a unit and the whole dsgvo catalog in one step add controls after"() {
+        when: "We create all elements"
+        def domainDto = getDomains().find { it.name == "DS-GVO" }
+        def catalogId = uriToId(domainDto.catalogs[0].targetUri)
+        def catalogDsgvo = getCatalog(catalogId)
+
+        def catalogItemsIds = catalogDsgvo.catalogItems.collect{uriToId(it.targetUri)}.join(',')
+        def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${catalogItemsIds}").body
+        def newElements = incarnate(incarnationDescription)
+
+        then: "all items of the catalog are created"
+        newElements.size() == catalogDsgvo.catalogItems.size()
+
+        when: "We add other controls from the catalog"
+        def tomi = uriToId(catalogDsgvo.catalogItems.find { it.displayName.contains("TOM-I") }.targetUri)
+        def tome = uriToId(catalogDsgvo.catalogItems.find { it.displayName.contains("TOM-P") }.targetUri)
+
+        def idTom = get("/units/${unitId}/incarnations?itemIds=${tomi},${tome}").body
+        def toms = incarnate(idTom)
+
+        def tom1 = get(toms[0].targetUri).body
+        def tom2 = get(toms[1].targetUri).body
+
+        then: "we check some basic data"
+        toms.size() == 2
+        tom1.abbreviation  == "TOM-I"
+        tom2.abbreviation  == "TOM-P"
+    }
+
     private itemIdByDisplayName(displayName) {
         def itemRef = catalog.catalogItems.find{it.displayName == displayName}
         uriToId(itemRef.targetUri)

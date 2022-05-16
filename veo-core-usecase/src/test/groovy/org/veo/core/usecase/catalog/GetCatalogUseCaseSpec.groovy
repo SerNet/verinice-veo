@@ -38,6 +38,7 @@ class GetCatalogUseCaseSpec extends UseCaseSpec {
     GetCatalogUseCase usecase = new GetCatalogUseCase(repository)
 
     def setup() {
+        domaintemplate.modelInterface >> DomainTemplate.class
         existingDomain.getId() >> existingDomainId
         existingDomain.owner >> existingClient
 

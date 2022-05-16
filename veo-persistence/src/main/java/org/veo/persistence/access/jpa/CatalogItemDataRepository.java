@@ -30,6 +30,7 @@ public interface CatalogItemDataRepository
         "element.links",
         "element.customAspects",
         "element.subTypeAspects",
+        "catalog",
         "tailoringReferences"
       })
   Iterable<CatalogItemData> findAllWithElementDataByDbIdIn(Iterable<String> ids);

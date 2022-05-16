@@ -48,6 +48,7 @@ abstract class UseCaseSpec extends Specification {
 
     def setup() {
         existingDomain = Mock()
+        existingDomain.modelInterface >> Domain.class
 
         def id1 = Key.newUuid()
         Client client = Mock()

@@ -54,7 +54,7 @@ public final class UseCaseTools {
    * @throws ModelConsistencyException when the domain is not owned by the client.
    */
   public static void checkDomainBelongsToClient(Client client, DomainTemplate domaintemplate) {
-    if (!Domain.class.isAssignableFrom(domaintemplate.getClass())) {
+    if (!Domain.class.isAssignableFrom(domaintemplate.getModelInterface())) {
       throw new IllegalArgumentException("A DomainTemplate never belongs to a client");
     }
     if (!client.getDomains().contains(domaintemplate)) {

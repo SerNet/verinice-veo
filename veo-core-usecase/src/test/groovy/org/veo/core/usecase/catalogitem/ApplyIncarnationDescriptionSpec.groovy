@@ -70,5 +70,7 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
         item1.id >> id
         item1.catalog >> catalog
         item1.element >> control
+
+        catalog.domainTemplate >> existingDomain
     }
 }
