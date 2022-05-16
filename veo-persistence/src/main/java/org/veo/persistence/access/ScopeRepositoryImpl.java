@@ -44,7 +44,7 @@ public class ScopeRepositoryImpl extends AbstractScopeRiskAffectedRepository
   }
 
   @Override
-  public Boolean canUseRiskDefinition(
+  public boolean canUseRiskDefinition(
       Set<? extends Element> members, RiskDefinitionRef riskDefinitionRef, Domain domain) {
     var memberIds = members.stream().map(Identifiable::getIdAsString).collect(Collectors.toSet());
     return scopeDataRepository.canUseRiskDefinition(

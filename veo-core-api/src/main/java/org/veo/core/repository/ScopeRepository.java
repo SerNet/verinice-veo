@@ -36,6 +36,6 @@ public interface ScopeRepository extends RiskAffectedRepository<Scope, ScopeRisk
    * Select if any of the given elements is a direct member of a scope with given risk definition
    * and domain.
    */
-  Boolean canUseRiskDefinition(
+  boolean canUseRiskDefinition(
       Set<? extends Element> members, RiskDefinitionRef riskDefinitionRef, Domain domain);
 }

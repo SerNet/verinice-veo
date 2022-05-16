@@ -57,6 +57,6 @@ public interface ScopeDataRepository extends ScopeRiskAffectedDataRepository {
           + "inner join s.riskValuesAspects r "
           + "inner join s.members m "
           + "where m.dbId in ?1 and r.riskDefinitionRef = ?2 and r.domain.dbId = ?3")
-  Boolean canUseRiskDefinition(
+  boolean canUseRiskDefinition(
       Set<String> elementIds, RiskDefinitionRef riskDefinitionRef, String domainId);
 }
