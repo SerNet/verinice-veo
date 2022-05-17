@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -250,6 +251,7 @@ public abstract class ElementData extends IdentifiableVersionedData
    */
   @Override
   public boolean removeFromLinks(CustomLink aCustomLink) {
+    forceUpdate();
     aCustomLink.setSource(null);
     return this.links.remove(aCustomLink);
   }
@@ -287,5 +289,13 @@ public abstract class ElementData extends IdentifiableVersionedData
 
   private void removeAspect(Set<? extends Aspect> aspects, DomainTemplate domain) {
     aspects.removeIf(a -> a.getDomain().equals(domain));
+  }
+
+  /**
+   * Convince JPA that this entity has been changed. This may be necessary when making changes to a
+   * collection.
+   */
+  private void forceUpdate() {
+    this.setUpdatedAt(Instant.now());
   }
 }

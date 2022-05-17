@@ -38,7 +38,6 @@ import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ElementDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.ElementData;
-import org.veo.persistence.entity.jpa.IdentifiableVersionedData;
 import org.veo.persistence.entity.jpa.ScopeData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
@@ -77,14 +76,9 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
   @Transactional
   public void deleteByUnit(Unit owner) {
     var elements = dataRepository.findByUnits(singleton(owner.getId().uuidValue()));
-    var entityIDs =
-        elements.stream().map(IdentifiableVersionedData::getDbId).collect(Collectors.toSet());
-    var links = linkDataRepository.findLinksByTargetIds(entityIDs);
+    deleteLinksByTargets(elements.stream().map(ElementData::getDbId).collect(Collectors.toSet()));
 
-    // using deleteAll() to utilize batching and optimistic locking:
     elements.forEach(e -> e.getLinks().clear());
-    links.forEach(CustomLink::remove);
-    linkDataRepository.deleteAll(links);
 
     elements.forEach(Element::remove);
 
@@ -94,14 +88,19 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
   @Override
   @Transactional
   public void deleteById(Key<UUID> id) {
-    // remove links to element:
-    var links = linkDataRepository.findLinksByTargetIds(singleton(id.uuidValue()));
-    linkDataRepository.deleteAll(links);
+    deleteLinksByTargets(Set.of(id.uuidValue()));
 
     // remove element from scope members:
     Set<Scope> scopes = scopeDataRepository.findDistinctByMemberIds(singleton(id.uuidValue()));
     scopes.stream().map(ScopeData.class::cast).forEach(scopeData -> scopeData.removeMemberById(id));
 
     dataRepository.deleteById(id.uuidValue());
+  }
+
+  private void deleteLinksByTargets(Set<String> targetElementIds) {
+    // using deleteAll() to utilize batching and optimistic locking:
+    var links = linkDataRepository.findLinksByTargetIds(targetElementIds);
+    linkDataRepository.deleteAll(links);
+    links.forEach(CustomLink::remove);
   }
 }

@@ -26,7 +26,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.veo.persistence.entity.jpa.CustomLinkData;
 
 public interface CustomLinkDataRepository extends JpaRepository<CustomLinkData, String> {
-  @Query("SELECT l FROM customlink l where l.target.dbId  IN ?1")
+  @Query(
+      "SELECT l FROM customlink l "
+          + "join fetch l.source as s "
+          + "join fetch s.links "
+          + "where l.target.dbId  IN ?1")
   @Transactional(readOnly = true)
   Set<CustomLinkData> findLinksByTargetIds(Set<String> targetIDs);
 }
