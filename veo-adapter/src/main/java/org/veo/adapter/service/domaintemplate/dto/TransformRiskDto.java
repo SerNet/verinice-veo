@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler.
+ * Copyright (C) 2022  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,18 +17,27 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate.dto;
 
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
-import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
+import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
+import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
+import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
+import org.veo.core.entity.Element;
 
 import lombok.Data;
 
-/** Represents a unit dump */
+/**
+ * This DTO represent the contained {@link Element} defined by a FullXXXDto. It uses the 'type'
+ * property in the json to determine the actual type.
+ */
 @Data
-public class TransformUnitDumpDto {
-
-  private Set<AbstractElementDto> elements;
-
-  private Set<AbstractRiskDto> risks;
-}
+@JsonTypeInfo(use = Id.DEDUCTION)
+@JsonSubTypes({
+  @JsonSubTypes.Type(value = ProcessRiskDto.class, name = "processrisk"),
+  @JsonSubTypes.Type(value = ScopeRiskDto.class, name = "scoperisk"),
+  @JsonSubTypes.Type(value = AssetRiskDto.class, name = "assetrisk")
+})
+public class TransformRiskDto extends AbstractRiskDto {}

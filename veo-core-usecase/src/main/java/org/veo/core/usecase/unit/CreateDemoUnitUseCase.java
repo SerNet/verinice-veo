@@ -26,24 +26,29 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.service.DomainTemplateService;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
@@ -63,18 +68,21 @@ public class CreateDemoUnitUseCase
   private final EntityFactory entityFactory;
   private final DomainTemplateService domainTemplateService;
   private final RepositoryProvider repositoryProvider;
+  private final EventPublisher eventPublisher;
 
   public CreateDemoUnitUseCase(
       ClientRepository clientRepository,
       UnitRepository unitRepository,
       EntityFactory entityFactory,
       DomainTemplateService domainTemplateService,
-      RepositoryProvider repositoryProvider) {
+      RepositoryProvider repositoryProvider,
+      EventPublisher eventPublisher) {
     this.clientRepository = clientRepository;
     this.unitRepository = unitRepository;
     this.entityFactory = entityFactory;
     this.domainTemplateService = domainTemplateService;
     this.repositoryProvider = repositoryProvider;
+    this.eventPublisher = eventPublisher;
   }
 
   @Override
@@ -99,6 +107,8 @@ public class CreateDemoUnitUseCase
     unitRepository.save(demoUnit);
     Map<Class<Element>, List<Element>> elementsGroupedByType = groupByType(demoUnitElements);
     Map<Element, Set<CustomLink>> links = new HashMap<>();
+
+    Map<RiskAffected, Set<AbstractRisk>> risks = new HashMap<>();
     // save links after the elements
     demoUnitElements.stream()
         .filter(e -> !e.getLinks().isEmpty())
@@ -106,6 +116,16 @@ public class CreateDemoUnitUseCase
             e -> {
               links.put(e, Set.copyOf(e.getLinks()));
               e.getLinks().clear();
+            });
+    // save risks after the elements
+    demoUnitElements.stream()
+        .filter(e -> e instanceof RiskAffected)
+        .map(RiskAffected.class::cast)
+        .filter(e -> !e.getRisks().isEmpty())
+        .forEach(
+            e -> {
+              risks.put(e, Set.copyOf(e.getRisks()));
+              e.getRisks().clear();
             });
 
     AtomicInteger counter = new AtomicInteger(0);
@@ -123,9 +143,22 @@ public class CreateDemoUnitUseCase
                         e.getKey().addToLinks(l);
                       });
             });
-    groupByType(links.keySet()).entrySet().stream()
-        .forEach(e -> saveElements(e.getKey(), e.getValue()));
+    risks.entrySet().stream()
+        .forEach(
+            e ->
+                e.getValue().stream()
+                    .forEach(
+                        r -> {
+                          r.setDesignator(DEMO_UNIT_DESIGNATOR_PREFIX + counter.incrementAndGet());
+                          e.getKey().addRisk(r);
+                        }));
+    Set<Element> elementsToSave =
+        Stream.concat(links.keySet().stream(), risks.keySet().stream()).collect(Collectors.toSet());
 
+    groupByType(elementsToSave).entrySet().stream()
+        .forEach(e -> saveElements(e.getKey(), e.getValue()));
+    elementsToSave.forEach(
+        it -> eventPublisher.publish(new RiskAffectingElementChangeEvent(it, this)));
     return demoUnit;
   }
 

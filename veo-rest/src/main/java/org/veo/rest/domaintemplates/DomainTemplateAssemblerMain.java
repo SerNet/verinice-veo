@@ -26,7 +26,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -37,12 +36,14 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
+import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl;
 import org.veo.adapter.service.domaintemplate.LocalReferenceAssembler;
 import org.veo.adapter.service.domaintemplate.ReferenceDeserializer;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformElementDto;
+import org.veo.adapter.service.domaintemplate.dto.TransformRiskDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformUnitDumpDto;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.persistence.entity.jpa.ReferenceSerializationModule;
@@ -65,6 +66,7 @@ public class DomainTemplateAssemblerMain {
   private static final ObjectMapper OBJECT_MAPPER =
       new ObjectMapper()
           .addMixIn(AbstractElementDto.class, TransformElementDto.class)
+          .addMixIn(AbstractRiskDto.class, TransformRiskDto.class)
           .registerModule(new SimpleModule().addDeserializer(IdRef.class, DESERIALIZER))
           .registerModule(new ReferenceSerializationModule())
           .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -101,9 +103,12 @@ public class DomainTemplateAssemblerMain {
 
       assembler.setRiskDefinitions(readRiskDefinitions(snippetPath.resolve("riskdefinitions")));
       TransformDomainTemplateDto templateDto = assembler.createDomainTemplateDto();
-      templateDto.setDemoUnitElements(
-          assembler.processDemoUnit(
-              readDemoUnitElements(new File(System.getenv("domaintemplate.unit-dump-file")))));
+      TransformUnitDumpDto exportDto =
+          readInstanceFile(
+              new File(System.getenv("domaintemplate.unit-dump-file")), TransformUnitDumpDto.class);
+
+      templateDto.setDemoUnitElements(assembler.processDemoUnit(exportDto.getElements()));
+      templateDto.setDemoUnitRisks(exportDto.getRisks());
       OBJECT_MAPPER
           .writerFor(TransformDomainTemplateDto.class)
           .writeValue(new File(System.getenv("domaintemplate.out.file")), templateDto);
@@ -124,11 +129,6 @@ public class DomainTemplateAssemblerMain {
       }
     }
     return m;
-  }
-
-  private static Set<AbstractElementDto> readDemoUnitElements(File demoUnit) {
-    TransformUnitDumpDto exportDto = readInstanceFile(demoUnit, TransformUnitDumpDto.class);
-    return exportDto.getElements();
   }
 
   @SuppressFBWarnings("PATH_TRAVERSAL_IN")

@@ -20,10 +20,13 @@ package org.veo.core.usecase
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Process
+import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.Unit
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent
 import org.veo.core.repository.AssetRepository
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.service.DomainTemplateService
+import org.veo.core.service.EventPublisher
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase.InputData
 
@@ -32,8 +35,10 @@ public class CreateDemoUnitUseCaseSpec extends UseCaseSpec {
     DomainTemplateService domainTemplateService = Mock()
     AssetRepository assetRepository = Mock()
     ProcessRepository processRepository = Mock()
+    EventPublisher eventPublisher = Mock()
 
-    CreateDemoUnitUseCase usecase = new CreateDemoUnitUseCase(clientRepository, unitRepository, entityFactory, domainTemplateService,repositoryProvider)
+
+    CreateDemoUnitUseCase usecase = new CreateDemoUnitUseCase(clientRepository, unitRepository, entityFactory, domainTemplateService,repositoryProvider, eventPublisher)
 
     def "Create a new demo unit for an existing client" () {
         given: "starting values for a unit"
@@ -46,18 +51,27 @@ public class CreateDemoUnitUseCaseSpec extends UseCaseSpec {
             getParts() >> []
             getLinks() >> []
             getDomains()  >> [domain]
+            getRisks() >> []
+            getOwningClient() >> Optional.of(existingClient)
         }
         Asset asset2 = Mock() {
             getModelInterface() >> Asset
             getParts() >> []
             getLinks() >> []
             getDomains()  >> [domain]
+            getRisks() >> []
+            getOwningClient() >> Optional.of(existingClient)
         }
+        ProcessRisk risk = Mock {
+        }
+
         Process process = Mock {
             getModelInterface() >> Process
             getParts() >> []
             getLinks() >> []
             getDomains()  >> [domain]
+            getRisks() >> [risk]
+            getOwningClient() >> Optional.of(existingClient)
         }
 
         and: "a parent unit in an existing client"
@@ -93,9 +107,10 @@ public class CreateDemoUnitUseCaseSpec extends UseCaseSpec {
         and: "everything is saved in the database"
         1 * unitRepository.save(_) >> demoUnit
         1 * repositoryProvider.getElementRepositoryFor(Asset) >> assetRepository
-        1 * repositoryProvider.getElementRepositoryFor(Process) >> processRepository
+        2 * repositoryProvider.getElementRepositoryFor(Process) >> processRepository
         1 * assetRepository.saveAll([asset1, asset2] as Set)
-        1 * processRepository.saveAll([process] as Set)
+        2 * processRepository.saveAll([process] as Set)
+        1 * eventPublisher.publish(_ as RiskAffectingElementChangeEvent)
 
         and: "a new unit was created and stored"
         newUnit != null

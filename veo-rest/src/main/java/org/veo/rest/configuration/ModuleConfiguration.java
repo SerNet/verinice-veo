@@ -471,13 +471,15 @@ public class ModuleConfiguration {
       ClientRepositoryImpl clientRepository,
       UnitRepositoryImpl unitRepository,
       DomainTemplateService domainTemplateService,
-      RepositoryProvider repositoryProvider) {
+      RepositoryProvider repositoryProvider,
+      EventPublisher eventPublisher) {
     return new CreateDemoUnitUseCase(
         clientRepository,
         unitRepository,
         getEntityFactory(),
         domainTemplateService,
-        repositoryProvider);
+        repositoryProvider,
+        eventPublisher);
   }
 
   @Bean

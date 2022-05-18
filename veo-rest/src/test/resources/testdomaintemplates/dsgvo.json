@@ -3545,6 +3545,92 @@
       "id": "7453d163-fc86-4e3d-9f96-07658e9df2e5"
     }
   ],
+  "demoUnitRisks": [
+    {
+      "designator": "RSK-28",
+      "scenario": {
+        "targetUri": "/scenarios/7453d163-fc86-4e3d-9f96-07658e9df2e5"
+      },
+      "process": {
+        "targetUri": "/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
+      },
+      "mitigation": {
+        "targetUri": "/controls/6843842a-fe71-4012-86c4-e598e27e11f7"
+      },
+      "domains": {
+        "e96dd67f-090e-52be-8b76-f66b75624b45": {
+          "reference": {
+            "targetUri": "/domains/e96dd67f-090e-52be-8b76-f66b75624b45"
+          },
+          "riskDefinitions": {
+            "DSRA": {
+              "probability": {
+                "potentialProbability": 1,
+                "specificProbability": 2,
+                "effectiveProbability": 2
+              },
+              "impactValues": [
+                {
+                  "category": "I",
+                  "potentialImpact": 1,
+                  "specificImpact": 0,
+                  "effectiveImpact": 0
+                },
+                {
+                  "category": "A",
+                  "potentialImpact": 2,
+                  "specificImpact": 1,
+                  "effectiveImpact": 1
+                },
+                {
+                  "category": "R",
+                  "potentialImpact": 0,
+                  "specificImpact": 1,
+                  "effectiveImpact": 1
+                },
+                {
+                  "category": "C",
+                  "potentialImpact": 2,
+                  "specificImpact": 2,
+                  "effectiveImpact": 2
+                }
+              ],
+              "riskValues": [
+                {
+                  "category": "I",
+                  "inherentRisk": 0,
+                  "residualRisk": 0,
+                  "riskTreatments": [],
+                  "effectiveRisk": 0
+                },
+                {
+                  "category": "A",
+                  "inherentRisk": 1,
+                  "residualRisk": 1,
+                  "riskTreatments": [],
+                  "effectiveRisk": 1
+                },
+                {
+                  "category": "R",
+                  "inherentRisk": 1,
+                  "residualRisk": 0,
+                  "riskTreatments": [],
+                  "effectiveRisk": 0
+                },
+                {
+                  "category": "C",
+                  "inherentRisk": 2,
+                  "residualRisk": 2,
+                  "riskTreatments": [],
+                  "effectiveRisk": 2
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
   "elementTypeDefinitions": {
     "process": {
       "subTypes": {

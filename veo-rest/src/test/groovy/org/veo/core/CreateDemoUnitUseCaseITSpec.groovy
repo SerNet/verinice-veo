@@ -71,67 +71,6 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
             it.domains*.name == ['DS-GVO']
         }
         unitRepository.findByClient(client).size() == 1
-        when: 'loading the processes'
-        def processes = txTemplate.execute{
-            processDataRepository.findByUnits([unit.idAsString] as Set).each {
-                //initialize lazy associations
-                it.riskValuesAspects.each {
-                    it.values.each { k,v->
-                        v.potentialImpacts.values()
-                    }
-                }
-            }
-        }
-        then: 'the processes are returned'
-        processes.size() == 1
-
-        with(processes.first()) {
-            riskValuesAspects.size() == 1
-            with(riskValuesAspects.first()) {
-                domain.name == 'DS-GVO'
-                values.size() == 1
-                with(values.entrySet().first()) {
-                    key.idRef == 'DSRA'
-                    with(value.potentialImpacts) {
-                        size() == 4
-                        entrySet().find{
-                            it.key.idRef == 'A'
-                        }.value.idRef == 2
-                    }
-                }
-            }
-        }
-        when: 'loading the scopes'
-        def scopes = txTemplate.execute{
-            scopeDataRepository.findByUnits([unit.idAsString] as Set).tap{
-                //initialize lazy associations
-                it*.links*.target*.name
-                it*.riskValuesAspects*.each {
-                    it.riskDefinitionRef
-                }
-            }
-        }
-        then: 'the scope is returned'
-        scopes.size() == 1
-        with(scopes.first()) {
-            it.name == "Data GmbH"
-            it.designator.startsWith('DMO-')
-            it.members.size() == 1
-            it.members.find{
-                it.name == 'Durchführung Befragungen'
-            }
-            it.links.size() == 2
-            with(it.links.find{
-                it.type == 'scope_informationSecurityOfficer'
-            }) {
-                target.name == 'Jürgen Toast'
-            }
-            riskValuesAspects.size() == 1
-            with(riskValuesAspects.first()) {
-                domain.name == 'DS-GVO'
-                riskDefinitionRef.idRef == 'DSRA'
-            }
-        }
         when: 'loading the controls'
         def controls = txTemplate.execute{
             controlDataRepository.findByUnits([unit.idAsString] as Set).each {
@@ -180,6 +119,112 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                 }
             }
         }
+        when: 'loading the processes'
+        def processes = txTemplate.execute{
+            processDataRepository.findByUnits([unit.idAsString] as Set).each {
+                //initialize lazy associations
+                it.riskValuesAspects.each {
+                    it.values.each { k,v->
+                        v.potentialImpacts.values()
+                    }
+                }
+                it.risks.each {
+                    it.riskDefinitions.size()
+                    it.mitigation?.id
+                    it.scenario?.id
+                    it.riskOwner?.id
+                }
+            }
+        }
+        then: 'the processes are returned'
+        processes.size() == 1
+
+        with(processes.first()) {
+            riskValuesAspects.size() == 1
+            with(riskValuesAspects.first()) {
+                domain.name == 'DS-GVO'
+                values.size() == 1
+                with(values.entrySet().first()) {
+                    key.idRef == 'DSRA'
+                    with(value.potentialImpacts) {
+                        size() == 4
+                        entrySet().find{
+                            it.key.idRef == 'A'
+                        }.value.idRef == 2
+                    }
+                }
+            }
+            risks.size() == 1
+            with(risks.first()) { risk->
+                scenario == scenarios.first()
+                mitigation == controls.first()
+                riskDefinitions.size()== 1
+                with(riskDefinitions.first()) {
+                    idRef == 'DSRA'
+                    with(risk.getProbabilityProvider(it).probability) {
+                        verifyAll {
+                            potentialProbability.idRef == 1
+                            specificProbability.idRef == 2
+                            effectiveProbability.idRef == 2
+                        }
+                    }
+                    with(risk.getImpactProvider(it)) {
+                        availableCategories.size() == 4
+                        def integrity = availableCategories.find{
+                            it.idRef == 'I'
+                        }
+
+                        verifyAll {
+                            getPotentialImpact(integrity).idRef == 1
+                            getSpecificImpact(integrity).idRef == 0
+                            getEffectiveImpact(integrity).idRef == 0
+                        }
+                    }
+                    with(risk.getRiskProvider(it)) {
+                        availableCategories.size() == 4
+                        def confidentiality = availableCategories.find{
+                            it.idRef == 'C'
+                        }
+                        verifyAll {
+                            getInherentRisk(confidentiality).idRef == 2
+                            getResidualRisk(confidentiality).idRef == 2
+                        }
+                    }
+                }
+            }
+        }
+        when: 'loading the scopes'
+        def scopes = txTemplate.execute{
+            scopeDataRepository.findByUnits([unit.idAsString] as Set).tap{
+                //initialize lazy associations
+                it*.links*.target*.name
+                it*.riskValuesAspects*.each {
+                    it.riskDefinitionRef
+                }
+            }
+        }
+        then: 'the scope is returned'
+        scopes.size() == 1
+        with(scopes.first()) {
+            it.name == "Data GmbH"
+            it.designator.startsWith('DMO-')
+            it.members.size() == 1
+            it.members.find{
+                it.name == 'Durchführung Befragungen'
+            }
+            it.links.size() == 2
+            with(it.links.find{
+                it.type == 'scope_informationSecurityOfficer'
+            }) {
+                target.name == 'Jürgen Toast'
+            }
+            riskValuesAspects.size() == 1
+            with(riskValuesAspects.first()) {
+                domain.name == 'DS-GVO'
+                riskDefinitionRef.idRef == 'DSRA'
+            }
+        }
+
 
         when: 'loading the demo unit elements and converting them to JSON'
         def demoElementsForUnitAsDtos = executeInTransaction{

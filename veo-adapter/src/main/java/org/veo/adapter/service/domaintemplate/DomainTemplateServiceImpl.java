@@ -41,9 +41,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
+import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
+import org.veo.adapter.presenter.api.dto.RiskDomainAssociationDto;
+import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
+import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
@@ -57,14 +61,22 @@ import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
+import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Person;
+import org.veo.core.entity.Process;
+import org.veo.core.entity.ProcessRisk;
+import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.risk.ProbabilityValueProvider;
+import org.veo.core.entity.risk.RiskValues;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.repository.DomainTemplateRepository;
@@ -192,6 +204,8 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                             .collect(
                                 Collectors.toMap(IdentifiableDto::getId, Function.identity())));
 
+                transformRisks(client, ref.cache, domain, domainTemplateDto, elementCache.values());
+
                 elementCache
                     .entrySet()
                     .forEach(
@@ -207,6 +221,90 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
               }
             });
     return elements;
+  }
+
+  private void transformRisks(
+      Client client,
+      Map<String, Identifiable> cache,
+      Domain domain,
+      TransformDomainTemplateDto domainTemplateDto,
+      Collection<Element> elements) {
+
+    Map<String, List<AbstractRiskDto>> risksByAffectedElementDbId =
+        domainTemplateDto.getDemoUnitRisks().stream()
+            .collect(
+                Collectors.groupingBy(
+                    r -> {
+                      if (r instanceof ProcessRiskDto) {
+                        return ((ProcessRiskDto) r).getProcess().getId();
+                      } else {
+                        throw new IllegalArgumentException();
+                      }
+                    }));
+    Unit dummyOwner = factory.createUnit(UUID.randomUUID().toString(), null);
+    dummyOwner.setClient(client);
+    elements.forEach(
+        e -> {
+          log.debug("Process element {}", e);
+
+          if (e instanceof Process) {
+            Process p = (Process) e;
+            List<AbstractRiskDto> risks = risksByAffectedElementDbId.remove(p.getIdAsString());
+            if (risks != null) {
+              for (AbstractRiskDto riskDto : risks) {
+                log.info("Transforming risk {}", riskDto);
+                Scenario scenario = (Scenario) cache.get(riskDto.getScenario().getId());
+                RiskDomainAssociationDto riskDomainData =
+                    riskDto.getDomains().get(domainTemplateDto.getId());
+                if (riskDomainData != null) {
+                  p.setOwner(dummyOwner);
+                  scenario.setOwner(dummyOwner);
+                  ProcessRisk risk = p.obtainRisk(scenario, domain);
+                  Set<RiskValues> riskValues = CategorizedRiskValueMapper.map(riskDto.getDomains());
+                  log.info("transformed risk values: {}", riskValues);
+
+                  riskValues.forEach(
+                      it -> {
+                        if (it.getDomainId().uuidValue().equals(domainTemplateDto.getId())) {
+                          it.setDomainId(domain.getId());
+                        }
+                      });
+
+                  risk.defineRiskValues(riskValues);
+                  Optional.ofNullable(riskDto.getMitigation())
+                      .ifPresent(
+                          it -> {
+                            Control mitigation = (Control) cache.get(it.getId());
+                            risk.mitigate(mitigation);
+                          });
+                  Optional.ofNullable(riskDto.getRiskOwner())
+                      .ifPresent(
+                          it -> {
+                            Person riskOwner = (Person) cache.get(it.getId());
+                            risk.appoint(riskOwner);
+                          });
+                  p.setOwner(null);
+                  scenario.setOwner(null);
+                  log.info("Transformed risk: {}", risk);
+                  risk.getRiskDefinitions()
+                      .forEach(
+                          rd -> {
+                            log.info("Risk definition: {}", rd);
+                            ProbabilityValueProvider pp = risk.getProbabilityProvider(rd);
+                            log.info("Potential probability: {}", pp.getPotentialProbability());
+
+                            log.info("Specific probability: {}", pp.getSpecificProbability());
+                          });
+                }
+              }
+            }
+          }
+        });
+    dummyOwner.setClient(null);
+
+    if (!risksByAffectedElementDbId.isEmpty()) {
+      throw new IllegalStateException("Unhandled risks found: " + risksByAffectedElementDbId);
+    }
   }
 
   @Override

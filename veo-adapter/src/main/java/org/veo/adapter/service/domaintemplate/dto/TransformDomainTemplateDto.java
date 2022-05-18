@@ -26,13 +26,16 @@ import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
 import org.veo.adapter.presenter.api.dto.AbstractDomainTemplateDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
+import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
+import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
@@ -41,6 +44,8 @@ import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
+import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
+import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
@@ -86,6 +91,14 @@ public class TransformDomainTemplateDto extends AbstractDomainTemplateDto
     @JsonSubTypes.Type(value = FullScopeDto.class, name = Scope.SINGULAR_TERM)
   })
   private Set<AbstractElementDto> demoUnitElements = new HashSet<>();
+
+  @JsonTypeInfo(use = Id.DEDUCTION)
+  @JsonSubTypes({
+    @JsonSubTypes.Type(value = ProcessRiskDto.class, name = "processrisk"),
+    @JsonSubTypes.Type(value = ScopeRiskDto.class, name = "scoperisk"),
+    @JsonSubTypes.Type(value = AssetRiskDto.class, name = "assetrisk")
+  })
+  private Set<AbstractRiskDto> demoUnitRisks = new HashSet<>();
 
   @JsonDeserialize(contentAs = TransformCatalogDto.class)
   @Override
