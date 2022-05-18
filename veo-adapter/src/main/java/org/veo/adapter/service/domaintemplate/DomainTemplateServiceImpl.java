@@ -35,10 +35,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
@@ -53,7 +51,6 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
-import org.veo.adapter.service.domaintemplate.dto.TransformElementDto;
 import org.veo.core.ExportDto;
 import org.veo.core.VeoInputStreamResource;
 import org.veo.core.entity.Catalog;
@@ -98,7 +95,9 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
       DomainAssociationTransformer domainAssociationTransformer,
       IdentifiableFactory identifiableFactory,
       CatalogItemPrepareStrategy preparations,
-      DomainTemplateIdGenerator domainTemplateIdGenerator) {
+      DomainTemplateIdGenerator domainTemplateIdGenerator,
+      ReferenceAssembler referenceAssembler,
+      ObjectMapper objectMapper) {
     this.domainTemplateRepository = domainTemplateRepository;
     this.factory = factory;
     this.domainResources = domainResources;
@@ -107,15 +106,9 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
     entityTransformer =
         new DtoToEntityTransformer(factory, identifiableFactory, domainAssociationTransformer);
-    assembler = new LocalReferenceAssembler();
+    assembler = referenceAssembler;
     dtoTransformer = new EntityToDtoTransformer(assembler, domainAssociationTransformer);
-    objectMapper =
-        new ObjectMapper()
-            .addMixIn(AbstractElementDto.class, TransformElementDto.class)
-            .registerModule(
-                new SimpleModule()
-                    .addDeserializer(IdRef.class, new ReferenceDeserializer(assembler)))
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    this.objectMapper = objectMapper;
     readTemplateFiles();
   }
 

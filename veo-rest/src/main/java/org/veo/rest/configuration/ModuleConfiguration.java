@@ -33,15 +33,19 @@ import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.data.domain.AuditorAware;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import org.veo.adapter.SchemaReplacer;
 import org.veo.adapter.persistence.schema.EntitySchemaGenerator;
 import org.veo.adapter.persistence.schema.EntitySchemaServiceImpl;
 import org.veo.adapter.persistence.schema.SchemaExtender;
 import org.veo.adapter.presenter.api.TypeDefinitionProvider;
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -50,6 +54,9 @@ import org.veo.adapter.service.domaintemplate.CatalogItemPrepareStrategy;
 import org.veo.adapter.service.domaintemplate.CatalogItemServiceImpl;
 import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl;
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl;
+import org.veo.adapter.service.domaintemplate.LocalReferenceAssembler;
+import org.veo.adapter.service.domaintemplate.ReferenceDeserializer;
+import org.veo.adapter.service.domaintemplate.dto.TransformElementDto;
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.specification.EntityValidator;
 import org.veo.core.entity.transform.EntityFactory;
@@ -717,6 +724,16 @@ public class ModuleConfiguration {
       DomainAssociationTransformer domainAssociationTransformer,
       CatalogItemPrepareStrategy prepareStrategy,
       DomainTemplateIdGenerator domainTemplateIdGenerator) {
+
+    ReferenceAssembler referenceAssembler = new LocalReferenceAssembler();
+
+    ObjectMapper objectMapper =
+        new ObjectMapper()
+            .addMixIn(AbstractElementDto.class, TransformElementDto.class)
+            .registerModule(
+                new SimpleModule()
+                    .addDeserializer(IdRef.class, new ReferenceDeserializer(referenceAssembler)))
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     return new DomainTemplateServiceImpl(
         domainTemplateRepository,
         factory,
@@ -724,7 +741,9 @@ public class ModuleConfiguration {
         domainAssociationTransformer,
         identifiableFactory,
         prepareStrategy,
-        domainTemplateIdGenerator);
+        domainTemplateIdGenerator,
+        referenceAssembler,
+        objectMapper);
   }
 
   @Bean
