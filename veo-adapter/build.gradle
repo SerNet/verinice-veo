@@ -15,6 +15,10 @@ sourceSets {
 apply plugin: 'groovy'
 apply plugin: 'java-library'
 
+configurations {
+    loggingImpl
+}
+
 dependencies {
 
     api project(":veo-core-usecase")
@@ -36,6 +40,8 @@ dependencies {
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.codehaus.groovy:groovy-json'
+
+    loggingImpl 'org.slf4j:slf4j-simple'
 }
 
 task assembleDomainTemplates(type: JavaExec) {
@@ -64,6 +70,7 @@ task assembleDomainTemplates(type: JavaExec) {
     inputs.properties config
     classpath compileJava.outputs.files
     classpath compileJava.classpath
+    classpath configurations.loggingImpl
     mainClass = 'org.veo.adapter.service.domaintemplate.DomainTemplateAssemblerMain'
     environment = config
 }
