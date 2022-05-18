@@ -61,7 +61,7 @@ pipeline {
             }
             steps {
                 sh './gradlew -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME classes generateLicenseReport'
-                stash name: "classes", includes: "*/build/classes/*/main/**,*/build/resources/main/**,*/build/lombok/**,veo-adapter/build/domain_templates/**"
+                stash name: "classes", includes: "*/build/classes/*/main/**,*/build/resources/main/**,*/build/lombok/**,veo-rest/build/domain_templates/**"
             }
             post {
                 always {
@@ -244,7 +244,7 @@ pipeline {
                                         docker.image("eu.gcr.io/veo-projekt/veo:git-${env.GIT_COMMIT}").withRun("\
                                 --network ${n}\
                                 --name veo-${n}\
-                                -v ${WORKSPACE}/veo-adapter/build/domain_templates/domaintemplates:/domaintemplates/main/\
+                                -v ${WORKSPACE}/veo-rest/build/domain_templates/domaintemplates:/domaintemplates/main/\
                                 -v ${WORKSPACE}/veo-rest/src/test/resources/testdomaintemplates/test-domain.json:/domaintemplates/test/test-domain.json\
                                 -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres\
                                 -e SPRING_DATASOURCE_USERNAME=test\

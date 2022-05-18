@@ -9,6 +9,10 @@ plugins {
 apply plugin: 'org.springframework.boot'
 apply plugin: 'groovy'
 
+configurations {
+    loggingImpl
+}
+
 dependencies {
     implementation project(":veo-adapter")
     implementation project(":veo-persistence")
@@ -51,6 +55,8 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
     testRuntimeOnly 'org.testcontainers:postgresql'
+
+    loggingImpl 'org.slf4j:slf4j-simple'
 }
 
 jar {
@@ -67,6 +73,56 @@ bootRun {
         jvmArgs = (project.jvmArgs.split("\\s+") as List)
     }
 }
+
+def domainTemplatesDir = "$buildDir/domain_templates"
+
+sourceSets {
+    main {
+        resources {
+            srcDir domainTemplatesDir
+        }
+    }
+}
+
+task assembleDomainTemplates(type: JavaExec) {
+    def targetDirectory = file("$domainTemplatesDir/domaintemplates/")
+    def templateSnippetDir = rootProject.file('domaintemplates/')
+
+    def config = [
+        'domaintemplate.dir': "${templateSnippetDir}/dsgvo",
+        'domaintemplate.abbreviation': "DS-GVO",
+        'domaintemplate.authority': "SERNET",
+        'domaintemplate.description': "The DS-GVO DomainTemplate.",
+        'domaintemplate.name': "DS-GVO",
+        'domaintemplate.out.file': "${targetDirectory}/dsgvo-example.json",
+        'domaintemplate.revision': "latest",
+        'domaintemplate.templateVersion': "1.8.0",
+        'domaintemplate.catalogPrefixes': "tom",
+        'tom.catalog.name': "DS-GVO",
+        'tom.prefix': "TOM.",
+        'domaintemplate.unit-dump-file': "${templateSnippetDir}/dsgvo/demo-unit/unit-dump.json"
+    ]
+
+    outputs.dir targetDirectory
+    outputs.cacheIf { true }
+    inputs.files compileJava.outputs
+    inputs.files templateSnippetDir
+    inputs.properties config
+    classpath compileJava.outputs.files
+    classpath compileJava.classpath
+    classpath configurations.loggingImpl
+    mainClass = 'org.veo.rest.domaintemplates.DomainTemplateAssemblerMain'
+    environment = config
+}
+
+plugins.withId('eclipse'){
+    eclipse {
+        synchronizationTasks assembleDomainTemplates
+        autoBuildTasks assembleDomainTemplates
+    }
+}
+
+processResources.dependsOn(assembleDomainTemplates)
 
 def continuousIntegrationBuild = rootProject.hasProperty('ci')
 

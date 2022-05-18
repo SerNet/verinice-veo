@@ -1,19 +1,5 @@
-def domainTemplatesDir = "$buildDir/domain_templates"
-
-sourceSets {
-    main {
-        resources {
-            srcDir domainTemplatesDir
-        }
-    }
-}
-
 apply plugin: 'groovy'
 apply plugin: 'java-library'
-
-configurations {
-    loggingImpl
-}
 
 dependencies {
 
@@ -36,46 +22,4 @@ dependencies {
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.codehaus.groovy:groovy-json'
-
-    loggingImpl 'org.slf4j:slf4j-simple'
 }
-
-task assembleDomainTemplates(type: JavaExec) {
-    def targetDirectory = file("$domainTemplatesDir/domaintemplates/")
-    def templateSnippetDir = rootProject.file('domaintemplates/')
-
-    def config = [
-        'domaintemplate.dir': "${templateSnippetDir}/dsgvo",
-        'domaintemplate.abbreviation': "DS-GVO",
-        'domaintemplate.authority': "SERNET",
-        'domaintemplate.description': "The DS-GVO DomainTemplate.",
-        'domaintemplate.name': "DS-GVO",
-        'domaintemplate.out.file': "${targetDirectory}/dsgvo-example.json",
-        'domaintemplate.revision': "latest",
-        'domaintemplate.templateVersion': "1.8.0",
-        'domaintemplate.catalogPrefixes': "tom",
-        'tom.catalog.name': "DS-GVO",
-        'tom.prefix': "TOM.",
-        'domaintemplate.unit-dump-file': "${templateSnippetDir}/dsgvo/demo-unit/unit-dump.json"
-    ]
-
-    outputs.dir targetDirectory
-    outputs.cacheIf { true }
-    inputs.files compileJava.outputs
-    inputs.files templateSnippetDir
-    inputs.properties config
-    classpath compileJava.outputs.files
-    classpath compileJava.classpath
-    classpath configurations.loggingImpl
-    mainClass = 'org.veo.adapter.service.domaintemplate.DomainTemplateAssemblerMain'
-    environment = config
-}
-
-plugins.withId('eclipse'){
-    eclipse {
-        synchronizationTasks assembleDomainTemplates
-        autoBuildTasks assembleDomainTemplates
-    }
-}
-
-processResources.dependsOn(assembleDomainTemplates)

@@ -15,17 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter
+package org.veo.rest.domaintemplates
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.CustomLinkDto
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
-import org.veo.adapter.service.domaintemplate.DomainTemplateAssembler
 import org.veo.adapter.service.domaintemplate.SyntheticIdRef
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto
 import org.veo.core.entity.Asset
 import org.veo.core.entity.TailoringReferenceType
+import org.veo.rest.domaintemplates.DomainTemplateAssembler
 
 import spock.lang.Specification
 

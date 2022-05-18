@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.service.domaintemplate;
+package org.veo.rest.domaintemplates;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,6 +35,7 @@ import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.create.CreateTailoringReferenceDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.adapter.service.domaintemplate.SyntheticIdRef;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;

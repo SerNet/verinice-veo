@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.service.domaintemplate;
+package org.veo.rest.domaintemplates;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -38,6 +38,9 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl;
+import org.veo.adapter.service.domaintemplate.LocalReferenceAssembler;
+import org.veo.adapter.service.domaintemplate.ReferenceDeserializer;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformElementDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformUnitDumpDto;
