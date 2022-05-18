@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
@@ -35,6 +34,7 @@ import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase.InputData
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.persistence.entity.jpa.ReferenceSerializationModule
 
 @WithUserDetails("user@domain.example")
 class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
@@ -73,16 +73,42 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         unitRepository.findByClient(client).size() == 1
         when: 'loading the processes'
         def processes = txTemplate.execute{
-            processDataRepository.findByUnits([unit.idAsString] as Set)
+            processDataRepository.findByUnits([unit.idAsString] as Set).each {
+                //initialize lazy associations
+                it.riskValuesAspects.each {
+                    it.values.each { k,v->
+                        v.potentialImpacts.values()
+                    }
+                }
+            }
         }
         then: 'the processes are returned'
         processes.size() == 1
 
+        with(processes.first()) {
+            riskValuesAspects.size() == 1
+            with(riskValuesAspects.first()) {
+                domain.name == 'DS-GVO'
+                values.size() == 1
+                with(values.entrySet().first()) {
+                    key.idRef == 'DSRA'
+                    with(value.potentialImpacts) {
+                        size() == 4
+                        entrySet().find{
+                            it.key.idRef == 'A'
+                        }.value.idRef == 2
+                    }
+                }
+            }
+        }
         when: 'loading the scopes'
         def scopes = txTemplate.execute{
             scopeDataRepository.findByUnits([unit.idAsString] as Set).tap{
                 //initialize lazy associations
                 it*.links*.target*.name
+                it*.riskValuesAspects*.each {
+                    it.riskDefinitionRef
+                }
             }
         }
         then: 'the scope is returned'
@@ -91,12 +117,70 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
             it.name == "Data GmbH"
             it.designator.startsWith('DMO-')
             it.members.size() == 1
-            it.members.find{it.name == 'Durchführung Befragungen'}
+            it.members.find{
+                it.name == 'Durchführung Befragungen'
+            }
             it.links.size() == 2
-            with(it.links.find{it.type == 'scope_informationSecurityOfficer'}) {
+            with(it.links.find{
+                it.type == 'scope_informationSecurityOfficer'
+            }) {
                 target.name == 'Jürgen Toast'
             }
+            riskValuesAspects.size() == 1
+            with(riskValuesAspects.first()) {
+                domain.name == 'DS-GVO'
+                riskDefinitionRef.idRef == 'DSRA'
+            }
         }
+        when: 'loading the controls'
+        def controls = txTemplate.execute{
+            controlDataRepository.findByUnits([unit.idAsString] as Set).each {
+                //initialize lazy associations
+                it.riskValuesAspects.each {
+                    it.values.each { k,v->
+                        v.implementationStatus
+                    }
+                }
+            }
+        }
+        then: 'the controls are returned'
+        controls.size() == 1
+
+        with(controls.first()) {
+            riskValuesAspects.size() == 1
+            with(riskValuesAspects.first()) {
+                domain.name == 'DS-GVO'
+                values.size() == 1
+                with(values.entrySet().first()) {
+                    key.idRef == 'DSRA'
+                    value.implementationStatus.ordinalValue == 2
+                }
+            }
+        }
+        when: 'loading the scenarios'
+        def scenarios = txTemplate.execute{
+            scenarioDataRepository.findByUnits([unit.idAsString] as Set).each {
+                //initialize lazy associations
+                it.riskValuesAspects.each {
+                    it.potentialProbability.values()
+                }
+            }
+        }
+        then: 'the scenarios are returned'
+        scenarios.size() == 1
+
+        with(scenarios.first()) {
+            riskValuesAspects.size() == 1
+            with(riskValuesAspects.first()) {
+                domain.name == 'DS-GVO'
+                potentialProbability.size() == 1
+                with(potentialProbability.entrySet().first()) {
+                    key.idRef == 'DSRA'
+                    value.potentialProbability.idRef == 1
+                }
+            }
+        }
+
         when: 'loading the demo unit elements and converting them to JSON'
         def demoElementsForUnitAsDtos = executeInTransaction{
             [
@@ -117,6 +201,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         then: 'the demo unit elements conform to the object schemas'
         ObjectMapper om = new ObjectMapper().tap{
             setSerializationInclusion(Include.NON_NULL)
+            registerModule(new ReferenceSerializationModule())
         }
         demoElementsForUnitAsDtos.each { dto->
             def schema = getSchema(client, dto.type)

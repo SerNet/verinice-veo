@@ -170,6 +170,7 @@ import org.veo.persistence.access.StoredEventRepository;
 import org.veo.persistence.access.StoredEventRepositoryImpl;
 import org.veo.persistence.access.UnitRepositoryImpl;
 import org.veo.persistence.access.jpa.StoredEventDataRepository;
+import org.veo.persistence.entity.jpa.ReferenceSerializationModule;
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
 import org.veo.persistence.entity.jpa.transformer.IdentifiableDataFactory;
 import org.veo.rest.security.AuthAwareImpl;
@@ -733,6 +734,7 @@ public class ModuleConfiguration {
             .registerModule(
                 new SimpleModule()
                     .addDeserializer(IdRef.class, new ReferenceDeserializer(referenceAssembler)))
+            .registerModule(new ReferenceSerializationModule())
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     return new DomainTemplateServiceImpl(
         domainTemplateRepository,

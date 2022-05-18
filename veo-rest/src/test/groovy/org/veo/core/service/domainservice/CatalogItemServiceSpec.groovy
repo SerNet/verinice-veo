@@ -76,7 +76,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
         when: "retrieving the demo unit elements for a client"
         def elements = domainTemplateService.getElementsForDemoUnit(client)
         then: "the elements for all the client's units are returned"
-        elements.size() == 4
+        elements.size() == 6
     }
 
 

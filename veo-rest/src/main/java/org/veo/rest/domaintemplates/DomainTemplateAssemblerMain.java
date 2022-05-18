@@ -45,6 +45,7 @@ import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformElementDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformUnitDumpDto;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
+import org.veo.persistence.entity.jpa.ReferenceSerializationModule;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
@@ -65,6 +66,7 @@ public class DomainTemplateAssemblerMain {
       new ObjectMapper()
           .addMixIn(AbstractElementDto.class, TransformElementDto.class)
           .registerModule(new SimpleModule().addDeserializer(IdRef.class, DESERIALIZER))
+          .registerModule(new ReferenceSerializationModule())
           .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
           .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
