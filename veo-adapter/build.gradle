@@ -1,13 +1,9 @@
-
-def generatedSchemasDir = "$buildDir/generated_entity_schemas"
 def domainTemplatesDir = "$buildDir/domain_templates"
 
 sourceSets {
     main {
         resources {
-            srcDir generatedSchemasDir
             srcDir domainTemplatesDir
-            exclude 'schemas/custom', 'schemas/links'
         }
     }
 }
