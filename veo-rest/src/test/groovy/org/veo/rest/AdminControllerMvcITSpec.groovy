@@ -27,6 +27,7 @@ import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 
 import groovy.util.logging.Log
+import spock.util.concurrent.PollingConditions
 
 @WithUserDetails("admin")
 @Log
@@ -108,69 +109,64 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
         def oldRiskValues = risk.domains.(domainId).riskDefinitions.DSRA.riskValues
         def oldImpactValues = risk.domains.(domainId).riskDefinitions.DSRA.impactValues
         def oldProbability = risk.domains.(domainId).riskDefinitions.DSRA.probability
-        def result = parseJson(get("/domains"))
-        def unitCount = result.size()
 
         and: 'updating all clients'
         post("/admin/domaintemplates/${DSGVO_DOMAINTEMPLATE_V2_UUID}/allclientsupdate", [:], 204)
 
-        while ((parseJson(get("/domains")).size() == unitCount)) {
-            log.info("Wait for domains: " + unitCount)
-            sleep(100)
-        }
-
         then: 'the elements and risks are transferred to the new domain'
-        with(parseJson(get("/admin/unit-dump/$unitId"))) {
-            domains.size() == 1
-            domains.first().templateVersion == '2.0.0'
-            def newDomainId = domains.first().id
-            elements.size() == 8
-            elements.each {
-                assert it.domains.keySet() =~ [newDomainId]
-                it.customAspects.each { type, ca ->
-                    assert ca.domains*.targetUri =~ [
-                        "http://localhost/domains/$domainId"
-                    ]
-                }
-                it.links.each { type, linksOfType->
-                    linksOfType.each {
-                        assert it.domains*.targetUri =~ [
+        new PollingConditions().within(5) {
+            with(parseJson(get("/admin/unit-dump/$unitId"))) {
+                domains.size() == 1
+                domains.first().templateVersion == '2.0.0'
+                def newDomainId = domains.first().id
+                elements.size() == 8
+                elements.each {
+                    assert it.domains.keySet() =~ [newDomainId]
+                    it.customAspects.each { type, ca ->
+                        assert ca.domains*.targetUri =~ [
                             "http://localhost/domains/$domainId"
                         ]
                     }
+                    it.links.each { type, linksOfType ->
+                        linksOfType.each {
+                            assert it.domains*.targetUri =~ [
+                                "http://localhost/domains/$domainId"
+                            ]
+                        }
+                    }
                 }
-            }
-            // process is present with risk values:
-            with(elements.find{it.id == processId}) {
-                name == "updated process"
-                domains.(newDomainId).riskValues.DSRA.potentialImpacts.size() == 2
-                domains.(newDomainId).riskValues.DSRA.potentialImpacts.C == 0
-                domains.(newDomainId).riskValues.DSRA.potentialImpacts.I == 1
-            }
+                // process is present with risk values:
+                with(elements.find { it.id == processId }) {
+                    name == "updated process"
+                    domains.(newDomainId).riskValues.DSRA.potentialImpacts.size() == 2
+                    domains.(newDomainId).riskValues.DSRA.potentialImpacts.C == 0
+                    domains.(newDomainId).riskValues.DSRA.potentialImpacts.I == 1
+                }
 
-            // scenario is present with risk values:
-            with(elements.find{it.id == scenarioId}) {
-                name == "scenario"
-                domains.(newDomainId).riskValues.DSRA.potentialProbability == 2
-            }
+                // scenario is present with risk values:
+                with(elements.find { it.id == scenarioId }) {
+                    name == "scenario"
+                    domains.(newDomainId).riskValues.DSRA.potentialProbability == 2
+                }
 
-            // asset risk is present without risk values:
-            with (risks.find{it.asset != null}) {
-                domains.size()==1
-                domains.(newDomainId) != null
-                domains.(newDomainId).reference.displayName == DSGVO_NAME
-                domains.(newDomainId).riskDefinitions.size() == 0
-            }
+                // asset risk is present without risk values:
+                with(risks.find { it.asset != null }) {
+                    domains.size() == 1
+                    domains.(newDomainId) != null
+                    domains.(newDomainId).reference.displayName == DSGVO_NAME
+                    domains.(newDomainId).riskDefinitions.size() == 0
+                }
 
-            // process risk is present with risk values:
-            with (risks.find{it.process != null}) {
-                domains.size()==1
-                domains.(newDomainId) != null
+                // process risk is present with risk values:
+                with(risks.find { it.process != null }) {
+                    domains.size() == 1
+                    domains.(newDomainId) != null
 
-                domains.(newDomainId).reference.displayName == oldDomainName
-                domains.(newDomainId).riskDefinitions.DSRA.riskValues   == oldRiskValues
-                domains.(newDomainId).riskDefinitions.DSRA.impactValues == oldImpactValues
-                domains.(newDomainId).riskDefinitions.DSRA.probability  == oldProbability
+                    domains.(newDomainId).reference.displayName == oldDomainName
+                    domains.(newDomainId).riskDefinitions.DSRA.riskValues == oldRiskValues
+                    domains.(newDomainId).riskDefinitions.DSRA.impactValues == oldImpactValues
+                    domains.(newDomainId).riskDefinitions.DSRA.probability == oldProbability
+                }
             }
         }
     }
