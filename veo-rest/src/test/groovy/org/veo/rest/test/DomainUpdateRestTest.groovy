@@ -20,6 +20,8 @@ package org.veo.rest.test
 import static org.veo.rest.test.UserType.ADMIN
 import static org.veo.rest.test.UserType.CONTENT_CREATOR
 
+import spock.util.concurrent.PollingConditions
+
 class DomainUpdateRestTest extends VeoRestTest {
 
     String oldDomainTemplateId
@@ -60,17 +62,20 @@ class DomainUpdateRestTest extends VeoRestTest {
             ]
         ]).body.resourceId
 
-        when: "incarnating the new domain template version and migrating to the new domain"
+        when: "incarnating the new domain template version"
         post("/domaintemplates/$newDomainTemplateId/createdomains", null, 204, ADMIN)
+
+        and: "triggering migration to the new domain"
         post("/admin/domaintemplates/$newDomainTemplateId/allclientsupdate", null, 204, ADMIN)
-        def domains = get("/domains").body.findAll{it.name == templateName}
 
         then: "only the new domain is active"
-        domains*.templateVersion == ["1.1.0"]
+        new PollingConditions().within(5, {
+            get("/domains").body.findAll{it.name == templateName}*.templateVersion == ["1.1.0"]
+        })
 
         when: "fetching the migrated scope"
         def migratedScope = get("/scopes/$scopeId").body
-        def newDomainId = domains.first().id
+        def newDomainId = get("/domains").body.findAll{it.name == templateName}.first().id
 
         then: "the sub type is still present under the new domain"
         migratedScope.domains.keySet() =~ [newDomainId]
