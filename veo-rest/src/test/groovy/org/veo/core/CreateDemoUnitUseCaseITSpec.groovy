@@ -128,6 +128,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                         v.potentialImpacts.values()
                     }
                 }
+                it.links.target*.name
                 it.risks.each {
                     it.riskDefinitions.size()
                     it.mitigation?.id
@@ -138,6 +139,25 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         }
         then: 'the processes are returned'
         processes.size() == 1
+        with(processes.first()) {
+            it.links.find{it.type == "process_PIAOOtherOrganisationsInvolved"}.target.name == "Data GmbH"
+        }
+
+        when: 'loading the persons'
+        def persons = txTemplate.execute{
+            personDataRepository.findByUnits([unit.idAsString] as Set).tap{
+                it*.parts*.name
+                it*.links*.target*.name
+            }
+        }
+        then: 'the persons are returned'
+        persons.size() == 3
+        with(persons.find{it.name == "Personal"}) {
+            it.parts*.name ==~ ["Jürgen Toast", "Hans Meiser"]
+        }
+        with(persons.find{it.name == "Jürgen Toast"}) {
+            it.links.find{it.type == "person_favoriteScope"}.target.name == "Data GmbH"
+        }
 
         with(processes.first()) {
             riskValuesAspects.size() == 1
