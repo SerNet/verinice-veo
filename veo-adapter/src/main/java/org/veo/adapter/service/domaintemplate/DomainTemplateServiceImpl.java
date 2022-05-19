@@ -215,36 +215,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
             });
     return elements;
   }
-  /**
-   * This will bootstrap the data in the db, the domain template is created and inserted in or
-   * returned from the database. We currently store the basic data.
-   */
-  public DomainTemplate createDomainTemplate(String id, VeoInputStreamResource templateFile) {
-    Optional<DomainTemplate> dt = domainTemplateRepository.findById(Key.uuidFrom(id));
-    if (dt.isPresent()) {
-      return dt.get();
-    }
-    try {
-      TransformDomainTemplateDto domainTemplateDto = readInstanceFile(templateFile);
-      DomainTemplate newDomainTemplate =
-          factory.createDomainTemplate(
-              domainTemplateDto.getName(),
-              domainTemplateDto.getAuthority(),
-              domainTemplateDto.getTemplateVersion(),
-              domainTemplateDto.getRevision(),
-              Key.uuidFrom(id));
-
-      processDomainTemplate(domainTemplateDto, newDomainTemplate);
-      preparations.updateVersion(newDomainTemplate);
-      log.info("Create and save domain template {}", newDomainTemplate);
-      return domainTemplateRepository.save(newDomainTemplate);
-    } catch (JsonMappingException e) {
-      log.error("Error parsing file", e);
-    } catch (IOException e) {
-      log.error("Error loading file", e);
-    }
-    throw new NotFoundException("Domain template %s file %s not found.", id, templateFile);
-  }
 
   @Override
   public DomainTemplate createDomainTemplateFromDomain(Domain domain) {
