@@ -146,8 +146,8 @@ subprojects {
             dependency 'com.github.victools:jsonschema-module-javax-validation:4.24.3'
             dependency 'com.github.victools:jsonschema-module-swagger-2:4.24.3'
             dependency 'com.networknt:json-schema-validator:1.0.69'
-            dependency "org.testcontainers:spock:1.17.1"
-            dependency "org.testcontainers:postgresql:1.17.1"
+            dependency "org.testcontainers:spock:1.17.2"
+            dependency "org.testcontainers:postgresql:1.17.2"
             dependency "org.keycloak:keycloak-authz-client:18.0.0"
             dependency "com.github.JanLoebel:json-schema-validation-starter:2.3.0"
             dependency 'com.fasterxml.uuid:java-uuid-generator:4.0.1'
