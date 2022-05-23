@@ -55,7 +55,8 @@ public class TypeExtractor {
   @Autowired private ServletContext servletContext;
 
   private RequestMappingHandlerMapping getRequestHandlerMapping() {
-    return applicationContext.getBean(RequestMappingHandlerMapping.class);
+    return applicationContext.getBean(
+        "requestMappingHandlerMapping", RequestMappingHandlerMapping.class);
   }
 
   public Optional<Class<? extends ModelDto>> parseDtoType(String uriString) {

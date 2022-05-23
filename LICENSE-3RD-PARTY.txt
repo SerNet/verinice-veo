@@ -72,15 +72,11 @@ Other developers who have contributed code are:
 
 --------------------------------------------------------------------------------
 
-6. Group: com.fasterxml.jackson  Name: jackson-bom  Version: 2.13.2
+6. Group: com.fasterxml.jackson  Name: jackson-bom  Version: 2.13.3
 
 No license information found
 
-7. Group: com.fasterxml.jackson  Name: jackson-bom  Version: 2.13.2.1
-
-No license information found
-
-8. Group: com.fasterxml.jackson.core  Name: jackson-annotations  Version: 2.13.2
+7. Group: com.fasterxml.jackson.core  Name: jackson-annotations  Version: 2.13.3
 
 Project URL: http://github.com/FasterXML/jackson
 
@@ -297,7 +293,7 @@ Embedded license:
 
 --------------------------------------------------------------------------------
 
-9. Group: com.fasterxml.jackson.core  Name: jackson-core  Version: 2.13.2
+8. Group: com.fasterxml.jackson.core  Name: jackson-core  Version: 2.13.3
 
 Project URL: https://github.com/FasterXML/jackson-core
 
@@ -534,7 +530,7 @@ from the source code management (SCM) system project uses.
 
 --------------------------------------------------------------------------------
 
-10. Group: com.fasterxml.jackson.core  Name: jackson-databind  Version: 2.13.2.1
+9. Group: com.fasterxml.jackson.core  Name: jackson-databind  Version: 2.13.3
 
 Project URL: http://github.com/FasterXML/jackson
 
@@ -771,7 +767,7 @@ from the source code management (SCM) system project uses.
 
 --------------------------------------------------------------------------------
 
-11. Group: com.fasterxml.jackson.dataformat  Name: jackson-dataformat-yaml  Version: 2.13.2
+10. Group: com.fasterxml.jackson.dataformat  Name: jackson-dataformat-yaml  Version: 2.13.3
 
 Project URL: https://github.com/FasterXML/jackson-dataformats-text
 
@@ -817,7 +813,7 @@ from the source code management (SCM) system project uses.
 
 --------------------------------------------------------------------------------
 
-12. Group: com.fasterxml.jackson.datatype  Name: jackson-datatype-jdk8  Version: 2.13.2
+11. Group: com.fasterxml.jackson.datatype  Name: jackson-datatype-jdk8  Version: 2.13.3
 
 Manifest Project URL: https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jdk8
 
@@ -827,7 +823,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-13. Group: com.fasterxml.jackson.datatype  Name: jackson-datatype-jsr310  Version: 2.13.2
+12. Group: com.fasterxml.jackson.datatype  Name: jackson-datatype-jsr310  Version: 2.13.3
 
 Manifest Project URL: https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310
 
@@ -850,7 +846,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 --------------------------------------------------------------------------------
 
-14. Group: com.fasterxml.jackson.module  Name: jackson-module-jaxb-annotations  Version: 2.13.2
+13. Group: com.fasterxml.jackson.module  Name: jackson-module-jaxb-annotations  Version: 2.13.3
 
 Project URL: https://github.com/FasterXML/jackson-modules-base
 
@@ -896,7 +892,7 @@ from the source code management (SCM) system project uses.
 
 --------------------------------------------------------------------------------
 
-15. Group: com.fasterxml.jackson.module  Name: jackson-module-parameter-names  Version: 2.13.2
+14. Group: com.fasterxml.jackson.module  Name: jackson-module-parameter-names  Version: 2.13.3
 
 Manifest Project URL: https://github.com/FasterXML/jackson-modules-java8/jackson-module-parameter-names
 
@@ -906,7 +902,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-16. Group: com.fasterxml.uuid  Name: java-uuid-generator  Version: 4.0.1
+15. Group: com.fasterxml.uuid  Name: java-uuid-generator  Version: 4.0.1
 
 Project URL: https://github.com/cowtowncoder/java-uuid-generator
 
@@ -938,7 +934,7 @@ Other developers who have contributed code are:
 
 --------------------------------------------------------------------------------
 
-17. Group: com.github.JanLoebel  Name: json-schema-validation-starter  Version: 2.3.0
+16. Group: com.github.JanLoebel  Name: json-schema-validation-starter  Version: 2.3.0
 
 POM Project URL: https://github.com/JanLoebel/json-schema-validation-starter
 
@@ -946,7 +942,7 @@ POM License: MIT License - https://opensource.org/licenses/MIT
 
 --------------------------------------------------------------------------------
 
-18. Group: com.github.stephenc.jcip  Name: jcip-annotations  Version: 1.0-1
+17. Group: com.github.stephenc.jcip  Name: jcip-annotations  Version: 1.0-1
 
 POM Project URL: http://stephenc.github.com/jcip-annotations
 
@@ -954,7 +950,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-19. Group: com.github.victools  Name: jsonschema-generator  Version: 4.24.3
+18. Group: com.github.victools  Name: jsonschema-generator  Version: 4.24.3
 
 POM Project URL: https://github.com/victools/jsonschema-generator
 
@@ -962,7 +958,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-20. Group: com.github.victools  Name: jsonschema-module-jackson  Version: 4.24.3
+19. Group: com.github.victools  Name: jsonschema-module-jackson  Version: 4.24.3
 
 POM Project URL: https://github.com/victools/jsonschema-generator
 
@@ -970,19 +966,19 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-21. Group: com.github.victools  Name: jsonschema-module-javax-validation  Version: 4.24.3
+20. Group: com.github.victools  Name: jsonschema-module-javax-validation  Version: 4.24.3
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
 --------------------------------------------------------------------------------
 
-22. Group: com.github.victools  Name: jsonschema-module-swagger-2  Version: 4.24.3
+21. Group: com.github.victools  Name: jsonschema-module-swagger-2  Version: 4.24.3
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
 --------------------------------------------------------------------------------
 
-23. Group: com.jayway.jsonpath  Name: json-path  Version: 2.6.0
+22. Group: com.jayway.jsonpath  Name: json-path  Version: 2.7.0
 
 POM Project URL: https://github.com/jayway/JsonPath
 
@@ -990,7 +986,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-24. Group: com.networknt  Name: json-schema-validator  Version: 1.0.70
+23. Group: com.networknt  Name: json-schema-validator  Version: 1.0.70
 
 POM Project URL: https://github.com/networknt/json-schema-validator
 
@@ -998,7 +994,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-25. Group: com.nimbusds  Name: nimbus-jose-jwt  Version: 9.14
+24. Group: com.nimbusds  Name: nimbus-jose-jwt  Version: 9.22
 
 Manifest Project URL: https://connect2id.com
 
@@ -1010,7 +1006,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-26. Group: com.rabbitmq  Name: amqp-client  Version: 5.13.1
+25. Group: com.rabbitmq  Name: amqp-client  Version: 5.14.2
 
 Project URL: https://www.rabbitmq.com
 
@@ -1024,7 +1020,7 @@ POM License: MPL 2.0 - https://www.mozilla.org/en-US/MPL/2.0/
 
 --------------------------------------------------------------------------------
 
-27. Group: com.sun.activation  Name: jakarta.activation  Version: 1.2.2
+26. Group: com.sun.activation  Name: jakarta.activation  Version: 1.2.2
 
 Manifest Project URL: https://www.eclipse.org
 
@@ -1108,7 +1104,7 @@ JUnit (4.12)
 
 --------------------------------------------------------------------------------
 
-28. Group: com.sun.istack  Name: istack-commons-runtime  Version: 3.0.12
+27. Group: com.sun.istack  Name: istack-commons-runtime  Version: 3.0.12
 
 Manifest Project URL: https://www.eclipse.org
 
@@ -1542,13 +1538,13 @@ permitted.
 
 --------------------------------------------------------------------------------
 
-29. Group: com.vladmihalcea  Name: hibernate-types-52  Version: 2.16.2
+28. Group: com.vladmihalcea  Name: hibernate-types-52  Version: 2.16.2
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
 --------------------------------------------------------------------------------
 
-30. Group: com.zaxxer  Name: HikariCP  Version: 4.0.3
+29. Group: com.zaxxer  Name: HikariCP  Version: 4.0.3
 
 Manifest Project URL: https://github.com/brettwooldridge
 
@@ -1560,7 +1556,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-31. Group: io.github.classgraph  Name: classgraph  Version: 4.8.143
+30. Group: io.github.classgraph  Name: classgraph  Version: 4.8.143
 
 Manifest license URL: https://opensource.org/licenses/MIT
 
@@ -1570,7 +1566,7 @@ POM License: MIT License - https://opensource.org/licenses/MIT
 
 --------------------------------------------------------------------------------
 
-32. Group: io.jsonwebtoken  Name: jjwt-api  Version: 0.11.5
+31. Group: io.jsonwebtoken  Name: jjwt-api  Version: 0.11.5
 
 Manifest Project URL: https://github.com/jwtk/jjwt
 
@@ -1580,7 +1576,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-33. Group: io.jsonwebtoken  Name: jjwt-impl  Version: 0.11.5
+32. Group: io.jsonwebtoken  Name: jjwt-impl  Version: 0.11.5
 
 Manifest Project URL: https://github.com/jwtk/jjwt
 
@@ -1590,7 +1586,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-34. Group: io.jsonwebtoken  Name: jjwt-jackson  Version: 0.11.5
+33. Group: io.jsonwebtoken  Name: jjwt-jackson  Version: 0.11.5
 
 Manifest Project URL: https://github.com/jwtk/jjwt
 
@@ -1600,7 +1596,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-35. Group: io.micrometer  Name: micrometer-core  Version: 1.8.5
+34. Group: io.micrometer  Name: micrometer-core  Version: 1.9.0
 
 POM Project URL: https://github.com/micrometer-metrics/micrometer
 
@@ -1862,7 +1858,7 @@ package in the Spring Framework library, distributed by VMware, Inc:
 
 --------------------------------------------------------------------------------
 
-36. Group: io.micrometer  Name: micrometer-registry-prometheus  Version: 1.8.5
+35. Group: io.micrometer  Name: micrometer-registry-prometheus  Version: 1.9.0
 
 POM Project URL: https://github.com/micrometer-metrics/micrometer
 
@@ -2124,7 +2120,7 @@ package in the Spring Framework library, distributed by VMware, Inc:
 
 --------------------------------------------------------------------------------
 
-37. Group: io.netty  Name: netty-buffer  Version: 4.1.76.Final
+36. Group: io.netty  Name: netty-buffer  Version: 4.1.77.Final
 
 Manifest Project URL: https://netty.io/
 
@@ -2134,7 +2130,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-38. Group: io.netty  Name: netty-codec  Version: 4.1.76.Final
+37. Group: io.netty  Name: netty-codec  Version: 4.1.77.Final
 
 Manifest Project URL: https://netty.io/
 
@@ -2144,7 +2140,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-39. Group: io.netty  Name: netty-codec-dns  Version: 4.1.76.Final
+38. Group: io.netty  Name: netty-codec-dns  Version: 4.1.77.Final
 
 Manifest Project URL: https://netty.io/
 
@@ -2154,7 +2150,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-40. Group: io.netty  Name: netty-codec-http  Version: 4.1.76.Final
+39. Group: io.netty  Name: netty-codec-http  Version: 4.1.77.Final
 
 Manifest Project URL: https://netty.io/
 
@@ -2164,7 +2160,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-41. Group: io.netty  Name: netty-codec-http2  Version: 4.1.76.Final
+40. Group: io.netty  Name: netty-codec-http2  Version: 4.1.77.Final
 
 Manifest Project URL: https://netty.io/
 
@@ -2174,7 +2170,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-42. Group: io.netty  Name: netty-codec-socks  Version: 4.1.76.Final
+41. Group: io.netty  Name: netty-codec-socks  Version: 4.1.77.Final
 
 Manifest Project URL: https://netty.io/
 
@@ -2184,7 +2180,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-43. Group: io.netty  Name: netty-common  Version: 4.1.76.Final
+42. Group: io.netty  Name: netty-common  Version: 4.1.77.Final
 
 Manifest Project URL: https://netty.io/
 
@@ -2194,7 +2190,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-44. Group: io.netty  Name: netty-handler  Version: 4.1.76.Final
+43. Group: io.netty  Name: netty-handler  Version: 4.1.77.Final
 
 Manifest Project URL: https://netty.io/
 
@@ -2204,7 +2200,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-45. Group: io.netty  Name: netty-handler-proxy  Version: 4.1.76.Final
+44. Group: io.netty  Name: netty-handler-proxy  Version: 4.1.77.Final
 
 Manifest Project URL: https://netty.io/
 
@@ -2214,7 +2210,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-46. Group: io.netty  Name: netty-resolver  Version: 4.1.76.Final
+45. Group: io.netty  Name: netty-resolver  Version: 4.1.77.Final
 
 Manifest Project URL: https://netty.io/
 
@@ -2224,7 +2220,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-47. Group: io.netty  Name: netty-resolver-dns  Version: 4.1.76.Final
+46. Group: io.netty  Name: netty-resolver-dns  Version: 4.1.77.Final
 
 Manifest Project URL: https://netty.io/
 
@@ -2234,7 +2230,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-48. Group: io.netty  Name: netty-resolver-dns-classes-macos  Version: 4.1.76.Final
+47. Group: io.netty  Name: netty-resolver-dns-classes-macos  Version: 4.1.77.Final
 
 Manifest Project URL: https://netty.io/
 
@@ -2244,7 +2240,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-49. Group: io.netty  Name: netty-resolver-dns-native-macos  Version: 4.1.76.Final
+48. Group: io.netty  Name: netty-resolver-dns-native-macos  Version: 4.1.77.Final
 
 Manifest Project URL: https://netty.io/
 
@@ -2254,7 +2250,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-50. Group: io.netty  Name: netty-transport  Version: 4.1.76.Final
+49. Group: io.netty  Name: netty-transport  Version: 4.1.77.Final
 
 Manifest Project URL: https://netty.io/
 
@@ -2264,7 +2260,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-51. Group: io.netty  Name: netty-transport-classes-epoll  Version: 4.1.76.Final
+50. Group: io.netty  Name: netty-transport-classes-epoll  Version: 4.1.77.Final
 
 Manifest Project URL: https://netty.io/
 
@@ -2274,7 +2270,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-52. Group: io.netty  Name: netty-transport-native-epoll  Version: 4.1.76.Final
+51. Group: io.netty  Name: netty-transport-native-epoll  Version: 4.1.77.Final
 
 Manifest Project URL: https://netty.io/
 
@@ -2284,7 +2280,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-53. Group: io.netty  Name: netty-transport-native-unix-common  Version: 4.1.76.Final
+52. Group: io.netty  Name: netty-transport-native-unix-common  Version: 4.1.77.Final
 
 Manifest Project URL: https://netty.io/
 
@@ -2294,7 +2290,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-54. Group: io.projectreactor  Name: reactor-core  Version: 3.4.17
+53. Group: io.projectreactor  Name: reactor-core  Version: 3.4.18
 
 POM Project URL: https://github.com/reactor/reactor-core
 
@@ -2302,7 +2298,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-55. Group: io.projectreactor.netty  Name: reactor-netty-core  Version: 1.0.18
+54. Group: io.projectreactor.netty  Name: reactor-netty-core  Version: 1.0.19
 
 POM Project URL: https://github.com/reactor/reactor-netty
 
@@ -2310,7 +2306,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-56. Group: io.projectreactor.netty  Name: reactor-netty-http  Version: 1.0.18
+55. Group: io.projectreactor.netty  Name: reactor-netty-http  Version: 1.0.19
 
 POM Project URL: https://github.com/reactor/reactor-netty
 
@@ -2318,7 +2314,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-57. Group: io.prometheus  Name: simpleclient  Version: 0.12.0
+56. Group: io.prometheus  Name: simpleclient  Version: 0.15.0
 
 Manifest license URL: https://www.apache.org/licenses/LICENSE-2.0
 
@@ -2326,7 +2322,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-58. Group: io.prometheus  Name: simpleclient_common  Version: 0.12.0
+57. Group: io.prometheus  Name: simpleclient_common  Version: 0.15.0
 
 Manifest license URL: https://www.apache.org/licenses/LICENSE-2.0
 
@@ -2334,7 +2330,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-59. Group: io.prometheus  Name: simpleclient_tracer_common  Version: 0.12.0
+58. Group: io.prometheus  Name: simpleclient_tracer_common  Version: 0.15.0
 
 Manifest license URL: https://www.apache.org/licenses/LICENSE-2.0
 
@@ -2342,7 +2338,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-60. Group: io.prometheus  Name: simpleclient_tracer_otel  Version: 0.12.0
+59. Group: io.prometheus  Name: simpleclient_tracer_otel  Version: 0.15.0
 
 Manifest license URL: https://www.apache.org/licenses/LICENSE-2.0
 
@@ -2350,7 +2346,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-61. Group: io.prometheus  Name: simpleclient_tracer_otel_agent  Version: 0.12.0
+60. Group: io.prometheus  Name: simpleclient_tracer_otel_agent  Version: 0.15.0
 
 Manifest license URL: https://www.apache.org/licenses/LICENSE-2.0
 
@@ -2358,7 +2354,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-62. Group: io.swagger.core.v3  Name: swagger-annotations  Version: 2.2.0
+61. Group: io.swagger.core.v3  Name: swagger-annotations  Version: 2.2.0
 
 Manifest Project URL: https://github.com/swagger-api/swagger-core/modules/swagger-annotations
 
@@ -2582,7 +2578,7 @@ Copy of the Apache 2.0 license can be found in `LICENSE` file.
 
 --------------------------------------------------------------------------------
 
-63. Group: io.swagger.core.v3  Name: swagger-core  Version: 2.2.0
+62. Group: io.swagger.core.v3  Name: swagger-core  Version: 2.2.0
 
 Manifest Project URL: https://github.com/swagger-api/swagger-core/modules/swagger-core
 
@@ -2806,7 +2802,7 @@ Copy of the Apache 2.0 license can be found in `LICENSE` file.
 
 --------------------------------------------------------------------------------
 
-64. Group: io.swagger.core.v3  Name: swagger-models  Version: 2.2.0
+63. Group: io.swagger.core.v3  Name: swagger-models  Version: 2.2.0
 
 Manifest Project URL: https://github.com/swagger-api/swagger-core/modules/swagger-models
 
@@ -3030,7 +3026,7 @@ Copy of the Apache 2.0 license can be found in `LICENSE` file.
 
 --------------------------------------------------------------------------------
 
-65. Group: jakarta.activation  Name: jakarta.activation-api  Version: 1.2.2
+64. Group: jakarta.activation  Name: jakarta.activation-api  Version: 1.2.2
 
 Manifest Project URL: https://www.eclipse.org
 
@@ -3114,7 +3110,7 @@ JUnit (4.12)
 
 --------------------------------------------------------------------------------
 
-66. Group: jakarta.annotation  Name: jakarta.annotation-api  Version: 1.3.5
+65. Group: jakarta.annotation  Name: jakarta.annotation-api  Version: 1.3.5
 
 Manifest Project URL: https://www.eclipse.org
 
@@ -3811,7 +3807,7 @@ permitted.
 
 --------------------------------------------------------------------------------
 
-67. Group: jakarta.persistence  Name: jakarta.persistence-api  Version: 2.2.3
+66. Group: jakarta.persistence  Name: jakarta.persistence-api  Version: 2.2.3
 
 Manifest Project URL: https://www.eclipse.org
 
@@ -3827,7 +3823,7 @@ POM License: GNU GENERAL PUBLIC LICENSE, Version 2 + Classpath Exception - https
 
 --------------------------------------------------------------------------------
 
-68. Group: jakarta.transaction  Name: jakarta.transaction-api  Version: 1.3.3
+67. Group: jakarta.transaction  Name: jakarta.transaction-api  Version: 1.3.3
 
 Manifest Project URL: https://github.com/eclipse-ee4j
 
@@ -3841,7 +3837,7 @@ POM License: GNU GENERAL PUBLIC LICENSE, Version 2 + Classpath Exception - https
 
 --------------------------------------------------------------------------------
 
-69. Group: jakarta.validation  Name: jakarta.validation-api  Version: 2.0.2
+68. Group: jakarta.validation  Name: jakarta.validation-api  Version: 2.0.2
 
 Manifest Project URL: https://www.eclipse.org
 
@@ -3857,7 +3853,7 @@ POM License: GNU GENERAL PUBLIC LICENSE, Version 2 + Classpath Exception - https
 
 --------------------------------------------------------------------------------
 
-70. Group: jakarta.xml.bind  Name: jakarta.xml.bind-api  Version: 2.3.3
+69. Group: jakarta.xml.bind  Name: jakarta.xml.bind-api  Version: 2.3.3
 
 Manifest Project URL: https://www.eclipse.org
 
@@ -3985,7 +3981,7 @@ permitted.
 
 --------------------------------------------------------------------------------
 
-71. Group: javax.transaction  Name: javax.transaction-api  Version: 1.3
+70. Group: javax.transaction  Name: javax.transaction-api  Version: 1.3
 
 Manifest Project URL: https://glassfish.java.net
 
@@ -4263,7 +4259,7 @@ As a special exception, the copyright holders of this library give you permissio
 
 --------------------------------------------------------------------------------
 
-72. Group: javax.validation  Name: validation-api  Version: 2.0.1.Final
+71. Group: javax.validation  Name: validation-api  Version: 2.0.1.Final
 
 Manifest license URL: https://www.apache.org/licenses/LICENSE-2.0
 
@@ -4282,7 +4278,7 @@ See the license.txt file in the root directory or <http://www.apache.org/license
 
 --------------------------------------------------------------------------------
 
-73. Group: net.bytebuddy  Name: byte-buddy  Version: 1.11.22
+72. Group: net.bytebuddy  Name: byte-buddy  Version: 1.12.10
 
 Manifest license URL: https://www.apache.org/licenses/LICENSE-2.0
 
@@ -4292,7 +4288,7 @@ Embedded license:
 
                     ****************************************                    
 
-This product bundles ASM 9.2, which is available under a "3-clause BSD"
+This product bundles ASM 9.3, which is available under a "3-clause BSD"
 license. For details, see licenses/ASM. For more information visit https://asm.ow2.io.
 
 Apache License
@@ -4491,7 +4487,7 @@ limitations under the License.
 
 --------------------------------------------------------------------------------
 
-74. Group: net.minidev  Name: accessors-smart  Version: 2.4.8
+73. Group: net.minidev  Name: accessors-smart  Version: 2.4.8
 
 Project URL: https://urielch.github.io/
 
@@ -4501,7 +4497,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-75. Group: net.minidev  Name: json-smart  Version: 2.4.8
+74. Group: net.minidev  Name: json-smart  Version: 2.4.8
 
 Project URL: https://urielch.github.io/
 
@@ -4511,7 +4507,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-76. Group: net.ttddyy  Name: datasource-proxy  Version: 1.7
+75. Group: net.ttddyy  Name: datasource-proxy  Version: 1.7
 
 POM Project URL: https://github.com/ttddyy/datasource-proxy/
 
@@ -4519,7 +4515,7 @@ POM License: MIT License - https://opensource.org/licenses/MIT
 
 --------------------------------------------------------------------------------
 
-77. Group: org.apache.commons  Name: commons-lang3  Version: 3.12.0
+76. Group: org.apache.commons  Name: commons-lang3  Version: 3.12.0
 
 Project URL: https://commons.apache.org/proper/commons-lang/
 
@@ -4744,7 +4740,7 @@ The Apache Software Foundation (https://www.apache.org/).
 
 --------------------------------------------------------------------------------
 
-78. Group: org.apache.logging.log4j  Name: log4j-api  Version: 2.17.2
+77. Group: org.apache.logging.log4j  Name: log4j-api  Version: 2.17.2
 
 Manifest Project URL: https://www.apache.org/
 
@@ -4972,7 +4968,7 @@ The Apache Software Foundation (http://www.apache.org/).
 
 --------------------------------------------------------------------------------
 
-79. Group: org.apache.logging.log4j  Name: log4j-to-slf4j  Version: 2.17.2
+78. Group: org.apache.logging.log4j  Name: log4j-to-slf4j  Version: 2.17.2
 
 Manifest Project URL: https://www.apache.org/
 
@@ -5200,7 +5196,7 @@ The Apache Software Foundation (http://www.apache.org/).
 
 --------------------------------------------------------------------------------
 
-80. Group: org.apache.tomcat.embed  Name: tomcat-embed-core  Version: 9.0.62
+79. Group: org.apache.tomcat.embed  Name: tomcat-embed-core  Version: 9.0.63
 
 POM Project URL: https://tomcat.apache.org/
 
@@ -6378,7 +6374,7 @@ http://www.oracle.com/webfolder/technetwork/jsc/xml/ns/javaee/index.html
 
 --------------------------------------------------------------------------------
 
-81. Group: org.apache.tomcat.embed  Name: tomcat-embed-el  Version: 9.0.62
+80. Group: org.apache.tomcat.embed  Name: tomcat-embed-el  Version: 9.0.63
 
 POM Project URL: https://tomcat.apache.org/
 
@@ -6601,7 +6597,7 @@ The Apache Software Foundation (http://www.apache.org/).
 
 --------------------------------------------------------------------------------
 
-82. Group: org.apache.tomcat.embed  Name: tomcat-embed-websocket  Version: 9.0.62
+81. Group: org.apache.tomcat.embed  Name: tomcat-embed-websocket  Version: 9.0.63
 
 POM Project URL: https://tomcat.apache.org/
 
@@ -6824,7 +6820,7 @@ The Apache Software Foundation (http://www.apache.org/).
 
 --------------------------------------------------------------------------------
 
-83. Group: org.aspectj  Name: aspectjweaver  Version: 1.9.7
+82. Group: org.aspectj  Name: aspectjweaver  Version: 1.9.7
 
 POM Project URL: https://www.eclipse.org/aspectj/
 
@@ -6832,7 +6828,7 @@ POM License: Eclipse Public License - v 2.0 - https://www.eclipse.org/org/docume
 
 --------------------------------------------------------------------------------
 
-84. Group: org.atteo  Name: evo-inflector  Version: 1.3
+83. Group: org.atteo  Name: evo-inflector  Version: 1.3
 
 POM Project URL: http://atteo.org/static/evo-inflector
 
@@ -6840,7 +6836,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-85. Group: org.checkerframework  Name: checker-qual  Version: 3.5.0
+84. Group: org.checkerframework  Name: checker-qual  Version: 3.5.0
 
 Manifest license URL: https://opensource.org/licenses/MIT
 
@@ -6877,7 +6873,7 @@ THE SOFTWARE.
 
 --------------------------------------------------------------------------------
 
-86. Group: org.codehaus.groovy  Name: groovy  Version: 3.0.10
+85. Group: org.codehaus.groovy  Name: groovy  Version: 3.0.10
 
 POM Project URL: https://groovy-lang.org
 
@@ -7350,7 +7346,7 @@ This product includes/uses ANTLR4 (https://github.com/antlr/antlr4)
 Copyright (c) 2012-2017 The ANTLR Project. All rights reserved.
 --------------------------------------------------------------------------------
 
-87. Group: org.codehaus.groovy  Name: groovy-json  Version: 3.0.10
+86. Group: org.codehaus.groovy  Name: groovy-json  Version: 3.0.10
 
 POM Project URL: https://groovy-lang.org
 
@@ -7573,7 +7569,7 @@ The Apache Software Foundation (http://www.apache.org/).
 
 --------------------------------------------------------------------------------
 
-88. Group: org.codehaus.groovy  Name: groovy-sql  Version: 3.0.10
+87. Group: org.codehaus.groovy  Name: groovy-sql  Version: 3.0.10
 
 POM Project URL: https://groovy-lang.org
 
@@ -7796,7 +7792,7 @@ The Apache Software Foundation (http://www.apache.org/).
 
 --------------------------------------------------------------------------------
 
-89. Group: org.flywaydb  Name: flyway-core  Version: 8.0.5
+88. Group: org.flywaydb  Name: flyway-core  Version: 8.5.11
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
@@ -7804,7 +7800,7 @@ Embedded license:
 
                     ****************************************                    
 
-Copyright (C) Red Gate Software Ltd 2010-2021
+Copyright (C) Red Gate Software Ltd 2010-2022
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -7817,6 +7813,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
                     ****************************************                    
 
 Welcome to Flyway.
@@ -7836,7 +7833,7 @@ Here is the info on how you can contribute in various ways to the project: https
 
 License
 -------
-Copyright © Red Gate Software Ltd 2010-2021
+Copyright © Red Gate Software Ltd 2010-2022
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -7853,9 +7850,10 @@ limitations under the License.
 
 
 Flyway is a registered trademark of Boxfuse GmbH, owned by Red Gate Software Ltd.
+
 --------------------------------------------------------------------------------
 
-90. Group: org.glassfish.jaxb  Name: jaxb-runtime  Version: 2.3.6
+89. Group: org.glassfish.jaxb  Name: jaxb-runtime  Version: 2.3.6
 
 Manifest Project URL: https://www.eclipse.org
 
@@ -8291,7 +8289,7 @@ permitted.
 
 --------------------------------------------------------------------------------
 
-91. Group: org.glassfish.jaxb  Name: txw2  Version: 2.3.6
+90. Group: org.glassfish.jaxb  Name: txw2  Version: 2.3.6
 
 POM Project URL: https://eclipse-ee4j.github.io/jaxb-ri/
 
@@ -8723,7 +8721,7 @@ permitted.
 
 --------------------------------------------------------------------------------
 
-92. Group: org.hdrhistogram  Name: HdrHistogram  Version: 2.1.12
+91. Group: org.hdrhistogram  Name: HdrHistogram  Version: 2.1.12
 
 Manifest license URL: https://opensource.org/licenses/BSD-2-Clause
 
@@ -8737,7 +8735,7 @@ POM License: The 2-Clause BSD License - https://opensource.org/licenses/BSD-2-Cl
 
 --------------------------------------------------------------------------------
 
-93. Group: org.hibernate  Name: hibernate-core  Version: 5.6.8.Final
+92. Group: org.hibernate  Name: hibernate-core  Version: 5.6.9.Final
 
 Manifest Project URL: https://hibernate.org/orm/5.6
 
@@ -8747,7 +8745,7 @@ POM License: GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 - https://www.gnu.or
 
 --------------------------------------------------------------------------------
 
-94. Group: org.hibernate.common  Name: hibernate-commons-annotations  Version: 5.1.2.Final
+93. Group: org.hibernate.common  Name: hibernate-commons-annotations  Version: 5.1.2.Final
 
 POM Project URL: http://hibernate.org
 
@@ -8755,7 +8753,7 @@ POM License: GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 - https://www.gnu.or
 
 --------------------------------------------------------------------------------
 
-95. Group: org.hibernate.validator  Name: hibernate-validator  Version: 6.2.3.Final
+94. Group: org.hibernate.validator  Name: hibernate-validator  Version: 6.2.3.Final
 
 Manifest license URL: https://www.apache.org/licenses/LICENSE-2.0
 
@@ -8763,7 +8761,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-96. Group: org.jboss  Name: jandex  Version: 2.4.2.Final
+95. Group: org.jboss  Name: jandex  Version: 2.4.2.Final
 
 Manifest Project URL: http://www.jboss.org
 
@@ -8775,7 +8773,7 @@ POM License: PUBLIC DOMAIN - http://repository.jboss.org/licenses/cc0-1.0.txt
 
 --------------------------------------------------------------------------------
 
-97. Group: org.jboss.logging  Name: jboss-logging  Version: 3.4.3.Final
+96. Group: org.jboss.logging  Name: jboss-logging  Version: 3.4.3.Final
 
 Project URL: http://www.jboss.org
 
@@ -8994,7 +8992,7 @@ Embedded license:
 
 --------------------------------------------------------------------------------
 
-98. Group: org.latencyutils  Name: LatencyUtils  Version: 2.0.3
+97. Group: org.latencyutils  Name: LatencyUtils  Version: 2.0.3
 
 POM Project URL: http://latencyutils.github.io/LatencyUtils/
 
@@ -9004,7 +9002,7 @@ POM License: PUBLIC DOMAIN - http://creativecommons.org/publicdomain/zero/1.0/
 
 --------------------------------------------------------------------------------
 
-99. Group: org.ow2.asm  Name: asm  Version: 9.1
+98. Group: org.ow2.asm  Name: asm  Version: 9.1
 
 Manifest Project URL: http://asm.ow2.org
 
@@ -9018,7 +9016,7 @@ POM License: The 3-Clause BSD License - https://opensource.org/licenses/BSD-3-Cl
 
 --------------------------------------------------------------------------------
 
-100. Group: org.postgresql  Name: postgresql  Version: 42.3.4
+99. Group: org.postgresql  Name: postgresql  Version: 42.3.5
 
 Manifest Project URL: https://jdbc.postgresql.org/
 
@@ -9168,7 +9166,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 --------------------------------------------------------------------------------
 
-101. Group: org.reactivestreams  Name: reactive-streams  Version: 1.0.3
+100. Group: org.reactivestreams  Name: reactive-streams  Version: 1.0.3
 
 Manifest Project URL: http://reactive-streams.org
 
@@ -9178,7 +9176,7 @@ POM License: Creative Commons Legal Code - https://creativecommons.org/publicdom
 
 --------------------------------------------------------------------------------
 
-102. Group: org.slf4j  Name: jul-to-slf4j  Version: 1.7.36
+101. Group: org.slf4j  Name: jul-to-slf4j  Version: 1.7.36
 
 POM Project URL: http://www.slf4j.org
 
@@ -9186,7 +9184,7 @@ POM License: MIT License - https://opensource.org/licenses/MIT
 
 --------------------------------------------------------------------------------
 
-103. Group: org.slf4j  Name: slf4j-api  Version: 1.7.36
+102. Group: org.slf4j  Name: slf4j-api  Version: 1.7.36
 
 POM Project URL: http://www.slf4j.org
 
@@ -9194,25 +9192,25 @@ POM License: MIT License - https://opensource.org/licenses/MIT
 
 --------------------------------------------------------------------------------
 
-104. Group: org.springdoc  Name: springdoc-openapi-common  Version: 1.6.8
+103. Group: org.springdoc  Name: springdoc-openapi-common  Version: 1.6.8
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
 --------------------------------------------------------------------------------
 
-105. Group: org.springdoc  Name: springdoc-openapi-ui  Version: 1.6.8
+104. Group: org.springdoc  Name: springdoc-openapi-ui  Version: 1.6.8
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
 --------------------------------------------------------------------------------
 
-106. Group: org.springdoc  Name: springdoc-openapi-webmvc-core  Version: 1.6.8
+105. Group: org.springdoc  Name: springdoc-openapi-webmvc-core  Version: 1.6.8
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
 --------------------------------------------------------------------------------
 
-107. Group: org.springframework  Name: spring-aop  Version: 5.3.19
+106. Group: org.springframework  Name: spring-aop  Version: 5.3.20
 
 POM Project URL: https://github.com/spring-projects/spring-framework
 
@@ -9426,9 +9424,9 @@ Embedded license:
 
 =======================================================================
 
-SPRING FRAMEWORK 5.3.19 SUBCOMPONENTS:
+SPRING FRAMEWORK 5.3.20 SUBCOMPONENTS:
 
-Spring Framework 5.3.19 includes a number of subcomponents
+Spring Framework 5.3.20 includes a number of subcomponents
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source
@@ -9514,7 +9512,7 @@ may accompany the Software.
 
                     ****************************************                    
 
-Spring Framework 5.3.19
+Spring Framework 5.3.20
 Copyright (c) 2002-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -9528,7 +9526,7 @@ subcomponent's license, as noted in the license.txt file.
 
 --------------------------------------------------------------------------------
 
-108. Group: org.springframework  Name: spring-aspects  Version: 5.3.19
+107. Group: org.springframework  Name: spring-aspects  Version: 5.3.20
 
 POM Project URL: https://github.com/spring-projects/spring-framework
 
@@ -9742,9 +9740,9 @@ Embedded license:
 
 =======================================================================
 
-SPRING FRAMEWORK 5.3.19 SUBCOMPONENTS:
+SPRING FRAMEWORK 5.3.20 SUBCOMPONENTS:
 
-Spring Framework 5.3.19 includes a number of subcomponents
+Spring Framework 5.3.20 includes a number of subcomponents
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source
@@ -9830,7 +9828,7 @@ may accompany the Software.
 
                     ****************************************                    
 
-Spring Framework 5.3.19
+Spring Framework 5.3.20
 Copyright (c) 2002-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -9844,7 +9842,7 @@ subcomponent's license, as noted in the license.txt file.
 
 --------------------------------------------------------------------------------
 
-109. Group: org.springframework  Name: spring-beans  Version: 5.3.19
+108. Group: org.springframework  Name: spring-beans  Version: 5.3.20
 
 POM Project URL: https://github.com/spring-projects/spring-framework
 
@@ -10058,9 +10056,9 @@ Embedded license:
 
 =======================================================================
 
-SPRING FRAMEWORK 5.3.19 SUBCOMPONENTS:
+SPRING FRAMEWORK 5.3.20 SUBCOMPONENTS:
 
-Spring Framework 5.3.19 includes a number of subcomponents
+Spring Framework 5.3.20 includes a number of subcomponents
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source
@@ -10146,7 +10144,7 @@ may accompany the Software.
 
                     ****************************************                    
 
-Spring Framework 5.3.19
+Spring Framework 5.3.20
 Copyright (c) 2002-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -10160,7 +10158,7 @@ subcomponent's license, as noted in the license.txt file.
 
 --------------------------------------------------------------------------------
 
-110. Group: org.springframework  Name: spring-context  Version: 5.3.19
+109. Group: org.springframework  Name: spring-context  Version: 5.3.20
 
 POM Project URL: https://github.com/spring-projects/spring-framework
 
@@ -10374,9 +10372,9 @@ Embedded license:
 
 =======================================================================
 
-SPRING FRAMEWORK 5.3.19 SUBCOMPONENTS:
+SPRING FRAMEWORK 5.3.20 SUBCOMPONENTS:
 
-Spring Framework 5.3.19 includes a number of subcomponents
+Spring Framework 5.3.20 includes a number of subcomponents
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source
@@ -10462,7 +10460,7 @@ may accompany the Software.
 
                     ****************************************                    
 
-Spring Framework 5.3.19
+Spring Framework 5.3.20
 Copyright (c) 2002-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -10476,7 +10474,7 @@ subcomponent's license, as noted in the license.txt file.
 
 --------------------------------------------------------------------------------
 
-111. Group: org.springframework  Name: spring-core  Version: 5.3.19
+110. Group: org.springframework  Name: spring-core  Version: 5.3.20
 
 POM Project URL: https://github.com/spring-projects/spring-framework
 
@@ -10690,9 +10688,9 @@ Embedded license:
 
 =======================================================================
 
-SPRING FRAMEWORK 5.3.19 SUBCOMPONENTS:
+SPRING FRAMEWORK 5.3.20 SUBCOMPONENTS:
 
-Spring Framework 5.3.19 includes a number of subcomponents
+Spring Framework 5.3.20 includes a number of subcomponents
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source
@@ -10778,7 +10776,7 @@ may accompany the Software.
 
                     ****************************************                    
 
-Spring Framework 5.3.19
+Spring Framework 5.3.20
 Copyright (c) 2002-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -10792,7 +10790,7 @@ subcomponent's license, as noted in the license.txt file.
 
 --------------------------------------------------------------------------------
 
-112. Group: org.springframework  Name: spring-expression  Version: 5.3.19
+111. Group: org.springframework  Name: spring-expression  Version: 5.3.20
 
 POM Project URL: https://github.com/spring-projects/spring-framework
 
@@ -11006,9 +11004,9 @@ Embedded license:
 
 =======================================================================
 
-SPRING FRAMEWORK 5.3.19 SUBCOMPONENTS:
+SPRING FRAMEWORK 5.3.20 SUBCOMPONENTS:
 
-Spring Framework 5.3.19 includes a number of subcomponents
+Spring Framework 5.3.20 includes a number of subcomponents
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source
@@ -11094,7 +11092,7 @@ may accompany the Software.
 
                     ****************************************                    
 
-Spring Framework 5.3.19
+Spring Framework 5.3.20
 Copyright (c) 2002-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -11108,7 +11106,7 @@ subcomponent's license, as noted in the license.txt file.
 
 --------------------------------------------------------------------------------
 
-113. Group: org.springframework  Name: spring-jcl  Version: 5.3.19
+112. Group: org.springframework  Name: spring-jcl  Version: 5.3.20
 
 POM Project URL: https://github.com/spring-projects/spring-framework
 
@@ -11322,9 +11320,9 @@ Embedded license:
 
 =======================================================================
 
-SPRING FRAMEWORK 5.3.19 SUBCOMPONENTS:
+SPRING FRAMEWORK 5.3.20 SUBCOMPONENTS:
 
-Spring Framework 5.3.19 includes a number of subcomponents
+Spring Framework 5.3.20 includes a number of subcomponents
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source
@@ -11410,7 +11408,7 @@ may accompany the Software.
 
                     ****************************************                    
 
-Spring Framework 5.3.19
+Spring Framework 5.3.20
 Copyright (c) 2002-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -11424,7 +11422,7 @@ subcomponent's license, as noted in the license.txt file.
 
 --------------------------------------------------------------------------------
 
-114. Group: org.springframework  Name: spring-jdbc  Version: 5.3.19
+113. Group: org.springframework  Name: spring-jdbc  Version: 5.3.20
 
 POM Project URL: https://github.com/spring-projects/spring-framework
 
@@ -11638,9 +11636,9 @@ Embedded license:
 
 =======================================================================
 
-SPRING FRAMEWORK 5.3.19 SUBCOMPONENTS:
+SPRING FRAMEWORK 5.3.20 SUBCOMPONENTS:
 
-Spring Framework 5.3.19 includes a number of subcomponents
+Spring Framework 5.3.20 includes a number of subcomponents
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source
@@ -11726,7 +11724,7 @@ may accompany the Software.
 
                     ****************************************                    
 
-Spring Framework 5.3.19
+Spring Framework 5.3.20
 Copyright (c) 2002-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -11740,7 +11738,7 @@ subcomponent's license, as noted in the license.txt file.
 
 --------------------------------------------------------------------------------
 
-115. Group: org.springframework  Name: spring-messaging  Version: 5.3.19
+114. Group: org.springframework  Name: spring-messaging  Version: 5.3.20
 
 POM Project URL: https://github.com/spring-projects/spring-framework
 
@@ -11954,9 +11952,9 @@ Embedded license:
 
 =======================================================================
 
-SPRING FRAMEWORK 5.3.19 SUBCOMPONENTS:
+SPRING FRAMEWORK 5.3.20 SUBCOMPONENTS:
 
-Spring Framework 5.3.19 includes a number of subcomponents
+Spring Framework 5.3.20 includes a number of subcomponents
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source
@@ -12042,7 +12040,7 @@ may accompany the Software.
 
                     ****************************************                    
 
-Spring Framework 5.3.19
+Spring Framework 5.3.20
 Copyright (c) 2002-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -12056,7 +12054,7 @@ subcomponent's license, as noted in the license.txt file.
 
 --------------------------------------------------------------------------------
 
-116. Group: org.springframework  Name: spring-orm  Version: 5.3.19
+115. Group: org.springframework  Name: spring-orm  Version: 5.3.20
 
 POM Project URL: https://github.com/spring-projects/spring-framework
 
@@ -12270,9 +12268,9 @@ Embedded license:
 
 =======================================================================
 
-SPRING FRAMEWORK 5.3.19 SUBCOMPONENTS:
+SPRING FRAMEWORK 5.3.20 SUBCOMPONENTS:
 
-Spring Framework 5.3.19 includes a number of subcomponents
+Spring Framework 5.3.20 includes a number of subcomponents
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source
@@ -12358,7 +12356,7 @@ may accompany the Software.
 
                     ****************************************                    
 
-Spring Framework 5.3.19
+Spring Framework 5.3.20
 Copyright (c) 2002-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -12372,7 +12370,7 @@ subcomponent's license, as noted in the license.txt file.
 
 --------------------------------------------------------------------------------
 
-117. Group: org.springframework  Name: spring-tx  Version: 5.3.19
+116. Group: org.springframework  Name: spring-tx  Version: 5.3.20
 
 POM Project URL: https://github.com/spring-projects/spring-framework
 
@@ -12586,9 +12584,9 @@ Embedded license:
 
 =======================================================================
 
-SPRING FRAMEWORK 5.3.19 SUBCOMPONENTS:
+SPRING FRAMEWORK 5.3.20 SUBCOMPONENTS:
 
-Spring Framework 5.3.19 includes a number of subcomponents
+Spring Framework 5.3.20 includes a number of subcomponents
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source
@@ -12674,7 +12672,7 @@ may accompany the Software.
 
                     ****************************************                    
 
-Spring Framework 5.3.19
+Spring Framework 5.3.20
 Copyright (c) 2002-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -12688,7 +12686,7 @@ subcomponent's license, as noted in the license.txt file.
 
 --------------------------------------------------------------------------------
 
-118. Group: org.springframework  Name: spring-web  Version: 5.3.19
+117. Group: org.springframework  Name: spring-web  Version: 5.3.20
 
 POM Project URL: https://github.com/spring-projects/spring-framework
 
@@ -12902,9 +12900,9 @@ Embedded license:
 
 =======================================================================
 
-SPRING FRAMEWORK 5.3.19 SUBCOMPONENTS:
+SPRING FRAMEWORK 5.3.20 SUBCOMPONENTS:
 
-Spring Framework 5.3.19 includes a number of subcomponents
+Spring Framework 5.3.20 includes a number of subcomponents
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source
@@ -12990,7 +12988,7 @@ may accompany the Software.
 
                     ****************************************                    
 
-Spring Framework 5.3.19
+Spring Framework 5.3.20
 Copyright (c) 2002-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -13004,7 +13002,7 @@ subcomponent's license, as noted in the license.txt file.
 
 --------------------------------------------------------------------------------
 
-119. Group: org.springframework  Name: spring-webflux  Version: 5.3.19
+118. Group: org.springframework  Name: spring-webflux  Version: 5.3.20
 
 POM Project URL: https://github.com/spring-projects/spring-framework
 
@@ -13218,9 +13216,9 @@ Embedded license:
 
 =======================================================================
 
-SPRING FRAMEWORK 5.3.19 SUBCOMPONENTS:
+SPRING FRAMEWORK 5.3.20 SUBCOMPONENTS:
 
-Spring Framework 5.3.19 includes a number of subcomponents
+Spring Framework 5.3.20 includes a number of subcomponents
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source
@@ -13306,7 +13304,7 @@ may accompany the Software.
 
                     ****************************************                    
 
-Spring Framework 5.3.19
+Spring Framework 5.3.20
 Copyright (c) 2002-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -13320,7 +13318,7 @@ subcomponent's license, as noted in the license.txt file.
 
 --------------------------------------------------------------------------------
 
-120. Group: org.springframework  Name: spring-webmvc  Version: 5.3.19
+119. Group: org.springframework  Name: spring-webmvc  Version: 5.3.20
 
 POM Project URL: https://github.com/spring-projects/spring-framework
 
@@ -13534,9 +13532,9 @@ Embedded license:
 
 =======================================================================
 
-SPRING FRAMEWORK 5.3.19 SUBCOMPONENTS:
+SPRING FRAMEWORK 5.3.20 SUBCOMPONENTS:
 
-Spring Framework 5.3.19 includes a number of subcomponents
+Spring Framework 5.3.20 includes a number of subcomponents
 with separate copyright notices and license terms. The product that
 includes this file does not necessarily use all the open source
 subcomponents referred to below. Your use of the source
@@ -13622,7 +13620,7 @@ may accompany the Software.
 
                     ****************************************                    
 
-Spring Framework 5.3.19
+Spring Framework 5.3.20
 Copyright (c) 2002-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -13636,7 +13634,7 @@ subcomponent's license, as noted in the license.txt file.
 
 --------------------------------------------------------------------------------
 
-121. Group: org.springframework.amqp  Name: spring-amqp  Version: 2.4.4
+120. Group: org.springframework.amqp  Name: spring-amqp  Version: 2.4.5
 
 POM Project URL: https://github.com/spring-projects/spring-amqp
 
@@ -13850,7 +13848,7 @@ Embedded license:
 
                     ****************************************                    
 
-Spring AMQP Framework 2.4.4
+Spring AMQP Framework 2.4.5
 Copyright (c) 2010-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -13864,7 +13862,7 @@ subcomponent's license, as noted in the license.txt file.
 
 --------------------------------------------------------------------------------
 
-122. Group: org.springframework.amqp  Name: spring-rabbit  Version: 2.4.4
+121. Group: org.springframework.amqp  Name: spring-rabbit  Version: 2.4.5
 
 POM Project URL: https://github.com/spring-projects/spring-amqp
 
@@ -14078,7 +14076,7 @@ Embedded license:
 
                     ****************************************                    
 
-Spring AMQP Framework 2.4.4
+Spring AMQP Framework 2.4.5
 Copyright (c) 2010-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -14092,7 +14090,7 @@ subcomponent's license, as noted in the license.txt file.
 
 --------------------------------------------------------------------------------
 
-123. Group: org.springframework.boot  Name: spring-boot  Version: 2.6.7
+122. Group: org.springframework.boot  Name: spring-boot  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -14306,7 +14304,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -14314,7 +14312,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-124. Group: org.springframework.boot  Name: spring-boot-actuator  Version: 2.6.7
+123. Group: org.springframework.boot  Name: spring-boot-actuator  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -14528,7 +14526,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -14536,7 +14534,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-125. Group: org.springframework.boot  Name: spring-boot-actuator-autoconfigure  Version: 2.6.7
+124. Group: org.springframework.boot  Name: spring-boot-actuator-autoconfigure  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -14750,7 +14748,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -14758,7 +14756,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-126. Group: org.springframework.boot  Name: spring-boot-autoconfigure  Version: 2.6.7
+125. Group: org.springframework.boot  Name: spring-boot-autoconfigure  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -14972,7 +14970,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -14980,7 +14978,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-127. Group: org.springframework.boot  Name: spring-boot-starter  Version: 2.6.7
+126. Group: org.springframework.boot  Name: spring-boot-starter  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -15194,7 +15192,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -15202,7 +15200,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-128. Group: org.springframework.boot  Name: spring-boot-starter-actuator  Version: 2.6.7
+127. Group: org.springframework.boot  Name: spring-boot-starter-actuator  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -15416,7 +15414,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -15424,7 +15422,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-129. Group: org.springframework.boot  Name: spring-boot-starter-amqp  Version: 2.6.7
+128. Group: org.springframework.boot  Name: spring-boot-starter-amqp  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -15638,7 +15636,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -15646,7 +15644,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-130. Group: org.springframework.boot  Name: spring-boot-starter-aop  Version: 2.6.7
+129. Group: org.springframework.boot  Name: spring-boot-starter-aop  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -15860,7 +15858,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -15868,7 +15866,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-131. Group: org.springframework.boot  Name: spring-boot-starter-data-jpa  Version: 2.6.7
+130. Group: org.springframework.boot  Name: spring-boot-starter-data-jpa  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -16082,7 +16080,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -16090,7 +16088,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-132. Group: org.springframework.boot  Name: spring-boot-starter-data-rest  Version: 2.6.7
+131. Group: org.springframework.boot  Name: spring-boot-starter-data-rest  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -16304,7 +16302,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -16312,7 +16310,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-133. Group: org.springframework.boot  Name: spring-boot-starter-hateoas  Version: 2.6.7
+132. Group: org.springframework.boot  Name: spring-boot-starter-hateoas  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -16526,7 +16524,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -16534,7 +16532,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-134. Group: org.springframework.boot  Name: spring-boot-starter-jdbc  Version: 2.6.7
+133. Group: org.springframework.boot  Name: spring-boot-starter-jdbc  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -16748,7 +16746,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -16756,7 +16754,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-135. Group: org.springframework.boot  Name: spring-boot-starter-json  Version: 2.6.7
+134. Group: org.springframework.boot  Name: spring-boot-starter-json  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -16970,7 +16968,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -16978,7 +16976,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-136. Group: org.springframework.boot  Name: spring-boot-starter-logging  Version: 2.6.7
+135. Group: org.springframework.boot  Name: spring-boot-starter-logging  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -17192,7 +17190,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -17200,7 +17198,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-137. Group: org.springframework.boot  Name: spring-boot-starter-oauth2-resource-server  Version: 2.6.7
+136. Group: org.springframework.boot  Name: spring-boot-starter-oauth2-resource-server  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -17414,7 +17412,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -17422,7 +17420,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-138. Group: org.springframework.boot  Name: spring-boot-starter-reactor-netty  Version: 2.6.7
+137. Group: org.springframework.boot  Name: spring-boot-starter-reactor-netty  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -17636,7 +17634,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -17644,7 +17642,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-139. Group: org.springframework.boot  Name: spring-boot-starter-security  Version: 2.6.7
+138. Group: org.springframework.boot  Name: spring-boot-starter-security  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -17858,7 +17856,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -17866,7 +17864,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-140. Group: org.springframework.boot  Name: spring-boot-starter-tomcat  Version: 2.6.7
+139. Group: org.springframework.boot  Name: spring-boot-starter-tomcat  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -18080,7 +18078,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -18088,7 +18086,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-141. Group: org.springframework.boot  Name: spring-boot-starter-validation  Version: 2.6.7
+140. Group: org.springframework.boot  Name: spring-boot-starter-validation  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -18302,7 +18300,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -18310,7 +18308,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-142. Group: org.springframework.boot  Name: spring-boot-starter-web  Version: 2.6.7
+141. Group: org.springframework.boot  Name: spring-boot-starter-web  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -18524,7 +18522,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -18532,7 +18530,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-143. Group: org.springframework.boot  Name: spring-boot-starter-webflux  Version: 2.6.7
+142. Group: org.springframework.boot  Name: spring-boot-starter-webflux  Version: 2.7.0
 
 POM Project URL: https://spring.io/projects/spring-boot
 
@@ -18746,7 +18744,7 @@ Embedded license:
    limitations under the License.
                     ****************************************                    
 
-Spring Boot 2.6.7
+Spring Boot 2.7.0
 Copyright (c) 2012-2022 Pivotal, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0
@@ -18754,7 +18752,7 @@ This product is licensed to you under the Apache License, Version 2.0
 the License.
 --------------------------------------------------------------------------------
 
-144. Group: org.springframework.data  Name: spring-data-commons  Version: 2.6.4
+143. Group: org.springframework.data  Name: spring-data-commons  Version: 2.7.0
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
@@ -18980,7 +18978,7 @@ physical medium.  This offer to obtain a copy of the Source Files is valid for t
 years from the date you acquired this Software product.
                     ****************************************                    
 
-Spring Data Commons 2.6.4 (2021.1.4)
+Spring Data Commons 2.7 GA (2021.2.0)
 Copyright (c) [2010-2021] Pivotal Software, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0 (the "License").
@@ -19019,11 +19017,13 @@ conditions of the subcomponent's license, as noted in the LICENSE file.
 
 
 
+
+
 --------------------------------------------------------------------------------
 
-145. Group: org.springframework.data  Name: spring-data-jpa  Version: 2.6.4
+144. Group: org.springframework.data  Name: spring-data-jpa  Version: 2.7.0
 
-POM Project URL: https://projects.spring.io/spring-data-jpa
+POM Project URL: https://spring.io/projects/spring-data-jpa
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
@@ -19249,7 +19249,7 @@ physical medium.  This offer to obtain a copy of the Source Files is valid for t
 years from the date you acquired this Software product.
                     ****************************************                    
 
-Spring Data JPA 2.6.4 (2021.1.4)
+Spring Data JPA 2.7 GA (2021.2.0)
 Copyright (c) [2011-2019] Pivotal Software, Inc.
 
 This product is licensed to you under the Apache License, Version 2.0 (the "License").
@@ -19259,6 +19259,8 @@ This product may include a number of subcomponents with
 separate copyright notices and license terms. Your use of the source
 code for the these subcomponents is subject to the terms and
 conditions of the subcomponent's license, as noted in the LICENSE file.
+
+
 
 
 
@@ -19310,19 +19312,19 @@ Spring Data JPA on Stackoverflow: https://stackoverflow.com/questions/tagged/spr
 
 --------------------------------------------------------------------------------
 
-146. Group: org.springframework.data  Name: spring-data-rest-core  Version: 3.6.4
+145. Group: org.springframework.data  Name: spring-data-rest-core  Version: 3.7.0
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
 --------------------------------------------------------------------------------
 
-147. Group: org.springframework.data  Name: spring-data-rest-webmvc  Version: 3.6.4
+146. Group: org.springframework.data  Name: spring-data-rest-webmvc  Version: 3.7.0
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
 --------------------------------------------------------------------------------
 
-148. Group: org.springframework.hateoas  Name: spring-hateoas  Version: 1.4.2
+147. Group: org.springframework.hateoas  Name: spring-hateoas  Version: 1.5.0
 
 POM Project URL: https://github.com/spring-projects/spring-hateoas
 
@@ -19562,7 +19564,7 @@ code for the these subcomponents is subject to the terms and
 conditions of the subcomponent's license, as noted in the LICENSE file.
 --------------------------------------------------------------------------------
 
-149. Group: org.springframework.plugin  Name: spring-plugin-core  Version: 2.0.0.RELEASE
+148. Group: org.springframework.plugin  Name: spring-plugin-core  Version: 2.0.0.RELEASE
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
@@ -19802,7 +19804,7 @@ conditions of the subcomponent's license, as noted in the LICENSE file.
 
 --------------------------------------------------------------------------------
 
-150. Group: org.springframework.retry  Name: spring-retry  Version: 1.3.3
+149. Group: org.springframework.retry  Name: spring-retry  Version: 1.3.3
 
 POM Project URL: https://www.springsource.org
 
@@ -19810,7 +19812,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-151. Group: org.springframework.security  Name: spring-security-config  Version: 5.6.3
+150. Group: org.springframework.security  Name: spring-security-config  Version: 5.7.1
 
 POM Project URL: https://spring.io/projects/spring-security
 
@@ -19818,7 +19820,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-152. Group: org.springframework.security  Name: spring-security-core  Version: 5.6.3
+151. Group: org.springframework.security  Name: spring-security-core  Version: 5.7.1
 
 POM Project URL: https://spring.io/projects/spring-security
 
@@ -19826,7 +19828,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-153. Group: org.springframework.security  Name: spring-security-crypto  Version: 5.6.3
+152. Group: org.springframework.security  Name: spring-security-crypto  Version: 5.7.1
 
 POM Project URL: https://spring.io/projects/spring-security
 
@@ -19834,7 +19836,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-154. Group: org.springframework.security  Name: spring-security-oauth2-core  Version: 5.6.3
+153. Group: org.springframework.security  Name: spring-security-oauth2-core  Version: 5.7.1
 
 POM Project URL: https://spring.io/projects/spring-security
 
@@ -19842,7 +19844,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-155. Group: org.springframework.security  Name: spring-security-oauth2-jose  Version: 5.6.3
+154. Group: org.springframework.security  Name: spring-security-oauth2-jose  Version: 5.7.1
 
 POM Project URL: https://spring.io/projects/spring-security
 
@@ -19850,7 +19852,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-156. Group: org.springframework.security  Name: spring-security-oauth2-resource-server  Version: 5.6.3
+155. Group: org.springframework.security  Name: spring-security-oauth2-resource-server  Version: 5.7.1
 
 POM Project URL: https://spring.io/projects/spring-security
 
@@ -19858,7 +19860,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-157. Group: org.springframework.security  Name: spring-security-web  Version: 5.6.3
+156. Group: org.springframework.security  Name: spring-security-web  Version: 5.7.1
 
 POM Project URL: https://spring.io/projects/spring-security
 
@@ -19866,7 +19868,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-158. Group: org.webjars  Name: swagger-ui  Version: 4.10.3
+157. Group: org.webjars  Name: swagger-ui  Version: 4.10.3
 
 POM Project URL: http://webjars.org
 
@@ -19874,7 +19876,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-159. Group: org.webjars  Name: webjars-locator-core  Version: 0.48
+158. Group: org.webjars  Name: webjars-locator-core  Version: 0.50
 
 POM Project URL: http://webjars.org
 
@@ -19882,16 +19884,16 @@ POM License: MIT License - https://opensource.org/licenses/MIT
 
 --------------------------------------------------------------------------------
 
-160. Group: org.yaml  Name: snakeyaml  Version: 1.29
+159. Group: org.yaml  Name: snakeyaml  Version: 1.30
 
 Manifest license URL: https://www.apache.org/licenses/LICENSE-2.0
 
-POM Project URL: http://www.snakeyaml.org
+POM Project URL: https://bitbucket.org/snakeyaml/snakeyaml
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
 --------------------------------------------------------------------------------
 
 
-This report was generated at Tue May 24 08:02:07 UTC 2022.
+This report was generated at Tue May 24 11:39:41 CEST 2022.
 
