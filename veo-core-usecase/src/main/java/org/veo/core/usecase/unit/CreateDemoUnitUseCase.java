@@ -17,29 +17,26 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
+import static java.util.Comparator.comparingInt;
+
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
-import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.CompositeElement;
-import org.veo.core.entity.CustomLink;
+import org.veo.core.entity.Designated;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.RiskAffected;
-import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.transform.EntityFactory;
@@ -88,7 +85,6 @@ public class CreateDemoUnitUseCase
   @Override
   @Transactional
   public OutputData execute(InputData input) {
-
     Client client = clientRepository.findById(input.getClientId()).orElseThrow();
     return new OutputData(createDemoUnitForClient(client));
   }
@@ -101,99 +97,54 @@ public class CreateDemoUnitUseCase
     Set<Domain> domainsFromElements =
         demoUnitElements.stream()
             .flatMap(element -> element.getDomains().stream())
-            .distinct()
             .collect(Collectors.toSet());
     demoUnit.addToDomains(domainsFromElements);
     unitRepository.save(demoUnit);
-    Map<Class<Element>, List<Element>> elementsGroupedByType = groupByType(demoUnitElements);
-    Map<Element, Set<CustomLink>> links = new HashMap<>();
 
-    Map<RiskAffected, Set<AbstractRisk>> risks = new HashMap<>();
-    // save links after the elements
+    // Assign sequential demo designators in deterministic order and assign owner.
+    var riskAffectedElements = new HashSet<Element>();
+    var counter = new AtomicInteger();
     demoUnitElements.stream()
-        .filter(e -> !e.getLinks().isEmpty())
+        .sorted(Comparator.comparing(e -> e.getModelInterface().getSimpleName()))
         .forEach(
             e -> {
-              links.put(e, Set.copyOf(e.getLinks()));
-              e.getLinks().clear();
+              designate(e, counter);
+              e.setOwner(demoUnit);
             });
-    // save risks after the elements
+
+    // Designate risks
     demoUnitElements.stream()
         .filter(e -> e instanceof RiskAffected)
-        .map(RiskAffected.class::cast)
-        .filter(e -> !e.getRisks().isEmpty())
+        .map(e -> (RiskAffected<?, ?>) e)
+        .flatMap(riskAffected -> riskAffected.getRisks().stream())
         .forEach(
-            e -> {
-              risks.put(e, Set.copyOf(e.getRisks()));
-              e.getRisks().clear();
+            risk -> {
+              designate(risk, counter);
+              riskAffectedElements.add(risk.getEntity());
             });
 
-    AtomicInteger counter = new AtomicInteger(0);
-    elementsGroupedByType.entrySet().stream()
-        // sort entries by model type to get predictable designators
-        .sorted(Comparator.comparing(entry -> entry.getKey().getSimpleName()))
-        .forEach(e -> prepareAndSaveElements(e.getKey(), e.getValue(), demoUnit, counter));
-    log.info("Demo unit with {} elements created", demoUnitElements.size());
-    links.entrySet().stream()
-        .forEach(
-            e -> {
-              e.getValue().stream()
-                  .forEach(
-                      l -> {
-                        e.getKey().addToLinks(l);
-                      });
-            });
-    risks.entrySet().stream()
-        .forEach(
-            e ->
-                e.getValue().stream()
-                    .forEach(
-                        r -> {
-                          r.setDesignator(DEMO_UNIT_DESIGNATOR_PREFIX + counter.incrementAndGet());
-                          e.getKey().addRisk(r);
-                        }));
-    Set<Element> elementsToSave =
-        Stream.concat(links.keySet().stream(), risks.keySet().stream()).collect(Collectors.toSet());
+    // Batch-save elements per type. Risk-affected elements must be saved last (because risks may
+    // hold references to non-risk-affected elements which must have been saved beforehand).
+    demoUnitElements.stream()
+        .collect(Collectors.groupingBy(e1 -> (Class<Element>) e1.getModelInterface()))
+        .entrySet()
+        .stream()
+        .sorted(comparingInt(t -> RiskAffected.class.isAssignableFrom(t.getKey()) ? 1 : 0))
+        .forEach(t -> saveElements(t.getKey(), t.getValue()));
 
-    groupByType(elementsToSave).entrySet().stream()
-        .forEach(e -> saveElements(e.getKey(), e.getValue()));
-    elementsToSave.forEach(
+    riskAffectedElements.forEach(
         it -> eventPublisher.publish(new RiskAffectingElementChangeEvent(it, this)));
     return demoUnit;
   }
 
-  @SuppressWarnings("unchecked")
-  private Map<Class<Element>, List<Element>> groupByType(Collection<Element> elements) {
-    return elements.stream()
-        .collect(Collectors.groupingBy(e1 -> (Class<Element>) e1.getModelInterface()));
-  }
-
-  private <T extends Element> void prepareAndSaveElements(
-      Class<T> entityType, List<T> elementsWithType, Unit demoUnit, AtomicInteger counter) {
-    elementsWithType.forEach(element -> prepareElement(element, demoUnit, counter));
-    saveElements(entityType, elementsWithType);
+  private void designate(Designated entity, AtomicInteger counter) {
+    entity.setDesignator(DEMO_UNIT_DESIGNATOR_PREFIX + counter.incrementAndGet());
   }
 
   private <T extends Element> void saveElements(Class<T> entityType, List<T> elementsWithType) {
     ElementRepository<T> elementRepository = repositoryProvider.getElementRepositoryFor(entityType);
     log.debug("Saving {} entities with type {}", elementsWithType.size(), entityType);
     elementRepository.saveAll(Set.copyOf(elementsWithType));
-    log.debug("Done");
-  }
-
-  private void prepareElement(Element element, Unit demoUnit, AtomicInteger counter) {
-    log.debug("Preparing element {}:{}", element.getId(), element);
-    element.setDesignator(DEMO_UNIT_DESIGNATOR_PREFIX + counter.incrementAndGet());
-    element.setOwner(demoUnit);
-
-    if (element instanceof CompositeElement<?>) {
-      CompositeElement<?> ce = (CompositeElement<?>) element;
-      ce.getParts().forEach(e -> prepareElement(e, demoUnit, counter));
-    } else if (element instanceof Scope) {
-      Scope scope = (Scope) element;
-      Set<Element> members = scope.getMembers();
-      members.forEach(m -> prepareElement(m, demoUnit, counter));
-    }
   }
 
   @Valid
