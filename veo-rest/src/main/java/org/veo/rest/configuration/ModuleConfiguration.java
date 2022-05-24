@@ -151,6 +151,7 @@ import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
 import org.veo.core.usecase.scope.UpdateScopeUseCase;
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
+import org.veo.core.usecase.unit.DeleteDemoUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
@@ -477,6 +478,14 @@ public class ModuleConfiguration {
         getEntityFactory(),
         domainTemplateService,
         repositoryProvider);
+  }
+
+  @Bean
+  public DeleteDemoUnitUseCase getDeleteDemoUnitUseCase(
+      DeleteUnitUseCase deleteUnitUseCase,
+      GetClientUseCase getClientUseCase,
+      GetUnitsUseCase getUnitsUseCase) {
+    return new DeleteDemoUnitUseCase(deleteUnitUseCase, getClientUseCase, getUnitsUseCase);
   }
 
   @Bean

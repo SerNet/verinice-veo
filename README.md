@@ -112,6 +112,9 @@ It will enable the following background tasks:
 
 * an event-dispatcher that forwards the generated application events to an external AMQP
 message broker.  The dispatcher needs to be configured using the corresponding settings found in `application.yaml`.
+* a scheduled task that resets a "demo unit" with example content in the database at the specified
+time interval. The point in time needs to be specified with the corresponding settings found in `application.yaml`.
+The default is to reset the example content at 03:00 am (UTC) every day.
 
 #### Profile 'local'
 (Or any other self-defined profile name). Loads additional configuration files that can be used to set up
