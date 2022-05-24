@@ -28,8 +28,10 @@ class DomainUpdateRestTest extends VeoRestTest {
     String newDomainTemplateId
     String templateName
     String processToScopeLinkName
+    String unitId
 
     def setup() {
+        unitId = postNewUnit("you knit").resourceId
         templateName = "domain update test template ${UUID.randomUUID()}"
 
         // TODO VEO-661 use constant link name once each link is assigned to one domain and the
@@ -50,7 +52,6 @@ class DomainUpdateRestTest extends VeoRestTest {
         given:
         post("/domaintemplates/$oldDomainTemplateId/createdomains", null, 204, ADMIN)
         def oldDomainId = get("/domains").body.find { it.name == templateName }.id
-        def unitId = postNewUnit("you knit").resourceId
         def scopeId = post("/scopes", [
             name: "target scope",
             owner: [targetUri: "$baseUrl/units/$unitId"],
