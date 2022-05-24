@@ -20,6 +20,7 @@ package org.veo.core.usecase.catalogitem
 import org.veo.core.entity.Catalog
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Control
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.repository.CatalogItemRepository
 import org.veo.core.repository.DomainRepository
@@ -55,6 +56,7 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
         unitRepo.findById(_) >> Optional.empty()
 
 
+
         control.getModelInterface() >> Control.class
         newControl.getModelInterface() >> Control.class
 
@@ -65,6 +67,8 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
         def existingDomainId = Key.newUuid()
         existingDomain.id >> existingDomainId
         existingDomain.owner >> existingClient
+        existingDomain.modelInterface >> Domain.class
+        domainRepository.findById(existingDomainId) >> Optional.of(existingDomain)
 
         def id = Key.newUuid()
         item1.id >> id

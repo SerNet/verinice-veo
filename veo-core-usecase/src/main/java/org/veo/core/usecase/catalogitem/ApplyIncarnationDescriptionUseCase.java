@@ -120,10 +120,28 @@ public class ApplyIncarnationDescriptionUseCase
           return elementData.elements;
         };
 
-    Domain domain =
-        domainRepository
-            .findByCatalogItem(catalogItemsbyId.values().iterator().next())
-            .orElseThrow();
+    Set<Key<UUID>> usedDomains1 =
+        catalogItemsbyId.values().stream()
+            .map(ci -> ci.getCatalog().getDomainTemplate().getId())
+            .collect(Collectors.toSet());
+
+    Map<Key<UUID>, Domain> usedDomains =
+        usedDomains1.stream()
+            .collect(
+                Collectors.toMap(
+                    Function.identity(),
+                    k ->
+                        domainRepository
+                            .findById(k)
+                            .orElseThrow(
+                                () ->
+                                    new NotFoundException("Domain %s not found.", k.uuidValue()))));
+
+    usedDomains
+        .values()
+        .forEach(
+            domain ->
+                UseCaseTools.checkDomainBelongsToClient(input.getAuthenticatedClient(), domain));
 
     List<Element> createdElements =
         input.getReferencesToApply().stream()
@@ -134,8 +152,8 @@ public class ApplyIncarnationDescriptionUseCase
                   if (catalogItem == null) {
                     throw new NotFoundException("CatalogItem not found %s", catalogItemId);
                   }
-
-                  UseCaseTools.checkDomainBelongsToClient(input.getAuthenticatedClient(), domain);
+                  Domain domain =
+                      usedDomains.get(catalogItem.getCatalog().getDomainTemplate().getId());
                   return createElementFromCatalogItem(
                       unit, authenticatedClient, catalogItem, domain, ra.getReferences());
                 })

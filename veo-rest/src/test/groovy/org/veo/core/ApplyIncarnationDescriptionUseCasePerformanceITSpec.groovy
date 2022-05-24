@@ -105,7 +105,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends VeoSpringSpec 
         def queryCounts = QueryCountHolder.grandTotal
         then:
         description.references.size() == 8
-        queryCounts.select == 5
+        queryCounts.select == 4
         when:
         def inputData = new  ApplyIncarnationDescriptionUseCase.InputData(client, unit.id, description.references)
         QueryCountHolder.clear()
@@ -114,7 +114,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends VeoSpringSpec 
         }
         queryCounts = QueryCountHolder.grandTotal
         then:
-        queryCounts.select == 30
+        queryCounts.select == 29
         queryCounts.insert == 24
     }
 

@@ -214,11 +214,17 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
 
         item1.tailoringReferences >> []
 
+        def otherDomainId = Key.newUuid()
+        Domain otherDomain = Mock(Domain)
+        otherDomain.id >> otherDomainId
+        otherDomain.modelInterface >> Domain.class
         domainRepository
-                .findByCatalogItem(item2) >> Optional.of(Mock(Domain))
+                .findByCatalogItem(item2) >> Optional.of(otherDomain)
+        domainRepository.findById(otherDomainId) >> Optional.of(otherDomain)
+
         Catalog other = Mock()
         item2.catalog >> other
-        other.domainTemplate >> Mock(Domain)
+        other.domainTemplate >> otherDomain
 
         when:
         usecase.execute(new InputData(existingClient, existingUnit.id, [
