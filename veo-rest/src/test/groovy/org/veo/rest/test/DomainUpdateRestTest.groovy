@@ -28,6 +28,7 @@ class DomainUpdateRestTest extends VeoRestTest {
     String newDomainTemplateId
     String templateName
     String processToScopeLinkName
+    String scopeToProcessLinkName
     String unitId
 
     def setup() {
@@ -40,6 +41,7 @@ class DomainUpdateRestTest extends VeoRestTest {
         // be conflicts when there are still domains created by this test left in the DB from a previous test run
         // (because rest-tests never cleanup the DB by design).
         processToScopeLinkName = "processToScopeLink_${UUID.randomUUID()}"
+        scopeToProcessLinkName = "scopeToProcessLink_${UUID.randomUUID()}"
 
         def template = getTemplate()
         oldDomainTemplateId = post("/domaintemplates", template, 201, CONTENT_CREATOR).body.resourceId
@@ -49,7 +51,7 @@ class DomainUpdateRestTest extends VeoRestTest {
     }
 
     def "updates client to new domain template version and migrates elements"() {
-        given:
+        given: "a scope and a process linked to it in the old domain"
         post("/domaintemplates/$oldDomainTemplateId/createdomains", null, 204, ADMIN)
         def oldDomainId = get("/domains").body.find { it.name == templateName }.id
         def scopeId = post("/scopes", [
@@ -62,6 +64,33 @@ class DomainUpdateRestTest extends VeoRestTest {
                 ]
             ]
         ]).body.resourceId
+        def processId = post("/processes", [
+            name: "old process",
+            owner: [targetUri: "$baseUrl/units/$unitId"],
+            domains: [
+                (oldDomainId): [
+                    subType: "PRO_DataProcessing",
+                    status: "NEW"
+                ]
+            ],
+            links: [
+                (processToScopeLinkName): [
+                    [
+                        target: [targetUri: "$baseUrl/scopes/$scopeId"]
+                    ]
+                ]
+            ]
+        ]).body.resourceId
+
+        and: "a link back from the scope to the process"
+        def scopeResponse = get("/scopes/$scopeId")
+        def scope = scopeResponse.body
+        scope.links[scopeToProcessLinkName] = [
+            [
+                target: [targetUri: "$baseUrl/processes/$processId"]
+            ]
+        ]
+        put("/scopes/$scopeId", scope, scopeResponse.parseETag())
 
         when: "incarnating the new domain template version"
         post("/domaintemplates/$newDomainTemplateId/createdomains", null, 204, ADMIN)
@@ -78,9 +107,24 @@ class DomainUpdateRestTest extends VeoRestTest {
         def migratedScope = get("/scopes/$scopeId").body
         def newDomainId = get("/domains").body.findAll{it.name == templateName}.first().id
 
-        then: "the sub type is still present under the new domain"
+        then: "the sub type and link are still present under the new domain"
         migratedScope.domains.keySet() =~ [newDomainId]
         migratedScope.domains[newDomainId].subType == "SCP_ResponsibleBody"
+        with(migratedScope.links[scopeToProcessLinkName]) {
+            size() == 1
+            first().target.targetUri == "$owner.baseUrl/processes/$processId"
+        }
+
+        when: "fetching the migrated process"
+        def migratedProcess = get("/processes/$processId").body
+
+        then: "the sub type & link are still present under the new domain"
+        migratedProcess.domains.keySet() =~ [newDomainId]
+        migratedProcess.domains[newDomainId].subType == "PRO_DataProcessing"
+        with(migratedProcess.links[processToScopeLinkName]) {
+            size() == 1
+            first().target.targetUri == "$owner.baseUrl/scopes/$scopeId"
+        }
 
         when: "adding a link from a new process to an old scope"
         post("/processes", [
@@ -192,7 +236,13 @@ class DomainUpdateRestTest extends VeoRestTest {
                 ],
                 'scope': [
                     'customAspects': [:],
-                    'links': [:],
+                    'links': [
+                        (scopeToProcessLinkName): [
+                            attributeSchemas: [:],
+                            targetSubType: 'PRO_DataProcessing',
+                            targetType: 'process',
+                        ]
+                    ],
                     'subTypes': [
                         'SCP_ResponsibleBody': [
                             'statuses': [

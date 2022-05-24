@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.domain;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -91,22 +92,30 @@ public class UpdateAllClientDomainsUseCase
         unit.addToDomains(newDomain);
       }
     }
-    EntityType.ELEMENT_TYPES.stream()
-        .forEach(
-            type -> {
-              Set<? extends Element> elements =
-                  repositoryProvider
-                      .getElementRepositoryFor((Class<Element>) type.getType())
-                      .findByDomain(domainToUpdate);
-              elements.forEach(
-                  element -> {
-                    element.transferToDomain(domainToUpdate, newDomain);
-                    elementMigrationService.migrate(
-                        element,
+
+    var elementsByTypeDef =
+        EntityType.ELEMENT_TYPES.stream()
+            .collect(
+                Collectors.toMap(
+                    type ->
                         newDomain.getElementTypeDefinition(type.getSingularTerm()).orElseThrow(),
-                        newDomain);
-                  });
-            });
+                    type ->
+                        repositoryProvider
+                            .getElementRepositoryFor((Class<Element>) type.getType())
+                            .findByDomain(domainToUpdate)));
+
+    // Transfer domain-specific information from old domain to new domain.
+    elementsByTypeDef.values().stream()
+        .flatMap(Collection::stream)
+        .forEach(element -> element.transferToDomain(domainToUpdate, newDomain));
+
+    // Mercilessly remove all information from the elements that is no longer valid under the new
+    // domain. This must happen after all elements have been transferred, because link targets are
+    // also validated and must have been transferred beforehand.
+    elementsByTypeDef.forEach(
+        (typeDef, elements) ->
+            elements.forEach(
+                element -> elementMigrationService.migrate(element, typeDef, newDomain)));
   }
 
   @Valid
