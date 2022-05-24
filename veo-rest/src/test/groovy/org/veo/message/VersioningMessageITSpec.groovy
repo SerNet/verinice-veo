@@ -77,5 +77,19 @@ class VersioningMessageITSpec extends VeoSpringSpec {
                 assert content.designator.contains("DMO-")
             }
         })
+
+        and: "there is one creation message for each catalog item"
+        var catalogItems = txTemplate.execute {
+            domainDataRepository.findAllByClient(clientId.uuidValue())
+                    .collectMany { it.catalogs }
+                    .collectMany { it.catalogItems }
+        }
+        catalogItems.size() > 0
+        catalogItems.forEach({ item ->
+            def itemMessages = messages.findAll { it.uri?.contains("/items/$item.idAsString") }
+            assert itemMessages.size() == 2
+            assert itemMessages.find{it.type == "CREATION"}.changeNumber == 0
+            assert itemMessages.find{it.type == "MODIFICATION"}.changeNumber == 1
+        })
     }
 }

@@ -111,15 +111,14 @@ public class MessageCreatorImpl implements MessageCreator {
   }
 
   private long getChangeNumber(Versioned entity, VersioningEvent.Type type) {
+    if (type == VersioningEvent.Type.PERSIST) {
+      return 0;
+    }
     // We use the JPA version number as a base for our continuous change number.
     // When updating an entity, JPA increments the version number after this message
     // creation, so we must add 1 to the version number. We must also add 1 in case
     // of a deletion, because JPA won't assign a new number for a deleted entity.
-    var changeNumber = entity.getVersion();
-    if (type != VersioningEvent.Type.PERSIST) {
-      changeNumber++;
-    }
-    return changeNumber;
+    return entity.getVersion() + 1;
   }
 
   private String getUri(Versioned entity) {
