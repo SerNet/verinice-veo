@@ -225,7 +225,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.elementTypeDefinitions.size() == 1
     }
 
-    def 'fetches latest template by name'() {
+    def 'fetches templates by name'() {
         given: "different iso template versions and one unrelated mogs template"
         repository.save(newDomainTemplate {
             name = "ISO"
@@ -249,10 +249,10 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         })
 
         when:
-        def result = repository.findLatestTemplateIdByName("ISO")
+        def result = repository.findTemplateIdsByName("ISO")
 
         then:
-        result.present
-        repository.findById(result.get()).get().templateVersion == "10.1.1"
+        result.size() == 4
+        repository.findById(result.last()).get().templateVersion == "10.1.1"
     }
 }

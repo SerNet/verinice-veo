@@ -18,7 +18,6 @@
 package org.veo.persistence.access;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -52,7 +51,9 @@ public class DomainTemplateRepositoryImpl
   }
 
   @Override
-  public Optional<Key<UUID>> getLatestDomainTemplateId(String name) {
-    return dataRepository.findLatestTemplateIdByName(name).map(Key::uuidFrom);
+  public List<Key<UUID>> getDomainTemplateIds(String name) {
+    return dataRepository.findTemplateIdsByName(name).stream()
+        .map(Key::uuidFrom)
+        .collect(Collectors.toUnmodifiableList());
   }
 }

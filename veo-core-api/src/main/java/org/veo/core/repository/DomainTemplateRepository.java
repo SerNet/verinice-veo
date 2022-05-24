@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 import org.veo.core.entity.DomainTemplate;
@@ -30,5 +30,5 @@ import org.veo.core.entity.Key;
  * methods - i.e. queries based on particular fields.
  */
 public interface DomainTemplateRepository extends Repository<DomainTemplate, Key<UUID>> {
-  Optional<Key<UUID>> getLatestDomainTemplateId(String name);
+  List<Key<UUID>> getDomainTemplateIds(String name);
 }

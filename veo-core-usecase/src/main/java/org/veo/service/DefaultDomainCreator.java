@@ -17,9 +17,12 @@
  ******************************************************************************/
 package org.veo.service;
 
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Key;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.service.DomainTemplateService;
 
@@ -41,22 +44,29 @@ public class DefaultDomainCreator {
     if (!client.getDomains().isEmpty()) {
       throw new IllegalArgumentException("The client already owns domains.");
     }
+    Set<String> templateIdsWithClasspathFiles = domainService.getTemplateIdsWithClasspathFiles();
     defaultDomainTemplateNames.forEach(
         name -> {
-          domainTemplateRepository
-              .getLatestDomainTemplateId(name)
-              .ifPresentOrElse(
-                  templateId -> {
-                    log.debug(
-                        "Adding default domain {} ({}) to client {}",
-                        templateId,
-                        name,
-                        client.getIdAsString());
-                    client.addToDomains(domainService.createDomain(client, templateId.uuidValue()));
-                  },
-                  () -> {
-                    log.warn("Default domain template {} not found.", name);
-                  });
+          List<Key<UUID>> templateIds = domainTemplateRepository.getDomainTemplateIds(name);
+          if (templateIds.isEmpty()) {
+            log.warn("Default domain template {} not found.", name);
+          } else {
+            templateIds.stream()
+                .map(Key::uuidValue)
+                .filter(templateIdsWithClasspathFiles::contains)
+                .findFirst()
+                .ifPresentOrElse(
+                    templateId -> {
+                      log.debug(
+                          "Adding default domain {} ({}) to client {}",
+                          templateId,
+                          name,
+                          client.getIdAsString());
+                      client.addToDomains(domainService.createDomain(client, templateId));
+                    },
+                    () ->
+                        log.warn("Could not create domain {}, no demo unit elements found.", name));
+          }
         });
   }
 }

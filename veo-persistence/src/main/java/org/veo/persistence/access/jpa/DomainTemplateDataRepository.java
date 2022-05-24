@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 
@@ -26,9 +26,6 @@ import org.veo.persistence.entity.jpa.DomainTemplateData;
 public interface DomainTemplateDataRepository
     extends IdentifiableVersionedDataRepository<DomainTemplateData> {
 
-  @Query(
-      value =
-          "select db_id from domaintemplate where name = ?1 order by templateVersion desc limit 1",
-      nativeQuery = true)
-  Optional<String> findLatestTemplateIdByName(String name);
+  @Query(value = "select id from domaintemplate where name = ?1 order by templateVersion")
+  List<String> findTemplateIdsByName(String name);
 }

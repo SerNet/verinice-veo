@@ -46,8 +46,12 @@ class DefaultDomainCreatorSpec extends Specification {
         defaultDomainCreator.addDefaultDomains(client)
 
         then: 'both templates are incarnated in the client'
-        1 * domainTemplateRepo.getLatestDomainTemplateId("DS-GVO") >> Optional.of(dsgvoTemplateId)
-        1 * domainTemplateRepo.getLatestDomainTemplateId("ISO") >> Optional.of(isoTemplateId)
+        1 * domainTemplateRepo.getDomainTemplateIds("DS-GVO") >> [dsgvoTemplateId]
+        1 * domainTemplateRepo.getDomainTemplateIds("ISO") >> [isoTemplateId]
+        1 * domainTemplateService.getTemplateIdsWithClasspathFiles() >> [
+            dsgvoTemplateId.uuidValue(),
+            isoTemplateId.uuidValue()
+        ]
         1 * domainTemplateService.createDomain(client, dsgvoTemplateId.uuidValue()) >> dsgvoDomain
         1 * domainTemplateService.createDomain(client, isoTemplateId.uuidValue()) >> isoDomain
         1 * client.addToDomains(dsgvoDomain)
@@ -67,8 +71,11 @@ class DefaultDomainCreatorSpec extends Specification {
         defaultDomainCreator.addDefaultDomains(client)
 
         then: 'only the present domain template is incarnated'
-        1 * domainTemplateRepo.getLatestDomainTemplateId("DS-GVO") >> Optional.empty()
-        1 * domainTemplateRepo.getLatestDomainTemplateId("ISO") >> Optional.of(isoTemplateId)
+        1 * domainTemplateRepo.getDomainTemplateIds("DS-GVO") >> []
+        1 * domainTemplateRepo.getDomainTemplateIds("ISO") >> [isoTemplateId]
+        1 * domainTemplateService.getTemplateIdsWithClasspathFiles() >> [
+            isoTemplateId.uuidValue()
+        ]
         1 * domainTemplateService.createDomain(client, isoTemplateId.uuidValue()) >> isoDomain
         1 * client.addToDomains(isoDomain)
     }

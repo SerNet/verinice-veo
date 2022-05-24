@@ -20,6 +20,7 @@ package org.veo.core.service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.ExportDto;
@@ -55,4 +56,6 @@ public interface DomainTemplateService {
   ExportDto exportDomain(Domain domain);
 
   DomainTemplate createDomainTemplateFromDomain(Domain domain);
+
+  Set<String> getTemplateIdsWithClasspathFiles();
 }
