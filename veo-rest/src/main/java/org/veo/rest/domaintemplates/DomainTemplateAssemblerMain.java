@@ -108,7 +108,7 @@ public class DomainTemplateAssemblerMain {
               new File(System.getenv("domaintemplate.unit-dump-file")), TransformUnitDumpDto.class);
 
       templateDto.setDemoUnitElements(assembler.processDemoUnit(exportDto.getElements()));
-      templateDto.setDemoUnitRisks(exportDto.getRisks());
+      templateDto.setDemoUnitRisks(assembler.processDemoUnitRisks(exportDto.getRisks()));
       OBJECT_MAPPER
           .writerFor(TransformDomainTemplateDto.class)
           .writeValue(new File(System.getenv("domaintemplate.out.file")), templateDto);
