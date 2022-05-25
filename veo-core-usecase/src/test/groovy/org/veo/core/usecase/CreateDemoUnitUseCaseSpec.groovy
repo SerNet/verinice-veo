@@ -62,19 +62,17 @@ public class CreateDemoUnitUseCaseSpec extends UseCaseSpec {
             getRisks() >> []
             getOwningClient() >> Optional.of(existingClient)
         }
+        ProcessRisk risk = Mock {
+        }
 
         Process process = Mock {
             getModelInterface() >> Process
             getParts() >> []
             getLinks() >> []
             getDomains()  >> [domain]
+            getRisks() >> [risk]
             getOwningClient() >> Optional.of(existingClient)
         }
-        process.risks >> [
-            Mock(ProcessRisk) {
-                entity >> process
-            }
-        ]
 
         and: "a parent unit in an existing client"
         def input = new InputData(this.existingClient.getId())
@@ -109,9 +107,9 @@ public class CreateDemoUnitUseCaseSpec extends UseCaseSpec {
         and: "everything is saved in the database"
         1 * unitRepository.save(_) >> demoUnit
         1 * repositoryProvider.getElementRepositoryFor(Asset) >> assetRepository
-        1 * repositoryProvider.getElementRepositoryFor(Process) >> processRepository
+        2 * repositoryProvider.getElementRepositoryFor(Process) >> processRepository
         1 * assetRepository.saveAll([asset1, asset2] as Set)
-        1 * processRepository.saveAll([process] as Set)
+        2 * processRepository.saveAll([process] as Set)
         1 * eventPublisher.publish(_ as RiskAffectingElementChangeEvent)
 
         and: "a new unit was created and stored"

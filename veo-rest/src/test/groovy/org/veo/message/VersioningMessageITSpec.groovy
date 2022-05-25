@@ -91,11 +91,14 @@ class VersioningMessageITSpec extends VeoSpringSpec {
         processes.size() > 0
         processes.forEach({ process ->
             def elementMessages = messages.findAll { it.uri?.endsWith("/processes/${process.idAsString}") }
-            assert elementMessages.size() == 1
-            elementMessages.first().with{
-                assert type == "CREATION"
-                assert changeNumber == 0
-                assert content.designator.contains("DMO-")
+            assert elementMessages.size() == 2
+            with(elementMessages.find{it.changeNumber == 0}) {
+                type == "CREATION"
+                content.designator.contains("DMO-")
+            }
+            with(elementMessages.find{it.changeNumber == 1}) {
+                type == "MODIFICATION"
+                content.designator.contains("DMO-")
             }
         })
 
