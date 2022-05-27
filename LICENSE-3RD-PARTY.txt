@@ -1556,7 +1556,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-30. Group: io.github.classgraph  Name: classgraph  Version: 4.8.143
+30. Group: io.github.classgraph  Name: classgraph  Version: 4.8.147
 
 Manifest license URL: https://opensource.org/licenses/MIT
 
@@ -9192,19 +9192,19 @@ POM License: MIT License - https://opensource.org/licenses/MIT
 
 --------------------------------------------------------------------------------
 
-103. Group: org.springdoc  Name: springdoc-openapi-common  Version: 1.6.8
+103. Group: org.springdoc  Name: springdoc-openapi-common  Version: 1.6.9
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
 --------------------------------------------------------------------------------
 
-104. Group: org.springdoc  Name: springdoc-openapi-ui  Version: 1.6.8
+104. Group: org.springdoc  Name: springdoc-openapi-ui  Version: 1.6.9
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
 --------------------------------------------------------------------------------
 
-105. Group: org.springdoc  Name: springdoc-openapi-webmvc-core  Version: 1.6.8
+105. Group: org.springdoc  Name: springdoc-openapi-webmvc-core  Version: 1.6.9
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
@@ -19868,7 +19868,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-157. Group: org.webjars  Name: swagger-ui  Version: 4.10.3
+157. Group: org.webjars  Name: swagger-ui  Version: 4.11.1
 
 POM Project URL: http://webjars.org
 
@@ -19895,5 +19895,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Tue May 24 11:39:41 CEST 2022.
+This report was generated at Fri May 27 16:32:01 UTC 2022.
 
