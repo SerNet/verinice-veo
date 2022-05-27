@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -26,26 +29,38 @@ import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CatalogReference;
+import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.Key;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @MappedSuperclass
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class CatalogReferenceData extends IdentifiableVersionedData
-    implements CatalogReference {
+public abstract class CatalogReferenceData implements Identifiable, CatalogReference {
   @Id
   @ToString.Include
   @GeneratedValue(generator = "UUID")
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
   private String dbId;
 
+  @EqualsAndHashCode.Include
   @ManyToOne(targetEntity = CatalogItemData.class)
   private CatalogItem catalogItem;
 
   @ManyToOne(targetEntity = CatalogItemData.class, optional = false)
   private CatalogItem owner;
+
+  @Override
+  public Key<UUID> getId() {
+    return Key.uuidFrom(getDbId());
+  }
+
+  @Override
+  public void setId(Key<UUID> id) {
+    setDbId(Optional.ofNullable(id).map(Key::uuidValue).orElse(null));
+  }
 }

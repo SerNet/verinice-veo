@@ -48,7 +48,6 @@ public class CatalogItemPrepareStrategy {
     item.setId(null);
     item.setCatalog(catalog);
     updateVersion(item);
-    item.getTailoringReferences().forEach(CatalogItemPrepareStrategy::updateVersion);
     Element element = item.getElement();
     if (element != null) {
       prepareElement(domain, element, true);

@@ -201,7 +201,6 @@ abstract class VeoSpec extends Specification {
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.TailoringReference") Closure init = null) {
         return factory.createTailoringReference(catalogItem, type).tap {
             VeoSpec.execute(it, init)
-            VeoSpec.version(it)
         }
     }
 
@@ -209,7 +208,6 @@ abstract class VeoSpec extends Specification {
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.UpdateReference") Closure init = null) {
         return factory.createUpdateReference(catalogItem, type).tap {
             VeoSpec.execute(it, init)
-            VeoSpec.version(it)
         }
     }
 
@@ -219,7 +217,6 @@ abstract class VeoSpec extends Specification {
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.ExternalTailoringReference") Closure init = null) {
         return factory.createLinkTailoringReference(catalogItem, referenceType).tap {
             VeoSpec.execute(it, init)
-            VeoSpec.version(it)
         }
     }
 

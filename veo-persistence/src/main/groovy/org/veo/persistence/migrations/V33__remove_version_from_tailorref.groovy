@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler.
+ * Copyright (C) 2022  Finn Westendorf
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,27 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.entity.jpa;
+package org.veo.persistence.migrations
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-import org.veo.core.entity.CatalogReference;
-import org.veo.core.entity.TailoringReference;
-import org.veo.core.entity.TailoringReferenceType;
+import groovy.sql.Sql
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+class V33__remove_version_from_tailorref extends BaseJavaMigration {
+    @Override
+    void migrate(Context context) throws Exception {
+        new Sql(context.connection).execute("""
 
-@Entity(name = "tailoringreference")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-@Data
-public class TailoringReferenceData extends CatalogReferenceData
-    implements TailoringReference, CatalogReference {
+        alter table tailoringreference
+          drop column created_at ,
+          drop column created_by ,
+          drop column updated_at ,
+          drop column updated_by ,
+          drop column version ;
 
-  @Column(name = "referencetype")
-  @NotNull
-  @EqualsAndHashCode.Include
-  private TailoringReferenceType referenceType;
+
+""")
+    }
 }

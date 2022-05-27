@@ -73,7 +73,10 @@ class VersioningMessageITSpec extends VeoSpringSpec {
                 .findAll { it.routingKey.contains("versioning_event") }
                 .collect { new ObjectMapper().readValue(it.content, Map.class) }
 
-        then: "there is one creation message for each person"
+        then: "no message with uri null"
+        messages.every {it.uri != null}
+
+        and: "there is one creation message for each person"
         def persons = personRepository.query(clientRepository.findById(clientId).get()).execute(PagingConfiguration.UNPAGED).resultPage
         persons.size() > 0
         persons.forEach({ person ->

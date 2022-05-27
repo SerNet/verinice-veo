@@ -392,7 +392,6 @@ public final class EntityToDtoTransformer {
     } else {
       target = new FullTailoringReferenceDto(source.getId().uuidValue());
     }
-    mapVersionedProperties(source, target);
 
     target.setReferenceType(source.getReferenceType());
 
