@@ -103,13 +103,14 @@ import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
-import org.veo.core.usecase.decision.EvaluateDecisionUseCase;
+import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.person.CreatePersonUseCase;
 import org.veo.core.usecase.person.GetPersonUseCase;
 import org.veo.core.usecase.person.GetPersonsUseCase;
 import org.veo.core.usecase.person.UpdatePersonUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
+import org.veo.rest.schemas.EvaluateElementOutputSchema;
 import org.veo.rest.security.ApplicationUser;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -141,9 +142,9 @@ public class PersonController extends AbstractElementController<Person, FullPers
       GetPersonsUseCase getPersonsUseCase,
       UpdatePersonUseCase updatePersonUseCase,
       DeleteElementUseCase deleteElementUseCase,
-      EvaluateDecisionUseCase evaluateDecisionUseCase,
+      EvaluateElementUseCase evaluateElementUseCase,
       InspectElementUseCase inspectElementUseCase) {
-    super(Person.class, getPersonUseCase, evaluateDecisionUseCase, inspectElementUseCase);
+    super(Person.class, getPersonUseCase, evaluateElementUseCase, inspectElementUseCase);
     this.createPersonUseCase = createPersonUseCase;
     this.getPersonsUseCase = getPersonsUseCase;
     this.updatePersonUseCase = updatePersonUseCase;
@@ -391,6 +392,8 @@ public class PersonController extends AbstractElementController<Person, FullPers
     }
   }
 
+  // TODO VEO-1460 remove deprecated endpoint
+  @Deprecated
   @Operation(summary = "Evaluates a decision on a transient person without persisting anything")
   @ApiResponses(
       value = {
@@ -411,6 +414,27 @@ public class PersonController extends AbstractElementController<Person, FullPers
           String decisionKey,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
     return super.evaluateDecision(auth, element, decisionKey, domainId);
+  }
+
+  @Operation(
+      summary =
+          "Evaluates decisions and inspections on a transient person without persisting anything")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Element evaluated",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
+      })
+  @PostMapping(value = "/evaluation")
+  public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
+      @Parameter(required = true, hidden = true) Authentication auth,
+      @Valid @RequestBody FullPersonDto element,
+      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+    return super.evaluate(auth, element, domainId);
   }
 
   @Operation(summary = "Runs inspections on a persisted person")

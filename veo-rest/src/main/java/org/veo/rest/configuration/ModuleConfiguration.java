@@ -104,7 +104,7 @@ import org.veo.core.usecase.control.GetControlUseCase;
 import org.veo.core.usecase.control.GetControlsUseCase;
 import org.veo.core.usecase.control.UpdateControlUseCase;
 import org.veo.core.usecase.decision.Decider;
-import org.veo.core.usecase.decision.EvaluateDecisionUseCase;
+import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.document.CreateDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentsUseCase;
@@ -931,9 +931,12 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public EvaluateDecisionUseCase evaluateDecisionUseCase(
-      DomainRepository domainRepository, RepositoryProvider repositoryProvider) {
-    return new EvaluateDecisionUseCase(domainRepository, repositoryProvider);
+  public EvaluateElementUseCase evaluateDecisionUseCase(
+      DomainRepository domainRepository,
+      RepositoryProvider repositoryProvider,
+      Decider decider,
+      Inspector inspector) {
+    return new EvaluateElementUseCase(repositoryProvider, decider, inspector);
   }
 
   @Bean

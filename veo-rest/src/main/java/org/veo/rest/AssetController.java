@@ -91,6 +91,7 @@ import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateAssetDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
+import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
@@ -114,10 +115,11 @@ import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.common.ETag;
-import org.veo.core.usecase.decision.EvaluateDecisionUseCase;
+import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
+import org.veo.rest.schemas.EvaluateElementOutputSchema;
 import org.veo.rest.security.ApplicationUser;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -152,9 +154,9 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
       DeleteRiskUseCase deleteRiskUseCase,
       UpdateAssetRiskUseCase updateAssetRiskUseCase,
       GetAssetRisksUseCase getAssetRisksUseCase,
-      EvaluateDecisionUseCase evaluateDecisionUseCase,
+      EvaluateElementUseCase evaluateElementUseCase,
       InspectElementUseCase inspectElementUseCase) {
-    super(Asset.class, getAssetUseCase, evaluateDecisionUseCase, inspectElementUseCase);
+    super(Asset.class, getAssetUseCase, evaluateElementUseCase, inspectElementUseCase);
     this.getAssetsUseCase = getAssetsUseCase;
     this.createAssetUseCase = createAssetUseCase;
     this.updateAssetUseCase = updateAssetUseCase;
@@ -414,6 +416,8 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
     }
   }
 
+  // TODO VEO-1460 remove deprecated endpoint
+  @Deprecated
   @Operation(summary = "Evaluates a decision on a transient asset without persisting anything")
   @ApiResponses(
       value = {
@@ -434,6 +438,27 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
           String decisionKey,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
     return super.evaluateDecision(auth, element, decisionKey, domainId);
+  }
+
+  @Operation(
+      summary =
+          "Evaluates decisions and inspections on a transient asset without persisting anything")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Element evaluated",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
+      })
+  @PostMapping(value = "/evaluation")
+  public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
+      @Parameter(required = true, hidden = true) Authentication auth,
+      @Valid @RequestBody FullProcessDto element,
+      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+    return super.evaluate(auth, element, domainId);
   }
 
   @Override

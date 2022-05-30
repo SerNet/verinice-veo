@@ -105,6 +105,7 @@ import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.common.ETag;
+import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.core.usecase.scope.CreateScopeRiskUseCase;
 import org.veo.core.usecase.scope.CreateScopeUseCase;
@@ -116,6 +117,7 @@ import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
 import org.veo.core.usecase.scope.UpdateScopeUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
+import org.veo.rest.schemas.EvaluateElementOutputSchema;
 import org.veo.rest.security.ApplicationUser;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -141,6 +143,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
 
   protected static final String TYPE_PARAM = "type";
 
+  private TransactionalRunner runner;
   private final UseCaseInteractor useCaseInteractor;
 
   private final CreateScopeUseCase createScopeUseCase;
@@ -154,6 +157,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
   private final DeleteRiskUseCase deleteRiskUseCase;
   private final UpdateScopeRiskUseCase updateScopeRiskUseCase;
   private final InspectElementUseCase inspectElementUseCase;
+  private final EvaluateElementUseCase evaluateElementUseCase;
 
   @GetMapping
   @Operation(summary = "Loads all scopes")
@@ -551,6 +555,34 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
         new InspectElementUseCase.InputData(
             client, Scope.class, Key.uuidFrom(uuid), Key.uuidFrom(domainId)),
         output -> ResponseEntity.ok().body(output.getFindings()));
+  }
+
+  @Operation(
+      summary =
+          "Evaluates decisions and inspections on a transient scope without persisting anything")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Element evaluated",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
+      })
+  @PostMapping(value = "/evaluation")
+  public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
+      @Parameter(required = true, hidden = true) Authentication auth,
+      @Valid @RequestBody FullScopeDto dto,
+      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+    var client = getAuthenticatedClient(auth);
+    var element =
+        runner.run(
+            () -> dtoToEntityTransformer.transformDto2Element(dto, createIdRefResolver(client)));
+    return useCaseInteractor.execute(
+        evaluateElementUseCase,
+        new EvaluateElementUseCase.InputData(client, Key.uuidFrom(domainId), element),
+        output -> ResponseEntity.ok().body(output));
   }
 
   @Override

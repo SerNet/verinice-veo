@@ -99,13 +99,14 @@ import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
-import org.veo.core.usecase.decision.EvaluateDecisionUseCase;
+import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.scenario.CreateScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenariosUseCase;
 import org.veo.core.usecase.scenario.UpdateScenarioUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
+import org.veo.rest.schemas.EvaluateElementOutputSchema;
 import org.veo.rest.security.ApplicationUser;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -130,9 +131,9 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
       CreateScenarioUseCase createScenarioUseCase,
       UpdateScenarioUseCase updateScenarioUseCase,
       DeleteElementUseCase deleteElementUseCase,
-      EvaluateDecisionUseCase evaluateDecisionUseCase,
+      EvaluateElementUseCase evaluateElementUseCase,
       InspectElementUseCase inspectElementUseCase) {
-    super(Scenario.class, getScenarioUseCase, evaluateDecisionUseCase, inspectElementUseCase);
+    super(Scenario.class, getScenarioUseCase, evaluateElementUseCase, inspectElementUseCase);
     this.getScenariosUseCase = getScenariosUseCase;
     this.createScenarioUseCase = createScenarioUseCase;
     this.updateScenarioUseCase = updateScenarioUseCase;
@@ -389,6 +390,8 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
     }
   }
 
+  // TODO VEO-1460 remove deprecated endpoint
+  @Deprecated
   @Operation(summary = "Evaluates a decision on a transient scenario without persisting anything")
   @ApiResponses(
       value = {
@@ -410,6 +413,27 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
           String decisionKey,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
     return super.evaluateDecision(auth, element, decisionKey, domainId);
+  }
+
+  @Operation(
+      summary =
+          "Evaluates decisions and inspections on a transient scenario without persisting anything")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Element evaluated",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
+      })
+  @PostMapping(value = "/evaluation")
+  public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
+      @Parameter(required = true, hidden = true) Authentication auth,
+      @Valid @RequestBody FullScenarioDto element,
+      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+    return super.evaluate(auth, element, domainId);
   }
 
   @Override

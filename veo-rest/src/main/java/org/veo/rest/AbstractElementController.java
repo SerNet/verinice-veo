@@ -41,7 +41,7 @@ import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
-import org.veo.core.usecase.decision.EvaluateDecisionUseCase;
+import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.rest.security.ApplicationUser;
 
 import lombok.RequiredArgsConstructor;
@@ -55,7 +55,7 @@ public abstract class AbstractElementController<
 
   private final TransactionalUseCase<UseCase.IdAndClient, GetElementUseCase.OutputData<T>>
       getElementUseCase;
-  private final EvaluateDecisionUseCase evaluateDecisionUseCase;
+  private final EvaluateElementUseCase evaluateElementUseCase;
   private final InspectElementUseCase inspectElementUseCase;
 
   @Autowired private TransactionalRunner runner;
@@ -102,6 +102,8 @@ public abstract class AbstractElementController<
         });
   }
 
+  // TODO VEO-1460 remove
+  @Deprecated
   public @Valid CompletableFuture<ResponseEntity<DecisionResult>> evaluateDecision(
       Authentication auth, @Valid AbstractElementDto dto, String decisionKey, String domainId) {
     var client = getAuthenticatedClient(auth);
@@ -112,9 +114,28 @@ public abstract class AbstractElementController<
               return dtoToEntityTransformer.transformDto2Element(dto, createIdRefResolver(client));
             });
     return useCaseInteractor.execute(
-        evaluateDecisionUseCase,
-        new EvaluateDecisionUseCase.InputData(client, Key.uuidFrom(domainId), decisionKey, element),
-        output -> ResponseEntity.ok().body(output.getDecisionResult()));
+        evaluateElementUseCase,
+        new EvaluateElementUseCase.InputData(client, Key.uuidFrom(domainId), element),
+        output ->
+            ResponseEntity.ok()
+                .body(
+                    output.getDecisionResults().entrySet().stream()
+                        .filter(resultPair -> resultPair.getKey().getKeyRef().equals(decisionKey))
+                        .findFirst()
+                        .orElseThrow()
+                        .getValue()));
+  }
+
+  public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
+      Authentication auth, @Valid AbstractElementDto dto, String domainId) {
+    var client = getAuthenticatedClient(auth);
+    var element =
+        runner.run(
+            () -> dtoToEntityTransformer.transformDto2Element(dto, createIdRefResolver(client)));
+    return useCaseInteractor.execute(
+        evaluateElementUseCase,
+        new EvaluateElementUseCase.InputData(client, Key.uuidFrom(domainId), element),
+        output -> ResponseEntity.ok().body(output));
   }
 
   public CompletableFuture<ResponseEntity<Set<Finding>>> inspect(

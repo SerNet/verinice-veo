@@ -108,9 +108,10 @@ import org.veo.core.usecase.control.CreateControlUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
 import org.veo.core.usecase.control.GetControlsUseCase;
 import org.veo.core.usecase.control.UpdateControlUseCase;
-import org.veo.core.usecase.decision.EvaluateDecisionUseCase;
+import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
+import org.veo.rest.schemas.EvaluateElementOutputSchema;
 import org.veo.rest.security.ApplicationUser;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -142,9 +143,9 @@ public class ControlController extends AbstractElementController<Control, FullCo
       GetControlsUseCase getControlsUseCase,
       UpdateControlUseCase updateControlUseCase,
       DeleteElementUseCase deleteElementUseCase,
-      EvaluateDecisionUseCase evaluateDecisionUseCase,
+      EvaluateElementUseCase evaluateElementUseCase,
       InspectElementUseCase inspectElementUseCase) {
-    super(Control.class, getControlUseCase, evaluateDecisionUseCase, inspectElementUseCase);
+    super(Control.class, getControlUseCase, evaluateElementUseCase, inspectElementUseCase);
     this.createControlUseCase = createControlUseCase;
     this.getControlsUseCase = getControlsUseCase;
     this.updateControlUseCase = updateControlUseCase;
@@ -394,6 +395,8 @@ public class ControlController extends AbstractElementController<Control, FullCo
     }
   }
 
+  // TODO VEO-1460 remove deprecated endpoint
+  @Deprecated
   @Operation(summary = "Evaluates a decision on a transient control without persisting anything")
   @ApiResponses(
       value = {
@@ -414,6 +417,27 @@ public class ControlController extends AbstractElementController<Control, FullCo
           String decisionKey,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
     return super.evaluateDecision(auth, element, decisionKey, domainId);
+  }
+
+  @Operation(
+      summary =
+          "Evaluates decisions and inspections on a transient control without persisting anything")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Element evaluated",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
+      })
+  @PostMapping(value = "/evaluation")
+  public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
+      @Parameter(required = true, hidden = true) Authentication auth,
+      @Valid @RequestBody FullControlDto element,
+      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+    return super.evaluate(auth, element, domainId);
   }
 
   @Operation(summary = "Runs inspections on a persisted control")

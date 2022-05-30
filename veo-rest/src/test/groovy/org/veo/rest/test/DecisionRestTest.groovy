@@ -139,7 +139,7 @@ class DecisionRestTest extends VeoRestTest {
         }
     }
 
-    def "piaMandatory decision can be evaluated for transient process"() {
+    def "piaMandatory decision and inspection can be evaluated for transient process"() {
         given: "a transient process"
         def decision = decisions.piaMandatory
         def process = [
@@ -161,16 +161,21 @@ class DecisionRestTest extends VeoRestTest {
         ]
 
         expect: "non-persistent evaluation to consider custom aspect attribute and missing risk values"
-        with(post("/processes/decision-evaluation?decision=piaMandatory&domain=$domainId", process, 200).body) {
-            value == null
-            decision.rules[decisiveRule].description.en == "Risk analysis not carried out"
-            matchingRules.collect{decision.rules[it].description.en} == [
-                "Risk analysis not carried out",
-                "Processing on list of the kinds of processing operations subject to a DPIA",
-            ]
-            agreeingRules.collect{decision.rules[it].description.en} == [
-                "Risk analysis not carried out"
-            ]
+        with(post("/processes/evaluation?domain=$domainId", process, 200).body) {
+            with(decisionResults.piaMandatory) {
+                value == null
+                decision.rules[decisiveRule].description.en == "Risk analysis not carried out"
+                matchingRules.collect{decision.rules[it].description.en} == [
+                    "Risk analysis not carried out",
+                    "Processing on list of the kinds of processing operations subject to a DPIA",
+                ]
+                agreeingRules.collect{decision.rules[it].description.en} == [
+                    "Risk analysis not carried out"
+                ]
+            }
+            inspectionFindings.empty
+            // TODO VEO-1460 remove deprecated endpoint assertion
+            post("/processes/decision-evaluation?decision=piaMandatory&domain=$owner.domainId", process, 200).body == decisionResults.piaMandatory
         }
 
         and: "no process has been persisted"
@@ -182,15 +187,29 @@ class DecisionRestTest extends VeoRestTest {
         addRiskValue(processId, 1)
 
         then: "non-persistent evaluation returns different results due to added risk"
-        with(post("/processes/decision-evaluation?decision=piaMandatory&domain=$domainId", process, 200).body) {
-            value == true
-            decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations subject to a DPIA"
-            matchingRules.collect{decision.rules[it].description.en} == [
-                "Processing on list of the kinds of processing operations subject to a DPIA",
-            ]
-            agreeingRules.collect{decision.rules[it].description.en} == [
-                "Processing on list of the kinds of processing operations subject to a DPIA"
-            ]
+        with(post("/processes/evaluation?domain=$domainId", process, 200).body) {
+            with(decisionResults.piaMandatory) {
+                value == true
+                decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations subject to a DPIA"
+                matchingRules.collect { decision.rules[it].description.en } == [
+                    "Processing on list of the kinds of processing operations subject to a DPIA",
+                ]
+                agreeingRules.collect { decision.rules[it].description.en } == [
+                    "Processing on list of the kinds of processing operations subject to a DPIA"
+                ]
+            }
+            inspectionFindings.size() == 1
+            with(inspectionFindings[0]) {
+                description.en == "DPIA was not carried out, but it is mandatory."
+                severity == "WARNING"
+                suggestions.size() == 1
+                with(suggestions[0]) {
+                    type == "addPart"
+                    partSubType == "PRO_DPIA"
+                }
+            }
+            // TODO VEO-1460 remove deprecated endpoint assertion
+            post("/processes/decision-evaluation?decision=piaMandatory&domain=$owner.domainId", process, 200).body == decisionResults.piaMandatory
         }
 
         when: "adding an attribute to the transient process"
@@ -198,16 +217,21 @@ class DecisionRestTest extends VeoRestTest {
         process.customAspects[PIA].attributes["${PIA}_otherExclusions"] = true
 
         then: "non-persistent evaluation returns different results due to added attribute"
-        with(post("/processes/decision-evaluation?decision=piaMandatory&domain=$domainId", process, 200).body) {
-            value == false
-            decision.rules[decisiveRule].description.en == "Other exclusions"
-            matchingRules.collect{decision.rules[it].description.en} == [
-                "Other exclusions",
-                "Processing on list of the kinds of processing operations subject to a DPIA"
-            ]
-            agreeingRules.collect{decision.rules[it].description.en} == [
-                "Other exclusions"
-            ]
+        with(post("/processes/evaluation?domain=$domainId", process, 200).body) {
+            with(decisionResults.piaMandatory) {
+                value == false
+                decision.rules[decisiveRule].description.en == "Other exclusions"
+                matchingRules.collect { decision.rules[it].description.en } == [
+                    "Other exclusions",
+                    "Processing on list of the kinds of processing operations subject to a DPIA"
+                ]
+                agreeingRules.collect { decision.rules[it].description.en } == [
+                    "Other exclusions"
+                ]
+            }
+            inspectionFindings.empty
+            // TODO VEO-1460 remove deprecated endpoint assertion
+            post("/processes/decision-evaluation?decision=piaMandatory&domain=$owner.domainId", process, 200).body == decisionResults.piaMandatory
         }
 
         and: "changes to the process have not been persisted"

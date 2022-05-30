@@ -19,6 +19,8 @@ package org.veo.core.usecase.decision;
 
 import static javax.transaction.Transactional.TxType.NEVER;
 
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
@@ -28,51 +30,52 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.repository.DomainRepository;
+import org.veo.core.entity.inspection.Finding;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.inspection.Inspector;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 /**
- * Evaluates a decision for a transient element and returns the decision result. Does not persist
- * any changes. This must NOT run in a transaction, so JPA does not automatically persist anything.
- * Therefore, it does not implement {@link TransactionalUseCase}
+ * Evaluates decisions and inspections for a transient element and returns the results. Does not
+ * persist any changes. This must NOT run in a transaction, so JPA does not automatically persist
+ * anything. Therefore, it does not implement {@link TransactionalUseCase}
  */
 @RequiredArgsConstructor
-public class EvaluateDecisionUseCase
-    implements UseCase<EvaluateDecisionUseCase.InputData, EvaluateDecisionUseCase.OutputData> {
-  private final DomainRepository domainRepository;
+public class EvaluateElementUseCase
+    implements UseCase<EvaluateElementUseCase.InputData, EvaluateElementUseCase.OutputData> {
   private final RepositoryProvider repositoryProvider;
+  private final Decider decider;
+  private final Inspector inspector;
 
   @Override
   @Transactional(NEVER)
   public OutputData execute(InputData input) {
+    // TODO VEO-1171 fetch domain using repository
+    // This is a workaround to make sure there is only one instance of the domain.
     var domain =
-        domainRepository
-            .findById(input.getDomainId(), input.getAuthenticatedClient().getId())
+        input.element.getDomains().stream()
+            .filter(d -> d.getId().equals(input.domainId))
+            .findFirst()
             .orElseThrow(
                 () ->
                     new NotFoundException("Domain {} not found", input.getDomainId().uuidValue()));
-    var decision =
-        domain
-            .getDecision(input.decisionKey)
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        "Decision {} not found in domain {}", input.decisionKey, input.domainId));
 
     // FIXME VEO-209 support risk values on all risk affected types
     if (input.element.getId() != null && input.element instanceof Process) {
       loadRisks((Process) input.element);
     }
+    input.element.setDecisionResults(decider.decide(input.element, domain), domain);
+    var findings = inspector.inspect(input.element, domain);
 
-    return new OutputData(decision.evaluate(input.element, domain));
+    return new OutputData(input.element.getDecisionResults(domain), findings);
   }
 
   /** Load persisted risks and add them to element */
@@ -90,13 +93,13 @@ public class EvaluateDecisionUseCase
   public static class InputData implements UseCase.InputData {
     Client authenticatedClient;
     Key<UUID> domainId;
-    String decisionKey;
     Element element;
   }
 
   @Valid
   @Value
   public static class OutputData implements UseCase.OutputData {
-    DecisionResult decisionResult;
+    Map<DecisionRef, DecisionResult> decisionResults;
+    Set<Finding> inspectionFindings;
   }
 }

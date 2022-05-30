@@ -102,13 +102,14 @@ import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
-import org.veo.core.usecase.decision.EvaluateDecisionUseCase;
+import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.document.CreateDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentsUseCase;
 import org.veo.core.usecase.document.UpdateDocumentUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
+import org.veo.rest.schemas.EvaluateElementOutputSchema;
 import org.veo.rest.security.ApplicationUser;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -133,9 +134,9 @@ public class DocumentController extends AbstractElementController<Document, Full
       CreateDocumentUseCase createDocumentUseCase,
       UpdateDocumentUseCase updateDocumentUseCase,
       DeleteElementUseCase deleteElementUseCase,
-      EvaluateDecisionUseCase evaluateDecisionUseCase,
+      EvaluateElementUseCase evaluateElementUseCase,
       InspectElementUseCase inspectElementUseCase) {
-    super(Document.class, getDocumentUseCase, evaluateDecisionUseCase, inspectElementUseCase);
+    super(Document.class, getDocumentUseCase, evaluateElementUseCase, inspectElementUseCase);
     this.getDocumentsUseCase = getDocumentsUseCase;
     this.createDocumentUseCase = createDocumentUseCase;
     this.updateDocumentUseCase = updateDocumentUseCase;
@@ -390,6 +391,8 @@ public class DocumentController extends AbstractElementController<Document, Full
     }
   }
 
+  // TODO VEO-1460 remove deprecated endpoint
+  @Deprecated
   @Operation(summary = "Evaluates a decision on a transient document without persisting anything")
   @ApiResponses(
       value = {
@@ -411,6 +414,27 @@ public class DocumentController extends AbstractElementController<Document, Full
           String decisionKey,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
     return super.evaluateDecision(auth, element, decisionKey, domainId);
+  }
+
+  @Operation(
+      summary =
+          "Evaluates decisions and inspections on a transient document without persisting anything")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Element evaluated",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
+      })
+  @PostMapping(value = "/evaluation")
+  public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
+      @Parameter(required = true, hidden = true) Authentication auth,
+      @Valid @RequestBody FullDocumentDto element,
+      @RequestParam(value = DOMAIN_PARAM) String domainId) {
+    return super.evaluate(auth, element, domainId);
   }
 
   @Operation(summary = "Runs inspections on a persisted document")
