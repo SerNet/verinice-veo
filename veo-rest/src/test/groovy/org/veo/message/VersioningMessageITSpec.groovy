@@ -26,6 +26,8 @@ import org.veo.core.entity.Key
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PersonRepository
+import org.veo.core.repository.ProcessRepository
+import org.veo.core.repository.ScopeRepository
 import org.veo.core.usecase.common.NameableInputData
 import org.veo.core.usecase.unit.CreateUnitUseCase
 import org.veo.persistence.access.StoredEventRepository
@@ -39,7 +41,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
     }
 
     @Autowired
-    CreateUnitUseCase createUnitUseCase;
+    CreateUnitUseCase createUnitUseCase
 
     @Autowired
     StoredEventRepository storedEventRepository
@@ -49,6 +51,12 @@ class VersioningMessageITSpec extends VeoSpringSpec {
 
     @Autowired
     PersonRepository personRepository
+
+    @Autowired
+    ProcessRepository processRepository
+
+    @Autowired
+    ScopeRepository scopeRepository
 
     @WithUserDetails("user@domain.example")
     def "creation messages produced for client creation with demo unit"() {
@@ -69,7 +77,33 @@ class VersioningMessageITSpec extends VeoSpringSpec {
         def persons = personRepository.query(clientRepository.findById(clientId).get()).execute(PagingConfiguration.UNPAGED).resultPage
         persons.size() > 0
         persons.forEach({ person ->
-            def elementMessages = messages.findAll { it.uri?.contains("/persons/${person.idAsString}") }
+            def elementMessages = messages.findAll { it.uri?.endsWith("/persons/${person.idAsString}") }
+            assert elementMessages.size() == 1
+            elementMessages.first().with{
+                assert type == "CREATION"
+                assert changeNumber == 0
+                assert content.designator.contains("DMO-")
+            }
+        })
+
+        and: "there is one creation message for each process"
+        def processes = processRepository.query(clientRepository.findById(clientId).get()).execute(PagingConfiguration.UNPAGED).resultPage
+        processes.size() > 0
+        processes.forEach({ process ->
+            def elementMessages = messages.findAll { it.uri?.endsWith("/processes/${process.idAsString}") }
+            assert elementMessages.size() == 1
+            elementMessages.first().with{
+                assert type == "CREATION"
+                assert changeNumber == 0
+                assert content.designator.contains("DMO-")
+            }
+        })
+
+        and: "there is one creation message for each scope"
+        def scopes = scopeRepository.query(clientRepository.findById(clientId).get()).execute(PagingConfiguration.UNPAGED).resultPage
+        scopes.size() > 0
+        scopes.forEach({ scope ->
+            def elementMessages = messages.findAll { it.uri?.endsWith("/scopes/${scope.idAsString}") }
             assert elementMessages.size() == 1
             elementMessages.first().with{
                 assert type == "CREATION"
