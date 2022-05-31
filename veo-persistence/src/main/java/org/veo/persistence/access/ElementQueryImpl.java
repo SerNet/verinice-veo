@@ -248,8 +248,8 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
                         .map(
                             str ->
                                 criteriaBuilder.like(
-                                    criteriaBuilder.upper(root.get(propertyName)),
-                                    "%" + str.toUpperCase(Locale.GERMAN) + "%"))
+                                    criteriaBuilder.lower(root.get(propertyName)),
+                                    "%" + str.toLowerCase(Locale.GERMAN) + "%"))
                         .toArray(Predicate[]::new)));
   }
 

@@ -87,4 +87,39 @@ class SearchMvcITSpec extends VeoMvcSpec {
         where:
         type << EntityType.ELEMENT_TYPES*.pluralTerm
     }
+
+    def 'find by displayname'() {
+        given: "a scenario with German characters in the name"
+        post("/scenarios", [
+            name: "Rechtswidrige bzw. unrechtmäßige Verabeitung personenbezogener Daten",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [
+                    subType: 'SCN_Scenario',
+                    status: "NEW"
+                ]
+            ]
+        ])
+
+        when: "searching for the scenario"
+        def results = parseJson(get("/scenarios?displayName=unrechtmäßige"))
+
+        then: "the item is returned"
+        results.items*.name == [
+            "Rechtswidrige bzw. unrechtmäßige Verabeitung personenbezogener Daten"
+        ]
+
+        when: "running the same search on the search endpoint"
+        def searchUrl = parseJson(post("/scenarios/searches", [
+            displayName: [
+                values: ["unrechtmäßige"]
+            ]
+        ])).searchUrl
+        results = parseJson(get(new URI(searchUrl)))
+
+        then: "the result is the same"
+        results.items*.name == [
+            "Rechtswidrige bzw. unrechtmäßige Verabeitung personenbezogener Daten"
+        ]
+    }
 }
