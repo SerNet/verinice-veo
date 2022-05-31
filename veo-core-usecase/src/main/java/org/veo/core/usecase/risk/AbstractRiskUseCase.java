@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
@@ -74,10 +75,10 @@ public abstract class AbstractRiskUseCase<
   @Value
   @AllArgsConstructor
   public static class InputData implements UseCase.InputData {
-    Client authenticatedClient;
-    Key<UUID> riskAffectedRef;
-    Key<UUID> scenarioRef;
-    Set<Key<UUID>> domainRefs;
+    @NotNull Client authenticatedClient;
+    @NotNull Key<UUID> riskAffectedRef;
+    @NotNull Key<UUID> scenarioRef;
+    @NotNull Set<@NotNull Key<UUID>> domainRefs;
     @Nullable Key<UUID> controlRef;
     @Nullable Key<UUID> riskOwnerRef;
 

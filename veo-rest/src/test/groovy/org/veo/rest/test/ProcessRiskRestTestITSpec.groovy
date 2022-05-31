@@ -103,4 +103,30 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
         then: "the error is present"
         error.body.message ==~ /Need at least one domain to create a risk\./
     }
+
+    def "create and update a process without domain ref"() {
+        given: "a process and a scenario"
+        def processId = post("/processes", [
+            domains: [
+                (domainId): [:]
+            ],
+            name: "risk test process-1",
+            owner: [targetUri: "$baseUrl/units/$unitId"]
+        ]).body.resourceId
+        def scenarioId = post("/scenarios", [
+            name: "process risk test scenario-1",
+            owner: [targetUri: "$baseUrl/units/$unitId"]
+        ]).body.resourceId
+
+        when: "creating the risk"
+        def error = post("/processes/$processId/risks", [
+            domains: [
+                (domainId) : [:]
+            ],
+            scenario: [targetUri: "$baseUrl/scenarios/$scenarioId"]
+        ], 400)
+
+        then: "the error is present"
+        error.body.values() ==~ ['domain reference is missing']
+    }
 }

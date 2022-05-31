@@ -20,6 +20,8 @@ package org.veo.adapter.presenter.api.dto;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.validation.constraints.NotNull;
+
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.full.RiskValuesDto;
 import org.veo.core.entity.Domain;
@@ -36,7 +38,10 @@ import lombok.NoArgsConstructor;
         "References a domain and its available risk-definitions in a map of "
             + "risk-definition-ID to riskDefinition")
 public class RiskDomainAssociationDto {
+
+  @NotNull(message = "domain reference is missing")
   IdRef<Domain> reference;
+
   Map<String, RiskValuesDto> riskDefinitions = new HashMap<>();
 
   public RiskDomainAssociationDto(IdRef<Domain> domainRef) {
