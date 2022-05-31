@@ -17,10 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.process;
 
-import java.util.Set;
-
 import org.veo.core.entity.Process;
-import org.veo.core.entity.Scope;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.ScopeRepository;
@@ -29,11 +26,9 @@ import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.decision.Decider;
-import org.veo.core.usecase.risk.RiskValueValidator;
 
 /** Creates a persistent new process object. */
 public class CreateProcessUseCase extends CreateElementUseCase<Process> {
-  private final RiskValueValidator riskValueValidator;
   private final EventPublisher eventPublisher;
 
   public CreateProcessUseCase(
@@ -41,11 +36,9 @@ public class CreateProcessUseCase extends CreateElementUseCase<Process> {
       ScopeRepository scopeRepository,
       ProcessRepository entityRepo,
       DesignatorService designatorService,
-      RiskValueValidator riskValueValidator,
       EventPublisher eventPublisher,
       Decider decider) {
     super(unitRepository, scopeRepository, entityRepo, designatorService, decider);
-    this.riskValueValidator = riskValueValidator;
     this.eventPublisher = eventPublisher;
   }
 
@@ -54,10 +47,5 @@ public class CreateProcessUseCase extends CreateElementUseCase<Process> {
     OutputData<Process> result = super.execute(input);
     eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
     return result;
-  }
-
-  @Override
-  protected void validate(Process process, Set<Scope> scopes) {
-    riskValueValidator.validate(process, scopes);
   }
 }

@@ -30,7 +30,6 @@ import org.veo.core.usecase.DesignatorService
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.CreateElementUseCase
 import org.veo.core.usecase.decision.Decider
-import org.veo.core.usecase.risk.RiskValueValidator
 
 class CreateProcessUseCaseSpec extends UseCaseSpec {
 
@@ -41,9 +40,8 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
     DesignatorService designatorService = Mock()
     EventPublisher eventPublisher = Mock()
     Decider decider = Mock()
-    RiskValueValidator riskValueValidator = Mock()
 
-    CreateProcessUseCase usecase = new CreateProcessUseCase(unitRepository,scopeRepository, processRepository, designatorService, riskValueValidator, eventPublisher, decider)
+    CreateProcessUseCase usecase = new CreateProcessUseCase(unitRepository,scopeRepository, processRepository, designatorService, eventPublisher, decider)
 
     def setup() {
         def id = Key.newUuid()
@@ -69,7 +67,6 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
             event.entityType == Process
             event.entityId == process.id
         })
-        1 * riskValueValidator.validate(process, [] as Set)
         output.entity != null
         output.entity.name == "John's process"
     }

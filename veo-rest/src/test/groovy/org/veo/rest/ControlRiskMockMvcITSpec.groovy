@@ -66,13 +66,8 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "can create and update control implementation status"() {
-        given: "scopes with different risk definitions"
-        def firstScopeId = postScope( "myFirstRiskDefinition")
-        def secondScopeId = postScope( "mySecondRiskDefinition")
-        def thirdScopeId = postScope( "myThirdRiskDefinition")
-
         when: "creating the control with risk values for different risk definitions"
-        def controlId = parseJson(post("/controls?scopes=$firstScopeId,$secondScopeId,$thirdScopeId", [
+        def controlId = parseJson(post("/controls", [
             name: "Super CTL",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
@@ -125,75 +120,9 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
         updatedControl.domains[domainId].riskValues.myThirdRiskDefinition.implementationStatus == 3
     }
 
-    def "control must be in a scope with the used risk definition"() {
-        given: "a control in a scope with myFirstRiskDefinition"
-        def firstScopeId = postScope( "myFirstRiskDefinition")
-        def controlId = parseJson(post("/controls?scopes=$firstScopeId", [
-            name: "Super CTL",
-            owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [:]
-            ]
-        ])).resourceId
-        def controlETag = getETag(get("/controls/$controlId"))
-
-        when: "trying to update the control with risk values for mySecondRiskDefinition"
-        put("/controls/$controlId", [
-            name: "Super CTL",
-            owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    riskValues: [
-                        mySecondRiskDefinition: [
-                            implementationStatus: 0
-                        ]
-                    ]
-                ]
-            ]
-        ], ['If-Match': controlETag], 400)
-
-        then: "it fails"
-        IllegalArgumentException ex = thrown()
-        ex.message == "Cannot use risk definition 'mySecondRiskDefinition' because the element is not a member of a scope with that risk definition"
-
-        when: "adding the control to a composite that is in a scope with mySecondRiskDefinition"
-        def secondScopeId = postScope( "mySecondRiskDefinition")
-        post("/controls?scopes=$secondScopeId", [
-            name: "Super composite CTL",
-            parts: [
-                [targetUri: "http://localhost/controls/$controlId"]
-            ],
-            owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [:]
-            ]
-        ])
-
-        and: "updating the control with risk values for mySecondRiskDefinition"
-        put("/controls/$controlId", [
-            name: "Super CTL",
-            owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    riskValues: [
-                        mySecondRiskDefinition: [
-                            implementationStatus: 0
-                        ]
-                    ]
-                ]
-            ]
-        ], ['If-Match': controlETag])
-
-        then: "it succeeds"
-        notThrown(Exception)
-    }
-
     def "undefined implementation status is rejected"() {
-        given: "a scope with theOneWithOnlyTwoImplementationStatuses"
-        def scopeId = postScope( "theOneWithOnlyTwoImplementationStatuses")
-
         when: "creating a control with a valid implementation status"
-        post("/controls?scopes=$scopeId", [
+        post("/controls", [
             name: "Super CTL",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
@@ -210,7 +139,7 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
         notThrown(Exception)
 
         when: "creating a control with an undefined implementation status"
-        post("/controls?scopes=$scopeId", [
+        post("/controls", [
             name: "Super CTL",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
@@ -227,17 +156,5 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
         then: "it is rejected"
         def ex = thrown(JsonSchemaValidationException)
         ex.message.contains("implementationStatus: does not have a value in the enumeration [0, 1]")
-    }
-
-    private String postScope(String riskDefinition) {
-        return parseJson(post("/scopes", [
-            name: "$riskDefinition scope",
-            domains: [
-                (domainId): [
-                    riskDefinition: riskDefinition
-                ]
-            ],
-            owner: [targetUri: "http://localhost/units/$unitId"],
-        ])).resourceId
     }
 }

@@ -17,10 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.person;
 
-import java.util.Set;
-
 import org.veo.core.entity.Person;
-import org.veo.core.entity.Scope;
 import org.veo.core.repository.PersonRepository;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
@@ -37,10 +34,5 @@ public class CreatePersonUseCase extends CreateElementUseCase<Person> {
       DesignatorService designatorService,
       Decider decider) {
     super(unitRepository, scopeRepository, entityRepo, designatorService, decider);
-  }
-
-  @Override
-  protected void validate(Person person, Set<Scope> scopes) {
-    // GNDN
   }
 }

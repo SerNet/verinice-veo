@@ -98,12 +98,8 @@ public abstract class AbstractRiskUseCase<
                   .getRiskDefinition(rv.getRiskDefinitionId())
                   .map(RiskDefinitionRef::from)
                   .orElseThrow();
-          validateRiskDefinition(riskAffected, riskDefinitionRef, domain);
         });
   }
-
-  protected abstract void validateRiskDefinition(
-      T riskAffected, RiskDefinitionRef riskDefinitionRef, Domain domain);
 
   @Valid
   @Value

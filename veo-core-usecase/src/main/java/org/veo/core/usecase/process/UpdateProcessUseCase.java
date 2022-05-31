@@ -23,21 +23,15 @@ import org.veo.core.repository.ProcessRepository;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.decision.Decider;
-import org.veo.core.usecase.risk.RiskValueValidator;
 
 /** Update a persisted process object. */
 public class UpdateProcessUseCase extends ModifyElementUseCase<Process> {
   private final EventPublisher eventPublisher;
-  private final RiskValueValidator riskValueValidator;
 
   public UpdateProcessUseCase(
-      ProcessRepository processRepository,
-      EventPublisher eventPublisher,
-      Decider decider,
-      RiskValueValidator riskValueValidator) {
+      ProcessRepository processRepository, EventPublisher eventPublisher, Decider decider) {
     super(processRepository, decider);
     this.eventPublisher = eventPublisher;
-    this.riskValueValidator = riskValueValidator;
   }
 
   @Override
@@ -45,11 +39,6 @@ public class UpdateProcessUseCase extends ModifyElementUseCase<Process> {
     OutputData<Process> result = super.execute(input);
     eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
     return result;
-  }
-
-  @Override
-  protected void validate(Process oldElement, Process newElement) {
-    riskValueValidator.validate(newElement);
   }
 
   @Override

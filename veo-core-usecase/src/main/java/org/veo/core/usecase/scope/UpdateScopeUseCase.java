@@ -29,37 +29,6 @@ public class UpdateScopeUseCase extends ModifyElementUseCase<Scope> {
   }
 
   @Override
-  protected void validate(Scope oldElement, Scope newElement) {
-    oldElement
-        .getDomains()
-        .forEach(
-            domain -> {
-              oldElement
-                  .getRiskDefinition(domain)
-                  .ifPresent(
-                      oldRiskDef -> {
-                        newElement
-                            .getRiskDefinition(domain)
-                            .ifPresentOrElse(
-                                newRiskDef -> {
-                                  if (!oldRiskDef.equals(newRiskDef)) {
-                                    throw new IllegalArgumentException(
-                                        String.format(
-                                            "Cannot update existing risk definition reference from scope %s",
-                                            oldElement.getIdAsString()));
-                                  }
-                                },
-                                () -> {
-                                  throw new IllegalArgumentException(
-                                      String.format(
-                                          "Cannot remove existing risk definition reference from scope %s",
-                                          oldElement.getIdAsString()));
-                                });
-                      });
-            });
-  }
-
-  @Override
   protected void evaluateDecisions(Scope entity, Scope storedEntity) {
     // FIXME VEO-839
     // Transfer risks from stored element because they may be relevant for risk

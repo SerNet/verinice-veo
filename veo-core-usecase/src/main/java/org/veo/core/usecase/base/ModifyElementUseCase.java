@@ -51,7 +51,6 @@ public abstract class ModifyElementUseCase<T extends Element>
     // The designator is read-only so it must stay the same.
     entity.setDesignator(storedEntity.getDesignator());
     evaluateDecisions(entity, storedEntity);
-    validate(storedEntity, entity);
     DomainSensitiveElementValidator.validate(entity);
     return new OutputData<T>(repo.save(entity));
   }
@@ -64,8 +63,6 @@ public abstract class ModifyElementUseCase<T extends Element>
               entity.setDecisionResults(decider.decide(entity, domain), domain);
             });
   }
-
-  protected abstract void validate(T oldElement, T newElement);
 
   private void checkSubTypeChange(T newElement, T oldElement) {
     oldElement

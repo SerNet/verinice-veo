@@ -17,10 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.scenario;
 
-import java.util.Set;
-
 import org.veo.core.entity.Scenario;
-import org.veo.core.entity.Scope;
 import org.veo.core.repository.ScenarioRepository;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
@@ -37,10 +34,5 @@ public class CreateScenarioUseCase extends CreateElementUseCase<Scenario> {
       DesignatorService designatorService,
       Decider decider) {
     super(unitRepository, scopeRepository, entityRepo, designatorService, decider);
-  }
-
-  @Override
-  protected void validate(Scenario scenario, Set<Scope> scopes) {
-    // GNDN
   }
 }

@@ -17,15 +17,8 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Repository;
 
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.Element;
-import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
@@ -41,13 +34,5 @@ public class ScopeRepositoryImpl extends AbstractScopeRiskAffectedRepository
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository) {
     super(dataRepository, validation, linkDataRepository, scopeDataRepository);
-  }
-
-  @Override
-  public boolean canUseRiskDefinition(
-      Set<? extends Element> members, RiskDefinitionRef riskDefinitionRef, Domain domain) {
-    var memberIds = members.stream().map(Identifiable::getIdAsString).collect(Collectors.toSet());
-    return scopeDataRepository.canUseRiskDefinition(
-        memberIds, riskDefinitionRef, domain.getIdAsString());
   }
 }

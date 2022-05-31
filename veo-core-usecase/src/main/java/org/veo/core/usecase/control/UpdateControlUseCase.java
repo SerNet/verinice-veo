@@ -23,20 +23,14 @@ import org.veo.core.repository.ControlRepository;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.decision.Decider;
-import org.veo.core.usecase.risk.RiskValueValidator;
 
 public class UpdateControlUseCase extends ModifyElementUseCase<Control> {
   private final EventPublisher eventPublisher;
-  private final RiskValueValidator riskValueValidator;
 
   public UpdateControlUseCase(
-      ControlRepository controlRepository,
-      EventPublisher eventPublisher,
-      RiskValueValidator riskValueValidator,
-      Decider decider) {
+      ControlRepository controlRepository, EventPublisher eventPublisher, Decider decider) {
     super(controlRepository, decider);
     this.eventPublisher = eventPublisher;
-    this.riskValueValidator = riskValueValidator;
   }
 
   @Override
@@ -44,10 +38,5 @@ public class UpdateControlUseCase extends ModifyElementUseCase<Control> {
     OutputData<Control> result = super.execute(input);
     eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
     return result;
-  }
-
-  @Override
-  protected void validate(Control oldElement, Control newElement) {
-    riskValueValidator.validate(newElement);
   }
 }

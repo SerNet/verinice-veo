@@ -34,16 +34,7 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
 
     def "create and update process risk values"() {
         given: "a composite process and a scenario"
-        def scopeId = post("/scopes", [
-            name: "DSRA scope",
-            domains: [
-                (domainId): [
-                    riskDefinition: "DSRA"
-                ]
-            ],
-            owner: [targetUri: "$baseUrl/units/$unitId"],
-        ]).body.resourceId
-        def processId = post("/processes?scopes=$scopeId", [
+        def processId = post("/processes", [
             domains: [
                 (domainId): [
                     riskValues: [

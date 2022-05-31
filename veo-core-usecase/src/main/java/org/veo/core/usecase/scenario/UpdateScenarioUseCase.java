@@ -40,9 +40,4 @@ public class UpdateScenarioUseCase extends ModifyElementUseCase<Scenario> {
     eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
     return result;
   }
-
-  @Override
-  protected void validate(Scenario oldElement, Scenario newElement) {
-    // GNDN
-  }
 }

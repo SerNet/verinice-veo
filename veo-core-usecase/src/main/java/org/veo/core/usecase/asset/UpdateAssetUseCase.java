@@ -31,11 +31,6 @@ public class UpdateAssetUseCase extends ModifyElementUseCase<Asset> {
   }
 
   @Override
-  protected void validate(Asset oldElement, Asset newElement) {
-    // GNDN
-  }
-
-  @Override
   protected void evaluateDecisions(Asset entity, Asset storedEntity) {
     // FIXME VEO-839
     // Transfer risks from stored element because they may be relevant for risk

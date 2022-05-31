@@ -17,10 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.asset;
 
-import java.util.Set;
-
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.Scope;
 import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
@@ -37,10 +34,5 @@ public class CreateAssetUseCase extends CreateElementUseCase<Asset> {
       DesignatorService designatorService,
       Decider decider) {
     super(unitRepository, scopeRepository, entityRepo, designatorService, decider);
-  }
-
-  @Override
-  protected void validate(Asset asset, Set<Scope> scopes) {
-    // GNDN
   }
 }

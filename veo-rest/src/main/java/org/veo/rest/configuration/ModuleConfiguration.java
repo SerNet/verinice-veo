@@ -90,7 +90,6 @@ import org.veo.core.usecase.asset.GetAssetsUseCase;
 import org.veo.core.usecase.asset.UpdateAssetRiskUseCase;
 import org.veo.core.usecase.asset.UpdateAssetUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
-import org.veo.core.usecase.base.ScopeProvider;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 import org.veo.core.usecase.catalog.GetCatalogUseCase;
 import org.veo.core.usecase.catalog.GetCatalogsUseCase;
@@ -136,7 +135,6 @@ import org.veo.core.usecase.process.GetProcessesUseCase;
 import org.veo.core.usecase.process.UpdateProcessRiskUseCase;
 import org.veo.core.usecase.process.UpdateProcessUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
-import org.veo.core.usecase.risk.RiskValueValidator;
 import org.veo.core.usecase.scenario.CreateScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenariosUseCase;
@@ -204,18 +202,14 @@ public class ModuleConfiguration {
   public CreateAssetRiskUseCase createAssetRiskUseCase(
       RepositoryProvider repositoryProvider,
       DesignatorService designatorService,
-      EventPublisher eventPublisher,
-      ScopeProvider scopeProvider) {
-    return new CreateAssetRiskUseCase(
-        repositoryProvider, designatorService, eventPublisher, scopeProvider);
+      EventPublisher eventPublisher) {
+    return new CreateAssetRiskUseCase(repositoryProvider, designatorService, eventPublisher);
   }
 
   @Bean
   public UpdateAssetRiskUseCase updateAssetRiskUseCase(
-      RepositoryProvider repositoryProvider,
-      EventPublisher eventPublisher,
-      ScopeProvider scopeProvider) {
-    return new UpdateAssetRiskUseCase(repositoryProvider, eventPublisher, scopeProvider);
+      RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {
+    return new UpdateAssetRiskUseCase(repositoryProvider, eventPublisher);
   }
 
   @Bean
@@ -243,15 +237,9 @@ public class ModuleConfiguration {
       ScopeRepositoryImpl scopeRepository,
       ControlRepositoryImpl controlRepository,
       DesignatorService designatorService,
-      Decider decider,
-      RiskValueValidator riskValueValidator) {
+      Decider decider) {
     return new CreateControlUseCase(
-        unitRepository,
-        scopeRepository,
-        controlRepository,
-        designatorService,
-        decider,
-        riskValueValidator);
+        unitRepository, scopeRepository, controlRepository, designatorService, decider);
   }
 
   @Bean
@@ -269,11 +257,8 @@ public class ModuleConfiguration {
 
   @Bean
   public UpdateControlUseCase updateControlUseCase(
-      ControlRepositoryImpl controlRepository,
-      EventPublisher eventPublisher,
-      RiskValueValidator riskValueValidator,
-      Decider decider) {
-    return new UpdateControlUseCase(controlRepository, eventPublisher, riskValueValidator, decider);
+      ControlRepositoryImpl controlRepository, EventPublisher eventPublisher, Decider decider) {
+    return new UpdateControlUseCase(controlRepository, eventPublisher, decider);
   }
 
   @Bean
@@ -373,14 +358,12 @@ public class ModuleConfiguration {
       ProcessRepositoryImpl processRepository,
       DesignatorService designatorService,
       EventPublisher eventPublisher,
-      Decider decider,
-      RiskValueValidator riskValueValidator) {
+      Decider decider) {
     return new CreateProcessUseCase(
         unitRepository,
         scopeRepository,
         processRepository,
         designatorService,
-        riskValueValidator,
         eventPublisher,
         decider);
   }
@@ -389,10 +372,8 @@ public class ModuleConfiguration {
   public CreateProcessRiskUseCase createProcessRiskUseCase(
       RepositoryProvider repositoryProvider,
       DesignatorService designatorService,
-      EventPublisher eventPublisher,
-      ScopeProvider scopeProvider) {
-    return new CreateProcessRiskUseCase(
-        repositoryProvider, designatorService, eventPublisher, scopeProvider);
+      EventPublisher eventPublisher) {
+    return new CreateProcessRiskUseCase(repositoryProvider, designatorService, eventPublisher);
   }
 
   @Bean
@@ -413,19 +394,14 @@ public class ModuleConfiguration {
 
   @Bean
   public UpdateProcessRiskUseCase updateProcessRiskUseCase(
-      RepositoryProvider repositoryProvider,
-      EventPublisher eventPublisher,
-      ScopeProvider scopeProvider) {
-    return new UpdateProcessRiskUseCase(repositoryProvider, eventPublisher, scopeProvider);
+      RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {
+    return new UpdateProcessRiskUseCase(repositoryProvider, eventPublisher);
   }
 
   @Bean
   public UpdateProcessUseCase putProcessUseCase(
-      ProcessRepositoryImpl processRepository,
-      EventPublisher eventPublisher,
-      Decider decider,
-      RiskValueValidator riskValueValidator) {
-    return new UpdateProcessUseCase(processRepository, eventPublisher, decider, riskValueValidator);
+      ProcessRepositoryImpl processRepository, EventPublisher eventPublisher, Decider decider) {
+    return new UpdateProcessUseCase(processRepository, eventPublisher, decider);
   }
 
   @Bean
@@ -596,12 +572,6 @@ public class ModuleConfiguration {
   @Bean
   public UnitHierarchyProvider unitHierarchyProvider(UnitRepository unitRepository) {
     return new UnitHierarchyProvider(unitRepository);
-  }
-
-  @Bean
-  public ScopeProvider scopeProvider(
-      ScopeRepository scopeRepository, RepositoryProvider repositoryProvider) {
-    return new ScopeProvider(repositoryProvider, scopeRepository);
   }
 
   @Bean
@@ -977,10 +947,5 @@ public class ModuleConfiguration {
       RepositoryProvider repositoryProvider,
       Inspector inspector) {
     return new InspectElementUseCase(domainRepository, repositoryProvider, inspector);
-  }
-
-  @Bean
-  RiskValueValidator riskValueValidator(ScopeProvider scopeProvider) {
-    return new RiskValueValidator(scopeProvider);
   }
 }

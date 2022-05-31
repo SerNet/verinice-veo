@@ -64,13 +64,8 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "can update process impact"() {
-        given: "scopes with different risk definitions"
-        def firstScopeId = postScope("myFirstRiskDefinition")
-        def secondScopeId = postScope("mySecondRiskDefinition")
-        def thirdScopeId = postScope("myThirdRiskDefinition")
-
         when: "creating a process with impact values for different risk definitions"
-        def processId = parseJson(post("/processes?scopes=$firstScopeId,$secondScopeId,$thirdScopeId", [
+        def processId = parseJson(post("/processes", [
             name: "Super PRO",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
@@ -135,83 +130,9 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         updatedProcess.domains[domainId].riskValues.myThirdRiskDefinition.potentialImpacts.I == 2
     }
 
-    def "process must be in a scope with the used risk definition"() {
-        given: "a process in a scope with myFirstRiskDefinition"
-        def scopeId = postScope("myFirstRiskDefinition")
-        def processId = parseJson(post("/processes?scopes=$scopeId", [
-            name: "Super PRO",
-            owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [:]
-            ]
-        ])).resourceId
-        def processETag = getETag(get("/processes/$processId"))
-
-        when: "trying to update the process with risk values for mySecondRiskDefinition"
-        put("/processes/$processId", [
-            name: "Super PRO",
-            owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    riskValues: [
-                        mySecondRiskDefinition: [
-                            potentialImpacts: [
-                                "C": 1,
-                                "I": 2,
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ], ['If-Match': processETag], 400)
-
-        then: "it fails"
-        IllegalArgumentException ex = thrown()
-        ex.message == "Cannot use risk definition 'mySecondRiskDefinition' because the element is not a member of a scope with that risk definition"
-
-        when: "adding the process to a composite that is in a scope with mySecondRiskDefinition"
-        def mySecondRiskDefinitionScopeId = postScope("mySecondRiskDefinition")
-        post("/processes?scopes=$mySecondRiskDefinitionScopeId", [
-            name: "Super composite PRO",
-            parts: [
-                [targetUri: "http://localhost/processes/$processId"]
-            ],
-            owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [:]
-            ]
-        ])
-
-        and: "updating the process with risk values for mySecondRiskDefinition"
-        put("/processes/$processId", [
-            name: "Super PRO",
-            owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (domainId): [
-                    riskValues: [
-                        mySecondRiskDefinition: [
-                            potentialImpacts: [
-                                "C": 1,
-                                "I": 2,
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ], ['If-Match': processETag])
-
-        then: "it succeeds"
-        notThrown(Exception)
-    }
-
-
     def "can't create process with wrong riskdefinition id"() {
-        given: "scopes with myFirstRiskDefinition & mySecondRiskDefinition"
-        def myFirstRiskDefinitionScopeId = postScope("myFirstRiskDefinition")
-        def mySecondRiskDefinitionScopeId = postScope("mySecondRiskDefinition")
-
-        when: "creating a process in those scopes that uses a different risk definition"
-        post("/processes?scopes=$myFirstRiskDefinitionScopeId,$mySecondRiskDefinitionScopeId", [
+        when: "creating a process that uses a different risk definition"
+        post("/processes", [
             name: "Super PRO wrong",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
@@ -239,12 +160,8 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "can't create process with wrong impact"() {
-        given: "scopes with myFirstRiskDefinition & mySecondRiskDefinition"
-        def firstScopeId = postScope("myFirstRiskDefinition")
-        def secondScopeId = postScope("mySecondRiskDefinition")
-
         when: "creating a process with risk values for different risk definitions"
-        post("/processes?scopes=$firstScopeId,$secondScopeId", [
+        post("/processes", [
             name: "Super PRO wrong",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
@@ -272,11 +189,8 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "can't create process with wrong impact value"() {
-        given: "a scope with mySecondRiskDefinition"
-        def scopeId = postScope("mySecondRiskDefinition")
-
         when: "creating the process with risk values for different risk definitions"
-        post("/processes?scopes=$scopeId", [
+        post("/processes", [
             name: "Super PRO wrong",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
@@ -295,17 +209,5 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         then: "an exception is thrown"
         JsonSchemaValidationException ex = thrown()
         ex.message.contains( 'potentialImpacts.C' )
-    }
-
-    private String postScope(String riskDefinition) {
-        return parseJson(post("/scopes", [
-            name: "$riskDefinition scope",
-            domains: [
-                (domainId): [
-                    riskDefinition: riskDefinition
-                ]
-            ],
-            owner: [targetUri: "http://localhost/units/$unitId"],
-        ])).resourceId
     }
 }

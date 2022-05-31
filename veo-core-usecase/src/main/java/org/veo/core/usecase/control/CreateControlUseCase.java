@@ -17,34 +17,22 @@
  ******************************************************************************/
 package org.veo.core.usecase.control;
 
-import java.util.Set;
-
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Scope;
 import org.veo.core.repository.ControlRepository;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.decision.Decider;
-import org.veo.core.usecase.risk.RiskValueValidator;
 
 public class CreateControlUseCase extends CreateElementUseCase<Control> {
-  private final RiskValueValidator riskValueValidator;
 
   public CreateControlUseCase(
       UnitRepository unitRepository,
       ScopeRepository scopeRepository,
       ControlRepository entityRepo,
       DesignatorService designatorService,
-      Decider decider,
-      RiskValueValidator riskValueValidator) {
+      Decider decider) {
     super(unitRepository, scopeRepository, entityRepo, designatorService, decider);
-    this.riskValueValidator = riskValueValidator;
-  }
-
-  @Override
-  protected void validate(Control control, Set<Scope> scopes) {
-    riskValueValidator.validate(control, scopes);
   }
 }

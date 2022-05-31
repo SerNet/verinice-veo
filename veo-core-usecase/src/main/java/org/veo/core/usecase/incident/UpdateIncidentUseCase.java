@@ -27,9 +27,4 @@ public class UpdateIncidentUseCase extends ModifyElementUseCase<Incident> {
   public UpdateIncidentUseCase(IncidentRepository incidentRepository, Decider decider) {
     super(incidentRepository, decider);
   }
-
-  @Override
-  protected void validate(Incident oldElement, Incident newElement) {
-    // GNDN
-  }
 }

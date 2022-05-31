@@ -79,7 +79,7 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
         retrievedScope.domains[domainId].riskDefinition == "risk-definition-for-projects"
     }
 
-    def "cannot change risk definition reference"() {
+    def "can change risk definition reference"() {
         when: "creating a scope without a risk definition"
         def scopeId = parseJson(post("/scopes", [
             name: "Project scope",
@@ -115,36 +115,38 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
                 (domainId): [riskDefinition: "risk-definition-for-projects"]
             ]
         ], ['If-Match': scopeETag])
-        scopeETag = getETag(get("/scopes/$scopeId"))
+        retrieveScopeResponse = get("/scopes/$scopeId")
+        scopeETag = getETag(retrieveScopeResponse)
 
-        then: "it is fine"
-        notThrown(Exception)
+        then: "it is persisted"
+        parseJson(retrieveScopeResponse).domains[domainId].riskDefinition == "risk-definition-for-projects"
 
-        when: "trying to change the risk definition"
+        when: "changing the risk definition"
         put("/scopes/$scopeId", [
             name: "Cinema scope",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [riskDefinition: "default-risk-definition"]
             ]
-        ], ['If-Match': scopeETag], 400)
+        ], ['If-Match': getETag(get("/scopes/$scopeId"))])
+        retrieveScopeResponse = get("/scopes/$scopeId")
+        scopeETag = getETag(retrieveScopeResponse)
 
-        then: "it is rejected"
-        IllegalArgumentException ex = thrown()
-        ex.message == "Cannot update existing risk definition reference from scope $scopeId"
+        then: "it is persisted"
+        parseJson(retrieveScopeResponse).domains[domainId].riskDefinition == "default-risk-definition"
 
-        when: "trying to remove the risk definition reference"
+        when: "removing the risk definition reference"
         put("/scopes/$scopeId", [
             name: "Cinema scope",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [:]
             ]
-        ], ['If-Match': scopeETag], 400)
+        ], ['If-Match': scopeETag])
+        retrieveScopeResponse = get("/scopes/$scopeId")
 
-        then: "it is rejected"
-        ex = thrown()
-        ex.message == "Cannot remove existing risk definition reference from scope $scopeId"
+        then: "it is persisted"
+        parseJson(retrieveScopeResponse).domains[domainId].riskDefinition == null
     }
 
     def "invalid risk definition reference is rejected"() {

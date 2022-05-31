@@ -98,10 +98,6 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "values can be set on a second risk definition"() {
-        given: "that the process can use both r1d1 & r2d2"
-        addProcessToScope("r1d1")
-        addProcessToScope("r2d2")
-
         when: "creating a process with risk values for two risk definitions"
         def processId = process.getIdAsString()
         def scenarioId = scenario.getIdAsString()
@@ -183,9 +179,6 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
     def "embedded risks can be requested"() {
         given: "a process with risks and risk values"
-        addProcessToScope("r1d1")
-        addProcessToScope("r2d2")
-
         def processId = process.getIdAsString()
         def scenarioId = scenario.getIdAsString()
 
@@ -365,8 +358,6 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
     def "Request a list of processes with embedded risks"() {
         given: "a list of processes with risks"
-        addProcessToScope("r1d1")
-        addProcessToScope("r2d2")
         def processId = process.getIdAsString()
         def scenarioId = scenario.getIdAsString()
         def scenario2 = newScenario(unit) {
@@ -381,8 +372,6 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             addToDomains(domain)
         }
         processRepository.save(process2)
-        addProcessToScope(process2, "r1d1")
-        addProcessToScope(process2, "r2d2")
         postRisk1(process2.idAsString, scenarioId)
         postRisk2(process2.idAsString, scenario2Id)
 
@@ -419,8 +408,6 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
     def "Searching for processes with embedded risks"() {
         given: "a list of processes with risks"
-        addProcessToScope("r1d1")
-        addProcessToScope("r2d2")
         def processId = process.getIdAsString()
         def scenarioId = scenario.getIdAsString()
         def scenario2 = newScenario(unit) {
@@ -435,8 +422,6 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             addToDomains(domain)
         }
         processRepository.save(process2)
-        addProcessToScope(process2, "r1d1")
-        addProcessToScope(process2, "r2d2")
         postRisk1(process2.idAsString, scenarioId)
         postRisk2(process2.idAsString, scenario2Id)
 
@@ -477,119 +462,6 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
-    def "cannot create risk with risk values for illegal risk definition"() {
-        given: "that the process can only use one risk definition"
-        addProcessToScope("r1d1")
-
-        when: "trying to set risk values for forbidden risk definition"
-        def processId = process.getIdAsString()
-        def scenarioId = scenario.getIdAsString()
-        post("/processes/$processId/risks/", [
-            domains: [
-                (domainId): [
-                    reference: [targetUri: "http://localhost/domains/$domainId"],
-                    riskDefinitions: [
-                        r2d2 : [
-                            impactValues: [
-                                [
-                                    category: "A",
-                                    specificImpact: 1
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ],
-            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
-        ], 400)
-
-        then: "it fails"
-        IllegalArgumentException ex = thrown()
-        ex.message == "Cannot define risk values for risk definition 'r2d2' because the process $processId is not within a scope that uses that risk definition"
-    }
-
-    def "cannot update risk with risk values for illegal risk definition"() {
-        given: "that the process can only use one risk definition"
-        addProcessToScope("r1d1")
-
-        when: "initializing the risk with values for legal risk definition"
-        def processId = process.getIdAsString()
-        def scenarioId = scenario.getIdAsString()
-        post("/processes/$processId/risks/", [
-            domains: [
-                (domainId): [
-                    reference: [targetUri: "http://localhost/domains/$domainId"],
-                    riskDefinitions: [
-                        r1d1 : [
-                            impactValues: [
-                                [
-                                    category: "A",
-                                    specificImpact: 1
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ],
-            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
-        ])
-        def eTag = getETag(get("/processes/$processId/risks/$scenarioId"))
-
-        then: "it is accepted"
-        notThrown(Exception)
-
-        when: "trying to update it with illegal values"
-        put("/processes/$processId/risks/$scenarioId", [
-            domains: [
-                (domainId): [
-                    reference: [targetUri: "http://localhost/domains/$domainId"],
-                    riskDefinitions: [
-                        r1d1 : [
-                            impactValues: [
-                                [
-                                    category: "A",
-                                    specificImpact: 1
-                                ]
-                            ]
-                        ],
-                        r2d2 : [
-                            impactValues: [
-                                [
-                                    category: "A",
-                                    specificImpact: 1
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ],
-            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
-        ], ['If-Match': eTag], 400)
-
-        then: "it fails"
-        IllegalArgumentException ex = thrown()
-        ex.message == "Cannot define risk values for risk definition 'r2d2' because the process $processId is not within a scope that uses that risk definition"
-    }
-
-    private def addProcessToScope(String riskDefinitionId) {
-        this.addProcessToScope(process, riskDefinitionId)
-    }
-
-    private def addProcessToScope(ProcessData process, String riskDefinitionId) {
-        post("/scopes", [
-            domains: [
-                (domainId): [
-                    riskDefinition: riskDefinitionId
-                ]
-            ],
-            name: "$riskDefinitionId scope",
-            members: [
-                [targetUri: "http://localhost/processes/$process.idAsString"]
-            ],
-            owner: [targetUri: "http://localhost/units/$process.owner.idAsString"]
-        ])
-    }
-
     def "Creating the same risk twice does not fail"() {
         when: "a POST request is issued to the risk ressource"
         def processId = process.getIdAsString()
@@ -623,8 +495,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "Creating a risk with only specific probability and impact values calculates risk value"() {
-        given: "a process in a scope with a risk definition"
-        addProcessToScope("r1d1")
+        given: "a process and a scenario"
         def processId = process.getIdAsString()
         def scenarioId = scenario.getIdAsString()
 
@@ -672,7 +543,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "Creating a risk with potential values calculates risk value"() {
-        given: "a process in a scope with one risk definition (out of two in the domain)"
+        given: "a process"
         def processId = parseJson(post("/processes", [
             domains: [
                 (domainId): [ : ]
@@ -681,19 +552,6 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "http://localhost/units/$unitId"]
         ])).resourceId
         def processETag = getETag(get("/processes/$processId"))
-
-        post("/scopes", [
-            name: "r1d1 scope",
-            domains: [
-                (domainId): [
-                    riskDefinition: "r1d1"
-                ]
-            ],
-            members: [
-                [targetUri: "http://localhost/processes/$processId"]
-            ],
-            owner: [targetUri: "http://localhost/units/$unitId"]
-        ])
 
         Map headers = [
             'If-Match': processETag
@@ -791,19 +649,6 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
         def processETag = getETag(get("/processes/$processId"))
 
-        post("/scopes", [
-            name: "r1d1 scope",
-            domains: [
-                (r1d1DomainId): [
-                    riskDefinition: "r1d1"
-                ]
-            ],
-            members: [
-                [targetUri: "http://localhost/processes/$processId"]
-            ],
-            owner: [targetUri: "http://localhost/units/$unitId"]
-        ])
-
         Map headers = [
             'If-Match': processETag
         ]
@@ -891,8 +736,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
 
     def "Trying to create an existing risk updates its values"() {
-        given: "a process in a scope with a risk definition"
-        addProcessToScope("r1d1")
+        given: "a process and a scenario"
         def processId = process.getIdAsString()
         def scenarioId = scenario.getIdAsString()
 

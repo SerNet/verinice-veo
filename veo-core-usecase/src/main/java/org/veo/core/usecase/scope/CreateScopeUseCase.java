@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.scope;
 
-import java.util.Set;
-
 import org.veo.core.entity.Scope;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
@@ -34,10 +32,5 @@ public class CreateScopeUseCase extends CreateElementUseCase<Scope> {
       DesignatorService designatorService,
       Decider decider) {
     super(unitRepository, scopeRepository, scopeRepository, designatorService, decider);
-  }
-
-  @Override
-  protected void validate(Scope scope, Set<Scope> scopes) {
-    // GNDN
   }
 }
