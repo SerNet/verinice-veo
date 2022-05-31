@@ -75,4 +75,45 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
         then: "the risk has an owner"
         get("/processes/$processId/risks/$scenarioId").body.riskOwner.targetUri ==~ /.*\/persons\/$ownerPersonId/
     }
+
+    def "create and update a process risk without domain"() {
+        given: "a composite process and a scenario"
+        def subProcessId = post("/processes", [
+            name: "sub process",
+            owner: [targetUri: "$baseUrl/units/$unitId"]
+        ]).body.resourceId
+        def processId = post("/processes", [
+            parts: [
+                // The part is not relevant for the risk, it just spices things up.
+                [targetUri: "$baseUrl/processes/$subProcessId"]
+            ],
+            name: "risk test process",
+            owner: [targetUri: "$baseUrl/units/$unitId"]
+        ]).body.resourceId
+        def scenarioId = post("/scenarios", [
+            name: "process risk test scenario",
+            owner: [targetUri: "$baseUrl/units/$unitId"]
+        ]).body.resourceId
+
+        when: "creating the risk"
+        post("/processes/$processId/risks", [
+            scenario: [targetUri: "$baseUrl/scenarios/$scenarioId"]
+        ])
+
+        then: "it can be retrieved"
+        def retrievedRiskResponse = get("/processes/$processId/risks/$scenarioId")
+        def risk = retrievedRiskResponse.body
+        risk.scenario.targetUri ==~ /.*\/scenarios\/$scenarioId/
+
+        when: "assigning a risk owner"
+        def ownerPersonId = post("/persons", [
+            name: "process risk owner",
+            owner: [targetUri: "$baseUrl/units/$unitId"]
+        ]).body.resourceId
+        risk.riskOwner = [targetUri: "$baseUrl/persons/$ownerPersonId"]
+        put("/processes/$processId/risks/$scenarioId", risk, retrievedRiskResponse.parseETag())
+
+        then: "the risk has an owner"
+        get("/processes/$processId/risks/$scenarioId").body.riskOwner.targetUri ==~ /.*\/persons\/$ownerPersonId/
+    }
 }
