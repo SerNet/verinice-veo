@@ -1,28 +1,16 @@
 {
   "unit": {
-    "createdAt": "2021-12-22T13:21:37.676077Z",
-    "createdBy": "mfce",
-    "updatedAt": "2022-05-11T14:09:56.321006Z",
-    "updatedBy": "veo-admin",
     "name": "Demo-WIP",
     "units": [],
     "domains": [
       {
-        "displayName": "DS-GVO DS-GVO",
-        "searchesUri": "https://api.staging.verinice.com/veo/domains/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8",
-        "resourcesUri": "https://api.staging.verinice.com/veo/domains"
+        "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
       }
     ],
-    "id": "6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-    "_self": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
+    "id": "6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
   },
   "domains": [
     {
-      "createdAt": "2022-05-11T14:09:37.107326Z",
-      "createdBy": "veo-admin",
-      "updatedAt": "2022-05-11T14:09:37.107326Z",
-      "updatedBy": "veo-admin",
       "name": "DS-GVO",
       "abbreviation": "DS-GVO",
       "description": "The DS-GVO DomainTemplate.",
@@ -994,25 +982,13 @@
           ]
         }
       },
-      "id": "a5204601-348b-43df-b33b-3ed707c7d1a8",
-      "_self": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
+      "id": "a5204601-348b-43df-b33b-3ed707c7d1a8"
     }
   ],
   "elements": [
     {
-      "createdAt": "2022-01-18T17:13:38.953690Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-13T19:24:48.872053Z",
-      "updatedBy": "dmce",
       "name": " Meeting-Metadaten",
-      "designator": "AST-20",
       "description": "z.B. Datum, Uhrzeit und Dauer der Kommunikation, Name des Meetings, Teilnehmer-IP-Adresse",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1030,23 +1006,11 @@
           }
         }
       },
-      "id": "40cd6764-830c-4af2-b88d-4bf02c9018e5",
-      "_self": "https://api.staging.verinice.com/veo/assets/40cd6764-830c-4af2-b88d-4bf02c9018e5"
+      "id": "40cd6764-830c-4af2-b88d-4bf02c9018e5"
     },
     {
-      "createdAt": "2022-01-18T17:15:00.415411Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-13T19:26:15.397139Z",
-      "updatedBy": "dmce",
       "name": " Verbindungsdaten ",
-      "designator": "AST-21",
       "description": "z.B. L\u00e4ndernamen, Start- und Endzeiten, IP-Adressen",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1064,23 +1028,11 @@
           }
         }
       },
-      "id": "a1e92c07-040a-4f7f-ae28-3cc742e63beb",
-      "_self": "https://api.staging.verinice.com/veo/assets/a1e92c07-040a-4f7f-ae28-3cc742e63beb"
+      "id": "a1e92c07-040a-4f7f-ae28-3cc742e63beb"
     },
     {
-      "createdAt": "2022-01-18T17:16:24.115259Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-13T19:26:56.803056Z",
-      "updatedBy": "dmce",
       "name": "Angaben zur Person",
-      "designator": "AST-22",
       "description": " z.B. Vor- und Nachname, E-Mail-Adresse, Profilbild",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1098,23 +1050,11 @@
           }
         }
       },
-      "id": "aaf17d31-eef3-458b-8109-bc216bf96660",
-      "_self": "https://api.staging.verinice.com/veo/assets/aaf17d31-eef3-458b-8109-bc216bf96660"
+      "id": "aaf17d31-eef3-458b-8109-bc216bf96660"
     },
     {
-      "createdAt": "2022-05-19T08:30:14.700240Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-19T08:58:10.969110Z",
-      "updatedBy": "stce",
       "name": "Berechtigungskonzept ",
-      "designator": "CTL-30",
       "description": "Ein schriftliches Berechtigungskonzept ist zu erstellen",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1138,10 +1078,7 @@
       "type": "control",
       "parts": [
         {
-          "displayName": "CTL-34 Berechtigungskonzept verfassen",
-          "searchesUri": "https://api.staging.verinice.com/veo/controls/searches",
-          "targetUri": "https://api.staging.verinice.com/veo/controls/e0632252-4d53-42f9-acf9-32f6c21a9b56",
-          "resourcesUri": "https://api.staging.verinice.com/veo/controls{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
+          "targetUri": "https://api.staging.verinice.com/veo/controls/e0632252-4d53-42f9-acf9-32f6c21a9b56"
         }
       ],
       "domains": {
@@ -1158,22 +1095,10 @@
           }
         }
       },
-      "id": "42346d17-161a-440e-b6e2-5d6fd7abe0ea",
-      "_self": "https://api.staging.verinice.com/veo/controls/42346d17-161a-440e-b6e2-5d6fd7abe0ea"
+      "id": "42346d17-161a-440e-b6e2-5d6fd7abe0ea"
     },
     {
-      "createdAt": "2022-05-19T08:58:10.430309Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-19T08:58:49.420400Z",
-      "updatedBy": "stce",
       "name": "Berechtigungskonzept verfassen",
-      "designator": "CTL-34",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1201,22 +1126,10 @@
           }
         }
       },
-      "id": "e0632252-4d53-42f9-acf9-32f6c21a9b56",
-      "_self": "https://api.staging.verinice.com/veo/controls/e0632252-4d53-42f9-acf9-32f6c21a9b56"
+      "id": "e0632252-4d53-42f9-acf9-32f6c21a9b56"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.899719Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:27:45.026315Z",
-      "updatedBy": "dmce",
       "name": "SAP ERP",
-      "designator": "DMO-1",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1234,22 +1147,10 @@
           }
         }
       },
-      "id": "6b860fe7-e547-4014-9159-9e8e30a3dbaf",
-      "_self": "https://api.staging.verinice.com/veo/assets/6b860fe7-e547-4014-9159-9e8e30a3dbaf"
+      "id": "6b860fe7-e547-4014-9159-9e8e30a3dbaf"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.900006Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:26:40.565589Z",
-      "updatedBy": "dmce",
       "name": "Lohn- und Gehaltsdaten",
-      "designator": "DMO-2",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1267,22 +1168,10 @@
           }
         }
       },
-      "id": "0ce7f2a8-88ac-41c3-8e6a-7b2d9a4d66ae",
-      "_self": "https://api.staging.verinice.com/veo/assets/0ce7f2a8-88ac-41c3-8e6a-7b2d9a4d66ae"
+      "id": "0ce7f2a8-88ac-41c3-8e6a-7b2d9a4d66ae"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.901173Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:25:19.351468Z",
-      "updatedBy": "dmce",
       "name": "Geburtsdatum",
-      "designator": "DMO-3",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1300,22 +1189,10 @@
           }
         }
       },
-      "id": "af507399-bd89-4859-8a14-3fb071f2d8e0",
-      "_self": "https://api.staging.verinice.com/veo/assets/af507399-bd89-4859-8a14-3fb071f2d8e0"
+      "id": "af507399-bd89-4859-8a14-3fb071f2d8e0"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.901456Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:25:00.294246Z",
-      "updatedBy": "dmce",
       "name": "Arbeitszeugnisse",
-      "designator": "DMO-4",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1333,23 +1210,11 @@
           }
         }
       },
-      "id": "5c8ab560-3d0b-471a-b2aa-a8520acb9219",
-      "_self": "https://api.staging.verinice.com/veo/assets/5c8ab560-3d0b-471a-b2aa-a8520acb9219"
+      "id": "5c8ab560-3d0b-471a-b2aa-a8520acb9219"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.898926Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:27:52.432274Z",
-      "updatedBy": "dmce",
       "name": "Thunderbird",
-      "designator": "DMO-5",
       "description": "Thunderbird ist eine E-Mail-Anwendung der Data GmbH.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1372,22 +1237,10 @@
           }
         }
       },
-      "id": "956e7d64-9d50-4420-91af-6239cd7d368f",
-      "_self": "https://api.staging.verinice.com/veo/assets/956e7d64-9d50-4420-91af-6239cd7d368f"
+      "id": "956e7d64-9d50-4420-91af-6239cd7d368f"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.901714Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:28:40.991816Z",
-      "updatedBy": "dmce",
       "name": "Client Personalabteilung",
-      "designator": "DMO-6",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1405,22 +1258,10 @@
           }
         }
       },
-      "id": "2087c04b-11f8-4842-90d7-e2e6d761cc38",
-      "_self": "https://api.staging.verinice.com/veo/assets/2087c04b-11f8-4842-90d7-e2e6d761cc38"
+      "id": "2087c04b-11f8-4842-90d7-e2e6d761cc38"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.902062Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:28:47.678699Z",
-      "updatedBy": "dmce",
       "name": "Clients",
-      "designator": "DMO-7",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1444,22 +1285,10 @@
           }
         }
       },
-      "id": "e99f8814-57b7-429b-a5a6-4d1c6732f29d",
-      "_self": "https://api.staging.verinice.com/veo/assets/e99f8814-57b7-429b-a5a6-4d1c6732f29d"
+      "id": "e99f8814-57b7-429b-a5a6-4d1c6732f29d"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.902499Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:27:59.033675Z",
-      "updatedBy": "dmce",
       "name": "Office 365",
-      "designator": "DMO-8",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1477,22 +1306,10 @@
           }
         }
       },
-      "id": "72d26283-44d7-40f4-a288-e8ed9f1aa19f",
-      "_self": "https://api.staging.verinice.com/veo/assets/72d26283-44d7-40f4-a288-e8ed9f1aa19f"
+      "id": "72d26283-44d7-40f4-a288-e8ed9f1aa19f"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.904652Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:25:57.970980Z",
-      "updatedBy": "dmce",
       "name": "Telefonnummer",
-      "designator": "DMO-9",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1510,23 +1327,11 @@
           }
         }
       },
-      "id": "dfeb4079-8b03-48af-895f-dfcbf66fa228",
-      "_self": "https://api.staging.verinice.com/veo/assets/dfeb4079-8b03-48af-895f-dfcbf66fa228"
+      "id": "dfeb4079-8b03-48af-895f-dfcbf66fa228"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.906156Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:25:10.740814Z",
-      "updatedBy": "dmce",
       "name": "Bankdaten",
-      "designator": "DMO-10",
       "description": "Kontonummern sind Bankdaten der Data GmbH.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1544,22 +1349,10 @@
           }
         }
       },
-      "id": "9a7b7dc6-6e62-4135-9c0a-e5b90340435b",
-      "_self": "https://api.staging.verinice.com/veo/assets/9a7b7dc6-6e62-4135-9c0a-e5b90340435b"
+      "id": "9a7b7dc6-6e62-4135-9c0a-e5b90340435b"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.905877Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:26:47.264942Z",
-      "updatedBy": "dmce",
       "name": "Steueridentifikationsnummer",
-      "designator": "DMO-11",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1577,22 +1370,10 @@
           }
         }
       },
-      "id": "acfb3f60-b577-4d0e-9a88-30583dc1fa23",
-      "_self": "https://api.staging.verinice.com/veo/assets/acfb3f60-b577-4d0e-9a88-30583dc1fa23"
+      "id": "acfb3f60-b577-4d0e-9a88-30583dc1fa23"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.905222Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:27:05.137487Z",
-      "updatedBy": "dmce",
       "name": "Behindertenstatus",
-      "designator": "DMO-12",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1610,23 +1391,11 @@
           }
         }
       },
-      "id": "7ad5c0fc-2c11-4325-b505-0318617d2bbc",
-      "_self": "https://api.staging.verinice.com/veo/assets/7ad5c0fc-2c11-4325-b505-0318617d2bbc"
+      "id": "7ad5c0fc-2c11-4325-b505-0318617d2bbc"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.905605Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:24:25.935564Z",
-      "updatedBy": "dmce",
       "name": "Allgemeine Personendaten",
-      "designator": "DMO-13",
       "description": "Vorname, Nachname, Anschrift und Telefonnummer ",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1644,22 +1413,10 @@
           }
         }
       },
-      "id": "f8b91106-c2c4-4492-b763-f083cc649c16",
-      "_self": "https://api.staging.verinice.com/veo/assets/f8b91106-c2c4-4492-b763-f083cc649c16"
+      "id": "f8b91106-c2c4-4492-b763-f083cc649c16"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.903966Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:28:23.346108Z",
-      "updatedBy": "dmce",
       "name": "Laptops",
-      "designator": "DMO-14",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1683,23 +1440,11 @@
           }
         }
       },
-      "id": "78267227-c51d-4376-b94b-c204a487106e",
-      "_self": "https://api.staging.verinice.com/veo/assets/78267227-c51d-4376-b94b-c204a487106e"
+      "id": "78267227-c51d-4376-b94b-c204a487106e"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.904402Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:24:38.933183Z",
-      "updatedBy": "dmce",
       "name": "E-Mail Adresse",
-      "designator": "DMO-15",
       "description": "",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1717,22 +1462,10 @@
           }
         }
       },
-      "id": "702215a6-17c9-4c8d-9edf-41261acd1eeb",
-      "_self": "https://api.staging.verinice.com/veo/assets/702215a6-17c9-4c8d-9edf-41261acd1eeb"
+      "id": "702215a6-17c9-4c8d-9edf-41261acd1eeb"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.903510Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:27:36.868144Z",
-      "updatedBy": "dmce",
       "name": "CRM",
-      "designator": "DMO-16",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1750,23 +1483,11 @@
           }
         }
       },
-      "id": "23508e6a-9025-4ea2-899f-4996fc207bdc",
-      "_self": "https://api.staging.verinice.com/veo/assets/23508e6a-9025-4ea2-899f-4996fc207bdc"
+      "id": "23508e6a-9025-4ea2-899f-4996fc207bdc"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.902826Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:26:26.952931Z",
-      "updatedBy": "dmce",
       "name": "Arbeitszeitdaten",
-      "designator": "DMO-17",
       "description": "Arbeitszeitdaten umfassen die Ist-Arbeitszeit, Soll-Arbeitszeit, Pausen, Urlaub, Sonderurlaub, Fehlzeiten, Krankheitstage sowie \u00dcberstunden.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1784,22 +1505,10 @@
           }
         }
       },
-      "id": "4f4c1f1b-dbd9-4151-87ff-ebea31131e35",
-      "_self": "https://api.staging.verinice.com/veo/assets/4f4c1f1b-dbd9-4151-87ff-ebea31131e35"
+      "id": "4f4c1f1b-dbd9-4151-87ff-ebea31131e35"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.903178Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:28:31.420497Z",
-      "updatedBy": "dmce",
       "name": "Laptop Teamleiter",
-      "designator": "DMO-18",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1817,22 +1526,10 @@
           }
         }
       },
-      "id": "33778f51-3169-4dae-a483-660ad0c57b1e",
-      "_self": "https://api.staging.verinice.com/veo/assets/33778f51-3169-4dae-a483-660ad0c57b1e"
+      "id": "33778f51-3169-4dae-a483-660ad0c57b1e"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.900290Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:28:54.746912Z",
-      "updatedBy": "dmce",
       "name": "E-Mail-Server",
-      "designator": "DMO-19",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1850,22 +1547,10 @@
           }
         }
       },
-      "id": "70914e42-2a26-4838-9881-913a6239204b",
-      "_self": "https://api.staging.verinice.com/veo/assets/70914e42-2a26-4838-9881-913a6239204b"
+      "id": "70914e42-2a26-4838-9881-913a6239204b"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.900561Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:26:06.524493Z",
-      "updatedBy": "dmce",
       "name": "Religionszugeh\u00f6rigkeit",
-      "designator": "DMO-20",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1883,23 +1568,11 @@
           }
         }
       },
-      "id": "222756c1-1b9d-4a58-985d-a44955c28719",
-      "_self": "https://api.staging.verinice.com/veo/assets/222756c1-1b9d-4a58-985d-a44955c28719"
+      "id": "222756c1-1b9d-4a58-985d-a44955c28719"
     },
     {
-      "createdAt": "2021-12-22T13:21:37.900845Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:26:34.081067Z",
-      "updatedBy": "dmce",
       "name": "Bewerberdaten",
-      "designator": "DMO-21",
       "description": "Bewerberdaten umfassen die Angaben zur Person, Kontaktdaten, Lebenslauf und Zeugnisse.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1917,24 +1590,12 @@
           }
         }
       },
-      "id": "a930d897-3a84-42d1-8e70-d9afe8f6ac6b",
-      "_self": "https://api.staging.verinice.com/veo/assets/a930d897-3a84-42d1-8e70-d9afe8f6ac6b"
+      "id": "a930d897-3a84-42d1-8e70-d9afe8f6ac6b"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.041624Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:34:40.213090Z",
-      "updatedBy": "dmce",
       "name": "TOM zur Gew\u00e4hrleistung der Integrit\u00e4t",
-      "designator": "DMO-22",
       "abbreviation": "TOM-I",
       "description": "Technische und organisatorische Ma\u00dfnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der F\u00e4higkeit, die Integrit\u00e4t der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1962,24 +1623,12 @@
           }
         }
       },
-      "id": "601d4759-3d89-4979-b8fa-0604b7ac5965",
-      "_self": "https://api.staging.verinice.com/veo/controls/601d4759-3d89-4979-b8fa-0604b7ac5965"
+      "id": "601d4759-3d89-4979-b8fa-0604b7ac5965"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.042421Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-11T14:09:57.183181Z",
-      "updatedBy": "veo-admin",
       "name": "TOM zur Wiederherstellbarkeit",
-      "designator": "DMO-23",
       "abbreviation": "TOM-REC",
       "description": "Technische und organisatorische Ma\u00dfnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der F\u00e4higkeit, die Verf\u00fcgbarkeit der personenbezogenen Daten und den Zugang zu ihnen bei einem physischen oder technischen Zwischenfall rasch wiederherzustellen.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -1987,10 +1636,7 @@
         "control_dataProtection": {
           "domains": [
             {
-              "displayName": "DS-GVO DS-GVO",
-              "searchesUri": "https://api.staging.verinice.com/veo/domains/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8",
-              "resourcesUri": "https://api.staging.verinice.com/veo/domains"
+              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
             }
           ],
           "attributes": {
@@ -2014,22 +1660,10 @@
           }
         }
       },
-      "id": "07709c03-3c8a-4993-b3e5-52304c3ec539",
-      "_self": "https://api.staging.verinice.com/veo/controls/07709c03-3c8a-4993-b3e5-52304c3ec539"
+      "id": "07709c03-3c8a-4993-b3e5-52304c3ec539"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.042814Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:33:59.178883Z",
-      "updatedBy": "dmce",
       "name": "Geeignete Aufstellung von Druckern und Kopierern",
-      "designator": "DMO-24",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2064,22 +1698,10 @@
           }
         }
       },
-      "id": "dfa6219b-3708-4cff-b7d3-20027984f9aa",
-      "_self": "https://api.staging.verinice.com/veo/controls/dfa6219b-3708-4cff-b7d3-20027984f9aa"
+      "id": "dfa6219b-3708-4cff-b7d3-20027984f9aa"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.043679Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:33:29.255059Z",
-      "updatedBy": "dmce",
       "name": "Einsatz von SSL/TLS-Verschl\u00fcsselung bei Daten\u00fcbertragung im Internet",
-      "designator": "DMO-25",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2109,22 +1731,10 @@
           }
         }
       },
-      "id": "80e6c46d-e0ec-4001-a902-b96dcd67ee3b",
-      "_self": "https://api.staging.verinice.com/veo/controls/80e6c46d-e0ec-4001-a902-b96dcd67ee3b"
+      "id": "80e6c46d-e0ec-4001-a902-b96dcd67ee3b"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.043992Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:33:36.587556Z",
-      "updatedBy": "dmce",
       "name": " Einwilligungen  dokumentieren",
-      "designator": "DMO-26",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2153,24 +1763,12 @@
           }
         }
       },
-      "id": "f9264d61-ce4e-4447-97de-cff6cc936b59",
-      "_self": "https://api.staging.verinice.com/veo/controls/f9264d61-ce4e-4447-97de-cff6cc936b59"
+      "id": "f9264d61-ce4e-4447-97de-cff6cc936b59"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.044266Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:34:12.047613Z",
-      "updatedBy": "dmce",
       "name": "TOM zur Pseudonymisierung",
-      "designator": "DMO-27",
       "abbreviation": "TOM-P",
       "description": "Technische und organisatorische Ma\u00dfnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Pseudonymisierung personenbezogener Daten.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2198,22 +1796,10 @@
           }
         }
       },
-      "id": "de8bbabe-0256-4012-88d1-e255ae9508f6",
-      "_self": "https://api.staging.verinice.com/veo/controls/de8bbabe-0256-4012-88d1-e255ae9508f6"
+      "id": "de8bbabe-0256-4012-88d1-e255ae9508f6"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.045271Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:33:05.863381Z",
-      "updatedBy": "dmce",
       "name": "Bestimmung der anwendbaren Gesetzgebung und der vertraglichen Anforderungen",
-      "designator": "DMO-28",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2253,24 +1839,12 @@
           }
         }
       },
-      "id": "172e5f2d-b052-43a2-914e-8ff1b91ce986",
-      "_self": "https://api.staging.verinice.com/veo/controls/172e5f2d-b052-43a2-914e-8ff1b91ce986"
+      "id": "172e5f2d-b052-43a2-914e-8ff1b91ce986"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.045901Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:35:45.188604Z",
-      "updatedBy": "dmce",
       "name": "TOM zur Gew\u00e4hrleistung der Belastbarkeit",
-      "designator": "DMO-29",
       "abbreviation": "TOM-R",
       "description": "Technische und organisatorische Ma\u00dfnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der F\u00e4higkeit, die Belastbarkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2298,23 +1872,11 @@
           }
         }
       },
-      "id": "35bd79b2-53ec-477c-b165-4fdd8d3c4674",
-      "_self": "https://api.staging.verinice.com/veo/controls/35bd79b2-53ec-477c-b165-4fdd8d3c4674"
+      "id": "35bd79b2-53ec-477c-b165-4fdd8d3c4674"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.046319Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:33:44.006667Z",
-      "updatedBy": "dmce",
       "name": "Sichere Aufbewahrung der Datentr\u00e4ger ",
-      "designator": "DMO-30",
       "description": "Die Datentr\u00e4ger werden vor und nach dem Versand sicher aufbewahrt. ",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2351,24 +1913,12 @@
           }
         }
       },
-      "id": "88e6758c-adc5-4efa-813d-9c7e0f34f592",
-      "_self": "https://api.staging.verinice.com/veo/controls/88e6758c-adc5-4efa-813d-9c7e0f34f592"
+      "id": "88e6758c-adc5-4efa-813d-9c7e0f34f592"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.046840Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:34:48.356634Z",
-      "updatedBy": "dmce",
       "name": "Verfahren regelm\u00e4\u00dfiger \u00dcberpr\u00fcfung, Bewertung und Evaluierung der Wirksamkeit der TOM",
-      "designator": "DMO-31",
       "abbreviation": "TOM-EFF",
       "description": "Technische und organisatorische Ma\u00dfnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich Verfahren zur regelm\u00e4\u00dfigen \u00dcberpr\u00fcfung, Bewertung und Evaluierung der Wirksamkeit der technischen und organisatorischen Ma\u00dfnahmen zur Gew\u00e4hrleistung der Sicherheit der Verarbeitung.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2396,22 +1946,10 @@
           }
         }
       },
-      "id": "e6d638b6-bc5b-48b2-86ba-82675b34a5c3",
-      "_self": "https://api.staging.verinice.com/veo/controls/e6d638b6-bc5b-48b2-86ba-82675b34a5c3"
+      "id": "e6d638b6-bc5b-48b2-86ba-82675b34a5c3"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.047258Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:34:56.185870Z",
-      "updatedBy": "dmce",
       "name": "E-Mail-Verschl\u00fcsselung von sensibler Kommunikation mittels S/MIME",
-      "designator": "DMO-32",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2441,24 +1979,12 @@
           }
         }
       },
-      "id": "5f659c46-eec4-474e-89ad-54abe687da2c",
-      "_self": "https://api.staging.verinice.com/veo/controls/5f659c46-eec4-474e-89ad-54abe687da2c"
+      "id": "5f659c46-eec4-474e-89ad-54abe687da2c"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.047989Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:34:06.026469Z",
-      "updatedBy": "dmce",
       "name": "TOM zur Gew\u00e4hrleistung der Verf\u00fcgbarkeit",
-      "designator": "DMO-33",
       "abbreviation": "TOM-A",
       "description": "Technische und organisatorische Ma\u00dfnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der F\u00e4higkeit, die Verf\u00fcgbarkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2486,23 +2012,11 @@
           }
         }
       },
-      "id": "6843842a-fe71-4012-86c4-e598e27e11f7",
-      "_self": "https://api.staging.verinice.com/veo/controls/6843842a-fe71-4012-86c4-e598e27e11f7"
+      "id": "6843842a-fe71-4012-86c4-e598e27e11f7"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.048432Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:35:21.411231Z",
-      "updatedBy": "dmce",
       "name": " L\u00f6schvorgaben festsetzen ",
-      "designator": "DMO-34",
       "description": "L\u00f6schvorgaben f\u00fcr digitale Bewerbungen m\u00fcssen implementiert und kommuniziert.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2537,24 +2051,12 @@
           }
         }
       },
-      "id": "2643384c-e06a-4466-a667-1ba60ef81ad8",
-      "_self": "https://api.staging.verinice.com/veo/controls/2643384c-e06a-4466-a667-1ba60ef81ad8"
+      "id": "2643384c-e06a-4466-a667-1ba60ef81ad8"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.047539Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:34:17.813526Z",
-      "updatedBy": "dmce",
       "name": "TOM zur Gew\u00e4hrleistung der Vertraulichkeit",
-      "designator": "DMO-35",
       "abbreviation": "TOM-C",
       "description": "Technische und organisatorische Ma\u00dfnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der F\u00e4higkeit, die Vertraulichkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2582,24 +2084,12 @@
           }
         }
       },
-      "id": "0db5135a-5231-4422-b14f-ec522167c1cd",
-      "_self": "https://api.staging.verinice.com/veo/controls/0db5135a-5231-4422-b14f-ec522167c1cd"
+      "id": "0db5135a-5231-4422-b14f-ec522167c1cd"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.043314Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:34:33.410789Z",
-      "updatedBy": "dmce",
       "name": "TOM zur Verschl\u00fcsselung",
-      "designator": "DMO-36",
       "abbreviation": "TOM-E",
       "description": "Technische und organisatorische Ma\u00dfnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Verschl\u00fcsselung personenbezogener Daten.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2627,22 +2117,10 @@
           }
         }
       },
-      "id": "2b9a0122-3870-4f79-afcc-7c30a9e8bdf4",
-      "_self": "https://api.staging.verinice.com/veo/controls/2b9a0122-3870-4f79-afcc-7c30a9e8bdf4"
+      "id": "2b9a0122-3870-4f79-afcc-7c30a9e8bdf4"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.044706Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:33:20.866058Z",
-      "updatedBy": "dmce",
       "name": "Datenschutzaspekte bei der Protokollierung",
-      "designator": "DMO-37",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2677,23 +2155,11 @@
           }
         }
       },
-      "id": "5632186d-0397-4041-9144-8ef04030b096",
-      "_self": "https://api.staging.verinice.com/veo/controls/5632186d-0397-4041-9144-8ef04030b096"
+      "id": "5632186d-0397-4041-9144-8ef04030b096"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.199365Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:31:11.015783Z",
-      "updatedBy": "dmce",
       "name": "Jule Penny",
-      "designator": "DMO-38",
       "description": "Die Leiterin der Buchaltung der Data GmbH.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2718,23 +2184,11 @@
           }
         }
       },
-      "id": "ca39207b-d35f-45b8-8898-f8f7e1c5af48",
-      "_self": "https://api.staging.verinice.com/veo/persons/ca39207b-d35f-45b8-8898-f8f7e1c5af48"
+      "id": "ca39207b-d35f-45b8-8898-f8f7e1c5af48"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.199799Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-11T14:09:59.795870Z",
-      "updatedBy": "veo-admin",
       "name": "Dr. Infort",
-      "designator": "DMO-39",
       "description": "Der IT-Leiter der MeD GmbH.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2752,23 +2206,11 @@
           }
         }
       },
-      "id": "1c754825-6179-41c1-847a-19175fd1d4ed",
-      "_self": "https://api.staging.verinice.com/veo/persons/1c754825-6179-41c1-847a-19175fd1d4ed"
+      "id": "1c754825-6179-41c1-847a-19175fd1d4ed"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.200041Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:37:15.748103Z",
-      "updatedBy": "dmce",
       "name": "Dr. Medical",
-      "designator": "DMO-40",
       "description": "Der Gesch\u00e4ftsf\u00fchrer der MED GmbH.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2794,23 +2236,11 @@
           }
         }
       },
-      "id": "1e97b745-f0bc-4aea-b124-fbe35ebe3897",
-      "_self": "https://api.staging.verinice.com/veo/persons/1e97b745-f0bc-4aea-b124-fbe35ebe3897"
+      "id": "1e97b745-f0bc-4aea-b124-fbe35ebe3897"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.200400Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:31:36.298362Z",
-      "updatedBy": "dmce",
       "name": "Nina Fliege",
-      "designator": "DMO-41",
       "description": "Fachverwantortlich Marketing Data GmbH",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2828,23 +2258,11 @@
           }
         }
       },
-      "id": "cc3d04f6-c145-44c5-afb5-71b8b2c56305",
-      "_self": "https://api.staging.verinice.com/veo/persons/cc3d04f6-c145-44c5-afb5-71b8b2c56305"
+      "id": "cc3d04f6-c145-44c5-afb5-71b8b2c56305"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.200699Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:31:17.929986Z",
-      "updatedBy": "dmce",
       "name": "J\u00fcrgen Toast",
-      "designator": "DMO-42",
       "description": "Der Informationssicherheitsbeauftrage der Data GmbH.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2862,23 +2280,11 @@
           }
         }
       },
-      "id": "164f3943-d327-48f7-a5c9-a68d52b2331a",
-      "_self": "https://api.staging.verinice.com/veo/persons/164f3943-d327-48f7-a5c9-a68d52b2331a"
+      "id": "164f3943-d327-48f7-a5c9-a68d52b2331a"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.199112Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:32:12.572127Z",
-      "updatedBy": "dmce",
       "name": "Ferdinant Maurer",
-      "designator": "DMO-43",
       "description": "Der Gesch\u00e4ftsf\u00fchrer der FED AG.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2896,23 +2302,11 @@
           }
         }
       },
-      "id": "bff07e8b-9e0b-4bbc-a76f-bec2722ef840",
-      "_self": "https://api.staging.verinice.com/veo/persons/bff07e8b-9e0b-4bbc-a76f-bec2722ef840"
+      "id": "bff07e8b-9e0b-4bbc-a76f-bec2722ef840"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.200967Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:29:52.510011Z",
-      "updatedBy": "dmce",
       "name": "Dieter Data",
-      "designator": "DMO-44",
       "description": "Der externe Datenschutzbeauftragte der Data GmbH (arbeitet f\u00fcr die FED AG)",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2954,23 +2348,11 @@
           }
         }
       },
-      "id": "5adafe4f-e024-41fc-9723-ada37a2ccff0",
-      "_self": "https://api.staging.verinice.com/veo/persons/5adafe4f-e024-41fc-9723-ada37a2ccff0"
+      "id": "5adafe4f-e024-41fc-9723-ada37a2ccff0"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.202902Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:30:17.950032Z",
-      "updatedBy": "dmce",
       "name": "Bennie Brunop",
-      "designator": "DMO-45",
       "description": "Der Fachverantwortliche f\u00fcr das Marketing der Data GmbH.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -2995,23 +2377,11 @@
           }
         }
       },
-      "id": "e077c827-664c-4166-9bcd-a6052a2ac406",
-      "_self": "https://api.staging.verinice.com/veo/persons/e077c827-664c-4166-9bcd-a6052a2ac406"
+      "id": "e077c827-664c-4166-9bcd-a6052a2ac406"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.197714Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:30:06.123192Z",
-      "updatedBy": "dmce",
       "name": "Jens Lerche",
-      "designator": "DMO-46",
       "description": "Der Gesch\u00e4ftsf\u00fchrer der Data GmbH.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -3055,22 +2425,10 @@
           }
         }
       },
-      "id": "15326988-258e-40c4-bae7-20cc150af0db",
-      "_self": "https://api.staging.verinice.com/veo/persons/15326988-258e-40c4-bae7-20cc150af0db"
+      "id": "15326988-258e-40c4-bae7-20cc150af0db"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.198319Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:32:20.353671Z",
-      "updatedBy": "dmce",
       "name": "Krankenkassen",
-      "designator": "DMO-47",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -3088,23 +2446,11 @@
           }
         }
       },
-      "id": "5cb836b6-5406-4e80-b8e4-5381d4767a1e",
-      "_self": "https://api.staging.verinice.com/veo/persons/5cb836b6-5406-4e80-b8e4-5381d4767a1e"
+      "id": "5cb836b6-5406-4e80-b8e4-5381d4767a1e"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.198600Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:30:27.759851Z",
-      "updatedBy": "dmce",
       "name": "Hans Meiser",
-      "designator": "DMO-48",
       "description": "Der IT-Leiter der Data GmbH.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -3147,22 +2493,10 @@
           }
         }
       },
-      "id": "e667fcb4-5b6e-4569-962f-b9408fb7fd28",
-      "_self": "https://api.staging.verinice.com/veo/persons/e667fcb4-5b6e-4569-962f-b9408fb7fd28"
+      "id": "e667fcb4-5b6e-4569-962f-b9408fb7fd28"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.202395Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:30:54.880995Z",
-      "updatedBy": "dmce",
       "name": "Fachabteilung 1",
-      "designator": "DMO-49",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -3180,23 +2514,11 @@
           }
         }
       },
-      "id": "f65a7919-f726-4769-9cf6-0c0c3d6aa59b",
-      "_self": "https://api.staging.verinice.com/veo/persons/f65a7919-f726-4769-9cf6-0c0c3d6aa59b"
+      "id": "f65a7919-f726-4769-9cf6-0c0c3d6aa59b"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.202664Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:31:25.730987Z",
-      "updatedBy": "dmce",
       "name": "Lisa Reise",
-      "designator": "DMO-50",
       "description": "IT-Leiterin FED AG",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -3214,24 +2536,12 @@
           }
         }
       },
-      "id": "95790af0-6917-4aca-ad5a-7143d5f1220b",
-      "_self": "https://api.staging.verinice.com/veo/persons/95790af0-6917-4aca-ad5a-7143d5f1220b"
+      "id": "95790af0-6917-4aca-ad5a-7143d5f1220b"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.201585Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:29:44.178809Z",
-      "updatedBy": "dmce",
       "name": "Heidi Kruse",
-      "designator": "DMO-51",
       "abbreviation": "",
       "description": "Die Datenschutzbeauftragte der Data GmbH (Verantwortlichen Stelle).",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -3280,22 +2590,10 @@
           }
         }
       },
-      "id": "5fb78661-571d-411b-9aa6-f39636c16717",
-      "_self": "https://api.staging.verinice.com/veo/persons/5fb78661-571d-411b-9aa6-f39636c16717"
+      "id": "5fb78661-571d-411b-9aa6-f39636c16717"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.203326Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:31:04.235591Z",
-      "updatedBy": "dmce",
       "name": "Finanzamt",
-      "designator": "DMO-52",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -3313,23 +2611,11 @@
           }
         }
       },
-      "id": "cb2b1688-81bd-45cc-8285-f057ad66ea2a",
-      "_self": "https://api.staging.verinice.com/veo/persons/cb2b1688-81bd-45cc-8285-f057ad66ea2a"
+      "id": "cb2b1688-81bd-45cc-8285-f057ad66ea2a"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.196701Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:29:37.808826Z",
-      "updatedBy": "dmce",
       "name": "Justin Gr\u00f6bel",
-      "designator": "DMO-53",
       "description": "Der externe Datenschutzbeauftragte der Data GmbH (arbeitet f\u00fcr die MED GmbH).",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -3378,22 +2664,10 @@
           }
         }
       },
-      "id": "bfa9422d-b039-4f92-a87a-6142df6e2335",
-      "_self": "https://api.staging.verinice.com/veo/persons/bfa9422d-b039-4f92-a87a-6142df6e2335"
+      "id": "bfa9422d-b039-4f92-a87a-6142df6e2335"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.413441Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-16T08:12:58.073152Z",
-      "updatedBy": "dmce",
       "name": "MeD GmbH",
-      "designator": "DMO-60",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         "scope_dataProtectionOfficer": [
           {
@@ -3402,10 +2676,7 @@
               "scope_dataProtectionOfficer_affiliation": "scope_dataProtectionOfficer_affiliation_internal"
             },
             "target": {
-              "displayName": "DMO-53 Justin Gr\u00f6bel",
-              "searchesUri": "https://api.staging.verinice.com/veo/persons/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/persons/bfa9422d-b039-4f92-a87a-6142df6e2335",
-              "resourcesUri": "https://api.staging.verinice.com/veo/persons{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
+              "targetUri": "https://api.staging.verinice.com/veo/persons/bfa9422d-b039-4f92-a87a-6142df6e2335"
             }
           }
         ],
@@ -3416,10 +2687,7 @@
               
             },
             "target": {
-              "displayName": "DMO-40 Dr. Medical",
-              "searchesUri": "https://api.staging.verinice.com/veo/persons/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/persons/1e97b745-f0bc-4aea-b124-fbe35ebe3897",
-              "resourcesUri": "https://api.staging.verinice.com/veo/persons{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
+              "targetUri": "https://api.staging.verinice.com/veo/persons/1e97b745-f0bc-4aea-b124-fbe35ebe3897"
             }
           }
         ]
@@ -3477,22 +2745,10 @@
           "riskDefinition": "DSRA"
         }
       },
-      "id": "7464bfd6-e2ee-47be-be46-abc9029e7992",
-      "_self": "https://api.staging.verinice.com/veo/scopes/7464bfd6-e2ee-47be-be46-abc9029e7992"
+      "id": "7464bfd6-e2ee-47be-be46-abc9029e7992"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.414137Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-16T08:13:24.666097Z",
-      "updatedBy": "dmce",
       "name": "Bewerbungen AG",
-      "designator": "DMO-61",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -3533,23 +2789,11 @@
           "riskDefinition": "DSRA"
         }
       },
-      "id": "8c322861-3446-413c-94ad-97f922e7a0c9",
-      "_self": "https://api.staging.verinice.com/veo/scopes/8c322861-3446-413c-94ad-97f922e7a0c9"
+      "id": "8c322861-3446-413c-94ad-97f922e7a0c9"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.414591Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-16T08:08:44.639129Z",
-      "updatedBy": "dmce",
       "name": "Externe Lohnbuchhaltung AG",
-      "designator": "DMO-62",
       "description": "Als Auftragsverarbeiter setzt die Data GmbH die Externe Lohnbuchhaltung AG ein. ",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -3597,23 +2841,11 @@
           "riskDefinition": "DSRA"
         }
       },
-      "id": "5836fdf4-94d0-443f-aa3d-d0f39f1a2436",
-      "_self": "https://api.staging.verinice.com/veo/scopes/5836fdf4-94d0-443f-aa3d-d0f39f1a2436"
+      "id": "5836fdf4-94d0-443f-aa3d-d0f39f1a2436"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.411838Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-19T08:38:46.269940Z",
-      "updatedBy": "stce",
       "name": "Data GmbH",
-      "designator": "DMO-63",
       "description": "Die Data GmbH ist ein IT-Dienstleister, spezialisiert auf Netzwerksicherheit und Informationssicherheit und in unserer Demo die Verantwortliche Stelle nach DS-GVO.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         "scope_informationSecurityOfficer": [
           {
@@ -3622,10 +2854,7 @@
               
             },
             "target": {
-              "displayName": "DMO-42 J\u00fcrgen Toast",
-              "searchesUri": "https://api.staging.verinice.com/veo/persons/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/persons/164f3943-d327-48f7-a5c9-a68d52b2331a",
-              "resourcesUri": "https://api.staging.verinice.com/veo/persons{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
+              "targetUri": "https://api.staging.verinice.com/veo/persons/164f3943-d327-48f7-a5c9-a68d52b2331a"
             }
           }
         ],
@@ -3636,10 +2865,7 @@
               
             },
             "target": {
-              "displayName": "DMO-48 Hans Meiser",
-              "searchesUri": "https://api.staging.verinice.com/veo/persons/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/persons/e667fcb4-5b6e-4569-962f-b9408fb7fd28",
-              "resourcesUri": "https://api.staging.verinice.com/veo/persons{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
+              "targetUri": "https://api.staging.verinice.com/veo/persons/e667fcb4-5b6e-4569-962f-b9408fb7fd28"
             }
           }
         ],
@@ -3652,10 +2878,7 @@
               "scope_dataProtectionOfficer_nominationDate": "2020-11-01"
             },
             "target": {
-              "displayName": "DMO-51  Heidi Kruse",
-              "searchesUri": "https://api.staging.verinice.com/veo/persons/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/persons/5fb78661-571d-411b-9aa6-f39636c16717",
-              "resourcesUri": "https://api.staging.verinice.com/veo/persons{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
+              "targetUri": "https://api.staging.verinice.com/veo/persons/5fb78661-571d-411b-9aa6-f39636c16717"
             }
           }
         ],
@@ -3666,10 +2889,7 @@
               
             },
             "target": {
-              "displayName": "DMO-46 Jens Lerche",
-              "searchesUri": "https://api.staging.verinice.com/veo/persons/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/persons/15326988-258e-40c4-bae7-20cc150af0db",
-              "resourcesUri": "https://api.staging.verinice.com/veo/persons{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
+              "targetUri": "https://api.staging.verinice.com/veo/persons/15326988-258e-40c4-bae7-20cc150af0db"
             }
           }
         ]
@@ -3717,52 +2937,28 @@
       "type": "scope",
       "members": [
         {
-          "displayName": "PRO-5 Durchf\u00fchrung von Webmeetings",
-          "searchesUri": "https://api.staging.verinice.com/veo/processes/searches",
-          "targetUri": "https://api.staging.verinice.com/veo/processes/97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7",
-          "resourcesUri": "https://api.staging.verinice.com/veo/processes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder,embedRisks}"
+          "targetUri": "https://api.staging.verinice.com/veo/processes/97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7"
         },
         {
-          "displayName": "DMO-68 Bewerberauswahlverfahren ",
-          "searchesUri": "https://api.staging.verinice.com/veo/processes/searches",
-          "targetUri": "https://api.staging.verinice.com/veo/processes/e17b2b09-dd1c-453b-97bd-dd70bdc996ac",
-          "resourcesUri": "https://api.staging.verinice.com/veo/processes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder,embedRisks}"
+          "targetUri": "https://api.staging.verinice.com/veo/processes/e17b2b09-dd1c-453b-97bd-dd70bdc996ac"
         },
         {
-          "displayName": "DMO-69 Lohnabrechnung",
-          "searchesUri": "https://api.staging.verinice.com/veo/processes/searches",
-          "targetUri": "https://api.staging.verinice.com/veo/processes/a4134991-7a46-4f20-9001-608e97464b10",
-          "resourcesUri": "https://api.staging.verinice.com/veo/processes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder,embedRisks}"
+          "targetUri": "https://api.staging.verinice.com/veo/processes/a4134991-7a46-4f20-9001-608e97464b10"
         },
         {
-          "displayName": "DMO-64 Meldungen",
-          "searchesUri": "https://api.staging.verinice.com/veo/processes/searches",
-          "targetUri": "https://api.staging.verinice.com/veo/processes/01dc79d3-c768-435b-982b-91a0b812929c",
-          "resourcesUri": "https://api.staging.verinice.com/veo/processes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder,embedRisks}"
+          "targetUri": "https://api.staging.verinice.com/veo/processes/01dc79d3-c768-435b-982b-91a0b812929c"
         },
         {
-          "displayName": "DMO-66 Externe Lohnabrechnung",
-          "searchesUri": "https://api.staging.verinice.com/veo/processes/searches",
-          "targetUri": "https://api.staging.verinice.com/veo/processes/71ae3f23-99d1-4c83-92be-333286314bb3",
-          "resourcesUri": "https://api.staging.verinice.com/veo/processes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder,embedRisks}"
+          "targetUri": "https://api.staging.verinice.com/veo/processes/71ae3f23-99d1-4c83-92be-333286314bb3"
         },
         {
-          "displayName": "CTL-30 Berechtigungskonzept ",
-          "searchesUri": "https://api.staging.verinice.com/veo/controls/searches",
-          "targetUri": "https://api.staging.verinice.com/veo/controls/42346d17-161a-440e-b6e2-5d6fd7abe0ea",
-          "resourcesUri": "https://api.staging.verinice.com/veo/controls{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
+          "targetUri": "https://api.staging.verinice.com/veo/controls/42346d17-161a-440e-b6e2-5d6fd7abe0ea"
         },
         {
-          "displayName": "DMO-65  Durchf\u00fchrung Befragungen",
-          "searchesUri": "https://api.staging.verinice.com/veo/processes/searches",
-          "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b",
-          "resourcesUri": "https://api.staging.verinice.com/veo/processes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder,embedRisks}"
+          "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
         },
         {
-          "displayName": "DMO-67 Bewerbermanagement",
-          "searchesUri": "https://api.staging.verinice.com/veo/processes/searches",
-          "targetUri": "https://api.staging.verinice.com/veo/processes/69d1e08f-eea5-4ae8-86da-eefd4b13e0e3",
-          "resourcesUri": "https://api.staging.verinice.com/veo/processes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder,embedRisks}"
+          "targetUri": "https://api.staging.verinice.com/veo/processes/69d1e08f-eea5-4ae8-86da-eefd4b13e0e3"
         }
       ],
       "domains": {
@@ -3775,22 +2971,10 @@
           "riskDefinition": "DSRA"
         }
       },
-      "id": "8c98ee3f-7402-4399-bf85-905abc92f17f",
-      "_self": "https://api.staging.verinice.com/veo/scopes/8c98ee3f-7402-4399-bf85-905abc92f17f"
+      "id": "8c98ee3f-7402-4399-bf85-905abc92f17f"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.269052Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:22:57.457507Z",
-      "updatedBy": "dmce",
       "name": "Meldungen",
-      "designator": "DMO-64",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -3823,24 +3007,12 @@
           }
         }
       },
-      "id": "01dc79d3-c768-435b-982b-91a0b812929c",
-      "_self": "https://api.staging.verinice.com/veo/processes/01dc79d3-c768-435b-982b-91a0b812929c"
+      "id": "01dc79d3-c768-435b-982b-91a0b812929c"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.269795Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-19T08:24:06.235376Z",
-      "updatedBy": "stce",
       "name": "Durchf\u00fchrung Befragungen",
-      "designator": "DMO-65",
       "abbreviation": "",
       "description": "Befragungsaktionen und deren Auswertungen werden von der Data GmbH durchgef\u00fchrt.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         "process_responsibleBody": [
           {
@@ -3849,10 +3021,7 @@
               
             },
             "target": {
-              "displayName": "DMO-63 Data GmbH",
-              "searchesUri": "https://api.staging.verinice.com/veo/scopes/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/scopes/8c98ee3f-7402-4399-bf85-905abc92f17f",
-              "resourcesUri": "https://api.staging.verinice.com/veo/scopes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/8c98ee3f-7402-4399-bf85-905abc92f17f"
             }
           }
         ],
@@ -3863,10 +3032,7 @@
               
             },
             "target": {
-              "displayName": "DMO-60 MeD GmbH",
-              "searchesUri": "https://api.staging.verinice.com/veo/scopes/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/scopes/7464bfd6-e2ee-47be-be46-abc9029e7992",
-              "resourcesUri": "https://api.staging.verinice.com/veo/scopes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/7464bfd6-e2ee-47be-be46-abc9029e7992"
             }
           },
           {
@@ -3875,10 +3041,7 @@
               
             },
             "target": {
-              "displayName": "DMO-70 FED AG",
-              "searchesUri": "https://api.staging.verinice.com/veo/scopes/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/scopes/9d68aaa0-5b61-4809-8238-034d1e58f8d2",
-              "resourcesUri": "https://api.staging.verinice.com/veo/scopes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/9d68aaa0-5b61-4809-8238-034d1e58f8d2"
             }
           }
         ],
@@ -3889,10 +3052,7 @@
               
             },
             "target": {
-              "displayName": "DMO-64 Meldungen",
-              "searchesUri": "https://api.staging.verinice.com/veo/processes/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/processes/01dc79d3-c768-435b-982b-91a0b812929c",
-              "resourcesUri": "https://api.staging.verinice.com/veo/processes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder,embedRisks}"
+              "targetUri": "https://api.staging.verinice.com/veo/processes/01dc79d3-c768-435b-982b-91a0b812929c"
             }
           },
           {
@@ -3901,10 +3061,7 @@
               
             },
             "target": {
-              "displayName": "PRO-5 Durchf\u00fchrung von Webmeetings",
-              "searchesUri": "https://api.staging.verinice.com/veo/processes/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/processes/97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7",
-              "resourcesUri": "https://api.staging.verinice.com/veo/processes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder,embedRisks}"
+              "targetUri": "https://api.staging.verinice.com/veo/processes/97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7"
             }
           }
         ]
@@ -4007,22 +3164,10 @@
           }
         }
       },
-      "id": "ecb458fb-0c56-48ef-9f74-36c47be2b11b",
-      "_self": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
+      "id": "ecb458fb-0c56-48ef-9f74-36c47be2b11b"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.270956Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:24:02.830821Z",
-      "updatedBy": "dmce",
       "name": "Externe Lohnabrechnung",
-      "designator": "DMO-66",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -4064,23 +3209,11 @@
           }
         }
       },
-      "id": "71ae3f23-99d1-4c83-92be-333286314bb3",
-      "_self": "https://api.staging.verinice.com/veo/processes/71ae3f23-99d1-4c83-92be-333286314bb3"
+      "id": "71ae3f23-99d1-4c83-92be-333286314bb3"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.271630Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-13T19:23:39.044173Z",
-      "updatedBy": "dmce",
       "name": "Bewerbermanagement",
-      "designator": "DMO-67",
       "description": "Bewerbungen erfolgen per E-Mail oder via Postsendung an die Data GmbH.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -4180,23 +3313,11 @@
           }
         }
       },
-      "id": "69d1e08f-eea5-4ae8-86da-eefd4b13e0e3",
-      "_self": "https://api.staging.verinice.com/veo/processes/69d1e08f-eea5-4ae8-86da-eefd4b13e0e3"
+      "id": "69d1e08f-eea5-4ae8-86da-eefd4b13e0e3"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.272993Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-11T14:09:56.713875Z",
-      "updatedBy": "veo-admin",
       "name": "Bewerberauswahlverfahren ",
-      "designator": "DMO-68",
       "description": "Eingegangene Bewerbungen werden an die Fachabteilungen zwecks Eignungspr\u00fcfung weitergeleitet.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -4204,10 +3325,7 @@
         "process_recipient": {
           "domains": [
             {
-              "displayName": "DS-GVO DS-GVO",
-              "searchesUri": "https://api.staging.verinice.com/veo/domains/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8",
-              "resourcesUri": "https://api.staging.verinice.com/veo/domains"
+              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
             }
           ],
           "attributes": {
@@ -4217,10 +3335,7 @@
         "process_dataTransfer": {
           "domains": [
             {
-              "displayName": "DS-GVO DS-GVO",
-              "searchesUri": "https://api.staging.verinice.com/veo/domains/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8",
-              "resourcesUri": "https://api.staging.verinice.com/veo/domains"
+              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
             }
           ],
           "attributes": {
@@ -4242,41 +3357,23 @@
           }
         }
       },
-      "id": "e17b2b09-dd1c-453b-97bd-dd70bdc996ac",
-      "_self": "https://api.staging.verinice.com/veo/processes/e17b2b09-dd1c-453b-97bd-dd70bdc996ac"
+      "id": "e17b2b09-dd1c-453b-97bd-dd70bdc996ac"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.273457Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-11T14:09:56.705710Z",
-      "updatedBy": "veo-admin",
       "name": "Lohnabrechnung",
-      "designator": "DMO-69",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         "process_dataTransmission": [
           {
             "domains": [
               {
-                "displayName": "DS-GVO DS-GVO",
-                "searchesUri": "https://api.staging.verinice.com/veo/domains/searches",
-                "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8",
-                "resourcesUri": "https://api.staging.verinice.com/veo/domains"
+                "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
               }
             ],
             "attributes": {
               
             },
             "target": {
-              "displayName": "DMO-64 Meldungen",
-              "searchesUri": "https://api.staging.verinice.com/veo/processes/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/processes/01dc79d3-c768-435b-982b-91a0b812929c",
-              "resourcesUri": "https://api.staging.verinice.com/veo/processes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder,embedRisks}"
+              "targetUri": "https://api.staging.verinice.com/veo/processes/01dc79d3-c768-435b-982b-91a0b812929c"
             }
           }
         ]
@@ -4285,10 +3382,7 @@
         "process_processingDetails": {
           "domains": [
             {
-              "displayName": "DS-GVO DS-GVO",
-              "searchesUri": "https://api.staging.verinice.com/veo/domains/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8",
-              "resourcesUri": "https://api.staging.verinice.com/veo/domains"
+              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
             }
           ],
           "attributes": {
@@ -4301,10 +3395,7 @@
         "process_accessAuthorization": {
           "domains": [
             {
-              "displayName": "DS-GVO DS-GVO",
-              "searchesUri": "https://api.staging.verinice.com/veo/domains/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8",
-              "resourcesUri": "https://api.staging.verinice.com/veo/domains"
+              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
             }
           ],
           "attributes": {
@@ -4315,10 +3406,7 @@
         "process_processing": {
           "domains": [
             {
-              "displayName": "DS-GVO DS-GVO",
-              "searchesUri": "https://api.staging.verinice.com/veo/domains/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8",
-              "resourcesUri": "https://api.staging.verinice.com/veo/domains"
+              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
             }
           ],
           "attributes": {
@@ -4328,10 +3416,7 @@
         "process_dataProcessing": {
           "domains": [
             {
-              "displayName": "DS-GVO DS-GVO",
-              "searchesUri": "https://api.staging.verinice.com/veo/domains/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8",
-              "resourcesUri": "https://api.staging.verinice.com/veo/domains"
+              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
             }
           ],
           "attributes": {
@@ -4345,10 +3430,7 @@
         "process_opinionDPO": {
           "domains": [
             {
-              "displayName": "DS-GVO DS-GVO",
-              "searchesUri": "https://api.staging.verinice.com/veo/domains/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8",
-              "resourcesUri": "https://api.staging.verinice.com/veo/domains"
+              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
             }
           ],
           "attributes": {
@@ -4362,10 +3444,7 @@
         "process_dataSubjects": {
           "domains": [
             {
-              "displayName": "DS-GVO DS-GVO",
-              "searchesUri": "https://api.staging.verinice.com/veo/domains/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8",
-              "resourcesUri": "https://api.staging.verinice.com/veo/domains"
+              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
             }
           ],
           "attributes": {
@@ -4377,10 +3456,7 @@
         "process_intendedPurpose": {
           "domains": [
             {
-              "displayName": "DS-GVO DS-GVO",
-              "searchesUri": "https://api.staging.verinice.com/veo/domains/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8",
-              "resourcesUri": "https://api.staging.verinice.com/veo/domains"
+              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
             }
           ],
           "attributes": {
@@ -4390,10 +3466,7 @@
         "process_privacyImpactAssessment": {
           "domains": [
             {
-              "displayName": "DS-GVO DS-GVO",
-              "searchesUri": "https://api.staging.verinice.com/veo/domains/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8",
-              "resourcesUri": "https://api.staging.verinice.com/veo/domains"
+              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
             }
           ],
           "attributes": {
@@ -4403,10 +3476,7 @@
         "process_informationsObligations": {
           "domains": [
             {
-              "displayName": "DS-GVO DS-GVO",
-              "searchesUri": "https://api.staging.verinice.com/veo/domains/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8",
-              "resourcesUri": "https://api.staging.verinice.com/veo/domains"
+              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
             }
           ],
           "attributes": {
@@ -4430,22 +3500,10 @@
           }
         }
       },
-      "id": "a4134991-7a46-4f20-9001-608e97464b10",
-      "_self": "https://api.staging.verinice.com/veo/processes/a4134991-7a46-4f20-9001-608e97464b10"
+      "id": "a4134991-7a46-4f20-9001-608e97464b10"
     },
     {
-      "createdAt": "2021-12-22T13:21:38.412768Z",
-      "createdBy": "mfce",
-      "updatedAt": "2022-05-16T08:12:23.753710Z",
-      "updatedBy": "dmce",
       "name": "FED AG",
-      "designator": "DMO-70",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         "scope_headOfDataProcessing": [
           {
@@ -4454,10 +3512,7 @@
               
             },
             "target": {
-              "displayName": "DMO-50 Lisa Reise",
-              "searchesUri": "https://api.staging.verinice.com/veo/persons/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/persons/95790af0-6917-4aca-ad5a-7143d5f1220b",
-              "resourcesUri": "https://api.staging.verinice.com/veo/persons{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
+              "targetUri": "https://api.staging.verinice.com/veo/persons/95790af0-6917-4aca-ad5a-7143d5f1220b"
             }
           }
         ],
@@ -4468,10 +3523,7 @@
               "scope_dataProtectionOfficer_affiliation": "scope_dataProtectionOfficer_affiliation_internal"
             },
             "target": {
-              "displayName": "DMO-44 Dieter Data",
-              "searchesUri": "https://api.staging.verinice.com/veo/persons/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/persons/5adafe4f-e024-41fc-9723-ada37a2ccff0",
-              "resourcesUri": "https://api.staging.verinice.com/veo/persons{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
+              "targetUri": "https://api.staging.verinice.com/veo/persons/5adafe4f-e024-41fc-9723-ada37a2ccff0"
             }
           }
         ],
@@ -4482,10 +3534,7 @@
               
             },
             "target": {
-              "displayName": "DMO-43 Ferdinant Maurer",
-              "searchesUri": "https://api.staging.verinice.com/veo/persons/searches",
-              "targetUri": "https://api.staging.verinice.com/veo/persons/bff07e8b-9e0b-4bbc-a76f-bec2722ef840",
-              "resourcesUri": "https://api.staging.verinice.com/veo/persons{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
+              "targetUri": "https://api.staging.verinice.com/veo/persons/bff07e8b-9e0b-4bbc-a76f-bec2722ef840"
             }
           }
         ]
@@ -4535,22 +3584,10 @@
           "riskDefinition": "DSRA"
         }
       },
-      "id": "9d68aaa0-5b61-4809-8238-034d1e58f8d2",
-      "_self": "https://api.staging.verinice.com/veo/scopes/9d68aaa0-5b61-4809-8238-034d1e58f8d2"
+      "id": "9d68aaa0-5b61-4809-8238-034d1e58f8d2"
     },
     {
-      "createdAt": "2022-01-18T16:08:48.665544Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-13T19:36:11.462471Z",
-      "updatedBy": "dmce",
       "name": "AV Zoom",
-      "designator": "DOC-4",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -4583,22 +3620,10 @@
           }
         }
       },
-      "id": "c8b1ee1f-2366-4e78-a1e9-6512e2a0acdb",
-      "_self": "https://api.staging.verinice.com/veo/documents/c8b1ee1f-2366-4e78-a1e9-6512e2a0acdb"
+      "id": "c8b1ee1f-2366-4e78-a1e9-6512e2a0acdb"
     },
     {
-      "createdAt": "2022-05-10T14:45:53.639213Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-13T19:43:34.352467Z",
-      "updatedBy": "dmce",
       "name": "AV  Externe Lohnbuchhaltung AG",
-      "designator": "DOC-10",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -4632,23 +3657,11 @@
           }
         }
       },
-      "id": "ba722062-7dd5-4575-be77-ee8ce986ad92",
-      "_self": "https://api.staging.verinice.com/veo/documents/ba722062-7dd5-4575-be77-ee8ce986ad92"
+      "id": "ba722062-7dd5-4575-be77-ee8ce986ad92"
     },
     {
-      "createdAt": "2022-05-13T19:40:28.259606Z",
-      "createdBy": "dmce",
-      "updatedAt": "2022-05-13T19:40:28.259606Z",
-      "updatedBy": "dmce",
       "name": "Informationssicherheitsleitlinie",
-      "designator": "DOC-11",
       "description": "Das Dokument ist die Leitlinie zur Informationssicherheit",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -4673,23 +3686,11 @@
           }
         }
       },
-      "id": "abe503f3-eacf-4ba4-a894-d55acd682b92",
-      "_self": "https://api.staging.verinice.com/veo/documents/abe503f3-eacf-4ba4-a894-d55acd682b92"
+      "id": "abe503f3-eacf-4ba4-a894-d55acd682b92"
     },
     {
-      "createdAt": "2022-05-13T19:43:10.675807Z",
-      "createdBy": "dmce",
-      "updatedAt": "2022-05-13T19:43:10.675807Z",
-      "updatedBy": "dmce",
       "name": "Benutzerrichtlinie",
-      "designator": "DOC-12",
       "description": "Diese Richtlinie richtet sich an alle Mitarbeiter der SerNet einschlie\u00dflich der Auszubildenden, Praktikanten sowie externen Arbeitskr\u00e4fte. Umfasst sind s\u00e4mtliche Betriebsteile, d.h. auch Tele-/Heimarbeits- sowie mobile Arbeitspl\u00e4tze au\u00dferhalb der Gesch\u00e4ftsr\u00e4ume. In diesem Dokument wird das Verhalten aller IT-Nutzer geregelt, um ein angemessenes Ma\u00df an Sicherheit in der IT zu gew\u00e4hren. Das Verhalten eines jeden nimmt Einfluss auf die Qualit\u00e4t des Sicherheitsprozesses und der Informationssicherheit.",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -4713,22 +3714,10 @@
           }
         }
       },
-      "id": "1204b01b-7d21-4429-b0f8-867d8998764c",
-      "_self": "https://api.staging.verinice.com/veo/documents/1204b01b-7d21-4429-b0f8-867d8998764c"
+      "id": "1204b01b-7d21-4429-b0f8-867d8998764c"
     },
     {
-      "createdAt": "2022-02-14T16:47:16.224812Z",
-      "createdBy": "dmce",
-      "updatedAt": "2022-05-13T19:32:05.252441Z",
-      "updatedBy": "dmce",
       "name": "Peter Pr\u00fcfer",
-      "designator": "PER-11",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -4752,23 +3741,11 @@
           }
         }
       },
-      "id": "6f64339c-dd50-4e62-9c09-e885ae66885d",
-      "_self": "https://api.staging.verinice.com/veo/persons/6f64339c-dd50-4e62-9c09-e885ae66885d"
+      "id": "6f64339c-dd50-4e62-9c09-e885ae66885d"
     },
     {
-      "createdAt": "2022-01-18T15:59:26.351261Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-13T19:22:34.299606Z",
-      "updatedBy": "dmce",
       "name": "Durchf\u00fchrung von Webmeetings",
-      "designator": "PRO-5",
       "description": "Gespr\u00e4che erfolgen teilweise \u00fcber Videokonferenzen und Telefonkonferenzen via ZOOM",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -4802,23 +3779,11 @@
           }
         }
       },
-      "id": "97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7",
-      "_self": "https://api.staging.verinice.com/veo/processes/97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7"
+      "id": "97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7"
     },
     {
-      "createdAt": "2022-05-19T08:16:09.975958Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-19T08:16:09.975958Z",
-      "updatedBy": "stce",
       "name": "Unberechtigter Zugriff auf personenbezogene Daten",
-      "designator": "SCN-131",
       "abbreviation": "DS-G.43",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -4839,23 +3804,11 @@
           }
         }
       },
-      "id": "7c1ee1aa-ac64-4d74-9816-194c428859bf",
-      "_self": "https://api.staging.verinice.com/veo/scenarios/7c1ee1aa-ac64-4d74-9816-194c428859bf"
+      "id": "7c1ee1aa-ac64-4d74-9816-194c428859bf"
     },
     {
-      "createdAt": "2022-05-19T08:16:10.001585Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-19T08:16:10.001585Z",
-      "updatedBy": "stce",
       "name": "Verarbeitung gro\u00dfer Datenmengen",
-      "designator": "SCN-132",
       "abbreviation": "DS-G.48",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -4876,23 +3829,11 @@
           }
         }
       },
-      "id": "d65cc8c9-8d51-4bc0-a2b1-eb51cf9702ad",
-      "_self": "https://api.staging.verinice.com/veo/scenarios/d65cc8c9-8d51-4bc0-a2b1-eb51cf9702ad"
+      "id": "d65cc8c9-8d51-4bc0-a2b1-eb51cf9702ad"
     },
     {
-      "createdAt": "2022-05-19T08:16:10.028159Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-19T08:16:10.028159Z",
-      "updatedBy": "stce",
       "name": "Unberechtigte Kenntnisnahme",
-      "designator": "SCN-133",
       "abbreviation": "DS-G.42",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -4913,23 +3854,11 @@
           }
         }
       },
-      "id": "4dbb8054-560e-49b9-83ec-fed93e612be7",
-      "_self": "https://api.staging.verinice.com/veo/scenarios/4dbb8054-560e-49b9-83ec-fed93e612be7"
+      "id": "4dbb8054-560e-49b9-83ec-fed93e612be7"
     },
     {
-      "createdAt": "2022-05-19T08:16:10.055458Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-19T08:16:10.055458Z",
-      "updatedBy": "stce",
       "name": "Verarbeitung \u00fcber die Speicherfrist hinaus",
-      "designator": "SCN-134",
       "abbreviation": "DS-G.49",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -4950,23 +3879,11 @@
           }
         }
       },
-      "id": "2f0c3e41-5f14-4692-9322-8d9bdb8b9dfe",
-      "_self": "https://api.staging.verinice.com/veo/scenarios/2f0c3e41-5f14-4692-9322-8d9bdb8b9dfe"
+      "id": "2f0c3e41-5f14-4692-9322-8d9bdb8b9dfe"
     },
     {
-      "createdAt": "2022-05-19T08:16:10.083629Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-19T08:16:10.083629Z",
-      "updatedBy": "stce",
       "name": "Fehlende oder unzureichende L\u00f6schvorgaben bzw. L\u00f6schmechanismen",
-      "designator": "SCN-135",
       "abbreviation": "DS-G.11",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -4987,23 +3904,11 @@
           }
         }
       },
-      "id": "6198e14b-9d7e-4f2c-8e82-33cfcad1828b",
-      "_self": "https://api.staging.verinice.com/veo/scenarios/6198e14b-9d7e-4f2c-8e82-33cfcad1828b"
+      "id": "6198e14b-9d7e-4f2c-8e82-33cfcad1828b"
     },
     {
-      "createdAt": "2022-05-19T08:16:10.107563Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-19T08:16:10.107563Z",
-      "updatedBy": "stce",
       "name": "Missachtung der Zweckbindung",
-      "designator": "SCN-136",
       "abbreviation": "DS-G.32",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -5024,23 +3929,11 @@
           }
         }
       },
-      "id": "59d46b37-5b0e-4afe-a30c-e8ed3e2d2cc8",
-      "_self": "https://api.staging.verinice.com/veo/scenarios/59d46b37-5b0e-4afe-a30c-e8ed3e2d2cc8"
+      "id": "59d46b37-5b0e-4afe-a30c-e8ed3e2d2cc8"
     },
     {
-      "createdAt": "2022-05-19T08:16:10.131580Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-19T08:16:10.131580Z",
-      "updatedBy": "stce",
       "name": "Verwendung der Daten zu inkompatiblen Zwecken",
-      "designator": "SCN-137",
       "abbreviation": "DS-G.55",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -5061,23 +3954,11 @@
           }
         }
       },
-      "id": "f15cdd48-a527-45b6-8b86-24dc17740d9c",
-      "_self": "https://api.staging.verinice.com/veo/scenarios/f15cdd48-a527-45b6-8b86-24dc17740d9c"
+      "id": "f15cdd48-a527-45b6-8b86-24dc17740d9c"
     },
     {
-      "createdAt": "2022-05-19T08:20:35.052945Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-19T08:20:35.052945Z",
-      "updatedBy": "stce",
       "name": "Rechtswidrige bzw. unrechtm\u00e4\u00dfige Verabeitung personenbezogener Daten",
-      "designator": "SCN-138",
       "abbreviation": "DS-G.35",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -5098,22 +3979,10 @@
           }
         }
       },
-      "id": "330c20b0-091b-410e-9a7f-e1c7ca3c5321",
-      "_self": "https://api.staging.verinice.com/veo/scenarios/330c20b0-091b-410e-9a7f-e1c7ca3c5321"
+      "id": "330c20b0-091b-410e-9a7f-e1c7ca3c5321"
     },
     {
-      "createdAt": "2022-01-18T16:01:06.596367Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-16T08:09:55.248810Z",
-      "updatedBy": "dmce",
       "name": " Zoom Video Communications, Inc",
-      "designator": "SCP-3",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -5147,22 +4016,10 @@
           "riskDefinition": "DSRA"
         }
       },
-      "id": "04a97d42-c8aa-4e95-96a1-2aab6214c1bb",
-      "_self": "https://api.staging.verinice.com/veo/scopes/04a97d42-c8aa-4e95-96a1-2aab6214c1bb"
+      "id": "04a97d42-c8aa-4e95-96a1-2aab6214c1bb"
     },
     {
-      "createdAt": "2022-05-10T12:12:12.565652Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-13T19:18:19.722933Z",
-      "updatedBy": "dmce",
       "name": "Fachabteilung 1",
-      "designator": "SCP-31",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -5180,22 +4037,10 @@
           }
         }
       },
-      "id": "848ba0c5-f164-4ae3-8da7-2d2c8f1fa0b4",
-      "_self": "https://api.staging.verinice.com/veo/scopes/848ba0c5-f164-4ae3-8da7-2d2c8f1fa0b4"
+      "id": "848ba0c5-f164-4ae3-8da7-2d2c8f1fa0b4"
     },
     {
-      "createdAt": "2022-05-10T14:25:29.960419Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-13T19:19:51.774465Z",
-      "updatedBy": "dmce",
       "name": "Krankenkassen",
-      "designator": "SCP-32",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -5213,22 +4058,10 @@
           }
         }
       },
-      "id": "d596b431-3711-499a-a0ee-096241176d8d",
-      "_self": "https://api.staging.verinice.com/veo/scopes/d596b431-3711-499a-a0ee-096241176d8d"
+      "id": "d596b431-3711-499a-a0ee-096241176d8d"
     },
     {
-      "createdAt": "2022-05-10T14:27:51.922250Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-13T19:19:32.915759Z",
-      "updatedBy": "dmce",
       "name": "Finanzamt",
-      "designator": "SCP-33",
-      "owner": {
-        "displayName": "Demo-WIP",
-        "searchesUri": "https://api.staging.verinice.com/veo/units/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d",
-        "resourcesUri": "https://api.staging.verinice.com/veo/units{?parent,displayName}"
-      },
       "links": {
         
       },
@@ -5246,70 +4079,34 @@
           }
         }
       },
-      "id": "b973c2f1-29f9-4957-8ef1-c5b0ffb7868d",
-      "_self": "https://api.staging.verinice.com/veo/scopes/b973c2f1-29f9-4957-8ef1-c5b0ffb7868d"
+      "id": "b973c2f1-29f9-4957-8ef1-c5b0ffb7868d"
     }
   ],
   "risks": [
     {
-      "createdAt": "2022-05-19T08:20:09.414158Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-19T08:20:09.414158Z",
-      "updatedBy": "stce",
-      "designator": "RSK-8",
       "scenario": {
-        "displayName": "SCN-137 DS-G.55 Verwendung der Daten zu inkompatiblen Zwecken",
-        "searchesUri": "https://api.staging.verinice.com/veo/scenarios/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/scenarios/f15cdd48-a527-45b6-8b86-24dc17740d9c",
-        "resourcesUri": "https://api.staging.verinice.com/veo/scenarios{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/59d46b37-5b0e-4afe-a30c-e8ed3e2d2cc8"
       },
       "process": {
-        "displayName": "DMO-65  Durchf\u00fchrung Befragungen",
-        "searchesUri": "https://api.staging.verinice.com/veo/processes/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b",
-        "resourcesUri": "https://api.staging.verinice.com/veo/processes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder,embedRisks}"
+        "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
       },
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "reference": {
-            "displayName": "DS-GVO DS-GVO",
-            "searchesUri": "https://api.staging.verinice.com/veo/domains/searches",
-            "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8",
-            "resourcesUri": "https://api.staging.verinice.com/veo/domains"
-          },
           "riskDefinitions": {
             
           }
         }
-      },
-      "_self": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b/risks/f15cdd48-a527-45b6-8b86-24dc17740d9c"
+      }
     },
     {
-      "createdAt": "2022-05-19T08:20:09.190660Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-19T08:26:36.228578Z",
-      "updatedBy": "stce",
-      "designator": "RSK-7",
       "scenario": {
-        "displayName": "SCN-133 DS-G.42 Unberechtigte Kenntnisnahme",
-        "searchesUri": "https://api.staging.verinice.com/veo/scenarios/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/scenarios/4dbb8054-560e-49b9-83ec-fed93e612be7",
-        "resourcesUri": "https://api.staging.verinice.com/veo/scenarios{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/4dbb8054-560e-49b9-83ec-fed93e612be7"
       },
       "process": {
-        "displayName": "DMO-65  Durchf\u00fchrung Befragungen",
-        "searchesUri": "https://api.staging.verinice.com/veo/processes/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b",
-        "resourcesUri": "https://api.staging.verinice.com/veo/processes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder,embedRisks}"
+        "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
       },
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "reference": {
-            "displayName": "DS-GVO DS-GVO",
-            "searchesUri": "https://api.staging.verinice.com/veo/domains/searches",
-            "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8",
-            "resourcesUri": "https://api.staging.verinice.com/veo/domains"
-          },
           "riskDefinitions": {
             "DSRA": {
               "probability": {
@@ -5385,74 +4182,37 @@
             }
           }
         }
-      },
-      "_self": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b/risks/4dbb8054-560e-49b9-83ec-fed93e612be7"
+      }
     },
     {
-      "createdAt": "2022-05-19T08:20:09.190637Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-19T08:20:09.190637Z",
-      "updatedBy": "stce",
-      "designator": "RSK-6",
       "scenario": {
-        "displayName": "SCN-136 DS-G.32 Missachtung der Zweckbindung",
-        "searchesUri": "https://api.staging.verinice.com/veo/scenarios/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/scenarios/59d46b37-5b0e-4afe-a30c-e8ed3e2d2cc8",
-        "resourcesUri": "https://api.staging.verinice.com/veo/scenarios{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/f15cdd48-a527-45b6-8b86-24dc17740d9c"
       },
       "process": {
-        "displayName": "DMO-65  Durchf\u00fchrung Befragungen",
-        "searchesUri": "https://api.staging.verinice.com/veo/processes/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b",
-        "resourcesUri": "https://api.staging.verinice.com/veo/processes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder,embedRisks}"
+        "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
       },
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "reference": {
-            "displayName": "DS-GVO DS-GVO",
-            "searchesUri": "https://api.staging.verinice.com/veo/domains/searches",
-            "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8",
-            "resourcesUri": "https://api.staging.verinice.com/veo/domains"
-          },
           "riskDefinitions": {
             
           }
         }
-      },
-      "_self": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b/risks/59d46b37-5b0e-4afe-a30c-e8ed3e2d2cc8"
+      }
     },
     {
-      "createdAt": "2022-05-19T08:21:03.033899Z",
-      "createdBy": "stce",
-      "updatedAt": "2022-05-19T08:21:03.033899Z",
-      "updatedBy": "stce",
-      "designator": "RSK-9",
       "scenario": {
-        "displayName": "SCN-138 DS-G.35 Rechtswidrige bzw. unrechtm\u00e4\u00dfige Verabeitung personenbezogener Daten",
-        "searchesUri": "https://api.staging.verinice.com/veo/scenarios/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/scenarios/330c20b0-091b-410e-9a7f-e1c7ca3c5321",
-        "resourcesUri": "https://api.staging.verinice.com/veo/scenarios{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}"
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/330c20b0-091b-410e-9a7f-e1c7ca3c5321"
       },
       "process": {
-        "displayName": "DMO-65  Durchf\u00fchrung Befragungen",
-        "searchesUri": "https://api.staging.verinice.com/veo/processes/searches",
-        "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b",
-        "resourcesUri": "https://api.staging.verinice.com/veo/processes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder,embedRisks}"
+        "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
       },
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "reference": {
-            "displayName": "DS-GVO DS-GVO",
-            "searchesUri": "https://api.staging.verinice.com/veo/domains/searches",
-            "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8",
-            "resourcesUri": "https://api.staging.verinice.com/veo/domains"
-          },
           "riskDefinitions": {
             
           }
         }
-      },
-      "_self": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b/risks/330c20b0-091b-410e-9a7f-e1c7ca3c5321"
+      }
     }
   ]
 }
