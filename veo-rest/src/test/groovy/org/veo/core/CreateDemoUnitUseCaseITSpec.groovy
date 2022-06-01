@@ -207,7 +207,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                         }
                         verifyAll {
                             getInherentRisk(confidentiality).idRef == 2
-                            getResidualRisk(confidentiality).idRef == 2
+                            getUserDefinedResidualRisk(confidentiality).idRef == 2
                         }
                     }
                 }

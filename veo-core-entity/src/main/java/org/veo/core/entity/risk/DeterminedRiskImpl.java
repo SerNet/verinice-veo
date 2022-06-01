@@ -42,7 +42,7 @@ public class DeterminedRiskImpl implements DeterminedRisk {
 
   private RiskRef inherentRisk;
 
-  private RiskRef residualRisk;
+  private RiskRef userDefinedResidualRisk;
 
   @Size(max = DeterminedRisk.EXPLANATION_MAX_LENGTH)
   private String residualRiskExplanation;

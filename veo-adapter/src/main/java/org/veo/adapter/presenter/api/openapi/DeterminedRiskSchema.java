@@ -49,17 +49,17 @@ public interface DeterminedRiskSchema {
               + " the user. A scalar value that matches a valid risk level from a risk-definition.",
       example = "3")
   @PositiveOrZero
-  BigDecimal getResidualRisk();
+  BigDecimal getUserDefinedResidualRisk();
 
   @Schema(
       description =
-          "The inherent risk becomes the effective risk - unless it is "
-              + "overruled by  the user-defined residual risk. A scalar value that matches a valid "
+          "The inherent risk value is used as the residual risk - unless it is "
+              + "overruled by the user-defined residual risk. A scalar value that matches a valid "
               + "risk level from  a risk-definition.",
       example = "3",
       accessMode = Schema.AccessMode.READ_ONLY)
   @PositiveOrZero
-  BigDecimal getEffectiveRisk();
+  BigDecimal getResidualRisk();
 
   @Schema(
       description = "An explanation for the user's choice of residual risk.",

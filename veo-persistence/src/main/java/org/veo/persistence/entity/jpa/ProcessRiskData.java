@@ -227,8 +227,8 @@ public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> impl
           // new value set, leave the existing categories as they are:
           if (newRiskValues.getCategorizedRisks() != null
               && newRiskValues.categoryExists(category)) {
-            risk.setResidualRisk(
-                validator.validate(category, newRiskValues.getResidualRisk(category)));
+            risk.setUserDefinedResidualRisk(
+                validator.validate(category, newRiskValues.getUserDefinedResidualRisk(category)));
             risk.setResidualRiskExplanation(newRiskValues.getResidualRiskExplanation(category));
             risk.setRiskTreatments(newRiskValues.getRiskTreatments(category));
             risk.setRiskTreatmentExplanation(newRiskValues.getRiskTreatmentExplanation(category));

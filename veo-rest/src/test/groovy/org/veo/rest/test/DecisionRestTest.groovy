@@ -244,7 +244,7 @@ class DecisionRestTest extends VeoRestTest {
         get("/processes/$processId/risks").body.size() == 1
     }
 
-    private void addRiskValue(String processId, Integer residualRisk) {
+    private void addRiskValue(String processId, Integer userDefinedResidualRisk) {
         post("/scopes", [
             name: "risky scope",
             domains: [
@@ -276,7 +276,7 @@ class DecisionRestTest extends VeoRestTest {
                             riskValues: [
                                 [
                                     category: "A",
-                                    residualRisk: residualRisk
+                                    userDefinedResidualRisk: userDefinedResidualRisk
                                 ]
                             ]
                         ]

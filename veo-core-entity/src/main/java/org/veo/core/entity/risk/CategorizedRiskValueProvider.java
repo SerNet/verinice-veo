@@ -30,7 +30,7 @@ public interface CategorizedRiskValueProvider {
 
   RiskRef getInherentRisk(CategoryRef impactCategory);
 
-  RiskRef getResidualRisk(CategoryRef impactCategory);
+  RiskRef getUserDefinedResidualRisk(CategoryRef impactCategory);
 
   void setResidualRiskExplanation(CategoryRef impactCategory, String residualRiskExplanation);
 
@@ -40,7 +40,7 @@ public interface CategorizedRiskValueProvider {
 
   String getRiskTreatmentExplanation(CategoryRef impactCategory);
 
-  void setResidualRisk(CategoryRef impactCategory, RiskRef residualRisk);
+  void setUserDefinedResidualRisk(CategoryRef impactCategory, RiskRef userDefinedResidualRisk);
 
   void setRiskTreatments(CategoryRef impactCategory, Set<RiskTreatmentOption> riskTreatments);
 }

@@ -161,7 +161,7 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
             }
 
             process.risks.first().getRiskProvider(riskDefRef).with {
-                it.setResidualRisk(confidentiality, new RiskRef(0))
+                it.setUserDefinedResidualRisk(confidentiality, new RiskRef(0))
                 it.setResidualRiskExplanation(confidentiality, NO_RISK_NO_FUN)
                 it.setRiskTreatmentExplanation(confidentiality, RISK_ACCEPTANCE)
                 it.setRiskTreatments(confidentiality, [
@@ -194,7 +194,7 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
         }
 
         with(retrievedRisk2.getRiskProvider(riskDefRef)) {
-            it.getResidualRisk(confidentiality) ==  new RiskRef(0)
+            it.getUserDefinedResidualRisk(confidentiality) ==  new RiskRef(0)
             it.getResidualRiskExplanation(confidentiality) == NO_RISK_NO_FUN
             it.getRiskTreatmentExplanation(confidentiality) == RISK_ACCEPTANCE
             it.getRiskTreatments(confidentiality) == [

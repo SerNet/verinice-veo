@@ -156,7 +156,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             riskValues: [
                 [
                     category: "A",
-                    residualRisk: 2,
+                    userDefinedResidualRisk: 2,
                 ],
             ]
         ]
@@ -174,7 +174,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         updatedRiskDef2ImpactA.specificImpact == 3
         updatedRiskDef2ImpactA.effectiveImpact == 3
 
-        updatedRisk.domains.(domainId).riskDefinitions.r2d2.riskValues.find{it.category=="A"}.residualRisk == 2
+        updatedRisk.domains.(domainId).riskDefinitions.r2d2.riskValues.find{it.category=="A"}.userDefinedResidualRisk == 2
     }
 
     def "embedded risks can be requested"() {
@@ -233,7 +233,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             }
 
             // risk values are present in second risk definition:
-            riskValues.find { it.category == "A" }.residualRisk == 0
+            riskValues.find { it.category == "A" }.userDefinedResidualRisk == 0
         }
 
         and: "Second risk, first risk definition: all values are correct"
@@ -262,7 +262,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             with(riskValues.find{it.category == "A"}) {
                 size() == 4
                 inherentRisk == 3
-                effectiveRisk == 3
+                residualRisk == 3
             }
         }
 
@@ -277,8 +277,8 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             // all manually set risk values are present in second risk definition:
             with(riskValues.find { it.category == "A" }) {
                 size() == 4
+                userDefinedResidualRisk == 3
                 residualRisk == 3
-                effectiveRisk == 3
             }
         }
     }
@@ -310,7 +310,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
                             riskValues  : [
                                 [
                                     category    : "A",
-                                    residualRisk: 3,
+                                    userDefinedResidualRisk: 3,
                                 ],
                             ]
                         ]
@@ -345,7 +345,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
                             riskValues  : [
                                 [
                                     category    : "A",
-                                    residualRisk: 0,
+                                    userDefinedResidualRisk: 0,
                                 ],
                             ]
                         ]
@@ -401,7 +401,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         def process2Risks = result.items.find { it.id == process2.idAsString }.risks
         with(process2Risks.find{it.designator=="RSK-4"}.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=="A"}) {
             inherentRisk != null
-            effectiveRisk != null
+            residualRisk != null
         }
     }
 
@@ -458,7 +458,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         def process2Risks = result.items.find { it.id == process2.idAsString }.risks
         with(process2Risks.find{it.designator=="RSK-4"}.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=="A"}) {
             inherentRisk != null
-            effectiveRisk != null
+            residualRisk != null
         }
     }
 
@@ -538,7 +538,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         with(
                 retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}) {
                     inherentRisk == 0
-                    effectiveRisk == 0
+                    residualRisk == 0
                 }
     }
 
@@ -634,7 +634,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         with(
                 retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}) {
                     inherentRisk == 0
-                    effectiveRisk == 0
+                    residualRisk == 0
                 }
     }
 
@@ -729,7 +729,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.riskValues.size == 4
         with(retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}) {
             inherentRisk == 0
-            effectiveRisk == 0
+            residualRisk == 0
         }
     }
 

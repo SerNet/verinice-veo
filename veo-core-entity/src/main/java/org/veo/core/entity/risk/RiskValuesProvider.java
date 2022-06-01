@@ -102,8 +102,8 @@ public interface RiskValuesProvider
   }
 
   @Override
-  default RiskRef getResidualRisk(CategoryRef impactCategory) {
-    return riskCategoryById(impactCategory).getResidualRisk();
+  default RiskRef getUserDefinedResidualRisk(CategoryRef impactCategory) {
+    return riskCategoryById(impactCategory).getUserDefinedResidualRisk();
   }
 
   @Override
@@ -137,8 +137,9 @@ public interface RiskValuesProvider
     impactCategoryById(impactCategory).setSpecificImpactExplanation(explanation);
   }
 
-  default void setResidualRisk(CategoryRef impactCategory, RiskRef residualRisk) {
-    riskCategoryById(impactCategory).setResidualRisk(residualRisk);
+  default void setUserDefinedResidualRisk(
+      CategoryRef impactCategory, RiskRef userDefinedResidualRisk) {
+    riskCategoryById(impactCategory).setUserDefinedResidualRisk(userDefinedResidualRisk);
   }
 
   @Override

@@ -123,7 +123,7 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
             category == "I"
             riskTreatments == []
             inherentRisk == 1
-            effectiveRisk == 1
+            residualRisk == 1
         }
 
 
@@ -147,7 +147,7 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         impactI.specificImpact = 3
         impactI.specificImpactExplanation = BRACE_FOR_IMPACT
 
-        riskI.residualRisk = 1
+        riskI.userDefinedResidualRisk = 1
         riskI.residualRiskExplanation = NO_RISK
         riskI.riskTreatments = [
             "RISK_TREATMENT_ACCEPTANCE",
@@ -183,14 +183,14 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         updatedImpactI.specificImpactExplanation == BRACE_FOR_IMPACT
 
         updatedRiskI.inherentRisk == 3
-        updatedRiskI.residualRisk == 1
+        updatedRiskI.userDefinedResidualRisk == 1
         updatedRiskI.residualRiskExplanation == NO_RISK
         updatedRiskI.riskTreatments ==~ [
             "RISK_TREATMENT_ACCEPTANCE",
             "RISK_TREATMENT_TRANSFER"
         ]
         updatedRiskI.riskTreatmentExplanation == PROBLEM
-        updatedRiskI.effectiveRisk == 1
+        updatedRiskI.residualRisk == 1
 
         // read-only values have not been changed:
         updatedProbability.potentialProbability == 2
@@ -202,6 +202,6 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         updatedRiskA.category == "A"
         updatedRiskA.residualRiskExplanation == PROBLEM
         updatedRiskA.riskTreatments ==~ ["RISK_TREATMENT_REDUCTION"]
-        updatedRiskA.effectiveRisk == 1
+        updatedRiskA.residualRisk == 1
     }
 }

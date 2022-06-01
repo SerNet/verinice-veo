@@ -4143,40 +4143,40 @@
                 {
                   "category": "I",
                   "inherentRisk": 2,
-                  "residualRisk": 0,
+                  "userDefinedResidualRisk": 0,
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
                   ],
                   "riskTreatmentExplanation": "Berechtigungskonzept ist zu erstellen und in der Organisation zu kommunizieren",
-                  "effectiveRisk": 0
+                  "residualRisk": 0
                 },
                 {
                   "category": "A",
                   "inherentRisk": 2,
-                  "residualRisk": 0,
+                  "userDefinedResidualRisk": 0,
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
                   ],
                   "riskTreatmentExplanation": "analog zur Vertraulichkeit",
-                  "effectiveRisk": 0
+                  "residualRisk": 0
                 },
                 {
                   "category": "R",
                   "inherentRisk": 0,
-                  "residualRisk": 0,
+                  "userDefinedResidualRisk": 0,
                   "riskTreatments": [
                     "RISK_TREATMENT_ACCEPTANCE"
                   ],
-                  "effectiveRisk": 0
+                  "residualRisk": 0
                 },
                 {
                   "category": "C",
                   "inherentRisk": 0,
-                  "residualRisk": 0,
+                  "userDefinedResidualRisk": 0,
                   "riskTreatments": [
                     "RISK_TREATMENT_ACCEPTANCE"
                   ],
-                  "effectiveRisk": 0
+                  "residualRisk": 0
                 }
               ]
             }

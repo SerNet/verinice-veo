@@ -29,13 +29,14 @@ import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
+import org.veo.core.entity.risk.DeterminedRisk;
 import org.veo.core.entity.risk.RiskRef;
 
 import lombok.Data;
 
 /**
- * Provides the highest effective risk value affecting given element. Returns null if the element is
- * not affected by any risks or if none of the risks have an effective risk value.
+ * Provides the highest residual risk value affecting given element. Returns null if the element is
+ * not affected by any risks or if none of the risks have a residual risk value.
  */
 @Data
 public class MaxRiskProvider implements InputProvider {
@@ -79,7 +80,7 @@ public class MaxRiskProvider implements InputProvider {
         .map(ProcessRisk.class::cast)
         .flatMap(risk -> risk.getRiskDefinitions().stream().map(rd -> risk.getRiskProvider(rd)))
         .flatMap(provider -> provider.getCategorizedRisks().stream())
-        .map(determinedRisk -> determinedRisk.getEffectiveRisk())
+        .map(DeterminedRisk::getResidualRisk)
         .filter(it -> it != null)
         .map(RiskRef::getIdRef)
         .max(BigDecimal::compareTo)

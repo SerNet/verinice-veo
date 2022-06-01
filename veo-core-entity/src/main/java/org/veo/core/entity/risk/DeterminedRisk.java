@@ -60,17 +60,17 @@ public interface DeterminedRisk {
    * The residual risk (aka net risk) entered manually by the user as result of taking control
    * effects into account.
    */
-  RiskRef getResidualRisk();
+  RiskRef getUserDefinedResidualRisk();
 
   /**
-   * The inherent risk becomes the effective risk - unless it is overruled by the user-defined
-   * residual risk.
+   * The inherent risk value is used as the residual risk - unless it is overruled by the
+   * user-defined residual risk.
    *
-   * @return effective risk or null (if there is no residual risk and no inherent risk)
+   * @return residual risk or null (if there is no user-defined residual risk and no inherent risk)
    */
   @JsonProperty(access = Access.READ_ONLY)
-  default RiskRef getEffectiveRisk() {
-    return Optional.ofNullable(getResidualRisk()).orElse(getInherentRisk());
+  default RiskRef getResidualRisk() {
+    return Optional.ofNullable(getUserDefinedResidualRisk()).orElse(getInherentRisk());
   }
 
   void setResidualRiskExplanation(
@@ -83,7 +83,7 @@ public interface DeterminedRisk {
   String getRiskTreatmentExplanation();
 
   /** The risk after existing controls have been taken into account. */
-  void setResidualRisk(RiskRef residualRisk);
+  void setUserDefinedResidualRisk(RiskRef userDefinedResidualRisk);
 
   void setRiskTreatments(Set<RiskTreatmentOption> riskTreatments);
 
