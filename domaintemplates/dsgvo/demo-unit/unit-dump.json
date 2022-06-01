@@ -1031,6 +1031,28 @@
       "id": "a1e92c07-040a-4f7f-ae28-3cc742e63beb"
     },
     {
+      "name": "Allgemeine Personendaten",
+      "description": "Vorname, Nachname, Anschrift und Telefonnummer ",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "asset",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "AST_Datatype",
+          "status": "RELEASED",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "f8b91106-c2c4-4492-b763-f083cc649c16"
+    },
+    {
       "name": "Angaben zur Person",
       "description": " z.B. Vor- und Nachname, E-Mail-Adresse, Profilbild",
       "links": {
@@ -1053,83 +1075,8 @@
       "id": "aaf17d31-eef3-458b-8109-bc216bf96660"
     },
     {
-      "name": "Berechtigungskonzept ",
-      "description": "Ein schriftliches Berechtigungskonzept ist zu erstellen",
-      "links": {
-        
-      },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [],
-          "attributes": {
-            "control_implementation_date": "2022-11-30"
-          }
-        },
-        "control_dataProtection": {
-          "domains": [],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_confidentiality",
-              "control_dataProtection_objectives_integrity"
-            ]
-          }
-        }
-      },
-      "type": "control",
-      "parts": [
-        {
-          "targetUri": "https://api.staging.verinice.com/veo/controls/e0632252-4d53-42f9-acf9-32f6c21a9b56"
-        }
-      ],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "CTL_TOM",
-          "status": "NEW",
-          "decisionResults": {
-            
-          },
-          "riskValues": {
-            "DSRA": {
-              "implementationStatus": 1
-            }
-          }
-        }
-      },
-      "id": "42346d17-161a-440e-b6e2-5d6fd7abe0ea"
-    },
-    {
-      "name": "Berechtigungskonzept verfassen",
-      "links": {
-        
-      },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [],
-          "attributes": {
-            "control_implementation_date": "2022-09-30"
-          }
-        }
-      },
-      "type": "control",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "CTL_TOM",
-          "status": "NEW",
-          "decisionResults": {
-            
-          },
-          "riskValues": {
-            "DSRA": {
-              "implementationStatus": 1
-            }
-          }
-        }
-      },
-      "id": "e0632252-4d53-42f9-acf9-32f6c21a9b56"
-    },
-    {
-      "name": "SAP ERP",
+      "name": "Arbeitszeitdaten",
+      "description": "Arbeitszeitdaten umfassen die Ist-Arbeitszeit, Soll-Arbeitszeit, Pausen, Urlaub, Sonderurlaub, Fehlzeiten, Krankheitstage sowie \u00dcberstunden.",
       "links": {
         
       },
@@ -1140,56 +1087,14 @@
       "parts": [],
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "AST_Application",
+          "subType": "AST_Datatype",
           "status": "ARCHIVED",
           "decisionResults": {
             
           }
         }
       },
-      "id": "6b860fe7-e547-4014-9159-9e8e30a3dbaf"
-    },
-    {
-      "name": "Lohn- und Gehaltsdaten",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "asset",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "AST_Datatype",
-          "status": "RELEASED",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "0ce7f2a8-88ac-41c3-8e6a-7b2d9a4d66ae"
-    },
-    {
-      "name": "Geburtsdatum",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "asset",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "AST_Datatype",
-          "status": "RELEASED",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "af507399-bd89-4859-8a14-3fb071f2d8e0"
+      "id": "4f4c1f1b-dbd9-4151-87ff-ebea31131e35"
     },
     {
       "name": "Arbeitszeugnisse",
@@ -1213,18 +1118,77 @@
       "id": "5c8ab560-3d0b-471a-b2aa-a8520acb9219"
     },
     {
-      "name": "Thunderbird",
-      "description": "Thunderbird ist eine E-Mail-Anwendung der Data GmbH.",
+      "name": "Bankdaten",
+      "description": "Kontonummern sind Bankdaten der Data GmbH.",
       "links": {
         
       },
       "customAspects": {
-        "asset_details": {
-          "domains": [],
-          "attributes": {
-            "asset_details_number": 1
+        
+      },
+      "type": "asset",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "AST_Datatype",
+          "status": "IN_PROGRESS",
+          "decisionResults": {
+            
           }
         }
+      },
+      "id": "9a7b7dc6-6e62-4135-9c0a-e5b90340435b"
+    },
+    {
+      "name": "Behindertenstatus",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "asset",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "AST_Datatype",
+          "status": "FOR_REVIEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "7ad5c0fc-2c11-4325-b505-0318617d2bbc"
+    },
+    {
+      "name": "Bewerberdaten",
+      "description": "Bewerberdaten umfassen die Angaben zur Person, Kontaktdaten, Lebenslauf und Zeugnisse.",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "asset",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "AST_Datatype",
+          "status": "FOR_REVIEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "a930d897-3a84-42d1-8e70-d9afe8f6ac6b"
+    },
+    {
+      "name": "CRM",
+      "links": {
+        
+      },
+      "customAspects": {
+        
       },
       "type": "asset",
       "parts": [],
@@ -1237,7 +1201,7 @@
           }
         }
       },
-      "id": "956e7d64-9d50-4420-91af-6239cd7d368f"
+      "id": "23508e6a-9025-4ea2-899f-4996fc207bdc"
     },
     {
       "name": "Client Personalabteilung",
@@ -1288,7 +1252,8 @@
       "id": "e99f8814-57b7-429b-a5a6-4d1c6732f29d"
     },
     {
-      "name": "Office 365",
+      "name": "E-Mail Adresse",
+      "description": "",
       "links": {
         
       },
@@ -1299,17 +1264,38 @@
       "parts": [],
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "AST_Application",
+          "subType": "AST_Datatype",
+          "status": "RELEASED",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "702215a6-17c9-4c8d-9edf-41261acd1eeb"
+    },
+    {
+      "name": "E-Mail-Server",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "asset",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "AST_IT-System",
           "status": "IN_PROGRESS",
           "decisionResults": {
             
           }
         }
       },
-      "id": "72d26283-44d7-40f4-a288-e8ed9f1aa19f"
+      "id": "70914e42-2a26-4838-9881-913a6239204b"
     },
     {
-      "name": "Telefonnummer",
+      "name": "Geburtsdatum",
       "links": {
         
       },
@@ -1327,11 +1313,10 @@
           }
         }
       },
-      "id": "dfeb4079-8b03-48af-895f-dfcbf66fa228"
+      "id": "af507399-bd89-4859-8a14-3fb071f2d8e0"
     },
     {
-      "name": "Bankdaten",
-      "description": "Kontonummern sind Bankdaten der Data GmbH.",
+      "name": "Laptop Teamleiter",
       "links": {
         
       },
@@ -1342,78 +1327,14 @@
       "parts": [],
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "AST_Datatype",
-          "status": "IN_PROGRESS",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "9a7b7dc6-6e62-4135-9c0a-e5b90340435b"
-    },
-    {
-      "name": "Steueridentifikationsnummer",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "asset",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "AST_Datatype",
+          "subType": "AST_IT-System",
           "status": "RELEASED",
           "decisionResults": {
             
           }
         }
       },
-      "id": "acfb3f60-b577-4d0e-9a88-30583dc1fa23"
-    },
-    {
-      "name": "Behindertenstatus",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "asset",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "AST_Datatype",
-          "status": "FOR_REVIEW",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "7ad5c0fc-2c11-4325-b505-0318617d2bbc"
-    },
-    {
-      "name": "Allgemeine Personendaten",
-      "description": "Vorname, Nachname, Anschrift und Telefonnummer ",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "asset",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "AST_Datatype",
-          "status": "RELEASED",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "f8b91106-c2c4-4492-b763-f083cc649c16"
+      "id": "33778f51-3169-4dae-a483-660ad0c57b1e"
     },
     {
       "name": "Laptops",
@@ -1443,8 +1364,7 @@
       "id": "78267227-c51d-4376-b94b-c204a487106e"
     },
     {
-      "name": "E-Mail Adresse",
-      "description": "",
+      "name": "Lohn- und Gehaltsdaten",
       "links": {
         
       },
@@ -1462,10 +1382,10 @@
           }
         }
       },
-      "id": "702215a6-17c9-4c8d-9edf-41261acd1eeb"
+      "id": "0ce7f2a8-88ac-41c3-8e6a-7b2d9a4d66ae"
     },
     {
-      "name": "CRM",
+      "name": "Office 365",
       "links": {
         
       },
@@ -1477,77 +1397,13 @@
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
           "subType": "AST_Application",
-          "status": "RELEASED",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "23508e6a-9025-4ea2-899f-4996fc207bdc"
-    },
-    {
-      "name": "Arbeitszeitdaten",
-      "description": "Arbeitszeitdaten umfassen die Ist-Arbeitszeit, Soll-Arbeitszeit, Pausen, Urlaub, Sonderurlaub, Fehlzeiten, Krankheitstage sowie \u00dcberstunden.",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "asset",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "AST_Datatype",
-          "status": "ARCHIVED",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "4f4c1f1b-dbd9-4151-87ff-ebea31131e35"
-    },
-    {
-      "name": "Laptop Teamleiter",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "asset",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "AST_IT-System",
-          "status": "RELEASED",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "33778f51-3169-4dae-a483-660ad0c57b1e"
-    },
-    {
-      "name": "E-Mail-Server",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "asset",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "AST_IT-System",
           "status": "IN_PROGRESS",
           "decisionResults": {
             
           }
         }
       },
-      "id": "70914e42-2a26-4838-9881-913a6239204b"
+      "id": "72d26283-44d7-40f4-a288-e8ed9f1aa19f"
     },
     {
       "name": "Religionszugeh\u00f6rigkeit",
@@ -1571,8 +1427,28 @@
       "id": "222756c1-1b9d-4a58-985d-a44955c28719"
     },
     {
-      "name": "Bewerberdaten",
-      "description": "Bewerberdaten umfassen die Angaben zur Person, Kontaktdaten, Lebenslauf und Zeugnisse.",
+      "name": "SAP ERP",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "asset",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "AST_Application",
+          "status": "ARCHIVED",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "6b860fe7-e547-4014-9159-9e8e30a3dbaf"
+    },
+    {
+      "name": "Steueridentifikationsnummer",
       "links": {
         
       },
@@ -1584,18 +1460,64 @@
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
           "subType": "AST_Datatype",
-          "status": "FOR_REVIEW",
+          "status": "RELEASED",
           "decisionResults": {
             
           }
         }
       },
-      "id": "a930d897-3a84-42d1-8e70-d9afe8f6ac6b"
+      "id": "acfb3f60-b577-4d0e-9a88-30583dc1fa23"
     },
     {
-      "name": "TOM zur Gew\u00e4hrleistung der Integrit\u00e4t",
-      "abbreviation": "TOM-I",
-      "description": "Technische und organisatorische Ma\u00dfnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der F\u00e4higkeit, die Integrit\u00e4t der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
+      "name": "Telefonnummer",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "asset",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "AST_Datatype",
+          "status": "RELEASED",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "dfeb4079-8b03-48af-895f-dfcbf66fa228"
+    },
+    {
+      "name": "Thunderbird",
+      "description": "Thunderbird ist eine E-Mail-Anwendung der Data GmbH.",
+      "links": {
+        
+      },
+      "customAspects": {
+        "asset_details": {
+          "domains": [],
+          "attributes": {
+            "asset_details_number": 1
+          }
+        }
+      },
+      "type": "asset",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "AST_Application",
+          "status": "RELEASED",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "956e7d64-9d50-4420-91af-6239cd7d368f"
+    },
+    {
+      "name": " Einwilligungserkl\u00e4rungen  dokumentieren",
       "links": {
         
       },
@@ -1604,6 +1526,7 @@
           "domains": [],
           "attributes": {
             "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_confidentiality",
               "control_dataProtection_objectives_integrity"
             ]
           }
@@ -1619,32 +1542,63 @@
             
           },
           "riskValues": {
-            
+            "DSRA": {
+              "implementationStatus": 0
+            }
           }
         }
       },
-      "id": "601d4759-3d89-4979-b8fa-0604b7ac5965"
+      "id": "f9264d61-ce4e-4447-97de-cff6cc936b59"
     },
     {
-      "name": "TOM zur Wiederherstellbarkeit",
-      "abbreviation": "TOM-REC",
-      "description": "Technische und organisatorische Ma\u00dfnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der F\u00e4higkeit, die Verf\u00fcgbarkeit der personenbezogenen Daten und den Zugang zu ihnen bei einem physischen oder technischen Zwischenfall rasch wiederherzustellen.",
+      "name": " L\u00f6schvorgaben festsetzen ",
+      "description": "L\u00f6schvorgaben f\u00fcr digitale Bewerbungen m\u00fcssen implementiert und kommuniziert.",
       "links": {
         
       },
       "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-06-16"
+          }
+        },
         "control_dataProtection": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_recoverability"
+              "control_dataProtection_objectives_confidentiality",
+              "control_dataProtection_objectives_integrity"
             ]
           }
         }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "IN_PROGRESS",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "implementationStatus": 1
+            }
+          }
+        }
+      },
+      "id": "2643384c-e06a-4466-a667-1ba60ef81ad8"
+    },
+    {
+      "name": "Anpassung der Informationspflichten",
+      "description": "Informationspflichten m\u00fcssen entsprechend der \u00c4nderungen aktualisiert werden",
+      "links": {
+        
+      },
+      "customAspects": {
+        
       },
       "type": "control",
       "parts": [],
@@ -1660,10 +1614,11 @@
           }
         }
       },
-      "id": "07709c03-3c8a-4993-b3e5-52304c3ec539"
+      "id": "db4431fa-355e-47db-9ba0-bcb3edbadcfa"
     },
     {
-      "name": "Geeignete Aufstellung von Druckern und Kopierern",
+      "name": "Berechtigungskonzept ",
+      "description": "Ein schriftliches Berechtigungskonzept ist zu erstellen",
       "links": {
         
       },
@@ -1671,46 +1626,13 @@
         "control_implementation": {
           "domains": [],
           "attributes": {
-            "control_implementation_date": "2021-08-19",
-            "control_implementation_explanation": "Drucker  und Kopierer m\u00fcssen in geeigneter Weise aufgestellt werden."
+            "control_implementation_date": "2022-11-30"
           }
         },
         "control_dataProtection": {
           "domains": [],
           "attributes": {
             "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_confidentiality"
-            ]
-          }
-        }
-      },
-      "type": "control",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "CTL_TOM",
-          "status": "RELEASED",
-          "decisionResults": {
-            
-          },
-          "riskValues": {
-            
-          }
-        }
-      },
-      "id": "dfa6219b-3708-4cff-b7d3-20027984f9aa"
-    },
-    {
-      "name": "Einsatz von SSL/TLS-Verschl\u00fcsselung bei Daten\u00fcbertragung im Internet",
-      "links": {
-        
-      },
-      "customAspects": {
-        "control_dataProtection": {
-          "domains": [],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_encryption",
               "control_dataProtection_objectives_confidentiality",
               "control_dataProtection_objectives_integrity"
             ]
@@ -1718,27 +1640,42 @@
         }
       },
       "type": "control",
-      "parts": [],
+      "parts": [
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/067fc2aa-327b-4005-880e-cc7e4f1d07f9"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/e0632252-4d53-42f9-acf9-32f6c21a9b56"
+        }
+      ],
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
           "subType": "CTL_TOM",
-          "status": "FOR_REVIEW",
+          "status": "NEW",
           "decisionResults": {
             
           },
           "riskValues": {
-            
+            "DSRA": {
+              "implementationStatus": 1
+            }
           }
         }
       },
-      "id": "80e6c46d-e0ec-4001-a902-b96dcd67ee3b"
+      "id": "42346d17-161a-440e-b6e2-5d6fd7abe0ea"
     },
     {
-      "name": " Einwilligungen  dokumentieren",
+      "name": "Berechtigungskonzept implementieren und kommunizieren",
       "links": {
         
       },
       "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-11-30"
+          }
+        },
         "control_dataProtection": {
           "domains": [],
           "attributes": {
@@ -1754,31 +1691,29 @@
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
           "subType": "CTL_TOM",
-          "status": "RELEASED",
+          "status": "NEW",
           "decisionResults": {
             
           },
           "riskValues": {
-            
+            "DSRA": {
+              "implementationStatus": 1
+            }
           }
         }
       },
-      "id": "f9264d61-ce4e-4447-97de-cff6cc936b59"
+      "id": "067fc2aa-327b-4005-880e-cc7e4f1d07f9"
     },
     {
-      "name": "TOM zur Pseudonymisierung",
-      "abbreviation": "TOM-P",
-      "description": "Technische und organisatorische Ma\u00dfnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Pseudonymisierung personenbezogener Daten.",
+      "name": "Berechtigungskonzept verfassen",
       "links": {
         
       },
       "customAspects": {
-        "control_dataProtection": {
+        "control_implementation": {
           "domains": [],
           "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_pseudonymization"
-            ]
+            "control_implementation_date": "2022-09-30"
           }
         }
       },
@@ -1787,16 +1722,18 @@
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
           "subType": "CTL_TOM",
-          "status": "RELEASED",
+          "status": "NEW",
           "decisionResults": {
             
           },
           "riskValues": {
-            
+            "DSRA": {
+              "implementationStatus": 1
+            }
           }
         }
       },
-      "id": "de8bbabe-0256-4012-88d1-e255ae9508f6"
+      "id": "e0632252-4d53-42f9-acf9-32f6c21a9b56"
     },
     {
       "name": "Bestimmung der anwendbaren Gesetzgebung und der vertraglichen Anforderungen",
@@ -1842,18 +1779,61 @@
       "id": "172e5f2d-b052-43a2-914e-8ff1b91ce986"
     },
     {
-      "name": "TOM zur Gew\u00e4hrleistung der Belastbarkeit",
-      "abbreviation": "TOM-R",
-      "description": "Technische und organisatorische Ma\u00dfnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der F\u00e4higkeit, die Belastbarkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
+      "name": "Bewerberpool",
+      "description": "Ma\u00dfnahmen zur Verwendung Bewerberpool",
       "links": {
         
       },
       "customAspects": {
+        
+      },
+      "type": "control",
+      "parts": [
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/8b6cd648-655f-4422-b28e-386d909d97ca"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/66410012-e820-4da3-9a8d-27c29744dcfa"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/787fda3e-4fdf-457b-ad37-ed2659ea660c"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/5dd4f777-3438-4368-92c3-be0543c5149b"
+        }
+      ],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "f2dcba8f-dce5-4831-9fff-86abb0e28168"
+    },
+    {
+      "name": "Datenschutzaspekte bei der Protokollierung",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            
+          }
+        },
         "control_dataProtection": {
           "domains": [],
           "attributes": {
             "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_resilience"
+              "control_dataProtection_objectives_integrity",
+              "control_dataProtection_objectives_confidentiality"
             ]
           }
         }
@@ -1872,7 +1852,507 @@
           }
         }
       },
-      "id": "35bd79b2-53ec-477c-b165-4fdd8d3c4674"
+      "id": "5632186d-0397-4041-9144-8ef04030b096"
+    },
+    {
+      "name": "E-Mail-Verschl\u00fcsselung von sensibler Kommunikation mittels S/MIME",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_dataProtection": {
+          "domains": [],
+          "attributes": {
+            "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_encryption",
+              "control_dataProtection_objectives_integrity",
+              "control_dataProtection_objectives_confidentiality"
+            ]
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "RELEASED",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "5f659c46-eec4-474e-89ad-54abe687da2c"
+    },
+    {
+      "name": "Einsatz von SSL/TLS-Verschl\u00fcsselung bei Daten\u00fcbertragung im Internet",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_dataProtection": {
+          "domains": [],
+          "attributes": {
+            "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_encryption",
+              "control_dataProtection_objectives_confidentiality",
+              "control_dataProtection_objectives_integrity"
+            ]
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "FOR_REVIEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "80e6c46d-e0ec-4001-a902-b96dcd67ee3b"
+    },
+    {
+      "name": "Einwilligungserkl\u00e4rungen dokumentieren",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-08-24"
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "implementationStatus": 1
+            }
+          }
+        }
+      },
+      "id": "8b6cd648-655f-4422-b28e-386d909d97ca"
+    },
+    {
+      "name": "Einwilligungserkl\u00e4rungen erg\u00e4nzen",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-08-31"
+          }
+        },
+        "control_dataProtection": {
+          "domains": [],
+          "attributes": {
+            "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_confidentiality",
+              "control_dataProtection_objectives_integrity"
+            ]
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "implementationStatus": 2
+            }
+          }
+        }
+      },
+      "id": "66410012-e820-4da3-9a8d-27c29744dcfa"
+    },
+    {
+      "name": "Erstellung Einwilligungserkl\u00e4rungen ",
+      "description": "Einwilligungserkl\u00e4rungen m\u00fcssen datenschutzrechtlichen Anforderungen entsprechend erstellt werden",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-05-31"
+          }
+        },
+        "control_dataProtection": {
+          "domains": [],
+          "attributes": {
+            "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_confidentiality",
+              "control_dataProtection_objectives_integrity"
+            ]
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "implementationStatus": 1
+            }
+          }
+        }
+      },
+      "id": "9613f60a-94e1-4a86-9e0d-5da5875dbd95"
+    },
+    {
+      "name": "Erstellung von Einwilligungserkl\u00e4rungen",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "c846ed2d-5103-430c-942e-d7a0d0990c7c"
+    },
+    {
+      "name": "Geeignete Aufstellung von Druckern und Kopierern",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2021-08-19",
+            "control_implementation_explanation": "Drucker  und Kopierer m\u00fcssen in geeigneter Weise aufgestellt werden."
+          }
+        },
+        "control_dataProtection": {
+          "domains": [],
+          "attributes": {
+            "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_confidentiality"
+            ]
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "RELEASED",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "dfa6219b-3708-4cff-b7d3-20027984f9aa"
+    },
+    {
+      "name": "Informationspflichten ",
+      "description": "Informationspflichten m\u00fcssen angepasst werden an die ver\u00e4nderten Bedingungen und den Betroffenen zur Kenntnis gebracht werden",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-08-04"
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "implementationStatus": 1
+            }
+          }
+        }
+      },
+      "id": "f5afe8f1-ac3b-4911-9589-571ecc4fdaa7"
+    },
+    {
+      "name": "Konsultation Rechtsabteilung",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-05-26"
+          }
+        },
+        "control_dataProtection": {
+          "domains": [],
+          "attributes": {
+            "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_confidentiality",
+              "control_dataProtection_objectives_integrity"
+            ]
+          }
+        }
+      },
+      "type": "control",
+      "parts": [
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/f9264d61-ce4e-4447-97de-cff6cc936b59"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/9613f60a-94e1-4a86-9e0d-5da5875dbd95"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/3e57df55-7343-46bc-ac25-6dde19cc67cb"
+        }
+      ],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "implementationStatus": 1
+            }
+          }
+        }
+      },
+      "id": "563642d5-2adb-47a6-845e-0ab79dda23e5"
+    },
+    {
+      "name": "L\u00f6schfrist 2 Jahres festlegen",
+      "description": "L\u00f6schfrist von 2 Jahren festelegen , implementieren, kommunizieren und dopkumentieren. ",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-06-30"
+          }
+        },
+        "control_dataProtection": {
+          "domains": [],
+          "attributes": {
+            "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_availability",
+              "control_dataProtection_objectives_integrity",
+              "control_dataProtection_objectives_confidentiality"
+            ]
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "implementationStatus": 2
+            }
+          }
+        }
+      },
+      "id": "787fda3e-4fdf-457b-ad37-ed2659ea660c"
+    },
+    {
+      "name": "L\u00f6schfrist Bewerbungsunterlagen",
+      "description": "Es muss eine 6 monatige L\u00f6schfrist f\u00fcr abgelehnte Bewerber festgesetzt und mit der Personalabteilung kommuniziert werden",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-06-09"
+          }
+        },
+        "control_dataProtection": {
+          "domains": [],
+          "attributes": {
+            "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_confidentiality"
+            ]
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "implementationStatus": 1
+            }
+          }
+        }
+      },
+      "id": "6e2d3339-4b6d-4b29-9eb9-5c27501e71b4"
+    },
+    {
+      "name": "L\u00f6schverfahren aus dem Bewerberpool",
+      "description": "L\u00f6schverfahren festlegen und implentieren ",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-06-14"
+          }
+        },
+        "control_dataProtection": {
+          "domains": [],
+          "attributes": {
+            "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_confidentiality",
+              "control_dataProtection_objectives_integrity"
+            ]
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "implementationStatus": 1
+            }
+          }
+        }
+      },
+      "id": "5dd4f777-3438-4368-92c3-be0543c5149b"
+    },
+    {
+      "name": "Ma\u00dfnahmen Bewerberverfahren",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "control",
+      "parts": [
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/2643384c-e06a-4466-a667-1ba60ef81ad8"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/6e2d3339-4b6d-4b29-9eb9-5c27501e71b4"
+        }
+      ],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "096cdf47-f4f5-43a6-99f7-b5439e385c3e"
+    },
+    {
+      "name": "Schulung zu Auskunfsterteilung",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "c739a561-5f2c-4c1b-8a9f-4a6c538f030b"
     },
     {
       "name": "Sichere Aufbewahrung der Datentr\u00e4ger ",
@@ -1916,40 +2396,42 @@
       "id": "88e6758c-adc5-4efa-813d-9c7e0f34f592"
     },
     {
-      "name": "Verfahren regelm\u00e4\u00dfiger \u00dcberpr\u00fcfung, Bewertung und Evaluierung der Wirksamkeit der TOM",
-      "abbreviation": "TOM-EFF",
-      "description": "Technische und organisatorische Ma\u00dfnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich Verfahren zur regelm\u00e4\u00dfigen \u00dcberpr\u00fcfung, Bewertung und Evaluierung der Wirksamkeit der technischen und organisatorischen Ma\u00dfnahmen zur Gew\u00e4hrleistung der Sicherheit der Verarbeitung.",
+      "name": "Spezifische TOMs zur Durchf\u00fchrung von Befragungen",
       "links": {
         
       },
       "customAspects": {
-        "control_dataProtection": {
-          "domains": [],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_effectiveness"
-            ]
-          }
-        }
+        
       },
       "type": "control",
-      "parts": [],
+      "parts": [
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/42346d17-161a-440e-b6e2-5d6fd7abe0ea"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/563642d5-2adb-47a6-845e-0ab79dda23e5"
+        }
+      ],
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
           "subType": "CTL_TOM",
-          "status": "ARCHIVED",
+          "status": "NEW",
           "decisionResults": {
             
           },
           "riskValues": {
-            
+            "DSRA": {
+              "implementationStatus": 2
+            }
           }
         }
       },
-      "id": "e6d638b6-bc5b-48b2-86ba-82675b34a5c3"
+      "id": "178f0f6e-65dc-48c6-9fd7-7d4bf59acb22"
     },
     {
-      "name": "E-Mail-Verschl\u00fcsselung von sensibler Kommunikation mittels S/MIME",
+      "name": "TOM zur Gew\u00e4hrleistung der Belastbarkeit",
+      "abbreviation": "TOM-R",
+      "description": "Technische und organisatorische Ma\u00dfnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der F\u00e4higkeit, die Belastbarkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
       "links": {
         
       },
@@ -1958,9 +2440,7 @@
           "domains": [],
           "attributes": {
             "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_encryption",
-              "control_dataProtection_objectives_integrity",
-              "control_dataProtection_objectives_confidentiality"
+              "control_dataProtection_objectives_resilience"
             ]
           }
         }
@@ -1979,7 +2459,40 @@
           }
         }
       },
-      "id": "5f659c46-eec4-474e-89ad-54abe687da2c"
+      "id": "35bd79b2-53ec-477c-b165-4fdd8d3c4674"
+    },
+    {
+      "name": "TOM zur Gew\u00e4hrleistung der Integrit\u00e4t",
+      "abbreviation": "TOM-I",
+      "description": "Technische und organisatorische Ma\u00dfnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der F\u00e4higkeit, die Integrit\u00e4t der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_dataProtection": {
+          "domains": [],
+          "attributes": {
+            "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_integrity"
+            ]
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "RELEASED",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "601d4759-3d89-4979-b8fa-0604b7ac5965"
     },
     {
       "name": "TOM zur Gew\u00e4hrleistung der Verf\u00fcgbarkeit",
@@ -2015,45 +2528,6 @@
       "id": "6843842a-fe71-4012-86c4-e598e27e11f7"
     },
     {
-      "name": " L\u00f6schvorgaben festsetzen ",
-      "description": "L\u00f6schvorgaben f\u00fcr digitale Bewerbungen m\u00fcssen implementiert und kommuniziert.",
-      "links": {
-        
-      },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [],
-          "attributes": {
-            
-          }
-        },
-        "control_dataProtection": {
-          "domains": [],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_confidentiality",
-              "control_dataProtection_objectives_integrity"
-            ]
-          }
-        }
-      },
-      "type": "control",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "CTL_TOM",
-          "status": "IN_PROGRESS",
-          "decisionResults": {
-            
-          },
-          "riskValues": {
-            
-          }
-        }
-      },
-      "id": "2643384c-e06a-4466-a667-1ba60ef81ad8"
-    },
-    {
       "name": "TOM zur Gew\u00e4hrleistung der Vertraulichkeit",
       "abbreviation": "TOM-C",
       "description": "Technische und organisatorische Ma\u00dfnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der F\u00e4higkeit, die Vertraulichkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
@@ -2085,6 +2559,39 @@
         }
       },
       "id": "0db5135a-5231-4422-b14f-ec522167c1cd"
+    },
+    {
+      "name": "TOM zur Pseudonymisierung",
+      "abbreviation": "TOM-P",
+      "description": "Technische und organisatorische Ma\u00dfnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Pseudonymisierung personenbezogener Daten.",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_dataProtection": {
+          "domains": [],
+          "attributes": {
+            "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_pseudonymization"
+            ]
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "RELEASED",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "de8bbabe-0256-4012-88d1-e255ae9508f6"
     },
     {
       "name": "TOM zur Verschl\u00fcsselung",
@@ -2120,23 +2627,22 @@
       "id": "2b9a0122-3870-4f79-afcc-7c30a9e8bdf4"
     },
     {
-      "name": "Datenschutzaspekte bei der Protokollierung",
+      "name": "TOM zur Wiederherstellbarkeit",
+      "abbreviation": "TOM-REC",
+      "description": "Technische und organisatorische Ma\u00dfnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der F\u00e4higkeit, die Verf\u00fcgbarkeit der personenbezogenen Daten und den Zugang zu ihnen bei einem physischen oder technischen Zwischenfall rasch wiederherzustellen.",
       "links": {
         
       },
       "customAspects": {
-        "control_implementation": {
-          "domains": [],
-          "attributes": {
-            
-          }
-        },
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_integrity",
-              "control_dataProtection_objectives_confidentiality"
+              "control_dataProtection_objectives_recoverability"
             ]
           }
         }
@@ -2146,7 +2652,7 @@
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
           "subType": "CTL_TOM",
-          "status": "RELEASED",
+          "status": "NEW",
           "decisionResults": {
             
           },
@@ -2155,11 +2661,240 @@
           }
         }
       },
-      "id": "5632186d-0397-4041-9144-8ef04030b096"
+      "id": "07709c03-3c8a-4993-b3e5-52304c3ec539"
     },
     {
-      "name": "Jule Penny",
-      "description": "Die Leiterin der Buchaltung der Data GmbH.",
+      "name": "Verfahren regelm\u00e4\u00dfiger \u00dcberpr\u00fcfung, Bewertung und Evaluierung der Wirksamkeit der TOM",
+      "abbreviation": "TOM-EFF",
+      "description": "Technische und organisatorische Ma\u00dfnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich Verfahren zur regelm\u00e4\u00dfigen \u00dcberpr\u00fcfung, Bewertung und Evaluierung der Wirksamkeit der technischen und organisatorischen Ma\u00dfnahmen zur Gew\u00e4hrleistung der Sicherheit der Verarbeitung.",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_dataProtection": {
+          "domains": [],
+          "attributes": {
+            "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_effectiveness"
+            ]
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "ARCHIVED",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "e6d638b6-bc5b-48b2-86ba-82675b34a5c3"
+    },
+    {
+      "name": "Widerspruchsm\u00f6glichkeiten",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-10-29"
+          }
+        }
+      },
+      "type": "control",
+      "parts": [
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/8b6cd648-655f-4422-b28e-386d909d97ca"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/66410012-e820-4da3-9a8d-27c29744dcfa"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/f5afe8f1-ac3b-4911-9589-571ecc4fdaa7"
+        }
+      ],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "implementationStatus": 2
+            }
+          }
+        }
+      },
+      "id": "c5a9cecd-fc3d-477e-b1bb-9c5a90a5f67a"
+    },
+    {
+      "name": "\u00dcberpr\u00fcfung Erm\u00e4chtigungsgrundlagen",
+      "description": "Die Rechtsabteilung muss die Erm\u00e4chtigungsgrundlagen \u00fcberpr\u00fcfen und ggf. anpassen.",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "3e57df55-7343-46bc-ac25-6dde19cc67cb"
+    },
+    {
+      "name": "AV  Externe Lohnbuchhaltung AG",
+      "links": {
+        
+      },
+      "customAspects": {
+        "document_contract": {
+          "domains": [],
+          "attributes": {
+            "document_contract_type": "AV-Vertrag",
+            "document_contract_location": "document_contract_location_germany",
+            "document_contract_subcontractor": false
+          }
+        },
+        "document_details": {
+          "domains": [],
+          "attributes": {
+            "document_details_version": "1.0",
+            "document_details_approvalDate": "2022-05-02",
+            "document_details_classification": "document_details_classification_confidential",
+            "document_details_typeOfDocument": "document_details_typeOfDocument_contract"
+          }
+        }
+      },
+      "type": "document",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "DOC_Contract",
+          "status": "IN_PROGRESS",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "ba722062-7dd5-4575-be77-ee8ce986ad92"
+    },
+    {
+      "name": "AV Zoom",
+      "links": {
+        
+      },
+      "customAspects": {
+        "document_contract": {
+          "domains": [],
+          "attributes": {
+            "document_contract_type": "AV Vertrag",
+            "document_contract_location": "document_contract_location_thirdCountry",
+            "document_contract_thirdCountry": "USA",
+            "document_contract_subcontractor": false
+          }
+        },
+        "document_details": {
+          "domains": [],
+          "attributes": {
+            "document_details_classification": "document_details_classification_internalUse",
+            "document_details_typeOfDocument": "document_details_typeOfDocument_contract"
+          }
+        }
+      },
+      "type": "document",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "DOC_Contract",
+          "status": "RELEASED",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "c8b1ee1f-2366-4e78-a1e9-6512e2a0acdb"
+    },
+    {
+      "name": "Benutzerrichtlinie",
+      "description": "Diese Richtlinie richtet sich an alle Mitarbeiter der SerNet einschlie\u00dflich der Auszubildenden, Praktikanten sowie externen Arbeitskr\u00e4fte. Umfasst sind s\u00e4mtliche Betriebsteile, d.h. auch Tele-/Heimarbeits- sowie mobile Arbeitspl\u00e4tze au\u00dferhalb der Gesch\u00e4ftsr\u00e4ume. In diesem Dokument wird das Verhalten aller IT-Nutzer geregelt, um ein angemessenes Ma\u00df an Sicherheit in der IT zu gew\u00e4hren. Das Verhalten eines jeden nimmt Einfluss auf die Qualit\u00e4t des Sicherheitsprozesses und der Informationssicherheit.",
+      "links": {
+        
+      },
+      "customAspects": {
+        "document_details": {
+          "domains": [],
+          "attributes": {
+            "document_details_classification": "document_details_classification_internalUse",
+            "document_details_typeOfDocument": "document_details_typeOfDocument_policy"
+          }
+        }
+      },
+      "type": "document",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "DOC_Document",
+          "status": "FOR_REVIEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "1204b01b-7d21-4429-b0f8-867d8998764c"
+    },
+    {
+      "name": "Informationssicherheitsleitlinie",
+      "description": "Das Dokument ist die Leitlinie zur Informationssicherheit",
+      "links": {
+        
+      },
+      "customAspects": {
+        "document_details": {
+          "domains": [],
+          "attributes": {
+            "document_details_approvalDate": "2021-12-01",
+            "document_details_classification": "document_details_classification_internalUse",
+            "document_details_typeOfDocument": "document_details_typeOfDocument_policy"
+          }
+        }
+      },
+      "type": "document",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "DOC_Document",
+          "status": "RELEASED",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "abe503f3-eacf-4ba4-a894-d55acd682b92"
+    },
+    {
+      "name": "Bennie Brunop",
+      "description": "Der Fachverantwortliche f\u00fcr das Marketing der Data GmbH.",
       "links": {
         
       },
@@ -2167,9 +2902,9 @@
         "person_generalInformation": {
           "domains": [],
           "attributes": {
-            "person_generalInformation_givenName": "Jule",
-            "person_generalInformation_familyName": "Penny",
-            "person_generalInformation_salutation": "Frau"
+            "person_generalInformation_givenName": "Bennie",
+            "person_generalInformation_familyName": "Brunop",
+            "person_generalInformation_salutation": "Herr"
           }
         }
       },
@@ -2178,13 +2913,59 @@
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
           "subType": "PER_Person",
+          "status": "IN_PROGRESS",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "e077c827-664c-4166-9bcd-a6052a2ac406"
+    },
+    {
+      "name": "Dieter Data",
+      "description": "Der externe Datenschutzbeauftragte der Data GmbH (arbeitet f\u00fcr die FED AG)",
+      "links": {
+        
+      },
+      "customAspects": {
+        "person_generalInformation": {
+          "domains": [],
+          "attributes": {
+            "person_generalInformation_givenName": "Dieter ",
+            "person_generalInformation_familyName": "Data",
+            "person_generalInformation_salutation": "Herr "
+          }
+        },
+        "person_address": {
+          "domains": [],
+          "attributes": {
+            "person_address_city": "Berlin",
+            "person_address_state": "Berlin",
+            "person_address_country": "Deutschland",
+            "person_address_address1": "Helmholzweg 3",
+            "person_address_postcode": "10117"
+          }
+        },
+        "person_contactInformation": {
+          "domains": [],
+          "attributes": {
+            "person_contactInformation_email": "dd@DS-Fed.de",
+            "person_contactInformation_office": "030 12345"
+          }
+        }
+      },
+      "type": "person",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PER_DataProtectionOfficer",
           "status": "RELEASED",
           "decisionResults": {
             
           }
         }
       },
-      "id": "ca39207b-d35f-45b8-8898-f8f7e1c5af48"
+      "id": "5adafe4f-e024-41fc-9723-ada37a2ccff0"
     },
     {
       "name": "Dr. Infort",
@@ -2239,8 +3020,7 @@
       "id": "1e97b745-f0bc-4aea-b124-fbe35ebe3897"
     },
     {
-      "name": "Nina Fliege",
-      "description": "Fachverwantortlich Marketing Data GmbH",
+      "name": "Fachabteilung 1",
       "links": {
         
       },
@@ -2258,29 +3038,7 @@
           }
         }
       },
-      "id": "cc3d04f6-c145-44c5-afb5-71b8b2c56305"
-    },
-    {
-      "name": "J\u00fcrgen Toast",
-      "description": "Der Informationssicherheitsbeauftrage der Data GmbH.",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "person",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "PER_Person",
-          "status": "RELEASED",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "164f3943-d327-48f7-a5c9-a68d52b2331a"
+      "id": "f65a7919-f726-4769-9cf6-0c0c3d6aa59b"
     },
     {
       "name": "Ferdinant Maurer",
@@ -2305,148 +3063,25 @@
       "id": "bff07e8b-9e0b-4bbc-a76f-bec2722ef840"
     },
     {
-      "name": "Dieter Data",
-      "description": "Der externe Datenschutzbeauftragte der Data GmbH (arbeitet f\u00fcr die FED AG)",
+      "name": "Finanzamt",
       "links": {
         
       },
       "customAspects": {
-        "person_generalInformation": {
-          "domains": [],
-          "attributes": {
-            "person_generalInformation_givenName": "Dieter ",
-            "person_generalInformation_familyName": "Data",
-            "person_generalInformation_salutation": "Herr "
-          }
-        },
-        "person_address": {
-          "domains": [],
-          "attributes": {
-            "person_address_city": "Berlin",
-            "person_address_state": "Berlin",
-            "person_address_country": "Deutschland",
-            "person_address_address1": "Helmholzweg 3",
-            "person_address_postcode": "10117"
-          }
-        },
-        "person_contactInformation": {
-          "domains": [],
-          "attributes": {
-            "person_contactInformation_email": "dd@DS-Fed.de",
-            "person_contactInformation_office": "030 12345"
-          }
-        }
+        
       },
       "type": "person",
       "parts": [],
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "PER_DataProtectionOfficer",
+          "subType": "PER_Person",
           "status": "RELEASED",
           "decisionResults": {
             
           }
         }
       },
-      "id": "5adafe4f-e024-41fc-9723-ada37a2ccff0"
-    },
-    {
-      "name": "Bennie Brunop",
-      "description": "Der Fachverantwortliche f\u00fcr das Marketing der Data GmbH.",
-      "links": {
-        
-      },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [],
-          "attributes": {
-            "person_generalInformation_givenName": "Bennie",
-            "person_generalInformation_familyName": "Brunop",
-            "person_generalInformation_salutation": "Herr"
-          }
-        }
-      },
-      "type": "person",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "PER_Person",
-          "status": "IN_PROGRESS",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "e077c827-664c-4166-9bcd-a6052a2ac406"
-    },
-    {
-      "name": "Jens Lerche",
-      "description": "Der Gesch\u00e4ftsf\u00fchrer der Data GmbH.",
-      "links": {
-        
-      },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [],
-          "attributes": {
-            "person_generalInformation_title": "Dr",
-            "person_generalInformation_givenName": "Jens ",
-            "person_generalInformation_familyName": " Lerche",
-            "person_generalInformation_salutation": "Herr "
-          }
-        },
-        "person_address": {
-          "domains": [],
-          "attributes": {
-            "person_address_city": "G\u00f6ttingen",
-            "person_address_state": "Niedersachsen",
-            "person_address_country": "D",
-            "person_address_address1": "Bahnhofsallee 1b",
-            "person_address_postcode": "37081"
-          }
-        },
-        "person_contactInformation": {
-          "domains": [],
-          "attributes": {
-            "person_contactInformation_email": "jl@data.de",
-            "person_contactInformation_mobile": "0551 370000-9",
-            "person_contactInformation_office": "0551 370000-0"
-          }
-        }
-      },
-      "type": "person",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "PER_Person",
-          "status": "ARCHIVED",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "15326988-258e-40c4-bae7-20cc150af0db"
-    },
-    {
-      "name": "Krankenkassen",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "person",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "PER_Person",
-          "status": "FOR_REVIEW",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "5cb836b6-5406-4e80-b8e4-5381d4767a1e"
+      "id": "cb2b1688-81bd-45cc-8285-f057ad66ea2a"
     },
     {
       "name": "Hans Meiser",
@@ -2494,49 +3129,6 @@
         }
       },
       "id": "e667fcb4-5b6e-4569-962f-b9408fb7fd28"
-    },
-    {
-      "name": "Fachabteilung 1",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "person",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "PER_Person",
-          "status": "RELEASED",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "f65a7919-f726-4769-9cf6-0c0c3d6aa59b"
-    },
-    {
-      "name": "Lisa Reise",
-      "description": "IT-Leiterin FED AG",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "person",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "PER_Person",
-          "status": "RELEASED",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "95790af0-6917-4aca-ad5a-7143d5f1220b"
     },
     {
       "name": "Heidi Kruse",
@@ -2593,12 +3185,68 @@
       "id": "5fb78661-571d-411b-9aa6-f39636c16717"
     },
     {
-      "name": "Finanzamt",
+      "name": "Jens Lerche",
+      "description": "Der Gesch\u00e4ftsf\u00fchrer der Data GmbH.",
       "links": {
         
       },
       "customAspects": {
+        "person_generalInformation": {
+          "domains": [],
+          "attributes": {
+            "person_generalInformation_title": "Dr",
+            "person_generalInformation_givenName": "Jens ",
+            "person_generalInformation_familyName": " Lerche",
+            "person_generalInformation_salutation": "Herr "
+          }
+        },
+        "person_address": {
+          "domains": [],
+          "attributes": {
+            "person_address_city": "G\u00f6ttingen",
+            "person_address_state": "Niedersachsen",
+            "person_address_country": "D",
+            "person_address_address1": "Bahnhofsallee 1b",
+            "person_address_postcode": "37081"
+          }
+        },
+        "person_contactInformation": {
+          "domains": [],
+          "attributes": {
+            "person_contactInformation_email": "jl@data.de",
+            "person_contactInformation_mobile": "0551 370000-9",
+            "person_contactInformation_office": "0551 370000-0"
+          }
+        }
+      },
+      "type": "person",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PER_Person",
+          "status": "ARCHIVED",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "15326988-258e-40c4-bae7-20cc150af0db"
+    },
+    {
+      "name": "Jule Penny",
+      "description": "Die Leiterin der Buchaltung der Data GmbH.",
+      "links": {
         
+      },
+      "customAspects": {
+        "person_generalInformation": {
+          "domains": [],
+          "attributes": {
+            "person_generalInformation_givenName": "Jule",
+            "person_generalInformation_familyName": "Penny",
+            "person_generalInformation_salutation": "Frau"
+          }
+        }
       },
       "type": "person",
       "parts": [],
@@ -2611,7 +3259,7 @@
           }
         }
       },
-      "id": "cb2b1688-81bd-45cc-8285-f057ad66ea2a"
+      "id": "ca39207b-d35f-45b8-8898-f8f7e1c5af48"
     },
     {
       "name": "Justin Gr\u00f6bel",
@@ -2667,69 +3315,1145 @@
       "id": "bfa9422d-b039-4f92-a87a-6142df6e2335"
     },
     {
-      "name": "MeD GmbH",
+      "name": "J\u00fcrgen Toast",
+      "description": "Der Informationssicherheitsbeauftrage der Data GmbH.",
       "links": {
-        "scope_dataProtectionOfficer": [
-          {
-            "domains": [],
-            "attributes": {
-              "scope_dataProtectionOfficer_affiliation": "scope_dataProtectionOfficer_affiliation_internal"
-            },
-            "target": {
-              "targetUri": "https://api.staging.verinice.com/veo/persons/bfa9422d-b039-4f92-a87a-6142df6e2335"
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "person",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PER_Person",
+          "status": "RELEASED",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "164f3943-d327-48f7-a5c9-a68d52b2331a"
+    },
+    {
+      "name": "Krankenkassen",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "person",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PER_Person",
+          "status": "FOR_REVIEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "5cb836b6-5406-4e80-b8e4-5381d4767a1e"
+    },
+    {
+      "name": "Lisa Reise",
+      "description": "IT-Leiterin FED AG",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "person",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PER_Person",
+          "status": "RELEASED",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "95790af0-6917-4aca-ad5a-7143d5f1220b"
+    },
+    {
+      "name": "Nina Fliege",
+      "description": "Fachverwantortlich Marketing Data GmbH",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "person",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PER_Person",
+          "status": "RELEASED",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "cc3d04f6-c145-44c5-afb5-71b8b2c56305"
+    },
+    {
+      "name": "Peter Pr\u00fcfer",
+      "links": {
+        
+      },
+      "customAspects": {
+        "person_generalInformation": {
+          "domains": [],
+          "attributes": {
+            "person_generalInformation_givenName": "Peter",
+            "person_generalInformation_familyName": "Pr\u00fcfer"
+          }
+        }
+      },
+      "type": "person",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PER_Person",
+          "status": "RELEASED",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "6f64339c-dd50-4e62-9c09-e885ae66885d"
+    },
+    {
+      "name": "Rudi St\u00fcrmer",
+      "description": "Risk0vernatwortlicher",
+      "links": {
+        
+      },
+      "customAspects": {
+        "person_generalInformation": {
+          "domains": [],
+          "attributes": {
+            "person_generalInformation_givenName": "Rudi",
+            "person_generalInformation_familyName": "St\u00fcrmer",
+            "person_generalInformation_salutation": "Herr"
+          }
+        }
+      },
+      "type": "person",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PER_Person",
+          "status": "NEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "c2843721-7603-451d-8e84-f2968c66b126"
+    },
+    {
+      "name": "Bewerberauswahlverfahren ",
+      "description": "Eingegangene Bewerbungen werden an die Fachabteilungen zwecks Eignungspr\u00fcfung weitergeleitet.",
+      "links": {
+        
+      },
+      "customAspects": {
+        "process_recipient": {
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
+            }
+          ],
+          "attributes": {
+            "process_recipient_type": "process_recipient_type_internal"
+          }
+        },
+        "process_dataTransfer": {
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
+            }
+          ],
+          "attributes": {
+            "process_dataTransfer_otherLegalBasis": "\u00a7 26 I BDSG, \u00a7 26 III BDSG"
+          }
+        }
+      },
+      "type": "process",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PRO_DataTransfer",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "e17b2b09-dd1c-453b-97bd-dd70bdc996ac"
+    },
+    {
+      "name": "Bewerbermanagement",
+      "description": "Bewerbungen erfolgen per E-Mail oder via Postsendung an die Data GmbH.",
+      "links": {
+        
+      },
+      "customAspects": {
+        "process_processing": {
+          "domains": [],
+          "attributes": {
+            "process_processing_asProcessor": false
+          }
+        },
+        "process_processingDetails": {
+          "domains": [],
+          "attributes": {
+            "process_processingDetails_typeOfSurvey": "process_processingDetails_typeOfSurvey_new",
+            "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation",
+            "process_processingDetails_surveyConductedOn": "2021-08-02",
+            "process_processingDetails_responsibleDepartment": "Personalabteilung"
+          }
+        },
+        "process_accessAuthorization": {
+          "domains": [],
+          "attributes": {
+            "process_accessAuthorization_concept": true,
+            "process_accessAuthorization_description": "Zust\u00e4ndiger Sachbearbeiter im Personalbereich, Teamleiter, ggf. Gesch\u00e4ftsf\u00fchrer"
+          }
+        },
+        "process_dataProcessing": {
+          "domains": [],
+          "attributes": {
+            "process_dataProcessing_legalBasis": [],
+            "process_dataProcessing_explanation": "F\u00fcr die Begr\u00fcndung eines Besch\u00e4ftigungsverh\u00e4ltnisses",
+            "process_dataProcessing_otherLegalBasis": "\u00a7 26 I BDSG, \u00a7 26 III BDSG"
+          }
+        },
+        "process_opinionDPO": {
+          "domains": [],
+          "attributes": {
+            "process_opinionDPO_findings": "Keine L\u00f6schvorgaben festgesetzt",
+            "process_opinionDPO_PIAComment": "nicht erforderlich",
+            "process_opinionDPO_PIACarriedOut": false,
+            "process_opinionDPO_recommendations": "L\u00f6schung der Daten 6 Monate nach Vergabe der Stelle, au\u00dfer der Bewerber hat der Aufnahme in Bewerberpool explizit zugestimmt",
+            "process_opinionDPO_consultationComment": "nicht erforderlich",
+            "process_opinionDPO_consultationRequired": false,
+            "process_opinionDPO_consultationConducted": false
+          }
+        },
+        "process_dataSubjects": {
+          "domains": [],
+          "attributes": {
+            "process_dataSubjects_dataSubjects": [
+              "process_dataSubjects_dataSubjects_applicants"
+            ],
+            "process_dataSubjects_otherDataSubjects": "Keine"
+          }
+        },
+        "process_intendedPurpose": {
+          "domains": [],
+          "attributes": {
+            "process_intendedPurpose_intendedPurpose": "Personalbeschaffung"
+          }
+        },
+        "process_privacyImpactAssessment": {
+          "domains": [],
+          "attributes": {
+            "process_privacyImpactAssessment_voluntary": false,
+            "process_privacyImpactAssessment_otherExclusions": false,
+            "process_privacyImpactAssessment_processingOperationAccordingArt35": false
+          }
+        },
+        "process_generalInformation": {
+          "domains": [],
+          "attributes": {
+            
+          }
+        },
+        "process_informationsObligations": {
+          "domains": [],
+          "attributes": {
+            "process_informationsObligations_status": true,
+            "process_informationsObligations_explanation": "Informationspflichten sind erf\u00fcllt, Vorlagen anbei"
+          }
+        }
+      },
+      "type": "process",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PRO_DataProcessing",
+          "status": "FOR_REVIEW",
+          "decisionResults": {
+            "piaMandatory": {
+              "matchingRules": [],
+              "agreeingRules": []
+            }
+          },
+          "riskValues": {
+            "DSRA": {
+              "potentialImpacts": {
+                "A": 1,
+                "R": 0,
+                "C": 2,
+                "I": 2
+              }
             }
           }
-        ],
-        "scope_management": [
+        }
+      },
+      "id": "69d1e08f-eea5-4ae8-86da-eefd4b13e0e3"
+    },
+    {
+      "name": "Durchf\u00fchrung Befragungen",
+      "abbreviation": "",
+      "description": "Befragungsaktionen und deren Auswertungen werden von der Data GmbH durchgef\u00fchrt.",
+      "links": {
+        "process_responsibleBody": [
           {
             "domains": [],
             "attributes": {
               
             },
             "target": {
-              "targetUri": "https://api.staging.verinice.com/veo/persons/1e97b745-f0bc-4aea-b124-fbe35ebe3897"
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/8c98ee3f-7402-4399-bf85-905abc92f17f"
+            }
+          }
+        ],
+        "process_controller": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/9d68aaa0-5b61-4809-8238-034d1e58f8d2"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/7464bfd6-e2ee-47be-be46-abc9029e7992"
+            }
+          }
+        ],
+        "process_dataTransmission": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/processes/97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/processes/01dc79d3-c768-435b-982b-91a0b812929c"
             }
           }
         ]
       },
       "customAspects": {
+        "process_processingDetails": {
+          "domains": [],
+          "attributes": {
+            "process_processingDetails_typeOfSurvey": "process_processingDetails_typeOfSurvey_new",
+            "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation",
+            "process_processingDetails_surveyConductedOn": "2021-09-27",
+            "process_processingDetails_responsibleDepartment": "Marketing "
+          }
+        },
+        "process_accessAuthorization": {
+          "domains": [],
+          "attributes": {
+            "process_accessAuthorization_concept": false,
+            "process_accessAuthorization_description": "Kein Berechtigungskonzept"
+          }
+        },
+        "process_processing": {
+          "domains": [],
+          "attributes": {
+            "process_processing_asProcessor": true
+          }
+        },
+        "process_dataProcessing": {
+          "domains": [],
+          "attributes": {
+            "process_dataProcessing_legalBasis": [
+              "process_dataProcessing_legalBasis_Art6Abs1litaDSGVO",
+              "process_dataProcessing_legalBasis_Art6Abs1litfDSGVO"
+            ]
+          }
+        },
+        "process_opinionDPO": {
+          "domains": [],
+          "attributes": {
+            "process_opinionDPO_findings": "Verwendung der Telefonnummer problematisch\nKein Berechtigungskonzept",
+            "process_opinionDPO_PIAComment": "Nicht erforderlich",
+            "process_opinionDPO_PIACarriedOut": false,
+            "process_opinionDPO_recommendations": "\u00dcberpr\u00fcfung durch Rechtsabteilung erforderlich\nBerechtigungskonzept sollte erstellt werden \n",
+            "process_opinionDPO_consultationComment": "nicht erforderlich",
+            "process_opinionDPO_consultationRequired": false,
+            "process_opinionDPO_consultationConducted": false
+          }
+        },
+        "process_dataSubjects": {
+          "domains": [],
+          "attributes": {
+            "process_dataSubjects_dataSubjects": [
+              "process_dataSubjects_dataSubjects_controllers",
+              "process_dataSubjects_dataSubjects_customers"
+            ]
+          }
+        },
+        "process_intendedPurpose": {
+          "domains": [],
+          "attributes": {
+            "process_intendedPurpose_intendedPurpose": "Kundenzufriedenheit"
+          }
+        },
+        "process_privacyImpactAssessment": {
+          "domains": [],
+          "attributes": {
+            "process_privacyImpactAssessment_voluntary": false,
+            "process_privacyImpactAssessment_otherExclusions": false,
+            "process_privacyImpactAssessment_processingOperationAccordingArt35": false
+          }
+        },
+        "process_informationsObligations": {
+          "domains": [],
+          "attributes": {
+            "process_informationsObligations_status": true,
+            "process_informationsObligations_explanation": "Siehe Webseite"
+          }
+        }
+      },
+      "type": "process",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PRO_DataProcessing",
+          "status": "RELEASED",
+          "decisionResults": {
+            "piaMandatory": {
+              "matchingRules": [],
+              "agreeingRules": []
+            }
+          },
+          "riskValues": {
+            "DSRA": {
+              "potentialImpacts": {
+                "A": 0,
+                "R": 0,
+                "C": 2,
+                "I": 2
+              }
+            }
+          }
+        }
+      },
+      "id": "ecb458fb-0c56-48ef-9f74-36c47be2b11b"
+    },
+    {
+      "name": "Durchf\u00fchrung von Webmeetings",
+      "description": "Gespr\u00e4che erfolgen teilweise \u00fcber Videokonferenzen und Telefonkonferenzen via ZOOM",
+      "links": {
+        
+      },
+      "customAspects": {
+        "process_recipient": {
+          "domains": [],
+          "attributes": {
+            "process_recipient_type": "process_recipient_type_processor"
+          }
+        },
+        "process_dataTransfer": {
+          "domains": [],
+          "attributes": {
+            "process_dataTransfer_legalBasis": [],
+            "process_dataTransfer_explanation": "Die Daten werden immer nach Beendigung des Online-Meetings gel\u00f6scht",
+            "process_dataTransfer_otherLegalBasis": "Art. 6 Abs. 1 S. 1 lit. b DSGVO"
+          }
+        }
+      },
+      "type": "process",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PRO_DataTransfer",
+          "status": "RELEASED",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7"
+    },
+    {
+      "name": "Externe Lohnabrechnung",
+      "links": {
+        
+      },
+      "customAspects": {
+        "process_recipient": {
+          "domains": [],
+          "attributes": {
+            "process_recipient_type": "process_recipient_type_processor"
+          }
+        },
+        "process_dataTransfer": {
+          "domains": [],
+          "attributes": {
+            "process_dataTransfer_document": "https://www.adv.de",
+            "process_dataTransfer_legalBasis": [
+              "process_dataTransfer_legalBasis_Art9Abs2litfDSGVO"
+            ],
+            "process_dataTransfer_explanation": "Kein Steuerberater , StBG nichr anwendbar. AV-Vertrag wurde abgeschlossen"
+          }
+        },
+        "process_generalInformation": {
+          "domains": [],
+          "attributes": {
+            
+          }
+        }
+      },
+      "type": "process",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PRO_DataTransfer",
+          "status": "ARCHIVED",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "71ae3f23-99d1-4c83-92be-333286314bb3"
+    },
+    {
+      "name": "Lohnabrechnung",
+      "links": {
+        "process_dataTransmission": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/processes/01dc79d3-c768-435b-982b-91a0b812929c"
+            }
+          }
+        ]
+      },
+      "customAspects": {
+        "process_processingDetails": {
+          "domains": [],
+          "attributes": {
+            "process_processingDetails_typeOfSurvey": "process_processingDetails_typeOfSurvey_new",
+            "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation",
+            "process_processingDetails_surveyConductedOn": "2021-08-16",
+            "process_processingDetails_responsibleDepartment": "Personalabteilung"
+          }
+        },
+        "process_accessAuthorization": {
+          "domains": [],
+          "attributes": {
+            "process_accessAuthorization_concept": true,
+            "process_accessAuthorization_description": "Nicht ausreichend dokumentiert"
+          }
+        },
+        "process_processing": {
+          "domains": [],
+          "attributes": {
+            "process_processing_asProcessor": false
+          }
+        },
+        "process_dataProcessing": {
+          "domains": [],
+          "attributes": {
+            "process_dataProcessing_legalBasis": [
+              "process_dataProcessing_legalBasis_Art6Abs1litbDSGVO"
+            ],
+            "process_dataProcessing_explanation": "Art. 6 Abs. 1 b DS- GVO Durchf\u00fchrung des Arbeitsvertrags, Erf\u00fcllung vertraglicher Pflichten",
+            "process_dataProcessing_otherLegalBasis": "keine"
+          }
+        },
+        "process_opinionDPO": {
+          "domains": [],
+          "attributes": {
+            "process_opinionDPO_findings": "Alles gut gemacht",
+            "process_opinionDPO_PIAComment": "nicht erforderlich",
+            "process_opinionDPO_PIACarriedOut": false,
+            "process_opinionDPO_recommendations": "Nichts zu verbessern",
+            "process_opinionDPO_consultationRequired": false,
+            "process_opinionDPO_consultationConducted": false
+          }
+        },
+        "process_dataSubjects": {
+          "domains": [],
+          "attributes": {
+            "process_dataSubjects_dataSubjects": [
+              "process_dataSubjects_dataSubjects_employees"
+            ]
+          }
+        },
+        "process_intendedPurpose": {
+          "domains": [],
+          "attributes": {
+            "process_intendedPurpose_intendedPurpose": "Lohnbuchhaltung, Gehaltsabrechnung"
+          }
+        },
+        "process_privacyImpactAssessment": {
+          "domains": [],
+          "attributes": {
+            "process_privacyImpactAssessment_voluntary": false,
+            "process_privacyImpactAssessment_otherExclusions": false,
+            "process_privacyImpactAssessment_processingOperationAccordingArt35": false
+          }
+        },
+        "process_informationsObligations": {
+          "domains": [],
+          "attributes": {
+            "process_informationsObligations_status": true,
+            "process_informationsObligations_document": "www.data.de",
+            "process_informationsObligations_explanation": "Siehe Webseite"
+          }
+        }
+      },
+      "type": "process",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PRO_DataProcessing",
+          "status": "IN_PROGRESS",
+          "decisionResults": {
+            "piaMandatory": {
+              "matchingRules": [],
+              "agreeingRules": []
+            }
+          },
+          "riskValues": {
+            "DSRA": {
+              "potentialImpacts": {
+                "A": 1,
+                "R": 0,
+                "C": 2,
+                "I": 2
+              }
+            }
+          }
+        }
+      },
+      "id": "a4134991-7a46-4f20-9001-608e97464b10"
+    },
+    {
+      "name": "Meldungen",
+      "links": {
+        
+      },
+      "customAspects": {
+        "process_recipient": {
+          "domains": [],
+          "attributes": {
+            "process_recipient_type": "process_recipient_type_external"
+          }
+        },
+        "process_dataTransfer": {
+          "domains": [],
+          "attributes": {
+            "process_dataTransfer_legalBasis": [],
+            "process_dataTransfer_otherLegalBasis": "\u00a7 41 a EstG, \u00a7 \u00a7 28a ff. SGB IV ,  \u00a7 28b  Abs. 1 Satz 1 Nr. 1 - 5 SGB IV"
+          }
+        }
+      },
+      "type": "process",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PRO_DataTransfer",
+          "status": "FOR_REVIEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "01dc79d3-c768-435b-982b-91a0b812929c"
+    },
+    {
+      "name": "Betroffenenrechte werden nicht oder nur unvollst\u00e4ndig gew\u00e4hrt",
+      "abbreviation": "DS-G.2",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "scenario",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "potentialProbability": 1
+            }
+          }
+        }
+      },
+      "id": "a8962118-f7ce-46ae-8423-d46d0853748a"
+    },
+    {
+      "name": "Fehlende oder unzureichende L\u00f6schvorgaben bzw. L\u00f6schmechanismen",
+      "abbreviation": "DS-G.11",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "scenario",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "potentialProbability": 0
+            }
+          }
+        }
+      },
+      "id": "6198e14b-9d7e-4f2c-8e82-33cfcad1828b"
+    },
+    {
+      "name": "Identit\u00e4tsdiebstahl oder Identit\u00e4tsbetrug",
+      "abbreviation": "DS-G.22",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "scenario",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "8a9673d5-d7f6-4645-aa1e-5b3629a8ea0e"
+    },
+    {
+      "name": "Keine Widerspruchsm\u00f6glichkeit f\u00fcr Betroffene gegen die Datenverarbeitung",
+      "abbreviation": "DS-G.23",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "scenario",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "potentialProbability": 0
+            }
+          }
+        }
+      },
+      "id": "f9270bf5-9297-4821-9a1d-418a6967248a"
+    },
+    {
+      "name": "Missachtung der Zweckbindung",
+      "abbreviation": "DS-G.32",
+      "links": {
+        
+      },
+      "customAspects": {
+        "scenario_threat": {
+          "domains": [],
+          "attributes": {
+            "scenario_threat_type": "scenario_threat_type_internalOffender"
+          }
+        },
+        "scenario_vulnerability": {
+          "domains": [],
+          "attributes": {
+            "scenario_vulnerability_type": "scenario_vulnerability_type_humanMistakes"
+          }
+        }
+      },
+      "type": "scenario",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "potentialProbability": 0
+            }
+          }
+        }
+      },
+      "id": "59d46b37-5b0e-4afe-a30c-e8ed3e2d2cc8"
+    },
+    {
+      "name": "Phishing ",
+      "abbreviation": "DS-G.33",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "scenario",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "475dda29-13ec-4a4f-ab3a-c7d3c88c13e0"
+    },
+    {
+      "name": "Rechtswidrige bzw. unrechtm\u00e4\u00dfige Verabeitung personenbezogener Daten",
+      "abbreviation": "DS-G.35",
+      "links": {
+        
+      },
+      "customAspects": {
+        "scenario_threat": {
+          "domains": [],
+          "attributes": {
+            "scenario_threat_type": "scenario_threat_type_unauthorizedAccess"
+          }
+        },
+        "scenario_vulnerability": {
+          "domains": [],
+          "attributes": {
+            "scenario_vulnerability_type": "scenario_vulnerability_type_humanMistakes"
+          }
+        }
+      },
+      "type": "scenario",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "potentialProbability": 0
+            }
+          }
+        }
+      },
+      "id": "330c20b0-091b-410e-9a7f-e1c7ca3c5321"
+    },
+    {
+      "name": "Unberechtigte Kenntnisnahme",
+      "abbreviation": "DS-G.42",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "scenario",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "potentialProbability": 0
+            }
+          }
+        }
+      },
+      "id": "4dbb8054-560e-49b9-83ec-fed93e612be7"
+    },
+    {
+      "name": "Unberechtigter Zugriff auf personenbezogene Daten",
+      "abbreviation": "DS-G.43",
+      "links": {
+        
+      },
+      "customAspects": {
+        "scenario_threat": {
+          "domains": [],
+          "attributes": {
+            "scenario_threat_type": "scenario_threat_type_unauthorizedAccess"
+          }
+        },
+        "scenario_vulnerability": {
+          "domains": [],
+          "attributes": {
+            "scenario_vulnerability_type": "scenario_vulnerability_type_humanMistakes"
+          }
+        }
+      },
+      "type": "scenario",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "potentialProbability": 0
+            }
+          }
+        }
+      },
+      "id": "7c1ee1aa-ac64-4d74-9816-194c428859bf"
+    },
+    {
+      "name": "Unzul\u00e4ssige Auskunftserteilung an Dritte",
+      "abbreviation": "DS-G.45",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "scenario",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "fa1372ec-f6f6-4388-8705-91852d906b04"
+    },
+    {
+      "name": "Unzureichende  Pseudonymisierung oder Anonymisierung",
+      "abbreviation": "DS-G.47",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "scenario",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "potentialProbability": 0
+            }
+          }
+        }
+      },
+      "id": "3b53b10e-6066-49c1-af15-748851dab001"
+    },
+    {
+      "name": "Unzureichende  Pseudonymisierung oder Anonymisierung",
+      "abbreviation": "DS-G.47",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "scenario",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "afe8c42c-6f35-45a7-b1c9-62bed6e102e7"
+    },
+    {
+      "name": "Verarbeitung gro\u00dfer Datenmengen",
+      "abbreviation": "DS-G.48",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "scenario",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "potentialProbability": 0
+            }
+          }
+        }
+      },
+      "id": "d65cc8c9-8d51-4bc0-a2b1-eb51cf9702ad"
+    },
+    {
+      "name": "Verarbeitung \u00fcber die Speicherfrist hinaus",
+      "abbreviation": "DS-G.49",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "scenario",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "potentialProbability": 0
+            }
+          }
+        }
+      },
+      "id": "37a06561-ee7e-4914-ae96-84ea429b50e1"
+    },
+    {
+      "name": "Verwendung der Daten zu inkompatiblen Zwecken",
+      "abbreviation": "DS-G.55",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "scenario",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "f15cdd48-a527-45b6-8b86-24dc17740d9c"
+    },
+    {
+      "name": " Zoom Video Communications, Inc",
+      "links": {
+        
+      },
+      "customAspects": {
         "scope_thirdCountry": {
           "domains": [],
           "attributes": {
-            "scope_thirdCountry_status": false
+            "scope_thirdCountry_status": true
           }
         },
         "scope_address": {
           "domains": [],
           "attributes": {
-            "scope_address_city": "Bonn",
-            "scope_address_state": "NRW",
-            "scope_address_country": "Deutschland",
-            "scope_address_address1": "Beethovenplatz 14",
-            "scope_address_postcode": "53115"
-          }
-        },
-        "scope_regulatoryAuthority": {
-          "domains": [],
-          "attributes": {
-            "scope_regulatoryAuthority_fax": "0211/38424-99",
-            "scope_regulatoryAuthority_city": "D\u00fcsseldorf",
-            "scope_regulatoryAuthority_name": "Landesbeauftragte f\u00fcr Datenschutz und Informationsfreiheit",
-            "scope_regulatoryAuthority_email": "poststelle@ldi.nrw.de",
-            "scope_regulatoryAuthority_phone": "0211/38424-0",
-            "scope_regulatoryAuthority_state": "NRW",
-            "scope_regulatoryAuthority_country": "Deutschland",
-            "scope_regulatoryAuthority_address1": "Postfach 20 04 44",
-            "scope_regulatoryAuthority_postcode": "40102 "
-          }
-        },
-        "scope_contactInformation": {
-          "domains": [],
-          "attributes": {
-            "scope_contactInformation_fax": "049 211 884-99",
-            "scope_contactInformation_email": "info@med.de",
-            "scope_contactInformation_phone": "049 211 884-0",
-            "scope_contactInformation_website": "www.med.de"
+            "scope_address_city": "Stockton",
+            "scope_address_state": "California",
+            "scope_address_country": "USA",
+            "scope_address_address1": "1012 Freedom Lane",
+            "scope_address_postcode": "95202"
           }
         }
       },
@@ -2737,7 +4461,7 @@
       "members": [],
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "SCP_Controller",
+          "subType": "SCP_Processor",
           "status": "RELEASED",
           "decisionResults": {
             
@@ -2745,7 +4469,7 @@
           "riskDefinition": "DSRA"
         }
       },
-      "id": "7464bfd6-e2ee-47be-be46-abc9029e7992"
+      "id": "04a97d42-c8aa-4e95-96a1-2aab6214c1bb"
     },
     {
       "name": "Bewerbungen AG",
@@ -2790,58 +4514,6 @@
         }
       },
       "id": "8c322861-3446-413c-94ad-97f922e7a0c9"
-    },
-    {
-      "name": "Externe Lohnbuchhaltung AG",
-      "description": "Als Auftragsverarbeiter setzt die Data GmbH die Externe Lohnbuchhaltung AG ein. ",
-      "links": {
-        
-      },
-      "customAspects": {
-        "scope_generalInformation": {
-          "domains": [],
-          "attributes": {
-            
-          }
-        },
-        "scope_thirdCountry": {
-          "domains": [],
-          "attributes": {
-            "scope_thirdCountry_status": false
-          }
-        },
-        "scope_address": {
-          "domains": [],
-          "attributes": {
-            "scope_address_city": "Hamburg",
-            "scope_address_state": "Hamburg",
-            "scope_address_country": "Deutschland",
-            "scope_address_address1": "Sierichstrasse 46",
-            "scope_address_postcode": "22301"
-          }
-        },
-        "scope_tomAssessment": {
-          "domains": [],
-          "attributes": {
-            "scope_tomAssessment_certification": true,
-            "scope_tomAssessment_securityConcept": true,
-            "scope_tomAssessment_overallAssessment": "Alles super"
-          }
-        }
-      },
-      "type": "scope",
-      "members": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "SCP_Processor",
-          "status": "FOR_REVIEW",
-          "decisionResults": {
-            
-          },
-          "riskDefinition": "DSRA"
-        }
-      },
-      "id": "5836fdf4-94d0-443f-aa3d-d0f39f1a2436"
     },
     {
       "name": "Data GmbH",
@@ -2937,28 +4609,55 @@
       "type": "scope",
       "members": [
         {
-          "targetUri": "https://api.staging.verinice.com/veo/processes/97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7"
+          "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
         },
         {
-          "targetUri": "https://api.staging.verinice.com/veo/processes/e17b2b09-dd1c-453b-97bd-dd70bdc996ac"
+          "targetUri": "https://api.staging.verinice.com/veo/controls/f9264d61-ce4e-4447-97de-cff6cc936b59"
         },
         {
-          "targetUri": "https://api.staging.verinice.com/veo/processes/a4134991-7a46-4f20-9001-608e97464b10"
-        },
-        {
-          "targetUri": "https://api.staging.verinice.com/veo/processes/01dc79d3-c768-435b-982b-91a0b812929c"
-        },
-        {
-          "targetUri": "https://api.staging.verinice.com/veo/processes/71ae3f23-99d1-4c83-92be-333286314bb3"
+          "targetUri": "https://api.staging.verinice.com/veo/controls/db4431fa-355e-47db-9ba0-bcb3edbadcfa"
         },
         {
           "targetUri": "https://api.staging.verinice.com/veo/controls/42346d17-161a-440e-b6e2-5d6fd7abe0ea"
         },
         {
-          "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
+          "targetUri": "https://api.staging.verinice.com/veo/controls/e0632252-4d53-42f9-acf9-32f6c21a9b56"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/processes/e17b2b09-dd1c-453b-97bd-dd70bdc996ac"
         },
         {
           "targetUri": "https://api.staging.verinice.com/veo/processes/69d1e08f-eea5-4ae8-86da-eefd4b13e0e3"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/f2dcba8f-dce5-4831-9fff-86abb0e28168"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/processes/97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/processes/71ae3f23-99d1-4c83-92be-333286314bb3"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/563642d5-2adb-47a6-845e-0ab79dda23e5"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/processes/a4134991-7a46-4f20-9001-608e97464b10"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/6e2d3339-4b6d-4b29-9eb9-5c27501e71b4"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/096cdf47-f4f5-43a6-99f7-b5439e385c3e"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/processes/01dc79d3-c768-435b-982b-91a0b812929c"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/178f0f6e-65dc-48c6-9fd7-7d4bf59acb22"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/c5a9cecd-fc3d-477e-b1bb-9c5a90a5f67a"
         }
       ],
       "domains": {
@@ -2974,533 +4673,56 @@
       "id": "8c98ee3f-7402-4399-bf85-905abc92f17f"
     },
     {
-      "name": "Meldungen",
+      "name": "Externe Lohnbuchhaltung AG",
+      "description": "Als Auftragsverarbeiter setzt die Data GmbH die Externe Lohnbuchhaltung AG ein. ",
       "links": {
         
       },
       "customAspects": {
-        "process_recipient": {
+        "scope_generalInformation": {
           "domains": [],
           "attributes": {
-            "process_recipient_type": "process_recipient_type_external"
+            
           }
         },
-        "process_dataTransfer": {
+        "scope_thirdCountry": {
           "domains": [],
           "attributes": {
-            "process_dataTransfer_legalBasis": [],
-            "process_dataTransfer_otherLegalBasis": "\u00a7 41 a EstG, \u00a7 \u00a7 28a ff. SGB IV ,  \u00a7 28b  Abs. 1 Satz 1 Nr. 1 - 5 SGB IV"
+            "scope_thirdCountry_status": false
+          }
+        },
+        "scope_address": {
+          "domains": [],
+          "attributes": {
+            "scope_address_city": "Hamburg",
+            "scope_address_state": "Hamburg",
+            "scope_address_country": "Deutschland",
+            "scope_address_address1": "Sierichstrasse 46",
+            "scope_address_postcode": "22301"
+          }
+        },
+        "scope_tomAssessment": {
+          "domains": [],
+          "attributes": {
+            "scope_tomAssessment_certification": true,
+            "scope_tomAssessment_securityConcept": true,
+            "scope_tomAssessment_overallAssessment": "Alles super"
           }
         }
       },
-      "type": "process",
-      "parts": [],
+      "type": "scope",
+      "members": [],
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "PRO_DataTransfer",
+          "subType": "SCP_Processor",
           "status": "FOR_REVIEW",
           "decisionResults": {
             
           },
-          "riskValues": {
-            
-          }
+          "riskDefinition": "DSRA"
         }
       },
-      "id": "01dc79d3-c768-435b-982b-91a0b812929c"
-    },
-    {
-      "name": "Durchf\u00fchrung Befragungen",
-      "abbreviation": "",
-      "description": "Befragungsaktionen und deren Auswertungen werden von der Data GmbH durchgef\u00fchrt.",
-      "links": {
-        "process_responsibleBody": [
-          {
-            "domains": [],
-            "attributes": {
-              
-            },
-            "target": {
-              "targetUri": "https://api.staging.verinice.com/veo/scopes/8c98ee3f-7402-4399-bf85-905abc92f17f"
-            }
-          }
-        ],
-        "process_controller": [
-          {
-            "domains": [],
-            "attributes": {
-              
-            },
-            "target": {
-              "targetUri": "https://api.staging.verinice.com/veo/scopes/7464bfd6-e2ee-47be-be46-abc9029e7992"
-            }
-          },
-          {
-            "domains": [],
-            "attributes": {
-              
-            },
-            "target": {
-              "targetUri": "https://api.staging.verinice.com/veo/scopes/9d68aaa0-5b61-4809-8238-034d1e58f8d2"
-            }
-          }
-        ],
-        "process_dataTransmission": [
-          {
-            "domains": [],
-            "attributes": {
-              
-            },
-            "target": {
-              "targetUri": "https://api.staging.verinice.com/veo/processes/01dc79d3-c768-435b-982b-91a0b812929c"
-            }
-          },
-          {
-            "domains": [],
-            "attributes": {
-              
-            },
-            "target": {
-              "targetUri": "https://api.staging.verinice.com/veo/processes/97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7"
-            }
-          }
-        ]
-      },
-      "customAspects": {
-        "process_processingDetails": {
-          "domains": [],
-          "attributes": {
-            "process_processingDetails_typeOfSurvey": "process_processingDetails_typeOfSurvey_new",
-            "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation",
-            "process_processingDetails_surveyConductedOn": "2021-09-27",
-            "process_processingDetails_responsibleDepartment": "Marketing "
-          }
-        },
-        "process_accessAuthorization": {
-          "domains": [],
-          "attributes": {
-            "process_accessAuthorization_concept": false,
-            "process_accessAuthorization_description": "Kein Berechtigungskonzept"
-          }
-        },
-        "process_processing": {
-          "domains": [],
-          "attributes": {
-            "process_processing_asProcessor": true
-          }
-        },
-        "process_dataProcessing": {
-          "domains": [],
-          "attributes": {
-            "process_dataProcessing_legalBasis": [
-              "process_dataProcessing_legalBasis_Art6Abs1litaDSGVO",
-              "process_dataProcessing_legalBasis_Art6Abs1litfDSGVO"
-            ]
-          }
-        },
-        "process_opinionDPO": {
-          "domains": [],
-          "attributes": {
-            "process_opinionDPO_findings": "Verwendung der Telefonnummer problematisch\nKein Berechtigungskonzept",
-            "process_opinionDPO_PIAComment": "Nicht erfordelich",
-            "process_opinionDPO_PIACarriedOut": false,
-            "process_opinionDPO_recommendations": "\u00dcberpr\u00fcfung durch Rechtsabteilung erforderlich\n",
-            "process_opinionDPO_consultationRequired": false,
-            "process_opinionDPO_consultationConducted": false
-          }
-        },
-        "process_dataSubjects": {
-          "domains": [],
-          "attributes": {
-            "process_dataSubjects_dataSubjects": [
-              "process_dataSubjects_dataSubjects_controllers",
-              "process_dataSubjects_dataSubjects_customers"
-            ]
-          }
-        },
-        "process_intendedPurpose": {
-          "domains": [],
-          "attributes": {
-            "process_intendedPurpose_intendedPurpose": "Kundenzufriedenheit"
-          }
-        },
-        "process_privacyImpactAssessment": {
-          "domains": [],
-          "attributes": {
-            "process_privacyImpactAssessment_voluntary": false,
-            "process_privacyImpactAssessment_otherExclusions": false,
-            "process_privacyImpactAssessment_processingOperationAccordingArt35": false
-          }
-        },
-        "process_informationsObligations": {
-          "domains": [],
-          "attributes": {
-            "process_informationsObligations_status": true,
-            "process_informationsObligations_explanation": "Siehe Webseite"
-          }
-        }
-      },
-      "type": "process",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "PRO_DataProcessing",
-          "status": "RELEASED",
-          "decisionResults": {
-            "piaMandatory": {
-              "matchingRules": [],
-              "agreeingRules": []
-            }
-          },
-          "riskValues": {
-            "DSRA": {
-              "potentialImpacts": {
-                "A": 1,
-                "R": 0,
-                "C": 2,
-                "I": 1
-              }
-            }
-          }
-        }
-      },
-      "id": "ecb458fb-0c56-48ef-9f74-36c47be2b11b"
-    },
-    {
-      "name": "Externe Lohnabrechnung",
-      "links": {
-        
-      },
-      "customAspects": {
-        "process_recipient": {
-          "domains": [],
-          "attributes": {
-            "process_recipient_type": "process_recipient_type_processor"
-          }
-        },
-        "process_dataTransfer": {
-          "domains": [],
-          "attributes": {
-            "process_dataTransfer_document": "https://www.adv.de",
-            "process_dataTransfer_legalBasis": [
-              "process_dataTransfer_legalBasis_Art9Abs2litfDSGVO"
-            ],
-            "process_dataTransfer_explanation": "Kein Steuerberater , StBG nichr anwendbar. AV-Vertrag wurde abgeschlossen"
-          }
-        },
-        "process_generalInformation": {
-          "domains": [],
-          "attributes": {
-            
-          }
-        }
-      },
-      "type": "process",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "PRO_DataTransfer",
-          "status": "ARCHIVED",
-          "decisionResults": {
-            
-          },
-          "riskValues": {
-            
-          }
-        }
-      },
-      "id": "71ae3f23-99d1-4c83-92be-333286314bb3"
-    },
-    {
-      "name": "Bewerbermanagement",
-      "description": "Bewerbungen erfolgen per E-Mail oder via Postsendung an die Data GmbH.",
-      "links": {
-        
-      },
-      "customAspects": {
-        "process_processingDetails": {
-          "domains": [],
-          "attributes": {
-            "process_processingDetails_typeOfSurvey": "process_processingDetails_typeOfSurvey_new",
-            "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation",
-            "process_processingDetails_surveyConductedOn": "2021-08-02",
-            "process_processingDetails_responsibleDepartment": "Personalabteilung"
-          }
-        },
-        "process_accessAuthorization": {
-          "domains": [],
-          "attributes": {
-            "process_accessAuthorization_concept": true,
-            "process_accessAuthorization_description": "Zust\u00e4ndiger Sachbearbeiter im Personalbereich, Teamleiter, ggf. Gesch\u00e4ftsf\u00fchrer"
-          }
-        },
-        "process_processing": {
-          "domains": [],
-          "attributes": {
-            "process_processing_asProcessor": false
-          }
-        },
-        "process_dataProcessing": {
-          "domains": [],
-          "attributes": {
-            "process_dataProcessing_legalBasis": [],
-            "process_dataProcessing_explanation": "F\u00fcr die Begr\u00fcndung eines Besch\u00e4ftigungsverh\u00e4ltnisses",
-            "process_dataProcessing_otherLegalBasis": "\u00a7 26 I BDSG, \u00a7 26 III BDSG"
-          }
-        },
-        "process_opinionDPO": {
-          "domains": [],
-          "attributes": {
-            "process_opinionDPO_findings": "Keine L\u00f6schvorgaben festgesetzt",
-            "process_opinionDPO_recommendations": "L\u00f6schung der Daten 6 Monate nach Vergabe der Stelle, au\u00dfer der Bewerber hat der Aufnahme in Bewerberpool explizit zugestimmt"
-          }
-        },
-        "process_dataSubjects": {
-          "domains": [],
-          "attributes": {
-            "process_dataSubjects_dataSubjects": [
-              "process_dataSubjects_dataSubjects_applicants"
-            ],
-            "process_dataSubjects_otherDataSubjects": "Keine"
-          }
-        },
-        "process_intendedPurpose": {
-          "domains": [],
-          "attributes": {
-            "process_intendedPurpose_intendedPurpose": "Personalbeschaffung"
-          }
-        },
-        "process_privacyImpactAssessment": {
-          "domains": [],
-          "attributes": {
-            "process_privacyImpactAssessment_otherExclusions": false,
-            "process_privacyImpactAssessment_processingOperationAccordingArt35": false
-          }
-        },
-        "process_generalInformation": {
-          "domains": [],
-          "attributes": {
-            
-          }
-        },
-        "process_informationsObligations": {
-          "domains": [],
-          "attributes": {
-            "process_informationsObligations_status": true,
-            "process_informationsObligations_explanation": "Informationspflichten sind erf\u00fcllt, Vorlagen anbei"
-          }
-        }
-      },
-      "type": "process",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "PRO_DataProcessing",
-          "status": "FOR_REVIEW",
-          "decisionResults": {
-            "piaMandatory": {
-              "decisiveRule": 0,
-              "matchingRules": [
-                0
-              ],
-              "agreeingRules": [
-                0
-              ]
-            }
-          },
-          "riskValues": {
-            
-          }
-        }
-      },
-      "id": "69d1e08f-eea5-4ae8-86da-eefd4b13e0e3"
-    },
-    {
-      "name": "Bewerberauswahlverfahren ",
-      "description": "Eingegangene Bewerbungen werden an die Fachabteilungen zwecks Eignungspr\u00fcfung weitergeleitet.",
-      "links": {
-        
-      },
-      "customAspects": {
-        "process_recipient": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
-            }
-          ],
-          "attributes": {
-            "process_recipient_type": "process_recipient_type_internal"
-          }
-        },
-        "process_dataTransfer": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
-            }
-          ],
-          "attributes": {
-            "process_dataTransfer_otherLegalBasis": "\u00a7 26 I BDSG, \u00a7 26 III BDSG"
-          }
-        }
-      },
-      "type": "process",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "PRO_DataTransfer",
-          "status": "NEW",
-          "decisionResults": {
-            
-          },
-          "riskValues": {
-            
-          }
-        }
-      },
-      "id": "e17b2b09-dd1c-453b-97bd-dd70bdc996ac"
-    },
-    {
-      "name": "Lohnabrechnung",
-      "links": {
-        "process_dataTransmission": [
-          {
-            "domains": [
-              {
-                "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
-              }
-            ],
-            "attributes": {
-              
-            },
-            "target": {
-              "targetUri": "https://api.staging.verinice.com/veo/processes/01dc79d3-c768-435b-982b-91a0b812929c"
-            }
-          }
-        ]
-      },
-      "customAspects": {
-        "process_processingDetails": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
-            }
-          ],
-          "attributes": {
-            "process_processingDetails_typeOfSurvey": "process_processingDetails_typeOfSurvey_new",
-            "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation",
-            "process_processingDetails_surveyConductedOn": "2021-08-16",
-            "process_processingDetails_responsibleDepartment": "Personalabteilung"
-          }
-        },
-        "process_accessAuthorization": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
-            }
-          ],
-          "attributes": {
-            "process_accessAuthorization_concept": true,
-            "process_accessAuthorization_description": "Nicht ausreichend dokumentiert"
-          }
-        },
-        "process_processing": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
-            }
-          ],
-          "attributes": {
-            "process_processing_asProcessor": false
-          }
-        },
-        "process_dataProcessing": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
-            }
-          ],
-          "attributes": {
-            "process_dataProcessing_legalBasis": [
-              "process_dataProcessing_legalBasis_Art6Abs1litbDSGVO"
-            ],
-            "process_dataProcessing_explanation": "Art. 6 Abs. 1 b DS- GVO Durchf\u00fchrung des Arbeitsvertrags, Erf\u00fcllung vertraglicher Pflichten",
-            "process_dataProcessing_otherLegalBasis": "keine"
-          }
-        },
-        "process_opinionDPO": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
-            }
-          ],
-          "attributes": {
-            "process_opinionDPO_findings": "Alles gut gemacht",
-            "process_opinionDPO_PIACarriedOut": false,
-            "process_opinionDPO_recommendations": "Nichts zu verbessern",
-            "process_opinionDPO_consultationRequired": false,
-            "process_opinionDPO_consultationConducted": false
-          }
-        },
-        "process_dataSubjects": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
-            }
-          ],
-          "attributes": {
-            "process_dataSubjects_dataSubjects": [
-              "process_dataSubjects_dataSubjects_employees"
-            ]
-          }
-        },
-        "process_intendedPurpose": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
-            }
-          ],
-          "attributes": {
-            "process_intendedPurpose_intendedPurpose": "Lohnbuchhaltung, Gehaltsabrechnung"
-          }
-        },
-        "process_privacyImpactAssessment": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
-            }
-          ],
-          "attributes": {
-            
-          }
-        },
-        "process_informationsObligations": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
-            }
-          ],
-          "attributes": {
-            "process_informationsObligations_status": true,
-            "process_informationsObligations_document": "www.data.de",
-            "process_informationsObligations_explanation": "Siehe Webseite"
-          }
-        }
-      },
-      "type": "process",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "PRO_DataProcessing",
-          "status": "IN_PROGRESS",
-          "decisionResults": {
-            
-          },
-          "riskValues": {
-            
-          }
-        }
-      },
-      "id": "a4134991-7a46-4f20-9001-608e97464b10"
+      "id": "5836fdf4-94d0-443f-aa3d-d0f39f1a2436"
     },
     {
       "name": "FED AG",
@@ -3587,438 +4809,6 @@
       "id": "9d68aaa0-5b61-4809-8238-034d1e58f8d2"
     },
     {
-      "name": "AV Zoom",
-      "links": {
-        
-      },
-      "customAspects": {
-        "document_contract": {
-          "domains": [],
-          "attributes": {
-            "document_contract_type": "AV Vertrag",
-            "document_contract_location": "document_contract_location_thirdCountry",
-            "document_contract_thirdCountry": "USA",
-            "document_contract_subcontractor": false
-          }
-        },
-        "document_details": {
-          "domains": [],
-          "attributes": {
-            "document_details_classification": "document_details_classification_internalUse",
-            "document_details_typeOfDocument": "document_details_typeOfDocument_contract"
-          }
-        }
-      },
-      "type": "document",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "DOC_Contract",
-          "status": "RELEASED",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "c8b1ee1f-2366-4e78-a1e9-6512e2a0acdb"
-    },
-    {
-      "name": "AV  Externe Lohnbuchhaltung AG",
-      "links": {
-        
-      },
-      "customAspects": {
-        "document_contract": {
-          "domains": [],
-          "attributes": {
-            "document_contract_type": "AV-Vertrag",
-            "document_contract_location": "document_contract_location_germany",
-            "document_contract_subcontractor": false
-          }
-        },
-        "document_details": {
-          "domains": [],
-          "attributes": {
-            "document_details_version": "1.0",
-            "document_details_approvalDate": "2022-05-02",
-            "document_details_classification": "document_details_classification_confidential",
-            "document_details_typeOfDocument": "document_details_typeOfDocument_contract"
-          }
-        }
-      },
-      "type": "document",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "DOC_Contract",
-          "status": "IN_PROGRESS",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "ba722062-7dd5-4575-be77-ee8ce986ad92"
-    },
-    {
-      "name": "Informationssicherheitsleitlinie",
-      "description": "Das Dokument ist die Leitlinie zur Informationssicherheit",
-      "links": {
-        
-      },
-      "customAspects": {
-        "document_details": {
-          "domains": [],
-          "attributes": {
-            "document_details_approvalDate": "2021-12-01",
-            "document_details_classification": "document_details_classification_internalUse",
-            "document_details_typeOfDocument": "document_details_typeOfDocument_policy"
-          }
-        }
-      },
-      "type": "document",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "DOC_Document",
-          "status": "RELEASED",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "abe503f3-eacf-4ba4-a894-d55acd682b92"
-    },
-    {
-      "name": "Benutzerrichtlinie",
-      "description": "Diese Richtlinie richtet sich an alle Mitarbeiter der SerNet einschlie\u00dflich der Auszubildenden, Praktikanten sowie externen Arbeitskr\u00e4fte. Umfasst sind s\u00e4mtliche Betriebsteile, d.h. auch Tele-/Heimarbeits- sowie mobile Arbeitspl\u00e4tze au\u00dferhalb der Gesch\u00e4ftsr\u00e4ume. In diesem Dokument wird das Verhalten aller IT-Nutzer geregelt, um ein angemessenes Ma\u00df an Sicherheit in der IT zu gew\u00e4hren. Das Verhalten eines jeden nimmt Einfluss auf die Qualit\u00e4t des Sicherheitsprozesses und der Informationssicherheit.",
-      "links": {
-        
-      },
-      "customAspects": {
-        "document_details": {
-          "domains": [],
-          "attributes": {
-            "document_details_classification": "document_details_classification_internalUse",
-            "document_details_typeOfDocument": "document_details_typeOfDocument_policy"
-          }
-        }
-      },
-      "type": "document",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "DOC_Document",
-          "status": "FOR_REVIEW",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "1204b01b-7d21-4429-b0f8-867d8998764c"
-    },
-    {
-      "name": "Peter Pr\u00fcfer",
-      "links": {
-        
-      },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [],
-          "attributes": {
-            "person_generalInformation_givenName": "Peter",
-            "person_generalInformation_familyName": "Pr\u00fcfer"
-          }
-        }
-      },
-      "type": "person",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "PER_Person",
-          "status": "RELEASED",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "6f64339c-dd50-4e62-9c09-e885ae66885d"
-    },
-    {
-      "name": "Durchf\u00fchrung von Webmeetings",
-      "description": "Gespr\u00e4che erfolgen teilweise \u00fcber Videokonferenzen und Telefonkonferenzen via ZOOM",
-      "links": {
-        
-      },
-      "customAspects": {
-        "process_recipient": {
-          "domains": [],
-          "attributes": {
-            "process_recipient_type": "process_recipient_type_processor"
-          }
-        },
-        "process_dataTransfer": {
-          "domains": [],
-          "attributes": {
-            "process_dataTransfer_legalBasis": [],
-            "process_dataTransfer_explanation": "Die Daten werden immer nach Beendigung des Online-Meetings gel\u00f6scht",
-            "process_dataTransfer_otherLegalBasis": "Art. 6 Abs. 1 S. 1 lit. b DSGVO"
-          }
-        }
-      },
-      "type": "process",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "PRO_DataTransfer",
-          "status": "RELEASED",
-          "decisionResults": {
-            
-          },
-          "riskValues": {
-            
-          }
-        }
-      },
-      "id": "97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7"
-    },
-    {
-      "name": "Unberechtigter Zugriff auf personenbezogene Daten",
-      "abbreviation": "DS-G.43",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "scenario",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "decisionResults": {
-            
-          },
-          "riskValues": {
-            
-          }
-        }
-      },
-      "id": "7c1ee1aa-ac64-4d74-9816-194c428859bf"
-    },
-    {
-      "name": "Verarbeitung gro\u00dfer Datenmengen",
-      "abbreviation": "DS-G.48",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "scenario",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "decisionResults": {
-            
-          },
-          "riskValues": {
-            
-          }
-        }
-      },
-      "id": "d65cc8c9-8d51-4bc0-a2b1-eb51cf9702ad"
-    },
-    {
-      "name": "Unberechtigte Kenntnisnahme",
-      "abbreviation": "DS-G.42",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "scenario",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "decisionResults": {
-            
-          },
-          "riskValues": {
-            
-          }
-        }
-      },
-      "id": "4dbb8054-560e-49b9-83ec-fed93e612be7"
-    },
-    {
-      "name": "Verarbeitung \u00fcber die Speicherfrist hinaus",
-      "abbreviation": "DS-G.49",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "scenario",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "decisionResults": {
-            
-          },
-          "riskValues": {
-            
-          }
-        }
-      },
-      "id": "2f0c3e41-5f14-4692-9322-8d9bdb8b9dfe"
-    },
-    {
-      "name": "Fehlende oder unzureichende L\u00f6schvorgaben bzw. L\u00f6schmechanismen",
-      "abbreviation": "DS-G.11",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "scenario",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "decisionResults": {
-            
-          },
-          "riskValues": {
-            
-          }
-        }
-      },
-      "id": "6198e14b-9d7e-4f2c-8e82-33cfcad1828b"
-    },
-    {
-      "name": "Missachtung der Zweckbindung",
-      "abbreviation": "DS-G.32",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "scenario",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "decisionResults": {
-            
-          },
-          "riskValues": {
-            
-          }
-        }
-      },
-      "id": "59d46b37-5b0e-4afe-a30c-e8ed3e2d2cc8"
-    },
-    {
-      "name": "Verwendung der Daten zu inkompatiblen Zwecken",
-      "abbreviation": "DS-G.55",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "scenario",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "decisionResults": {
-            
-          },
-          "riskValues": {
-            
-          }
-        }
-      },
-      "id": "f15cdd48-a527-45b6-8b86-24dc17740d9c"
-    },
-    {
-      "name": "Rechtswidrige bzw. unrechtm\u00e4\u00dfige Verabeitung personenbezogener Daten",
-      "abbreviation": "DS-G.35",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "scenario",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "decisionResults": {
-            
-          },
-          "riskValues": {
-            
-          }
-        }
-      },
-      "id": "330c20b0-091b-410e-9a7f-e1c7ca3c5321"
-    },
-    {
-      "name": " Zoom Video Communications, Inc",
-      "links": {
-        
-      },
-      "customAspects": {
-        "scope_thirdCountry": {
-          "domains": [],
-          "attributes": {
-            "scope_thirdCountry_status": true
-          }
-        },
-        "scope_address": {
-          "domains": [],
-          "attributes": {
-            "scope_address_city": "Stockton",
-            "scope_address_state": "California",
-            "scope_address_country": "USA",
-            "scope_address_address1": "1012 Freedom Lane",
-            "scope_address_postcode": "95202"
-          }
-        }
-      },
-      "type": "scope",
-      "members": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "SCP_Processor",
-          "status": "RELEASED",
-          "decisionResults": {
-            
-          },
-          "riskDefinition": "DSRA"
-        }
-      },
-      "id": "04a97d42-c8aa-4e95-96a1-2aab6214c1bb"
-    },
-    {
       "name": "Fachabteilung 1",
       "links": {
         
@@ -4038,6 +4828,27 @@
         }
       },
       "id": "848ba0c5-f164-4ae3-8da7-2d2c8f1fa0b4"
+    },
+    {
+      "name": "Finanzamt",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "scope",
+      "members": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCP_Scope",
+          "status": "FOR_REVIEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "b973c2f1-29f9-4957-8ef1-c5b0ffb7868d"
     },
     {
       "name": "Krankenkassen",
@@ -4061,46 +4872,509 @@
       "id": "d596b431-3711-499a-a0ee-096241176d8d"
     },
     {
-      "name": "Finanzamt",
+      "name": "MeD GmbH",
       "links": {
-        
+        "scope_dataProtectionOfficer": [
+          {
+            "domains": [],
+            "attributes": {
+              "scope_dataProtectionOfficer_affiliation": "scope_dataProtectionOfficer_affiliation_internal"
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/persons/bfa9422d-b039-4f92-a87a-6142df6e2335"
+            }
+          }
+        ],
+        "scope_management": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/persons/1e97b745-f0bc-4aea-b124-fbe35ebe3897"
+            }
+          }
+        ]
       },
       "customAspects": {
-        
+        "scope_thirdCountry": {
+          "domains": [],
+          "attributes": {
+            "scope_thirdCountry_status": false
+          }
+        },
+        "scope_address": {
+          "domains": [],
+          "attributes": {
+            "scope_address_city": "Bonn",
+            "scope_address_state": "NRW",
+            "scope_address_country": "Deutschland",
+            "scope_address_address1": "Beethovenplatz 14",
+            "scope_address_postcode": "53115"
+          }
+        },
+        "scope_regulatoryAuthority": {
+          "domains": [],
+          "attributes": {
+            "scope_regulatoryAuthority_fax": "0211/38424-99",
+            "scope_regulatoryAuthority_city": "D\u00fcsseldorf",
+            "scope_regulatoryAuthority_name": "Landesbeauftragte f\u00fcr Datenschutz und Informationsfreiheit",
+            "scope_regulatoryAuthority_email": "poststelle@ldi.nrw.de",
+            "scope_regulatoryAuthority_phone": "0211/38424-0",
+            "scope_regulatoryAuthority_state": "NRW",
+            "scope_regulatoryAuthority_country": "Deutschland",
+            "scope_regulatoryAuthority_address1": "Postfach 20 04 44",
+            "scope_regulatoryAuthority_postcode": "40102 "
+          }
+        },
+        "scope_contactInformation": {
+          "domains": [],
+          "attributes": {
+            "scope_contactInformation_fax": "049 211 884-99",
+            "scope_contactInformation_email": "info@med.de",
+            "scope_contactInformation_phone": "049 211 884-0",
+            "scope_contactInformation_website": "www.med.de"
+          }
+        }
       },
       "type": "scope",
       "members": [],
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "SCP_Scope",
-          "status": "FOR_REVIEW",
+          "subType": "SCP_Controller",
+          "status": "RELEASED",
           "decisionResults": {
             
-          }
+          },
+          "riskDefinition": "DSRA"
         }
       },
-      "id": "b973c2f1-29f9-4957-8ef1-c5b0ffb7868d"
+      "id": "7464bfd6-e2ee-47be-be46-abc9029e7992"
     }
   ],
   "risks": [
     {
       "scenario": {
-        "targetUri": "https://api.staging.verinice.com/veo/scenarios/59d46b37-5b0e-4afe-a30c-e8ed3e2d2cc8"
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/6198e14b-9d7e-4f2c-8e82-33cfcad1828b"
+      },
+      "mitigation": {
+        "targetUri": "https://api.staging.verinice.com/veo/controls/096cdf47-f4f5-43a6-99f7-b5439e385c3e"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/cc3d04f6-c145-44c5-afb5-71b8b2c56305"
       },
       "process": {
-        "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
+        "targetUri": "https://api.staging.verinice.com/veo/processes/69d1e08f-eea5-4ae8-86da-eefd4b13e0e3"
       },
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
           "riskDefinitions": {
-            
+            "DSRA": {
+              "probability": {
+                "potentialProbability": 0,
+                "specificProbability": 2,
+                "effectiveProbability": 2,
+                "specificProbabilityExplanation": "Keine spezifischen Sensibiliserungsma\u00dfnahmen der Personalabteilung "
+              },
+              "impactValues": [
+                {
+                  "category": "I",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                },
+                {
+                  "category": "A",
+                  "potentialImpact": 1,
+                  "effectiveImpact": 1
+                },
+                {
+                  "category": "R",
+                  "potentialImpact": 0,
+                  "effectiveImpact": 0
+                },
+                {
+                  "category": "C",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                }
+              ],
+              "riskValues": [
+                {
+                  "category": "I",
+                  "inherentRisk": 2,
+                  "userDefinedResidualRisk": 1,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "riskTreatmentExplanation": "Es muss eine L\u00f6sch-Frist von 6 Monaten f\u00fcr abgelehnete Bewerber festgesetzt werden ",
+                  "residualRisk": 1
+                },
+                {
+                  "category": "A",
+                  "inherentRisk": 1,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "riskTreatmentExplanation": "analog zur Vertraulichkeit",
+                  "residualRisk": 0
+                },
+                {
+                  "category": "R",
+                  "inherentRisk": 0,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_ACCEPTANCE"
+                  ],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "C",
+                  "inherentRisk": 2,
+                  "userDefinedResidualRisk": 1,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 1
+                }
+              ]
+            }
           }
         }
       }
     },
     {
       "scenario": {
-        "targetUri": "https://api.staging.verinice.com/veo/scenarios/4dbb8054-560e-49b9-83ec-fed93e612be7"
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/a8962118-f7ce-46ae-8423-d46d0853748a"
+      },
+      "mitigation": {
+        "targetUri": "https://api.staging.verinice.com/veo/controls/db4431fa-355e-47db-9ba0-bcb3edbadcfa"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/cc3d04f6-c145-44c5-afb5-71b8b2c56305"
+      },
+      "process": {
+        "targetUri": "https://api.staging.verinice.com/veo/processes/69d1e08f-eea5-4ae8-86da-eefd4b13e0e3"
+      },
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "riskDefinitions": {
+            "DSRA": {
+              "probability": {
+                "potentialProbability": 1,
+                "specificProbability": 2,
+                "effectiveProbability": 2,
+                "specificProbabilityExplanation": "Keine spezifischen Sensibiliserungsma\u00dfnahmen der Personalabteilung "
+              },
+              "impactValues": [
+                {
+                  "category": "I",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                },
+                {
+                  "category": "A",
+                  "potentialImpact": 1,
+                  "effectiveImpact": 1
+                },
+                {
+                  "category": "R",
+                  "potentialImpact": 0,
+                  "effectiveImpact": 0
+                },
+                {
+                  "category": "C",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                }
+              ],
+              "riskValues": [
+                {
+                  "category": "I",
+                  "inherentRisk": 2,
+                  "userDefinedResidualRisk": 1,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "riskTreatmentExplanation": "Informationspflichten m\u00fcssen aktualisert  und den Bewerbern zur Verf\u00fcgung gestellt werden",
+                  "residualRisk": 1
+                },
+                {
+                  "category": "A",
+                  "inherentRisk": 1,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "R",
+                  "inherentRisk": 0,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_ACCEPTANCE"
+                  ],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "C",
+                  "inherentRisk": 2,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 0
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "scenario": {
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/8a9673d5-d7f6-4645-aa1e-5b3629a8ea0e"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/ca39207b-d35f-45b8-8898-f8f7e1c5af48"
+      },
+      "process": {
+        "targetUri": "https://api.staging.verinice.com/veo/processes/a4134991-7a46-4f20-9001-608e97464b10"
+      },
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "riskDefinitions": {
+            "DSRA": {
+              "probability": {
+                "specificProbability": 1,
+                "effectiveProbability": 1,
+                "specificProbabilityExplanation": "Regelm\u00e4\u00dfge Sensibilisierungsma\u00dfnahmen zum Thema IT-Security und Datenschutz"
+              },
+              "impactValues": [
+                {
+                  "category": "I",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                },
+                {
+                  "category": "A",
+                  "potentialImpact": 1,
+                  "effectiveImpact": 1
+                },
+                {
+                  "category": "R",
+                  "potentialImpact": 0,
+                  "effectiveImpact": 0
+                },
+                {
+                  "category": "C",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                }
+              ],
+              "riskValues": [
+                {
+                  "category": "I",
+                  "inherentRisk": 1,
+                  "riskTreatments": [],
+                  "residualRisk": 1
+                },
+                {
+                  "category": "A",
+                  "inherentRisk": 0,
+                  "riskTreatments": [],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "R",
+                  "inherentRisk": 0,
+                  "riskTreatments": [],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "C",
+                  "inherentRisk": 1,
+                  "riskTreatments": [],
+                  "residualRisk": 1
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "scenario": {
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/f9270bf5-9297-4821-9a1d-418a6967248a"
+      },
+      "mitigation": {
+        "targetUri": "https://api.staging.verinice.com/veo/controls/c5a9cecd-fc3d-477e-b1bb-9c5a90a5f67a"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/cc3d04f6-c145-44c5-afb5-71b8b2c56305"
+      },
+      "process": {
+        "targetUri": "https://api.staging.verinice.com/veo/processes/69d1e08f-eea5-4ae8-86da-eefd4b13e0e3"
+      },
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "riskDefinitions": {
+            "DSRA": {
+              "probability": {
+                "potentialProbability": 0,
+                "specificProbability": 2,
+                "effectiveProbability": 2,
+                "specificProbabilityExplanation": "Einwilligungserkl\u00e4rungen mangelhaft"
+              },
+              "impactValues": [
+                {
+                  "category": "I",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                },
+                {
+                  "category": "A",
+                  "potentialImpact": 1,
+                  "effectiveImpact": 1
+                },
+                {
+                  "category": "R",
+                  "potentialImpact": 0,
+                  "effectiveImpact": 0
+                },
+                {
+                  "category": "C",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                }
+              ],
+              "riskValues": [
+                {
+                  "category": "I",
+                  "inherentRisk": 2,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "riskTreatmentExplanation": "Einwilligungserkl\u00e4rungen m\u00fcssen erg\u00e4nzt werden",
+                  "residualRisk": 0
+                },
+                {
+                  "category": "A",
+                  "inherentRisk": 1,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "R",
+                  "inherentRisk": 0,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "C",
+                  "inherentRisk": 2,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_ACCEPTANCE"
+                  ],
+                  "residualRisk": 0
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "scenario": {
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/475dda29-13ec-4a4f-ab3a-c7d3c88c13e0"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/ca39207b-d35f-45b8-8898-f8f7e1c5af48"
+      },
+      "process": {
+        "targetUri": "https://api.staging.verinice.com/veo/processes/a4134991-7a46-4f20-9001-608e97464b10"
+      },
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "riskDefinitions": {
+            "DSRA": {
+              "probability": {
+                "specificProbability": 1,
+                "effectiveProbability": 1,
+                "specificProbabilityExplanation": "Regelm\u00e4\u00dfge Sensibilisierungsma\u00dfnahmen zum Thema Phishing"
+              },
+              "impactValues": [
+                {
+                  "category": "I",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                },
+                {
+                  "category": "A",
+                  "potentialImpact": 1,
+                  "effectiveImpact": 1
+                },
+                {
+                  "category": "R",
+                  "potentialImpact": 0,
+                  "effectiveImpact": 0
+                },
+                {
+                  "category": "C",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                }
+              ],
+              "riskValues": [
+                {
+                  "category": "I",
+                  "inherentRisk": 1,
+                  "riskTreatments": [],
+                  "residualRisk": 1
+                },
+                {
+                  "category": "A",
+                  "inherentRisk": 0,
+                  "riskTreatments": [],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "R",
+                  "inherentRisk": 0,
+                  "riskTreatments": [],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "C",
+                  "inherentRisk": 1,
+                  "riskTreatments": [],
+                  "residualRisk": 1
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "scenario": {
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/330c20b0-091b-410e-9a7f-e1c7ca3c5321"
+      },
+      "mitigation": {
+        "targetUri": "https://api.staging.verinice.com/veo/controls/563642d5-2adb-47a6-845e-0ab79dda23e5"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/c2843721-7603-451d-8e84-f2968c66b126"
       },
       "process": {
         "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
@@ -4110,19 +5384,204 @@
           "riskDefinitions": {
             "DSRA": {
               "probability": {
+                "potentialProbability": 0,
                 "specificProbability": 2,
-                "effectiveProbability": 2
+                "effectiveProbability": 2,
+                "specificProbabilityExplanation": "Es erfolgte keine Zul\u00e4ssigkeitspr\u00fcfung"
               },
               "impactValues": [
                 {
                   "category": "I",
-                  "potentialImpact": 1,
+                  "potentialImpact": 2,
                   "specificImpact": 2,
                   "effectiveImpact": 2
                 },
                 {
                   "category": "A",
+                  "potentialImpact": 0,
+                  "specificImpact": 2,
+                  "effectiveImpact": 2
+                },
+                {
+                  "category": "R",
+                  "potentialImpact": 0,
+                  "specificImpact": 1,
+                  "effectiveImpact": 1
+                },
+                {
+                  "category": "C",
+                  "potentialImpact": 2,
+                  "specificImpact": 1,
+                  "effectiveImpact": 1
+                }
+              ],
+              "riskValues": [
+                {
+                  "category": "I",
+                  "inherentRisk": 2,
+                  "userDefinedResidualRisk": 1,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "riskTreatmentExplanation": "Die Rechtsabteilung muss eine datenschutzrechtliche Pr\u00fcfung vornehmen und entsprechende Ma\u00dfnamen initiieren",
+                  "residualRisk": 1
+                },
+                {
+                  "category": "A",
+                  "inherentRisk": 2,
+                  "userDefinedResidualRisk": 1,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "riskTreatmentExplanation": "Analog zur Vertraulichkeit",
+                  "residualRisk": 1
+                },
+                {
+                  "category": "R",
+                  "inherentRisk": 1,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "C",
+                  "inherentRisk": 1,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 0
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "scenario": {
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/330c20b0-091b-410e-9a7f-e1c7ca3c5321"
+      },
+      "mitigation": {
+        "targetUri": "https://api.staging.verinice.com/veo/controls/f2dcba8f-dce5-4831-9fff-86abb0e28168"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/cc3d04f6-c145-44c5-afb5-71b8b2c56305"
+      },
+      "process": {
+        "targetUri": "https://api.staging.verinice.com/veo/processes/69d1e08f-eea5-4ae8-86da-eefd4b13e0e3"
+      },
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "riskDefinitions": {
+            "DSRA": {
+              "probability": {
+                "potentialProbability": 0,
+                "specificProbability": 2,
+                "effectiveProbability": 2,
+                "specificProbabilityExplanation": "Keine spezifischen Sensibiliserungsma\u00dfnahmen der Personalabteilung "
+              },
+              "impactValues": [
+                {
+                  "category": "I",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                },
+                {
+                  "category": "A",
                   "potentialImpact": 1,
+                  "effectiveImpact": 1
+                },
+                {
+                  "category": "R",
+                  "potentialImpact": 0,
+                  "effectiveImpact": 0
+                },
+                {
+                  "category": "C",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                }
+              ],
+              "riskValues": [
+                {
+                  "category": "I",
+                  "inherentRisk": 2,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "riskTreatmentExplanation": "Einwilligungserkl\u00e4rungen f\u00fcr Aufnahme in Bewerberpool verfassen und weitere Schritte ansto\u00dfen",
+                  "residualRisk": 0
+                },
+                {
+                  "category": "A",
+                  "inherentRisk": 1,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "R",
+                  "inherentRisk": 0,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_ACCEPTANCE"
+                  ],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "C",
+                  "inherentRisk": 2,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_ACCEPTANCE"
+                  ],
+                  "residualRisk": 0
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "scenario": {
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/4dbb8054-560e-49b9-83ec-fed93e612be7"
+      },
+      "mitigation": {
+        "targetUri": "https://api.staging.verinice.com/veo/controls/42346d17-161a-440e-b6e2-5d6fd7abe0ea"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/c2843721-7603-451d-8e84-f2968c66b126"
+      },
+      "process": {
+        "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
+      },
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "riskDefinitions": {
+            "DSRA": {
+              "probability": {
+                "potentialProbability": 0,
+                "specificProbability": 1,
+                "effectiveProbability": 1,
+                "specificProbabilityExplanation": "Regelm\u00e4\u00dfge Ma\u00dfnahmen wie z.B DS-Schulungen, Weiterbildungen zu Datenschutz und IT-Security, Verpflichtungserkl\u00e4rungen, die die Mitarbeiter \u00fcber ihre Pflichten informieren und sensibilisieren."
+              },
+              "impactValues": [
+                {
+                  "category": "I",
+                  "potentialImpact": 2,
+                  "specificImpact": 2,
+                  "effectiveImpact": 2
+                },
+                {
+                  "category": "A",
+                  "potentialImpact": 0,
                   "specificImpact": 2,
                   "effectiveImpact": 2
                 },
@@ -4142,7 +5601,7 @@
               "riskValues": [
                 {
                   "category": "I",
-                  "inherentRisk": 2,
+                  "inherentRisk": 1,
                   "userDefinedResidualRisk": 0,
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
@@ -4152,7 +5611,7 @@
                 },
                 {
                   "category": "A",
-                  "inherentRisk": 2,
+                  "inherentRisk": 1,
                   "userDefinedResidualRisk": 0,
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
@@ -4186,22 +5645,93 @@
     },
     {
       "scenario": {
-        "targetUri": "https://api.staging.verinice.com/veo/scenarios/f15cdd48-a527-45b6-8b86-24dc17740d9c"
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/fa1372ec-f6f6-4388-8705-91852d906b04"
+      },
+      "mitigation": {
+        "targetUri": "https://api.staging.verinice.com/veo/controls/c739a561-5f2c-4c1b-8a9f-4a6c538f030b"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/ca39207b-d35f-45b8-8898-f8f7e1c5af48"
       },
       "process": {
-        "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
+        "targetUri": "https://api.staging.verinice.com/veo/processes/a4134991-7a46-4f20-9001-608e97464b10"
       },
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
           "riskDefinitions": {
-            
+            "DSRA": {
+              "probability": {
+                "specificProbability": 2,
+                "effectiveProbability": 2,
+                "specificProbabilityExplanation": ""
+              },
+              "impactValues": [
+                {
+                  "category": "I",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                },
+                {
+                  "category": "A",
+                  "potentialImpact": 1,
+                  "effectiveImpact": 1
+                },
+                {
+                  "category": "R",
+                  "potentialImpact": 0,
+                  "effectiveImpact": 0
+                },
+                {
+                  "category": "C",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                }
+              ],
+              "riskValues": [
+                {
+                  "category": "I",
+                  "inherentRisk": 2,
+                  "userDefinedResidualRisk": 1,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "riskTreatmentExplanation": "Spezifische Schulungen zur Auskunftserteilung an Dritte",
+                  "residualRisk": 1
+                },
+                {
+                  "category": "A",
+                  "inherentRisk": 1,
+                  "userDefinedResidualRisk": 1,
+                  "riskTreatments": [],
+                  "riskTreatmentExplanation": "Analaog zur Verrtraulichkeit",
+                  "residualRisk": 1
+                },
+                {
+                  "category": "R",
+                  "inherentRisk": 0,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "C",
+                  "inherentRisk": 2,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [],
+                  "residualRisk": 0
+                }
+              ]
+            }
           }
         }
       }
     },
     {
       "scenario": {
-        "targetUri": "https://api.staging.verinice.com/veo/scenarios/330c20b0-091b-410e-9a7f-e1c7ca3c5321"
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/f15cdd48-a527-45b6-8b86-24dc17740d9c"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/c2843721-7603-451d-8e84-f2968c66b126"
       },
       "process": {
         "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
@@ -4209,7 +5739,73 @@
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
           "riskDefinitions": {
-            
+            "DSRA": {
+              "probability": {
+                "specificProbability": 0,
+                "effectiveProbability": 0,
+                "specificProbabilityExplanation": "Regelm\u00e4\u00dfge Schulungen der Mitarbeiter aus Marketing und Vertrieb zu speziellen DS-rechtlichen Fragestellungen"
+              },
+              "impactValues": [
+                {
+                  "category": "I",
+                  "potentialImpact": 2,
+                  "specificImpact": 1,
+                  "effectiveImpact": 1
+                },
+                {
+                  "category": "A",
+                  "potentialImpact": 0,
+                  "specificImpact": 1,
+                  "effectiveImpact": 1
+                },
+                {
+                  "category": "R",
+                  "potentialImpact": 0,
+                  "specificImpact": 0,
+                  "effectiveImpact": 0
+                },
+                {
+                  "category": "C",
+                  "potentialImpact": 2,
+                  "specificImpact": 0,
+                  "effectiveImpact": 0
+                }
+              ],
+              "riskValues": [
+                {
+                  "category": "I",
+                  "inherentRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_ACCEPTANCE"
+                  ],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "A",
+                  "inherentRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_ACCEPTANCE"
+                  ],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "R",
+                  "inherentRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_ACCEPTANCE"
+                  ],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "C",
+                  "inherentRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_ACCEPTANCE"
+                  ],
+                  "residualRisk": 0
+                }
+              ]
+            }
           }
         }
       }
