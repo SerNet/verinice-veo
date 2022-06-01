@@ -19,6 +19,7 @@ package org.veo.adapter.presenter.api.dto.full;
 
 import static java.util.stream.Collectors.toMap;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -61,7 +62,8 @@ public class ProcessRiskDto extends AbstractRiskDto {
 
   @Valid private IdRef<Process> process;
 
-  @Valid @JsonIgnore private Map<String, RiskDomainAssociationDto> domainsWithRiskValues;
+  @Valid @JsonIgnore
+  private Map<String, RiskDomainAssociationDto> domainsWithRiskValues = Collections.emptyMap();
 
   @JsonGetter(value = "domains")
   @Schema(

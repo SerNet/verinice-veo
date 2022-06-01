@@ -96,24 +96,11 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
         ]).body.resourceId
 
         when: "creating the risk"
-        post("/processes/$processId/risks", [
+        def error = post("/processes/$processId/risks", [
             scenario: [targetUri: "$baseUrl/scenarios/$scenarioId"]
-        ])
+        ],400)
 
-        then: "it can be retrieved"
-        def retrievedRiskResponse = get("/processes/$processId/risks/$scenarioId")
-        def risk = retrievedRiskResponse.body
-        risk.scenario.targetUri ==~ /.*\/scenarios\/$scenarioId/
-
-        when: "assigning a risk owner"
-        def ownerPersonId = post("/persons", [
-            name: "process risk owner",
-            owner: [targetUri: "$baseUrl/units/$unitId"]
-        ]).body.resourceId
-        risk.riskOwner = [targetUri: "$baseUrl/persons/$ownerPersonId"]
-        put("/processes/$processId/risks/$scenarioId", risk, retrievedRiskResponse.parseETag())
-
-        then: "the risk has an owner"
-        get("/processes/$processId/risks/$scenarioId").body.riskOwner.targetUri ==~ /.*\/persons\/$ownerPersonId/
+        then: "the error is present"
+        error.body.message ==~ /Need at least one domain to create a risk\./
     }
 }
