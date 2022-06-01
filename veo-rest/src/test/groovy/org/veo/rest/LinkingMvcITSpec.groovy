@@ -127,16 +127,14 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         def retrievedScope = parseJson(get("/scopes/$scopeId"))
 
         then:
-        with(retrievedScope.links.linkToWhateverPersonA.sort {it.name}) {
-            size() == 2
-            it[0].target.targetUri == "http://localhost/persons/$person1"
-            it[1].target.targetUri == "http://localhost/persons/$person2"
-        }
-        with(retrievedScope.links.linkToWhateverPersonB.sort{it.name}) {
-            size() == 2
-            it[0].target.targetUri == "http://localhost/persons/$person2"
-            it[1].target.targetUri == "http://localhost/persons/$person3"
-        }
+        retrievedScope.links.linkToWhateverPersonA*.target*.targetUri ==~ [
+            "http://localhost/persons/$person1",
+            "http://localhost/persons/$person2",
+        ]*.toString()
+        retrievedScope.links.linkToWhateverPersonB*.target*.targetUri ==~ [
+            "http://localhost/persons/$person2",
+            "http://localhost/persons/$person3",
+        ]*.toString()
     }
 
     def "link target type is validated"() {
