@@ -17,24 +17,22 @@
  ******************************************************************************/
 package org.veo.core.entity.event;
 
+import java.time.Instant;
+
 import org.veo.core.entity.Versioned;
 
-import lombok.Getter;
+import lombok.Value;
 
 /**
  * This event should be triggered by the persistence layer when a {@link Versioned} is being
  * persisted, updated or removed.
  */
+@Value
 public class VersioningEvent {
-  @Getter private final Versioned entity;
-  @Getter private final Type type;
-  @Getter private final String author;
-
-  public VersioningEvent(Versioned entity, Type type, String author) {
-    this.entity = entity;
-    this.type = type;
-    this.author = author;
-  }
+  Versioned entity;
+  Type type;
+  String author;
+  Instant time;
 
   public enum Type {
     PERSIST,

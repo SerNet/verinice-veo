@@ -95,13 +95,19 @@ class VersioningMessageITSpec extends VeoSpringSpec {
         processes.forEach({ process ->
             def elementMessages = messages.findAll { it.uri?.endsWith("/processes/${process.idAsString}") }
             assert elementMessages.size() == 2
-            with(elementMessages.find{it.changeNumber == 0}) {
-                type == "CREATION"
+
+            def creation = elementMessages.find{it.type == "CREATION"}
+            with(creation) {
+                changeNumber == 0
                 content.designator.contains("DMO-")
+                time != null
             }
-            with(elementMessages.find{it.changeNumber == 1}) {
-                type == "MODIFICATION"
+
+            def modification = elementMessages.find{it.type == "MODIFICATION"}
+            with(modification) {
+                changeNumber == 1
                 content.designator.contains("DMO-")
+                time > creation.time
             }
         })
 
@@ -128,8 +134,18 @@ class VersioningMessageITSpec extends VeoSpringSpec {
         catalogItems.forEach({ item ->
             def itemMessages = messages.findAll { it.uri?.contains("/items/$item.idAsString") }
             assert itemMessages.size() == 2
-            assert itemMessages.find{it.type == "CREATION"}.changeNumber == 0
-            assert itemMessages.find{it.type == "MODIFICATION"}.changeNumber == 1
+
+            def creation = itemMessages.find { it.type == "CREATION" }
+            with(creation) {
+                changeNumber == 0
+                time != null
+            }
+
+            def modification = itemMessages.find { it.type == "MODIFICATION" }
+            with(modification) {
+                changeNumber == 1
+                time > creation.time
+            }
         })
     }
 }

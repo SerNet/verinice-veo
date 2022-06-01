@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.time.Instant;
+
 import javax.persistence.PrePersist;
 import javax.persistence.PreRemove;
 import javax.persistence.PreUpdate;
@@ -47,6 +49,8 @@ public class VersionedEntityListener {
   @PrePersist
   public void prePersist(Versioned entity) {
     log.debug("Publishing PrePersist event for {}", entity);
+    var event =
+        new VersioningEvent(entity, Type.PERSIST, currentUserProvider.getUsername(), Instant.now());
     if (entity instanceof Identifiable) {
       // We need to fire this one a little later (after the entity's ID has been
       // generated).
@@ -54,25 +58,23 @@ public class VersionedEntityListener {
           new TransactionSynchronization() {
             @Override
             public void beforeCommit(boolean readOnly) {
-              publisher.publishEvent(
-                  new VersioningEvent(entity, Type.PERSIST, currentUserProvider.getUsername()));
+              publisher.publishEvent(event);
             }
           });
     } else {
-      publisher.publishEvent(
-          new VersioningEvent(entity, Type.PERSIST, currentUserProvider.getUsername()));
+      publisher.publishEvent(event);
     }
   }
 
   @PreUpdate
   public void preUpdate(Versioned entity) {
     publisher.publishEvent(
-        new VersioningEvent(entity, Type.UPDATE, currentUserProvider.getUsername()));
+        new VersioningEvent(entity, Type.UPDATE, currentUserProvider.getUsername(), Instant.now()));
   }
 
   @PreRemove
   public void preRemove(Versioned entity) {
     publisher.publishEvent(
-        new VersioningEvent(entity, Type.REMOVE, currentUserProvider.getUsername()));
+        new VersioningEvent(entity, Type.REMOVE, currentUserProvider.getUsername(), Instant.now()));
   }
 }

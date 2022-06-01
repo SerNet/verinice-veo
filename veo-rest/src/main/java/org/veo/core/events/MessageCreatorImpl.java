@@ -68,6 +68,7 @@ public class MessageCreatorImpl implements MessageCreator {
             versioningEvent.getEntity(),
             versioningEvent.getType(),
             versioningEvent.getAuthor(),
+            versioningEvent.getTime(),
             client);
     storeMessage(ROUTING_KEY_ENTITY_REVISION, json);
   }
@@ -98,12 +99,12 @@ public class MessageCreatorImpl implements MessageCreator {
   }
 
   private JsonNode createEntityRevisionJson(
-      Versioned entity, VersioningEvent.Type type, String author, Client client) {
+      Versioned entity, VersioningEvent.Type type, String author, Instant time, Client client) {
     var tree = objectMapper.createObjectNode();
     tree.put("uri", getUri(entity));
     tree.put("type", convertType(type));
     tree.put("changeNumber", getChangeNumber(entity, type));
-    tree.put("time", Instant.now().toString());
+    tree.put("time", time.toString());
     tree.put("author", author);
     tree.put("clientId", client.getId().uuidValue());
     tree.set("content", objectMapper.valueToTree(entityToDtoTransformer.transform2Dto(entity)));
