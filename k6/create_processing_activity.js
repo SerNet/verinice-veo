@@ -565,8 +565,8 @@ export function loadElementsWithBaseUrlAndSleep(baseUrl, path, sleepSeconds) {
     "Get forms result is status 200": (r) => r.status === 200,
   });
   if (result.status != 200) {
-    console.error("GET forms status: " + result.status);
-    console.error("GET forms URL: " + url);
+    console.error("GET status: " + result.status);
+    console.error("GET URL: " + url);
   }
   if (sleepSeconds > 0) {
     sleep(sleepSeconds);
@@ -659,17 +659,26 @@ function deleteElement(path, uuid) {
 export function getToken() {
   console.log("Getting token...");
   var url = KEYCLOAK_BASE_URL + "/auth/realms/" + KEYCLOAK_REALM + "/protocol/openid-connect/token";
+  var params = {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+  };
   let body = { 
     username:USER_NAME, 
     password:PASSWORD,
     grant_type:"password",
     client_id:KEYCLOAK_CLIENT_ID
   };
-  var result = http.post(url, body);
+  var result = http.post(url, body, params);
 
   check(result, {
     "Get token result is status 200": (r) => r.status === 200,
   });
+  if (result.status != 200) {
+    console.error("POST auth token status: " + result.status_text);
+    console.error("POST auth token URL: " + url);
+  }
   TOKEN = "Bearer " + result.json().access_token;
 }
 
