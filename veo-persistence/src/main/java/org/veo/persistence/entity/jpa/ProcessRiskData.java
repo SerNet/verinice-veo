@@ -193,7 +193,11 @@ public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> impl
               domain
                   .getRiskDefinition(newValues.getRiskDefinitionId().value())
                   .map(RiskDefinitionRef::from)
-                  .orElseThrow();
+                  .orElseThrow(
+                      () ->
+                          new NotFoundException(
+                              "Risk definition '%s' not found in domain %s",
+                              newValues.getRiskDefinitionId().value(), domain.getIdAsString()));
 
           var ra = getOrCreateRiskAspect(domain, riskDefinition);
           var validator =

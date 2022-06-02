@@ -68,7 +68,6 @@ public abstract class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends 
     checkDomainOwnership(input.getAuthenticatedClient(), domains);
     mitigation.ifPresent(control -> control.checkSameClient(input.getAuthenticatedClient()));
     riskOwner.ifPresent(person -> person.checkSameClient(input.getAuthenticatedClient()));
-    validateRiskValues(input.getRiskValues(), domains, riskAffected);
 
     // Execute requested operation:
     R result =

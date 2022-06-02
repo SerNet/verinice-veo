@@ -75,7 +75,6 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
       newRiskCreated = true;
     }
 
-    validateRiskValues(input.getRiskValues(), domains, riskAffected);
     if (risk instanceof ProcessRisk) {
       ((ProcessRisk) risk).defineRiskValues(input.getRiskValues());
     }

@@ -27,6 +27,7 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
+import org.veo.core.entity.exception.NotFoundException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScenarioRepositoryImpl
@@ -175,6 +176,35 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         updatedRiskDef2ImpactA.effectiveImpact == 3
 
         updatedRisk.domains.(domainId).riskDefinitions.r2d2.riskValues.find{it.category=="A"}.userDefinedResidualRisk == 2
+    }
+
+    def "non-existing risk definition causes error"() {
+        given:
+        def processId = process.getIdAsString()
+        def scenarioId = scenario.getIdAsString()
+
+        when: "creating a risk with risk values for a non-existing risk definition"
+        post("/processes/$processId/risks", [
+            domains: [
+                (domainId): [
+                    reference: [targetUri: "http://localhost/domains/$domainId"],
+                    riskDefinitions: [
+                        absentRd : [
+                            impactValues: [
+                                [
+                                    category: "A",
+                                    specificImpact: 1
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ], 404)
+
+        then:
+        thrown(NotFoundException)
     }
 
     def "embedded risks can be requested"() {
