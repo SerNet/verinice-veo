@@ -10,20 +10,19 @@
   "abbreviation": "TOM-1",
   "customAspects": {
     "control_implementation": {
-      "attributes": {
-        "control_implementation_status": "control_implementation_status_partially",
-        "control_implementation_date": "2021-09-29"
-      },
-      "id": "00000000-0000-0000-0000-000000000000"
+        "domains": [],
+        "attributes": {
+            "control_implementation_date": "2022-11-30"
+        }
     },
     "control_dataProtection": {
-      "attributes": {
-        "control_dataProtection_objectives": [
-          "control_dataProtection_objectives_integrity",
-          "control_dataProtection_objectives_confidentiality"
-        ]
-      },
-      "id": "00000000-0000-0000-0000-000000000000"
+        "domains": [],
+        "attributes": {
+            "control_dataProtection_objectives": [
+                "control_dataProtection_objectives_confidentiality",
+                "control_dataProtection_objectives_integrity"
+            ]
+        }
     }
   }
 }

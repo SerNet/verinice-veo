@@ -18,17 +18,6 @@
           "targetUri": "https://veo.develop.verinice.com/assets/fd6493d6-350f-412f-be93-333d5af5e579"
         }
       }
-    ],
-    "process_internalRecipient": [
-      {
-        "domains": [],
-        "attributes": {
-          "process_internalRecipient_thirdCountryProcessing": false
-        },
-        "target": {
-          "targetUri": "https://veo.develop.verinice.com/persons/b2ab8085-9419-4227-bd86-74f480d5c709"
-        }
-      }
     ]
   },
   "customAspects": {

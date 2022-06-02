@@ -110,7 +110,6 @@ export default function () {
   let tomId = createTOM();
   let dataTypeId = createDataType();
   DATA_TRANSFER.links.process_dataType[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + dataTypeId;
-  DATA_TRANSFER.links.process_internalRecipient[0].target.targetUri = "https://api." + HOSTNAME + "/veo/persons/" + personId;
   let dataTransferId = createDataTransfer();
   loadDashboard();
   let itSystemId = createItSystem();
@@ -121,7 +120,6 @@ export default function () {
   DATA_PROCESSING.links.process_jointControllership[0].target.targetUri = "https://api." + HOSTNAME + "/veo/scopes/" + jointControllerId;
   DATA_PROCESSING.links.process_dataType[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + dataTypeId;
   DATA_PROCESSING.links.process_requiredApplications[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + applicationId;
-  DATA_PROCESSING.links.process_tom[0].target.targetUri = "https://api." + HOSTNAME + "/veo/controls/" + tomId;
   DATA_PROCESSING.links.process_requiredITSystems[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + itSystemId;
   DATA_PROCESSING.links.process_dataTransmission[0].target.targetUri = "https://api." + HOSTNAME + "/veo/processes/" + dataTransferId;
   let dataProcessingId = createDataProcessing();
