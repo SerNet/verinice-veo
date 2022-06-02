@@ -27,15 +27,17 @@ Parameters to run the script:
 
  -e name=<USER_NAME> required
  -e password=<PASSWORD> required
- -e host=<HOSTNAME> optional, develop.verinice.com | staging.verinice.com (default)
+ -e host=<HOSTNAME> e.g. verinice.com
+ -e keycloak_url=<KEYCLOAK_BASE_URL> e.g. https://auth.verinice.com
+ -e keycloak_client=<KEYCLOAK_CLIENT_ID> e.g. veo-prod
 
 After installing k6, this script is started with:
 
- k6 run create_processing_activity.js -e host=staging.verinice.com -e name=foo -e password=bar
+ k6 run create_processing_activity.js -e host=verinice.com -e keycloak_url=https://auth.verinice.com -e keycloak_client=veo-prod -e name=foo -e password=bar
 
 To run a load test with 10 virtual user (vus) for 30s, type:
 
- k6 run --vus 10 --duration 30s create_processing_activity.js -e host=staging.verinice.com -e name=foo -e password=bar
+ k6 run --vus 10 --duration 30s create_processing_activity.js -e host=verinice.com -e keycloak_url=https://auth.verinice.com -e keycloak_client=veo-prod -e name=foo -e password=bar
 
 See k6 documentation for more options: 
 https://k6.io/docs/getting-started/running-k6
@@ -49,17 +51,17 @@ import http from "k6/http";
 const HOSTNAME = __ENV.host;
 const USER_NAME = __ENV.name;
 const PASSWORD = __ENV.password;
+const KEYCLOAK_BASE_URL = __ENV.keycloak_url;
+const KEYCLOAK_CLIENT_ID = __ENV.keycloak_client; 
 
 // Base URLs of the APIs
 const VEO_BASE_URL = "https://api." + HOSTNAME + "/veo";
 const VEO_FORMS_BASE_URL = "https://api." + HOSTNAME + "/forms";
 const VEO_HISTORY_BASE_URL = "https://api." + HOSTNAME + "/history";
 const VEO_REPORTS_BASE_URL = "https://api." + HOSTNAME + "/reporting";
-const KEYCLOAK_BASE_URL = "https://keycloak.staging.verinice.com";
 
 // Keycloak authentication parameter
 const KEYCLOAK_REALM = "verinice-veo";
-const KEYCLOAK_CLIENT_ID = "veo-development-client";
 
 // Maximum number of seconds to sleep after a request
 const MAX_SLEEP_SECONDS = 5;

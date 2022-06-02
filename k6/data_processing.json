@@ -90,74 +90,76 @@
   },
   "customAspects": {
     "process_processingDetails": {
-        "domains": [],
-        "attributes": {
-            "process_processingDetails_typeOfSurvey": "process_processingDetails_typeOfSurvey_new",
-            "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation",
-            "process_processingDetails_surveyConductedOn": "2021-08-02",
-            "process_processingDetails_responsibleDepartment": "Personalabteilung"
-        }
+      "domains": [],
+      "attributes": {
+        "process_processingDetails_typeOfSurvey": "process_processingDetails_typeOfSurvey_new",
+        "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation",
+        "process_processingDetails_surveyConductedOn": "2021-08-02",
+        "process_processingDetails_responsibleDepartment": "Personalabteilung"
+      }
     },
     "process_accessAuthorization": {
-        "domains": [],
-        "attributes": {
-            "process_accessAuthorization_concept": true,
-            "process_accessAuthorization_description": "Zuständiger Sachbearbeiter im Personalbereich, Teamleiter, ggf. Geschäftsführer"
-        }
+      "domains": [],
+      "attributes": {
+        "process_accessAuthorization_concept": true,
+        "process_accessAuthorization_description": "Zuständiger Sachbearbeiter im Personalbereich, Teamleiter, ggf. Geschäftsführer"
+      }
     },
     "process_processing": {
-        "domains": [],
-        "attributes": {
-            "process_processing_asProcessor": false
-        }
+      "domains": [],
+      "attributes": {
+        "process_processing_asProcessor": false
+      }
     },
     "process_dataProcessing": {
-        "domains": [],
-        "attributes": {
-            "process_dataProcessing_legalBasis": [],
-            "process_dataProcessing_explanation": "Für die Begründung eines Beschäftigungsverhältnisses",
-            "process_dataProcessing_otherLegalBasis": "§ 26 I BDSG, § 26 III BDSG"
-        }
+      "domains": [],
+      "attributes": {
+        "process_dataProcessing_legalBasis": [],
+        "process_dataProcessing_explanation": "Für die Begründung eines Beschäftigungsverhältnisses",
+        "process_dataProcessing_otherLegalBasis": "§ 26 I BDSG, § 26 III BDSG"
+      }
     },
     "process_opinionDPO": {
-        "domains": [],
-        "attributes": {
-            "process_opinionDPO_findings": "Keine Löschvorgaben festgesetzt",
-            "process_opinionDPO_recommendations": "Löschung der Daten 6 Monate nach Vergabe der Stelle, außer der Bewerber hat der Aufnahme in Bewerberpool explizit zugestimmt"
-        }
+      "domains": [],
+      "attributes": {
+        "process_opinionDPO_findings": "Keine Löschvorgaben festgesetzt",
+        "process_opinionDPO_recommendations": "Löschung der Daten 6 Monate nach Vergabe der Stelle, außer der Bewerber hat der Aufnahme in Bewerberpool explizit zugestimmt"
+      }
     },
     "process_dataSubjects": {
-        "domains": [],
-        "attributes": {
-            "process_dataSubjects_dataSubjects": [
-                "process_dataSubjects_dataSubjects_applicants"
-            ],
-            "process_dataSubjects_otherDataSubjects": "Keine"
-        }
+      "domains": [],
+      "attributes": {
+        "process_dataSubjects_dataSubjects": [
+          "process_dataSubjects_dataSubjects_applicants"
+        ],
+        "process_dataSubjects_otherDataSubjects": "Keine"
+      }
     },
     "process_intendedPurpose": {
-        "domains": [],
-        "attributes": {
-            "process_intendedPurpose_intendedPurpose": "Personalbeschaffung"
-        }
+      "domains": [],
+      "attributes": {
+        "process_intendedPurpose_intendedPurpose": "Personalbeschaffung"
+      }
     },
     "process_privacyImpactAssessment": {
-        "domains": [],
-        "attributes": {
-            "process_privacyImpactAssessment_otherExclusions": false,
-            "process_privacyImpactAssessment_processingOperationAccordingArt35": false
-        }
+      "domains": [],
+      "attributes": {
+        "process_privacyImpactAssessment_otherExclusions": false,
+        "process_privacyImpactAssessment_processingOperationAccordingArt35": false
+      }
     },
     "process_generalInformation": {
-        "domains": [],
-        "attributes": {}
+      "domains": [],
+      "attributes": {
+        
+      }
     },
     "process_informationsObligations": {
-        "domains": [],
-        "attributes": {
-            "process_informationsObligations_status": true,
-            "process_informationsObligations_explanation": "Informationspflichten sind erfüllt, Vorlagen anbei"
-        }
+      "domains": [],
+      "attributes": {
+        "process_informationsObligations_status": true,
+        "process_informationsObligations_explanation": "Informationspflichten sind erfüllt, Vorlagen anbei"
+      }
     }
   },
   "type": "process",
