@@ -68,12 +68,12 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
 
     // Apply requested operation:
     var risk = riskAffected.obtainRisk(scenario, domains);
-
-    risk = applyOptionalInput(input, risk);
     if (risk.getDesignator() == null || risk.getDesignator().isEmpty()) {
       designatorService.assignDesignator(risk, input.getAuthenticatedClient());
       newRiskCreated = true;
     }
+
+    risk = applyOptionalInput(input, risk);
 
     if (risk instanceof ProcessRisk) {
       ((ProcessRisk) risk).defineRiskValues(input.getRiskValues());
