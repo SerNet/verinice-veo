@@ -4507,7 +4507,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-75. Group: net.ttddyy  Name: datasource-proxy  Version: 1.7
+75. Group: net.ttddyy  Name: datasource-proxy  Version: 1.8
 
 POM Project URL: https://github.com/ttddyy/datasource-proxy/
 
@@ -19895,5 +19895,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Fri May 27 16:32:01 UTC 2022.
+This report was generated at Fri Jun 03 08:31:46 UTC 2022.
 
