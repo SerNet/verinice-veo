@@ -221,7 +221,11 @@
       
     },
     "control": {
-      
+      "links": {
+        "Control_details_Control": {
+          "targetType": "control"
+        }
+      }
     },
     "document": {
       

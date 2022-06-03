@@ -85,7 +85,7 @@
           "tailoringReferences": [
             {
               "catalogItem": {
-                "targetUri": "/catalogitems/e40d750a-24f3-40ac-84a7-746ac13f64d4"
+                "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
               },
               "referenceType": "LINK_EXTERNAL",
               "linkType": "process_tom",
@@ -109,7 +109,9 @@
               "control_dataProtection": {
                 "domains": [],
                 "attributes": {
-                  "control_dataProtection_objectives": "control_dataProtection_objectives_confidentiality"
+                  "control_dataProtection_objectives": [
+                    "control_dataProtection_objectives_confidentiality"
+                  ]
                 }
               }
             },
@@ -531,7 +533,7 @@
           "tailoringReferences": [
             {
               "catalogItem": {
-                "targetUri": "/catalogitems/7a60f2cc-fb20-4669-9eda-d76863a29602"
+                "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
               },
               "referenceType": "LINK_EXTERNAL",
               "linkType": "process_tom",
@@ -555,7 +557,9 @@
               "control_dataProtection": {
                 "domains": [],
                 "attributes": {
-                  "control_dataProtection_objectives": "control_dataProtection_objectives_encryption"
+                  "control_dataProtection_objectives": [
+                    "control_dataProtection_objectives_encryption"
+                  ]
                 }
               }
             },
@@ -581,7 +585,7 @@
           "tailoringReferences": [
             {
               "catalogItem": {
-                "targetUri": "/catalogitems/1a3f8704-4eee-45ed-b818-410fad32e412"
+                "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
               },
               "referenceType": "LINK_EXTERNAL",
               "linkType": "process_tom",
@@ -605,7 +609,9 @@
               "control_dataProtection": {
                 "domains": [],
                 "attributes": {
-                  "control_dataProtection_objectives": "control_dataProtection_objectives_recoverability"
+                  "control_dataProtection_objectives": [
+                    "control_dataProtection_objectives_recoverability"
+                  ]
                 }
               }
             },
@@ -631,7 +637,7 @@
           "tailoringReferences": [
             {
               "catalogItem": {
-                "targetUri": "/catalogitems/01f07484-ef75-445e-aeeb-8013bb34c8a9"
+                "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
               },
               "referenceType": "LINK_EXTERNAL",
               "linkType": "process_tom",
@@ -655,7 +661,9 @@
               "control_dataProtection": {
                 "domains": [],
                 "attributes": {
-                  "control_dataProtection_objectives": "control_dataProtection_objectives_availability"
+                  "control_dataProtection_objectives": [
+                    "control_dataProtection_objectives_availability"
+                  ]
                 }
               }
             },
@@ -714,7 +722,7 @@
           "tailoringReferences": [
             {
               "catalogItem": {
-                "targetUri": "/catalogitems/f78f6d65-2e36-4598-9628-76f0433742e0"
+                "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
               },
               "referenceType": "LINK_EXTERNAL",
               "linkType": "process_tom",
@@ -738,7 +746,9 @@
               "control_dataProtection": {
                 "domains": [],
                 "attributes": {
-                  "control_dataProtection_objectives": "control_dataProtection_objectives_integrity"
+                  "control_dataProtection_objectives": [
+                    "control_dataProtection_objectives_integrity"
+                  ]
                 }
               }
             },
@@ -1176,7 +1186,7 @@
           "tailoringReferences": [
             {
               "catalogItem": {
-                "targetUri": "/catalogitems/c4f39b57-acc3-4edf-9a0b-7d8595607424"
+                "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
               },
               "referenceType": "LINK_EXTERNAL",
               "linkType": "process_tom",
@@ -1200,7 +1210,9 @@
               "control_dataProtection": {
                 "domains": [],
                 "attributes": {
-                  "control_dataProtection_objectives": "control_dataProtection_objectives_resilience"
+                  "control_dataProtection_objectives": [
+                    "control_dataProtection_objectives_resilience"
+                  ]
                 }
               }
             },
@@ -2150,7 +2162,7 @@
           "tailoringReferences": [
             {
               "catalogItem": {
-                "targetUri": "/catalogitems/545aa1a7-984d-42ab-a7d0-55682153b3b0"
+                "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
               },
               "referenceType": "LINK_EXTERNAL",
               "linkType": "process_tom",
@@ -2174,7 +2186,9 @@
               "control_dataProtection": {
                 "domains": [],
                 "attributes": {
-                  "control_dataProtection_objectives": "control_dataProtection_objectives_pseudonymization"
+                  "control_dataProtection_objectives": [
+                    "control_dataProtection_objectives_pseudonymization"
+                  ]
                 }
               }
             },
@@ -2233,7 +2247,7 @@
           "tailoringReferences": [
             {
               "catalogItem": {
-                "targetUri": "/catalogitems/971b5250-3673-4c80-8343-7aec2f5980ae"
+                "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
               },
               "referenceType": "LINK_EXTERNAL",
               "linkType": "process_tom",
@@ -2257,7 +2271,9 @@
               "control_dataProtection": {
                 "domains": [],
                 "attributes": {
-                  "control_dataProtection_objectives": "control_dataProtection_objectives_effectiveness"
+                  "control_dataProtection_objectives": [
+                    "control_dataProtection_objectives_effectiveness"
+                  ]
                 }
               }
             },

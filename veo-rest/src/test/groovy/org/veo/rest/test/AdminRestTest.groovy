@@ -71,7 +71,9 @@ class AdminRestTest extends VeoRestTest{
             customAspects.size() == 1
             customAspects.control_dataProtection.domains.size() == 1
             customAspects.control_dataProtection.attributes.size() == 1
-            customAspects.control_dataProtection.attributes.control_dataProtection_objectives == "control_dataProtection_objectives_integrity"
+            customAspects.control_dataProtection.attributes.control_dataProtection_objectives == [
+                "control_dataProtection_objectives_integrity"
+            ]
             domains[dsgvoId].subType == "CTL_TOM"
             domains[dsgvoId].status == "NEW"
         }

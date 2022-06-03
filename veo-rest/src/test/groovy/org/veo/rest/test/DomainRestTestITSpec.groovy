@@ -63,7 +63,9 @@ class DomainRestTestITSpec extends VeoRestTest {
         with (tomi.element) {
             customAspects.size() == 1
             customAspects.control_dataProtection.attributes.size() == 1
-            customAspects.control_dataProtection.attributes.control_dataProtection_objectives == "control_dataProtection_objectives_integrity"
+            customAspects.control_dataProtection.attributes.control_dataProtection_objectives == [
+                "control_dataProtection_objectives_integrity"
+            ]
             domains[dsgvoId].subType == "CTL_TOM"
             domains[dsgvoId].status == "NEW"
         }
