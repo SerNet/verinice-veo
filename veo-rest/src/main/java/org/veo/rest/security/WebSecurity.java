@@ -28,15 +28,14 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -50,7 +49,7 @@ import lombok.extern.slf4j.Slf4j;
 /** This class bundles custom API security configurations. */
 @EnableWebSecurity
 @Slf4j
-public class WebSecurity extends WebSecurityConfigurerAdapter {
+public class WebSecurity {
 
   @Value("${veo.cors.origins}")
   private String[] origins;
@@ -58,9 +57,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
   @Value("${veo.cors.headers}")
   private String[] allowedHeaders;
 
+  @Bean
   @SuppressFBWarnings("SPRING_CSRF_PROTECTION_DISABLED")
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.csrf().disable();
     http.cors();
     http.headers().cacheControl().disable();
@@ -107,6 +106,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     // see above
 
     http.oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter());
+    return http.build();
   }
 
   private JwtAuthenticationConverter jwtAuthenticationConverter() {
@@ -118,11 +118,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
     jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
     return jwtAuthenticationConverter;
-  }
-
-  @Override
-  public void configure(AuthenticationManagerBuilder auth) throws Exception {
-    auth.userDetailsService(inMemoryUserDetailsManager());
   }
 
   @Bean
