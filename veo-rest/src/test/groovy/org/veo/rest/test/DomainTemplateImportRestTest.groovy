@@ -132,6 +132,9 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                                 'id': '1b55d69a-977b-49b6-93d8-247d1a064126',
                                 'links': [:],
                                 'name': 'Test process-1',
+                                'owner': [
+                                    'targetUri': '/catalogitems/f55a860f-3bf0-4f63-9c8c-1c2a82762e40'
+                                ],
                                 'parts': [],
                                 'type': 'process'],
                             'id': 'f55a860f-3bf0-4f63-9c8c-1c2a82762e40',
