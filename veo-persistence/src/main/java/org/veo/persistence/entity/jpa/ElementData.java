@@ -196,6 +196,10 @@ public abstract class ElementData extends IdentifiableVersionedData
   public void setSubType(DomainTemplate domain, String subType, String status) {
     removeAspect(subTypeAspects, domain);
     if (subType != null) {
+      if (status == null) {
+        throw new IllegalStateException(
+            String.format("Cannot assign sub type %s without a status", subType));
+      }
       subTypeAspects.add(new SubTypeAspectData(domain, this, subType, status));
     } else if (status != null) {
       throw new InvalidSubTypeException(

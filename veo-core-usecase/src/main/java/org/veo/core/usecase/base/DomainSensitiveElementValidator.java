@@ -76,6 +76,7 @@ class DomainSensitiveElementValidator {
                                       link.getType())));
               validateLink(link.getType(), element, link.getTarget(), link.getAttributes(), domain);
             });
+    element.getDomainTemplates().forEach(d -> SubTypeValidator.validate(element, d));
   }
 
   private static void validateCustomAspect(

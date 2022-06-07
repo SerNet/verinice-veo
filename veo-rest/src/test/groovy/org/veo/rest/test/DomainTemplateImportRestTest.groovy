@@ -147,6 +147,19 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         response.message.endsWith("Invalid target type 'process' for link type 'process_manager'")
     }
 
+    def "cannot import template with invalid catalog item sub type"() {
+        given: "a template with an invalid sub type"
+        var template = getTemplateBody()
+        def vtElement = template.catalogs[0].catalogItems.find { it.namespace == "VT.p-1" }.element
+        vtElement.domains[vtElement.domains.keySet().first()].subType = "PRO_fit"
+
+        when: "trying to create the template"
+        def response = post("/domaintemplates", template, 400, UserType.CONTENT_CREATOR).body
+
+        then: "it fails with a helpful message"
+        response.message.endsWith("Sub type 'PRO_fit' is not defined for element type process")
+    }
+
     def "cannot import template with invalid catalog item risk definition"() {
         given: "a template with a catalog item using a non-existing risk definition"
         var template = getTemplateBody()
