@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -285,6 +286,15 @@ public abstract class ElementData extends IdentifiableVersionedData
   @Override
   public String getDisplayName() {
     return displayName;
+  }
+
+  @Transient
+  @Override
+  public Set<DomainTemplate> getDomainTemplates() {
+    if (containingCatalogItem != null) {
+      return Set.of(containingCatalogItem.getCatalog().getDomainTemplate());
+    }
+    return domains.stream().map(DomainTemplate.class::cast).collect(Collectors.toSet());
   }
 
   private void removeAspect(Set<? extends Aspect> aspects, DomainTemplate domain) {

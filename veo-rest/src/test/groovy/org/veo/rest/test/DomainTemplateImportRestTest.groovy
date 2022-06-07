@@ -111,6 +111,42 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         ], 409, UserType.CONTENT_CREATOR)
     }
 
+    def "cannot import template with invalid catalog item attribute"() {
+        given: "a template with an invalid catalog item attribute"
+        var template = getTemplateBody()
+        def vtElement = template.catalogs[0].catalogItems.find { it.namespace == "VT.p-1" }.element
+        vtElement.customAspects.process_accessAuthorization = [
+            attributes: [
+                process_accessAuthorization_description: 1
+            ]
+        ]
+
+        when: "trying to create the template"
+        def response = post("/domaintemplates", template, 400, UserType.CONTENT_CREATOR).body
+
+        then: "it fails with a helpful message"
+        response.message.endsWith("Invalid value for attribute 'process_accessAuthorization_description': \$: integer found, string expected")
+    }
+
+    def "cannot import template with invalid catalog link"() {
+        given: "a template with an invalid catalog item attribute"
+        var template = getTemplateBody()
+        def vtItem = template.catalogs[0].catalogItems.find { it.namespace == "VT.p-1" }
+        vtItem.tailoringReferences.add(
+                [
+                    catalogItem: [targetUri: '/catalogitems/f55a860f-3bf0-4f63-9c8c-1c2a82762e40'],
+                    linkType: 'process_manager',
+                    referenceType: 'LINK'
+                ]
+                )
+
+        when: "trying to create the template"
+        def response = post("/domaintemplates", template, 400, UserType.CONTENT_CREATOR).body
+
+        then: "it fails with a helpful message"
+        response.message.endsWith("Invalid target type 'process' for link type 'process_manager'")
+    }
+
     def "cannot import template with invalid catalog item risk definition"() {
         given: "a template with a catalog item using a non-existing risk definition"
         var template = getTemplateBody()
@@ -153,6 +189,12 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                             'element': [
                                 'customAspects': [:],
                                 'id': '1b55d69a-977b-49b6-93d8-247d1a064126',
+                                'domains': [
+                                    (randomUuid): [
+                                        subType: 'PRO_DataTransfer',
+                                        status: 'NEW'
+                                    ]
+                                ],
                                 'links': [:],
                                 'name': 'Test process-1',
                                 'owner': [
@@ -170,7 +212,12 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                                 'abbreviation': 'c-1',
                                 'customAspects': [:],
                                 'description': 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.',
-                                'domains': [:],
+                                'domains': [
+                                    (randomUuid): [
+                                        subType: 'CTL_TOM',
+                                        status: 'IN_PROGRESS'
+                                    ]
+                                ],
                                 'id': '37ea81df-fcd9-46b2-a148-bbcb9298669d',
                                 'links': [:],
                                 'name': 'Control-1',
@@ -282,7 +329,13 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                         'process_tom': [
                             'attributeSchemas': [:],
                             'targetSubType': 'CTL_TOM',
-                            'targetType': 'control']],
+                            'targetType': 'control'
+                        ],
+                        'process_manager': [
+                            'attributeSchemas': [:],
+                            'targetType': 'person'
+                        ],
+                    ],
                     'subTypes': [
                         'PRO_DataProcessing': [
                             'statuses': [

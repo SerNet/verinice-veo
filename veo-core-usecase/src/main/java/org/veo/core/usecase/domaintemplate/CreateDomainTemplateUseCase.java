@@ -19,13 +19,13 @@ package org.veo.core.usecase.domaintemplate;
 
 import javax.validation.Valid;
 
-import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.service.DomainTemplateIdGenerator;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.base.CatalogItemValidator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -56,8 +56,11 @@ public class CreateDomainTemplateUseCase
 
     domainTemplate.getCatalogs().stream()
         .flatMap(c -> c.getCatalogItems().stream())
-        .map(CatalogItem::getElement)
-        .forEach(element -> element.setDesignator("NO_DESIGNATOR"));
+        .forEach(
+            item -> {
+              item.getElement().setDesignator("NO_DESIGNATOR");
+              CatalogItemValidator.validate(item);
+            });
 
     domainTemplate = domainTemplateRepository.save(domainTemplate);
 

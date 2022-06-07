@@ -223,4 +223,10 @@ public interface Element
     domainResults.put(decisionRef, result);
     setDecisionResults(domainResults, domain);
   }
+
+  /**
+   * Retrieve all domains or domain templates this element is associated with. If this is a catalog
+   * item, the catalog's domain (template) is returned.
+   */
+  Set<DomainTemplate> getDomainTemplates();
 }

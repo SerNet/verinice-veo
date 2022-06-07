@@ -46,10 +46,12 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
     def setup() {
         def id = Key.newUuid()
         process.domains >> []
+        process.domainTemplates >> []
         process.owner >> unit
         process.name >> "John's process"
         process.modelInterface >> Process
         process.id >> id
+        process.customAspects >> []
         process.links >> []
         process.owningClient >> Optional.of(existingClient)
 

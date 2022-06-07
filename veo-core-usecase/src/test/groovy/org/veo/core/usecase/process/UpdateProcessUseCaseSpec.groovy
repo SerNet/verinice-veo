@@ -39,11 +39,13 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
         def id = Key.newUuid()
         Process process = Mock()
         process.domains >> []
+        process.domainTemplates >> []
         process.getId() >> id
         process.getName()>> "Updated process"
         process.getOwner() >> existingUnit
         process.version >> 0
         process.modelInterface >> Process
+        process.customAspects >> []
         process.links >> []
 
         def existingProcess = Mock(Process) {

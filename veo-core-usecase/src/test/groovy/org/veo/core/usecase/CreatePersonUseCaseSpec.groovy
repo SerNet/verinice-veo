@@ -41,8 +41,10 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
         person = Mock() {
             name >> "John"
             owner >> existingUnit
+            customAspects >> []
             links >> []
             domains >> []
+            domainTemplates >> []
         }
 
         unitRepository.findById(_) >> Optional.of(existingUnit)

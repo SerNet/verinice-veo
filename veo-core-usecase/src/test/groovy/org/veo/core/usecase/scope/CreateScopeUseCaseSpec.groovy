@@ -40,8 +40,10 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
     def setup() {
         scope.name >> "My scope"
         scope.owner >> unit
+        scope.customAspects >> []
         scope.links >> []
         scope.domains >> []
+        scope.domainTemplates >> []
 
         unitRepository.findById(_) >> Optional.of(existingUnit)
         scopeRepository.getByIds([] as Set) >> []

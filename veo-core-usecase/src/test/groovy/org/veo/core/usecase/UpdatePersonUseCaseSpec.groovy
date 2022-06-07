@@ -41,6 +41,8 @@ public class UpdatePersonUseCaseSpec extends UseCaseSpec {
         person.name >> "Updated person"
         person.version >> 0
         person.domains >> []
+        person.domainTemplates >> []
+        person.customAspects >> []
         person.links >> []
 
         when:
