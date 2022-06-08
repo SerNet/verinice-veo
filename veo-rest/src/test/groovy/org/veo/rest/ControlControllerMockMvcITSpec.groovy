@@ -101,13 +101,18 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             owner: [
                 displayName: 'controlDataProtectionObjectivesEugdprEncryption',
                 targetUri: 'http://localhost/units/' + unit.id.uuidValue()
-            ], customAspects:
-            [
-                'control_dataProtection' :
-                [
+            ],
+            domains: [
+                (dsgvoDomain.idAsString): [
+                    subType: "CTL_TOM",
+                    status: "NEW",
+                ]
+            ],
+            customAspects: [
+                'control_dataProtection': [
                     domains: [],
-                    attributes:  [
-                        control_dataProtection_objectives:[
+                    attributes: [
+                        control_dataProtection_objectives: [
                             'control_dataProtection_objectives_pseudonymization'
                         ]
                     ]

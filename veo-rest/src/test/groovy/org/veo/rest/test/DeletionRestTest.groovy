@@ -42,6 +42,12 @@ class DeletionRestTest extends VeoRestTest {
         ]).body.resourceId
         def processId = post("/processes", [
             name: "source process",
+            domains: [
+                (domainId): [
+                    subType: "PRO_DataProcessing",
+                    status: "NEW",
+                ]
+            ],
             links: [
                 process_dataType: [
                     [
@@ -88,6 +94,12 @@ class DeletionRestTest extends VeoRestTest {
         def processId = post("/processes", [
             name: "process in other unit",
             owner: [targetUri: otherUnitUri],
+            domains: [
+                (domainId): [
+                    subType: "PRO_DataProcessing",
+                    status: "NEW",
+                ]
+            ],
             links: [
                 process_PIAScenario: [
                     [target: [targetUri: "$baseUrl/scenarios/$scenarioId"]]

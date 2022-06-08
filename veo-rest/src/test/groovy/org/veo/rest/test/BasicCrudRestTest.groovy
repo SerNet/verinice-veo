@@ -25,12 +25,14 @@ import org.springframework.http.HttpMethod
 class BasicCrudRestTest extends VeoRestTest {
 
     String unitId
-    String unitTargetUri = "$baseUrl/units/$unitId"
+    String domainId
     String unitName
 
     def setup() {
         unitName = 'CRUD test unit'
         unitId = post("/units", ["name": unitName], 201).body.resourceId
+        domainId = get("/domains").body.find{it.name == "DS-GVO"}.id
+
         UUID.fromString(unitId)
     }
 
@@ -112,7 +114,25 @@ class BasicCrudRestTest extends VeoRestTest {
 
         and: 'Creating an asset inside the unit with properties'
         def propertiesAssetName = 'CRUD test asset'
-        def propertiesAssetBody = [name: propertiesAssetName, owner: [displayName: unitName, targetUri: targetUri], customAspects: [asset_details: [domains: [], attributes: [asset_details_number: 1, asset_details_operatingStage: "asset_details_operatingStage_planning"]]]]
+        def propertiesAssetBody = [
+            name: propertiesAssetName,
+            owner: [displayName: unitName, targetUri: targetUri],
+            domains: [
+                (domainId): [
+                    subType: "AST_Application",
+                    status: "NEW",
+                ]
+            ],
+            customAspects: [
+                asset_details: [
+                    domains: [],
+                    attributes: [
+                        asset_details_number: 1,
+                        asset_details_operatingStage: "asset_details_operatingStage_planning"
+                    ]
+                ]
+            ]
+        ]
         def postPropertiesAssetResponse = post("$baseUrl/assets", propertiesAssetBody, 201, UserType.DEFAULT)
         def propertiesAssetId = postPropertiesAssetResponse.body.resourceId
         UUID.fromString(propertiesAssetId)
@@ -172,7 +192,26 @@ class BasicCrudRestTest extends VeoRestTest {
 
         and: 'Creating a person inside the unit with properties'
         def propertiesPersonName = 'CRUD test person'
-        def postPropertiesPersonBody = [name: propertiesPersonName, owner: [displayName: unitName, targetUri: targetUri], customAspects: [person_generalInformation: [domains: [], attributes: [person_generalInformation_salutation: "Herr", person_generalInformation_familyName: "Schmidt"]]]]
+        def postPropertiesPersonBody = [
+            name: propertiesPersonName,
+            owner: [
+                displayName: unitName,
+                targetUri: targetUri],
+            domains: [
+                (domainId): [
+                    subType: "PER_Person",
+                    status: "NEW",
+                ]
+            ],
+            customAspects: [
+                person_generalInformation: [
+                    domains: [],
+                    attributes: [
+                        person_generalInformation_salutation: "Herr",
+                        person_generalInformation_familyName: "Schmidt"]
+                ]
+            ]
+        ]
         def postPropertiesPersonResponse = post("$baseUrl/persons", postPropertiesPersonBody, 201, UserType.DEFAULT)
         def propertiesPersonId = postPropertiesPersonResponse.body.resourceId
         UUID.fromString(propertiesPersonId)
@@ -230,9 +269,29 @@ class BasicCrudRestTest extends VeoRestTest {
 
         and: 'Creating a control inside the unit with properties'
         def propertiesControlName = 'CRUD test control'
-        def postPropertiesControlBody = [name: propertiesControlName, owner: [displayName: unitName, targetUri: targetUri], customAspects: [control_dataProtection: [domains: [], attributes: [control_dataProtection_objectives: [
+        def postPropertiesControlBody = [
+            name: propertiesControlName,
+            owner: [
+                displayName: unitName,
+                targetUri: targetUri
+            ],
+            domains: [
+                (domainId): [
+                    subType: "CTL_TOM",
+                    status: "NEW",
+                ]
+            ],
+            customAspects: [
+                control_dataProtection: [
+                    domains: [],
+                    attributes: [
+                        control_dataProtection_objectives: [
                             "control_dataProtection_objectives_pseudonymization"
-                        ]]]]]
+                        ]
+                    ]
+                ]
+            ]
+        ]
         def postPropertiesControlResponse = post("$baseUrl/controls", postPropertiesControlBody, 201, UserType.DEFAULT)
         def propertiesControlId = postPropertiesControlResponse.body.resourceId
         UUID.fromString(propertiesControlId)

@@ -63,7 +63,13 @@ class ProcessRestTestITSpec extends VeoRestTest{
                 ]
             ],
             name: "process",
-            owner: [targetUri: "$baseUrl/units/$unitId"]
+            owner: [targetUri: "$baseUrl/units/$unitId"],
+            domains: [
+                (dsgvoDomainId): [
+                    subType: "PRO_DataProcessing",
+                    status: "NEW",
+                ]
+            ],
         ]).body.resourceId
 
         then: "it can be retrieved"

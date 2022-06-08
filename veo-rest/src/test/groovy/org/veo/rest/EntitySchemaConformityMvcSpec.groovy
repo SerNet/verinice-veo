@@ -69,6 +69,12 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                     ]
                 ]
             ],
+            domains: [
+                (domainId): [
+                    subType: "AST_Application",
+                    status: "NEW",
+                ]
+            ],
             name: "asset",
             owner: [
                 targetUri: "http://localhost/units/"+unitId,
@@ -278,6 +284,12 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             owner: [
                 targetUri: "http://localhost/units/"+unitId
             ],
+            domains: [
+                (domainId): [
+                    subType: "DOC_Document",
+                    status: "NEW",
+                ]
+            ],
             customAspects: [
                 document_details: [
                     attributes: [
@@ -303,7 +315,13 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             name: "incident",
             owner: [
                 targetUri: "http://localhost/units/"+unitId
-            ]
+            ],
+            domains: [
+                (domainId): [
+                    subType: "INC_Incident",
+                    status: "NEW",
+                ]
+            ],
         ])).resourceId
         def createdIncidentJson = parseNode(get("/incidents/$incidentId"))
 
@@ -321,6 +339,12 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             name: "person",
             owner: [
                 targetUri: "http://localhost/units/"+unitId
+            ],
+            domains: [
+                (domainId): [
+                    subType: "PER_Person",
+                    status: "NEW",
+                ]
             ],
             customAspects: [
                 person_address: [
@@ -359,6 +383,12 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             owner: [
                 targetUri: "http://localhost/units/"+unitId
             ],
+            domains: [
+                (domainId): [
+                    subType: "PRO_DataProcessing",
+                    status: "NEW",
+                ]
+            ],
             links: [
                 process_controller: [
                     [
@@ -395,6 +425,12 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             name: "scenario",
             owner: [
                 targetUri: "http://localhost/units/"+unitId
+            ],
+            domains: [
+                (domainId): [
+                    subType: "SCN_Scenario",
+                    status: "NEW",
+                ]
             ],
             customAspects: [
                 scenario_threat: [

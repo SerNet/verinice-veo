@@ -30,6 +30,14 @@ import org.veo.core.entity.definitions.LinkDefinition;
 class DomainSensitiveElementValidator {
 
   public static void validate(Element element) {
+    // TODO VEO-661 validate that the element is associated with each domain that it has custom
+    // aspects or links for. This is not possible at the moment because we don't maintain the
+    // individual domain associations of custom aspects and links consistently.
+    if (element.getDomainTemplates().isEmpty()
+        && (!element.getCustomAspects().isEmpty() || !element.getLinks().isEmpty())) {
+      throw new IllegalArgumentException(
+          "Element cannot contain custom aspects or links without being associated with a domain");
+    }
     element
         .getCustomAspects()
         .forEach(

@@ -38,11 +38,12 @@ class CustomAspectMvcITSpec extends VeoMvcSpec {
     TransactionTemplate txTemplate
 
     String unitId
+    String domainId
 
     def setup() {
         txTemplate.execute {
             def client = createTestClient()
-            createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+            domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
             unitId = unitRepository.save(newUnit(client)).id.uuidValue()
         }
     }
@@ -66,7 +67,13 @@ class CustomAspectMvcITSpec extends VeoMvcSpec {
                 ]
             ],
             name : "person",
-            owner: [targetUri: "http://localhost/units/$unitId"]
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [
+                    subType: "PER_Person",
+                    status: "NEW",
+                ]
+            ],
         ])).resourceId
         def retrievedPerson = parseJson(get("/persons/$personId"))
 

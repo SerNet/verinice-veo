@@ -90,14 +90,32 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         given: "three persons"
         def person1 = parseJson(post("/persons", [
             name: "person 1",
+            domains: [
+                (domainId): [
+                    subType: "Normal",
+                    status: "NEW",
+                ]
+            ],
             owner: [targetUri: "http://localhost/units/$unitId"]
         ])).resourceId
         def person2 = parseJson(post("/persons", [
             name: "person 2",
+            domains: [
+                (domainId): [
+                    subType: "Normal",
+                    status: "NEW",
+                ]
+            ],
             owner: [targetUri: "http://localhost/units/$unitId"]
         ])).resourceId
         def person3 = parseJson(post("/persons", [
             name: "person 3",
+            domains: [
+                (domainId): [
+                    subType: "Normal",
+                    status: "NEW",
+                ]
+            ],
             owner: [targetUri: "http://localhost/units/$unitId"]
         ])).resourceId
 
@@ -122,7 +140,13 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                 ]
             ],
             name : "scope",
-            owner: [targetUri: "http://localhost/units/$unitId"]
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [
+                    subType: "Normal",
+                    status: "NEW",
+                ]
+            ],
         ])).resourceId
         def retrievedScope = parseJson(get("/scopes/$scopeId"))
 
@@ -176,6 +200,12 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
+            domains: [
+                (domainId): [
+                    subType: "Normal",
+                    status: "NEW",
+                ]
+            ],
             links: [
                 linkToNormalPerson: [
                     [
@@ -196,6 +226,12 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             name: "Good scope",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
+            ],
+            domains: [
+                (domainId): [
+                    subType: "Normal",
+                    status: "NEW",
+                ]
             ],
             links: [
                 linkToNormalPerson: [
@@ -218,6 +254,12 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
+            domains: [
+                (domainId): [
+                    subType: "Normal",
+                    status: "NEW",
+                ]
+            ],
             links: [
                 linkToNormalPerson: [
                     [
@@ -238,6 +280,12 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             name: "Bad scope",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
+            ],
+            domains: [
+                (domainId): [
+                    subType: "Normal",
+                    status: "NEW",
+                ]
             ],
             links: [
                 linkToNormalPerson: [
@@ -294,6 +342,12 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
+            domains: [
+                (domainId): [
+                    subType: "Normal",
+                    status: "NEW",
+                ]
+            ],
             links: [
                 linkToNicePerson: [
                     [
@@ -314,6 +368,12 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             name: "Good scope",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
+            ],
+            domains: [
+                (domainId): [
+                    subType: "Normal",
+                    status: "NEW",
+                ]
             ],
             links: [
                 linkToNicePerson: [
@@ -336,6 +396,12 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
+            domains: [
+                (domainId): [
+                    subType: "Normal",
+                    status: "NEW",
+                ]
+            ],
             links: [
                 linkToNicePerson: [
                     [
@@ -356,6 +422,12 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             name: "Bad scope",
             owner: [
                 targetUri: "http://localhost/units/$unitId"
+            ],
+            domains: [
+                (domainId): [
+                    subType: "Normal",
+                    status: "NEW",
+                ]
             ],
             links: [
                 linkToNicePerson: [

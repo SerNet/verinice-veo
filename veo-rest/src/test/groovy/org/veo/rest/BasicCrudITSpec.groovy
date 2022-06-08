@@ -76,6 +76,12 @@ class BasicCrudITSpec extends VeoMvcSpec {
             owner: [
                 targetUri: "http://localhost/units/$unitId"
             ],
+            domains: [
+                (domainId): [
+                    subType: "PRO_DataProcessing",
+                    status: "NEW",
+                ]
+            ],
             links: [
                 'process_dataType':[
                     [

@@ -130,6 +130,12 @@ class DomainUpdateRestTest extends VeoRestTest {
         post("/processes", [
             name: "new process",
             owner: [targetUri: "$baseUrl/units/$unitId"],
+            domains: [
+                (newDomainId): [
+                    subType: "PRO_DataProcessing",
+                    status: "NEW",
+                ]
+            ],
             links: [
                 (processToScopeLinkName): [
                     [

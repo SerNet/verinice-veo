@@ -20,7 +20,6 @@ package org.veo.rest.test
 class DomainAssociationRestTest extends VeoRestTest {
     String unitUri
     String dsgvoDomainId
-    String testDomainId
 
     def setup() {
         unitUri = "$baseUrl/units/" + postNewUnit("some unit").resourceId
@@ -48,15 +47,52 @@ class DomainAssociationRestTest extends VeoRestTest {
         }
     }
 
-    // TODO VEO-1413 expect this to fail
-    def "can create element without domains"() {
-        expect:
-        post("/incidents", [
-            name: "incident with domains",
+    // TODO VEO-661 remove (it will be impossible to specify custom aspects without a domain association in the new DTO structure)
+    def "cannot create element with custom aspects and without domains"() {
+        when:
+        def response = post("/assets", [
+            name: "asset without domains",
+            owner: [
+                targetUri: unitUri
+            ],
+            customAspects: [
+                asset_details: [
+                    attributes: [
+                        asset_details_number: 5
+                    ]
+                ]
+            ],
+        ], 400)
+
+        then:
+        response.body.message == "Element cannot contain custom aspects or links without being associated with a domain"
+    }
+
+    // TODO VEO-661 remove (it will be impossible to specify links without a domain association in the new DTO structure)
+    def "cannot create element with links and without domains"() {
+        when:
+        def targetPersonId = post("/persons", [
+            name: "Kim",
             owner: [
                 targetUri: unitUri
             ]
-        ])
+        ]).body.resourceId
+        def response = post("/scopes", [
+            name: "scope without domains",
+            owner: [
+                targetUri: unitUri
+            ],
+            links: [
+                scope_informationSecurityOfficer: [
+                    [
+                        target: [targetUri: "$baseUrl/persons/$targetPersonId"]
+                    ]
+                ]
+            ]
+        ], 400)
+
+        then:
+        response.body.message == "Element cannot contain custom aspects or links without being associated with a domain"
     }
 
     def "cannot use non-existing domains"() {

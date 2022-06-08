@@ -508,6 +508,12 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             owner: [
                 targetUri: 'http://localhost/units/'+unit.id.uuidValue()
             ],
+            domains: [
+                (dsgvoDomain.idAsString): [
+                    subType: "PRO_DataProcessing",
+                    status: "NEW",
+                ]
+            ],
             links: [
                 'process_dataType': [
                     [
