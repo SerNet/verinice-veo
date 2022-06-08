@@ -3458,6 +3458,34 @@
       "id": "c2843721-7603-451d-8e84-f2968c66b126"
     },
     {
+      "name": "Viola Seher",
+      "links": {
+        
+      },
+      "customAspects": {
+        "person_generalInformation": {
+          "domains": [],
+          "attributes": {
+            "person_generalInformation_givenName": "Viola",
+            "person_generalInformation_familyName": "Seher",
+            "person_generalInformation_salutation": "Frau"
+          }
+        }
+      },
+      "type": "person",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PER_Person",
+          "status": "NEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "5c0875a0-3319-4b58-b5c0-2b3847b8bbad"
+    },
+    {
       "name": "Bewerberauswahlverfahren ",
       "description": "Eingegangene Bewerbungen werden an die Fachabteilungen zwecks Eignungspr\u00fcfung weitergeleitet.",
       "links": {
@@ -3614,10 +3642,123 @@
       "id": "69d1e08f-eea5-4ae8-86da-eefd4b13e0e3"
     },
     {
+      "name": "DSFA VI\u00dc",
+      "links": {
+        "process_PIAResponsibleBody": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/8c98ee3f-7402-4399-bf85-905abc92f17f"
+            }
+          }
+        ],
+        "process_PIAProcessOwner": [
+          {
+            "domains": [],
+            "attributes": {
+              "process_PIAProcessOwner_role": "Kontaktperson, an die die Fragen zur DSFA gerichtet werden k\u00f6nnen."
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/persons/5c0875a0-3319-4b58-b5c0-2b3847b8bbad"
+            }
+          }
+        ],
+        "process_PIADataProcessing": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/processes/eecc6821-5928-42c6-b287-41f4e42b82f1"
+            }
+          }
+        ]
+      },
+      "customAspects": {
+        "process_PIADetails": {
+          "domains": [],
+          "attributes": {
+            "process_PIADetails_date": "2022-06-16",
+            "process_PIADetails_reason": "process_PIADetails_reason_new"
+          }
+        }
+      },
+      "type": "process",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PRO_DPIA",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "ac4f2d7c-047a-4d29-a99c-74c497e82b0b"
+    },
+    {
       "name": "Durchf\u00fchrung Befragungen",
       "abbreviation": "",
       "description": "Befragungsaktionen und deren Auswertungen werden von der Data GmbH durchgef\u00fchrt.",
       "links": {
+        "process_dataType": [
+          {
+            "domains": [],
+            "attributes": {
+              "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct"
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/dfeb4079-8b03-48af-895f-dfcbf66fa228"
+            }
+          }
+        ],
+        "process_requiredApplications": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/23508e6a-9025-4ea2-899f-4996fc207bdc"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/72d26283-44d7-40f4-a288-e8ed9f1aa19f"
+            }
+          }
+        ],
+        "process_requiredITSystems": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/e99f8814-57b7-429b-a5a6-4d1c6732f29d"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/78267227-c51d-4376-b94b-c204a487106e"
+            }
+          }
+        ],
         "process_responsibleBody": [
           {
             "domains": [],
@@ -4005,6 +4146,67 @@
         }
       },
       "id": "01dc79d3-c768-435b-982b-91a0b812929c"
+    },
+    {
+      "name": "VI\u00dc",
+      "links": {
+        "process_responsibleBody": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/8c98ee3f-7402-4399-bf85-905abc92f17f"
+            }
+          }
+        ]
+      },
+      "customAspects": {
+        "process_privacyImpactAssessment": {
+          "domains": [],
+          "attributes": {
+            "process_privacyImpactAssessment_listed": "process_privacyImpactAssessment_listed_positive"
+          }
+        }
+      },
+      "type": "process",
+      "parts": [
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/processes/ac4f2d7c-047a-4d29-a99c-74c497e82b0b"
+        }
+      ],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PRO_DataProcessing",
+          "status": "NEW",
+          "decisionResults": {
+            "piaMandatory": {
+              "value": true,
+              "decisiveRule": 4,
+              "matchingRules": [
+                4,
+                5
+              ],
+              "agreeingRules": [
+                4,
+                5
+              ]
+            }
+          },
+          "riskValues": {
+            "DSRA": {
+              "potentialImpacts": {
+                "A": 3,
+                "R": 3,
+                "C": 2,
+                "I": 2
+              }
+            }
+          }
+        }
+      },
+      "id": "eecc6821-5928-42c6-b287-41f4e42b82f1"
     },
     {
       "name": "Betroffenenrechte werden nicht oder nur unvollst\u00e4ndig gew\u00e4hrt",
@@ -4633,6 +4835,9 @@
           "targetUri": "https://api.staging.verinice.com/veo/controls/f2dcba8f-dce5-4831-9fff-86abb0e28168"
         },
         {
+          "targetUri": "https://api.staging.verinice.com/veo/processes/ac4f2d7c-047a-4d29-a99c-74c497e82b0b"
+        },
+        {
           "targetUri": "https://api.staging.verinice.com/veo/processes/97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7"
         },
         {
@@ -4655,6 +4860,9 @@
         },
         {
           "targetUri": "https://api.staging.verinice.com/veo/controls/178f0f6e-65dc-48c6-9fd7-7d4bf59acb22"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/processes/eecc6821-5928-42c6-b287-41f4e42b82f1"
         },
         {
           "targetUri": "https://api.staging.verinice.com/veo/controls/c5a9cecd-fc3d-477e-b1bb-9c5a90a5f67a"
@@ -4951,9 +5159,304 @@
         }
       },
       "id": "7464bfd6-e2ee-47be-be46-abc9029e7992"
+    },
+    {
+      "name": "SafeGuard GmbH",
+      "description": "Diensleister f\u00fcr Video\u00fcberwachung ",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "scope",
+      "members": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCP_Processor",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskDefinition": "DSRA"
+        }
+      },
+      "id": "f028abf2-810c-4931-8a20-5c3753e150c4"
     }
   ],
   "risks": [
+    {
+      "scenario": {
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/330c20b0-091b-410e-9a7f-e1c7ca3c5321"
+      },
+      "mitigation": {
+        "targetUri": "https://api.staging.verinice.com/veo/controls/563642d5-2adb-47a6-845e-0ab79dda23e5"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/c2843721-7603-451d-8e84-f2968c66b126"
+      },
+      "process": {
+        "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
+      },
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "riskDefinitions": {
+            "DSRA": {
+              "probability": {
+                "potentialProbability": 0,
+                "specificProbability": 2,
+                "effectiveProbability": 2,
+                "specificProbabilityExplanation": "Es erfolgte keine Zul\u00e4ssigkeitspr\u00fcfung"
+              },
+              "impactValues": [
+                {
+                  "category": "I",
+                  "potentialImpact": 2,
+                  "specificImpact": 2,
+                  "effectiveImpact": 2
+                },
+                {
+                  "category": "A",
+                  "potentialImpact": 0,
+                  "specificImpact": 2,
+                  "effectiveImpact": 2
+                },
+                {
+                  "category": "R",
+                  "potentialImpact": 0,
+                  "specificImpact": 1,
+                  "effectiveImpact": 1
+                },
+                {
+                  "category": "C",
+                  "potentialImpact": 2,
+                  "specificImpact": 1,
+                  "effectiveImpact": 1
+                }
+              ],
+              "riskValues": [
+                {
+                  "category": "I",
+                  "inherentRisk": 2,
+                  "userDefinedResidualRisk": 1,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "riskTreatmentExplanation": "Die Rechtsabteilung muss eine datenschutzrechtliche Pr\u00fcfung vornehmen und entsprechende Ma\u00dfnamen initiieren",
+                  "residualRisk": 1
+                },
+                {
+                  "category": "A",
+                  "inherentRisk": 2,
+                  "userDefinedResidualRisk": 1,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "riskTreatmentExplanation": "Analog zur Vertraulichkeit",
+                  "residualRisk": 1
+                },
+                {
+                  "category": "R",
+                  "inherentRisk": 1,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "C",
+                  "inherentRisk": 1,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 0
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "scenario": {
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/4dbb8054-560e-49b9-83ec-fed93e612be7"
+      },
+      "mitigation": {
+        "targetUri": "https://api.staging.verinice.com/veo/controls/42346d17-161a-440e-b6e2-5d6fd7abe0ea"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/c2843721-7603-451d-8e84-f2968c66b126"
+      },
+      "process": {
+        "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
+      },
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "riskDefinitions": {
+            "DSRA": {
+              "probability": {
+                "potentialProbability": 0,
+                "specificProbability": 1,
+                "effectiveProbability": 1,
+                "specificProbabilityExplanation": "Regelm\u00e4\u00dfge Ma\u00dfnahmen wie z.B DS-Schulungen, Weiterbildungen zu Datenschutz und IT-Security, Verpflichtungserkl\u00e4rungen, die die Mitarbeiter \u00fcber ihre Pflichten informieren und sensibilisieren."
+              },
+              "impactValues": [
+                {
+                  "category": "I",
+                  "potentialImpact": 2,
+                  "specificImpact": 2,
+                  "effectiveImpact": 2
+                },
+                {
+                  "category": "A",
+                  "potentialImpact": 0,
+                  "specificImpact": 2,
+                  "effectiveImpact": 2
+                },
+                {
+                  "category": "R",
+                  "potentialImpact": 0,
+                  "specificImpact": 0,
+                  "effectiveImpact": 0
+                },
+                {
+                  "category": "C",
+                  "potentialImpact": 2,
+                  "specificImpact": 0,
+                  "effectiveImpact": 0
+                }
+              ],
+              "riskValues": [
+                {
+                  "category": "I",
+                  "inherentRisk": 1,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "riskTreatmentExplanation": "Berechtigungskonzept ist zu erstellen und in der Organisation zu kommunizieren",
+                  "residualRisk": 0
+                },
+                {
+                  "category": "A",
+                  "inherentRisk": 1,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "riskTreatmentExplanation": "analog zur Vertraulichkeit",
+                  "residualRisk": 0
+                },
+                {
+                  "category": "R",
+                  "inherentRisk": 0,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_ACCEPTANCE"
+                  ],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "C",
+                  "inherentRisk": 0,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_ACCEPTANCE"
+                  ],
+                  "residualRisk": 0
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "scenario": {
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/f15cdd48-a527-45b6-8b86-24dc17740d9c"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/c2843721-7603-451d-8e84-f2968c66b126"
+      },
+      "process": {
+        "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
+      },
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "riskDefinitions": {
+            "DSRA": {
+              "probability": {
+                "specificProbability": 0,
+                "effectiveProbability": 0,
+                "specificProbabilityExplanation": "Regelm\u00e4\u00dfge Schulungen der Mitarbeiter aus Marketing und Vertrieb zu speziellen DS-rechtlichen Fragestellungen"
+              },
+              "impactValues": [
+                {
+                  "category": "I",
+                  "potentialImpact": 2,
+                  "specificImpact": 1,
+                  "effectiveImpact": 1
+                },
+                {
+                  "category": "A",
+                  "potentialImpact": 0,
+                  "specificImpact": 1,
+                  "effectiveImpact": 1
+                },
+                {
+                  "category": "R",
+                  "potentialImpact": 0,
+                  "specificImpact": 0,
+                  "effectiveImpact": 0
+                },
+                {
+                  "category": "C",
+                  "potentialImpact": 2,
+                  "specificImpact": 0,
+                  "effectiveImpact": 0
+                }
+              ],
+              "riskValues": [
+                {
+                  "category": "I",
+                  "inherentRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_ACCEPTANCE"
+                  ],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "A",
+                  "inherentRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_ACCEPTANCE"
+                  ],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "R",
+                  "inherentRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_ACCEPTANCE"
+                  ],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "C",
+                  "inherentRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_ACCEPTANCE"
+                  ],
+                  "residualRisk": 0
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
     {
       "scenario": {
         "targetUri": "https://api.staging.verinice.com/veo/scenarios/6198e14b-9d7e-4f2c-8e82-33cfcad1828b"
@@ -5135,78 +5638,6 @@
     },
     {
       "scenario": {
-        "targetUri": "https://api.staging.verinice.com/veo/scenarios/8a9673d5-d7f6-4645-aa1e-5b3629a8ea0e"
-      },
-      "riskOwner": {
-        "targetUri": "https://api.staging.verinice.com/veo/persons/ca39207b-d35f-45b8-8898-f8f7e1c5af48"
-      },
-      "process": {
-        "targetUri": "https://api.staging.verinice.com/veo/processes/a4134991-7a46-4f20-9001-608e97464b10"
-      },
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "riskDefinitions": {
-            "DSRA": {
-              "probability": {
-                "specificProbability": 1,
-                "effectiveProbability": 1,
-                "specificProbabilityExplanation": "Regelm\u00e4\u00dfge Sensibilisierungsma\u00dfnahmen zum Thema IT-Security und Datenschutz"
-              },
-              "impactValues": [
-                {
-                  "category": "I",
-                  "potentialImpact": 2,
-                  "effectiveImpact": 2
-                },
-                {
-                  "category": "A",
-                  "potentialImpact": 1,
-                  "effectiveImpact": 1
-                },
-                {
-                  "category": "R",
-                  "potentialImpact": 0,
-                  "effectiveImpact": 0
-                },
-                {
-                  "category": "C",
-                  "potentialImpact": 2,
-                  "effectiveImpact": 2
-                }
-              ],
-              "riskValues": [
-                {
-                  "category": "I",
-                  "inherentRisk": 1,
-                  "riskTreatments": [],
-                  "residualRisk": 1
-                },
-                {
-                  "category": "A",
-                  "inherentRisk": 0,
-                  "riskTreatments": [],
-                  "residualRisk": 0
-                },
-                {
-                  "category": "R",
-                  "inherentRisk": 0,
-                  "riskTreatments": [],
-                  "residualRisk": 0
-                },
-                {
-                  "category": "C",
-                  "inherentRisk": 1,
-                  "riskTreatments": [],
-                  "residualRisk": 1
-                }
-              ]
-            }
-          }
-        }
-      }
-    },
-    {
-      "scenario": {
         "targetUri": "https://api.staging.verinice.com/veo/scenarios/f9270bf5-9297-4821-9a1d-418a6967248a"
       },
       "mitigation": {
@@ -5285,172 +5716,6 @@
                   "userDefinedResidualRisk": 0,
                   "riskTreatments": [
                     "RISK_TREATMENT_ACCEPTANCE"
-                  ],
-                  "residualRisk": 0
-                }
-              ]
-            }
-          }
-        }
-      }
-    },
-    {
-      "scenario": {
-        "targetUri": "https://api.staging.verinice.com/veo/scenarios/475dda29-13ec-4a4f-ab3a-c7d3c88c13e0"
-      },
-      "riskOwner": {
-        "targetUri": "https://api.staging.verinice.com/veo/persons/ca39207b-d35f-45b8-8898-f8f7e1c5af48"
-      },
-      "process": {
-        "targetUri": "https://api.staging.verinice.com/veo/processes/a4134991-7a46-4f20-9001-608e97464b10"
-      },
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "riskDefinitions": {
-            "DSRA": {
-              "probability": {
-                "specificProbability": 1,
-                "effectiveProbability": 1,
-                "specificProbabilityExplanation": "Regelm\u00e4\u00dfge Sensibilisierungsma\u00dfnahmen zum Thema Phishing"
-              },
-              "impactValues": [
-                {
-                  "category": "I",
-                  "potentialImpact": 2,
-                  "effectiveImpact": 2
-                },
-                {
-                  "category": "A",
-                  "potentialImpact": 1,
-                  "effectiveImpact": 1
-                },
-                {
-                  "category": "R",
-                  "potentialImpact": 0,
-                  "effectiveImpact": 0
-                },
-                {
-                  "category": "C",
-                  "potentialImpact": 2,
-                  "effectiveImpact": 2
-                }
-              ],
-              "riskValues": [
-                {
-                  "category": "I",
-                  "inherentRisk": 1,
-                  "riskTreatments": [],
-                  "residualRisk": 1
-                },
-                {
-                  "category": "A",
-                  "inherentRisk": 0,
-                  "riskTreatments": [],
-                  "residualRisk": 0
-                },
-                {
-                  "category": "R",
-                  "inherentRisk": 0,
-                  "riskTreatments": [],
-                  "residualRisk": 0
-                },
-                {
-                  "category": "C",
-                  "inherentRisk": 1,
-                  "riskTreatments": [],
-                  "residualRisk": 1
-                }
-              ]
-            }
-          }
-        }
-      }
-    },
-    {
-      "scenario": {
-        "targetUri": "https://api.staging.verinice.com/veo/scenarios/330c20b0-091b-410e-9a7f-e1c7ca3c5321"
-      },
-      "mitigation": {
-        "targetUri": "https://api.staging.verinice.com/veo/controls/563642d5-2adb-47a6-845e-0ab79dda23e5"
-      },
-      "riskOwner": {
-        "targetUri": "https://api.staging.verinice.com/veo/persons/c2843721-7603-451d-8e84-f2968c66b126"
-      },
-      "process": {
-        "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
-      },
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "riskDefinitions": {
-            "DSRA": {
-              "probability": {
-                "potentialProbability": 0,
-                "specificProbability": 2,
-                "effectiveProbability": 2,
-                "specificProbabilityExplanation": "Es erfolgte keine Zul\u00e4ssigkeitspr\u00fcfung"
-              },
-              "impactValues": [
-                {
-                  "category": "I",
-                  "potentialImpact": 2,
-                  "specificImpact": 2,
-                  "effectiveImpact": 2
-                },
-                {
-                  "category": "A",
-                  "potentialImpact": 0,
-                  "specificImpact": 2,
-                  "effectiveImpact": 2
-                },
-                {
-                  "category": "R",
-                  "potentialImpact": 0,
-                  "specificImpact": 1,
-                  "effectiveImpact": 1
-                },
-                {
-                  "category": "C",
-                  "potentialImpact": 2,
-                  "specificImpact": 1,
-                  "effectiveImpact": 1
-                }
-              ],
-              "riskValues": [
-                {
-                  "category": "I",
-                  "inherentRisk": 2,
-                  "userDefinedResidualRisk": 1,
-                  "riskTreatments": [
-                    "RISK_TREATMENT_REDUCTION"
-                  ],
-                  "riskTreatmentExplanation": "Die Rechtsabteilung muss eine datenschutzrechtliche Pr\u00fcfung vornehmen und entsprechende Ma\u00dfnamen initiieren",
-                  "residualRisk": 1
-                },
-                {
-                  "category": "A",
-                  "inherentRisk": 2,
-                  "userDefinedResidualRisk": 1,
-                  "riskTreatments": [
-                    "RISK_TREATMENT_REDUCTION"
-                  ],
-                  "riskTreatmentExplanation": "Analog zur Vertraulichkeit",
-                  "residualRisk": 1
-                },
-                {
-                  "category": "R",
-                  "inherentRisk": 1,
-                  "userDefinedResidualRisk": 0,
-                  "riskTreatments": [
-                    "RISK_TREATMENT_REDUCTION"
-                  ],
-                  "residualRisk": 0
-                },
-                {
-                  "category": "C",
-                  "inherentRisk": 1,
-                  "userDefinedResidualRisk": 0,
-                  "riskTreatments": [
-                    "RISK_TREATMENT_REDUCTION"
                   ],
                   "residualRisk": 0
                 }
@@ -5551,91 +5816,141 @@
     },
     {
       "scenario": {
-        "targetUri": "https://api.staging.verinice.com/veo/scenarios/4dbb8054-560e-49b9-83ec-fed93e612be7"
-      },
-      "mitigation": {
-        "targetUri": "https://api.staging.verinice.com/veo/controls/42346d17-161a-440e-b6e2-5d6fd7abe0ea"
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/8a9673d5-d7f6-4645-aa1e-5b3629a8ea0e"
       },
       "riskOwner": {
-        "targetUri": "https://api.staging.verinice.com/veo/persons/c2843721-7603-451d-8e84-f2968c66b126"
+        "targetUri": "https://api.staging.verinice.com/veo/persons/ca39207b-d35f-45b8-8898-f8f7e1c5af48"
       },
       "process": {
-        "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
+        "targetUri": "https://api.staging.verinice.com/veo/processes/a4134991-7a46-4f20-9001-608e97464b10"
       },
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
           "riskDefinitions": {
             "DSRA": {
               "probability": {
-                "potentialProbability": 0,
                 "specificProbability": 1,
                 "effectiveProbability": 1,
-                "specificProbabilityExplanation": "Regelm\u00e4\u00dfge Ma\u00dfnahmen wie z.B DS-Schulungen, Weiterbildungen zu Datenschutz und IT-Security, Verpflichtungserkl\u00e4rungen, die die Mitarbeiter \u00fcber ihre Pflichten informieren und sensibilisieren."
+                "specificProbabilityExplanation": "Regelm\u00e4\u00dfge Sensibilisierungsma\u00dfnahmen zum Thema IT-Security und Datenschutz"
               },
               "impactValues": [
                 {
                   "category": "I",
                   "potentialImpact": 2,
-                  "specificImpact": 2,
                   "effectiveImpact": 2
                 },
                 {
                   "category": "A",
-                  "potentialImpact": 0,
-                  "specificImpact": 2,
-                  "effectiveImpact": 2
+                  "potentialImpact": 1,
+                  "effectiveImpact": 1
                 },
                 {
                   "category": "R",
                   "potentialImpact": 0,
-                  "specificImpact": 0,
                   "effectiveImpact": 0
                 },
                 {
                   "category": "C",
                   "potentialImpact": 2,
-                  "specificImpact": 0,
-                  "effectiveImpact": 0
+                  "effectiveImpact": 2
                 }
               ],
               "riskValues": [
                 {
                   "category": "I",
                   "inherentRisk": 1,
-                  "userDefinedResidualRisk": 0,
-                  "riskTreatments": [
-                    "RISK_TREATMENT_REDUCTION"
-                  ],
-                  "riskTreatmentExplanation": "Berechtigungskonzept ist zu erstellen und in der Organisation zu kommunizieren",
-                  "residualRisk": 0
+                  "riskTreatments": [],
+                  "residualRisk": 1
                 },
                 {
                   "category": "A",
-                  "inherentRisk": 1,
-                  "userDefinedResidualRisk": 0,
-                  "riskTreatments": [
-                    "RISK_TREATMENT_REDUCTION"
-                  ],
-                  "riskTreatmentExplanation": "analog zur Vertraulichkeit",
+                  "inherentRisk": 0,
+                  "riskTreatments": [],
                   "residualRisk": 0
                 },
                 {
                   "category": "R",
                   "inherentRisk": 0,
-                  "userDefinedResidualRisk": 0,
-                  "riskTreatments": [
-                    "RISK_TREATMENT_ACCEPTANCE"
-                  ],
+                  "riskTreatments": [],
                   "residualRisk": 0
                 },
                 {
                   "category": "C",
+                  "inherentRisk": 1,
+                  "riskTreatments": [],
+                  "residualRisk": 1
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "scenario": {
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/475dda29-13ec-4a4f-ab3a-c7d3c88c13e0"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/ca39207b-d35f-45b8-8898-f8f7e1c5af48"
+      },
+      "process": {
+        "targetUri": "https://api.staging.verinice.com/veo/processes/a4134991-7a46-4f20-9001-608e97464b10"
+      },
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "riskDefinitions": {
+            "DSRA": {
+              "probability": {
+                "specificProbability": 1,
+                "effectiveProbability": 1,
+                "specificProbabilityExplanation": "Regelm\u00e4\u00dfge Sensibilisierungsma\u00dfnahmen zum Thema Phishing"
+              },
+              "impactValues": [
+                {
+                  "category": "I",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                },
+                {
+                  "category": "A",
+                  "potentialImpact": 1,
+                  "effectiveImpact": 1
+                },
+                {
+                  "category": "R",
+                  "potentialImpact": 0,
+                  "effectiveImpact": 0
+                },
+                {
+                  "category": "C",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                }
+              ],
+              "riskValues": [
+                {
+                  "category": "I",
+                  "inherentRisk": 1,
+                  "riskTreatments": [],
+                  "residualRisk": 1
+                },
+                {
+                  "category": "A",
                   "inherentRisk": 0,
-                  "userDefinedResidualRisk": 0,
-                  "riskTreatments": [
-                    "RISK_TREATMENT_ACCEPTANCE"
-                  ],
+                  "riskTreatments": [],
                   "residualRisk": 0
+                },
+                {
+                  "category": "R",
+                  "inherentRisk": 0,
+                  "riskTreatments": [],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "C",
+                  "inherentRisk": 1,
+                  "riskTreatments": [],
+                  "residualRisk": 1
                 }
               ]
             }
@@ -5728,81 +6043,74 @@
     },
     {
       "scenario": {
-        "targetUri": "https://api.staging.verinice.com/veo/scenarios/f15cdd48-a527-45b6-8b86-24dc17740d9c"
-      },
-      "riskOwner": {
-        "targetUri": "https://api.staging.verinice.com/veo/persons/c2843721-7603-451d-8e84-f2968c66b126"
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/a8962118-f7ce-46ae-8423-d46d0853748a"
       },
       "process": {
-        "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
+        "targetUri": "https://api.staging.verinice.com/veo/processes/eecc6821-5928-42c6-b287-41f4e42b82f1"
       },
       "domains": {
         "a5204601-348b-43df-b33b-3ed707c7d1a8": {
           "riskDefinitions": {
             "DSRA": {
               "probability": {
-                "specificProbability": 0,
-                "effectiveProbability": 0,
-                "specificProbabilityExplanation": "Regelm\u00e4\u00dfge Schulungen der Mitarbeiter aus Marketing und Vertrieb zu speziellen DS-rechtlichen Fragestellungen"
+                "potentialProbability": 1,
+                "specificProbability": 2,
+                "effectiveProbability": 2
               },
               "impactValues": [
                 {
                   "category": "I",
                   "potentialImpact": 2,
-                  "specificImpact": 1,
-                  "effectiveImpact": 1
+                  "effectiveImpact": 2
                 },
                 {
                   "category": "A",
-                  "potentialImpact": 0,
-                  "specificImpact": 1,
-                  "effectiveImpact": 1
+                  "potentialImpact": 3,
+                  "effectiveImpact": 3
                 },
                 {
                   "category": "R",
-                  "potentialImpact": 0,
-                  "specificImpact": 0,
-                  "effectiveImpact": 0
+                  "potentialImpact": 3,
+                  "effectiveImpact": 3
                 },
                 {
                   "category": "C",
                   "potentialImpact": 2,
-                  "specificImpact": 0,
-                  "effectiveImpact": 0
+                  "effectiveImpact": 2
                 }
               ],
               "riskValues": [
                 {
                   "category": "I",
-                  "inherentRisk": 0,
+                  "inherentRisk": 2,
                   "riskTreatments": [
                     "RISK_TREATMENT_ACCEPTANCE"
                   ],
-                  "residualRisk": 0
+                  "residualRisk": 2
                 },
                 {
                   "category": "A",
-                  "inherentRisk": 0,
+                  "inherentRisk": 3,
                   "riskTreatments": [
                     "RISK_TREATMENT_ACCEPTANCE"
                   ],
-                  "residualRisk": 0
+                  "residualRisk": 3
                 },
                 {
                   "category": "R",
-                  "inherentRisk": 0,
+                  "inherentRisk": 3,
                   "riskTreatments": [
                     "RISK_TREATMENT_ACCEPTANCE"
                   ],
-                  "residualRisk": 0
+                  "residualRisk": 3
                 },
                 {
                   "category": "C",
-                  "inherentRisk": 0,
+                  "inherentRisk": 2,
                   "riskTreatments": [
                     "RISK_TREATMENT_ACCEPTANCE"
                   ],
-                  "residualRisk": 0
+                  "residualRisk": 2
                 }
               ]
             }
