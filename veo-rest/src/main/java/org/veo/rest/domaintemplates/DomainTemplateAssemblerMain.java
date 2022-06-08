@@ -24,7 +24,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -45,7 +44,6 @@ import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformElementDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformRiskDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformUnitDumpDto;
-import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.persistence.entity.jpa.ReferenceSerializationModule;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -90,10 +88,6 @@ public class DomainTemplateAssemblerMain {
               version,
               revision);
 
-      var typeAssembler = new ElementTypeDefinitionAssembler();
-      assembler.setElementTypeDefinitions(
-          typeAssembler.loadDefinitions(snippetPath.resolve("types").toFile()));
-
       for (var prefix : System.getenv("domaintemplate.catalogPrefixes").split(",")) {
         assembler.addCatalog(
             System.getenv(prefix + ".catalog.name"),
@@ -101,7 +95,6 @@ public class DomainTemplateAssemblerMain {
             readCatalogItems(snippetPath.resolve(prefix)));
       }
 
-      assembler.setRiskDefinitions(readRiskDefinitions(snippetPath.resolve("riskdefinitions")));
       TransformDomainTemplateDto templateDto = assembler.createDomainTemplateDto();
       TransformUnitDumpDto exportDto =
           readInstanceFile(
@@ -116,19 +109,6 @@ public class DomainTemplateAssemblerMain {
       log.error("Error writing domain", e);
       System.exit(1);
     }
-  }
-
-  private static Map<String, RiskDefinition> readRiskDefinitions(Path riskDefinitionPath) {
-    Map<String, RiskDefinition> m = new HashMap<>();
-
-    File[] files = riskDefinitionPath.toFile().listFiles((f, name) -> name.endsWith(".json"));
-    if (files != null) {
-      for (File file : files) {
-        RiskDefinition def = readInstanceFile(file, RiskDefinition.class);
-        m.put(def.getId(), def);
-      }
-    }
-    return m;
   }
 
   @SuppressFBWarnings("PATH_TRAVERSAL_IN")

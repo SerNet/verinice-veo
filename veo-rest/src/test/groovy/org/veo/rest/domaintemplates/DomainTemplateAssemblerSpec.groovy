@@ -19,48 +19,17 @@ package org.veo.rest.domaintemplates
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.CustomLinkDto
-import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
 import org.veo.adapter.service.domaintemplate.SyntheticIdRef
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto
 import org.veo.core.entity.Asset
 import org.veo.core.entity.TailoringReferenceType
-import org.veo.rest.domaintemplates.DomainTemplateAssembler
 
 import spock.lang.Specification
 
 class DomainTemplateAssemblerSpec extends Specification{
     def refAssembler = Mock(ReferenceAssembler)
     def domainTemplateAssembler = new DomainTemplateAssembler(refAssembler, UUID.randomUUID().toString(), "my little template", "mla", "it's gonna be great", "ME", "2.0", "stable")
-
-    def "creates template DTO with trivial data"() {
-        when:
-        def typeDefinitions = [
-            asset: new ElementTypeDefinitionDto(),
-            document: new ElementTypeDefinitionDto(),
-        ]
-        domainTemplateAssembler.setElementTypeDefinitions(typeDefinitions)
-        def dto = domainTemplateAssembler.createDomainTemplateDto()
-
-        then:
-        dto.name == "my little template"
-        dto.elementTypeDefinitions == typeDefinitions
-    }
-
-    def "adds element type definitions"() {
-        given:
-        def definitions = [
-            asset: new ElementTypeDefinitionDto(),
-            document: new ElementTypeDefinitionDto()
-        ]
-
-        when:
-        domainTemplateAssembler.setElementTypeDefinitions(definitions)
-        def dto = domainTemplateAssembler.createDomainTemplateDto()
-
-        then:
-        dto.elementTypeDefinitions == definitions
-    }
 
     def "creates template DTO with a catalog item"() {
         given:

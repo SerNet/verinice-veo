@@ -1,7 +1,0 @@
-{
-  "attributeSchemas": {
-    "process_processing_asProcessor": {
-      "type": "boolean"
-    }
-  }
-}

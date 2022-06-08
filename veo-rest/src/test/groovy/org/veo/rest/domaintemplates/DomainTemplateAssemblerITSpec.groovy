@@ -47,9 +47,6 @@ class DomainTemplateAssemblerITSpec extends Specification {
                 it.element.name != null
             }
         }
-        with(template.elementTypeDefinitions.asset) {
-            it.customAspects.asset_details.attributeSchemas.asset_details_number.type == "integer"
-        }
         where:
         template << templates
     }

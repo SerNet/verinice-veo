@@ -1,9 +1,0 @@
-{
-  "attributeSchemas": {
-    "control_generalInformation_document": {
-      "format": "uri",
-      "pattern": "^(https?|ftp)://",
-      "type": "string"
-    }
-  }
-}

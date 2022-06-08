@@ -1,9 +1,0 @@
-{
-  "attributeSchemas": {
-    "process_PIAAuditor_role": {
-      "type": "string"
-    }
-  },
-  "targetType": "person",
-  "targetSubType": "PER_Person"
-}

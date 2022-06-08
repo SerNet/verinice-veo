@@ -1,9 +1,0 @@
-{
-  "attributeSchemas": {
-    "document_generalInformation_externalLink": {
-      "format": "uri",
-      "pattern": "^(https?|ftp)://",
-      "type": "string"
-    }
-  }
-}

@@ -33,7 +33,6 @@ import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
-import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.RiskDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.create.CreateTailoringReferenceDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
@@ -49,7 +48,6 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.TailoringReferenceType;
-import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import lombok.RequiredArgsConstructor;
 
@@ -70,8 +68,6 @@ class DomainTemplateAssembler {
   private final String templateVersion;
   private final String revision;
   private final Set<AbstractCatalogDto> catalogs = new HashSet<>();
-  private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions = new HashMap<>();
-  private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
 
   /**
    * Creates a domain template with all catalogs previously added by {@link #addCatalog(String,
@@ -86,19 +82,8 @@ class DomainTemplateAssembler {
     domainTemplateDto.setAuthority(authority);
     domainTemplateDto.setRevision(revision);
     domainTemplateDto.setTemplateVersion(templateVersion);
-    domainTemplateDto.setElementTypeDefinitions(elementTypeDefinitions);
     domainTemplateDto.setCatalogs(catalogs);
-    domainTemplateDto.setRiskDefinitions(riskDefinitions);
     return domainTemplateDto;
-  }
-
-  public void setElementTypeDefinitions(
-      Map<String, ElementTypeDefinitionDto> elementTypeDefinitions) {
-    this.elementTypeDefinitions = elementTypeDefinitions;
-  }
-
-  public void setRiskDefinitions(Map<String, RiskDefinition> riskDefinitions) {
-    this.riskDefinitions = riskDefinitions;
   }
 
   /**
