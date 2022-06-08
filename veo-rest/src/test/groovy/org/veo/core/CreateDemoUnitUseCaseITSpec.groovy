@@ -80,12 +80,14 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                         v.implementationStatus
                     }
                 }
+                it.domains*.name
             }
         }
         then: 'the controls are returned'
         controls.size() == 1
 
         with(controls.first()) {
+            it.domains*.name == ['DS-GVO']
             riskValuesAspects.size() == 1
             with(riskValuesAspects.first()) {
                 domain.name == 'DS-GVO'
@@ -109,6 +111,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         scenarios.size() == 1
 
         with(scenarios.first()) {
+            it.domains*.name == ['DS-GVO']
             riskValuesAspects.size() == 1
             with(riskValuesAspects.first()) {
                 domain.name == 'DS-GVO'
@@ -140,6 +143,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         then: 'the processes are returned'
         processes.size() == 1
         with(processes.first()) {
+            it.domains*.name == ['DS-GVO']
             it.links.find{it.type == "process_PIAOOtherOrganisationsInvolved"}.target.name == "Data GmbH"
         }
 
@@ -153,6 +157,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         then: 'the persons are returned'
         persons.size() == 3
         with(persons.find{it.name == "Personal"}) {
+            it.domains*.name == ['DS-GVO']
             it.parts*.name ==~ ["Jürgen Toast", "Hans Meiser"]
         }
         with(persons.find{it.name == "Jürgen Toast"}) {
@@ -176,6 +181,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
             }
             risks.size() == 1
             with(risks.first()) { risk->
+                it.domains*.name == ['DS-GVO']
                 scenario == scenarios.first()
                 mitigation == controls.first()
                 riskDefinitions.size()== 1
@@ -226,6 +232,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         then: 'the scope is returned'
         scopes.size() == 1
         with(scopes.first()) {
+            it.domains*.name == ['DS-GVO']
             it.name == "Data GmbH"
             it.designator.startsWith('DMO-')
             it.members.size() == 1
