@@ -160,7 +160,7 @@ public class DomainAssociationTransformer {
                                   .orElseThrow(
                                       () ->
                                           new IllegalArgumentException(
-                                              "Undefined Risk definitions: " + e.getKey())),
+                                              "Undefined risk definition: " + e.getKey())),
                           e ->
                               mapProcessImpactValues(
                                   e.getKey(), e.getValue(), referenceProvider))));
