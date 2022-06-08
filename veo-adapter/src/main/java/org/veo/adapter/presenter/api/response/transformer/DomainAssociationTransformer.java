@@ -426,7 +426,6 @@ public class DomainAssociationTransformer {
               if (domainTemplate instanceof Domain) {
                 var domain = (Domain) domainTemplate;
                 target.addToDomains(domain);
-                domain.validateSubType(target.getModelInterface(), associationDto.getSubType());
               }
               target.setSubType(
                   domainTemplate, associationDto.getSubType(), associationDto.getStatus());

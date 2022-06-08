@@ -56,9 +56,4 @@ public interface Domain extends DomainTemplate, ClientOwned {
   default Optional<Client> getOwningClient() {
     return Optional.of(getOwner());
   }
-
-  default void validateSubType(Class<? extends Identifiable> entityType, String subType)
-      throws InvalidSubTypeException {
-    // TODO VEO-516: validate subtype
-  }
 }

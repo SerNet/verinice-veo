@@ -66,8 +66,6 @@ class DomainAssociationTransformerSpec extends Specification {
         1 * entity.addToDomains(domain1)
         1 * entity.setSubType(domain0, "foo", "NEW_FOO")
         1 * entity.setSubType(domain1, "bar", "NEW_BAR")
-        1 * domain0.validateSubType(Process, "foo")
-        1 * domain1.validateSubType(Process, "bar")
     }
 
     def "maps sub types from entity to DTO"() {
