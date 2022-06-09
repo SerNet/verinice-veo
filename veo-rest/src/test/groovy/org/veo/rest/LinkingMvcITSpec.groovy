@@ -349,7 +349,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
 
         then:
         IllegalArgumentException ex = thrown()
-        ex.message == "Invalid target sub type 'Normal' for link type 'linkToNicePerson'"
+        ex.message == "Expected target of link 'linkToNicePerson' ('John') to have sub type 'Nice' but found 'Normal'"
 
         when: "posting a scope with an invalid link"
         post("/scopes", [
@@ -370,6 +370,6 @@ class LinkingMvcITSpec extends VeoMvcSpec {
 
         then:
         ex = thrown()
-        ex.message == "Invalid target sub type 'Normal' for link type 'linkToNicePerson'"
+        ex.message == "Expected target of link 'linkToNicePerson' ('John') to have sub type 'Nice' but found 'Normal'"
     }
 }

@@ -139,7 +139,8 @@ class DomainSensitiveElementValidator {
     if (!linkDefinition.getTargetSubType().equals(targetSubType)) {
       throw new IllegalArgumentException(
           String.format(
-              "Invalid target sub type '%s' for link type '%s'", targetSubType, linkType));
+              "Expected target of link '%s' ('%s') to have sub type '%s' but found '%s'",
+              linkType, target.getName(), linkDefinition.getTargetSubType(), targetSubType));
     }
   }
 
