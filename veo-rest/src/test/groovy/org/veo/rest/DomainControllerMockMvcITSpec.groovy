@@ -187,7 +187,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         }
         then: 'the entity schemas are updated'
 
-        with(updatedDomain.getElementTypeDefinition('scope').get()) {
+        with(updatedDomain.getElementTypeDefinition('scope')) {
             with(it.subTypes) {
                 it.keySet() == [
                     'SCP_Scope',

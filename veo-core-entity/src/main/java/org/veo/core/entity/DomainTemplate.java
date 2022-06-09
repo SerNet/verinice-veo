@@ -27,6 +27,7 @@ import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.Rule;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.inspection.Severity;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
@@ -86,10 +87,18 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
 
   void setElementTypeDefinitions(Set<ElementTypeDefinition> elementTypeDefinitions);
 
-  default Optional<ElementTypeDefinition> getElementTypeDefinition(String type) {
+  default Optional<ElementTypeDefinition> findElementTypeDefinition(String type) {
     return getElementTypeDefinitions().stream()
         .filter(d -> d.getElementType().equals(type))
         .findFirst();
+  }
+
+  default ElementTypeDefinition getElementTypeDefinition(String type) {
+    return findElementTypeDefinition(type)
+        .orElseThrow(
+            () ->
+                new NotFoundException(
+                    String.format("Domain has no definition for entity type %s", type)));
   }
 
   /** Returns a map of risk definitions grouped by their ID. */

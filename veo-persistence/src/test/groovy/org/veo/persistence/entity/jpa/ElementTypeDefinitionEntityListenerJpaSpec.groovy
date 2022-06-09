@@ -82,7 +82,7 @@ class ElementTypeDefinitionEntityListenerJpaSpec extends AbstractJpaSpec {
         when: "replacing the asset definition"
         txTemplate.execute {
             def domain = domainRepo.findById(domainId).get()
-            domain.getElementTypeDefinition(EntityType.ASSET.singularTerm).get().tap {
+            domain.getElementTypeDefinition(EntityType.ASSET.singularTerm).tap {
                 it.subTypes["AST_Server"] = new SubTypeDefinition().tap {
                     it.statuses = ["BRAND_NEW"]
                 }
@@ -95,7 +95,7 @@ class ElementTypeDefinitionEntityListenerJpaSpec extends AbstractJpaSpec {
         when: "replacing the asset definition again"
         txTemplate.execute {
             def domain = domainRepo.findById(domainId).get()
-            domain.getElementTypeDefinition(EntityType.ASSET.singularTerm).get().tap {
+            domain.getElementTypeDefinition(EntityType.ASSET.singularTerm).tap {
                 it.subTypes["AST_Server"] = new SubTypeDefinition().tap {
                     it.statuses = ["BRAND_NEW", "USED"]
                 }
@@ -108,7 +108,7 @@ class ElementTypeDefinitionEntityListenerJpaSpec extends AbstractJpaSpec {
         when: "updating the asset definition"
         txTemplate.execute {
             def domain = domainRepo.findById(domainId).get()
-            domain.getElementTypeDefinition("asset").get().subTypes["AST_Server"].statuses.add("OLD")
+            domain.getElementTypeDefinition("asset").subTypes["AST_Server"].statuses.add("OLD")
         }
 
         then: "an entity type definition update event was published"
@@ -117,7 +117,7 @@ class ElementTypeDefinitionEntityListenerJpaSpec extends AbstractJpaSpec {
         when: "updating the asset definition again"
         txTemplate.execute {
             def domain = domainRepo.findById(domainId).get()
-            domain.getElementTypeDefinition("asset").get().subTypes["AST_Server"].statuses.add("ANCIENT")
+            domain.getElementTypeDefinition("asset").subTypes["AST_Server"].statuses.add("ANCIENT")
         }
 
         then: "another entity type definition update event was published"

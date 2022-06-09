@@ -25,6 +25,6 @@ public class CompleteEntityTypeDefinitionsSpecification implements EntitySpecifi
   @Override
   public boolean test(Domain entity) {
     return EntityType.ELEMENT_TYPES.stream()
-        .allMatch(t -> entity.getElementTypeDefinition(t.getSingularTerm()).isPresent());
+        .allMatch(t -> entity.findElementTypeDefinition(t.getSingularTerm()).isPresent());
   }
 }

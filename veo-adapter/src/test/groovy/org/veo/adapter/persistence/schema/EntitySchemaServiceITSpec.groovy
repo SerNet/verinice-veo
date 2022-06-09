@@ -18,7 +18,6 @@
 package org.veo.adapter.persistence.schema
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.node.ObjectNode
 import com.networknt.schema.JsonMetaSchema
 import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
@@ -205,85 +204,75 @@ class EntitySchemaServiceITSpec extends Specification {
     private Domain getTestDomain() {
         return Mock(Domain) {
             idAsString >> UUID.randomUUID()
-            getElementTypeDefinition("asset") >> [
-                Mock(ElementTypeDefinition) {
-                    customAspects >> [
-                        test: Mock(CustomAspectDefinition) {
-                            attributeSchemas >> [
-                                testAttr: [
-                                    type: "string"
-                                ]
+            getElementTypeDefinition("asset") >> Mock(ElementTypeDefinition) {
+                customAspects >> [
+                    test: Mock(CustomAspectDefinition) {
+                        attributeSchemas >> [
+                            testAttr: [
+                                type: "string"
                             ]
-                        }
-                    ]
-                    links >> [
-                        test: Mock(LinkDefinition) {
-                            attributeSchemas >> [
-                                linkTestAttr: [
-                                    type: "string"
-                                ]
+                        ]
+                    }
+                ]
+                links >> [
+                    test: Mock(LinkDefinition) {
+                        attributeSchemas >> [
+                            linkTestAttr: [
+                                type: "string"
                             ]
-                            targetType >> "otherType"
-                            targetSubType >> "otherSubType"
-                        }
-                    ]
-                    subTypes >> [
-                        testSubType: Mock(SubTypeDefinition) {
-                            statuses >> ["NEW", "OLD"]
-                        }
-                    ]
-                }
-            ]
-            getElementTypeDefinition("control") >> [
-                Mock(ElementTypeDefinition) {
-                    customAspects >> [:]
-                    links >> [:]
-                    subTypes >> [
-                        subControl: Mock(SubTypeDefinition) {
-                            statuses >> ["NEW", "OLD"]
-                        }
-                    ]
-                }
-            ]
-            getElementTypeDefinition("scenario") >> [
-                Mock(ElementTypeDefinition) {
-                    customAspects >> [:]
-                    links >> [:]
-                    subTypes >> [
-                        subScenario: Mock(SubTypeDefinition) {
-                            statuses >> [
-                                "IN_PROGRESS",
-                                "NEW",
-                                "RELEASED",
-                                "FOR_REVIEW",
-                                "ARCHIVED"
-                            ]
-                        }
-                    ]
-                }
-            ]
-            getElementTypeDefinition("scope") >> [
-                Mock(ElementTypeDefinition) {
-                    customAspects >> [:]
-                    links >> [:]
-                    subTypes >> [
-                        subScope: Mock(SubTypeDefinition) {
-                            statuses >> ["NEW", "OLD"]
-                        }
-                    ]
-                }
-            ]
-            getElementTypeDefinition(Process.SINGULAR_TERM) >> [
-                Mock(ElementTypeDefinition) {
-                    customAspects >> [:]
-                    links >> [:]
-                    subTypes >> [
-                        subControl: Mock(SubTypeDefinition) {
-                            statuses >> ["NEW", "OLD"]
-                        }
-                    ]
-                }
-            ]
+                        ]
+                        targetType >> "otherType"
+                        targetSubType >> "otherSubType"
+                    }
+                ]
+                subTypes >> [
+                    testSubType: Mock(SubTypeDefinition) {
+                        statuses >> ["NEW", "OLD"]
+                    }
+                ]
+            }
+            getElementTypeDefinition("control") >> Mock(ElementTypeDefinition) {
+                customAspects >> [:]
+                links >> [:]
+                subTypes >> [
+                    subControl: Mock(SubTypeDefinition) {
+                        statuses >> ["NEW", "OLD"]
+                    }
+                ]
+            }
+            getElementTypeDefinition("scenario") >> Mock(ElementTypeDefinition) {
+                customAspects >> [:]
+                links >> [:]
+                subTypes >> [
+                    subScenario: Mock(SubTypeDefinition) {
+                        statuses >> [
+                            "IN_PROGRESS",
+                            "NEW",
+                            "RELEASED",
+                            "FOR_REVIEW",
+                            "ARCHIVED"
+                        ]
+                    }
+                ]
+            }
+            getElementTypeDefinition("scope") >> Mock(ElementTypeDefinition) {
+                customAspects >> [:]
+                links >> [:]
+                subTypes >> [
+                    subScope: Mock(SubTypeDefinition) {
+                        statuses >> ["NEW", "OLD"]
+                    }
+                ]
+            }
+            getElementTypeDefinition(Process.SINGULAR_TERM) >> Mock(ElementTypeDefinition) {
+                customAspects >> [:]
+                links >> [:]
+                subTypes >> [
+                    subControl: Mock(SubTypeDefinition) {
+                        statuses >> ["NEW", "OLD"]
+                    }
+                ]
+            }
             getRiskDefinitions() >> [
                 "riskDefA": Mock(RiskDefinition) {
                     categories >> [
@@ -356,45 +345,41 @@ class EntitySchemaServiceITSpec extends Specification {
     private Domain getExtraTestDomain() {
         return Mock(Domain) {
             idAsString >> UUID.randomUUID()
-            getElementTypeDefinition("asset") >> [
-                Mock(ElementTypeDefinition) {
-                    customAspects >> [
-                        extraTest: Mock(CustomAspectDefinition) {
-                            attributeSchemas >> [
-                                extraTestAttr: [
-                                    type: "boolean"
-                                ]
+            getElementTypeDefinition("asset") >> Mock(ElementTypeDefinition) {
+                customAspects >> [
+                    extraTest: Mock(CustomAspectDefinition) {
+                        attributeSchemas >> [
+                            extraTestAttr: [
+                                type: "boolean"
                             ]
-                        }
-                    ]
-                    links >> [
-                        extraTest: Mock(LinkDefinition) {
-                            attributeSchemas >> [
-                                extraLinkTestAttr: [
-                                    type: "integer"
-                                ]
+                        ]
+                    }
+                ]
+                links >> [
+                    extraTest: Mock(LinkDefinition) {
+                        attributeSchemas >> [
+                            extraLinkTestAttr: [
+                                type: "integer"
                             ]
-                            targetType >> "extraType"
-                            targetSubType >> "extraSubType"
-                        }
-                    ]
-                    subTypes >> [
-                        extraTestSubType: Mock(SubTypeDefinition) {
-                            statuses >> ["EXTRA_NEW", "EXTRA_OLD"]
-                        },
-                        extraSuperSubType: Mock(SubTypeDefinition) {
-                            statuses >> ["SUPER_NEW", "SUPER_OLD"]
-                        },
-                    ]
-                }
-            ]
-            getElementTypeDefinition("scope") >> [
-                Mock(ElementTypeDefinition) {
-                    customAspects >> [:]
-                    links >> [:]
-                    subTypes >> [:]
-                }
-            ]
+                        ]
+                        targetType >> "extraType"
+                        targetSubType >> "extraSubType"
+                    }
+                ]
+                subTypes >> [
+                    extraTestSubType: Mock(SubTypeDefinition) {
+                        statuses >> ["EXTRA_NEW", "EXTRA_OLD"]
+                    },
+                    extraSuperSubType: Mock(SubTypeDefinition) {
+                        statuses >> ["SUPER_NEW", "SUPER_OLD"]
+                    },
+                ]
+            }
+            getElementTypeDefinition("scope") >> Mock(ElementTypeDefinition) {
+                customAspects >> [:]
+                links >> [:]
+                subTypes >> [:]
+            }
             getRiskDefinitions() >> [
                 "extraRiskDef": Mock(RiskDefinition)
             ]

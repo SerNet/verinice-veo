@@ -34,7 +34,7 @@ public class IncomingMessageHandler {
   private final ElementMigrationService elementMigrationService;
 
   public void handleElementTypeDefinitionUpdate(Domain domain, EntityType elementType) {
-    var definition = domain.getElementTypeDefinition(elementType.getSingularTerm()).orElseThrow();
+    var definition = domain.getElementTypeDefinition(elementType.getSingularTerm());
 
     repositoryProvider
         .getElementRepositoryFor((Class<? extends Element>) elementType.getType())

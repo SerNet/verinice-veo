@@ -59,13 +59,7 @@ public class UpdateElementTypeDefinitionUseCase
     }
 
     ElementTypeDefinition existingDefinition =
-        domain
-            .getElementTypeDefinition(input.entityType.getSingularTerm())
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        "Domain has no definition for entity type "
-                            + input.entityType.getSingularTerm()));
+        domain.getElementTypeDefinition(input.entityType.getSingularTerm());
     ElementTypeDefinition updatedDefinition = input.elementTypeDefinition;
 
     existingDefinition.setCustomAspects(updatedDefinition.getCustomAspects());

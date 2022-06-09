@@ -158,7 +158,7 @@ abstract class VeoSpec extends Specification {
             EntityType
                     .ELEMENT_TYPES
                     .collect { it.singularTerm }
-                    .findAll { type -> it.getElementTypeDefinition(type).empty}
+                    .findAll { type -> it.findElementTypeDefinition(type).empty}
                     .each { type -> it.elementTypeDefinitions.add(newElementTypeDefinition(type, it)) }
         }
     }

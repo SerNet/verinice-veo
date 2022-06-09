@@ -97,8 +97,7 @@ public class UpdateAllClientDomainsUseCase
         EntityType.ELEMENT_TYPES.stream()
             .collect(
                 Collectors.toMap(
-                    type ->
-                        newDomain.getElementTypeDefinition(type.getSingularTerm()).orElseThrow(),
+                    type -> newDomain.getElementTypeDefinition(type.getSingularTerm()),
                     type ->
                         repositoryProvider
                             .getElementRepositoryFor((Class<Element>) type.getType())

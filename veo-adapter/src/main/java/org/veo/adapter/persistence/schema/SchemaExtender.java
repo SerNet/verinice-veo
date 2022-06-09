@@ -18,7 +18,6 @@
 package org.veo.adapter.persistence.schema;
 
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -75,15 +74,7 @@ public class SchemaExtender {
         domain -> {
           var domainAssociationSchema =
               addDomainAssociation(domainProps, domain, generator, elementType);
-          var typeDef =
-              domain
-                  .getElementTypeDefinition(elementType)
-                  .orElseThrow(
-                      () ->
-                          new NoSuchElementException(
-                              String.format(
-                                  "Element type %s not configured in domain %s",
-                                  elementType, domain.getIdAsString())));
+          var typeDef = domain.getElementTypeDefinition(elementType);
           addSubTypes(domainAssociationSchema, typeDef.getSubTypes());
           addCustomAspects(customObjectProperties, typeDef.getCustomAspects(), generator);
           addLinks(linkProps, typeDef.getLinks(), generator);
