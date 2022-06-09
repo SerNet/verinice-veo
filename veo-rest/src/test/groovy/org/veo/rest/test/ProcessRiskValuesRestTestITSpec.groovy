@@ -37,6 +37,8 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         def processId = post("/processes", [
             domains: [
                 (domainId): [
+                    subType: "PRO_DataTransfer",
+                    status: "NEW",
                     riskValues: [
                         DSRA : [
                             potentialImpacts: [
@@ -56,6 +58,8 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
             owner: [targetUri: "$baseUrl/units/$unitId"],
             domains: [
                 (domainId): [
+                    subType: "SCN_Scenario",
+                    status: "NEW",
                     riskValues: [
                         DSRA : [
                             potentialProbability: 2
@@ -210,6 +214,8 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         def processId = post("/processes", [
             domains: [
                 (domainId): [
+                    subType: "PRO_DataTransfer",
+                    status: "NEW",
                     riskValues: [
                         DSRA : [
                             potentialImpacts: [
@@ -229,6 +235,8 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
             owner: [targetUri: "$baseUrl/units/$unitId"],
             domains: [
                 (domainId): [
+                    subType: "SCN_Scenario",
+                    status: "NEW",
                     riskValues: [
                         DSRA : [
                             potentialProbability: 2
@@ -242,7 +250,10 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
             name: "process risk test control",
             owner: [targetUri: "$baseUrl/units/$unitId"],
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "CTL_TOM",
+                    status: "NEW",
+                ]
             ]
         ]).body.resourceId
 

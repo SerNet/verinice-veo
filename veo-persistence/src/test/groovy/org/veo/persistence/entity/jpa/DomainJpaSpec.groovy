@@ -296,7 +296,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         CatalogItem item5 = newCatalogItem(catalog, {
             newProcess(it) {
                 name = 'p1'
-                setSubType(domain0, "Test", "NEW")
+                associateWithDomain(domain0, "Test", "NEW")
             }
         })
         newTailoringReference(item5, TailoringReferenceType.COPY) {

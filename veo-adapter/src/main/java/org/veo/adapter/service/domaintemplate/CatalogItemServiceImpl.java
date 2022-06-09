@@ -63,7 +63,7 @@ public class CatalogItemServiceImpl implements CatalogItemService {
     preparations.prepareElement(domain, newElement, false);
     catalogElement
         .getSubTypeAspects()
-        .forEach(st -> newElement.setSubType(domain, st.getSubType(), st.getStatus()));
+        .forEach(st -> newElement.associateWithDomain(domain, st.getSubType(), st.getStatus()));
     if (newElement instanceof Process) {
       Process po = (Process) catalogElement;
       Process pn = (Process) newElement;

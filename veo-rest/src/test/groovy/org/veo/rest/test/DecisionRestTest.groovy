@@ -243,6 +243,8 @@ class DecisionRestTest extends VeoRestTest {
             name: "risky scope",
             domains: [
                 (domainId): [
+                    subType: "SCP_Scope",
+                    status: "NEW",
                     riskDefinition: "DSRA"
                 ]
             ],

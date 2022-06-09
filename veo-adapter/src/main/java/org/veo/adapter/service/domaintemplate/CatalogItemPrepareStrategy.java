@@ -77,7 +77,7 @@ public class CatalogItemPrepareStrategy {
     element.setId(null);
     element.setDesignator(isCatalogElement ? NO_DESIGNATOR : null);
     element.getDomains().clear();
-    element.addToDomains(domain);
+    element.getDomains().add(domain);
     processSubTypes(domain, element);
     processLinks(domain, element);
     processCustomAspects(domain, element);

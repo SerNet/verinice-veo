@@ -20,7 +20,6 @@ package org.veo.persistence.entity.jpa
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Domain
-import org.veo.core.entity.InvalidSubTypeException
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
@@ -58,7 +57,7 @@ class AspectJpaSpec extends AbstractJpaSpec {
     def 'aspect is inserted'() {
         given: "an asset with a sub type aspect"
         def asset = newAsset(unit) {
-            setSubType(domain0, "foo", "NEW")
+            associateWithDomain(domain0, "foo", "NEW")
         }
         when: "saving and retrieving the asset"
         assetRepository.save(asset)
@@ -73,42 +72,21 @@ class AspectJpaSpec extends AbstractJpaSpec {
     def 'aspect value can be changed'() {
         given: "a saved asset with two sub types for domains 0 & 1"
         def asset = newAsset(unit) {
-            setSubType(domain0, "foo", "NEW")
-            setSubType(domain1, "bar", "NEW")
+            associateWithDomain(domain0, "foo", "NEW")
+            associateWithDomain(domain1, "bar", "NEW")
         }
         assetRepository.save(asset)
         when: "changing the sub type for domain 1, saving & retrieving"
-        asset.setSubType(domain1, "tar", "NEW")
+        asset.associateWithDomain(domain1, "tar", "NEW")
         assetRepository.save(asset)
         def retrievedAsset = assetRepository.findById(asset.dbId)
         then: "the new sub type has been applied"
-        with(retrievedAsset.get().subTypeAspects.sort{it.subType}) {
+        with(retrievedAsset.get().subTypeAspects.sort { it.subType }) {
             size() == 2
             it[0].subType == "foo"
             it[0].domain == domain0
             it[1].subType == "tar"
             it[1].domain == domain1
         }
-    }
-
-    def 'cannot set status without a sub type'() {
-        given: "an element"
-        def asset = newAsset(unit)
-        when: "trying to assign a status without a sub type"
-        asset.setSubType(domain0, null, "NEW")
-        then:
-        thrown(InvalidSubTypeException)
-    }
-
-    def 'can set an empty subtype and status'() {
-        given: "an element with existing subtype"
-        def asset = newAsset(unit)
-        asset.setSubType(domain0, "foo", "NEW")
-
-        when: "assigning an empty subtype"
-        asset.setSubType(domain0, null, null)
-
-        then: "the existing subtype is removed and the element has no subtype"
-        asset.subTypeAspects.size() == 0
     }
 }

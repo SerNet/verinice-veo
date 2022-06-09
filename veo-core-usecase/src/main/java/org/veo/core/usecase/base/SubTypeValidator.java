@@ -25,7 +25,7 @@ class SubTypeValidator {
   static void validate(Element element, DomainTemplate domain) {
     element
         .getSubType(domain)
-        .ifPresent(
+        .ifPresentOrElse(
             subType -> {
               var definition =
                   domain
@@ -43,6 +43,10 @@ class SubTypeValidator {
                 throw new IllegalArgumentException(
                     String.format("Status '%s' is not allowed for sub type '%s'", status, subType));
               }
+            },
+            () -> {
+              throw new IllegalArgumentException(
+                  "Cannot assign element to domain without specifying a sub type");
             });
   }
 }

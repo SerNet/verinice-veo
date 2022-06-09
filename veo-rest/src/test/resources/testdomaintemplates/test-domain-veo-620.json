@@ -24,7 +24,10 @@
             },
             "description": "This is a scope that contains some assets",
             "domains": {
-              
+              "7254b28e-6804-5ea9-8905-e2a7b4883030": {
+                "subType": "default",
+                "status": "NEW"
+              }
             },
             "id": "8fd99c68-a4f1-4e1d-8105-30fe2f2f230e",
             "links": {
@@ -58,7 +61,10 @@
             },
             "description": "This is the first asset.",
             "domains": {
-              
+              "7254b28e-6804-5ea9-8905-e2a7b4883030": {
+                "subType": "default",
+                "status": "NEW"
+              }
             },
             "id": "e58987b7-9f94-455f-a81b-18e7d3eacb65",
             "links": {
@@ -85,7 +91,10 @@
             },
             "description": "This is the second asset.",
             "domains": {
-              
+              "7254b28e-6804-5ea9-8905-e2a7b4883030": {
+                "subType": "default",
+                "status": "NEW"
+              }
             },
             "id": "e5de2918-aacb-40cd-9150-4795f0d736e5",
             "links": {
@@ -105,6 +114,23 @@
     }
   ],
   "elementTypeDefinitions": {
-    
+    "asset": {
+      "subTypes": {
+        "default": {
+          "statuses": [
+            "NEW"
+          ]
+        }
+      }
+    },
+    "scope": {
+      "subTypes": {
+        "default": {
+          "statuses": [
+            "NEW"
+          ]
+        }
+      }
+    }
   }
 }

@@ -23,6 +23,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -50,6 +51,13 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
                     "mySecondRiskDefinition": createRiskDefinition("mySecondRiskDefinition"),
                     "myThirdRiskDefinition": createRiskDefinition("myThirdRiskDefinition")
                 ]
+                elementTypeDefinitions = [
+                    newElementTypeDefinition("scenario", it) {
+                        subTypes = [
+                            RiskyScenario: newSubTypeDefinition()
+                        ]
+                    }
+                ]
             }
             domainId = domain.idAsString
             unitId = unitRepository.save(newUnit(client)).idAsString
@@ -63,7 +71,10 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
             name: "Flood",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "RiskyScenario",
+                    status: "NEW",
+                ]
             ]
         ])).resourceId
 
@@ -81,6 +92,8 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
+                    subType: "RiskyScenario",
+                    status: "NEW",
                     riskValues: [
                         myFirstRiskDefinition : [
                             potentialProbability: 0
@@ -108,6 +121,8 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
+                    subType: "RiskyScenario",
+                    status: "NEW",
                     riskValues: [
                         myFirstRiskDefinition : [
                             potentialProbability: 2
@@ -156,6 +171,8 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
+                    subType: "RiskyScenario",
+                    status: "NEW",
                     riskValues: [
                         (undefinedName) : [
                             potentialProbability: 1

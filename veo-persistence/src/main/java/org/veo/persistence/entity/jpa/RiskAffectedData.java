@@ -27,11 +27,13 @@ import javax.persistence.OneToMany;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import lombok.ToString;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
@@ -73,4 +75,14 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
   }
 
   abstract R createRisk(Scenario scenario);
+
+  @Override
+  public boolean associateWithDomain(
+      @NonNull DomainTemplate domain, String subType, String status) {
+    var added = super.associateWithDomain(domain, subType, status);
+    if (added && domain instanceof Domain) {
+      risks.forEach(r -> r.addToDomains((Domain) domain));
+    }
+    return added;
+  }
 }

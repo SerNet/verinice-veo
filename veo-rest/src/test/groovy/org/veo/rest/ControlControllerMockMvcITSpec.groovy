@@ -247,7 +247,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a saved control"
         def control = txTemplate.execute {
             controlRepository.save(newControl(unit) {
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "CTL_TOM", "NEW")
             })
         }
 
@@ -259,8 +259,12 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
-            ],  domains: [
-                (dsgvoDomain.id.uuidValue()): [:]
+            ],
+            domains: [
+                (dsgvoDomain.id.uuidValue()): [
+                    subType: "CTL_TOM",
+                    status: "NEW",
+                ]
             ]
         ]
 
@@ -275,6 +279,8 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == 'New control-2'
         result.abbreviation == 'u-2'
         result.domains[dsgvoDomain.id.uuidValue()] == [
+            subType: "CTL_TOM",
+            status: "NEW",
             decisionResults: [:],
             riskValues: [:],
         ]
@@ -290,7 +296,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         def control = txTemplate.execute {
             controlRepository.save(newControl(unit) {
                 customAspects = [customAspect] as Set
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "CTL_TOM", "NEW")
             })
         }
         Map request = [
@@ -303,7 +309,10 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ], domains: [
-                (dsgvoDomain.id.uuidValue()): [:]
+                (dsgvoDomain.id.uuidValue()): [
+                    subType: "CTL_TOM",
+                    status: "NEW",
+                ]
             ], customAspects:
             [
                 'control_dataProtection' :
@@ -329,6 +338,8 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         result.abbreviation == 'u-2'
         result.domains[dsgvoDomain.id.uuidValue()] == [
             decisionResults: [:],
+            subType: "CTL_TOM",
+            status: "NEW",
             riskValues: [:],
         ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()

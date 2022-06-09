@@ -25,6 +25,7 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
+import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.core.repository.DomainRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.StoredEventRepository
@@ -65,6 +66,23 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             domain = domainRepository.save(newDomain(client) {
                 domainTemplate = template
                 name = "ISO"
+                elementTypeDefinitions = [
+                    newElementTypeDefinition("asset", it) {
+                        subTypes = [
+                            EventfulAsset: newSubTypeDefinition()
+                        ]
+                    },
+                    newElementTypeDefinition("process", it) {
+                        subTypes = [
+                            EventfulProcess: newSubTypeDefinition()
+                        ]
+                    },
+                    newElementTypeDefinition("scenario", it) {
+                        subTypes = [
+                            EventfulScenario: newSubTypeDefinition()
+                        ]
+                    },
+                ]
             })
 
             unit = newUnit(client) {
@@ -173,7 +191,10 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         String assetId = parseJson(post("/assets", [
             name: "acid",
             domains: [
-                (domain.id.uuidValue()): [:]
+                (domain.id.uuidValue()): [
+                    subType: "EventfulAsset",
+                    status: "NEW",
+                ]
             ],
             owner: [
                 targetUri: "http://localhost/units/${unit.id.uuidValue()}"
@@ -182,7 +203,10 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         String scenarioId = parseJson(post("/scenarios", [
             name: "scenario",
             domains: [
-                (domain.id.uuidValue()): [:]
+                (domain.id.uuidValue()): [
+                    subType: "EventfulScenario",
+                    status: "NEW",
+                ]
             ],
             owner: [
                 targetUri: "http://localhost/units/${unit.id.uuidValue()}"
@@ -237,7 +261,10 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         String processId = parseJson(post("/processes", [
             name: "pro",
             domains: [
-                (domain.id.uuidValue()): [:]
+                (domain.id.uuidValue()): [
+                    subType: "EventfulProcess",
+                    status: "NEW",
+                ]
             ],
             owner: [
                 targetUri: "http://localhost/units/${unit.id.uuidValue()}"
@@ -246,7 +273,10 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         String scenarioId = parseJson(post("/scenarios", [
             name: "scenario",
             domains: [
-                (domain.id.uuidValue()): [:]
+                (domain.id.uuidValue()): [
+                    subType: "EventfulScenario",
+                    status: "NEW",
+                ]
             ],
             owner: [
                 targetUri: "http://localhost/units/${unit.id.uuidValue()}"

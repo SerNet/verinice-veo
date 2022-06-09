@@ -66,6 +66,13 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
             domain = domainRepository.save(newDomain(client) {
                 abbreviation = "D"
                 name = "Domain"
+                elementTypeDefinitions = [
+                    newElementTypeDefinition("document", it) {
+                        subTypes = [
+                            Manual: newSubTypeDefinition()
+                        ]
+                    }
+                ]
             })
 
             domain1 = domainRepository.save(newDomain(client) {
@@ -177,7 +184,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a saved document"
         def document = txTemplate.execute {
             documentRepository.save(newDocument(unit) {
-                domains = [domain1] as Set
+                associateWithDomain(domain, "Manual", "NEW")
             })
         }
 
@@ -190,7 +197,10 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ],  domains: [
-                (domain.id.uuidValue()): [:]
+                (domain.id.uuidValue()): [
+                    subType: "Manual",
+                    status: "NEW",
+                ]
             ]
         ]
 
@@ -204,6 +214,8 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == 'New document-2'
         result.abbreviation == 'u-2'
         result.domains[domain.id.uuidValue()] == [
+            subType: "Manual",
+            status: "NEW",
             decisionResults: [:]
         ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()

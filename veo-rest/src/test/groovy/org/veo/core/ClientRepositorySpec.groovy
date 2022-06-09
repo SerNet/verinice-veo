@@ -147,19 +147,19 @@ class ClientRepositorySpec extends VeoSpringSpec {
         }
 
         newPerson(unit) {
-            domains = [domain] as Set
+            associateWithDomain(domain, "NormalPerson", "NEW")
         }
 
         newAsset(unit) {
-            domains = [domain] as Set
+            associateWithDomain(domain, "NormalAsset", "NEW")
         }
 
         newProcess(unit) {
-            domains = [domain] as Set
+            associateWithDomain(domain, "NormalProcess", "NEW")
         }
 
         newDocument(unit) {
-            domains = [domain] as Set
+            associateWithDomain(domain, "NormalDocument", "NEW")
         }
 
         when:"save and load the client"

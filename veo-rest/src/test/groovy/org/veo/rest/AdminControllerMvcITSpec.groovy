@@ -172,7 +172,7 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
     }
 
     private createUnitWithElements() {
-        def domainId = parseJson(get("/domains")).first().id
+        def domainId = parseJson(get("/domains")).find{it.name == "DSGVO-test"}.id
         def unitId = parseJson(post("/units", [
             name   : "you knit",
             domains: [
@@ -183,7 +183,10 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
 
         def assetId = parseJson(post("/assets", [
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "AST_Application",
+                    status: "NEW",
+                ]
             ],
             name   : "asset",
             owner  : owner
@@ -191,34 +194,49 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
         post("/controls", [
             name   : "control",
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "CTL_TOM",
+                    status: "NEW",
+                ]
             ],
             owner  : owner
         ])
         post("/documents", [
             name   : "document",
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "DOC_Document",
+                    status: "NEW",
+                ]
             ],
             owner  : owner
         ])
         post("/incidents", [
             name   : "incident",
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "INC_Incident",
+                    status: "NEW",
+                ]
             ],
             owner  : owner
         ])
         post("/persons", [
             name   : "person",
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "PER_Person",
+                    status: "NEW",
+                ]
             ],
             owner  : owner
         ])
         def processId = parseJson(post("/processes", [
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "PRO_DataProcessing",
+                    status: "NEW",
+                ]
             ],
             name   : "process",
             owner  : owner
@@ -226,14 +244,20 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
         def scenarioId = parseJson(post("/scenarios", [
             name   : "scenario",
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "SCN_Scenario",
+                    status: "NEW",
+                ]
             ],
             owner  : owner
         ])).resourceId
         post("/scopes", [
             name   : "scope",
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "SCP_Scope",
+                    status: "NEW",
+                ]
             ],
             owner  : owner
         ])
@@ -275,7 +299,10 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
 
         def assetId = parseJson(post("/assets", [
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "AST_Application",
+                    status: "NEW",
+                ]
             ],
             name   : "asset",
             owner  : owner
@@ -283,28 +310,40 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
         post("/controls", [
             name   : "control",
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "CTL_TOM",
+                    status: "NEW",
+                ]
             ],
             owner  : owner
         ])
         post("/documents", [
             name   : "document",
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "DOC_Document",
+                    status: "NEW",
+                ]
             ],
             owner  : owner
         ])
         post("/incidents", [
             name   : "incident",
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "INC_Incident",
+                    status: "NEW",
+                ]
             ],
             owner  : owner
         ])
         post("/persons", [
             name   : "person",
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "PER_Person",
+                    status: "NEW",
+                ]
             ],
             owner  : owner
         ])
@@ -313,7 +352,9 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
             name: "DSRA scope",
             domains: [
                 (domainId): [
-                    riskDefinition: "DSRA"
+                    subType: "SCP_Scope",
+                    status: "NEW",
+                    riskDefinition: "DSRA",
                 ]
             ],
             owner: owner
@@ -322,6 +363,8 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
         def processId = parseJson(post("/processes?scopes=$scopeId", [
             domains: [
                 (domainId): [
+                    subType: "PRO_DataProcessing",
+                    status: "NEW",
                     riskValues: [
                         DSRA: [
                             potentialImpacts: [
@@ -340,6 +383,8 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
             name   : "scenario",
             domains: [
                 (domainId): [
+                    subType: "SCN_Scenario",
+                    status: "NEW",
                     riskValues: [
                         DSRA : [
                             potentialProbability: 2

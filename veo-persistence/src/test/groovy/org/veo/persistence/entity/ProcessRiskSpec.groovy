@@ -52,7 +52,7 @@ class ProcessRiskSpec extends VeoSpec {
         def scenario = newScenario(unit)
         def control = newControl(unit)
         def domain1 = newDomain(client)
-        process.addToDomains(domain1)
+        process.associateWithDomain(domain1, "NormalProcess", "NEW")
 
         when: "a risk is created for these entities"
         def risk = process.obtainRisk(scenario, domain1)
@@ -69,7 +69,7 @@ class ProcessRiskSpec extends VeoSpec {
         def process = newProcess(unit)
         def scenario = newScenario(unit)
         def domain1 = newDomain(client)
-        process.addToDomains(domain1)
+        process.associateWithDomain(domain1, "NormalProcess", "NEW")
 
         when: "a risk is created"
         def risk = process.obtainRisk(scenario, domain1)
@@ -85,7 +85,7 @@ class ProcessRiskSpec extends VeoSpec {
         def scenario1 = newScenario(unit)
         def scenario2 = newScenario(unit)
         def domain1 = newDomain(client)
-        process.addToDomains(domain1)
+        process.associateWithDomain(domain1, "NormalProcess", "NEW")
 
         when: "risks are added"
         def risks = process.obtainRisks([scenario1, scenario2] as Set, domain1,[] as Set)
@@ -105,7 +105,7 @@ class ProcessRiskSpec extends VeoSpec {
         def process = newProcess(unit)
         def scenario = newScenario(unit)
         def domain1 = newDomain(client)
-        process.addToDomains(domain1)
+        process.associateWithDomain(domain1, "NormalProcess", "NEW")
         def person = newPerson(unit)
 
         when: "a risk is created and linked to the person"
@@ -123,7 +123,7 @@ class ProcessRiskSpec extends VeoSpec {
         def process = newProcess(unit)
         def scenario = newScenario(unit)
         def domain1 = newDomain(client)
-        process.addToDomains(domain1)
+        process.associateWithDomain(domain1, "NormalProcess", "NEW")
         def person = newPerson(unit)
         def personComposite = newPerson(unit)
         personComposite.parts = [person]
@@ -147,7 +147,7 @@ class ProcessRiskSpec extends VeoSpec {
         def processComposite = newProcess(unit) {
             name = "processcomposite"
         }
-        processComposite.addToDomains(domain1)
+        processComposite.associateWithDomain(domain1, "NormalProcess", "NEW")
         processComposite.setParts([process1, process2] as Set)
         def scenario = newScenario(unit)
 
@@ -169,7 +169,7 @@ class ProcessRiskSpec extends VeoSpec {
         scenarioComposite.setParts([scenario1, scenario2] as Set)
         def process = newProcess(unit)
         def domain1 = newDomain(client)
-        process.addToDomains(domain1)
+        process.associateWithDomain(domain1, "NormalProcess", "NEW")
 
         when: "a risk is created"
         def risk = process.obtainRisk(scenarioComposite, domain1)
@@ -189,7 +189,7 @@ class ProcessRiskSpec extends VeoSpec {
         def process1 = newProcess(unit)
         def scenario1 = newScenario(unit)
         def domain1 = newDomain(client)
-        process1.addToDomains(domain1)
+        process1.associateWithDomain(domain1, "NormalProcess", "NEW")
 
         when: "a risk is created"
         def risk = process1.obtainRisk(scenario1, domain1)
@@ -206,9 +206,8 @@ class ProcessRiskSpec extends VeoSpec {
         def scenario1 = newScenario(unit)
         def process1 = newProcess(unit)
         def domain1 = newDomain(client)
-        process1.addToDomains(domain1)
+        process1.associateWithDomain(domain1, "NormalProcess", "NEW")
         def risk1 = process1.obtainRisk(scenario1, domain1)
-        process1.addToDomains(domain1)
         def set = new HashSet<ProcessRisk>()
         set.add(risk1)
 
@@ -229,8 +228,8 @@ class ProcessRiskSpec extends VeoSpec {
         def domain1 = newDomain(client)
         def domain2 = newDomain(client)
         def domainUnknown = newDomain(client)
-        process1.addToDomains(domain1)
-        process1.addToDomains(domain2)
+        process1.associateWithDomain(domain1, "NormalProcess", "NEW")
+        process1.associateWithDomain(domain2, "NormalProcess", "NEW")
 
         when: "a risk is created with two domains"
         def risk = process1.obtainRisk(scenario1, domain1)
@@ -319,7 +318,8 @@ class ProcessRiskSpec extends VeoSpec {
         }
         def process = newProcess(unit) {
             name = "risky process"
-            domains = [domain0, domain1]
+            associateWithDomain(domain0, "NormalProcess", "NEW")
+            associateWithDomain(domain1, "OrdinaryProcess", "NEW")
         }
         def scenario = newScenario(unit)
 

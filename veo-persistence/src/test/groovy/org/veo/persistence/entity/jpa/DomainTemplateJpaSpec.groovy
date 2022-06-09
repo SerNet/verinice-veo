@@ -139,7 +139,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         newCatalogItem(catalog, {
             newProcess(it) {
                 name = 'p1'
-                setSubType(domain0, "Test", "NEW")
+                associateWithDomain(domain0, "Test", "NEW")
             }
         })
         domain0.elementTypeDefinitions.add(newElementTypeDefinition(domain0, "process"))
@@ -179,14 +179,14 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         def itemP1 = newCatalogItem(catalog, {
             newProcess(it) {
                 name = 'p1'
-                setSubType(domain0, "Test", "NEW")
+                associateWithDomain(domain0, "Test", "NEW")
             }
         })
 
         newCatalogItem(catalog, { c->
             newProcess(c) {
                 name = 'p2'
-                setSubType(domain0, "Test1", "NOT-NEW")
+                associateWithDomain(domain0, "Test1", "NOT-NEW")
                 addToLinks(newCustomLink(itemP1.element, "p2->p1"))
             }
         })

@@ -65,6 +65,13 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
             domain = domainRepository.save(newDomain(client) {
                 abbreviation = "D"
                 name = "Domain"
+                elementTypeDefinitions = [
+                    newElementTypeDefinition("scenario", it) {
+                        subTypes = [
+                            WorstCase: newSubTypeDefinition()
+                        ]
+                    }
+                ]
             })
 
             domain1 = domainRepository.save(newDomain(client) {
@@ -184,7 +191,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a saved scenario"
         def scenario = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit) {
-                domains = [domain1] as Set
+                associateWithDomain(domain, "WorstCase", "NEW")
             })
         }
 
@@ -197,7 +204,10 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ],  domains: [
-                (domain.id.uuidValue()): [:]
+                (domain.id.uuidValue()): [
+                    subType: "WorstCase",
+                    status: "NEW",
+                ]
             ]
         ]
 
@@ -212,6 +222,8 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == 'New scenario-2'
         result.abbreviation == 'u-2'
         result.domains[domain.id.uuidValue()] == [
+            subType: "WorstCase",
+            status: "NEW",
             decisionResults: [:],
             riskValues: [:],
         ]
@@ -306,7 +318,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         given: "an existing scenario"
         def scenario = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit) {
-                addToDomains(domain)
+                associateWithDomain(domain, "WorstCase", "NEW")
             })
         }
 

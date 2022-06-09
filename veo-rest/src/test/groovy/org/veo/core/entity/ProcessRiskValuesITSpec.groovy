@@ -31,11 +31,8 @@ import org.veo.core.entity.risk.ProbabilityRef
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.risk.RiskRef
 import org.veo.core.entity.riskdefinition.RiskDefinition
-import org.veo.core.entity.transform.EntityFactory
-import org.veo.core.repository.ControlRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
-import org.veo.persistence.access.PersonRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScenarioRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -47,8 +44,6 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
     public static final String MURPHYS_LAW = "Anything that can go wrong will go wrong"
     public static final String RISK_ACCEPTANCE = "https://www.youtube.com/watch?v=9IG3zqvUqJY&t=157s"
     public static final String NO_RISK_NO_FUN = "No risk no fun. Our only problem: way too much fun!"
-    @Autowired
-    EntityFactory entityFactory
 
     @Autowired
     private ClientRepositoryImpl clientRepository
@@ -60,16 +55,10 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
     ProcessRepositoryImpl processRepository
 
     @Autowired
-    PersonRepositoryImpl personRepository
-
-    @Autowired
     ScenarioRepositoryImpl scenarioRepository
 
     @Autowired
     DomainRepositoryImpl domainRepository
-
-    @Autowired
-    ControlRepository controlRepository
 
     Client client
 
@@ -94,23 +83,19 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
 
     def "risk values can be modified"() {
         given: "A risk definition, a process with a risk and a scenario"
-        def process1 = newProcess(unit)
-        def scenario1 = newScenario(unit)
-        process1.addToDomains(domain)
         def riskDef = domain.getRiskDefinitions().values().first()
         def riskDefRef = RiskDefinitionRef.from(riskDef)
         def confidentiality = new CategoryRef("C")
 
-        def risk = txTemplate.execute{
-            scenario1 = scenarioRepository.save(scenario1)
-            this.domain = domainRepository.save(this.domain)
-            process1 = processRepository.save(process1)
-
-            process1 = processRepository.findById(process1.getId()).get()
-            process1.obtainRisk(scenario1, this.domain).tap {
+        def scenario1 = scenarioRepository.save(newScenario(unit))
+        domain = domainRepository.save(domain)
+        ProcessRisk risk
+        processRepository.save(newProcess(unit) {
+            associateWithDomain(domain, "PRO_DataProcessing", "NEW")
+            risk = obtainRisk(scenario1, this.domain).tap {
                 designator = "RSK-1"
             }
-        }
+        })
 
         when: "the risk is retrieved"
         ProcessRisk retrievedRisk1 = txTemplate.execute{

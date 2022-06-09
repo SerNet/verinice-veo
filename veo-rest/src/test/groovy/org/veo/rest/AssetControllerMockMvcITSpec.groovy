@@ -257,7 +257,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         }
         def sourceAsset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
                 links = [
                     newCustomLink(targetAsset, "mypreciouslink")
                 ]
@@ -289,12 +289,12 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         def asset = newAsset(unit) {
             name = "Test asset-1"
-            domains = [dsgvoDomain] as Set
+            associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
         }
 
         def asset2 = newAsset(unit2) {
             name = "Test asset-2"
-            domains = [dsgvoDomain] as Set
+            associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
         }
 
         (asset, asset2) = txTemplate.execute {
@@ -419,7 +419,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
                 name = 'New asset-2'
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
             })
         }
 
@@ -433,7 +433,10 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 displayName: 'test unit'
             ],
             domains: [
-                (dsgvoDomain.id.uuidValue()): [:]
+                (dsgvoDomain.id.uuidValue()): [
+                    subType: "AST_Datatype",
+                    status: "NEW",
+                ]
             ]
         ]
 
@@ -447,6 +450,8 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == 'New asset-2'
         result.abbreviation == 'u-2'
         result.domains[dsgvoDomain.id.uuidValue()] == [
+            subType: "AST_Datatype",
+            status: "NEW",
             decisionResults: [:]
         ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
@@ -461,7 +466,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
                 name = "Test asset-1"
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "AST_Application", "NEW")
                 customAspects = [customAspect] as Set
             })
         }
@@ -476,7 +481,10 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 displayName: 'test unit'
             ],
             domains: [
-                (dsgvoDomain.id.uuidValue()): [:]
+                (dsgvoDomain.id.uuidValue()): [
+                    subType: "AST_Application",
+                    status: "NEW",
+                ]
             ],
             customAspects:
             [
@@ -501,6 +509,8 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == 'New asset-2'
         result.abbreviation == 'u-2'
         result.domains[dsgvoDomain.id.uuidValue()] == [
+            subType: "AST_Application",
+            status: "NEW",
             decisionResults: [:]
         ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
@@ -530,7 +540,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
                 name = "Test asset-2"
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
             })
         }
 
@@ -547,13 +557,13 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         def targetAsset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
             })
         }
 
         def sourceAsset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
             })
         }
         CustomLink link = newCustomLink(targetAsset, "goodLink")
@@ -662,12 +672,12 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
                 name = 'New asset-2'
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
             })
         }
         def scenario = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit) {
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
             })
         }
 
@@ -723,12 +733,12 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         def (Asset asset, ScenarioData scenario, Object postResult) = createRisk()
         def scenario2 = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit) {
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
             })
         }
         def scenario3 = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit) {
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
             })
         }
         post("/assets/"+asset.id.uuidValue()+"/risks", [
@@ -784,14 +794,14 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         def person = txTemplate.execute {
             personRepository.save(newPerson(unit) {
                 name = 'New person-1'
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
             })
         }
 
         def control = txTemplate.execute {
             controlRepository.save(newControl(unit) {
                 name = 'New control-1'
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
             })
         }
 
@@ -868,12 +878,12 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     private List createRisk() {
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
             })
         }
         def scenario = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit) {
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "SCN_Scenario", "NEW")
             })
         }
         def postResult = parseJson(

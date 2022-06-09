@@ -206,11 +206,6 @@ public class SchemaExtender {
 
   private void addSubTypes(
       ObjectNode domainAssociationSchema, Map<String, SubTypeDefinition> subTypes) {
-    // Make status required if there is a sub type and vice versa.
-    var dependentRequired = domainAssociationSchema.putObject("dependentRequired");
-    dependentRequired.putArray("subType").add("status");
-    dependentRequired.putArray("status").add("subType");
-
     // Add enum with allowed sub types. Also define allowed statuses per sub type by
     // adding a list of conditions.
     var subTypeSchema = (ObjectNode) domainAssociationSchema.get(PROPS).get("subType");

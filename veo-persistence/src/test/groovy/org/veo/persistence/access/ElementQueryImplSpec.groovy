@@ -383,11 +383,11 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "a"
-                setSubType(domain, "VT", "NEW")
+                associateWithDomain(domain, "VT", "NEW")
             },
             newProcess(unit) {
                 name = "b"
-                setSubType(domain, "VT", "NEW")
+                associateWithDomain(domain, "VT", "NEW")
             },
             newProcess(unit) {
                 name = "c"
@@ -412,15 +412,15 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "a"
-                setSubType(domain, "VT", "GOOD")
+                associateWithDomain(domain, "VT", "GOOD")
             },
             newProcess(unit) {
                 name = "b"
-                setSubType(domain, "VT", "OK")
+                associateWithDomain(domain, "VT", "OK")
             },
             newProcess(unit) {
                 name = "c"
-                setSubType(domain, "VT", "BAD")
+                associateWithDomain(domain, "VT", "BAD")
             },
             newProcess(unit) {
                 name = "d"
@@ -446,19 +446,19 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "a"
-                setSubType(domain, "VT", "GOOD")
+                associateWithDomain(domain, "VT", "GOOD")
             },
             newProcess(unit) {
                 name = "b"
-                setSubType(domain, "VT", "BAD")
+                associateWithDomain(domain, "VT", "BAD")
             },
             newProcess(unit) {
                 name = "c"
-                setSubType(domain, "NT", "GOOD")
+                associateWithDomain(domain, "NT", "GOOD")
             },
             newProcess(unit) {
                 name = "d"
-                setSubType(domain, "NT", "BAD")
+                associateWithDomain(domain, "NT", "BAD")
             },
         ])
 
@@ -480,11 +480,10 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "a"
-                setSubType(domain, "VT", "NEW")
+                associateWithDomain(domain, "VT", "NEW")
             },
             newProcess(unit) {
                 name = "b"
-                setSubType(domain, null, null)
             },
             newProcess(unit) {
                 name = "c"

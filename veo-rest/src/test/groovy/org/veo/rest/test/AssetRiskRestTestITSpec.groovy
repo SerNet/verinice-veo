@@ -24,7 +24,7 @@ class AssetRiskRestTestITSpec extends VeoRestTest{
 
     def setup() {
         unitId = post("/units", [name: "asset risk rest test unit"]).body.resourceId
-        domainId = get("/domains").body[0].id
+        domainId = get("/domains").body.find{it.name == "DS-GVO"}.id
     }
 
     def "create and update an asset risk"() {
@@ -35,7 +35,10 @@ class AssetRiskRestTestITSpec extends VeoRestTest{
         ]).body.resourceId
         def assetId = post("/assets", [
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "AST_Datatype",
+                    status: "IN_PROGRESS",
+                ]
             ],
             parts: [
                 // The part is not relevant for the risk, it just spices things up.

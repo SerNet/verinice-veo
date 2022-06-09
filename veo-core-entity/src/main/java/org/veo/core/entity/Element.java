@@ -44,15 +44,6 @@ public interface Element
   }
 
   /**
-   * Add the given Domain to the collection domains.
-   *
-   * @return true if added
-   */
-  default boolean addToDomains(Domain aDomain) {
-    return this.getDomains().add(aDomain);
-  }
-
-  /**
    * Remove the given Domain from the collection domains.
    *
    * @return true if removed
@@ -69,15 +60,6 @@ public interface Element
 
   Set<Domain> getDomains();
 
-  default void setDomains(Set<Domain> newDomains) {
-    for (Domain domain : this.getDomains()) {
-      removeFromDomains(domain);
-    }
-    for (Domain domain : newDomains) {
-      addToDomains(domain);
-    }
-  }
-
   default void transferToDomain(Domain oldDomain, Domain newDomain) {
     if (!getDomains().contains(oldDomain)) {
       throw new IllegalArgumentException(this + " is not a member of " + oldDomain);
@@ -85,7 +67,7 @@ public interface Element
     if (getDomains().contains(newDomain)) {
       throw new IllegalArgumentException(this + " is already a member of " + newDomain);
     }
-    addToDomains(newDomain);
+    associateWithDomain(newDomain, getSubType(oldDomain).get(), getStatus(oldDomain).get());
     getCustomAspects()
         .forEach(
             ca -> {
@@ -97,13 +79,6 @@ public interface Element
             cl -> {
               cl.removeFromDomains(oldDomain);
               cl.addToDomains(newDomain);
-            });
-    getSubTypeAspects()
-        .forEach(
-            sa -> {
-              if (sa.getDomain().equals(oldDomain)) {
-                sa.setDomain(newDomain);
-              }
             });
     removeFromDomains(oldDomain);
   }
@@ -130,7 +105,7 @@ public interface Element
 
   Optional<String> getStatus(DomainTemplate domain);
 
-  void setSubType(DomainTemplate domain, String subType, String status);
+  boolean associateWithDomain(DomainTemplate domain, String subType, String status);
 
   /**
    * Add the given {@link CustomAspect} to the collection customAspects.

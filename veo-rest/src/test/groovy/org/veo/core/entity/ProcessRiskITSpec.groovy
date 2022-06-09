@@ -71,25 +71,18 @@ class ProcessRiskITSpec extends VeoSpringSpec {
     def "a risk can be modified persistently"() {
 
         given: "predefined entities"
-        def process1 = newProcess(unit)
-        def scenario1 = newScenario(unit)
-        def domain1 = newDomain(client)
-        process1.addToDomains(domain1)
-        def control1 = newControl(unit)
-        def person1 = newPerson(unit)
-
-        def risk = txTemplate.execute{
-            scenario1 = insertScenario(scenario1)
-            domain1 = insertDomain(domain1)
-            process1 = insertProcess(process1)
-            person1 = insertPerson(person1)
-            control1 = insertControl(control1)
-
-            process1 = processRepository.findById(process1.getId()).get()
-            process1.obtainRisk(scenario1, domain1).tap {
+        def scenario1 = insertScenario(newScenario(unit))
+        def domain1 = insertDomain(newDomain(client))
+        ProcessRisk risk
+        def process1 = insertProcess(newProcess(unit) {
+            associateWithDomain(domain1, "PRO_DataProcessing", "NEW")
+            risk = obtainRisk(scenario1, domain1).tap {
                 designator = "RSK-1"
             }
-        }
+        })
+        def person1 = insertPerson(newPerson(unit))
+        def control1 = insertControl(newControl(unit))
+
 
         when: "the risk is retrieved"
         ProcessRisk retrievedRisk1 = txTemplate.execute{

@@ -92,7 +92,7 @@ class ScopePersistenceSpec extends VeoSpringSpec {
                     designator = "super bad designator"
                 }
             ]
-            setSubType(null, "fun sub type", "NEW")
+            associateWithDomain(newDomain(client), null, null)
         })
         then:
         def ex = thrown(ConstraintViolationException)
@@ -100,7 +100,8 @@ class ScopePersistenceSpec extends VeoSpringSpec {
             "customAspects[].type",
             "links[].target",
             "members[].designator",
-            "subTypeAspects[].domain"
+            "subTypeAspects[].status",
+            "subTypeAspects[].subType",
         ]
     }
 }

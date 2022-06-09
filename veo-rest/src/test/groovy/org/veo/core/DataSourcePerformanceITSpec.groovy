@@ -654,8 +654,8 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
             def scenario = scenarioDataRepository.save(newScenario(unit))
             def person = personDataRepository.save(newPerson(unit))
             def control = controlDataRepository.save(newControl(unit))
-            process.addToDomains(domain)
-            scenario.addToDomains(domain)
+            process.associateWithDomain(domain, "NormalProcess", "NEW")
+            scenario.associateWithDomain(domain, "NormalScenario", "NEW")
             process.obtainRisk(scenario, domain).tap{
                 it.setDesignator("RSK-1")
                 it.setCreatedBy("me")

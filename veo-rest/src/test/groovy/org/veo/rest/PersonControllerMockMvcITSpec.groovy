@@ -154,8 +154,12 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
-            ],  domains: [
-                (dsgvoDomain.id.uuidValue()): [:]
+            ],
+            domains: [
+                (dsgvoDomain.id.uuidValue()): [
+                    subType: "PER_Person",
+                    status: "NEW",
+                ]
             ]
         ]
 
@@ -170,6 +174,8 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == 'New person-2'
         result.abbreviation == 'u-2'
         result.domains[dsgvoDomain.id.uuidValue()] == [
+            subType: "PER_Person",
+            status: "NEW",
             decisionResults: [:]
         ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
@@ -184,7 +190,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         def person = txTemplate.execute {
             personRepository.save(newPerson(unit) {
                 name = 'Test person-1'
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "PER_Person", "NEW")
                 customAspects = [customAspect] as Set
             })
         }
@@ -198,7 +204,10 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
             ], domains: [
-                (dsgvoDomain.id.uuidValue()): [:]
+                (dsgvoDomain.id.uuidValue()): [
+                    subType: "PER_Person",
+                    status: "NEW",
+                ]
             ], customAspects:
             [
                 'person_generalInformation' :
@@ -222,6 +231,8 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == 'New person-2'
         result.abbreviation == 'u-2'
         result.domains[dsgvoDomain.id.uuidValue()] == [
+            subType: "PER_Person",
+            status: "NEW",
             decisionResults: [:]
         ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()

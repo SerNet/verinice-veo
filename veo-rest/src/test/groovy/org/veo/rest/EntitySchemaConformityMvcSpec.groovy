@@ -222,7 +222,10 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         def schema = getSchema("control")
         def controlId = (String)parseJson(post("/controls", [
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "CTL_TOM",
+                    status: "NEW",
+                ]
             ],
             name: "control",
             owner: [
@@ -233,6 +236,8 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             name: "schema test scope",
             domains: [
                 (domainId): [
+                    subType: "SCP_Scope",
+                    status: "NEW",
                     riskDefinition: "DSRA"
                 ]
             ],
@@ -254,6 +259,8 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             ],
             domains: [
                 (domainId): [
+                    subType: "CTL_TOM",
+                    status: "NEW",
                     riskValues: [
                         DSRA: [
                             implementationStatus: 1

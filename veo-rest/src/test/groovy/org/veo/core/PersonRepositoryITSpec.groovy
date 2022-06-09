@@ -86,7 +86,7 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
                     designator = "super bad designator"
                 }
             ]
-            setSubType(null, "fun sub type", "NEW")
+            associateWithDomain(newDomain(client), null, null)
         })
         then:
         def ex = thrown(ConstraintViolationException)
@@ -94,7 +94,8 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
             "customAspects[].type",
             "links[].target",
             "parts[].designator",
-            "subTypeAspects[].domain"
+            "subTypeAspects[].status",
+            "subTypeAspects[].subType",
         ]
     }
 
@@ -104,17 +105,14 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
         executeInTransaction{
             2.times {
                 personRepository.save(newPerson(unit) {
-                    addToDomains(domain)
-                    setSubType(domain, 'PER_Person', 'NEW')
+                    associateWithDomain(domain, 'PER_Person', 'NEW')
                 })
             }
             personRepository.save( newPerson(unit) {
-                addToDomains(domain)
-                setSubType(domain, 'PER_Person', 'IN_PROGRESS')
+                associateWithDomain(domain, 'PER_Person', 'IN_PROGRESS')
             })
             personRepository.save(newPerson(unit) {
-                addToDomains(domain)
-                setSubType(domain, 'PER_DataProtectionOfficer', 'RELEASED')
+                associateWithDomain(domain, 'PER_DataProtectionOfficer', 'RELEASED')
             })
         }
         when:

@@ -135,15 +135,16 @@ class ElementJpaSpec extends AbstractJpaSpec {
         assetRepository.saveAll([
             newAsset(owner1) {
                 name = "one"
-                domains = [domain1]
+                associateWithDomain(domain1, "Application", "NEW")
             },
             newAsset(owner1) {
                 name = "two"
-                domains = [domain1, domain2]
+                associateWithDomain(domain1, "Application", "OLD")
+                associateWithDomain(domain2, "App", "ARCHIVED")
             },
             newAsset(owner1) {
                 name = "three"
-                domains = [domain2]
+                associateWithDomain(domain2, "Application", "PLANNED")
             }
         ])
 

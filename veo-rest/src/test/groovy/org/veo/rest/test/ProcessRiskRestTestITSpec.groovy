@@ -26,7 +26,7 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
 
     def setup() {
         unitId = post("/units", [name: "process risk rest test unit"]).body.resourceId
-        domainId = get("/domains").body[0].id
+        domainId = get("/domains").body.find{it.name == "DS-GVO"}.id
     }
 
     def "create and update a process risk"() {
@@ -37,7 +37,10 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
         ]).body.resourceId
         def processId = post("/processes", [
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "PRO_DataTransfer",
+                    status: "NEW",
+                ]
             ],
             parts: [
                 // The part is not relevant for the risk, it just spices things up.
@@ -110,7 +113,10 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
         given: "a process and a scenario"
         def processId = post("/processes", [
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "PRO_DataTransfer",
+                    status: "NEW",
+                ]
             ],
             name: "risk test process-1",
             owner: [targetUri: "$baseUrl/units/$unitId"]
@@ -138,7 +144,10 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
         given: "a process and a scenario"
         def processId = post("/processes", [
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "PRO_DataTransfer",
+                    status: "NEW",
+                ]
             ],
             name: "risk test process-1",
             owner: [targetUri: "$baseUrl/units/$unitId"]

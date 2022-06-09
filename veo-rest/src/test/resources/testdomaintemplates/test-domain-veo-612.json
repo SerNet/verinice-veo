@@ -24,7 +24,10 @@
             },
             "description": "This is a composite control that contains all other controls.",
             "domains": {
-              
+              "1624d827-299f-59d1-a1be-7064ed6f7f44": {
+                "subType": "CTL_Control",
+                "status": "NEW"
+              }
             },
             "id": "b7920357-f810-4827-b6ce-d4eb753fb07c",
             "links": {
@@ -58,7 +61,10 @@
             },
             "description": "This is the first control.",
             "domains": {
-              
+              "1624d827-299f-59d1-a1be-7064ed6f7f44": {
+                "subType": "CTL_Control",
+                "status": "NEW"
+              }
             },
             "id": "c3eea4f0-d20e-40a7-ac7c-c1e38c2dc0b1",
             "links": {
@@ -85,7 +91,10 @@
             },
             "description": "This is the second control.",
             "domains": {
-              
+              "1624d827-299f-59d1-a1be-7064ed6f7f44": {
+                "subType": "CTL_Control",
+                "status": "NEW"
+              }
             },
             "id": "380a72c5-12a9-48f5-a2cd-b5cc9bc6c2fa",
             "links": {
@@ -105,6 +114,14 @@
     }
   ],
   "elementTypeDefinitions": {
-    
+    "control": {
+      "subTypes": {
+        "CTL_Control": {
+          "statuses": [
+            "NEW"
+          ]
+        }
+      }
+    }
   }
 }

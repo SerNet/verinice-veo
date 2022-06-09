@@ -51,7 +51,6 @@ import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.InvalidSubTypeException;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
@@ -64,6 +63,7 @@ import org.veo.persistence.entity.jpa.validation.HasOwnerOrContainingCatalogItem
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -193,19 +193,23 @@ public abstract class ElementData extends IdentifiableVersionedData
   }
 
   @Override
-  public void setSubType(DomainTemplate domain, String subType, String status) {
-    removeAspect(subTypeAspects, domain);
-    if (subType != null) {
-      if (status == null) {
-        throw new IllegalStateException(
-            String.format("Cannot assign sub type %s without a status", subType));
+  public boolean associateWithDomain(
+      @NonNull DomainTemplate domain, String subType, String status) {
+    var added = false;
+    if (this.getContainingCatalogItem() == null) {
+      if (domain instanceof Domain) {
+        added = domains.add((Domain) domain);
       }
-      subTypeAspects.add(new SubTypeAspectData(domain, this, subType, status));
-    } else if (status != null) {
-      throw new InvalidSubTypeException(
+    } else if (!domain.equals(getContainingCatalogItem().getCatalog().getDomainTemplate())) {
+      throw new IllegalArgumentException(
           String.format(
-              "Cannot assign status %s for domain %s without a sub type", status, domain.getId()));
+              "Catalog item element %s can only be associated with its catalog's domain template",
+              getIdAsString()));
     }
+
+    removeAspect(subTypeAspects, domain);
+    subTypeAspects.add(new SubTypeAspectData(domain, this, subType, status));
+    return added;
   }
 
   public void setLinks(Set<CustomLink> newLinks) {

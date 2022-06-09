@@ -19,6 +19,8 @@ package org.veo.adapter.presenter.api.dto;
 
 import java.util.Map;
 
+import javax.validation.constraints.NotNull;
+
 import org.veo.core.entity.aspects.SubTypeAspect;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
@@ -28,10 +30,12 @@ import lombok.Data;
 
 @Data
 public class DomainAssociationDto {
-  @Schema(minLength = 1, maxLength = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
+  @NotNull
+  @Schema(minLength = 1, maxLength = SubTypeAspect.SUB_TYPE_MAX_LENGTH, required = true)
   String subType;
 
-  @Schema(minLength = 1, maxLength = SubTypeAspect.STATUS_MAX_LENGTH)
+  @NotNull
+  @Schema(minLength = 1, maxLength = SubTypeAspect.STATUS_MAX_LENGTH, required = true)
   String status;
 
   @Schema(

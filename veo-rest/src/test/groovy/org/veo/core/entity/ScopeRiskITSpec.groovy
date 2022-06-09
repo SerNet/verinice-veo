@@ -23,7 +23,6 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.annotation.Transactional
 
 import org.veo.core.VeoSpringSpec
-import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.repository.ControlRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
@@ -35,9 +34,6 @@ import org.veo.persistence.entity.jpa.ScopeRiskData
 
 @WithUserDetails("user@domain.example")
 class ScopeRiskITSpec extends VeoSpringSpec {
-
-    @Autowired
-    EntityFactory entityFactory
 
     @Autowired
     private ClientRepositoryImpl clientRepository
@@ -69,27 +65,18 @@ class ScopeRiskITSpec extends VeoSpringSpec {
     }
 
     def "a risk can be modified persistently"() {
-
         given: "predefined entities"
-        def scope1 = newScope(unit)
-        def scenario1 = newScenario(unit)
-        def domain1 = newDomain(client)
-        scope1.addToDomains(domain1)
-        def control1 = newControl(unit)
-        def person1 = newPerson(unit)
-
-        def risk = txTemplate.execute{
-            scenario1 = insertScenario(scenario1)
-            domain1 = insertDomain(domain1)
-            scope1 = insertScope(scope1)
-            person1 = insertPerson(person1)
-            control1 = insertControl(control1)
-
-            scope1 = scopeRepository.findById(scope1.getId()).get()
-            scope1.obtainRisk(scenario1, domain1).tap {
+        def scenario1 = insertScenario(newScenario(unit))
+        def domain1 = insertDomain(newDomain(client))
+        ScopeRisk risk
+        def scope1 = insertScope(newScope(unit) {
+            associateWithDomain(domain1, "NormalScope", "NEW")
+            risk = obtainRisk(scenario1, domain1).tap {
                 designator = "RSK-1"
             }
-        }
+        })
+        def person1 = insertPerson(newPerson(unit))
+        def control1 = insertControl(newControl(unit))
 
         when: "the risk is retrieved"
         ScopeRisk retrievedRisk1 = txTemplate.execute{

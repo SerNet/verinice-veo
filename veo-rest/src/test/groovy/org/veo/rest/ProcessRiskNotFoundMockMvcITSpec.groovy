@@ -23,6 +23,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -52,6 +53,23 @@ class ProcessRiskNotFoundMockMvcITSpec extends VeoMvcSpec {
                     "default-risk-definition": createRiskDefinition("default-risk-definition"),
                     "risk-definition-for-projects": createRiskDefinition("risk-definition-for-projects"),
                 ]
+                elementTypeDefinitions = [
+                    newElementTypeDefinition("process", it) {
+                        subTypes = [
+                            RiskyProcess: newSubTypeDefinition()
+                        ]
+                    },
+                    newElementTypeDefinition("scenario", it) {
+                        subTypes = [
+                            BestCase: newSubTypeDefinition()
+                        ]
+                    },
+                    newElementTypeDefinition("scope", it) {
+                        subTypes = [
+                            SmallScope: newSubTypeDefinition()
+                        ]
+                    },
+                ]
             }.idAsString
             unitId = unitRepository.save(newUnit(client)).idAsString
             clientRepository.save(client)
@@ -63,7 +81,10 @@ class ProcessRiskNotFoundMockMvcITSpec extends VeoMvcSpec {
         given: "a process and scenario are created but no risk"
         def processId = parseJson(post("/processes", [
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "RiskyProcess",
+                    status: "NEW",
+                ]
             ],
             name: "risk test process",
             owner: [targetUri: "http://localhost/units/$unitId"]
@@ -73,7 +94,10 @@ class ProcessRiskNotFoundMockMvcITSpec extends VeoMvcSpec {
             name: "process risk test scenario",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "BestCase",
+                    status: "NEW",
+                ]
             ]
         ])).resourceId
 
@@ -91,7 +115,10 @@ class ProcessRiskNotFoundMockMvcITSpec extends VeoMvcSpec {
             name: "process risk test scenario",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "BestCase",
+                    status: "NEW",
+                ]
             ]
         ])).resourceId
         def randomUuid = UUID.randomUUID()
@@ -108,7 +135,10 @@ class ProcessRiskNotFoundMockMvcITSpec extends VeoMvcSpec {
         given: "a process is created"
         def processId = parseJson(post("/processes", [
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "RiskyProcess",
+                    status: "NEW",
+                ]
             ],
             name: "risk test process",
             owner: [targetUri: "http://localhost/units/$unitId"]

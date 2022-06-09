@@ -49,7 +49,7 @@ class InspectionITSpec extends VeoSpec {
 
         when: "a mac has no tux sticker"
         def mac = newAsset(unit) {
-            setSubType(domain, "computer", "NEW")
+            associateWithDomain(domain, "computer", "NEW")
             customAspects.add(newCustomAspect("software") {
                 attributes["os"] = "macOs"
             })
@@ -61,7 +61,7 @@ class InspectionITSpec extends VeoSpec {
 
         when: "a linux pc has no sticker"
         def linuxPc = newAsset(unit) {
-            setSubType(domain, "computer", "NEW")
+            associateWithDomain(domain, "computer", "NEW")
             customAspects.add(newCustomAspect("software") {
                 attributes["os"] = "linux"
             })
@@ -80,7 +80,7 @@ class InspectionITSpec extends VeoSpec {
 
         when: "the linux pc is equipped with a tux sticker"
         linuxPc.addPart(newAsset(unit) {
-            setSubType(domain, "tuxSticker", "NEW")
+            associateWithDomain(domain, "tuxSticker", "NEW")
         })
         finding = stickerInspection.run(linuxPc, domain)
 

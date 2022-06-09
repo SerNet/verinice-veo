@@ -28,6 +28,7 @@ import org.veo.core.entity.Control
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
+import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.AssetRepositoryImpl
@@ -340,14 +341,25 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
     def "cannot use a another client's domain"() {
         given: "a domain for another client"
         def otherClient = clientRepository.save(newClient {})
-        def otherClientsDomainId = domainDataRepository.save(newDomain(otherClient)).idAsString
+        def otherClientsDomainId = domainDataRepository.save(newDomain(otherClient) {
+            elementTypeDefinitions = [
+                newElementTypeDefinition("control", it) {
+                    subTypes = [
+                        SuperControl: newSubTypeDefinition()
+                    ]
+                }
+            ]
+        }).idAsString
 
         when: "trying to assign a new document to the other client's domain"
         post("/documents/", [
             name: "bad document",
             owner: [targetUri: "http://localhost/units/$unit.idAsString"],
             domains: [
-                (otherClientsDomainId): [:]
+                (otherClientsDomainId): [
+                    subType: "CTL_TOM",
+                    status: "NEW",
+                ]
             ]
         ], 400)
 

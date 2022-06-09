@@ -95,12 +95,34 @@ class DomainAssociationRestTest extends VeoRestTest {
         response.body.message == "Element cannot contain custom aspects or links without being associated with a domain"
     }
 
+    def "cannot associate element with domain without a sub type"() {
+        when:
+        def response = post("/incidents", [
+            name: "incident without a sub type",
+            owner: [
+                targetUri: unitUri
+            ],
+            domains: [
+                (dsgvoDomainId): [:]
+            ],
+        ], 400)
+
+        then:
+        with(response.body.message) {
+            contains("subType: is missing but it is required")
+            contains("status: is missing but it is required")
+        }
+    }
+
     def "cannot use non-existing domains"() {
         expect:
         post("/incidents", [
             name: "incident without domains",
             domains: [
-                (UUID.randomUUID()): [:]
+                (UUID.randomUUID()): [
+                    subType: "INC_Incident",
+                    status: "NEW",
+                ]
             ],
             owner: [
                 targetUri: unitUri

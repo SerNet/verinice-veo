@@ -132,7 +132,24 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
                 domains: [
                     properties: [
                         "70e5c01d-2f81-4940-8635-1078c057c34c": [
-                            allOf: []
+                            allOf: [
+                                [
+                                    if: [
+                                        properties: [
+                                            subType: [
+                                                const: "NormalAsset"
+                                            ]
+                                        ]
+                                    ],
+                                    then: [
+                                        properties: [
+                                            status: [
+                                                enum: ["NEW"]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
                         ]
                     ]
                 ],
@@ -145,7 +162,10 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
         and: "an asset that conforms to the element type definition"
         def assetId = parseJson(post("/assets", [
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "NormalAsset",
+                    status: "NEW",
+                ]
             ],
             name: "my little asset",
             owner: [targetUri: "http://localhost/units/$unitId"],

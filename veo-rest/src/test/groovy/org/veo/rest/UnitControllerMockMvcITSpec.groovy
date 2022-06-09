@@ -372,7 +372,10 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
                 displayName: 'test unit'
             ],
             domains: [
-                (domain.id.uuidValue()): [:]
+                (domain.id.uuidValue()): [
+                    subType: "PRO_DataProcessing",
+                    status: "NEW",
+                ]
             ],
             links:
             [

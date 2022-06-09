@@ -160,6 +160,19 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         response.message.endsWith("Sub type 'PRO_fit' is not defined for element type process")
     }
 
+    def "cannot import template with sub-type-less catalog item"() {
+        given: "a template with a catalog item that has no sup type"
+        var template = getTemplateBody()
+        def vtElement = template.catalogs[0].catalogItems.find { it.namespace == "VT.p-1" }.element
+        vtElement.domains = [:]
+
+        when: "trying to create the template"
+        def response = post("/domaintemplates", template, 400, UserType.CONTENT_CREATOR).body
+
+        then: "it fails with a helpful message"
+        response.message.endsWith("Cannot assign element to domain without specifying a sub type")
+    }
+
     def "cannot import template with invalid catalog item risk definition"() {
         given: "a template with a catalog item using a non-existing risk definition"
         var template = getTemplateBody()

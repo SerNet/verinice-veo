@@ -309,7 +309,7 @@ class ElementMigrationServiceSpec extends Specification{
         elementMigrationService.migrate(element, definition, domain)
 
         then:
-        1 * element.setSubType(domain, null, null)
+        1 * element.associateWithDomain(domain, null, null)
     }
 
     def 'removes obsolete status'() {
@@ -335,6 +335,6 @@ class ElementMigrationServiceSpec extends Specification{
         elementMigrationService.migrate(element, definition, domain)
 
         then:
-        1 * element.setSubType(domain, "AST_Server", 'NEW')
+        1 * element.associateWithDomain(domain, "AST_Server", 'NEW')
     }
 }

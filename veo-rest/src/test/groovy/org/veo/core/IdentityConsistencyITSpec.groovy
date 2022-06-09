@@ -254,12 +254,11 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
         given:
         def asset = newAsset(unit)
         def scenario = newScenario(unit)
-        def domain = newDomain(client) {
+        def domain = domainRepository.save(newDomain(client) {
             name = "domain1"
-        }
-        domainRepository.save(domain)
+        })
         client.addToDomains(domain)
-        asset.addToDomains(domain)
+        asset.associateWithDomain(domain, "NormalAsset", "NEW")
         clientRepository.save(client)
         assetDataRepository.save(asset)
         scenarioDataRepository.save(scenario)
@@ -282,7 +281,7 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
         entityManager.flush()
 
         when:
-        asset.setSubType(this.domain, "foo", "NEW")
+        asset.associateWithDomain(this.domain, "foo", "NEW")
         def aspect = asset.subTypeAspects[0]
         testIdentityConsistency(SubTypeAspectData.class, aspect)
 

@@ -50,6 +50,7 @@ import org.veo.core.entity.Unit
 import org.veo.core.entity.UpdateReference
 import org.veo.core.entity.Versioned
 import org.veo.core.entity.definitions.ElementTypeDefinition
+import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.core.entity.inspection.Inspection
 import org.veo.core.entity.inspection.Severity
 import org.veo.core.entity.risk.ProbabilityImpl
@@ -166,6 +167,14 @@ abstract class VeoSpec extends Specification {
     static ElementTypeDefinition newElementTypeDefinition(String type, Domain it, @DelegatesTo(value = ElementTypeDefinition.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.definitions.ElementTypeDefinition") Closure init = null) {
         return factory.createElementTypeDefinition(type, it).tap{
+            VeoSpec.execute(it, init)
+        }
+    }
+
+    static SubTypeDefinition newSubTypeDefinition(@DelegatesTo(value = SubTypeDefinition.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.definitions.SubTypeDefinition") Closure init = null) {
+        return new SubTypeDefinition().tap{
+            statuses = ["NEW"]
             VeoSpec.execute(it, init)
         }
     }
@@ -413,9 +422,6 @@ abstract class VeoSpec extends Specification {
         }
         if(target.customAspects == null) {
             target.customAspects = []
-        }
-        if(target.domains == null) {
-            target.domains = []
         }
         if(target.links == null) {
             target.links = []

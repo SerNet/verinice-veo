@@ -87,7 +87,7 @@ public class ElementMigrationService {
                     "Removing obsolete sub type {} of element {}",
                     subType,
                     element.getIdAsString());
-                element.setSubType(domain, null, null);
+                element.associateWithDomain(domain, null, null);
                 return;
               }
               var status = element.getStatus(domain).orElseThrow();
@@ -99,7 +99,7 @@ public class ElementMigrationService {
                     status,
                     element.getIdAsString(),
                     fallbackStatus);
-                element.setSubType(domain, subType, fallbackStatus);
+                element.associateWithDomain(domain, subType, fallbackStatus);
               }
             });
   }

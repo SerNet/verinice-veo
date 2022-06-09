@@ -25,6 +25,7 @@ import org.springframework.transaction.support.TransactionTemplate
 import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
@@ -53,6 +54,20 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
                     "default-risk-definition": createRiskDefinition("default-risk-definition"),
                     "risk-definition-for-projects": createRiskDefinition("risk-definition-for-projects"),
                 ]
+                elementTypeDefinitions = [
+                    newElementTypeDefinition("scope", it) {
+                        subTypes = [
+                            RiskyScope: newSubTypeDefinition()
+                        ]
+                    }
+                ]
+                elementTypeDefinitions = [
+                    newElementTypeDefinition("scope", it) {
+                        subTypes = [
+                            RiskyScope: newSubTypeDefinition()
+                        ]
+                    }
+                ]
             }.idAsString
             unitId = unitRepository.save(newUnit(client)).idAsString
             clientRepository.save(client)
@@ -66,6 +81,8 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
+                    subType: "RiskyScope",
+                    status: "NEW",
                     riskDefinition: "risk-definition-for-projects"
                 ]
             ]
@@ -85,7 +102,10 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
             name: "Project scope",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "RiskyScope",
+                    status: "NEW",
+                ]
             ]
         ])).resourceId
         def scopeETag = getETag(get("/scopes/$scopeId"))
@@ -95,7 +115,11 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
             name: "Project scope",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
-                (domainId): [riskDefinition: "risk-definition-for-projects"]
+                (domainId): [
+                    subType: "RiskyScope",
+                    status: "NEW",
+                    riskDefinition: "risk-definition-for-projects"
+                ]
             ]
         ], ['If-Match': scopeETag])
 
@@ -112,7 +136,11 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
             name: "Cinema scope",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
-                (domainId): [riskDefinition: "risk-definition-for-projects"]
+                (domainId): [
+                    subType: "RiskyScope",
+                    status: "NEW",
+                    riskDefinition: "risk-definition-for-projects"
+                ]
             ]
         ], ['If-Match': scopeETag])
         retrieveScopeResponse = get("/scopes/$scopeId")
@@ -126,7 +154,11 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
             name: "Cinema scope",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
-                (domainId): [riskDefinition: "default-risk-definition"]
+                (domainId): [
+                    subType: "RiskyScope",
+                    status: "NEW",
+                    riskDefinition: "default-risk-definition"
+                ]
             ]
         ], ['If-Match': getETag(get("/scopes/$scopeId"))])
         retrieveScopeResponse = get("/scopes/$scopeId")
@@ -140,7 +172,10 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
             name: "Cinema scope",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
-                (domainId): [:]
+                (domainId): [
+                    subType: "RiskyScope",
+                    status: "NEW",
+                ]
             ]
         ], ['If-Match': scopeETag])
         retrieveScopeResponse = get("/scopes/$scopeId")
@@ -156,6 +191,8 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
+                    subType: "RiskyScope",
+                    status: "NEW",
                     riskDefinition: "fantasy-definition"
                 ]
             ]

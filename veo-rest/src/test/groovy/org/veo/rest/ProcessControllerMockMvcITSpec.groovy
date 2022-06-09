@@ -170,7 +170,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "PRO_DataProcessing", "NEW")
             })
         }
 
@@ -208,7 +208,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "PRO_DataTransfer", "NEW")
             })
         }
 
@@ -223,7 +223,10 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ]
             ,
             domains: [
-                (dsgvoDomain.id.uuidValue()): [:]
+                (dsgvoDomain.id.uuidValue()): [
+                    subType: "PRO_DataTransfer",
+                    status: "NEW",
+                ]
             ]
         ]
 
@@ -237,6 +240,8 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
         result.domains[dsgvoDomain.id.uuidValue()] == [
+            subType: "PRO_DataTransfer",
+            status: "NEW",
             decisionResults: [:],
             riskValues: [:],
         ]
@@ -249,7 +254,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         given: "an existing process"
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "PRO_DataProcessing", "NEW")
             })
         }
 
@@ -268,7 +273,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "PRO_DataTransfer", "NEW")
                 customAspects = [cp] as Set
             })
         }
@@ -284,7 +289,10 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ]
             ,
             domains: [
-                (dsgvoDomain.id.uuidValue()): [:]
+                (dsgvoDomain.id.uuidValue()): [
+                    subType: "PRO_DataTransfer",
+                    status: "NEW",
+                ]
             ],
             customAspects:
             [
@@ -310,6 +318,8 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
         result.domains[dsgvoDomain.id.uuidValue()] == [
+            subType: "PRO_DataTransfer",
+            status: "NEW",
             decisionResults: [:],
             riskValues: [:],
         ]
@@ -334,7 +344,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "overwrite a custom aspect attribute"() {
+    def     "overwrite a custom aspect attribute"() {
         given: "a saved process"
 
         CustomAspect cp = newCustomAspect("process_privacyImpactAssessment") {
@@ -345,7 +355,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "PRO_DataTransfer", "NEW")
                 customAspects = [cp] as Set
             })
         }
@@ -362,7 +372,10 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ]
             ,
             domains: [
-                (dsgvoDomain.id.uuidValue()): [:]
+                (dsgvoDomain.id.uuidValue()): [
+                    subType: "PRO_DataTransfer",
+                    status: "NEW",
+                ]
             ],
             customAspects:
             [
@@ -384,6 +397,8 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
         result.domains[dsgvoDomain.id.uuidValue()] == [
+            subType: "PRO_DataTransfer",
+            status: "NEW",
             decisionResults: [:],
             riskValues: [:],
         ]
@@ -445,7 +460,10 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             ]
             ,
             domains: [
-                (dsgvoDomain.id.uuidValue()): [:]
+                (dsgvoDomain.id.uuidValue()): [
+                    subType: "PRO_DataTransfer",
+                    status: "NEW",
+                ]
             ],
             links:
             [
@@ -476,6 +494,8 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == 'New Process-2'
         result.abbreviation == 'u-2'
         result.domains[dsgvoDomain.id.uuidValue()] == [
+            subType: "PRO_DataTransfer",
+            status: "NEW",
             decisionResults: [:],
             riskValues: [:],
         ]
@@ -602,7 +622,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             processRepository.save(newProcess(unit) {
                 name = 'Test process-1'
-                setSubType(dsgvoDomain, 'VT', "NEW")
+                associateWithDomain(dsgvoDomain, 'VT', "NEW")
             })
             processRepository.save(newProcess(unit) {
                 name = 'Test process-2'
@@ -673,12 +693,12 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
                 name = 'New process-2'
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "PRO_DataProcessing", "NEW")
             })
         }
         def scenario = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit) {
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "SCN_Scenario", "NEW")
             })
         }
 
@@ -743,12 +763,12 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     private createTwoRisks(Process process) {
         def scenario2 = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit) {
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "SCN_Scenario", "NEW")
             })
         }
         def scenario3 = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit) {
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "SCN_Scenario", "NEW")
             })
         }
         post("/processes/"+process.id.uuidValue()+"/risks", [
@@ -812,14 +832,14 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def person = txTemplate.execute {
             personRepository.save(newPerson(unit) {
                 name = 'New person-1'
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "PER_Person", "NEW")
             })
         }
 
         def control = txTemplate.execute {
             controlRepository.save(newControl(unit) {
                 name = 'New control-1'
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "CTL_TOM", "NEW")
             })
         }
 
@@ -896,12 +916,12 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     private List createRisk() {
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "PRO_DataProcessing", "NEW")
             })
         }
         def scenario = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit) {
-                domains = [dsgvoDomain] as Set
+                associateWithDomain(dsgvoDomain, "SCN_Scenario", "NEW")
             })
         }
         def postResult = parseJson(

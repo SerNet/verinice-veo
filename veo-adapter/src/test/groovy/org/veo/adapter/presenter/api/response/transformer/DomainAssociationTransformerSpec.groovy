@@ -20,7 +20,6 @@ package org.veo.adapter.presenter.api.response.transformer
 
 import org.veo.adapter.IdRefResolver
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto
-import org.veo.adapter.presenter.api.dto.DomainAssociationDto
 import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto
 import org.veo.adapter.service.domaintemplate.SyntheticIdRef
 import org.veo.core.entity.Domain
@@ -62,10 +61,8 @@ class DomainAssociationTransformerSpec extends Specification {
         when: "the sub types are mapped"
         domainAssociationTransformer.mapDomainsToEntity(dto, entity, idRefResolver)
         then: "it is set"
-        1 * entity.addToDomains(domain0)
-        1 * entity.addToDomains(domain1)
-        1 * entity.setSubType(domain0, "foo", "NEW_FOO")
-        1 * entity.setSubType(domain1, "bar", "NEW_BAR")
+        1 * entity.associateWithDomain(domain0, "foo", "NEW_FOO")
+        1 * entity.associateWithDomain(domain1, "bar", "NEW_BAR")
     }
 
     def "maps sub types from entity to DTO"() {

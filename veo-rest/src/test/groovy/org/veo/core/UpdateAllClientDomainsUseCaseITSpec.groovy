@@ -142,7 +142,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             addToDomains(dsgvoDomain)
         })
         Control control = controlRepository.save(newControl(unit) {
-            addToDomains(dsgvoDomain)
+            associateWithDomain(dsgvoDomain, "CTL_TOM", "NEW")
             setRiskValues(dsgvoDomain, riskValues)
         })
         when: 'executing the UpdateAllClientDomainsUseCase'
@@ -177,7 +177,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             addToDomains(dsgvoDomain)
         })
         def scope = scopeRepository.save(newScope(unit) {
-            addToDomains(dsgvoDomain)
+            associateWithDomain(dsgvoDomain, "SCP_Scope", "NEW")
             setRiskDefinition(dsgvoDomain, new RiskDefinitionRef("xyz"))
         })
 
@@ -210,7 +210,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             addToDomains(dsgvoDomain)
         })
         Scenario scenario = scenarioRepository.save(newScenario(unit) {
-            addToDomains(dsgvoDomain)
+            associateWithDomain(dsgvoDomain, "SCN_Scenario", "NEW")
             setPotentialProbability(dsgvoDomain, riskValues)
         })
 
@@ -259,7 +259,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             addToDomains(dsgvoDomain)
         })
         Process process = processRepository.save(newProcess(unit) {
-            addToDomains(dsgvoDomain)
+            associateWithDomain(dsgvoDomain, "PRO_DataProcessing", "NEW")
             setImpactValues(dsgvoDomain, impactValues)
         })
         when: 'executing the UpdateAllClientDomainsUseCase'

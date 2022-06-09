@@ -168,7 +168,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends VeoSpringSpec 
             CatalogItem item5 = newCatalogItem(catalog, {
                 newProcess(it) {
                     name = 'p1'
-                    setSubType(domain, "Test", "NEW")
+                    associateWithDomain(domain, "Test", "NEW")
                 }
             })
             newTailoringReference(item5, TailoringReferenceType.COPY) {

@@ -23,6 +23,7 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
+import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
@@ -41,7 +42,25 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
     def setup() {
         txTemplate.execute {
             def client = createTestClient()
-            newDomain(client)
+            newDomain(client) {
+                elementTypeDefinitions = [
+                    newElementTypeDefinition("asset", it) {
+                        subTypes = [
+                            Server: newSubTypeDefinition()
+                        ]
+                    },
+                    newElementTypeDefinition("process", it) {
+                        subTypes = [
+                            Development: newSubTypeDefinition()
+                        ]
+                    },
+                    newElementTypeDefinition("scenario", it) {
+                        subTypes = [
+                            WorstCase: newSubTypeDefinition()
+                        ]
+                    },
+                ]
+            }
             unit = newUnit(client) {
                 name = "Test unit"
             }
@@ -95,13 +114,22 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
             name: "scenario",
             owner: [
                 targetUri: "http://localhost/units/${unit.id.uuidValue()}"
-            ]
+            ],
+            domains: [
+                (domain.idAsString): [
+                    subType: "WorstCase",
+                    status: "NEW",
+                ]
+            ],
         ])).resourceId
 
         when: "creating an asset risk"
         String assetId = parseJson(post("/assets", [
             domains: [
-                (domain.id.uuidValue()): [:]
+                (domain.idAsString): [
+                    subType: "Server",
+                    status: "NEW",
+                ]
             ],
             name: "asset",
             owner: [
@@ -124,7 +152,10 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
         when: "creating an process risk"
         String processId = parseJson(post("/processes", [
             domains: [
-                (domain.id.uuidValue()): [:]
+                (domain.id.uuidValue()): [
+                    subType: "Development",
+                    status: "NEW"
+                ]
             ],
             name: "process",
             owner: [

@@ -60,7 +60,7 @@ class ScenarioRepositoryITSpec extends VeoSpringSpec {
                     designator = "super bad designator"
                 }
             ]
-            setSubType(null, "fun sub type", "NEW")
+            associateWithDomain(newDomain(client), null, null)
         })
         then:
         def ex = thrown(ConstraintViolationException)
@@ -68,7 +68,8 @@ class ScenarioRepositoryITSpec extends VeoSpringSpec {
             "customAspects[].type",
             "links[].target",
             "parts[].designator",
-            "subTypeAspects[].domain"
+            "subTypeAspects[].status",
+            "subTypeAspects[].subType",
         ]
     }
 }

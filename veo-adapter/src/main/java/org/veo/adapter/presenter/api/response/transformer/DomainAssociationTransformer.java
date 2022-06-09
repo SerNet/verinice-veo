@@ -423,11 +423,7 @@ public class DomainAssociationTransformer {
               var associationDto = entry.getValue();
               DomainTemplate domainTemplate =
                   idRefResolver.resolve(SyntheticIdRef.from(entry.getKey(), Domain.class));
-              if (domainTemplate instanceof Domain) {
-                var domain = (Domain) domainTemplate;
-                target.addToDomains(domain);
-              }
-              target.setSubType(
+              target.associateWithDomain(
                   domainTemplate, associationDto.getSubType(), associationDto.getStatus());
               customMapper.accept(domainTemplate, associationDto);
             });

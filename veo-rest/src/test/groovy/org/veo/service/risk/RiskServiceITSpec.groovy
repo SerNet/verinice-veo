@@ -102,12 +102,12 @@ class RiskServiceITSpec extends VeoSpringSpec {
             (riskDefinitionRef) : processImpactValues
         ]
         Process process = newProcess(unit) {
-            addToDomains(domain)
+            associateWithDomain(domain, "NormalProcess", "NEW")
             setImpactValues(domain, impactValues)
         }
 
         Scenario scenario = scenarioDataRepository.save(newScenario(unit) {
-            addToDomains(domain)
+            associateWithDomain(domain, "NormalScenario", "NEW")
             setPotentialProbability(domain, [(riskDefinitionRef): new PotentialProbabilityImpl().tap {
                     potentialProbability = probabilityRare
                 }])

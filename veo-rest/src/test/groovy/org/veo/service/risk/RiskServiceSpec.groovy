@@ -69,10 +69,10 @@ class RiskServiceSpec extends VeoSpec {
             it.riskDefinitions = [(RISK_DEF): riskDefinition]
         }
         this.scenario = newScenario(unit) {
-            addToDomains(domain)
+            associateWithDomain(domain, "NormalScenario", "NEW")
         }
         this.process = newProcess(unit) {
-            addToDomains(domain)
+            associateWithDomain(domain, "NormalProcess", "NEW")
         }
         this.risk = process.obtainRisk(scenario, domain).tap {
             assignDesignator(it)
@@ -297,7 +297,7 @@ class RiskServiceSpec extends VeoSpec {
         when:
         def categoryRef = new CategoryRef("C")
         def scenario2 = newScenario(unit) {
-            addToDomains(domain)
+            associateWithDomain(domain, "NormalScenario", "NEW")
         }
         def risk2 = process.obtainRisk(scenario2, domain).tap {
             assignDesignator(it)

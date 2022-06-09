@@ -30,7 +30,6 @@ import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.ControlRiskValues
-import org.veo.core.entity.risk.DomainRiskReferenceProvider
 import org.veo.core.entity.risk.ImpactRef
 import org.veo.core.entity.risk.ImplementationStatusRef
 import org.veo.core.entity.risk.PotentialProbabilityImpl
@@ -110,17 +109,19 @@ class CatalogSpec extends VeoMvcSpec {
             item1 = newCatalogItem(catalog, {
                 newControl(it) {
                     name = 'c1'
-                    domains = [domain]
+                    associateWithDomain(domain, "CTL_TOM", "NEW")
                 }
             })
             item2 = newCatalogItem(catalog, {
                 newControl(it) {
                     name = 'c2'
+                    associateWithDomain(domain, "CTL_TOM", "NEW")
                 }
             })
             item3 = newCatalogItem(catalog, {
                 newControl(it) {
                     name = 'c3'
+                    associateWithDomain(domain, "CTL_TOM", "NEW")
                 }
             })
             newTailoringReference(item3, TailoringReferenceType.COPY) {
@@ -134,6 +135,7 @@ class CatalogSpec extends VeoMvcSpec {
                 newProcess(it) {
                     name = 'p1'
                     description = "a process example entry"
+                    associateWithDomain(domain, "normalProcess", "NEW")
                 }
             })
 
@@ -150,7 +152,7 @@ class CatalogSpec extends VeoMvcSpec {
                 newProcess(it) {
                     name = 'p2'
                     description = "a process with subtype"
-                    setSubType(domain, "MY_SUBTYPE", "NEW")
+                    associateWithDomain(domain, "MY_SUBTYPE", "NEW")
                 }
             })
 
@@ -159,7 +161,7 @@ class CatalogSpec extends VeoMvcSpec {
                     abbreviation = "caf"
                     name = 'p3-all-features'
                     description = "a process with subtype"
-                    setSubType(domain, "MY_SUBTYPE", "START")
+                    associateWithDomain(domain, "MY_SUBTYPE", "START")
                     customAspects = [
                         newCustomAspect("process_resilience") {
                             attributes = [
@@ -185,7 +187,7 @@ class CatalogSpec extends VeoMvcSpec {
                 newControl(it) {
                     name = 'tom1'
                     description = "a control with external tailorref"
-                    setSubType(domain, "CTL_TOM", "NEW1")
+                    associateWithDomain(domain, "CTL_TOM", "NEW1")
                     customAspects = [
                         newCustomAspect("process_resilience") {
                             attributes = [
@@ -210,14 +212,14 @@ class CatalogSpec extends VeoMvcSpec {
                 newControl(it) {
                     name = 'zz1'
                     description = "a control linked in a circle"
-                    setSubType(domain, "CTL_TOM", "NEW")
+                    associateWithDomain(domain, "CTL_TOM", "NEW")
                 }
             })
             zz2 = newCatalogItem(catalog, {
                 newControl(it) {
                     name = 'zz2'
                     description = "a control linked in a circle"
-                    setSubType(domain, "CTL_TOM", "NEW")
+                    associateWithDomain(domain, "CTL_TOM", "NEW")
                 }
             })
 
@@ -244,6 +246,7 @@ class CatalogSpec extends VeoMvcSpec {
                 newProcess(it) {
                     name = 'zzzp-impact'
                     description = "a process example entry"
+                    associateWithDomain(domain, "PRO_DataProcessing", "NEW")
                     setImpactValues(domain, [
                         (riskDefinitionRef) : new ProcessImpactValues().tap{
                             potentialImpacts = [
@@ -258,6 +261,7 @@ class CatalogSpec extends VeoMvcSpec {
                 newControl(it) {
                     name = 'zzzzc-impact'
                     description = "a control example entry"
+                    associateWithDomain(domain, "CTL_TOM", "NEW")
                     setRiskValues(domain, [
                         (riskDefinitionRef): new ControlRiskValues().tap {
                             implementationStatus = new ImplementationStatusRef(1)
@@ -270,6 +274,7 @@ class CatalogSpec extends VeoMvcSpec {
                 newScenario(it) {
                     name = 'zzzzszsimpact'
                     description = "a scenario example entry"
+                    associateWithDomain(domain, "SCN_Scenario", "NEW")
                     setPotentialProbability(domain, [
                         (riskDefinitionRef): new PotentialProbabilityImpl().tap {
                             potentialProbability = new ProbabilityRef(3)
@@ -316,6 +321,7 @@ class CatalogSpec extends VeoMvcSpec {
                 newCatalogItem(it, {
                     newControl(it) {
                         name = 'c15'
+                        associateWithDomain(domain3, "CTL_TOM", "NEW")
                     }
                 })
             }

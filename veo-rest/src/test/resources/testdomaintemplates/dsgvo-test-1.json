@@ -22,6 +22,12 @@
               
             },
             "id": "f05ed626-1de1-4ff1-bb1a-eb741a64a87a",
+            "domains": {
+              "00000000-0000-0000-0000-000000000001": {
+                "subType": "PRO_DataProcessing",
+                "status": "NEW"
+              }
+            },
             "links": {
               
             },
@@ -83,7 +89,10 @@
             },
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
             "domains": {
-              
+              "00000000-0000-0000-0000-000000000001": {
+                "subType": "CTL_TOM",
+                "status": "NEW"
+              }
             },
             "id": "6f7e4df3-2bfc-4f87-9b9c-764eaf07e001",
             "links": {
@@ -119,7 +128,10 @@
             },
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
             "domains": {
-              
+              "00000000-0000-0000-0000-000000000001": {
+                "subType": "CTL_TOM",
+                "status": "NEW"
+              }
             },
             "id": "6f7e4df3-2bfc-4f87-9b9c-764eaf07e061",
             "links": {
@@ -194,7 +206,10 @@
             },
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
             "domains": {
-              
+              "00000000-0000-0000-0000-000000000001": {
+                "subType": "CTL_TOM",
+                "status": "NEW"
+              }
             },
             "id": "4b7e4df3-2bfc-4f87-9b9c-764eaf07e063",
             "links": {

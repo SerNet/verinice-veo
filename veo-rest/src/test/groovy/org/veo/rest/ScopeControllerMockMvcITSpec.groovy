@@ -309,7 +309,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         def scope = txTemplate.execute {
             scopeRepository.save(newScope(unit) {
                 customAspects = [customAspect]
-                domains = [dsgvoDomain]
+                associateWithDomain(dsgvoDomain, "SCP_Scope", "NEW")
             })
         }
 
@@ -322,7 +322,10 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
                 targetUri: "http://localhost/units/${unit.id.uuidValue()}",
                 displayName: 'test unit'
             ], domains: [
-                (dsgvoDomain.id.uuidValue()): [:]
+                (dsgvoDomain.id.uuidValue()): [
+                    subType: "SCP_Scope",
+                    status: "NEW",
+                ]
             ], customAspects:
             [
                 'scope_address' :
@@ -346,6 +349,8 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == 'New scope 2'
         result.abbreviation == 's-2'
         result.domains[dsgvoDomain.id.uuidValue()] == [
+            subType: "SCP_Scope",
+            status: "NEW",
             decisionResults: [:]
         ]
         result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"

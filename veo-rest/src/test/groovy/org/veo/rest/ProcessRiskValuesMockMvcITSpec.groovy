@@ -22,7 +22,6 @@ import java.time.Instant
 import org.apache.http.HttpStatus
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
@@ -50,9 +49,6 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
     private UnitRepositoryImpl unitRepository
 
     @Autowired
-    private TransactionTemplate txTemplate
-
-    @Autowired
     private ProcessRepositoryImpl processRepository
 
     @Autowired
@@ -68,36 +64,58 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
     private ScenarioData scenario
 
     def setup() {
-        txTemplate.execute {
-            client = createTestClient()
-            domain = newDomain(client) {
-                riskDefinitions = [
-                    "r1d1": createRiskDefinition("r1d1"),
-                    "r2d2": createRiskDefinition("r2d2")
-                ]
-            }
-            domainId = domain.idAsString
-
-            r1d1DomainId = (newDomain(client) {
-                riskDefinitions = [
-                    "r1d1": createRiskDefinition("r1d1"),
-                ]
-            }).idAsString
-
-            unit = newUnit(client)
-            unitId = unitRepository.save(unit).idAsString
-            clientRepository.save(client)
-
-            process = newProcess(unit) {
-                addToDomains(domain)
-            }
-            processRepository.save(process)
-
-            scenario = newScenario(unit) {
-                addToDomains(domain)
-            }
-            scenarioRepository.save(scenario)
+        client = createTestClient()
+        domain = newDomain(client) {
+            riskDefinitions = [
+                "r1d1": createRiskDefinition("r1d1"),
+                "r2d2": createRiskDefinition("r2d2")
+            ]
+            elementTypeDefinitions = [
+                newElementTypeDefinition("process", it) {
+                    subTypes = [
+                        DifficultProcess: newSubTypeDefinition()
+                    ]
+                },
+                newElementTypeDefinition("scenario", it) {
+                    subTypes = [
+                        BestCase: newSubTypeDefinition()
+                    ]
+                },
+            ]
         }
+        domainId = domain.idAsString
+
+        r1d1DomainId = (newDomain(client) {
+            riskDefinitions = [
+                "r1d1": createRiskDefinition("r1d1"),
+            ]
+            elementTypeDefinitions = [
+                newElementTypeDefinition("process", it) {
+                    subTypes = [
+                        RiskyProcess: newSubTypeDefinition()
+                    ]
+                },
+                newElementTypeDefinition("scenario", it) {
+                    subTypes = [
+                        HypotheticalScenario: newSubTypeDefinition()
+                    ]
+                },
+            ]
+        }).idAsString
+
+        unit = newUnit(client)
+        unitId = unitRepository.save(unit).idAsString
+        clientRepository.save(client)
+
+        process = newProcess(unit) {
+            associateWithDomain(domain, "NormalProcess", "NEW")
+        }
+        processRepository.save(process)
+
+        scenario = newScenario(unit) {
+            associateWithDomain(domain, "NormalScenario", "NEW")
+        }
+        scenarioRepository.save(scenario)
     }
 
     def "values can be set on a second risk definition"() {
@@ -215,7 +233,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         def scenarioId = scenario.getIdAsString()
 
         def scenario2Id = scenarioRepository.save(newScenario(unit) {
-            addToDomains(domain)
+            associateWithDomain(domain, "NormalScenario", "NEW")
         }).idAsString
 
         postRisk1(processId, scenarioId)
@@ -393,7 +411,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         def processId = process.getIdAsString()
         def scenarioId = scenario.getIdAsString()
         def scenario2 = newScenario(unit) {
-            addToDomains(domain)
+            associateWithDomain(domain, "NormalScenario", "NEW")
         }
         scenarioRepository.save(scenario2)
         def scenario2Id = scenario2.getIdAsString()
@@ -401,7 +419,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         postRisk2(processId, scenario2Id)
 
         def process2 = newProcess(unit) {
-            addToDomains(domain)
+            associateWithDomain(domain, "NormalProcess", "NEW")
         }
         processRepository.save(process2)
         postRisk1(process2.idAsString, scenarioId)
@@ -443,7 +461,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         def processId = process.getIdAsString()
         def scenarioId = scenario.getIdAsString()
         def scenario2 = newScenario(unit) {
-            addToDomains(domain)
+            associateWithDomain(domain, "NormalScenario", "NEW")
         }
         scenarioRepository.save(scenario2)
         def scenario2Id = scenario2.getIdAsString()
@@ -451,7 +469,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         postRisk2(processId, scenario2Id)
 
         def process2 = newProcess(unit) {
-            addToDomains(domain)
+            associateWithDomain(domain, "NormalProcess", "NEW")
         }
         processRepository.save(process2)
         postRisk1(process2.idAsString, scenarioId)
@@ -578,7 +596,10 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         given: "a process"
         def processId = parseJson(post("/processes", [
             domains: [
-                (domainId): [ : ]
+                (domainId): [
+                    subType: "DifficultProcess",
+                    status: "NEW",
+                ]
             ],
             name: "risk test process",
             owner: [targetUri: "http://localhost/units/$unitId"]
@@ -591,6 +612,8 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         put("/processes/$processId", [
             domains: [
                 (domainId): [
+                    subType: "DifficultProcess",
+                    status: "NEW",
                     riskValues: [
                         r1d1 : [
                             potentialImpacts: [
@@ -609,6 +632,8 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
+                    subType: "BestCase",
+                    status: "NEW",
                     riskValues: [
                         r1d1 : [
                             potentialProbability: 2
@@ -674,19 +699,9 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         given: "a process in a domain with only a single risk definition"
         def processId = parseJson(post("/processes", [
             domains: [
-                (r1d1DomainId): [ : ]
-            ],
-            name: "risk test process",
-            owner: [targetUri: "http://localhost/units/$unitId"]
-        ])).resourceId
-        def processETag = getETag(get("/processes/$processId"))
-
-        Map headers = [
-            'If-Match': processETag
-        ]
-        put("/processes/$processId", [
-            domains: [
                 (r1d1DomainId): [
+                    subType: "RiskyProcess",
+                    status: "NEW",
                     riskValues: [
                         r1d1 : [
                             potentialImpacts: [
@@ -698,13 +713,15 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             ],
             name: "risk test process",
             owner: [targetUri: "http://localhost/units/$unitId"]
-        ], headers)
+        ])).resourceId
 
         def scenarioId = parseJson(post("/scenarios", [
             name: "process risk test scenario",
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (r1d1DomainId): [
+                    subType: "HypotheticalScenario",
+                    status: "NEW",
                     riskValues: [
                         r1d1 : [
                             potentialProbability: 2

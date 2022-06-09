@@ -50,7 +50,7 @@ class ProcessRiskAspectSpec extends VeoSpec {
     def "The risk object contains the applicable impact categories"() {
         given: "a process risk"
         def process = newProcess(unit)
-        process.addToDomains(domain)
+        process.associateWithDomain(domain, "NormalProcess", "NEW")
 
         def rd = domain.getRiskDefinitions().values().first()
         def rdRef = RiskDefinitionRef.from(rd)
@@ -66,7 +66,7 @@ class ProcessRiskAspectSpec extends VeoSpec {
     def "Potential probability/impact #potProb/#potC and specific values #specProb/#specC are evaluated to effective values: #effProb/#effC"() {
         given: "a process risk"
         def process = newProcess(unit)
-        process.addToDomains(domain)
+        process.associateWithDomain(domain, "NormalProcess", "NEW")
         def rd = domain.getRiskDefinitions().values().first()
         def rdRef = RiskDefinitionRef.from(rd)
         def risk = createRisk(process, domain, rdRef)
@@ -97,7 +97,7 @@ class ProcessRiskAspectSpec extends VeoSpec {
     private createRisk(Process process, Domain domain, RiskDefinitionRef rdRef) {
         def scenario = newScenario(unit)
         def control = newControl(unit)
-        process.addToDomains(domain)
+        process.associateWithDomain(domain, "NormalProcess", "NEW")
         def risk = process.obtainRisk(scenario, domain)
         risk = risk.mitigate(control)
         risk.defineRiskValues([

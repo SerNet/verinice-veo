@@ -25,6 +25,7 @@ import org.springframework.transaction.support.TransactionTemplate
 import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
@@ -51,6 +52,13 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             def client = createTestClient()
             def domain = newDomain(client) {
+                elementTypeDefinitions = [
+                    newElementTypeDefinition("process", it) {
+                        subTypes = [
+                            DifficultProcess: newSubTypeDefinition()
+                        ]
+                    }
+                ]
                 riskDefinitions = [
                     "myFirstRiskDefinition": createRiskDefinition("myFirstRiskDefinition"),
                     "mySecondRiskDefinition": createRiskDefinition("mySecondRiskDefinition"),
@@ -70,6 +78,8 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
+                    subType: "DifficultProcess",
+                    status: "NEW",
                     riskValues: [
                         myFirstRiskDefinition: [
                             potentialImpacts: [
@@ -104,6 +114,8 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
+                    subType: "DifficultProcess",
+                    status: "NEW",
                     riskValues: [
                         myFirstRiskDefinition: [
                             potentialImpacts: [ "C": 1,

@@ -310,20 +310,16 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         def unit = executeInTransaction{
             def unit = unitDataRepository.save(newUnit(client))
             processDataRepository.save(newProcess(unit) {
-                addToDomains(domain)
-                setSubType(domain, 'PRO_DPIA', 'FOR_REVIEW')
+                associateWithDomain(domain, 'PRO_DPIA', 'FOR_REVIEW')
             })
             processDataRepository.save(newProcess(unit) {
-                addToDomains(domain)
-                setSubType(domain, 'PRO_DataProcessing', 'NEW')
+                associateWithDomain(domain, 'PRO_DataProcessing', 'NEW')
             })
             processDataRepository.save(newProcess(unit) {
-                addToDomains(domain)
-                setSubType(domain, 'PRO_DataProcessing', 'ARCHIVED')
+                associateWithDomain(domain, 'PRO_DataProcessing', 'ARCHIVED')
             })
             scopeDataRepository.save(newScope(unit) {
-                addToDomains(domain)
-                setSubType(domain, 'SCP_ResponsibleBody', 'IN_PROGRESS')
+                associateWithDomain(domain, 'SCP_ResponsibleBody', 'IN_PROGRESS')
             })
             unit
         }

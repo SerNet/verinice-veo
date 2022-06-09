@@ -38,7 +38,7 @@ class EntityValidatorSpec extends VeoSpec {
     def "a properly initialized Person instance passes validation"() {
         given : "a valid person"
         Person person = newPerson(unit) {
-            addToDomains(domain)
+            associateWithDomain(domain, "NormalPerson", "NEW")
         }
 
         when : "it is validated"
@@ -62,7 +62,7 @@ class EntityValidatorSpec extends VeoSpec {
     def "a properly initialized Asset instance passes validation"() {
         given : "a valid asset"
         Asset asset = newAsset(unit) {
-            addToDomains(domain)
+            associateWithDomain(domain, "NormalAsset", "NEW")
         }
 
         when : "it is validated"
@@ -86,7 +86,7 @@ class EntityValidatorSpec extends VeoSpec {
     def "a properly initialized Process instance passes validation"() {
         given : "a valid process"
         Process process = newProcess(unit) {
-            addToDomains(domain)
+            associateWithDomain(domain, "NormalProcess", "NEW")
         }
 
         when : "it is validated"
@@ -110,7 +110,7 @@ class EntityValidatorSpec extends VeoSpec {
     def "a properly initialized Document instance passes validation"() {
         given : "a valid document"
         Document document = newDocument(unit) {
-            addToDomains(domain)
+            associateWithDomain(domain, "NormalDocument", "NEW")
         }
 
         when : "it is validated"
@@ -134,7 +134,7 @@ class EntityValidatorSpec extends VeoSpec {
     def "a properly initialized Control instance passes validation"() {
         given : "a valid control"
         Control control = newControl(unit) {
-            addToDomains(domain)
+            associateWithDomain(domain, "NormalControl", "NEW")
         }
 
         when : "it is validated"
@@ -205,7 +205,7 @@ class EntityValidatorSpec extends VeoSpec {
         given : "an entity with a custom aspect in the wrong domain"
         Domain otherDomain = newDomain(client)
         Process process = newProcess(unit) {
-            addToDomains(domain)
+            associateWithDomain(domain, "NormalProcess", "NEW")
         }
         process.addToCustomAspects( newCustomAspect("a") {
             addToDomains(otherDomain)
@@ -222,10 +222,10 @@ class EntityValidatorSpec extends VeoSpec {
         given : "an entity with a custom link in the wrong domain"
         Domain otherDomain = newDomain(client)
         Process process = newProcess(unit) {
-            addToDomains(domain)
+            associateWithDomain(domain, "NormalProcess", "NEW")
         }
         Control control = newControl(unit) {
-            addToDomains(domain)
+            associateWithDomain(domain, "NormalControl", "NEW")
         }
         process.addToLinks( newCustomLink(control, "a") {
             addToDomains(otherDomain)
@@ -238,26 +238,11 @@ class EntityValidatorSpec extends VeoSpec {
         thrown(EntityValidationException)
     }
 
-    def "A subtype with a wrong domain does not pass validation"() {
-        given : "an entity with a custom link in the wrong domain"
-        Domain otherDomain = newDomain(client)
-        Process process = newProcess(unit) {
-            addToDomains(domain)
-        }
-        process.setSubType(otherDomain, "Foo", "Bar")
-
-        when : "it is validated"
-        validator.validate(process.subTypeAspects.first())
-
-        then: "the validation is unsuccessful"
-        thrown(EntityValidationException)
-    }
-
     def "A process with a risk in the wrong domain does not pass validation"() {
         when : "an entity with a custom link in the wrong domain"
         Domain otherDomain = newDomain(client)
         Process process = newProcess(unit) {
-            addToDomains(domain)
+            associateWithDomain(domain, "NormalProcess", "NEW")
         }
         Scenario scenario = newScenario(unit)
         process.obtainRisk(scenario, otherDomain)
@@ -270,7 +255,7 @@ class EntityValidatorSpec extends VeoSpec {
         given : "a person for another client"
         Domain otherDomain = newDomain(otherClient)
         Person person = newPerson(unit) {
-            addToDomains(otherDomain)
+            associateWithDomain(otherDomain, "NormalPerson", "NEW")
         }
 
         when : "it is validated"

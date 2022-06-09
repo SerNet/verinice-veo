@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.ResultActions
 import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.core.entity.riskdefinition.ImplementationStateDefinition
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -47,6 +48,13 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
         executeInTransaction {
             def client = createTestClient()
             def domain = newDomain(client) {
+                elementTypeDefinitions = [
+                    newElementTypeDefinition("control", it) {
+                        subTypes = [
+                            NormalControl: newSubTypeDefinition()
+                        ]
+                    }
+                ]
                 riskDefinitions = [
                     "myFirstRiskDefinition": createRiskDefinition("myFirstRiskDefinition"),
                     "mySecondRiskDefinition": createRiskDefinition("mySecondRiskDefinition"),
@@ -72,6 +80,8 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
+                    subType: "NormalControl",
+                    status: "NEW",
                     riskValues: [
                         myFirstRiskDefinition : [
                             implementationStatus: 0
@@ -99,6 +109,8 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
+                    subType: "NormalControl",
+                    status: "NEW",
                     riskValues: [
                         myFirstRiskDefinition : [
                             implementationStatus: 2
@@ -127,6 +139,8 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
+                    subType: "NormalControl",
+                    status: "NEW",
                     riskValues: [
                         theOneWithOnlyTwoImplementationStatuses : [
                             implementationStatus: 1
@@ -144,6 +158,8 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
+                    subType: "NormalControl",
+                    status: "NEW",
                     riskValues: [
                         theOneWithOnlyTwoImplementationStatuses : [
                             implementationStatus: 2

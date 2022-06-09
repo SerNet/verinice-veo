@@ -64,6 +64,13 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
             domain = domainRepository.save(newDomain(client) {
                 abbreviation = "D"
                 name = "Domain"
+                elementTypeDefinitions = [
+                    newElementTypeDefinition("incident", it) {
+                        subTypes = [
+                            NormalIncident: newSubTypeDefinition()
+                        ]
+                    }
+                ]
             })
 
             domain1 = domainRepository.save(newDomain(client) {
@@ -175,7 +182,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a saved incident"
         def incident = txTemplate.execute {
             incidentRepository.save(newIncident(unit) {
-                domains = [domain1] as Set
+                associateWithDomain(domain, "NormalIncident", "NEW")
             })
         }
 
@@ -187,8 +194,12 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
             [
                 targetUri: 'http://localhost/units/'+unit.id.uuidValue(),
                 displayName: 'test unit'
-            ],  domains: [
-                (domain.id.uuidValue()): [:]
+            ],
+            domains: [
+                (domain.id.uuidValue()): [
+                    subType: "NormalIncident",
+                    status: "NEW",
+                ]
             ]
         ]
 
@@ -203,6 +214,8 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == 'New incident-2'
         result.abbreviation == 'u-2'
         result.domains[domain.id.uuidValue()] == [
+            subType: "NormalIncident",
+            status: "NEW",
             decisionResults: [:]
         ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()

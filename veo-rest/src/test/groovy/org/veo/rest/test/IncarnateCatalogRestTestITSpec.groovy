@@ -127,7 +127,10 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
             name : "Link Target Control",
             owner: [targetUri: "$baseUrl/units/$unitId"],
             domains: [
-                (domainId): [:] as Map
+                (domainId): [
+                    subType: "TOM",
+                    status: "NEW",
+                ]
             ]
         ]).body.resourceId
 

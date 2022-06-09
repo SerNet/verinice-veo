@@ -70,7 +70,6 @@ class ElementQueryImplPerformanceSpec extends VeoSpringSpec {
         def processes = new HashSet<ProcessData>()
         for(int i = 0; i < testProcessCount; i++) {
             processes.add(newProcess(unit) {
-                domains = [domain] as Set
                 customAspects = [
                     new CustomAspectData().tap {
                         it.type = "my_custom_aspect"
@@ -85,7 +84,7 @@ class ElementQueryImplPerformanceSpec extends VeoSpringSpec {
                         it.target = asset
                     }
                 ] as Set
-                setSubType(domain, "VT", "NEW")
+                associateWithDomain(domain, "VT", "NEW")
             })
         }
         processRepository.saveAll(processes)
