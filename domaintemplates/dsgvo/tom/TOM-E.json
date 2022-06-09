@@ -14,7 +14,9 @@
   "customAspects": {
     "control_dataProtection": {
       "attributes": {
-        "control_dataProtection_objectives": "control_dataProtection_objectives_encryption"
+        "control_dataProtection_objectives": [
+          "control_dataProtection_objectives_encryption"
+        ]
       }
     }
   },
