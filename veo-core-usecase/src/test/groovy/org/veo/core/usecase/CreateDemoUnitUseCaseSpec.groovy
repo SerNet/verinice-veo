@@ -27,6 +27,7 @@ import org.veo.core.repository.AssetRepository
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.service.DomainTemplateService
 import org.veo.core.service.EventPublisher
+import org.veo.core.usecase.decision.Decider
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase.InputData
 
@@ -36,9 +37,9 @@ public class CreateDemoUnitUseCaseSpec extends UseCaseSpec {
     AssetRepository assetRepository = Mock()
     ProcessRepository processRepository = Mock()
     EventPublisher eventPublisher = Mock()
+    Decider decider = Mock()
 
-
-    CreateDemoUnitUseCase usecase = new CreateDemoUnitUseCase(clientRepository, unitRepository, entityFactory, domainTemplateService,repositoryProvider, eventPublisher)
+    CreateDemoUnitUseCase usecase = new CreateDemoUnitUseCase(clientRepository, unitRepository, entityFactory, domainTemplateService,repositoryProvider, eventPublisher, decider)
 
     def "Create a new demo unit for an existing client" () {
         given: "starting values for a unit"
@@ -103,6 +104,11 @@ public class CreateDemoUnitUseCaseSpec extends UseCaseSpec {
             1 * setDesignator('DMO-3')
             1 * setOwner(demoUnit)
         }
+
+        and: "decisions are evaluated"
+        1 * decider.decide(asset1, domain) >> [:]
+        1 * decider.decide(asset2, domain) >> [:]
+        1 * decider.decide(process, domain) >> [:]
 
         and: "everything is saved in the database"
         1 * unitRepository.save(_) >> demoUnit

@@ -20,13 +20,13 @@ package org.veo.core.usecase.unit;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -51,6 +51,7 @@ import org.veo.core.service.DomainTemplateService;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.decision.Decider;
 
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -69,6 +70,7 @@ public class CreateDemoUnitUseCase
   private final DomainTemplateService domainTemplateService;
   private final RepositoryProvider repositoryProvider;
   private final EventPublisher eventPublisher;
+  private final Decider decider;
 
   public CreateDemoUnitUseCase(
       ClientRepository clientRepository,
@@ -76,13 +78,15 @@ public class CreateDemoUnitUseCase
       EntityFactory entityFactory,
       DomainTemplateService domainTemplateService,
       RepositoryProvider repositoryProvider,
-      EventPublisher eventPublisher) {
+      EventPublisher eventPublisher,
+      Decider decider) {
     this.clientRepository = clientRepository;
     this.unitRepository = unitRepository;
     this.entityFactory = entityFactory;
     this.domainTemplateService = domainTemplateService;
     this.repositoryProvider = repositoryProvider;
     this.eventPublisher = eventPublisher;
+    this.decider = decider;
   }
 
   @Override
@@ -133,7 +137,9 @@ public class CreateDemoUnitUseCase
         // sort entries by model type to get predictable designators
         .sorted(Comparator.comparing(entry -> entry.getKey().getSimpleName()))
         .forEach(e -> prepareAndSaveElements(e.getKey(), e.getValue(), demoUnit, counter));
-    log.info("Demo unit with {} elements created", demoUnitElements.size());
+
+    Set<Element> elementsToSave = new HashSet<>(demoUnitElements.size());
+
     links.entrySet().stream()
         .forEach(
             e -> {
@@ -141,6 +147,7 @@ public class CreateDemoUnitUseCase
                   .forEach(
                       l -> {
                         e.getKey().addToLinks(l);
+                        elementsToSave.add(e.getKey());
                       });
             });
     risks.entrySet().stream()
@@ -150,15 +157,26 @@ public class CreateDemoUnitUseCase
                     .forEach(
                         r -> {
                           r.setDesignator(DEMO_UNIT_DESIGNATOR_PREFIX + counter.incrementAndGet());
+                          elementsToSave.add(e.getKey());
                           e.getKey().addRisk(r);
                         }));
-    Set<Element> elementsToSave =
-        Stream.concat(links.keySet().stream(), risks.keySet().stream()).collect(Collectors.toSet());
 
+    demoUnitElements.stream()
+        .forEach(
+            element ->
+                domainsFromElements.forEach(
+                    domain -> {
+                      var results = decider.decide(element, domain);
+                      if (!results.isEmpty()) {
+                        element.setDecisionResults(results, domain);
+                        elementsToSave.add(element);
+                      }
+                    }));
     groupByType(elementsToSave).entrySet().stream()
         .forEach(e -> saveElements(e.getKey(), e.getValue()));
     elementsToSave.forEach(
         it -> eventPublisher.publish(new RiskAffectingElementChangeEvent(it, this)));
+    log.info("Demo unit with {} elements created", demoUnitElements.size());
     return demoUnit;
   }
 

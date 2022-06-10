@@ -145,6 +145,12 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         with(processes.first()) {
             it.domains*.name == ['DS-GVO']
             it.links.find{it.type == "process_PIAOOtherOrganisationsInvolved"}.target.name == "Data GmbH"
+            decisionResultsAspects.size() == 1
+            with(decisionResultsAspects.first()) {
+                domain.name == 'DS-GVO'
+                results.keySet()*.keyRef ==~ ['piaMandatory']
+                results.values().first().value == true
+            }
         }
 
         when: 'loading the persons'

@@ -449,14 +449,16 @@ public class ModuleConfiguration {
       UnitRepositoryImpl unitRepository,
       DomainTemplateService domainTemplateService,
       RepositoryProvider repositoryProvider,
-      EventPublisher eventPublisher) {
+      EventPublisher eventPublisher,
+      Decider decider) {
     return new CreateDemoUnitUseCase(
         clientRepository,
         unitRepository,
         getEntityFactory(),
         domainTemplateService,
         repositoryProvider,
-        eventPublisher);
+        eventPublisher,
+        decider);
   }
 
   @Bean
