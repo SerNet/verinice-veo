@@ -25,7 +25,7 @@ class DeletionRestTest extends VeoRestTest {
         unitUri = "$baseUrl/units/" + post("/units", [
             name: "deletion test unit"
         ]).body.resourceId
-        domainId = get("/domains").body.first().id
+        domainId = get("/domains").body.find{it.name == "DS-GVO"}.id
     }
 
     def "link is removed when target element is deleted"() {
