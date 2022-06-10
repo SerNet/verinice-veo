@@ -1161,6 +1161,27 @@
       "id": "7ad5c0fc-2c11-4325-b505-0318617d2bbc"
     },
     {
+      "name": "Bewegungsdaten",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "asset",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "AST_Datatype",
+          "status": "NEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "da2c2881-a4ad-4a71-a472-69f87273a840"
+    },
+    {
       "name": "Bewerberdaten",
       "description": "Bewerberdaten umfassen die Angaben zur Person, Kontaktdaten, Lebenslauf und Zeugnisse.",
       "links": {
@@ -1181,6 +1202,27 @@
         }
       },
       "id": "a930d897-3a84-42d1-8e70-d9afe8f6ac6b"
+    },
+    {
+      "name": "Bilddaten",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "asset",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "AST_Datatype",
+          "status": "NEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "1b729aa4-7853-40bc-a777-698bed6e62ba"
     },
     {
       "name": "CRM",
@@ -1252,6 +1294,27 @@
       "id": "e99f8814-57b7-429b-a5a6-4d1c6732f29d"
     },
     {
+      "name": "Datum und Uhrzeit",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "asset",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "AST_Datatype",
+          "status": "NEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "d897c2d1-d1e7-4ad9-8ad3-de651569f5d2"
+    },
+    {
       "name": "E-Mail Adresse",
       "description": "",
       "links": {
@@ -1314,6 +1377,28 @@
         }
       },
       "id": "af507399-bd89-4859-8a14-3fb071f2d8e0"
+    },
+    {
+      "name": "Hautfarbe , Haare",
+      "description": "\u00c4u\u00dfere Erscheinungsbild der gefilmten Personen wie z.B  rassische und ethnische Herkunft (Hautfarbe, Haare)",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "asset",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "AST_Datatype",
+          "status": "NEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "ae37a7a6-b9b8-440c-986d-d8d8e6e8eb3e"
     },
     {
       "name": "Laptop Teamleiter",
@@ -1425,6 +1510,28 @@
         }
       },
       "id": "222756c1-1b9d-4a58-985d-a44955c28719"
+    },
+    {
+      "name": "Religi\u00f6se oder weltanschauliche \u00dcberzeugung",
+      "description": "z.B. religi\u00f6se Kleidungsst\u00fccke wie Kopftuch oder Kippa",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "asset",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "AST_Datatype",
+          "status": "NEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "6008c8d1-a1ed-4464-a6ef-8c47b702cae0"
     },
     {
       "name": "SAP ERP",
@@ -2093,6 +2200,31 @@
         }
       },
       "id": "dfa6219b-3708-4cff-b7d3-20027984f9aa"
+    },
+    {
+      "name": "Hinweisschilder Vido\u00fcberwachung",
+      "description": "Es m\u00fcssen am Anfangs- und am Endbereich des \u00fcberwachten Areals Hinweisschilder so angebracht werden , dass sie von den Betroffenen direkt zur Kentniss gelangen k\u00f6nnen.",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "0a4c1fd4-5097-41e2-9bae-2e568b7d573e"
     },
     {
       "name": "Informationspflichten ",
@@ -2800,6 +2932,27 @@
       "id": "ba722062-7dd5-4575-be77-ee8ce986ad92"
     },
     {
+      "name": "AV Vertrag Vide\u00dc",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "document",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "DOC_Contract",
+          "status": "NEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "7d4424e4-f6bb-4c6f-b81a-01a0d09b346f"
+    },
+    {
       "name": "AV Zoom",
       "links": {
         
@@ -3337,6 +3490,35 @@
       "id": "164f3943-d327-48f7-a5c9-a68d52b2331a"
     },
     {
+      "name": "Karl Hase",
+      "description": "Pf\u00f6rtner der Data GmbH",
+      "links": {
+        
+      },
+      "customAspects": {
+        "person_generalInformation": {
+          "domains": [],
+          "attributes": {
+            "person_generalInformation_givenName": "Karl",
+            "person_generalInformation_familyName": "Hase",
+            "person_generalInformation_salutation": "Herr"
+          }
+        }
+      },
+      "type": "person",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PER_Person",
+          "status": "NEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "e1015920-c96d-4d05-9440-5f59fc9b5d35"
+    },
+    {
       "name": "Krankenkassen",
       "links": {
         
@@ -3380,6 +3562,35 @@
       "id": "95790af0-6917-4aca-ad5a-7143d5f1220b"
     },
     {
+      "name": "Markus Reiter",
+      "description": "Mitarbeiter im Gebaudemanagement",
+      "links": {
+        
+      },
+      "customAspects": {
+        "person_generalInformation": {
+          "domains": [],
+          "attributes": {
+            "person_generalInformation_givenName": "Markus",
+            "person_generalInformation_familyName": "Reiter",
+            "person_generalInformation_salutation": "Herr"
+          }
+        }
+      },
+      "type": "person",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PER_Person",
+          "status": "NEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "debea096-da44-4c2c-b05a-0950162f75ce"
+    },
+    {
       "name": "Nina Fliege",
       "description": "Fachverwantortlich Marketing Data GmbH",
       "links": {
@@ -3400,6 +3611,34 @@
         }
       },
       "id": "cc3d04f6-c145-44c5-afb5-71b8b2c56305"
+    },
+    {
+      "name": "Paul Pr\u00fcfer",
+      "links": {
+        
+      },
+      "customAspects": {
+        "person_generalInformation": {
+          "domains": [],
+          "attributes": {
+            "person_generalInformation_givenName": "Paul ",
+            "person_generalInformation_familyName": "Pr\u00fcfer",
+            "person_generalInformation_salutation": "Herr"
+          }
+        }
+      },
+      "type": "person",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PER_Person",
+          "status": "NEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "ebcb86d9-7b53-4fe1-b607-3183cf02b3eb"
     },
     {
       "name": "Peter Pr\u00fcfer",
@@ -3456,6 +3695,36 @@
         }
       },
       "id": "c2843721-7603-451d-8e84-f2968c66b126"
+    },
+    {
+      "name": "Stefanie Bremer",
+      "description": "Juristin in der Rechtsbateilung",
+      "links": {
+        
+      },
+      "customAspects": {
+        "person_generalInformation": {
+          "domains": [],
+          "attributes": {
+            "person_generalInformation_title": "Dr.",
+            "person_generalInformation_givenName": "Stefanie",
+            "person_generalInformation_familyName": "Bemer",
+            "person_generalInformation_salutation": "Frau"
+          }
+        }
+      },
+      "type": "person",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "PER_Person",
+          "status": "NEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "a2c4c63c-e443-46a5-bc11-143eafde068f"
     },
     {
       "name": "Viola Seher",
@@ -3642,16 +3911,50 @@
       "id": "69d1e08f-eea5-4ae8-86da-eefd4b13e0e3"
     },
     {
-      "name": "DSFA VI\u00dc",
+      "name": "DSFA Video\u00fcberwachung ",
+      "description": "Erfassung von Videodaten im Eingangs- und Zutrittsbereich mit IP-Kameras. Die Erfassung erfolgt durchgehend.Im betroffenen Eingangs- und Zutrittsbereich befinden sich zudem Arbeitspl\u00e4tze. In den Gesch\u00e4ftsr\u00e4umen  erfolgt die Erfassung an Wochentagen nur zwischen 20.00 Uhr und 6.00 Uhr .  Die IP-Kameras sind schwenkbar und k\u00f6nnen zoomen.",
       "links": {
-        "process_PIAResponsibleBody": [
+        "process_PIAAuditor": [
           {
             "domains": [],
             "attributes": {
               
             },
             "target": {
-              "targetUri": "https://api.staging.verinice.com/veo/scopes/8c98ee3f-7402-4399-bf85-905abc92f17f"
+              "targetUri": "https://api.staging.verinice.com/veo/persons/ebcb86d9-7b53-4fe1-b607-3183cf02b3eb"
+            }
+          }
+        ],
+        "process_PIADataProcessing": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/processes/eecc6821-5928-42c6-b287-41f4e42b82f1"
+            }
+          }
+        ],
+        "process_PIAOOtherOrganisationsInvolved": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/c25f59be-e1ae-499b-98a8-96b2f0c7208c"
+            }
+          }
+        ],
+        "process_PIAOtherPersonsInvolved": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/persons/e1015920-c96d-4d05-9440-5f59fc9b5d35"
             }
           }
         ],
@@ -3666,24 +3969,108 @@
             }
           }
         ],
-        "process_PIADataProcessing": [
+        "process_PIAProcessor": [
           {
             "domains": [],
             "attributes": {
               
             },
             "target": {
-              "targetUri": "https://api.staging.verinice.com/veo/processes/eecc6821-5928-42c6-b287-41f4e42b82f1"
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/f028abf2-810c-4931-8a20-5c3753e150c4"
+            }
+          }
+        ],
+        "process_PIARepresentatives": [
+          {
+            "domains": [],
+            "attributes": {
+              "process_PIARepresentatives_role": " Angestellter aus IT- Abteilung f\u00fcr Fragestellungen IT-Security relebvanter Themen"
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/persons/164f3943-d327-48f7-a5c9-a68d52b2331a"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              "process_PIARepresentatives_role": "Teilprojektleiterin, die  f\u00fcr die rechtliche Bewertung der DSFA-Durchf\u00fchrung und Dokumentation zust\u00e4ndi"
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/persons/a2c4c63c-e443-46a5-bc11-143eafde068f"
+            }
+          }
+        ],
+        "process_PIAResponsibleBody": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/8c98ee3f-7402-4399-bf85-905abc92f17f"
             }
           }
         ]
       },
       "customAspects": {
+        "process_PIADescription": {
+          "domains": [],
+          "attributes": {
+            "process_PIADescription_dataType": false,
+            "process_PIADescription_legalBasis": false,
+            "process_PIADescription_testObject": "Mo\u0308glichkeit des Hineinzoomens in Gesichtsabschnitte istb gegb",
+            "process_PIADescription_dataTransfer": true,
+            "process_PIADescription_affectedPersons": false,
+            "process_PIADescription_deletionPeriods": false,
+            "process_PIADescription_intendedPurpose": false,
+            "process_PIADescription_accessAuthorisation": true,
+            "process_PIADescription_applicationsSystems": false,
+            "process_PIADescription_dataTransferAdditions": "Es findet eine Daten\u00fcbertragung statt an einen Dienstleister. ",
+            "process_PIADescription_informationObligations": true
+          }
+        },
         "process_PIADetails": {
           "domains": [],
           "attributes": {
-            "process_PIADetails_date": "2022-06-16",
+            "process_PIADetails_date": "2022-06-30",
             "process_PIADetails_reason": "process_PIADetails_reason_new"
+          }
+        },
+        "process_PIADPO": {
+          "domains": [],
+          "attributes": {
+            "process_PIADPO_advice": true,
+            "process_PIADPO_comment": "Rat des Datenschutzbeauftragten bezu\u0308glich der Videou\u0308berwachung wurde eingeholt. Dieser bat um gro\u00dffla\u0308chige Kennzeichnung der Videou\u0308berwachung. Aus dieser soll zusa\u0308tzlich zur verpflichtenden Angabe des Verantwortlichen hervorgehen, dass das Videou\u0308berwachungssystem die Videos aufzeichnet , also nicht nur Echtzeitaufnahmen erfolgen, eine Auswertung nur im Anlassfall stattfindet und Gesichtserkennung nicht zur Anwendung gelangt.  DSB-Stellungnahme zum Verarbeitungsvorgang Vido\u00fcberwachung liegt vor, vgl. ",
+            "process_PIADPO_document": "https://www.bfdi.bund.de/DE/DerBfDI/Dokumente/Stellungnahmen/stellungnahmen_node.html"
+          }
+        },
+        "process_PIAAssessment": {
+          "domains": [],
+          "attributes": {
+            "process_PIAAssessment_rulesExisting": false
+          }
+        },
+        "process_PIAInvolvement": {
+          "domains": [],
+          "attributes": {
+            "process_PIAInvolvement_stakeholderPOV": false,
+            "process_PIAInvolvement_affectedPersons": "Arbeitnehmer und Betriebsrat",
+            "process_PIAInvolvement_affectedPersonsPOV": true,
+            "process_PIAInvolvement_stakeholderComment": "nicht relevant, da keine Akteure",
+            "process_PIAInvolvement_affectedPersonsComment": "Viel zu weitreichende Eingriffe in die Pers\u00f6nlichkeitsrechte der Arbeitnehmer. Schriftlich Anforderungen und Kritikpunkte liegen vor",
+            "process_PIAInvolvement_stakeholderParticipation": false
+          }
+        },
+        "process_PIAResult": {
+          "domains": [],
+          "attributes": {
+            "process_PIAResult_risk": true,
+            "process_PIAResult_comment": "Das Risiko konnte nicht reduziert werden trotz Ma\u00dfnahmen",
+            "process_PIAResult_commentsPIO": "Vide\u00fcberwachung kann noch nicht eingef\u00fchrt werden. Entscheidung der Aufsichtsbeh\u00f6rde ist abzuwarten.",
+            "process_PIAResult_consultationDate": "2022-07-28",
+            "process_PIAResult_consultationRequired": true,
+            "process_PIAResult_consultationConducted": false,
+            "process_PIAResult_consultationJustification": "Kosultationsprozess muss angesto\u00dfen werden, Verantwortlichkeiten m\u00fcssen noch knoch gekl\u00e4rt werden"
           }
         }
       },
@@ -3697,17 +4084,64 @@
             
           },
           "riskValues": {
-            
+            "DSRA": {
+              "potentialImpacts": {
+                "A": 3,
+                "R": 3,
+                "C": 2,
+                "I": 2
+              }
+            }
           }
         }
       },
-      "id": "ac4f2d7c-047a-4d29-a99c-74c497e82b0b"
+      "id": "8307acf4-9922-41b2-b038-1872a8fc9fe7"
     },
     {
       "name": "Durchf\u00fchrung Befragungen",
       "abbreviation": "",
       "description": "Befragungsaktionen und deren Auswertungen werden von der Data GmbH durchgef\u00fchrt.",
       "links": {
+        "process_controller": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/9d68aaa0-5b61-4809-8238-034d1e58f8d2"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/7464bfd6-e2ee-47be-be46-abc9029e7992"
+            }
+          }
+        ],
+        "process_dataTransmission": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/processes/97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/processes/01dc79d3-c768-435b-982b-91a0b812929c"
+            }
+          }
+        ],
         "process_dataType": [
           {
             "domains": [],
@@ -3767,46 +4201,6 @@
             },
             "target": {
               "targetUri": "https://api.staging.verinice.com/veo/scopes/8c98ee3f-7402-4399-bf85-905abc92f17f"
-            }
-          }
-        ],
-        "process_controller": [
-          {
-            "domains": [],
-            "attributes": {
-              
-            },
-            "target": {
-              "targetUri": "https://api.staging.verinice.com/veo/scopes/9d68aaa0-5b61-4809-8238-034d1e58f8d2"
-            }
-          },
-          {
-            "domains": [],
-            "attributes": {
-              
-            },
-            "target": {
-              "targetUri": "https://api.staging.verinice.com/veo/scopes/7464bfd6-e2ee-47be-be46-abc9029e7992"
-            }
-          }
-        ],
-        "process_dataTransmission": [
-          {
-            "domains": [],
-            "attributes": {
-              
-            },
-            "target": {
-              "targetUri": "https://api.staging.verinice.com/veo/processes/97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7"
-            }
-          },
-          {
-            "domains": [],
-            "attributes": {
-              
-            },
-            "target": {
-              "targetUri": "https://api.staging.verinice.com/veo/processes/01dc79d3-c768-435b-982b-91a0b812929c"
             }
           }
         ]
@@ -4148,8 +4542,38 @@
       "id": "01dc79d3-c768-435b-982b-91a0b812929c"
     },
     {
-      "name": "VI\u00dc",
+      "name": "Video\u00fcberwachung der Gesch\u00e4ftsr\u00e4ume",
+      "description": "Die Data GmbH plant f\u00fcr den o\u0308ffentlicher Raum wie z.B. Kundenbereiche und Mitarbeiterra\u0308ume eine Video\u00fcberwachung",
       "links": {
+        "process_dataType": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/da2c2881-a4ad-4a71-a472-69f87273a840"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct"
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/1b729aa4-7853-40bc-a777-698bed6e62ba"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct"
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/d897c2d1-d1e7-4ad9-8ad3-de651569f5d2"
+            }
+          }
+        ],
         "process_responsibleBody": [
           {
             "domains": [],
@@ -4160,20 +4584,88 @@
               "targetUri": "https://api.staging.verinice.com/veo/scopes/8c98ee3f-7402-4399-bf85-905abc92f17f"
             }
           }
+        ],
+        "process_responsiblePerson": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/persons/debea096-da44-4c2c-b05a-0950162f75ce"
+            }
+          }
         ]
       },
       "customAspects": {
+        "process_processingDetails": {
+          "domains": [],
+          "attributes": {
+            "process_processingDetails_typeOfSurvey": "process_processingDetails_typeOfSurvey_new",
+            "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_planning",
+            "process_processingDetails_surveyConductedOn": "2022-06-10",
+            "process_processingDetails_responsibleDepartment": "Geb\u00e4udemanagement"
+          }
+        },
+        "process_accessAuthorization": {
+          "domains": [],
+          "attributes": {
+            "process_accessAuthorization_concept": true
+          }
+        },
+        "process_dataProcessing": {
+          "domains": [],
+          "attributes": {
+            "process_dataProcessing_legalBasis": [
+              "process_dataProcessing_legalBasis_Art6Abs1litfDSGVO",
+              "process_dataProcessing_legalBasis_P26Abs1BDSG"
+            ]
+          }
+        },
+        "process_opinionDPO": {
+          "domains": [],
+          "attributes": {
+            "process_opinionDPO_PIACarriedOut": true,
+            "process_opinionDPO_consultationRequired": true,
+            "process_opinionDPO_consultationConducted": false
+          }
+        },
+        "process_dataSubjects": {
+          "domains": [],
+          "attributes": {
+            "process_dataSubjects_dataSubjects": [
+              "process_dataSubjects_dataSubjects_employees",
+              "process_dataSubjects_dataSubjects_applicants",
+              "process_dataSubjects_dataSubjects_supplier",
+              "process_dataSubjects_dataSubjects_customers",
+              "process_dataSubjects_dataSubjects_externalServiceProvider"
+            ],
+            "process_dataSubjects_otherDataSubjects": "Passanten"
+          }
+        },
+        "process_intendedPurpose": {
+          "domains": [],
+          "attributes": {
+            "process_intendedPurpose_intendedPurpose": "Zwecke einer Vandalismuspr\u00e4vention oder aber als Zutritts- und Zugangskontrolle zum Betriebsgel\u00e4nde und Firmengeb\u00e4ude dient. "
+          }
+        },
         "process_privacyImpactAssessment": {
           "domains": [],
           "attributes": {
             "process_privacyImpactAssessment_listed": "process_privacyImpactAssessment_listed_positive"
+          }
+        },
+        "process_informationsObligations": {
+          "domains": [],
+          "attributes": {
+            "process_informationsObligations_status": false
           }
         }
       },
       "type": "process",
       "parts": [
         {
-          "targetUri": "https://api.staging.verinice.com/veo/processes/ac4f2d7c-047a-4d29-a99c-74c497e82b0b"
+          "targetUri": "https://api.staging.verinice.com/veo/processes/8307acf4-9922-41b2-b038-1872a8fc9fe7"
         }
       ],
       "domains": {
@@ -4674,6 +5166,29 @@
       "id": "04a97d42-c8aa-4e95-96a1-2aab6214c1bb"
     },
     {
+      "name": "Betriebsrat",
+      "description": "Der Betriebsrat ist Repr\u00e4sentant der Arbeitnehmer eines Betriebs und hat sich f\u00fcr deren Interessen einzusetzen. Der Betriebsrat ist deshalb grunds\u00e4tzlich f\u00fcr alle Arbeitnehmer zust\u00e4ndig.",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "scope",
+      "members": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCP_Scope",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskDefinition": "DSRA"
+        }
+      },
+      "id": "c25f59be-e1ae-499b-98a8-96b2f0c7208c"
+    },
+    {
       "name": "Bewerbungen AG",
       "links": {
         
@@ -4721,14 +5236,16 @@
       "name": "Data GmbH",
       "description": "Die Data GmbH ist ein IT-Dienstleister, spezialisiert auf Netzwerksicherheit und Informationssicherheit und in unserer Demo die Verantwortliche Stelle nach DS-GVO.",
       "links": {
-        "scope_informationSecurityOfficer": [
+        "scope_dataProtectionOfficer": [
           {
             "domains": [],
             "attributes": {
-              
+              "scope_dataProtectionOfficer_nomination": true,
+              "scope_dataProtectionOfficer_affiliation": "scope_dataProtectionOfficer_affiliation_internal",
+              "scope_dataProtectionOfficer_nominationDate": "2020-11-01"
             },
             "target": {
-              "targetUri": "https://api.staging.verinice.com/veo/persons/164f3943-d327-48f7-a5c9-a68d52b2331a"
+              "targetUri": "https://api.staging.verinice.com/veo/persons/5fb78661-571d-411b-9aa6-f39636c16717"
             }
           }
         ],
@@ -4743,16 +5260,14 @@
             }
           }
         ],
-        "scope_dataProtectionOfficer": [
+        "scope_informationSecurityOfficer": [
           {
             "domains": [],
             "attributes": {
-              "scope_dataProtectionOfficer_nomination": true,
-              "scope_dataProtectionOfficer_affiliation": "scope_dataProtectionOfficer_affiliation_internal",
-              "scope_dataProtectionOfficer_nominationDate": "2020-11-01"
+              
             },
             "target": {
-              "targetUri": "https://api.staging.verinice.com/veo/persons/5fb78661-571d-411b-9aa6-f39636c16717"
+              "targetUri": "https://api.staging.verinice.com/veo/persons/164f3943-d327-48f7-a5c9-a68d52b2331a"
             }
           }
         ],
@@ -4835,7 +5350,7 @@
           "targetUri": "https://api.staging.verinice.com/veo/controls/f2dcba8f-dce5-4831-9fff-86abb0e28168"
         },
         {
-          "targetUri": "https://api.staging.verinice.com/veo/processes/ac4f2d7c-047a-4d29-a99c-74c497e82b0b"
+          "targetUri": "https://api.staging.verinice.com/veo/processes/8307acf4-9922-41b2-b038-1872a8fc9fe7"
         },
         {
           "targetUri": "https://api.staging.verinice.com/veo/processes/97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7"
@@ -4935,17 +5450,6 @@
     {
       "name": "FED AG",
       "links": {
-        "scope_headOfDataProcessing": [
-          {
-            "domains": [],
-            "attributes": {
-              
-            },
-            "target": {
-              "targetUri": "https://api.staging.verinice.com/veo/persons/95790af0-6917-4aca-ad5a-7143d5f1220b"
-            }
-          }
-        ],
         "scope_dataProtectionOfficer": [
           {
             "domains": [],
@@ -4954,6 +5458,17 @@
             },
             "target": {
               "targetUri": "https://api.staging.verinice.com/veo/persons/5adafe4f-e024-41fc-9723-ada37a2ccff0"
+            }
+          }
+        ],
+        "scope_headOfDataProcessing": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/persons/95790af0-6917-4aca-ad5a-7143d5f1220b"
             }
           }
         ],
@@ -5162,12 +5677,17 @@
     },
     {
       "name": "SafeGuard GmbH",
-      "description": "Diensleister f\u00fcr Video\u00fcberwachung ",
+      "description": "Safeguard ist mit der Durchf\u00fchrung der Video\u00fcberwachung beauftragt",
       "links": {
         
       },
       "customAspects": {
-        
+        "scope_thirdCountry": {
+          "domains": [],
+          "attributes": {
+            "scope_thirdCountry_status": false
+          }
+        }
       },
       "type": "scope",
       "members": [],
@@ -5807,6 +6327,230 @@
                     "RISK_TREATMENT_ACCEPTANCE"
                   ],
                   "residualRisk": 0
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "scenario": {
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/6198e14b-9d7e-4f2c-8e82-33cfcad1828b"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/5c0875a0-3319-4b58-b5c0-2b3847b8bbad"
+      },
+      "process": {
+        "targetUri": "https://api.staging.verinice.com/veo/processes/8307acf4-9922-41b2-b038-1872a8fc9fe7"
+      },
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "riskDefinitions": {
+            "DSRA": {
+              "probability": {
+                "potentialProbability": 0,
+                "specificProbability": 2,
+                "effectiveProbability": 2
+              },
+              "impactValues": [
+                {
+                  "category": "I",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                },
+                {
+                  "category": "A",
+                  "potentialImpact": 3,
+                  "effectiveImpact": 3
+                },
+                {
+                  "category": "R",
+                  "potentialImpact": 3,
+                  "effectiveImpact": 3
+                },
+                {
+                  "category": "C",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                }
+              ],
+              "riskValues": [
+                {
+                  "category": "I",
+                  "inherentRisk": 2,
+                  "riskTreatments": [],
+                  "residualRisk": 2
+                },
+                {
+                  "category": "A",
+                  "inherentRisk": 3,
+                  "riskTreatments": [],
+                  "residualRisk": 3
+                },
+                {
+                  "category": "R",
+                  "inherentRisk": 3,
+                  "riskTreatments": [],
+                  "residualRisk": 3
+                },
+                {
+                  "category": "C",
+                  "inherentRisk": 2,
+                  "riskTreatments": [],
+                  "residualRisk": 2
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "scenario": {
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/a8962118-f7ce-46ae-8423-d46d0853748a"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/5c0875a0-3319-4b58-b5c0-2b3847b8bbad"
+      },
+      "process": {
+        "targetUri": "https://api.staging.verinice.com/veo/processes/8307acf4-9922-41b2-b038-1872a8fc9fe7"
+      },
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "riskDefinitions": {
+            "DSRA": {
+              "probability": {
+                "potentialProbability": 1,
+                "specificProbability": 2,
+                "effectiveProbability": 2
+              },
+              "impactValues": [
+                {
+                  "category": "I",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                },
+                {
+                  "category": "A",
+                  "potentialImpact": 3,
+                  "effectiveImpact": 3
+                },
+                {
+                  "category": "R",
+                  "potentialImpact": 3,
+                  "effectiveImpact": 3
+                },
+                {
+                  "category": "C",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                }
+              ],
+              "riskValues": [
+                {
+                  "category": "I",
+                  "inherentRisk": 2,
+                  "riskTreatments": [],
+                  "residualRisk": 2
+                },
+                {
+                  "category": "A",
+                  "inherentRisk": 3,
+                  "riskTreatments": [],
+                  "residualRisk": 3
+                },
+                {
+                  "category": "R",
+                  "inherentRisk": 3,
+                  "riskTreatments": [],
+                  "residualRisk": 3
+                },
+                {
+                  "category": "C",
+                  "inherentRisk": 2,
+                  "riskTreatments": [],
+                  "residualRisk": 2
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "scenario": {
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/4dbb8054-560e-49b9-83ec-fed93e612be7"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/5c0875a0-3319-4b58-b5c0-2b3847b8bbad"
+      },
+      "process": {
+        "targetUri": "https://api.staging.verinice.com/veo/processes/8307acf4-9922-41b2-b038-1872a8fc9fe7"
+      },
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "riskDefinitions": {
+            "DSRA": {
+              "probability": {
+                "potentialProbability": 0,
+                "specificProbability": 2,
+                "effectiveProbability": 2
+              },
+              "impactValues": [
+                {
+                  "category": "I",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                },
+                {
+                  "category": "A",
+                  "potentialImpact": 3,
+                  "effectiveImpact": 3
+                },
+                {
+                  "category": "R",
+                  "potentialImpact": 3,
+                  "effectiveImpact": 3
+                },
+                {
+                  "category": "C",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                }
+              ],
+              "riskValues": [
+                {
+                  "category": "I",
+                  "inherentRisk": 2,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 2
+                },
+                {
+                  "category": "A",
+                  "inherentRisk": 3,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 3
+                },
+                {
+                  "category": "R",
+                  "inherentRisk": 3,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 3
+                },
+                {
+                  "category": "C",
+                  "inherentRisk": 2,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 2
                 }
               ]
             }
