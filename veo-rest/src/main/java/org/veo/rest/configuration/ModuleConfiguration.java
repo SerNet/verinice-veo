@@ -174,6 +174,7 @@ import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
 import org.veo.persistence.entity.jpa.transformer.IdentifiableDataFactory;
 import org.veo.rest.security.AuthAwareImpl;
 import org.veo.rest.security.CurrentUserProviderImpl;
+import org.veo.service.CatalogMigrationService;
 import org.veo.service.DefaultDomainCreator;
 import org.veo.service.ElementMigrationService;
 import org.veo.service.EtagService;
@@ -873,8 +874,9 @@ public class ModuleConfiguration {
   public IncomingMessageHandler incomingMessageHandler(
       RepositoryProvider repositoryProvider,
       ElementMigrationService elementMigrationService,
-      RiskService riskService) {
-    return new IncomingMessageHandler(repositoryProvider, elementMigrationService);
+      CatalogMigrationService catalogMigrationService) {
+    return new IncomingMessageHandler(
+        repositoryProvider, elementMigrationService, catalogMigrationService);
   }
 
   @Bean
@@ -950,5 +952,12 @@ public class ModuleConfiguration {
       RepositoryProvider repositoryProvider,
       Inspector inspector) {
     return new InspectElementUseCase(domainRepository, repositoryProvider, inspector);
+  }
+
+  @Bean
+  CatalogMigrationService catalogItemMigrationService(
+      ElementMigrationService elementMigrationService,
+      CatalogItemRepository catalogItemRepository) {
+    return new CatalogMigrationService(elementMigrationService, catalogItemRepository);
   }
 }

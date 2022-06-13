@@ -21,6 +21,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.service.CatalogMigrationService;
 import org.veo.service.ElementMigrationService;
 
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class IncomingMessageHandler {
   private final RepositoryProvider repositoryProvider;
   private final ElementMigrationService elementMigrationService;
+  private final CatalogMigrationService catalogMigrationService;
 
   public void handleElementTypeDefinitionUpdate(Domain domain, EntityType elementType) {
     var definition = domain.getElementTypeDefinition(elementType.getSingularTerm());
@@ -43,5 +45,7 @@ public class IncomingMessageHandler {
             element -> {
               elementMigrationService.migrate(element, definition, domain);
             });
+
+    catalogMigrationService.migrate(definition, domain);
   }
 }

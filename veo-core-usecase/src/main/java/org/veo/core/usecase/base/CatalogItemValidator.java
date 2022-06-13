@@ -40,7 +40,7 @@ public class CatalogItemValidator {
     }
   }
 
-  private static void validate(TailoringReference tailoringReference, DomainTemplate domain) {
+  public static void validate(TailoringReference tailoringReference, DomainTemplate domain) {
     var item = tailoringReference.getOwner();
     var referenceType = tailoringReference.getReferenceType();
     if (referenceType == TailoringReferenceType.LINK) {

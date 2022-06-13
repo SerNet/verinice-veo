@@ -30,6 +30,8 @@ import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Domain
+import org.veo.core.repository.CatalogRepository
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.UnitRepository
 import org.veo.jobs.MessagingJob
@@ -58,8 +60,12 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
     UnitRepository unitRepo
 
     @Autowired
+    CatalogRepository catalogRepository
+
+    @Autowired
     MessagingJob messagingJob
 
+    Domain domain
     String domainId
     String unitId
 
@@ -83,7 +89,7 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
 
     def setup() {
         def client = createTestClient()
-        def domain = newDomain(client)
+        domain = newDomain(client)
         domainId = domain.id.uuidValue()
         clientRepo.save(client)
 
@@ -158,6 +164,26 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
             ]
         ])).resourceId
 
+        // TODO VEO-399 create catalog item via API endpoint
+        and: "a catalog item that conforms to the element type definition"
+        catalogRepository.save(newCatalog(domain) {
+            catalogItems = [
+                newCatalogItem(it) {
+                    it.element = newAsset(null) {
+                        name = "my little catalog asset"
+                        customAspects = [
+                            newCustomAspect("aspectOne") {
+                                attributes = [
+                                    'attrOne': "catalogValueOne",
+                                    'attrTwo': "catalogValueTwo",
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        })
+
         when: "removing one custom aspect type and one custom aspect attribute from the element type definition"
         schema.properties.customAspects.properties.remove("aspectTwo")
         schema.properties.customAspects.properties.aspectOne.properties.attributes.properties.remove("attrTwo")
@@ -183,6 +209,19 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
         and: "the obsolete content has been removed from the asset"
         retrievedAsset.customAspects.aspectOne.attributes.attrTwo == null
         retrievedAsset.customAspects.aspectTwo == null
+
+        when: "retrieving the catalog item"
+        def catalogId = parseJson(get("/catalogs")).first().id
+        def catalogItem = parseJson(get("/catalogs/$catalogId/items")).first()
+        def catalogItemElement = parseJson(get(catalogItem.element.targetUri))
+
+        then:"the content of the catalog item that still conforms to the current element type definition is still there"
+        catalogItemElement.customAspects.aspectOne != null
+        catalogItemElement.customAspects.aspectOne.attributes.attrOne != null
+
+        and: "the obsolete content has been removed from the catalog item"
+        catalogItemElement.customAspects.aspectOne.attributes.attrTwo == null
+
     }
 
     def cleanup() {

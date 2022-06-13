@@ -214,7 +214,7 @@ abstract class VeoSpec extends Specification {
     static LinkTailoringReferenceData newLinkTailoringReference(CatalogItem catalogItem,
             TailoringReferenceType referenceType,
             @DelegatesTo(value = LinkTailoringReference.class, strategy = Closure.DELEGATE_FIRST)
-            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.ExternalTailoringReference") Closure init = null) {
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.LinkTailoringReference") Closure init = null) {
         return factory.createLinkTailoringReference(catalogItem, referenceType).tap {
             VeoSpec.execute(it, init)
         }
