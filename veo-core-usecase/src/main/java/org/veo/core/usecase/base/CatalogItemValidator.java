@@ -30,7 +30,7 @@ public class CatalogItemValidator {
       DomainSensitiveElementValidator.validate(item.getElement());
       var domain = item.getCatalog().getDomainTemplate();
       item.getTailoringReferences()
-          .forEach(tailoringReference -> validate(tailoringReference, item, domain));
+          .forEach(tailoringReference -> validate(tailoringReference, domain));
     } catch (IllegalArgumentException illEx) {
       throw new IllegalArgumentException(
           String.format(
@@ -40,8 +40,8 @@ public class CatalogItemValidator {
     }
   }
 
-  private static void validate(
-      TailoringReference tailoringReference, CatalogItem item, DomainTemplate domain) {
+  private static void validate(TailoringReference tailoringReference, DomainTemplate domain) {
+    var item = tailoringReference.getOwner();
     var referenceType = tailoringReference.getReferenceType();
     if (referenceType == TailoringReferenceType.LINK) {
       var linkRef = (LinkTailoringReference) tailoringReference;
