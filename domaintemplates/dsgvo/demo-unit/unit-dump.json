@@ -1624,6 +1624,27 @@
       "id": "956e7d64-9d50-4420-91af-6239cd7d368f"
     },
     {
+      "name": "Tonaufnahmen",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "asset",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "AST_Datatype",
+          "status": "NEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "672e473d-3d9d-4573-af66-f89b1b0d84e4"
+    },
+    {
       "name": " Einwilligungserkl\u00e4rungen  dokumentieren",
       "links": {
         
@@ -1699,6 +1720,48 @@
       "id": "2643384c-e06a-4466-a667-1ba60ef81ad8"
     },
     {
+      "name": "AV Vertrag mit Safeguard ",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-06-30",
+            "control_implementation_explanation": "Vertrag muss abgeschlossen werden, Sicherheitskonzept ist vorab anzufordern"
+          }
+        },
+        "control_dataProtection": {
+          "domains": [],
+          "attributes": {
+            "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_availability",
+              "control_dataProtection_objectives_integrity",
+              "control_dataProtection_objectives_confidentiality"
+            ]
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "implementationStatus": 1
+            }
+          }
+        }
+      },
+      "id": "1db5fc86-c716-45f4-ad92-35c35ec81af7"
+    },
+    {
       "name": "Anpassung der Informationspflichten",
       "description": "Informationspflichten m\u00fcssen entsprechend der \u00c4nderungen aktualisiert werden",
       "links": {
@@ -1722,6 +1785,38 @@
         }
       },
       "id": "db4431fa-355e-47db-9ba0-bcb3edbadcfa"
+    },
+    {
+      "name": "Arbeitsanweiung zur Tonaufzeichnung",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-06-30",
+            "control_implementation_explanation": "Wird eine Videou\u0308berwachungskamera mit Audiofunktion eingesetzt, kann dies unter den Straftatbestand des \u00a7 201I, II STGB fallen. Demnach ist das\nunbefugt heimliche Abho\u0308ren oder Aufzeichnen des nichto\u0308ffentlich gesprochenen Wortes strafbar. Verfu\u0308gt eine Videou\u0308berwachungskamera u\u0308ber eine Audiofunktion, ist diese unumkehrbar zu deaktivieren. Hierf\u00fcr ist eine Arbeitsanweisung zu erstellen und in der Organisation umzusetzen\n"
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "implementationStatus": 1
+            }
+          }
+        }
+      },
+      "id": "c97ae1cb-a8e6-4e01-b598-f21fc987f6aa"
     },
     {
       "name": "Berechtigungskonzept ",
@@ -1960,6 +2055,40 @@
         }
       },
       "id": "5632186d-0397-4041-9144-8ef04030b096"
+    },
+    {
+      "name": "Dokumentation Video\u00fcberwachung",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "control",
+      "parts": [
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/0a4c1fd4-5097-41e2-9bae-2e568b7d573e"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/93a035e1-7e4a-4b73-a95c-bfcb1d736746"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/ef4ce568-f465-4357-ac23-47b48353e863"
+        }
+      ],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "1e4e8c03-c176-4e06-8a04-b9dd6321341e"
     },
     {
       "name": "E-Mail-Verschl\u00fcsselung von sensibler Kommunikation mittels S/MIME",
@@ -2203,12 +2332,26 @@
     },
     {
       "name": "Hinweisschilder Vido\u00fcberwachung",
-      "description": "Es m\u00fcssen am Anfangs- und am Endbereich des \u00fcberwachten Areals Hinweisschilder so angebracht werden , dass sie von den Betroffenen direkt zur Kentniss gelangen k\u00f6nnen.",
+      "description": "Auf die Datenverarbeitung ist\ntransparent und fair nach den Vorgaben der Art. 12 ff. DS-GVO hinzuweisen\n",
       "links": {
         
       },
       "customAspects": {
-        
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-08-26",
+            "control_implementation_explanation": "Es m\u00fcssen am Anfangs- und am Endbereich des \u00fcberwachten Areals Hinweisschilder so angebracht werden , dass sie von den Betroffenen direkt zur Kentniss gelangen k\u00f6nnen."
+          }
+        },
+        "control_dataProtection": {
+          "domains": [],
+          "attributes": {
+            "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_confidentiality"
+            ]
+          }
+        }
       },
       "type": "control",
       "parts": [],
@@ -2220,7 +2363,9 @@
             
           },
           "riskValues": {
-            
+            "DSRA": {
+              "implementationStatus": 1
+            }
           }
         }
       },
@@ -2257,6 +2402,46 @@
         }
       },
       "id": "f5afe8f1-ac3b-4911-9589-571ecc4fdaa7"
+    },
+    {
+      "name": "Informationspflichten Video\u00fcberwachung ",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-08-17",
+            "control_implementation_explanation": "Die Informationspflichten zu den  Video\u00fcberwachungsma\u00dfnahmen m\u00fcssen erstellt und f\u00fcr die Betroffnen zur Verf\u00fcgung getsellt werden. "
+          }
+        },
+        "control_dataProtection": {
+          "domains": [],
+          "attributes": {
+            "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_confidentiality"
+            ]
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "implementationStatus": 1
+            }
+          }
+        }
+      },
+      "id": "93a035e1-7e4a-4b73-a95c-bfcb1d736746"
     },
     {
       "name": "Konsultation Rechtsabteilung",
@@ -2351,6 +2536,45 @@
       "id": "787fda3e-4fdf-457b-ad37-ed2659ea660c"
     },
     {
+      "name": "L\u00f6schfrist 72 Stunden Videoaufzeichnungen",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_explanation": "Es muss eine L\u00f6schfrist von 72 Stunden f\u00fcr Videoaufzeichnungen festgesetzt werden. Das L\u00f6schkonzept ist entsprechend zu erg\u00e4nzen , Fristen m\u00fcssen aktiv kommuniziert werden"
+          }
+        },
+        "control_dataProtection": {
+          "domains": [],
+          "attributes": {
+            "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_integrity",
+              "control_dataProtection_objectives_confidentiality",
+              "control_dataProtection_objectives_availability"
+            ]
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "a8f65c89-d253-4c8f-82d7-1a5e4defd0e6"
+    },
+    {
       "name": "L\u00f6schfrist Bewerbungsunterlagen",
       "description": "Es muss eine 6 monatige L\u00f6schfrist f\u00fcr abgelehnte Bewerber festgesetzt und mit der Personalabteilung kommuniziert werden",
       "links": {
@@ -2389,6 +2613,38 @@
         }
       },
       "id": "6e2d3339-4b6d-4b29-9eb9-5c27501e71b4"
+    },
+    {
+      "name": "L\u00f6schverfahren Videoaufzeichnungen",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-08-31",
+            "control_implementation_explanation": "L\u00f6schmechanismen f\u00fcr Videoaufzeichnungen m\u00fcssen implemeniert  und dokumentiert werden, d.h Art und Weise der L\u00f6schung und Nachweise"
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "implementationStatus": 1
+            }
+          }
+        }
+      },
+      "id": "fd778e4e-067f-4238-ba35-ba4283d8ed31"
     },
     {
       "name": "L\u00f6schverfahren aus dem Bewerberpool",
@@ -2461,6 +2717,88 @@
         }
       },
       "id": "096cdf47-f4f5-43a6-99f7-b5439e385c3e"
+    },
+    {
+      "name": "Mitigierende Ma\u00dfnahme f\u00fcr \"SCN-135 DS-G.11 Fehlende oder unzureichende L\u00f6schvorgaben bzw. L\u00f6schmechanismen\"",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "control",
+      "parts": [
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/a8f65c89-d253-4c8f-82d7-1a5e4defd0e6"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/fd778e4e-067f-4238-ba35-ba4283d8ed31"
+        }
+      ],
+      "domains": {
+        
+      },
+      "id": "a063e725-b2be-4dd7-986c-4c8fda0046ea"
+    },
+    {
+      "name": "Mitigierende Ma\u00dfnahme f\u00fcr \"SCN-151 DS-G.44 Unvollst\u00e4ndige Vertr\u00e4ge\"",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "control",
+      "parts": [
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/1db5fc86-c716-45f4-ad92-35c35ec81af7"
+        }
+      ],
+      "domains": {
+        
+      },
+      "id": "625cd4f3-5b0c-4e1b-bf71-c815efac60d8"
+    },
+    {
+      "name": "Rechtsgutachten Video\u00fcberwachung",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-07-22",
+            "control_implementation_explanation": "Eine Stellungnahme zur datenschutzrechlichen Zul\u00e4ssigkeit der Video\u00fcberwachung insb. der Tonaufzeichnungen ist seitens der Rechtsabteilung anzufertigen. Weitergehende Ma\u00dfnahmen , die sich aus dem Gutachten resultieren sind mit den Verantwortlkichem  zu kommunizieren und anzusto\u00dfen"
+          }
+        },
+        "control_dataProtection": {
+          "domains": [],
+          "attributes": {
+            "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_confidentiality",
+              "control_dataProtection_objectives_integrity"
+            ]
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "implementationStatus": 1
+            }
+          }
+        }
+      },
+      "id": "84b75fa2-0f80-4acb-b972-4624ba162d13"
     },
     {
       "name": "Schulung zu Auskunfsterteilung",
@@ -2794,6 +3132,76 @@
         }
       },
       "id": "07709c03-3c8a-4993-b3e5-52304c3ec539"
+    },
+    {
+      "name": "Technische Dokumentation anfertigen",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-07-29",
+            "control_implementation_explanation": "Technische Doku ist zu verfolst\u00e4ndigen. Zudem sind die Zweckef\u00fcr jede einzelne Kamera schriftlich zu dokumentieren.\nFragebogen hierf\u00fcr anh\u00e4ngend"
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "implementationStatus": 2
+            }
+          }
+        }
+      },
+      "id": "ef4ce568-f465-4357-ac23-47b48353e863"
+    },
+    {
+      "name": "Tonaufzeichnungen",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-06-29"
+          }
+        }
+      },
+      "type": "control",
+      "parts": [
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/c97ae1cb-a8e6-4e01-b598-f21fc987f6aa"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/84b75fa2-0f80-4acb-b972-4624ba162d13"
+        }
+      ],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "implementationStatus": 1
+            }
+          }
+        }
+      },
+      "id": "c775a2db-9f05-4179-bd29-0b1e997a630d"
     },
     {
       "name": "Verfahren regelm\u00e4\u00dfiger \u00dcberpr\u00fcfung, Bewertung und Evaluierung der Wirksamkeit der TOM",
@@ -3912,7 +4320,7 @@
     },
     {
       "name": "DSFA Video\u00fcberwachung ",
-      "description": "Erfassung von Videodaten im Eingangs- und Zutrittsbereich mit IP-Kameras. Die Erfassung erfolgt durchgehend.Im betroffenen Eingangs- und Zutrittsbereich befinden sich zudem Arbeitspl\u00e4tze. In den Gesch\u00e4ftsr\u00e4umen  erfolgt die Erfassung an Wochentagen nur zwischen 20.00 Uhr und 6.00 Uhr .  Die IP-Kameras sind schwenkbar und k\u00f6nnen zoomen.",
+      "description": "Erfassung von Videodaten im Eingangs- und Zutrittsbereich mit IP-Kameras. Die Erfassung erfolgt durchgehend.Im betroffenen Eingangs- und Zutrittsbereich befinden sich zudem Arbeitspl\u00e4tze. In den Gesch\u00e4ftsr\u00e4umen  erfolgt die Erfassung an Wochentagen nur zwischen 20.00 Uhr und 6.00 Uhr Die IP-Kameras sind schwenkbar und k\u00f6nnen zoomen.",
       "links": {
         "process_PIAAuditor": [
           {
@@ -4025,7 +4433,7 @@
             "process_PIADescription_intendedPurpose": false,
             "process_PIADescription_accessAuthorisation": true,
             "process_PIADescription_applicationsSystems": false,
-            "process_PIADescription_dataTransferAdditions": "Es findet eine Daten\u00fcbertragung statt an einen Dienstleister. ",
+            "process_PIADescription_dataTransferAdditions": "Es findet eine Daten\u00fcbertragung statt an einen Dienstleister. Rechtliche \u00dcberpr\u00fcfung erforderlich",
             "process_PIADescription_informationObligations": true
           }
         },
@@ -4040,7 +4448,7 @@
           "domains": [],
           "attributes": {
             "process_PIADPO_advice": true,
-            "process_PIADPO_comment": "Rat des Datenschutzbeauftragten bezu\u0308glich der Videou\u0308berwachung wurde eingeholt. Dieser bat um gro\u00dffla\u0308chige Kennzeichnung der Videou\u0308berwachung. Aus dieser soll zusa\u0308tzlich zur verpflichtenden Angabe des Verantwortlichen hervorgehen, dass das Videou\u0308berwachungssystem die Videos aufzeichnet , also nicht nur Echtzeitaufnahmen erfolgen, eine Auswertung nur im Anlassfall stattfindet und Gesichtserkennung nicht zur Anwendung gelangt.  DSB-Stellungnahme zum Verarbeitungsvorgang Vido\u00fcberwachung liegt vor, vgl. ",
+            "process_PIADPO_comment": "Rat des Datenschutzbeauftragten bezu\u0308glich der Videou\u0308berwachung wurde eingeholt. Dieser bat um gro\u00dffla\u0308chige Kennzeichnung der Videou\u0308berwachung. Aus dieser soll zusa\u0308tzlich zur verpflichtenden Angabe des Verantwortlichen hervorgehen, dass das Videou\u0308berwachungssystem die Videos aufzeichnet , also nicht nur Echtzeitaufnahmen erfolgen. Die Tonaufzeichnung sind nach Ansicht des DSB unzul\u00e4ssig und m\u00fcssen unterbleiben. Schriftliche  DSB-Stellungnahme zum Verarbeitungsvorgang Vido\u00fcberwachung liegt vor, vgl. ",
             "process_PIADPO_document": "https://www.bfdi.bund.de/DE/DerBfDI/Dokumente/Stellungnahmen/stellungnahmen_node.html"
           }
         },
@@ -4070,7 +4478,7 @@
             "process_PIAResult_consultationDate": "2022-07-28",
             "process_PIAResult_consultationRequired": true,
             "process_PIAResult_consultationConducted": false,
-            "process_PIAResult_consultationJustification": "Kosultationsprozess muss angesto\u00dfen werden, Verantwortlichkeiten m\u00fcssen noch knoch gekl\u00e4rt werden"
+            "process_PIAResult_consultationJustification": "Kosultationsprozess muss angesto\u00dfen werden, Verantwortlichkeiten m\u00fcssen noch noch gekl\u00e4rt werden"
           }
         }
       },
@@ -4543,22 +4951,17 @@
     },
     {
       "name": "Video\u00fcberwachung der Gesch\u00e4ftsr\u00e4ume",
-      "description": "Die Data GmbH plant f\u00fcr den o\u0308ffentlicher Raum wie z.B. Kundenbereiche und Mitarbeiterra\u0308ume eine Video\u00fcberwachung",
+      "description": "Die Data GmbH plant f\u00fcr die R\u00e4ume im Kundenbereich sowie in den Mitarbeiterra\u0308ume eine Video\u00fcberwachung.",
       "links": {
         "process_dataType": [
           {
             "domains": [],
             "attributes": {
-              
-            },
-            "target": {
-              "targetUri": "https://api.staging.verinice.com/veo/assets/da2c2881-a4ad-4a71-a472-69f87273a840"
-            }
-          },
-          {
-            "domains": [],
-            "attributes": {
-              "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct"
+              "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct",
+              "process_dataType_deletionPeriod": "process_dataType_deletionPeriod_day",
+              "process_dataType_deletionPeriodCount": 14,
+              "process_dataType_deletionPeriodStart": "process_dataType_deletionPeriodStart_dataCollection",
+              "process_dataType_descriptionDeletionProcedure": "nicht bekannt"
             },
             "target": {
               "targetUri": "https://api.staging.verinice.com/veo/assets/1b729aa4-7853-40bc-a777-698bed6e62ba"
@@ -4567,10 +4970,27 @@
           {
             "domains": [],
             "attributes": {
-              "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct"
+              "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct",
+              "process_dataType_deletionPeriod": "process_dataType_deletionPeriod_day",
+              "process_dataType_deletionPeriodCount": 14,
+              "process_dataType_deletionPeriodStart": "process_dataType_deletionPeriodStart_dataCollection",
+              "process_dataType_descriptionDeletionProcedure": "nicht bekannt"
             },
             "target": {
               "targetUri": "https://api.staging.verinice.com/veo/assets/d897c2d1-d1e7-4ad9-8ad3-de651569f5d2"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct",
+              "process_dataType_deletionPeriod": "process_dataType_deletionPeriod_day",
+              "process_dataType_deletionPeriodCount": 16,
+              "process_dataType_deletionPeriodStart": "process_dataType_deletionPeriodStart_dataCollection",
+              "process_dataType_descriptionDeletionProcedure": "unbekannt"
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/672e473d-3d9d-4573-af66-f89b1b0d84e4"
             }
           }
         ],
@@ -4619,14 +5039,18 @@
             "process_dataProcessing_legalBasis": [
               "process_dataProcessing_legalBasis_Art6Abs1litfDSGVO",
               "process_dataProcessing_legalBasis_P26Abs1BDSG"
-            ]
+            ],
+            "process_dataProcessing_explanation": "Die Data GmbH geht aufgrund wiederholter Einbruchsversuche und Sachbescha\u0308digungen in den letzten Monaten davon aus, dass eine besondere Gefa\u0308hrdungslage besteht, die durch die beschriebene Videou\u0308berwachung eingeda\u0308mmt werden kann. Deswegen liegt ein berechtigtes Interesse an der Videou\u0308berwachung vor."
           }
         },
         "process_opinionDPO": {
           "domains": [],
           "attributes": {
+            "process_opinionDPO_findings": "Es sind keine Hinweisschilder angebracht. \nNeben den Bilddaten werden auch Tonaufzeichnungen angefertigt",
+            "process_opinionDPO_PIAComment": "DSFA Prozess noch nicht abgeschlossen",
             "process_opinionDPO_PIACarriedOut": true,
-            "process_opinionDPO_consultationRequired": true,
+            "process_opinionDPO_recommendations": "Es sollten f\u00fcr die Betroffnen erkennbare Hinweisschilder auf die Video\u00fcberwachung mit den datenschutzrechtlichen Angaben angebracht werden. Informationspflichten werden nicht erf\u00fcllt. Die Tonaufzeichnung der Betroffenen im Zuge der Video\u00fcebrwachung ist unzul\u00e4ssig. Es muss eine DSFA durchgef\u00fchrt werden.",
+            "process_opinionDPO_consultationRequired": false,
             "process_opinionDPO_consultationConducted": false
           }
         },
@@ -4639,26 +5063,31 @@
               "process_dataSubjects_dataSubjects_supplier",
               "process_dataSubjects_dataSubjects_customers",
               "process_dataSubjects_dataSubjects_externalServiceProvider"
-            ],
-            "process_dataSubjects_otherDataSubjects": "Passanten"
+            ]
           }
         },
         "process_intendedPurpose": {
           "domains": [],
           "attributes": {
-            "process_intendedPurpose_intendedPurpose": "Zwecke einer Vandalismuspr\u00e4vention oder aber als Zutritts- und Zugangskontrolle zum Betriebsgel\u00e4nde und Firmengeb\u00e4ude dient. "
+            "process_intendedPurpose_intendedPurpose": "Zum Zwecke einer Vandalismuspr\u00e4vention und als Zutritts- und Zugangskontrolle zum  Firmengeb\u00e4ude und in die Mitarbeiterr\u00e4ume"
           }
         },
         "process_privacyImpactAssessment": {
           "domains": [],
           "attributes": {
-            "process_privacyImpactAssessment_listed": "process_privacyImpactAssessment_listed_positive"
+            "process_privacyImpactAssessment_listed": "process_privacyImpactAssessment_listed_positive",
+            "process_privacyImpactAssessment_processingCriteria": [
+              "process_privacyImpactAssessment_processingCriteria_monitoring",
+              "process_privacyImpactAssessment_processingCriteria_specialCategories",
+              "process_privacyImpactAssessment_processingCriteria_vulnerability"
+            ]
           }
         },
         "process_informationsObligations": {
           "domains": [],
           "attributes": {
-            "process_informationsObligations_status": false
+            "process_informationsObligations_status": false,
+            "process_informationsObligations_explanation": "nicht eingehalten"
           }
         }
       },
@@ -4678,11 +5107,13 @@
               "decisiveRule": 4,
               "matchingRules": [
                 4,
-                5
+                5,
+                6
               ],
               "agreeingRules": [
                 4,
-                5
+                5,
+                6
               ]
             }
           },
@@ -4726,6 +5157,31 @@
         }
       },
       "id": "a8962118-f7ce-46ae-8423-d46d0853748a"
+    },
+    {
+      "name": "Fehlende oder unzureichende Information oder mangelnde Transparenz",
+      "abbreviation": "DS-G.10",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "scenario",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "070a3267-a85f-44a6-803f-c18bccaf3268"
     },
     {
       "name": "Fehlende oder unzureichende L\u00f6schvorgaben bzw. L\u00f6schmechanismen",
@@ -4973,6 +5429,31 @@
       "id": "7c1ee1aa-ac64-4d74-9816-194c428859bf"
     },
     {
+      "name": "Unvollst\u00e4ndige Vertr\u00e4ge",
+      "abbreviation": "DS-G.44",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "scenario",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "eb29bc66-ea37-45e3-9bc7-d3f7be80ff2c"
+    },
+    {
       "name": "Unzul\u00e4ssige Auskunftserteilung an Dritte",
       "abbreviation": "DS-G.45",
       "links": {
@@ -5048,6 +5529,31 @@
         }
       },
       "id": "afe8c42c-6f35-45a7-b1c9-62bed6e102e7"
+    },
+    {
+      "name": "Unzureichende Erf\u00fcllung von Nachweis- und Dokumentationspflichten ",
+      "abbreviation": "DS-G.46",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "scenario",
+      "parts": [],
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "ebf9dbeb-2a21-40d9-b2e4-a283fb971aa3"
     },
     {
       "name": "Verarbeitung gro\u00dfer Datenmengen",
@@ -5351,6 +5857,9 @@
         },
         {
           "targetUri": "https://api.staging.verinice.com/veo/processes/8307acf4-9922-41b2-b038-1872a8fc9fe7"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/1e4e8c03-c176-4e06-8a04-b9dd6321341e"
         },
         {
           "targetUri": "https://api.staging.verinice.com/veo/processes/97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7"
@@ -6226,6 +6735,7 @@
                   "inherentRisk": 0,
                   "userDefinedResidualRisk": 0,
                   "riskTreatments": [
+                    "RISK_TREATMENT_ACCEPTANCE",
                     "RISK_TREATMENT_REDUCTION"
                   ],
                   "residualRisk": 0
@@ -6235,7 +6745,7 @@
                   "inherentRisk": 2,
                   "userDefinedResidualRisk": 0,
                   "riskTreatments": [
-                    "RISK_TREATMENT_ACCEPTANCE"
+                    "RISK_TREATMENT_REDUCTION"
                   ],
                   "residualRisk": 0
                 }
@@ -6338,6 +6848,9 @@
       "scenario": {
         "targetUri": "https://api.staging.verinice.com/veo/scenarios/6198e14b-9d7e-4f2c-8e82-33cfcad1828b"
       },
+      "mitigation": {
+        "targetUri": "https://api.staging.verinice.com/veo/controls/a063e725-b2be-4dd7-986c-4c8fda0046ea"
+      },
       "riskOwner": {
         "targetUri": "https://api.staging.verinice.com/veo/persons/5c0875a0-3319-4b58-b5c0-2b3847b8bbad"
       },
@@ -6379,26 +6892,38 @@
                 {
                   "category": "I",
                   "inherentRisk": 2,
-                  "riskTreatments": [],
-                  "residualRisk": 2
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 0
                 },
                 {
                   "category": "A",
                   "inherentRisk": 3,
-                  "riskTreatments": [],
-                  "residualRisk": 3
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 0
                 },
                 {
                   "category": "R",
                   "inherentRisk": 3,
-                  "riskTreatments": [],
-                  "residualRisk": 3
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 0
                 },
                 {
                   "category": "C",
                   "inherentRisk": 2,
-                  "riskTreatments": [],
-                  "residualRisk": 2
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 0
                 }
               ]
             }
@@ -6480,6 +7005,21 @@
     },
     {
       "scenario": {
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/475dda29-13ec-4a4f-ab3a-c7d3c88c13e0"
+      },
+      "process": {
+        "targetUri": "https://api.staging.verinice.com/veo/processes/8307acf4-9922-41b2-b038-1872a8fc9fe7"
+      },
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "riskDefinitions": {
+            
+          }
+        }
+      }
+    },
+    {
+      "scenario": {
         "targetUri": "https://api.staging.verinice.com/veo/scenarios/4dbb8054-560e-49b9-83ec-fed93e612be7"
       },
       "riskOwner": {
@@ -6551,6 +7091,92 @@
                     "RISK_TREATMENT_REDUCTION"
                   ],
                   "residualRisk": 2
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "scenario": {
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/eb29bc66-ea37-45e3-9bc7-d3f7be80ff2c"
+      },
+      "mitigation": {
+        "targetUri": "https://api.staging.verinice.com/veo/controls/625cd4f3-5b0c-4e1b-bf71-c815efac60d8"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/5c0875a0-3319-4b58-b5c0-2b3847b8bbad"
+      },
+      "process": {
+        "targetUri": "https://api.staging.verinice.com/veo/processes/8307acf4-9922-41b2-b038-1872a8fc9fe7"
+      },
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "riskDefinitions": {
+            "DSRA": {
+              "probability": {
+                "specificProbability": 1,
+                "effectiveProbability": 1
+              },
+              "impactValues": [
+                {
+                  "category": "I",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                },
+                {
+                  "category": "A",
+                  "potentialImpact": 3,
+                  "effectiveImpact": 3
+                },
+                {
+                  "category": "R",
+                  "potentialImpact": 3,
+                  "effectiveImpact": 3
+                },
+                {
+                  "category": "C",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                }
+              ],
+              "riskValues": [
+                {
+                  "category": "I",
+                  "inherentRisk": 1,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "A",
+                  "inherentRisk": 2,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "R",
+                  "inherentRisk": 2,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 0
+                },
+                {
+                  "category": "C",
+                  "inherentRisk": 1,
+                  "userDefinedResidualRisk": 0,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 0
                 }
               ]
             }
@@ -6787,7 +7413,13 @@
     },
     {
       "scenario": {
-        "targetUri": "https://api.staging.verinice.com/veo/scenarios/a8962118-f7ce-46ae-8423-d46d0853748a"
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/070a3267-a85f-44a6-803f-c18bccaf3268"
+      },
+      "mitigation": {
+        "targetUri": "https://api.staging.verinice.com/veo/controls/1e4e8c03-c176-4e06-8a04-b9dd6321341e"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/debea096-da44-4c2c-b05a-0950162f75ce"
       },
       "process": {
         "targetUri": "https://api.staging.verinice.com/veo/processes/eecc6821-5928-42c6-b287-41f4e42b82f1"
@@ -6797,7 +7429,90 @@
           "riskDefinitions": {
             "DSRA": {
               "probability": {
-                "potentialProbability": 1,
+                "specificProbability": 2,
+                "effectiveProbability": 2,
+                "specificProbabilityExplanation": ""
+              },
+              "impactValues": [
+                {
+                  "category": "I",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                },
+                {
+                  "category": "A",
+                  "potentialImpact": 3,
+                  "effectiveImpact": 3
+                },
+                {
+                  "category": "R",
+                  "potentialImpact": 3,
+                  "effectiveImpact": 3
+                },
+                {
+                  "category": "C",
+                  "potentialImpact": 2,
+                  "effectiveImpact": 2
+                }
+              ],
+              "riskValues": [
+                {
+                  "category": "I",
+                  "inherentRisk": 2,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 2
+                },
+                {
+                  "category": "A",
+                  "inherentRisk": 3,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 3
+                },
+                {
+                  "category": "R",
+                  "inherentRisk": 3,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 3
+                },
+                {
+                  "category": "C",
+                  "inherentRisk": 2,
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "residualRisk": 2
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "scenario": {
+        "targetUri": "https://api.staging.verinice.com/veo/scenarios/330c20b0-091b-410e-9a7f-e1c7ca3c5321"
+      },
+      "mitigation": {
+        "targetUri": "https://api.staging.verinice.com/veo/controls/c775a2db-9f05-4179-bd29-0b1e997a630d"
+      },
+      "riskOwner": {
+        "targetUri": "https://api.staging.verinice.com/veo/persons/a2c4c63c-e443-46a5-bc11-143eafde068f"
+      },
+      "process": {
+        "targetUri": "https://api.staging.verinice.com/veo/processes/eecc6821-5928-42c6-b287-41f4e42b82f1"
+      },
+      "domains": {
+        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+          "riskDefinitions": {
+            "DSRA": {
+              "probability": {
+                "potentialProbability": 0,
                 "specificProbability": 2,
                 "effectiveProbability": 2
               },
@@ -6827,34 +7542,38 @@
                 {
                   "category": "I",
                   "inherentRisk": 2,
+                  "userDefinedResidualRisk": 0,
                   "riskTreatments": [
-                    "RISK_TREATMENT_ACCEPTANCE"
+                    "RISK_TREATMENT_REDUCTION"
                   ],
-                  "residualRisk": 2
+                  "residualRisk": 0
                 },
                 {
                   "category": "A",
                   "inherentRisk": 3,
+                  "userDefinedResidualRisk": 0,
                   "riskTreatments": [
-                    "RISK_TREATMENT_ACCEPTANCE"
+                    "RISK_TREATMENT_REDUCTION"
                   ],
-                  "residualRisk": 3
+                  "residualRisk": 0
                 },
                 {
                   "category": "R",
                   "inherentRisk": 3,
+                  "userDefinedResidualRisk": 0,
                   "riskTreatments": [
-                    "RISK_TREATMENT_ACCEPTANCE"
+                    "RISK_TREATMENT_REDUCTION"
                   ],
-                  "residualRisk": 3
+                  "residualRisk": 0
                 },
                 {
                   "category": "C",
                   "inherentRisk": 2,
+                  "userDefinedResidualRisk": 0,
                   "riskTreatments": [
-                    "RISK_TREATMENT_ACCEPTANCE"
+                    "RISK_TREATMENT_REDUCTION"
                   ],
-                  "residualRisk": 2
+                  "residualRisk": 0
                 }
               ]
             }
