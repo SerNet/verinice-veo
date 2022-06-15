@@ -40,4 +40,8 @@ public interface TailoringReference extends CatalogReference, TailoringReference
   default String getModelType() {
     return SINGULAR_TERM;
   }
+
+  default void remove() {
+    getOwner().getTailoringReferences().remove(this);
+  }
 }

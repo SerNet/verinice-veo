@@ -56,6 +56,14 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
                     ]
                     links = [
                         author: new LinkDefinition().tap{
+                            attributeSchemas = [
+                                copyrightYear: [
+                                    type: "number"
+                                ],
+                                placeOfAuthoring: [
+                                    type: "string"
+                                ],
+                            ]
                             targetType = "person"
                         }
                     ]
@@ -149,6 +157,68 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
         then:
         with(catalog.catalogItems.find{it.namespace == "routerManual"}) {
             it.tailoringReferences*.catalogItem*.namespace == ["manualAuthor"]
+        }
+    }
+
+    def "invalid attribute on internal and external link references is removed"() {
+        given: "a catalog with two links that have some invalid attributes"
+        def catalogId = catalogRepository.save(newCatalog(domain) {
+            def routerManual = newCatalogItem(it, {newDocument(it)}) {
+                it.namespace = "routerManual"
+            }
+            def manualAuthor = newCatalogItem(it, {newPerson(it)}) {
+                it.namespace = "manualAuthor"
+                it.tailoringReferences = [
+                    newLinkTailoringReference(it, TailoringReferenceType.LINK_EXTERNAL) {
+                        it.linkType = "author"
+                        it.catalogItem = routerManual
+                        it.attributes.copyrightYear = 2019
+                        it.attributes.placeOfAuthoring = 22
+                    }
+                ]
+            }
+            def thermometerManual = newCatalogItem(it, {newDocument(it)}) {
+                it.namespace = "thermometerManual"
+                it.tailoringReferences = [
+                    newLinkTailoringReference(it, TailoringReferenceType.LINK) {
+                        it.linkType = "author"
+                        it.catalogItem = manualAuthor
+                        it.attributes.copyrightYear = "2019"
+                        it.attributes.placeOfAuthoring = "She wrote it in her armchair"
+                    },
+                ]
+            }
+            catalogItems = [
+                routerManual,
+                thermometerManual,
+                manualAuthor,
+            ]
+        }).id
+
+        when: "migrating"
+        executeInTransaction {
+            catalogItemMigrationService.migrate(domain.getElementTypeDefinition("document"), domain)
+        }
+
+        and: "fetching the catalog"
+        def catalog = executeInTransaction {
+            catalogRepository.findById(catalogId).get().tap{
+                it.catalogItems*.tailoringReferences*.catalogItem*.element
+            }
+        }
+
+        then: "only the valid attributes remain"
+        with(catalog.catalogItems.find{it.namespace == "manualAuthor"}) {
+            with(it.tailoringReferences.find{it.catalogItem.namespace == "routerManual"}) {
+                attributes.copyrightYear == 2019
+                attributes.placeOfAuthoring == null
+            }
+        }
+        with(catalog.catalogItems.find{it.namespace == "thermometerManual"}) {
+            with(it.tailoringReferences.find{it.catalogItem.namespace == "manualAuthor"}) {
+                attributes.copyrightYear == null
+                attributes.placeOfAuthoring == "She wrote it in her armchair"
+            }
         }
     }
 }

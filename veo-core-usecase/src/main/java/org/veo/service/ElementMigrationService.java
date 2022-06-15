@@ -17,14 +17,15 @@
  ******************************************************************************/
 package org.veo.service;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
-import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
+import org.veo.core.usecase.base.AttributeValidator;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,7 +49,7 @@ public class ElementMigrationService {
                 element.getCustomAspects().remove(ca);
                 return;
               }
-              cleanUpAttributes(element, ca, caDefinition);
+              migrateAttributes(ca.getAttributes(), caDefinition.getAttributeSchemas());
             });
     new HashSet<>(element.getLinks())
         .forEach(
@@ -70,7 +71,7 @@ public class ElementMigrationService {
                 element.getLinks().remove(link);
                 return;
               }
-              cleanUpAttributes(element, link, linkDefinition);
+              migrateAttributes(link.getAttributes(), linkDefinition.getAttributeSchemas());
             });
     migrateSubType(domain, definition, element);
   }
@@ -103,18 +104,18 @@ public class ElementMigrationService {
             });
   }
 
-  private void cleanUpAttributes(
-      Element element, CustomAspect caOrLink, CustomAspectDefinition definition) {
-    new HashSet<>(caOrLink.getAttributes().keySet())
+  /** Removes all invalid attributes from given custom aspect / link attributes. */
+  public void migrateAttributes(
+      Map<String, Object> attributes, Map<String, Object> attributeSchemas) {
+    new HashMap<>(attributes)
         .forEach(
-            attrType -> {
-              if (!definition.getAttributeSchemas().containsKey(attrType)) {
-                log.debug(
-                    "Removing obsolete attribute {} on {} from element {}.",
-                    attrType,
-                    caOrLink.getType(),
-                    element.getIdAsString());
-                caOrLink.getAttributes().remove(attrType);
+            (attrKey, attrValue) -> {
+              try {
+                AttributeValidator.validate(attrKey, attrValue, attributeSchemas);
+              } catch (IllegalArgumentException illEx) {
+                log.debug("Attribute validation failed", illEx);
+                log.debug("Removing invalidate attribute {}", attrKey);
+                attributes.remove(attrKey);
               }
             });
   }

@@ -60,20 +60,30 @@ public class CatalogMigrationService {
                     .getModelType()
                     .equals(definition.getElementType()))
         .forEach(
-            linkTailoringReference -> {
-              // TODO VEO-1280 migrate attributes
-              try {
-                CatalogItemValidator.validate(linkTailoringReference, domain);
-              } catch (IllegalArgumentException illEx) {
-                log.info("Tailoring reference validation failed", illEx);
-                log.info(
-                    "Deleting invalid tailoring reference {}",
-                    linkTailoringReference.getIdAsString());
-                linkTailoringReference
-                    .getOwner()
-                    .getTailoringReferences()
-                    .remove(linkTailoringReference);
-              }
-            });
+            linkTailoringReference ->
+                definition
+                    .findLink(linkTailoringReference.getLinkType())
+                    .ifPresentOrElse(
+                        linkDef -> {
+                          elementMigrationService.migrateAttributes(
+                              linkTailoringReference.getAttributes(),
+                              linkDef.getAttributeSchemas());
+                          try {
+                            CatalogItemValidator.validate(linkTailoringReference, domain);
+                          } catch (IllegalArgumentException illEx) {
+                            log.info("Tailoring reference validation failed", illEx);
+                            log.info(
+                                "Deleting invalid tailoring reference {}",
+                                linkTailoringReference.getIdAsString());
+                            linkTailoringReference.remove();
+                          }
+                        },
+                        () -> {
+                          log.info(
+                              "Link type {} for tailoring reference is invalid, deleting invalid tailoring reference {}",
+                              linkTailoringReference.getLinkType(),
+                              linkTailoringReference.getIdAsString());
+                          linkTailoringReference.remove();
+                        }));
   }
 }

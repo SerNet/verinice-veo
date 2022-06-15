@@ -18,6 +18,7 @@
 package org.veo.core.entity.definitions;
 
 import java.util.Map;
+import java.util.Optional;
 
 public interface ElementTypeDefinition {
   String getElementType();
@@ -31,6 +32,10 @@ public interface ElementTypeDefinition {
   void setCustomAspects(Map<String, CustomAspectDefinition> definitions);
 
   Map<String, LinkDefinition> getLinks();
+
+  default Optional<LinkDefinition> findLink(String type) {
+    return Optional.ofNullable(getLinks().get(type));
+  }
 
   void setLinks(Map<String, LinkDefinition> definitions);
 

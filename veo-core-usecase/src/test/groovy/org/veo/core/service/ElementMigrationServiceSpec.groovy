@@ -185,6 +185,49 @@ class ElementMigrationServiceSpec extends Specification{
         element.links[0].attributes.keySet().sort() == ["attrA"]
     }
 
+    def 'removes invalid custom aspect attribute'() {
+        given:
+        def definition = Spy(ElementTypeDefinition) {
+            customAspects >> [
+                typeA: Spy(CustomAspectDefinition) {
+                    attributeSchemas >> [
+                        firstName: [
+                            type: "string"
+                        ],
+                        lastName: [
+                            type: "string"
+                        ]
+                    ]
+                }
+            ]
+        }
+        def targetPerson = Mock(Element) {
+            modelType >> "person"
+            getSubType(domain) >> Optional.of("PER_Person")
+        }
+        def element = Spy(Element) {
+            id >> Key.newUuid()
+            customAspects >> [
+                Spy(CustomLink) {
+                    type >> "typeA"
+                    attributes >> [
+                        firstName: "Johnny",
+                        lastName: 5,
+                    ]
+                    target >> targetPerson
+                }
+            ]
+            links >> []
+            getSubType(domain) >> Optional.empty()
+        }
+
+        when:
+        elementMigrationService.migrate(element, definition, domain)
+
+        then:
+        element.customAspects[0].attributes.keySet() ==~ ["firstName"]
+    }
+
     def 'removes links with wrong target type or sub type'() {
         given:
         def definition = Spy(ElementTypeDefinition) {
