@@ -78,7 +78,8 @@ public class MaxRiskProvider implements InputProvider {
         // values
         .filter(ProcessRisk.class::isInstance)
         .map(ProcessRisk.class::cast)
-        .flatMap(risk -> risk.getRiskDefinitions().stream().map(rd -> risk.getRiskProvider(rd)))
+        .flatMap(
+            risk -> risk.getRiskDefinitions(domain).stream().map(rd -> risk.getRiskProvider(rd)))
         .flatMap(provider -> provider.getCategorizedRisks().stream())
         .map(DeterminedRisk::getResidualRisk)
         .filter(it -> it != null)

@@ -121,7 +121,7 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
 
         then: "risk values are empty"
         retrievedRisk1 == risk
-        retrievedRisk1.getRiskDefinitions().size() == 0
+        retrievedRisk1.getRiskDefinitions(domain).size() == 0
 
         when: "blank risk values are added for a risk definition"
         txTemplate.execute{

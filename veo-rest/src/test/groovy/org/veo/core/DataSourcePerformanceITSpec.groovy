@@ -25,6 +25,7 @@ import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.CompositeElement
 import org.veo.core.entity.CustomAspect
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
@@ -71,6 +72,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
     private Client client
     private Unit unit
+    Domain domain
 
     /**
      * to create a predictable number of select statements, we need to make sure
@@ -497,7 +499,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
                 }
             })
 
-            def domain = client.domains.first()
+            domain = client.domains.first()
 
             unit = newUnit(client)
             unit.setClient(client)

@@ -28,6 +28,7 @@ import com.networknt.schema.SpecVersion
 
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Client
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.core.service.EntitySchemaService
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
@@ -57,9 +58,10 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
 
     def "create a demo unit for a client"() {
         given: 'a client'
+        Domain domain
         def client = executeInTransaction {
-            createClient().tap{
-                createTestDomain(it, DSGVO_DOMAINTEMPLATE_UUID)
+            createClient().tap {
+                domain = createTestDomain(it, DSGVO_DOMAINTEMPLATE_UUID)
             }
         }
         when: 'executing the CreateDemoUnitUseCase'
@@ -133,7 +135,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                 }
                 it.links.target*.name
                 it.risks.each {
-                    it.riskDefinitions.size()
+                    it.getRiskDefinitions(domain)
                     it.mitigation?.id
                     it.scenario?.id
                     it.riskOwner?.id
@@ -190,8 +192,8 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                 it.domains*.name == ['DS-GVO']
                 scenario == scenarios.first()
                 mitigation == controls.first()
-                riskDefinitions.size()== 1
-                with(riskDefinitions.first()) {
+                getRiskDefinitions(domain).size() == 1
+                with(getRiskDefinitions(domain).first()) {
                     idRef == 'DSRA'
                     with(risk.getProbabilityProvider(it).probability) {
                         verifyAll {

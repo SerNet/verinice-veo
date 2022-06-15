@@ -110,7 +110,7 @@ public class RiskService {
 
     for (RiskDefinition riskDefinition : domain.getRiskDefinitions().values()) {
       RiskDefinitionRef rdr = RiskDefinitionRef.from(riskDefinition);
-      if (risk.getRiskDefinitions().contains(rdr)) {
+      if (risk.getRiskDefinitions(domain).contains(rdr)) {
         var riskEvent =
             calculateValuesForRiskDefinition(process, risk, scenario, domain, riskDefinition);
         riskEvent.ifPresent(riskEvents::add);

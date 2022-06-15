@@ -167,13 +167,6 @@ public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> impl
   }
 
   @Override
-  public Set<RiskDefinitionRef> getRiskDefinitions() {
-    return riskAspects.stream()
-        .map(ProcessRiskValuesAspectData::getRiskDefinition)
-        .collect(toSet());
-  }
-
-  @Override
   public Set<RiskDefinitionRef> getRiskDefinitions(Domain domain) {
     return riskAspects.stream()
         .filter(ra -> ra.getDomain().equals(domain))

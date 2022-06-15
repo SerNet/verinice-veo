@@ -141,12 +141,14 @@ public class ProcessRiskDto extends AbstractRiskDto {
                 result.put(
                     d.getIdAsString(),
                     new RiskDomainAssociationDto(
-                        IdRef.from(d, referenceAssembler), valuesGroupedByRiskDefinition(risk))));
+                        IdRef.from(d, referenceAssembler),
+                        valuesGroupedByRiskDefinition(risk, d))));
     return result;
   }
 
-  private static Map<String, RiskValuesDto> valuesGroupedByRiskDefinition(ProcessRisk risk) {
-    return risk.getRiskDefinitions().stream()
+  private static Map<String, RiskValuesDto> valuesGroupedByRiskDefinition(
+      ProcessRisk risk, Domain domain) {
+    return risk.getRiskDefinitions(domain).stream()
         .collect(toMap(RiskDefinitionRef::getIdRef, rd -> RiskValuesDto.from(risk, rd)));
   }
 }

@@ -126,7 +126,9 @@ class RiskServiceITSpec extends VeoSpringSpec {
         }
         risk = executeInTransaction {
             process = processDataRepository.findByIdsWithRiskValues(Set.of(process.idAsString)).first()
-            process.risks.first()
+            process.risks.first().tap {
+                it.getRiskDefinitions(domain)
+            }
         }
         def oldRiskVersion = risk.version
 
@@ -195,7 +197,7 @@ class RiskServiceITSpec extends VeoSpringSpec {
                 process = processDataRepository.findById(process.idAsString).get()
                 process.risks.first().tap {
                     //initialize lazy associations
-                    it.riskDefinitions
+                    it.getRiskDefinitions(domain)
                 }
             }
         }

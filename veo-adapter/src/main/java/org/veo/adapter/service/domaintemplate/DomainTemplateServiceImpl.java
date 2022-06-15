@@ -286,7 +286,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                   p.setOwner(null);
                   scenario.setOwner(null);
                   log.info("Transformed risk: {}", risk);
-                  risk.getRiskDefinitions()
+                  risk.getRiskDefinitions(domain)
                       .forEach(
                           rd -> {
                             log.info("Risk definition: {}", rd);
