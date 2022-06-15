@@ -80,6 +80,7 @@ public class SpringSpecDomainTemplateCreator {
                   templateId, Optional.of(List.of(client.getIdAsString()))));
         });
     return domainRepository.findAllByClient(client.getId()).stream()
+        .filter(d -> d.getDomainTemplate() != null)
         .filter(d -> d.getDomainTemplate().getId().uuidValue().equals(templateId))
         .findFirst()
         .orElseThrow();

@@ -20,6 +20,7 @@ package org.veo.rest;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
+import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -42,6 +43,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
@@ -61,13 +63,16 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
+import org.veo.core.entity.statistics.ElementStatusCounts;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
+import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
+import org.veo.rest.annotations.UnitUuidParam;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
@@ -102,6 +107,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   private final ExportDomainUseCase exportDomainUseCase;
   private final UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase;
   private final CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase;
+  private final GetElementStatusCountUseCase getElementStatusCountUseCase;
 
   public DomainController(
       UseCaseInteractor useCaseInteractor,
@@ -110,7 +116,8 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
       GetDomainsUseCase getDomainsUseCase,
       UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase,
       ExportDomainUseCase exportDomainUseCase,
-      CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase) {
+      CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase,
+      GetElementStatusCountUseCase getElementStatusCountUseCase) {
     this.useCaseInteractor = useCaseInteractor;
     this.objectSchemaParser = objectSchemaParser;
     this.getDomainUseCase = getDomainUseCase;
@@ -118,6 +125,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     this.exportDomainUseCase = exportDomainUseCase;
     this.updateElementTypeDefinitionUseCase = updateElementTypeDefinitionUseCase;
     this.createDomainTemplateFromDomainUseCase = createDomainTemplateFromDomainUseCase;
+    this.getElementStatusCountUseCase = getElementStatusCountUseCase;
   }
 
   @GetMapping
@@ -273,6 +281,35 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
       log.error("Cannot parse object schema: {}", e.getLocalizedMessage());
       throw new IllegalArgumentException("Cannot parse object schema.");
     }
+  }
+
+  @GetMapping(value = "/{id}/element-status-count")
+  @Operation(summary = "Retrieve element counts grouped by subType and status")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Elements counted",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ElementStatusCounts.class))),
+        @ApiResponse(responseCode = "404", description = "Domain not found")
+      })
+  public @Valid CompletableFuture<ResponseEntity<ElementStatusCounts>> getElementStatusCount(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @PathVariable String id,
+      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = true) String unitId,
+      WebRequest request) {
+    Client client = getAuthenticatedClient(auth);
+
+    return useCaseInteractor
+        .execute(
+            getElementStatusCountUseCase,
+            new GetElementStatusCountUseCase.InputData(
+                Key.uuidFrom(unitId), Key.uuidFrom(id), client),
+            output -> output.getResult())
+        .thenApply(counts -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(counts));
   }
 
   @InitBinder

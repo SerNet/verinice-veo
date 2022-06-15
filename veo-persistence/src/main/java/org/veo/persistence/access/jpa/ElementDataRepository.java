@@ -32,6 +32,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.repository.SubTypeStatusCount;
 import org.veo.persistence.entity.jpa.ElementData;
 
 public interface ElementDataRepository<T extends ElementData>
@@ -91,4 +92,13 @@ public interface ElementDataRepository<T extends ElementData>
           + "join e.domains d "
           + "where d.id = ?1")
   Set<T> findByDomain(String domainId);
+
+  @Query(
+      "SELECT new org.veo.core.repository.SubTypeStatusCount(a.subType, a.status, count(a.status)) from #{#entityName} as e "
+          + "inner join e.subTypeAspects a "
+          + "inner join e.domains d "
+          + "where e.owner.dbId = ?1 "
+          + "and d.id = ?2 "
+          + "group by a.subType, a.status")
+  Set<SubTypeStatusCount> getCountsBySubType(String unitId, String domainId);
 }

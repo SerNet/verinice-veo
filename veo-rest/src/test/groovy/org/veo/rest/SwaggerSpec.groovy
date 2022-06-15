@@ -335,6 +335,39 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "endpoint documentation is correct for GetElementStatusCountUseCase"() {
+
+        when: "retrieving the information about the endpoint"
+        def endPointInfo = parsedApiDocs.paths["/domains/{id}/element-status-count"]
+
+        then: "the information is found"
+        endPointInfo != null
+
+        and: 'it handles get requests'
+        endPointInfo.get != null
+
+        and: 'it has a meaningful description'
+        endPointInfo.get.summary == 'Retrieve element counts grouped by subType and status'
+
+        and: 'parameter is described'
+        with(endPointInfo.get.parameters[0]) {
+            name == 'id'
+            it.in == 'path'
+            required == true
+        }
+        with(endPointInfo.get.parameters[1]) {
+            name == 'unit'
+            it.in == 'query'
+            required == true
+            description ==~ /UUID of the containing unit.*/
+        }
+        with(endPointInfo.get.security) {
+            size() == 1
+            it[0].OAuth2.size() == 0
+        }
+    }
+
+
     @Memoized
     String getApiDocsString() {
         mvc.perform(get('/v3/api-docs')).andReturn().response.contentAsString

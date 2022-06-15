@@ -113,6 +113,7 @@ import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
+import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
@@ -961,5 +962,11 @@ public class ModuleConfiguration {
       ElementMigrationService elementMigrationService,
       CatalogItemRepository catalogItemRepository) {
     return new CatalogMigrationService(elementMigrationService, catalogItemRepository);
+  }
+
+  @Bean
+  GetElementStatusCountUseCase getElementStatusCountUseCase(
+      DomainRepository domainRepository, RepositoryProvider repositoryProvider) {
+    return new GetElementStatusCountUseCase(domainRepository, repositoryProvider);
   }
 }

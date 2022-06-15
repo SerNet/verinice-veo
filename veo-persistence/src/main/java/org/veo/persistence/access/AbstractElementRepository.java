@@ -34,6 +34,7 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.ElementRepository;
+import org.veo.core.repository.SubTypeStatusCount;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ElementDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
@@ -83,6 +84,11 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
     elements.forEach(Element::remove);
 
     dataRepository.deleteAll(elements);
+  }
+
+  @Override
+  public Set<SubTypeStatusCount> getCountsBySubType(Unit u, Domain d) {
+    return dataRepository.getCountsBySubType(u.getIdAsString(), d.getIdAsString());
   }
 
   @Override

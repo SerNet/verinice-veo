@@ -97,4 +97,44 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
             "subTypeAspects[].domain"
         ]
     }
+
+    def "Element counts can be queried"() {
+        given:
+        def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+        executeInTransaction{
+            2.times {
+                personRepository.save(newPerson(unit) {
+                    addToDomains(domain)
+                    setSubType(domain, 'PER_Person', 'NEW')
+                })
+            }
+            personRepository.save( newPerson(unit) {
+                addToDomains(domain)
+                setSubType(domain, 'PER_Person', 'IN_PROGRESS')
+            })
+            personRepository.save(newPerson(unit) {
+                addToDomains(domain)
+                setSubType(domain, 'PER_DataProtectionOfficer', 'RELEASED')
+            })
+        }
+        when:
+        def counts = personRepository.getCountsBySubType(unit, domain).toSorted{[it.subType, it.status]}
+        then:
+        counts.size() == 3
+        with(counts[0]) {
+            subType == 'PER_Person'
+            status == 'IN_PROGRESS'
+            count == 1
+        }
+        with(counts[1]) {
+            subType == 'PER_Person'
+            status == 'NEW'
+            count == 2
+        }
+        with(counts[2]) {
+            subType == 'PER_DataProtectionOfficer'
+            status == 'RELEASED'
+            count == 1
+        }
+    }
 }
