@@ -21,7 +21,6 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.TailoringReference;
-import org.veo.core.entity.TailoringReferenceType;
 
 /** Validates catalog items according to the domain's element type definitions. */
 public class CatalogItemValidator {
@@ -41,22 +40,12 @@ public class CatalogItemValidator {
   }
 
   public static void validate(TailoringReference tailoringReference, DomainTemplate domain) {
-    var item = tailoringReference.getOwner();
-    var referenceType = tailoringReference.getReferenceType();
-    if (referenceType == TailoringReferenceType.LINK) {
+    if (tailoringReference instanceof LinkTailoringReference) {
       var linkRef = (LinkTailoringReference) tailoringReference;
       DomainSensitiveElementValidator.validateLink(
           linkRef.getLinkType(),
-          item.getElement(),
-          linkRef.getCatalogItem().getElement(),
-          linkRef.getAttributes(),
-          domain);
-    } else if (referenceType == TailoringReferenceType.LINK_EXTERNAL) {
-      var linkRef = (LinkTailoringReference) tailoringReference;
-      DomainSensitiveElementValidator.validateLink(
-          linkRef.getLinkType(),
-          linkRef.getCatalogItem().getElement(),
-          item.getElement(),
+          linkRef.getLinkSourceItem().getElement(),
+          linkRef.getLinkTargetItem().getElement(),
           linkRef.getAttributes(),
           domain);
     }

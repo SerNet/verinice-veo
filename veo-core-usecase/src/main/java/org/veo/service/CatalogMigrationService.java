@@ -55,11 +55,10 @@ public class CatalogMigrationService {
         .map(LinkTailoringReference.class::cast)
         .filter(
             ltr ->
-                ltr.getOwner().getElement().getModelType().equals(definition.getElementType())
-                    || ltr.getCatalogItem()
-                        .getElement()
-                        .getModelType()
-                        .equals(definition.getElementType()))
+                ltr.getLinkSourceItem()
+                    .getElement()
+                    .getModelType()
+                    .equals(definition.getElementType()))
         .forEach(
             linkTailoringReference -> {
               // TODO VEO-1280 migrate attributes

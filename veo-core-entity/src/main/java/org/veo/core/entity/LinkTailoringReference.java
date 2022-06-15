@@ -33,4 +33,18 @@ public interface LinkTailoringReference extends TailoringReference {
   Map<String, Object> getAttributes();
 
   void setAttributes(Map<String, Object> attributes);
+
+  default CatalogItem getLinkSourceItem() {
+    if (getReferenceType().equals(TailoringReferenceType.LINK_EXTERNAL)) {
+      return getCatalogItem();
+    }
+    return getOwner();
+  }
+
+  default CatalogItem getLinkTargetItem() {
+    if (getReferenceType().equals(TailoringReferenceType.LINK_EXTERNAL)) {
+      return getOwner();
+    }
+    return getCatalogItem();
+  }
 }
