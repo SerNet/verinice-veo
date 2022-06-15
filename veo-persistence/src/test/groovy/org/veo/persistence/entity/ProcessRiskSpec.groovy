@@ -252,4 +252,30 @@ class ProcessRiskSpec extends VeoSpec {
         then: "The operation is prevented"
         thrown(ModelConsistencyException)
     }
+
+    def "risk can be used in multiple domains"() {
+        given: "a process in two domains and a scenario"
+        def domain0 = newDomain(client)
+        def domain1 = newDomain(client)
+        def process = newProcess(unit) {
+            name = "risky process"
+            domains = [domain0, domain1]
+        }
+        def scenario = newScenario(unit)
+
+        when: "a risk is obtained for the process and scenario in domain 0"
+        def domain0Risk = process.obtainRisk(scenario, domain0)
+
+        then: "it is assigned to domain 0"
+        domain0Risk.domains ==~ [domain0]
+
+        when: "obtaining a risk for the process and scenario in domain 1"
+        def domain1Risk = process.obtainRisk(scenario, domain1)
+
+        then: "the same risk is used in both domains"
+        domain1Risk == domain0Risk
+
+        and: "it is assigned to both domains"
+        domain0Risk.domains ==~ [domain0, domain1]
+    }
 }

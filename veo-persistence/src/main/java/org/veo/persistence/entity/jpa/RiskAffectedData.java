@@ -58,16 +58,18 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
   public R obtainRisk(Scenario scenario, Domain domain) {
     scenario.checkSameClient(this);
     isDomainValid(domain);
-    return risks.stream()
-        .filter(r -> r.getScenario().equals(scenario))
-        .findAny()
-        .orElseGet(
-            () -> {
-              var riskData = createRisk(scenario);
-              riskData.addToDomains(domain);
-              addRisk(riskData);
-              return riskData;
-            });
+    var risk =
+        risks.stream()
+            .filter(r -> r.getScenario().equals(scenario))
+            .findAny()
+            .orElseGet(
+                () -> {
+                  var riskData = createRisk(scenario);
+                  addRisk(riskData);
+                  return riskData;
+                });
+    risk.addToDomains(domain);
+    return risk;
   }
 
   abstract R createRisk(Scenario scenario);
