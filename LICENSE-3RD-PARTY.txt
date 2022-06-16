@@ -2354,7 +2354,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-61. Group: io.swagger.core.v3  Name: swagger-annotations  Version: 2.2.0
+61. Group: io.swagger.core.v3  Name: swagger-annotations  Version: 2.2.1
 
 Manifest Project URL: https://github.com/swagger-api/swagger-core/modules/swagger-annotations
 
@@ -2578,7 +2578,7 @@ Copy of the Apache 2.0 license can be found in `LICENSE` file.
 
 --------------------------------------------------------------------------------
 
-62. Group: io.swagger.core.v3  Name: swagger-core  Version: 2.2.0
+62. Group: io.swagger.core.v3  Name: swagger-core  Version: 2.2.1
 
 Manifest Project URL: https://github.com/swagger-api/swagger-core/modules/swagger-core
 
@@ -2802,7 +2802,7 @@ Copy of the Apache 2.0 license can be found in `LICENSE` file.
 
 --------------------------------------------------------------------------------
 
-63. Group: io.swagger.core.v3  Name: swagger-models  Version: 2.2.0
+63. Group: io.swagger.core.v3  Name: swagger-models  Version: 2.2.1
 
 Manifest Project URL: https://github.com/swagger-api/swagger-core/modules/swagger-models
 
@@ -19895,5 +19895,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Mon Jun 13 16:36:33 CEST 2022.
+This report was generated at Thu Jun 16 05:32:10 UTC 2022.
 
