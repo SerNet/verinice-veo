@@ -35,7 +35,6 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -100,30 +99,6 @@ public abstract class AbstractElementController<
               .cacheControl(defaultCacheControl)
               .body(element.getParts().stream().map(this::entity2Dto).collect(Collectors.toList()));
         });
-  }
-
-  // TODO VEO-1460 remove
-  @Deprecated
-  public @Valid CompletableFuture<ResponseEntity<DecisionResult>> evaluateDecision(
-      Authentication auth, @Valid AbstractElementDto dto, String decisionKey, String domainId) {
-    var client = getAuthenticatedClient(auth);
-
-    var element =
-        runner.run(
-            () -> {
-              return dtoToEntityTransformer.transformDto2Element(dto, createIdRefResolver(client));
-            });
-    return useCaseInteractor.execute(
-        evaluateElementUseCase,
-        new EvaluateElementUseCase.InputData(client, Key.uuidFrom(domainId), element),
-        output ->
-            ResponseEntity.ok()
-                .body(
-                    output.getDecisionResults().entrySet().stream()
-                        .filter(resultPair -> resultPair.getKey().getKeyRef().equals(decisionKey))
-                        .findFirst()
-                        .orElseThrow()
-                        .getValue()));
   }
 
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(

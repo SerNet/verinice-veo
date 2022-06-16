@@ -58,9 +58,6 @@ public final class ControllerConstants {
   static final String HAS_PARENT_ELEMENTS_PARAM = "hasParentElements";
   static final String UPDATED_BY_PARAM = "updatedBy";
   static final String DISPLAY_NAME_PARAM = "displayName";
-  static final String DECISION_KEY_PARAM = "decision";
-  static final String DECISION_KEY_DESCRIPTION =
-      "Decision key (corresponds to a key in the decision map on the domain)";
   static final String PAGE_SIZE_PARAM = "size";
   static final String PAGE_SIZE_DEFAULT_VALUE = "20";
   static final String PAGE_NUMBER_PARAM = "page";

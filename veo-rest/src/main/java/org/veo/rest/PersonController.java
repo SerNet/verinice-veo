@@ -23,8 +23,6 @@ import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.ANY_INT;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
 import static org.veo.rest.ControllerConstants.CHILD_ELEMENT_IDS_PARAM;
-import static org.veo.rest.ControllerConstants.DECISION_KEY_DESCRIPTION;
-import static org.veo.rest.ControllerConstants.DECISION_KEY_PARAM;
 import static org.veo.rest.ControllerConstants.DESCRIPTION_PARAM;
 import static org.veo.rest.ControllerConstants.DESIGNATOR_PARAM;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
@@ -95,7 +93,6 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
-import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.base.CreateElementUseCase;
@@ -390,30 +387,6 @@ public class PersonController extends AbstractElementController<Person, FullPers
       log.error("Could not decode search URL: {}", e.getLocalizedMessage());
       return null;
     }
-  }
-
-  // TODO VEO-1460 remove deprecated endpoint
-  @Deprecated
-  @Operation(summary = "Evaluates a decision on a transient person without persisting anything")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Decision evaluated",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(schema = @Schema(implementation = FullPersonDto.class)))),
-        @ApiResponse(responseCode = "404", description = "Decision not found")
-      })
-  @PostMapping(value = "/decision-evaluation")
-  public @Valid CompletableFuture<ResponseEntity<DecisionResult>> evaluateDecision(
-      @Parameter(required = true, hidden = true) Authentication auth,
-      @Valid @RequestBody FullPersonDto element,
-      @Parameter(description = DECISION_KEY_DESCRIPTION) @RequestParam(value = DECISION_KEY_PARAM)
-          String decisionKey,
-      @RequestParam(value = DOMAIN_PARAM) String domainId) {
-    return super.evaluateDecision(auth, element, decisionKey, domainId);
   }
 
   @Operation(

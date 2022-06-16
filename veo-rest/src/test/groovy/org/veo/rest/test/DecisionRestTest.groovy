@@ -174,8 +174,6 @@ class DecisionRestTest extends VeoRestTest {
                 ]
             }
             inspectionFindings.empty
-            // TODO VEO-1460 remove deprecated endpoint assertion
-            post("/processes/decision-evaluation?decision=piaMandatory&domain=$owner.domainId", process, 200).body == decisionResults.piaMandatory
         }
 
         and: "no process has been persisted"
@@ -208,8 +206,6 @@ class DecisionRestTest extends VeoRestTest {
                     partSubType == "PRO_DPIA"
                 }
             }
-            // TODO VEO-1460 remove deprecated endpoint assertion
-            post("/processes/decision-evaluation?decision=piaMandatory&domain=$owner.domainId", process, 200).body == decisionResults.piaMandatory
         }
 
         when: "adding an attribute to the transient process"
@@ -230,8 +226,6 @@ class DecisionRestTest extends VeoRestTest {
                 ]
             }
             inspectionFindings.empty
-            // TODO VEO-1460 remove deprecated endpoint assertion
-            post("/processes/decision-evaluation?decision=piaMandatory&domain=$owner.domainId", process, 200).body == decisionResults.piaMandatory
         }
 
         and: "changes to the process have not been persisted"
