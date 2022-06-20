@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.rest.test
 
+import org.apache.http.HttpStatus
+
 class ProcessRiskRestTestITSpec extends VeoRestTest{
 
     String unitId
@@ -102,6 +104,34 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
 
         then: "the error is present"
         error.body.message ==~ /Need at least one domain to create a risk\./
+    }
+
+    def "create a process risk with an invalid domain reference"() {
+        given: "a process and a scenario"
+        def processId = post("/processes", [
+            domains: [
+                (domainId): [:]
+            ],
+            name: "risk test process-1",
+            owner: [targetUri: "$baseUrl/units/$unitId"]
+        ]).body.resourceId
+        def scenarioId = post("/scenarios", [
+            name: "process risk test scenario-1",
+            owner: [targetUri: "$baseUrl/units/$unitId"]
+        ]).body.resourceId
+        def invalidDomainId = UUID.randomUUID().toString()
+        when: "trying to create a risk with an invalid domain"
+        def error = post("/processes/$processId/risks", [
+            domains: [
+                (invalidDomainId) :  [
+                    reference: [targetUri: "$baseUrl/domains/$invalidDomainId"]
+                ]
+            ],
+            scenario: [targetUri: "$baseUrl/scenarios/$scenarioId"]
+        ], HttpStatus.SC_UNPROCESSABLE_ENTITY)
+
+        then: "the error is present"
+        error.body.message ==~ /Unable to resolve all domain references/
     }
 
     def "create and update a process without domain ref"() {

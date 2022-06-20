@@ -28,6 +28,7 @@ import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.event.RiskChangedEvent;
+import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
@@ -60,6 +61,9 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
     var scenario = findEntity(Scenario.class, input.getScenarioRef()).orElseThrow();
 
     var domains = findEntities(Domain.class, input.getDomainRefs());
+    if (domains.size() != input.getDomainRefs().size()) {
+      throw new UnprocessableDataException("Unable to resolve all domain references");
+    }
 
     // Validate security constraints:
     riskAffected.checkSameClient(input.getAuthenticatedClient());
