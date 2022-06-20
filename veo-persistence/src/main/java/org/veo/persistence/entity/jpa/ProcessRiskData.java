@@ -39,6 +39,7 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.risk.CategorizedImpactValueProvider;
 import org.veo.core.entity.risk.CategorizedRiskValueProvider;
 import org.veo.core.entity.risk.DeterminedRisk;
@@ -188,7 +189,12 @@ public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> impl
               getDomains().stream()
                   .filter(d -> d.getId().equals(newValues.getDomainId()))
                   .findFirst()
-                  .orElseThrow();
+                  .orElseThrow(
+                      () ->
+                          new UnprocessableDataException(
+                              "Cannot assign risk values for unknown domain '"
+                                  + newValues.getDomainId()
+                                  + "'"));
           var riskDefinition =
               domain
                   .getRiskDefinition(newValues.getRiskDefinitionId().value())

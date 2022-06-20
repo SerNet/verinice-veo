@@ -31,6 +31,7 @@ import org.veo.adapter.presenter.api.DeviatingIdException;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.core.entity.DomainException;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.usecase.common.ETagMismatchException;
 import org.veo.core.usecase.domaintemplate.EntityAlreadyExistsException;
@@ -84,6 +85,11 @@ public class VeriniceExceptionHandler {
   @ExceptionHandler({MissingAdminPrivilegesException.class})
   protected ResponseEntity<ApiResponseBody> handle(MissingAdminPrivilegesException exception) {
     return handle(exception, HttpStatus.FORBIDDEN);
+  }
+
+  @ExceptionHandler({UnprocessableDataException.class})
+  protected ResponseEntity<ApiResponseBody> handle(UnprocessableDataException exception) {
+    return handle(exception, HttpStatus.UNPROCESSABLE_ENTITY);
   }
 
   private ResponseEntity<ApiResponseBody> handle(Throwable exception, HttpStatus status) {

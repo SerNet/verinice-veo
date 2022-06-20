@@ -19,6 +19,7 @@ package org.veo.rest
 
 import java.time.Instant
 
+import org.apache.http.HttpStatus
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
@@ -28,6 +29,7 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScenarioRepositoryImpl
@@ -825,6 +827,35 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         retrievedProcessRisk2.createdAt == retrievedProcessRisk1.createdAt
         eTag2 != null
         eTag1 != eTag2
+    }
+
+    def "Invalid domain reference in risk leads to a sensible error code"() {
+        given:
+        def processId = process.getIdAsString()
+        def scenarioId = scenario.getIdAsString()
+
+        when:
+        post("/processes/$processId/risks", [
+            domains: [
+                (UUID.randomUUID().toString()): [
+                    reference: [targetUri: "http://localhost/domains/$domainId"],
+                    riskDefinitions: [
+                        absentRd : [
+                            impactValues: [
+                                [
+                                    category: "A",
+                                    specificImpact: 1
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ], HttpStatus.SC_UNPROCESSABLE_ENTITY)
+
+        then:
+        thrown(UnprocessableDataException)
     }
 
     private postProcessRisk(String processId, String scenarioId, int expectedStatusCode = 201) {
