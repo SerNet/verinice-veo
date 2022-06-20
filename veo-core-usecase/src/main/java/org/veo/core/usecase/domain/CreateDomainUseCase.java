@@ -57,7 +57,7 @@ public class CreateDomainUseCase
     if (input.getClientIDs().isPresent()) {
       Set<Key<UUID>> clientIDs =
           input.getClientIDs().get().stream().map(Key::uuidFrom).collect(Collectors.toSet());
-      clients = clientRepository.getByIds(clientIDs);
+      clients = clientRepository.findByIds(clientIDs);
     } else {
       clients = clientRepository.findAll();
     }

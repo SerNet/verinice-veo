@@ -46,7 +46,7 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         scope.domainTemplates >> []
 
         unitRepository.findById(_) >> Optional.of(existingUnit)
-        scopeRepository.getByIds([] as Set) >> []
+        scopeRepository.findByIds([] as Set) >> []
     }
 
     def "create a scope"() {
@@ -71,7 +71,7 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         superScope.checkSameClient(existingClient) >> {
             throw new ClientBoundaryViolationException(superScope, existingClient)
         }
-        scopeRepository.getByIds([superScope.id] as Set) >> [superScope]
+        scopeRepository.findByIds([superScope.id] as Set) >> [superScope]
 
         when: "creating the new process inside the scope"
         usecase.execute(new CreateElementUseCase.InputData(scope, existingClient, [superScope.id] as Set))

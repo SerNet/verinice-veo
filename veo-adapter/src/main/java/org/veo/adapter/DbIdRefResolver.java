@@ -101,7 +101,7 @@ public class DbIdRefResolver implements IdRefResolver {
         repositoryProvider.getRepositoryFor(entityType);
 
     Set<? extends Identifiable> entities =
-        entityRepository.getByIds(
+        entityRepository.findByIds(
             copyOfReferences.stream()
                 .map(IdRef::getId)
                 .map(Key::uuidFrom)

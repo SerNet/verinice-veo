@@ -40,7 +40,7 @@ public interface Repository<T, K> {
 
   Optional<T> findById(K id);
 
-  Set<T> getByIds(Set<K> ids);
+  Set<T> findByIds(Set<K> ids);
 
   void delete(T entity);
 

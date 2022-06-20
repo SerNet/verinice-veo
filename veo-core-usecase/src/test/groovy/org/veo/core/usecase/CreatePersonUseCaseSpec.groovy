@@ -48,7 +48,7 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
         }
 
         unitRepository.findById(_) >> Optional.of(existingUnit)
-        scopeRepository.getByIds([] as Set) >> []
+        scopeRepository.findByIds([] as Set) >> []
     }
 
     def "create a person"() {
@@ -66,7 +66,7 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
         def scope = Mock(Scope)
         scope.id >> Key.newUuid()
         scope.checkSameClient(existingClient) >> { throw new ClientBoundaryViolationException(scope, existingClient) }
-        scopeRepository.getByIds([scope.id] as Set) >> [scope]
+        scopeRepository.findByIds([scope.id] as Set) >> [scope]
 
         when: "creating the new process inside the scope"
         usecase.execute(new CreateElementUseCase.InputData(person, existingClient, [scope.id] as Set))

@@ -71,7 +71,7 @@ public abstract class CreateElementUseCase<TEntity extends Element>
 
   private void addToScopes(TEntity element, Set<Key<UUID>> scopeIds, Client client) {
     scopeRepository
-        .getByIds(scopeIds)
+        .findByIds(scopeIds)
         .forEach(
             scope -> {
               scope.checkSameClient(client);

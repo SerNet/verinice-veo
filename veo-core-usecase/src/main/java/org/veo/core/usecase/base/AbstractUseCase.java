@@ -65,6 +65,6 @@ public abstract class AbstractUseCase<I extends UseCase.InputData, O extends Use
   }
 
   protected <M extends Identifiable> Set<M> findEntities(Class<M> clazz, Set<Key<UUID>> ids) {
-    return repositoryProvider.getRepositoryFor(clazz).getByIds(ids);
+    return repositoryProvider.getRepositoryFor(clazz).findByIds(ids);
   }
 }
