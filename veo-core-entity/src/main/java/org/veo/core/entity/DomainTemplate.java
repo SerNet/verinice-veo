@@ -119,8 +119,8 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
         "piaMandatory",
         new Decision(
             Map.of(
-                "en", "PIA mandatory",
-                "de", "DSFA erforderlich"),
+                "en", "Data Protection Impact Assessment mandatory",
+                "de", "Datenschutz-Folgenabschätzung verpflichtend"),
             Process.SINGULAR_TERM,
             "PRO_DataProcessing",
             List.of(
@@ -136,7 +136,7 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
                         false,
                         Map.of(
                             "en",
-                                "Processing on list of the kinds of processing operations not subject to a DPIA",
+                                "Processing on list of the kinds of processing operations not subject to a Data Protection Impact Assessment",
                             "de", "VT auf Negativliste"))
                     .ifAttributeEquals(piaCa + "_listed_negative", piaCa + "_listed", piaCa),
                 new Rule(
@@ -161,7 +161,7 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
                         true,
                         Map.of(
                             "en",
-                                "Processing on list of the kinds of processing operations subject to a DPIA",
+                                "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment",
                             "de", "VT auf Positivliste"))
                     .ifAttributeEquals(piaCa + "_listed_positive", piaCa + "_listed", piaCa),
                 new Rule(
@@ -184,9 +184,9 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
                 Severity.WARNING,
                 Map.of(
                     "de",
-                    "DSFA wurde nicht durchgeführt, sie ist aber erforderlich.",
+                    "Datenschutz-Folgenabschätzung wurde nicht durchgeführt, sie ist aber erforderlich.",
                     "en",
-                    "DPIA was not carried out, but it is mandatory."),
+                    "Data Protection Impact Assessment was not carried out, but it is mandatory."),
                 Process.SINGULAR_TERM,
                 "PRO_DataProcessing")
             .ifDecisionResultEquals(true, new DecisionRef("piaMandatory", this))

@@ -123,9 +123,9 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == testDomain.name
         result.catalogs.size() == 1
         with(result.decisions.piaMandatory) {
-            name.en == "PIA mandatory"
+            name.en == "Data Protection Impact Assessment mandatory"
             elementSubType == "PRO_DataProcessing"
-            rules[5].description.en == "Processing on list of the kinds of processing operations subject to a DPIA"
+            rules[5].description.en == "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment"
             rules[5].conditions[0].inputProvider.type == "customAspectAttributeValue"
             rules[5].conditions[0].inputProvider.customAspect == "process_privacyImpactAssessment"
             rules[5].conditions[0].inputProvider.attribute == "process_privacyImpactAssessment_listed"

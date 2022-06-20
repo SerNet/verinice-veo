@@ -113,13 +113,13 @@ class DecisionRestTest extends VeoRestTest {
         then: "added attribute is taken into consideration"
         with(get("/processes/$processId").body.domains[domainId].decisionResults.piaMandatory) {
             value == true
-            decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations subject to a DPIA"
+            decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment"
             matchingRules.collect { decision.rules[it].description.en } ==~ [
-                "Processing on list of the kinds of processing operations subject to a DPIA",
+                "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment",
                 "Two or more criteria apply",
             ]
             agreeingRules.collect { decision.rules[it].description.en } ==~ [
-                "Processing on list of the kinds of processing operations subject to a DPIA",
+                "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment",
                 "Two or more criteria apply",
             ]
         }
@@ -128,7 +128,7 @@ class DecisionRestTest extends VeoRestTest {
         with(get("/processes/$processId/inspection?domain=$domainId").body) {
             size() == 1
             with(it[0]) {
-                description.en == "DPIA was not carried out, but it is mandatory."
+                description.en == "Data Protection Impact Assessment was not carried out, but it is mandatory."
                 severity == "WARNING"
                 suggestions.size() == 1
                 with(suggestions[0]) {
@@ -167,7 +167,7 @@ class DecisionRestTest extends VeoRestTest {
                 decision.rules[decisiveRule].description.en == "Risk analysis not carried out"
                 matchingRules.collect{decision.rules[it].description.en} == [
                     "Risk analysis not carried out",
-                    "Processing on list of the kinds of processing operations subject to a DPIA",
+                    "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment",
                 ]
                 agreeingRules.collect{decision.rules[it].description.en} == [
                     "Risk analysis not carried out"
@@ -188,17 +188,17 @@ class DecisionRestTest extends VeoRestTest {
         with(post("/processes/evaluation?domain=$domainId", process, 200).body) {
             with(decisionResults.piaMandatory) {
                 value == true
-                decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations subject to a DPIA"
+                decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment"
                 matchingRules.collect { decision.rules[it].description.en } == [
-                    "Processing on list of the kinds of processing operations subject to a DPIA",
+                    "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment",
                 ]
                 agreeingRules.collect { decision.rules[it].description.en } == [
-                    "Processing on list of the kinds of processing operations subject to a DPIA"
+                    "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment"
                 ]
             }
             inspectionFindings.size() == 1
             with(inspectionFindings[0]) {
-                description.en == "DPIA was not carried out, but it is mandatory."
+                description.en == "Data Protection Impact Assessment was not carried out, but it is mandatory."
                 severity == "WARNING"
                 suggestions.size() == 1
                 with(suggestions[0]) {
@@ -219,7 +219,7 @@ class DecisionRestTest extends VeoRestTest {
                 decision.rules[decisiveRule].description.en == "Other exclusions"
                 matchingRules.collect { decision.rules[it].description.en } == [
                     "Other exclusions",
-                    "Processing on list of the kinds of processing operations subject to a DPIA"
+                    "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment"
                 ]
                 agreeingRules.collect { decision.rules[it].description.en } == [
                     "Other exclusions"
