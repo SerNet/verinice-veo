@@ -299,4 +299,21 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         result.sort{it.name}.first().name == 's1'
         result.sort{it.name}[1].name == 's2'
     }
+
+    @WithUserDetails("user@domain.example")
+    // TODO VEO-1355: add a test for a scenario/domain with inspections
+    def "there are no decisions for a scenario"() {
+        given: "an existing scenario"
+        def scenario = txTemplate.execute {
+            scenarioDataRepository.save(newScenario(unit) {
+                addToDomains(domain)
+            })
+        }
+
+        when: "inspections are performed on the scenario"
+        def result = parseJson(get("/scenarios/${scenario.id.uuidValue()}/inspection?domain=${domain.idAsString}"))
+
+        then: "there are no results"
+        result.empty
+    }
 }
