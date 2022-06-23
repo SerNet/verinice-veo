@@ -24,7 +24,7 @@ veo:
       routing-key-prefix: 'veo.message.'
     consume:
       queue: 'veo'
-      dlx: 'veo_dlq'
+      dlx: 'veo_dlx'
   threads:
     corePoolSize: 2
     maxPoolSize: 4
