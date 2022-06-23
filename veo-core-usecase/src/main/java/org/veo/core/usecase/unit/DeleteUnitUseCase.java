@@ -21,12 +21,17 @@ import static java.util.function.Predicate.not;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
@@ -83,6 +88,14 @@ public class DeleteUnitUseCase
     // delete scope and risk-affected elements first to prevent FK constraint
     // violations
     // FIXME VEO-1124 remove all relations first, then elements
+
+    Map<Class<? extends Element>, Set> entitiesInUnitByType =
+        EntityType.ELEMENT_TYPE_CLASSES.stream()
+            .collect(
+                Collectors.toMap(
+                    Function.identity(),
+                    type -> repositoryProvider.getElementRepositoryFor(type).findByUnit(unit)));
+
     var associationOwners = List.of(Scope.class, Process.class, Asset.class, Scenario.class);
     associationOwners.forEach(
         type -> {
@@ -90,7 +103,9 @@ public class DeleteUnitUseCase
               "Step 1: First remove the owning side of bi-directional associations "
                   + "members / risks on {}.",
               type.getSimpleName());
-          repositoryProvider.getElementRepositoryFor(type).deleteByUnit(unit);
+          repositoryProvider
+              .getElementRepositoryFor(type)
+              .deleteAll(entitiesInUnitByType.get(type));
         });
 
     EntityType.ELEMENT_TYPE_CLASSES.stream()
@@ -99,7 +114,9 @@ public class DeleteUnitUseCase
         .forEach(
             clazz -> {
               log.debug("Step 2:Deleting all unit members " + "of type {}.", clazz.getSimpleName());
-              repositoryProvider.getElementRepositoryFor(clazz).deleteByUnit(unit);
+              repositoryProvider
+                  .getElementRepositoryFor(clazz)
+                  .deleteAll(entitiesInUnitByType.get(clazz));
             });
   }
 

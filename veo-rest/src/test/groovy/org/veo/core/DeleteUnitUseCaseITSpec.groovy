@@ -54,10 +54,10 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformaceITSpec {
 
         then: 'query statistics show sensible data'
         verifyAll {
-            queryCounts.select == 104
+            queryCounts.select == 84
             queryCounts.insert == 5
             queryCounts.update == 2
-            queryCounts.delete == 39
+            queryCounts.delete in [39l, 40l]
             queryCounts.time < 1000
         }
     }

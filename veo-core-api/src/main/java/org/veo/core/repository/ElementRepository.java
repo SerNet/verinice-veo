@@ -26,6 +26,9 @@ import org.veo.core.entity.Unit;
 
 public interface ElementRepository<T extends Element> extends IdentifiableVersionedRepository<T> {
 
+  Set<T> findByUnit(Unit owner);
+
+  @Deprecated
   void deleteByUnit(Unit owner);
 
   ElementQuery<T> query(Client client);
@@ -33,4 +36,6 @@ public interface ElementRepository<T extends Element> extends IdentifiableVersio
   Set<T> findByDomain(Domain domain);
 
   Set<SubTypeStatusCount> getCountsBySubType(Unit u, Domain domain);
+
+  void deleteAll(Set<T> entities);
 }
