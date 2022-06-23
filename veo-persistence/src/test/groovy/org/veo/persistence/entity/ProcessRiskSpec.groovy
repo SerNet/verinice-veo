@@ -22,6 +22,18 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.ModelConsistencyException
+import org.veo.core.entity.risk.CategoryRef
+import org.veo.core.entity.risk.DeterminedRiskImpl
+import org.veo.core.entity.risk.ImpactImpl
+import org.veo.core.entity.risk.ImpactRef
+import org.veo.core.entity.risk.ProbabilityImpl
+import org.veo.core.entity.risk.ProbabilityRef
+import org.veo.core.entity.risk.RiskDefinitionRef
+import org.veo.core.entity.risk.RiskRef
+import org.veo.core.entity.riskdefinition.CategoryLevel
+import org.veo.core.entity.riskdefinition.ProbabilityDefinition
+import org.veo.core.entity.riskdefinition.ProbabilityLevel
+import org.veo.core.entity.riskdefinition.RiskValue
 import org.veo.test.VeoSpec
 
 class ProcessRiskSpec extends VeoSpec {
@@ -254,9 +266,57 @@ class ProcessRiskSpec extends VeoSpec {
     }
 
     def "risk can be used in multiple domains"() {
-        given: "a process in two domains and a scenario"
-        def domain0 = newDomain(client)
-        def domain1 = newDomain(client)
+        given: "a process in two domains which have different risk definitions with the same ID and a scenario"
+        def riskDefId = "ubiquitous risk def"
+        def domain0 = newDomain(client) {
+            riskDefinitions = [
+                (riskDefId): newRiskDefinition(riskDefId) {
+                    riskValues = [
+                        new RiskValue("low"),
+                        new RiskValue("high")
+                    ]
+                    categories = [
+                        newCategoryDefinition("C") {
+                            potentialImpacts = [
+                                new CategoryLevel().tap{name = "low impact"},
+                                new CategoryLevel().tap{
+                                    name = "high impact"
+                                }
+                            ]
+                        }
+                    ]
+                    probability = new ProbabilityDefinition(null, null, null, [
+                        new ProbabilityLevel("unlikely", null, null, null),
+                        new ProbabilityLevel("likely", null, null, null),
+                    ])
+                }
+            ]
+        }
+        def domain1 = newDomain(client) {
+            riskDefinitions = [
+                (riskDefId): newRiskDefinition(riskDefId) {
+                    riskValues = [
+                        new RiskValue("low"),
+                        new RiskValue("medium"),
+                        new RiskValue("high")
+                    ]
+                    categories = [
+                        newCategoryDefinition("C") {
+                            potentialImpacts = [
+                                new CategoryLevel().tap{name = "low impact"},
+                                new CategoryLevel().tap{name = "medium impact"},
+                                new CategoryLevel().tap{name = "high impact"},
+                            ]
+                        }
+                    ]
+                    probability = new ProbabilityDefinition(null, null, null, [
+                        new ProbabilityLevel("unlikely", null, null, null),
+                        new ProbabilityLevel("kind of likely", null, null, null),
+                        new ProbabilityLevel("likely", null, null, null),
+                    ])
+                }
+            ]
+        }
         def process = newProcess(unit) {
             name = "risky process"
             domains = [domain0, domain1]
@@ -277,5 +337,50 @@ class ProcessRiskSpec extends VeoSpec {
 
         and: "it is assigned to both domains"
         domain0Risk.domains ==~ [domain0, domain1]
+
+        when: "setting distinct risk values for the two domains"
+        def riskDefRef = new RiskDefinitionRef(riskDefId)
+        def cat = new CategoryRef("C")
+        process.updateRisk(domain0Risk, [domain0, domain1] as Set, null, null, [
+            newRiskValues(riskDefRef, domain0) {
+                probability = new ProbabilityImpl().tap{
+                    specificProbability = new ProbabilityRef(BigDecimal.valueOf(1))
+                }
+                impactCategories = [
+                    new ImpactImpl(cat).tap{
+                        specificImpact = new ImpactRef(BigDecimal.valueOf(1))
+                    }
+                ]
+                categorizedRisks = [
+                    new DeterminedRiskImpl(cat).tap{
+                        userDefinedResidualRisk = new RiskRef(BigDecimal.valueOf(1))
+                    }
+                ]
+            },
+            newRiskValues(riskDefRef, domain1) {
+                probability = new ProbabilityImpl().tap{
+                    specificProbability = new ProbabilityRef(BigDecimal.valueOf(2))
+                }
+                impactCategories = [
+                    new ImpactImpl(cat).tap{
+                        specificImpact = new ImpactRef(BigDecimal.valueOf(2))
+                    }
+                ]
+                categorizedRisks = [
+                    new DeterminedRiskImpl(cat).tap{
+                        userDefinedResidualRisk = new RiskRef(BigDecimal.valueOf(2))
+                    }
+                ]
+            },
+        ] as Set)
+
+        then: "the correct values can be fetched for both domains"
+        domain0Risk.getImpactProvider(riskDefRef, domain0).getSpecificImpact(cat).idRef.longValue() == 1
+        domain0Risk.getProbabilityProvider(riskDefRef, domain0).getSpecificProbability().idRef.longValue() == 1
+        domain0Risk.getRiskProvider(riskDefRef, domain0).getUserDefinedResidualRisk(cat).idRef.longValue() == 1
+
+        domain0Risk.getImpactProvider(riskDefRef, domain1).getSpecificImpact(cat).idRef.longValue() == 2
+        domain0Risk.getProbabilityProvider(riskDefRef, domain1).getSpecificProbability().idRef.longValue() == 2
+        domain0Risk.getRiskProvider(riskDefRef, domain1).getUserDefinedResidualRisk(cat).idRef.longValue() == 2
     }
 }

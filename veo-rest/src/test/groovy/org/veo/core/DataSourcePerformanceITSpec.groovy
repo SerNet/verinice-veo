@@ -44,7 +44,6 @@ import org.veo.persistence.entity.jpa.StoredEventData
 
 import net.ttddyy.dsproxy.QueryCount
 import net.ttddyy.dsproxy.QueryCountHolder
-import spock.lang.Ignore
 import spock.lang.Issue
 
 class DataSourcePerformanceITSpec extends VeoSpringSpec {
@@ -177,11 +176,11 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         def queryCounts = trackQueryCounts{
             processes = selectProcesses(process.id, true)
             processes.first().risks.forEach{
-                it.getRiskProvider(rd)
+                it.getRiskProvider(rd, domain)
                         .getCategorizedRisks().size() == 4
-                def prob = it.getProbabilityProvider(rd).effectiveProbability
-                def cat = it.getRiskProvider(rd).getAvailableCategories().first()
-                def risk = it.getRiskProvider(rd).getInherentRisk(cat)
+                def prob = it.getProbabilityProvider(rd, domain).effectiveProbability
+                def cat = it.getRiskProvider(rd, domain).getAvailableCategories().first()
+                def risk = it.getRiskProvider(rd, domain).getInherentRisk(cat)
                 def scenario = it.getScenario().getDisplayName()
                 def person = it.getRiskOwner().getDisplayName()
                 def mitigation = it.getMitigation().getDisplayName()
@@ -199,11 +198,11 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts = trackQueryCounts{
             processes = selectProcesses(process.id, false)
             processes.first().risks.forEach{
-                it.getRiskProvider(rd)
+                it.getRiskProvider(rd, domain)
                         .getCategorizedRisks().size() == 4
-                def prob = it.getProbabilityProvider(rd).effectiveProbability
-                def cat = it.getRiskProvider(rd).getAvailableCategories().first()
-                def risk = it.getRiskProvider(rd).getInherentRisk(cat)
+                def prob = it.getProbabilityProvider(rd, domain).effectiveProbability
+                def cat = it.getRiskProvider(rd, domain).getAvailableCategories().first()
+                def risk = it.getRiskProvider(rd, domain).getInherentRisk(cat)
                 def scenario = it.getScenario().getDisplayName()
                 def person = it.getRiskOwner().getDisplayName()
                 def mitigation = it.getMitigation().getDisplayName()

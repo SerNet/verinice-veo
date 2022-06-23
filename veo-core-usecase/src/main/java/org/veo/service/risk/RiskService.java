@@ -169,7 +169,7 @@ public class RiskService {
       Domain domain,
       RiskDefinitionRef rdr,
       RiskChangedEvent riskEvent) {
-    ProbabilityValueProvider riskValueProbability = risk.getProbabilityProvider(rdr);
+    ProbabilityValueProvider riskValueProbability = risk.getProbabilityProvider(rdr, domain);
 
     ProbabilityRef newProbability =
         scenario
@@ -195,7 +195,7 @@ public class RiskService {
       ProbabilityRef riskValueEffectiveProbability,
       CategoryDefinition categoryDefinition) {
     CategoryRef categoryRef = CategoryRef.from(categoryDefinition);
-    var riskValueImpact = risk.getImpactProvider(riskDefinitionRef);
+    var riskValueImpact = risk.getImpactProvider(riskDefinitionRef, domain);
 
     ImpactRef effectiveImpact =
         calculateImpact(
@@ -205,6 +205,7 @@ public class RiskService {
         risk,
         riskDefinitionRef,
         riskEvent,
+        domain,
         riskValueEffectiveProbability,
         categoryDefinition,
         effectiveImpact);
@@ -215,6 +216,7 @@ public class RiskService {
       ProcessRisk risk,
       RiskDefinitionRef riskDefinitionRef,
       RiskChangedEvent riskEvent,
+      Domain domain,
       ProbabilityRef riskValueEffectiveProbability,
       CategoryDefinition categoryDefinition,
       ImpactRef effectiveImpact) {
@@ -224,7 +226,7 @@ public class RiskService {
     // 'inherentRisk':
     DeterminedRiskImpl riskForCategory =
         (DeterminedRiskImpl)
-            ((RiskValuesProvider) risk.getRiskProvider(riskDefinitionRef))
+            ((RiskValuesProvider) risk.getRiskProvider(riskDefinitionRef, domain))
                 .riskCategoryById(category);
 
     RiskRef inherentRisk =

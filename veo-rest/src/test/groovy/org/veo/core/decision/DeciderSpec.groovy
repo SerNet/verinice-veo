@@ -415,7 +415,7 @@ class DeciderSpec extends VeoSpec {
             defineRiskValues([
                 newRiskValues(riskDefinitionRef, domain)
             ] as Set)
-            getRiskProvider(riskDefinitionRef).tap { CategorizedRiskValueProvider riskValueProvider ->
+            getRiskProvider(riskDefinitionRef, domain).tap { CategorizedRiskValueProvider riskValueProvider ->
                 inherentRisks.forEach{category, riskValue ->
                     riskValueProvider.categorizedRisks
                             .find { it.category == category }

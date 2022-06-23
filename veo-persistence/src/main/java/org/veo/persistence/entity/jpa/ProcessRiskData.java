@@ -117,8 +117,9 @@ public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> impl
   private Set<ProcessRiskValuesAspectData> riskAspects = new HashSet<>();
 
   @Override
-  public ProbabilityValueProvider getProbabilityProvider(RiskDefinitionRef riskDefinition) {
-    return findRiskAspectForDefinition(riskDefinition)
+  public ProbabilityValueProvider getProbabilityProvider(
+      RiskDefinitionRef riskDefinition, Domain domain) {
+    return findRiskAspectForDefinition(riskDefinition, domain)
         .orElseThrow(
             () ->
                 new NotFoundException(
@@ -132,8 +133,9 @@ public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> impl
   }
 
   @Override
-  public CategorizedImpactValueProvider getImpactProvider(RiskDefinitionRef riskDefinition) {
-    return findRiskAspectForDefinition(riskDefinition)
+  public CategorizedImpactValueProvider getImpactProvider(
+      RiskDefinitionRef riskDefinition, Domain domain) {
+    return findRiskAspectForDefinition(riskDefinition, domain)
         .orElseThrow(
             () ->
                 new NotFoundException(
@@ -146,15 +148,16 @@ public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> impl
   }
 
   private Optional<ProcessRiskValuesAspectData> findRiskAspectForDefinition(
-      RiskDefinitionRef riskDefinition) {
+      RiskDefinitionRef riskDefinition, Domain domain) {
     return riskAspects.stream()
-        .filter(a -> a.getRiskDefinition().equals(riskDefinition))
+        .filter(a -> a.getRiskDefinition().equals(riskDefinition) && a.getDomain().equals(domain))
         .findFirst();
   }
 
   @Override
-  public CategorizedRiskValueProvider getRiskProvider(RiskDefinitionRef riskDefinition) {
-    return findRiskAspectForDefinition(riskDefinition)
+  public CategorizedRiskValueProvider getRiskProvider(
+      RiskDefinitionRef riskDefinition, Domain domain) {
+    return findRiskAspectForDefinition(riskDefinition, domain)
         .orElseThrow(
             () ->
                 new NotFoundException(

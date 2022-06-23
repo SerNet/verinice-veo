@@ -41,7 +41,8 @@ public interface ProcessDataRepository extends CompositeRiskAffectedDataReposito
   @Query(
       "select distinct p from process p "
           + "left join fetch p.risks risks "
-          + "left join fetch risks.riskAspects "
+          + "left join fetch risks.riskAspects ra "
+          + "left join fetch ra.domain "
           + "where p.dbId IN ?1")
   Set<ProcessData> findByIdsWithRiskValues(Set<String> dbIds);
 

@@ -133,10 +133,10 @@ class RiskServiceITSpec extends VeoSpringSpec {
         def oldRiskVersion = risk.version
 
         then: 'the effective and inherent risk values are set'
-        with(risk.getProbabilityProvider(riskDefinitionRef)) {
+        with(risk.getProbabilityProvider(riskDefinitionRef, domain)) {
             effectiveProbability.idRef == 0
         }
-        with(risk.getImpactProvider(riskDefinitionRef)) {
+        with(risk.getImpactProvider(riskDefinitionRef, domain)) {
             with (getEffectiveImpact(confidentialityRef)) {
                 it.idRef == 0
                 confidentiality.getLevel(it.idRef as int).orElseThrow().name == VERNACHLAESSIGBAR
@@ -146,7 +146,7 @@ class RiskServiceITSpec extends VeoSpringSpec {
                 availability.getLevel(it.idRef as int).orElseThrow().name == BETRAECHTLICH
             }
         }
-        with(risk.getRiskProvider(riskDefinitionRef)) {
+        with(risk.getRiskProvider(riskDefinitionRef, domain)) {
             with(getInherentRisk(confidentialityRef)) {
                 it.idRef == 0
                 riskDefinition.getRiskValue(it.idRef as int).orElseThrow().name == GERING
@@ -203,10 +203,10 @@ class RiskServiceITSpec extends VeoSpringSpec {
         }
 
         then: 'the effective and inherent risk values are updated accordingly'
-        with(risk.getProbabilityProvider(riskDefinitionRef)) {
+        with(risk.getProbabilityProvider(riskDefinitionRef, domain)) {
             effectiveProbability.idRef == 2
         }
-        with(risk.getImpactProvider(riskDefinitionRef)) {
+        with(risk.getImpactProvider(riskDefinitionRef, domain)) {
             with (getEffectiveImpact(confidentialityRef)) {
                 it.idRef == 0
                 confidentiality.getLevel(it.idRef as int).orElseThrow().name == VERNACHLAESSIGBAR
@@ -216,7 +216,7 @@ class RiskServiceITSpec extends VeoSpringSpec {
                 availability.getLevel(it.idRef as int).orElseThrow().name == BETRAECHTLICH
             }
         }
-        with(risk.getRiskProvider(riskDefinitionRef)) {
+        with(risk.getRiskProvider(riskDefinitionRef, domain)) {
             with(getInherentRisk(confidentialityRef)) {
                 it.idRef == 0
                 riskDefinition.getRiskValue(it.idRef as int).orElseThrow().name == GERING
@@ -257,7 +257,7 @@ class RiskServiceITSpec extends VeoSpringSpec {
 
         when: "changing the risk's specific impact and running the risk service"
         listener.receivedEvents.clear()
-        risk.getImpactProvider(riskDefinitionRef).setSpecificImpact(availabilityRef, ImpactRef.from(highAvailabilityImpact))
+        risk.getImpactProvider(riskDefinitionRef, domain).setSpecificImpact(availabilityRef, ImpactRef.from(highAvailabilityImpact))
         executeInTransaction {
             process = processDataRepository.save(process)
             riskService.evaluateChangedRiskComponent(process)
@@ -266,10 +266,10 @@ class RiskServiceITSpec extends VeoSpringSpec {
         }
 
         then: 'the effective and inherent risk values are updated accordingly'
-        with(risk.getProbabilityProvider(riskDefinitionRef)) {
+        with(risk.getProbabilityProvider(riskDefinitionRef, domain)) {
             effectiveProbability.idRef == 2
         }
-        with(risk.getImpactProvider(riskDefinitionRef)) {
+        with(risk.getImpactProvider(riskDefinitionRef, domain)) {
             with (getEffectiveImpact(confidentialityRef)) {
                 it.idRef == 0
                 confidentiality.getLevel(it.idRef as int).orElseThrow().name == VERNACHLAESSIGBAR
@@ -279,7 +279,7 @@ class RiskServiceITSpec extends VeoSpringSpec {
                 availability.getLevel(it.idRef as int).orElseThrow().name == EXISTENZBEDROHEND
             }
         }
-        with(risk.getRiskProvider(riskDefinitionRef)) {
+        with(risk.getRiskProvider(riskDefinitionRef, domain)) {
             with(getInherentRisk(confidentialityRef)) {
                 it.idRef == 0
                 riskDefinition.getRiskValue(it.idRef as int).orElseThrow().name == GERING

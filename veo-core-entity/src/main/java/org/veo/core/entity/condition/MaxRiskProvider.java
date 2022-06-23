@@ -72,14 +72,15 @@ public class MaxRiskProvider implements InputProvider {
   }
 
   private BigDecimal getMaxRisk(RiskAffected<?, ?> element, Domain domain) {
-    // TODO VEO-1295 apply domain parameter
     return element.getRisks().stream()
         // TODO VEO-209 remove filter and cast once all types of risk can provide risk
         // values
         .filter(ProcessRisk.class::isInstance)
         .map(ProcessRisk.class::cast)
         .flatMap(
-            risk -> risk.getRiskDefinitions(domain).stream().map(rd -> risk.getRiskProvider(rd)))
+            risk ->
+                risk.getRiskDefinitions(domain).stream()
+                    .map(rd -> risk.getRiskProvider(rd, domain)))
         .flatMap(provider -> provider.getCategorizedRisks().stream())
         .map(DeterminedRisk::getResidualRisk)
         .filter(it -> it != null)

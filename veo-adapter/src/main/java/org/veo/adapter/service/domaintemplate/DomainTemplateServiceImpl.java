@@ -290,7 +290,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                       .forEach(
                           rd -> {
                             log.info("Risk definition: {}", rd);
-                            ProbabilityValueProvider pp = risk.getProbabilityProvider(rd);
+                            ProbabilityValueProvider pp = risk.getProbabilityProvider(rd, domain);
                             log.info("Potential probability: {}", pp.getPotentialProbability());
 
                             log.info("Specific probability: {}", pp.getSpecificProbability());

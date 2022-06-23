@@ -195,14 +195,14 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                 getRiskDefinitions(domain).size() == 1
                 with(getRiskDefinitions(domain).first()) {
                     idRef == 'DSRA'
-                    with(risk.getProbabilityProvider(it).probability) {
+                    with(risk.getProbabilityProvider(it, domain).probability) {
                         verifyAll {
                             potentialProbability.idRef == 1
                             specificProbability.idRef == 2
                             effectiveProbability.idRef == 2
                         }
                     }
-                    with(risk.getImpactProvider(it)) {
+                    with(risk.getImpactProvider(it, domain)) {
                         availableCategories.size() == 4
                         def integrity = availableCategories.find{
                             it.idRef == 'I'
@@ -214,7 +214,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                             getEffectiveImpact(integrity).idRef == 0
                         }
                     }
-                    with(risk.getRiskProvider(it)) {
+                    with(risk.getRiskProvider(it, domain)) {
                         availableCategories.size() == 4
                         def confidentiality = availableCategories.find{
                             it.idRef == 'C'

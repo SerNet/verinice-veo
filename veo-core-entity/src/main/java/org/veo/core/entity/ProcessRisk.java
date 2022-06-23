@@ -39,11 +39,11 @@ import org.veo.core.entity.risk.RiskValues;
  */
 public interface ProcessRisk extends AbstractRisk<Process, ProcessRisk> {
 
-  ProbabilityValueProvider getProbabilityProvider(RiskDefinitionRef riskDefinition);
+  ProbabilityValueProvider getProbabilityProvider(RiskDefinitionRef riskDefinition, Domain domain);
 
-  CategorizedImpactValueProvider getImpactProvider(RiskDefinitionRef riskDefinition);
+  CategorizedImpactValueProvider getImpactProvider(RiskDefinitionRef riskDefinition, Domain domain);
 
-  CategorizedRiskValueProvider getRiskProvider(RiskDefinitionRef riskDefinition);
+  CategorizedRiskValueProvider getRiskProvider(RiskDefinitionRef riskDefinition, Domain domain);
 
   Set<RiskDefinitionRef> getRiskDefinitions(Domain domain);
 

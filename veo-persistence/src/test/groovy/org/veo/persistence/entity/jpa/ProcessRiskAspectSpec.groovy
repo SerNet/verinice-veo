@@ -57,7 +57,7 @@ class ProcessRiskAspectSpec extends VeoSpec {
         def risk = createRisk(process, domain, rdRef)
 
         when: "get the list of impact categories"
-        def categories = risk.getImpactProvider(rdRef).getAvailableCategories()
+        def categories = risk.getImpactProvider(rdRef, domain).getAvailableCategories()
 
         then: "the expected categories are returned"
         categories*.idRef.toSet() == ["C", "I", "A", "R"] as Set
@@ -72,12 +72,12 @@ class ProcessRiskAspectSpec extends VeoSpec {
         def risk = createRisk(process, domain, rdRef)
 
         when: "default and specific values are set"
-        def probability = risk.getProbabilityProvider(rdRef)
+        def probability = risk.getProbabilityProvider(rdRef, domain)
         probability.potentialProbability = factory.createProbabilityRef(potProb)
         probability.specificProbability = factory.createProbabilityRef(specProb)
 
         def confidentiality = factory.createCategoryRef("C")
-        def impact = risk.getImpactProvider(rdRef)
+        def impact = risk.getImpactProvider(rdRef, domain)
         impact.setPotentialImpact(confidentiality, factory.createImpactRef(potC))
         impact.setSpecificImpact(confidentiality, factory.createImpactRef(specC))
 

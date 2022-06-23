@@ -149,6 +149,6 @@ public class ProcessRiskDto extends AbstractRiskDto {
   private static Map<String, RiskValuesDto> valuesGroupedByRiskDefinition(
       ProcessRisk risk, Domain domain) {
     return risk.getRiskDefinitions(domain).stream()
-        .collect(toMap(RiskDefinitionRef::getIdRef, rd -> RiskValuesDto.from(risk, rd)));
+        .collect(toMap(RiskDefinitionRef::getIdRef, rd -> RiskValuesDto.from(risk, rd, domain)));
   }
 }

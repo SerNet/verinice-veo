@@ -135,32 +135,34 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
         and: "the risk is retrieved"
         retrievedRisk1 = txTemplate.execute{
             Set<Process> processes = processRepository.findRisksWithValue(scenario1)
-            return processes.first().risks.first()
+            return processes.first().risks.first().tap{
+                it.getRiskDefinitions(domain)
+            }
         }
 
         then: "risk values were initialized"
         retrievedRisk1 == risk
-        retrievedRisk1.getRiskDefinitions().size() == 1
-        retrievedRisk1.getProbabilityProvider(riskDefRef).getProbability() != null
-        retrievedRisk1.getImpactProvider(riskDefRef) != null
-        retrievedRisk1.getRiskProvider(riskDefRef) != null
+        retrievedRisk1.getRiskDefinitions(domain).size() == 1
+        retrievedRisk1.getProbabilityProvider(riskDefRef, domain).getProbability() != null
+        retrievedRisk1.getImpactProvider(riskDefRef, domain) != null
+        retrievedRisk1.getRiskProvider(riskDefRef, domain) != null
 
         when: "risk values are modified"
         txTemplate.execute{
             def process = processRepository.findRisksWithValue(scenario1).first()
-            process.risks.first().getProbabilityProvider(riskDefRef).with {
+            process.risks.first().getProbabilityProvider(riskDefRef, domain).with {
                 potentialProbability = new ProbabilityRef(2)
                 specificProbability = new ProbabilityRef(1)
                 specificProbabilityExplanation = BAD_FEELINGS
             }
 
-            process.risks.first().getImpactProvider(riskDefRef).with {
+            process.risks.first().getImpactProvider(riskDefRef, domain).with {
                 it.setPotentialImpact(confidentiality, new ImpactRef(1))
                 it.setSpecificImpact(confidentiality, new ImpactRef(3))
                 it.setSpecificImpactExplanation(confidentiality, MURPHYS_LAW)
             }
 
-            process.risks.first().getRiskProvider(riskDefRef).with {
+            process.risks.first().getRiskProvider(riskDefRef, domain).with {
                 it.setUserDefinedResidualRisk(confidentiality, new RiskRef(0))
                 it.setResidualRiskExplanation(confidentiality, NO_RISK_NO_FUN)
                 it.setRiskTreatmentExplanation(confidentiality, RISK_ACCEPTANCE)
@@ -173,12 +175,13 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
 
         // retrieve in new transaction:
         def retrievedRisk2 = txTemplate.execute {
-            def retrievedRisk2 = processRepository.findRisksWithValue(scenario1).first().risks.first()
-            return retrievedRisk2
+            processRepository.findRisksWithValue(scenario1).first().risks.first().tap{
+                it.getRiskDefinitions(domain)
+            }
         }
 
         then: "the persisted object reflects the changes"
-        with(retrievedRisk2.getProbabilityProvider(riskDefRef)) {
+        with(retrievedRisk2.getProbabilityProvider(riskDefRef, domain)) {
             it.potentialProbability == new ProbabilityRef(2)
             it.specificProbability == new ProbabilityRef(1)
             it.effectiveProbability == new ProbabilityRef(1)
@@ -186,14 +189,14 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
         }
 
 
-        with(retrievedRisk2.getImpactProvider(riskDefRef)) {
+        with(retrievedRisk2.getImpactProvider(riskDefRef, domain)) {
             it.getPotentialImpact(confidentiality) == new ImpactRef(1)
             it.getSpecificImpact(confidentiality) == new ImpactRef(3)
             it.getSpecificImpactExplanation(confidentiality) == MURPHYS_LAW
 
         }
 
-        with(retrievedRisk2.getRiskProvider(riskDefRef)) {
+        with(retrievedRisk2.getRiskProvider(riskDefRef, domain)) {
             it.getUserDefinedResidualRisk(confidentiality) ==  new RiskRef(0)
             it.getResidualRiskExplanation(confidentiality) == NO_RISK_NO_FUN
             it.getRiskTreatmentExplanation(confidentiality) == RISK_ACCEPTANCE
