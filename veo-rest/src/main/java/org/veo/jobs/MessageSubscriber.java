@@ -20,6 +20,7 @@ package org.veo.jobs;
 import static org.veo.core.events.MessageCreatorImpl.ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE;
 import static org.veo.rest.VeoRestConfiguration.PROFILE_BACKGROUND_TASKS;
 
+import org.springframework.amqp.rabbit.annotation.Argument;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
@@ -62,7 +63,11 @@ public class MessageSubscriber {
                       value = "${veo.message.consume.queue}",
                       exclusive = "false",
                       durable = "true",
-                      autoDelete = "false"),
+                      autoDelete = "false",
+                      arguments =
+                          @Argument(
+                              name = "x-dead-letter-exchange",
+                              value = "${veo.message.consume.dlx}")),
               exchange = @Exchange(value = "${veo.message.dispatch.exchange}", type = "topic"),
               key =
                   "${veo.message.dispatch.routing-key-prefix}"
