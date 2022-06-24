@@ -94,8 +94,8 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
             description = "OpenAPI documentation for verinice.VEO.",
             license =
                 @License(
-                    name = "GNU Lesser General Public License",
-                    url = "https://www.gnu.org/licenses/lgpl-3.0.de.html"),
+                    name = "GNU Affero General Public License",
+                    url = "https://www.gnu.org/licenses/agpl-3.0.html.en"),
             contact = @Contact(url = "http://verinice.com", email = "verinice@sernet.de")))
 public class RestApplication {
 
