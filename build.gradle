@@ -172,6 +172,8 @@ subprojects {
             "https.proxyPort"
         ])
         systemProperty 'user.language', 'en'
+        // work around https://github.com/spockframework/spock/issues/1406
+        jvmArgs '--add-opens=java.base/java.lang.invoke=ALL-UNNAMED'
     }
 
     pmd {
