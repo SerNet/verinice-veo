@@ -1538,7 +1538,7 @@ permitted.
 
 --------------------------------------------------------------------------------
 
-28. Group: com.vladmihalcea  Name: hibernate-types-52  Version: 2.16.2
+28. Group: com.vladmihalcea  Name: hibernate-types-52  Version: 2.16.3
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
@@ -19897,5 +19897,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Mon Jun 27 05:04:59 UTC 2022.
+This report was generated at Mon Jun 27 09:32:05 UTC 2022.
 
