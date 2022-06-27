@@ -63,7 +63,7 @@ public class MessageSubscriber {
                       value = "${veo.message.consume.queue}",
                       exclusive = "false",
                       durable = "true",
-                      autoDelete = "false",
+                      autoDelete = "${veo.message.consume.autoDelete:false}",
                       arguments =
                           @Argument(
                               name = "x-dead-letter-exchange",

@@ -2,6 +2,8 @@ veo:
   cors:
     origins: https://*.verinice.example, https://frontend.somewhereelse.example
   message:
+    consume:
+      autoDelete: 'true'
     dispatch:
       routing-key-prefix: 'veo.resttestmessage.'
   resttest:

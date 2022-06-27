@@ -25,6 +25,7 @@ veo:
     consume:
       queue: 'veo'
       dlx: 'veo_dlx'
+      autoDelete: 'false'
   threads:
     corePoolSize: 2
     maxPoolSize: 4
