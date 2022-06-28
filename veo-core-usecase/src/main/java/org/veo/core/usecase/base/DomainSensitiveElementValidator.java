@@ -25,6 +25,7 @@ import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.definitions.LinkDefinition;
+import org.veo.core.entity.exception.UnprocessableDataException;
 
 /** Validates elements considering domain-specific rules (e.g. element type definitions). */
 class DomainSensitiveElementValidator {
@@ -55,7 +56,7 @@ class DomainSensitiveElementValidator {
                       .findAny()
                       .orElseThrow(
                           () ->
-                              new IllegalArgumentException(
+                              new UnprocessableDataException(
                                   String.format(
                                       "Custom aspect type '%s' is not defined in any domain used by the element.",
                                       ca.getType())));

@@ -28,6 +28,7 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.entity.exception.ReferenceTargetNotFoundException
 import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
@@ -221,10 +222,10 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
                 ]
             ],
             scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
-        ], 404)
+        ], 422)
 
         then:
-        thrown(NotFoundException)
+        thrown(ReferenceTargetNotFoundException)
     }
 
     def "embedded risks can be requested"() {
@@ -856,6 +857,35 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             domains: [
                 (UUID.randomUUID().toString()): [
                     reference: [targetUri: "http://localhost/domains/$domainId"],
+                    riskDefinitions: [
+                        absentRd : [
+                            impactValues: [
+                                [
+                                    category: "A",
+                                    specificImpact: 1
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ], HttpStatus.SC_UNPROCESSABLE_ENTITY)
+
+        then:
+        thrown(UnprocessableDataException)
+    }
+
+    def "nonexistent resource in request body leads to a sensible error code"() {
+        given:
+        def processId = process.getIdAsString()
+        def scenarioId = scenario.getIdAsString()
+
+        when:
+        post("/processes/$processId/risks", [
+            domains: [
+                (domainId): [
+                    reference: [targetUri: "http://localhost/domains/"+UUID.randomUUID().toString()],
                     riskDefinitions: [
                         absentRd : [
                             impactValues: [

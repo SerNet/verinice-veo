@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter;
 
+import static java.lang.String.format;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +37,7 @@ import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.EntitySpecifications;
 import org.veo.core.repository.Repository;
@@ -128,10 +131,11 @@ public class DbIdRefResolver implements IdRefResolver {
           copyOfReferences.remove(reference);
         });
     if (!copyOfReferences.isEmpty()) {
-      throw new NotFoundException(
-          "Unable to resolve references of type %s to objects: missing IDs: %s",
-          entityType,
-          copyOfReferences.stream().map(IdRef::getId).collect(Collectors.joining(", ")));
+      throw new ReferenceTargetNotFoundException(
+          format(
+              "Unable to resolve references of type %s to objects: missing IDs: %s",
+              entityType,
+              copyOfReferences.stream().map(IdRef::getId).collect(Collectors.joining(", "))));
     }
     return result;
   }

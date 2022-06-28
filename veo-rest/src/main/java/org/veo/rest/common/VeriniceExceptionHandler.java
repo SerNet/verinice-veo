@@ -31,6 +31,7 @@ import org.veo.adapter.presenter.api.DeviatingIdException;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.core.entity.DomainException;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.usecase.common.ETagMismatchException;
@@ -89,6 +90,11 @@ public class VeriniceExceptionHandler {
 
   @ExceptionHandler({UnprocessableDataException.class})
   protected ResponseEntity<ApiResponseBody> handle(UnprocessableDataException exception) {
+    return handle(exception, HttpStatus.UNPROCESSABLE_ENTITY);
+  }
+
+  @ExceptionHandler({ReferenceTargetNotFoundException.class})
+  protected ResponseEntity<ApiResponseBody> handle(ReferenceTargetNotFoundException exception) {
     return handle(exception, HttpStatus.UNPROCESSABLE_ENTITY);
   }
 

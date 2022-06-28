@@ -31,7 +31,7 @@ import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase.InputDa
 
 class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSpec {
 
-    GetIncarnationDescriptionUseCase usecase = new GetIncarnationDescriptionUseCase(unitRepo, catalogItemRepository, domainRepository, entityRepo)
+    GetIncarnationDescriptionUseCase usecase = new GetIncarnationDescriptionUseCase(unitRepo, catalogItemRepository, entityRepo)
 
     def setup() {
         entityRepo.getElementRepositoryFor(_) >> repo

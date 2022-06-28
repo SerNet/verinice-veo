@@ -23,6 +23,7 @@ import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 
 class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
@@ -346,9 +347,9 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters.size() == 2
 
         when: "post the data"
-        post("/${basePath}/${unit.id.uuidValue()}/incarnations",result, 404)
+        post("/${basePath}/${unit.id.uuidValue()}/incarnations",result, 422)
         then: "the data is rejected"
-        thrown(NotFoundException)
+        thrown(UnprocessableDataException)
     }
 
     @WithUserDetails("user@domain.example")

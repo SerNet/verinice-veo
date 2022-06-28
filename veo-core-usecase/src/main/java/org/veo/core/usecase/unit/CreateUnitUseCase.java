@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
+import static java.lang.String.format;
+
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,7 +27,7 @@ import javax.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.UnitRepository;
@@ -84,8 +86,8 @@ public class CreateUnitUseCase
               .findById(input.getParentUnitId().get())
               .orElseThrow(
                   () ->
-                      new NotFoundException(
-                          "Parent unit %s was not found", input.getParentUnitId().get()));
+                      new ReferenceTargetNotFoundException(
+                          format("Parent unit %s was not found", input.getParentUnitId().get())));
       newUnit = entityFactory.createUnit(input.getNameableInput().getName(), parentUnit);
     }
     newUnit.setAbbreviation(input.getNameableInput().getAbbreviation());

@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import static java.lang.String.format;
 import static java.util.stream.Collectors.toSet;
 
 import java.time.Instant;
@@ -38,6 +39,7 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.risk.CategorizedImpactValueProvider;
 import org.veo.core.entity.risk.CategorizedRiskValueProvider;
@@ -196,9 +198,11 @@ public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> impl
                   .map(RiskDefinitionRef::from)
                   .orElseThrow(
                       () ->
-                          new NotFoundException(
-                              "Risk definition '%s' not found in domain %s",
-                              newValues.getRiskDefinitionId().value(), domain.getIdAsString()));
+                          new ReferenceTargetNotFoundException(
+                              format(
+                                  "Risk definition '%s' not found in domain %s",
+                                  newValues.getRiskDefinitionId().value(),
+                                  domain.getIdAsString())));
 
           var ra = getOrCreateRiskAspect(domain, riskDefinition);
           var validator =

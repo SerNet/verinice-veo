@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer;
 
+import static java.lang.String.format;
 import static org.veo.core.entity.risk.DomainRiskReferenceProvider.referencesForDomain;
 
 import java.math.BigDecimal;
@@ -59,7 +60,7 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.aspects.Aspect;
-import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
@@ -102,9 +103,10 @@ public class DomainAssociationTransformer {
                 .getRiskDefinitionRef(kv.getKey())
                 .orElseThrow(
                     () ->
-                        new NotFoundException(
-                            "Risk definition '%s' was not found for domain '%s'",
-                            kv.getKey(), domain.getId())),
+                        new ReferenceTargetNotFoundException(
+                            format(
+                                "Risk definition '%s' was not found for domain '%s'",
+                                kv.getKey(), domain.getId()))),
         kv -> mapControlRiskValuesDto2Entity(kv.getKey(), kv.getValue(), referenceProvider));
   }
 
@@ -119,7 +121,7 @@ public class DomainAssociationTransformer {
             .orElseThrow(
                 () ->
                     new IllegalArgumentException(
-                        String.format(
+                        format(
                             "Risk definition %s contains no implementation status with ordinal value %d",
                             riskDefinitionId, riskValuesDto.getImplementationStatus())));
     riskValues.setImplementationStatus(implementationStatus);
@@ -230,7 +232,7 @@ public class DomainAssociationTransformer {
             .orElseThrow(
                 () ->
                     new IllegalArgumentException(
-                        String.format(
+                        format(
                             "Risk definition %s contains no implementation status with ordinal value %d",
                             riskDefinitionId, riskValuesDto.getPotentialProbability())));
     riskValues.setPotentialProbability(probability);
@@ -432,8 +434,8 @@ public class DomainAssociationTransformer {
         .getRiskDefinitionRef(riskDefId)
         .orElseThrow(
             () ->
-                new NotFoundException(
-                    String.format(
+                new ReferenceTargetNotFoundException(
+                    format(
                         "Risk definition '%s' was not found for domain '%s'",
                         riskDefId, domain.getIdAsString())));
   }

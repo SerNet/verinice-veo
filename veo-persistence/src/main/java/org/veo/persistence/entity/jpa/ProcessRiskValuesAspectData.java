@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import static java.lang.String.format;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.aspects.RiskValuesAspect;
-import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.DeterminedRisk;
 import org.veo.core.entity.risk.DeterminedRiskImpl;
@@ -79,9 +80,10 @@ public class ProcessRiskValuesAspectData implements RiskValuesAspect {
             .getRiskDefinition(riskDefinition.getIdRef())
             .orElseThrow(
                 () ->
-                    new NotFoundException(
-                        "Risk " + "definition ID %s not found in domain ID %s.",
-                        riskDefinition.getIdRef(), domain.getId()));
+                    new ReferenceTargetNotFoundException(
+                        format(
+                            "Risk definition ID %s not found in domain ID %s.",
+                            riskDefinition.getIdRef(), domain.getId())));
 
     var categoryRefs =
         domainRiskDefinition.getCategories().stream().map(CategoryRef::from).collect(toSet());

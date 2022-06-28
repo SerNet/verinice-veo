@@ -28,6 +28,9 @@ import org.veo.core.entity.DomainException;
  * <p>This exception must be caught by the controller and an appropriate status code and message
  * must be returned to the caller. The caller will need to remediate the situation, i.e. by
  * temporarily noting down all changes, then reloading the object and applying the changes again.
+ *
+ * <p>When an input entity contains a reference to an entity that could not be found, throw a {@link
+ * ReferenceTargetNotFoundException} instead.
  */
 public class NotFoundException extends DomainException {
 

@@ -25,6 +25,7 @@ import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.entity.exception.ReferenceTargetNotFoundException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
@@ -180,10 +181,10 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ], 404)
+        ], 422)
 
         then: "an exception is thrown"
-        ex = thrown(NotFoundException)
+        ex = thrown(ReferenceTargetNotFoundException)
         ex.message.contains("Risk definition '$undefinedName' was not found for domain")
 
         when: "creating a scenario with an undefined risk value"

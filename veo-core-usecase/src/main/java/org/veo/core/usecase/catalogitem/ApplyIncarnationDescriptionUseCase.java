@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalogitem;
 
+import static java.lang.String.format;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -46,6 +48,8 @@ import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TailoringReferenceTyped;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
+import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.util.TailoringReferenceComparators;
 import org.veo.core.repository.CatalogItemRepository;
@@ -134,8 +138,7 @@ public class ApplyIncarnationDescriptionUseCase
                         domainRepository
                             .findById(k)
                             .orElseThrow(
-                                () ->
-                                    new NotFoundException("Domain %s not found.", k.uuidValue()))));
+                                () -> new ReferenceTargetNotFoundException(k, Domain.class))));
 
     usedDomains
         .values()
@@ -150,7 +153,7 @@ public class ApplyIncarnationDescriptionUseCase
                   Key<UUID> catalogItemId = ra.getItem().getId();
                   CatalogItem catalogItem = catalogItemsbyId.get(catalogItemId);
                   if (catalogItem == null) {
-                    throw new NotFoundException("CatalogItem not found %s", catalogItemId);
+                    throw new ReferenceTargetNotFoundException(catalogItemId, CatalogItem.class);
                   }
                   Domain domain =
                       usedDomains.get(catalogItem.getCatalog().getDomainTemplate().getId());
@@ -311,12 +314,13 @@ public class ApplyIncarnationDescriptionUseCase
               .findFirst()
               .orElseThrow(
                   () ->
-                      new NotFoundException(
-                          "CatalogItem %s:%s not included in request but required by %s:%s.",
-                          ri.sourceItem.getNamespace(),
-                          ri.sourceItem.getDisplayName(),
-                          ri.source.getDesignator(),
-                          ri.source.getName()));
+                      new UnprocessableDataException(
+                          format(
+                              "CatalogItem %s:%s not included in request but required by %s:%s.",
+                              ri.sourceItem.getNamespace(),
+                              ri.sourceItem.getDisplayName(),
+                              ri.source.getDesignator(),
+                              ri.source.getName())));
       CustomLink link =
           createLink(ri.source, internalTarget, ri.domain, ri.linkType, ri.attributes);
       ri.source.addToLinks(link);

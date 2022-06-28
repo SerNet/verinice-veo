@@ -127,6 +127,6 @@ class DomainAssociationRestTest extends VeoRestTest {
             owner: [
                 targetUri: unitUri
             ]
-        ], 404)
+        ], 422)
     }
 }

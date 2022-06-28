@@ -27,7 +27,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.repository.Repository;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
@@ -58,9 +58,7 @@ public abstract class CreateElementUseCase<TEntity extends Element>
         unitRepository
             .findById(entity.getOwner().getId())
             .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        "Unit %s not found.", entity.getOwner().getId().uuidValue()));
+                () -> new ReferenceTargetNotFoundException(entity.getOwner().getId(), Unit.class));
     unit.checkSameClient(input.authenticatedClient);
     DomainSensitiveElementValidator.validate(entity);
     designatorService.assignDesignator(entity, input.authenticatedClient);

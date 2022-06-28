@@ -28,7 +28,7 @@ import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase.InputDa
 
 class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSpec {
     EntityFactory factory = Mock()
-    GetIncarnationDescriptionUseCase usecaseGet = new GetIncarnationDescriptionUseCase(unitRepo, catalogItemRepository, domainRepository, entityRepo)
+    GetIncarnationDescriptionUseCase usecaseGet = new GetIncarnationDescriptionUseCase(unitRepo, catalogItemRepository, entityRepo)
 
     ApplyIncarnationDescriptionUseCase usecasePut = new ApplyIncarnationDescriptionUseCase(
     unitRepo, catalogItemRepository, domainRepository, entityRepo, designatorService, catalogItemservice, factory)
