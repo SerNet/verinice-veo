@@ -72,7 +72,7 @@ class SchemaControllerMockMvcSpec extends VeoMvcSpec {
     def "get the schema for an unknown domain"() {
         given:
         def someRandomUUID = UUID.randomUUID().toString()
-        when: "a request for the asset schama is made"
+        when: "a request for the asset schema is made"
         parseJson(get("/schemas/asset?domains=${someRandomUUID}", 404))
 
         then: "the domain is not found"
