@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
-import org.veo.core.entity.risk.Probability;
+import org.veo.core.entity.risk.ExplainedPotentialProbability;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -53,7 +53,7 @@ public interface ProbabilitySchema {
   @Schema(
       description = "A user-defined explanation for the selection of the probability value.",
       example = "No risk no fun.")
-  @Size(max = Probability.EXPLANATION_MAX_LENGTH)
+  @Size(max = ExplainedPotentialProbability.EXPLANATION_MAX_LENGTH)
   String getSpecificProbabilityExplanation();
 
   @Schema(

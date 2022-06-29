@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Daniel Murygin
+ * Copyright (C) 2022  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,27 +17,14 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
-import javax.validation.constraints.Size;
+import org.veo.core.entity.Constraints;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+/** The default probability defined for the scenario. */
+public interface ExplainedPotentialProbability extends PotentialProbability {
 
-/**
- * This class contains a reference to a potential probability. The referenced probability must be
- * defined in a risk definition.
- */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class PotentialProbabilityImpl implements ExplainedPotentialProbability {
+  int EXPLANATION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
 
-  public PotentialProbabilityImpl(ProbabilityRef potentialProbability) {
-    this.potentialProbability = potentialProbability;
-  }
+  String getPotentialProbabilityExplanation();
 
-  private ProbabilityRef potentialProbability;
-
-  @Size(max = ExplainedPotentialProbability.EXPLANATION_MAX_LENGTH)
-  private String potentialProbabilityExplanation;
+  void setPotentialProbabilityExplanation(String explanation);
 }

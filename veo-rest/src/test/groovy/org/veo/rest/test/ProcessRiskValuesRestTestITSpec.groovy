@@ -19,6 +19,7 @@ package org.veo.rest.test
 
 class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
 
+    public static final String IT_HAPPENED = "everything possible will happen, so it has happened already, infinite times"
     public static final String NO_DICE = "God does not play dice."
     public static final String BRACE_FOR_IMPACT = "Brace for impact"
     public static final String NO_RISK = "Don't be silly. If this was really the ship's Self-Destruct-Button, do you think they'd leave it lying around where anyone could press it?"
@@ -144,6 +145,7 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         when: "the risk is updated with additional values"
         probability.specificProbability = 2
         probability.specificProbabilityExplanation = NO_DICE
+        probability.potentialProbabilityExplanation = IT_HAPPENED
 
         impactI.specificImpact = 3
         impactI.specificImpactExplanation = BRACE_FOR_IMPACT

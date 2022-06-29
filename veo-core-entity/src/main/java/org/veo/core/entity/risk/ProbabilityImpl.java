@@ -28,15 +28,15 @@ import lombok.Setter;
 @Valid
 public class ProbabilityImpl implements Probability {
 
-  private ProbabilityRef potentialProbability;
-
   private ProbabilityRef specificProbability;
 
   @Setter(AccessLevel.NONE)
   private ProbabilityRef effectiveProbability;
 
-  @Size(max = Probability.EXPLANATION_MAX_LENGTH)
+  @Size(max = ExplainedPotentialProbability.EXPLANATION_MAX_LENGTH)
   private String specificProbabilityExplanation;
+
+  private ProbabilityRef potentialProbability;
 
   public void setPotentialProbability(ProbabilityRef potentialProbability) {
     this.potentialProbability = potentialProbability;

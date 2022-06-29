@@ -22,6 +22,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.veo.core.entity.risk.ExplainedPotentialProbability;
 import org.veo.core.entity.risk.Probability;
 import org.veo.core.entity.risk.ProbabilityRef;
 import org.veo.core.entity.risk.ProbabilityValueProvider;
@@ -41,7 +42,7 @@ public class ProbabilityDto implements Probability {
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   ProbabilityRef effectiveProbability;
 
-  @Size(max = Probability.EXPLANATION_MAX_LENGTH)
+  @Size(max = ExplainedPotentialProbability.EXPLANATION_MAX_LENGTH)
   String specificProbabilityExplanation;
 
   public static ProbabilityDto from(ProbabilityValueProvider from) {

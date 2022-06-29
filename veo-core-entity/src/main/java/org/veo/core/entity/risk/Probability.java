@@ -22,8 +22,6 @@ import static org.veo.core.entity.Nameable.DESCRIPTION_MAX_LENGTH;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 
-import org.veo.core.entity.Constraints;
-
 /**
  * The probability of a risk event occurring.
  *
@@ -31,8 +29,6 @@ import org.veo.core.entity.Constraints;
  */
 @Valid
 public interface Probability extends PotentialProbability {
-
-  int EXPLANATION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
 
   /**
    * The corrected value for a specific case of a scenario interfering with a risk-affected entity.
