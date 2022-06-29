@@ -26,6 +26,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -110,7 +111,7 @@ public class CatalogController extends AbstractEntityController {
                     schema = @Schema(implementation = FullCatalogDto.class))),
         @ApiResponse(responseCode = "404", description = "Catalog not found")
       })
-  public @Valid CompletableFuture<ResponseEntity<FullCatalogDto>> getCatalog(
+  public @Valid Future<ResponseEntity<FullCatalogDto>> getCatalog(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String id,
       WebRequest request) {
@@ -225,7 +226,7 @@ public class CatalogController extends AbstractEntityController {
                     schema = @Schema(implementation = FullCatalogItemDto.class))),
         @ApiResponse(responseCode = "404", description = "CatalogItem not found")
       })
-  public @Valid CompletableFuture<ResponseEntity<FullCatalogItemDto>> getCatalogItem(
+  public @Valid Future<ResponseEntity<FullCatalogItemDto>> getCatalogItem(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String id,
       @PathVariable String itemId,

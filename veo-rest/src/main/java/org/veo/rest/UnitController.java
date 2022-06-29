@@ -32,6 +32,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -208,7 +209,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     array = @ArraySchema(schema = @Schema(implementation = FullUnitDto.class))))
       })
-  public @Valid CompletableFuture<List<FullUnitDto>> getUnits(
+  public @Valid Future<List<FullUnitDto>> getUnits(
       @Parameter(required = false, hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = PARENT_PARAM, required = false) String parentUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName) {
@@ -246,7 +247,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
                     schema = @Schema(implementation = FullUnitDto.class))),
         @ApiResponse(responseCode = "404", description = "Unit not found")
       })
-  public @Valid CompletableFuture<ResponseEntity<FullUnitDto>> getUnit(
+  public @Valid Future<ResponseEntity<FullUnitDto>> getUnit(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String id,
       WebRequest request) {
@@ -342,7 +343,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
 
   @GetMapping(value = "/searches/{searchId}")
   @Operation(summary = "Finds units for the search.")
-  public @Valid CompletableFuture<List<FullUnitDto>> runSearch(
+  public @Valid Future<List<FullUnitDto>> runSearch(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String searchId) {
     // TODO VEO-425 Use custom search query DTO & criteria API, apply

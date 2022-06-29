@@ -57,6 +57,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -176,7 +177,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
 
   @GetMapping
   @Operation(summary = "Loads all assets")
-  public @Valid CompletableFuture<PageDto<FullAssetDto>> getAssets(
+  public @Valid Future<PageDto<FullAssetDto>> getAssets(
       @Parameter(required = false, hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
@@ -259,7 +260,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
         @ApiResponse(responseCode = "404", description = "Asset not found")
       })
   @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
-  public @Valid CompletableFuture<ResponseEntity<FullAssetDto>> getElement(
+  public @Valid Future<ResponseEntity<FullAssetDto>> getElement(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
@@ -377,7 +378,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
 
   @GetMapping(value = "/searches/{searchId}")
   @Operation(summary = "Finds assets for the search.")
-  public @Valid CompletableFuture<PageDto<FullAssetDto>> runSearch(
+  public @Valid Future<PageDto<FullAssetDto>> runSearch(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String searchId,
       @RequestParam(
@@ -451,10 +452,15 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
   }
 
   @Override
-  public @Valid CompletableFuture<ResponseEntity<AssetRiskDto>> getRisk(
+  public @Valid Future<ResponseEntity<AssetRiskDto>> getRisk(
       @Parameter(hidden = true) ApplicationUser user, String assetId, String scenarioId) {
 
     Client client = getClient(user.getClientId());
+    return getRisk(client, assetId, scenarioId);
+  }
+
+  private CompletableFuture<ResponseEntity<AssetRiskDto>> getRisk(
+      Client client, String assetId, String scenarioId) {
     var input =
         new GetAssetRiskUseCase.InputData(client, Key.uuidFrom(assetId), Key.uuidFrom(scenarioId));
 
@@ -530,10 +536,10 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
       String scenarioId,
       @Valid @NotNull AssetRiskDto dto,
       String eTag) {
-
+    var client = getClient(user.getClientId());
     var input =
         new UpdateAssetRiskUseCase.InputData(
-            getClient(user.getClientId()),
+            client,
             Key.uuidFrom(assetId),
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
@@ -545,7 +551,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
     // update risk and return saved risk with updated ETag, timestamps etc.:
     return useCaseInteractor
         .execute(updateAssetRiskUseCase, input, output -> null)
-        .thenCompose(o -> this.getRisk(user, assetId, scenarioId));
+        .thenCompose(o -> this.getRisk(client, assetId, scenarioId));
   }
 
   @Operation(summary = "Runs inspections on a persisted asset")

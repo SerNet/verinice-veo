@@ -59,6 +59,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -194,7 +195,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
         @ApiResponse(responseCode = "404", description = "Process not found")
       })
   @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
-  public @Valid CompletableFuture<ResponseEntity<FullProcessDto>> getProcess(
+  public @Valid Future<ResponseEntity<FullProcessDto>> getProcess(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
@@ -219,7 +220,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
   }
 
   @Override
-  public CompletableFuture<ResponseEntity<FullProcessDto>> getElement(
+  public Future<ResponseEntity<FullProcessDto>> getElement(
       Authentication auth, String uuid, WebRequest request) {
     return super.getElement(auth, uuid, request);
   }
@@ -324,7 +325,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
 
   @GetMapping
   @Operation(summary = "Loads all processes")
-  public @Valid CompletableFuture<PageDto<FullProcessDto>> getProcesses(
+  public @Valid Future<PageDto<FullProcessDto>> getProcesses(
       @Parameter(required = false, hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String parentUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
@@ -410,7 +411,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
 
   @GetMapping(value = "/searches/{searchId}")
   @Operation(summary = "Finds processes for the search.")
-  public @Valid CompletableFuture<PageDto<FullProcessDto>> runSearch(
+  public @Valid Future<PageDto<FullProcessDto>> runSearch(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String searchId,
       @RequestParam(
@@ -489,10 +490,15 @@ public class ProcessController extends AbstractElementController<Process, FullPr
   }
 
   @Override
-  public @Valid CompletableFuture<ResponseEntity<ProcessRiskDto>> getRisk(
+  public @Valid Future<ResponseEntity<ProcessRiskDto>> getRisk(
       @Parameter(hidden = true) ApplicationUser user, String processId, String scenarioId) {
 
     Client client = getClient(user.getClientId());
+    return getRisk(client, processId, scenarioId);
+  }
+
+  private CompletableFuture<ResponseEntity<ProcessRiskDto>> getRisk(
+      Client client, String processId, String scenarioId) {
     var input =
         new GetProcessRiskUseCase.InputData(
             client, Key.uuidFrom(processId), Key.uuidFrom(scenarioId));
@@ -568,9 +574,10 @@ public class ProcessController extends AbstractElementController<Process, FullPr
       String scenarioId,
       @Valid @NotNull ProcessRiskDto dto,
       String eTag) {
+    var client = getClient(user.getClientId());
     var input =
         new UpdateProcessRiskUseCase.InputData(
-            getClient(user.getClientId()),
+            client,
             Key.uuidFrom(processId),
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
@@ -582,7 +589,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
     // update risk and return saved risk with updated ETag, timestamps etc.:
     return useCaseInteractor
         .execute(updateProcessRiskUseCase, input, output -> null)
-        .thenCompose(o -> this.getRisk(user, processId, scenarioId));
+        .thenCompose(o -> this.getRisk(client, processId, scenarioId));
   }
 
   @Operation(summary = "Runs inspections on a persisted process")

@@ -56,6 +56,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
 import javax.validation.Valid;
@@ -149,7 +150,7 @@ public class DocumentController extends AbstractElementController<Document, Full
 
   @GetMapping
   @Operation(summary = "Loads all documents")
-  public @Valid CompletableFuture<PageDto<FullDocumentDto>> getDocuments(
+  public @Valid Future<PageDto<FullDocumentDto>> getDocuments(
       @Parameter(hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
@@ -231,7 +232,7 @@ public class DocumentController extends AbstractElementController<Document, Full
         @ApiResponse(responseCode = "404", description = "Document not found")
       })
   @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
-  public @Valid CompletableFuture<ResponseEntity<FullDocumentDto>> getElement(
+  public @Valid Future<ResponseEntity<FullDocumentDto>> getElement(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
@@ -352,7 +353,7 @@ public class DocumentController extends AbstractElementController<Document, Full
 
   @GetMapping(value = "/searches/{searchId}")
   @Operation(summary = "Finds documents for the search.")
-  public @Valid CompletableFuture<PageDto<FullDocumentDto>> runSearch(
+  public @Valid Future<PageDto<FullDocumentDto>> runSearch(
       @Parameter(hidden = true) Authentication auth,
       @PathVariable String searchId,
       @RequestParam(

@@ -56,6 +56,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
 import javax.validation.Valid;
@@ -149,7 +150,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
 
   @GetMapping
   @Operation(summary = "Loads all incidents")
-  public @Valid CompletableFuture<PageDto<FullIncidentDto>> getIncidents(
+  public @Valid Future<PageDto<FullIncidentDto>> getIncidents(
       @Parameter(required = false, hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
@@ -231,7 +232,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
         @ApiResponse(responseCode = "404", description = "Incident not found")
       })
   @GetMapping(UUID_PARAM_SPEC)
-  public @Valid CompletableFuture<ResponseEntity<FullIncidentDto>> getElement(
+  public @Valid Future<ResponseEntity<FullIncidentDto>> getElement(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
@@ -354,7 +355,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
 
   @GetMapping(value = "/searches/{searchId}")
   @Operation(summary = "Finds incidents for the search.")
-  public @Valid CompletableFuture<PageDto<FullIncidentDto>> runSearch(
+  public @Valid Future<PageDto<FullIncidentDto>> runSearch(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String searchId,
       @RequestParam(

@@ -56,6 +56,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
 import javax.validation.Valid;
@@ -150,7 +151,7 @@ public class PersonController extends AbstractElementController<Person, FullPers
 
   @GetMapping
   @Operation(summary = "Loads all persons")
-  public @Valid CompletableFuture<PageDto<FullPersonDto>> getPersons(
+  public @Valid Future<PageDto<FullPersonDto>> getPersons(
       @Parameter(required = false, hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
@@ -233,7 +234,7 @@ public class PersonController extends AbstractElementController<Person, FullPers
         @ApiResponse(responseCode = "404", description = "Person not found")
       })
   @GetMapping(UUID_PARAM_SPEC)
-  public @Valid CompletableFuture<ResponseEntity<FullPersonDto>> getElement(
+  public @Valid Future<ResponseEntity<FullPersonDto>> getElement(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
@@ -353,7 +354,7 @@ public class PersonController extends AbstractElementController<Person, FullPers
 
   @GetMapping(value = "/searches/{searchId}")
   @Operation(summary = "Finds persons for the search.")
-  public @Valid CompletableFuture<PageDto<FullPersonDto>> runSearch(
+  public @Valid Future<PageDto<FullPersonDto>> runSearch(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String searchId,
       @RequestParam(

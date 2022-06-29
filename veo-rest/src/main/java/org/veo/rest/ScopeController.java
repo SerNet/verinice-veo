@@ -57,6 +57,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -172,7 +173,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
                     array = @ArraySchema(schema = @Schema(implementation = FullScopeDto.class)))),
         @ApiResponse(responseCode = "404", description = "Scope not found")
       })
-  public @Valid CompletableFuture<PageDto<FullScopeDto>> getScopes(
+  public @Valid Future<PageDto<FullScopeDto>> getScopes(
       @Parameter(required = false, hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
@@ -253,7 +254,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
                     schema = @Schema(implementation = FullScopeDto.class))),
         @ApiResponse(responseCode = "404", description = "Scope not found")
       })
-  public @Valid CompletableFuture<ResponseEntity<FullScopeDto>> getScope(
+  public @Valid Future<ResponseEntity<FullScopeDto>> getScope(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
@@ -405,7 +406,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
 
   @GetMapping(value = "/searches/{searchId}")
   @Operation(summary = "Finds scopes for the search.")
-  public @Valid CompletableFuture<PageDto<FullScopeDto>> runSearch(
+  public @Valid Future<PageDto<FullScopeDto>> runSearch(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String searchId,
       @RequestParam(
@@ -458,10 +459,15 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
   }
 
   @Override
-  public @Valid CompletableFuture<ResponseEntity<ScopeRiskDto>> getRisk(
+  public @Valid Future<ResponseEntity<ScopeRiskDto>> getRisk(
       @Parameter(hidden = true) ApplicationUser user, String scopeId, String scenarioId) {
 
     Client client = getClient(user.getClientId());
+    return getRisk(client, scopeId, scenarioId);
+  }
+
+  private CompletableFuture<ResponseEntity<ScopeRiskDto>> getRisk(
+      Client client, String scopeId, String scenarioId) {
     var input =
         new GetScopeRiskUseCase.InputData(client, Key.uuidFrom(scopeId), Key.uuidFrom(scenarioId));
 
@@ -593,9 +599,10 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
       @Valid @NotNull ScopeRiskDto dto,
       String eTag) {
 
+    var client = getClient(user.getClientId());
     var input =
         new UpdateScopeRiskUseCase.InputData(
-            getClient(user.getClientId()),
+            client,
             Key.uuidFrom(scopeId),
             urlAssembler.toKey(dto.getScenario()),
             urlAssembler.toKeys(dto.getDomainReferences()),
@@ -607,6 +614,6 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
     // update risk and return saved risk with updated ETag, timestamps etc.:
     return useCaseInteractor
         .execute(updateScopeRiskUseCase, input, output -> null)
-        .thenCompose(o -> this.getRisk(user, scopeId, scenarioId));
+        .thenCompose(o -> this.getRisk(client, scopeId, scenarioId));
   }
 }

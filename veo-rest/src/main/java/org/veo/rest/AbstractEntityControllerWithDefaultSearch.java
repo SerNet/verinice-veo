@@ -18,6 +18,7 @@
 package org.veo.rest;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 import javax.validation.Valid;
 
@@ -36,7 +37,7 @@ public abstract class AbstractEntityControllerWithDefaultSearch extends Abstract
 
   @PostMapping(value = "/searches")
   @Operation(summary = "Creates a new search with the given search criteria.")
-  public @Valid CompletableFuture<ResponseEntity<SearchResponse>> createSearch(
+  public @Valid Future<ResponseEntity<SearchResponse>> createSearch(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Valid @RequestBody SearchQueryDto search) {
     return CompletableFuture.supplyAsync(() -> createSearchResponseBody(search));

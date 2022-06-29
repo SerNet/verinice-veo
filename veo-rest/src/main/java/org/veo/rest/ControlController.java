@@ -56,6 +56,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
 import javax.validation.Valid;
@@ -151,7 +152,7 @@ public class ControlController extends AbstractElementController<Control, FullCo
 
   @GetMapping
   @Operation(summary = "Loads all controls")
-  public @Valid CompletableFuture<PageDto<FullControlDto>> getControls(
+  public @Valid Future<PageDto<FullControlDto>> getControls(
       @Parameter(required = false, hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
@@ -233,7 +234,7 @@ public class ControlController extends AbstractElementController<Control, FullCo
         @ApiResponse(responseCode = "404", description = "Control not found")
       })
   @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
-  public @Valid CompletableFuture<ResponseEntity<FullControlDto>> getElement(
+  public @Valid Future<ResponseEntity<FullControlDto>> getElement(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
@@ -356,7 +357,7 @@ public class ControlController extends AbstractElementController<Control, FullCo
 
   @GetMapping(value = "/searches/{searchId}")
   @Operation(summary = "Finds controls for the search.")
-  public @Valid CompletableFuture<PageDto<FullControlDto>> runSearch(
+  public @Valid Future<PageDto<FullControlDto>> runSearch(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String searchId,
       @RequestParam(

@@ -19,6 +19,7 @@ package org.veo.rest;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -86,7 +87,7 @@ public interface ProcessRiskResource {
         @ApiResponse(responseCode = "404", description = "Risk not found")
       })
   @Valid
-  CompletableFuture<ResponseEntity<ProcessRiskDto>> getRisk(
+  Future<ResponseEntity<ProcessRiskDto>> getRisk(
       @Parameter(hidden = true) ApplicationUser user,
       @PathVariable String processId,
       @PathVariable String scenarioId);

@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -140,7 +141,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     array = @ArraySchema(schema = @Schema(implementation = FullDomainDto.class))))
       })
-  public @Valid CompletableFuture<List<FullDomainDto>> getDomains(
+  public @Valid Future<List<FullDomainDto>> getDomains(
       @Parameter(required = false, hidden = true) Authentication auth) {
 
     Client client = null;
@@ -174,7 +175,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
                     schema = @Schema(implementation = FullDomainDto.class))),
         @ApiResponse(responseCode = "404", description = "Domain not found")
       })
-  public @Valid CompletableFuture<ResponseEntity<FullDomainDto>> getDomain(
+  public @Valid Future<ResponseEntity<FullDomainDto>> getDomain(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String id,
       WebRequest request) {
@@ -247,7 +248,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
 
   @GetMapping(value = "/searches/{searchId}")
   @Operation(summary = "Finds domains for the search.")
-  public @Valid CompletableFuture<List<FullDomainDto>> runSearch(
+  public @Valid Future<List<FullDomainDto>> runSearch(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String searchId) {
     // TODO: VEO-498 Implement Domain Search

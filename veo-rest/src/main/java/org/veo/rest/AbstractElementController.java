@@ -20,6 +20,7 @@ package org.veo.rest;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -68,7 +69,7 @@ public abstract class AbstractElementController<
    * @param request the corresponding web request
    * @return the element for the given ID if one was found. Null otherwise.
    */
-  public @Valid CompletableFuture<ResponseEntity<E>> getElement(
+  public @Valid Future<ResponseEntity<E>> getElement(
       Authentication auth, String uuid, WebRequest request) {
     ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
     Client client = getClient(user.getClientId());

@@ -56,6 +56,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
 import javax.validation.Valid;
@@ -149,7 +150,7 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
 
   @GetMapping
   @Operation(summary = "Loads all scenarios")
-  public @Valid CompletableFuture<PageDto<FullScenarioDto>> getScenarios(
+  public @Valid Future<PageDto<FullScenarioDto>> getScenarios(
       @Parameter(required = false, hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
@@ -231,7 +232,7 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
         @ApiResponse(responseCode = "404", description = "Scenario not found")
       })
   @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
-  public @Valid CompletableFuture<ResponseEntity<FullScenarioDto>> getElement(
+  public @Valid Future<ResponseEntity<FullScenarioDto>> getElement(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
@@ -354,7 +355,7 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
 
   @GetMapping(value = "/searches/{searchId}")
   @Operation(summary = "Finds scenarios for the search.")
-  public @Valid CompletableFuture<PageDto<FullScenarioDto>> runSearch(
+  public @Valid Future<PageDto<FullScenarioDto>> runSearch(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String searchId,
       @RequestParam(
