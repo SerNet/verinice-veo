@@ -64,20 +64,17 @@ public class CatalogItemServiceImpl implements CatalogItemService {
     catalogElement
         .getSubTypeAspects()
         .forEach(st -> newElement.associateWithDomain(domain, st.getSubType(), st.getStatus()));
-    if (newElement instanceof Process) {
+    if (newElement instanceof Process pn) {
       Process po = (Process) catalogElement;
-      Process pn = (Process) newElement;
       po.getImpactValues(item.getCatalog().getDomainTemplate())
           .ifPresent(impactValues -> pn.setImpactValues(domain, impactValues));
-    } else if (newElement instanceof Scenario) {
+    } else if (newElement instanceof Scenario sn) {
       Scenario so = (Scenario) catalogElement;
-      Scenario sn = (Scenario) newElement;
       so.getPotentialProbability(item.getCatalog().getDomainTemplate())
           .ifPresent(
               potentialProbability -> sn.setPotentialProbability(domain, potentialProbability));
-    } else if (newElement instanceof Control) {
+    } else if (newElement instanceof Control cn) {
       Control co = (Control) catalogElement;
-      Control cn = (Control) newElement;
       co.getRiskValues(item.getCatalog().getDomainTemplate())
           .ifPresent(riskValues -> cn.setRiskValues(domain, riskValues));
     }

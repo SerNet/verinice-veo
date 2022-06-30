@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -90,7 +89,7 @@ public class WebMvcSecurityConfiguration {
     private final Map<String, ApplicationUser> users = new HashMap<String, ApplicationUser>();
 
     public CustomUserDetailsManager(Collection<ApplicationUser> appUsers) {
-      super(appUsers.stream().map(u -> (UserDetails) u).collect(Collectors.toList()));
+      super(appUsers.stream().map(u -> (UserDetails) u).toList());
       appUsers.stream().forEach(this::storeUser);
     }
 

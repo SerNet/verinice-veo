@@ -18,7 +18,6 @@
 package org.veo.adapter.presenter.api.response.transformer;
 
 import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.List;
@@ -106,26 +105,26 @@ public final class EntityToDtoTransformer {
   }
 
   public VersionedDto transform2Dto(Versioned source) {
-    if (source instanceof Element) {
-      return transform2Dto((Element) source);
+    if (source instanceof Element element) {
+      return transform2Dto(element);
     }
-    if (source instanceof Domain) {
-      return transformDomain2Dto((Domain) source);
+    if (source instanceof Domain domain) {
+      return transformDomain2Dto(domain);
     }
-    if (source instanceof Unit) {
-      return transformUnit2Dto((Unit) source);
+    if (source instanceof Unit unit) {
+      return transformUnit2Dto(unit);
     }
-    if (source instanceof AbstractRisk) {
-      return transform2Dto((AbstractRisk) source);
+    if (source instanceof AbstractRisk abstractRisk) {
+      return transform2Dto(abstractRisk);
     }
-    if (source instanceof Catalog) {
-      return transformCatalog2Dto((Catalog) source);
+    if (source instanceof Catalog catalog) {
+      return transformCatalog2Dto(catalog);
     }
-    if (source instanceof CatalogItem) {
-      return transformCatalogItem2Dto((CatalogItem) source, false);
+    if (source instanceof CatalogItem catalogItem) {
+      return transformCatalogItem2Dto(catalogItem, false);
     }
-    if (source instanceof TailoringReference) {
-      return transformTailoringReference2Dto((TailoringReference) source);
+    if (source instanceof TailoringReference tailoringReference) {
+      return transformTailoringReference2Dto(tailoringReference);
     }
     throw new IllegalArgumentException(
         "No transform method defined for " + source.getClass().getSimpleName());
@@ -133,43 +132,43 @@ public final class EntityToDtoTransformer {
 
   public AbstractElementDto transform2Dto(@Valid Element source) {
 
-    if (source instanceof Person) {
-      return transformPerson2Dto((Person) source);
+    if (source instanceof Person person) {
+      return transformPerson2Dto(person);
     }
-    if (source instanceof Asset) {
-      return transformAsset2Dto((Asset) source);
+    if (source instanceof Asset asset) {
+      return transformAsset2Dto(asset);
     }
-    if (source instanceof Process) {
-      return transformProcess2Dto((Process) source);
+    if (source instanceof Process process) {
+      return transformProcess2Dto(process);
     }
-    if (source instanceof Document) {
-      return transformDocument2Dto((Document) source);
+    if (source instanceof Document document) {
+      return transformDocument2Dto(document);
     }
-    if (source instanceof Control) {
-      return transformControl2Dto((Control) source);
+    if (source instanceof Control control) {
+      return transformControl2Dto(control);
     }
-    if (source instanceof Incident) {
-      return transformIncident2Dto((Incident) source);
+    if (source instanceof Incident incident) {
+      return transformIncident2Dto(incident);
     }
-    if (source instanceof Scenario) {
-      return transformScenario2Dto((Scenario) source);
+    if (source instanceof Scenario scenario) {
+      return transformScenario2Dto(scenario);
     }
-    if (source instanceof Scope) {
-      return transformScope2Dto((Scope) source);
+    if (source instanceof Scope scope) {
+      return transformScope2Dto(scope);
     }
     throw new IllegalArgumentException(
         "No transform method defined for " + source.getClass().getSimpleName());
   }
 
   public AbstractRiskDto transform2Dto(@Valid AbstractRisk<?, ?> source) {
-    if (source instanceof AssetRisk) {
-      return AssetRiskDto.from((AssetRisk) source, referenceAssembler);
+    if (source instanceof AssetRisk assetRisk) {
+      return AssetRiskDto.from(assetRisk, referenceAssembler);
     }
-    if (source instanceof ProcessRisk) {
-      return ProcessRiskDto.from((ProcessRisk) source, referenceAssembler);
+    if (source instanceof ProcessRisk processRisk) {
+      return ProcessRiskDto.from(processRisk, referenceAssembler);
     }
-    if (source instanceof ScopeRisk) {
-      return ScopeRiskDto.from((ScopeRisk) source, referenceAssembler);
+    if (source instanceof ScopeRisk scopeRisk) {
+      return ScopeRiskDto.from(scopeRisk, referenceAssembler);
     }
     throw new IllegalArgumentException(
         "No transform method defined for risk type " + source.getClass().getSimpleName());
@@ -314,8 +313,7 @@ public final class EntityToDtoTransformer {
     if (source.getDomainTemplate() != null) {
       target.setDomainTemplate(IdRef.from(source.getDomainTemplate(), referenceAssembler));
     }
-    target.setCatalogItems(
-        convertSet(source.getCatalogItems(), ci -> transformCatalogItem2Dto(ci)));
+    target.setCatalogItems(convertSet(source.getCatalogItems(), this::transformCatalogItem2Dto));
 
     return target;
   }
@@ -496,10 +494,7 @@ public final class EntityToDtoTransformer {
         .collect(
             toMap(
                 Map.Entry::getKey,
-                entry ->
-                    entry.getValue().stream()
-                        .map(link -> transformCustomLink2Dto(link))
-                        .collect(toList())));
+                entry -> entry.getValue().stream().map(this::transformCustomLink2Dto).toList()));
   }
 
   private Map<String, CustomAspectDto> mapCustomAspects(Set<CustomAspect> customAspects) {

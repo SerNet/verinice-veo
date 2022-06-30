@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
@@ -66,7 +65,6 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.statistics.ElementStatusCounts;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
@@ -101,7 +99,6 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
 
   public static final String URL_BASE_PATH = "/" + Domain.PLURAL_TERM;
 
-  private final UseCaseInteractor useCaseInteractor;
   private final ObjectSchemaParser objectSchemaParser;
   private final GetDomainUseCase getDomainUseCase;
   private final GetDomainsUseCase getDomainsUseCase;
@@ -111,7 +108,6 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   private final GetElementStatusCountUseCase getElementStatusCountUseCase;
 
   public DomainController(
-      UseCaseInteractor useCaseInteractor,
       ObjectSchemaParser objectSchemaParser,
       GetDomainUseCase getDomainUseCase,
       GetDomainsUseCase getDomainsUseCase,
@@ -119,7 +115,6 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
       ExportDomainUseCase exportDomainUseCase,
       CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase,
       GetElementStatusCountUseCase getElementStatusCountUseCase) {
-    this.useCaseInteractor = useCaseInteractor;
     this.objectSchemaParser = objectSchemaParser;
     this.getDomainUseCase = getDomainUseCase;
     this.getDomainsUseCase = getDomainsUseCase;
@@ -155,11 +150,10 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     return useCaseInteractor.execute(
         getDomainsUseCase,
         inputData,
-        output -> {
-          return output.getObjects().stream()
-              .map(u -> entityToDtoTransformer.transformDomain2Dto(u))
-              .collect(Collectors.toList());
-        });
+        output ->
+            output.getObjects().stream()
+                .map(u -> entityToDtoTransformer.transformDomain2Dto(u))
+                .toList());
   }
 
   @GetMapping(value = "/{id}")
@@ -214,7 +208,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
         useCaseInteractor.execute(
             exportDomainUseCase,
             new UseCase.IdAndClient(Key.uuidFrom(id), client),
-            output -> output.getExportDomain());
+            ExportDomainUseCase.OutputData::getExportDomain);
     return domainFuture.thenApply(
         domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
   }
@@ -309,7 +303,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             getElementStatusCountUseCase,
             new GetElementStatusCountUseCase.InputData(
                 Key.uuidFrom(unitId), Key.uuidFrom(id), client),
-            output -> output.getResult())
+            GetElementStatusCountUseCase.OutputData::getResult)
         .thenApply(counts -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(counts));
   }
 

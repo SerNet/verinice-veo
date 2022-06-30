@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.rest.domaintemplates
 
-import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.CustomLinkDto
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
 import org.veo.adapter.service.domaintemplate.SyntheticIdRef
@@ -28,8 +27,7 @@ import org.veo.core.entity.TailoringReferenceType
 import spock.lang.Specification
 
 class DomainTemplateAssemblerSpec extends Specification{
-    def refAssembler = Mock(ReferenceAssembler)
-    def domainTemplateAssembler = new DomainTemplateAssembler(refAssembler, UUID.randomUUID().toString(), "my little template", "mla", "it's gonna be great", "ME", "2.0", "stable")
+    def domainTemplateAssembler = new DomainTemplateAssembler(UUID.randomUUID().toString(), "my little template", "mla", "it's gonna be great", "ME", "2.0", "stable")
 
     def "creates template DTO with a catalog item"() {
         given:

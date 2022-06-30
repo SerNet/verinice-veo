@@ -112,15 +112,14 @@ public class DbIdRefResolver implements IdRefResolver {
 
     entities.forEach(
         entity -> {
-          if (entity instanceof Unit) {
-            ((Unit) entity).checkSameClient(client);
+          if (entity instanceof Unit unit) {
+            unit.checkSameClient(client);
           }
-          if (entity instanceof Element) {
-            ((Element) entity).checkSameClient(client);
+          if (entity instanceof Element element) {
+            element.checkSameClient(client);
           }
-          if (entity instanceof Domain) {
-            if (!(EntitySpecifications.hasSameClient(client))
-                .isSatisfiedBy(((Domain) entity).getOwner()))
+          if (entity instanceof Domain domain) {
+            if (!(EntitySpecifications.hasSameClient(client)).isSatisfiedBy((domain).getOwner()))
               throw new ClientBoundaryViolationException(entity, client);
           }
           result.add((TEntity) entity);

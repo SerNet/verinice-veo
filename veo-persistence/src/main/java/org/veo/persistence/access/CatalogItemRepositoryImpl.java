@@ -48,11 +48,11 @@ public class CatalogItemRepositoryImpl
 
   @Override
   public Set<CatalogItem> getByIdsFetchElementData(Set<Key<UUID>> ids) {
-    var idStrings = ids.stream().map(Key::uuidValue).collect(Collectors.toList());
+    var idStrings = ids.stream().map(Key::uuidValue).toList();
     return StreamSupport.stream(
             catalogItemDataRepository.findAllWithElementDataByDbIdIn(idStrings).spliterator(),
             false)
-        .map(e -> (CatalogItem) e)
+        .map(CatalogItem.class::cast)
         .collect(Collectors.toSet());
   }
 

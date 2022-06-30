@@ -18,7 +18,6 @@
 package org.veo.adapter.presenter.api.response;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.IdRef;
@@ -64,7 +63,7 @@ public class IncarnateCatalogItemDescriptionDto {
                         IdRef.from(r.getReferencedElement(), urlAssembler),
                         r.getReferenceKey(),
                         r.getReferenceType()))
-            .collect(Collectors.toList());
+            .toList();
   }
 
   public IncarnateCatalogItemDescription dto2Model(IdRefResolver idRefResolver) {
@@ -78,7 +77,7 @@ public class IncarnateCatalogItemDescriptionDto {
                             : idRefResolver.resolve(t.getReferencedElement()),
                         t.getReferenceType(),
                         t.getReferenceKey()))
-            .collect(Collectors.toList());
+            .toList();
     return new IncarnateCatalogItemDescription(idRefResolver.resolve(item), list);
   }
 }

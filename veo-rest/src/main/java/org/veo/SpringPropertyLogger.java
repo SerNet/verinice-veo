@@ -33,12 +33,11 @@ public final class SpringPropertyLogger {
           .ifPresent(
               it ->
                   it.forEach(
-                      propertyToLog -> {
-                        logger.debug(
-                            "spring property {}: {}",
-                            propertyToLog,
-                            Optional.ofNullable(env.getProperty(propertyToLog)).orElse(""));
-                      }));
+                      propertyToLog ->
+                          logger.debug(
+                              "spring property {}: {}",
+                              propertyToLog,
+                              Optional.ofNullable(env.getProperty(propertyToLog)).orElse(""))));
     }
   }
 

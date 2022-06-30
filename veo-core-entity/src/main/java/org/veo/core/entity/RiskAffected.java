@@ -130,8 +130,7 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
 
     // TODO VEO-209 remove the if-statement when risk values are supported for all
     // risk-affected entities
-    if (riskToUpdate instanceof ProcessRisk) {
-      var processRisk = (ProcessRisk) riskToUpdate;
+    if (riskToUpdate instanceof ProcessRisk processRisk) {
       processRisk.defineRiskValues(riskValuesSet);
     }
 

@@ -20,7 +20,6 @@ package org.veo.core.usecase.catalogitem;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -60,7 +59,7 @@ public class GetCatalogItemsUseCase
                     .namespace
                     .map(EntitySpecifications::hasNamespace)
                     .orElse(EntitySpecifications.matchAll()))
-            .collect(Collectors.toList());
+            .toList();
     return new OutputData(list);
   }
 

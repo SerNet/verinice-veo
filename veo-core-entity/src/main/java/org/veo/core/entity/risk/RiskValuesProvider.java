@@ -17,9 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toUnmodifiableList;
-
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -177,11 +174,11 @@ public interface RiskValuesProvider
 
   @Override
   default List<CategoryRef> getAvailableCategories() {
-    return getImpactCategories().stream().map(Impact::getCategory).collect(toUnmodifiableList());
+    return getImpactCategories().stream().map(Impact::getCategory).toList();
   }
 
   default List<Impact> getCategorizedImpacts() {
-    return getImpactCategories().stream().map(Impact.class::cast).collect(toList());
+    return getImpactCategories().stream().map(Impact.class::cast).toList();
   }
 
   default boolean categoryExists(CategoryRef category) {

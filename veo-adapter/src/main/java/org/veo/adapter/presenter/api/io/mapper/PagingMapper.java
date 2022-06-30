@@ -18,7 +18,6 @@
 package org.veo.adapter.presenter.api.io.mapper;
 
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.core.entity.Element;
@@ -29,8 +28,8 @@ public class PagingMapper {
 
   public static <TDto, TElement extends Element> PageDto<TDto> toPage(
       PagedResult<TElement> input, Function<TElement, TDto> mapper) {
-    return new PageDto<TDto>(
-        input.getResultPage().stream().map(mapper).collect(Collectors.toList()),
+    return new PageDto<>(
+        input.getResultPage().stream().map(mapper).toList(),
         input.getTotalResults(),
         input.getTotalPages(),
         input.getPagingConfiguration().getPageNumber());
@@ -42,7 +41,7 @@ public class PagingMapper {
   }
 
   private static PagingConfiguration.SortOrder getSortOrder(String sortOrder) {
-    if (sortOrder.toUpperCase().equals("DESC")) {
+    if (sortOrder.equalsIgnoreCase("DESC")) {
       return PagingConfiguration.SortOrder.DESCENDING;
     }
     return PagingConfiguration.SortOrder.ASCENDING;

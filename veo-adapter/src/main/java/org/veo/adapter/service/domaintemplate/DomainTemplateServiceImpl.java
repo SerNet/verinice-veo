@@ -235,8 +235,8 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
             .collect(
                 Collectors.groupingBy(
                     r -> {
-                      if (r instanceof ProcessRiskDto) {
-                        return ((ProcessRiskDto) r).getProcess().getId();
+                      if (r instanceof ProcessRiskDto dto) {
+                        return dto.getProcess().getId();
                       } else {
                         throw new IllegalArgumentException();
                       }
@@ -247,8 +247,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         e -> {
           log.debug("Process element {}", e);
 
-          if (e instanceof Process) {
-            Process p = (Process) e;
+          if (e instanceof Process p) {
             List<AbstractRiskDto> risks = risksByAffectedElementDbId.remove(p.getIdAsString());
             if (risks != null) {
               for (AbstractRiskDto riskDto : risks) {
@@ -326,7 +325,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
             domainTemplateKey);
 
     processDomainTemplate(domainTemplateDto, newDomainTemplate);
-    preparations.updateVersion(newDomainTemplate);
+    CatalogItemPrepareStrategy.updateVersion(newDomainTemplate);
     log.info("Create and save domain template {} from domain {}", newDomainTemplate, domain);
     return domainTemplateRepository.save(newDomainTemplate);
   }
@@ -352,10 +351,10 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
               createCatalog.setName(c.getName());
               createCatalog.setAbbreviation(c.getAbbreviation());
               createCatalog.setDescription(c.getDescription());
-              preparations.updateVersion(createCatalog);
+              CatalogItemPrepareStrategy.updateVersion(createCatalog);
               ref.cache.put(((IdentifiableDto) c).getId(), createCatalog);
               c.setDomainTemplate(
-                  new SyntheticIdRef<>(domainTemplateDto.getId(), DomainTemplate.class, assembler));
+                  new SyntheticIdRef<>(domainTemplateDto.getId(), DomainTemplate.class));
             });
 
     Map<String, Element> elementCache =
@@ -398,7 +397,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
               Catalog createCatalog = factory.createCatalog(newDomain);
               ref.cache.put(((IdentifiableDto) c).getId(), createCatalog);
               c.setDomainTemplate(
-                  new SyntheticIdRef<>(domainTemplateDto.getId(), DomainTemplate.class, assembler));
+                  new SyntheticIdRef<>(domainTemplateDto.getId(), DomainTemplate.class));
             });
 
     Map<String, Element> elementCache =
@@ -456,18 +455,16 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
   private Map<String, Element> createElementCacheFromDomainTemplateDto(
       TransformDomainTemplateDto domainTemplateDto, PlaceholderResolver ref) {
-    Map<String, Element> elementCache =
-        createElementCache(
-            ref,
-            domainTemplateDto.getCatalogs().stream()
-                .map(TransformCatalogDto.class::cast)
-                .flatMap(c -> c.getCatalogItems().stream())
-                .map(TransformCatalogItemDto.class::cast)
-                .map(TransformCatalogItemDto::getElement)
-                .map(this::removeOwner)
-                .map(IdentifiableDto.class::cast)
-                .collect(Collectors.toMap(IdentifiableDto::getId, Function.identity())));
-    return elementCache;
+    return createElementCache(
+        ref,
+        domainTemplateDto.getCatalogs().stream()
+            .map(TransformCatalogDto.class::cast)
+            .flatMap(c -> c.getCatalogItems().stream())
+            .map(TransformCatalogItemDto.class::cast)
+            .map(TransformCatalogItemDto::getElement)
+            .map(this::removeOwner)
+            .map(IdentifiableDto.class::cast)
+            .collect(Collectors.toMap(IdentifiableDto::getId, Function.identity())));
   }
 
   /** Fills the ref.cache and dtoCache with the elements and fix links. */
@@ -518,10 +515,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     elementDtos.values().stream()
         .map(AbstractElementDto.class::cast)
         .map(e -> entityTransformer.transformDto2Element(e, ref))
-        .forEach(
-            c -> {
-              ref.cache.put(c.getIdAsString(), c);
-            });
+        .forEach(c -> ref.cache.put(c.getIdAsString(), c));
 
     Map<String, Element> elementCache =
         ref.cache.entrySet().stream()
@@ -551,12 +545,11 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                     elementCache.entrySet().stream()
                         .filter(e -> partIds.contains(e.getKey()))
                         .map(Entry::getValue)
-                        .map(it -> (CompositeElement) it)
+                        .map(CompositeElement.class::cast)
                         .collect(Collectors.toSet());
                 ce.setParts(resolvedParts);
               }
-              if (es instanceof Scope) {
-                Scope se = (Scope) es;
+              if (es instanceof Scope se) {
                 Set<String> memberIds =
                     se.getMembers().stream()
                         .map(Identifiable::getIdAsString)

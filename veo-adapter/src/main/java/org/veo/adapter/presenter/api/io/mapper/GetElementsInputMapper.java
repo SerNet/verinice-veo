@@ -134,8 +134,7 @@ public class GetElementsInputMapper {
 
   static QueryCondition<Key<UUID>> createUuidListCondition(List<String> ids) {
     if (ids != null) {
-      return new QueryCondition<Key<UUID>>(
-          ids.stream().map(Key::uuidFrom).collect(Collectors.toSet()));
+      return new QueryCondition<>(ids.stream().map(Key::uuidFrom).collect(Collectors.toSet()));
     }
     return null;
   }

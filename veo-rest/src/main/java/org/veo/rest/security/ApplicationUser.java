@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -77,7 +76,7 @@ public class ApplicationUser implements UserDetails {
         Optional.ofNullable(groups).orElseGet(Collections::emptyList).stream()
             .filter(g -> g.matches("^/veo_client:" + UUID_REGEX + "$"))
             .map(g -> g.replaceFirst("/veo_client:", ""))
-            .collect(Collectors.toList());
+            .toList();
 
     if (clientIDs.size() != 1) {
       throw new IllegalArgumentException(
@@ -88,8 +87,8 @@ public class ApplicationUser implements UserDetails {
   }
 
   public static ApplicationUser authenticatedUser(Object principal) {
-    if (principal instanceof Jwt) return new ApplicationUser((Jwt) principal);
-    else if (principal instanceof ApplicationUser) return (ApplicationUser) principal;
+    if (principal instanceof Jwt jwt) return new ApplicationUser(jwt);
+    else if (principal instanceof ApplicationUser applicationUser) return applicationUser;
     throw new IllegalArgumentException("Principal does not represent an authenticated user.");
   }
 

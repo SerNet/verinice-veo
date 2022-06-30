@@ -79,8 +79,8 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
 
     risk = applyOptionalInput(input, risk);
 
-    if (risk instanceof ProcessRisk) {
-      ((ProcessRisk) risk).defineRiskValues(input.getRiskValues());
+    if (risk instanceof ProcessRisk processRisk) {
+      processRisk.defineRiskValues(input.getRiskValues());
     }
     publishEvents(riskAffected, risk);
     return new OutputData<>(risk, newRiskCreated);

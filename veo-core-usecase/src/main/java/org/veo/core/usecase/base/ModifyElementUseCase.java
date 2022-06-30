@@ -52,40 +52,36 @@ public abstract class ModifyElementUseCase<T extends Element>
     entity.setDesignator(storedEntity.getDesignator());
     evaluateDecisions(entity, storedEntity);
     DomainSensitiveElementValidator.validate(entity);
-    return new OutputData<T>(repo.save(entity));
+    return new OutputData<>(repo.save(entity));
   }
 
   protected void evaluateDecisions(T entity, T storedEntity) {
     entity
         .getDomains()
-        .forEach(
-            domain -> {
-              entity.setDecisionResults(decider.decide(entity, domain), domain);
-            });
+        .forEach(domain -> entity.setDecisionResults(decider.decide(entity, domain), domain));
   }
 
   private void checkSubTypeChange(T newElement, T oldElement) {
     oldElement
         .getDomains()
         .forEach(
-            domain -> {
-              oldElement
-                  .getSubType(domain)
-                  .ifPresent(
-                      oldSubType -> {
-                        var newSubType =
-                            newElement
-                                .getSubType(domain)
-                                .orElseThrow(
-                                    (() ->
-                                        new IllegalArgumentException(
-                                            "Cannot remove a sub type from an existing element")));
-                        if (!newSubType.equals(oldSubType)) {
-                          throw new IllegalArgumentException(
-                              "Cannot change a sub type on an existing element");
-                        }
-                      });
-            });
+            domain ->
+                oldElement
+                    .getSubType(domain)
+                    .ifPresent(
+                        oldSubType -> {
+                          var newSubType =
+                              newElement
+                                  .getSubType(domain)
+                                  .orElseThrow(
+                                      (() ->
+                                          new IllegalArgumentException(
+                                              "Cannot remove a sub type from an existing element")));
+                          if (!newSubType.equals(oldSubType)) {
+                            throw new IllegalArgumentException(
+                                "Cannot change a sub type on an existing element");
+                          }
+                        }));
   }
 
   private void checkETag(Element storedElement, InputData<? extends Element> input) {

@@ -87,7 +87,8 @@ public class ScenarioData extends ElementData implements Scenario {
 
   public Optional<Map<RiskDefinitionRef, PotentialProbabilityImpl>> getPotentialProbability(
       DomainTemplate domain) {
-    return findAspectByDomain(riskValuesAspects, domain).map(a -> a.getPotentialProbability());
+    return findAspectByDomain(riskValuesAspects, domain)
+        .map(ScenarioRiskValuesAspectData::getPotentialProbability);
   }
 
   @Override

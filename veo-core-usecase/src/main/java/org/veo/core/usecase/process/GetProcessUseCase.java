@@ -53,8 +53,8 @@ public class GetProcessUseCase
   }
 
   private boolean shouldEmbedRisks(IdAndClient input) {
-    if (input instanceof InputData) {
-      return ((InputData) input).embedRisks;
+    if (input instanceof InputData inputData) {
+      return inputData.embedRisks;
     }
     return false;
   }

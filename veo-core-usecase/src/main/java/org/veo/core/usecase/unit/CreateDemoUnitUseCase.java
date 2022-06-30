@@ -123,7 +123,7 @@ public class CreateDemoUnitUseCase
             });
     // save risks after the elements
     demoUnitElements.stream()
-        .filter(e -> e instanceof RiskAffected)
+        .filter(RiskAffected.class::isInstance)
         .map(RiskAffected.class::cast)
         .filter(e -> !e.getRisks().isEmpty())
         .forEach(
@@ -139,27 +139,21 @@ public class CreateDemoUnitUseCase
         .forEach(e -> prepareAndSaveElements(e.getKey(), e.getValue(), demoUnit, counter));
 
     Set<Element> elementsToSave = new HashSet<>(demoUnitElements.size());
+    links.forEach(
+        (element, elementLinks) -> {
+          elementLinks.forEach(element::addToLinks);
+          elementsToSave.add(element);
+        });
 
-    links.entrySet().stream()
-        .forEach(
-            e -> {
-              e.getValue().stream()
-                  .forEach(
-                      l -> {
-                        e.getKey().addToLinks(l);
-                        elementsToSave.add(e.getKey());
-                      });
-            });
-    risks.entrySet().stream()
-        .forEach(
-            e ->
-                e.getValue().stream()
-                    .forEach(
-                        r -> {
-                          r.setDesignator(DEMO_UNIT_DESIGNATOR_PREFIX + counter.incrementAndGet());
-                          elementsToSave.add(e.getKey());
-                          e.getKey().addRisk(r);
-                        }));
+    risks.forEach(
+        (element, elementRisks) -> {
+          elementRisks.forEach(
+              r -> {
+                r.setDesignator(DEMO_UNIT_DESIGNATOR_PREFIX + counter.incrementAndGet());
+                element.addRisk(r);
+              });
+          elementsToSave.add(element);
+        });
 
     demoUnitElements.stream()
         .forEach(
@@ -204,11 +198,9 @@ public class CreateDemoUnitUseCase
     element.setDesignator(DEMO_UNIT_DESIGNATOR_PREFIX + counter.incrementAndGet());
     element.setOwner(demoUnit);
 
-    if (element instanceof CompositeElement<?>) {
-      CompositeElement<?> ce = (CompositeElement<?>) element;
+    if (element instanceof CompositeElement<?> ce) {
       ce.getParts().forEach(e -> prepareElement(e, demoUnit, counter));
-    } else if (element instanceof Scope) {
-      Scope scope = (Scope) element;
+    } else if (element instanceof Scope scope) {
       Set<Element> members = scope.getMembers();
       members.forEach(m -> prepareElement(m, demoUnit, counter));
     }

@@ -62,7 +62,7 @@ public class ReferenceDeserializer extends JsonDeserializer<SyntheticIdRef<?>> {
       String term = matcher.group(1);
       Class<Identifiable> type = (Class<Identifiable>) EntityType.getTypeForPluralTerm(term);
       String id = matcher.group(2);
-      return new SyntheticIdRef<Identifiable>(id, type, urlAssembler);
+      return new SyntheticIdRef<>(id, type);
     }
 
     return null;

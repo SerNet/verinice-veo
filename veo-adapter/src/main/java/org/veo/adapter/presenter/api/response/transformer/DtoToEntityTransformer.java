@@ -197,11 +197,9 @@ public final class DtoToEntityTransformer {
     var target = createIdentifiable(Catalog.class, source);
     idRefResolver.resolve(source.getDomainTemplate()).addToCatalogs(target);
     mapNameableProperties(source, target);
-    if (source instanceof ReferenceCatalogDto) {
-      ReferenceCatalogDto catalogDto = (ReferenceCatalogDto) source;
+    if (source instanceof ReferenceCatalogDto catalogDto) {
       target.setCatalogItems(idRefResolver.resolve(catalogDto.getCatalogItems()));
-    } else if (source instanceof CompositeCatalogDto) {
-      CompositeCatalogDto catalogDto = (CompositeCatalogDto) source;
+    } else if (source instanceof CompositeCatalogDto catalogDto) {
       target.setCatalogItems(
           convertSet(
               catalogDto.getCatalogItems(),
@@ -272,22 +270,22 @@ public final class DtoToEntityTransformer {
   }
 
   public Element transformDto2Element(AbstractElementDto elementDto, IdRefResolver idRefResolver) {
-    if (elementDto instanceof AbstractAssetDto) {
-      return transformDto2Asset((AbstractAssetDto) elementDto, idRefResolver);
-    } else if (elementDto instanceof AbstractControlDto) {
-      return transformDto2Control((AbstractControlDto) elementDto, idRefResolver);
-    } else if (elementDto instanceof AbstractDocumentDto) {
-      return transformDto2Document((AbstractDocumentDto) elementDto, idRefResolver);
-    } else if (elementDto instanceof AbstractIncidentDto) {
-      return transformDto2Incident((AbstractIncidentDto) elementDto, idRefResolver);
-    } else if (elementDto instanceof AbstractPersonDto) {
-      return transformDto2Person((AbstractPersonDto) elementDto, idRefResolver);
-    } else if (elementDto instanceof AbstractProcessDto) {
-      return transformDto2Process((AbstractProcessDto) elementDto, idRefResolver);
-    } else if (elementDto instanceof AbstractScenarioDto) {
-      return transformDto2Scenario((AbstractScenarioDto) elementDto, idRefResolver);
-    } else if (elementDto instanceof AbstractScopeDto) {
-      return transformDto2Scope((AbstractScopeDto) elementDto, idRefResolver);
+    if (elementDto instanceof AbstractAssetDto asset) {
+      return transformDto2Asset(asset, idRefResolver);
+    } else if (elementDto instanceof AbstractControlDto control) {
+      return transformDto2Control(control, idRefResolver);
+    } else if (elementDto instanceof AbstractDocumentDto document) {
+      return transformDto2Document(document, idRefResolver);
+    } else if (elementDto instanceof AbstractIncidentDto incdent) {
+      return transformDto2Incident(incdent, idRefResolver);
+    } else if (elementDto instanceof AbstractPersonDto person) {
+      return transformDto2Person(person, idRefResolver);
+    } else if (elementDto instanceof AbstractProcessDto process) {
+      return transformDto2Process(process, idRefResolver);
+    } else if (elementDto instanceof AbstractScenarioDto scenario) {
+      return transformDto2Scenario(scenario, idRefResolver);
+    } else if (elementDto instanceof AbstractScopeDto scope) {
+      return transformDto2Scope(scope, idRefResolver);
     }
     throw new IllegalArgumentException("unkown type: " + elementDto.getClass().getName());
   }
@@ -363,28 +361,26 @@ public final class DtoToEntityTransformer {
       AbstractCatalogItemDto source, IdRefResolver idRefResolver, Catalog catalog) {
     var target = createIdentifiable(CatalogItem.class, source);
     target.setCatalog(catalog);
-    if (source instanceof CompositeCatalogItemDto) {
-      CompositeCatalogItemDto catalogitem = (CompositeCatalogItemDto) source;
+    if (source instanceof CompositeCatalogItemDto catalogitem) {
       AbstractElementDto elementDto = catalogitem.getElement();
-      if (elementDto instanceof AbstractAssetDto) {
-        target.setElement(transformDto2Asset((AbstractAssetDto) elementDto, idRefResolver));
-      } else if (elementDto instanceof AbstractControlDto) {
-        target.setElement(transformDto2Control((AbstractControlDto) elementDto, idRefResolver));
-      } else if (elementDto instanceof AbstractDocumentDto) {
-        target.setElement(transformDto2Document((AbstractDocumentDto) elementDto, idRefResolver));
-      } else if (elementDto instanceof AbstractIncidentDto) {
-        target.setElement(transformDto2Incident((AbstractIncidentDto) elementDto, idRefResolver));
-      } else if (elementDto instanceof AbstractPersonDto) {
-        target.setElement(transformDto2Person((AbstractPersonDto) elementDto, idRefResolver));
-      } else if (elementDto instanceof AbstractProcessDto) {
-        target.setElement(transformDto2Process((AbstractProcessDto) elementDto, idRefResolver));
-      } else if (elementDto instanceof AbstractScenarioDto) {
-        target.setElement(transformDto2Scenario((AbstractScenarioDto) elementDto, idRefResolver));
-      } else if (elementDto instanceof AbstractScopeDto) {
-        target.setElement(transformDto2Scope((AbstractScopeDto) elementDto, idRefResolver));
+      if (elementDto instanceof AbstractAssetDto asset) {
+        target.setElement(transformDto2Asset(asset, idRefResolver));
+      } else if (elementDto instanceof AbstractControlDto control) {
+        target.setElement(transformDto2Control(control, idRefResolver));
+      } else if (elementDto instanceof AbstractDocumentDto document) {
+        target.setElement(transformDto2Document(document, idRefResolver));
+      } else if (elementDto instanceof AbstractIncidentDto incident) {
+        target.setElement(transformDto2Incident(incident, idRefResolver));
+      } else if (elementDto instanceof AbstractPersonDto person) {
+        target.setElement(transformDto2Person(person, idRefResolver));
+      } else if (elementDto instanceof AbstractProcessDto process) {
+        target.setElement(transformDto2Process(process, idRefResolver));
+      } else if (elementDto instanceof AbstractScenarioDto scenario) {
+        target.setElement(transformDto2Scenario(scenario, idRefResolver));
+      } else if (elementDto instanceof AbstractScopeDto scope) {
+        target.setElement(transformDto2Scope(scope, idRefResolver));
       }
-    } else if (source instanceof ReferenceCatalogItemDto) {
-      ReferenceCatalogItemDto catalogitem = (ReferenceCatalogItemDto) source;
+    } else if (source instanceof ReferenceCatalogItemDto catalogitem) {
       target.setElement(idRefResolver.resolve(catalogitem.getElement()));
     } else {
       throw new IllegalArgumentException(
@@ -404,8 +400,8 @@ public final class DtoToEntityTransformer {
 
   private <T extends Identifiable> T createIdentifiable(Class<T> type, Object source) {
     Key<UUID> key = null;
-    if (source instanceof IdentifiableDto) {
-      key = Key.uuidFrom(((IdentifiableDto) source).getId());
+    if (source instanceof IdentifiableDto identifiable) {
+      key = Key.uuidFrom(identifiable.getId());
     }
     return identifiableFactory.create(type, key);
   }

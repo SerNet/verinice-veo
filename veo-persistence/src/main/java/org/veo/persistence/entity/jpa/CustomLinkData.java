@@ -64,6 +64,7 @@ public class CustomLinkData extends CustomAspectData implements CustomLink {
    *
    * @return true if added
    */
+  @Override
   public boolean addToDomains(Domain aDomain) {
     return this.domains.add(aDomain);
   }
@@ -73,6 +74,7 @@ public class CustomLinkData extends CustomAspectData implements CustomLink {
    *
    * @return true if removed
    */
+  @Override
   public boolean removeFromDomains(Domain aDomain) {
     return this.domains.remove(aDomain);
   }

@@ -55,7 +55,7 @@ abstract class AbstractScopeRiskAffectedRepository
   @Override
   public Set<Scope> findByRisk(Scenario cause) {
     return riskAffectedRepo.findDistinctByRisks_ScenarioIn(singleton((ScenarioData) cause)).stream()
-        .map(riskAffectedData -> (Scope) riskAffectedData)
+        .map(Scope.class::cast)
         .collect(Collectors.toSet());
   }
 
@@ -64,7 +64,7 @@ abstract class AbstractScopeRiskAffectedRepository
     return riskAffectedRepo
         .findDistinctByRisks_Mitigation_In(singleton((ControlData) mitigatedBy))
         .stream()
-        .map(riskAffectedData -> (Scope) riskAffectedData)
+        .map(Scope.class::cast)
         .collect(Collectors.toSet());
   }
 
@@ -73,7 +73,7 @@ abstract class AbstractScopeRiskAffectedRepository
     return riskAffectedRepo
         .findDistinctByRisks_RiskOwner_In(singleton((PersonData) riskOwner))
         .stream()
-        .map(riskAffectedData -> (Scope) riskAffectedData)
+        .map(Scope.class::cast)
         .collect(Collectors.toSet());
   }
 }

@@ -20,7 +20,6 @@ package org.veo.core.usecase.catalog;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -47,7 +46,7 @@ public class GetCatalogsUseCase
                     .map(EntitySpecifications::hasId)
                     .orElse(EntitySpecifications.matchAll()))
             .flatMap(d -> d.getCatalogs().stream())
-            .collect(Collectors.toList());
+            .toList();
     // TODO: VEO-500 Implement Catalog Search
     return new OutputData(list);
   }

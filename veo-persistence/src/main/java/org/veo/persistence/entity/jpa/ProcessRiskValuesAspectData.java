@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.ArrayList;
@@ -87,9 +86,9 @@ public class ProcessRiskValuesAspectData implements RiskValuesAspect {
     var categoryRefs =
         domainRiskDefinition.getCategories().stream().map(CategoryRef::from).collect(toSet());
 
-    this.impactCategories = categoryRefs.stream().map(ImpactImpl::new).collect(toList());
+    this.impactCategories = categoryRefs.stream().map(ImpactImpl::new).toList();
 
-    this.riskCategories = categoryRefs.stream().map(DeterminedRiskImpl::new).collect(toList());
+    this.riskCategories = categoryRefs.stream().map(DeterminedRiskImpl::new).toList();
   }
 
   @Id
@@ -156,11 +155,11 @@ public class ProcessRiskValuesAspectData implements RiskValuesAspect {
   }
 
   public List<Impact> getImpactCategories() {
-    return impactCategories.stream().map(Impact.class::cast).collect(toList());
+    return impactCategories.stream().map(Impact.class::cast).toList();
   }
 
   @Override
   public List<DeterminedRisk> getCategorizedRisks() {
-    return riskCategories.stream().map(DeterminedRisk.class::cast).collect(toList());
+    return riskCategories.stream().map(DeterminedRisk.class::cast).toList();
   }
 }

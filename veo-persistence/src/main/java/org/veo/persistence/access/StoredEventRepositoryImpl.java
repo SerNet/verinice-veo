@@ -44,7 +44,9 @@ public class StoredEventRepositoryImpl implements StoredEventRepository {
 
   @Override
   public Set<StoredEvent> findAll() {
-    return dataRepository.findAll().stream().map(e -> (StoredEvent) e).collect(Collectors.toSet());
+    return dataRepository.findAll().stream()
+        .map(StoredEvent.class::cast)
+        .collect(Collectors.toSet());
   }
 
   @Override
@@ -62,6 +64,6 @@ public class StoredEventRepositoryImpl implements StoredEventRepository {
     var all =
         dataRepository.saveAll(
             pendingEvents.stream().map(StoredEventData.class::cast).collect(Collectors.toSet()));
-    return all.stream().map(StoredEvent.class::cast).collect(Collectors.toList());
+    return all.stream().map(StoredEvent.class::cast).toList();
   }
 }

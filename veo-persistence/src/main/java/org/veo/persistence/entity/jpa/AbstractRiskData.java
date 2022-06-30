@@ -124,7 +124,7 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
   }
 
   public void setDomains(@NonNull @NotEmpty Set<Domain> newDomains) {
-    if (newDomains.size() < 1)
+    if (newDomains.isEmpty())
       throw new IllegalArgumentException("There must be at least one domain for the risk.");
     this.domains.clear();
     this.domains.addAll(newDomains);

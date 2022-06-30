@@ -40,8 +40,7 @@ public class CatalogItemValidator {
   }
 
   public static void validate(TailoringReference tailoringReference, DomainTemplate domain) {
-    if (tailoringReference instanceof LinkTailoringReference) {
-      var linkRef = (LinkTailoringReference) tailoringReference;
+    if (tailoringReference instanceof LinkTailoringReference linkRef) {
       DomainSensitiveElementValidator.validateLink(
           linkRef.getLinkType(),
           linkRef.getLinkSourceItem().getElement(),

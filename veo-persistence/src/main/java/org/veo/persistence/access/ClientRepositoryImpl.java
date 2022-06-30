@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.StreamSupport.stream;
 
 import java.util.List;
@@ -68,6 +67,6 @@ public class ClientRepositoryImpl
   public List<Client> findAll() {
     return stream(clientDataRepository.findAll().spliterator(), false)
         .map(Client.class::cast)
-        .collect(toList());
+        .toList();
   }
 }

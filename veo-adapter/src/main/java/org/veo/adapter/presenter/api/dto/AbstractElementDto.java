@@ -28,7 +28,6 @@ import javax.validation.constraints.Size;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefOwner;
 import org.veo.core.entity.ElementOwner;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -41,8 +40,6 @@ import lombok.ToString;
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AbstractElementDto extends AbstractVersionedSelfReferencingDto
     implements NameableDto {
-
-  public abstract Class<? extends Identifiable> getModelInterface();
 
   @NotNull(message = "A name must be present.")
   @Schema(description = "The name for the Element.", example = "Lock doors", required = true)

@@ -84,12 +84,11 @@ public class MessageSubscriber {
     domainRepository
         .findById(domainId)
         .ifPresent(
-            domain -> {
-              AsSystemUser.runInClient(
-                  domain.getOwner(),
-                  () -> {
-                    incomingMessageHandler.handleElementTypeDefinitionUpdate(domain, elementType);
-                  });
-            });
+            domain ->
+                AsSystemUser.runInClient(
+                    domain.getOwner(),
+                    () ->
+                        incomingMessageHandler.handleElementTypeDefinitionUpdate(
+                            domain, elementType)));
   }
 }

@@ -36,8 +36,7 @@ public class RestApiResponse {
     String resourceId = body.getResourceId().orElse("");
     URI location = URI.create(urlBasePath + "/" + resourceId);
     BodyBuilder bodyBuilder = ResponseEntity.created(location);
-    ResponseEntity<ApiResponseBody> body2 = bodyBuilder.body(body);
-    return body2;
+    return bodyBuilder.body(body);
   }
 
   public static ResponseEntity<ApiResponseBody> noContent() {

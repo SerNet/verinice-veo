@@ -65,6 +65,7 @@ public class ProcessRiskDto extends AbstractRiskDto {
   @Valid @JsonIgnore
   private Map<String, RiskDomainAssociationDto> domainsWithRiskValues = Collections.emptyMap();
 
+  @Override
   @JsonGetter(value = "domains")
   @Schema(
       description =
@@ -74,6 +75,7 @@ public class ProcessRiskDto extends AbstractRiskDto {
     return domainsWithRiskValues;
   }
 
+  @Override
   @JsonSetter(value = "domains")
   public void setDomains(Map<String, RiskDomainAssociationDto> domainMap) {
     super.setDomains(domainMap);

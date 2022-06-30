@@ -17,13 +17,13 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import lombok.ToString;
 
@@ -48,10 +48,7 @@ public class Key<T> {
 
   @SafeVarargs
   public Key(T... fields) {
-    List<T> input = new ArrayList<>();
-    for (T t : fields) {
-      input.add(t);
-    }
+    List<T> input = Stream.of(fields).toList();
     checkFieldsNotNull(input);
     this.fields = input;
   }

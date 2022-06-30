@@ -59,7 +59,7 @@ class PlaceholderResolver extends DbIdRefResolver {
   @Override
   public <TEntity extends Identifiable> Set<TEntity> resolve(Set<IdRef<TEntity>> objectReferences) {
 
-    return objectReferences.stream().map(o -> resolve(o)).collect(Collectors.toSet());
+    return objectReferences.stream().map(this::resolve).collect(Collectors.toSet());
   }
 
   /** Creates the missing element from the dto in the cache. */

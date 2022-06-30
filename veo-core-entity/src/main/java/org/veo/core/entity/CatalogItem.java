@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * CatalogItem The catalog item contains an element and/other related catalog item. It describes
@@ -45,13 +45,9 @@ public interface CatalogItem extends ElementOwner {
    * item itself is at the first position.
    */
   default List<CatalogItem> getAllElementsToCreate() {
-    List<CatalogItem> result =
-        this.getElementsToCreate().stream()
-            .sorted(BY_CATALOGITEMS)
-            .distinct()
-            .collect(Collectors.toList());
-    result.add(0, this);
-    return result;
+    return Stream.concat(
+            Stream.of(this), getElementsToCreate().stream().sorted(BY_CATALOGITEMS).distinct())
+        .toList();
   }
 
   /**

@@ -64,19 +64,18 @@ public class Decider {
     client
         .getDomains()
         .forEach(
-            domain -> {
-              domain
-                  .getDecisions()
-                  .forEach(
-                      (key, decision) -> {
-                        if (decision.isApplicableToElement(element, domain)
-                            && decision.isAffectedByEvent(event, domain)) {
-                          element.setDecisionResult(
-                              new DecisionRef(key, domain),
-                              decision.evaluate(element, domain),
-                              domain);
-                        }
-                      });
-            });
+            domain ->
+                domain
+                    .getDecisions()
+                    .forEach(
+                        (key, decision) -> {
+                          if (decision.isApplicableToElement(element, domain)
+                              && decision.isAffectedByEvent(event, domain)) {
+                            element.setDecisionResult(
+                                new DecisionRef(key, domain),
+                                decision.evaluate(element, domain),
+                                domain);
+                          }
+                        }));
   }
 }

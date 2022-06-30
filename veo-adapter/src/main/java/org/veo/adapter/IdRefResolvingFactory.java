@@ -85,12 +85,11 @@ public class IdRefResolvingFactory implements IdRefResolver, IdentifiableFactory
     return (T)
         registry.computeIfAbsent(
             SyntheticIdRef.from(id.uuidValue(), type),
-            idRef -> {
-              // Do not set the ID on the actual entity itself, so it is treated as a new
-              // entity. This avoids conflicts with existing entities with the same ID in the
-              // DB. The ID will only be used for resolving.
-              return factory.create(type, null);
-            });
+            idRef ->
+                // Do not set the ID on the actual entity itself, so it is treated as a new
+                // entity. This avoids conflicts with existing entities with the same ID in the
+                // DB. The ID will only be used for resolving.
+                factory.create(type, null));
   }
 
   /**

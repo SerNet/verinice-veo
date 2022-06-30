@@ -59,7 +59,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -306,7 +305,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
               .body(
                   scope.getMembers().stream()
                       .map(member -> entityToDtoTransformer.transform2Dto(member))
-                      .collect(Collectors.toList()));
+                      .toList());
         });
   }
 
@@ -455,7 +454,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
         output ->
             output.getRisks().stream()
                 .map(risk -> ScopeRiskDto.from(risk, referenceAssembler))
-                .collect(Collectors.toList()));
+                .toList());
   }
 
   @Override

@@ -85,7 +85,7 @@ abstract class AbstractIdentifiableVersionedRepository<
 
   @Override
   public Set<T> findByIds(Set<Key<UUID>> ids) {
-    var idStrings = ids.stream().map(Key::uuidValue).collect(Collectors.toList());
+    var idStrings = ids.stream().map(Key::uuidValue).toList();
     return StreamSupport.stream(dataRepository.findAllById(idStrings).spliterator(), false)
         .map(e -> (T) e)
         .collect(Collectors.toSet());

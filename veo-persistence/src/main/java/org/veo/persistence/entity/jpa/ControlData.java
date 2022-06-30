@@ -91,7 +91,8 @@ public class ControlData extends ElementData implements Control {
   }
 
   public Optional<Map<RiskDefinitionRef, ControlRiskValues>> getRiskValues(DomainTemplate domain) {
-    return findAspectByDomain(riskValuesAspects, domain).map(a -> a.getValues());
+    return findAspectByDomain(riskValuesAspects, domain)
+        .map(ControlRiskValuesAspectData::getValues);
   }
 
   @Override

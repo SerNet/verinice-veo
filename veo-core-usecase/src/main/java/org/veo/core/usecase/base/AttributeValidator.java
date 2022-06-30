@@ -33,10 +33,7 @@ public class AttributeValidator {
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
   static void validate(Map<String, Object> attributes, Map<String, Object> attributeSchemas) {
-    attributes.forEach(
-        (attrKey, attrValue) -> {
-          validate(attrKey, attrValue, attributeSchemas);
-        });
+    attributes.forEach((attrKey, attrValue) -> validate(attrKey, attrValue, attributeSchemas));
   }
 
   public static void validate(

@@ -18,6 +18,7 @@
 package org.veo.core.entity.riskdefinition;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -98,7 +99,7 @@ public class CategoryDefinition extends DimensionDefinition {
   public void validateRiskCategory(
       @NotNull List<RiskValue> riskValues, @NotNull ProbabilityDefinition probability) {
     Set<RiskValue> containedValues =
-        valueMatrix.stream().flatMap(x -> x.stream()).collect(Collectors.toSet());
+        valueMatrix.stream().flatMap(Collection::stream).collect(Collectors.toSet());
     if (containedValues.isEmpty()) throw new IllegalArgumentException("Risk matrix is empty.");
 
     containedValues.removeAll(riskValues);

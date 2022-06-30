@@ -214,7 +214,7 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
   @Transactional(readOnly = true)
   public PagedResult<TInterface> execute(PagingConfiguration pagingConfiguration) {
     Page<TDataClass> items = dataRepository.findAll(mySpec, toPageable(pagingConfiguration));
-    List<String> ids = items.stream().map(ElementData::getDbId).collect(Collectors.toList());
+    List<String> ids = items.stream().map(ElementData::getDbId).toList();
     List<TDataClass> fullyLoadedItems = fullyLoadItems(ids);
     fullyLoadedItems.sort(Comparator.comparingInt(item -> ids.indexOf(item.getDbId())));
 

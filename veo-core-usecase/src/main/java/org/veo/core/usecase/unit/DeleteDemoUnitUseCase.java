@@ -21,7 +21,6 @@ import static org.veo.core.usecase.unit.CreateDemoUnitUseCase.DEMO_UNIT_NAME;
 
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -62,13 +61,13 @@ public class DeleteDemoUnitUseCase
             .getUnits()
             .stream()
             .filter(unit -> unit.getName().equals(DEMO_UNIT_NAME))
-            .collect(Collectors.toList());
+            .toList();
 
     if (demoUnits.size() > 1)
       throw new ModelConsistencyException(
           "Client %s should contain 1 demo unit, but %d were found",
           client.getIdAsString(), demoUnits.size());
-    if (demoUnits.size() == 0) {
+    if (demoUnits.isEmpty()) {
       log.warn("Client {} contained no demo unit - nothing to delete.", client.getIdAsString());
       return EmptyOutput.INSTANCE;
     }

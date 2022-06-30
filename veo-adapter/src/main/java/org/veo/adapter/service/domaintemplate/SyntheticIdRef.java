@@ -20,14 +20,13 @@ package org.veo.adapter.service.domaintemplate;
 import java.lang.reflect.Field;
 
 import org.veo.adapter.presenter.api.common.IdRef;
-import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.core.entity.Identifiable;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SyntheticIdRef<T extends Identifiable> extends IdRef<T> {
-  public SyntheticIdRef(String id, Class<T> type, ReferenceAssembler urlAssembler) {
+  public SyntheticIdRef(String id, Class<T> type) {
     super(id, null, type, null, null, null);
   }
 
@@ -52,12 +51,12 @@ public class SyntheticIdRef<T extends Identifiable> extends IdRef<T> {
   }
 
   public static <T extends Identifiable> SyntheticIdRef<T> from(String id, Class<T> type) {
-    return new SyntheticIdRef<>(id, type, null);
+    return new SyntheticIdRef<>(id, type);
   }
 
   public static <T extends Identifiable> SyntheticIdRef<T> from(
       String id, Class<T> declaredType, Class<?> realType) {
-    return new SyntheticIdRef<T>(id, (Class<T>) realType, null);
+    return new SyntheticIdRef<>(id, (Class<T>) realType);
   }
 
   public static <T extends Identifiable> String toUrl(Class<T> type, String id) {

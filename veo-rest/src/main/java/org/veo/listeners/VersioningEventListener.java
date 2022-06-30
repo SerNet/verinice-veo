@@ -47,14 +47,13 @@ public class VersioningEventListener {
   void handle(VersioningEvent event) {
     var entity = event.getEntity();
 
-    if (entity instanceof Domain && event.getType() == Type.PERSIST) {
-      var domain = (Domain) entity;
+    if (entity instanceof Domain domain && event.getType() == Type.PERSIST) {
       log.debug("Creating domain creation message for domain {}}", domain.getIdAsString());
       messageCreator.createDomainCreationMessage(domain);
     }
 
-    if (entity instanceof ClientOwned) {
-      ((ClientOwned) entity)
+    if (entity instanceof ClientOwned clientOwned) {
+      clientOwned
           .getOwningClient()
           .ifPresent(
               client -> {

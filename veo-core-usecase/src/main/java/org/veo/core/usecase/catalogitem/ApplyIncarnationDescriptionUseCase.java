@@ -360,14 +360,14 @@ public class ApplyIncarnationDescriptionUseCase
         .filter(typePredicate)
         .sorted(TailoringReferenceComparators.BY_EXECUTION)
         .map(LinkTailoringReference.class::cast)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   /** Return a list of TailoringReferenceParameter filtered by {@code typePredicate}. */
   private List<TailoringReferenceParameter> linkTailorReferencesParameters(
       List<TailoringReferenceParameter> referencesToApply,
       Predicate<? super TailoringReferenceParameter> typePredicate) {
-    return referencesToApply.stream().filter(typePredicate).collect(Collectors.toList());
+    return referencesToApply.stream().filter(typePredicate).toList();
   }
 
   @Valid
@@ -387,8 +387,8 @@ public class ApplyIncarnationDescriptionUseCase
   /** Contains the created elements and the links to resolve later of all these elements. */
   @Data
   private static class IncarnationResult {
-    private final List<Element> elements = new ArrayList<Element>();
-    private final List<InternalResolveInfo> internalLinks = new ArrayList<InternalResolveInfo>();
+    private final List<Element> elements = new ArrayList<>();
+    private final List<InternalResolveInfo> internalLinks = new ArrayList<>();
   }
 
   /** Contains the created element and the links to resolve later. */

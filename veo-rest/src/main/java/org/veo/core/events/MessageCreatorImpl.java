@@ -123,11 +123,11 @@ public class MessageCreatorImpl implements MessageCreator {
   }
 
   private String getUri(Versioned entity) {
-    if (entity instanceof Identifiable) {
-      return referenceAssembler.targetReferenceOf((Identifiable) entity);
+    if (entity instanceof Identifiable identifiable) {
+      return referenceAssembler.targetReferenceOf(identifiable);
     }
-    if (entity instanceof AbstractRisk) {
-      return referenceAssembler.targetReferenceOf((AbstractRisk<?, ?>) entity);
+    if (entity instanceof AbstractRisk<?, ?> risk) {
+      return referenceAssembler.targetReferenceOf(risk);
     }
     throw new NotImplementedException("Can't build URI for object of type " + entity.getClass());
   }

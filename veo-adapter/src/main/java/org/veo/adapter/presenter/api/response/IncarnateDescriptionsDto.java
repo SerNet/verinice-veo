@@ -18,7 +18,6 @@
 package org.veo.adapter.presenter.api.response;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
@@ -50,12 +49,10 @@ public class IncarnateDescriptionsDto {
     this.parameters =
         references.stream()
             .map(p -> new IncarnateCatalogItemDescriptionDto(p, urlAssembler))
-            .collect(Collectors.toList());
+            .toList();
   }
 
   public List<IncarnateCatalogItemDescription> dto2Model(IdRefResolver idRefResolver) {
-    return getParameters().stream()
-        .map(a -> a.dto2Model(idRefResolver))
-        .collect(Collectors.toList());
+    return getParameters().stream().map(a -> a.dto2Model(idRefResolver)).toList();
   }
 }

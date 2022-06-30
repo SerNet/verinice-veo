@@ -41,10 +41,7 @@ public class IncomingMessageHandler {
     repositoryProvider
         .getElementRepositoryFor((Class<? extends Element>) elementType.getType())
         .findByDomain(domain)
-        .forEach(
-            element -> {
-              elementMigrationService.migrate(element, definition, domain);
-            });
+        .forEach(element -> elementMigrationService.migrate(element, definition, domain));
 
     catalogMigrationService.migrate(definition, domain);
   }

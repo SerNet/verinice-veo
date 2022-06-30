@@ -34,7 +34,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -69,7 +68,6 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase;
 import org.veo.core.usecase.unit.ChangeUnitUseCase;
@@ -109,7 +107,6 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
 
   public static final String URL_BASE_PATH = "/" + Unit.PLURAL_TERM;
 
-  private final UseCaseInteractor useCaseInteractor;
   private final CreateUnitUseCase createUnitUseCase;
   private final GetUnitUseCase getUnitUseCase;
   private final UpdateUnitUseCase putUnitUseCase;
@@ -142,7 +139,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
           List<String> itemIds) {
     Client client = getAuthenticatedClient(auth);
     Key<UUID> containerId = Key.uuidFrom(unitId);
-    List<Key<UUID>> list = itemIds.stream().map(Key::uuidFrom).collect(Collectors.toList());
+    List<Key<UUID>> list = itemIds.stream().map(Key::uuidFrom).toList();
 
     CompletableFuture<IncarnateDescriptionsDto> catalogFuture =
         useCaseInteractor.execute(
@@ -193,7 +190,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
             output ->
                 output.getNewElements().stream()
                     .map(c -> IdRef.from(c, referenceAssembler))
-                    .collect(Collectors.toList()));
+                    .toList());
     return completableFuture.thenApply(result -> ResponseEntity.status(201).body(result));
   }
 
@@ -227,11 +224,10 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
     return useCaseInteractor.execute(
         getUnitsUseCase,
         inputData,
-        output -> {
-          return output.getUnits().stream()
-              .map(u -> entityToDtoTransformer.transformUnit2Dto(u))
-              .collect(Collectors.toList());
-        });
+        output ->
+            output.getUnits().stream()
+                .map(u -> entityToDtoTransformer.transformUnit2Dto(u))
+                .toList());
   }
 
   @GetMapping(value = "/{id}")
@@ -331,9 +327,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
     return useCaseInteractor.execute(
         deleteUnitUseCase,
         new DeleteUnitUseCase.InputData(Key.uuidFrom(uuid), getAuthenticatedClient(auth)),
-        output -> {
-          return RestApiResponse.noContent();
-        });
+        output -> RestApiResponse.noContent());
   }
 
   @Override

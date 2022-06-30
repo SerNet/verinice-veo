@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.veo.adapter.presenter.api.dto.TranslationsDto;
 import org.veo.core.entity.Client;
@@ -42,9 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 public class EntitySchemaServiceImpl implements EntitySchemaService {
 
   private static final List<String> VALID_TYPE_SINGULAR_TERMS =
-      EntityType.ELEMENT_TYPES.stream()
-          .map(EntityType::getSingularTerm)
-          .collect(Collectors.toList());
+      EntityType.ELEMENT_TYPES.stream().map(EntityType::getSingularTerm).toList();
   private final EntitySchemaGenerator generateEntitytSchema;
 
   @Override

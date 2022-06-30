@@ -83,7 +83,7 @@ public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<
   @Override
   @Transactional
   public void deleteAll(Set<Person> elements) {
-    removeFromRisks(elements.stream().map(el -> (PersonData) el).collect(Collectors.toSet()));
+    removeFromRisks(elements.stream().map(PersonData.class::cast).collect(Collectors.toSet()));
     super.deleteAll(elements);
   }
 }

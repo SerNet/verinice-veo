@@ -82,10 +82,7 @@ public abstract class CreateElementUseCase<TEntity extends Element>
   private void evaluateDecisions(TEntity entity) {
     entity
         .getDomains()
-        .forEach(
-            domain -> {
-              entity.setDecisionResults(decider.decide(entity, domain), domain);
-            });
+        .forEach(domain -> entity.setDecisionResults(decider.decide(entity, domain), domain));
   }
 
   @Valid

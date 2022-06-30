@@ -43,17 +43,15 @@ public class ElementTypeDefintionEntityListener {
     // instead of PreUpdate. But we can use the owner's version to detect if it is a
     // creation or an update (assuming that element type definitions are always
     // created in the same transaction as their owner).
-    if (definition.getOwner() instanceof Domain && definition.getOwner().getVersion() > 0) {
-      publisher.publishEvent(
-          new ElementTypeDefinitionUpdateEvent(definition, (Domain) definition.getOwner()));
+    if (definition.getOwner() instanceof Domain domain && definition.getOwner().getVersion() > 0) {
+      publisher.publishEvent(new ElementTypeDefinitionUpdateEvent(definition, domain));
     }
   }
 
   @PreUpdate
   public void preUpdate(ElementTypeDefinitionData definition) {
-    if (definition.getOwner() instanceof Domain) {
-      publisher.publishEvent(
-          new ElementTypeDefinitionUpdateEvent(definition, (Domain) definition.getOwner()));
+    if (definition.getOwner() instanceof Domain domain) {
+      publisher.publishEvent(new ElementTypeDefinitionUpdateEvent(definition, domain));
     }
   }
 }

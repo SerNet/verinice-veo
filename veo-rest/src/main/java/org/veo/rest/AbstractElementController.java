@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -98,7 +97,7 @@ public abstract class AbstractElementController<
           T element = output.getElement();
           return ResponseEntity.ok()
               .cacheControl(defaultCacheControl)
-              .body(element.getParts().stream().map(this::entity2Dto).collect(Collectors.toList()));
+              .body(element.getParts().stream().map(this::entity2Dto).toList());
         });
   }
 

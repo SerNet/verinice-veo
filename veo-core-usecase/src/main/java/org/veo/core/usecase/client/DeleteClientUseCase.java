@@ -56,9 +56,8 @@ public class DeleteClientUseCase
     unitRepository
         .findByClient(client)
         .forEach(
-            unit -> {
-              deleteUnitUseCase.execute(new DeleteUnitUseCase.InputData(unit.getId(), client));
-            });
+            unit ->
+                deleteUnitUseCase.execute(new DeleteUnitUseCase.InputData(unit.getId(), client)));
     clientRepository.delete(client);
     return EmptyOutput.INSTANCE;
   }

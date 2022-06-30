@@ -69,8 +69,8 @@ public class EvaluateElementUseCase
                     new NotFoundException("Domain {} not found", input.getDomainId().uuidValue()));
 
     // FIXME VEO-209 support risk values on all risk affected types
-    if (input.element.getId() != null && input.element instanceof Process) {
-      loadRisks((Process) input.element);
+    if (input.element.getId() != null && input.element instanceof Process process) {
+      loadRisks(process);
     }
     input.element.setDecisionResults(decider.decide(input.element, domain), domain);
     var findings = inspector.inspect(input.element, domain);
@@ -81,8 +81,7 @@ public class EvaluateElementUseCase
   /** Load persisted risks and add them to element */
   private void loadRisks(Process element) {
     var repo = repositoryProvider.getRepositoryFor(element.getModelInterface());
-    if (repo instanceof ProcessRepository) {
-      var riskAffectedRepo = (ProcessRepository) repo;
+    if (repo instanceof ProcessRepository riskAffectedRepo) {
       var storedElement = riskAffectedRepo.findByIdWithRiskValues(element.getId()).get();
       element.setRisks(storedElement.getRisks());
     }

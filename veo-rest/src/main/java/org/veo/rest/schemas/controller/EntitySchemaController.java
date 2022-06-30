@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,9 +64,7 @@ public class EntitySchemaController implements EntitySchemaResource {
         () -> {
           ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
           List<String> userRoles =
-              user.getAuthorities().stream()
-                  .map(grant -> grant.getAuthority())
-                  .collect(Collectors.toList());
+              user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
           // TODO define schema-roles for users
           // TODO use valid 'domain' class
 

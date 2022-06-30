@@ -38,14 +38,14 @@ public class GreaterThanMatcher implements InputMatcher {
     if (value == null) {
       return false;
     }
-    if (value instanceof BigDecimal) {
-      return comparisonValue.compareTo((BigDecimal) value) < 0;
+    if (value instanceof BigDecimal bd) {
+      return comparisonValue.compareTo(bd) < 0;
     }
-    if (value instanceof Integer) {
-      return comparisonValue.compareTo(new BigDecimal((Integer) value)) < 0;
+    if (value instanceof Integer i) {
+      return comparisonValue.compareTo(new BigDecimal(i)) < 0;
     }
-    if (value instanceof Long) {
-      return comparisonValue.compareTo(new BigDecimal((Long) value)) < 0;
+    if (value instanceof Long l) {
+      return comparisonValue.compareTo(new BigDecimal(l)) < 0;
     }
     throw new IllegalArgumentException(
         "Cannot compare BigDecimal to " + value.getClass().getSimpleName());

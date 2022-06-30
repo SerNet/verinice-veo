@@ -22,7 +22,6 @@ import static org.veo.core.entity.Element.ELEMENT_TYPE_MAX_LENGTH;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -79,9 +78,7 @@ public class Decision {
       DecisionRuleRef decisiveRuleRef, List<DecisionRuleRef> matchingRules) {
     var value = getRule(decisiveRuleRef).getOutput();
     var agreeingRules =
-        matchingRules.stream()
-            .filter(ref -> getRule(ref).outputEquals(value))
-            .collect(Collectors.toList());
+        matchingRules.stream().filter(ref -> getRule(ref).outputEquals(value)).toList();
     return new DecisionResult(value, decisiveRuleRef, matchingRules, agreeingRules);
   }
 

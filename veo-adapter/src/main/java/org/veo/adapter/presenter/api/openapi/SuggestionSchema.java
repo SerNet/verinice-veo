@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.openapi;
 
+import org.veo.core.entity.inspection.AddPartSuggestion;
 import org.veo.core.entity.inspection.Suggestion;
 
 import io.swagger.v3.oas.annotations.media.DiscriminatorMapping;
@@ -27,6 +28,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
     discriminatorProperty = "type",
     discriminatorMapping =
         @DiscriminatorMapping(
-            value = AddPartSuggestionSchema.NAME,
+            value = AddPartSuggestion.NAME,
             schema = AddPartSuggestionSchema.class))
 public class SuggestionSchema extends Suggestion {}

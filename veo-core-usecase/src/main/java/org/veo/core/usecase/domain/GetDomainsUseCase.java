@@ -18,7 +18,6 @@
 package org.veo.core.usecase.domain;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -35,9 +34,7 @@ public class GetDomainsUseCase
   @Override
   public OutputData execute(InputData input) {
     return new OutputData(
-        input.authenticatedClient.getDomains().stream()
-            .filter(d -> d.isActive())
-            .collect(Collectors.toList()));
+        input.authenticatedClient.getDomains().stream().filter(Domain::isActive).toList());
   }
 
   @Valid

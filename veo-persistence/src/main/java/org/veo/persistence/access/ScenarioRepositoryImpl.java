@@ -84,7 +84,7 @@ public class ScenarioRepositoryImpl
   @Override
   @Transactional
   public void deleteAll(Set<Scenario> elements) {
-    removeRisks(elements.stream().map(el -> (ScenarioData) el).collect(Collectors.toSet()));
+    removeRisks(elements.stream().map(ScenarioData.class::cast).collect(Collectors.toSet()));
     super.deleteAll(elements);
   }
 }

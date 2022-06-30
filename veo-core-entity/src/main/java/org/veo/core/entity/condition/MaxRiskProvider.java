@@ -22,6 +22,7 @@ import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_DELETED;
 import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_VALUES_CHANGED;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
@@ -83,7 +84,7 @@ public class MaxRiskProvider implements InputProvider {
                     .map(rd -> risk.getRiskProvider(rd, domain)))
         .flatMap(provider -> provider.getCategorizedRisks().stream())
         .map(DeterminedRisk::getResidualRisk)
-        .filter(it -> it != null)
+        .filter(Objects::nonNull)
         .map(RiskRef::getIdRef)
         .max(BigDecimal::compareTo)
         .orElse(null);

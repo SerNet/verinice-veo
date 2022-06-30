@@ -51,7 +51,7 @@ public class UnitDumpMapper {
   private static Set<AbstractRiskDto> getRisks(
       Set<Element> elements, EntityToDtoTransformer transformer) {
     return elements.stream()
-        .filter(i -> i instanceof RiskAffected)
+        .filter(RiskAffected.class::isInstance)
         .map(i -> (RiskAffected<?, ?>) i)
         .flatMap(a -> a.getRisks().stream())
         .map(transformer::transform2Dto)

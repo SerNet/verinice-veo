@@ -91,7 +91,7 @@ public class GetIncarnationDescriptionUseCase
                   return catalogItem;
                 })
             .flatMap(ci -> ci.getAllElementsToCreate().stream())
-            .collect(Collectors.toList());
+            .toList();
 
     Stream<CatalogItem> linkedCatalogItems =
         itemsToCreate.stream()
@@ -133,7 +133,7 @@ public class GetIncarnationDescriptionUseCase
                       toTailorreferenceParameters(catalogItem, referencedItemsByCatalogItemId);
                   return new IncarnateCatalogItemDescription(catalogItem, parameters);
                 })
-            .collect(Collectors.toList());
+            .toList();
     log.info(
         "GetIncarnationDescriptionUseCase IncarnationDescription: {}", incarnationDescriptions);
     return new OutputData(incarnationDescriptions, unit);
@@ -153,7 +153,7 @@ public class GetIncarnationDescriptionUseCase
         .sorted(TailoringReferenceComparators.BY_EXECUTION)
         .map(LinkTailoringReference.class::cast)
         .map(lr -> toParameter(lr, referencedItemsByCatalogItemId.get(lr.getCatalogItem().getId())))
-        .collect(Collectors.toList());
+        .toList();
   }
 
   /**

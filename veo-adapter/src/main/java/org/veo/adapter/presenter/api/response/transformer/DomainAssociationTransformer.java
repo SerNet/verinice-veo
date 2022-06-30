@@ -58,6 +58,7 @@ import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.aspects.Aspect;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ControlRiskValues;
@@ -84,12 +85,11 @@ public class DomainAssociationTransformer {
         source.getDomains(),
         target,
         idRefResolver,
-        (domain, associationDto) -> {
-          target.setRiskValues(
-              domain,
-              associationDto.getRiskValues().entrySet().stream()
-                  .collect(groupRiskDefinitionsByDomain(domain)));
-        });
+        (domain, associationDto) ->
+            target.setRiskValues(
+                domain,
+                associationDto.getRiskValues().entrySet().stream()
+                    .collect(groupRiskDefinitionsByDomain(domain))));
   }
 
   private Collector<
@@ -177,7 +177,7 @@ public class DomainAssociationTransformer {
         value.getPotentialImpacts().entrySet().stream()
             .collect(
                 Collectors.toMap(
-                    e -> toCategoryRef(riskDefinitionId, referenceProvider, e), e -> e.getValue()));
+                    e -> toCategoryRef(riskDefinitionId, referenceProvider, e), Entry::getValue));
     riskValues.setPotentialImpacts(potentialImpacts);
     return riskValues;
   }
@@ -200,12 +200,11 @@ public class DomainAssociationTransformer {
         source.getDomains(),
         target,
         idRefResolver,
-        (domain, associationDto) -> {
-          target.setPotentialProbability(
-              domain,
-              associationDto.getRiskValues().entrySet().stream()
-                  .collect(groupScenarioRiskValuesByDomain(domain)));
-        });
+        (domain, associationDto) ->
+            target.setPotentialProbability(
+                domain,
+                associationDto.getRiskValues().entrySet().stream()
+                    .collect(groupScenarioRiskValuesByDomain(domain))));
   }
 
   private Collector<
@@ -244,10 +243,9 @@ public class DomainAssociationTransformer {
         source.getDomains(),
         target,
         idRefResolver,
-        (domain, associationDto) -> {
-          target.setRiskDefinition(
-              domain, toRiskDefinitionRef(associationDto.getRiskDefinition(), domain));
-        });
+        (domain, associationDto) ->
+            target.setRiskDefinition(
+                domain, toRiskDefinitionRef(associationDto.getRiskDefinition(), domain)));
   }
 
   public void mapDomainsToDto(Asset source, AbstractAssetDto target) {
@@ -258,19 +256,18 @@ public class DomainAssociationTransformer {
     Map<String, ControlDomainAssociationDto> extractDomainAssociations =
         extractDomainAssociations(
             source,
-            (domain) -> {
+            domain -> {
               var associationDto = new ControlDomainAssociationDto();
               source
                   .getRiskValues(domain)
                   .ifPresent(
-                      riskValues -> {
-                        associationDto.setRiskValues(
-                            riskValues.entrySet().stream()
-                                .collect(
-                                    Collectors.toMap(
-                                        kv -> kv.getKey().getIdRef(),
-                                        this::mapControlRiskValuesToDto)));
-                      });
+                      riskValues ->
+                          associationDto.setRiskValues(
+                              riskValues.entrySet().stream()
+                                  .collect(
+                                      Collectors.toMap(
+                                          kv -> kv.getKey().getIdRef(),
+                                          this::mapControlRiskValuesToDto))));
               return associationDto;
             });
     target.setDomains(extractDomainAssociations);
@@ -290,7 +287,7 @@ public class DomainAssociationTransformer {
     Map<CategoryRef, ImpactRef> potentialImpacts = entry.getValue().getPotentialImpacts();
     Map<String, ImpactRef> riskValues =
         potentialImpacts.entrySet().stream()
-            .collect(Collectors.toMap(e -> e.getKey().getIdRef(), e -> e.getValue()));
+            .collect(Collectors.toMap(e -> e.getKey().getIdRef(), Entry::getValue));
     riskValuesDto.setPotentialImpacts(riskValues);
     return riskValuesDto;
   }
@@ -311,7 +308,7 @@ public class DomainAssociationTransformer {
     target.setDomains(
         extractDomainAssociations(
             source,
-            (domain) -> {
+            domain -> {
               var assocationDto = new ProcessDomainAssociationDto();
               source
                   .getImpactValues(domain)
@@ -323,8 +320,7 @@ public class DomainAssociationTransformer {
                                 Map<String, ProcessRiskValuesDto>>
                             collector =
                                 Collectors.toMap(
-                                    kv -> kv.getKey().getIdRef(),
-                                    kk -> mapProcessRiskValuesToDto(kk));
+                                    kv -> kv.getKey().getIdRef(), this::mapProcessRiskValuesToDto);
                         Map<String, ProcessRiskValuesDto> values =
                             riskValues.entrySet().stream().collect(collector);
                         assocationDto.setRiskValues(values);
@@ -337,19 +333,18 @@ public class DomainAssociationTransformer {
     target.setDomains(
         extractDomainAssociations(
             source,
-            (domain) -> {
+            domain -> {
               var assocationDto = new ScenarioDomainAssociationDto();
               source
                   .getPotentialProbability(domain)
                   .ifPresent(
-                      riskValues -> {
-                        assocationDto.setRiskValues(
-                            riskValues.entrySet().stream()
-                                .collect(
-                                    Collectors.toMap(
-                                        kv -> kv.getKey().getIdRef(),
-                                        this::mapScenarioRiskValuesToDto)));
-                      });
+                      riskValues ->
+                          assocationDto.setRiskValues(
+                              riskValues.entrySet().stream()
+                                  .collect(
+                                      Collectors.toMap(
+                                          kv -> kv.getKey().getIdRef(),
+                                          this::mapScenarioRiskValuesToDto))));
               return assocationDto;
             }));
   }
@@ -366,7 +361,7 @@ public class DomainAssociationTransformer {
     target.setDomains(
         extractDomainAssociations(
             source,
-            (domain) -> {
+            domain -> {
               var assocationDto = new ScopeDomainAssociationDto();
               source
                   .getRiskDefinition(domain)
@@ -391,7 +386,7 @@ public class DomainAssociationTransformer {
     var domains = new HashSet<DomainTemplate>();
     domains.addAll(source.getDomains());
     domains.addAll(
-        source.getSubTypeAspects().stream().map(a -> a.getDomain()).collect(Collectors.toSet()));
+        source.getSubTypeAspects().stream().map(Aspect::getDomain).collect(Collectors.toSet()));
 
     return domains.stream()
         .collect(

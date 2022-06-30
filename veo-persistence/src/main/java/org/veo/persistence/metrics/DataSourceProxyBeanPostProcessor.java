@@ -58,10 +58,9 @@ public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
 
   @Override
   public Object postProcessAfterInitialization(Object bean, String beanName) {
-    if (bean instanceof DataSource) {
+    if (bean instanceof DataSource datasource) {
       String jdbcUrl = "unknown";
-      if (bean instanceof HikariDataSource) {
-        HikariDataSource hikariData = (HikariDataSource) bean;
+      if (bean instanceof HikariDataSource hikariData) {
         jdbcUrl = hikariData.getJdbcUrl();
       }
       log.info(
@@ -70,8 +69,7 @@ public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
           slowThresholdMs);
       final ProxyFactory proxyFactory = new ProxyFactory(bean);
       proxyFactory.setProxyTargetClass(true);
-      proxyFactory.addAdvice(
-          new ProxyDataSourceInterceptor((DataSource) bean, slowThresholdMs, logAll));
+      proxyFactory.addAdvice(new ProxyDataSourceInterceptor(datasource, slowThresholdMs, logAll));
       return proxyFactory.getProxy();
     }
     return bean;

@@ -19,7 +19,6 @@ package org.veo.persistence.access;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Repository;
@@ -46,14 +45,12 @@ public class DomainTemplateRepositoryImpl
 
   public List<DomainTemplate> getAll() {
     return StreamSupport.stream(dataRepository.findAll().spliterator(), false)
-        .map(e -> (DomainTemplate) e)
-        .collect(Collectors.toList());
+        .map(DomainTemplate.class::cast)
+        .toList();
   }
 
   @Override
   public List<Key<UUID>> getDomainTemplateIds(String name) {
-    return dataRepository.findTemplateIdsByName(name).stream()
-        .map(Key::uuidFrom)
-        .collect(Collectors.toUnmodifiableList());
+    return dataRepository.findTemplateIdsByName(name).stream().map(Key::uuidFrom).toList();
   }
 }

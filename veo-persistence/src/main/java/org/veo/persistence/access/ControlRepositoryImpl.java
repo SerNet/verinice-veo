@@ -84,7 +84,7 @@ public class ControlRepositoryImpl
   @Override
   @Transactional
   public void deleteAll(Set<Control> elements) {
-    removeFromRisks(elements.stream().map(el -> (ControlData) el).collect(Collectors.toSet()));
+    removeFromRisks(elements.stream().map(ControlData.class::cast).collect(Collectors.toSet()));
     super.deleteAll(elements);
   }
 }

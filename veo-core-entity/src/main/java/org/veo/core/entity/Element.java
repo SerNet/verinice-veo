@@ -171,8 +171,8 @@ public interface Element
   }
 
   default void setOwnerOrContainingCatalogItem(ElementOwner owner) {
-    if (owner instanceof Unit) {
-      this.setOwner((Unit) owner);
+    if (owner instanceof Unit unit) {
+      this.setOwner(unit);
       this.setContainingCatalogItem(null);
     } else {
       this.setOwner(null);

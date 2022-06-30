@@ -20,7 +20,6 @@ package org.veo.adapter.persistence.schema;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -109,7 +108,7 @@ public class SchemaExtender {
   private ObjectNode buildDomainAssociationSchemaForProcess(
       SchemaGenerator generator, Domain domain) {
     var domainAssociationSchema = generator.generateSchema(ProcessDomainAssociationDto.class);
-    var riskValuesSchema = (ObjectNode) domainAssociationSchema.get(PROPS).get("riskValues");
+    var riskValuesSchema = (ObjectNode) domainAssociationSchema.get(PROPS).get(RISK_VALUES);
     riskValuesSchema.put(ADDITIONAL_PROPERTIES, false);
     var riskValuesProps = riskValuesSchema.putObject(PROPS);
     domain
@@ -135,7 +134,7 @@ public class SchemaExtender {
                                   c.getPotentialImpacts().stream()
                                       .map(DiscreteValue::getOrdinalValue)
                                       .map(IntNode::new)
-                                      .collect(Collectors.toList())));
+                                      .toList()));
               riskValuesProps.set(riskDefId, riskDefinitionSchema);
             });
     return domainAssociationSchema;
@@ -159,7 +158,7 @@ public class SchemaExtender {
                       riskDef.getImplementationStateDefinition().getLevels().stream()
                           .map(DiscreteValue::getOrdinalValue)
                           .map(IntNode::new)
-                          .collect(Collectors.toList()));
+                          .toList());
               riskValuesSchema.put(ADDITIONAL_PROPERTIES, false);
               riskValuesProps.set(riskDefId, riskValuesSchema);
             });
@@ -184,7 +183,7 @@ public class SchemaExtender {
                       riskDef.getProbability().getLevels().stream()
                           .map(DiscreteValue::getOrdinalValue)
                           .map(IntNode::new)
-                          .collect(Collectors.toList()));
+                          .toList());
               riskValuesSchema.put(ADDITIONAL_PROPERTIES, false);
               riskValuesProps.set(riskDefId, riskValuesSchema);
             });
@@ -197,10 +196,7 @@ public class SchemaExtender {
     var riskDefinitionNode = (ObjectNode) domainAssociationSchema.get(PROPS).get("riskDefinition");
     riskDefinitionNode
         .putArray("enum")
-        .addAll(
-            domain.getRiskDefinitions().keySet().stream()
-                .map(TextNode::new)
-                .collect(Collectors.toList()));
+        .addAll(domain.getRiskDefinitions().keySet().stream().map(TextNode::new).toList());
     return domainAssociationSchema;
   }
 

@@ -221,8 +221,8 @@ public abstract class ElementData extends IdentifiableVersionedData
     this.customAspects.clear();
     aCustomAspects.forEach(
         aspect -> {
-          if (aspect instanceof CustomAspectData) {
-            ((CustomAspectData) aspect).setOwner(this);
+          if (aspect instanceof CustomAspectData customAspectData) {
+            customAspectData.setOwner(this);
           }
         });
     this.customAspects.addAll(aCustomAspects);
@@ -270,8 +270,8 @@ public abstract class ElementData extends IdentifiableVersionedData
    * @return true if added
    */
   public boolean addToCustomAspects(CustomAspect aCustomAspect) {
-    if (aCustomAspect instanceof CustomAspectData) {
-      ((CustomAspectData) aCustomAspect).setOwner(this);
+    if (aCustomAspect instanceof CustomAspectData customAspectData) {
+      customAspectData.setOwner(this);
     }
     return this.customAspects.add(aCustomAspect);
   }
@@ -282,8 +282,7 @@ public abstract class ElementData extends IdentifiableVersionedData
    * @return true if removed
    */
   public boolean removeFromCustomAspects(CustomAspect aCustomAspect) {
-    if (aCustomAspect instanceof CustomAspectData) {
-      CustomAspectData propertiesData = (CustomAspectData) aCustomAspect;
+    if (aCustomAspect instanceof CustomAspectData propertiesData) {
       propertiesData.setOwner(null);
     }
     return this.customAspects.remove(aCustomAspect);

@@ -34,7 +34,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
@@ -265,14 +264,6 @@ public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> impl
                 newImpactValues.getSpecificImpactExplanation(category));
           }
         });
-  }
-
-  private Optional<RiskValues> getRiskValuesForRiskDefinition(
-      Set<RiskValues> newValues, DomainTemplate domain, RiskDefinitionRef riskDefinition) {
-    return newValues.stream()
-        .filter(nv -> nv.getDomainId().equals(domain.getId()))
-        .filter(nv -> nv.getRiskDefinitionId().value().equals(riskDefinition.getIdRef()))
-        .findFirst();
   }
 
   @Override

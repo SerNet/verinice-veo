@@ -79,7 +79,6 @@ public class DomainTemplateAssemblerMain {
       var id = new DomainTemplateIdGeneratorImpl().createDomainTemplateId(name, version, revision);
       DomainTemplateAssembler assembler =
           new DomainTemplateAssembler(
-              REFERENCE_ASSEMBLER,
               id,
               name,
               System.getenv("domaintemplate.abbreviation"),

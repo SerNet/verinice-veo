@@ -22,7 +22,6 @@ import static org.veo.core.entity.riskdefinition.DimensionDefinition.initLevel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -92,16 +91,14 @@ public class RiskDefinition {
   }
 
   private void validateSymbolicRiskUniqueness() {
-    List<String> ids =
-        riskValues.stream().map(RiskValue::getSymbolicRisk).collect(Collectors.toList());
+    List<String> ids = riskValues.stream().map(RiskValue::getSymbolicRisk).toList();
     if (ids.size() > ids.stream().distinct().count()) {
       throw new IllegalArgumentException("SymbolicRisk not unique.");
     }
   }
 
   private void validateCategoryUniqueness() {
-    List<String> ids =
-        categories.stream().map(CategoryDefinition::getId).collect(Collectors.toList());
+    List<String> ids = categories.stream().map(CategoryDefinition::getId).toList();
     if (ids.size() > ids.stream().distinct().count()) {
       throw new IllegalArgumentException("Categories not unique.");
     }

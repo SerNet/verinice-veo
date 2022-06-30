@@ -20,7 +20,6 @@ package org.veo.rest.security;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -40,10 +39,10 @@ import org.springframework.stereotype.Component;
 public class CustomUserDetailsManager extends InMemoryUserDetailsManager {
 
   // This would be a repository or service in production:
-  private final Map<String, ApplicationUser> users = new HashMap<String, ApplicationUser>();
+  private final Map<String, ApplicationUser> users = new HashMap<>();
 
   public CustomUserDetailsManager(Collection<ApplicationUser> appUsers) {
-    super(appUsers.stream().map(u -> (UserDetails) u).collect(Collectors.toList()));
+    super(appUsers.stream().map(UserDetails.class::cast).toList());
     appUsers.stream().forEach(this::storeUser);
   }
 

@@ -80,8 +80,8 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
   public boolean associateWithDomain(
       @NonNull DomainTemplate domain, String subType, String status) {
     var added = super.associateWithDomain(domain, subType, status);
-    if (added && domain instanceof Domain) {
-      risks.forEach(r -> r.addToDomains((Domain) domain));
+    if (added && domain instanceof Domain d) {
+      risks.forEach(r -> r.addToDomains(d));
     }
     return added;
   }

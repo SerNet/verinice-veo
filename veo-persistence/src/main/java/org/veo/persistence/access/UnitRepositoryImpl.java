@@ -20,7 +20,6 @@ package org.veo.persistence.access;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 
@@ -46,15 +45,15 @@ public class UnitRepositoryImpl extends AbstractIdentifiableVersionedRepository<
   @Override
   public List<Unit> findByClient(Client client) {
     return dataRepository.findByClientId(client.getId().uuidValue()).stream()
-        .map(e -> (Unit) e)
-        .collect(Collectors.toList());
+        .map(Unit.class::cast)
+        .toList();
   }
 
   @Override
   public List<Unit> findByParent(Unit parent) {
     return dataRepository.findByParentId(parent.getId().uuidValue()).stream()
-        .map(e -> (Unit) e)
-        .collect(Collectors.toList());
+        .map(Unit.class::cast)
+        .toList();
   }
 
   @Override

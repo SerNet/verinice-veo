@@ -32,6 +32,6 @@ public class PageDto<T> {
   private int page;
 
   public static <T> PageDto<T> emptyPage() {
-    return new PageDto<T>(Collections.emptyList(), 0l, 1, 0);
+    return new PageDto<>(Collections.emptyList(), 0l, 1, 0);
   }
 }

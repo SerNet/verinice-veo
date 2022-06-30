@@ -27,7 +27,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -158,11 +157,10 @@ public class CatalogController extends AbstractEntityController {
     return useCaseInteractor.execute(
         getCatalogsUseCase,
         inputData,
-        output -> {
-          return output.getCatalogs().stream()
-              .map(u -> entityToDtoTransformer.transformCatalog2Dto(u))
-              .collect(Collectors.toList());
-        });
+        output ->
+            output.getCatalogs().stream()
+                .map(u -> entityToDtoTransformer.transformCatalog2Dto(u))
+                .toList());
   }
 
   @GetMapping(value = "/{id}/items")
@@ -203,14 +201,13 @@ public class CatalogController extends AbstractEntityController {
     return useCaseInteractor.execute(
         getCatalogItemsUseCase,
         inputData,
-        output -> {
-          return ResponseEntity.ok()
-              .cacheControl(defaultCacheControl)
-              .body(
-                  output.getCatalogItems().stream()
-                      .map(u -> entityToDtoTransformer.transformCatalogItem2Dto(u, true))
-                      .collect(Collectors.toList()));
-        });
+        output ->
+            ResponseEntity.ok()
+                .cacheControl(defaultCacheControl)
+                .body(
+                    output.getCatalogItems().stream()
+                        .map(u -> entityToDtoTransformer.transformCatalogItem2Dto(u, true))
+                        .toList()));
   }
 
   @GetMapping(value = "/{id}/items/{itemId}")

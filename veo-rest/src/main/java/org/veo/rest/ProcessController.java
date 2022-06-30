@@ -61,7 +61,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -486,7 +485,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
         output ->
             output.getRisks().stream()
                 .map(risk -> ProcessRiskDto.from(risk, referenceAssembler))
-                .collect(Collectors.toList()));
+                .toList());
   }
 
   @Override

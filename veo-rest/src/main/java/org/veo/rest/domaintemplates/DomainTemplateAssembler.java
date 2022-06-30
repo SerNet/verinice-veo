@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import org.veo.adapter.presenter.api.common.IdRef;
-import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
@@ -57,8 +56,6 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 class DomainTemplateAssembler {
-
-  private final ReferenceAssembler assembler;
 
   private final String id;
   private final String name;
@@ -107,7 +104,7 @@ class DomainTemplateAssembler {
     catalogDto.setName(catalogName);
     catalogDto.setId(catalogId);
     catalogDto.getCatalogItems().addAll(catalogItemsById.values());
-    catalogDto.setDomainTemplate(new SyntheticIdRef<>(id, DomainTemplate.class, assembler));
+    catalogDto.setDomainTemplate(new SyntheticIdRef<>(id, DomainTemplate.class));
 
     catalogs.add(catalogDto);
   }
@@ -156,7 +153,7 @@ class DomainTemplateAssembler {
                       TransformLinkTailoringReference referenceDto =
                           new TransformLinkTailoringReference();
                       referenceDto.setCatalogItem(
-                          new SyntheticIdRef<>(targetItem.getId(), CatalogItem.class, assembler));
+                          new SyntheticIdRef<>(targetItem.getId(), CatalogItem.class));
                       referenceDto.setReferenceType(TailoringReferenceType.LINK_EXTERNAL);
                       referenceDto.setLinkType(typedLinks.getKey());
                       referenceDto.setAttributes(new HashMap<>(link.getAttributes()));
@@ -180,7 +177,7 @@ class DomainTemplateAssembler {
                           TransformLinkTailoringReference referenceDto =
                               new TransformLinkTailoringReference();
                           referenceDto.setCatalogItem(
-                              new SyntheticIdRef<>(itemDto.getId(), CatalogItem.class, assembler));
+                              new SyntheticIdRef<>(itemDto.getId(), CatalogItem.class));
                           referenceDto.setReferenceType(TailoringReferenceType.LINK);
                           referenceDto.setLinkType(e.getKey());
                           referenceDto.setAttributes(new HashMap<>(l.getAttributes()));
@@ -192,15 +189,14 @@ class DomainTemplateAssembler {
             p -> {
               TransformCatalogItemDto itemDto = catalogItems.get(p.getId());
               CreateTailoringReferenceDto referenceDto = new CreateTailoringReferenceDto();
-              referenceDto.setCatalogItem(
-                  new SyntheticIdRef<>(itemDto.getId(), CatalogItem.class, assembler));
+              referenceDto.setCatalogItem(new SyntheticIdRef<>(itemDto.getId(), CatalogItem.class));
               currentItem.getTailoringReferences().add(referenceDto);
               referenceDto.setReferenceType(TailoringReferenceType.COPY);
             });
   }
 
   public Set<AbstractElementDto> processDemoUnit(Set<AbstractElementDto> readDemoUnitElements) {
-    SyntheticIdRef<Domain> domainRef = new SyntheticIdRef<>(id, Domain.class, assembler);
+    SyntheticIdRef<Domain> domainRef = new SyntheticIdRef<>(id, Domain.class);
     Set<IdRef<Domain>> domainsToApply = Collections.singleton(domainRef);
     readDemoUnitElements.forEach(e -> processDemoUnitElement(e, domainsToApply));
     return readDemoUnitElements;
@@ -218,7 +214,7 @@ class DomainTemplateAssembler {
   }
 
   public Set<AbstractRiskDto> processDemoUnitRisks(Set<AbstractRiskDto> risks) {
-    SyntheticIdRef<Domain> domainRef = new SyntheticIdRef<>(id, Domain.class, assembler);
+    SyntheticIdRef<Domain> domainRef = new SyntheticIdRef<>(id, Domain.class);
     risks.forEach(
         r ->
             r.setDomains(

@@ -85,7 +85,7 @@ public class DeleteUnitUseCase
     // FIXME VEO-1124 remove all relations first, then elements
     var associationOwners = List.of(Scope.class, Process.class, Asset.class, Scenario.class);
     associationOwners.forEach(
-        (type) -> {
+        type -> {
           log.debug(
               "Step 1: First remove the owning side of bi-directional associations "
                   + "members / risks on {}.",
@@ -96,10 +96,11 @@ public class DeleteUnitUseCase
     EntityType.ELEMENT_TYPE_CLASSES.stream()
         .filter(not(associationOwners::contains))
         .sorted(Comparator.comparing(Class::getSimpleName))
-        .peek(
-            (e) ->
-                log.debug("Step 2:Deleting all unit members " + "of type {}.", e.getSimpleName()))
-        .forEach(clazz -> repositoryProvider.getElementRepositoryFor(clazz).deleteByUnit(unit));
+        .forEach(
+            clazz -> {
+              log.debug("Step 2:Deleting all unit members " + "of type {}.", clazz.getSimpleName());
+              repositoryProvider.getElementRepositoryFor(clazz).deleteByUnit(unit);
+            });
   }
 
   @Valid

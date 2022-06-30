@@ -32,9 +32,11 @@ import com.vladmihalcea.hibernate.type.json.JsonType;
 
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ProcessImpactValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.riskdefinition.CategoryDefinition;
+import org.veo.core.entity.riskdefinition.DimensionDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import lombok.AccessLevel;
@@ -109,11 +111,11 @@ class ProcessImpactValuesAspectData extends AspectData {
 
               Set<String> categoryIds =
                   riskDefinition.getCategories().stream()
-                      .map(c -> c.getId())
+                      .map(DimensionDefinition::getId)
                       .collect(Collectors.toSet());
               Set<String> usedCatIds =
                   e.getValue().getPotentialImpacts().keySet().stream()
-                      .map(c -> c.getIdRef())
+                      .map(CategoryRef::getIdRef)
                       .collect(Collectors.toSet());
 
               usedCatIds.removeAll(categoryIds);
