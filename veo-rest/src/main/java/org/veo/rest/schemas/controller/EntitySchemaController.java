@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -54,7 +55,7 @@ public class EntitySchemaController implements EntitySchemaResource {
   private final DomainRepository domainRepository;
 
   @Override
-  public CompletableFuture<ResponseEntity<String>> getSchema(
+  public Future<ResponseEntity<String>> getSchema(
       Authentication auth,
       @PathVariable String type,
       @RequestParam(value = "domains") List<String> domainIDs) {
