@@ -50,7 +50,7 @@ import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
  */
 public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
 
-  @Value("${veo.logging.datasource.slow_threshold_ms:1000}")
+  @Value("${veo.logging.datasource.slow_threshold_ms:600}")
   private long slowThresholdMs;
 
   @Value("${veo.logging.datasource.all_queries:false}")
