@@ -711,11 +711,11 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
             def link_process_person = newCustomLink(compositePerson, "type4")
             process.addToLinks(link_process_person)
-            process = processRepository.save(process)
+            processRepository.save(process)
 
             def link_asset_asset = newCustomLink(asset2, "type5")
             asset.addToLinks(link_asset_asset)
-            asset = assetRepository.save(asset)
+            assetRepository.save(asset)
         }
     }
 
