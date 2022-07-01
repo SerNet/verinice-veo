@@ -21,13 +21,13 @@ import static java.util.Collections.singleton;
 
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
-import org.veo.core.entity.Unit;
 import org.veo.core.repository.PersonRepository;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
@@ -82,8 +82,8 @@ public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<
 
   @Override
   @Transactional
-  public void deleteByUnit(Unit owner) {
-    removeFromRisks(dataRepository.findByUnits(singleton(owner.getId().uuidValue())));
-    super.deleteByUnit(owner);
+  public void deleteAll(Set<Person> elements) {
+    removeFromRisks(elements.stream().map(el -> (PersonData) el).collect(Collectors.toSet()));
+    super.deleteAll(elements);
   }
 }

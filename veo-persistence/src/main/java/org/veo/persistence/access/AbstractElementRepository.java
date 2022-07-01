@@ -76,14 +76,26 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
 
   @Transactional
   public void deleteByUnit(Unit owner) {
-    var elements = dataRepository.findByUnits(singleton(owner.getId().uuidValue()));
-    deleteLinksByTargets(elements.stream().map(ElementData::getDbId).collect(Collectors.toSet()));
+    deleteAll(findByUnit(owner));
+  }
+
+  @Transactional
+  public void deleteAll(Set<T> elements) {
+    Set<String> elementIds =
+        elements.stream().map(Element::getIdAsString).collect(Collectors.toSet());
+    deleteLinksByTargets(elementIds);
 
     elements.forEach(e -> e.getLinks().clear());
-
     elements.forEach(Element::remove);
 
-    dataRepository.deleteAll(elements);
+    dataRepository.deleteAllById(elementIds);
+  }
+
+  @Override
+  public Set<T> findByUnit(Unit owner) {
+    var elements = dataRepository.findByUnits(singleton(owner.getId().uuidValue()));
+    dataRepository.findWithScopesByUnits(singleton(owner.getId().uuidValue()));
+    return elements.stream().map(el -> (T) el).collect(Collectors.toSet());
   }
 
   @Override

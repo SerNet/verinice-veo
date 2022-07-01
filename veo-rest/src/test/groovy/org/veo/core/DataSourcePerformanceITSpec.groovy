@@ -401,7 +401,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 16
         queryCounts.insert == 11
         queryCounts.update == 0
-        queryCounts.select == 16
+        queryCounts.select == 17
     }
 
     @Issue('VEO-689')
@@ -442,7 +442,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete <= 12
         queryCounts.insert == 4
         queryCounts.update == 2
-        queryCounts.select == 28
+        queryCounts.select == 34
     }
 
     def "SQL performance for deleting 2 units with 1 commonly referenced domain"() {

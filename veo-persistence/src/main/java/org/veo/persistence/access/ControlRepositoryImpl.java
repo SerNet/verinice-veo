@@ -21,13 +21,13 @@ import static java.util.Collections.singleton;
 
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
 import org.veo.core.repository.ControlRepository;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.ControlDataRepository;
@@ -83,8 +83,8 @@ public class ControlRepositoryImpl
 
   @Override
   @Transactional
-  public void deleteByUnit(Unit owner) {
-    removeFromRisks(dataRepository.findByUnits(singleton(owner.getId().uuidValue())));
-    super.deleteByUnit(owner);
+  public void deleteAll(Set<Control> elements) {
+    removeFromRisks(elements.stream().map(el -> (ControlData) el).collect(Collectors.toSet()));
+    super.deleteAll(elements);
   }
 }

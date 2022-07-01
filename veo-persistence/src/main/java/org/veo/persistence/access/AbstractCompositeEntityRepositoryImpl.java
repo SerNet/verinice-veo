@@ -23,9 +23,12 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Unit;
 import org.veo.core.repository.CompositeElementRepository;
 import org.veo.persistence.access.jpa.CompositeEntityDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
@@ -63,5 +66,14 @@ abstract class AbstractCompositeEntityRepositoryImpl<
     return compositeRepo.findDistinctByParts_DbId_In(partIds).stream()
         .map(data -> (S) data)
         .collect(Collectors.toSet());
+  }
+
+  @Override
+  @Transactional
+  public Set<S> findByUnit(Unit owner) {
+    var elements = dataRepository.findByUnits(singleton(owner.getId().uuidValue()));
+    dataRepository.findWithScopesByUnits(singleton(owner.getId().uuidValue()));
+    compositeRepo.findWithPartsByUnits(singleton(owner.getId().uuidValue()));
+    return elements.stream().map(el -> (S) el).collect(Collectors.toSet());
   }
 }

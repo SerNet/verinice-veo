@@ -39,20 +39,26 @@ public interface CompositeEntityDataRepository<T extends ElementData>
   // TODO VEO-448 override findAll(Specification<> spec) using an entity graph
   // that fetches parts.
   @Query(
-      "select e from #{#entityName} as e "
-          + "left join fetch e.customAspects "
-          + "left join fetch e.links "
-          + "left join fetch e.decisionResultsAspects "
-          + "left join fetch e.subTypeAspects "
-          + "left join fetch e.appliedCatalogItems "
-          + "left join fetch e.parts "
-          + "left join fetch e.composites as c "
-          + "left join fetch c.parts "
-          + "left join fetch e.scopes as s "
-          + "left join fetch s.members "
-          + "left join fetch e.domains "
-          + "where e.owner.dbId IN ?1")
+      """
+         select e from #{#entityName} as e
+         left join fetch e.customAspects
+         left join fetch e.links
+         left join fetch e.decisionResultsAspects
+         left join fetch e.subTypeAspects
+         left join fetch e.appliedCatalogItems
+         left join fetch e.domains
+         where e.owner.dbId IN ?1""")
   @Transactional(readOnly = true)
   @Override
   Set<T> findByUnits(Set<String> unitIds);
+
+  @Query(
+      """
+         select e from #{#entityName} as e
+         left join fetch e.parts
+         left join fetch e.composites as c
+         left join fetch c.parts
+         where e.owner.dbId IN ?1""")
+  @Transactional(readOnly = true)
+  Set<T> findWithPartsByUnits(Set<String> unitIds);
 }

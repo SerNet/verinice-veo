@@ -101,4 +101,13 @@ public interface ElementDataRepository<T extends ElementData>
           + "and d.id = ?2 "
           + "group by a.subType, a.status")
   Set<SubTypeStatusCount> getCountsBySubType(String unitId, String domainId);
+
+  @Query(
+      """
+         select e from #{#entityName} as e
+         left join fetch e.scopes as s
+         left join fetch s.members
+         where e.owner.dbId IN ?1""")
+  @Transactional(readOnly = true)
+  Set<T> findWithScopesByUnits(Set<String> unitIds);
 }

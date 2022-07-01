@@ -38,16 +38,15 @@ public interface ScopeDataRepository extends ScopeRiskAffectedDataRepository {
   Set<Scope> findDistinctByMemberIds(Set<String> dbIds);
 
   @Query(
-      "select e from #{#entityName} as e "
-          + "left join fetch e.customAspects "
-          + "left join fetch e.links "
-          + "left join fetch e.decisionResultsAspects "
-          + "left join fetch e.subTypeAspects "
-          + "left join fetch e.members "
-          + "left join fetch e.domains "
-          + "left join fetch e.scopes as s "
-          + "left join fetch s.members "
-          + "where e.owner.dbId IN ?1")
+      """
+         select e from #{#entityName} as e
+         left join fetch e.customAspects
+         left join fetch e.links
+         left join fetch e.decisionResultsAspects
+         left join fetch e.subTypeAspects
+         left join fetch e.members
+         left join fetch e.domains
+         where e.owner.dbId IN ?1""")
   @Transactional(readOnly = true)
   @Override
   Set<ScopeData> findByUnits(Set<String> unitIds);
