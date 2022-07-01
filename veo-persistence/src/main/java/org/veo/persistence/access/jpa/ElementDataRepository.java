@@ -60,6 +60,11 @@ public interface ElementDataRepository<T extends ElementData>
   @EntityGraph(ElementData.FULL_AGGREGATE_GRAPH)
   List<T> findAllById(Iterable<String> ids);
 
+  @Nonnull
+  @Transactional(readOnly = true)
+  @EntityGraph(attributePaths = "appliedCatalogItems")
+  List<T> findAllWithAppliedCatalogItemsByDbIdIn(Iterable<String> ids);
+
   @Override
   @Nonnull
   @Transactional(readOnly = true)

@@ -60,6 +60,7 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
 
   private final ElementDataRepository<TDataClass> dataRepository;
   protected Specification<TDataClass> mySpec;
+  protected boolean fetchAppliedCatalogItems;
 
   public ElementQueryImpl(ElementDataRepository<TDataClass> repo, Client client) {
     this.dataRepository = repo;
@@ -204,6 +205,12 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
   }
 
   @Override
+  public ElementQuery<TInterface> setFetchAppliedCatalogItems(boolean flag) {
+    fetchAppliedCatalogItems = flag;
+    return this;
+  }
+
+  @Override
   @Transactional(readOnly = true)
   public PagedResult<TInterface> execute(PagingConfiguration pagingConfiguration) {
     Page<TDataClass> items = dataRepository.findAll(mySpec, toPageable(pagingConfiguration));
@@ -219,7 +226,11 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
   }
 
   protected List<TDataClass> fullyLoadItems(List<String> ids) {
-    return new ArrayList<>(dataRepository.findAllById(ids));
+    var items = dataRepository.findAllById(ids);
+    if (fetchAppliedCatalogItems) {
+      items = dataRepository.findAllWithAppliedCatalogItemsByDbIdIn(ids);
+    }
+    return new ArrayList<>(items);
   }
 
   private Specification<TDataClass> createSpecification(Client client) {

@@ -141,6 +141,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
         def result = repo.query(client).with {
             whereOwnerIs(unit)
             whereAppliedItemsContain([item])
+            fetchAppliedCatalogItems = true
             execute(PagingConfiguration.UNPAGED)
         }
 

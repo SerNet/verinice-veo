@@ -39,7 +39,11 @@ public class ProcessQueryImpl extends ElementQueryImpl<Process, ProcessData> {
   @Override
   protected List<ProcessData> fullyLoadItems(List<String> ids) {
     if (withRisks) {
-      return new ArrayList<>(processRepository.findAllWithRisksByDbIdIn(ids));
+      var items = processRepository.findAllWithRisksByDbIdIn(ids);
+      if (fetchAppliedCatalogItems) {
+        items = processRepository.findAllWithAppliedCatalogItemsByDbIdIn(ids);
+      }
+      return new ArrayList<>(items);
     } else {
       return super.fullyLoadItems(ids);
     }

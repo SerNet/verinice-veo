@@ -53,7 +53,6 @@ import lombok.ToString;
     attributeNodes = {
       @NamedAttributeNode(value = "customAspects"),
       @NamedAttributeNode(value = "domains"),
-      @NamedAttributeNode(value = "appliedCatalogItems"),
       @NamedAttributeNode(value = "links"),
       @NamedAttributeNode(value = "subTypeAspects"),
       @NamedAttributeNode(value = "risks", subgraph = "risk.entities"),
