@@ -54,11 +54,20 @@ public interface ElementDataRepository<T extends ElementData>
   @Nonnull
   Optional<T> findById(@Nonnull String id);
 
-  @Override
   @Nonnull
   @Transactional(readOnly = true)
-  @EntityGraph(ElementData.FULL_AGGREGATE_GRAPH)
-  List<T> findAllById(Iterable<String> ids);
+  @EntityGraph(attributePaths = {"domains", "links", "decisionResultsAspects"})
+  List<T> findAllWithDomainsLinksDecisionsByDbIdIn(Iterable<String> ids);
+
+  @Nonnull
+  @Transactional(readOnly = true)
+  @EntityGraph(attributePaths = "customAspects")
+  List<T> findAllWithCustomAspectsByDbIdIn(Iterable<String> ids);
+
+  @Nonnull
+  @Transactional(readOnly = true)
+  @EntityGraph(attributePaths = "subTypeAspects")
+  List<T> findAllWithSubtypeAspectsByDbIdIn(Iterable<String> ids);
 
   @Nonnull
   @Transactional(readOnly = true)

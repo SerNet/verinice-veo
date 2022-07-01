@@ -33,8 +33,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedAttributeNode;
-import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
@@ -71,20 +69,9 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-@NamedEntityGraph(
-    name = ElementData.FULL_AGGREGATE_GRAPH,
-    attributeNodes = {
-      @NamedAttributeNode(value = "customAspects"),
-      @NamedAttributeNode(value = "domains"),
-      @NamedAttributeNode(value = "links"),
-      @NamedAttributeNode(value = "decisionResultsAspects"),
-      @NamedAttributeNode(value = "subTypeAspects")
-    })
 @HasOwnerOrContainingCatalogItem
 public abstract class ElementData extends IdentifiableVersionedData
     implements NameableData, Element {
-
-  public static final String FULL_AGGREGATE_GRAPH = "fullAggregateGraph";
 
   @Id
   @ToString.Include

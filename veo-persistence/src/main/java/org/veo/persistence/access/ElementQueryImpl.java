@@ -233,7 +233,10 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
   }
 
   protected List<TDataClass> fullyLoadItems(List<String> ids) {
-    var items = dataRepository.findAllById(ids);
+    var items = dataRepository.findAllWithDomainsLinksDecisionsByDbIdIn(ids);
+    dataRepository.findAllWithCustomAspectsByDbIdIn(ids);
+    dataRepository.findAllWithSubtypeAspectsByDbIdIn(ids);
+
     if (fetchAppliedCatalogItems) {
       dataRepository.findAllWithAppliedCatalogItemsByDbIdIn(ids);
     }

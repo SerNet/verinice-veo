@@ -91,7 +91,9 @@ class ElementQueryImplPerformanceSpec extends VeoSpringSpec {
         QueryCountHolder.grandTotal.select == 0
 
         when:
-        def result = processRepository.query(client).execute(PagingConfiguration.UNPAGED)
+        def result = txTemplate.execute {
+            processRepository.query(client).execute(PagingConfiguration.UNPAGED)
+        }
 
         then: "all data has been fetched"
         result.totalResults == testProcessCount
@@ -102,6 +104,6 @@ class ElementQueryImplPerformanceSpec extends VeoSpringSpec {
             links.first() != null
         }
 
-        QueryCountHolder.grandTotal.select == 3
+        QueryCountHolder.grandTotal.select == 5
     }
 }

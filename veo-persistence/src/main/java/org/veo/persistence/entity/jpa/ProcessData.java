@@ -48,8 +48,11 @@ import lombok.Getter;
 import lombok.ToString;
 
 @Entity(name = "process")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+@ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@Data
 @NamedEntityGraph(
-    name = ProcessData.AGGREGATE_GRAPH_WITH_RISKS,
+    name = ProcessData.GRAPH_WITH_RISKS,
     attributeNodes = {
       @NamedAttributeNode(value = "risks", subgraph = "risk.entities"),
     },
@@ -73,12 +76,9 @@ import lombok.ToString;
             @NamedAttributeNode(value = "riskAspects"),
           })
     })
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-@ToString(onlyExplicitlyIncluded = true, callSuper = true)
-@Data
 public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implements Process {
 
-  public static final String AGGREGATE_GRAPH_WITH_RISKS = "aggregateGraphWithRisks";
+  public static final String GRAPH_WITH_RISKS = "graphWithRisks";
 
   @ManyToMany(
       targetEntity = ProcessData.class,

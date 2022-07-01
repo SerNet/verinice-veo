@@ -188,11 +188,11 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
             }
         }
 
-        then: "all risks elements were join-fetched"
+        then: "all risks elements were fetched"
         queryCounts.delete == 0
         queryCounts.insert == 0
         queryCounts.update == 0
-        queryCounts.select == 3
+        queryCounts.select == 4
 
         when: "fetch risks using only full aggregate graph"
         queryCounts = trackQueryCounts{
@@ -214,7 +214,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 0
         queryCounts.insert == 0
         queryCounts.update == 0
-        queryCounts.select == 6
+        queryCounts.select == 7
     }
 
     def "SQL performance for putting 1 string value in 1 customAspect with 10 existing values"() {
@@ -401,7 +401,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 16
         queryCounts.insert == 11
         queryCounts.update == 0
-        queryCounts.select == 18
+        queryCounts.select == 20
     }
 
     @Issue('VEO-689')
@@ -442,7 +442,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete <= 12
         queryCounts.insert == 4
         queryCounts.update == 2
-        queryCounts.select == 41
+        queryCounts.select == 50
     }
 
     def "SQL performance for deleting 2 units with 1 commonly referenced domain"() {

@@ -38,6 +38,7 @@ public class ProcessQueryImpl extends CompositeElementQueryImpl<Process, Process
   @Override
   protected List<ProcessData> fullyLoadItems(List<String> ids) {
     var items = super.fullyLoadItems(ids);
+
     if (withRisks) {
       processRepository.findAllWithRisksByDbIdIn(ids);
     }

@@ -696,7 +696,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
             pageable.sort.first().ascending
             pageable.sort.first().property == 'foo'
         }) >> Page.empty()
-        1 * dataRepository.findAllById(_) >> []
+        1 * dataRepository.findAllWithDomainsLinksDecisionsByDbIdIn(_) >> []
     }
 
     def 'sort by designator produces expected sorting'() {
