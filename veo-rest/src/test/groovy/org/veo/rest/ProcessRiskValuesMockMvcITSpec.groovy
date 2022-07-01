@@ -439,17 +439,17 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         then: "the risks are embedded"
         result.items != null
         result.items.size() == 2
-        result.items.each {assert it.risks != null}
+        result.items.each { assert it.risks != null }
 
         result.items*.risks*.domains.(domainId).riskDefinitions.r1d1.riskValues.size() == 2
         result.items*.risks*.domains.(domainId).riskDefinitions.r2d2.riskValues.size() == 2
 
         def process1Risks = result.items.find { it.id == process.idAsString }.risks
-        process1Risks.find{it.designator=="RSK-2"}.domains.(domainId).riskDefinitions.r1d1.probability.specificProbability != null
-        process1Risks.find{it.designator=="RSK-1"}.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=="A"}.effectiveImpact != null
+        process1Risks.find { it.designator == "RSK-2" }.domains.(domainId).riskDefinitions.r1d1.probability.specificProbability != null
+        process1Risks.find { it.designator == "RSK-1" }.domains.(domainId).riskDefinitions.r1d1.impactValues.find { it.category == "A" }.effectiveImpact != null
 
         def process2Risks = result.items.find { it.id == process2.idAsString }.risks
-        with(process2Risks.find{it.designator=="RSK-4"}.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=="A"}) {
+        with(process2Risks.find { it.designator == "RSK-4" }.domains.(domainId).riskDefinitions.r1d1.riskValues.find { it.category == "A" }) {
             inherentRisk != null
             residualRisk != null
         }
