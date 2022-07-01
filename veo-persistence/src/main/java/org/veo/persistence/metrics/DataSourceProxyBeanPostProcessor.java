@@ -18,6 +18,7 @@
 package org.veo.persistence.metrics;
 
 import java.lang.reflect.Method;
+import java.sql.ResultSet;
 import java.util.concurrent.TimeUnit;
 
 import javax.sql.DataSource;
@@ -56,6 +57,15 @@ public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
   @Value("${veo.logging.datasource.all_queries:false}")
   private boolean logAll;
 
+  @Value("${veo.logging.datasource.row_count:false}")
+  private boolean logResultSetRowCount;
+
+  static int totalResultSetRowsRead = 0;
+
+  public static int getTotalResultSetRowsRead() {
+    return totalResultSetRowsRead;
+  }
+
   @Override
   public Object postProcessAfterInitialization(Object bean, String beanName) {
     if (bean instanceof DataSource datasource) {
@@ -69,7 +79,9 @@ public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
           slowThresholdMs);
       final ProxyFactory proxyFactory = new ProxyFactory(bean);
       proxyFactory.setProxyTargetClass(true);
-      proxyFactory.addAdvice(new ProxyDataSourceInterceptor(datasource, slowThresholdMs, logAll));
+      proxyFactory.addAdvice(
+          new ProxyDataSourceInterceptor(
+              datasource, slowThresholdMs, logAll, logResultSetRowCount));
       return proxyFactory.getProxy();
     }
     return bean;
@@ -84,7 +96,8 @@ public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
 
     private final DataSource dataSource;
 
-    public ProxyDataSourceInterceptor(DataSource dataSource, long slowThreshold, boolean logAll) {
+    public ProxyDataSourceInterceptor(
+        DataSource dataSource, long slowThreshold, boolean logAll, boolean resultSetRowCount) {
       super();
       var dataSourceBuilder =
           ProxyDataSourceBuilder.create(dataSource)
@@ -92,8 +105,26 @@ public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
               .name("DATA_SOURCE_PROXY")
               .logSlowQueryBySlf4j(slowThreshold, TimeUnit.MILLISECONDS)
               .multiline();
+
       if (logAll) {
         dataSourceBuilder.logQueryBySlf4j(SLF4JLogLevel.INFO);
+      }
+
+      if (resultSetRowCount) {
+        dataSourceBuilder
+            .repeatableReadResultSet()
+            .proxyResultSet()
+            .afterMethod(
+                executionContext -> {
+                  var method = executionContext.getMethod();
+                  if (ResultSet.class.isAssignableFrom(executionContext.getTarget().getClass())
+                      && method.getName().equals("next")) {
+                    DataSourceProxyBeanPostProcessor.totalResultSetRowsRead++;
+                    log.debug(
+                        "Total ResultSet rows processed: {}",
+                        DataSourceProxyBeanPostProcessor.totalResultSetRowsRead);
+                  }
+                });
       }
       this.dataSource = dataSourceBuilder.build();
     }

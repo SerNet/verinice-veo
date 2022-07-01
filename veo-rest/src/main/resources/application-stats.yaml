@@ -9,6 +9,7 @@ veo:
     datasource:
       slow_threshold_ms: 60
       all_queries: true
+      row_count: true
 spring:
   jmx:
     enabled: true
