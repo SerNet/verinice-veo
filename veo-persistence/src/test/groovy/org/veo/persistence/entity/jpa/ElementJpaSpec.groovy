@@ -24,6 +24,10 @@ import javax.persistence.PersistenceException
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Client
+import org.veo.core.entity.Domain
+import org.veo.core.entity.decision.DecisionRef
+import org.veo.core.entity.decision.DecisionResult
+import org.veo.core.entity.decision.DecisionRuleRef
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.DomainDataRepository
@@ -50,9 +54,12 @@ class ElementJpaSpec extends AbstractJpaSpec {
     UnitData owner0
     UnitData owner1
     UnitData owner2
+    Domain domain
 
     def setup() {
         client = clientRepository.save(newClient())
+        domain = domainRepository.save(newDomain(client))
+        client = clientRepository.save(client)
         owner0 = unitRepository.save(newUnit(client))
         owner1 = unitRepository.save(newUnit(client))
         owner2 = unitRepository.save(newUnit(client))
@@ -173,6 +180,33 @@ class ElementJpaSpec extends AbstractJpaSpec {
         then: "version is incremented"
         versionBefore == 0
         unit.getVersion() == 1
+    }
+
+    def 'retrieved decision results are immutable'() {
+        given: "a transient asset with a decision result"
+        def rule0 = new DecisionRuleRef(0)
+        def asset = newAsset(owner0) {
+            it.associateWithDomain(domain, "Server", "RUNNING")
+            setDecisionResult(new DecisionRef("overclock"), new DecisionResult(true, rule0, [rule0], [rule0]), domain)
+        }
+
+        when: "trying to mutate the results"
+        asset.getDecisionResults(domain)[new DecisionRef("turnOffAtNight")] = new DecisionResult(false, rule0, [rule0], [rule0])
+
+        then:
+        thrown(UnsupportedOperationException)
+
+        when: "saving and reloading the asset"
+        asset = assetRepository.save(asset)
+        entityManager.flush()
+        entityManager.detach(asset)
+        asset = assetRepository.findById(asset.idAsString).get()
+
+        and: "trying to mutate the results again"
+        asset.getDecisionResults(domain)[new DecisionRef("turnOffAtNight")] = new DecisionResult(false, rule0, [rule0], [rule0])
+
+        then:
+        thrown(UnsupportedOperationException)
     }
 
     def 'max description length is applied'() {

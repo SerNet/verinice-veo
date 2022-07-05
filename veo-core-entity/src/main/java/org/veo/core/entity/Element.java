@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -194,7 +195,7 @@ public interface Element
   void setDecisionResults(Map<DecisionRef, DecisionResult> decisionResults, Domain domain);
 
   default void setDecisionResult(DecisionRef decisionRef, DecisionResult result, Domain domain) {
-    var domainResults = getDecisionResults(domain);
+    var domainResults = new HashMap<>(getDecisionResults(domain));
     domainResults.put(decisionRef, result);
     setDecisionResults(domainResults, domain);
   }

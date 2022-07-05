@@ -19,6 +19,8 @@ package org.veo.persistence.entity.jpa;
 
 import java.util.Map;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -46,10 +48,15 @@ public class DecisionResultsAspectData extends AspectData {
   public DecisionResultsAspectData(
       DomainTemplate domain, Element owner, Map<DecisionRef, DecisionResult> results) {
     super(domain, owner);
-    this.results = results;
+    setResults(results);
   }
 
+  @Access(value = AccessType.PROPERTY)
   @Column(columnDefinition = "jsonb")
   @Getter
   private Map<DecisionRef, DecisionResult> results;
+
+  final void setResults(Map<DecisionRef, DecisionResult> results) {
+    this.results = Map.copyOf(results);
+  }
 }
