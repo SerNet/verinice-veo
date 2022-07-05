@@ -75,7 +75,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         unitRepository.findByClient(client).size() == 1
         when: 'loading the controls'
         def controls = txTemplate.execute{
-            controlDataRepository.findByUnits([unit.idAsString] as Set).each {
+            findByUnit(controlDataRepository, unit).each {
                 //initialize lazy associations
                 it.riskValuesAspects.each {
                     it.values.each { k,v->
@@ -102,7 +102,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         }
         when: 'loading the scenarios'
         def scenarios = txTemplate.execute{
-            scenarioDataRepository.findByUnits([unit.idAsString] as Set).each {
+            findByUnit(scenarioDataRepository, unit).each {
                 //initialize lazy associations
                 it.riskValuesAspects.each {
                     it.potentialProbability.values()
@@ -126,7 +126,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         }
         when: 'loading the processes'
         def processes = txTemplate.execute{
-            processDataRepository.findByUnits([unit.idAsString] as Set).each {
+            findByUnit(processDataRepository, unit).each {
                 //initialize lazy associations
                 it.riskValuesAspects.each {
                     it.values.each { k,v->
@@ -157,7 +157,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
 
         when: 'loading the persons'
         def persons = txTemplate.execute{
-            personDataRepository.findByUnits([unit.idAsString] as Set).tap{
+            findByUnit(personDataRepository, unit).tap{
                 it*.parts*.name
                 it*.links*.target*.name
             }
@@ -229,12 +229,13 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         }
         when: 'loading the scopes'
         def scopes = txTemplate.execute{
-            scopeDataRepository.findByUnits([unit.idAsString] as Set).tap{
+            findByUnit(scopeDataRepository, unit).tap{
                 //initialize lazy associations
                 it*.links*.target*.name
                 it*.riskValuesAspects*.each {
                     it.riskDefinitionRef
                 }
+                it*.members*.name
             }
         }
         then: 'the scope is returned'
@@ -273,7 +274,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                 scenarioDataRepository,
                 scopeDataRepository
             ].collectMany {
-                it.findByUnits([unit.idAsString] as Set).collect {
+                findByUnit(it, unit).collect {
                     entityToDtoTransformer.transform2Dto(it)
                 }
             }
@@ -368,7 +369,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         with(unit) {
             it.name == 'Demo'
         }
-        processDataRepository.findByUnits([unit.idAsString] as Set).empty
+        findByUnit(processDataRepository, unit).empty
     }
 
     def "create demo units for a client with a domain with an unknown template"() {

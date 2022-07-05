@@ -192,7 +192,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 0
         queryCounts.insert == 0
         queryCounts.update == 0
-        queryCounts.select == 2
+        queryCounts.select == 3
 
         when: "fetch risks using only full aggregate graph"
         queryCounts = trackQueryCounts{
@@ -401,7 +401,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 16
         queryCounts.insert == 11
         queryCounts.update == 0
-        queryCounts.select == 17
+        queryCounts.select == 19
     }
 
     @Issue('VEO-689')
@@ -442,7 +442,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete <= 12
         queryCounts.insert == 4
         queryCounts.update == 2
-        queryCounts.select == 34
+        queryCounts.select == 42
     }
 
     def "SQL performance for deleting 2 units with 1 commonly referenced domain"() {
@@ -610,10 +610,10 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
 
     List<Process> selectProcesses(Key<UUID> id, boolean withRisks = false) {
         executeInTransaction {
+            def result = processDataRepository.findAllById([id.uuidValue()])
             if (withRisks)
                 processDataRepository.findAllWithRisksByDbIdIn([id.uuidValue()])
-            else
-                processDataRepository.findAllById([id.uuidValue()])
+            result
         }
     }
 

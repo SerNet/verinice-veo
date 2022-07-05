@@ -185,7 +185,7 @@ public class GetIncarnationDescriptionUseCase
     ElementQuery<Element> query = repository.query(unit.getClient());
     query.whereOwnerIs(unit);
     query.whereAppliedItemsContain(catalogItems);
-    query.setFetchAppliedCatalogItems(true);
+    query.fetchAppliedCatalogItems();
     return query.execute(PagingConfiguration.UNPAGED).getResultPage();
   }
 

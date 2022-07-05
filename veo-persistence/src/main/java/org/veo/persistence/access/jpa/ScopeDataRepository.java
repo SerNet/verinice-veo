@@ -17,8 +17,10 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
+import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,24 +40,14 @@ public interface ScopeDataRepository extends ScopeRiskAffectedDataRepository {
   Set<Scope> findDistinctByMemberIds(Set<String> dbIds);
 
   @Query(
-      """
-         select e from #{#entityName} as e
-         left join fetch e.customAspects
-         left join fetch e.links
-         left join fetch e.decisionResultsAspects
-         left join fetch e.subTypeAspects
-         left join fetch e.members
-         left join fetch e.domains
-         where e.owner.dbId IN ?1""")
-  @Transactional(readOnly = true)
-  @Override
-  Set<ScopeData> findByUnits(Set<String> unitIds);
-
-  @Query(
       "select count(s) > 0 from #{#entityName} as s "
           + "inner join s.riskValuesAspects r "
           + "inner join s.members m "
           + "where m.dbId in ?1 and r.riskDefinitionRef = ?2 and r.domain.dbId = ?3")
   boolean canUseRiskDefinition(
       Set<String> elementIds, RiskDefinitionRef riskDefinitionRef, String domainId);
+
+  @Transactional(readOnly = true)
+  @EntityGraph(attributePaths = "members")
+  List<ScopeData> findAllWithMembersByDbIdIn(List<String> ids);
 }

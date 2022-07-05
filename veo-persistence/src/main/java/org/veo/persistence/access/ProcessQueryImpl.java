@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.veo.core.entity.Client;
@@ -25,7 +24,7 @@ import org.veo.core.entity.Process;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.entity.jpa.ProcessData;
 
-public class ProcessQueryImpl extends ElementQueryImpl<Process, ProcessData> {
+public class ProcessQueryImpl extends CompositeElementQueryImpl<Process, ProcessData> {
 
   private final boolean withRisks;
   private final ProcessDataRepository processRepository;
@@ -38,14 +37,10 @@ public class ProcessQueryImpl extends ElementQueryImpl<Process, ProcessData> {
 
   @Override
   protected List<ProcessData> fullyLoadItems(List<String> ids) {
+    var items = super.fullyLoadItems(ids);
     if (withRisks) {
-      var items = processRepository.findAllWithRisksByDbIdIn(ids);
-      if (fetchAppliedCatalogItems) {
-        items = processRepository.findAllWithAppliedCatalogItemsByDbIdIn(ids);
-      }
-      return new ArrayList<>(items);
-    } else {
-      return super.fullyLoadItems(ids);
+      processRepository.findAllWithRisksByDbIdIn(ids);
     }
+    return items;
   }
 }

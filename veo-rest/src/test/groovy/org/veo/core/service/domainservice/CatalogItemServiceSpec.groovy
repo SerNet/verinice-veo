@@ -138,11 +138,13 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
         element.setOwner(unit)
         element.setDesignator("CTL-1")
         repo.save(element)
-        def result = repo.query(client).with {
-            whereOwnerIs(unit)
-            whereAppliedItemsContain([item])
-            fetchAppliedCatalogItems = true
-            execute(PagingConfiguration.UNPAGED)
+        def result = executeInTransaction {
+            repo.query(client).with {
+                whereOwnerIs(unit)
+                whereAppliedItemsContain([item])
+                fetchAppliedCatalogItems()
+                execute(PagingConfiguration.UNPAGED)
+            }
         }
 
         then:"the element is found"

@@ -24,8 +24,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 
+import org.veo.core.entity.Element
+import org.veo.core.entity.Unit
+import org.veo.core.repository.PagingConfiguration
 import org.veo.persistence.JpaTestConfig
 import org.veo.persistence.VeoJpaConfiguration
+import org.veo.persistence.access.ElementQueryImpl
+import org.veo.persistence.access.jpa.ElementDataRepository
 import org.veo.test.VeoSpec
 
 @DataJpaTest
@@ -33,4 +38,8 @@ import org.veo.test.VeoSpec
 @AutoConfigureTestDatabase(replace = NONE)
 @ActiveProfiles("test")
 abstract class AbstractJpaSpec extends VeoSpec {
+
+    List<Element> findByUnit(ElementDataRepository repository, Unit unit) {
+        new ElementQueryImpl(repository, unit.client).whereOwnerIs(unit).execute(PagingConfiguration.UNPAGED).resultPage
+    }
 }

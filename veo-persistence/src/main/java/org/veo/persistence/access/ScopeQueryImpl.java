@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jochen Kemnade.
+ * Copyright (C) 2022  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,30 +17,43 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
-import org.springframework.stereotype.Repository;
+import java.util.List;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Scope;
 import org.veo.core.repository.ElementQuery;
-import org.veo.core.repository.ScopeRepository;
-import org.veo.persistence.access.jpa.CustomLinkDataRepository;
+import org.veo.core.repository.ScopeQuery;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
-import org.veo.persistence.entity.jpa.ValidationService;
+import org.veo.persistence.entity.jpa.ScopeData;
 
-@Repository
-public class ScopeRepositoryImpl extends AbstractScopeRiskAffectedRepository
-    implements ScopeRepository {
+public class ScopeQueryImpl extends ElementQueryImpl<Scope, ScopeData> implements ScopeQuery {
 
-  public ScopeRepositoryImpl(
-      ScopeDataRepository dataRepository,
-      ValidationService validation,
-      CustomLinkDataRepository linkDataRepository,
-      ScopeDataRepository scopeDataRepository) {
-    super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+  private final ScopeDataRepository scopeRepository;
+  private boolean fetchMembers;
+
+  public ScopeQueryImpl(ScopeDataRepository repo, Client client) {
+    super(repo, client);
+    this.scopeRepository = repo;
   }
 
   @Override
-  public ElementQuery<Scope> query(Client client) {
-    return new ScopeQueryImpl(scopeDataRepository, client);
+  public ElementQuery<Scope> fetchParentsAndChildrenAndSiblings() {
+    super.fetchParentsAndChildrenAndSiblings();
+    return fetchMembers();
+  }
+
+  @Override
+  public ScopeQueryImpl fetchMembers() {
+    fetchMembers = true;
+    return this;
+  }
+
+  @Override
+  protected List<ScopeData> fullyLoadItems(List<String> ids) {
+    List<ScopeData> result = super.fullyLoadItems(ids);
+    if (fetchMembers) {
+      scopeRepository.findAllWithMembersByDbIdIn(ids);
+    }
+    return result;
   }
 }

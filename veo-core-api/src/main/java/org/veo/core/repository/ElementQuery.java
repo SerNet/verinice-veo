@@ -81,7 +81,9 @@ public interface ElementQuery<T extends Element> {
 
   ElementQuery<T> whereOwnerIs(Unit unit);
 
-  ElementQuery<T> setFetchAppliedCatalogItems(boolean flag);
+  ElementQuery<T> fetchAppliedCatalogItems();
+
+  ElementQuery<T> fetchParentsAndChildrenAndSiblings();
 
   PagedResult<T> execute(PagingConfiguration pagingConfiguration);
 }

@@ -61,6 +61,7 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
   private final ElementDataRepository<TDataClass> dataRepository;
   protected Specification<TDataClass> mySpec;
   protected boolean fetchAppliedCatalogItems;
+  protected boolean fetchScopesAndScopeMembers;
 
   public ElementQueryImpl(ElementDataRepository<TDataClass> repo, Client client) {
     this.dataRepository = repo;
@@ -205,8 +206,14 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
   }
 
   @Override
-  public ElementQuery<TInterface> setFetchAppliedCatalogItems(boolean flag) {
-    fetchAppliedCatalogItems = flag;
+  public ElementQuery<TInterface> fetchAppliedCatalogItems() {
+    fetchAppliedCatalogItems = true;
+    return this;
+  }
+
+  @Override
+  public ElementQuery<TInterface> fetchParentsAndChildrenAndSiblings() {
+    fetchScopesAndScopeMembers = true;
     return this;
   }
 
@@ -228,7 +235,10 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
   protected List<TDataClass> fullyLoadItems(List<String> ids) {
     var items = dataRepository.findAllById(ids);
     if (fetchAppliedCatalogItems) {
-      items = dataRepository.findAllWithAppliedCatalogItemsByDbIdIn(ids);
+      dataRepository.findAllWithAppliedCatalogItemsByDbIdIn(ids);
+    }
+    if (fetchScopesAndScopeMembers) {
+      dataRepository.findAllWithScopesAndScopeMembersByDbIdIn(ids);
     }
     return new ArrayList<>(items);
   }

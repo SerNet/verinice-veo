@@ -34,6 +34,7 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.ElementRepository;
+import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.SubTypeStatusCount;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ElementDataRepository;
@@ -76,7 +77,15 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
 
   @Transactional
   public void deleteByUnit(Unit owner) {
-    deleteAll(findByUnit(owner));
+    deleteAll(
+        query(owner.getClient())
+            .whereOwnerIs(owner)
+            .fetchAppliedCatalogItems()
+            .fetchParentsAndChildrenAndSiblings()
+            .execute(PagingConfiguration.UNPAGED)
+            .getResultPage()
+            .stream()
+            .collect(Collectors.toSet()));
   }
 
   @Transactional
@@ -89,13 +98,6 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
     elements.forEach(Element::remove);
 
     dataRepository.deleteAllById(elementIds);
-  }
-
-  @Override
-  public Set<T> findByUnit(Unit owner) {
-    var elements = dataRepository.findByUnits(singleton(owner.getId().uuidValue()));
-    dataRepository.findWithScopesByUnits(singleton(owner.getId().uuidValue()));
-    return elements.stream().map(el -> (T) el).collect(Collectors.toSet());
   }
 
   @Override

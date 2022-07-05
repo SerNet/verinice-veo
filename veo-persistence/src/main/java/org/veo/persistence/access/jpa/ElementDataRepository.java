@@ -72,22 +72,6 @@ public interface ElementDataRepository<T extends ElementData>
   // https://github.com/spring-projects/spring-data-jpa/issues/1378 is fixed
   Page<T> findAll(Specification<T> specification, Pageable pageable);
 
-  /**
-   * Find all elements of the repository's type in the given units. (This includes composites.)
-   *
-   * @param unitIds a list of units' UUIDs
-   */
-  @Query(
-      "select e from #{#entityName} as e "
-          + "left join fetch e.customAspects "
-          + "left join fetch e.links "
-          + "left join fetch e.appliedCatalogItems "
-          + "left join fetch e.decisionResultsAspects "
-          + "left join fetch e.subTypeAspects "
-          + "where e.owner.dbId IN ?1")
-  @Transactional(readOnly = true)
-  Set<T> findByUnits(Set<String> unitIds);
-
   @Query(
       "select distinct e from #{#entityName} as e "
           + "left join fetch e.links "
@@ -107,12 +91,7 @@ public interface ElementDataRepository<T extends ElementData>
           + "group by a.subType, a.status")
   Set<SubTypeStatusCount> getCountsBySubType(String unitId, String domainId);
 
-  @Query(
-      """
-         select e from #{#entityName} as e
-         left join fetch e.scopes as s
-         left join fetch s.members
-         where e.owner.dbId IN ?1""")
   @Transactional(readOnly = true)
-  Set<T> findWithScopesByUnits(Set<String> unitIds);
+  @EntityGraph(attributePaths = {"scopes", "scopes.members"})
+  List<T> findAllWithScopesAndScopeMembersByDbIdIn(List<String> ids);
 }

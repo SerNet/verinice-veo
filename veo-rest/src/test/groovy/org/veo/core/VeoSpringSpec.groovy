@@ -28,10 +28,13 @@ import org.springframework.transaction.support.TransactionTemplate
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.Element
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
+import org.veo.core.repository.PagingConfiguration
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.jobs.SpringSpecDomainTemplateCreator
+import org.veo.persistence.access.ElementQueryImpl
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.CatalogDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
@@ -39,6 +42,7 @@ import org.veo.persistence.access.jpa.ControlDataRepository
 import org.veo.persistence.access.jpa.DocumentDataRepository
 import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
+import org.veo.persistence.access.jpa.ElementDataRepository
 import org.veo.persistence.access.jpa.IncidentDataRepository
 import org.veo.persistence.access.jpa.PersonDataRepository
 import org.veo.persistence.access.jpa.ProcessDataRepository
@@ -169,5 +173,9 @@ abstract class VeoSpringSpec extends VeoSpec {
         txTemplate.execute {
             cl.call()
         }
+    }
+
+    List<Element> findByUnit(ElementDataRepository repository, Unit unit) {
+        new ElementQueryImpl(repository, unit.client).whereOwnerIs(unit).execute(PagingConfiguration.UNPAGED).resultPage
     }
 }

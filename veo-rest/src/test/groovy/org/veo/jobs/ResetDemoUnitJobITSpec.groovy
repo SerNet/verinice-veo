@@ -80,9 +80,7 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
         txTemplate.execute {
             assetDataRepository.save(
                     newAsset(unit, { name = ASSET_NAME }))
-            def process = processDataRepository
-                    .findByUnits([unit.getIdAsString()] as Set)
-                    .first()
+            def process = findByUnit(processDataRepository, unit).first()
             process.setName(MODIFIED_PROCESS_NAME)
         }
         userSwitcher.revokeUser()
@@ -93,10 +91,10 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
         }
         unitRepository.findByClient(client).size() == 1
         assetDataRepository.count() == unmodifiedDemoUnitAssetCount + 1
-        with(processDataRepository.findByUnits([unit.getIdAsString()] as Set)*.name) {
+        with(findByUnit(processDataRepository, unit)*.name) {
             MODIFIED_PROCESS_NAME in it
         }
-        with(assetDataRepository.findByUnits([unit.getIdAsString()] as Set)*.name) {
+        with(findByUnit(assetDataRepository, unit)*.name) {
             ASSET_NAME in it
         }
 
@@ -111,10 +109,10 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
         with(resetUnit) {
             it.name == 'Demo'
         }
-        with(processDataRepository.findByUnits([unit.getIdAsString()] as Set)*.name) {
+        with(findByUnit(processDataRepository, unit)*.name) {
             !(MODIFIED_PROCESS_NAME in it)
         }
-        with(assetDataRepository.findByUnits([unit.getIdAsString()] as Set)*.name) {
+        with(findByUnit(assetDataRepository, unit)*.name) {
             !(ASSET_NAME in it)
         }
     }
@@ -150,10 +148,10 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
         def client1ModifiedDemoUnit = txTemplate.execute {
             // create the second demo unit for client1, with modifications:
             def client1ModifiedDemoUnit = createDemoUnitUseCase.execute(new InputData(client1.id)).unit
-            def process = processDataRepository
-                    .findByUnits([
-                        client1ModifiedDemoUnit.getIdAsString()
-                    ] as Set)
+
+            findByUnit(processDataRepository, client1ModifiedDemoUnit)
+
+            def process = findByUnit(processDataRepository, client1ModifiedDemoUnit)
                     .first()
             process.setName(MODIFIED_PROCESS_NAME)
             client1ModifiedDemoUnit
@@ -167,10 +165,7 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
         def client2ModifiedDemoUnit = txTemplate.execute {
             // create one unit for client2, with modifications:
             def client2ModifiedDemoUnit = createDemoUnitUseCase.execute(new InputData(client2.id)).unit
-            def process = processDataRepository
-                    .findByUnits([
-                        client2ModifiedDemoUnit.getIdAsString()
-                    ] as Set)
+            def process = findByUnit(processDataRepository, client2ModifiedDemoUnit)
                     .first()
             process.setName(MODIFIED_PROCESS_NAME)
             client2ModifiedDemoUnit
@@ -181,14 +176,10 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
         unitRepository.findByClient(client1).size() == 2
         unitRepository.findByClient(client2).size() == 1
 
-        with(processDataRepository.findByUnits([
-            client1ModifiedDemoUnit.getIdAsString()
-        ] as Set)*.name) {
+        with(findByUnit(processDataRepository, client1ModifiedDemoUnit)*.name) {
             MODIFIED_PROCESS_NAME in it
         }
-        with(processDataRepository.findByUnits([
-            client2ModifiedDemoUnit.getIdAsString()
-        ] as Set)*.name) {
+        with(findByUnit(processDataRepository, client2ModifiedDemoUnit)*.name) {
             MODIFIED_PROCESS_NAME in it
         }
 
@@ -197,18 +188,14 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
 
         then: "the first client was skipped"
         unitRepository.findByClient(client1).size() == 2
-        with(processDataRepository.findByUnits([
-            client1ModifiedDemoUnit.getIdAsString()
-        ] as Set)*.name) {
+        with(findByUnit(processDataRepository, client1ModifiedDemoUnit)*.name) {
             MODIFIED_PROCESS_NAME in it
         }
 
         and: "the second client's demo unit was reset"
         unitRepository.findByClient(client2).size() == 1
         unitRepository.findById(client2ModifiedDemoUnit.getId()).isEmpty()
-        with(processDataRepository.findByUnits([
-            client2ModifiedDemoUnit.getIdAsString()
-        ] as Set)*.name) {
+        with(findByUnit(processDataRepository, client2ModifiedDemoUnit)*.name) {
             !(MODIFIED_PROCESS_NAME in it)
         }
     }

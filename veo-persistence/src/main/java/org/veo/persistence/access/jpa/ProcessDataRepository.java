@@ -59,6 +59,6 @@ public interface ProcessDataRepository extends CompositeRiskAffectedDataReposito
   Set<ProcessData> findAllHavingRisks(Client client);
 
   @Nonnull
-  @EntityGraph(ProcessData.FULL_AGGREGATE_GRAPH_WITH_RISKS)
+  @EntityGraph(ProcessData.AGGREGATE_GRAPH_WITH_RISKS)
   List<ProcessData> findAllWithRisksByDbIdIn(Iterable<String> ids);
 }

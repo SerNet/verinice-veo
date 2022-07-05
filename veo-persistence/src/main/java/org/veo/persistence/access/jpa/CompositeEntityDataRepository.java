@@ -20,6 +20,7 @@ package org.veo.persistence.access.jpa;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,29 +37,7 @@ public interface CompositeEntityDataRepository<T extends ElementData>
   @SuppressWarnings("PMD.MethodNamingConventions")
   List<T> findDistinctByParts_DbId_In(Set<String> dbIds);
 
-  // TODO VEO-448 override findAll(Specification<> spec) using an entity graph
-  // that fetches parts.
-  @Query(
-      """
-         select e from #{#entityName} as e
-         left join fetch e.customAspects
-         left join fetch e.links
-         left join fetch e.decisionResultsAspects
-         left join fetch e.subTypeAspects
-         left join fetch e.appliedCatalogItems
-         left join fetch e.domains
-         where e.owner.dbId IN ?1""")
   @Transactional(readOnly = true)
-  @Override
-  Set<T> findByUnits(Set<String> unitIds);
-
-  @Query(
-      """
-         select e from #{#entityName} as e
-         left join fetch e.parts
-         left join fetch e.composites as c
-         left join fetch c.parts
-         where e.owner.dbId IN ?1""")
-  @Transactional(readOnly = true)
-  Set<T> findWithPartsByUnits(Set<String> unitIds);
+  @EntityGraph(attributePaths = {"parts", "composites", "composites.parts"})
+  List<T> findAllWithPartsAndCompositesAndCompositesPartsByDbIdIn(List<String> ids);
 }
