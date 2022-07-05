@@ -114,15 +114,15 @@ class ClientRepositorySpec extends VeoSpringSpec {
         newClient = repository.findById(clientId)
         def units = unitRepository.findByClient(c)
 
-        boolean isPresent = newClient.isPresent()
+        then:
+        newClient.isPresent()
+        when:
         c = newClient.get()
 
         then: "test"
-
-        isPresent
         c.domains.first().description == "ISO/IEC"
         c.domains.first().abbreviation == "ISO"
-        units.size == 1
+        units.size() == 1
     }
 
     def "create simple client, unit and some objects"() {
