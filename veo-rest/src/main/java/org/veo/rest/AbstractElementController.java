@@ -40,6 +40,7 @@ import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
+import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.rest.security.ApplicationUser;
 
@@ -124,6 +125,12 @@ public abstract class AbstractElementController<
         new InspectElementUseCase.InputData(
             client, elementType, Key.uuidFrom(elementId), Key.uuidFrom(domainId)),
         output -> ResponseEntity.ok().body(output.getFindings()));
+  }
+
+  protected ResponseEntity<E> toResponseEntity(T entity) {
+    return ResponseEntity.ok()
+        .eTag(ETag.from(entity.getIdAsString(), entity.getVersion() + 1))
+        .body((E) entityToDtoTransformer.transform2Dto(entity));
   }
 
   protected abstract E entity2Dto(T entity);

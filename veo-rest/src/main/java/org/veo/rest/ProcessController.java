@@ -282,7 +282,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
         @ApiResponse(responseCode = "200", description = "Process updated"),
         @ApiResponse(responseCode = "404", description = "Process not found")
       })
-  public @Valid CompletableFuture<FullProcessDto> updateProcess(
+  public @Valid CompletableFuture<ResponseEntity<FullProcessDto>> updateProcess(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
       @PathVariable String id,
@@ -300,7 +300,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
                   eTag,
                   user.getUsername());
             },
-        output -> entityToDtoTransformer.transformProcess2Dto(output.getEntity()));
+        output -> toResponseEntity(output.getEntity()));
   }
 
   @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")

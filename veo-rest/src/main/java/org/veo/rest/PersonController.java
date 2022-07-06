@@ -297,7 +297,7 @@ public class PersonController extends AbstractElementController<Person, FullPers
         @ApiResponse(responseCode = "200", description = "Person updated"),
         @ApiResponse(responseCode = "404", description = "Person not found")
       })
-  public CompletableFuture<FullPersonDto> updatePerson(
+  public CompletableFuture<ResponseEntity<FullPersonDto>> updatePerson(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -320,7 +320,7 @@ public class PersonController extends AbstractElementController<Person, FullPers
                 user.getUsername());
           }
         },
-        output -> entityToDtoTransformer.transformPerson2Dto(output.getEntity()));
+        output -> toResponseEntity(output.getEntity()));
   }
 
   @DeleteMapping(UUID_PARAM_SPEC)

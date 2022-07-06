@@ -299,7 +299,7 @@ public class DocumentController extends AbstractElementController<Document, Full
         @ApiResponse(responseCode = "200", description = "Document updated"),
         @ApiResponse(responseCode = "404", description = "Document not found")
       })
-  public CompletableFuture<FullDocumentDto> updateDocument(
+  public CompletableFuture<ResponseEntity<FullDocumentDto>> updateDocument(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
       @PathVariable String id,
@@ -318,7 +318,7 @@ public class DocumentController extends AbstractElementController<Document, Full
                   eTag,
                   user.getUsername());
             },
-        output -> entityToDtoTransformer.transformDocument2Dto(output.getEntity()));
+        output -> toResponseEntity(output.getEntity()));
   }
 
   @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)

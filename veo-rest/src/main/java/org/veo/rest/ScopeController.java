@@ -349,7 +349,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
         @ApiResponse(responseCode = "200", description = "Scope updated"),
         @ApiResponse(responseCode = "404", description = "Scope not found")
       })
-  public CompletableFuture<FullScopeDto> updateScope(
+  public CompletableFuture<ResponseEntity<FullScopeDto>> updateScope(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -370,7 +370,12 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
                   eTag,
                   user.getUsername());
             },
-        output -> entityToDtoTransformer.transformScope2Dto(output.getEntity()));
+        output -> {
+          var scope = output.getEntity();
+          return ResponseEntity.ok()
+              .eTag(ETag.from(uuid, scope.getVersion() + 1))
+              .body(entityToDtoTransformer.transformScope2Dto(scope));
+        });
   }
 
   @DeleteMapping(UUID_PARAM_SPEC)

@@ -300,7 +300,7 @@ public class ControlController extends AbstractElementController<Control, FullCo
         @ApiResponse(responseCode = "200", description = "Control updated"),
         @ApiResponse(responseCode = "404", description = "Control not found")
       })
-  public CompletableFuture<FullControlDto> updateControl(
+  public CompletableFuture<ResponseEntity<FullControlDto>> updateControl(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -323,7 +323,7 @@ public class ControlController extends AbstractElementController<Control, FullCo
                 user.getUsername());
           }
         },
-        output -> entityToDtoTransformer.transformControl2Dto(output.getEntity()));
+        output -> toResponseEntity(output.getEntity()));
   }
 
   @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)

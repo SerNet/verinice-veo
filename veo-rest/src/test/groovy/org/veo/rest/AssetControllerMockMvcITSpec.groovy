@@ -442,9 +442,10 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         Map headers = [
-            'If-Match': ETag.from(asset.id.uuidValue(), asset.version)
+            'If-Match': ETag.from(asset.id.uuidValue(), 0)
         ]
-        def result = parseJson(put("/assets/${asset.id.uuidValue()}", request, headers))
+        def resultActions = put("/assets/${asset.id.uuidValue()}", request, headers)
+        def result = parseJson(resultActions)
 
         then: "the asset is found"
         result.name == 'New asset-2'
@@ -455,6 +456,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             decisionResults: [:]
         ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+        parseETag(resultActions) == ETag.from(asset.idAsString, 1)
     }
 
     @WithUserDetails("user@domain.example")

@@ -408,10 +408,12 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
         def getResult = get("/scopes/$id")
 
-        expect: "putting the retrieved scope back to be successful"
-        put("/scopes/$id", parseJson(getResult), [
-            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+        when: "putting the retrieved scope back to be successful"
+        def resultActions = put("/scopes/$id", parseJson(getResult), [
+            "If-Match": ETag.from(id, 0)
         ])
+        then: 'the ETag is returned'
+        parseETag(resultActions) == ETag.from(id, 1)
     }
 
     @WithUserDetails("user@domain.example")

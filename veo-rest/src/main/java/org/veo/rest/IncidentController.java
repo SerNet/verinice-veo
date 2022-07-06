@@ -299,7 +299,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
         @ApiResponse(responseCode = "200", description = "Incident updated"),
         @ApiResponse(responseCode = "404", description = "Incident not found")
       })
-  public CompletableFuture<FullIncidentDto> updateIncident(
+  public CompletableFuture<ResponseEntity<FullIncidentDto>> updateIncident(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
       @PathVariable String id,
@@ -320,7 +320,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
                 user.getUsername());
           }
         },
-        output -> entityToDtoTransformer.transformIncident2Dto(output.getEntity()));
+        output -> toResponseEntity(output.getEntity()));
   }
 
   @DeleteMapping(UUID_PARAM_SPEC)

@@ -299,7 +299,7 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
         @ApiResponse(responseCode = "200", description = "Scenario updated"),
         @ApiResponse(responseCode = "404", description = "Scenario not found")
       })
-  public CompletableFuture<FullScenarioDto> updateScenario(
+  public CompletableFuture<ResponseEntity<FullScenarioDto>> updateScenario(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
       @PathVariable String id,
@@ -320,7 +320,7 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
                 user.getUsername());
           }
         },
-        output -> entityToDtoTransformer.transformScenario2Dto(output.getEntity()));
+        output -> toResponseEntity(output.getEntity()));
   }
 
   @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)

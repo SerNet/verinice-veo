@@ -323,7 +323,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
         @ApiResponse(responseCode = "200", description = "Asset updated"),
         @ApiResponse(responseCode = "404", description = "Asset not found")
       })
-  public CompletableFuture<FullAssetDto> updateAsset(
+  public CompletableFuture<ResponseEntity<FullAssetDto>> updateAsset(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
       @PathVariable String id,
@@ -342,7 +342,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
                   eTag,
                   user.getUsername());
             },
-        output -> entityToDtoTransformer.transformAsset2Dto(output.getEntity()));
+        output -> toResponseEntity(output.getEntity()));
   }
 
   @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
