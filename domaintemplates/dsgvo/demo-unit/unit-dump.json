@@ -4,7 +4,7 @@
     "units": [],
     "domains": [
       {
-        "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
+        "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
       }
     ],
     "id": "6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
@@ -15,12 +15,12 @@
       "abbreviation": "DS-GVO",
       "description": "The DS-GVO DomainTemplate.",
       "authority": "SERNET",
-      "templateVersion": "1.8.0",
+      "templateVersion": "1.9.0",
       "revision": "latest",
       "catalogs": [
         {
-          "displayName": "DS-GVO-Controls",
-          "targetUri": "https://api.staging.verinice.com/veo/catalogs/8685d46f-7b9b-40ff-8185-07612090df60"
+          "displayName": "DS-GVO",
+          "targetUri": "https://api.staging.verinice.com/veo/catalogs/0d8f41e5-f1c0-49e0-bbf3-55ae6db0d4be"
         }
       ],
       "riskDefinitions": {
@@ -982,7 +982,7 @@
           ]
         }
       },
-      "id": "a5204601-348b-43df-b33b-3ed707c7d1a8"
+      "id": "7de19fda-73dc-42b8-ab85-56bc04d27460"
     }
   ],
   "elements": [
@@ -998,7 +998,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "FOR_REVIEW",
           "decisionResults": {
@@ -1020,7 +1020,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "RELEASED",
           "decisionResults": {
@@ -1042,7 +1042,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "RELEASED",
           "decisionResults": {
@@ -1064,7 +1064,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "RELEASED",
           "decisionResults": {
@@ -1086,7 +1086,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "ARCHIVED",
           "decisionResults": {
@@ -1107,7 +1107,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "ARCHIVED",
           "decisionResults": {
@@ -1129,7 +1129,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "IN_PROGRESS",
           "decisionResults": {
@@ -1150,7 +1150,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "FOR_REVIEW",
           "decisionResults": {
@@ -1171,7 +1171,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "NEW",
           "decisionResults": {
@@ -1193,7 +1193,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "FOR_REVIEW",
           "decisionResults": {
@@ -1214,7 +1214,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "NEW",
           "decisionResults": {
@@ -1235,7 +1235,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Application",
           "status": "RELEASED",
           "decisionResults": {
@@ -1256,7 +1256,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_IT-System",
           "status": "FOR_REVIEW",
           "decisionResults": {
@@ -1273,7 +1273,11 @@
       },
       "customAspects": {
         "asset_details": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "asset_details_number": 50,
             "asset_details_operatingStage": "asset_details_operatingStage_operation"
@@ -1283,7 +1287,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_IT-System",
           "status": "RELEASED",
           "decisionResults": {
@@ -1304,7 +1308,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "NEW",
           "decisionResults": {
@@ -1326,7 +1330,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "RELEASED",
           "decisionResults": {
@@ -1347,7 +1351,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_IT-System",
           "status": "IN_PROGRESS",
           "decisionResults": {
@@ -1368,7 +1372,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "RELEASED",
           "decisionResults": {
@@ -1390,7 +1394,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "NEW",
           "decisionResults": {
@@ -1411,7 +1415,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_IT-System",
           "status": "RELEASED",
           "decisionResults": {
@@ -1428,7 +1432,11 @@
       },
       "customAspects": {
         "asset_details": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "asset_details_number": 50,
             "asset_details_operatingStage": "asset_details_operatingStage_operation"
@@ -1438,7 +1446,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_IT-System",
           "status": "RELEASED",
           "decisionResults": {
@@ -1459,7 +1467,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "RELEASED",
           "decisionResults": {
@@ -1480,7 +1488,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Application",
           "status": "IN_PROGRESS",
           "decisionResults": {
@@ -1501,7 +1509,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "FOR_REVIEW",
           "decisionResults": {
@@ -1523,7 +1531,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "NEW",
           "decisionResults": {
@@ -1544,7 +1552,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Application",
           "status": "ARCHIVED",
           "decisionResults": {
@@ -1565,7 +1573,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_IT-System",
           "status": "NEW",
           "decisionResults": {
@@ -1586,7 +1594,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "RELEASED",
           "decisionResults": {
@@ -1607,7 +1615,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "RELEASED",
           "decisionResults": {
@@ -1625,7 +1633,11 @@
       },
       "customAspects": {
         "asset_details": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "asset_details_number": 1
           }
@@ -1634,7 +1646,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Application",
           "status": "RELEASED",
           "decisionResults": {
@@ -1655,7 +1667,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Datatype",
           "status": "NEW",
           "decisionResults": {
@@ -1672,7 +1684,11 @@
       },
       "customAspects": {
         "asset_details": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "asset_details_number": 10,
             "asset_details_operatingStage": "asset_details_operatingStage_planning"
@@ -1682,7 +1698,7 @@
       "type": "asset",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "AST_Application",
           "status": "NEW",
           "decisionResults": {
@@ -1699,7 +1715,11 @@
       },
       "customAspects": {
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality",
@@ -1711,7 +1731,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "RELEASED",
           "decisionResults": {
@@ -1734,13 +1754,21 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2022-06-16"
           }
         },
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality",
@@ -1752,7 +1780,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "IN_PROGRESS",
           "decisionResults": {
@@ -1774,14 +1802,22 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2022-06-30",
             "control_implementation_explanation": "Vertrag muss abgeschlossen werden, Sicherheitskonzept ist vorab anzufordern"
           }
         },
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_availability",
@@ -1794,7 +1830,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -1821,7 +1857,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -1844,14 +1880,14 @@
           "domains": [],
           "attributes": {
             "control_implementation_date": "2022-06-30",
-            "control_implementation_explanation": "Wird eine Videou\u0308berwachungskamera mit Audiofunktion eingesetzt, kann dies unter den Straftatbestand des \u00a7 201I, II STGB fallen. Demnach ist das\nunbefugt heimliche Abho\u0308ren oder Aufzeichnen des nichto\u0308ffentlich gesprochenen Wortes strafbar. Verfu\u0308gt eine Videou\u0308berwachungskamera u\u0308ber eine Audiofunktion, ist diese unumkehrbar zu deaktivieren. Hierf\u00fcr ist eine Arbeitsanweisung zu erstellen und in der Organisation umzusetzen\n"
+            "control_implementation_explanation": "Wird eine Videou\u0308berwachungskamera mit Audiofunktion eingesetzt, kann dies unter den Straftatbestand des \u00a7 201I, II StGB fallen. Demnach ist das\nunbefugt heimliche Abho\u0308ren oder Aufzeichnen des nichto\u0308ffentlich gesprochenen Wortes strafbar. Verfu\u0308gt eine Videou\u0308berwachungskamera u\u0308ber eine Audiofunktion, ist diese unumkehrbar zu deaktivieren. Hierf\u00fcr ist eine Arbeitsanweisung zu erstellen und in der Organisation umzusetzen\n"
           }
         }
       },
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -1899,7 +1935,7 @@
         }
       ],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -1921,13 +1957,21 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2022-11-30"
           }
         },
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality",
@@ -1939,7 +1983,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -1961,7 +2005,11 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2022-09-30"
           }
@@ -1970,7 +2018,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -1992,14 +2040,22 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2022-03-05",
             "control_implementation_explanation": "Welche Gesetzgebung zum Datenschutz ist einschl\u00e4gig? DSGVO, Bundes- oder Landesdatenschutzgesetze? \nGibt es die Verpflichtung zur Bestellung eines Datenschutzbeauftragten? \nDiese Fragen sind zu kl\u00e4ren und zu dokumentieren."
           }
         },
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality",
@@ -2015,7 +2071,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "RELEASED",
           "decisionResults": {
@@ -2053,7 +2109,7 @@
         }
       ],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -2073,13 +2129,21 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             
           }
         },
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_integrity",
@@ -2091,7 +2155,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "RELEASED",
           "decisionResults": {
@@ -2125,7 +2189,7 @@
         }
       ],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -2145,7 +2209,11 @@
       },
       "customAspects": {
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_encryption",
@@ -2158,7 +2226,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "RELEASED",
           "decisionResults": {
@@ -2178,7 +2246,11 @@
       },
       "customAspects": {
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_encryption",
@@ -2191,7 +2263,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "FOR_REVIEW",
           "decisionResults": {
@@ -2211,7 +2283,11 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2022-08-24"
           }
@@ -2220,7 +2296,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -2242,13 +2318,21 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2022-08-31"
           }
         },
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality",
@@ -2260,7 +2344,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -2283,13 +2367,21 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2022-05-31"
           }
         },
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality",
@@ -2301,7 +2393,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -2327,7 +2419,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -2347,14 +2439,22 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2021-08-19",
             "control_implementation_explanation": "Drucker  und Kopierer m\u00fcssen in geeigneter Weise aufgestellt werden."
           }
         },
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality"
@@ -2365,7 +2465,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "RELEASED",
           "decisionResults": {
@@ -2386,14 +2486,22 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2022-08-26",
             "control_implementation_explanation": "Es m\u00fcssen am Anfangs- und am Endbereich des \u00fcberwachten Areals Hinweisschilder so angebracht werden , dass sie von den Betroffenen direkt zur Kentniss gelangen k\u00f6nnen."
           }
         },
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality"
@@ -2404,7 +2512,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -2427,7 +2535,11 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2022-08-04"
           }
@@ -2436,7 +2548,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -2458,14 +2570,22 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2022-08-17",
             "control_implementation_explanation": "Die Informationspflichten zu den  Video\u00fcberwachungsma\u00dfnahmen m\u00fcssen erstellt und f\u00fcr die Betroffnen zur Verf\u00fcgung getsellt werden. "
           }
         },
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality"
@@ -2476,7 +2596,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -2526,7 +2646,7 @@
         }
       ],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -2549,13 +2669,21 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2022-06-30"
           }
         },
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_availability",
@@ -2568,7 +2696,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -2590,13 +2718,21 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_explanation": "Es muss eine L\u00f6schfrist von 72 Stunden f\u00fcr Videoaufzeichnungen festgesetzt werden. Das L\u00f6schkonzept ist entsprechend zu erg\u00e4nzen , Fristen m\u00fcssen aktiv kommuniziert werden"
           }
         },
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_integrity",
@@ -2609,7 +2745,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -2630,13 +2766,21 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2022-06-09"
           }
         },
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality"
@@ -2647,7 +2791,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -2669,7 +2813,11 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2022-08-31",
             "control_implementation_explanation": "L\u00f6schmechanismen f\u00fcr Videoaufzeichnungen m\u00fcssen implemeniert  und dokumentiert werden, d.h Art und Weise der L\u00f6schung und Nachweise"
@@ -2679,7 +2827,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -2702,13 +2850,21 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2022-06-14"
           }
         },
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality",
@@ -2720,7 +2876,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -2753,7 +2909,7 @@
         }
       ],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -2787,6 +2943,21 @@
         
       },
       "id": "a063e725-b2be-4dd7-986c-4c8fda0046ea"
+    },
+    {
+      "name": "Mitigierende Ma\u00dfnahme f\u00fcr \"SCN-137 DS-G.55 Verwendung der Daten zu inkompatiblen Zwecken\"",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        
+      },
+      "id": "f960f80a-7a98-4009-93af-0dbc8d7c7a73"
     },
     {
       "name": "Mitigierende Ma\u00dfnahme f\u00fcr \"SCN-151 DS-G.44 Unvollst\u00e4ndige Vertr\u00e4ge\"",
@@ -2832,14 +3003,22 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2022-07-22",
             "control_implementation_explanation": "Eine Stellungnahme zur datenschutzrechlichen Zul\u00e4ssigkeit der Video\u00fcberwachung insb. der Tonaufzeichnungen ist seitens der Rechtsabteilung anzufertigen. Weitergehende Ma\u00dfnahmen , die sich aus dem Gutachten resultieren sind mit den Verantwortlkichem  zu kommunizieren und anzusto\u00dfen"
           }
         },
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality",
@@ -2851,7 +3030,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -2877,7 +3056,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -2898,14 +3077,22 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2021-10-23",
             "control_implementation_explanation": "Geeigneter Prozess ist zu implemetieren"
           }
         },
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_integrity",
@@ -2918,7 +3105,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "RELEASED",
           "decisionResults": {
@@ -2938,14 +3125,22 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2022-07-29",
             "control_implementation_explanation": "Sicherheitskonzept muss schriftlich angefordert und bewertet werden. \n\n"
           }
         },
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality",
@@ -2957,7 +3152,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "IN_PROGRESS",
           "decisionResults": {
@@ -2990,7 +3185,7 @@
         }
       ],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -3014,7 +3209,11 @@
       },
       "customAspects": {
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_resilience"
@@ -3025,7 +3224,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "RELEASED",
           "decisionResults": {
@@ -3047,7 +3246,11 @@
       },
       "customAspects": {
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_integrity"
@@ -3058,7 +3261,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "RELEASED",
           "decisionResults": {
@@ -3080,7 +3283,11 @@
       },
       "customAspects": {
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_availability"
@@ -3091,7 +3298,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "FOR_REVIEW",
           "decisionResults": {
@@ -3113,7 +3320,11 @@
       },
       "customAspects": {
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality"
@@ -3124,7 +3335,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "RELEASED",
           "decisionResults": {
@@ -3146,7 +3357,11 @@
       },
       "customAspects": {
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_pseudonymization"
@@ -3157,7 +3372,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "RELEASED",
           "decisionResults": {
@@ -3179,7 +3394,11 @@
       },
       "customAspects": {
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_encryption"
@@ -3190,7 +3409,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "RELEASED",
           "decisionResults": {
@@ -3214,7 +3433,7 @@
         "control_dataProtection": {
           "domains": [
             {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
             }
           ],
           "attributes": {
@@ -3227,7 +3446,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -3247,7 +3466,11 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2022-07-29",
             "control_implementation_explanation": "Technische Doku ist zu verfolst\u00e4ndigen. Zudem sind die Zweckef\u00fcr jede einzelne Kamera schriftlich zu dokumentieren.\nFragebogen hierf\u00fcr anh\u00e4ngend"
@@ -3257,7 +3480,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -3279,7 +3502,11 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_implementation_date": "2022-06-29"
           }
@@ -3295,7 +3522,7 @@
         }
       ],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -3319,7 +3546,11 @@
       },
       "customAspects": {
         "control_dataProtection": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_effectiveness"
@@ -3330,7 +3561,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "ARCHIVED",
           "decisionResults": {
@@ -3369,7 +3600,7 @@
         }
       ],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -3396,7 +3627,7 @@
       "type": "control",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "CTL_TOM",
           "status": "NEW",
           "decisionResults": {
@@ -3416,7 +3647,11 @@
       },
       "customAspects": {
         "document_contract": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "document_contract_type": "AV-Vertrag",
             "document_contract_location": "document_contract_location_germany",
@@ -3424,7 +3659,11 @@
           }
         },
         "document_details": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "document_details_version": "1.0",
             "document_details_approvalDate": "2022-05-02",
@@ -3436,7 +3675,7 @@
       "type": "document",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "DOC_Contract",
           "status": "IN_PROGRESS",
           "decisionResults": {
@@ -3457,7 +3696,7 @@
       "type": "document",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "DOC_Contract",
           "status": "NEW",
           "decisionResults": {
@@ -3474,7 +3713,11 @@
       },
       "customAspects": {
         "document_contract": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "document_contract_type": "AV Vertrag",
             "document_contract_location": "document_contract_location_thirdCountry",
@@ -3483,7 +3726,11 @@
           }
         },
         "document_details": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "document_details_classification": "document_details_classification_internalUse",
             "document_details_typeOfDocument": "document_details_typeOfDocument_contract"
@@ -3493,7 +3740,7 @@
       "type": "document",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "DOC_Contract",
           "status": "RELEASED",
           "decisionResults": {
@@ -3511,7 +3758,11 @@
       },
       "customAspects": {
         "document_details": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "document_details_classification": "document_details_classification_internalUse",
             "document_details_typeOfDocument": "document_details_typeOfDocument_policy"
@@ -3521,7 +3772,7 @@
       "type": "document",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "DOC_Document",
           "status": "FOR_REVIEW",
           "decisionResults": {
@@ -3539,7 +3790,11 @@
       },
       "customAspects": {
         "document_details": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "document_details_approvalDate": "2021-12-01",
             "document_details_classification": "document_details_classification_internalUse",
@@ -3550,7 +3805,7 @@
       "type": "document",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "DOC_Document",
           "status": "RELEASED",
           "decisionResults": {
@@ -3568,7 +3823,11 @@
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_generalInformation_givenName": "Bennie",
             "person_generalInformation_familyName": "Brunop",
@@ -3579,7 +3838,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "IN_PROGRESS",
           "decisionResults": {
@@ -3597,7 +3856,11 @@
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_generalInformation_givenName": "Dieter ",
             "person_generalInformation_familyName": "Data",
@@ -3605,7 +3868,11 @@
           }
         },
         "person_address": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_address_city": "Berlin",
             "person_address_state": "Berlin",
@@ -3615,7 +3882,11 @@
           }
         },
         "person_contactInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_contactInformation_email": "dd@DS-Fed.de",
             "person_contactInformation_office": "030 12345"
@@ -3625,7 +3896,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_DataProtectionOfficer",
           "status": "RELEASED",
           "decisionResults": {
@@ -3647,7 +3918,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "NEW",
           "decisionResults": {
@@ -3665,7 +3936,11 @@
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_generalInformation_title": "Dr",
             "person_generalInformation_givenName": "Alfons",
@@ -3677,7 +3952,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "FOR_REVIEW",
           "decisionResults": {
@@ -3698,7 +3973,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "RELEASED",
           "decisionResults": {
@@ -3720,7 +3995,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "RELEASED",
           "decisionResults": {
@@ -3741,7 +4016,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "RELEASED",
           "decisionResults": {
@@ -3759,7 +4034,11 @@
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_generalInformation_givenName": "Hans",
             "person_generalInformation_familyName": "Meiser",
@@ -3767,7 +4046,11 @@
           }
         },
         "person_address": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_address_city": "G\u00f6ttingen",
             "person_address_state": "Niedersachsen",
@@ -3777,7 +4060,11 @@
           }
         },
         "person_contactInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_contactInformation_email": "hm@data.de",
             "person_contactInformation_mobile": "0551 370000-9",
@@ -3788,7 +4075,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "IN_PROGRESS",
           "decisionResults": {
@@ -3807,7 +4094,11 @@
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_generalInformation_givenName": "Heidi",
             "person_generalInformation_familyName": "Kruse",
@@ -3815,7 +4106,11 @@
           }
         },
         "person_address": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_address_city": "G\u00f6ttingen",
             "person_address_state": "Niedersachsen",
@@ -3825,14 +4120,22 @@
           }
         },
         "person_dataProtectionOfficer": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_dataProtectionOfficer_expertise": true,
             "person_dataProtectionOfficer_profession": "DSB, DSB-Auditor, Compliance-Manager"
           }
         },
         "person_contactInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_contactInformation_email": "HL@data.de",
             "person_contactInformation_office": "0551 370000-0"
@@ -3842,7 +4145,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_DataProtectionOfficer",
           "status": "RELEASED",
           "decisionResults": {
@@ -3860,7 +4163,11 @@
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_generalInformation_title": "Dr",
             "person_generalInformation_givenName": "Jens ",
@@ -3869,7 +4176,11 @@
           }
         },
         "person_address": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_address_city": "G\u00f6ttingen",
             "person_address_state": "Niedersachsen",
@@ -3879,7 +4190,11 @@
           }
         },
         "person_contactInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_contactInformation_email": "jl@data.de",
             "person_contactInformation_mobile": "0551 370000-9",
@@ -3890,7 +4205,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "ARCHIVED",
           "decisionResults": {
@@ -3908,7 +4223,11 @@
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_generalInformation_givenName": "Jule",
             "person_generalInformation_familyName": "Penny",
@@ -3919,7 +4238,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "RELEASED",
           "decisionResults": {
@@ -3937,7 +4256,11 @@
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_generalInformation_givenName": "Justin",
             "person_generalInformation_familyName": "Gr\u00f6bel",
@@ -3945,7 +4268,11 @@
           }
         },
         "person_address": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_address_city": "D\u00fcsseldorf",
             "person_address_state": "Nordrhein-Westfalen",
@@ -3955,13 +4282,21 @@
           }
         },
         "person_dataProtectionOfficer": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_dataProtectionOfficer_expertise": false
           }
         },
         "person_contactInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_contactInformation_fax": "049 211 884-99",
             "person_contactInformation_email": "jg@ds.de",
@@ -3972,7 +4307,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_DataProtectionOfficer",
           "status": "ARCHIVED",
           "decisionResults": {
@@ -3989,12 +4324,18 @@
         
       },
       "customAspects": {
-        
+        "person_generalInformation": {
+          "domains": [],
+          "attributes": {
+            "person_generalInformation_givenName": "J\u00fcrgen ",
+            "person_generalInformation_familyName": "Toast"
+          }
+        }
       },
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "RELEASED",
           "decisionResults": {
@@ -4012,7 +4353,11 @@
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_generalInformation_givenName": "Karl",
             "person_generalInformation_familyName": "Hase",
@@ -4023,7 +4368,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "NEW",
           "decisionResults": {
@@ -4044,7 +4389,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "FOR_REVIEW",
           "decisionResults": {
@@ -4066,7 +4411,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "RELEASED",
           "decisionResults": {
@@ -4084,7 +4429,11 @@
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_generalInformation_givenName": "Markus",
             "person_generalInformation_familyName": "Reiter",
@@ -4095,7 +4444,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "NEW",
           "decisionResults": {
@@ -4117,7 +4466,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "RELEASED",
           "decisionResults": {
@@ -4134,7 +4483,11 @@
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_generalInformation_givenName": "Paul ",
             "person_generalInformation_familyName": "Pr\u00fcfer",
@@ -4145,7 +4498,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "NEW",
           "decisionResults": {
@@ -4162,7 +4515,11 @@
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_generalInformation_givenName": "Peter",
             "person_generalInformation_familyName": "Pr\u00fcfer"
@@ -4172,7 +4529,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "RELEASED",
           "decisionResults": {
@@ -4190,7 +4547,11 @@
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_generalInformation_givenName": "Rudi",
             "person_generalInformation_familyName": "St\u00fcrmer",
@@ -4201,7 +4562,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "NEW",
           "decisionResults": {
@@ -4219,7 +4580,11 @@
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_generalInformation_title": "Dr.",
             "person_generalInformation_givenName": "Stefanie",
@@ -4231,7 +4596,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "NEW",
           "decisionResults": {
@@ -4248,7 +4613,11 @@
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "person_generalInformation_givenName": "Viola",
             "person_generalInformation_familyName": "Seher",
@@ -4259,7 +4628,7 @@
       "type": "person",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PER_Person",
           "status": "NEW",
           "decisionResults": {
@@ -4279,7 +4648,7 @@
         "process_recipient": {
           "domains": [
             {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
             }
           ],
           "attributes": {
@@ -4289,7 +4658,7 @@
         "process_dataTransfer": {
           "domains": [
             {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/a5204601-348b-43df-b33b-3ed707c7d1a8"
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
             }
           ],
           "attributes": {
@@ -4300,7 +4669,7 @@
       "type": "process",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PRO_DataTransfer",
           "status": "NEW",
           "decisionResults": {
@@ -4317,7 +4686,116 @@
       "name": "Bewerbermanagement",
       "description": "Bewerbungen erfolgen per E-Mail oder via Postsendung an die Data GmbH.",
       "links": {
-        
+        "process_dataTransmission": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/processes/e17b2b09-dd1c-453b-97bd-dd70bdc996ac"
+            }
+          }
+        ],
+        "process_dataType": [
+          {
+            "domains": [],
+            "attributes": {
+              "process_dataType_comment": "Per E-Mail oder Online Web",
+              "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct",
+              "process_dataType_deletionPeriodStart": "process_dataType_deletionPeriodStart_appplicationClosure",
+              "process_dataType_descriptionDeletionProcedure": "Keine L\u00f6schvorgaben"
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/5c8ab560-3d0b-471a-b2aa-a8520acb9219"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              "process_dataType_comment": "Per E-Mail oder Online Web",
+              "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct",
+              "process_dataType_deletionPeriodStart": "process_dataType_deletionPeriodStart_appplicationClosure",
+              "process_dataType_descriptionDeletionProcedure": "Keine L\u00f6schvorgaben"
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/a930d897-3a84-42d1-8e70-d9afe8f6ac6b"
+            }
+          }
+        ],
+        "process_jointControllership": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/8c322861-3446-413c-94ad-97f922e7a0c9"
+            }
+          }
+        ],
+        "process_requiredApplications": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/956e7d64-9d50-4420-91af-6239cd7d368f"
+            }
+          }
+        ],
+        "process_requiredITSystems": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/2087c04b-11f8-4842-90d7-e2e6d761cc38"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/70914e42-2a26-4838-9881-913a6239204b"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/33778f51-3169-4dae-a483-660ad0c57b1e"
+            }
+          }
+        ],
+        "process_responsibleBody": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/8c98ee3f-7402-4399-bf85-905abc92f17f"
+            }
+          }
+        ],
+        "process_responsiblePerson": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/persons/cc3d04f6-c145-44c5-afb5-71b8b2c56305"
+            }
+          }
+        ]
       },
       "customAspects": {
         "process_processing": {
@@ -4402,13 +4880,19 @@
       "type": "process",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PRO_DataProcessing",
           "status": "FOR_REVIEW",
           "decisionResults": {
             "piaMandatory": {
-              "matchingRules": [],
-              "agreeingRules": []
+              "value": true,
+              "decisiveRule": 4,
+              "matchingRules": [
+                4
+              ],
+              "agreeingRules": [
+                4
+              ]
             }
           },
           "riskValues": {
@@ -4427,7 +4911,7 @@
     },
     {
       "name": "DSFA Video\u00fcberwachung ",
-      "description": "Die Verantwortliche plant 10 Videokameras im Eingangs- und Zutrittsbereich des Geb\u00e4udes   sowie in den Gessch\u00e4ftsr\u00e4umen einzurichten.",
+      "description": "Die Verantwortliche plant 10 Videokameras im Eingangs- und Zutrittsbereich des Geb\u00e4udes  sowie in den Gesch\u00e4ftsr\u00e4umen einzurichten.",
       "links": {
         "process_PIAAuditor": [
           {
@@ -4508,7 +4992,7 @@
           {
             "domains": [],
             "attributes": {
-              "process_PIARepresentatives_role": "Teilprojektleiterin, die  f\u00fcr die rechtliche Bewertung der DSFA-Durchf\u00fchrung und Dokumentation zust\u00e4ndi"
+              "process_PIARepresentatives_role": "Teilprojektleiterin, die f\u00fcr die rechtliche Bewertung der DSFA-Durchf\u00fchrung und Dokumentation zust\u00e4ndi"
             },
             "target": {
               "targetUri": "https://api.staging.verinice.com/veo/persons/a2c4c63c-e443-46a5-bc11-143eafde068f"
@@ -4533,7 +5017,7 @@
           "attributes": {
             "process_PIADescription_dataType": false,
             "process_PIADescription_legalBasis": false,
-            "process_PIADescription_testObject": "Erfassung von Videodaten im Eingangs- und Zutrittsbereich des Geb\u00e4udes. Die Erfassung soll durchgehend erfolgen.. Hierbei werden Teile eines \u00f6ffentlichen Parkplatzes, des anliegenden Einkaufszentrums mit erfassr. In den Gesch\u00e4ftsr\u00e4umen  erfolgt die Erfassung an Wochentagen nur zwischen 20.00 Uhr und 6.00 Uhr . Die Kameras sind schwenkbar und k\u00f6nnen zoomen.",
+            "process_PIADescription_testObject": "Erfassung von Videodaten im Eingangs- und Zutrittsbereich des Geb\u00e4udes. Die Erfassung soll durchgehend erfolgen. Hierbei werden Teile eines \u00f6ffentlichen Parkplatzes des anliegenden Einkaufszentrums mit erfassr. In den Gesch\u00e4ftsr\u00e4umen  erfolgt die Erfassung an Wochentagen nur zwischen 20.00 Uhr und 6.00 Uhr . Die Kameras sind schwenkbar und k\u00f6nnen zoomen.",
             "process_PIADescription_dataTransfer": true,
             "process_PIADescription_affectedPersons": false,
             "process_PIADescription_deletionPeriods": false,
@@ -4555,14 +5039,14 @@
           "domains": [],
           "attributes": {
             "process_PIADPO_advice": true,
-            "process_PIADPO_comment": "Rat des Datenschutzbeauftragten bezu\u0308glich der Videou\u0308berwachung wurde eingeholt. Dieser bat um gro\u00dffla\u0308chige Kennzeichnung der Videou\u0308berwachung. Aus dieser soll zusa\u0308tzlich zur verpflichtenden Angabe des Verantwortlichen hervorgehen, dass das Videou\u0308berwachungssystem die Videos aufzeichnet , also nicht nur Echtzeitaufnahmen erfolgen. Die Tonaufzeichnung sind nach Ansicht des DSB unzul\u00e4ssig und m\u00fcssen unterbleiben. Schriftliche  DSB-Stellungnahme zum Verarbeitungsvorgang Vido\u00fcberwachung liegt vor, vgl. ",
+            "process_PIADPO_comment": "Rat des Datenschutzbeauftragten bezu\u0308glich der Videou\u0308berwachung wurde eingeholt. Dieser bat um gro\u00dffla\u0308chige Kennzeichnung der Videou\u0308berwachung. Aus dieser soll zusa\u0308tzlich zur verpflichtenden Angabe des Verantwortlichen hervorgehen, dass das Videou\u0308berwachungssystem die Videos aufzeichnet , also nicht nur Echtzeitaufnahmen erfolgen. Die Tonaufzeichnung sind nach Ansicht des DSB unzul\u00e4ssig und m\u00fcssen unterbleiben. Schriftliche  DSB-Stellungnahme zum Verarbeitungsvorgang Video\u00fcberwachung liegt vor, vgl. ",
             "process_PIADPO_document": "https://www.bfdi.bund.de/DE/DerBfDI/Dokumente/Stellungnahmen/stellungnahmen_node.html"
           }
         },
         "process_PIAAssessment": {
           "domains": [],
           "attributes": {
-            "process_PIAAssessment_necessity": "Zoom- und Schwenkbarkeit stellt einen sehr intensiven Eingriff in das Personlichkeitsrecht der Bteroffnen dar und ist weder verh\u00e4ltnism\u00e4\u00dfig noch erforderlich. Eine durchgehende Erfassung  ebenso.\nSoll  der Eingangsbereich eines Geb\u00e4udes \u00fcberwacht werden, darf die Kamera nicht mehr als eben diesen Bereich erfassen. \u00d6ffentliche Bereiche wie die Stra\u00dfe vor der Eingangst\u00fcr d\u00fcrfen in der Regel nicht per Kamera \u00fcberwacht werden.",
+            "process_PIAAssessment_necessity": "Zoom- und Schwenkbarkeit stellen einen sehr intensiven Eingriff in das Pers\u00f6nlichkeitsrecht der Betroffenen dar und sind weder verh\u00e4ltnism\u00e4\u00dfig noch erforderlich. Dies gilt gleicherma\u00dfen f\u00fcr eine durchgehende Erfassung .\nSoll  der Eingangsbereich eines Geb\u00e4udes \u00fcberwacht werden, darf die Kamera nicht mehr als eben diesen Bereich erfassen. \u00d6ffentliche Bereiche wie die Stra\u00dfe vor der Eingangst\u00fcr d\u00fcrfen in der Regel nicht per Kamera \u00fcberwacht werden.",
             "process_PIAAssessment_rulesExisting": false
           }
         },
@@ -4573,7 +5057,7 @@
             "process_PIAInvolvement_affectedPersons": "Arbeitnehmer und Betriebsrat",
             "process_PIAInvolvement_affectedPersonsPOV": true,
             "process_PIAInvolvement_stakeholderComment": "nicht relevant, da keine Akteure",
-            "process_PIAInvolvement_affectedPersonsComment": "Viel zu weitreichende Eingriffe in die Pers\u00f6nlichkeitsrechte der Arbeitnehmer. Schriftlich Anforderungen und Kritikpunkte liegen vor",
+            "process_PIAInvolvement_affectedPersonsComment": "Viel zu weitreichende Eingriffe in die Pers\u00f6nlichkeitsrechte der Arbeitnehmer. Schriftliche Anforderungen und Kritikpunkte liegen vor.",
             "process_PIAInvolvement_stakeholderParticipation": false
           }
         },
@@ -4582,17 +5066,17 @@
           "attributes": {
             "process_PIAResult_risk": true,
             "process_PIAResult_comment": "Das Risiko konnte nicht reduziert werden trotz Ma\u00dfnahmen",
-            "process_PIAResult_commentsPIO": "Vide\u00fcberwachung kann noch nicht eingef\u00fchrt werden. Entscheidung der Aufsichtsbeh\u00f6rde ist abzuwarten.",
+            "process_PIAResult_commentsPIO": "Video\u00fcberwachung kann noch nicht eingef\u00fchrt werden. Entscheidung der Aufsichtsbeh\u00f6rde ist abzuwarten.",
             "process_PIAResult_consultationRequired": true,
             "process_PIAResult_consultationConducted": false,
-            "process_PIAResult_consultationJustification": "Kosultationsprozess muss angesto\u00dfen werden, Verantwortlichkeiten m\u00fcssen noch noch gekl\u00e4rt werden"
+            "process_PIAResult_consultationJustification": "Kosultationsprozess muss angesto\u00dfen werden, Verantwortlichkeiten m\u00fcsse noch gekl\u00e4rt werden"
           }
         }
       },
       "type": "process",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PRO_DPIA",
           "status": "IN_PROGRESS",
           "decisionResults": {
@@ -4661,7 +5145,20 @@
           {
             "domains": [],
             "attributes": {
-              "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct"
+              "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct",
+              "process_dataType_deletionPeriod": "process_dataType_deletionPeriod_immediately",
+              "process_dataType_deletionPeriodStart": "process_dataType_deletionPeriodStart_consentWithdrawal"
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/702215a6-17c9-4c8d-9edf-41261acd1eeb"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct",
+              "process_dataType_deletionPeriod": "process_dataType_deletionPeriod_immediately",
+              "process_dataType_deletionPeriodStart": "process_dataType_deletionPeriodStart_consentWithdrawal"
             },
             "target": {
               "targetUri": "https://api.staging.verinice.com/veo/assets/dfeb4079-8b03-48af-895f-dfcbf66fa228"
@@ -4798,7 +5295,7 @@
       "type": "process",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PRO_DataProcessing",
           "status": "RELEASED",
           "decisionResults": {
@@ -4829,13 +5326,21 @@
       },
       "customAspects": {
         "process_recipient": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "process_recipient_type": "process_recipient_type_processor"
           }
         },
         "process_dataTransfer": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "process_dataTransfer_legalBasis": [],
             "process_dataTransfer_explanation": "Die Daten werden immer nach Beendigung des Online-Meetings gel\u00f6scht",
@@ -4846,7 +5351,7 @@
       "type": "process",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PRO_DataTransfer",
           "status": "RELEASED",
           "decisionResults": {
@@ -4866,13 +5371,21 @@
       },
       "customAspects": {
         "process_recipient": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "process_recipient_type": "process_recipient_type_processor"
           }
         },
         "process_dataTransfer": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "process_dataTransfer_document": "https://www.adv.de",
             "process_dataTransfer_legalBasis": [
@@ -4882,7 +5395,11 @@
           }
         },
         "process_generalInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             
           }
@@ -4891,7 +5408,7 @@
       "type": "process",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PRO_DataTransfer",
           "status": "ARCHIVED",
           "decisionResults": {
@@ -4915,6 +5432,70 @@
             },
             "target": {
               "targetUri": "https://api.staging.verinice.com/veo/processes/01dc79d3-c768-435b-982b-91a0b812929c"
+            }
+          }
+        ],
+        "process_dataType": [
+          {
+            "domains": [],
+            "attributes": {
+              "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct",
+              "process_dataType_descriptionDeletionProcedure": "Die Daten werden gel\u00f6scht, sobald sie zur Erf\u00fcllung von Versorgungsanspr\u00fcchen der jeweiligen Mitarbeiter nicht mehr erforderlich sind."
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/7ad5c0fc-2c11-4325-b505-0318617d2bbc"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct",
+              "process_dataType_descriptionDeletionProcedure": "Die Daten werden gel\u00f6scht, sobald sie zur Erf\u00fcllung von Versorgungsanspr\u00fcchen der jeweiligen Mitarbeiter nicht mehr erforderlich sind."
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/0ce7f2a8-88ac-41c3-8e6a-7b2d9a4d66ae"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct",
+              "process_dataType_descriptionDeletionProcedure": "Die Daten werden gel\u00f6scht, sobald sie zur Erf\u00fcllung von Versorgungsanspr\u00fcchen der jeweiligen Mitarbeiter nicht mehr erforderlich sind."
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/222756c1-1b9d-4a58-985d-a44955c28719"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              "process_dataType_dataOrigin": "process_dataType_dataOrigin_direct",
+              "process_dataType_descriptionDeletionProcedure": "Die Daten werden gel\u00f6scht, sobald sie zur Erf\u00fcllung von Versorgungsanspr\u00fcchen der jeweiligen Mitarbeiter nicht mehr erforderlich sind."
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/acfb3f60-b577-4d0e-9a88-30583dc1fa23"
+            }
+          }
+        ],
+        "process_responsibleBody": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/8c98ee3f-7402-4399-bf85-905abc92f17f"
+            }
+          }
+        ],
+        "process_responsiblePerson": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/persons/ca39207b-d35f-45b8-8898-f8f7e1c5af48"
             }
           }
         ]
@@ -4997,7 +5578,7 @@
       "type": "process",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PRO_DataProcessing",
           "status": "IN_PROGRESS",
           "decisionResults": {
@@ -5027,13 +5608,21 @@
       },
       "customAspects": {
         "process_recipient": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "process_recipient_type": "process_recipient_type_external"
           }
         },
         "process_dataTransfer": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "process_dataTransfer_legalBasis": [],
             "process_dataTransfer_otherLegalBasis": "\u00a7 41 a EstG, \u00a7 \u00a7 28a ff. SGB IV ,  \u00a7 28b  Abs. 1 Satz 1 Nr. 1 - 5 SGB IV"
@@ -5043,7 +5632,7 @@
       "type": "process",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PRO_DataTransfer",
           "status": "FOR_REVIEW",
           "decisionResults": {
@@ -5178,7 +5767,7 @@
             "process_opinionDPO_findings": "Es sind keine Hinweisschilder angebracht. \nNeben den Bilddaten werden auch Tonaufzeichnungen angefertigt",
             "process_opinionDPO_PIAComment": "DSFA Prozess noch nicht abgeschlossen",
             "process_opinionDPO_PIACarriedOut": true,
-            "process_opinionDPO_recommendations": "Es sollten f\u00fcr die Betroffnen erkennbare Hinweisschilder auf die Video\u00fcberwachung mit den datenschutzrechtlichen Angaben angebracht werden. Informationspflichten werden nicht erf\u00fcllt. Die Tonaufzeichnung der Betroffenen im Zuge der Video\u00fcebrwachung ist unzul\u00e4ssig. Es muss eine DSFA durchgef\u00fchrt werden.",
+            "process_opinionDPO_recommendations": "Es sollten f\u00fcr die Betroffenen erkennbare Hinweisschilder auf die Video\u00fcberwachung mit den datenschutzrechtlichen Angaben angebracht werden. Informationspflichten werden nicht erf\u00fcllt. Die Tonaufzeichnung der Betroffenen im Zuge der Video\u00fcberwachung ist unzul\u00e4ssig. Es muss eine DSFA durchgef\u00fchrt werden.",
             "process_opinionDPO_consultationRequired": false,
             "process_opinionDPO_consultationConducted": false
           }
@@ -5216,7 +5805,7 @@
           "domains": [],
           "attributes": {
             "process_informationsObligations_status": false,
-            "process_informationsObligations_explanation": "liegen noch nicvht vor"
+            "process_informationsObligations_explanation": "liegen noch nicht vor"
           }
         }
       },
@@ -5227,7 +5816,7 @@
         }
       ],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "PRO_DataProcessing",
           "status": "NEW",
           "decisionResults": {
@@ -5272,7 +5861,7 @@
       "type": "scenario",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCN_Scenario",
           "status": "NEW",
           "decisionResults": {
@@ -5299,7 +5888,7 @@
       "type": "scenario",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCN_Scenario",
           "status": "NEW",
           "decisionResults": {
@@ -5324,7 +5913,7 @@
       "type": "scenario",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCN_Scenario",
           "status": "NEW",
           "decisionResults": {
@@ -5351,7 +5940,7 @@
       "type": "scenario",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCN_Scenario",
           "status": "NEW",
           "decisionResults": {
@@ -5376,7 +5965,7 @@
       "type": "scenario",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCN_Scenario",
           "status": "NEW",
           "decisionResults": {
@@ -5399,13 +5988,21 @@
       },
       "customAspects": {
         "scenario_threat": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scenario_threat_type": "scenario_threat_type_internalOffender"
           }
         },
         "scenario_vulnerability": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scenario_vulnerability_type": "scenario_vulnerability_type_humanMistakes"
           }
@@ -5414,7 +6011,7 @@
       "type": "scenario",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCN_Scenario",
           "status": "NEW",
           "decisionResults": {
@@ -5441,7 +6038,7 @@
       "type": "scenario",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCN_Scenario",
           "status": "NEW",
           "decisionResults": {
@@ -5462,13 +6059,21 @@
       },
       "customAspects": {
         "scenario_threat": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scenario_threat_type": "scenario_threat_type_unauthorizedAccess"
           }
         },
         "scenario_vulnerability": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scenario_vulnerability_type": "scenario_vulnerability_type_humanMistakes"
           }
@@ -5477,7 +6082,7 @@
       "type": "scenario",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCN_Scenario",
           "status": "NEW",
           "decisionResults": {
@@ -5504,7 +6109,7 @@
       "type": "scenario",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCN_Scenario",
           "status": "NEW",
           "decisionResults": {
@@ -5527,13 +6132,21 @@
       },
       "customAspects": {
         "scenario_threat": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scenario_threat_type": "scenario_threat_type_unauthorizedAccess"
           }
         },
         "scenario_vulnerability": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scenario_vulnerability_type": "scenario_vulnerability_type_humanMistakes"
           }
@@ -5542,7 +6155,7 @@
       "type": "scenario",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCN_Scenario",
           "status": "NEW",
           "decisionResults": {
@@ -5569,7 +6182,7 @@
       "type": "scenario",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCN_Scenario",
           "status": "NEW",
           "decisionResults": {
@@ -5594,7 +6207,7 @@
       "type": "scenario",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCN_Scenario",
           "status": "NEW",
           "decisionResults": {
@@ -5619,7 +6232,32 @@
       "type": "scenario",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
+          "subType": "SCN_Scenario",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
+      },
+      "id": "afe8c42c-6f35-45a7-b1c9-62bed6e102e7"
+    },
+    {
+      "name": "Unzureichende  Pseudonymisierung oder Anonymisierung",
+      "abbreviation": "DS-G.47",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "scenario",
+      "parts": [],
+      "domains": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCN_Scenario",
           "status": "NEW",
           "decisionResults": {
@@ -5635,31 +6273,6 @@
       "id": "3b53b10e-6066-49c1-af15-748851dab001"
     },
     {
-      "name": "Unzureichende  Pseudonymisierung oder Anonymisierung",
-      "abbreviation": "DS-G.47",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "scenario",
-      "parts": [],
-      "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "decisionResults": {
-            
-          },
-          "riskValues": {
-            
-          }
-        }
-      },
-      "id": "afe8c42c-6f35-45a7-b1c9-62bed6e102e7"
-    },
-    {
       "name": "Unzureichende Erf\u00fcllung von Nachweis- und Dokumentationspflichten ",
       "abbreviation": "DS-G.46",
       "links": {
@@ -5671,7 +6284,7 @@
       "type": "scenario",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCN_Scenario",
           "status": "NEW",
           "decisionResults": {
@@ -5696,7 +6309,7 @@
       "type": "scenario",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCN_Scenario",
           "status": "NEW",
           "decisionResults": {
@@ -5723,7 +6336,7 @@
       "type": "scenario",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCN_Scenario",
           "status": "NEW",
           "decisionResults": {
@@ -5750,7 +6363,7 @@
       "type": "scenario",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCN_Scenario",
           "status": "NEW",
           "decisionResults": {
@@ -5771,13 +6384,21 @@
       },
       "customAspects": {
         "scenario_threat": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scenario_threat_type": "scenario_threat_type_undirectedAttacks"
           }
         },
         "scenario_vulnerability": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scenario_vulnerability_type": "scenario_vulnerability_type_organisationalDeficiencies"
           }
@@ -5786,7 +6407,7 @@
       "type": "scenario",
       "parts": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCN_Scenario",
           "status": "NEW",
           "decisionResults": {
@@ -5808,13 +6429,21 @@
       },
       "customAspects": {
         "scope_thirdCountry": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_thirdCountry_status": true
           }
         },
         "scope_address": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_address_city": "Stockton",
             "scope_address_state": "California",
@@ -5827,7 +6456,7 @@
       "type": "scope",
       "members": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCP_Processor",
           "status": "RELEASED",
           "decisionResults": {
@@ -5850,7 +6479,7 @@
       "type": "scope",
       "members": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCP_Scope",
           "status": "NEW",
           "decisionResults": {
@@ -5868,13 +6497,21 @@
       },
       "customAspects": {
         "scope_thirdCountry": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_thirdCountry_status": false
           }
         },
         "scope_address": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_address_city": "Berlin",
             "scope_address_state": "Berlin",
@@ -5884,7 +6521,11 @@
           }
         },
         "scope_contactInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_contactInformation_email": "info@bewerbungen.de",
             "scope_contactInformation_phone": "030- 123456"
@@ -5894,7 +6535,7 @@
       "type": "scope",
       "members": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCP_JointController",
           "status": "RELEASED",
           "decisionResults": {
@@ -5911,7 +6552,11 @@
       "links": {
         "scope_dataProtectionOfficer": [
           {
-            "domains": [],
+            "domains": [
+              {
+                "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+              }
+            ],
             "attributes": {
               "scope_dataProtectionOfficer_nomination": true,
               "scope_dataProtectionOfficer_affiliation": "scope_dataProtectionOfficer_affiliation_internal",
@@ -5924,7 +6569,11 @@
         ],
         "scope_headOfDataProcessing": [
           {
-            "domains": [],
+            "domains": [
+              {
+                "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+              }
+            ],
             "attributes": {
               
             },
@@ -5935,7 +6584,11 @@
         ],
         "scope_informationSecurityOfficer": [
           {
-            "domains": [],
+            "domains": [
+              {
+                "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+              }
+            ],
             "attributes": {
               
             },
@@ -5946,7 +6599,11 @@
         ],
         "scope_management": [
           {
-            "domains": [],
+            "domains": [
+              {
+                "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+              }
+            ],
             "attributes": {
               
             },
@@ -5958,13 +6615,21 @@
       },
       "customAspects": {
         "scope_thirdCountry": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_thirdCountry_status": false
           }
         },
         "scope_address": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_address_city": "G\u00f6ttingen",
             "scope_address_state": "Niedersachsen",
@@ -5974,7 +6639,11 @@
           }
         },
         "scope_regulatoryAuthority": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_regulatoryAuthority_fax": "0511120 45 99",
             "scope_regulatoryAuthority_city": "Hannover",
@@ -5988,7 +6657,11 @@
           }
         },
         "scope_contactInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_contactInformation_email": "kontakt@data.de",
             "scope_contactInformation_phone": "0523 7006000",
@@ -6060,7 +6733,7 @@
         }
       ],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCP_ResponsibleBody",
           "status": "RELEASED",
           "decisionResults": {
@@ -6079,19 +6752,31 @@
       },
       "customAspects": {
         "scope_generalInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             
           }
         },
         "scope_thirdCountry": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_thirdCountry_status": false
           }
         },
         "scope_address": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_address_city": "Hamburg",
             "scope_address_state": "Hamburg",
@@ -6101,7 +6786,11 @@
           }
         },
         "scope_tomAssessment": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_tomAssessment_certification": true,
             "scope_tomAssessment_securityConcept": true,
@@ -6112,7 +6801,7 @@
       "type": "scope",
       "members": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCP_Processor",
           "status": "FOR_REVIEW",
           "decisionResults": {
@@ -6128,7 +6817,11 @@
       "links": {
         "scope_dataProtectionOfficer": [
           {
-            "domains": [],
+            "domains": [
+              {
+                "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+              }
+            ],
             "attributes": {
               "scope_dataProtectionOfficer_affiliation": "scope_dataProtectionOfficer_affiliation_internal"
             },
@@ -6139,7 +6832,11 @@
         ],
         "scope_headOfDataProcessing": [
           {
-            "domains": [],
+            "domains": [
+              {
+                "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+              }
+            ],
             "attributes": {
               
             },
@@ -6150,7 +6847,11 @@
         ],
         "scope_management": [
           {
-            "domains": [],
+            "domains": [
+              {
+                "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+              }
+            ],
             "attributes": {
               
             },
@@ -6162,13 +6863,21 @@
       },
       "customAspects": {
         "scope_thirdCountry": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_thirdCountry_status": false
           }
         },
         "scope_address": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_address_city": "Trier",
             "scope_address_state": "Rheinland-Pfalz",
@@ -6178,13 +6887,21 @@
           }
         },
         "scope_regulatoryAuthority": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_regulatoryAuthority_name": "Landesbeauftragte f\u00fcr Datenschutz und Informationsfreiheit"
           }
         },
         "scope_contactInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_contactInformation_fax": "01234567",
             "scope_contactInformation_email": "kontakt@FED AG",
@@ -6196,7 +6913,7 @@
       "type": "scope",
       "members": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCP_Controller",
           "status": "FOR_REVIEW",
           "decisionResults": {
@@ -6218,7 +6935,7 @@
       "type": "scope",
       "members": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCP_Scope",
           "status": "RELEASED",
           "decisionResults": {
@@ -6239,7 +6956,7 @@
       "type": "scope",
       "members": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCP_Scope",
           "status": "FOR_REVIEW",
           "decisionResults": {
@@ -6260,7 +6977,7 @@
       "type": "scope",
       "members": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCP_Scope",
           "status": "RELEASED",
           "decisionResults": {
@@ -6275,7 +6992,11 @@
       "links": {
         "scope_dataProtectionOfficer": [
           {
-            "domains": [],
+            "domains": [
+              {
+                "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+              }
+            ],
             "attributes": {
               "scope_dataProtectionOfficer_affiliation": "scope_dataProtectionOfficer_affiliation_internal"
             },
@@ -6286,7 +7007,11 @@
         ],
         "scope_management": [
           {
-            "domains": [],
+            "domains": [
+              {
+                "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+              }
+            ],
             "attributes": {
               
             },
@@ -6298,13 +7023,21 @@
       },
       "customAspects": {
         "scope_thirdCountry": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_thirdCountry_status": false
           }
         },
         "scope_address": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_address_city": "Bonn",
             "scope_address_state": "NRW",
@@ -6314,7 +7047,11 @@
           }
         },
         "scope_regulatoryAuthority": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_regulatoryAuthority_fax": "0211/38424-99",
             "scope_regulatoryAuthority_city": "D\u00fcsseldorf",
@@ -6328,7 +7065,11 @@
           }
         },
         "scope_contactInformation": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_contactInformation_fax": "049 211 884-99",
             "scope_contactInformation_email": "info@med.de",
@@ -6340,7 +7081,7 @@
       "type": "scope",
       "members": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCP_Controller",
           "status": "RELEASED",
           "decisionResults": {
@@ -6359,7 +7100,11 @@
       },
       "customAspects": {
         "scope_thirdCountry": {
-          "domains": [],
+          "domains": [
+            {
+              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
+            }
+          ],
           "attributes": {
             "scope_thirdCountry_status": false
           }
@@ -6368,7 +7113,7 @@
       "type": "scope",
       "members": [],
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "subType": "SCP_Processor",
           "status": "NEW",
           "decisionResults": {
@@ -6389,13 +7134,13 @@
         "targetUri": "https://api.staging.verinice.com/veo/controls/563642d5-2adb-47a6-845e-0ab79dda23e5"
       },
       "riskOwner": {
-        "targetUri": "https://api.staging.verinice.com/veo/persons/c2843721-7603-451d-8e84-f2968c66b126"
+        "targetUri": "https://api.staging.verinice.com/veo/persons/e077c827-664c-4166-9bcd-a6052a2ac406"
       },
       "process": {
         "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
       },
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "riskDefinitions": {
             "DSRA": {
               "probability": {
@@ -6438,7 +7183,7 @@
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
                   ],
-                  "riskTreatmentExplanation": "Die Rechtsabteilung muss eine datenschutzrechtliche Pr\u00fcfung vornehmen und entsprechende Ma\u00dfnamen initiieren",
+                  "riskTreatmentExplanation": "Analog zur Vertraulichkeit",
                   "residualRisk": 1
                 },
                 {
@@ -6448,7 +7193,7 @@
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
                   ],
-                  "riskTreatmentExplanation": "Analog zur Vertraulichkeit",
+                  "riskTreatmentExplanation": "",
                   "residualRisk": 1
                 },
                 {
@@ -6467,6 +7212,7 @@
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
                   ],
+                  "riskTreatmentExplanation": "Die Rechtsabteilung muss eine datenschutzrechtliche Pr\u00fcfung vornehmen und entsprechende Ma\u00dfnamen initiieren",
                   "residualRisk": 0
                 }
               ]
@@ -6489,7 +7235,7 @@
         "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
       },
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "riskDefinitions": {
             "DSRA": {
               "probability": {
@@ -6532,7 +7278,7 @@
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
                   ],
-                  "riskTreatmentExplanation": "Berechtigungskonzept ist zu erstellen und in der Organisation zu kommunizieren",
+                  "riskTreatmentExplanation": "analog zur Vertraulichkeit",
                   "residualRisk": 0
                 },
                 {
@@ -6542,7 +7288,7 @@
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
                   ],
-                  "riskTreatmentExplanation": "analog zur Vertraulichkeit",
+                  "riskTreatmentExplanation": "",
                   "residualRisk": 0
                 },
                 {
@@ -6559,8 +7305,9 @@
                   "inherentRisk": 0,
                   "userDefinedResidualRisk": 0,
                   "riskTreatments": [
-                    "RISK_TREATMENT_ACCEPTANCE"
+                    "RISK_TREATMENT_REDUCTION"
                   ],
+                  "riskTreatmentExplanation": "Berechtigungskonzept ist zu erstellen und in der Organisation zu kommunizieren",
                   "residualRisk": 0
                 }
               ]
@@ -6573,14 +7320,17 @@
       "scenario": {
         "targetUri": "https://api.staging.verinice.com/veo/scenarios/f15cdd48-a527-45b6-8b86-24dc17740d9c"
       },
+      "mitigation": {
+        "targetUri": "https://api.staging.verinice.com/veo/controls/f960f80a-7a98-4009-93af-0dbc8d7c7a73"
+      },
       "riskOwner": {
-        "targetUri": "https://api.staging.verinice.com/veo/persons/c2843721-7603-451d-8e84-f2968c66b126"
+        "targetUri": "https://api.staging.verinice.com/veo/persons/e077c827-664c-4166-9bcd-a6052a2ac406"
       },
       "process": {
         "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
       },
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "riskDefinitions": {
             "DSRA": {
               "probability": {
@@ -6667,14 +7417,14 @@
         "targetUri": "https://api.staging.verinice.com/veo/processes/69d1e08f-eea5-4ae8-86da-eefd4b13e0e3"
       },
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "riskDefinitions": {
             "DSRA": {
               "probability": {
                 "potentialProbability": 0,
                 "specificProbability": 2,
                 "effectiveProbability": 2,
-                "specificProbabilityExplanation": "Keine spezifischen Sensibiliserungsma\u00dfnahmen der Personalabteilung "
+                "specificProbabilityExplanation": "Keine spezifischen Sensibilisierungsma\u00dfnahmen der Personalabteilung "
               },
               "impactValues": [
                 {
@@ -6706,7 +7456,7 @@
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
                   ],
-                  "riskTreatmentExplanation": "Es muss eine L\u00f6sch-Frist von 6 Monaten f\u00fcr abgelehnete Bewerber festgesetzt werden ",
+                  "riskTreatmentExplanation": "analog zur Vertraulichkeit",
                   "residualRisk": 1
                 },
                 {
@@ -6716,7 +7466,7 @@
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
                   ],
-                  "riskTreatmentExplanation": "analog zur Vertraulichkeit",
+                  "riskTreatmentExplanation": "",
                   "residualRisk": 0
                 },
                 {
@@ -6735,6 +7485,7 @@
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
                   ],
+                  "riskTreatmentExplanation": "Es muss eine L\u00f6sch-Frist von 6 Monaten f\u00fcr abgelehnete Bewerber festgesetzt werden ",
                   "residualRisk": 1
                 }
               ]
@@ -6757,14 +7508,14 @@
         "targetUri": "https://api.staging.verinice.com/veo/processes/69d1e08f-eea5-4ae8-86da-eefd4b13e0e3"
       },
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "riskDefinitions": {
             "DSRA": {
               "probability": {
                 "potentialProbability": 1,
                 "specificProbability": 2,
                 "effectiveProbability": 2,
-                "specificProbabilityExplanation": "Keine spezifischen Sensibiliserungsma\u00dfnahmen der Personalabteilung "
+                "specificProbabilityExplanation": "Keine spezifischen Sensibilisierungsma\u00dfnahmen der Personalabteilung "
               },
               "impactValues": [
                 {
@@ -6796,7 +7547,7 @@
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
                   ],
-                  "riskTreatmentExplanation": "Informationspflichten m\u00fcssen aktualisert  und den Bewerbern zur Verf\u00fcgung gestellt werden",
+                  "riskTreatmentExplanation": "I",
                   "residualRisk": 1
                 },
                 {
@@ -6824,6 +7575,7 @@
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
                   ],
+                  "riskTreatmentExplanation": "nformationspflichten m\u00fcssen aktualisert  und den Bewerbern zur Verf\u00fcgung gestellt werden",
                   "residualRisk": 0
                 }
               ]
@@ -6846,7 +7598,7 @@
         "targetUri": "https://api.staging.verinice.com/veo/processes/69d1e08f-eea5-4ae8-86da-eefd4b13e0e3"
       },
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "riskDefinitions": {
             "DSRA": {
               "probability": {
@@ -6885,7 +7637,7 @@
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
                   ],
-                  "riskTreatmentExplanation": "Einwilligungserkl\u00e4rungen m\u00fcssen erg\u00e4nzt werden",
+                  "riskTreatmentExplanation": "",
                   "residualRisk": 0
                 },
                 {
@@ -6913,6 +7665,7 @@
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
                   ],
+                  "riskTreatmentExplanation": "Einwilligungserkl\u00e4rungen m\u00fcssen erg\u00e4nzt werden",
                   "residualRisk": 0
                 }
               ]
@@ -6935,7 +7688,7 @@
         "targetUri": "https://api.staging.verinice.com/veo/processes/69d1e08f-eea5-4ae8-86da-eefd4b13e0e3"
       },
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "riskDefinitions": {
             "DSRA": {
               "probability": {
@@ -6974,7 +7727,7 @@
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
                   ],
-                  "riskTreatmentExplanation": "Einwilligungserkl\u00e4rungen f\u00fcr Aufnahme in Bewerberpool verfassen und weitere Schritte ansto\u00dfen",
+                  "riskTreatmentExplanation": "",
                   "residualRisk": 0
                 },
                 {
@@ -6998,11 +7751,11 @@
                 {
                   "category": "C",
                   "inherentRisk": 2,
-                  "userDefinedResidualRisk": 0,
                   "riskTreatments": [
-                    "RISK_TREATMENT_ACCEPTANCE"
+                    "RISK_TREATMENT_REDUCTION"
                   ],
-                  "residualRisk": 0
+                  "riskTreatmentExplanation": "Einwilligungserkl\u00e4rungen f\u00fcr Aufnahme in Bewerberpool verfassen und weitere Schritte ansto\u00dfen",
+                  "residualRisk": 2
                 }
               ]
             }
@@ -7024,7 +7777,7 @@
         "targetUri": "https://api.staging.verinice.com/veo/processes/8307acf4-9922-41b2-b038-1872a8fc9fe7"
       },
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "riskDefinitions": {
             "DSRA": {
               "probability": {
@@ -7110,7 +7863,7 @@
         "targetUri": "https://api.staging.verinice.com/veo/processes/8307acf4-9922-41b2-b038-1872a8fc9fe7"
       },
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "riskDefinitions": {
             "DSRA": {
               "probability": {
@@ -7194,7 +7947,7 @@
         "targetUri": "https://api.staging.verinice.com/veo/processes/8307acf4-9922-41b2-b038-1872a8fc9fe7"
       },
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "riskDefinitions": {
             "DSRA": {
               "probability": {
@@ -7278,7 +8031,7 @@
         "targetUri": "https://api.staging.verinice.com/veo/processes/8307acf4-9922-41b2-b038-1872a8fc9fe7"
       },
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "riskDefinitions": {
             "DSRA": {
               "probability": {
@@ -7365,7 +8118,7 @@
         "targetUri": "https://api.staging.verinice.com/veo/processes/a4134991-7a46-4f20-9001-608e97464b10"
       },
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "riskDefinitions": {
             "DSRA": {
               "probability": {
@@ -7437,7 +8190,7 @@
         "targetUri": "https://api.staging.verinice.com/veo/processes/a4134991-7a46-4f20-9001-608e97464b10"
       },
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "riskDefinitions": {
             "DSRA": {
               "probability": {
@@ -7512,7 +8265,7 @@
         "targetUri": "https://api.staging.verinice.com/veo/processes/a4134991-7a46-4f20-9001-608e97464b10"
       },
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "riskDefinitions": {
             "DSRA": {
               "probability": {
@@ -7546,25 +8299,23 @@
                 {
                   "category": "I",
                   "inherentRisk": 2,
-                  "userDefinedResidualRisk": 1,
+                  "userDefinedResidualRisk": 0,
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
                   ],
-                  "riskTreatmentExplanation": "Spezifische Schulungen zur Auskunftserteilung an Dritte",
-                  "residualRisk": 1
+                  "riskTreatmentExplanation": "Analaog zur Verrtraulichkeit",
+                  "residualRisk": 0
                 },
                 {
                   "category": "A",
                   "inherentRisk": 1,
-                  "userDefinedResidualRisk": 1,
                   "riskTreatments": [],
-                  "riskTreatmentExplanation": "Analaog zur Verrtraulichkeit",
+                  "riskTreatmentExplanation": "",
                   "residualRisk": 1
                 },
                 {
                   "category": "R",
                   "inherentRisk": 0,
-                  "userDefinedResidualRisk": 0,
                   "riskTreatments": [],
                   "residualRisk": 0
                 },
@@ -7572,7 +8323,10 @@
                   "category": "C",
                   "inherentRisk": 2,
                   "userDefinedResidualRisk": 0,
-                  "riskTreatments": [],
+                  "riskTreatments": [
+                    "RISK_TREATMENT_REDUCTION"
+                  ],
+                  "riskTreatmentExplanation": "Spezifische Schulungen zur Auskunftserteilung an Dritte",
                   "residualRisk": 0
                 }
               ]
@@ -7595,7 +8349,7 @@
         "targetUri": "https://api.staging.verinice.com/veo/processes/eecc6821-5928-42c6-b287-41f4e42b82f1"
       },
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "riskDefinitions": {
             "DSRA": {
               "probability": {
@@ -7678,7 +8432,7 @@
         "targetUri": "https://api.staging.verinice.com/veo/processes/eecc6821-5928-42c6-b287-41f4e42b82f1"
       },
       "domains": {
-        "a5204601-348b-43df-b33b-3ed707c7d1a8": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
           "riskDefinitions": {
             "DSRA": {
               "probability": {
