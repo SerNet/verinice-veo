@@ -42,6 +42,7 @@ import org.veo.core.entity.Catalog;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
+import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import lombok.Data;
@@ -114,6 +115,9 @@ public class DomainTemplateData extends IdentifiableVersionedData
 
   @Column(columnDefinition = "jsonb")
   private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
+
+  @Column(columnDefinition = "jsonb")
+  private Map<String, ProfileDefinition> profileElements = new HashMap<>();
 
   public void setRiskDefinitions(Map<String, RiskDefinition> riskDefinitions) {
     this.riskDefinitions.clear();
