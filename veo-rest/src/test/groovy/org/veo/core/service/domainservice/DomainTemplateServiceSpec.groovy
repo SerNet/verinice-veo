@@ -118,6 +118,8 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             domainFromTemplate = domainTemplateService.createDomain(client, domainTemplateFromDomain.idAsString)
             client.addToDomains(domainFromTemplate)
             client = repository.save(client)
+            // initialize lazy association
+            client.domains*.domainTemplate*.name
         }
         domainFromTemplate = client.domains.find { it.domainTemplate.id == domainTemplateFromDomain.id }
 

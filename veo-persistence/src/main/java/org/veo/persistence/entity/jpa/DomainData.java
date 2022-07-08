@@ -41,8 +41,8 @@ public class DomainData extends DomainTemplateData implements NameableData, Doma
   @Column(name = "active")
   @ToString.Include
   private boolean active = true;
-  // one to one
-  @ManyToOne(targetEntity = DomainTemplateData.class)
+
+  @ManyToOne(targetEntity = DomainTemplateData.class, fetch = FetchType.LAZY)
   @Valid
   private DomainTemplate domainTemplate;
 

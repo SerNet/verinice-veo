@@ -26,7 +26,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -84,8 +83,7 @@ public class DomainTemplateData extends IdentifiableVersionedData
       cascade = CascadeType.ALL,
       orphanRemoval = true,
       targetEntity = CatalogData.class,
-      mappedBy = "domainTemplate",
-      fetch = FetchType.EAGER)
+      mappedBy = "domainTemplate")
   @Valid
   private Set<Catalog> catalogs = new HashSet<>();
 

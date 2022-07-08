@@ -32,6 +32,8 @@ import org.veo.core.entity.Key;
  */
 public interface ClientRepository extends IdentifiableVersionedRepository<Client> {
 
+  Optional<Client> findByIdFetchCatalogs(Key<UUID> id);
+
   Optional<Client> findByIdFetchCatalogsAndItems(Key<UUID> id);
 
   Optional<Client> findByIdFetchCatalogsAndItemsAndTailoringReferences(Key<UUID> id);

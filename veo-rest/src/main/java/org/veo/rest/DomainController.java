@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -72,6 +74,7 @@ import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
+import org.veo.rest.security.ApplicationUser;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.swagger.v3.oas.annotations.Operation;
@@ -141,7 +144,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
 
     Client client = null;
     try {
-      client = getAuthenticatedClient(auth);
+      client = getClientWithCatalogs(auth);
     } catch (NoSuchElementException e) {
       return CompletableFuture.supplyAsync(Collections::emptyList);
     }
@@ -311,5 +314,12 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   public void initBinder(WebDataBinder dataBinder) {
     dataBinder.registerCustomEditor(
         EntityType.class, new IgnoreCaseEnumConverter<>(EntityType.class));
+  }
+
+  protected Client getClientWithCatalogs(Authentication auth) {
+    ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
+    Key<UUID> id = Key.uuidFrom(user.getClientId());
+    Optional<Client> client = clientRepository.findByIdFetchCatalogs(id);
+    return client.orElseThrow();
   }
 }

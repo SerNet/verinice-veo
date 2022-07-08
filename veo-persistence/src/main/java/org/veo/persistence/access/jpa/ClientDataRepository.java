@@ -22,12 +22,16 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 
+import org.veo.core.entity.Client;
 import org.veo.persistence.entity.jpa.ClientData;
 
 public interface ClientDataRepository extends IdentifiableVersionedDataRepository<ClientData> {
 
   @Query("select c from #{#entityName} c left join fetch c.domains where c.dbId = ?1")
   Optional<ClientData> findById(String id);
+
+  @EntityGraph(attributePaths = {"domains.catalogs"})
+  Optional<Client> findWithCatalogsByDbId(String uuidValue);
 
   @EntityGraph(
       attributePaths = {"domains.catalogs.catalogItems", "domains.catalogs.catalogItems.element"})
