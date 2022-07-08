@@ -48,7 +48,7 @@ public class DecisionResultsAspectData extends AspectData {
   public DecisionResultsAspectData(
       DomainTemplate domain, Element owner, Map<DecisionRef, DecisionResult> results) {
     super(domain, owner);
-    setResults(results);
+    this.results = Map.copyOf(results);
   }
 
   @Access(value = AccessType.PROPERTY)
@@ -56,7 +56,7 @@ public class DecisionResultsAspectData extends AspectData {
   @Getter
   private Map<DecisionRef, DecisionResult> results;
 
-  final void setResults(Map<DecisionRef, DecisionResult> results) {
+  void setResults(Map<DecisionRef, DecisionResult> results) {
     this.results = Map.copyOf(results);
   }
 }
