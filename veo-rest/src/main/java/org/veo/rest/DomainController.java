@@ -19,7 +19,9 @@ package org.veo.rest;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.veo.adapter.presenter.api.io.mapper.VersionMapper.parseVersion;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
+import static org.veo.rest.ControllerConstants.SEM_VER_PATTERN;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 
 import java.io.IOException;
@@ -216,10 +218,17 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
         domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
   }
 
-  @PostMapping(value = "/{id}/createdomaintemplate/{revision}")
+  @PostMapping(value = "/{id}/createdomaintemplate/{version}")
   @Operation(summary = "Creates a domaintemplate from a domain")
   @ApiResponses(
-      value = {@ApiResponse(responseCode = "200", description = "DomainTemplate created")})
+      value = {
+        @ApiResponse(responseCode = "201", description = "DomainTemplate created"),
+        @ApiResponse(responseCode = "400", description = "Invalid version"),
+        @ApiResponse(responseCode = "409", description = "Template with version already exists"),
+        @ApiResponse(
+            responseCode = "422",
+            description = "Version is lower than current template version"),
+      })
   public CompletableFuture<ResponseEntity<IdRef<DomainTemplate>>> createDomainTemplatefromDomain(
       Authentication auth,
       @Pattern(
@@ -227,12 +236,13 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
               message = "ID must be a valid UUID string following RFC 4122.")
           @PathVariable
           String id,
-      @Size(max = 255) @PathVariable String revision) {
+      @Size(max = 255) @Pattern(regexp = SEM_VER_PATTERN) @PathVariable String version) {
     Client client = getAuthenticatedClient(auth);
     CompletableFuture<IdRef<DomainTemplate>> completableFuture =
         useCaseInteractor.execute(
             createDomainTemplateFromDomainUseCase,
-            new CreateDomainTemplateFromDomainUseCase.InputData(Key.uuidFrom(id), revision, client),
+            new CreateDomainTemplateFromDomainUseCase.InputData(
+                Key.uuidFrom(id), parseVersion(version), client),
             out -> IdRef.from(out.getNewDomainTemplate(), referenceAssembler));
     return completableFuture.thenApply(result -> ResponseEntity.status(201).body(result));
   }

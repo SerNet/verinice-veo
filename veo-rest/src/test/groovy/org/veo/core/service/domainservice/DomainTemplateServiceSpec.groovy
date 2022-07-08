@@ -108,8 +108,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             client = repository.save(client)
         }
         domainFromTemplate = client.domains.first()
-        domainFromTemplate.templateVersion = "1.0"
-        domainFromTemplate.revision = "1"
+        domainFromTemplate.templateVersion = "1.1.0"
 
         def domainTemplateFromDomain = txTemplate.execute {
             domainTemplateService.createDomainTemplateFromDomain(domainFromTemplate)
@@ -125,8 +124,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
         expect: 'the domain matches'
         domainFromTemplate.domainTemplate.id == domainTemplateFromDomain.id
-        domainFromTemplate.templateVersion == "1.0"
-        domainFromTemplate.revision == "1"
+        domainFromTemplate.templateVersion == "1.1.0"
         with (domainFromTemplate.catalogs) {
             size() == 1
             first().name == 'DSGVO-Controls'

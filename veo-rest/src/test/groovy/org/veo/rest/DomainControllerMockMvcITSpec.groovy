@@ -27,7 +27,9 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Catalog
 import org.veo.core.entity.Domain
 import org.veo.core.entity.exception.ModelConsistencyException
+import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
+import org.veo.core.usecase.domaintemplate.EntityAlreadyExistsException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainTemplateRepositoryImpl
 
@@ -248,7 +250,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
             domainTemplateDataRepository.count()
         }
         when: "a template is created"
-        def result = parseJson(post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/update-1",[:]))
+        def result = parseJson(post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.0.0",[:]))
         then: "a result is returned"
         result != null
         and: "there is one more template in the repo"
@@ -258,46 +260,45 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         def dt = txTemplate.execute {
             domainTemplateRepository.getAll().find{ it.name == "Domain 1" }
         }
-        then: "the revision is set"
-        dt.revision == "update-1"
+        then: "the version is set"
+        dt.templateVersion == "1.0.0"
 
-        when: "creating the next template"
-        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/update-2",[:])
-        then: "one domain template more"
-        domainTemplateDataRepository.count() == initialTemplateCount + 2
-    }
+        when: "trying to create another domain template with the same version"
+        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.0.0",[:], 409)
 
-    @WithUserDetails("content-creator")
-    def "create a DomainTemplate without revision number"() {
-        given: "a saved domain"
-        when: "a request is made to the server"
-        def count1 = txTemplate.execute {
-            domainTemplateDataRepository.count()
-        }
+        then:
+        thrown(EntityAlreadyExistsException)
 
-        def results = post("/domains/${secondDomain.id.uuidValue()}/createdomaintemplate/update-3",[:])
-        def result = parseJson(results)
-        then: "a result is returned"
-        result != null
+        when: "trying to create another domain template with a lower version"
+        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/0.5.3",[:], 422)
 
-        when: "loading the domaintemplates from the database"
-        def count2 = txTemplate.execute {
-            domainTemplateDataRepository.count()
-        }
-        then: "one domaintemplate more"
-        count2 == count1 +1
+        then:
+        thrown(UnprocessableDataException)
 
-        when: "create the next template"
-        post("/domains/${secondDomain.id.uuidValue()}/createdomaintemplate/update-3",[:],400)
-        then: "the data is rejected"
-        thrown(ModelConsistencyException)
+        when: "trying to create another domain template with an invalid version"
+        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.1",[:], 400)
+
+        then:
+        thrown(IllegalArgumentException)
+
+        when: "trying to create another domain template with a prerelease label"
+        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.0.1-prerelease3",[:], 400)
+
+        then:
+        thrown(IllegalArgumentException)
+
+        when: "trying to create another domain template with a higher version"
+        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.0.1",[:])
+
+        then:
+        notThrown(Exception)
     }
 
     @WithUserDetails("user@domain.example")
     def "create a DomainTemplate forbidden for user"() {
         given: "a saved domain"
         when: "a request is made to the server"
-        def status = postUnauthorized("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/latest", [:])
+        def status = postUnauthorized("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.0.0", [:])
         then: "it is forbidden"
         status.andReturn().response.status == 403
     }

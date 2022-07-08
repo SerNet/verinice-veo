@@ -18,6 +18,7 @@
 package org.veo.persistence.access.jpa;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 
@@ -28,4 +29,9 @@ public interface DomainTemplateDataRepository
 
   @Query(value = "select id from domaintemplate where name = ?1 order by templateVersion")
   List<String> findTemplateIdsByName(String name);
+
+  @Query(
+      value = "SELECT MAX(templateversion) from domaintemplate where name = ?1",
+      nativeQuery = true)
+  Optional<String> findCurrentTemplateVersion(String templateName);
 }

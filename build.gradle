@@ -151,6 +151,7 @@ subprojects {
             dependency "org.keycloak:keycloak-authz-client:18.0.2"
             dependency "com.github.JanLoebel:json-schema-validation-starter:2.3.0"
             dependency 'com.fasterxml.uuid:java-uuid-generator:4.0.1'
+            dependency 'com.github.zafarkhaja:java-semver:0.9.0'
         }
     }
 

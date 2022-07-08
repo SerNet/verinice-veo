@@ -21,11 +21,14 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
+import com.github.zafarkhaja.semver.Version;
+
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
@@ -68,15 +71,33 @@ public class CreateDomainTemplateFromDomainUseCase
       throw new NotFoundException("Domain is inactive.");
     }
 
-    domain = updateRevision(domain, input.revision);
+    domain = updateVersion(domain, input.version);
     DomainTemplate domainTemplateFromDomain =
         domainTemplateService.createDomainTemplateFromDomain(domain);
     return new OutputData(domainTemplateRepository.save(domainTemplateFromDomain));
   }
 
-  /** Increase the revision field if the content is a number. */
-  private Domain updateRevision(Domain domain, String revision) {
-    domain.setRevision(revision);
+  /** Validate and apply new version value. */
+  private Domain updateVersion(Domain domain, Version version) {
+    if (!version.getPreReleaseVersion().isEmpty() || !version.getBuildMetadata().isEmpty()) {
+      throw new IllegalArgumentException(
+          "Pre-release & metadata labels are not supported for domain template versions");
+    }
+    domainTemplateRepository
+        .findCurrentTemplateVersion(domain.getName())
+        .ifPresent(
+            currentTemplateVersion -> {
+              if (version.lessThan(currentTemplateVersion)) {
+                throw new UnprocessableDataException(
+                    "Domain template version must be higher than current version %s"
+                        .formatted(currentTemplateVersion));
+              }
+              if (version.equals(currentTemplateVersion)) {
+                throw new EntityAlreadyExistsException(
+                    "Domain template with version %s already exists".formatted(version));
+              }
+            });
+    domain.setTemplateVersion(version.toString());
     return repository.save(domain);
   }
 
@@ -84,7 +105,7 @@ public class CreateDomainTemplateFromDomainUseCase
   @Value
   public static class InputData implements UseCase.InputData {
     Key<UUID> id;
-    String revision;
+    Version version;
     Client authenticatedClient;
   }
 

@@ -14,6 +14,7 @@ dependencies {
     implementation 'com.github.victools:jsonschema-module-swagger-2'
     implementation 'io.swagger.core.v3:swagger-annotations'
     implementation 'org.springdoc:springdoc-openapi-common'
+    implementation 'com.github.zafarkhaja:java-semver'
 
     compileOnly('org.projectlombok:lombok')
     compileOnly 'io.swagger.core.v3:swagger-core'

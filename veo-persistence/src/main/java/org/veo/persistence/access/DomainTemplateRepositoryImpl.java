@@ -18,10 +18,13 @@
 package org.veo.persistence.access;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Repository;
+
+import com.github.zafarkhaja.semver.Version;
 
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;
@@ -52,5 +55,21 @@ public class DomainTemplateRepositoryImpl
   @Override
   public List<Key<UUID>> getDomainTemplateIds(String name) {
     return dataRepository.findTemplateIdsByName(name).stream().map(Key::uuidFrom).toList();
+  }
+
+  @Override
+  public Optional<Version> findCurrentTemplateVersion(String templateName) {
+    return dataRepository
+        .findCurrentTemplateVersion(templateName)
+        .map(
+            version -> {
+              try {
+                return Version.valueOf(version);
+              }
+              // TODO-1072 This will no longer happen once we've abolished non-sem-vers from the DB.
+              catch (Exception ex) {
+                return null;
+              }
+            });
   }
 }

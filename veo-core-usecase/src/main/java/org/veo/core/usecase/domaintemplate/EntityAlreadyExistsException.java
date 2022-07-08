@@ -28,4 +28,8 @@ public class EntityAlreadyExistsException extends DomainException {
             "%s %s already exists and can't be modified.",
             entity.getModelType(), entity.getIdAsString()));
   }
+
+  public EntityAlreadyExistsException(String message) {
+    super(message);
+  }
 }
