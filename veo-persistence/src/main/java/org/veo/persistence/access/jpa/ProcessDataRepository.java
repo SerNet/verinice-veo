@@ -28,6 +28,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import org.veo.core.entity.Client;
 import org.veo.persistence.entity.jpa.ProcessData;
+import org.veo.persistence.entity.jpa.ProcessRiskData;
 import org.veo.persistence.entity.jpa.ScenarioData;
 
 public interface ProcessDataRepository extends CompositeRiskAffectedDataRepository<ProcessData> {
@@ -47,16 +48,23 @@ public interface ProcessDataRepository extends CompositeRiskAffectedDataReposito
   Set<ProcessData> findByIdsWithRiskValues(Set<String> dbIds);
 
   @Query(
-      "select distinct e from #{#entityName} e "
-          + "left join fetch e.owner o "
-          + "left join fetch e.riskValuesAspects "
-          + "inner join fetch e.risks r "
-          + "left join fetch r.riskAspects "
-          + "inner join fetch r.domains "
-          + "inner join fetch r.scenario s "
-          + "left join fetch s.riskValuesAspects "
-          + " where o.client = ?1")
+      """
+         select distinct e from #{#entityName} e
+         inner join fetch e.owner o
+         left join fetch e.riskValuesAspects
+         inner join fetch e.risks r
+         where o.client = ?1""")
   Set<ProcessData> findAllHavingRisks(Client client);
+
+  @Query(
+      """
+         select r from processrisk r
+         inner join fetch r.domains
+         left join fetch r.riskAspects
+         inner join fetch r.scenario s
+         left join fetch s.riskValuesAspects
+         where r.entity.dbId in ?1""")
+  Set<ProcessRiskData> findRisksWithScenariosByEntityDbIdIn(Iterable<String> ids);
 
   @Nonnull
   @EntityGraph(ProcessData.GRAPH_WITH_RISKS)

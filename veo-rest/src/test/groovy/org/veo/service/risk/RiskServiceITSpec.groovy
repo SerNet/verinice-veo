@@ -130,7 +130,7 @@ class RiskServiceITSpec extends VeoSpringSpec {
 
         when: 'running the risk service on the changed process'
         executeInTransaction {
-            riskService.evaluateChangedRiskComponent(process)
+            riskService.evaluateChangedRiskComponent(processDataRepository.findById(process.idAsString).orElseThrow())
         }
         risk = executeInTransaction {
             process = processDataRepository.findByIdsWithRiskValues(Set.of(process.idAsString)).first()
@@ -342,9 +342,9 @@ class RiskServiceITSpec extends VeoSpringSpec {
         def queryCounts = QueryCountHolder.grandTotal
         then:
         verifyAll {
-            queryCounts.select == 5
+            queryCounts.select == 6
             queryCounts.insert == 1
-            queryCounts.update == 1
+            queryCounts.update == 2
             queryCounts.time < 500
         }
     }

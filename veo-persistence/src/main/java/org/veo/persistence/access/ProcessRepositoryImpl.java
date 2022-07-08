@@ -19,6 +19,7 @@ package org.veo.persistence.access;
 
 import static java.util.Collections.singleton;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -26,6 +27,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
@@ -73,8 +75,12 @@ public class ProcessRepositoryImpl
   }
 
   @Override
+  @Transactional(readOnly = true)
   public Set<Process> findAllHavingRisks(Client client) {
-    return processDataRepository.findAllHavingRisks(client).stream().collect(Collectors.toSet());
+    var elements = processDataRepository.findAllHavingRisks(client);
+    processDataRepository.findRisksWithScenariosByEntityDbIdIn(
+        elements.stream().map(ProcessData::getDbId).collect(Collectors.toSet()));
+    return Collections.unmodifiableSet(elements);
   }
 
   @Override
