@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.decision;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,11 +71,12 @@ public class Decider {
                     .forEach(
                         (key, decision) -> {
                           if (decision.isApplicableToElement(element, domain)
-                              && decision.isAffectedByEvent(event, domain)) {
-                            element.setDecisionResult(
-                                new DecisionRef(key, domain),
-                                decision.evaluate(element, domain),
-                                domain);
+                              && decision.isAffectedByEvent(event, domain)
+                              && element.setDecisionResult(
+                                  new DecisionRef(key, domain),
+                                  decision.evaluate(element, domain),
+                                  domain)) {
+                            element.setUpdatedAt(Instant.now());
                           }
                         }));
   }

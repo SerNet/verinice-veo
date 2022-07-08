@@ -73,18 +73,22 @@ class DecisionRestTest extends VeoRestTest {
         }
 
         when: "adding a risk"
+        def processETagBeforeRiskAddition = get("/processes/$processId").parseETag()
         addRiskValue(processId, 1)
 
         then: "the result has changed"
-        with(get("/processes/$processId").body.domains[domainId].decisionResults.piaMandatory) {
-            value == true
-            decision.rules[decisiveRule].description.en == "Two or more criteria apply"
-            matchingRules.collect { decision.rules[it].description.en } ==~ [
-                "Two or more criteria apply"
-            ]
-            agreeingRules.collect { decision.rules[it].description.en } ==~ [
-                "Two or more criteria apply"
-            ]
+        with(get("/processes/$processId")) {
+            parseETag() != processETagBeforeRiskAddition
+            with(body.domains[domainId].decisionResults.piaMandatory) {
+                value == true
+                decision.rules[decisiveRule].description.en == "Two or more criteria apply"
+                matchingRules.collect { decision.rules[it].description.en } ==~ [
+                    "Two or more criteria apply"
+                ]
+                agreeingRules.collect { decision.rules[it].description.en } ==~ [
+                    "Two or more criteria apply"
+                ]
+            }
         }
 
         when: "adding PIA related attributes"

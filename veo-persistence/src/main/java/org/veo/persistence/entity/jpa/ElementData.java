@@ -236,9 +236,13 @@ public abstract class ElementData extends IdentifiableVersionedData
   }
 
   @Override
-  public void setDecisionResults(Map<DecisionRef, DecisionResult> results, Domain domain) {
-    removeAspect(decisionResultsAspects, domain);
-    decisionResultsAspects.add(new DecisionResultsAspectData(domain, this, results));
+  public boolean setDecisionResults(Map<DecisionRef, DecisionResult> results, Domain domain) {
+    if (!results.equals(getDecisionResults(domain))) {
+      removeAspect(decisionResultsAspects, domain);
+      decisionResultsAspects.add(new DecisionResultsAspectData(domain, this, results));
+      return true;
+    }
+    return false;
   }
 
   /**

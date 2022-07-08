@@ -27,13 +27,15 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 import org.veo.core.entity.Element;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /** Result of a {@link Decision} for an {@link Element} */
-@Getter
+@EqualsAndHashCode
 @JsonAutoDetect(fieldVisibility = ANY)
 @RequiredArgsConstructor
+@Getter
 public class DecisionResult {
   public DecisionResult() {
     this(null, null, List.of(), List.of());

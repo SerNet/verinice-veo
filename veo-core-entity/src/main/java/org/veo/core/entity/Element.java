@@ -192,12 +192,22 @@ public interface Element
 
   Map<DecisionRef, DecisionResult> getDecisionResults(DomainTemplate domain);
 
-  void setDecisionResults(Map<DecisionRef, DecisionResult> decisionResults, Domain domain);
+  /**
+   * Update all decision results in given domain.
+   *
+   * @return {@code true} if new results differ from previous values, otherwise {@code false}
+   */
+  boolean setDecisionResults(Map<DecisionRef, DecisionResult> decisionResults, Domain domain);
 
-  default void setDecisionResult(DecisionRef decisionRef, DecisionResult result, Domain domain) {
+  /**
+   * Update the result of given decision in given domain.
+   *
+   * @return {@code true} if new result differs from previous value, otherwise {@code false}
+   */
+  default boolean setDecisionResult(DecisionRef decisionRef, DecisionResult result, Domain domain) {
     var domainResults = new HashMap<>(getDecisionResults(domain));
     domainResults.put(decisionRef, result);
-    setDecisionResults(domainResults, domain);
+    return setDecisionResults(domainResults, domain);
   }
 
   /**

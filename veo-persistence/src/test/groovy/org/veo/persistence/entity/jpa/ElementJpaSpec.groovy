@@ -182,6 +182,33 @@ class ElementJpaSpec extends AbstractJpaSpec {
         unit.getVersion() == 1
     }
 
+    def 'updates decision results'() {
+        given: "anasset with a decision result"
+        def rule0 = new DecisionRuleRef(0)
+        def rule1 = new DecisionRuleRef(1)
+        def decision = new DecisionRef("overclock")
+        def asset = newAsset(owner0) {
+            it.associateWithDomain(domain, "Server", "RUNNING")
+            setDecisionResult(decision, new DecisionResult(true, rule0, [rule0], [rule0]), domain)
+        }
+
+        expect: "results to be retrievable"
+        asset.getDecisionResults(domain).get(decision).decisiveRule == rule0
+
+        when: "setting the same decision result again"
+        def changed = asset.setDecisionResult(decision, new DecisionResult(true, rule0, [rule0], [rule0]), domain)
+
+        then: "no change is reported"
+        !changed
+
+        when: "saving a slightly different result"
+        changed = asset.setDecisionResult(decision, new DecisionResult(true, rule0, [rule0, rule1], [rule0]), domain)
+
+        then: "the results have been changed"
+        changed
+        asset.getDecisionResults(domain).get(decision).matchingRules == [rule0, rule1]
+    }
+
     def 'retrieved decision results are immutable'() {
         given: "a transient asset with a decision result"
         def rule0 = new DecisionRuleRef(0)
