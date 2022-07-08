@@ -69,6 +69,7 @@ import org.veo.rest.CatalogController;
 import org.veo.rest.ControlController;
 import org.veo.rest.DocumentController;
 import org.veo.rest.DomainController;
+import org.veo.rest.DomainTemplateController;
 import org.veo.rest.IncidentController;
 import org.veo.rest.PersonController;
 import org.veo.rest.ProcessController;
@@ -154,6 +155,12 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
           .withRel(DomainController.URL_BASE_PATH)
           .getHref();
     }
+    if (DomainTemplate.class.isAssignableFrom(type)) {
+      return linkTo(
+              methodOn(DomainTemplateController.class).getDomainTemplate(ANY_AUTH, id, ANY_REQUEST))
+          .withRel(DomainTemplateController.URL_BASE_PATH)
+          .getHref();
+    }
     if (Catalog.class.isAssignableFrom(type)) {
       return linkTo(methodOn(CatalogController.class).getCatalog(ANY_AUTH, id, ANY_REQUEST))
           .withRel(CatalogController.URL_BASE_PATH)
@@ -174,9 +181,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
           .getHref();
     }
     // Some types have no endpoint.
-    if (Client.class.isAssignableFrom(type)
-        || DomainTemplate.class.isAssignableFrom(type)
-        || CatalogReference.class.isAssignableFrom(type)) {
+    if (Client.class.isAssignableFrom(type) || CatalogReference.class.isAssignableFrom(type)) {
       return null;
     }
 

@@ -20,20 +20,25 @@ package org.veo.rest;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateDomainTemplateInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
@@ -47,6 +52,9 @@ import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
 import org.veo.rest.common.RestApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -110,5 +118,26 @@ public class DomainTemplateController {
           var body = CreateOutputMapper.map(out.getDomainTemplate());
           return RestApiResponse.created(URL_BASE_PATH, body);
         });
+  }
+
+  @GetMapping(value = "/{id}")
+  @Operation(summary = "Loads a domaintemplate")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Domain loaded",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = FullDomainDto.class))),
+        @ApiResponse(responseCode = "404", description = "Domain not found")
+      })
+  public @Valid Future<ResponseEntity<TransformDomainTemplateDto>> getDomainTemplate(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @PathVariable String id,
+      WebRequest request) {
+    // TODO: VEO-1549 implement getDomainTemplate
+    return CompletableFuture.failedFuture(new UnsupportedOperationException("not implemented"));
   }
 }
