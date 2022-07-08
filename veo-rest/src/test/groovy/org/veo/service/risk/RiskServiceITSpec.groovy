@@ -31,6 +31,7 @@ import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Process
 import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.Scenario
+import org.veo.core.entity.Unit
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent
 import org.veo.core.entity.event.RiskChangedEvent
 import org.veo.core.entity.event.RiskEvent
@@ -40,6 +41,10 @@ import org.veo.core.entity.risk.PotentialProbabilityImpl
 import org.veo.core.entity.risk.ProbabilityRef
 import org.veo.core.entity.risk.ProcessImpactValues
 import org.veo.core.entity.risk.RiskDefinitionRef
+import org.veo.core.usecase.unit.CreateDemoUnitUseCase
+import org.veo.core.usecase.unit.CreateDemoUnitUseCase.InputData
+
+import net.ttddyy.dsproxy.QueryCountHolder
 
 @WithUserDetails("user@domain.example")
 @ContextConfiguration(classes = Config.class)
@@ -57,6 +62,9 @@ class RiskServiceITSpec extends VeoSpringSpec {
     RiskService riskService
     @Autowired
     RiskEventListener listener
+
+    @Autowired
+    private CreateDemoUnitUseCase createDemoUnitUseCase
 
     static class Config {
         @Bean
@@ -318,6 +326,32 @@ class RiskServiceITSpec extends VeoSpringSpec {
             event.hasChangedRisks()
             event.clientId == client.id
             event.changedRisks ==~ [riskImpactEvent]
+        }
+    }
+
+    def "Calculate risk values in demo unit"() {
+        given:
+        def client = createTestClient()
+        createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+        def demoUnit = createDemoUnit(client)
+        QueryCountHolder.clear()
+        when:
+        executeInTransaction {
+            riskService.determineAllRiskValues(client)
+        }
+        def queryCounts = QueryCountHolder.grandTotal
+        then:
+        verifyAll {
+            queryCounts.select == 5
+            queryCounts.insert == 1
+            queryCounts.update == 1
+            queryCounts.time < 500
+        }
+    }
+
+    Unit createDemoUnit(client) {
+        executeInTransaction {
+            createDemoUnitUseCase.execute(new InputData(client.id)).unit
         }
     }
 }
