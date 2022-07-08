@@ -15,25 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.profile;
+package org.veo.rest;
 
-import java.util.Set;
+public class InternalProccesingException extends RuntimeException {
+  private static final long serialVersionUID = 8614377326809691738L;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class ProfileDefinition {
-  private Set<?> elements;
-  private Set<?> risks;
-
-  public static ProfileDefinition of(Set<?> elements, Set<?> risks) {
-    ProfileDefinition profileDefinition = new ProfileDefinition();
-    profileDefinition.elements = elements;
-    profileDefinition.risks = risks;
-    return profileDefinition;
+  public InternalProccesingException(String cause, InterruptedException ex) {
+    super(cause, ex);
   }
 }

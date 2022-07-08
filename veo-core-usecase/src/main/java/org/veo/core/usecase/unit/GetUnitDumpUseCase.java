@@ -27,6 +27,7 @@ import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.RepositoryProvider;
@@ -47,15 +48,20 @@ public class GetUnitDumpUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    if (!accountProvider.getCurrentUserAccount().isAdmin()) {
-      throw new MissingAdminPrivilegesException();
-    }
     var unit =
         unitRepository
             .findById(input.unitId)
             .orElseThrow(
                 () ->
                     new NotFoundException(String.format("Unit %s does not exist.", input.unitId)));
+    if (!accountProvider.getCurrentUserAccount().isAdmin()) {
+      try {
+        unit.checkSameClient(accountProvider.getCurrentUserAccount().getClient());
+      } catch (ClientBoundaryViolationException e) {
+        throw new MissingAdminPrivilegesException();
+      }
+    }
+
     return new OutputData(unit, getElements(unit));
   }
 

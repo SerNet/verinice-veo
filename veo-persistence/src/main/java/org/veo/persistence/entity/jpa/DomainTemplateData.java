@@ -115,7 +115,7 @@ public class DomainTemplateData extends IdentifiableVersionedData
   private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
 
   @Column(columnDefinition = "jsonb")
-  private Map<String, ProfileDefinition> profileElements = new HashMap<>();
+  private Map<String, ProfileDefinition> profiles = new HashMap<>();
 
   public void setRiskDefinitions(Map<String, RiskDefinition> riskDefinitions) {
     this.riskDefinitions.clear();

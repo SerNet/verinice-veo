@@ -23,8 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
+import org.veo.adapter.service.domaintemplate.dto.CreateDomainTemplateFromDomainParameterDto
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Catalog
+import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.exception.ModelConsistencyException
 import org.veo.core.entity.exception.UnprocessableDataException
@@ -41,7 +43,7 @@ import groovy.json.JsonSlurper
  * Does not start an embedded server.
  * Uses a test Web-MVC configuration with example accounts and clients.
  */
-class DomainControllerMockMvcITSpec extends VeoMvcSpec {
+class DomainControllerMockMvcITSpec extends ContentSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
@@ -56,12 +58,13 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
     private Domain secondDomain
     private Catalog catalog
     private Domain domainSecondClient
+    private Client client
 
     def setup() {
         txTemplate.execute {
             def rd = createRiskDefinition("id1")
 
-            def client = createTestClient()
+            this.client = createTestClient()
             newDomain(client) {
                 name = "Domain 1"
                 revision = "0"
@@ -249,8 +252,10 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         def initialTemplateCount = txTemplate.execute {
             domainTemplateDataRepository.count()
         }
+        def parameter =[version : "1.0.0"] as Map
+
         when: "a template is created"
-        def result = parseJson(post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.0.0",[:]))
+        def result = parseJson(post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.0.0",parameter))
         then: "a result is returned"
         result != null
         and: "there is one more template in the repo"
@@ -264,35 +269,84 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         dt.templateVersion == "1.0.0"
 
         when: "trying to create another domain template with the same version"
-        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.0.0",[:], 409)
+        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.0.0",parameter, 409)
 
         then:
         thrown(EntityAlreadyExistsException)
 
         when: "trying to create another domain template with a lower version"
-        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/0.5.3",[:], 422)
+        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/0.5.3", [version : "0.5.3"] as Map, 422)
 
         then:
         thrown(UnprocessableDataException)
 
         when: "trying to create another domain template with an invalid version"
-        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.1",[:], 400)
+        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.1", [version : "1.1.0"] as Map, 400)
 
         then:
         thrown(IllegalArgumentException)
 
         when: "trying to create another domain template with a prerelease label"
-        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.0.1-prerelease3",[:], 400)
+        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.0.1-prerelease3", [version : "1.0.1"] as Map, 400)
 
         then:
         thrown(IllegalArgumentException)
 
         when: "trying to create another domain template with a higher version"
-        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.0.1",[:])
+        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.0.1",[version : "1.0.1"])
 
         then:
         notThrown(Exception)
     }
+
+    @WithUserDetails("content-creator")
+    def "create a DomainTemplate with unit"() {
+        Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domain)
+
+        given: "a number of existing templates"
+        def initialTemplateCount = txTemplate.execute {
+            domainTemplateDataRepository.count()
+        }
+
+        when: "a template is created"
+        def result = parseJson(post("/domains/${domain.id.uuidValue()}/createdomaintemplate",[version : "1.2.3",
+            profiles: ["demoUnit": (unitId)]
+        ]))
+        then: "a result is returned"
+        result != null
+        and: "there is one more template in the repo"
+        domainTemplateDataRepository.count() == initialTemplateCount + 1
+
+        when: "loading the domaintemplates from the database"
+        def dt = txTemplate.execute {
+            domainTemplateRepository.getAll().find{ it.name == domain.name && it.templateVersion == "1.2.3"}
+        }
+        then: "the template is found, the version is set"
+        dt.templateVersion == "1.2.3"
+        and: "the profile data for the demo unit exists"
+        dt.profiles.demoUnit.elements != null
+        dt.profiles.demoUnit.risks != null
+
+        dt.profiles.demoUnit.elements*.type.sort() == [
+            "asset",
+            "control",
+            "document",
+            "incident",
+            "person",
+            "process",
+            "scenario",
+            "scope"
+        ]
+        dt.profiles.demoUnit.risks*._self.size() == 2
+
+        when: "creating the next template"
+        parameter = [version : "1.2.4"] as Map
+        post("/domains/${domain.id.uuidValue()}/createdomaintemplate/1.2.4",parameter)
+        then: "one domain template more"
+        domainTemplateDataRepository.count() == initialTemplateCount + 2
+    }
+
 
     @WithUserDetails("user@domain.example")
     def "create a DomainTemplate forbidden for user"() {
@@ -344,5 +398,120 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
             size() == 3
             get('AST_Application') == [IN_PROGRESS:0, NEW:0, RELEASED:0, FOR_REVIEW:0, ARCHIVED:0]
         }
+    }
+
+    private createUnitWithElements(Domain domain) {
+        def domainId = domain.id.uuidValue()
+        def unitId = parseJson(post("/units", [
+            name   : "you knit",
+            domains: [
+                [targetUri: "http://localhost/domains/(domainId)"]
+            ]
+        ])).resourceId
+        def owner = [targetUri: "http://localhost/units/$unitId"]
+
+        def assetId = parseJson(post("/assets", [
+            domains: [
+                (domainId): [
+                    subType: "AST_Application",
+                    status: "NEW",
+                ]
+            ],
+            name   : "asset",
+            owner  : owner
+        ])).resourceId
+        post("/controls", [
+            name   : "control",
+            domains: [
+                (domainId): [
+                    subType: "CTL_TOM",
+                    status: "NEW",
+                ]
+            ],
+            owner  : owner
+        ])
+        post("/documents", [
+            name   : "document",
+            domains: [
+                (domainId): [
+                    subType: "DOC_Document",
+                    status: "NEW",
+                ]
+            ],
+            owner  : owner
+        ])
+        post("/incidents", [
+            name   : "incident",
+            domains: [
+                (domainId): [
+                    subType: "INC_Incident",
+                    status: "NEW",
+                ]
+            ],
+            owner  : owner
+        ])
+        post("/persons", [
+            name   : "person",
+            domains: [
+                (domainId): [
+                    subType: "PER_Person",
+                    status: "NEW",
+                ]
+            ],
+            owner  : owner
+        ])
+        def processId = parseJson(post("/processes", [
+            domains: [
+                (domainId): [
+                    subType: "PRO_DataProcessing",
+                    status: "NEW",
+                ]
+            ],
+            name   : "process",
+            owner  : owner
+        ])).resourceId
+        def scenarioId = parseJson(post("/scenarios", [
+            name   : "scenario",
+            domains: [
+                (domainId): [
+                    subType: "SCN_Scenario",
+                    status: "NEW",
+                ]
+            ],
+            owner  : owner
+        ])).resourceId
+        post("/scopes", [
+            name   : "scope",
+            domains: [
+                (domainId): [
+                    subType: "SCP_Scope",
+                    status: "NEW",
+                ]
+            ],
+            owner  : owner
+        ])
+
+        post("/assets/$assetId/risks", [
+            domains : [
+                (domainId): [
+                    reference: [targetUri: "http://localhost/domains/$domainId"]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ])
+        post("/processes/$processId/risks", [
+            domains : [
+                (domainId): [
+                    reference: [targetUri: "http://localhost/domains/$domainId"]
+                ]
+            ],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ])
+        [
+            unitId,
+            assetId,
+            scenarioId,
+            processId
+        ]
     }
 }

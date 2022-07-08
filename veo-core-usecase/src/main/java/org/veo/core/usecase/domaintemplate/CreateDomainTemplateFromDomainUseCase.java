@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.domaintemplate;
 
+import java.util.Map;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -29,6 +30,7 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
@@ -74,6 +76,7 @@ public class CreateDomainTemplateFromDomainUseCase
     domain = updateVersion(domain, input.version);
     DomainTemplate domainTemplateFromDomain =
         domainTemplateService.createDomainTemplateFromDomain(domain);
+    domainTemplateFromDomain.setProfiles(input.profiles);
     return new OutputData(domainTemplateRepository.save(domainTemplateFromDomain));
   }
 
@@ -107,6 +110,7 @@ public class CreateDomainTemplateFromDomainUseCase
     Key<UUID> id;
     Version version;
     Client authenticatedClient;
+    Map<String, ProfileDefinition> profiles;
   }
 
   @Valid

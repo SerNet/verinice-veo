@@ -26,12 +26,17 @@ import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.function.Supplier;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
@@ -57,9 +62,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.dto.AbstractElementDto;
+import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
+import org.veo.adapter.presenter.api.dto.UnitDumpDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
+import org.veo.adapter.presenter.api.io.mapper.UnitDumpMapper;
 import org.veo.adapter.service.ObjectSchemaParser;
+import org.veo.adapter.service.domaintemplate.dto.CreateDomainTemplateFromDomainParameterDto;
 import org.veo.core.ExportDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -67,6 +77,7 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
+import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.statistics.ElementStatusCounts;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
@@ -75,6 +86,7 @@ import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
+import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.security.ApplicationUser;
 
@@ -112,6 +124,8 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   private final CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase;
   private final GetElementStatusCountUseCase getElementStatusCountUseCase;
 
+  private final GetUnitDumpUseCase getUnitDumpUseCase;
+
   public DomainController(
       ObjectSchemaParser objectSchemaParser,
       GetDomainUseCase getDomainUseCase,
@@ -119,7 +133,8 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
       UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase,
       ExportDomainUseCase exportDomainUseCase,
       CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase,
-      GetElementStatusCountUseCase getElementStatusCountUseCase) {
+      GetElementStatusCountUseCase getElementStatusCountUseCase,
+      GetUnitDumpUseCase getUnitDumpUseCase) {
     this.objectSchemaParser = objectSchemaParser;
     this.getDomainUseCase = getDomainUseCase;
     this.getDomainsUseCase = getDomainsUseCase;
@@ -127,6 +142,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     this.updateElementTypeDefinitionUseCase = updateElementTypeDefinitionUseCase;
     this.createDomainTemplateFromDomainUseCase = createDomainTemplateFromDomainUseCase;
     this.getElementStatusCountUseCase = getElementStatusCountUseCase;
+    this.getUnitDumpUseCase = getUnitDumpUseCase;
   }
 
   @GetMapping
@@ -236,13 +252,48 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
               message = "ID must be a valid UUID string following RFC 4122.")
           @PathVariable
           String id,
-      @Size(max = 255) @Pattern(regexp = SEM_VER_PATTERN) @PathVariable String version) {
+      @Size(max = 255) @Pattern(regexp = SEM_VER_PATTERN) @PathVariable String version,
+      @Valid @RequestBody CreateDomainTemplateFromDomainParameterDto createParameter) {
     Client client = getAuthenticatedClient(auth);
+    if (createParameter == null) {
+      throw new IllegalArgumentException("create parameter cannot be null");
+    }
+    Map<String, ProfileDefinition> profiles = new HashMap<>();
+
+    createParameter
+        .getProfiles()
+        .forEach(
+            (name, unitId) -> {
+              try {
+                UnitDumpDto dump =
+                    useCaseInteractor
+                        .execute(
+                            getUnitDumpUseCase,
+                            (Supplier<GetUnitDumpUseCase.InputData>)
+                                () -> UnitDumpMapper.mapInput(unitId),
+                            out -> UnitDumpMapper.mapOutput(out, entityToDtoTransformer))
+                        .get();
+                Set<AbstractElementDto> elements = dump.getElements();
+                Set<AbstractRiskDto> risks = dump.getRisks();
+
+                log.info(
+                    "dump size, elements:{} risks:{}",
+                    dump.getElements().size(),
+                    dump.getRisks().size());
+                profiles.put(name, ProfileDefinition.of(elements, risks));
+              } catch (InterruptedException ex) {
+                throw new InternalProccesingException("Internal error", ex);
+              } catch (ExecutionException ex) {
+                if (ex.getCause() instanceof RuntimeException)
+                  throw (RuntimeException) ex.getCause();
+              }
+            });
+
     CompletableFuture<IdRef<DomainTemplate>> completableFuture =
         useCaseInteractor.execute(
             createDomainTemplateFromDomainUseCase,
             new CreateDomainTemplateFromDomainUseCase.InputData(
-                Key.uuidFrom(id), parseVersion(version), client),
+                Key.uuidFrom(id), parseVersion(version), client, profiles),
             out -> IdRef.from(out.getNewDomainTemplate(), referenceAssembler));
     return completableFuture.thenApply(result -> ResponseEntity.status(201).body(result));
   }

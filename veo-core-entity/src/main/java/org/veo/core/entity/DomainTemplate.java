@@ -111,9 +111,9 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
     return getRiskDefinition(riskDefinitionId.value());
   }
 
-  Map<String, ProfileDefinition> getProfileElements();
+  Map<String, ProfileDefinition> getProfiles();
 
-  void setProfileElements(Map<String, ProfileDefinition> profileElements);
+  void setProfiles(Map<String, ProfileDefinition> profiles);
 
   void setRiskDefinitions(Map<String, RiskDefinition> definitions);
 

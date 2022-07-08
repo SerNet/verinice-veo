@@ -17,6 +17,11 @@
  ******************************************************************************/
 package org.veo.rest.test
 
+import org.apache.http.HttpStatus
+
+import groovy.util.logging.Slf4j
+import spock.util.concurrent.PollingConditions
+
 class DomainRestTestITSpec extends VeoRestTest {
 
     def setup() {
@@ -74,6 +79,50 @@ class DomainRestTestITSpec extends VeoRestTest {
                 name == "Keine Widerspruchsmöglichkeit für Betroffene gegen die Datenverarbeitung"
                 domains[dsgvoId].subType == "SCN_Scenario"
                 domains[dsgvoId].status == "NEW"
+            }
+        }
+    }
+
+    def "create domaintemplate from domain"() {
+        when: "we create a domain with a profile"
+
+        def domain = getDomains().find { it.name == "DS-GVO" }
+        def dsgvoId = domain.id
+        def oldVersion = domain.templateVersion
+
+        def unitId = postNewUnit("the unit formerly known as demo unit").resourceId
+
+        def assetId = post("/assets", [
+            name: "target asset for process",
+            domains: [
+                (dsgvoId): [
+                    subType: "AST_Datatype",
+                    status: "NEW"
+                ]
+            ],
+            owner: [targetUri: "$baseUrl/units/$unitId"],
+        ]).body.resourceId
+
+        def rest = post("/domains/${dsgvoId}/createdomaintemplate",
+                [version : "1.4.1",
+                    profiles: ["demoUnit": (unitId)]
+                ],
+                201,
+                UserType.CONTENT_CREATOR)
+
+        def templateId = rest.body.targetUri.split('/').last()
+
+        then:"the domain template is created"
+        rest.body.displayName == "DS-GVO DS-GVO"
+
+        when: "we create a domain from the template"
+
+        post("/domaintemplates/${templateId}/createdomains", [:], HttpStatus.SC_NO_CONTENT, UserType.ADMIN)
+
+        then: "the client gets the new domain"
+        new PollingConditions().within(5) {
+            with(getDomains().find { it.name == "DS-GVO" && it.templateVersion=="1.4.1" }) {
+                oldVersion != templateVersion
             }
         }
     }

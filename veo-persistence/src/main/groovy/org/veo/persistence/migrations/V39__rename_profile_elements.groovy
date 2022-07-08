@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Urs Zeidler
+ * Copyright (C) 2022  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,25 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.profile;
+package org.veo.persistence.migrations
 
-import java.util.Set;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import groovy.sql.Sql
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class ProfileDefinition {
-  private Set<?> elements;
-  private Set<?> risks;
+class V39__rename_profile_elements extends BaseJavaMigration {
+    @Override
+    void migrate(Context context) throws Exception {
+        new Sql(context.connection).execute("""
+        alter table domain
+            rename column profile_elements to profiles;
 
-  public static ProfileDefinition of(Set<?> elements, Set<?> risks) {
-    ProfileDefinition profileDefinition = new ProfileDefinition();
-    profileDefinition.elements = elements;
-    profileDefinition.risks = risks;
-    return profileDefinition;
-  }
+        alter table domaintemplate
+            rename column profile_elements to profiles;
+            """)
+    }
 }

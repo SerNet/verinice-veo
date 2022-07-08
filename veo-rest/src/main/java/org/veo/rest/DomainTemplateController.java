@@ -126,18 +126,18 @@ public class DomainTemplateController {
       value = {
         @ApiResponse(
             responseCode = "200",
-            description = "Domain loaded",
+            description = "DomainTemplate loaded",
             content =
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = FullDomainDto.class))),
-        @ApiResponse(responseCode = "404", description = "Domain not found")
+        @ApiResponse(responseCode = "404", description = "DomainTemplate not found")
       })
   public @Valid Future<ResponseEntity<TransformDomainTemplateDto>> getDomainTemplate(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String id,
       WebRequest request) {
-    // TODO: VEO-1549 implement getDomainTemplate
+    // TODO: VEO-1535 implement getDomainTemplate
     return CompletableFuture.failedFuture(new UnsupportedOperationException("not implemented"));
   }
 }
