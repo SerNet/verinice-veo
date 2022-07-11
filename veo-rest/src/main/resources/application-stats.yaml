@@ -22,12 +22,6 @@ spring:
       hibernate:
         generate_statistics: true
     open-in-view: false
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: https://keycloak.staging.verinice.com/auth/realms/verinice-veo
-          jwk-set-uri: https://keycloak.staging.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/certs
   mvc:
     async:
       request-timeout: 3600000
