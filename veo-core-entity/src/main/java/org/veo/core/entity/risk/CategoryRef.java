@@ -27,10 +27,12 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @EqualsAndHashCode
 @Valid
+@ToString
 public class CategoryRef {
   public static final int MAX_ID_LENGTH = Constraints.DEFAULT_CONSTANT_MAX_LENGTH;
 

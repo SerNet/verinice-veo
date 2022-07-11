@@ -28,6 +28,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Depending on the category definition, a ProbabilityRef can either be a reference to a pre-defined
@@ -43,6 +44,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Valid
 @EqualsAndHashCode
+@ToString
 public class ProbabilityRef {
 
   @Getter @PositiveOrZero BigDecimal idRef;
