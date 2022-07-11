@@ -192,7 +192,7 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
         queryCounts.delete == 0
         queryCounts.insert == 0
         queryCounts.update == 0
-        queryCounts.select == 4
+        queryCounts.select == 3
 
         when: "fetch risks using only full aggregate graph"
         queryCounts = trackQueryCounts{

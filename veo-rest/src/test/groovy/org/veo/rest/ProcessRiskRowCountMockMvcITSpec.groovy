@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.rest
 
-import java.util.function.Supplier
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.context.DynamicPropertyRegistry
@@ -156,8 +154,8 @@ class ProcessRiskRowCountMockMvcITSpec extends VeoMvcSpec {
         result.items.each { assert it.risks != null }
 
         and: "the number of read rows is acceptable"
-        // 250 is the currently observed count of 224 rows plus an acceptable safety margin
-        DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBeforeQuery < 250
+        // 210 is the currently observed count of 184 rows plus an acceptable safety margin
+        DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBeforeQuery < 210
     }
 
     private postRisk2(String processId, String scenario2Id) {

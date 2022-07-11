@@ -23,7 +23,6 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 
 import org.veo.core.entity.Client;
@@ -67,6 +66,14 @@ public interface ProcessDataRepository extends CompositeRiskAffectedDataReposito
   Set<ProcessRiskData> findRisksWithScenariosByEntityDbIdIn(Iterable<String> ids);
 
   @Nonnull
-  @EntityGraph(ProcessData.GRAPH_WITH_RISKS)
+  @Query(
+      """
+         select distinct e from #{#entityName} e
+         inner join fetch e.risks r
+         inner join fetch r.scenario
+         left join fetch r.mitigation
+         left join fetch r.riskOwner
+         left join fetch r.riskAspects
+         where r.entity.dbId in ?1""")
   List<ProcessData> findAllWithRisksByDbIdIn(Iterable<String> ids);
 }

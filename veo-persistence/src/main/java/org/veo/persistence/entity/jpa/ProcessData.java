@@ -28,9 +28,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedAttributeNode;
-import javax.persistence.NamedEntityGraph;
-import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
 
@@ -51,34 +48,7 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-@NamedEntityGraph(
-    name = ProcessData.GRAPH_WITH_RISKS,
-    attributeNodes = {
-      @NamedAttributeNode(value = "risks", subgraph = "risk.entities"),
-    },
-    subgraphs = {
-      @NamedSubgraph(
-          name = "risk.entities",
-          attributeNodes = {
-            @NamedAttributeNode(value = "scenario"),
-            @NamedAttributeNode(value = "mitigation"),
-            @NamedAttributeNode(value = "riskOwner"),
-          })
-    },
-    subclassSubgraphs = {
-      @NamedSubgraph(
-          name = "risk.entities",
-          type = ProcessRiskData.class,
-          attributeNodes = {
-            @NamedAttributeNode(value = "scenario"),
-            @NamedAttributeNode(value = "mitigation"),
-            @NamedAttributeNode(value = "riskOwner"),
-            @NamedAttributeNode(value = "riskAspects"),
-          })
-    })
 public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implements Process {
-
-  public static final String GRAPH_WITH_RISKS = "graphWithRisks";
 
   @ManyToMany(
       targetEntity = ProcessData.class,
