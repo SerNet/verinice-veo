@@ -70,8 +70,11 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
 
   @Override
   public Set<T> findByDomain(Domain domain) {
-    return dataRepository.findByDomain(domain.getId().uuidValue()).stream()
-        .map(el -> (T) el)
+    return query(domain.getOwningClient().get())
+        .whereDomainsContain(domain)
+        .execute(PagingConfiguration.UNPAGED)
+        .getResultPage()
+        .stream()
         .collect(Collectors.toSet());
   }
 

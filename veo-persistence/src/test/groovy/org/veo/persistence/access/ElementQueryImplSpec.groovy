@@ -28,6 +28,7 @@ import org.veo.core.repository.PagingConfiguration.SortOrder
 import org.veo.core.repository.QueryCondition
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
+import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.access.jpa.PersonDataRepository
 import org.veo.persistence.access.jpa.ProcessDataRepository
 import org.veo.persistence.access.jpa.ScopeDataRepository
@@ -52,6 +53,12 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     @Autowired
     ScopeDataRepository scopeDataRepository
+
+    @Autowired
+    AssetDataRepository assetDataRepository
+
+    @Autowired
+    DomainDataRepository domainDataRepository
 
     ClientData client
     Domain domain
@@ -719,5 +726,36 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
             it[41].name == "Person 42"
             it[99].name == "Person 100"
         }
+    }
+
+    def 'queries by domain'() {
+        given:
+        def domain1 = domainDataRepository.save(newDomain(client))
+        def domain2 = domainDataRepository.save(newDomain(client))
+        client = clientDataRepository.save(client)
+        assetDataRepository.saveAll([
+            newAsset(unit) {
+                name = "one"
+                associateWithDomain(domain1, "Application", "NEW")
+            },
+            newAsset(unit) {
+                name = "two"
+                associateWithDomain(domain1, "Application", "OLD")
+                associateWithDomain(domain2, "App", "ARCHIVED")
+            },
+            newAsset(unit) {
+                name = "three"
+                associateWithDomain(domain2, "Application", "PLANNED")
+            }
+        ])
+
+        def query = new ElementQueryImpl<>(assetDataRepository, client)
+
+        when:
+        query.whereDomainsContain(domain1)
+        def result = query.execute(PagingConfiguration.UNPAGED)
+
+        then:
+        result.resultPage.sort{it.name}*.name == ["one", "two"]
     }
 }

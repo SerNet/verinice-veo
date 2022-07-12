@@ -133,35 +133,6 @@ class ElementJpaSpec extends AbstractJpaSpec {
         }
     }
 
-    def 'finds entities by domain'() {
-        given:
-        def domain1 = domainRepository.save(newDomain(client))
-        def domain2 = domainRepository.save(newDomain(client))
-        client = clientRepository.save(client)
-
-        assetRepository.saveAll([
-            newAsset(owner1) {
-                name = "one"
-                associateWithDomain(domain1, "Application", "NEW")
-            },
-            newAsset(owner1) {
-                name = "two"
-                associateWithDomain(domain1, "Application", "OLD")
-                associateWithDomain(domain2, "App", "ARCHIVED")
-            },
-            newAsset(owner1) {
-                name = "three"
-                associateWithDomain(domain2, "Application", "PLANNED")
-            }
-        ])
-
-        when:
-        def domain1Assets = assetRepository.findByDomain(domain1.id.uuidValue())
-
-        then:
-        domain1Assets*.name.sort() == ["one", "two"]
-    }
-
     def 'increment version id'() {
         given: "one unit db ID"
 

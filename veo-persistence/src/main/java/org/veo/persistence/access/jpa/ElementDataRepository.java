@@ -82,16 +82,6 @@ public interface ElementDataRepository<T extends ElementData>
   Page<T> findAll(Specification<T> specification, Pageable pageable);
 
   @Query(
-      "select distinct e from #{#entityName} as e "
-          + "left join fetch e.links "
-          + "left join fetch e.customAspects "
-          + "left join fetch e.decisionResultsAspects "
-          + "left join fetch e.subTypeAspects "
-          + "join e.domains d "
-          + "where d.id = ?1")
-  Set<T> findByDomain(String domainId);
-
-  @Query(
       "SELECT new org.veo.core.repository.SubTypeStatusCount(a.subType, a.status, count(a.status)) from #{#entityName} as e "
           + "inner join e.subTypeAspects a "
           + "inner join e.domains d "

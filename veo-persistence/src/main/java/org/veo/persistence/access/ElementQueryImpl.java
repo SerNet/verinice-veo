@@ -41,6 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
@@ -202,6 +203,14 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
   public ElementQuery<TInterface> whereUpdatedByContainsIgnoreCase(
       QueryCondition<String> condition) {
     inIgnoringCase(condition, "updatedBy");
+    return this;
+  }
+
+  @Override
+  public ElementQuery<TInterface> whereDomainsContain(Domain domain) {
+    mySpec =
+        mySpec.and(
+            (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.join("domains"), domain));
     return this;
   }
 

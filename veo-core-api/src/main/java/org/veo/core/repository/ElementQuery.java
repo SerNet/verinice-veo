@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
@@ -84,6 +85,8 @@ public interface ElementQuery<T extends Element> {
   ElementQuery<T> fetchAppliedCatalogItems();
 
   ElementQuery<T> fetchParentsAndChildrenAndSiblings();
+
+  ElementQuery<T> whereDomainsContain(Domain domain);
 
   PagedResult<T> execute(PagingConfiguration pagingConfiguration);
 }
