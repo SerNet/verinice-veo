@@ -85,6 +85,7 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
         .fetchAppliedCatalogItems()
         .fetchParentsAndChildrenAndSiblings()
         .fetchRisks()
+        .fetchRiskValuesAspects()
         .execute(PagingConfiguration.UNPAGED)
         .getResultPage()
         .stream()

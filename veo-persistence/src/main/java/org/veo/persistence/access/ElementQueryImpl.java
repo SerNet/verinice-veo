@@ -64,6 +64,7 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
   protected boolean fetchAppliedCatalogItems;
   protected boolean fetchScopesAndScopeMembers;
   protected boolean fetchRisks;
+  protected boolean fetchRiskValuesAspects;
 
   public ElementQueryImpl(ElementDataRepository<TDataClass> repo, Client client) {
     this.dataRepository = repo;
@@ -230,6 +231,12 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
   @Override
   public ElementQuery<TInterface> fetchRisks() {
     fetchRisks = true;
+    return this;
+  }
+
+  @Override
+  public ElementQuery<TInterface> fetchRiskValuesAspects() {
+    fetchRiskValuesAspects = true;
     return this;
   }
 

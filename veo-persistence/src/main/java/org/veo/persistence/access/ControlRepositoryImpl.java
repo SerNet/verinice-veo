@@ -26,9 +26,11 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.ControlRepository;
+import org.veo.core.repository.ElementQuery;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.ControlDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
@@ -55,6 +57,11 @@ public class ControlRepositoryImpl
     super(dataRepository, validation, linkDataRepository, scopeDataRepository);
     this.assetDataRepository = assetDataRepository;
     this.processDataRepository = processDataRepository;
+  }
+
+  @Override
+  public ElementQuery<Control> query(Client client) {
+    return new ControlQueryImpl((ControlDataRepository) dataRepository, client);
   }
 
   @Override

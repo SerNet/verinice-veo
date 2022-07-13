@@ -40,6 +40,9 @@ public class ProcessQueryImpl extends CompositeElementQueryImpl<Process, Process
     if (fetchRisks) {
       processRepository.findAllWithRisksByDbIdIn(ids);
     }
+    if (fetchRiskValuesAspects) {
+      processRepository.findAllWithRiskValuesAspectsByDbIdIn(ids);
+    }
     return items;
   }
 }

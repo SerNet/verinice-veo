@@ -26,8 +26,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scenario;
+import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.ScenarioRepository;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
@@ -55,6 +57,11 @@ public class ScenarioRepositoryImpl
     super(dataRepository, validation, linkDataRepository, scopeDataRepository);
     this.assetDataRepository = assetDataRepository;
     this.processDataRepository = processDataRepository;
+  }
+
+  @Override
+  public ElementQuery<Scenario> query(Client client) {
+    return new ScenarioQueryImpl((ScenarioDataRepository) dataRepository, client);
   }
 
   @Override

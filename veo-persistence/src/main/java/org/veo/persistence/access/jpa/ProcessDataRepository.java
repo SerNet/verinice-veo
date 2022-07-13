@@ -18,9 +18,12 @@
 package org.veo.persistence.access.jpa;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Client;
 import org.veo.persistence.entity.jpa.ProcessData;
@@ -61,4 +64,8 @@ public interface ProcessDataRepository extends CompositeRiskAffectedDataReposito
          left join fetch s.riskValuesAspects
          where r.entity.dbId in ?1""")
   Set<ProcessRiskData> findRisksWithScenariosByEntityDbIdIn(Iterable<String> ids);
+
+  @Transactional(readOnly = true)
+  @EntityGraph(attributePaths = "riskValuesAspects")
+  Set<ProcessData> findAllWithRiskValuesAspectsByDbIdIn(List<String> ids);
 }

@@ -57,6 +57,9 @@ public class ScopeQueryImpl extends ElementQueryImpl<Scope, ScopeData> implement
     if (fetchRisks) {
       scopeRepository.findAllWithRisksByDbIdIn(ids);
     }
+    if (fetchRiskValuesAspects) {
+      scopeRepository.findAllWithRiskValuesAspectsByDbIdIn(ids);
+    }
     return result;
   }
 }

@@ -50,4 +50,8 @@ public interface ScopeDataRepository extends ScopeRiskAffectedDataRepository {
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = "members")
   List<ScopeData> findAllWithMembersByDbIdIn(List<String> ids);
+
+  @Transactional(readOnly = true)
+  @EntityGraph(attributePaths = "riskValuesAspects")
+  List<ScopeData> findAllWithRiskValuesAspectsByDbIdIn(List<String> ids);
 }

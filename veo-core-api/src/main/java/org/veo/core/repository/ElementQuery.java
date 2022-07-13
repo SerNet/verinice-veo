@@ -88,6 +88,8 @@ public interface ElementQuery<T extends Element> {
 
   ElementQuery<T> fetchRisks();
 
+  ElementQuery<T> fetchRiskValuesAspects();
+
   ElementQuery<T> whereDomainsContain(Domain domain);
 
   PagedResult<T> execute(PagingConfiguration pagingConfiguration);

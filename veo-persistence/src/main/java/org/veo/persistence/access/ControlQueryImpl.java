@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Alexander Ben Nasrallah.
+ * Copyright (C) 2022  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,18 +15,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.access.jpa;
+package org.veo.persistence.access;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.transaction.annotation.Transactional;
+import org.veo.core.entity.Client;
+import org.veo.core.entity.Control;
+import org.veo.persistence.access.jpa.ControlDataRepository;
+import org.veo.persistence.entity.jpa.ControlData;
 
-import org.veo.persistence.entity.jpa.ScenarioData;
+public class ControlQueryImpl extends CompositeElementQueryImpl<Control, ControlData> {
 
-public interface ScenarioDataRepository extends CompositeEntityDataRepository<ScenarioData> {
+  private final ControlDataRepository controlRepository;
 
-  @Transactional(readOnly = true)
-  @EntityGraph(attributePaths = "riskValuesAspects")
-  List<ScenarioData> findAllWithRiskValuesAspectsByDbIdIn(List<String> ids);
+  public ControlQueryImpl(ControlDataRepository repo, Client client) {
+    super(repo, client);
+    this.controlRepository = repo;
+  }
+
+  @Override
+  protected List<ControlData> fullyLoadItems(List<String> ids) {
+    List<ControlData> result = super.fullyLoadItems(ids);
+
+    if (fetchRiskValuesAspects) {
+      controlRepository.findAllWithRiskValuesAspectsByDbIdIn(ids);
+    }
+    return result;
+  }
 }
