@@ -168,7 +168,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.delete == 0
         queryCounts.insert == 0
         queryCounts.update == 0
-        queryCounts.select == 3
+        queryCounts.select == 2
 
         when: "fetch risks using only full aggregate graph"
         queryCounts = trackQueryCounts{

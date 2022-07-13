@@ -51,6 +51,7 @@ public interface CompositeRiskAffectedDataRepository<T extends RiskAffectedData<
       """
          select distinct e from #{#entityName} e
          inner join fetch e.risks r
+         inner join fetch r.domains
          inner join fetch r.scenario
          left join fetch r.mitigation
          left join fetch r.riskOwner

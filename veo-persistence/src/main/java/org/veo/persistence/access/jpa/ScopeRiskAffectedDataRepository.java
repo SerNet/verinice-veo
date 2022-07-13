@@ -50,6 +50,7 @@ public interface ScopeRiskAffectedDataRepository extends ElementDataRepository<S
       """
          select distinct e from #{#entityName} e
          inner join fetch e.risks r
+         inner join fetch r.domains
          inner join fetch r.scenario
          left join fetch r.mitigation
          left join fetch r.riskOwner
