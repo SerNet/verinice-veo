@@ -61,7 +61,7 @@ public interface ElementDataRepository<T extends ElementData>
 
   @Nonnull
   @Transactional(readOnly = true)
-  @EntityGraph(attributePaths = "customAspects")
+  @EntityGraph(attributePaths = {"customAspects", "customAspects.domains"})
   List<T> findAllWithCustomAspectsByDbIdIn(Iterable<String> ids);
 
   @Nonnull
