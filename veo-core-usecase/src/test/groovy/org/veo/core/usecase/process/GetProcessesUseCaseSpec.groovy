@@ -24,7 +24,6 @@ import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.QueryCondition
 import org.veo.core.usecase.UseCaseSpec
-import org.veo.core.usecase.base.GetElementsUseCase
 
 class GetProcessesUseCaseSpec extends UseCaseSpec {
 
@@ -35,7 +34,7 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
     GetProcessesUseCase usecase = new GetProcessesUseCase(clientRepository, processRepository, unitHierarchyProvider)
 
     def setup() {
-        processRepository.query(existingClient, false) >> query
+        processRepository.query(existingClient) >> query
     }
 
     def "retrieve all processes for a client"() {

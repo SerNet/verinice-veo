@@ -25,7 +25,6 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.repository.ClientRepository;
-import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.QueryCondition;
@@ -41,27 +40,23 @@ import lombok.Value;
 public class GetProcessesUseCase
     extends GetElementsUseCase<Process, GetProcessesUseCase.InputData> {
 
-  private final ProcessRepository processRepository;
-
   public GetProcessesUseCase(
       ClientRepository clientRepository,
       ProcessRepository repository,
       UnitHierarchyProvider unitHierarchyProvider) {
     super(clientRepository, repository, unitHierarchyProvider);
-    this.processRepository = repository;
   }
 
   @Override
   public OutputData<Process> execute(GetProcessesUseCase.InputData input) {
     Client client =
         UseCaseTools.checkClientExists(input.getAuthenticatedClient().getId(), clientRepository);
-    var query = createQuery(client, input.isEmbedRisks());
+    var query = createQuery(client);
+    if (input.isEmbedRisks()) {
+      query.fetchRisks();
+    }
     applyDefaultQueryParameters(input, query);
     return new OutputData<>(query.execute(input.getPagingConfiguration()));
-  }
-
-  private ElementQuery<Process> createQuery(Client client, boolean withRisks) {
-    return processRepository.query(client, withRisks);
   }
 
   @Valid

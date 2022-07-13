@@ -26,12 +26,10 @@ import org.veo.persistence.entity.jpa.ProcessData;
 
 public class ProcessQueryImpl extends CompositeElementQueryImpl<Process, ProcessData> {
 
-  private final boolean withRisks;
   private final ProcessDataRepository processRepository;
 
-  public ProcessQueryImpl(ProcessDataRepository repo, Client client, boolean withRisks) {
+  public ProcessQueryImpl(ProcessDataRepository repo, Client client) {
     super(repo, client);
-    this.withRisks = withRisks;
     this.processRepository = repo;
   }
 
@@ -39,7 +37,7 @@ public class ProcessQueryImpl extends CompositeElementQueryImpl<Process, Process
   protected List<ProcessData> fullyLoadItems(List<String> ids) {
     var items = super.fullyLoadItems(ids);
 
-    if (withRisks) {
+    if (fetchRisks) {
       processRepository.findAllWithRisksByDbIdIn(ids);
     }
     return items;

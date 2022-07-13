@@ -44,7 +44,5 @@ public interface ProcessRepository
   /** Find elements that have risks associated to them. */
   Set<Process> findAllHavingRisks(Client client);
 
-  ElementQuery<Process> query(Client client, boolean withRisks);
-
   Optional<Process> findById(Key<UUID> id, boolean shouldEmbedRisks);
 }

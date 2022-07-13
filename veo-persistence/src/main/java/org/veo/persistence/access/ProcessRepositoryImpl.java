@@ -84,8 +84,8 @@ public class ProcessRepositoryImpl
   }
 
   @Override
-  public ElementQuery<Process> query(Client client, boolean withRisks) {
-    return new ProcessQueryImpl((ProcessDataRepository) dataRepository, client, withRisks);
+  public ElementQuery<Process> query(Client client) {
+    return new ProcessQueryImpl((ProcessDataRepository) dataRepository, client);
   }
 
   @Override

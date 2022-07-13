@@ -86,6 +86,8 @@ public interface ElementQuery<T extends Element> {
 
   ElementQuery<T> fetchParentsAndChildrenAndSiblings();
 
+  ElementQuery<T> fetchRisks();
+
   ElementQuery<T> whereDomainsContain(Domain domain);
 
   PagedResult<T> execute(PagingConfiguration pagingConfiguration);
