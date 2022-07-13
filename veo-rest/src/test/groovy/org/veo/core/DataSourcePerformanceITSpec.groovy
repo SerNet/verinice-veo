@@ -418,7 +418,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.delete <= 12
         queryCounts.insert == 4
         queryCounts.update == 2
-        queryCounts.select == 50
+        queryCounts.select == 53
     }
 
     def "SQL performance for deleting 2 units with 1 commonly referenced domain"() {

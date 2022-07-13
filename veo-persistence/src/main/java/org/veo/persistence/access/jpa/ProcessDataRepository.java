@@ -18,10 +18,7 @@
 package org.veo.persistence.access.jpa;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
-
-import javax.annotation.Nonnull;
 
 import org.springframework.data.jpa.repository.Query;
 
@@ -64,16 +61,4 @@ public interface ProcessDataRepository extends CompositeRiskAffectedDataReposito
          left join fetch s.riskValuesAspects
          where r.entity.dbId in ?1""")
   Set<ProcessRiskData> findRisksWithScenariosByEntityDbIdIn(Iterable<String> ids);
-
-  @Nonnull
-  @Query(
-      """
-         select distinct e from #{#entityName} e
-         inner join fetch e.risks r
-         inner join fetch r.scenario
-         left join fetch r.mitigation
-         left join fetch r.riskOwner
-         left join fetch r.riskAspects
-         where r.entity.dbId in ?1""")
-  List<ProcessData> findAllWithRisksByDbIdIn(Iterable<String> ids);
 }

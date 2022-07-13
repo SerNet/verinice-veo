@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2019  Urs Zeidler.
+ * Copyright (C) 2022  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,34 +17,29 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
-import org.springframework.stereotype.Repository;
+import java.util.List;
 
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.Client;
-import org.veo.core.repository.AssetRepository;
-import org.veo.core.repository.ElementQuery;
 import org.veo.persistence.access.jpa.AssetDataRepository;
-import org.veo.persistence.access.jpa.CustomLinkDataRepository;
-import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.AssetData;
-import org.veo.persistence.entity.jpa.ValidationService;
 
-@Repository
-public class AssetRepositoryImpl
-    extends AbstractCompositeRiskAffectedRepository<Asset, AssetRisk, AssetData>
-    implements AssetRepository {
+public class AssetQueryImpl extends CompositeElementQueryImpl<Asset, AssetData> {
 
-  public AssetRepositoryImpl(
-      AssetDataRepository dataRepository,
-      ValidationService validation,
-      CustomLinkDataRepository linkDataRepository,
-      ScopeDataRepository scopeDataRepository) {
-    super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+  private final AssetDataRepository assetRepository;
+
+  public AssetQueryImpl(AssetDataRepository repo, Client client) {
+    super(repo, client);
+    this.assetRepository = repo;
   }
 
   @Override
-  public ElementQuery<Asset> query(Client client) {
-    return new AssetQueryImpl((AssetDataRepository) dataRepository, client);
+  protected List<AssetData> fullyLoadItems(List<String> ids) {
+    var items = super.fullyLoadItems(ids);
+
+    if (fetchRisks) {
+      assetRepository.findAllWithRisksByDbIdIn(ids);
+    }
+    return items;
   }
 }

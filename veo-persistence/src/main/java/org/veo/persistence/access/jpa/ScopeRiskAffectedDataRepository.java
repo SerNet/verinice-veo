@@ -18,8 +18,12 @@
 package org.veo.persistence.access.jpa;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,4 +44,16 @@ public interface ScopeRiskAffectedDataRepository extends ElementDataRepository<S
 
   @SuppressWarnings("PMD.MethodNamingConventions")
   Set<ScopeData> findDistinctByRisks_RiskOwner_In(Collection<PersonData> persons);
+
+  @Nonnull
+  @Query(
+      """
+         select distinct e from #{#entityName} e
+         inner join fetch e.risks r
+         inner join fetch r.scenario
+         left join fetch r.mitigation
+         left join fetch r.riskOwner
+         left join fetch r.riskAspects
+         where r.entity.dbId in ?1""")
+  List<ScopeData> findAllWithRisksByDbIdIn(Iterable<String> ids);
 }
