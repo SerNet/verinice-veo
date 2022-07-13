@@ -34,7 +34,7 @@ import org.veo.persistence.entity.jpa.ProcessData
 
 import net.ttddyy.dsproxy.QueryCountHolder
 
-class ElementQueryImplPerformanceSpec extends VeoSpringSpec {
+class ElementQueryImplPerformanceSpec extends AbstractPerformaceITSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository

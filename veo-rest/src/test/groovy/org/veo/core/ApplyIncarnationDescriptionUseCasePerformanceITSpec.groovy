@@ -20,8 +20,6 @@ package org.veo.core
 import java.util.concurrent.CompletableFuture
 import java.util.function.Function
 
-import javax.persistence.SequenceGenerator
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
@@ -37,12 +35,11 @@ import org.veo.persistence.access.CatalogRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.StoredEventDataRepository
-import org.veo.persistence.entity.jpa.StoredEventData
 
 import net.ttddyy.dsproxy.QueryCountHolder
 
 @WithUserDetails("user@domain.example")
-class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends VeoSpringSpec {
+class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerformaceITSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
@@ -71,25 +68,6 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends VeoSpringSpec 
 
     private Client client
     private Unit unit
-
-    /**
-     * to create a predictable number of select statements, we need to make sure
-     * that the number of queries to the seq_events sequence is always the same.
-     * Therefore, we insert dummy events until the highest ID is a multiple of the
-     * allocationSize of the @SequenceGenerator.
-     *
-     * @see {@link org.veo.persistence.entity.jpa.StoredEventData#id}
-     * @see {@link javax.persistence.SequenceGenerator#allocationSize()}
-     */
-    def setup() {
-        txTemplate.execute {
-            def highestId = storedEventRepository.save(new StoredEventData()).id
-            int allocationSize = StoredEventData.class.getDeclaredField('id').getAnnotation(SequenceGenerator).allocationSize()
-            while (!(highestId % allocationSize == 0)) {
-                highestId= storedEventRepository.save(new StoredEventData()).id
-            }
-        }
-    }
 
     def "SQL performance for getting and applying an incarnation description"() {
         given:

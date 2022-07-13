@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.core
 
-import javax.persistence.SequenceGenerator
-
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Asset
@@ -40,13 +38,10 @@ import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.StoredEventDataRepository
-import org.veo.persistence.entity.jpa.StoredEventData
 
-import net.ttddyy.dsproxy.QueryCount
-import net.ttddyy.dsproxy.QueryCountHolder
 import spock.lang.Issue
 
-class DataSourcePerformanceITSpec extends VeoSpringSpec {
+class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
@@ -72,25 +67,6 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
     private Client client
     private Unit unit
     Domain domain
-
-    /**
-     * to create a predictable number of select statements, we need to make sure
-     * that the number of queries to the seq_events sequence is always the same.
-     * Therefore, we insert dummy events until the highest ID is a multiple of the
-     * allocationSize of the @SequenceGenerator.
-     *
-     * @see {@link org.veo.persistence.entity.jpa.StoredEventData#id}
-     * @see {@link javax.persistence.SequenceGenerator#allocationSize()}
-     */
-    def setup() {
-        txTemplate.execute {
-            def highestId = storedEventRepository.save(new StoredEventData()).id
-            int allocationSize = StoredEventData.class.getDeclaredField('id').getAnnotation(SequenceGenerator).allocationSize()
-            while (!(highestId % allocationSize == 0)) {
-                highestId= storedEventRepository.save(new StoredEventData()).id
-            }
-        }
-    }
 
     def "SQL performance for saving a new domain, client and unit"() {
         when:
@@ -727,13 +703,5 @@ class DataSourcePerformanceITSpec extends VeoSpringSpec {
             scopeRepository.deleteByUnit(unit)
             unitRepository.delete(unit)
         }
-    }
-
-    QueryCount trackQueryCounts(Closure cl) {
-        QueryCountHolder.clear()
-        executeInTransaction {
-            cl.call()
-        }
-        QueryCountHolder.grandTotal
     }
 }

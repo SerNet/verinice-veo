@@ -27,7 +27,7 @@ import org.springframework.context.event.EventListener
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.context.ContextConfiguration
 
-import org.veo.core.VeoSpringSpec
+import org.veo.core.AbstractPerformaceITSpec
 import org.veo.core.entity.Process
 import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.Scenario
@@ -48,7 +48,7 @@ import net.ttddyy.dsproxy.QueryCountHolder
 
 @WithUserDetails("user@domain.example")
 @ContextConfiguration(classes = Config.class)
-class RiskServiceITSpec extends VeoSpringSpec {
+class RiskServiceITSpec extends AbstractPerformaceITSpec  {
 
     private static final String BETRAECHTLICH = 'beträchtlich'
     private static final String EXISTENZBEDROHEND = 'existenzbedrohend'
