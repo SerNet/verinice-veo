@@ -987,50 +987,6 @@
   ],
   "elements": [
     {
-      "name": " Meeting-Metadaten",
-      "description": "z.B. Datum, Uhrzeit und Dauer der Kommunikation, Name des Meetings, Teilnehmer-IP-Adresse",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "asset",
-      "parts": [],
-      "domains": {
-        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
-          "subType": "AST_Datatype",
-          "status": "FOR_REVIEW",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "40cd6764-830c-4af2-b88d-4bf02c9018e5"
-    },
-    {
-      "name": " Verbindungsdaten ",
-      "description": "z.B. L\u00e4ndernamen, Start- und Endzeiten, IP-Adressen",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "asset",
-      "parts": [],
-      "domains": {
-        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
-          "subType": "AST_Datatype",
-          "status": "RELEASED",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "a1e92c07-040a-4f7f-ae28-3cc742e63beb"
-    },
-    {
       "name": "Allgemeine Personendaten",
       "description": "Vorname, Nachname, Anschrift und Telefonnummer ",
       "links": {
@@ -1319,7 +1275,7 @@
       "id": "d897c2d1-d1e7-4ad9-8ad3-de651569f5d2"
     },
     {
-      "name": "E-Mail Adresse",
+      "name": "E-Mail-Adresse",
       "description": "",
       "links": {
         
@@ -1383,8 +1339,8 @@
       "id": "af507399-bd89-4859-8a14-3fb071f2d8e0"
     },
     {
-      "name": "Hautfarbe , Haare",
-      "description": "\u00c4u\u00dfere Erscheinungsbild der gefilmten Personen wie z.B  rassische und ethnische Herkunft (Hautfarbe, Haare)",
+      "name": "Hautfarbe, Haare",
+      "description": "\u00c4u\u00dfere Erscheinungsbild der gefilmten Personen wie z.B.  rassische und ethnische Herkunft (Hautfarbe, Haare)",
       "links": {
         
       },
@@ -1476,6 +1432,28 @@
         }
       },
       "id": "0ce7f2a8-88ac-41c3-8e6a-7b2d9a4d66ae"
+    },
+    {
+      "name": "Meeting-Metadaten",
+      "description": "z.B. Datum, Uhrzeit und Dauer der Kommunikation, Name des Meetings, Teilnehmer-IP-Adresse",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "asset",
+      "parts": [],
+      "domains": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
+          "subType": "AST_Datatype",
+          "status": "FOR_REVIEW",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "40cd6764-830c-4af2-b88d-4bf02c9018e5"
     },
     {
       "name": "Office 365",
@@ -1678,6 +1656,28 @@
       "id": "672e473d-3d9d-4573-af66-f89b1b0d84e4"
     },
     {
+      "name": "Verbindungsdaten",
+      "description": "z.B. L\u00e4ndernamen, Start- und Endzeiten, IP-Adressen",
+      "links": {
+        
+      },
+      "customAspects": {
+        
+      },
+      "type": "asset",
+      "parts": [],
+      "domains": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
+          "subType": "AST_Datatype",
+          "status": "RELEASED",
+          "decisionResults": {
+            
+          }
+        }
+      },
+      "id": "a1e92c07-040a-4f7f-ae28-3cc742e63beb"
+    },
+    {
       "name": "Videokamera",
       "links": {
         
@@ -1709,115 +1709,20 @@
       "id": "aa600233-2194-4f2b-b5b8-df0d1dfd40a8"
     },
     {
-      "name": " Einwilligungserkl\u00e4rungen  dokumentieren",
-      "links": {
-        
-      },
-      "customAspects": {
-        "control_dataProtection": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_confidentiality",
-              "control_dataProtection_objectives_integrity"
-            ]
-          }
-        }
-      },
-      "type": "control",
-      "parts": [],
-      "domains": {
-        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
-          "subType": "CTL_TOM",
-          "status": "RELEASED",
-          "decisionResults": {
-            
-          },
-          "riskValues": {
-            "DSRA": {
-              "implementationStatus": 0
-            }
-          }
-        }
-      },
-      "id": "f9264d61-ce4e-4447-97de-cff6cc936b59"
-    },
-    {
-      "name": " L\u00f6schvorgaben festsetzen ",
-      "description": "L\u00f6schvorgaben f\u00fcr digitale Bewerbungen m\u00fcssen implementiert und kommuniziert.",
+      "name": "AV Vertrag mit Safeguard",
       "links": {
         
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
-          "attributes": {
-            "control_implementation_date": "2022-06-16"
-          }
-        },
-        "control_dataProtection": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_confidentiality",
-              "control_dataProtection_objectives_integrity"
-            ]
-          }
-        }
-      },
-      "type": "control",
-      "parts": [],
-      "domains": {
-        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
-          "subType": "CTL_TOM",
-          "status": "IN_PROGRESS",
-          "decisionResults": {
-            
-          },
-          "riskValues": {
-            "DSRA": {
-              "implementationStatus": 1
-            }
-          }
-        }
-      },
-      "id": "2643384c-e06a-4466-a667-1ba60ef81ad8"
-    },
-    {
-      "name": "AV Vertrag mit Safeguard ",
-      "links": {
-        
-      },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_implementation_date": "2022-06-30",
             "control_implementation_explanation": "Vertrag muss abgeschlossen werden, Sicherheitskonzept ist vorab anzufordern"
           }
         },
         "control_dataProtection": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_availability",
@@ -1871,7 +1776,7 @@
       "id": "db4431fa-355e-47db-9ba0-bcb3edbadcfa"
     },
     {
-      "name": "Arbeitsanweiung zur Tonaufzeichnung",
+      "name": "Arbeitsanweisung zur Tonaufzeichnung",
       "links": {
         
       },
@@ -1880,7 +1785,7 @@
           "domains": [],
           "attributes": {
             "control_implementation_date": "2022-06-30",
-            "control_implementation_explanation": "Wird eine Videou\u0308berwachungskamera mit Audiofunktion eingesetzt, kann dies unter den Straftatbestand des \u00a7 201I, II StGB fallen. Demnach ist das\nunbefugt heimliche Abho\u0308ren oder Aufzeichnen des nichto\u0308ffentlich gesprochenen Wortes strafbar. Verfu\u0308gt eine Videou\u0308berwachungskamera u\u0308ber eine Audiofunktion, ist diese unumkehrbar zu deaktivieren. Hierf\u00fcr ist eine Arbeitsanweisung zu erstellen und in der Organisation umzusetzen\n"
+            "control_implementation_explanation": "Wird eine Video\u00fcberwachungskamera mit Audiofunktion eingesetzt, kann dies unter den Straftatbestand des \u00a7 201I, II StGB fallen. Demnach ist das\nunbefugt heimliche Abh\u00f6ren oder Aufzeichnen des nicht\u00f6ffentlich gesprochenen Wortes strafbar. Verf\u00fcgt eine Video\u00fcberwachungskamera \u00fcber eine Audiofunktion, ist diese unumkehrbar zu deaktivieren. Hierf\u00fcr ist eine Arbeitsanweisung zu erstellen und in der Organisation umzusetzen\n"
           }
         }
       },
@@ -1903,7 +1808,7 @@
       "id": "c97ae1cb-a8e6-4e01-b598-f21fc987f6aa"
     },
     {
-      "name": "Berechtigungskonzept ",
+      "name": "Berechtigungskonzept",
       "description": "Ein schriftliches Berechtigungskonzept ist zu erstellen",
       "links": {
         
@@ -2283,11 +2188,7 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_implementation_date": "2022-08-24"
           }
@@ -2310,6 +2211,40 @@
         }
       },
       "id": "8b6cd648-655f-4422-b28e-386d909d97ca"
+    },
+    {
+      "name": "Einwilligungserkl\u00e4rungen dokumentieren",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_dataProtection": {
+          "domains": [],
+          "attributes": {
+            "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_confidentiality",
+              "control_dataProtection_objectives_integrity"
+            ]
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
+          "subType": "CTL_TOM",
+          "status": "RELEASED",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "implementationStatus": 0
+            }
+          }
+        }
+      },
+      "id": "f9264d61-ce4e-4447-97de-cff6cc936b59"
     },
     {
       "name": "Einwilligungserkl\u00e4rungen erg\u00e4nzen",
@@ -2439,22 +2374,14 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_implementation_date": "2021-08-19",
-            "control_implementation_explanation": "Drucker  und Kopierer m\u00fcssen in geeigneter Weise aufgestellt werden."
+            "control_implementation_explanation": "Drucker und Kopierer m\u00fcssen in geeigneter Weise aufgestellt werden."
           }
         },
         "control_dataProtection": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality"
@@ -2479,29 +2406,21 @@
       "id": "dfa6219b-3708-4cff-b7d3-20027984f9aa"
     },
     {
-      "name": "Hinweisschilder Vido\u00fcberwachung",
+      "name": "Hinweisschilder Video\u00fcberwachung",
       "description": "Auf die Datenverarbeitung ist\ntransparent und fair nach den Vorgaben der Art. 12 ff. DS-GVO hinzuweisen\n",
       "links": {
         
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_implementation_date": "2022-08-26",
-            "control_implementation_explanation": "Es m\u00fcssen am Anfangs- und am Endbereich des \u00fcberwachten Areals Hinweisschilder so angebracht werden , dass sie von den Betroffenen direkt zur Kentniss gelangen k\u00f6nnen."
+            "control_implementation_explanation": "Es m\u00fcssen am Anfangs- und am Endbereich des \u00fcberwachten Areals Hinweisschilder so angebracht werden, dass sie von den Betroffenen direkt zur Kentniss gelangen k\u00f6nnen."
           }
         },
         "control_dataProtection": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality"
@@ -2528,18 +2447,14 @@
       "id": "0a4c1fd4-5097-41e2-9bae-2e568b7d573e"
     },
     {
-      "name": "Informationspflichten ",
+      "name": "Informationspflichten",
       "description": "Informationspflichten m\u00fcssen angepasst werden an die ver\u00e4nderten Bedingungen und den Betroffenen zur Kenntnis gebracht werden",
       "links": {
         
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_implementation_date": "2022-08-04"
           }
@@ -2564,28 +2479,20 @@
       "id": "f5afe8f1-ac3b-4911-9589-571ecc4fdaa7"
     },
     {
-      "name": "Informationspflichten Video\u00fcberwachung ",
+      "name": "Informationspflichten Video\u00fcberwachung",
       "links": {
         
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_implementation_date": "2022-08-17",
-            "control_implementation_explanation": "Die Informationspflichten zu den  Video\u00fcberwachungsma\u00dfnahmen m\u00fcssen erstellt und f\u00fcr die Betroffnen zur Verf\u00fcgung getsellt werden. "
+            "control_implementation_explanation": "Die Informationspflichten zu den Video\u00fcberwachungsma\u00dfnahmen m\u00fcssen erstellt und f\u00fcr die Betroffenen zur Verf\u00fcgung gestellt werden. "
           }
         },
         "control_dataProtection": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality"
@@ -2663,27 +2570,19 @@
     },
     {
       "name": "L\u00f6schfrist 2 Jahres festlegen",
-      "description": "L\u00f6schfrist von 2 Jahren festelegen , implementieren, kommunizieren und dopkumentieren. ",
+      "description": "L\u00f6schfrist von 2 Jahren festlegen, implementieren, kommunizieren und dokumentieren. ",
       "links": {
         
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_implementation_date": "2022-06-30"
           }
         },
         "control_dataProtection": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_availability",
@@ -2718,21 +2617,13 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
-            "control_implementation_explanation": "Es muss eine L\u00f6schfrist von 72 Stunden f\u00fcr Videoaufzeichnungen festgesetzt werden. Das L\u00f6schkonzept ist entsprechend zu erg\u00e4nzen , Fristen m\u00fcssen aktiv kommuniziert werden"
+            "control_implementation_explanation": "Es muss eine L\u00f6schfrist von 72 Stunden f\u00fcr Videoaufzeichnungen festgesetzt werden.\nDas L\u00f6schkonzept ist entsprechend zu erg\u00e4nzen, Fristen m\u00fcssen aktiv kommuniziert werden"
           }
         },
         "control_dataProtection": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_integrity",
@@ -2760,27 +2651,19 @@
     },
     {
       "name": "L\u00f6schfrist Bewerbungsunterlagen",
-      "description": "Es muss eine 6 monatige L\u00f6schfrist f\u00fcr abgelehnte Bewerber festgesetzt und mit der Personalabteilung kommuniziert werden",
+      "description": "Es muss eine 6-monatige L\u00f6schfrist f\u00fcr abgelehnte Bewerber festgesetzt und mit der Personalabteilung kommuniziert werden",
       "links": {
         
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_implementation_date": "2022-06-09"
           }
         },
         "control_dataProtection": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality"
@@ -2813,14 +2696,10 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_implementation_date": "2022-08-31",
-            "control_implementation_explanation": "L\u00f6schmechanismen f\u00fcr Videoaufzeichnungen m\u00fcssen implemeniert  und dokumentiert werden, d.h Art und Weise der L\u00f6schung und Nachweise"
+            "control_implementation_explanation": "L\u00f6schmechanismen f\u00fcr Videoaufzeichnungen m\u00fcssen implementiert und dokumentiert werden, d.h Art und Weise der L\u00f6schung und Nachweise"
           }
         }
       },
@@ -2844,27 +2723,19 @@
     },
     {
       "name": "L\u00f6schverfahren aus dem Bewerberpool",
-      "description": "L\u00f6schverfahren festlegen und implentieren ",
+      "description": "L\u00f6schverfahren festlegen und implementieren",
       "links": {
         
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_implementation_date": "2022-06-14"
           }
         },
         "control_dataProtection": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality",
@@ -2892,6 +2763,47 @@
       "id": "5dd4f777-3438-4368-92c3-be0543c5149b"
     },
     {
+      "name": "L\u00f6schvorgaben festsetzen",
+      "description": "L\u00f6schvorgaben f\u00fcr digitale Bewerbungen m\u00fcssen implementiert und kommuniziert werden",
+      "links": {
+        
+      },
+      "customAspects": {
+        "control_implementation": {
+          "domains": [],
+          "attributes": {
+            "control_implementation_date": "2022-06-16"
+          }
+        },
+        "control_dataProtection": {
+          "domains": [],
+          "attributes": {
+            "control_dataProtection_objectives": [
+              "control_dataProtection_objectives_confidentiality",
+              "control_dataProtection_objectives_integrity"
+            ]
+          }
+        }
+      },
+      "type": "control",
+      "parts": [],
+      "domains": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
+          "subType": "CTL_TOM",
+          "status": "IN_PROGRESS",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            "DSRA": {
+              "implementationStatus": 1
+            }
+          }
+        }
+      },
+      "id": "2643384c-e06a-4466-a667-1ba60ef81ad8"
+    },
+    {
       "name": "Ma\u00dfnahmen Bewerberverfahren",
       "links": {
         
@@ -2902,10 +2814,10 @@
       "type": "control",
       "parts": [
         {
-          "targetUri": "https://api.staging.verinice.com/veo/controls/2643384c-e06a-4466-a667-1ba60ef81ad8"
+          "targetUri": "https://api.staging.verinice.com/veo/controls/6e2d3339-4b6d-4b29-9eb9-5c27501e71b4"
         },
         {
-          "targetUri": "https://api.staging.verinice.com/veo/controls/6e2d3339-4b6d-4b29-9eb9-5c27501e71b4"
+          "targetUri": "https://api.staging.verinice.com/veo/controls/2643384c-e06a-4466-a667-1ba60ef81ad8"
         }
       ],
       "domains": {
@@ -3003,22 +2915,14 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_implementation_date": "2022-07-22",
-            "control_implementation_explanation": "Eine Stellungnahme zur datenschutzrechlichen Zul\u00e4ssigkeit der Video\u00fcberwachung insb. der Tonaufzeichnungen ist seitens der Rechtsabteilung anzufertigen. Weitergehende Ma\u00dfnahmen , die sich aus dem Gutachten resultieren sind mit den Verantwortlkichem  zu kommunizieren und anzusto\u00dfen"
+            "control_implementation_explanation": "Eine Stellungnahme zur datenschutzrechtlichen Zul\u00e4ssigkeit der Video\u00fcberwachung insb. der Tonaufzeichnungen ist seitens der Rechtsabteilung anzufertigen. Weitergehende Ma\u00dfnahmen , die sich aus dem Gutachten resultieren sind mit den Verantwortlichen zu kommunizieren und anzusto\u00dfen"
           }
         },
         "control_dataProtection": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality",
@@ -3046,7 +2950,7 @@
       "id": "84b75fa2-0f80-4acb-b972-4624ba162d13"
     },
     {
-      "name": "Schulung zu Auskunfsterteilung",
+      "name": "Schulung zu Auskunftserteilung",
       "links": {
         
       },
@@ -3070,29 +2974,21 @@
       "id": "c739a561-5f2c-4c1b-8a9f-4a6c538f030b"
     },
     {
-      "name": "Sichere Aufbewahrung der Datentr\u00e4ger ",
-      "description": "Die Datentr\u00e4ger werden vor und nach dem Versand sicher aufbewahrt. ",
+      "name": "Sichere Aufbewahrung der Datentr\u00e4ger",
+      "description": "Die Datentr\u00e4ger werden vor und nach dem Versand sicher aufbewahrt.",
       "links": {
         
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_implementation_date": "2021-10-23",
             "control_implementation_explanation": "Geeigneter Prozess ist zu implemetieren"
           }
         },
         "control_dataProtection": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_integrity",
@@ -3466,14 +3362,10 @@
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_implementation_date": "2022-07-29",
-            "control_implementation_explanation": "Technische Doku ist zu verfolst\u00e4ndigen. Zudem sind die Zweckef\u00fcr jede einzelne Kamera schriftlich zu dokumentieren.\nFragebogen hierf\u00fcr anh\u00e4ngend"
+            "control_implementation_explanation": "Die technische Dokumentation ist zu vervollst\u00e4ndigen. Zudem sind die Zwecke f\u00fcr jede einzelne Kamera schriftlich zu dokumentieren.\nFragebogen hierf\u00fcr anh\u00e4ngend"
           }
         }
       },
@@ -3641,17 +3533,13 @@
       "id": "3e57df55-7343-46bc-ac25-6dde19cc67cb"
     },
     {
-      "name": "AV  Externe Lohnbuchhaltung AG",
+      "name": "AV Externe Lohnbuchhaltung AG",
       "links": {
         
       },
       "customAspects": {
         "document_contract": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "document_contract_type": "AV-Vertrag",
             "document_contract_location": "document_contract_location_germany",
@@ -3659,11 +3547,7 @@
           }
         },
         "document_details": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "document_details_version": "1.0",
             "document_details_approvalDate": "2022-05-02",
@@ -3686,7 +3570,7 @@
       "id": "ba722062-7dd5-4575-be77-ee8ce986ad92"
     },
     {
-      "name": "AV Vertrag Vide\u00dc",
+      "name": "AV Vertrag Video\u00fcberwachung",
       "links": {
         
       },
@@ -3816,20 +3700,16 @@
       "id": "abe503f3-eacf-4ba4-a894-d55acd682b92"
     },
     {
-      "name": "Bennie Brunop",
+      "name": "Benni Brunop",
       "description": "Der Fachverantwortliche f\u00fcr das Marketing der Data GmbH.",
       "links": {
         
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
-            "person_generalInformation_givenName": "Bennie",
+            "person_generalInformation_givenName": "Benni",
             "person_generalInformation_familyName": "Brunop",
             "person_generalInformation_salutation": "Herr"
           }
@@ -3984,7 +3864,7 @@
       "id": "f65a7919-f726-4769-9cf6-0c0c3d6aa59b"
     },
     {
-      "name": "Ferdinant Maurer",
+      "name": "Ferdinand Maurer",
       "description": "Der Gesch\u00e4ftsf\u00fchrer der FED AG.",
       "links": {
         
@@ -4034,23 +3914,15 @@
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "person_generalInformation_givenName": "Hans",
             "person_generalInformation_familyName": "Meiser",
-            "person_generalInformation_salutation": "Herr "
+            "person_generalInformation_salutation": "Herr"
           }
         },
         "person_address": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "person_address_city": "G\u00f6ttingen",
             "person_address_state": "Niedersachsen",
@@ -4060,11 +3932,7 @@
           }
         },
         "person_contactInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "person_contactInformation_email": "hm@data.de",
             "person_contactInformation_mobile": "0551 370000-9",
@@ -4163,24 +4031,16 @@
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
-            "person_generalInformation_title": "Dr",
-            "person_generalInformation_givenName": "Jens ",
-            "person_generalInformation_familyName": " Lerche",
-            "person_generalInformation_salutation": "Herr "
+            "person_generalInformation_title": "Dr.",
+            "person_generalInformation_givenName": "Jens",
+            "person_generalInformation_familyName": "Lerche",
+            "person_generalInformation_salutation": "Herr"
           }
         },
         "person_address": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "person_address_city": "G\u00f6ttingen",
             "person_address_state": "Niedersachsen",
@@ -4190,11 +4050,7 @@
           }
         },
         "person_contactInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "person_contactInformation_email": "jl@data.de",
             "person_contactInformation_mobile": "0551 370000-9",
@@ -4217,17 +4073,13 @@
     },
     {
       "name": "Jule Penny",
-      "description": "Die Leiterin der Buchaltung der Data GmbH.",
+      "description": "Die Leiterin der Buchhaltung der Data GmbH.",
       "links": {
         
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "person_generalInformation_givenName": "Jule",
             "person_generalInformation_familyName": "Penny",
@@ -4423,17 +4275,13 @@
     },
     {
       "name": "Markus Reiter",
-      "description": "Mitarbeiter im Gebaudemanagement",
+      "description": "Mitarbeiter im Geb\u00e4udemanagement",
       "links": {
         
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "person_generalInformation_givenName": "Markus",
             "person_generalInformation_familyName": "Reiter",
@@ -4483,13 +4331,9 @@
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
-            "person_generalInformation_givenName": "Paul ",
+            "person_generalInformation_givenName": "Paul",
             "person_generalInformation_familyName": "Pr\u00fcfer",
             "person_generalInformation_salutation": "Herr"
           }
@@ -4541,17 +4385,13 @@
     },
     {
       "name": "Rudi St\u00fcrmer",
-      "description": "Risk0vernatwortlicher",
+      "description": "Risikoverantwortlicher",
       "links": {
         
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "person_generalInformation_givenName": "Rudi",
             "person_generalInformation_familyName": "St\u00fcrmer",
@@ -4574,17 +4414,13 @@
     },
     {
       "name": "Stefanie Bremer",
-      "description": "Juristin in der Rechtsbateilung",
+      "description": "Juristin in der Rechtsabteilung",
       "links": {
         
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "person_generalInformation_title": "Dr.",
             "person_generalInformation_givenName": "Stefanie",
@@ -4642,25 +4478,47 @@
       "name": "Bewerberauswahlverfahren ",
       "description": "Eingegangene Bewerbungen werden an die Fachabteilungen zwecks Eignungspr\u00fcfung weitergeleitet.",
       "links": {
-        
+        "process_dataType": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/5c8ab560-3d0b-471a-b2aa-a8520acb9219"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/a930d897-3a84-42d1-8e70-d9afe8f6ac6b"
+            }
+          }
+        ],
+        "process_internalRecipient": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/848ba0c5-f164-4ae3-8da7-2d2c8f1fa0b4"
+            }
+          }
+        ]
       },
       "customAspects": {
         "process_recipient": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "process_recipient_type": "process_recipient_type_internal"
           }
         },
         "process_dataTransfer": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "process_dataTransfer_otherLegalBasis": "\u00a7 26 I BDSG, \u00a7 26 III BDSG"
           }
@@ -4835,7 +4693,7 @@
             "process_opinionDPO_PIAComment": "nicht erforderlich",
             "process_opinionDPO_PIACarriedOut": false,
             "process_opinionDPO_recommendations": "L\u00f6schung der Daten 6 Monate nach Vergabe der Stelle, au\u00dfer der Bewerber hat der Aufnahme in Bewerberpool explizit zugestimmt",
-            "process_opinionDPO_consultationComment": "nicht erforderlich",
+            "process_opinionDPO_consultationComment": "Nicht erforderlich",
             "process_opinionDPO_consultationRequired": false,
             "process_opinionDPO_consultationConducted": false
           }
@@ -4910,8 +4768,8 @@
       "id": "69d1e08f-eea5-4ae8-86da-eefd4b13e0e3"
     },
     {
-      "name": "DSFA Video\u00fcberwachung ",
-      "description": "Die Verantwortliche plant 10 Videokameras im Eingangs- und Zutrittsbereich des Geb\u00e4udes  sowie in den Gesch\u00e4ftsr\u00e4umen einzurichten.",
+      "name": "DSFA Video\u00fcberwachung",
+      "description": "Die Verantwortliche plant 10 Videokameras im Eingangs- und Zutrittsbereich des Geb\u00e4udes sowie in den Gesch\u00e4ftsr\u00e4umen einzurichten.",
       "links": {
         "process_PIAAuditor": [
           {
@@ -4983,7 +4841,7 @@
           {
             "domains": [],
             "attributes": {
-              "process_PIARepresentatives_role": " Angestellter aus IT- Abteilung f\u00fcr Fragestellungen IT-Security relebvanter Themen"
+              "process_PIARepresentatives_role": "Angestellter aus IT-Abteilung f\u00fcr Fragestellungen IT-Security relevanter Themen"
             },
             "target": {
               "targetUri": "https://api.staging.verinice.com/veo/persons/164f3943-d327-48f7-a5c9-a68d52b2331a"
@@ -4992,7 +4850,7 @@
           {
             "domains": [],
             "attributes": {
-              "process_PIARepresentatives_role": "Teilprojektleiterin, die f\u00fcr die rechtliche Bewertung der DSFA-Durchf\u00fchrung und Dokumentation zust\u00e4ndi"
+              "process_PIARepresentatives_role": "Teilprojektleiterin, die f\u00fcr die rechtliche Bewertung der DSFA-Durchf\u00fchrung und Dokumentation zust\u00e4ndig ist"
             },
             "target": {
               "targetUri": "https://api.staging.verinice.com/veo/persons/a2c4c63c-e443-46a5-bc11-143eafde068f"
@@ -5017,7 +4875,7 @@
           "attributes": {
             "process_PIADescription_dataType": false,
             "process_PIADescription_legalBasis": false,
-            "process_PIADescription_testObject": "Erfassung von Videodaten im Eingangs- und Zutrittsbereich des Geb\u00e4udes. Die Erfassung soll durchgehend erfolgen. Hierbei werden Teile eines \u00f6ffentlichen Parkplatzes des anliegenden Einkaufszentrums mit erfassr. In den Gesch\u00e4ftsr\u00e4umen  erfolgt die Erfassung an Wochentagen nur zwischen 20.00 Uhr und 6.00 Uhr . Die Kameras sind schwenkbar und k\u00f6nnen zoomen.",
+            "process_PIADescription_testObject": "Erfassung von Videodaten im Eingangs- und Zutrittsbereich des Geb\u00e4udes. Die Erfassung soll durchgehend erfolgen. Hierbei werden Teile eines \u00f6ffentlichen Parkplatzes des anliegenden Einkaufszentrums mit erfasst. In den Gesch\u00e4ftsr\u00e4umen  erfolgt die Erfassung an Wochentagen nur zwischen 20.00 Uhr und 6.00 Uhr. Die Kameras sind schwenkbar und k\u00f6nnen zoomen.",
             "process_PIADescription_dataTransfer": true,
             "process_PIADescription_affectedPersons": false,
             "process_PIADescription_deletionPeriods": false,
@@ -5039,14 +4897,14 @@
           "domains": [],
           "attributes": {
             "process_PIADPO_advice": true,
-            "process_PIADPO_comment": "Rat des Datenschutzbeauftragten bezu\u0308glich der Videou\u0308berwachung wurde eingeholt. Dieser bat um gro\u00dffla\u0308chige Kennzeichnung der Videou\u0308berwachung. Aus dieser soll zusa\u0308tzlich zur verpflichtenden Angabe des Verantwortlichen hervorgehen, dass das Videou\u0308berwachungssystem die Videos aufzeichnet , also nicht nur Echtzeitaufnahmen erfolgen. Die Tonaufzeichnung sind nach Ansicht des DSB unzul\u00e4ssig und m\u00fcssen unterbleiben. Schriftliche  DSB-Stellungnahme zum Verarbeitungsvorgang Video\u00fcberwachung liegt vor, vgl. ",
+            "process_PIADPO_comment": "Rat des Datenschutzbeauftragten bezu\u0308glich der Videou\u0308berwachung wurde eingeholt. Dieser bat um gro\u00dffla\u0308chige Kennzeichnung der Videou\u0308berwachung. Aus dieser soll zus\u00e4tzlich zur verpflichtenden Angabe des Verantwortlichen hervorgehen, dass das Videou\u0308berwachungssystem die Videos aufzeichnet, also nicht nur Echtzeitaufnahmen erfolgen. Die Tonaufzeichnung sind nach Ansicht des DSB unzul\u00e4ssig und m\u00fcssen unterbleiben. Schriftliche  DSB-Stellungnahme zum Verarbeitungsvorgang Video\u00fcberwachung liegt vor.",
             "process_PIADPO_document": "https://www.bfdi.bund.de/DE/DerBfDI/Dokumente/Stellungnahmen/stellungnahmen_node.html"
           }
         },
         "process_PIAAssessment": {
           "domains": [],
           "attributes": {
-            "process_PIAAssessment_necessity": "Zoom- und Schwenkbarkeit stellen einen sehr intensiven Eingriff in das Pers\u00f6nlichkeitsrecht der Betroffenen dar und sind weder verh\u00e4ltnism\u00e4\u00dfig noch erforderlich. Dies gilt gleicherma\u00dfen f\u00fcr eine durchgehende Erfassung .\nSoll  der Eingangsbereich eines Geb\u00e4udes \u00fcberwacht werden, darf die Kamera nicht mehr als eben diesen Bereich erfassen. \u00d6ffentliche Bereiche wie die Stra\u00dfe vor der Eingangst\u00fcr d\u00fcrfen in der Regel nicht per Kamera \u00fcberwacht werden.",
+            "process_PIAAssessment_necessity": "Zoom- und Schwenkbarkeit stellen einen sehr intensiven Eingriff in das Pers\u00f6nlichkeitsrecht der Betroffenen dar und sind weder verh\u00e4ltnism\u00e4\u00dfig noch erforderlich. Dies gilt gleicherma\u00dfen f\u00fcr eine durchgehende Erfassung.\nSoll  der Eingangsbereich eines Geb\u00e4udes \u00fcberwacht werden, darf die Kamera nicht mehr als eben diesen Bereich erfassen. \u00d6ffentliche Bereiche wie die Stra\u00dfe vor der Eingangst\u00fcr d\u00fcrfen in der Regel nicht per Kamera \u00fcberwacht werden.",
             "process_PIAAssessment_rulesExisting": false
           }
         },
@@ -5056,7 +4914,7 @@
             "process_PIAInvolvement_stakeholderPOV": false,
             "process_PIAInvolvement_affectedPersons": "Arbeitnehmer und Betriebsrat",
             "process_PIAInvolvement_affectedPersonsPOV": true,
-            "process_PIAInvolvement_stakeholderComment": "nicht relevant, da keine Akteure",
+            "process_PIAInvolvement_stakeholderComment": "Nicht relevant, da keine Akteure",
             "process_PIAInvolvement_affectedPersonsComment": "Viel zu weitreichende Eingriffe in die Pers\u00f6nlichkeitsrechte der Arbeitnehmer. Schriftliche Anforderungen und Kritikpunkte liegen vor.",
             "process_PIAInvolvement_stakeholderParticipation": false
           }
@@ -5069,7 +4927,7 @@
             "process_PIAResult_commentsPIO": "Video\u00fcberwachung kann noch nicht eingef\u00fchrt werden. Entscheidung der Aufsichtsbeh\u00f6rde ist abzuwarten.",
             "process_PIAResult_consultationRequired": true,
             "process_PIAResult_consultationConducted": false,
-            "process_PIAResult_consultationJustification": "Kosultationsprozess muss angesto\u00dfen werden, Verantwortlichkeiten m\u00fcsse noch gekl\u00e4rt werden"
+            "process_PIAResult_consultationJustification": "Konsultationsprozess muss angesto\u00dfen werden, Verantwortlichkeiten m\u00fcsse noch gekl\u00e4rt werden"
           }
         }
       },
@@ -5129,15 +4987,6 @@
             },
             "target": {
               "targetUri": "https://api.staging.verinice.com/veo/processes/97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7"
-            }
-          },
-          {
-            "domains": [],
-            "attributes": {
-              
-            },
-            "target": {
-              "targetUri": "https://api.staging.verinice.com/veo/processes/01dc79d3-c768-435b-982b-91a0b812929c"
             }
           }
         ],
@@ -5215,6 +5064,17 @@
               "targetUri": "https://api.staging.verinice.com/veo/scopes/8c98ee3f-7402-4399-bf85-905abc92f17f"
             }
           }
+        ],
+        "process_responsiblePerson": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/persons/e077c827-664c-4166-9bcd-a6052a2ac406"
+            }
+          }
         ]
       },
       "customAspects": {
@@ -5224,7 +5084,7 @@
             "process_processingDetails_typeOfSurvey": "process_processingDetails_typeOfSurvey_new",
             "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation",
             "process_processingDetails_surveyConductedOn": "2021-09-27",
-            "process_processingDetails_responsibleDepartment": "Marketing "
+            "process_processingDetails_responsibleDepartment": "Marketing"
           }
         },
         "process_accessAuthorization": {
@@ -5252,7 +5112,7 @@
         "process_opinionDPO": {
           "domains": [],
           "attributes": {
-            "process_opinionDPO_findings": "Verwendung der Telefonnummer problematisch\nKein Berechtigungskonzept",
+            "process_opinionDPO_findings": "Verwendung der Telefonnummer problematisch.\nKein Berechtigungskonzept",
             "process_opinionDPO_PIAComment": "Nicht erforderlich",
             "process_opinionDPO_PIACarriedOut": false,
             "process_opinionDPO_recommendations": "\u00dcberpr\u00fcfung durch Rechtsabteilung erforderlich.\nBerechtigungskonzept sollte erstellt werden. \n",
@@ -5322,29 +5182,44 @@
       "name": "Durchf\u00fchrung von Webmeetings",
       "description": "Gespr\u00e4che erfolgen teilweise \u00fcber Videokonferenzen und Telefonkonferenzen via ZOOM",
       "links": {
-        
+        "process_dataType": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/40cd6764-830c-4af2-b88d-4bf02c9018e5"
+            }
+          }
+        ],
+        "process_processor": [
+          {
+            "domains": [],
+            "attributes": {
+              "process_processor_thirdCountryName": "USA",
+              "process_processor_thirdCountryGuarantees": "SCC",
+              "process_processor_thirdCountryProcessing": true
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/04a97d42-c8aa-4e95-96a1-2aab6214c1bb"
+            }
+          }
+        ]
       },
       "customAspects": {
         "process_recipient": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "process_recipient_type": "process_recipient_type_processor"
           }
         },
         "process_dataTransfer": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "process_dataTransfer_legalBasis": [],
             "process_dataTransfer_explanation": "Die Daten werden immer nach Beendigung des Online-Meetings gel\u00f6scht",
-            "process_dataTransfer_otherLegalBasis": "Art. 6 Abs. 1 S. 1 lit. b DSGVO"
+            "process_dataTransfer_otherLegalBasis": "Art. 6 Abs. 1 S. 1 lit. b DS-GVO"
           }
         }
       },
@@ -5366,40 +5241,59 @@
     },
     {
       "name": "Externe Lohnabrechnung",
+      "description": "Als Auftragsverarbeiter setzt die Data GmbH die Externe Lohnabrechnung AG ein",
       "links": {
-        
+        "process_dataType": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/f8b91106-c2c4-4492-b763-f083cc649c16"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/4f4c1f1b-dbd9-4151-87ff-ebea31131e35"
+            }
+          }
+        ],
+        "process_processor": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/5836fdf4-94d0-443f-aa3d-d0f39f1a2436"
+            }
+          }
+        ]
       },
       "customAspects": {
         "process_recipient": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "process_recipient_type": "process_recipient_type_processor"
           }
         },
         "process_dataTransfer": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "process_dataTransfer_document": "https://www.adv.de",
             "process_dataTransfer_legalBasis": [
               "process_dataTransfer_legalBasis_Art9Abs2litfDSGVO"
             ],
-            "process_dataTransfer_explanation": "Kein Steuerberater , StBG nichr anwendbar. AV-Vertrag wurde abgeschlossen"
+            "process_dataTransfer_explanation": "Kein Steuerberater, StBG nichr anwendbar. AV-Vertrag wurde abgeschlossen"
           }
         },
         "process_generalInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             
           }
@@ -5425,6 +5319,15 @@
       "name": "Lohnabrechnung",
       "links": {
         "process_dataTransmission": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/processes/71ae3f23-99d1-4c83-92be-333286314bb3"
+            }
+          },
           {
             "domains": [],
             "attributes": {
@@ -5474,6 +5377,28 @@
             },
             "target": {
               "targetUri": "https://api.staging.verinice.com/veo/assets/acfb3f60-b577-4d0e-9a88-30583dc1fa23"
+            }
+          }
+        ],
+        "process_requiredApplications": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/6b860fe7-e547-4014-9159-9e8e30a3dbaf"
+            }
+          }
+        ],
+        "process_requiredITSystems": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/2087c04b-11f8-4842-90d7-e2e6d761cc38"
             }
           }
         ],
@@ -5604,25 +5529,74 @@
     {
       "name": "Meldungen",
       "links": {
-        
+        "process_dataType": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/f8b91106-c2c4-4492-b763-f083cc649c16"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/4f4c1f1b-dbd9-4151-87ff-ebea31131e35"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/af507399-bd89-4859-8a14-3fb071f2d8e0"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/assets/0ce7f2a8-88ac-41c3-8e6a-7b2d9a4d66ae"
+            }
+          }
+        ],
+        "process_externalRecipient": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/b973c2f1-29f9-4957-8ef1-c5b0ffb7868d"
+            }
+          },
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/scopes/d596b431-3711-499a-a0ee-096241176d8d"
+            }
+          }
+        ]
       },
       "customAspects": {
         "process_recipient": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "process_recipient_type": "process_recipient_type_external"
           }
         },
         "process_dataTransfer": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "process_dataTransfer_legalBasis": [],
             "process_dataTransfer_otherLegalBasis": "\u00a7 41 a EstG, \u00a7 \u00a7 28a ff. SGB IV ,  \u00a7 28b  Abs. 1 Satz 1 Nr. 1 - 5 SGB IV"
@@ -5647,7 +5621,7 @@
     },
     {
       "name": "Video\u00fcberwachung Geb\u00e4ude und Gesch\u00e4ftsr\u00e4ume",
-      "description": "Die Data GmbH plant f\u00fcr Eingangs- und Zutrittsbereich des Geb\u00e4udes  sowie in den Gesch\u00e4ftsr\u00e4umen eine Video\u00fcberwachung mittels 10 Kameras.",
+      "description": "Die Data GmbH plant f\u00fcr Eingangs- und Zutrittsbereich des Geb\u00e4udes sowie in den Gesch\u00e4ftsr\u00e4umen eine Video\u00fcberwachung mittels 10 Kameras.",
       "links": {
         "process_dataType": [
           {
@@ -5657,7 +5631,7 @@
               "process_dataType_deletionPeriod": "process_dataType_deletionPeriod_day",
               "process_dataType_deletionPeriodCount": 14,
               "process_dataType_deletionPeriodStart": "process_dataType_deletionPeriodStart_dataCollection",
-              "process_dataType_descriptionDeletionProcedure": "nicht bekannt"
+              "process_dataType_descriptionDeletionProcedure": "Nicht bekannt"
             },
             "target": {
               "targetUri": "https://api.staging.verinice.com/veo/assets/1b729aa4-7853-40bc-a777-698bed6e62ba"
@@ -5670,7 +5644,7 @@
               "process_dataType_deletionPeriod": "process_dataType_deletionPeriod_day",
               "process_dataType_deletionPeriodCount": 14,
               "process_dataType_deletionPeriodStart": "process_dataType_deletionPeriodStart_dataCollection",
-              "process_dataType_descriptionDeletionProcedure": "nicht bekannt"
+              "process_dataType_descriptionDeletionProcedure": "Nicht bekannt"
             },
             "target": {
               "targetUri": "https://api.staging.verinice.com/veo/assets/d897c2d1-d1e7-4ad9-8ad3-de651569f5d2"
@@ -5683,7 +5657,7 @@
               "process_dataType_deletionPeriod": "process_dataType_deletionPeriod_day",
               "process_dataType_deletionPeriodCount": 16,
               "process_dataType_deletionPeriodStart": "process_dataType_deletionPeriodStart_dataCollection",
-              "process_dataType_descriptionDeletionProcedure": "unbekannt"
+              "process_dataType_descriptionDeletionProcedure": "Unbekannt"
             },
             "target": {
               "targetUri": "https://api.staging.verinice.com/veo/assets/672e473d-3d9d-4573-af66-f89b1b0d84e4"
@@ -5758,7 +5732,7 @@
               "process_dataProcessing_legalBasis_Art6Abs1litfDSGVO",
               "process_dataProcessing_legalBasis_P26Abs1BDSG"
             ],
-            "process_dataProcessing_explanation": "Die Data GmbH geht aufgrund wiederholter Einbruchsversuche und Sachbesch\u00e4digungen  in den letzten Monaten davon aus, dass eine besondere Gef\u00e4hrdungslage besteht, die durch die beschriebene Video\u00fcberwachung eingeda\u0308mmt werden kann. Deswegen liegt ein berechtigtes Interesse an der Video\u00fcberwachung vor."
+            "process_dataProcessing_explanation": "Die Data GmbH geht aufgrund wiederholter Einbruchsversuche und Sachbesch\u00e4digungen in den letzten Monaten davon aus, dass eine besondere Gef\u00e4hrdungslage besteht, die durch die beschriebene Video\u00fcberwachung einged\u00e4mmt werden kann. Deswegen liegt ein berechtigtes Interesse an der Video\u00fcberwachung vor."
           }
         },
         "process_opinionDPO": {
@@ -5787,7 +5761,7 @@
         "process_intendedPurpose": {
           "domains": [],
           "attributes": {
-            "process_intendedPurpose_intendedPurpose": "Zum Zwecke einer Vandalismuspr\u00e4vention, Diebstahlsschutz"
+            "process_intendedPurpose_intendedPurpose": "Zum Zwecke einer Vandalismuspr\u00e4vention, Diebstahlschutz"
           }
         },
         "process_privacyImpactAssessment": {
@@ -5805,7 +5779,7 @@
           "domains": [],
           "attributes": {
             "process_informationsObligations_status": false,
-            "process_informationsObligations_explanation": "liegen noch nicht vor"
+            "process_informationsObligations_explanation": "Liegen noch nicht vor"
           }
         }
       },
@@ -6027,7 +6001,7 @@
       "id": "59d46b37-5b0e-4afe-a30c-e8ed3e2d2cc8"
     },
     {
-      "name": "Phishing ",
+      "name": "Phishing",
       "abbreviation": "DS-G.33",
       "links": {
         
@@ -6045,35 +6019,29 @@
             
           },
           "riskValues": {
-            
+            "DSRA": {
+              "potentialProbability": 0
+            }
           }
         }
       },
       "id": "475dda29-13ec-4a4f-ab3a-c7d3c88c13e0"
     },
     {
-      "name": "Rechtswidrige bzw. unrechtm\u00e4\u00dfige Verabeitung personenbezogener Daten",
+      "name": "Rechtswidrige bzw. unrechtm\u00e4\u00dfige Verarbeitung personenbezogener Daten",
       "abbreviation": "DS-G.35",
       "links": {
         
       },
       "customAspects": {
         "scenario_threat": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "scenario_threat_type": "scenario_threat_type_unauthorizedAccess"
           }
         },
         "scenario_vulnerability": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "scenario_vulnerability_type": "scenario_vulnerability_type_humanMistakes"
           }
@@ -6221,8 +6189,8 @@
       "id": "fa1372ec-f6f6-4388-8705-91852d906b04"
     },
     {
-      "name": "Unzureichende  Pseudonymisierung oder Anonymisierung",
-      "abbreviation": "DS-G.47",
+      "name": "Unzureichende Erf\u00fcllung von Nachweis- und Dokumentationspflichten",
+      "abbreviation": "DS-G.46",
       "links": {
         
       },
@@ -6243,10 +6211,10 @@
           }
         }
       },
-      "id": "afe8c42c-6f35-45a7-b1c9-62bed6e102e7"
+      "id": "ebf9dbeb-2a21-40d9-b2e4-a283fb971aa3"
     },
     {
-      "name": "Unzureichende  Pseudonymisierung oder Anonymisierung",
+      "name": "Unzureichende Pseudonymisierung oder Anonymisierung",
       "abbreviation": "DS-G.47",
       "links": {
         
@@ -6273,8 +6241,8 @@
       "id": "3b53b10e-6066-49c1-af15-748851dab001"
     },
     {
-      "name": "Unzureichende Erf\u00fcllung von Nachweis- und Dokumentationspflichten ",
-      "abbreviation": "DS-G.46",
+      "name": "Unzureichende Pseudonymisierung oder Anonymisierung",
+      "abbreviation": "DS-G.47",
       "links": {
         
       },
@@ -6291,11 +6259,13 @@
             
           },
           "riskValues": {
-            
+            "DSRA": {
+              "potentialProbability": 0
+            }
           }
         }
       },
-      "id": "ebf9dbeb-2a21-40d9-b2e4-a283fb971aa3"
+      "id": "afe8c42c-6f35-45a7-b1c9-62bed6e102e7"
     },
     {
       "name": "Verarbeitung gro\u00dfer Datenmengen",
@@ -6421,51 +6391,6 @@
         }
       },
       "id": "dda2e671-861d-4e5c-840b-a192080a72e4"
-    },
-    {
-      "name": " Zoom Video Communications, Inc",
-      "links": {
-        
-      },
-      "customAspects": {
-        "scope_thirdCountry": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
-          "attributes": {
-            "scope_thirdCountry_status": true
-          }
-        },
-        "scope_address": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
-          "attributes": {
-            "scope_address_city": "Stockton",
-            "scope_address_state": "California",
-            "scope_address_country": "USA",
-            "scope_address_address1": "1012 Freedom Lane",
-            "scope_address_postcode": "95202"
-          }
-        }
-      },
-      "type": "scope",
-      "members": [],
-      "domains": {
-        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
-          "subType": "SCP_Processor",
-          "status": "RELEASED",
-          "decisionResults": {
-            
-          },
-          "riskDefinition": "DSRA"
-        }
-      },
-      "id": "04a97d42-c8aa-4e95-96a1-2aab6214c1bb"
     },
     {
       "name": "Betriebsrat",
@@ -6675,9 +6600,6 @@
           "targetUri": "https://api.staging.verinice.com/veo/processes/ecb458fb-0c56-48ef-9f74-36c47be2b11b"
         },
         {
-          "targetUri": "https://api.staging.verinice.com/veo/controls/f9264d61-ce4e-4447-97de-cff6cc936b59"
-        },
-        {
           "targetUri": "https://api.staging.verinice.com/veo/controls/db4431fa-355e-47db-9ba0-bcb3edbadcfa"
         },
         {
@@ -6703,6 +6625,9 @@
         },
         {
           "targetUri": "https://api.staging.verinice.com/veo/processes/97a0bd31-6c8c-4bb0-99d2-0b5e50ce28c7"
+        },
+        {
+          "targetUri": "https://api.staging.verinice.com/veo/controls/f9264d61-ce4e-4447-97de-cff6cc936b59"
         },
         {
           "targetUri": "https://api.staging.verinice.com/veo/processes/71ae3f23-99d1-4c83-92be-333286314bb3"
@@ -6748,35 +6673,33 @@
       "name": "Externe Lohnbuchhaltung AG",
       "description": "Als Auftragsverarbeiter setzt die Data GmbH die Externe Lohnbuchhaltung AG ein. ",
       "links": {
-        
+        "scope_contract": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/documents/ba722062-7dd5-4575-be77-ee8ce986ad92"
+            }
+          }
+        ]
       },
       "customAspects": {
         "scope_generalInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             
           }
         },
         "scope_thirdCountry": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "scope_thirdCountry_status": false
           }
         },
         "scope_address": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "scope_address_city": "Hamburg",
             "scope_address_state": "Hamburg",
@@ -6786,11 +6709,7 @@
           }
         },
         "scope_tomAssessment": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "scope_tomAssessment_certification": true,
             "scope_tomAssessment_securityConcept": true,
@@ -6817,11 +6736,7 @@
       "links": {
         "scope_dataProtectionOfficer": [
           {
-            "domains": [
-              {
-                "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-              }
-            ],
+            "domains": [],
             "attributes": {
               "scope_dataProtectionOfficer_affiliation": "scope_dataProtectionOfficer_affiliation_internal"
             },
@@ -6832,11 +6747,7 @@
         ],
         "scope_headOfDataProcessing": [
           {
-            "domains": [
-              {
-                "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-              }
-            ],
+            "domains": [],
             "attributes": {
               
             },
@@ -6847,11 +6758,7 @@
         ],
         "scope_management": [
           {
-            "domains": [
-              {
-                "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-              }
-            ],
+            "domains": [],
             "attributes": {
               
             },
@@ -6863,21 +6770,13 @@
       },
       "customAspects": {
         "scope_thirdCountry": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "scope_thirdCountry_status": false
           }
         },
         "scope_address": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "scope_address_city": "Trier",
             "scope_address_state": "Rheinland-Pfalz",
@@ -6887,24 +6786,16 @@
           }
         },
         "scope_regulatoryAuthority": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "scope_regulatoryAuthority_name": "Landesbeauftragte f\u00fcr Datenschutz und Informationsfreiheit"
           }
         },
         "scope_contactInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "scope_contactInformation_fax": "01234567",
-            "scope_contactInformation_email": "kontakt@FED AG",
+            "scope_contactInformation_email": "kontakt@FED.com",
             "scope_contactInformation_phone": "01234567",
             "scope_contactInformation_website": "www.FED.com"
           }
@@ -6992,11 +6883,7 @@
       "links": {
         "scope_dataProtectionOfficer": [
           {
-            "domains": [
-              {
-                "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-              }
-            ],
+            "domains": [],
             "attributes": {
               "scope_dataProtectionOfficer_affiliation": "scope_dataProtectionOfficer_affiliation_internal"
             },
@@ -7007,11 +6894,7 @@
         ],
         "scope_management": [
           {
-            "domains": [
-              {
-                "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-              }
-            ],
+            "domains": [],
             "attributes": {
               
             },
@@ -7023,21 +6906,13 @@
       },
       "customAspects": {
         "scope_thirdCountry": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "scope_thirdCountry_status": false
           }
         },
         "scope_address": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "scope_address_city": "Bonn",
             "scope_address_state": "NRW",
@@ -7047,11 +6922,7 @@
           }
         },
         "scope_regulatoryAuthority": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "scope_regulatoryAuthority_fax": "0211/38424-99",
             "scope_regulatoryAuthority_city": "D\u00fcsseldorf",
@@ -7061,15 +6932,11 @@
             "scope_regulatoryAuthority_state": "NRW",
             "scope_regulatoryAuthority_country": "Deutschland",
             "scope_regulatoryAuthority_address1": "Postfach 20 04 44",
-            "scope_regulatoryAuthority_postcode": "40102 "
+            "scope_regulatoryAuthority_postcode": "40102"
           }
         },
         "scope_contactInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "scope_contactInformation_fax": "049 211 884-99",
             "scope_contactInformation_email": "info@med.de",
@@ -7123,6 +6990,53 @@
         }
       },
       "id": "f028abf2-810c-4931-8a20-5c3753e150c4"
+    },
+    {
+      "name": "Zoom Video Communications, Inc",
+      "links": {
+        "scope_contract": [
+          {
+            "domains": [],
+            "attributes": {
+              
+            },
+            "target": {
+              "targetUri": "https://api.staging.verinice.com/veo/documents/c8b1ee1f-2366-4e78-a1e9-6512e2a0acdb"
+            }
+          }
+        ]
+      },
+      "customAspects": {
+        "scope_thirdCountry": {
+          "domains": [],
+          "attributes": {
+            "scope_thirdCountry_status": true
+          }
+        },
+        "scope_address": {
+          "domains": [],
+          "attributes": {
+            "scope_address_city": "Stockton",
+            "scope_address_state": "California",
+            "scope_address_country": "USA",
+            "scope_address_address1": "1012 Freedom Lane",
+            "scope_address_postcode": "95202"
+          }
+        }
+      },
+      "type": "scope",
+      "members": [],
+      "domains": {
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
+          "subType": "SCP_Processor",
+          "status": "RELEASED",
+          "decisionResults": {
+            
+          },
+          "riskDefinition": "DSRA"
+        }
+      },
+      "id": "04a97d42-c8aa-4e95-96a1-2aab6214c1bb"
     }
   ],
   "risks": [
@@ -8194,6 +8108,7 @@
           "riskDefinitions": {
             "DSRA": {
               "probability": {
+                "potentialProbability": 0,
                 "specificProbability": 1,
                 "effectiveProbability": 1,
                 "specificProbabilityExplanation": "Regelm\u00e4\u00dfge Sensibilisierungsma\u00dfnahmen zum Thema Phishing"
