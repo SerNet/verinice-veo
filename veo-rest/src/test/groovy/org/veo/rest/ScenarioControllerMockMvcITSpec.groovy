@@ -307,7 +307,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         def result = parseJson(get("/scenarios/${compositeScenario.id.uuidValue()}/parts"))
 
         then: "the parts are found"
-        result.size == 2
+        result.size() == 2
         result.sort{it.name}.first().name == 's1'
         result.sort{it.name}[1].name == 's2'
     }

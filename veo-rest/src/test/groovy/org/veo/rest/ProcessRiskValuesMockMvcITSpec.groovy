@@ -584,7 +584,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.effectiveProbability == 1
 
         and: "the risk was calculated"
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.size == 4
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.size() == 4
         with(
                 retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}) {
                     inherentRisk == 0
@@ -687,7 +687,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.effectiveProbability == 1
 
         and: "the risk was calculated"
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.size == 4
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.size() == 4
         with(
                 retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}) {
                     inherentRisk == 0
@@ -775,7 +775,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.probability.effectiveProbability == 1
 
         and: "the risk was calculated"
-        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.riskValues.size == 4
+        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.riskValues.size() == 4
         with(retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}) {
             inherentRisk == 0
             residualRisk == 0
@@ -837,7 +837,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.effectiveImpact == 1
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.specificProbability == 1
         retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.effectiveProbability == 1
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.size == 4
+        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.size() == 4
 
         and: "it is still the same risk object"
         retrievedProcessRisk2.designator == retrievedProcessRisk1.designator

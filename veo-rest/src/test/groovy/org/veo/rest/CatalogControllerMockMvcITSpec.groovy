@@ -112,7 +112,7 @@ class CatalogControllerMockMvcITSpec extends CatalogSpec {
         def result = parseJson(get("/catalogs/${catalog.dbId}/items"))
 
         then: "the domains are returned"
-        result.size == catalog.catalogItems.size()
+        result.size() == catalog.catalogItems.size()
         when: "the catalog item 'item4' is retrieved from the list of items"
         def item4FromResult = result.find { it.id == item4.id.uuidValue() }
         then: "the catalog item contains the element's description"

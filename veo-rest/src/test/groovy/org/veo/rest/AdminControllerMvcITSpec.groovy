@@ -76,7 +76,7 @@ class AdminControllerMvcITSpec extends VeoMvcSpec {
         then: "it contains the unit and all its elements"
         with(dump) {
             unit.name == "you knit"
-            domains.size == 2
+            domains.size() == 2
             elements*.type.sort() == [
                 "asset",
                 "control",

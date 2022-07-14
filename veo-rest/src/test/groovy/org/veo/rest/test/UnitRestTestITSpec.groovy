@@ -81,7 +81,7 @@ class UnitRestTestITSpec extends VeoRestTest {
             name == UNIT_NAME
             createdBy == user
             updatedBy == user
-            domains.size > 0
+            domains.size() > 0
             Instant.parse(it.createdAt) > beforeCreation
             Instant.parse(it.updatedAt) > beforeCreation
         }
@@ -114,7 +114,7 @@ class UnitRestTestITSpec extends VeoRestTest {
             name == NEW_UNIT_NAME
             createdBy == user
             updatedBy == user
-            domains.size > 0
+            domains.size() > 0
             Instant.parse(createdAt) > beforeCreation
             Instant.parse(createdAt) < beforeUpdate
             Instant.parse(updatedAt) > beforeUpdate

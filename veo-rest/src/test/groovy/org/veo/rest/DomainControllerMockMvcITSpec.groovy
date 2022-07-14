@@ -156,7 +156,7 @@ class DomainControllerMockMvcITSpec extends VeoMvcSpec {
         def result = parseJson(get("/domains?"))
 
         then: "the domains are returned"
-        result.size == 3
+        result.size() == 3
         result*.name.sort().first() == 'Domain 1'
     }
 

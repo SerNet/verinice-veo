@@ -602,7 +602,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def result = parseJson(get("/processes?unit=${unit.id.uuidValue()}"))
 
         then:
-        result.items.size == 1
+        result.items.size() == 1
         result.items.first().name == 'Test process-1'
         result.items.first().owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 
@@ -610,7 +610,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         result = parseJson(get("/processes?unit=${unit2.id.uuidValue()}"))
 
         then:
-        result.items.size == 1
+        result.items.size() == 1
         result.items.first().name == 'Test process-2'
         result.items.first().owner.targetUri == "http://localhost/units/"+unit2.id.uuidValue()
     }
@@ -632,7 +632,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         when: "the sub type param is omitted"
         def result = parseJson(get("/processes"))
         then: "both processes are returned"
-        result.items.size == 2
+        result.items.size() == 2
 
         when: "VT processes are queried"
         result = parseJson(get("/processes?subType=VT"))
@@ -757,7 +757,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
                 get("/processes/${process.id.uuidValue()}/risks/"))
 
         then: "the risks are retreived"
-        getResult.size == 3
+        getResult.size() == 3
     }
 
     private createTwoRisks(Process process) {

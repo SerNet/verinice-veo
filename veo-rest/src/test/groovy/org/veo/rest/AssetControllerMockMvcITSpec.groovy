@@ -306,7 +306,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the assets are returned"
         def sortedItems = result.items.sort { it.name }
-        sortedItems.size == 2
+        sortedItems.size() == 2
         sortedItems[0].name == 'Test asset-1'
         sortedItems[0].owner.targetUri == "http://localhost/units/" + unit.id.uuidValue()
         sortedItems[1].name == 'Test asset-2'
@@ -768,7 +768,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 get("/assets/${asset.id.uuidValue()}/risks/"))
 
         then: "The risks are retreived"
-        getResult.size == 3
+        getResult.size() == 3
     }
 
     @WithUserDetails("user@domain.example")
