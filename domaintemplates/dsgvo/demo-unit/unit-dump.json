@@ -2852,7 +2852,16 @@
         }
       ],
       "domains": {
-        
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
       },
       "id": "a063e725-b2be-4dd7-986c-4c8fda0046ea"
     },
@@ -2867,7 +2876,16 @@
       "type": "control",
       "parts": [],
       "domains": {
-        
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
       },
       "id": "f960f80a-7a98-4009-93af-0dbc8d7c7a73"
     },
@@ -2889,7 +2907,16 @@
         }
       ],
       "domains": {
-        
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
       },
       "id": "625cd4f3-5b0c-4e1b-bf71-c815efac60d8"
     },
@@ -2904,7 +2931,16 @@
       "type": "control",
       "parts": [],
       "domains": {
-        
+        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
+          "subType": "CTL_TOM",
+          "status": "NEW",
+          "decisionResults": {
+            
+          },
+          "riskValues": {
+            
+          }
+        }
       },
       "id": "110bbbec-1c3e-479e-aab4-cd3080cac729"
     },
@@ -4475,7 +4511,7 @@
       "id": "5c0875a0-3319-4b58-b5c0-2b3847b8bbad"
     },
     {
-      "name": "Bewerberauswahlverfahren ",
+      "name": "Bewerberauswahlverfahren",
       "description": "Eingegangene Bewerbungen werden an die Fachabteilungen zwecks Eignungspr\u00fcfung weitergeleitet.",
       "links": {
         "process_dataType": [
@@ -4690,7 +4726,7 @@
           "domains": [],
           "attributes": {
             "process_opinionDPO_findings": "Keine L\u00f6schvorgaben festgesetzt",
-            "process_opinionDPO_PIAComment": "nicht erforderlich",
+            "process_opinionDPO_PIAComment": "Nicht erforderlich",
             "process_opinionDPO_PIACarriedOut": false,
             "process_opinionDPO_recommendations": "L\u00f6schung der Daten 6 Monate nach Vergabe der Stelle, au\u00dfer der Bewerber hat der Aufnahme in Bewerberpool explizit zugestimmt",
             "process_opinionDPO_consultationComment": "Nicht erforderlich",
@@ -5116,7 +5152,7 @@
             "process_opinionDPO_PIAComment": "Nicht erforderlich",
             "process_opinionDPO_PIACarriedOut": false,
             "process_opinionDPO_recommendations": "\u00dcberpr\u00fcfung durch Rechtsabteilung erforderlich.\nBerechtigungskonzept sollte erstellt werden. \n",
-            "process_opinionDPO_consultationComment": "nicht erforderlich",
+            "process_opinionDPO_consultationComment": "Nicht erforderlich",
             "process_opinionDPO_consultationRequired": false,
             "process_opinionDPO_consultationConducted": false
           }
@@ -5454,7 +5490,7 @@
             "process_dataProcessing_legalBasis": [
               "process_dataProcessing_legalBasis_Art6Abs1litbDSGVO"
             ],
-            "process_dataProcessing_explanation": "Art. 6 Abs. 1 b DS- GVO Durchf\u00fchrung des Arbeitsvertrags, Erf\u00fcllung vertraglicher Pflichten",
+            "process_dataProcessing_explanation": "Art. 6 Abs. 1 b DS-GVO Durchf\u00fchrung des Arbeitsvertrags, Erf\u00fcllung vertraglicher Pflichten",
             "process_dataProcessing_otherLegalBasis": "keine"
           }
         },
@@ -6238,7 +6274,7 @@
           }
         }
       },
-      "id": "3b53b10e-6066-49c1-af15-748851dab001"
+      "id": "afe8c42c-6f35-45a7-b1c9-62bed6e102e7"
     },
     {
       "name": "Unzureichende Pseudonymisierung oder Anonymisierung",
@@ -6265,7 +6301,7 @@
           }
         }
       },
-      "id": "afe8c42c-6f35-45a7-b1c9-62bed6e102e7"
+      "id": "3b53b10e-6066-49c1-af15-748851dab001"
     },
     {
       "name": "Verarbeitung gro\u00dfer Datenmengen",
@@ -6477,11 +6513,7 @@
       "links": {
         "scope_dataProtectionOfficer": [
           {
-            "domains": [
-              {
-                "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-              }
-            ],
+            "domains": [],
             "attributes": {
               "scope_dataProtectionOfficer_nomination": true,
               "scope_dataProtectionOfficer_affiliation": "scope_dataProtectionOfficer_affiliation_internal",
@@ -6494,11 +6526,7 @@
         ],
         "scope_headOfDataProcessing": [
           {
-            "domains": [
-              {
-                "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-              }
-            ],
+            "domains": [],
             "attributes": {
               
             },
@@ -6509,11 +6537,7 @@
         ],
         "scope_informationSecurityOfficer": [
           {
-            "domains": [
-              {
-                "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-              }
-            ],
+            "domains": [],
             "attributes": {
               
             },
@@ -6524,11 +6548,7 @@
         ],
         "scope_management": [
           {
-            "domains": [
-              {
-                "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-              }
-            ],
+            "domains": [],
             "attributes": {
               
             },
@@ -6540,21 +6560,13 @@
       },
       "customAspects": {
         "scope_thirdCountry": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "scope_thirdCountry_status": false
           }
         },
         "scope_address": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "scope_address_city": "G\u00f6ttingen",
             "scope_address_state": "Niedersachsen",
@@ -6564,11 +6576,7 @@
           }
         },
         "scope_regulatoryAuthority": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "scope_regulatoryAuthority_fax": "0511120 45 99",
             "scope_regulatoryAuthority_city": "Hannover",
@@ -6577,16 +6585,12 @@
             "scope_regulatoryAuthority_phone": "0511 120 45 00",
             "scope_regulatoryAuthority_website": "https://lfd.niedersachsen.de/startseite/",
             "scope_regulatoryAuthority_address1": "Prinzenstra\u00dfe 5",
-            "scope_regulatoryAuthority_postcode": "30159 ",
+            "scope_regulatoryAuthority_postcode": "30159",
             "scope_regulatoryAuthority_description": "Frau Barbara Thiel"
           }
         },
         "scope_contactInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "scope_contactInformation_email": "kontakt@data.de",
             "scope_contactInformation_phone": "0523 7006000",
@@ -6671,7 +6675,7 @@
     },
     {
       "name": "Externe Lohnbuchhaltung AG",
-      "description": "Als Auftragsverarbeiter setzt die Data GmbH die Externe Lohnbuchhaltung AG ein. ",
+      "description": "Als Auftragsverarbeiter setzt die Data GmbH die Externe Lohnbuchhaltung AG ein",
       "links": {
         "scope_contract": [
           {
