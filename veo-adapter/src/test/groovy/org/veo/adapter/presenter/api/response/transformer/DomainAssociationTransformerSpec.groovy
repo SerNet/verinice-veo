@@ -69,7 +69,7 @@ class DomainAssociationTransformerSpec extends Specification {
         given: "a process with different sub types in two domains"
         AbstractProcessDto dto = Mock()
         Process entity = Mock()
-        entity.getImpactValues(_) >> [:]
+        entity.getImpactValues(_) >> Optional.empty()
         Map<String, ProcessDomainAssociationDto> capturedDomainMap
         entity.domains >> [domain0, domain1]
         entity.subTypeAspects >> [

@@ -154,7 +154,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the scenarios are returned"
         def expectedUnitUri = "http://localhost/units/${unit.id.uuidValue()}"
         with(result.items.sort{it.name}) {
-            size == 2
+            size() == 2
             it[0].name == 'Test scenario-1'
             it[0].owner.targetUri == expectedUnitUri
             it[1].name == 'Test scenario-2'

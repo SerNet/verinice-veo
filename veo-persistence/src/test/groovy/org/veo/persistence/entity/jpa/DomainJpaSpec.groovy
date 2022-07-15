@@ -240,7 +240,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         d.catalogs.size() == 1
         d.catalogs.first().catalogItems.size() == 3
         with(d.catalogs.first().catalogItems.sort {it.element.name}) {
-            size == 3
+            size() == 3
             it[0].element.name == 'c1'
             it[1].element.name == 'c2'
             it[2].element.name == 'c3'

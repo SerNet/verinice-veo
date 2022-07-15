@@ -47,7 +47,7 @@ public class GetUnitsUseCaseSpec extends Specification {
         existingUnit.getId() >> Key.newUuid()
 
         existingClient.getUnits >> [existingUnit]
-        existingClient.getUnit(_)>> new Optional(existingUnit)
+        existingClient.getUnit(_)>> Optional.of(existingUnit)
 
         existingClient.createUnit(_)>>existingUnit
     }
