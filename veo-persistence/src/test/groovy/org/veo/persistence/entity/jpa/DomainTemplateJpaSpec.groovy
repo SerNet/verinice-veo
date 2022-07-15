@@ -23,6 +23,7 @@ import org.springframework.transaction.support.TransactionTemplate
 import org.veo.core.entity.Catalog
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
+import org.veo.core.entity.profile.ProfileDefinition
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
@@ -50,11 +51,30 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
     def 'domainTemplate is inserted'() {
         given: "the domain template"
 
+        Map data = [name: "Meeting-Metadaten",
+            id: "40cd6764-830c-4af2-b88d-4bf02c9018e5",
+            description: "z.B. Datum, Uhrzeit und Dauer der Kommunikation, Name des Meetings, Teilnehmer-IP-Adresse",
+            links:[],
+            customAspects:[],
+            type:"asset",
+            parts: [],
+            domains:[
+                "7de19fda-73dc-42b8-ab85-56bc04d27460" : [
+                    subType: "AST_Datatype",
+                    status: "FOR_REVIEW",
+                    decisionResults :[],
+                ]
+            ]
+        ]
+
         domain0 = newDomainTemplate() {
             riskDefinitions = ["id1":
                 createRiskDefinition("id1"),
                 "id2":createRiskDefinition("id2")
-            ] as Map
+            ]
+            profiles = [
+                "demoUnit": ProfileDefinition.of(Collections.singleton(data), Collections.emptySet())
+            ]
         }
 
         when: "saving"
@@ -73,6 +93,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.templateVersion == domain0.templateVersion
         d.revision == domain0.revision
         d.riskDefinitions == domain0.riskDefinitions
+        d.profiles == domain0.profiles
     }
 
     def 'domainTemplate with catalog is inserted'() {

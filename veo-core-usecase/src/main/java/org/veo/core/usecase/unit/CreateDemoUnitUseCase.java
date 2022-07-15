@@ -86,6 +86,8 @@ public class CreateDemoUnitUseCase
 
   private Unit createDemoUnitForClient(Client savedClient) {
     Unit demoUnit = entityFactory.createUnit(DEMO_UNIT_NAME, null);
+    DomainTemplateService.updateVersion(demoUnit);
+
     demoUnit.setClient(savedClient);
     Collection<Element> demoUnitElements =
         domainTemplateService.getElementsForDemoUnit(savedClient);

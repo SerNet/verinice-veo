@@ -25,6 +25,7 @@ import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.DocumentRepository
 import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
+import org.veo.rest.test.UserType
 
 import groovy.util.logging.Log
 import spock.util.concurrent.PollingConditions
@@ -65,7 +66,8 @@ class AdminControllerMvcITSpec extends ContentSpec {
         def client = createTestClient()
         createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID)
         createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        def (unitId, assetId, scenarioId, processId) = createUnitWithElements()
+        def domainId = parseJson(get("/domains")).find{it.name == "DSGVO-test"}.id
+        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId)
 
         when: "requesting a unit dump"
         def dump = parseJson(get("/admin/unit-dump/$unitId"))
@@ -96,11 +98,11 @@ class AdminControllerMvcITSpec extends ContentSpec {
         def client = createTestClient()
         createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
         createTestDomain(client, DSGVO_DOMAINTEMPLATE_V2_UUID)
-        def (unitId, assetId, scenarioId, processId) = createUnitWithRiskyElements()
+        def domainId = parseJson(get("/domains")).find{it.templateVersion=="1.4.0"}.id
+        def (unitId, assetId, scenarioId, processId) = createUnitWithRiskyElements(domainId)
 
         when: "the process risk values are preserved before migration"
         def json = parseJson(get("/admin/unit-dump/$unitId"))
-        def domainId = json.domains.find{it.templateVersion == "1.4.0"}.id
         def risk = json.risks.find{it.process != null}
         def oldDomainName = risk.domains.(domainId).reference.displayName
         def oldRiskValues = risk.domains.(domainId).riskDefinitions.DSRA.riskValues

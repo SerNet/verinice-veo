@@ -15,26 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.profile;
+package org.veo.adapter.service;
 
-import java.util.Set;
+public class InternalDataCorruptionException extends RuntimeException {
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+  private static final long serialVersionUID = -8570807641612103507L;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class ProfileDefinition {
-  public static final String DEMO_UNIT = "demoUnit";
-  private Set<?> elements;
-  private Set<?> risks;
-
-  public static ProfileDefinition of(Set<?> elements, Set<?> risks) {
-    ProfileDefinition profileDefinition = new ProfileDefinition();
-    profileDefinition.elements = elements;
-    profileDefinition.risks = risks;
-    return profileDefinition;
+  public InternalDataCorruptionException(String message, Throwable cause) {
+    super(message, cause);
   }
 }

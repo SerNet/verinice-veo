@@ -35,6 +35,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -52,6 +53,7 @@ import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
+import org.veo.adapter.service.InternalDataCorruptionException;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
@@ -75,6 +77,7 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.risk.ProbabilityValueProvider;
 import org.veo.core.entity.risk.RiskValues;
 import org.veo.core.entity.transform.EntityFactory;
@@ -124,6 +127,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     readTemplateFiles();
   }
 
+  @Deprecated
   private void readTemplateFiles() {
     log.info("read files from resources ...");
     domainResources.forEach(
@@ -180,58 +184,107 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     Set<Element> elements = new HashSet<>();
     PlaceholderResolver ref = new PlaceholderResolver(entityTransformer);
     client.getDomains().stream()
-        .filter(
-            d ->
-                d.isActive()
-                    && d.getDomainTemplate() != null
-                    && domainTemplateFiles.containsKey(d.getDomainTemplate().getIdAsString()))
+        .filter(d -> d.getDomainTemplate() != null)
         .forEach(
             domain -> {
-              log.info("Processing {}", domain);
               DomainTemplate template = domain.getDomainTemplate();
-              // TODO VEO-1168: read demo unit elements from the database
-              VeoInputStreamResource templateFile =
-                  domainTemplateFiles.get(template.getIdAsString());
-              try {
-                TransformDomainTemplateDto domainTemplateDto = readInstanceFile(templateFile);
-                ref.cache.put(domainTemplateDto.getId(), domain);
-                Map<String, Element> elementCache =
-                    createElementCache(
-                        ref,
-                        domainTemplateDto.getDemoUnitElements().stream()
-                            .map(this::removeOwner)
-                            .map(IdentifiableDto.class::cast)
-                            .collect(
-                                Collectors.toMap(IdentifiableDto::getId, Function.identity())));
-
-                transformRisks(client, ref.cache, domain, domainTemplateDto, elementCache.values());
-
-                elementCache
-                    .entrySet()
-                    .forEach(
-                        e -> {
-                          Element value = e.getValue();
-                          value.setId(null);
-                        });
-                elements.addAll(elementCache.values());
-              } catch (JsonMappingException e) {
-                log.error("Error parsing file", e);
-              } catch (IOException e) {
-                log.error("Error loading file", e);
+              Map<String, ProfileDefinition> profileElements = template.getProfiles();
+              ProfileDefinition profileDefinition =
+                  profileElements.get(ProfileDefinition.DEMO_UNIT);
+              if (profileDefinition != null) {
+                elements.addAll(
+                    createElementsFromProfile(client, ref, domain, template, profileDefinition));
+              } else {
+                elements.addAll(createElementsFromFile(client, ref, domain, template));
               }
             });
     return elements;
+  }
+
+  @Deprecated
+  private Collection<Element> createElementsFromFile(
+      Client client, PlaceholderResolver ref, Domain domain, DomainTemplate template) {
+    VeoInputStreamResource templateFile = domainTemplateFiles.get(template.getIdAsString());
+    if (templateFile == null) {
+      return Collections.emptySet();
+    }
+    try {
+      TransformDomainTemplateDto domainTemplateDto = readInstanceFile(templateFile);
+      String templateId = domainTemplateDto.getId();
+      Set<AbstractElementDto> demoUnitElements = domainTemplateDto.getDemoUnitElements();
+      Set<AbstractRiskDto> demoUnitRisks = domainTemplateDto.getDemoUnitRisks();
+
+      return createElements(client, ref, domain, templateId, demoUnitElements, demoUnitRisks);
+    } catch (JsonMappingException e) {
+      log.error("Error parsing file", e);
+      throw new InternalDataCorruptionException(
+          "The provided template file can not be parsed to json.", e);
+    } catch (IOException e) {
+      log.error("Error loading file", e);
+      throw new InternalDataCorruptionException("The provided template file can not be loaded.", e);
+    }
+  }
+
+  private Collection<Element> createElements(
+      Client client,
+      PlaceholderResolver ref,
+      Domain domain,
+      String templateId,
+      Set<AbstractElementDto> demoUnitElements,
+      Set<AbstractRiskDto> demoUnitRisks) {
+    ref.cache.put(templateId, domain);
+    Map<String, Element> elementCache =
+        createElementCache(
+            ref,
+            demoUnitElements.stream()
+                .map(this::removeOwner)
+                .map(IdentifiableDto.class::cast)
+                .collect(Collectors.toMap(IdentifiableDto::getId, Function.identity())));
+
+    transformRisks(client, ref.cache, domain, templateId, elementCache.values(), demoUnitRisks);
+    elementCache.values().forEach(e -> e.setId(null));
+    return elementCache.values();
+  }
+
+  private Collection<Element> createElementsFromProfile(
+      Client client,
+      PlaceholderResolver ref,
+      Domain domain,
+      DomainTemplate template,
+      ProfileDefinition profileDefinition) {
+    String templateId = template.getIdAsString();
+    Set<?> demoElements = profileDefinition.getElements();
+    Set<?> demoRisk = profileDefinition.getRisks();
+    try {
+      String elementJson = objectMapper.writeValueAsString(demoElements);
+      log.info("elementJson: {}", elementJson);
+      String riskJson = objectMapper.writeValueAsString(demoRisk);
+      log.info("riskJson: {}", riskJson);
+
+      var demoUnitElements =
+          objectMapper.readValue(elementJson, new TypeReference<Set<AbstractElementDto>>() {});
+      demoUnitElements.forEach(edto -> edto.associateWithTargetDomain(templateId));
+
+      var demoUnitRisks =
+          objectMapper.readValue(riskJson, new TypeReference<Set<AbstractRiskDto>>() {});
+
+      return createElements(client, ref, domain, templateId, demoUnitElements, demoUnitRisks);
+    } catch (IOException e) {
+      log.error("Error reading profile from domain template", e);
+      throw new InternalDataCorruptionException("Error reading profile from domain template.", e);
+    }
   }
 
   private void transformRisks(
       Client client,
       Map<String, Identifiable> cache,
       Domain domain,
-      TransformDomainTemplateDto domainTemplateDto,
-      Collection<Element> elements) {
+      String domainTemplateId,
+      Collection<Element> elements,
+      Set<AbstractRiskDto> demoUnitRisks) {
 
     Map<String, List<AbstractRiskDto>> risksByAffectedElementDbId =
-        domainTemplateDto.getDemoUnitRisks().stream()
+        demoUnitRisks.stream()
             .collect(
                 Collectors.groupingBy(
                     r -> {
@@ -254,7 +307,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                 log.info("Transforming risk {}", riskDto);
                 Scenario scenario = (Scenario) cache.get(riskDto.getScenario().getId());
                 RiskDomainAssociationDto riskDomainData =
-                    riskDto.getDomains().get(domainTemplateDto.getId());
+                    riskDto.getDomains().get(domainTemplateId);
                 if (riskDomainData != null) {
                   p.setOwner(dummyOwner);
                   scenario.setOwner(dummyOwner);
@@ -264,7 +317,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
                   riskValues.forEach(
                       it -> {
-                        if (it.getDomainId().uuidValue().equals(domainTemplateDto.getId())) {
+                        if (it.getDomainId().uuidValue().equals(domainTemplateId)) {
                           it.setDomainId(domain.getId());
                         }
                       });
@@ -601,6 +654,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     return target;
   }
 
+  @Deprecated
   private TransformDomainTemplateDto readInstanceFile(VeoInputStreamResource resource)
       throws IOException {
     try (BufferedReader br =

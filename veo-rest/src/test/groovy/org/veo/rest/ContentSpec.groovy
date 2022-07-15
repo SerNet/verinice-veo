@@ -26,8 +26,7 @@ class ContentSpec extends VeoMvcSpec {
     public static final String PROBLEM = "In computer science, there are only three hard problems: " +
     "Cache invalidation, naming things, and off-by-one errors."
 
-    protected createUnitWithElements() {
-        def domainId = parseJson(get("/domains")).find{it.name == "DSGVO-test"}.id
+    protected createUnitWithElements(String domainId) {
         def unitId = parseJson(post("/units", [
             name   : "you knit",
             domains: [
@@ -142,8 +141,7 @@ class ContentSpec extends VeoMvcSpec {
     }
 
 
-    protected createUnitWithRiskyElements() {
-        def domainId = parseJson(get("/domains")).find{it.templateVersion=="1.4.0"}.id
+    protected createUnitWithRiskyElements(String domainId) {
         def unitId = parseJson(post("/units", [
             name   : "you knit",
             domains: [
