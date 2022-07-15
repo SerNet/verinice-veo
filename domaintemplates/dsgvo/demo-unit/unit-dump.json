@@ -988,7 +988,7 @@
   "elements": [
     {
       "name": "Allgemeine Personendaten",
-      "description": "Vorname, Nachname, Anschrift und Telefonnummer ",
+      "description": "Vorname, Nachname, Anschrift und Telefonnummer",
       "links": {
         
       },
@@ -1010,7 +1010,7 @@
     },
     {
       "name": "Angaben zur Person",
-      "description": " z.B. Vor- und Nachname, E-Mail-Adresse, Profilbild",
+      "description": "Z.B. Vor- und Nachname, E-Mail-Adresse, Profilbild",
       "links": {
         
       },
@@ -1276,7 +1276,7 @@
     },
     {
       "name": "E-Mail-Adresse",
-      "description": "",
+      "description": "E-Mail-Adressen, die den Vor- oder Nachnamen enthalten. Ausreichend ist aber auch, wenn die E-Mail-Adresse einer bestimmten nat\u00fcrlichen Person zugeordnet werden kann oder diese Zuordnung zumindest mittelbar erfolgen kann.",
       "links": {
         
       },
@@ -1337,28 +1337,6 @@
         }
       },
       "id": "af507399-bd89-4859-8a14-3fb071f2d8e0"
-    },
-    {
-      "name": "Hautfarbe, Haare",
-      "description": "\u00c4u\u00dfere Erscheinungsbild der gefilmten Personen wie z.B.  rassische und ethnische Herkunft (Hautfarbe, Haare)",
-      "links": {
-        
-      },
-      "customAspects": {
-        
-      },
-      "type": "asset",
-      "parts": [],
-      "domains": {
-        "7de19fda-73dc-42b8-ab85-56bc04d27460": {
-          "subType": "AST_Datatype",
-          "status": "NEW",
-          "decisionResults": {
-            
-          }
-        }
-      },
-      "id": "ae37a7a6-b9b8-440c-986d-d8d8e6e8eb3e"
     },
     {
       "name": "Laptop Teamleiter",
@@ -1709,7 +1687,7 @@
       "id": "aa600233-2194-4f2b-b5b8-df0d1dfd40a8"
     },
     {
-      "name": "AV Vertrag mit Safeguard",
+      "name": "AV Vertrag mit SafeGuard",
       "links": {
         
       },
@@ -1785,7 +1763,7 @@
           "domains": [],
           "attributes": {
             "control_implementation_date": "2022-06-30",
-            "control_implementation_explanation": "Wird eine Video\u00fcberwachungskamera mit Audiofunktion eingesetzt, kann dies unter den Straftatbestand des \u00a7 201I, II StGB fallen. Demnach ist das\nunbefugt heimliche Abh\u00f6ren oder Aufzeichnen des nicht\u00f6ffentlich gesprochenen Wortes strafbar. Verf\u00fcgt eine Video\u00fcberwachungskamera \u00fcber eine Audiofunktion, ist diese unumkehrbar zu deaktivieren. Hierf\u00fcr ist eine Arbeitsanweisung zu erstellen und in der Organisation umzusetzen\n"
+            "control_implementation_explanation": "Wird eine Video\u00fcberwachungskamera mit Audiofunktion eingesetzt, kann dies unter den Straftatbestand des \u00a7 201I, II StGB fallen. Demnach ist das\nunbefugt heimliche Abh\u00f6ren oder Aufzeichnen des nicht \u00f6ffentlich gesprochenen Wortes strafbar. Verf\u00fcgt eine Video\u00fcberwachungskamera \u00fcber eine Audiofunktion, ist diese unumkehrbar zu deaktivieren. Hierf\u00fcr ist eine Arbeitsanweisung zu erstellen und in der Organisation umzusetzen\n"
           }
         }
       },
@@ -2295,28 +2273,20 @@
       "id": "66410012-e820-4da3-9a8d-27c29744dcfa"
     },
     {
-      "name": "Erstellung Einwilligungserkl\u00e4rungen ",
+      "name": "Erstellung Einwilligungserkl\u00e4rungen",
       "description": "Einwilligungserkl\u00e4rungen m\u00fcssen datenschutzrechtlichen Anforderungen entsprechend erstellt werden",
       "links": {
         
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_implementation_date": "2022-05-31"
           }
         },
         "control_dataProtection": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality",
@@ -2416,7 +2386,7 @@
           "domains": [],
           "attributes": {
             "control_implementation_date": "2022-08-26",
-            "control_implementation_explanation": "Es m\u00fcssen am Anfangs- und am Endbereich des \u00fcberwachten Areals Hinweisschilder so angebracht werden, dass sie von den Betroffenen direkt zur Kentniss gelangen k\u00f6nnen."
+            "control_implementation_explanation": "Es m\u00fcssen am Anfangs- und am Endbereich des \u00fcberwachten Areals Hinweisschilder so angebracht werden, dass sie von den Betroffenen direkt zur Kenntnis gelangen k\u00f6nnen."
           }
         },
         "control_dataProtection": {
@@ -2488,7 +2458,7 @@
           "domains": [],
           "attributes": {
             "control_implementation_date": "2022-08-17",
-            "control_implementation_explanation": "Die Informationspflichten zu den Video\u00fcberwachungsma\u00dfnahmen m\u00fcssen erstellt und f\u00fcr die Betroffenen zur Verf\u00fcgung gestellt werden. "
+            "control_implementation_explanation": "Die Informationspflichten zu den Video\u00fcberwachungsma\u00dfnahmen m\u00fcssen erstellt und f\u00fcr die Betroffenen zur Verf\u00fcgung gestellt werden."
           }
         },
         "control_dataProtection": {
@@ -2570,7 +2540,7 @@
     },
     {
       "name": "L\u00f6schfrist 2 Jahres festlegen",
-      "description": "L\u00f6schfrist von 2 Jahren festlegen, implementieren, kommunizieren und dokumentieren. ",
+      "description": "L\u00f6schfrist von 2 Jahren festlegen, implementieren, kommunizieren und dokumentieren.",
       "links": {
         
       },
@@ -2954,7 +2924,7 @@
           "domains": [],
           "attributes": {
             "control_implementation_date": "2022-07-22",
-            "control_implementation_explanation": "Eine Stellungnahme zur datenschutzrechtlichen Zul\u00e4ssigkeit der Video\u00fcberwachung insb. der Tonaufzeichnungen ist seitens der Rechtsabteilung anzufertigen. Weitergehende Ma\u00dfnahmen , die sich aus dem Gutachten resultieren sind mit den Verantwortlichen zu kommunizieren und anzusto\u00dfen"
+            "control_implementation_explanation": "Eine Stellungnahme zur datenschutzrechtlichen Zul\u00e4ssigkeit der Video\u00fcberwachung insbesondere der Tonaufzeichnungen ist seitens der Rechtsabteilung anzufertigen. Weitergehende Ma\u00dfnahmen, die aus dem Gutachten resultieren sind mit den Verantwortlichen zu kommunizieren und anzusto\u00dfen"
           }
         },
         "control_dataProtection": {
@@ -3020,7 +2990,7 @@
           "domains": [],
           "attributes": {
             "control_implementation_date": "2021-10-23",
-            "control_implementation_explanation": "Geeigneter Prozess ist zu implemetieren"
+            "control_implementation_explanation": "Geeigneter Prozess ist zu implementieren"
           }
         },
         "control_dataProtection": {
@@ -3044,35 +3014,29 @@
             
           },
           "riskValues": {
-            
+            "DSRA": {
+              "implementationStatus": 2
+            }
           }
         }
       },
       "id": "88e6758c-adc5-4efa-813d-9c7e0f34f592"
     },
     {
-      "name": "Sicherheitskonzept Safeguard",
+      "name": "Sicherheitskonzept SafeGuard",
       "links": {
         
       },
       "customAspects": {
         "control_implementation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_implementation_date": "2022-07-29",
             "control_implementation_explanation": "Sicherheitskonzept muss schriftlich angefordert und bewertet werden. \n\n"
           }
         },
         "control_dataProtection": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "control_dataProtection_objectives": [
               "control_dataProtection_objectives_confidentiality",
@@ -3672,17 +3636,13 @@
     },
     {
       "name": "Benutzerrichtlinie",
-      "description": "Diese Richtlinie richtet sich an alle Mitarbeiter der SerNet einschlie\u00dflich der Auszubildenden, Praktikanten sowie externen Arbeitskr\u00e4fte. Umfasst sind s\u00e4mtliche Betriebsteile, d.h. auch Tele-/Heimarbeits- sowie mobile Arbeitspl\u00e4tze au\u00dferhalb der Gesch\u00e4ftsr\u00e4ume. In diesem Dokument wird das Verhalten aller IT-Nutzer geregelt, um ein angemessenes Ma\u00df an Sicherheit in der IT zu gew\u00e4hren. Das Verhalten eines jeden nimmt Einfluss auf die Qualit\u00e4t des Sicherheitsprozesses und der Informationssicherheit.",
+      "description": "Diese Richtlinie richtet sich an alle Mitarbeiter der Data GmbH, einschlie\u00dflich der Auszubildenden, Praktikanten sowie externen Arbeitskr\u00e4fte. Umfasst sind s\u00e4mtliche Betriebsteile, d.h. auch Tele-/Heimarbeits- sowie mobile Arbeitspl\u00e4tze au\u00dferhalb der Gesch\u00e4ftsr\u00e4ume. In diesem Dokument wird das Verhalten aller IT-Nutzer geregelt, um ein angemessenes Ma\u00df an Sicherheit in der IT zu gew\u00e4hren. Das Verhalten eines jeden nimmt Einfluss auf die Qualit\u00e4t des Sicherheitsprozesses und der Informationssicherheit.",
       "links": {
         
       },
       "customAspects": {
         "document_details": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "document_details_classification": "document_details_classification_internalUse",
             "document_details_typeOfDocument": "document_details_typeOfDocument_policy"
@@ -3766,29 +3726,21 @@
     },
     {
       "name": "Dieter Data",
-      "description": "Der externe Datenschutzbeauftragte der Data GmbH (arbeitet f\u00fcr die FED AG)",
+      "description": "Der Datenschutzbeauftragte der FED AG",
       "links": {
         
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
-            "person_generalInformation_givenName": "Dieter ",
+            "person_generalInformation_givenName": "Dieter",
             "person_generalInformation_familyName": "Data",
-            "person_generalInformation_salutation": "Herr "
+            "person_generalInformation_salutation": "Herr"
           }
         },
         "person_address": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "person_address_city": "Berlin",
             "person_address_state": "Berlin",
@@ -3798,11 +3750,7 @@
           }
         },
         "person_contactInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "person_contactInformation_email": "dd@DS-Fed.de",
             "person_contactInformation_office": "030 12345"
@@ -3846,19 +3794,15 @@
     },
     {
       "name": "Dr. Medical",
-      "description": "Der Gesch\u00e4ftsf\u00fchrer der MED GmbH.",
+      "description": "Der Gesch\u00e4ftsf\u00fchrer der MeD GmbH.",
       "links": {
         
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
-            "person_generalInformation_title": "Dr",
+            "person_generalInformation_title": "Dr.",
             "person_generalInformation_givenName": "Alfons",
             "person_generalInformation_familyName": "Medical",
             "person_generalInformation_salutation": "Herr"
@@ -3992,17 +3936,13 @@
     {
       "name": "Heidi Kruse",
       "abbreviation": "",
-      "description": "Die Datenschutzbeauftragte der Data GmbH (Verantwortlichen Stelle).",
+      "description": "Die Datenschutzbeauftragte der Data GmbH.",
       "links": {
         
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "person_generalInformation_givenName": "Heidi",
             "person_generalInformation_familyName": "Kruse",
@@ -4010,11 +3950,7 @@
           }
         },
         "person_address": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "person_address_city": "G\u00f6ttingen",
             "person_address_state": "Niedersachsen",
@@ -4024,22 +3960,14 @@
           }
         },
         "person_dataProtectionOfficer": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "person_dataProtectionOfficer_expertise": true,
             "person_dataProtectionOfficer_profession": "DSB, DSB-Auditor, Compliance-Manager"
           }
         },
         "person_contactInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "person_contactInformation_email": "HL@data.de",
             "person_contactInformation_office": "0551 370000-0"
@@ -4138,17 +4066,13 @@
     },
     {
       "name": "Justin Gr\u00f6bel",
-      "description": "Der externe Datenschutzbeauftragte der Data GmbH (arbeitet f\u00fcr die MED GmbH).",
+      "description": "Die interne Datenschutzbeauftragte der MeD GmbH",
       "links": {
         
       },
       "customAspects": {
         "person_generalInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "person_generalInformation_givenName": "Justin",
             "person_generalInformation_familyName": "Gr\u00f6bel",
@@ -4156,35 +4080,23 @@
           }
         },
         "person_address": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "person_address_city": "D\u00fcsseldorf",
             "person_address_state": "Nordrhein-Westfalen",
             "person_address_country": "Deutschland",
-            "person_address_address1": "Bluemstrasse 2",
+            "person_address_address1": "Bluemstra\u00dfe 2",
             "person_address_postcode": "40221"
           }
         },
         "person_dataProtectionOfficer": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "person_dataProtectionOfficer_expertise": false
           }
         },
         "person_contactInformation": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "person_contactInformation_fax": "049 211 884-99",
             "person_contactInformation_email": "jg@ds.de",
@@ -4207,7 +4119,7 @@
     },
     {
       "name": "J\u00fcrgen Toast",
-      "description": "Der Informationssicherheitsbeauftrage der Data GmbH.",
+      "description": "Der Informationssicherheitsbeauftragte der Data GmbH.",
       "links": {
         
       },
@@ -4215,7 +4127,7 @@
         "person_generalInformation": {
           "domains": [],
           "attributes": {
-            "person_generalInformation_givenName": "J\u00fcrgen ",
+            "person_generalInformation_givenName": "J\u00fcrgen",
             "person_generalInformation_familyName": "Toast"
           }
         }
@@ -4340,12 +4252,19 @@
     },
     {
       "name": "Nina Fliege",
-      "description": "Fachverwantortlich Marketing Data GmbH",
+      "description": "Die Fachverantwortliche f\u00fcr das Marketing der Data GmbH",
       "links": {
         
       },
       "customAspects": {
-        
+        "person_generalInformation": {
+          "domains": [],
+          "attributes": {
+            "person_generalInformation_givenName": "Nina",
+            "person_generalInformation_familyName": "Fliege",
+            "person_generalInformation_salutation": "Frau"
+          }
+        }
       },
       "type": "person",
       "parts": [],
@@ -4460,7 +4379,7 @@
           "attributes": {
             "person_generalInformation_title": "Dr.",
             "person_generalInformation_givenName": "Stefanie",
-            "person_generalInformation_familyName": "Bemer",
+            "person_generalInformation_familyName": "Bremer",
             "person_generalInformation_salutation": "Frau"
           }
         }
@@ -4911,7 +4830,7 @@
           "attributes": {
             "process_PIADescription_dataType": false,
             "process_PIADescription_legalBasis": false,
-            "process_PIADescription_testObject": "Erfassung von Videodaten im Eingangs- und Zutrittsbereich des Geb\u00e4udes. Die Erfassung soll durchgehend erfolgen. Hierbei werden Teile eines \u00f6ffentlichen Parkplatzes des anliegenden Einkaufszentrums mit erfasst. In den Gesch\u00e4ftsr\u00e4umen  erfolgt die Erfassung an Wochentagen nur zwischen 20.00 Uhr und 6.00 Uhr. Die Kameras sind schwenkbar und k\u00f6nnen zoomen.",
+            "process_PIADescription_testObject": "Erfassung von Videodaten im Eingangs- und Zutrittsbereich des Geb\u00e4udes. Die Erfassung soll durchgehend erfolgen. Hierbei werden Teile eines \u00f6ffentlichen Parkplatzes des anliegenden Einkaufszentrums mit erfasst. In den Gesch\u00e4ftsr\u00e4umen erfolgt die Erfassung an Wochentagen nur zwischen 20.00 Uhr und 6.00 Uhr. Die Kameras sind schwenkbar und k\u00f6nnen zoomen.",
             "process_PIADescription_dataTransfer": true,
             "process_PIADescription_affectedPersons": false,
             "process_PIADescription_deletionPeriods": false,
@@ -4933,14 +4852,14 @@
           "domains": [],
           "attributes": {
             "process_PIADPO_advice": true,
-            "process_PIADPO_comment": "Rat des Datenschutzbeauftragten bezu\u0308glich der Videou\u0308berwachung wurde eingeholt. Dieser bat um gro\u00dffla\u0308chige Kennzeichnung der Videou\u0308berwachung. Aus dieser soll zus\u00e4tzlich zur verpflichtenden Angabe des Verantwortlichen hervorgehen, dass das Videou\u0308berwachungssystem die Videos aufzeichnet, also nicht nur Echtzeitaufnahmen erfolgen. Die Tonaufzeichnung sind nach Ansicht des DSB unzul\u00e4ssig und m\u00fcssen unterbleiben. Schriftliche  DSB-Stellungnahme zum Verarbeitungsvorgang Video\u00fcberwachung liegt vor.",
+            "process_PIADPO_comment": "Rat des Datenschutzbeauftragten bez\u00fcglich der Video\u00fcberwachung wurde eingeholt. Dieser bat um gro\u00dffl\u00e4chige Kennzeichnung der Video\u00fcberwachung. Aus dieser soll zus\u00e4tzlich zur verpflichtenden Angabe des Verantwortlichen hervorgehen, dass das Video\u00fcberwachungssystem die Videos aufzeichnet, also nicht nur Echtzeitaufnahmen erfolgen. Die Tonaufzeichnung sind nach Ansicht des DSB unzul\u00e4ssig und m\u00fcssen unterbleiben. Schriftliche DSB-Stellungnahme zum Verarbeitungsvorgang Video\u00fcberwachung liegt vor.",
             "process_PIADPO_document": "https://www.bfdi.bund.de/DE/DerBfDI/Dokumente/Stellungnahmen/stellungnahmen_node.html"
           }
         },
         "process_PIAAssessment": {
           "domains": [],
           "attributes": {
-            "process_PIAAssessment_necessity": "Zoom- und Schwenkbarkeit stellen einen sehr intensiven Eingriff in das Pers\u00f6nlichkeitsrecht der Betroffenen dar und sind weder verh\u00e4ltnism\u00e4\u00dfig noch erforderlich. Dies gilt gleicherma\u00dfen f\u00fcr eine durchgehende Erfassung.\nSoll  der Eingangsbereich eines Geb\u00e4udes \u00fcberwacht werden, darf die Kamera nicht mehr als eben diesen Bereich erfassen. \u00d6ffentliche Bereiche wie die Stra\u00dfe vor der Eingangst\u00fcr d\u00fcrfen in der Regel nicht per Kamera \u00fcberwacht werden.",
+            "process_PIAAssessment_necessity": "Zoombarkeit und Schwenkbarkeit stellen einen sehr intensiven Eingriff in das Pers\u00f6nlichkeitsrecht der Betroffenen dar und sind weder verh\u00e4ltnism\u00e4\u00dfig noch erforderlich. Dies gilt gleicherma\u00dfen f\u00fcr eine durchgehende Erfassung.\nSoll der Eingangsbereich eines Geb\u00e4udes \u00fcberwacht werden, darf die Kamera nicht mehr als eben diesen Bereich erfassen. \u00d6ffentliche Bereiche wie die Stra\u00dfe vor der Eingangst\u00fcr d\u00fcrfen in der Regel nicht per Kamera \u00fcberwacht werden.",
             "process_PIAAssessment_rulesExisting": false
           }
         },
@@ -5325,7 +5244,7 @@
             "process_dataTransfer_legalBasis": [
               "process_dataTransfer_legalBasis_Art9Abs2litfDSGVO"
             ],
-            "process_dataTransfer_explanation": "Kein Steuerberater, StBG nichr anwendbar. AV-Vertrag wurde abgeschlossen"
+            "process_dataTransfer_explanation": "Kein Steuerberater, StBerG nicht anwendbar. AV-Vertrag wurde abgeschlossen"
           }
         },
         "process_generalInformation": {
@@ -5498,7 +5417,7 @@
           "domains": [],
           "attributes": {
             "process_opinionDPO_findings": "Alles gut gemacht",
-            "process_opinionDPO_PIAComment": "nicht erforderlich",
+            "process_opinionDPO_PIAComment": "Nicht erforderlich",
             "process_opinionDPO_PIACarriedOut": false,
             "process_opinionDPO_recommendations": "Nichts zu verbessern",
             "process_opinionDPO_consultationRequired": false,
@@ -5607,7 +5526,7 @@
           {
             "domains": [],
             "attributes": {
-              
+              "process_externalRecipient_thirdCountryProcessing": false
             },
             "target": {
               "targetUri": "https://api.staging.verinice.com/veo/scopes/b973c2f1-29f9-4957-8ef1-c5b0ffb7868d"
@@ -5616,7 +5535,7 @@
           {
             "domains": [],
             "attributes": {
-              
+              "process_externalRecipient_thirdCountryProcessing": false
             },
             "target": {
               "targetUri": "https://api.staging.verinice.com/veo/scopes/d596b431-3711-499a-a0ee-096241176d8d"
@@ -5635,7 +5554,7 @@
           "domains": [],
           "attributes": {
             "process_dataTransfer_legalBasis": [],
-            "process_dataTransfer_otherLegalBasis": "\u00a7 41 a EstG, \u00a7 \u00a7 28a ff. SGB IV ,  \u00a7 28b  Abs. 1 Satz 1 Nr. 1 - 5 SGB IV"
+            "process_dataTransfer_otherLegalBasis": "\u00a7 41a EStG, \u00a7\u00a7 28a ff. SGB IV, \u00a7 28b Abs.1 Satz 1 Nr.1-5 SGB IV"
           }
         }
       },
@@ -6274,7 +6193,7 @@
           }
         }
       },
-      "id": "afe8c42c-6f35-45a7-b1c9-62bed6e102e7"
+      "id": "3b53b10e-6066-49c1-af15-748851dab001"
     },
     {
       "name": "Unzureichende Pseudonymisierung oder Anonymisierung",
@@ -6301,7 +6220,7 @@
           }
         }
       },
-      "id": "3b53b10e-6066-49c1-af15-748851dab001"
+      "id": "afe8c42c-6f35-45a7-b1c9-62bed6e102e7"
     },
     {
       "name": "Verarbeitung gro\u00dfer Datenmengen",
@@ -6708,7 +6627,7 @@
             "scope_address_city": "Hamburg",
             "scope_address_state": "Hamburg",
             "scope_address_country": "Deutschland",
-            "scope_address_address1": "Sierichstrasse 46",
+            "scope_address_address1": "Sierichstra\u00dfe 46",
             "scope_address_postcode": "22301"
           }
         },
@@ -6965,17 +6884,13 @@
     },
     {
       "name": "SafeGuard GmbH",
-      "description": "Safeguard ist mit der Durchf\u00fchrung der Video\u00fcberwachung beauftragt",
+      "description": "SafeGuard ist mit der Durchf\u00fchrung der Video\u00fcberwachung beauftragt",
       "links": {
         
       },
       "customAspects": {
         "scope_thirdCountry": {
-          "domains": [
-            {
-              "targetUri": "https://api.staging.verinice.com/veo/domains/7de19fda-73dc-42b8-ab85-56bc04d27460"
-            }
-          ],
+          "domains": [],
           "attributes": {
             "scope_thirdCountry_status": false
           }
@@ -6996,7 +6911,7 @@
       "id": "f028abf2-810c-4931-8a20-5c3753e150c4"
     },
     {
-      "name": "Zoom Video Communications, Inc",
+      "name": "Zoom Video Communications, Inc.",
       "links": {
         "scope_contract": [
           {
@@ -7978,7 +7893,8 @@
                 {
                   "category": "C",
                   "potentialImpact": 2,
-                  "effectiveImpact": 2
+                  "specificImpact": 3,
+                  "effectiveImpact": 3
                 }
               ],
               "riskValues": [
@@ -7989,7 +7905,7 @@
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
                   ],
-                  "riskTreatmentExplanation": "AV - Vertr\u00e4ge m\u00fcssen abgeschlossen werden",
+                  "riskTreatmentExplanation": "AV-Vertr\u00e4ge m\u00fcssen abgeschlossen werden",
                   "residualRisk": 0
                 },
                 {
@@ -8012,7 +7928,7 @@
                 },
                 {
                   "category": "C",
-                  "inherentRisk": 1,
+                  "inherentRisk": 2,
                   "userDefinedResidualRisk": 0,
                   "riskTreatments": [
                     "RISK_TREATMENT_REDUCTION"
