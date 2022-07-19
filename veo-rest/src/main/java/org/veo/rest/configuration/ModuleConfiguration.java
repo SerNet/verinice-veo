@@ -761,11 +761,10 @@ public class ModuleConfiguration {
   @Bean
   public GetIncarnationDescriptionUseCase getIncarnationDescriptionUseCase(
       UnitRepository unitRepository,
-      DomainRepository domainRepository,
       CatalogItemRepository catalogItemRepository,
       RepositoryProvider repositoryProvider) {
     return new GetIncarnationDescriptionUseCase(
-        unitRepository, catalogItemRepository, domainRepository, repositoryProvider);
+        unitRepository, catalogItemRepository, repositoryProvider);
   }
 
   @Bean

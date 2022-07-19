@@ -42,7 +42,6 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.RuntimeModelException;
 import org.veo.core.entity.util.TailoringReferenceComparators;
 import org.veo.core.repository.CatalogItemRepository;
-import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.PagingConfiguration;
@@ -64,7 +63,6 @@ public class GetIncarnationDescriptionUseCase
         GetIncarnationDescriptionUseCase.InputData, GetIncarnationDescriptionUseCase.OutputData> {
   private final UnitRepository unitRepository;
   private final CatalogItemRepository catalogItemRepository;
-  private final DomainRepository domainRepository;
   private final org.veo.core.repository.RepositoryProvider repositoryProvider;
 
   @Override
