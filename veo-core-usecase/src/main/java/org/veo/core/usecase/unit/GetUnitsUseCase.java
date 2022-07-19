@@ -57,8 +57,6 @@ public class GetUnitsUseCase
             .findById(input.getAuthenticatedClient().getId())
             .orElseThrow(() -> new NotFoundException("Invalid client-ID"));
 
-    ;
-
     if (input.getParentUuid().isEmpty()) return new OutputData(unitRepository.findByClient(client));
     else {
       Key<UUID> parentId = Key.uuidFrom(input.getParentUuid().get());
