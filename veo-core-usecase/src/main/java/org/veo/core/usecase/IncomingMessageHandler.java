@@ -36,13 +36,11 @@ public class IncomingMessageHandler {
   private final CatalogMigrationService catalogMigrationService;
 
   public void handleElementTypeDefinitionUpdate(Domain domain, EntityType elementType) {
-    var definition = domain.getElementTypeDefinition(elementType.getSingularTerm());
-
     repositoryProvider
         .getElementRepositoryFor((Class<? extends Element>) elementType.getType())
         .findByDomain(domain)
-        .forEach(element -> elementMigrationService.migrate(element, definition, domain));
+        .forEach(element -> elementMigrationService.migrate(element, domain));
 
-    catalogMigrationService.migrate(definition, domain);
+    catalogMigrationService.migrate(elementType, domain);
   }
 }

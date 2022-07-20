@@ -17,9 +17,12 @@
  ******************************************************************************/
 package org.veo.core
 
+import static org.veo.core.entity.EntityType.DOCUMENT
+
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Domain
+import org.veo.core.entity.EntityType
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.LinkDefinition
@@ -95,7 +98,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
 
         when:
         executeInTransaction {
-            catalogItemMigrationService.migrate(domain.getElementTypeDefinition("document"), domain)
+            catalogItemMigrationService.migrate(DOCUMENT, domain)
         }
 
         and:
@@ -144,7 +147,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
 
         when:
         executeInTransaction {
-            catalogItemMigrationService.migrate(domain.getElementTypeDefinition("document"), domain)
+            catalogItemMigrationService.migrate(DOCUMENT, domain)
         }
 
         and:
@@ -197,7 +200,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
 
         when: "migrating"
         executeInTransaction {
-            catalogItemMigrationService.migrate(domain.getElementTypeDefinition("document"), domain)
+            catalogItemMigrationService.migrate(DOCUMENT, domain)
         }
 
         and: "fetching the catalog"

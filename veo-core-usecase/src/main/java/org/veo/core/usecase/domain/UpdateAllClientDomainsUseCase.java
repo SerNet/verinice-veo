@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.domain;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -93,28 +92,20 @@ public class UpdateAllClientDomainsUseCase
       }
     }
 
-    var elementsByTypeDef =
+    var elements =
         EntityType.ELEMENT_TYPES.stream()
-            .collect(
-                Collectors.toMap(
-                    type -> newDomain.getElementTypeDefinition(type.getSingularTerm()),
-                    type ->
-                        repositoryProvider
-                            .getElementRepositoryFor((Class<Element>) type.getType())
-                            .findByDomain(domainToUpdate)));
+            .map(t -> (Class<Element>) t.getType())
+            .map(repositoryProvider::getElementRepositoryFor)
+            .flatMap(repo -> repo.findByDomain(domainToUpdate).stream())
+            .toList();
 
     // Transfer domain-specific information from old domain to new domain.
-    elementsByTypeDef.values().stream()
-        .flatMap(Collection::stream)
-        .forEach(element -> element.transferToDomain(domainToUpdate, newDomain));
+    elements.forEach(element -> element.transferToDomain(domainToUpdate, newDomain));
 
     // Mercilessly remove all information from the elements that is no longer valid under the new
     // domain. This must happen after all elements have been transferred, because link targets are
     // also validated and must have been transferred beforehand.
-    elementsByTypeDef.forEach(
-        (typeDef, elements) ->
-            elements.forEach(
-                element -> elementMigrationService.migrate(element, typeDef, newDomain)));
+    elements.forEach(element -> elementMigrationService.migrate(element, newDomain));
   }
 
   @Valid

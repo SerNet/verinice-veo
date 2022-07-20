@@ -36,7 +36,7 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes obsolete custom aspect'() {
         given:
-        def definition = Spy(ElementTypeDefinition) {
+        domain.getElementTypeDefinition("asset") >> Spy(ElementTypeDefinition) {
             customAspects >> [
                 typeA: Spy(CustomAspectDefinition) {
                     attributeSchemas >> [
@@ -47,6 +47,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
         def element = Spy(Element) {
             id >> Key.newUuid()
+            modelType >> "asset"
             customAspects >> ([
                 Spy(CustomAspect) {
                     type >> "typeA"
@@ -66,7 +67,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
 
         when:
-        elementMigrationService.migrate(element, definition, domain)
+        elementMigrationService.migrate(element, domain)
 
         then:
         element.customAspects*.type.sort() == ["typeA"]
@@ -74,7 +75,7 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes obsolete custom aspect attribute'() {
         given:
-        def definition = Spy(ElementTypeDefinition) {
+        domain.getElementTypeDefinition("asset") >> Spy(ElementTypeDefinition) {
             customAspects >> [
                 typeA: Spy(CustomAspectDefinition) {
                     attributeSchemas >> [
@@ -85,6 +86,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
         def element = Spy(Element) {
             id >> Key.newUuid()
+            modelType >> "asset"
             customAspects >> ([
                 Spy(CustomAspect) {
                     type >> "typeA"
@@ -99,7 +101,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
 
         when:
-        elementMigrationService.migrate(element, definition, domain)
+        elementMigrationService.migrate(element, domain)
 
         then:
         element.customAspects[0].attributes.keySet().sort() == ["attrA"]
@@ -107,7 +109,7 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes obsolete link'() {
         given:
-        def definition = Spy(ElementTypeDefinition) {
+        domain.getElementTypeDefinition("asset") >> Spy(ElementTypeDefinition) {
             links >> [
                 typeA: Mock(LinkDefinition) {
                     attributeSchemas >> [:]
@@ -122,6 +124,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
         def element = Spy(Element) {
             id >> Key.newUuid()
+            modelType >> "asset"
             customAspects >> ([] as Set)
             links >> ([
                 Spy(CustomLink) {
@@ -139,7 +142,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
 
         when:
-        elementMigrationService.migrate(element, definition, domain)
+        elementMigrationService.migrate(element, domain)
 
         then:
         element.links*.type.sort() == ["typeA"]
@@ -147,7 +150,7 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes obsolete link attribute'() {
         given:
-        def definition = Spy(ElementTypeDefinition) {
+        domain.getElementTypeDefinition("asset") >>  Spy(ElementTypeDefinition) {
             links >> [
                 typeA: Spy(LinkDefinition) {
                     attributeSchemas >> [
@@ -164,6 +167,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
         def element = Spy(Element) {
             id >> Key.newUuid()
+            modelType >> "asset"
             customAspects >> ([] as Set)
             links >> ([
                 Spy(CustomLink) {
@@ -179,7 +183,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
 
         when:
-        elementMigrationService.migrate(element, definition, domain)
+        elementMigrationService.migrate(element, domain)
 
         then:
         element.links[0].attributes.keySet().sort() == ["attrA"]
@@ -187,7 +191,7 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes invalid custom aspect attribute'() {
         given:
-        def definition = Spy(ElementTypeDefinition) {
+        domain.getElementTypeDefinition("asset") >>  Spy(ElementTypeDefinition) {
             customAspects >> [
                 typeA: Spy(CustomAspectDefinition) {
                     attributeSchemas >> [
@@ -207,6 +211,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
         def element = Spy(Element) {
             id >> Key.newUuid()
+            modelType >> "asset"
             customAspects >> [
                 Spy(CustomLink) {
                     type >> "typeA"
@@ -222,7 +227,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
 
         when:
-        elementMigrationService.migrate(element, definition, domain)
+        elementMigrationService.migrate(element, domain)
 
         then:
         element.customAspects[0].attributes.keySet() ==~ ["firstName"]
@@ -230,7 +235,7 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes links with wrong target type or sub type'() {
         given:
-        def definition = Spy(ElementTypeDefinition) {
+        domain.getElementTypeDefinition("asset") >>  Spy(ElementTypeDefinition) {
             links >> [
                 veryNicePersonLink: Spy(LinkDefinition) {
                     attributeSchemas >> [:]
@@ -255,6 +260,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
         def element = Spy(Element) {
             id >> Key.newUuid()
+            modelType >> "asset"
             customAspects >> ([] as Set)
             links >> ([
                 Spy(CustomLink) {
@@ -277,7 +283,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
 
         when:
-        elementMigrationService.migrate(element, definition, domain)
+        elementMigrationService.migrate(element, domain)
 
         then:
         element.links*.type.sort() == ["veryNicePersonLink"]
@@ -285,7 +291,7 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes obsolete sub type'() {
         given:
-        def definition = Mock(ElementTypeDefinition) {
+        domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
             customAspects >> []
             links >> []
             subTypes >> [
@@ -299,6 +305,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
         def element = Mock(Element) {
             id >> Key.newUuid()
+            modelType >> "asset"
             customAspects >> ([] as Set)
             links >> ([] as Set)
             getSubType(domain) >> Optional.of("AST_Building")
@@ -306,7 +313,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
 
         when:
-        elementMigrationService.migrate(element, definition, domain)
+        elementMigrationService.migrate(element, domain)
 
         then:
         1 * element.associateWithDomain(domain, null, null)
@@ -314,7 +321,7 @@ class ElementMigrationServiceSpec extends Specification{
 
     def 'removes obsolete status'() {
         given:
-        def definition = Mock(ElementTypeDefinition) {
+        domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
             customAspects >> []
             links >> []
             subTypes >> [
@@ -325,6 +332,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
         def element = Mock(Element) {
             id >> Key.newUuid()
+            modelType >> "asset"
             customAspects >> ([] as Set)
             links >> ([] as Set)
             getSubType(domain) >> Optional.of("AST_Server")
@@ -332,7 +340,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
 
         when:
-        elementMigrationService.migrate(element, definition, domain)
+        elementMigrationService.migrate(element, domain)
 
         then:
         1 * element.associateWithDomain(domain, "AST_Server", 'NEW')

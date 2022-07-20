@@ -36,7 +36,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ElementMigrationService {
 
-  public void migrate(Element element, ElementTypeDefinition definition, Domain domain) {
+  public void migrate(Element element, Domain domain) {
+    var definition = domain.getElementTypeDefinition(element.getModelType());
     new HashSet<>(element.getCustomAspects())
         .forEach(
             ca -> {

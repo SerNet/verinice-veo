@@ -21,8 +21,8 @@ import java.util.Set;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.LinkTailoringReference;
-import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.usecase.base.CatalogItemValidator;
 
@@ -39,14 +39,14 @@ public class CatalogMigrationService {
   private final ElementMigrationService elementMigrationService;
   private final CatalogItemRepository catalogItemRepository;
 
-  public void migrate(ElementTypeDefinition definition, Domain domain) {
+  public void migrate(EntityType type, Domain domain) {
     var items = catalogItemRepository.findAllByDomain(domain);
 
     // Migrate elements
     items.stream()
         .map(CatalogItem::getElement)
-        .filter(e -> e.getModelType().equals(definition.getElementType()))
-        .forEach(e -> elementMigrationService.migrate(e, definition, domain));
+        .filter(e -> e.getModelType().equals(type.getSingularTerm()))
+        .forEach(e -> elementMigrationService.migrate(e, domain));
 
     // Migrate link tailoring references
     items.stream()
@@ -55,13 +55,11 @@ public class CatalogMigrationService {
         .map(LinkTailoringReference.class::cast)
         .filter(
             ltr ->
-                ltr.getLinkSourceItem()
-                    .getElement()
-                    .getModelType()
-                    .equals(definition.getElementType()))
+                ltr.getLinkSourceItem().getElement().getModelType().equals(type.getSingularTerm()))
         .forEach(
             linkTailoringReference ->
-                definition
+                domain
+                    .getElementTypeDefinition(type.getSingularTerm())
                     .findLink(linkTailoringReference.getLinkType())
                     .ifPresentOrElse(
                         linkDef -> {
