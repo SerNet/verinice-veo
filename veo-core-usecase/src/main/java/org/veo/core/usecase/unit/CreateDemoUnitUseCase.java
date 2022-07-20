@@ -52,11 +52,14 @@ import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.decision.Decider;
+import org.veo.service.ElementMigrationService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 /** Create a new demo unit for a client. */
+@RequiredArgsConstructor
 @Slf4j
 public class CreateDemoUnitUseCase
     implements TransactionalUseCase<
@@ -71,23 +74,7 @@ public class CreateDemoUnitUseCase
   private final RepositoryProvider repositoryProvider;
   private final EventPublisher eventPublisher;
   private final Decider decider;
-
-  public CreateDemoUnitUseCase(
-      ClientRepository clientRepository,
-      UnitRepository unitRepository,
-      EntityFactory entityFactory,
-      DomainTemplateService domainTemplateService,
-      RepositoryProvider repositoryProvider,
-      EventPublisher eventPublisher,
-      Decider decider) {
-    this.clientRepository = clientRepository;
-    this.unitRepository = unitRepository;
-    this.entityFactory = entityFactory;
-    this.domainTemplateService = domainTemplateService;
-    this.repositoryProvider = repositoryProvider;
-    this.eventPublisher = eventPublisher;
-    this.decider = decider;
-  }
+  private final ElementMigrationService elementMigrationService;
 
   @Override
   @Transactional
@@ -197,6 +184,9 @@ public class CreateDemoUnitUseCase
     log.debug("Preparing element {}:{}", element.getId(), element);
     element.setDesignator(DEMO_UNIT_DESIGNATOR_PREFIX + counter.incrementAndGet());
     element.setOwner(demoUnit);
+    // TODO VEO-1547 element migration will become obsolete once the profiles they come from get
+    // migrated in the domain.
+    element.getDomains().forEach(d -> elementMigrationService.migrate(element, d));
 
     if (element instanceof CompositeElement<?> ce) {
       ce.getParts().forEach(e -> prepareElement(e, demoUnit, counter));

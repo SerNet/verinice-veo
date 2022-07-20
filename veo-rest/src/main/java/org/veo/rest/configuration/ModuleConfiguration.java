@@ -451,7 +451,8 @@ public class ModuleConfiguration {
       DomainTemplateService domainTemplateService,
       RepositoryProvider repositoryProvider,
       EventPublisher eventPublisher,
-      Decider decider) {
+      Decider decider,
+      ElementMigrationService elementMigrationService) {
     return new CreateDemoUnitUseCase(
         clientRepository,
         unitRepository,
@@ -459,7 +460,8 @@ public class ModuleConfiguration {
         domainTemplateService,
         repositoryProvider,
         eventPublisher,
-        decider);
+        decider,
+        elementMigrationService);
   }
 
   @Bean

@@ -30,6 +30,7 @@ import org.veo.core.service.EventPublisher
 import org.veo.core.usecase.decision.Decider
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase.InputData
+import org.veo.service.ElementMigrationService
 
 public class CreateDemoUnitUseCaseSpec extends UseCaseSpec {
 
@@ -38,8 +39,9 @@ public class CreateDemoUnitUseCaseSpec extends UseCaseSpec {
     ProcessRepository processRepository = Mock()
     EventPublisher eventPublisher = Mock()
     Decider decider = Mock()
+    ElementMigrationService elementMigrationService = Mock()
 
-    CreateDemoUnitUseCase usecase = new CreateDemoUnitUseCase(clientRepository, unitRepository, entityFactory, domainTemplateService,repositoryProvider, eventPublisher, decider)
+    CreateDemoUnitUseCase usecase = new CreateDemoUnitUseCase(clientRepository, unitRepository, entityFactory, domainTemplateService,repositoryProvider, eventPublisher, decider, elementMigrationService)
 
     def "Create a new demo unit for an existing client" () {
         given: "starting values for a unit"
@@ -95,14 +97,17 @@ public class CreateDemoUnitUseCaseSpec extends UseCaseSpec {
         with(asset1) {
             1 * setDesignator('DMO-1')
             1 * setOwner(demoUnit)
+            1 * elementMigrationService.migrate(it, domain)
         }
         with(asset2) {
             1 * setDesignator('DMO-2')
             1 * setOwner(demoUnit)
+            1 * elementMigrationService.migrate(it, domain)
         }
         with(process) {
             1 * setDesignator('DMO-3')
             1 * setOwner(demoUnit)
+            1 * elementMigrationService.migrate(it, domain)
         }
 
         and: "decisions are evaluated"

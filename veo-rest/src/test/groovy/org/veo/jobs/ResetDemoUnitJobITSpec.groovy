@@ -117,6 +117,41 @@ class ResetDemoUnitJobITSpec extends VeoSpringSpec {
         }
     }
 
+    def "Demo unit is migrated on reset"() {
+        given: "an existing demo unit"
+        def clientId = UUID.randomUUID().toString()
+        userSwitcher.switchToUser("testuser", clientId)
+        def client = createClient(clientId)
+        def unit = createDemoUnit(client)
+
+        expect: "some demo processes to have processing details"
+        executeInTransaction {
+            findByUnit(processDataRepository, unit)
+                    .collectMany { it.customAspects }
+                    .any { it.type == "process_processingDetails" }
+        }
+
+        when: "removing processing details from the element type definition"
+        executeInTransaction {
+            domainDataRepository.findAllByDomainTemplateId(DSGVO_DOMAINTEMPLATE_UUID).first().with{
+                getElementTypeDefinition("process").customAspects.remove("process_processingDetails")
+                domainDataRepository.save(it)
+            }
+        }
+
+        and: "resetting the demo unit"
+        userSwitcher.revokeUser()
+        job.resetAllDemoUnits()
+        def resetUnit = unitRepository.findByClient(client).first()
+
+        then: "no demo processes have processing details"
+        executeInTransaction {
+            !findByUnit(processDataRepository, resetUnit)
+                    .collectMany { it.customAspects }
+                    .any { it.type == "process_processingDetails" }
+        }
+    }
+
     def "Reset demo unit for client with no demo unit"() {
         given: "a new client"
         def clientId = UUID.randomUUID().toString()
