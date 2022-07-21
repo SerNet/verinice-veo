@@ -189,6 +189,24 @@ class DomainRestTestITSpec extends VeoRestTest {
             ]
             profiles.exampleUnit.risks.size() == 1
         }
+
+        when:" we post the domain export as domaintemplate"
+        domainDto.name = "My own domain"
+
+        def template = post("/domaintemplates", domainDto, 201, UserType.CONTENT_CREATOR).body
+        def templateId = template.resourceId
+        def domainTemplateExport = get("/domaintemplates/$templateId/export", 200, UserType.CONTENT_CREATOR).body
+
+        then: "the domaintemplate exist and contains the data"
+        with(domainTemplateExport) {
+            name == domainDto.name
+            templateVersion == domainDto.templateVersion
+            profiles.exampleUnit.elements*.name ==~ [
+                "example process",
+                "example scenario"
+            ]
+            profiles.exampleUnit.risks.size() == 1
+        }
     }
 
     def "create a new domain template version with a profile from the demo unit"() {

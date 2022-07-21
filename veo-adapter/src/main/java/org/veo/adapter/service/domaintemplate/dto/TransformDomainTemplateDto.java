@@ -24,6 +24,7 @@ import java.util.Set;
 
 import javax.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
@@ -61,6 +62,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+// we accept also dto which conforms to the domain schema, so we need to ignore the additional
+// fields it contains
+@JsonIgnoreProperties("domainTemplate")
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class TransformDomainTemplateDto extends AbstractDomainTemplateDto

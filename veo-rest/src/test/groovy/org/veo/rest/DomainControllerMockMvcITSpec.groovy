@@ -351,8 +351,6 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
 
         then:" the export file contains the profile data"
         exportedDomain.name == newDomain.name
-        exportedDomain.profiles.demoUnit.elements != null
-
         exportedDomain.profiles.demoUnit.elements*.type ==~ [
             "asset",
             "control",
@@ -364,6 +362,30 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             "scope"
         ]
         exportedDomain.profiles.demoUnit.risks.size() == 2
+
+        when: "we create a new domain template from the export"
+        exportedDomain.templateVersion = "1.2.4"
+        def domainTemplateId = parseJson(post("/domaintemplates", exportedDomain)).resourceId
+
+        then:" the domain template is created"
+        UUID.fromString(domainTemplateId)
+
+        when: "we create a domain from the domain template"
+        newDomain = createTestDomain(client, domainTemplateId)
+
+        then: "the domain contains the profiles"
+        newDomain.name == "DSGVO-test"
+        newDomain.profiles.demoUnit.elements*.type ==~ [
+            "asset",
+            "control",
+            "document",
+            "incident",
+            "person",
+            "process",
+            "scenario",
+            "scope"
+        ]
+        newDomain.profiles.demoUnit.risks.size() == 2
     }
 
 
