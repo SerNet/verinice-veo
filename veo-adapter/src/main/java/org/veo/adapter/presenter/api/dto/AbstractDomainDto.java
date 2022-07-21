@@ -33,6 +33,7 @@ import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.decision.Decision;
+import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -96,6 +97,8 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
   private IdRef<DomainTemplate> domainTemplate;
 
   private Map<String, Decision> decisions;
+
+  private Map<String, ProfileDefinition> profiles = new HashMap<>();
 
   @Override
   public Class<? extends Identifiable> getModelInterface() {

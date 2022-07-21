@@ -27,6 +27,7 @@ import javax.validation.constraints.Size;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
+import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -81,6 +82,8 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfRef
 
   @Schema(description = "A list of risk definitions belonging to the DomainTemplate.")
   private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
+
+  private Map<String, ProfileDefinition> profiles = new HashMap<>();
 
   @Override
   public Class<? extends Identifiable> getModelInterface() {

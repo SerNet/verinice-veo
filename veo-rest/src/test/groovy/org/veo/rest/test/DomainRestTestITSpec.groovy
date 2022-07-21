@@ -165,6 +165,16 @@ class DomainRestTestITSpec extends VeoRestTest {
             first().name == "example scenario"
             first().domains[newDomainId].subType == "SCN_Scenario"
         }
+
+        when: "We export the domain"
+        def domainDto = exportDomain(newDomainId)
+
+        then: "the profile is contained"
+        domainDto.profiles.exampleUnit.elements*.name ==~ [
+            "example process",
+            "example scenario"
+        ]
+        domainDto.profiles.exampleUnit.risks.size() == 1
     }
 
     def "create a new domain template version with a profile from the demo unit"() {

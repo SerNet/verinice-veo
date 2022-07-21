@@ -344,10 +344,26 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         ]
         dt.profiles.demoUnit.risks*._self.size() == 2
 
-        when: "creating the next template"
-        post("/domains/${domain.id.uuidValue()}/createdomaintemplate", [version : "1.2.4"])
-        then: "one domain template more"
-        domainTemplateDataRepository.count() == initialTemplateCount + 2
+        when: "creating and exporting the domain"
+        Domain newDomain = createTestDomain(client, dt.id.uuidValue())
+        def results = get("/domains/${newDomain.id.uuidValue()}/export")
+        def exportedDomain = parseJson(results)
+
+        then:" the export file contains the profile data"
+        exportedDomain.name == newDomain.name
+        exportedDomain.profiles.demoUnit.elements != null
+
+        exportedDomain.profiles.demoUnit.elements*.type ==~ [
+            "asset",
+            "control",
+            "document",
+            "incident",
+            "person",
+            "process",
+            "scenario",
+            "scope"
+        ]
+        exportedDomain.profiles.demoUnit.risks.size() == 2
     }
 
 

@@ -295,6 +295,8 @@ public final class DtoToEntityTransformer {
     target.setAuthority(source.getAuthority());
     target.setRevision(source.getRevision());
     target.setTemplateVersion(source.getTemplateVersion());
+    target.setProfiles(Map.copyOf(source.getProfiles()));
+
     mapNameableProperties(source, target);
     if (source.getCatalogs() != null) {
       target.setCatalogs(
