@@ -22,6 +22,7 @@ import java.nio.charset.StandardCharsets
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
+import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.adapter.service.domaintemplate.dto.CreateDomainTemplateFromDomainParameterDto
 import org.veo.core.VeoMvcSpec
@@ -222,7 +223,6 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         status.andReturn().response.status == 403
     }
 
-
     @WithUserDetails("user@domain.example")
     def "export a Domain"() {
         given: "a saved domain"
@@ -252,10 +252,9 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         def initialTemplateCount = txTemplate.execute {
             domainTemplateDataRepository.count()
         }
-        def parameter =[version : "1.0.0"] as Map
 
         when: "a template is created"
-        def result = parseJson(post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.0.0",parameter))
+        def result = parseJson(post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate",[version : "1.0.0"]))
         then: "a result is returned"
         result != null
         and: "there is one more template in the repo"
@@ -269,31 +268,31 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         dt.templateVersion == "1.0.0"
 
         when: "trying to create another domain template with the same version"
-        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.0.0",parameter, 409)
+        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate", [version : "1.0.0"], 409)
 
         then:
         thrown(EntityAlreadyExistsException)
 
         when: "trying to create another domain template with a lower version"
-        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/0.5.3", [version : "0.5.3"] as Map, 422)
+        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate", [version : "0.5.3"], 422)
 
         then:
         thrown(UnprocessableDataException)
 
         when: "trying to create another domain template with an invalid version"
-        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.1", [version : "1.1.0"] as Map, 400)
+        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate", [version : "1.1"], 400)
 
         then:
-        thrown(IllegalArgumentException)
+        thrown(MethodArgumentNotValidException)
 
         when: "trying to create another domain template with a prerelease label"
-        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.0.1-prerelease3", [version : "1.0.1"] as Map, 400)
+        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate", [version : "1.0.1-prerelease3"], 400)
 
         then:
-        thrown(IllegalArgumentException)
+        thrown(MethodArgumentNotValidException)
 
         when: "trying to create another domain template with a higher version"
-        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.0.1",[version : "1.0.1"])
+        post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate", [version : "1.0.1"])
 
         then:
         notThrown(Exception)
@@ -310,7 +309,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         }
 
         when: "a template is created"
-        def result = parseJson(post("/domains/${domain.id.uuidValue()}/createdomaintemplate",[version : "1.2.3",
+        def result = parseJson(post("/domains/${domain.id.uuidValue()}/createdomaintemplate", [version : "1.2.3",
             profiles: ["demoUnit": (unitId)]
         ]))
         then: "a result is returned"
@@ -341,8 +340,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         dt.profiles.demoUnit.risks*._self.size() == 2
 
         when: "creating the next template"
-        parameter = [version : "1.2.4"] as Map
-        post("/domains/${domain.id.uuidValue()}/createdomaintemplate/1.2.4",parameter)
+        post("/domains/${domain.id.uuidValue()}/createdomaintemplate", [version : "1.2.4"])
         then: "one domain template more"
         domainTemplateDataRepository.count() == initialTemplateCount + 2
     }
@@ -352,7 +350,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
     def "create a DomainTemplate forbidden for user"() {
         given: "a saved domain"
         when: "a request is made to the server"
-        def status = postUnauthorized("/domains/${testDomain.id.uuidValue()}/createdomaintemplate/1.0.0", [:])
+        def status = postUnauthorized("/domains/${testDomain.id.uuidValue()}/createdomaintemplate", [version : "1.0.0"])
         then: "it is forbidden"
         status.andReturn().response.status == 403
     }

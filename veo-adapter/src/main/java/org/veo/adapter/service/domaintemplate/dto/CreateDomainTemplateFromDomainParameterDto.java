@@ -27,6 +27,7 @@ import javax.validation.constraints.Size;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+@Schema(description = "The parameter object ")
 @Data
 public class CreateDomainTemplateFromDomainParameterDto {
   static final String SEM_VER_PATTERN = "[0-9]+\\.[0-9]+\\.[0-9]+";

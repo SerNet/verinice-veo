@@ -21,7 +21,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.veo.adapter.presenter.api.io.mapper.VersionMapper.parseVersion;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
-import static org.veo.rest.ControllerConstants.SEM_VER_PATTERN;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 
 import java.io.IOException;
@@ -40,7 +39,6 @@ import java.util.function.Supplier;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -234,7 +232,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
         domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
   }
 
-  @PostMapping(value = "/{id}/createdomaintemplate/{version}")
+  @PostMapping(value = "/{id}/createdomaintemplate")
   @Operation(summary = "Creates a domaintemplate from a domain")
   @ApiResponses(
       value = {
@@ -252,7 +250,6 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
               message = "ID must be a valid UUID string following RFC 4122.")
           @PathVariable
           String id,
-      @Size(max = 255) @Pattern(regexp = SEM_VER_PATTERN) @PathVariable String version,
       @Valid @RequestBody CreateDomainTemplateFromDomainParameterDto createParameter) {
     Client client = getAuthenticatedClient(auth);
     if (createParameter == null) {
@@ -293,7 +290,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
         useCaseInteractor.execute(
             createDomainTemplateFromDomainUseCase,
             new CreateDomainTemplateFromDomainUseCase.InputData(
-                Key.uuidFrom(id), parseVersion(version), client, profiles),
+                Key.uuidFrom(id), parseVersion(createParameter.getVersion()), client, profiles),
             out -> IdRef.from(out.getNewDomainTemplate(), referenceAssembler));
     return completableFuture.thenApply(result -> ResponseEntity.status(201).body(result));
   }

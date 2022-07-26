@@ -313,7 +313,7 @@ class SwaggerSpec extends VeoSpringSpec {
 
     def "endpoint documentation is correct for CreateDomainTemplateUseCase"() {
         when: "retrieving the information about the endpoint"
-        def endPointInfo = parsedApiDocs.paths["/domains/{id}/createdomaintemplate/{version}"]
+        def endPointInfo = parsedApiDocs.paths["/domains/{id}/createdomaintemplate"]
         then: "the information is found"
         endPointInfo != null
         and: 'it handles post requests'
@@ -325,10 +325,8 @@ class SwaggerSpec extends VeoSpringSpec {
             name == 'id'
             required == true
         }
-        with(endPointInfo.post.parameters[1]) {
-            name == 'version'
+        with(endPointInfo.post.requestBody) {
             required == true
-            "0.2.32".matches schema.pattern
         }
         with(endPointInfo.post.security) {
             size() == 1
