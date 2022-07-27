@@ -246,7 +246,6 @@ pipeline {
                                 --name veo-${n}\
                                 -v ${WORKSPACE}/veo-rest/build/domain_templates/domaintemplates:/domaintemplates/main/\
                                 -v ${WORKSPACE}/veo-rest/src/test/resources/testdomaintemplates/test-domain.json:/domaintemplates/test/test-domain.json\
-                                -v ${WORKSPACE}/veo-rest/src/test/resources/testdomaintemplates/dsgvo.json:/domaintemplates/test/dsgvo.json\
                                 -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres\
                                 -e SPRING_DATASOURCE_USERNAME=test\
                                 -e SPRING_DATASOURCE_PASSWORD=test\

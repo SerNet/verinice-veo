@@ -673,9 +673,4 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   public ExportDto exportDomain(Domain domain) {
     return dtoTransformer.transformDomain2ExportDto(domain);
   }
-
-  @Override
-  public Set<String> getTemplateIdsWithClasspathFiles() {
-    return domainTemplateFiles.keySet();
-  }
 }

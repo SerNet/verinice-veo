@@ -53,8 +53,8 @@ public class DomainTemplateRepositoryImpl
   }
 
   @Override
-  public List<Key<UUID>> getDomainTemplateIds(String name) {
-    return dataRepository.findTemplateIdsByName(name).stream().map(Key::uuidFrom).toList();
+  public Optional<Key<UUID>> getLatestDomainTemplateId(String name) {
+    return dataRepository.findLatestTemplateIdByName(name).map(Key::uuidFrom);
   }
 
   @Override

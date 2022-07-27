@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,7 +32,7 @@ import org.veo.core.entity.Key;
  * methods - i.e. queries based on particular fields.
  */
 public interface DomainTemplateRepository extends Repository<DomainTemplate, Key<UUID>> {
-  List<Key<UUID>> getDomainTemplateIds(String name);
+  Optional<Key<UUID>> getLatestDomainTemplateId(String name);
 
   Optional<Version> findCurrentTemplateVersion(String templateName);
 }
