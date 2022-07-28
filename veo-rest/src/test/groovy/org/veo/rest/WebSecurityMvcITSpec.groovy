@@ -69,5 +69,6 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         expect: "domain template creation to be forbidden"
         mvc.perform(MockMvcRequestBuilders.post("/domaintemplates")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders.post("/domaintemplates/")).andReturn().response.status == 403
+        mvc.perform(MockMvcRequestBuilders.get("/domaintemplates/"+TEST_DOMAIN_TEMPLATE_ID+"/export")).andReturn().response.status == 403
     }
 }

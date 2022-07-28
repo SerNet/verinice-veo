@@ -87,6 +87,8 @@ public class WebSecurity {
         .permitAll()
         .antMatchers(HttpMethod.POST, "/domains/**", "/domaintemplates", "/domaintemplates/")
         .hasRole("veo-content-creator")
+        .antMatchers(HttpMethod.GET, "/domaintemplates/*/export")
+        .hasRole("veo-content-creator")
         .antMatchers(
             "/units/**",
             "/assets/**",

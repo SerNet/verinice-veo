@@ -175,6 +175,20 @@ class DomainRestTestITSpec extends VeoRestTest {
             "example scenario"
         ]
         domainDto.profiles.exampleUnit.risks.size() == 1
+
+        when: "we export the new domain template"
+        def domainTemplate = get("/domaintemplates/${newTemplateVersionId}/export").body
+
+        then: "the domaintemplate is returned"
+        with(domainTemplate) {
+            name == "DS-GVO"
+            templateVersion == "1.4.1"
+            profiles.exampleUnit.elements*.name ==~ [
+                "example process",
+                "example scenario"
+            ]
+            profiles.exampleUnit.risks.size() == 1
+        }
     }
 
     def "create a new domain template version with a profile from the demo unit"() {

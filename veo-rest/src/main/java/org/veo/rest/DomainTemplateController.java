@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.function.Function;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -43,12 +44,16 @@ import org.veo.adapter.presenter.api.io.mapper.CreateDomainTemplateInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
+import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
+import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
+import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase;
 import org.veo.rest.common.RestApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -73,7 +78,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(DomainTemplateController.URL_BASE_PATH)
 @RequiredArgsConstructor
 @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
-public class DomainTemplateController {
+public class DomainTemplateController extends AbstractEntityController {
 
   public static final String URL_BASE_PATH = "/" + DomainTemplate.PLURAL_TERM;
 
@@ -83,6 +88,7 @@ public class DomainTemplateController {
   private final EntityFactory entityFactory;
   private final IdentifiableFactory identifiableFactory;
   private final DomainAssociationTransformer domainAssociationTransformer;
+  private final GetDomainTemplateUseCase getDomainTemplateUseCase;
 
   @PostMapping(value = "/{id}/createdomains")
   @Operation(summary = "Creates domains from a domain template")
@@ -137,7 +143,50 @@ public class DomainTemplateController {
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String id,
       WebRequest request) {
-    // TODO: VEO-1535 implement getDomainTemplate
+    // TODO: VEO-1549 implement getDomainTemplate, hint: use getDomainTemplate(id, client,
+    // toDtoFunction);
     return CompletableFuture.failedFuture(new UnsupportedOperationException("not implemented"));
+  }
+
+  @GetMapping(value = "/{id}/export")
+  @Operation(summary = "export a domaintemplate")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "DomainTemplate exported",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = TransformDomainTemplateDto.class))),
+        @ApiResponse(responseCode = "404", description = "DomainTemplate not found")
+      })
+  public @Valid Future<ResponseEntity<TransformDomainTemplateDto>> exportDomainTemplate(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @PathVariable String id,
+      WebRequest request) {
+    Client client = getAuthenticatedClient(auth);
+    Function<GetDomainTemplateUseCase.OutputData, TransformDomainTemplateDto> toDtoFunction =
+        (output) -> entityToDtoTransformer.transformDomainTemplate2Dto(output.getDomainTemplate());
+    return getDomainTemplate(id, client, toDtoFunction);
+  }
+
+  private Future<ResponseEntity<TransformDomainTemplateDto>> getDomainTemplate(
+      String id,
+      Client client,
+      Function<GetDomainTemplateUseCase.OutputData, TransformDomainTemplateDto> toDtoFunction) {
+    var domainFuture =
+        useCaseInteractor.execute(
+            getDomainTemplateUseCase,
+            new UseCase.IdAndClient(Key.uuidFrom(id), client),
+            toDtoFunction);
+    return domainFuture.thenApply(
+        domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
+  }
+
+  @Override
+  protected String buildSearchUri(String searchId) {
+    // TODO: VEO-499 Implement DomainTemplate Search
+    return null;
   }
 }
