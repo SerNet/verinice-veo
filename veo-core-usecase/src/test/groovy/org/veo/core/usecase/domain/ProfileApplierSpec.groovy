@@ -53,7 +53,7 @@ class ProfileApplierSpec extends Specification {
         given: "starting values for a unit"
 
         Client existingClient = Mock()
-        Unit demoUnit = Mock()
+        Unit unit = Mock()
         Domain domain = Mock() {
             owner >> existingClient
         }
@@ -88,27 +88,27 @@ class ProfileApplierSpec extends Specification {
         }
 
         when: "applying the profile"
-        profileApplier.applyProfile(domain, profile, demoUnit)
+        profileApplier.applyProfile(domain, profile, unit)
 
         then: "the unit is associated with the domain"
-        1 * demoUnit.addToDomains([domain] as Set)
+        1 * unit.addToDomains(domain)
 
-        and: "the demo unit elements are created for the unit"
+        and: "profile elements are retrieved"
         1 * domainTemplateService.getProfileElements(domain, profile) >> [asset1, asset2, process]
 
         with(asset1) {
             1 * setDesignator('DMO-1')
-            1 * setOwner(demoUnit)
+            1 * setOwner(unit)
             1 * elementMigrationService.migrate(it, domain)
         }
         with(asset2) {
             1 * setDesignator('DMO-2')
-            1 * setOwner(demoUnit)
+            1 * setOwner(unit)
             1 * elementMigrationService.migrate(it, domain)
         }
         with(process) {
             1 * setDesignator('DMO-3')
-            1 * setOwner(demoUnit)
+            1 * setOwner(unit)
             1 * elementMigrationService.migrate(it, domain)
         }
 
@@ -118,7 +118,7 @@ class ProfileApplierSpec extends Specification {
         1 * decider.decide(process, domain) >> [:]
 
         and: "everything is saved in the database"
-        1 * unitRepository.save(_) >> demoUnit
+        1 * unitRepository.save(_) >> unit
         1 * repositoryProvider.getElementRepositoryFor(Asset) >> assetRepository
         2 * repositoryProvider.getElementRepositoryFor(Process) >> processRepository
         1 * assetRepository.saveAll([asset1, asset2] as Set)

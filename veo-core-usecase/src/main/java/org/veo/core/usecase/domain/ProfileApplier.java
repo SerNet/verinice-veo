@@ -52,7 +52,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class ProfileApplier {
-  private static final String DEMO_UNIT_DESIGNATOR_PREFIX = "DMO-";
+  private static final String DESIGNATOR_PREFIX = "DMO-";
 
   private final DomainTemplateService domainTemplateService;
   private final UnitRepository unitRepository;
@@ -61,17 +61,16 @@ public class ProfileApplier {
   private final Decider decider;
   private final ElementMigrationService elementMigrationService;
 
-  public void applyProfile(Domain sourceDomain, ProfileRef profile, Unit unit) {
-    var demoUnitElements = domainTemplateService.getProfileElements(sourceDomain, profile);
-    var domainsFromElements = Set.of(sourceDomain);
-    unit.addToDomains(domainsFromElements);
+  public void applyProfile(Domain domain, ProfileRef profile, Unit unit) {
+    var profileElements = domainTemplateService.getProfileElements(domain, profile);
+    unit.addToDomains(domain);
     unitRepository.save(unit);
-    Map<Class<Element>, List<Element>> elementsGroupedByType = groupByType(demoUnitElements);
+    Map<Class<Element>, List<Element>> elementsGroupedByType = groupByType(profileElements);
     Map<Element, Set<CustomLink>> links = new HashMap<>();
 
     Map<RiskAffected, Set<AbstractRisk>> risks = new HashMap<>();
     // save links after the elements
-    demoUnitElements.stream()
+    profileElements.stream()
         .filter(e -> !e.getLinks().isEmpty())
         .forEach(
             e -> {
@@ -79,7 +78,7 @@ public class ProfileApplier {
               e.getLinks().clear();
             });
     // save risks after the elements
-    demoUnitElements.stream()
+    profileElements.stream()
         .filter(RiskAffected.class::isInstance)
         .map(RiskAffected.class::cast)
         .filter(e -> !e.getRisks().isEmpty())
@@ -95,7 +94,7 @@ public class ProfileApplier {
         .sorted(Comparator.comparing(entry -> entry.getKey().getSimpleName()))
         .forEach(e -> prepareAndSaveElements(e.getKey(), e.getValue(), unit, counter));
 
-    Set<Element> elementsToSave = new HashSet<>(demoUnitElements.size());
+    Set<Element> elementsToSave = new HashSet<>(profileElements.size());
     links.forEach(
         (element, elementLinks) -> {
           elementLinks.forEach(element::addToLinks);
@@ -106,25 +105,21 @@ public class ProfileApplier {
         (element, elementRisks) -> {
           elementRisks.forEach(
               r -> {
-                r.setDesignator(DEMO_UNIT_DESIGNATOR_PREFIX + counter.incrementAndGet());
+                r.setDesignator(DESIGNATOR_PREFIX + counter.incrementAndGet());
                 element.addRisk(r);
               });
           elementsToSave.add(element);
         });
 
-    demoUnitElements.stream()
-        .forEach(
-            element ->
-                domainsFromElements.forEach(
-                    domain -> {
-                      var results = decider.decide(element, domain);
-                      if (!results.isEmpty()) {
-                        element.setDecisionResults(results, domain);
-                        elementsToSave.add(element);
-                      }
-                    }));
-    groupByType(elementsToSave).entrySet().stream()
-        .forEach(e -> saveElements(e.getKey(), e.getValue()));
+    profileElements.forEach(
+        element -> {
+          var results = decider.decide(element, domain);
+          if (!results.isEmpty()) {
+            element.setDecisionResults(results, domain);
+            elementsToSave.add(element);
+          }
+        });
+    groupByType(elementsToSave).forEach(this::saveElements);
     elementsToSave.forEach(
         it -> eventPublisher.publish(new RiskAffectingElementChangeEvent(it, this)));
     log.info("{} profile elements added to unit {}", profileElements.size(), unit.getIdAsString());
@@ -137,8 +132,8 @@ public class ProfileApplier {
   }
 
   private <T extends Element> void prepareAndSaveElements(
-      Class<T> entityType, List<T> elementsWithType, Unit demoUnit, AtomicInteger counter) {
-    elementsWithType.forEach(element -> prepareElement(element, demoUnit, counter));
+      Class<T> entityType, List<T> elementsWithType, Unit unit, AtomicInteger counter) {
+    elementsWithType.forEach(element -> prepareElement(element, unit, counter));
     saveElements(entityType, elementsWithType);
   }
 
@@ -149,19 +144,19 @@ public class ProfileApplier {
     log.debug("Done");
   }
 
-  private void prepareElement(Element element, Unit demoUnit, AtomicInteger counter) {
+  private void prepareElement(Element element, Unit unit, AtomicInteger counter) {
     log.debug("Preparing element {}:{}", element.getId(), element);
-    element.setDesignator(DEMO_UNIT_DESIGNATOR_PREFIX + counter.incrementAndGet());
-    element.setOwner(demoUnit);
+    element.setDesignator(DESIGNATOR_PREFIX + counter.incrementAndGet());
+    element.setOwner(unit);
     // TODO VEO-1547 element migration will become obsolete once the profiles they come from get
     // migrated in the domain.
     element.getDomains().forEach(d -> elementMigrationService.migrate(element, d));
 
     if (element instanceof CompositeElement<?> ce) {
-      ce.getParts().forEach(e -> prepareElement(e, demoUnit, counter));
+      ce.getParts().forEach(e -> prepareElement(e, unit, counter));
     } else if (element instanceof Scope scope) {
       Set<Element> members = scope.getMembers();
-      members.forEach(m -> prepareElement(m, demoUnit, counter));
+      members.forEach(m -> prepareElement(m, unit, counter));
     }
   }
 }
