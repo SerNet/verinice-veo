@@ -15,39 +15,49 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase
+package org.veo.core.usecase.domain
 
 import org.veo.core.entity.Asset
+import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Process
 import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.Unit
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent
+import org.veo.core.entity.profile.ProfileRef
 import org.veo.core.repository.AssetRepository
 import org.veo.core.repository.ProcessRepository
+import org.veo.core.repository.RepositoryProvider
+import org.veo.core.repository.UnitRepository
 import org.veo.core.service.DomainTemplateService
 import org.veo.core.service.EventPublisher
 import org.veo.core.usecase.decision.Decider
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase.InputData
 import org.veo.service.ElementMigrationService
 
-public class CreateDemoUnitUseCaseSpec extends UseCaseSpec {
+import spock.lang.Specification
+
+class ProfileApplierSpec extends Specification {
 
     DomainTemplateService domainTemplateService = Mock()
+    UnitRepository unitRepository = Mock()
     AssetRepository assetRepository = Mock()
     ProcessRepository processRepository = Mock()
     EventPublisher eventPublisher = Mock()
+    RepositoryProvider repositoryProvider = Mock()
     Decider decider = Mock()
     ElementMigrationService elementMigrationService = Mock()
 
-    CreateDemoUnitUseCase usecase = new CreateDemoUnitUseCase(clientRepository, unitRepository, entityFactory, domainTemplateService,repositoryProvider, eventPublisher, decider, elementMigrationService)
+    ProfileApplier profileApplier = new ProfileApplier(domainTemplateService, unitRepository, repositoryProvider, eventPublisher, decider, elementMigrationService)
 
-    def "Create a new demo unit for an existing client" () {
+    def "apply a profile to a unit"() {
         given: "starting values for a unit"
 
+        Client existingClient = Mock()
         Unit demoUnit = Mock()
-        Domain domain = Mock()
+        Domain domain = Mock() {
+            owner >> existingClient
+        }
+        ProfileRef profile = new ProfileRef("highProfile")
 
         Asset asset1 = Mock {
             getModelInterface() >> Asset
@@ -77,22 +87,14 @@ public class CreateDemoUnitUseCaseSpec extends UseCaseSpec {
             getOwningClient() >> Optional.of(existingClient)
         }
 
-        and: "a parent unit in an existing client"
-        def input = new InputData(this.existingClient.getId())
+        when: "applying the profile"
+        profileApplier.applyProfile(domain, profile, demoUnit)
 
-        when: "the use case to create a unit is executed"
-        def newUnit = usecase.execute(input).getUnit()
-
-        then: "a client is retrieved"
-        1 * clientRepository.findById(_) >> Optional.of(existingClient)
-
-        and: "a new unit is created in the client"
-        1 * entityFactory.createUnit("Demo", null) >> demoUnit
-        1 * demoUnit.setClient(existingClient)
+        then: "the unit is associated with the domain"
         1 * demoUnit.addToDomains([domain] as Set)
 
         and: "the demo unit elements are created for the unit"
-        1 * domainTemplateService.getElementsForDemoUnit(existingClient) >> [asset1, asset2, process]
+        1 * domainTemplateService.getProfileElements(domain, profile) >> [asset1, asset2, process]
 
         with(asset1) {
             1 * setDesignator('DMO-1')
@@ -122,8 +124,5 @@ public class CreateDemoUnitUseCaseSpec extends UseCaseSpec {
         1 * assetRepository.saveAll([asset1, asset2] as Set)
         2 * processRepository.saveAll([process] as Set)
         1 * eventPublisher.publish(_ as RiskAffectingElementChangeEvent)
-
-        and: "a new unit was created and stored"
-        newUnit != null
     }
 }

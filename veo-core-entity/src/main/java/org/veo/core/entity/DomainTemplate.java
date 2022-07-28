@@ -31,6 +31,7 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.inspection.Inspection;
 import org.veo.core.entity.inspection.Severity;
 import org.veo.core.entity.profile.ProfileDefinition;
+import org.veo.core.entity.profile.ProfileRef;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 /**
@@ -112,6 +113,10 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
   }
 
   Map<String, ProfileDefinition> getProfiles();
+
+  default Optional<ProfileDefinition> findProfile(ProfileRef ref) {
+    return Optional.ofNullable(getProfiles().get(ref.getKeyRef()));
+  }
 
   void setProfiles(Map<String, ProfileDefinition> profiles);
 

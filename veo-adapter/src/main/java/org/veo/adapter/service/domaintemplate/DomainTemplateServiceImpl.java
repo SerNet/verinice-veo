@@ -78,6 +78,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.profile.ProfileDefinition;
+import org.veo.core.entity.profile.ProfileRef;
 import org.veo.core.entity.risk.ProbabilityValueProvider;
 import org.veo.core.entity.risk.RiskValues;
 import org.veo.core.entity.transform.EntityFactory;
@@ -179,26 +180,14 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   }
 
   @Override
-  public Collection<Element> getElementsForDemoUnit(Client client) {
-    log.info("Create demo unit elements for {}", client);
-    Set<Element> elements = new HashSet<>();
-    PlaceholderResolver ref = new PlaceholderResolver(entityTransformer);
-    client.getDomains().stream()
-        .filter(d -> d.getDomainTemplate() != null)
-        .forEach(
-            domain -> {
-              DomainTemplate template = domain.getDomainTemplate();
-              Map<String, ProfileDefinition> profileElements = template.getProfiles();
-              ProfileDefinition profileDefinition =
-                  profileElements.get(ProfileDefinition.DEMO_UNIT);
-              if (profileDefinition != null) {
-                elements.addAll(
-                    createElementsFromProfile(client, ref, domain, template, profileDefinition));
-              } else {
-                elements.addAll(createElementsFromFile(client, ref, domain, template));
-              }
-            });
-    return elements;
+  public Collection<Element> getProfileElements(Domain domain, ProfileRef profileKey) {
+    var client = domain.getOwner();
+    var ref = new PlaceholderResolver(entityTransformer);
+    var template = domain.getDomainTemplate();
+    return template
+        .findProfile(profileKey)
+        .map(profile -> createElementsFromProfile(client, ref, domain, template, profile))
+        .orElseGet(() -> createElementsFromFile(client, ref, domain, template));
   }
 
   @Deprecated

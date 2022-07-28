@@ -31,6 +31,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.profile.ProfileRef;
 
 /**
  * A {@link DomainTemplate} exist in the system space and is not directly bound to any client. This
@@ -52,8 +53,7 @@ public interface DomainTemplateService {
    */
   Domain createDomain(Client client, String templateId);
 
-  /** Returns the elements that are to be created in the demo unit for the new client. */
-  Collection<Element> getElementsForDemoUnit(Client client);
+  Collection<Element> getProfileElements(Domain domain, ProfileRef profileKey);
 
   ExportDto exportDomain(Domain domain);
 

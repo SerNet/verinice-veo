@@ -109,11 +109,13 @@ import org.veo.core.usecase.document.CreateDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentsUseCase;
 import org.veo.core.usecase.document.UpdateDocumentUseCase;
+import org.veo.core.usecase.domain.ApplyProfileUseCase;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
+import org.veo.core.usecase.domain.ProfileApplier;
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
@@ -447,21 +449,11 @@ public class ModuleConfiguration {
   @Bean
   public CreateDemoUnitUseCase getCreateDemoUnitUseCase(
       ClientRepositoryImpl clientRepository,
-      UnitRepositoryImpl unitRepository,
-      DomainTemplateService domainTemplateService,
-      RepositoryProvider repositoryProvider,
-      EventPublisher eventPublisher,
-      Decider decider,
-      ElementMigrationService elementMigrationService) {
+      ProfileApplier profileApplier,
+      EntityFactory entityFactory,
+      UnitRepository unitRepository) {
     return new CreateDemoUnitUseCase(
-        clientRepository,
-        unitRepository,
-        getEntityFactory(),
-        domainTemplateService,
-        repositoryProvider,
-        eventPublisher,
-        decider,
-        elementMigrationService);
+        clientRepository, entityFactory, profileApplier, unitRepository);
   }
 
   @Bean
@@ -969,5 +961,30 @@ public class ModuleConfiguration {
   GetElementStatusCountUseCase getElementStatusCountUseCase(
       DomainRepository domainRepository, RepositoryProvider repositoryProvider) {
     return new GetElementStatusCountUseCase(domainRepository, repositoryProvider);
+  }
+
+  @Bean
+  ApplyProfileUseCase applyProfileUseCase(
+      DomainRepository domainRepository,
+      ProfileApplier profileApplier,
+      UnitRepository unitRepository) {
+    return new ApplyProfileUseCase(domainRepository, profileApplier, unitRepository);
+  }
+
+  @Bean
+  ProfileApplier profileApplier(
+      DomainTemplateService domainTemplateService,
+      UnitRepository unitRepository,
+      RepositoryProvider repositoryProvider,
+      EventPublisher eventPublisher,
+      Decider decider,
+      ElementMigrationService elementMigrationService) {
+    return new ProfileApplier(
+        domainTemplateService,
+        unitRepository,
+        repositoryProvider,
+        eventPublisher,
+        decider,
+        elementMigrationService);
   }
 }

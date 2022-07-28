@@ -22,6 +22,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.veo.adapter.presenter.api.io.mapper.VersionMapper.parseVersion;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
+import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -78,6 +79,7 @@ import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.statistics.ElementStatusCounts;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.domain.ApplyProfileUseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
@@ -85,6 +87,7 @@ import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
+import org.veo.persistence.entity.jpa.ProfileReferenceFactoryImpl;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.security.ApplicationUser;
 
@@ -96,6 +99,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -109,6 +113,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @RestController
 @RequestMapping(DomainController.URL_BASE_PATH)
+@RequiredArgsConstructor
 @Slf4j
 public class DomainController extends AbstractEntityControllerWithDefaultSearch {
 
@@ -124,24 +129,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
 
   private final GetUnitDumpUseCase getUnitDumpUseCase;
 
-  public DomainController(
-      ObjectSchemaParser objectSchemaParser,
-      GetDomainUseCase getDomainUseCase,
-      GetDomainsUseCase getDomainsUseCase,
-      UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase,
-      ExportDomainUseCase exportDomainUseCase,
-      CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase,
-      GetElementStatusCountUseCase getElementStatusCountUseCase,
-      GetUnitDumpUseCase getUnitDumpUseCase) {
-    this.objectSchemaParser = objectSchemaParser;
-    this.getDomainUseCase = getDomainUseCase;
-    this.getDomainsUseCase = getDomainsUseCase;
-    this.exportDomainUseCase = exportDomainUseCase;
-    this.updateElementTypeDefinitionUseCase = updateElementTypeDefinitionUseCase;
-    this.createDomainTemplateFromDomainUseCase = createDomainTemplateFromDomainUseCase;
-    this.getElementStatusCountUseCase = getElementStatusCountUseCase;
-    this.getUnitDumpUseCase = getUnitDumpUseCase;
-  }
+  private final ApplyProfileUseCase applyProfileUseCase;
 
   @GetMapping
   @Operation(summary = "Loads all domains")
@@ -366,6 +354,29 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
                 Key.uuidFrom(unitId), Key.uuidFrom(id), client),
             GetElementStatusCountUseCase.OutputData::getResult)
         .thenApply(counts -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(counts));
+  }
+
+  @PostMapping("/{id}/profiles/{profileKey}/units/{unitId}")
+  @Operation(summary = "Apply a profile to a unit. Adds all profile elements & risks to the unit.")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "204", description = "Profile applied"),
+        @ApiResponse(responseCode = "404", description = "Domain not found"),
+        @ApiResponse(responseCode = "404", description = "Unit not found"),
+      })
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> applyProfile(
+      @Parameter(required = true, hidden = true) Authentication auth,
+      @PathVariable @Pattern(regexp = UUID_REGEX) String id,
+      @PathVariable String profileKey,
+      @PathVariable @Pattern(regexp = UUID_REGEX) String unitId) {
+    return useCaseInteractor.execute(
+        applyProfileUseCase,
+        new ApplyProfileUseCase.InputData(
+            getAuthenticatedClient(auth).getId(),
+            Key.uuidFrom(id),
+            ProfileReferenceFactoryImpl.getInstance().createProfileRef(profileKey),
+            Key.uuidFrom(unitId)),
+        out -> ResponseEntity.noContent().build());
   }
 
   @InitBinder

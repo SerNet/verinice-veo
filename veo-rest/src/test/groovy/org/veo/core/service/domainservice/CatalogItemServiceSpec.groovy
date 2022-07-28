@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.service.domainservice
 
+import static org.veo.core.entity.profile.ProfileDefinition.DEMO_UNIT
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
@@ -25,6 +27,7 @@ import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
+import org.veo.core.entity.profile.ProfileRef
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.service.CatalogItemService
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -51,7 +54,8 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
     private Client client
     private Unit unit
     private Unit unit1
-    private Domain domainFromTemplate
+    private Domain testDomain
+    private Domain dsgvoDomain
 
     def item
     def element
@@ -61,32 +65,22 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
             client = repository.save(newClient {
                 name = "Demo Client"
             })
-            domainFromTemplate = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID)
-            createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+            testDomain = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID)
+            dsgvoDomain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
             client = repository.save(client)
             unit = unitRepository.save(newUnit(client) {
                 name = "Test unit"
             })
         }
-        item = domainFromTemplate.catalogs.first().catalogItems.sort({it.namespace}).first()
-        element = catalogItemService.createInstance(item, domainFromTemplate)
+        item = testDomain.catalogs.first().catalogItems.sort({it.namespace}).first()
+        element = catalogItemService.createInstance(item, testDomain)
     }
 
     def "retrieve demo unit elements for default client"() {
         when: "retrieving the demo unit elements for a client"
-        def elements = domainTemplateService.getElementsForDemoUnit(client)
+        def elements = domainTemplateService.getProfileElements(dsgvoDomain, new ProfileRef(DEMO_UNIT))
         then: "the elements for all the client's units are returned"
         elements.size() == 7
-    }
-
-
-    def "retrieve demo unit elements for client without domains"() {
-        given:
-        def clientWithoutDomains = repository.save(newClient())
-        when: "retrieving the demo unit elements for a client"
-        def elements = domainTemplateService.getElementsForDemoUnit(clientWithoutDomains)
-        then: "the elements for all the client's units are returned"
-        elements.empty
     }
 
     def "create an element from a catalog item"() {
@@ -99,12 +93,12 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
         element.appliedCatalogItems.size() == 1
         element.appliedCatalogItems.contains(item)
         element.domains.size() == 1
-        element.domains.contains(domainFromTemplate)
+        element.domains.contains(testDomain)
 
         when: "we take another item"
 
-        item = domainFromTemplate.catalogs.first().catalogItems.sort({it.namespace})[2]
-        element = catalogItemService.createInstance(item, domainFromTemplate)
+        item = testDomain.catalogs.first().catalogItems.sort({it.namespace})[2]
+        element = catalogItemService.createInstance(item, testDomain)
 
         then: "the element is created and initialized"
 
@@ -114,7 +108,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
         element.appliedCatalogItems.size() == 1
         element.appliedCatalogItems.contains(item)
         element.domains.size() == 1
-        element.domains.contains(domainFromTemplate)
+        element.domains.contains(testDomain)
     }
 
     def "find an applied item"() {
@@ -132,7 +126,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
         element.appliedCatalogItems.size() == 1
         element.appliedCatalogItems.contains(item)
         element.domains.size() == 1
-        element.domains.contains(domainFromTemplate)
+        element.domains.contains(testDomain)
 
         when: "the element is saved and searched for by applieditems"
         element.setOwner(unit)

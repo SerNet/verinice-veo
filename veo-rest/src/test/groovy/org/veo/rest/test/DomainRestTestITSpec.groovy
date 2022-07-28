@@ -17,9 +17,10 @@
  ******************************************************************************/
 package org.veo.rest.test
 
+import static org.veo.rest.test.UserType.CONTENT_CREATOR
+
 import org.apache.http.HttpStatus
 
-import groovy.util.logging.Slf4j
 import spock.util.concurrent.PollingConditions
 
 class DomainRestTestITSpec extends VeoRestTest {
@@ -83,47 +84,44 @@ class DomainRestTestITSpec extends VeoRestTest {
         }
     }
 
-    def "create domaintemplate from domain"() {
-        when: "we create a domain with a profile"
+    def "create a new domain template version with a profile"() {
+        given: "a DS-GVO domain"
+        def oldDomain = getDomains().find { it.name == "DS-GVO" }
 
-        def domain = getDomains().find { it.name == "DS-GVO" }
-        def dsgvoId = domain.id
-        def oldVersion = domain.templateVersion
-
-        def unitId = postNewUnit("the unit formerly known as demo unit").resourceId
-
-        def assetId = post("/assets", [
-            name: "target asset for process",
+        when: "we create a new version of the domain with a profile"
+        def profileSourceUnitId = postNewUnit("the unit formerly known as demo unit").resourceId
+        post("/assets", [
+            name: "example asset",
             domains: [
-                (dsgvoId): [
+                (oldDomain.id): [
                     subType: "AST_Datatype",
                     status: "NEW"
                 ]
             ],
-            owner: [targetUri: "$baseUrl/units/$unitId"],
+            owner: [targetUri: "$baseUrl/units/$profileSourceUnitId"],
         ]).body.resourceId
+        def newTemplateVersionId = post("/domains/${oldDomain.id}/createdomaintemplate", [
+            version: "1.4.1",
+            profiles: ["exampleUnit": (profileSourceUnitId)]
+        ], 201, CONTENT_CREATOR).body.targetUri.split('/').last()
+        delete("/units/$profileSourceUnitId")
 
-        def rest = post("/domains/${dsgvoId}/createdomaintemplate",
-                [version : "1.4.1",
-                    profiles: ["demoUnit": (unitId)]
-                ],
-                201,
-                UserType.CONTENT_CREATOR)
-
-        def templateId = rest.body.targetUri.split('/').last()
-
-        then:"the domain template is created"
-        rest.body.displayName == "DS-GVO DS-GVO"
-
-        when: "we create a domain from the template"
-
-        post("/domaintemplates/${templateId}/createdomains", [:], HttpStatus.SC_NO_CONTENT, UserType.ADMIN)
-
-        then: "the client gets the new domain"
+        and: "we create a domain from the new template version"
+        post("/domaintemplates/${newTemplateVersionId}/createdomains", [:], HttpStatus.SC_NO_CONTENT, UserType.ADMIN)
         new PollingConditions().within(5) {
-            with(getDomains().find { it.name == "DS-GVO" && it.templateVersion=="1.4.1" }) {
-                oldVersion != templateVersion
-            }
+            getDomains().count { it.name == oldDomain.name } == 2
+        }
+        def newDomainId = getDomains().find { it.name == oldDomain.name && it.createdAt > oldDomain.createdAt }.id
+
+        and: "the profile is applied to a new unit"
+        def profileTargetUnitId = post("/units", [name: "apply profile here!"]).body.resourceId
+        post("/domains/$newDomainId/profiles/exampleUnit/units/$profileTargetUnitId", null, 204)
+
+        then: "the profile elements have been added to the unit"
+        with(get("/assets?unit=$profileTargetUnitId").body.items) {
+            size() == 1
+            first().name == "example asset"
+            first().domains[newDomainId].subType == "AST_Datatype"
         }
     }
 }
