@@ -88,18 +88,48 @@ class DomainRestTestITSpec extends VeoRestTest {
         given: "a DS-GVO domain"
         def oldDomain = getDomains().find { it.name == "DS-GVO" }
 
-        when: "we create a new version of the domain with a profile"
+        when: "we create a unit with elements and a risk"
         def profileSourceUnitId = postNewUnit("the unit formerly known as demo unit").resourceId
-        post("/assets", [
-            name: "example asset",
+        def processId = post("/processes", [
+            name: "example process",
             domains: [
                 (oldDomain.id): [
-                    subType: "AST_Datatype",
+                    subType: "PRO_DataProcessing",
                     status: "NEW"
                 ]
             ],
             owner: [targetUri: "$baseUrl/units/$profileSourceUnitId"],
         ]).body.resourceId
+        def scenarioId = post("/scenarios", [
+            name: "example scenario",
+            domains: [
+                (oldDomain.id): [
+                    subType: "SCN_Scenario",
+                    status: "NEW"
+                ]
+            ],
+            owner: [targetUri: "$baseUrl/units/$profileSourceUnitId"],
+        ]).body.resourceId
+        post("/processes/$processId/risks", [
+            domains: [
+                (oldDomain.id): [
+                    reference: [targetUri: "$baseUrl/domains/${oldDomain.id}"],
+                    riskDefinitions: [
+                        DSRA: [
+                            impactValues: [
+                                [
+                                    category: "A",
+                                    specificImpact: 1
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            scenario: [targetUri: "$baseUrl/scenarios/$scenarioId"],
+        ])
+
+        and: "create a new domain template with the a profile based on the unit"
         def newTemplateVersionId = post("/domains/${oldDomain.id}/createdomaintemplate", [
             version: "1.4.1",
             profiles: ["exampleUnit": (profileSourceUnitId)]
@@ -117,11 +147,17 @@ class DomainRestTestITSpec extends VeoRestTest {
         def profileTargetUnitId = post("/units", [name: "apply profile here!"]).body.resourceId
         post("/domains/$newDomainId/profiles/exampleUnit/units/$profileTargetUnitId", null, 204)
 
-        then: "the profile elements have been added to the unit"
-        with(get("/assets?unit=$profileTargetUnitId").body.items) {
+        then: "the profile elements and risk have been added to the unit"
+        with(get("/processes?unit=$profileTargetUnitId").body.items[0]) {
+            name == "example process"
+            domains[newDomainId].subType == "PRO_DataProcessing"
+            def risk = owner.get(it._self + "/risks").body[0]
+            risk.domains[newDomainId].riskDefinitions.DSRA.impactValues.find { it.category == "A" }.specificImpact == 1
+        }
+        with(get("/scenarios?unit=$profileTargetUnitId").body.items) {
             size() == 1
-            first().name == "example asset"
-            first().domains[newDomainId].subType == "AST_Datatype"
+            first().name == "example scenario"
+            first().domains[newDomainId].subType == "SCN_Scenario"
         }
     }
 }

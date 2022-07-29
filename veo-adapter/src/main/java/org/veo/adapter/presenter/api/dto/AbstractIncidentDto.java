@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import static org.veo.adapter.presenter.api.dto.MapFunctions.renameKey;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +84,11 @@ public abstract class AbstractIncidentDto extends CompositeEntityDto<Incident> {
   @Override
   public void clearDomains() {
     domains.clear();
+  }
+
+  @Override
+  public void transferToDomain(String sourceDomainId, String targetDomainId) {
+    renameKey(domains, sourceDomainId, targetDomainId);
   }
 
   @Valid

@@ -19,6 +19,7 @@ package org.veo.core.usecase.domaintemplate;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 
 import javax.validation.Valid;
 
@@ -76,7 +77,8 @@ public class CreateDomainTemplateFromDomainUseCase
     domain = updateVersion(domain, input.version);
     DomainTemplate domainTemplateFromDomain =
         domainTemplateService.createDomainTemplateFromDomain(domain);
-    domainTemplateFromDomain.setProfiles(input.profiles);
+    domainTemplateFromDomain.setProfiles(
+        input.profileProvider.apply(domainTemplateFromDomain.getId()));
     return new OutputData(domainTemplateRepository.save(domainTemplateFromDomain));
   }
 
@@ -110,7 +112,7 @@ public class CreateDomainTemplateFromDomainUseCase
     Key<UUID> id;
     Version version;
     Client authenticatedClient;
-    Map<String, ProfileDefinition> profiles;
+    Function<Key<UUID>, Map<String, ProfileDefinition>> profileProvider;
   }
 
   @Valid

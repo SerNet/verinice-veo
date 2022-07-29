@@ -243,6 +243,22 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     if (createParameter == null) {
       throw new IllegalArgumentException("create parameter cannot be null");
     }
+    CompletableFuture<IdRef<DomainTemplate>> completableFuture =
+        useCaseInteractor.execute(
+            createDomainTemplateFromDomainUseCase,
+            new CreateDomainTemplateFromDomainUseCase.InputData(
+                Key.uuidFrom(id),
+                parseVersion(createParameter.getVersion()),
+                client,
+                (domainTemplateId) -> buildProfiles(createParameter, id, domainTemplateId)),
+            out -> IdRef.from(out.getNewDomainTemplate(), referenceAssembler));
+    return completableFuture.thenApply(result -> ResponseEntity.status(201).body(result));
+  }
+
+  private Map<String, ProfileDefinition> buildProfiles(
+      CreateDomainTemplateFromDomainParameterDto createParameter,
+      String domainId,
+      Key<UUID> domainTemplateId) {
     Map<String, ProfileDefinition> profiles = new HashMap<>();
 
     createParameter
@@ -259,7 +275,9 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
                             out -> UnitDumpMapper.mapOutput(out, entityToDtoTransformer))
                         .get();
                 Set<AbstractElementDto> elements = dump.getElements();
+                elements.forEach(e -> e.transferToDomain(domainId, domainTemplateId.uuidValue()));
                 Set<AbstractRiskDto> risks = dump.getRisks();
+                risks.forEach(e -> e.transferToDomain(domainId, domainTemplateId.uuidValue()));
 
                 log.info(
                     "dump size, elements:{} risks:{}",
@@ -273,14 +291,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
                   throw (RuntimeException) ex.getCause();
               }
             });
-
-    CompletableFuture<IdRef<DomainTemplate>> completableFuture =
-        useCaseInteractor.execute(
-            createDomainTemplateFromDomainUseCase,
-            new CreateDomainTemplateFromDomainUseCase.InputData(
-                Key.uuidFrom(id), parseVersion(createParameter.getVersion()), client, profiles),
-            out -> IdRef.from(out.getNewDomainTemplate(), referenceAssembler));
-    return completableFuture.thenApply(result -> ResponseEntity.status(201).body(result));
+    return profiles;
   }
 
   @Override

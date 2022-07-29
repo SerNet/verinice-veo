@@ -85,4 +85,6 @@ public abstract class AbstractElementDto extends AbstractVersionedSelfReferencin
   public abstract void associateWithTargetDomain(String id);
 
   public abstract void clearDomains();
+
+  public abstract void transferToDomain(String sourceDomainId, String targetDomainId);
 }

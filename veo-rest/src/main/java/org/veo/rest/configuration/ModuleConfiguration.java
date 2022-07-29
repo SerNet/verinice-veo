@@ -46,6 +46,7 @@ import org.veo.adapter.presenter.api.TypeDefinitionProvider;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
+import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -57,6 +58,7 @@ import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl;
 import org.veo.adapter.service.domaintemplate.LocalReferenceAssembler;
 import org.veo.adapter.service.domaintemplate.ReferenceDeserializer;
 import org.veo.adapter.service.domaintemplate.dto.TransformElementDto;
+import org.veo.adapter.service.domaintemplate.dto.TransformRiskDto;
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.specification.EntityValidator;
 import org.veo.core.entity.transform.EntityFactory;
@@ -710,6 +712,7 @@ public class ModuleConfiguration {
     ObjectMapper objectMapper =
         new ObjectMapper()
             .addMixIn(AbstractElementDto.class, TransformElementDto.class)
+            .addMixIn(AbstractRiskDto.class, TransformRiskDto.class)
             .registerModule(
                 new SimpleModule()
                     .addDeserializer(IdRef.class, new ReferenceDeserializer(referenceAssembler)))

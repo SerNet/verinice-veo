@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import static org.veo.adapter.presenter.api.dto.MapFunctions.renameKey;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -104,4 +106,10 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
       implementation = IdRefEntity.class,
       description = "The accountable point-of-contact for this risk.")
   private IdRef<Person> riskOwner;
+
+  public void transferToDomain(String sourceDomainId, String targetDomainId) {
+    var domainAssociations = getDomains();
+    renameKey(domainAssociations, sourceDomainId, targetDomainId);
+    setDomains(domainAssociations);
+  }
 }

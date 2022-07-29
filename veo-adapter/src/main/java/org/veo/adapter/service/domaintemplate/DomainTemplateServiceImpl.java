@@ -252,7 +252,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
       var demoUnitElements =
           objectMapper.readValue(elementJson, new TypeReference<Set<AbstractElementDto>>() {});
-      demoUnitElements.forEach(edto -> edto.associateWithTargetDomain(templateId));
 
       var demoUnitRisks =
           objectMapper.readValue(riskJson, new TypeReference<Set<AbstractRiskDto>>() {});
