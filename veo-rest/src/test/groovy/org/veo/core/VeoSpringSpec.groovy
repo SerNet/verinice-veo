@@ -169,6 +169,12 @@ abstract class VeoSpringSpec extends VeoSpec {
         }
     }
 
+    Domain deactivateDomain(String domainId) {
+        def domain = domainDataRepository.findById(domainId).orElseThrow()
+        domain.setActive(false)
+        return domainDataRepository.save(domain)
+    }
+
     def executeInTransaction(Closure cl) {
         txTemplate.execute {
             cl.call()

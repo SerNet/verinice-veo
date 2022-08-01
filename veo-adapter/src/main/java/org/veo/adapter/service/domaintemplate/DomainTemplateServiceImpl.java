@@ -279,15 +279,17 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                       if (r instanceof ProcessRiskDto dto) {
                         return dto.getProcess().getId();
                       } else {
-                        throw new IllegalArgumentException();
+                        throw new IllegalArgumentException(
+                            "Unprocessable risk '" + r.getSelf() + "' in profile unit.");
+                        // TODO: VEO-1558 handle more risk types
                       }
                     }));
     Unit dummyOwner = factory.createUnit(UUID.randomUUID().toString(), null);
     dummyOwner.setClient(client);
     elements.forEach(
         e -> {
-          log.debug("Process element {}", e);
-
+          log.info("Process element {}", e);
+          DomainTemplateService.updateVersion(e);
           if (e instanceof Process p) {
             List<AbstractRiskDto> risks = risksByAffectedElementDbId.remove(p.getIdAsString());
             if (risks != null) {
@@ -300,6 +302,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                   p.setOwner(dummyOwner);
                   scenario.setOwner(dummyOwner);
                   ProcessRisk risk = p.obtainRisk(scenario, domain);
+                  DomainTemplateService.updateVersion(risk);
                   Set<RiskValues> riskValues = CategorizedRiskValueMapper.map(riskDto.getDomains());
                   log.info("transformed risk values: {}", riskValues);
 

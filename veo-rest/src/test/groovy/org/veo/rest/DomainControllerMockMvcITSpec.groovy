@@ -29,10 +29,13 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Catalog
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.ModelConsistencyException
 import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.usecase.domaintemplate.EntityAlreadyExistsException
+import org.veo.core.usecase.unit.CreateDemoUnitUseCase
+import org.veo.core.usecase.unit.CreateDemoUnitUseCase.InputData
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainTemplateRepositoryImpl
 
@@ -53,6 +56,8 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
 
     @Autowired
     TransactionTemplate txTemplate
+    @Autowired
+    private CreateDemoUnitUseCase createDemoUnitUseCase
 
     private Domain testDomain
     private Domain completeDomain
@@ -301,7 +306,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("content-creator")
     def "create a DomainTemplate with unit"() {
         Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domain)
+        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domain.idAsString)
 
         given: "a number of existing templates"
         def initialTemplateCount = txTemplate.execute {
@@ -377,7 +382,6 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             unit
         }
 
-
         when:
         def result = parseJson(get("/domains/${domain.idAsString}/element-status-count?unit=${unit.idAsString}"))
 
@@ -396,120 +400,5 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             size() == 3
             get('AST_Application') == [IN_PROGRESS:0, NEW:0, RELEASED:0, FOR_REVIEW:0, ARCHIVED:0]
         }
-    }
-
-    private createUnitWithElements(Domain domain) {
-        def domainId = domain.id.uuidValue()
-        def unitId = parseJson(post("/units", [
-            name   : "you knit",
-            domains: [
-                [targetUri: "http://localhost/domains/(domainId)"]
-            ]
-        ])).resourceId
-        def owner = [targetUri: "http://localhost/units/$unitId"]
-
-        def assetId = parseJson(post("/assets", [
-            domains: [
-                (domainId): [
-                    subType: "AST_Application",
-                    status: "NEW",
-                ]
-            ],
-            name   : "asset",
-            owner  : owner
-        ])).resourceId
-        post("/controls", [
-            name   : "control",
-            domains: [
-                (domainId): [
-                    subType: "CTL_TOM",
-                    status: "NEW",
-                ]
-            ],
-            owner  : owner
-        ])
-        post("/documents", [
-            name   : "document",
-            domains: [
-                (domainId): [
-                    subType: "DOC_Document",
-                    status: "NEW",
-                ]
-            ],
-            owner  : owner
-        ])
-        post("/incidents", [
-            name   : "incident",
-            domains: [
-                (domainId): [
-                    subType: "INC_Incident",
-                    status: "NEW",
-                ]
-            ],
-            owner  : owner
-        ])
-        post("/persons", [
-            name   : "person",
-            domains: [
-                (domainId): [
-                    subType: "PER_Person",
-                    status: "NEW",
-                ]
-            ],
-            owner  : owner
-        ])
-        def processId = parseJson(post("/processes", [
-            domains: [
-                (domainId): [
-                    subType: "PRO_DataProcessing",
-                    status: "NEW",
-                ]
-            ],
-            name   : "process",
-            owner  : owner
-        ])).resourceId
-        def scenarioId = parseJson(post("/scenarios", [
-            name   : "scenario",
-            domains: [
-                (domainId): [
-                    subType: "SCN_Scenario",
-                    status: "NEW",
-                ]
-            ],
-            owner  : owner
-        ])).resourceId
-        post("/scopes", [
-            name   : "scope",
-            domains: [
-                (domainId): [
-                    subType: "SCP_Scope",
-                    status: "NEW",
-                ]
-            ],
-            owner  : owner
-        ])
-
-        post("/assets/$assetId/risks", [
-            domains : [
-                (domainId): [
-                    reference: [targetUri: "http://localhost/domains/$domainId"]
-                ]
-            ],
-            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
-        ])
-        post("/processes/$processId/risks", [
-            domains : [
-                (domainId): [
-                    reference: [targetUri: "http://localhost/domains/$domainId"]
-                ]
-            ],
-            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
-        ])
-        [
-            unitId,
-            assetId,
-            scenarioId,
-            processId
-        ]
     }
 }
