@@ -114,6 +114,7 @@ public class DomainTemplateData extends IdentifiableVersionedData
   @Column(columnDefinition = "jsonb")
   private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
 
+  @NotNull
   @Column(columnDefinition = "jsonb")
   private Map<String, ProfileDefinition> profiles = new HashMap<>();
 
