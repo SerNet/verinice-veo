@@ -82,8 +82,6 @@ public abstract class AbstractElementDto extends AbstractVersionedSelfReferencin
   @Schema(description = "Entity type identifier", accessMode = Schema.AccessMode.READ_ONLY)
   private String type;
 
-  public abstract void associateWithTargetDomain(String id);
-
   public abstract void clearDomains();
 
   public abstract void transferToDomain(String sourceDomainId, String targetDomainId);

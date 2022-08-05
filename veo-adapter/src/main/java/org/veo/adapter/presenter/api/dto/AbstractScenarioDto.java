@@ -78,14 +78,6 @@ public abstract class AbstractScenarioDto extends CompositeEntityDto<Scenario> {
   }
 
   @Override
-  public void associateWithTargetDomain(String id) {
-    setDomains(
-        Map.of(
-            id,
-            getDomains().values().stream().findFirst().orElse(new ScenarioDomainAssociationDto())));
-  }
-
-  @Override
   public void clearDomains() {
     domains.clear();
   }

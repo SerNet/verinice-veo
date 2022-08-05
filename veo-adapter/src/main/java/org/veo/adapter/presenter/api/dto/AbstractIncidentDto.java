@@ -76,12 +76,6 @@ public abstract class AbstractIncidentDto extends CompositeEntityDto<Incident> {
   }
 
   @Override
-  public void associateWithTargetDomain(String id) {
-    setDomains(
-        Map.of(id, getDomains().values().stream().findFirst().orElse(new DomainAssociationDto())));
-  }
-
-  @Override
   public void clearDomains() {
     domains.clear();
   }

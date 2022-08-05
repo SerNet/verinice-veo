@@ -327,9 +327,6 @@ public final class EntityToDtoTransformer {
     Element element = source.getElement();
     if (element != null) {
       target.setElement(transform2Dto(element));
-      DomainTemplate domainTemplate = source.getCatalog().getDomainTemplate();
-
-      target.getElement().associateWithTargetDomain(domainTemplate.getIdAsString());
     }
     target.setTailoringReferences(
         source.getTailoringReferences().stream()

@@ -51,14 +51,6 @@ public abstract class AbstractScopeDto extends AbstractElementDto {
   }
 
   @Override
-  public void associateWithTargetDomain(String id) {
-    setDomains(
-        Map.of(
-            id,
-            getDomains().values().stream().findFirst().orElse(new ScopeDomainAssociationDto())));
-  }
-
-  @Override
   public void clearDomains() {
     domains.clear();
   }

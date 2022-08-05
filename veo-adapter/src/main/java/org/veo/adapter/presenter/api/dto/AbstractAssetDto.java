@@ -75,17 +75,6 @@ public abstract class AbstractAssetDto extends CompositeEntityDto<Asset> {
     return Asset.class;
   }
 
-  /* This method is called to associate the DTO that was made from the CatalogItem
-   * with the new domain template. */
-  // FIXME VEO-661 this method will break as soon as there are multiple domains in
-  // a client
-  // and we create a domain template from one of these domains.
-  @Override
-  public void associateWithTargetDomain(String id) {
-    setDomains(
-        Map.of(id, getDomains().values().stream().findFirst().orElse(new DomainAssociationDto())));
-  }
-
   @Override
   public void clearDomains() {
     domains.clear();

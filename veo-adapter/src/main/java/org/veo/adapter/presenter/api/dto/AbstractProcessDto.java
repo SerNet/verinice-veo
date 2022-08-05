@@ -82,14 +82,6 @@ public abstract class AbstractProcessDto extends CompositeEntityDto<Process> {
   }
 
   @Override
-  public void associateWithTargetDomain(String id) {
-    setDomains(
-        Map.of(
-            id,
-            getDomains().values().stream().findFirst().orElse(new ProcessDomainAssociationDto())));
-  }
-
-  @Override
   public void clearDomains() {
     domains.clear();
   }
