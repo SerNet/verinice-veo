@@ -35,8 +35,9 @@ public interface StoredEventRepository {
    *
    * @param maxLockTime Locked events are only included if they've been locked before this point in
    *     time.
+   * @param maxResults the maximum number of results to return
    */
-  List<StoredEvent> findPendingEvents(Instant maxLockTime);
+  List<StoredEvent> findPendingEvents(Instant maxLockTime, int maxResults);
 
   List<StoredEvent> saveAll(List<StoredEvent> pendingEvents);
 }

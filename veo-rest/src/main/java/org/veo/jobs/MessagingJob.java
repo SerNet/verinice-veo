@@ -53,6 +53,9 @@ public class MessagingJob {
   @Value("${veo.messages.publishing.confirmationWaitMs:2000}")
   public int confirmationWaitMs;
 
+  @Value("${veo.messages.publishing.processingChunkSize:5000}")
+  public int processingChunkSize;
+
   private final StoredEventRepository storedEventRepository;
 
   private final VeoRestConfiguration config;
@@ -140,7 +143,8 @@ public class MessagingJob {
     public List<StoredEvent> retrievePendingEvents() {
       var events =
           storedEventRepository.findPendingEvents(
-              Instant.now().minus(config.getMessagePublishingLockExpiration()));
+              Instant.now().minus(config.getMessagePublishingLockExpiration()),
+              processingChunkSize);
       events.forEach(StoredEvent::lock);
       return events;
     }

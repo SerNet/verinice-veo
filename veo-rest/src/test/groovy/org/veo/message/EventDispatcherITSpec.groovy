@@ -29,6 +29,7 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.PageRequest
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.containers.GenericContainer
@@ -167,13 +168,13 @@ class EventDispatcherITSpec extends VeoSpringSpec {
         storedEventRepository.saveAll(events)
 
         then:
-        storedEventRepository.findPendingEvents(FOREVER_AND_EVER).size() == NUM_EVENTS
+        storedEventRepository.findPendingEvents(FOREVER_AND_EVER, PageRequest.ofSize(1000)).size() == NUM_EVENTS
 
         when:
         messagingJob.sendMessages()
 
         then:
-        storedEventRepository.findPendingEvents(FOREVER_AND_EVER).isEmpty()
+        storedEventRepository.findPendingEvents(FOREVER_AND_EVER, PageRequest.ofSize(1000)).isEmpty()
     }
     def cleanup() {
         def purgeCount = rabbitAdmin.purgeQueue(testQueue)

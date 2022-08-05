@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.event.StoredEvent;
@@ -55,8 +56,8 @@ public class StoredEventRepositoryImpl implements StoredEventRepository {
   }
 
   @Override
-  public List<StoredEvent> findPendingEvents(Instant maxLockTime) {
-    return dataRepository.findPendingEvents(maxLockTime);
+  public List<StoredEvent> findPendingEvents(Instant maxLockTime, int maxResults) {
+    return dataRepository.findPendingEvents(maxLockTime, PageRequest.ofSize(maxResults));
   }
 
   @Override

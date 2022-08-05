@@ -54,7 +54,7 @@ class StoredEventRepositorySpec extends VeoSpringSpec {
         })
 
         when:
-        def pending = storedEventRepository.findPendingEvents(Instant.parse("2021-02-19T13:00:00.000Z"))
+        def pending = storedEventRepository.findPendingEvents(Instant.parse("2021-02-19T13:00:00.000Z"), 1000)
 
         then:
         pending.size() == 3
