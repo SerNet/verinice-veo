@@ -188,6 +188,7 @@ class DomainRestTestITSpec extends VeoRestTest {
                 "example scenario"
             ]
             profiles.exampleUnit.risks.size() == 1
+            profiles.exampleUnit.elements[0].domains.keySet() ==~ [domainTemplate.id]
         }
 
         when:" we post the domain export as domaintemplate"

@@ -247,6 +247,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         with(firstCatalog) {
             name == 'a'
             catalogItems.size() == 3
+            catalogItems[0].element.domains.keySet() ==~ [result.id]
             domainTemplate !=null
         }
     }
