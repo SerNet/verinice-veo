@@ -88,16 +88,19 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
                     newCatalogItem(c,{
                         newControl(it) {
                             name = 'c1'
+                            it.associateWithDomain(d, "CTL_Control", 'NEW')
                         }
                     })
                     newCatalogItem(c,{
                         newControl(it) {
                             name = 'c2'
+                            it.associateWithDomain(d, "CTL_Control", 'NEW')
                         }
                     })
                     newCatalogItem(c,{
                         newControl(it) {
                             name = 'c3'
+                            it.associateWithDomain(d, "CTL_Control", 'NEW')
                         }
                     })
                 }
