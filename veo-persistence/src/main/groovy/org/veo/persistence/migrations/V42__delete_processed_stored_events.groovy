@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jonas Jordan.
+ * Copyright (C) 2022  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,30 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.access;
+package org.veo.persistence.migrations
 
-import java.time.Instant;
-import java.util.List;
-import java.util.Set;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-import org.veo.core.entity.event.StoredEvent;
+import groovy.sql.Sql
 
-public interface StoredEventRepository {
-  StoredEvent save(StoredEvent event);
+class V42__delete_processed_stored_events extends BaseJavaMigration {
+    @Override
+    void migrate(Context context) throws Exception {
+        new Sql(context.connection).execute("""
+        delete from stored_event_data where processed = true;
 
-  Set<StoredEvent> findAll();
+        drop index IDX_STORED_EVENT_DATA_PROCESSED;
 
-  void remove(StoredEvent event);
-
-  /**
-   * Retrieves stored events that are either not locked or have been locked before given point in
-   * time, sorted by creation time in descending order.
-   *
-   * @param maxLockTime Locked events are only included if they've been locked before this point in
-   *     time.
-   * @param maxResults the maximum number of results to return
-   */
-  List<StoredEvent> findPendingEvents(Instant maxLockTime, int maxResults);
-
-  void deleteAll(Set<StoredEvent> events);
+        alter table stored_event_data drop column processed;
+""")
+    }
 }

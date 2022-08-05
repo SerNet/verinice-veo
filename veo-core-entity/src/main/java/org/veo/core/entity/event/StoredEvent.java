@@ -43,21 +43,6 @@ public interface StoredEvent {
   String getRoutingKey();
 
   /**
-   * @return Whether this event has already been forwarded.
-   */
-  Boolean getProcessed();
-
-  /**
-   * Tag this event as having been processed. This usually means that it was successfully forwarded
-   * to a message queue and that publication was confirmed by the message broker. Events that are
-   * marked as processed should be ignored by workers.
-   *
-   * @return {@code true} if the event was marked as processed by this call. Returns {@code false}
-   *     if the event was already marked as processed before.
-   */
-  boolean markAsProcessed();
-
-  /**
    * Lock this event for processing so other workers don't process it redundantly. This sets the
    * lock time to now.
    */

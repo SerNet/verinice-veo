@@ -32,6 +32,7 @@ import org.veo.persistence.entity.jpa.StoredEventData;
 public interface StoredEventDataRepository extends JpaRepository<StoredEventData, Long> {
   @Query(
       "select e from #{#entityName} as e "
-          + "where e.processed = false and (e.lockTime is null or e.lockTime < ?1) order by e.id")
+          + "where e.lockTime is null or e.lockTime < ?1 "
+          + "order by e.id")
   List<StoredEvent> findPendingEvents(Instant maxLockTime, Pageable pageable);
 }

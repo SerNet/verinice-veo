@@ -32,24 +32,20 @@ class StoredEventRepositorySpec extends VeoSpringSpec {
     @Autowired
     StoredEventRepository storedEventRepository
 
-    def "finds unprocessed stored events"() {
+    def "finds pending stored events"() {
         given:
         storedEventRepository.save(new StoredEventData().tap {
             routingKey = "a"
-            processed = true
         })
         storedEventRepository.save(new StoredEventData().tap {
             routingKey = "b"
         })
         storedEventRepository.save(new StoredEventData().tap {
             routingKey = "c"
-        })
-        storedEventRepository.save(new StoredEventData().tap {
-            routingKey = "d"
             lockTime = Instant.parse("2021-02-19T12:00:00.000Z")
         })
         storedEventRepository.save(new StoredEventData().tap {
-            routingKey = "e"
+            routingKey = "d"
             lockTime = Instant.parse("2021-02-19T14:00:00.000Z")
         })
 
@@ -57,9 +53,6 @@ class StoredEventRepositorySpec extends VeoSpringSpec {
         def pending = storedEventRepository.findPendingEvents(Instant.parse("2021-02-19T13:00:00.000Z"), 1000)
 
         then:
-        pending.size() == 3
-        pending[0].routingKey == "b"
-        pending[1].routingKey == "c"
-        pending[2].routingKey == "d"
+        pending*.routingKey ==~ ["a", "b", "c"]
     }
 }

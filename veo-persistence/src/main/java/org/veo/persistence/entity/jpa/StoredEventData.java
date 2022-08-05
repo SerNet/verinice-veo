@@ -60,19 +60,9 @@ public class StoredEventData implements StoredEvent {
 
   private String routingKey;
 
-  @Column(nullable = false)
-  private Boolean processed = false;
-
   private Instant lockTime;
 
   private Instant timestamp;
-
-  @Override
-  public boolean markAsProcessed() {
-    if (processed) return false;
-    processed = true;
-    return true;
-  }
 
   @Override
   public void lock() {
@@ -102,6 +92,6 @@ public class StoredEventData implements StoredEvent {
   }
 
   public static StoredEventData newInstance(String content, String routingKey) {
-    return new StoredEventData(null, content, routingKey, false, null, Instant.now());
+    return new StoredEventData(null, content, routingKey, null, Instant.now());
   }
 }

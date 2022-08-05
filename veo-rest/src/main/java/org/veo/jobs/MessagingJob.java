@@ -21,6 +21,7 @@ import static org.veo.message.EventMessage.messagesFrom;
 import static org.veo.rest.VeoRestConfiguration.PROFILE_BACKGROUND_TASKS;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -96,13 +97,15 @@ public class MessagingJob {
       var latch = new CountDownLatch(pendingEvents.size());
       var pending =
           pendingEvents.stream().collect(Collectors.toMap(StoredEvent::getId, event -> event));
+      var dispatchedEvents = new HashSet<StoredEvent>(pendingEvents.size());
 
       eventDispatcher.sendAsync(
           messagesFrom(pendingEvents),
           (e, ack) -> {
             if (ack) {
-              var storedEvent = pending.get(e.getId());
-              if (storedEvent != null && storedEvent.markAsProcessed()) {
+              var storedEvent = pending.remove(e.getId());
+              if (storedEvent != null) {
+                dispatchedEvents.add(storedEvent);
                 latch.countDown();
               } else log.warn("Stored event {} was already processed", e.getId());
             } else log.warn("Dispatch unsuccessful for stored event {}.", e.getId());
@@ -125,7 +128,7 @@ public class MessagingJob {
       } catch (InterruptedException e) {
         log.warn("Interrupted while waiting for confirmation from published events.", e);
       }
-      storedEventRepository.saveAll(pendingEvents);
+      storedEventRepository.deleteAll(dispatchedEvents);
     }
   }
 

@@ -61,10 +61,8 @@ public class StoredEventRepositoryImpl implements StoredEventRepository {
   }
 
   @Override
-  public List<StoredEvent> saveAll(List<StoredEvent> pendingEvents) {
-    var all =
-        dataRepository.saveAll(
-            pendingEvents.stream().map(StoredEventData.class::cast).collect(Collectors.toSet()));
-    return all.stream().map(StoredEvent.class::cast).toList();
+  public void deleteAll(Set<StoredEvent> events) {
+    dataRepository.deleteAll(
+        events.stream().map(StoredEventData.class::cast).collect(Collectors.toSet()));
   }
 }
