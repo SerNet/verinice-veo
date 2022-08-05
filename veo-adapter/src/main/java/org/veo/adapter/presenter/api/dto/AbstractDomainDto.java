@@ -98,6 +98,9 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
 
   private Map<String, Decision> decisions;
 
+  @Schema(
+      description = "The profiles that belong to this domain keyed by their symbolic names.",
+      required = true)
   private Map<String, ProfileDefinition> profiles = new HashMap<>();
 
   @Override

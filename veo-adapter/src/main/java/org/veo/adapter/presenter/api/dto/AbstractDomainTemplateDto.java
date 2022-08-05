@@ -83,6 +83,10 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfRef
   @Schema(description = "A list of risk definitions belonging to the DomainTemplate.")
   private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
 
+  @Schema(
+      description =
+          "The profiles that belong to this domain template keyed by their symbolic names.",
+      required = true)
   private Map<String, ProfileDefinition> profiles = new HashMap<>();
 
   @Override

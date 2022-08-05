@@ -151,7 +151,12 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
   @Override
   public Optional<DomainTemplate> getTemplate(Client client, Key<UUID> key) {
-    return Optional.empty();
+    checkClientAccess(client, key);
+    return domainTemplateRepository.findById(key);
+  }
+
+  private void checkClientAccess(Client client, Key<UUID> key) {
+    // TODO VEO-1454 check the shop status for available products
   }
 
   @Override

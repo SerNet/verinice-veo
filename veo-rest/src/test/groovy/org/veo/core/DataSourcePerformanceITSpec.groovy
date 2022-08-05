@@ -78,6 +78,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.insert == 6
         queryCounts.update == 0
         queryCounts.select == 3
+        queryCounts.time < 500
     }
 
     def "SQL performance for saving 1 process"() {
@@ -93,6 +94,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.insert == 2
         queryCounts.update == 0
         queryCounts.select == 0
+        queryCounts.time < 500
     }
 
     def "SQL performance for saving 1 process with 2 links to 1 asset and 1 composite person"() {
@@ -108,6 +110,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.insert == 5
         queryCounts.update == 0
         queryCounts.select == 0
+        queryCounts.time < 500
     }
 
 
@@ -124,6 +127,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.insert == 3
         queryCounts.update == 0
         queryCounts.select == 0
+        queryCounts.time < 500
     }
 
     def "SQL performance for saving 1 process with 1 custom aspect"() {
@@ -139,6 +143,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.insert == 3
         queryCounts.update == 0
         queryCounts.select == 0
+        queryCounts.time < 500
     }
 
     def "SQL performance for selecting 1 process with embedded risk"() {
@@ -169,6 +174,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.insert == 0
         queryCounts.update == 0
         queryCounts.select == 2
+        queryCounts.time < 500
 
         when: "fetch risks using only full aggregate graph"
         queryCounts = trackQueryCounts{
@@ -191,6 +197,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.insert == 0
         queryCounts.update == 0
         queryCounts.select == 7
+        queryCounts.time < 500
     }
 
     def "SQL performance for putting 1 string value in 1 customAspect with 10 existing values"() {
@@ -207,6 +214,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.insert == 0
         queryCounts.update == 1
         queryCounts.select == 1
+        queryCounts.time < 500
     }
 
     def "SQL performance for saving 1 composite person with 2 parts"() {
@@ -225,6 +233,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.insert == 3
         queryCounts.update == 0
         queryCounts.select == 0
+        queryCounts.time < 500
     }
 
     def "SQL performance for saving 1 scope with 2 persons"() {
@@ -243,6 +252,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.insert == 4
         queryCounts.update == 0
         queryCounts.select == 0
+        queryCounts.time < 500
     }
 
 
@@ -261,6 +271,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.insert == 13
         queryCounts.update == 0
         queryCounts.select == 2
+        queryCounts.time < 500
     }
 
     def "SQL performance for saving 1 scope with 100 persons with 2 parts each"() {
@@ -283,6 +294,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.insert == 33
         queryCounts.update == 0
         queryCounts.select == 6
+        queryCounts.time < 500
     }
 
     def "SQL performance for saving 1 scope with 10 persons with 10 parts each"() {
@@ -304,6 +316,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.insert == 14
         queryCounts.update == 0
         queryCounts.select == 2
+        queryCounts.time < 500
     }
 
     def "SQL performance for adding 100 persons with 2 parts each to an existing scope"() {
@@ -320,6 +333,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.insert == 35
         queryCounts.update == 5
         queryCounts.select == 19
+        queryCounts.time < 500
     }
 
     def "SQL performance for selecting units of a client"() {
@@ -338,6 +352,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.insert == 0
         queryCounts.update == 0
         queryCounts.select == 1
+        queryCounts.time < 500
     }
 
     def "SQL performance for selecting subunits of a unit"() {
@@ -356,6 +371,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.insert == 0
         queryCounts.update == 0
         queryCounts.select == 2
+        queryCounts.time < 500
     }
 
     def "SQL performance for deleting 1 unit with 100 persons of 2 parts each"() {
@@ -378,6 +394,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.insert == 11
         queryCounts.update == 0
         queryCounts.select == 20
+        queryCounts.time < 500
     }
 
     @Issue('VEO-689')
@@ -419,6 +436,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.insert == 4
         queryCounts.update == 2
         queryCounts.select == 53
+        queryCounts.time < 500
     }
 
     def "SQL performance for deleting 2 units with 1 commonly referenced domain"() {
@@ -446,6 +464,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.insert == 2
         queryCounts.update == 1
         queryCounts.select == 6
+        queryCounts.time < 500
     }
 
     void createClient() {

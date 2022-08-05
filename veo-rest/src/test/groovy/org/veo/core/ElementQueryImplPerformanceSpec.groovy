@@ -105,5 +105,6 @@ class ElementQueryImplPerformanceSpec extends AbstractPerformaceITSpec {
         }
 
         QueryCountHolder.grandTotal.select == 5
+        QueryCountHolder.grandTotal.time < 500
     }
 }

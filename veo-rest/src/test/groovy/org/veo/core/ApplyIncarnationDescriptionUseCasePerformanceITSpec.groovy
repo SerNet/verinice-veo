@@ -94,6 +94,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
         then:
         queryCounts.select == 29
         queryCounts.insert == 24
+        queryCounts.time < 500
     }
 
     Client createClient() {

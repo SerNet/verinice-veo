@@ -53,30 +53,48 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
         def processRepository = Mock(ProcessRepository)
         def scenarioRepository = Mock(ScenarioRepository)
         def scopeRepository = Mock(ScopeRepository)
+
+        Set scopes = Mock()
+        Set assets = Mock()
+        Set controls = Mock()
+        Set documents = Mock()
+        Set incidents = Mock()
+        Set persons = Mock()
+        Set processes = Mock()
+        Set scenarios = Mock()
+
         when: "the unit is deleted"
         def input = new DeleteUnitUseCase.InputData(existingUnit.getId(), existingClient)
         def usecase = new DeleteUnitUseCase(clientRepository, unitRepository, repositoryProvider)
         usecase.execute(input)
 
         then: "the client for the unit is retrieved"
-        1 * repositoryProvider.getElementRepositoryFor(Asset) >> assetRepository
-        1 * repositoryProvider.getElementRepositoryFor(Control) >> controlRepository
-        1 * repositoryProvider.getElementRepositoryFor(Document) >> documentRepository
-        1 * repositoryProvider.getElementRepositoryFor(Incident) >> incidentRepository
-        1 * repositoryProvider.getElementRepositoryFor(Person) >> personRepository
-        1 * repositoryProvider.getElementRepositoryFor(Process) >> processRepository
-        1 * repositoryProvider.getElementRepositoryFor(Scenario) >> scenarioRepository
-        1 * repositoryProvider.getElementRepositoryFor(Scope) >> scopeRepository
+        2 * repositoryProvider.getElementRepositoryFor(Asset) >> assetRepository
+        2 * repositoryProvider.getElementRepositoryFor(Control) >> controlRepository
+        2 * repositoryProvider.getElementRepositoryFor(Document) >> documentRepository
+        2 * repositoryProvider.getElementRepositoryFor(Incident) >> incidentRepository
+        2 * repositoryProvider.getElementRepositoryFor(Person) >> personRepository
+        2 * repositoryProvider.getElementRepositoryFor(Process) >> processRepository
+        2 * repositoryProvider.getElementRepositoryFor(Scenario) >> scenarioRepository
+        2 * repositoryProvider.getElementRepositoryFor(Scope) >> scopeRepository
         1 * clientRepository.findById(_) >> Optional.of(existingClient)
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
-        1 * scopeRepository.deleteByUnit(existingUnit)
-        1 * assetRepository.deleteByUnit(existingUnit)
-        1 * controlRepository.deleteByUnit(existingUnit)
-        1 * documentRepository.deleteByUnit(existingUnit)
-        1 * incidentRepository.deleteByUnit(existingUnit)
-        1 * personRepository.deleteByUnit(existingUnit)
-        1 * processRepository.deleteByUnit(existingUnit)
-        1 * scenarioRepository.deleteByUnit(existingUnit)
+        1 * scopeRepository.findByUnit(existingUnit) >> scopes
+        1 * scopeRepository.deleteAll(scopes)
+        1 * assetRepository.findByUnit(existingUnit) >> assets
+        1 * assetRepository.deleteAll(assets)
+        1 * controlRepository.findByUnit(existingUnit) >> controls
+        1 * controlRepository.deleteAll(controls)
+        1 * documentRepository.findByUnit(existingUnit) >> documents
+        1 * documentRepository.deleteAll(documents)
+        1 * incidentRepository.findByUnit(existingUnit) >> incidents
+        1 * incidentRepository.deleteAll(incidents)
+        1 * personRepository.findByUnit(existingUnit) >> persons
+        1 * personRepository.deleteAll(persons)
+        1 * processRepository.findByUnit(existingUnit) >> processes
+        1 * processRepository.deleteAll(processes)
+        1 * scenarioRepository.findByUnit(existingUnit) >> scenarios
+        1 * scenarioRepository.deleteAll(scenarios)
         and: "the unit is deleted"
         1 * unitRepository.delete(_)
     }

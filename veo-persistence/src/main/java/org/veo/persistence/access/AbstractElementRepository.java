@@ -78,18 +78,22 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
         .collect(Collectors.toSet());
   }
 
+  @Override
+  public Set<T> findByUnit(Unit owner) {
+    return query(owner.getClient())
+        .whereOwnerIs(owner)
+        .fetchAppliedCatalogItems()
+        .fetchParentsAndChildrenAndSiblings()
+        .fetchRisks()
+        .execute(PagingConfiguration.UNPAGED)
+        .getResultPage()
+        .stream()
+        .collect(Collectors.toSet());
+  }
+
   @Transactional
   public void deleteByUnit(Unit owner) {
-    deleteAll(
-        query(owner.getClient())
-            .whereOwnerIs(owner)
-            .fetchAppliedCatalogItems()
-            .fetchParentsAndChildrenAndSiblings()
-            .fetchRisks()
-            .execute(PagingConfiguration.UNPAGED)
-            .getResultPage()
-            .stream()
-            .collect(Collectors.toSet()));
+    deleteAll(findByUnit(owner));
   }
 
   @Transactional

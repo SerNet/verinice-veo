@@ -130,7 +130,7 @@ subprojects {
 
     dependencyManagement {
         dependencies {
-            dependency 'com.vladmihalcea:hibernate-types-52:2.17.1'
+            dependency 'com.vladmihalcea:hibernate-types-52:2.17.3'
             dependency 'io.jsonwebtoken:jjwt-api:0.11.5'
             dependency 'io.jsonwebtoken:jjwt-impl:0.11.5'
             dependency 'io.jsonwebtoken:jjwt-jackson:0.11.5'
@@ -149,7 +149,7 @@ subprojects {
             dependency 'com.networknt:json-schema-validator:1.0.72'
             dependency "org.testcontainers:spock:1.17.3"
             dependency "org.testcontainers:postgresql:1.17.3"
-            dependency "org.keycloak:keycloak-authz-client:18.0.2"
+            dependency "org.keycloak:keycloak-authz-client:19.0.1"
             dependency "com.github.JanLoebel:json-schema-validation-starter:2.3.0"
             dependency 'com.fasterxml.uuid:java-uuid-generator:4.0.1'
             dependency 'com.github.zafarkhaja:java-semver:0.9.0'
@@ -182,7 +182,7 @@ subprojects {
     }
 
     pmd {
-        toolVersion = '6.43.0'
+        toolVersion = '6.48.0'
         ruleSetConfig = rootProject.resources.text.fromFile('misc/pmd/rules.xml')
         ruleSets = []
         rulesMinimumPriority = 2
