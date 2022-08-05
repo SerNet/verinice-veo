@@ -19,7 +19,10 @@ package org.veo.adapter.persistence.schema;
 
 import static org.apache.commons.lang3.StringUtils.capitalize;
 
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -41,30 +44,57 @@ import com.github.victools.jsonschema.module.swagger2.Swagger2Module;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntitySchemaException;
+import org.veo.core.entity.EntityType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public class EntitySchemaGenerator {
+
+  private static final String PACKAGE_NAME = "org.veo.adapter.presenter.api.dto.full";
+
   private final SchemaExtender schemaExtender;
+  private final Map<String, JsonNode> baseSchemas;
 
-  public String createSchema(String baseName, Set<Domain> domains) {
-    String packageName = "org.veo.adapter.presenter.api.dto.full";
-    CustomPrettyPrinter prettyPrinter = new CustomPrettyPrinter();
-    prettyPrinter.indentArraysWith(new DefaultIndenter());
-    ObjectWriter writer = new ObjectMapper().writer(prettyPrinter);
+  private final ObjectWriter writer;
 
+  public EntitySchemaGenerator(SchemaExtender schemaExtender) {
+    this.schemaExtender = schemaExtender;
     SchemaGenerator generator = createSchemaGenerator();
 
-    Class<?> clazz = null;
+    CustomPrettyPrinter prettyPrinter = new CustomPrettyPrinter();
+    prettyPrinter.indentArraysWith(new DefaultIndenter());
+    writer = new ObjectMapper().writer(prettyPrinter);
+    baseSchemas =
+        EntityType.ELEMENT_TYPES.stream()
+            .map(EntityType::getSingularTerm)
+            .collect(
+                Collectors.toMap(
+                    Function.identity(),
+                    singularTerm -> {
+                      try {
+                        Class<?> clazz =
+                            Class.forName(
+                                PACKAGE_NAME + ".Full" + capitalize(singularTerm) + "Dto");
+                        return generator.generateSchema(clazz);
+                      } catch (ClassNotFoundException e) {
+                        throw new EntitySchemaException(
+                            "Error initializing base schema for " + singularTerm, e);
+                      }
+                    }));
+  }
+
+  public String createSchema(String baseName, Set<Domain> domains) {
+    JsonNode jsonSchema = baseSchemas.get(baseName);
+    if (jsonSchema == null) {
+      throw new EntitySchemaException("Invalid entity type: " + baseName);
+    }
+
     try {
-      clazz = Class.forName(packageName + ".Full" + capitalize(baseName) + "Dto");
-      JsonNode jsonSchema = generator.generateSchema(clazz);
+      SchemaGenerator generator = createSchemaGenerator();
       schemaExtender.extendSchema(generator, jsonSchema, baseName, domains);
 
       return writer.writeValueAsString(jsonSchema);
-    } catch (ClassNotFoundException | JsonProcessingException e) {
+    } catch (JsonProcessingException e) {
       throw new EntitySchemaException("Schema creation failed", e);
     }
   }
