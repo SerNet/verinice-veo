@@ -92,11 +92,6 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
   }
 
   @Transactional
-  public void deleteByUnit(Unit owner) {
-    deleteAll(findByUnit(owner));
-  }
-
-  @Transactional
   public void deleteAll(Set<T> elements) {
     Set<String> elementIds =
         elements.stream().map(Element::getIdAsString).collect(Collectors.toSet());

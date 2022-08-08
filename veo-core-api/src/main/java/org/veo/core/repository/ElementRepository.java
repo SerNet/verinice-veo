@@ -28,9 +28,6 @@ public interface ElementRepository<T extends Element> extends IdentifiableVersio
 
   Set<T> findByUnit(Unit owner);
 
-  @Deprecated
-  void deleteByUnit(Unit owner);
-
   ElementQuery<T> query(Client client);
 
   Set<T> findByDomain(Domain domain);

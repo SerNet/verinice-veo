@@ -386,7 +386,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
 
         when:
         def queryCounts = trackQueryCounts{
-            personRepository.deleteByUnit(unit)
+            personRepository.deleteAll(personRepository.findByUnit(unit))
             unitRepository.delete(unit)
         }
         then:
@@ -435,7 +435,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.delete <= 12
         queryCounts.insert == 4
         queryCounts.update == 2
-        queryCounts.select == 53
+        queryCounts.select == 45
         queryCounts.time < 500
     }
 
@@ -716,10 +716,16 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
 
     def deleteUnit() {
         executeInTransaction {
-            assetRepository.deleteByUnit(unit)
-            personRepository.deleteByUnit(unit)
-            processRepository.deleteByUnit(unit)
-            scopeRepository.deleteByUnit(unit)
+            def assets = assetRepository.findByUnit(unit)
+            def persons = personRepository.findByUnit(unit)
+            def processes = processRepository.findByUnit(unit)
+            def scopes = scopeRepository.findByUnit(unit)
+
+            assetRepository.deleteAll(assets)
+            personRepository.deleteAll(persons)
+            processRepository.deleteAll(processes)
+            scopeRepository.deleteAll(scopes)
+
             unitRepository.delete(unit)
         }
     }
