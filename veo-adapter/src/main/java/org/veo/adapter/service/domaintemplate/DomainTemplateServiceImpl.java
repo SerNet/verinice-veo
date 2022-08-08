@@ -17,10 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,7 +33,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.veo.adapter.presenter.api.common.IdRef;
@@ -58,7 +54,6 @@ import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.core.ExportDto;
-import org.veo.core.VeoInputStreamResource;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
@@ -96,18 +91,15 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   private final DtoToEntityTransformer entityTransformer;
   private final EntityToDtoTransformer dtoTransformer;
   private final EntityFactory factory;
-  private final List<VeoInputStreamResource> domainResources;
   private final CatalogItemPrepareStrategy preparations;
   private final DomainTemplateIdGenerator domainTemplateIdGenerator;
 
   private final ReferenceAssembler assembler;
   private final ObjectMapper objectMapper;
-  private final Map<String, VeoInputStreamResource> domainTemplateFiles = new HashMap<>();
 
   public DomainTemplateServiceImpl(
       DomainTemplateRepository domainTemplateRepository,
       EntityFactory factory,
-      List<VeoInputStreamResource> domainResources,
       DomainAssociationTransformer domainAssociationTransformer,
       IdentifiableFactory identifiableFactory,
       CatalogItemPrepareStrategy preparations,
@@ -116,7 +108,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
       ObjectMapper objectMapper) {
     this.domainTemplateRepository = domainTemplateRepository;
     this.factory = factory;
-    this.domainResources = domainResources;
     this.preparations = preparations;
     this.domainTemplateIdGenerator = domainTemplateIdGenerator;
 
@@ -125,23 +116,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     assembler = referenceAssembler;
     dtoTransformer = new EntityToDtoTransformer(assembler, domainAssociationTransformer);
     this.objectMapper = objectMapper;
-    readTemplateFiles();
-  }
-
-  @Deprecated
-  private void readTemplateFiles() {
-    log.info("read files from resources ...");
-    domainResources.forEach(
-        f -> {
-          log.info("read file:{}", f.getDescription());
-          TransformDomainTemplateDto templateDto = null;
-          try {
-            templateDto = readInstanceFile(f);
-            domainTemplateFiles.put(templateDto.getId(), f);
-          } catch (IOException e) {
-            log.error("Error reading file", e);
-          }
-        });
   }
 
   @Override
@@ -192,31 +166,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     return template
         .findProfile(profileKey)
         .map(profile -> createElementsFromProfile(client, ref, domain, template, profile))
-        .orElseGet(() -> createElementsFromFile(client, ref, domain, template));
-  }
-
-  @Deprecated
-  private Collection<Element> createElementsFromFile(
-      Client client, PlaceholderResolver ref, Domain domain, DomainTemplate template) {
-    VeoInputStreamResource templateFile = domainTemplateFiles.get(template.getIdAsString());
-    if (templateFile == null) {
-      return Collections.emptySet();
-    }
-    try {
-      TransformDomainTemplateDto domainTemplateDto = readInstanceFile(templateFile);
-      String templateId = domainTemplateDto.getId();
-      Set<AbstractElementDto> demoUnitElements = domainTemplateDto.getDemoUnitElements();
-      Set<AbstractRiskDto> demoUnitRisks = domainTemplateDto.getDemoUnitRisks();
-
-      return createElements(client, ref, domain, templateId, demoUnitElements, demoUnitRisks);
-    } catch (JsonMappingException e) {
-      log.error("Error parsing file", e);
-      throw new InternalDataCorruptionException(
-          "The provided template file can not be parsed to json.", e);
-    } catch (IOException e) {
-      log.error("Error loading file", e);
-      throw new InternalDataCorruptionException("The provided template file can not be loaded.", e);
-    }
+        .orElseGet(Collections::emptySet);
   }
 
   private Collection<Element> createElements(
@@ -644,16 +594,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
       target.getElement().setContainingCatalogItem(target);
     }
     return target;
-  }
-
-  @Deprecated
-  private TransformDomainTemplateDto readInstanceFile(VeoInputStreamResource resource)
-      throws IOException {
-    try (BufferedReader br =
-        new BufferedReader(
-            new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
-      return objectMapper.readValue(br, TransformDomainTemplateDto.class);
-    }
   }
 
   private <T extends AbstractElementDto> T removeOwner(T element) {

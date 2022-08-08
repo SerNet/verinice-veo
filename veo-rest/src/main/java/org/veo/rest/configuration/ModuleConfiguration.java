@@ -703,7 +703,6 @@ public class ModuleConfiguration {
       DomainTemplateRepository domainTemplateRepository,
       EntityFactory factory,
       IdentifiableFactory identifiableFactory,
-      DomainTemplateResource domainTemplateResource,
       DomainAssociationTransformer domainAssociationTransformer,
       CatalogItemPrepareStrategy prepareStrategy,
       DomainTemplateIdGenerator domainTemplateIdGenerator) {
@@ -722,7 +721,6 @@ public class ModuleConfiguration {
     return new DomainTemplateServiceImpl(
         domainTemplateRepository,
         factory,
-        domainTemplateResource.getResources(),
         domainAssociationTransformer,
         identifiableFactory,
         prepareStrategy,

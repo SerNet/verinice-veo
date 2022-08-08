@@ -244,8 +244,6 @@ pipeline {
                                         docker.image("eu.gcr.io/veo-projekt/veo:git-${env.GIT_COMMIT}").withRun("\
                                 --network ${n}\
                                 --name veo-${n}\
-                                -v ${WORKSPACE}/veo-rest/src/main/resources/domaintemplates:/domaintemplates/main/\
-                                -v ${WORKSPACE}/veo-rest/src/test/resources/testdomaintemplates/test-domain.json:/domaintemplates/test/test-domain.json\
                                 -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres\
                                 -e SPRING_DATASOURCE_USERNAME=test\
                                 -e SPRING_DATASOURCE_PASSWORD=test\
@@ -253,7 +251,6 @@ pipeline {
                                 -e SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=${env.VEO_AUTH_URL}\
                                 -e SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=${env.VEO_AUTH_URL}/protocol/openid-connect/certs\
                                 -e 'VEO_CORS_ORIGINS=https://*.verinice.example, https://frontend.somewhereelse.example'\
-                                -e 'VEO_DOMAIN_FILE_SELECTOR=file:/domaintemplates/*/*.json'\
                                 -e VEO_DEFAULT_DOMAINTEMPLATE_NAMES=DS-GVO,test-domain\
                                 -e VEO_ETAG_SALT=zuL4Q8JKdy\
                                 -e 'JDK_JAVA_OPTIONS=-Dhttp.proxyHost=cache.int.sernet.de -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.int.sernet.de -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Dhttp.proxySet=true'") { veo ->
