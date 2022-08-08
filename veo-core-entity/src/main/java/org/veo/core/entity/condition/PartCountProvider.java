@@ -40,7 +40,12 @@ public class PartCountProvider implements InputProvider {
       if (partSubType != null) {
         parts =
             parts.stream()
-                .filter(c -> partSubType.equals(c.getSubType(domain).orElse(null)))
+                .filter(
+                    c ->
+                        partSubType.equals(
+                            // TODO VEO-1569: this fails if the part's subtypeAspects are a
+                            // hibernate proxy
+                            c.getSubType(domain).orElse(null)))
                 .collect(Collectors.toSet());
       }
       return parts.size();

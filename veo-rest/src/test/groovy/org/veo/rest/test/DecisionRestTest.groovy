@@ -242,6 +242,54 @@ class DecisionRestTest extends VeoRestTest {
         get("/processes/$processId/risks").body.size() == 1
     }
 
+    def "piaMandatory decision and inspection can be evaluated for process with a pia"() {
+        given: "a persisted process with a DPIA as its part"
+        def decision = decisions.piaMandatory
+        def dpia = [
+            name: "dpia",
+            domains: [
+                (domainId): [
+                    subType: "PRO_DPIA",
+                    status: "NEW"
+                ],
+            ],
+            owner: [targetUri: unitUri]
+        ]
+        def dpiaId = post("/processes", dpia).body.resourceId
+
+        def process = [
+            name: "process with a DPIA",
+            customAspects: [
+                (PIA): [
+                    attributes:[
+                        ("${PIA}_listed"): "${PIA}_listed_positive"
+                    ]
+                ]
+            ],
+            domains: [
+                (domainId): [
+                    subType: "PRO_DataProcessing",
+                    status: "NEW"
+                ],
+            ],
+            owner: [targetUri: unitUri],
+            parts: [
+                [targetUri: "http://localhost/processes/$dpiaId"]
+            ]
+        ]
+        def processId = post("/processes", process).body.resourceId
+        process = get("/processes/$processId").body
+        addRiskValue(processId, 1)
+
+        expect: "a DPIA is required and the existing one is accepted"
+        with(post("/processes/evaluation?domain=$domainId", process, 200).body) {
+            with(decisionResults.piaMandatory) {
+                value == true
+            }
+            inspectionFindings.empty
+        }
+    }
+
     private void addRiskValue(String processId, Integer userDefinedResidualRisk) {
         post("/scopes", [
             name: "risky scope",

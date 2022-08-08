@@ -24,6 +24,7 @@ import java.util.concurrent.Future;
 
 import javax.validation.Valid;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -107,7 +108,16 @@ public abstract class AbstractElementController<
     var client = getAuthenticatedClient(auth);
     var element =
         runner.run(
-            () -> dtoToEntityTransformer.transformDto2Element(dto, createIdRefResolver(client)));
+            () -> {
+              var e = dtoToEntityTransformer.transformDto2Element(dto, createIdRefResolver(client));
+              if (e instanceof CompositeElement) {
+                // initialize subtypeAspects field for PartCountProvider
+                // TODO VEO-1569: remove this when the PartCountProvider uses a repository method
+                CompositeElement<CompositeElement> ce = (CompositeElement<CompositeElement>) e;
+                ce.getParts().forEach(p -> Hibernate.initialize(p.getSubTypeAspects()));
+              }
+              return e;
+            });
     return useCaseInteractor.execute(
         evaluateElementUseCase,
         new EvaluateElementUseCase.InputData(client, Key.uuidFrom(domainId), element),
