@@ -38,6 +38,10 @@ public interface CompositeEntityDataRepository<T extends ElementData>
   List<T> findDistinctByParts_DbId_In(Set<String> dbIds);
 
   @Transactional(readOnly = true)
-  @EntityGraph(attributePaths = {"parts", "composites", "composites.parts"})
-  List<T> findAllWithPartsAndCompositesAndCompositesPartsByDbIdIn(List<String> ids);
+  @EntityGraph(attributePaths = {"parts"})
+  List<T> findAllWithPartsByDbIdIn(List<String> ids);
+
+  @Transactional(readOnly = true)
+  @EntityGraph(attributePaths = {"composites", "composites.parts"})
+  List<T> findAllWithCompositesAndCompositesPartsByDbIdIn(List<String> ids);
 }

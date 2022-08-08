@@ -55,7 +55,8 @@ public class CompositeElementQueryImpl<TInterface extends Element, TDataClass ex
   protected List<TDataClass> fullyLoadItems(List<String> ids) {
     List<TDataClass> result = super.fullyLoadItems(ids);
     if (fetchPartsAndCompositesAndCompositeParts) {
-      compositeElementRepository.findAllWithPartsAndCompositesAndCompositesPartsByDbIdIn(ids);
+      compositeElementRepository.findAllWithPartsByDbIdIn(ids);
+      compositeElementRepository.findAllWithCompositesAndCompositesPartsByDbIdIn(ids);
     }
     return result;
   }
