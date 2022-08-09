@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -98,10 +99,14 @@ public class MessagingJob {
       var pending =
           pendingEvents.stream().collect(Collectors.toMap(StoredEvent::getId, event -> event));
       var dispatchedEvents = new HashSet<StoredEvent>(pendingEvents.size());
+      var abort = new AtomicBoolean();
 
       eventDispatcher.sendAsync(
           messagesFrom(pendingEvents),
           (e, ack) -> {
+            if (abort.get()) {
+              return;
+            }
             if (ack) {
               var storedEvent = pending.remove(e.getId());
               if (storedEvent != null) {
@@ -115,6 +120,7 @@ public class MessagingJob {
       // than CONFIRMATION_WAIT:
       try {
         if (!latch.await(confirmationWaitMs, TimeUnit.MILLISECONDS)) {
+          abort.set(true);
           log.warn(
               "Timeout reached before receiving ACK for all dispatched messages. "
                   + "{} remaining messages will not be removed and will be "
