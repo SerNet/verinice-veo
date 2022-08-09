@@ -117,7 +117,7 @@ public class MessagingJob {
         if (!latch.await(confirmationWaitMs, TimeUnit.MILLISECONDS)) {
           log.warn(
               "Timeout reached before receiving ACK for all dispatched messages. "
-                  + "{} remaining messages will not be marked as processed and "
+                  + "{} remaining messages will not be removed and will be "
                   + "re-sent during the next scheduled publication after the "
                   + "lock period of {} seconds",
               latch.getCount(),
