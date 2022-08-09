@@ -73,7 +73,7 @@ public class MessagingJob {
     this.eventDispatcher = eventDispatcher;
   }
 
-  @Scheduled(fixedRateString = "${veo.messages.publishing.rateMs:2000}")
+  @Scheduled(fixedDelayString = "${veo.messages.publishing.delayMs:50}")
   public void sendMessages() {
     var sender = new EventSender();
     var retriever = new EventRetriever();
