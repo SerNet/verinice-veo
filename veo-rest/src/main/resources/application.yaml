@@ -33,7 +33,7 @@ veo:
   messages:
     publishing:
       lockExpirationMs: 20000
-      rateMs: 2000
+      delayMs: 50
       confirmationWaitMs: 2000
       processingChunkSize: 5000
   scheduler:

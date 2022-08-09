@@ -23,7 +23,6 @@ import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -48,41 +47,44 @@ public class EventDispatcher {
     this.exchange = exchange;
   }
 
-  private void send(EventMessage event, ConfirmCallback callback) {
+  private MessageTask send(EventMessage event, ConfirmCallback callback) {
     log.debug(
         "Sending event id: {}, timestamp: {}, routing-key: {}",
         event.getId(),
         event.getTimestamp(),
         event.getRoutingKey());
     var correlationData = new CorrelationData(event.getId().toString());
-    correlationData
-        .getFuture()
-        .addCallback(
-            confirm -> {
-              var returnedMessage = correlationData.getReturned();
-              if (returnedMessage != null) {
-                log.warn(
-                    "Message for event {} returned with code {}: {}",
-                    event.getId(),
-                    returnedMessage.getReplyCode(),
-                    returnedMessage.getMessage());
-                callback.confirm(event, false);
-              } else {
-                callback.confirm(event, confirm != null && confirm.isAck());
-              }
-            },
-            fail -> log.error("Failed to confirm event: {}", fail.getLocalizedMessage()));
+    var future = correlationData.getFuture();
+    future.addCallback(
+        confirm -> {
+          var returnedMessage = correlationData.getReturned();
+          if (returnedMessage != null) {
+            log.warn(
+                "Message for event {} returned with code {}: {}",
+                event.getId(),
+                returnedMessage.getReplyCode(),
+                returnedMessage.getMessage());
+            callback.confirm(event, false);
+          } else {
+            callback.confirm(event, confirm != null && confirm.isAck());
+          }
+        },
+        fail -> log.error("Failed to confirm event: {}", fail.getLocalizedMessage()));
 
     rabbitTemplate.convertAndSend(exchange, event.getRoutingKey(), event, correlationData);
+    return () -> future.cancel(true);
   }
 
-  @Async
-  public void sendAsync(EventMessage event, ConfirmCallback callback) {
-    this.sendAsync(Set.of(event), callback);
+  public MessageTask sendAsync(EventMessage event, ConfirmCallback callback) {
+    return this.sendAsync(Set.of(event), callback);
   }
 
-  @Async
-  public void sendAsync(Set<EventMessage> events, ConfirmCallback callback) {
-    events.forEach((e -> this.send(e, callback)));
+  public MessageTask sendAsync(Set<EventMessage> events, ConfirmCallback callback) {
+    var tasks = events.stream().map(e -> this.send(e, callback)).toList();
+    return () -> tasks.forEach(MessageTask::cancel);
+  }
+
+  public interface MessageTask {
+    void cancel();
   }
 }

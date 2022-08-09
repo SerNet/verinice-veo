@@ -101,25 +101,27 @@ public class MessagingJob {
       var dispatchedEvents = new HashSet<StoredEvent>(pendingEvents.size());
       var abort = new AtomicBoolean();
 
-      eventDispatcher.sendAsync(
-          messagesFrom(pendingEvents),
-          (e, ack) -> {
-            if (abort.get()) {
-              return;
-            }
-            if (ack) {
-              var storedEvent = pending.remove(e.getId());
-              if (storedEvent != null) {
-                dispatchedEvents.add(storedEvent);
-                latch.countDown();
-              } else log.warn("Stored event {} was already processed", e.getId());
-            } else log.warn("Dispatch unsuccessful for stored event {}.", e.getId());
-          });
+      var task =
+          eventDispatcher.sendAsync(
+              messagesFrom(pendingEvents),
+              (e, ack) -> {
+                if (abort.get()) {
+                  return;
+                }
+                if (ack) {
+                  var storedEvent = pending.remove(e.getId());
+                  if (storedEvent != null) {
+                    dispatchedEvents.add(storedEvent);
+                    latch.countDown();
+                  } else log.warn("Stored event {} was already processed", e.getId());
+                } else log.warn("Dispatch unsuccessful for stored event {}.", e.getId());
+              });
 
       // keep this transaction open until all messages are confirmed - but no longer
       // than CONFIRMATION_WAIT:
       try {
         if (!latch.await(confirmationWaitMs, TimeUnit.MILLISECONDS)) {
+          task.cancel();
           abort.set(true);
           log.warn(
               "Timeout reached before receiving ACK for all dispatched messages. "
