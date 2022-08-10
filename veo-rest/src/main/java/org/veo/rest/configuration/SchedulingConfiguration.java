@@ -37,7 +37,7 @@ public class SchedulingConfiguration implements SchedulingConfigurer {
     taskRegistrar.setScheduler(taskExecutor());
   }
 
-  @Bean(destroyMethod = "shutdown")
+  @Bean(name = "schedulingTaskExecutor", destroyMethod = "shutdown")
   public Executor taskExecutor() {
     return Executors.newScheduledThreadPool(2);
   }
