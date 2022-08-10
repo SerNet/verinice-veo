@@ -251,13 +251,9 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     Set<?> demoRisk = profileDefinition.getRisks();
     try {
       String elementJson = objectMapper.writeValueAsString(demoElements);
-      log.info("elementJson: {}", elementJson);
       String riskJson = objectMapper.writeValueAsString(demoRisk);
-      log.info("riskJson: {}", riskJson);
-
       var demoUnitElements =
           objectMapper.readValue(elementJson, new TypeReference<Set<AbstractElementDto>>() {});
-
       var demoUnitRisks =
           objectMapper.readValue(riskJson, new TypeReference<Set<AbstractRiskDto>>() {});
 
