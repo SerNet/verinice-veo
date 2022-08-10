@@ -239,13 +239,13 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     dummyOwner.setClient(client);
     elements.forEach(
         e -> {
-          log.info("Process element {}", e);
+          log.debug("Process element {}", e);
           DomainTemplateService.updateVersion(e);
           if (e instanceof Process p) {
             List<AbstractRiskDto> risks = risksByAffectedElementDbId.remove(p.getIdAsString());
             if (risks != null) {
               for (AbstractRiskDto riskDto : risks) {
-                log.info("Transforming risk {}", riskDto);
+                log.debug("Transforming risk {}", riskDto);
                 Scenario scenario = (Scenario) cache.get(riskDto.getScenario().getId());
                 RiskDomainAssociationDto riskDomainData =
                     riskDto.getDomains().get(domainTemplateId);
@@ -255,7 +255,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                   ProcessRisk risk = p.obtainRisk(scenario, domain);
                   DomainTemplateService.updateVersion(risk);
                   Set<RiskValues> riskValues = CategorizedRiskValueMapper.map(riskDto.getDomains());
-                  log.info("transformed risk values: {}", riskValues);
+                  log.debug("transformed risk values: {}", riskValues);
 
                   riskValues.forEach(
                       it -> {
@@ -279,16 +279,18 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                           });
                   p.setOwner(null);
                   scenario.setOwner(null);
-                  log.info("Transformed risk: {}", risk);
-                  risk.getRiskDefinitions(domain)
-                      .forEach(
-                          rd -> {
-                            log.info("Risk definition: {}", rd);
-                            ProbabilityValueProvider pp = risk.getProbabilityProvider(rd, domain);
-                            log.info("Potential probability: {}", pp.getPotentialProbability());
+                  log.debug("Transformed risk: {}", risk);
+                  if (log.isDebugEnabled()) {
+                    risk.getRiskDefinitions(domain)
+                        .forEach(
+                            rd -> {
+                              log.debug("Risk definition: {}", rd);
+                              ProbabilityValueProvider pp = risk.getProbabilityProvider(rd, domain);
+                              log.debug("Potential probability: {}", pp.getPotentialProbability());
 
-                            log.info("Specific probability: {}", pp.getSpecificProbability());
-                          });
+                              log.debug("Specific probability: {}", pp.getSpecificProbability());
+                            });
+                  }
                 }
               }
             }
