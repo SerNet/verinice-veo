@@ -23,7 +23,6 @@ import org.apache.http.HttpStatus
 
 import org.veo.core.entity.EntityType
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
-import org.veo.rest.ControllerConstants
 
 import groovy.util.logging.Slf4j
 import spock.util.concurrent.PollingConditions
@@ -228,7 +227,7 @@ class DomainRestTestITSpec extends VeoRestTest {
         new PollingConditions().within(5) {
             getDomains().count { it.name == oldDomain.name } == 3
         }
-        def newDomainId = getDomains().find { it.name == oldDomain.name && it.templateVersion == "1.4.3" }.id
+        def newDomainId = getDomains().findAll{ it.name == oldDomain.name && it.templateVersion == "1.4.3" }.toSorted{ it.createdAt }.last().id
 
         and: "the profile is applied to a new unit"
         def profileTargetUnitId = post("/units", [name: "apply profile here!"]).body.resourceId
@@ -247,7 +246,7 @@ class DomainRestTestITSpec extends VeoRestTest {
                     with(items[i]) {
                         name == oldObject.items.get(i).name
                         description == oldObject.items[i].description
-                        domains[newDomainId].subType == oldObject.items[i].domains[newDomainId].subType
+                        domains[newDomainId].subType == oldObject.items[i].domains[oldDomain.id].subType
                     }
                 }
             }
