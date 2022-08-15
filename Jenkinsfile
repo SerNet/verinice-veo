@@ -244,6 +244,7 @@ pipeline {
                                         docker.image("eu.gcr.io/veo-projekt/veo:git-${env.GIT_COMMIT}").withRun("\
                                 --network ${n}\
                                 --name veo-${n}\
+                                -m 1g\
                                 -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres\
                                 -e SPRING_DATASOURCE_USERNAME=test\
                                 -e SPRING_DATASOURCE_PASSWORD=test\
