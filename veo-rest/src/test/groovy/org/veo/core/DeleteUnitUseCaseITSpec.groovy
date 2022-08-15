@@ -19,6 +19,8 @@ package org.veo.core
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
+import org.springframework.test.context.DynamicPropertyRegistry
+import org.springframework.test.context.DynamicPropertySource
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Unit
@@ -26,6 +28,7 @@ import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.core.usecase.unit.DeleteUnitUseCase.InputData
 import org.veo.persistence.access.ClientRepositoryImpl
+import org.veo.persistence.metrics.DataSourceProxyBeanPostProcessor
 
 import net.ttddyy.dsproxy.QueryCountHolder
 
@@ -41,13 +44,18 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformaceITSpec {
     @Autowired
     private DeleteUnitUseCase deleteUnitUseCase
 
+    @DynamicPropertySource
+    static void setRowCount(DynamicPropertyRegistry registry) {
+        registry.add("veo.logging.datasource.row_count", { -> true })
+    }
+
     def "delete a demo unit"() {
         given: 'a client with a demo unit'
         def client = createTestClient()
         createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
         def demoUnit = createDemoUnit(client)
         QueryCountHolder.clear()
-
+        def rowCountBefore = DataSourceProxyBeanPostProcessor.totalResultSetRowsRead
         when: 'executing the DeleteUnitUseCase'
         def unit = runUseCase(demoUnit)
         def queryCounts = QueryCountHolder.grandTotal
@@ -59,6 +67,8 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformaceITSpec {
             queryCounts.update == 2
             queryCounts.delete in [39l, 40l]
             queryCounts.time < 1000
+            // 200 is the currently observed count of 174 rows plus an acceptable safety margin
+            DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 200
         }
     }
 
