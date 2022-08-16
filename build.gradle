@@ -169,6 +169,7 @@ subprojects {
     }
 
     tasks.withType(Test) {
+        maxHeapSize = '1g'
         useJUnitPlatform()
         systemProperties project.properties.subMap([
             "http.proxyHost",
