@@ -49,12 +49,12 @@ public interface ScopeRiskAffectedDataRepository extends ElementDataRepository<S
   @Query(
       """
          select distinct e from #{#entityName} e
-         inner join fetch e.risks r
-         inner join fetch r.domains
-         inner join fetch r.scenario
+         left join fetch e.risks r
+         left join fetch r.domains
+         left join fetch r.scenario
          left join fetch r.mitigation
          left join fetch r.riskOwner
          left join fetch r.riskAspects
-         where r.entity.dbId in ?1""")
+         where e.dbId in ?1""")
   List<ScopeData> findAllWithRisksByDbIdIn(Iterable<String> ids);
 }
