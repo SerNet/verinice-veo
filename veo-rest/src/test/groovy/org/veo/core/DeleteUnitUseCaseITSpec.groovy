@@ -72,6 +72,74 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformaceITSpec {
         }
     }
 
+    def "delete a large unit"() {
+        given: 'a client with a demo unit'
+        def client = createTestClient()
+        def testDomain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+        def unit = executeInTransaction {
+            def unit = unitDataRepository.save( newUnit(client).tap { unit->
+                addToDomains(testDomain)
+            })
+            def assets = assetDataRepository.saveAll((0..99).collect{
+                newAsset(unit)
+            })
+            def documents = documentDataRepository.saveAll((0..99).collect{
+                newDocument(unit)
+            })
+            def incidents = incidentDataRepository.saveAll((0..99).collect{
+                newIncident(unit)
+            })
+            def scenarios = scenarioDataRepository.saveAll((0..99).collect{
+                newScenario(unit)
+            })
+            def persons = personDataRepository.saveAll((0..99).collect{
+                newPerson(unit)
+            })
+            def controls = controlDataRepository.saveAll((0..99).collect{
+                newControl(unit)
+            })
+            def processes = processDataRepository.saveAll((0..99).collect{ i->
+                newProcess(unit).tap {
+                    associateWithDomain(testDomain, 'PRO_DataProcessing', 'NEw')
+                    obtainRisk(scenarios[i], testDomain).tap {
+                        assignDesignator(it)
+                        appoint(persons[i])
+                        mitigate(controls[i])
+                    }
+                }
+            })
+            def scopes = scopeDataRepository.saveAll((0..99).collect{ i->
+                newScope(unit).tap {
+                    addMember(assets[i])
+                    addMember(documents[i])
+                    addMember(incidents[i])
+                    addMember(scenarios[i])
+                    addMember(processes[i])
+                    addMember(persons[i])
+                    addMember(controls[i])
+                }
+            })
+            unit
+        }
+        QueryCountHolder.clear()
+        def rowCountBefore = DataSourceProxyBeanPostProcessor.totalResultSetRowsRead
+        when: 'executing the DeleteUnitUseCase'
+        runUseCase(unit)
+        def queryCounts = QueryCountHolder.grandTotal
+
+        then: 'query statistics show sensible data'
+        verifyAll {
+            queryCounts.select == 702
+            queryCounts.insert == 35
+            queryCounts.update == 0
+            queryCounts.delete == 342
+            queryCounts.time < 5000
+            // 12000 is the currently observed count of 11905 rows plus an acceptable safety margin
+            DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 12000
+        }
+    }
+
+
     def runUseCase(Unit unit) {
         executeInTransaction {
             deleteUnitUseCase.execute(new InputData(unit.id, unit.client))
