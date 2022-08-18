@@ -97,8 +97,8 @@ class DeciderSpec extends VeoSpec {
         with(decisions[piaMandatoryRef]) {
             value == null
             decisiveRule.index == 0
-            matchingRules*.index == [0, 5]
-            agreeingRules*.index == [0]
+            matchingRules*.index == [0, 5, 7]
+            agreeingRules*.index == [0, 7]
         }
     }
 
@@ -116,8 +116,8 @@ class DeciderSpec extends VeoSpec {
         with(decisions[piaMandatoryRef]) {
             value == null
             decisiveRule.index == 0
-            matchingRules*.index == [0, 5]
-            agreeingRules*.index == [0]
+            matchingRules*.index == [0, 5, 7]
+            agreeingRules*.index == [0, 7]
         }
     }
 
@@ -137,8 +137,8 @@ class DeciderSpec extends VeoSpec {
         with(decisions[piaMandatoryRef]) {
             value == null
             decisiveRule.index == 0
-            matchingRules*.index == [0, 5]
-            agreeingRules*.index == [0]
+            matchingRules*.index == [0, 5, 7]
+            agreeingRules*.index == [0, 7]
         }
     }
 
@@ -158,7 +158,7 @@ class DeciderSpec extends VeoSpec {
         with(decisions[piaMandatoryRef]) {
             value
             decisiveRule.index == 5
-            matchingRules*.index == [5]
+            matchingRules*.index == [5, 7]
             agreeingRules*.index == [5]
         }
     }
@@ -180,9 +180,9 @@ class DeciderSpec extends VeoSpec {
         then:
         with(decisions[piaMandatoryRef]) {
             value == null
-            decisiveRule == null
-            matchingRules*.index == []
-            agreeingRules*.index == []
+            decisiveRule.index == 7
+            matchingRules*.index == [7]
+            agreeingRules*.index == [7]
         }
     }
 
@@ -205,7 +205,7 @@ class DeciderSpec extends VeoSpec {
         with(decisions[piaMandatoryRef]) {
             value
             decisiveRule.index == 6
-            matchingRules*.index == [6]
+            matchingRules*.index == [6, 7]
             agreeingRules*.index == [6]
         }
     }
@@ -230,7 +230,7 @@ class DeciderSpec extends VeoSpec {
         with(decisions[piaMandatoryRef]) {
             value
             decisiveRule.index == 6
-            matchingRules*.index == [6]
+            matchingRules*.index == [6, 7]
             agreeingRules*.index == [6]
         }
     }
@@ -252,7 +252,7 @@ class DeciderSpec extends VeoSpec {
         with(decisions[piaMandatoryRef]) {
             value
             decisiveRule.index == 4
-            matchingRules*.index == [4]
+            matchingRules*.index == [4, 7]
             agreeingRules*.index == [4]
         }
     }
@@ -271,7 +271,7 @@ class DeciderSpec extends VeoSpec {
         with(decisions[piaMandatoryRef]) {
             value
             decisiveRule.index == 4
-            matchingRules*.index == [4]
+            matchingRules*.index == [4, 7]
             agreeingRules*.index == [4]
         }
     }
@@ -292,7 +292,7 @@ class DeciderSpec extends VeoSpec {
         with(decisions[piaMandatoryRef]) {
             value == false
             decisiveRule.index == 1
-            matchingRules*.index == [1, 4]
+            matchingRules*.index == [1, 4, 7]
             agreeingRules*.index == [1]
         }
     }
@@ -311,9 +311,9 @@ class DeciderSpec extends VeoSpec {
         then:
         with(decisions[piaMandatoryRef]) {
             value == null
-            decisiveRule == null
-            matchingRules*.index == []
-            agreeingRules*.index == []
+            decisiveRule.index == 7
+            matchingRules*.index == [7]
+            agreeingRules*.index == [7]
         }
     }
 
@@ -335,8 +335,32 @@ class DeciderSpec extends VeoSpec {
         with(decisions[piaMandatoryRef]) {
             value == false
             decisiveRule.index == 1
-            matchingRules*.index == [1, 2, 3, 4]
+            matchingRules*.index == [1, 2, 3, 4, 7]
             agreeingRules*.index == [1, 2, 3]
+        }
+    }
+
+    def "PIA not required with all attributes set and no applicable rules"() {
+        given:
+        def process = createProcess([
+            process_privacyImpactAssessment_listed: "process_privacyImpactAssessment_listed_neither",
+            process_privacyImpactAssessment_processingOperationAccordingArt35: false,
+            process_privacyImpactAssessment_otherExclusions: false,
+            process_privacyImpactAssessment_processingCriteria: [],
+        ])
+        addRisk(process, [
+            (riskCategoryC): riskValueLow
+        ])
+
+        when:
+        def decisions = decider.decide(process, domain)
+
+        then:
+        with(decisions[piaMandatoryRef]) {
+            value == false
+            decisiveRule == null
+            matchingRules*.index == []
+            agreeingRules*.index == []
         }
     }
 
@@ -355,7 +379,7 @@ class DeciderSpec extends VeoSpec {
         with(decisions[piaMandatoryRef]) {
             value == false
             decisiveRule.index == 2
-            matchingRules*.index == [2, 5]
+            matchingRules*.index == [2, 5, 7]
             agreeingRules*.index == [2]
         }
     }
@@ -375,7 +399,7 @@ class DeciderSpec extends VeoSpec {
         with(decisions[piaMandatoryRef]) {
             value == false
             decisiveRule.index == 3
-            matchingRules*.index == [3, 5]
+            matchingRules*.index == [3, 5, 7]
             agreeingRules*.index == [3]
         }
     }
@@ -394,9 +418,9 @@ class DeciderSpec extends VeoSpec {
         then:
         with(decisions[piaMandatoryRef]) {
             value == null
-            decisiveRule == null
-            matchingRules*.index == []
-            agreeingRules*.index == []
+            decisiveRule.index == 7
+            matchingRules*.index == [7]
+            agreeingRules*.index == [7]
         }
     }
 

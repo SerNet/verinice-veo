@@ -85,7 +85,7 @@ public class Rule {
     return this;
   }
 
-  /** Add a condition that a custom aspect attribute must not be null */
+  /** Add a condition that a custom aspect attribute must be null */
   public Rule ifAttributeIsNull(String attributeType, String customAspectType) {
     conditions.add(
         new Condition(

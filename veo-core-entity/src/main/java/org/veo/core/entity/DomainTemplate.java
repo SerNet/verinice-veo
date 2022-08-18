@@ -175,7 +175,17 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
                         Map.of(
                             "en", "Two or more criteria applicable?",
                             "de", "Mehrere Kriterien zutreffend?"))
-                    .ifAttributeSizeGreaterThan(1, piaCa + "_processingCriteria", piaCa))));
+                    .ifAttributeSizeGreaterThan(1, piaCa + "_processingCriteria", piaCa),
+                new Rule(
+                        null,
+                        Map.of(
+                            "en", "DPIA-relevant attributes incomplete?",
+                            "de", "DSFA-relevante Attribute unvollständig?"))
+                    .ifAttributeIsNull(piaCa + "_processingCriteria", piaCa)
+                    .ifAttributeIsNull(piaCa + "_listed", piaCa)
+                    .ifAttributeIsNull(piaCa + "_otherExclusions", piaCa)
+                    .ifAttributeIsNull(piaCa + "_processingOperationAccordingArt35", piaCa)),
+            false));
   }
 
   default Optional<Decision> getDecision(String decisionKey) {

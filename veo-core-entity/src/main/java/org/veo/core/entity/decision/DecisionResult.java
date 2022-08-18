@@ -37,8 +37,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public class DecisionResult {
-  public DecisionResult() {
-    this(null, null, List.of(), List.of());
+  public DecisionResult(Boolean defaultValue) {
+    this(defaultValue, null, List.of(), List.of());
+  }
+
+  private DecisionResult() {
+    this(null);
   }
 
   /** Actual decision result value */

@@ -65,10 +65,12 @@ class DecisionRestTest extends VeoRestTest {
             decision.rules[decisiveRule].description.en == "Missing risk analysis?"
             matchingRules.collect { decision.rules[it].description.en } ==~ [
                 "Missing risk analysis?",
-                "Two or more criteria applicable?"
+                "Two or more criteria applicable?",
+                "DPIA-relevant attributes incomplete?",
             ]
             agreeingRules.collect { decision.rules[it].description.en } ==~ [
-                "Missing risk analysis?"
+                "Missing risk analysis?",
+                "DPIA-relevant attributes incomplete?",
             ]
         }
 
@@ -83,7 +85,8 @@ class DecisionRestTest extends VeoRestTest {
                 value == true
                 decision.rules[decisiveRule].description.en == "Two or more criteria applicable?"
                 matchingRules.collect { decision.rules[it].description.en } ==~ [
-                    "Two or more criteria applicable?"
+                    "Two or more criteria applicable?",
+                    "DPIA-relevant attributes incomplete?",
                 ]
                 agreeingRules.collect { decision.rules[it].description.en } ==~ [
                     "Two or more criteria applicable?"
@@ -121,6 +124,7 @@ class DecisionRestTest extends VeoRestTest {
             matchingRules.collect { decision.rules[it].description.en } ==~ [
                 "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment?",
                 "Two or more criteria applicable?",
+                "DPIA-relevant attributes incomplete?",
             ]
             agreeingRules.collect { decision.rules[it].description.en } ==~ [
                 "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment?",
@@ -172,9 +176,11 @@ class DecisionRestTest extends VeoRestTest {
                 matchingRules.collect{decision.rules[it].description.en} == [
                     "Missing risk analysis?",
                     "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment?",
+                    "DPIA-relevant attributes incomplete?",
                 ]
                 agreeingRules.collect{decision.rules[it].description.en} == [
-                    "Missing risk analysis?"
+                    "Missing risk analysis?",
+                    "DPIA-relevant attributes incomplete?",
                 ]
             }
             inspectionFindings.empty
@@ -195,6 +201,7 @@ class DecisionRestTest extends VeoRestTest {
                 decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment?"
                 matchingRules.collect { decision.rules[it].description.en } == [
                     "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment?",
+                    "DPIA-relevant attributes incomplete?",
                 ]
                 agreeingRules.collect { decision.rules[it].description.en } == [
                     "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment?"
@@ -223,7 +230,8 @@ class DecisionRestTest extends VeoRestTest {
                 decision.rules[decisiveRule].description.en == "Other exclusions?"
                 matchingRules.collect { decision.rules[it].description.en } == [
                     "Other exclusions?",
-                    "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment?"
+                    "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment?",
+                    "DPIA-relevant attributes incomplete?"
                 ]
                 agreeingRules.collect { decision.rules[it].description.en } == [
                     "Other exclusions?"

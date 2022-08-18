@@ -28,6 +28,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
     description = "Result of a decision that was evaluated on an element",
     accessMode = Schema.AccessMode.READ_ONLY)
 public abstract class DecisionResultsSchema extends DecisionResult {
+  public DecisionResultsSchema() {
+    super(null);
+  }
+
   @Override
   @Schema(
       description = "Final result value of the decision. Can be null if result is undetermined.",

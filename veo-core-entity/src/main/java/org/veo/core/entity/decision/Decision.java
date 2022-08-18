@@ -52,6 +52,8 @@ public class Decision {
   private final String elementSubType;
   /** Rules ordered by priority (descending). */
   private final List<Rule> rules;
+  /** The decision result value in the case that none of the rules apply (can be null) */
+  private final Boolean defaultResultValue;
 
   public DecisionResult evaluate(Element element, Domain domain) {
     // Find all matching rules
@@ -67,7 +69,7 @@ public class Decision {
     return matchingRules.stream()
         .findFirst()
         .map(decisiveRuleRef -> buildResult(decisiveRuleRef, matchingRules))
-        .orElse(new DecisionResult());
+        .orElse(new DecisionResult(defaultResultValue));
   }
 
   public Rule getRule(DecisionRuleRef ref) {
