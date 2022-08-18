@@ -41,7 +41,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * Configurable rule for a {@link Decision} with a list of conditions and an output value that
  * should become the decision's result value if the rule matches the element (unless another rule
- * takes precedence). An element only matches the rule if all the rule conditions match.
+ * takes precedence). An element only matches the rule if any of the rule conditions match.
  */
 @Data
 @RequiredArgsConstructor
@@ -55,12 +55,12 @@ public class Rule {
   /** Translated human-readable texts. Key is ISO language code, value is text. */
   @NotNull private final Map<String, String> description;
 
-  /** The rule only matches an element if all these conditions match the element. */
+  /** The rule only matches an element if any of these conditions match the element. */
   private final List<Condition> conditions = new ArrayList<>();
 
-  /** Determines whether the element matches all rule conditions */
+  /** Determines whether the element matches any rule conditions */
   public boolean matches(Element element, Domain domain) {
-    return conditions.stream().allMatch(c -> c.matches(element, domain));
+    return conditions.stream().anyMatch(c -> c.matches(element, domain));
   }
 
   /** Add a condition that a custom aspect attribute must equal given value */
@@ -82,6 +82,15 @@ public class Rule {
         new Condition(
             new CustomAspectAttributeSizeProvider(customAspectType, attributeType),
             new GreaterThanMatcher(new BigDecimal(i))));
+    return this;
+  }
+
+  /** Add a condition that a custom aspect attribute must not be null */
+  public Rule ifAttributeIsNull(String attributeType, String customAspectType) {
+    conditions.add(
+        new Condition(
+            new CustomAspectAttributeValueProvider(customAspectType, attributeType),
+            new IsNullMatcher()));
     return this;
   }
 
