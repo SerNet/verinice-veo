@@ -62,13 +62,13 @@ class DecisionRestTest extends VeoRestTest {
         then: "result is undetermined due to missing risks"
         with(get("/processes/$processId").body.domains[domainId].decisionResults.piaMandatory) {
             value == null
-            decision.rules[decisiveRule].description.en == "Risk analysis not carried out"
+            decision.rules[decisiveRule].description.en == "Missing risk analysis?"
             matchingRules.collect { decision.rules[it].description.en } ==~ [
-                "Risk analysis not carried out",
-                "Two or more criteria apply"
+                "Missing risk analysis?",
+                "Two or more criteria applicable?"
             ]
             agreeingRules.collect { decision.rules[it].description.en } ==~ [
-                "Risk analysis not carried out"
+                "Missing risk analysis?"
             ]
         }
 
@@ -81,12 +81,12 @@ class DecisionRestTest extends VeoRestTest {
             parseETag() != processETagBeforeRiskAddition
             with(body.domains[domainId].decisionResults.piaMandatory) {
                 value == true
-                decision.rules[decisiveRule].description.en == "Two or more criteria apply"
+                decision.rules[decisiveRule].description.en == "Two or more criteria applicable?"
                 matchingRules.collect { decision.rules[it].description.en } ==~ [
-                    "Two or more criteria apply"
+                    "Two or more criteria applicable?"
                 ]
                 agreeingRules.collect { decision.rules[it].description.en } ==~ [
-                    "Two or more criteria apply"
+                    "Two or more criteria applicable?"
                 ]
             }
         }
@@ -117,14 +117,14 @@ class DecisionRestTest extends VeoRestTest {
         then: "added attribute is taken into consideration"
         with(get("/processes/$processId").body.domains[domainId].decisionResults.piaMandatory) {
             value == true
-            decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment"
+            decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment?"
             matchingRules.collect { decision.rules[it].description.en } ==~ [
-                "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment",
-                "Two or more criteria apply",
+                "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment?",
+                "Two or more criteria applicable?",
             ]
             agreeingRules.collect { decision.rules[it].description.en } ==~ [
-                "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment",
-                "Two or more criteria apply",
+                "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment?",
+                "Two or more criteria applicable?",
             ]
         }
 
@@ -168,13 +168,13 @@ class DecisionRestTest extends VeoRestTest {
         with(post("/processes/evaluation?domain=$domainId", process, 200).body) {
             with(decisionResults.piaMandatory) {
                 value == null
-                decision.rules[decisiveRule].description.en == "Risk analysis not carried out"
+                decision.rules[decisiveRule].description.en == "Missing risk analysis?"
                 matchingRules.collect{decision.rules[it].description.en} == [
-                    "Risk analysis not carried out",
-                    "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment",
+                    "Missing risk analysis?",
+                    "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment?",
                 ]
                 agreeingRules.collect{decision.rules[it].description.en} == [
-                    "Risk analysis not carried out"
+                    "Missing risk analysis?"
                 ]
             }
             inspectionFindings.empty
@@ -192,12 +192,12 @@ class DecisionRestTest extends VeoRestTest {
         with(post("/processes/evaluation?domain=$domainId", process, 200).body) {
             with(decisionResults.piaMandatory) {
                 value == true
-                decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment"
+                decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment?"
                 matchingRules.collect { decision.rules[it].description.en } == [
-                    "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment",
+                    "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment?",
                 ]
                 agreeingRules.collect { decision.rules[it].description.en } == [
-                    "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment"
+                    "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment?"
                 ]
             }
             inspectionFindings.size() == 1
@@ -220,13 +220,13 @@ class DecisionRestTest extends VeoRestTest {
         with(post("/processes/evaluation?domain=$domainId", process, 200).body) {
             with(decisionResults.piaMandatory) {
                 value == false
-                decision.rules[decisiveRule].description.en == "Other exclusions"
+                decision.rules[decisiveRule].description.en == "Other exclusions?"
                 matchingRules.collect { decision.rules[it].description.en } == [
-                    "Other exclusions",
-                    "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment"
+                    "Other exclusions?",
+                    "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment?"
                 ]
                 agreeingRules.collect { decision.rules[it].description.en } == [
-                    "Other exclusions"
+                    "Other exclusions?"
                 ]
             }
             inspectionFindings.empty

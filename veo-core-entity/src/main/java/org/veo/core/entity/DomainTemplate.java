@@ -136,49 +136,45 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
             List.of(
                 new Rule(
                         null,
-                        Map.of(
-                            "en",
-                            "Risk analysis not carried out",
-                            "de",
-                            "Risikoanalyse VT nicht durchgeführt"))
+                        Map.of("en", "Missing risk analysis?", "de", "Fehlende Risikoanalyse?"))
                     .ifNoRiskValuesPresent(),
                 new Rule(
                         false,
                         Map.of(
                             "en",
-                                "Processing on list of the kinds of processing operations not subject to a Data Protection Impact Assessment",
-                            "de", "VT auf Negativliste"))
+                                "Processing on list of the kinds of processing operations not subject to a Data Protection Impact Assessment?",
+                            "de", "VT auf Negativliste?"))
                     .ifAttributeEquals(piaCa + "_listed_negative", piaCa + "_listed", piaCa),
                 new Rule(
                         false,
                         Map.of(
-                            "en", "Part of a joint processing",
-                            "de", "Gemeinsame VT"))
+                            "en", "Part of a joint processing?",
+                            "de", "Gemeinsame VT?"))
                     .ifAttributeEquals(true, piaCa + "_processingOperationAccordingArt35", piaCa),
                 new Rule(
                         false,
                         Map.of(
-                            "en", "Other exclusions",
-                            "de", "Anderer Ausschlusstatbestand"))
+                            "en", "Other exclusions?",
+                            "de", "Anderer Ausschlusstatbestand?"))
                     .ifAttributeEquals(true, piaCa + "_otherExclusions", piaCa),
                 new Rule(
                         true,
                         Map.of(
-                            "en", "High risk present",
-                            "de", "Hohes Risiko vorhanden"))
+                            "en", "High risk present?",
+                            "de", "Hohes Risiko vorhanden?"))
                     .ifMaxRiskGreaterThan(BigDecimal.valueOf(1)),
                 new Rule(
                         true,
                         Map.of(
                             "en",
-                                "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment",
-                            "de", "VT auf Positivliste"))
+                                "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment?",
+                            "de", "VT auf Positivliste?"))
                     .ifAttributeEquals(piaCa + "_listed_positive", piaCa + "_listed", piaCa),
                 new Rule(
                         true,
                         Map.of(
-                            "en", "Two or more criteria apply",
-                            "de", "Mehrere Kriterien treffen zu"))
+                            "en", "Two or more criteria applicable?",
+                            "de", "Mehrere Kriterien zutreffend?"))
                     .ifAttributeSizeGreaterThan(1, piaCa + "_processingCriteria", piaCa))));
   }
 
