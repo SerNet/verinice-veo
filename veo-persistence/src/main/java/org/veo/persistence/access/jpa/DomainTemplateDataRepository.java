@@ -40,4 +40,7 @@ public interface DomainTemplateDataRepository
       value = "SELECT MAX(templateversion) from domaintemplate where name = ?1",
       nativeQuery = true)
   Optional<String> findCurrentTemplateVersion(String templateName);
+
+  @Query("select dt from #{#entityName} dt join fetch dt.profileSet where dt.dbId = ?1")
+  Optional<DomainTemplateData> findByIdWithProfiles(String id);
 }

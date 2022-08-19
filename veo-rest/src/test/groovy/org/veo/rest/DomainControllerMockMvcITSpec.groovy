@@ -24,18 +24,13 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.bind.MethodArgumentNotValidException
 
-import org.veo.adapter.service.domaintemplate.dto.CreateDomainTemplateFromDomainParameterDto
-import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Catalog
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Unit
-import org.veo.core.entity.exception.ModelConsistencyException
 import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.usecase.domaintemplate.EntityAlreadyExistsException
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase.InputData
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainTemplateRepositoryImpl
 
@@ -328,7 +323,9 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
 
         when: "loading the domaintemplates from the database"
         def dt = txTemplate.execute {
-            domainTemplateRepository.getAll().find{ it.name == domain.name && it.templateVersion == "1.2.3"}
+            domainTemplateRepository.getAll()
+                    .find{ it.name == domain.name && it.templateVersion == "1.2.3"}
+                    .tap{it.profiles  } // init proxy
         }
         then: "the template is found, the version is set"
         dt.templateVersion == "1.2.3"

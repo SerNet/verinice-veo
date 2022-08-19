@@ -63,7 +63,7 @@ public class CreateDomainTemplateFromDomainUseCase
   public OutputData execute(InputData input) {
     Domain domain =
         repository
-            .findById(input.getId())
+            .findByIdWithProfiles(input.getId(), input.authenticatedClient.getId())
             .orElseThrow(
                 () -> new NotFoundException("Domain with id %s not found.", input.getId()));
     Client client = input.getAuthenticatedClient();

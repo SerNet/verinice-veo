@@ -54,6 +54,13 @@ public class DomainRepositoryImpl
   }
 
   @Override
+  public Set<Domain> findActiveDomainsWithProfiles(Key<UUID> clientId) {
+    return dataRepository.findActiveDomainsWithProfiles(clientId.uuidValue()).stream()
+        .map(Domain.class::cast)
+        .collect(Collectors.toSet());
+  }
+
+  @Override
   public Set<Domain> findAllByTemplateId(Key<UUID> domainTemplateId) {
     return dataRepository.findAllByDomainTemplateId(domainTemplateId.uuidValue()).stream()
         .map(Domain.class::cast)
@@ -70,5 +77,12 @@ public class DomainRepositoryImpl
   @Override
   public Optional<Domain> findById(@NonNull Key<UUID> domainId, @NonNull Key<UUID> clientId) {
     return dataRepository.findById(domainId.uuidValue(), clientId.uuidValue());
+  }
+
+  @Override
+  public Optional<Domain> findByIdWithProfiles(Key<UUID> id, Key<UUID> clientId) {
+    return dataRepository
+        .findByIdWithProfiles(id.uuidValue(), clientId.uuidValue())
+        .map(Domain.class::cast);
   }
 }

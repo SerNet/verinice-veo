@@ -41,4 +41,16 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
 
   @Query("select d from #{#entityName} d " + "where d.dbId = ?1 and d.owner.dbId = ?2")
   Optional<Domain> findById(String domainId, String clientId);
+
+  @Query(
+      "select d from #{#entityName} d "
+          + "join fetch d.profileSet "
+          + "where d.owner.dbId = ?1 and d.active = true")
+  Set<DomainData> findActiveDomainsWithProfiles(String clientId);
+
+  @Query(
+      "select d from #{#entityName} d "
+          + "join fetch d.profileSet "
+          + "where d.dbId = ?1 and d.owner.dbId = ?2")
+  Optional<DomainData> findByIdWithProfiles(String id, String clientId);
 }

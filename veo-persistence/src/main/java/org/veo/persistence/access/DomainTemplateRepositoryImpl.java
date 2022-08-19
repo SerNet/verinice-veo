@@ -77,4 +77,9 @@ public class DomainTemplateRepositoryImpl
               }
             });
   }
+
+  @Override
+  public Optional<DomainTemplate> findByIdWithProfiles(Key<UUID> id) {
+    return dataRepository.findByIdWithProfiles(id.uuidValue()).map(DomainTemplate.class::cast);
+  }
 }

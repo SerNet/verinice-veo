@@ -126,7 +126,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   @Override
   public Optional<DomainTemplate> getTemplate(Client client, Key<UUID> key) {
     checkClientAccess(client, key);
-    return domainTemplateRepository.findById(key);
+    return domainTemplateRepository.findByIdWithProfiles(key);
   }
 
   private void checkClientAccess(Client client, Key<UUID> key) {
@@ -137,7 +137,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   public Domain createDomain(Client client, String templateId) {
     DomainTemplate domainTemplate =
         domainTemplateRepository
-            .findById(Key.uuidFrom(templateId))
+            .findByIdWithProfiles(Key.uuidFrom(templateId))
             .orElseThrow(
                 () ->
                     new NotFoundException(

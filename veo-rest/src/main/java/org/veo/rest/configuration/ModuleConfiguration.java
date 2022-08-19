@@ -605,8 +605,8 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetDomainsUseCase getDomainsUseCase() {
-    return new GetDomainsUseCase();
+  public GetDomainsUseCase getDomainsUseCase(DomainRepository domainRepository) {
+    return new GetDomainsUseCase(domainRepository);
   }
 
   @Bean

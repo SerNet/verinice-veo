@@ -23,18 +23,23 @@ import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
+@RequiredArgsConstructor
 public class GetDomainsUseCase
     implements TransactionalUseCase<GetDomainsUseCase.InputData, GetDomainsUseCase.OutputData> {
+  private final DomainRepository domainRepository;
 
   @Override
   public OutputData execute(InputData input) {
     return new OutputData(
-        input.authenticatedClient.getDomains().stream().filter(Domain::isActive).toList());
+        domainRepository.findActiveDomainsWithProfiles(input.authenticatedClient.getId()).stream()
+            .toList());
   }
 
   @Valid

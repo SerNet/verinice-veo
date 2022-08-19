@@ -26,10 +26,13 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -114,9 +117,19 @@ public class DomainTemplateData extends IdentifiableVersionedData
   @Column(columnDefinition = "jsonb")
   private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
 
-  @NotNull
-  @Column(columnDefinition = "jsonb")
-  private Map<String, ProfileDefinition> profiles = new HashMap<>();
+  @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JoinColumn(name = "profile_set_id")
+  private ProfileSetData profileSet = new ProfileSetData();
+
+  @Override
+  public Map<String, ProfileDefinition> getProfiles() {
+    return profileSet.getProfiles();
+  }
+
+  @Override
+  public void setProfiles(Map<String, ProfileDefinition> profiles) {
+    profileSet.setProfiles(profiles);
+  }
 
   public void setRiskDefinitions(Map<String, RiskDefinition> riskDefinitions) {
     this.riskDefinitions.clear();

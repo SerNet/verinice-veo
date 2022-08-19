@@ -19,15 +19,17 @@ package org.veo.core.usecase.domain
 
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
+import org.veo.core.repository.DomainRepository
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.domain.GetDomainsUseCase.InputData
 
 
 class GetDomainsUseCaseSpec extends UseCaseSpec {
 
+    DomainRepository domainRepository = Mock()
     Key existingDomainId
 
-    GetDomainsUseCase usecase = new GetDomainsUseCase()
+    GetDomainsUseCase usecase = new GetDomainsUseCase(domainRepository)
 
     def setup() {
         existingDomainId = Key.newUuid()
@@ -39,18 +41,12 @@ class GetDomainsUseCaseSpec extends UseCaseSpec {
 
     def "retrieve all domains for the client"() {
         given:
-        def id = Key.newUuid()
         Domain domain = Mock()
-        domain.getId() >> id
-        domain.owner >> existingClient
-        domain.active >> false
-
-        existingClient.getDomains() >> [existingDomain, domain]
+        domainRepository.findActiveDomainsWithProfiles(existingClient.id) >> [existingDomain, domain]
 
         when:
         def output = usecase.execute(new InputData(existingClient))
         then:
-        output.objects != null
-        output.objects.size() == 1
+        output.objects ==~ [existingDomain, domain]
     }
 }

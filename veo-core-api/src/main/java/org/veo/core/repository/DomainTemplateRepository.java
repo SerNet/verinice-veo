@@ -38,4 +38,6 @@ public interface DomainTemplateRepository extends Repository<DomainTemplate, Key
   Optional<Key<UUID>> getLatestDomainTemplateId(String name);
 
   Optional<Version> findCurrentTemplateVersion(String templateName);
+
+  Optional<DomainTemplate> findByIdWithProfiles(Key<UUID> id);
 }
