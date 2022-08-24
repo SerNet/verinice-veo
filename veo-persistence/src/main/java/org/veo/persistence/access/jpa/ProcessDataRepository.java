@@ -49,7 +49,9 @@ public interface ProcessDataRepository extends CompositeRiskAffectedDataReposito
       """
          select distinct e from #{#entityName} e
          inner join fetch e.owner o
-         left join fetch e.riskValuesAspects
+         left join fetch e.riskValuesAspects as rva
+         left join fetch rva.domain as d
+         left join fetch d.riskDefinitionSet
          inner join fetch e.risks r
          where o.client = ?1""")
   Set<ProcessData> findAllHavingRisks(Client client);

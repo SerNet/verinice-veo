@@ -79,7 +79,9 @@ public class DomainTemplateRepositoryImpl
   }
 
   @Override
-  public Optional<DomainTemplate> findByIdWithProfiles(Key<UUID> id) {
-    return dataRepository.findByIdWithProfiles(id.uuidValue()).map(DomainTemplate.class::cast);
+  public Optional<DomainTemplate> findByIdWithProfilesAndRiskDefinitions(Key<UUID> id) {
+    return dataRepository
+        .findByIdWithProfilesAndRiskDefinitions(id.uuidValue())
+        .map(DomainTemplate.class::cast);
   }
 }

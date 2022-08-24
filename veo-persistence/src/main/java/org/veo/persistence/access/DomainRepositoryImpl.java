@@ -54,8 +54,20 @@ public class DomainRepositoryImpl
   }
 
   @Override
-  public Set<Domain> findActiveDomainsWithProfiles(Key<UUID> clientId) {
-    return dataRepository.findActiveDomainsWithProfiles(clientId.uuidValue()).stream()
+  public Set<Domain> findActiveDomainsWithProfilesAndRiskDefinitions(Key<UUID> clientId) {
+    return dataRepository
+        .findActiveDomainsWithProfilesAndRiskDefinitions(clientId.uuidValue())
+        .stream()
+        .map(Domain.class::cast)
+        .collect(Collectors.toSet());
+  }
+
+  @Override
+  public Set<Domain> findAllByClientWithEntityTypeDefinitionsAndRiskDefinitions(
+      Key<UUID> clientId) {
+    return dataRepository
+        .findAllByClientWithEntityTypeDefinitionsAndRiskDefinitions(clientId.uuidValue())
+        .stream()
         .map(Domain.class::cast)
         .collect(Collectors.toSet());
   }
@@ -80,9 +92,9 @@ public class DomainRepositoryImpl
   }
 
   @Override
-  public Optional<Domain> findByIdWithProfiles(Key<UUID> id, Key<UUID> clientId) {
+  public Optional<Domain> findByIdWithProfilesAndRiskDefinitions(Key<UUID> id, Key<UUID> clientId) {
     return dataRepository
-        .findByIdWithProfiles(id.uuidValue(), clientId.uuidValue())
+        .findByIdWithProfilesAndRiskDefinitions(id.uuidValue(), clientId.uuidValue())
         .map(Domain.class::cast);
   }
 }

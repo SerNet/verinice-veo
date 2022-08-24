@@ -92,7 +92,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
         }
         queryCounts = QueryCountHolder.grandTotal
         then:
-        queryCounts.select == 29
+        queryCounts.select == 30
         queryCounts.insert == 24
         queryCounts.time < 500
     }

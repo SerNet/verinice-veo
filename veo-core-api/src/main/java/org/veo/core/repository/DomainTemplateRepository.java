@@ -39,5 +39,5 @@ public interface DomainTemplateRepository extends Repository<DomainTemplate, Key
 
   Optional<Version> findCurrentTemplateVersion(String templateName);
 
-  Optional<DomainTemplate> findByIdWithProfiles(Key<UUID> id);
+  Optional<DomainTemplate> findByIdWithProfilesAndRiskDefinitions(Key<UUID> id);
 }

@@ -42,7 +42,7 @@ class GetDomainsUseCaseSpec extends UseCaseSpec {
     def "retrieve all domains for the client"() {
         given:
         Domain domain = Mock()
-        domainRepository.findActiveDomainsWithProfiles(existingClient.id) >> [existingDomain, domain]
+        domainRepository.findActiveDomainsWithProfilesAndRiskDefinitions(existingClient.id) >> [existingDomain, domain]
 
         when:
         def output = usecase.execute(new InputData(existingClient))

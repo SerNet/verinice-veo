@@ -41,6 +41,12 @@ public interface DomainTemplateDataRepository
       nativeQuery = true)
   Optional<String> findCurrentTemplateVersion(String templateName);
 
-  @Query("select dt from #{#entityName} dt join fetch dt.profileSet where dt.dbId = ?1")
-  Optional<DomainTemplateData> findByIdWithProfiles(String id);
+  @Query(
+      """
+        select dt from #{#entityName} dt
+          join fetch dt.profileSet
+          join fetch dt.riskDefinitionSet
+          where dt.dbId = ?1
+      """)
+  Optional<DomainTemplateData> findByIdWithProfilesAndRiskDefinitions(String id);
 }

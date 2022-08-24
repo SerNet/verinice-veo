@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.rest.schemas.controller;
 
+import static org.veo.core.entity.Key.uuidFrom;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +35,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.service.EntitySchemaService;
@@ -69,7 +70,10 @@ public class EntitySchemaController implements EntitySchemaResource {
           // TODO use valid 'domain' class
 
           var clientDomainsById =
-              domainRepository.findAllByClient(Key.uuidFrom(user.getClientId())).stream()
+              domainRepository
+                  .findAllByClientWithEntityTypeDefinitionsAndRiskDefinitions(
+                      uuidFrom(user.getClientId()))
+                  .stream()
                   .collect(Collectors.toMap(Domain::getIdAsString, Function.identity()));
           Set<Domain> domains = new HashSet<>(domainIDs.size());
           for (String domainId : domainIDs) {

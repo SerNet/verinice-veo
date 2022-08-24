@@ -38,7 +38,9 @@ public class GetDomainsUseCase
   @Override
   public OutputData execute(InputData input) {
     return new OutputData(
-        domainRepository.findActiveDomainsWithProfiles(input.authenticatedClient.getId()).stream()
+        domainRepository
+            .findActiveDomainsWithProfilesAndRiskDefinitions(input.authenticatedClient.getId())
+            .stream()
             .toList());
   }
 

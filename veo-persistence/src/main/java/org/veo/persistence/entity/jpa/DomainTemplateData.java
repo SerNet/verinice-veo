@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -114,8 +113,18 @@ public class DomainTemplateData extends IdentifiableVersionedData
       mappedBy = "owner")
   private Set<ElementTypeDefinition> elementTypeDefinitions = new HashSet<>();
 
-  @Column(columnDefinition = "jsonb")
-  private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
+  @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JoinColumn(name = "risk_definition_set_id")
+  private RiskDefinitionSetData riskDefinitionSet = new RiskDefinitionSetData();
+
+  @Override
+  public Map<String, RiskDefinition> getRiskDefinitions() {
+    return riskDefinitionSet.getRiskDefinitions();
+  }
+
+  public void setRiskDefinitions(Map<String, RiskDefinition> riskDefinitions) {
+    this.riskDefinitionSet.setRiskDefinitions(riskDefinitions);
+  }
 
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinColumn(name = "profile_set_id")
@@ -129,11 +138,6 @@ public class DomainTemplateData extends IdentifiableVersionedData
   @Override
   public void setProfiles(Map<String, ProfileDefinition> profiles) {
     profileSet.setProfiles(profiles);
-  }
-
-  public void setRiskDefinitions(Map<String, RiskDefinition> riskDefinitions) {
-    this.riskDefinitions.clear();
-    this.riskDefinitions.putAll(riskDefinitions);
   }
 
   public void setElementTypeDefinitions(Set<ElementTypeDefinition> elementTypeDefinitions) {

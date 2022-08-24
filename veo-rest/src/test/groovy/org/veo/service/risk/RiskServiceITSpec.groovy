@@ -189,7 +189,7 @@ class RiskServiceITSpec extends AbstractPerformaceITSpec  {
         }
         and: "the DB operations are within reasonable limits"
         verifyAll {
-            queryCounts.select == 6
+            queryCounts.select == 7
             queryCounts.insert == 1
             queryCounts.update == 2
             queryCounts.time < 500
@@ -270,7 +270,7 @@ class RiskServiceITSpec extends AbstractPerformaceITSpec  {
         }
         and: "the DB operations are within reasonable limits"
         verifyAll {
-            queryCounts.select == 5
+            queryCounts.select == 6
             queryCounts.insert == 1
             queryCounts.update == 3
             queryCounts.time < 500
@@ -344,7 +344,7 @@ class RiskServiceITSpec extends AbstractPerformaceITSpec  {
         }
         and: "the DB operations are within reasonable limits"
         verifyAll {
-            queryCounts.select == 3
+            queryCounts.select == 4
             queryCounts.insert == 0
             queryCounts.update == 1
             queryCounts.time < 500
