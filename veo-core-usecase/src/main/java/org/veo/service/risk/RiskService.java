@@ -71,10 +71,9 @@ public class RiskService {
   }
 
   private void determineAllRiskValues(Client client) {
-    log.info("Determine all risk values for {}", client);
     Set<Process> processes = processRepository.findAllHavingRisks(client);
     log.debug(
-        "Select {} processes for risk calculation in client {}.",
+        "Determine all risk values for {} processes in client {}.",
         processes.size(),
         client.getIdAsString());
 
@@ -105,7 +104,7 @@ public class RiskService {
 
   private Set<RiskChangedEvent> calculateValuesForDomain(
       Process process, ProcessRisk risk, Scenario scenario, Domain domain) {
-    log.info("Determine values for {} of {} in {}", risk, process, domain);
+    log.debug("Determine values for {} of {} in {}", risk, process, domain);
     Set<RiskChangedEvent> riskEvents = new HashSet<>();
 
     for (RiskDefinition riskDefinition : domain.getRiskDefinitions().values()) {
