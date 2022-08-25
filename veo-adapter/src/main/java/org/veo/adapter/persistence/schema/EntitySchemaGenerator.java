@@ -90,6 +90,7 @@ public class EntitySchemaGenerator {
     }
 
     try {
+      jsonSchema = jsonSchema.deepCopy();
       SchemaGenerator generator = createSchemaGenerator();
       schemaExtender.extendSchema(generator, jsonSchema, baseName, domains);
 
