@@ -175,7 +175,7 @@ abstract class VeoSpringSpec extends VeoSpec {
         return domainDataRepository.save(domain)
     }
 
-    def executeInTransaction(Closure cl) {
+    def <T> T executeInTransaction(Closure<T> cl) {
         txTemplate.execute {
             cl.call()
         }
