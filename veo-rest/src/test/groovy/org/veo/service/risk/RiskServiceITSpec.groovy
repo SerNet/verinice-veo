@@ -31,7 +31,6 @@ import org.veo.core.AbstractPerformaceITSpec
 import org.veo.core.entity.Process
 import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.Scenario
-import org.veo.core.entity.Unit
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent
 import org.veo.core.entity.event.RiskChangedEvent
 import org.veo.core.entity.event.RiskEvent
@@ -41,8 +40,6 @@ import org.veo.core.entity.risk.PotentialProbabilityImpl
 import org.veo.core.entity.risk.ProbabilityRef
 import org.veo.core.entity.risk.ProcessImpactValues
 import org.veo.core.entity.risk.RiskDefinitionRef
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase.InputData
 
 import net.ttddyy.dsproxy.QueryCountHolder
 
@@ -62,9 +59,6 @@ class RiskServiceITSpec extends AbstractPerformaceITSpec  {
     RiskService riskService
     @Autowired
     RiskEventListener listener
-
-    @Autowired
-    private CreateDemoUnitUseCase createDemoUnitUseCase
 
     static class Config {
         @Bean
@@ -127,11 +121,14 @@ class RiskServiceITSpec extends AbstractPerformaceITSpec  {
             ] as Set)
         }
         process = processDataRepository.save(process)
+        QueryCountHolder.clear()
 
         when: 'running the risk service on the changed process'
         executeInTransaction {
             riskService.evaluateChangedRiskComponent(processDataRepository.findById(process.idAsString).orElseThrow())
         }
+        def queryCounts = QueryCountHolder.grandTotal
+
         risk = executeInTransaction {
             process = processDataRepository.findByIdsWithRiskValues(Set.of(process.idAsString)).first()
             process.risks.first().tap {
@@ -190,6 +187,13 @@ class RiskServiceITSpec extends AbstractPerformaceITSpec  {
             event.clientId == client.id
             event.changedRisks ==~ [riskValueEvent]
         }
+        and: "the DB operations are within reasonable limits"
+        verifyAll {
+            queryCounts.select == 6
+            queryCounts.insert == 1
+            queryCounts.update == 2
+            queryCounts.time < 500
+        }
 
         when: "changing the scenario's potential probability and running the risk service"
         listener.receivedEvents.clear()
@@ -198,8 +202,10 @@ class RiskServiceITSpec extends AbstractPerformaceITSpec  {
                 riskValuesAspects.first().potentialProbability[riskDefinitionRef].potentialProbability = probabilityOften
             }
             process = processDataRepository.findById(process.idAsString).get()
+            QueryCountHolder.clear()
             riskService.evaluateChangedRiskComponent(process)
         }
+        queryCounts = QueryCountHolder.grandTotal
         executeInTransaction {
             risk = executeInTransaction {
                 process = processDataRepository.findById(process.idAsString).get()
@@ -262,13 +268,22 @@ class RiskServiceITSpec extends AbstractPerformaceITSpec  {
             event.clientId == client.id
             event.changedRisks ==~ [riskProbabilityEvent]
         }
+        and: "the DB operations are within reasonable limits"
+        verifyAll {
+            queryCounts.select == 5
+            queryCounts.insert == 1
+            queryCounts.update == 3
+            queryCounts.time < 500
+        }
 
         when: "changing the risk's specific impact and running the risk service"
         listener.receivedEvents.clear()
         risk.getImpactProvider(riskDefinitionRef, domain).setSpecificImpact(availabilityRef, ImpactRef.from(highAvailabilityImpact))
         executeInTransaction {
             process = processDataRepository.save(process)
+            QueryCountHolder.clear()
             riskService.evaluateChangedRiskComponent(process)
+            queryCounts = QueryCountHolder.grandTotal
             process = processDataRepository.save(process)
             risk = process.risks.first()
         }
@@ -327,31 +342,12 @@ class RiskServiceITSpec extends AbstractPerformaceITSpec  {
             event.clientId == client.id
             event.changedRisks ==~ [riskImpactEvent]
         }
-    }
-
-    def "Calculate risk values in demo unit"() {
-        given:
-        def client = createTestClient()
-        createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
-        def demoUnit = createDemoUnit(client)
-        QueryCountHolder.clear()
-        when:
-        executeInTransaction {
-            riskService.determineAllRiskValues(client)
-        }
-        def queryCounts = QueryCountHolder.grandTotal
-        then:
+        and: "the DB operations are within reasonable limits"
         verifyAll {
-            queryCounts.select == 6
-            queryCounts.insert == 1
-            queryCounts.update == 2
+            queryCounts.select == 3
+            queryCounts.insert == 0
+            queryCounts.update == 1
             queryCounts.time < 500
-        }
-    }
-
-    Unit createDemoUnit(client) {
-        executeInTransaction {
-            createDemoUnitUseCase.execute(new InputData(client.id)).unit
         }
     }
 }

@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Client;
 import org.veo.persistence.entity.jpa.ProcessData;
-import org.veo.persistence.entity.jpa.ProcessRiskData;
 import org.veo.persistence.entity.jpa.ScenarioData;
 
 public interface ProcessDataRepository extends CompositeRiskAffectedDataRepository<ProcessData> {
@@ -57,13 +56,15 @@ public interface ProcessDataRepository extends CompositeRiskAffectedDataReposito
 
   @Query(
       """
-         select r from processrisk r
+         select distinct e from #{#entityName} e
+         inner join fetch e.riskValuesAspects
+         inner join fetch e.risks r
          inner join fetch r.domains
          left join fetch r.riskAspects
          inner join fetch r.scenario s
          left join fetch s.riskValuesAspects
-         where r.entity.dbId in ?1""")
-  Set<ProcessRiskData> findRisksWithScenariosByEntityDbIdIn(Iterable<String> ids);
+         where e.dbId in ?1""")
+  Set<ProcessData> findWithRisksAndScenariosByDbIdIn(Iterable<String> ids);
 
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = "riskValuesAspects")

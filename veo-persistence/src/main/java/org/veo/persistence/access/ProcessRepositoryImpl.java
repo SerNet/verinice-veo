@@ -21,10 +21,10 @@ import static java.util.Collections.singleton;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,10 +76,9 @@ public class ProcessRepositoryImpl
 
   @Override
   @Transactional(readOnly = true)
-  public Set<Process> findAllHavingRisks(Client client) {
-    var elements = processDataRepository.findAllHavingRisks(client);
-    processDataRepository.findRisksWithScenariosByEntityDbIdIn(
-        elements.stream().map(ProcessData::getDbId).collect(Collectors.toSet()));
+  public Set<Process> findWithRisksAndScenarios(Set<Key<UUID>> ids) {
+    List<String> dbIDs = ids.stream().map(Key::uuidValue).toList();
+    var elements = processDataRepository.findWithRisksAndScenariosByDbIdIn(dbIDs);
     return Collections.unmodifiableSet(elements);
   }
 

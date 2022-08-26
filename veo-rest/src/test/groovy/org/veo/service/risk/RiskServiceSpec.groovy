@@ -22,6 +22,7 @@ import static org.veo.core.entity.event.RiskEvent.ChangedValues.IMPACT_VALUES_CH
 import static org.veo.core.entity.event.RiskEvent.ChangedValues.PROBABILITY_VALUES_CHANGED
 import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_VALUES_CHANGED
 
+import org.veo.core.entity.Key
 import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent
 import org.veo.core.entity.event.RiskChangedEvent
@@ -73,6 +74,7 @@ class RiskServiceSpec extends VeoSpec {
         }
         this.process = newProcess(unit) {
             associateWithDomain(domain, "NormalProcess", "NEW")
+            id = Key.newUuid()
         }
         this.risk = process.obtainRisk(scenario, domain).tap {
             assignDesignator(it)
@@ -104,7 +106,7 @@ class RiskServiceSpec extends VeoSpec {
                 prob?.with { new ProbabilityRef(it) }
         risk.getRiskProvider(riskDefRef, domain).getInherentRisk(categoryRef) ==
                 riskVal?.with { new RiskRef(it) }
-        1 * repo.findAllHavingRisks(_) >> [this.process]
+        1 * repo.findWithRisksAndScenarios(_) >> [this.process]
         0 * publisher.publish(_)
 
         where:
@@ -128,7 +130,7 @@ class RiskServiceSpec extends VeoSpec {
         then:
         risk.getProbabilityProvider(riskDefRef, domain).potentialProbability ==
                 prob?.with { new ProbabilityRef(it) }
-        1 * repo.findAllHavingRisks(_) >> [this.process]
+        1 * repo.findWithRisksAndScenarios(_) >> [this.process]
         1 * publisher.publish({
             verifyAll(it, RiskChangedEvent) {
                 changes ==~ [PROBABILITY_VALUES_CHANGED]
@@ -178,7 +180,7 @@ class RiskServiceSpec extends VeoSpec {
         risk.getProbabilityProvider(riskDefRef, domain).potentialProbability ==
                 (prob?.with { new ProbabilityRef(it) })
         risk.getRiskProvider(riskDefRef, domain).getInherentRisk(categoryRef) == (riskVal?.with { new RiskRef(it) })
-        1 * repo.findAllHavingRisks(_) >> [this.process]
+        1 * repo.findWithRisksAndScenarios(_) >> [this.process]
         1 * publisher.publish({
             verifyAll(it, RiskChangedEvent) {
                 changes ==~ [
@@ -226,7 +228,7 @@ class RiskServiceSpec extends VeoSpec {
 
         then:
         risk.getRiskProvider(riskDefRef, domain).getInherentRisk(categoryRef) == (riskVal?.with { new RiskRef(it) })
-        1 * repo.findAllHavingRisks(_) >> [this.process]
+        1 * repo.findWithRisksAndScenarios(_) >> [this.process]
         1 * publisher.publish({
             verifyAll(it, RiskChangedEvent) {
                 changes ==~ [RISK_VALUES_CHANGED]
@@ -280,7 +282,7 @@ class RiskServiceSpec extends VeoSpec {
 
         then:
         risk.getRiskProvider(riskDefRef, domain).getInherentRisk(categoryRef) == (riskVal?.with { new RiskRef(it) })
-        1 * repo.findAllHavingRisks(_) >> [this.process]
+        1 * repo.findWithRisksAndScenarios(_) >> [this.process]
         0 * publisher.publish(*_)
 
         where:
@@ -333,7 +335,7 @@ class RiskServiceSpec extends VeoSpec {
             risk2.getRiskProvider(riskDefRef, domain).getInherentRisk(categoryRef).idRef == 2
         }
 
-        1 * repo.findAllHavingRisks(_) >> [this.process]
+        1 * repo.findWithRisksAndScenarios(_) >> [this.process]
         2 * publisher.publish({
             verifyAll(it, RiskChangedEvent) {
                 changes ==~ [

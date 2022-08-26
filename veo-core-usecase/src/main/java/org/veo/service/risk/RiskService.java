@@ -26,8 +26,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
@@ -65,20 +65,18 @@ public class RiskService {
 
   public void evaluateChangedRiskComponent(Element element) {
     Class<? extends Identifiable> type = element.getModelInterface();
-    if (Process.class.isAssignableFrom(type) || Scenario.class.isAssignableFrom(type)) {
-      determineAllRiskValues(element.getOwningClient().orElseThrow());
-    }
-  }
 
-  private void determineAllRiskValues(Client client) {
-    Set<Process> processes = processRepository.findAllHavingRisks(client);
-    log.debug(
-        "Determine all risk values for {} processes in client {}.",
-        processes.size(),
-        client.getIdAsString());
+    if (Process.class.isAssignableFrom(type)) {
+      processRepository.findWithRisksAndScenarios(Set.of(element.getId()));
+      calculateValuesForProcess((Process) element);
+    } else if (Scenario.class.isAssignableFrom(type)) {
+      Set<Process> processes = processRepository.findByRisk((Scenario) element);
+      processRepository.findWithRisksAndScenarios(
+          processes.stream().map(Process::getId).collect(Collectors.toSet()));
 
-    for (Process process : processes) {
-      calculateValuesForProcess(process);
+      for (Process process : processes) {
+        calculateValuesForProcess(process);
+      }
     }
   }
 
