@@ -157,6 +157,7 @@ public class MessagingJob {
               Instant.now().minus(config.getMessagePublishingLockExpiration()),
               processingChunkSize);
       events.forEach(StoredEvent::lock);
+      storedEventRepository.saveAll(events);
       return events;
     }
   }
