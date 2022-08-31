@@ -17,34 +17,49 @@
  ******************************************************************************/
 package org.veo.core
 
+import javax.persistence.EntityManager
 import javax.persistence.SequenceGenerator
 
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository
+
+import org.veo.persistence.entity.jpa.ProfileSetData
+import org.veo.persistence.entity.jpa.RiskDefinitionSetData
 import org.veo.persistence.entity.jpa.StoredEventData
 
 import net.ttddyy.dsproxy.QueryCount
 import net.ttddyy.dsproxy.QueryCountHolder
 
 abstract class AbstractPerformaceITSpec extends VeoSpringSpec {
+    @Autowired
+    private EntityManager entityManager
 
     /**
      * to create a predictable number of select statements, we need to make sure
-     * that the number of queries to the seq_events sequence is always the same.
-     * Therefore, we insert dummy events until the highest ID is a multiple of the
+     * that the number of queries to the sequences is always the same.
+     * Therefore, we insert dummy entities until the highest ID is a multiple of the
      * allocationSize of the @SequenceGenerator.
      *
-     * @see {@link org.veo.persistence.entity.jpa.StoredEventData#id}
      * @see {@link javax.persistence.SequenceGenerator#allocationSize()}
      */
     def setup() {
         executeInTransaction {
-            long highestId = eventStoreDataRepository.save(new StoredEventData()).id
-            int allocationSize = StoredEventData.class.getDeclaredField('id').getAnnotation(SequenceGenerator).allocationSize()
-            long nextMultipleOfAllocationSize = (long) Math.ceil(highestId/allocationSize)*allocationSize
-            if (nextMultipleOfAllocationSize != highestId) {
-                int numberOfItemsToSave = nextMultipleOfAllocationSize - highestId
-                def fillUpItems = (1..numberOfItemsToSave).collect{ new StoredEventData() }
-                eventStoreDataRepository.saveAll(fillUpItems)
-            }
+            resetSequence(ProfileSetData)
+            resetSequence(RiskDefinitionSetData)
+            resetSequence(StoredEventData)
+        }
+    }
+
+    protected <TEntity> void resetSequence(Class<TEntity> clazz) {
+        def repository = new SimpleJpaRepository(clazz, entityManager)
+        def newEntity = { clazz.getDeclaredConstructor().newInstance() }
+        long highestId = repository.save(newEntity()).id
+        int allocationSize = clazz.getDeclaredField('id').getAnnotation(SequenceGenerator).allocationSize()
+        long nextMultipleOfAllocationSize = (long) Math.ceil(highestId / allocationSize) * allocationSize
+        if (nextMultipleOfAllocationSize != highestId) {
+            int numberOfItemsToSave = nextMultipleOfAllocationSize - highestId
+            def fillUpItems = (1..numberOfItemsToSave).collect {newEntity()}
+            repository.saveAll(fillUpItems)
         }
     }
 

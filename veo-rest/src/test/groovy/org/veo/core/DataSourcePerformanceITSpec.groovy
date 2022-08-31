@@ -77,7 +77,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
         queryCounts.delete == 0
         queryCounts.insert == 8
         queryCounts.update == 0
-        queryCounts.select in (3L..4L)
+        queryCounts.select == 3
         queryCounts.time < 500
     }
 
