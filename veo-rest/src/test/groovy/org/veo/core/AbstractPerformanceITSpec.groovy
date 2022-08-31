@@ -30,7 +30,7 @@ import org.veo.persistence.entity.jpa.StoredEventData
 import net.ttddyy.dsproxy.QueryCount
 import net.ttddyy.dsproxy.QueryCountHolder
 
-abstract class AbstractPerformaceITSpec extends VeoSpringSpec {
+abstract class AbstractPerformanceITSpec extends VeoSpringSpec {
     @Autowired
     private EntityManager entityManager
 

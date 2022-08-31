@@ -41,7 +41,7 @@ import org.veo.persistence.access.jpa.StoredEventDataRepository
 
 import spock.lang.Issue
 
-class DataSourcePerformanceITSpec extends AbstractPerformaceITSpec {
+class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository

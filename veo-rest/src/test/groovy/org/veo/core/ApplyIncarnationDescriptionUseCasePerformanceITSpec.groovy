@@ -39,7 +39,7 @@ import org.veo.persistence.access.jpa.StoredEventDataRepository
 import net.ttddyy.dsproxy.QueryCountHolder
 
 @WithUserDetails("user@domain.example")
-class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerformaceITSpec {
+class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerformanceITSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository

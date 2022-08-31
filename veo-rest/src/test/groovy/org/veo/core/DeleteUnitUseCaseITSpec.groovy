@@ -33,7 +33,7 @@ import org.veo.persistence.metrics.DataSourceProxyBeanPostProcessor
 import net.ttddyy.dsproxy.QueryCountHolder
 
 @WithUserDetails("user@domain.example")
-class DeleteUnitUseCaseITSpec extends AbstractPerformaceITSpec {
+class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
