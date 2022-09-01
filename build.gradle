@@ -135,8 +135,8 @@ subprojects {
             dependency 'io.jsonwebtoken:jjwt-impl:0.11.5'
             dependency 'io.jsonwebtoken:jjwt-jackson:0.11.5'
             dependency 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
-            dependency "org.spockframework:spock-core:2.1-groovy-3.0"
-            dependency "org.spockframework:spock-spring:2.1-groovy-3.0"
+            dependency "org.spockframework:spock-core:2.3-groovy-3.0"
+            dependency "org.spockframework:spock-spring:2.3-groovy-3.0"
             dependency 'org.springdoc:springdoc-openapi-ui:1.6.11'
             dependency 'org.springdoc:springdoc-openapi-common:1.6.11'
             dependency 'io.swagger.core.v3:swagger-core:2.2.3'
@@ -178,8 +178,6 @@ subprojects {
             "https.proxyPort"
         ])
         systemProperty 'user.language', 'en'
-        // work around https://github.com/spockframework/spock/issues/1406
-        jvmArgs '--add-opens=java.base/java.lang.invoke=ALL-UNNAMED'
     }
 
     pmd {
