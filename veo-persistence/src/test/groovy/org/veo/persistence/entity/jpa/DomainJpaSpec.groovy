@@ -71,7 +71,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
             description = 'a description'
             authority = 'ISO'
             templateVersion = '1.0'
-            revision = 'latest'
             riskDefinitions = ["id":
                 createRiskDefinition("id1")
             ]as Map
@@ -90,7 +89,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
         d.description == domain0.description
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
-        d.revision == domain0.revision
         d.riskDefinitions == domain0.riskDefinitions
     }
 
@@ -101,7 +99,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
             name = 'domain'
             authority = 'ISO'
             templateVersion = '1.0'
-            revision = 'latest'
         }
 
         when: "saving"
@@ -121,7 +118,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
-        d.revision == domain0.revision
         d.catalogs.size() == 1
         d.catalogs.first().name == c.name
         d.catalogs.first().abbreviation == c.abbreviation
@@ -151,7 +147,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
-        d.revision == domain0.revision
         d.catalogs.size() == 1
         d.catalogs.first().id != null
         d.catalogs.first().domainTemplate == domain0
@@ -191,7 +186,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
-        d.revision == domain0.revision
         d.catalogs.size() == 1
         d.catalogs.first().id != null
         d.catalogs.first().catalogItems.size() == 3
@@ -236,7 +230,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
-        d.revision == domain0.revision
         d.catalogs.size() == 1
         d.catalogs.first().catalogItems.size() == 3
         with(d.catalogs.first().catalogItems.sort {it.element.name}) {
@@ -338,7 +331,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
-        d.revision == domain0.revision
         d.catalogs.size() == 1
         when:
         def loadedCatalog = d.catalogs.first()

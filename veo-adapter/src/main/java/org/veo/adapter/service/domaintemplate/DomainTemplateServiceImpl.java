@@ -149,8 +149,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         factory.createDomain(
             domainTemplateDto.getName(),
             domainTemplateDto.getAuthority(),
-            domainTemplateDto.getTemplateVersion(),
-            domainTemplateDto.getRevision());
+            domainTemplateDto.getTemplateVersion());
     Domain domain = processDomainTemplate(domainTemplateDto, domainPlaceholder);
     domain.setDomainTemplate(domainTemplate);
     client.addToDomains(domain);
@@ -318,7 +317,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
             domainTemplateDto.getName(),
             domainTemplateDto.getAuthority(),
             domainTemplateDto.getTemplateVersion(),
-            domainTemplateDto.getRevision(),
             domainTemplateKey);
 
     processDomainTemplate(domainTemplateDto, newDomainTemplate);
@@ -329,7 +327,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
   private String createDomainTemplateId(Domain domain) {
     return domainTemplateIdGenerator.createDomainTemplateId(
-        domain.getName(), domain.getTemplateVersion(), domain.getRevision());
+        domain.getName(), domain.getTemplateVersion());
   }
 
   /** Transform the given domainTemplateDto to a new domain. */

@@ -37,14 +37,13 @@ import org.veo.core.entity.riskdefinition.RiskDefinition;
 /**
  * DomainTemplate The domaintemplare are managed by the system itself. The uuid is a named uui
  * generated as following: https://v.de/veo/domain-templates/DOMAIN-NAME/VERSION DOMAIN-NAME:
- * authority-name VERSION: version.revision
+ * authority-name VERSION: version
  */
 public interface DomainTemplate extends Nameable, Identifiable, Versioned {
   String SINGULAR_TERM = "domaintemplate";
   String PLURAL_TERM = "domaintemplates";
 
   int AUTHORITY_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
-  int REVISION_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
   int TEMPLATE_VERSION_MAX_LENGTH = 10;
 
   /** The authority of this domaintemplate. */
@@ -56,11 +55,6 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
   String getTemplateVersion();
 
   void setTemplateVersion(String aTemplateVersion);
-
-  /** The revision of the version. */
-  String getRevision();
-
-  void setRevision(String aRevision);
 
   /** The catalog describing the template element of this domaintemplate. */
   Set<Catalog> getCatalogs();

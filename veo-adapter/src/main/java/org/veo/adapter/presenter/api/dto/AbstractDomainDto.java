@@ -75,18 +75,10 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
 
   @NotNull(message = "A templateVersion must be present.")
   @Schema(
-      description = "Template version in semver format",
-      example = "1.0",
+      description = "Template version in Semantic Versioning 2.0.0 format",
+      example = "1.0.0",
       accessMode = Schema.AccessMode.READ_ONLY)
   private String templateVersion;
-
-  @NotNull(message = "A revision must be present.")
-  @Schema(
-      description = "Addition version info",
-      example = "latest",
-      required = true,
-      accessMode = Schema.AccessMode.READ_ONLY)
-  private String revision;
 
   @ArraySchema(schema = @Schema(implementation = IdRefDomainCatalogs.class))
   private Set<IdRef<Catalog>> catalogs = new HashSet<>();

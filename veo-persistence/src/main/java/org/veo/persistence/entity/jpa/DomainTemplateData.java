@@ -89,11 +89,6 @@ public class DomainTemplateData extends IdentifiableVersionedData
   @Valid
   private Set<Catalog> catalogs = new HashSet<>();
 
-  @NotNull
-  @Column(name = "revision")
-  @ToString.Include
-  private String revision;
-
   @Override
   public boolean addToCatalogs(Catalog aCatalog) {
     aCatalog.setDomainTemplate(this);

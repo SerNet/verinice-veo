@@ -249,7 +249,6 @@ public final class EntityToDtoTransformer {
     target.setId(source.getId().uuidValue());
     target.setVersion(source.getVersion());
     target.setAuthority(source.getAuthority());
-    target.setRevision(source.getRevision());
     target.setTemplateVersion(source.getTemplateVersion());
     target.setDecisions(source.getDecisions());
     target.setProfiles(Map.copyOf(source.getProfiles()));
@@ -278,7 +277,6 @@ public final class EntityToDtoTransformer {
     target.setId(source.getId().uuidValue());
     target.setVersion(source.getVersion());
     target.setAuthority(source.getAuthority());
-    target.setRevision(source.getRevision());
     target.setTemplateVersion(source.getTemplateVersion());
     target.setProfiles(Map.copyOf(source.getProfiles()));
 

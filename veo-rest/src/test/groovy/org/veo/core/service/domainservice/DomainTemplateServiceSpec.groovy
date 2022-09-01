@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.security.test.context.support.WithUserDetails
 
+import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
@@ -60,7 +61,6 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             abbreviation == domainTemplate.abbreviation
             description == domainTemplate.description
             authority == domainTemplate.authority
-            revision == domainTemplate.revision
             templateVersion == domainTemplate.templateVersion
         }
         with (domainFromTemplate.catalogs) {
@@ -171,13 +171,12 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             client = repository.save(client)
         }
         domainFromTemplate = client.domains.first()
-        domainFromTemplate.templateVersion = "1.0"
-        domainFromTemplate.revision = "2"
+        domainFromTemplate.templateVersion = "1.0.1"
 
         txTemplate.execute {
             domainTemplateService.createDomainTemplateFromDomain(domainFromTemplate)
         }
-        when:"created with same name/version/revision"
+        when:"created with same name/version"
         txTemplate.execute {
             domainTemplateService.createDomainTemplateFromDomain(domainFromTemplate)
         }
@@ -193,7 +192,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
         def domainFromTemplate = null
         txTemplate.execute {
-            def testDomainVeo612TemplateId = "1624d827-299f-59d1-a1be-7064ed6f7f44"
+            def testDomainVeo612TemplateId = "40df37d5-cd23-528e-bfc2-7b73c0aa2c67"
             createTestDomainTemplate(testDomainVeo612TemplateId)
             domainFromTemplate = domainTemplateService.createDomain(client, testDomainVeo612TemplateId)
             client.addToDomains(domainFromTemplate)
@@ -204,12 +203,11 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         expect: 'the domain matches'
         domainFromTemplate != null
         with (domainFromTemplate) {
-            domainTemplate.dbId == "1624d827-299f-59d1-a1be-7064ed6f7f44"
+            domainTemplate.dbId == "40df37d5-cd23-528e-bfc2-7b73c0aa2c67"
             name == domainTemplate.name
             abbreviation == domainTemplate.abbreviation
             description == domainTemplate.description
             authority == domainTemplate.authority
-            revision == domainTemplate.revision
             templateVersion == domainTemplate.templateVersion
         }
         with (domainFromTemplate.catalogs) {
@@ -233,7 +231,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
         def domainFromTemplate = null
         txTemplate.execute {
-            def testDomainTemplateVeo620 = "7254b28e-6804-5ea9-8905-e2a7b4883030"
+            def testDomainTemplateVeo620 = "99af3dc3-eb17-5267-afc5-14e9f2ebd701"
             createTestDomainTemplate(testDomainTemplateVeo620)
             domainFromTemplate = domainTemplateService.createDomain(client, testDomainTemplateVeo620)
             client.addToDomains(domainFromTemplate)
@@ -244,12 +242,11 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         expect: 'the domain matches'
         domainFromTemplate != null
         with (domainFromTemplate) {
-            domainTemplate.dbId == "7254b28e-6804-5ea9-8905-e2a7b4883030"
+            domainTemplate.dbId == "99af3dc3-eb17-5267-afc5-14e9f2ebd701"
             name == domainTemplate.name
             abbreviation == domainTemplate.abbreviation
             description == domainTemplate.description
             authority == domainTemplate.authority
-            revision == domainTemplate.revision
             templateVersion == domainTemplate.templateVersion
         }
         with (domainFromTemplate.catalogs) {

@@ -1,10 +1,9 @@
 {
-  "id": "3d4321c8-8764-52fb-b6d4-2480672038ed",
+  "id": "fece7858-8da5-59a3-b34a-6f8f831a256f",
   "name": "DSGVO-test",
   "abbreviation": "DSGVO",
   "authority": "SERNET",
-  "templateVersion": "1.0",
-  "revision": "latest",
+  "templateVersion": "1.0.0",
   "catalogs": [
     {
       "id": "08cd8562-48fe-4be8-9ab2-3fedd937bc2f",
@@ -50,7 +49,7 @@
             },
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
             "domains": {
-              "3d4321c8-8764-52fb-b6d4-2480672038ed": {
+              "fece7858-8da5-59a3-b34a-6f8f831a256f": {
                 "subType": "CTL_TOM",
                 "status": "NEW"
               }

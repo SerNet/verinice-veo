@@ -74,7 +74,7 @@ public interface EntityFactory {
    * Reconstitutes a domain without the reference to its owning client. Adding it to a client is the
    * caller's responsibility.
    */
-  Domain createDomain(String name, String authority, String templateVersion, String revision);
+  Domain createDomain(String name, String authority, String templateVersion);
 
   CustomLink createCustomLink(Element linkTarget, Element linkSource, String type);
 
@@ -83,7 +83,7 @@ public interface EntityFactory {
   Catalog createCatalog(DomainTemplate owner);
 
   DomainTemplate createDomainTemplate(
-      String name, String authority, String templateVersion, String revision, Key<UUID> id);
+      String name, String authority, String templateVersion, Key<UUID> id);
 
   /** Creates a catalogItem and add it to the catalog. Careful this changes the catalog entity. */
   CatalogItem createCatalogItem(Catalog catalog, Function<CatalogItem, Element> elementFactory);

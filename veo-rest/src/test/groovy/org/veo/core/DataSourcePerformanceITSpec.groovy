@@ -446,7 +446,6 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
 
         def domain2 = newDomain(client) {
             authority = 'ta'
-            revision = '1'
             templateVersion = '1.0'
         }
 

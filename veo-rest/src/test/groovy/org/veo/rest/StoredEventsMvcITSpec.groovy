@@ -333,7 +333,6 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         when: "creating a domain template"
         def domainTemplate = domainTemplateRepository.save(newDomainTemplate() {
             templateVersion = '1'
-            revision = ''
             authority = 'me'
 
             newCatalog(it) {

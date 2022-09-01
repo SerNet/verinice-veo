@@ -1,16 +1,15 @@
 {
-  "id": "1624d827-299f-59d1-a1be-7064ed6f7f44",
+  "id": "40df37d5-cd23-528e-bfc2-7b73c0aa2c67",
   "name": "test-domain-veo-612",
   "abbreviation": "td-612",
   "authority": "SERNET",
-  "templateVersion": "v1.0",
-  "revision": "latest",
+  "templateVersion": "1.0.0",
   "catalogs": [
     {
       "id": "5062033b-f70d-4a7a-b8cc-8856499ec0af",
       "name": "TEST-Controls",
       "domainTemplate": {
-        "targetUri": "/domaintemplates/1624d827-299f-59d1-a1be-7064ed6f7f44"
+        "targetUri": "/domaintemplates/40df37d5-cd23-528e-bfc2-7b73c0aa2c67"
       },
       "catalogItems": [
         {
@@ -24,7 +23,7 @@
             },
             "description": "This is a composite control that contains all other controls.",
             "domains": {
-              "1624d827-299f-59d1-a1be-7064ed6f7f44": {
+              "40df37d5-cd23-528e-bfc2-7b73c0aa2c67": {
                 "subType": "CTL_Control",
                 "status": "NEW"
               }
@@ -61,7 +60,7 @@
             },
             "description": "This is the first control.",
             "domains": {
-              "1624d827-299f-59d1-a1be-7064ed6f7f44": {
+              "40df37d5-cd23-528e-bfc2-7b73c0aa2c67": {
                 "subType": "CTL_Control",
                 "status": "NEW"
               }
@@ -91,7 +90,7 @@
             },
             "description": "This is the second control.",
             "domains": {
-              "1624d827-299f-59d1-a1be-7064ed6f7f44": {
+              "40df37d5-cd23-528e-bfc2-7b73c0aa2c67": {
                 "subType": "CTL_Control",
                 "status": "NEW"
               }

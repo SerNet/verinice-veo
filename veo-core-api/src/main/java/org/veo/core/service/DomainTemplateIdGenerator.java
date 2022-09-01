@@ -19,5 +19,5 @@ package org.veo.core.service;
 
 public interface DomainTemplateIdGenerator {
 
-  String createDomainTemplateId(String name, String version, String revision);
+  String createDomainTemplateId(String name, String version);
 }

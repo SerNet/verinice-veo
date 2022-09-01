@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.usecase.domaintemplate;
 
+import static org.veo.core.usecase.domaintemplate.DomainTemplateValidator.validateVersion;
+
 import javax.validation.Valid;
 
 import org.veo.core.entity.DomainTemplate;
@@ -46,10 +48,9 @@ public class CreateDomainTemplateUseCase
     domainTemplate.setId(
         Key.uuidFrom(
             domainTemplateIdGenerator.createDomainTemplateId(
-                domainTemplate.getName(),
-                domainTemplate.getTemplateVersion(),
-                domainTemplate.getRevision())));
+                domainTemplate.getName(), domainTemplate.getTemplateVersion())));
 
+    validateVersion(input.domainTemplate.getTemplateVersion());
     if (domainTemplateRepository.exists(domainTemplate.getId())) {
       throw new EntityAlreadyExistsException(domainTemplate);
     }

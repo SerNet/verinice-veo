@@ -1,16 +1,15 @@
 {
-  "id": "7254b28e-6804-5ea9-8905-e2a7b4883030",
+  "id": "99af3dc3-eb17-5267-afc5-14e9f2ebd701",
   "name": "test-domain-veo-620",
   "abbreviation": "td-620",
   "authority": "SERNET",
-  "templateVersion": "v1.0",
-  "revision": "latest",
+  "templateVersion": "1.0.0",
   "catalogs": [
     {
       "id": "aed7c0a6-ac6e-4fe4-84d2-fd6532aa7558",
       "name": "TEST-Elements",
       "domainTemplate": {
-        "targetUri": "/domaintemplates/7254b28e-6804-5ea9-8905-e2a7b4883030"
+        "targetUri": "/domaintemplates/99af3dc3-eb17-5267-afc5-14e9f2ebd701"
       },
       "catalogItems": [
         {
@@ -24,7 +23,7 @@
             },
             "description": "This is a scope that contains some assets",
             "domains": {
-              "7254b28e-6804-5ea9-8905-e2a7b4883030": {
+              "99af3dc3-eb17-5267-afc5-14e9f2ebd701": {
                 "subType": "default",
                 "status": "NEW"
               }
@@ -61,7 +60,7 @@
             },
             "description": "This is the first asset.",
             "domains": {
-              "7254b28e-6804-5ea9-8905-e2a7b4883030": {
+              "99af3dc3-eb17-5267-afc5-14e9f2ebd701": {
                 "subType": "default",
                 "status": "NEW"
               }
@@ -91,7 +90,7 @@
             },
             "description": "This is the second asset.",
             "domains": {
-              "7254b28e-6804-5ea9-8905-e2a7b4883030": {
+              "99af3dc3-eb17-5267-afc5-14e9f2ebd701": {
                 "subType": "default",
                 "status": "NEW"
               }

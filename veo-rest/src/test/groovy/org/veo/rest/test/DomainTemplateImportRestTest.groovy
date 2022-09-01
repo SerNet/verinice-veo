@@ -37,7 +37,6 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         then: "the domain contains metadata from the template"
         domain.abbreviation == template.abbreviation
         domain.authority == template.authority
-        domain.revision == template.revision
         domain.templateVersion == template.templateVersion
 
         and: "the domain contains the risk definition"
@@ -91,24 +90,40 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         expect: "posting different version numbers to succeed"
         post("/domaintemplates", [
             name: name,
-            templateVersion: "2.0",
-            revision: "finest",
+            templateVersion: "2.0.0",
             authority: "me"
         ], 201, UserType.CONTENT_CREATOR)
         post("/domaintemplates", [
             name: name,
-            templateVersion: "2.1",
-            revision: "finest",
+            templateVersion: "2.1.0",
             authority: "me"
         ], 201, UserType.CONTENT_CREATOR)
 
         and: "posting a previous version number again to cause a conflict"
         post("/domaintemplates/", [
             name: name,
-            templateVersion: "2.1",
-            revision: "finest",
+            templateVersion: "2.1.0",
             authority: "me"
         ], 409, UserType.CONTENT_CREATOR)
+    }
+
+    def "cannot import template with invalid version"() {
+        given: "a unique template name for this test run"
+        def name = "import test template ${UUID.randomUUID()}"
+
+        expect: "posting a valid version number to succeed"
+        post("/domaintemplates", [
+            name: name,
+            templateVersion: "1.0.0",
+            authority: "me"
+        ], 201, UserType.CONTENT_CREATOR)
+
+        and: "posting an invalid version to fail"
+        post("/domaintemplates/", [
+            name: name,
+            templateVersion: "1.1",
+            authority: "me"
+        ], 400, UserType.CONTENT_CREATOR)
     }
 
     def "cannot import template with invalid catalog item attribute"() {
@@ -202,8 +217,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         def randomUuid = UUID.randomUUID().toString()
         return [
             'name': "Import test template $randomUuid",
-            'revision': 'latest',
-            'templateVersion': '1.0',
+            'templateVersion': '1.0.0',
             'abbreviation': 'ITT',
             'authority': 'JJ',
             'catalogs': [

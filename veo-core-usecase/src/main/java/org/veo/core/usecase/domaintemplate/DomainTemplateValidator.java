@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Jochen Kemnade.
+ * Copyright (C) 2022  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,28 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.service.domaintemplate;
+package org.veo.core.usecase.domaintemplate;
 
-import java.util.UUID;
+import com.github.zafarkhaja.semver.ParseException;
+import com.github.zafarkhaja.semver.Version;
 
-import com.fasterxml.uuid.Generators;
-import com.fasterxml.uuid.impl.NameBasedGenerator;
+class DomainTemplateValidator {
+  public static void validateVersion(String version) {
+    try {
+      validateVersion(Version.valueOf(version));
+    } catch (ParseException parseEx) {
+      throw new IllegalArgumentException(
+          "Version %s does not conform to Semantic Versioning 2.0.0".formatted(version), parseEx);
+    }
+  }
 
-import org.veo.core.service.DomainTemplateIdGenerator;
-
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
-public class DomainTemplateIdGeneratorImpl implements DomainTemplateIdGenerator {
-
-  private static final String SERNET_VERNDOR_URL = "https://v.de/veo/domain-templates/";
-
-  @Override
-  public String createDomainTemplateId(String name, String version) {
-    String url = SERNET_VERNDOR_URL + name + "/" + version;
-    UUID namebaseUUID =
-        Generators.nameBasedGenerator(NameBasedGenerator.NAMESPACE_URL).generate(url);
-    log.info("generated domain template id url:{} UUID:{}", url, namebaseUUID);
-    return namebaseUUID.toString();
+  public static void validateVersion(Version version) {
+    if (!version.getPreReleaseVersion().isEmpty() || !version.getBuildMetadata().isEmpty()) {
+      throw new IllegalArgumentException(
+          "Pre-release & metadata labels are not supported for domain template versions");
+    }
   }
 }

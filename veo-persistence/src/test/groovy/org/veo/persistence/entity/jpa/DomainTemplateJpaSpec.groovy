@@ -91,7 +91,6 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
-        d.revision == domain0.revision
         d.riskDefinitions == domain0.riskDefinitions
         d.profiles == domain0.profiles
     }
@@ -112,7 +111,6 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
-        d.revision == domain0.revision
         d.catalogs.size() == 1
     }
 
@@ -142,7 +140,6 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
-        d.revision == domain0.revision
         d.catalogs.first().id != null
         d.catalogs.first().catalogItems.size() == 3
     }
@@ -179,7 +176,6 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
-        d.revision == domain0.revision
         d.catalogs.first().id != null
         d.catalogs.first().name == 'a'
         d.catalogs.first().catalogItems.size() == 4
@@ -228,7 +224,6 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
-        d.revision == domain0.revision
         d.catalogs.first().id != null
         d.catalogs.first().name == 'a'
         d.catalogs.first().catalogItems.size() == 5
@@ -288,7 +283,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         given: "a valid sem-ver and a two-number version"
         repository.save(newDomainTemplate {
             name = "ISO"
-            templateVersion = "1.0"
+            templateVersion = "1.0.0"
         })
         repository.save(newDomainTemplate {
             name = "ISO"

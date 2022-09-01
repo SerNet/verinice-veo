@@ -68,7 +68,6 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             this.client = createTestClient()
             newDomain(client) {
                 name = "Domain 1"
-                revision = "0"
                 newCatalog(it) {
                     name = 'a'
                 }

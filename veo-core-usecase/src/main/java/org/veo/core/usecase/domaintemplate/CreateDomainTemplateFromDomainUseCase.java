@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.usecase.domaintemplate;
 
+import static org.veo.core.usecase.domaintemplate.DomainTemplateValidator.validateVersion;
+
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
@@ -85,10 +87,7 @@ public class CreateDomainTemplateFromDomainUseCase
 
   /** Validate and apply new version value. */
   private Domain updateVersion(Domain domain, Version version) {
-    if (!version.getPreReleaseVersion().isEmpty() || !version.getBuildMetadata().isEmpty()) {
-      throw new IllegalArgumentException(
-          "Pre-release & metadata labels are not supported for domain template versions");
-    }
+    validateVersion(version);
     domainTemplateRepository
         .findCurrentTemplateVersion(domain.getName())
         .ifPresent(

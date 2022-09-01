@@ -148,14 +148,12 @@ public class EntityDataFactory implements EntityFactory {
   }
 
   @Override
-  public Domain createDomain(
-      String name, String authority, String templateVersion, String revision) {
+  public Domain createDomain(String name, String authority, String templateVersion) {
     Domain domain = new DomainData();
     domain.setId(Key.newUuid());
     domain.setName(name);
     domain.setAuthority(authority);
     domain.setTemplateVersion(templateVersion);
-    domain.setRevision(revision);
 
     return domain;
   }
@@ -192,13 +190,12 @@ public class EntityDataFactory implements EntityFactory {
 
   @Override
   public DomainTemplate createDomainTemplate(
-      String name, String authority, String templateVersion, String revision, Key<UUID> id) {
+      String name, String authority, String templateVersion, Key<UUID> id) {
     DomainTemplate domainTemplate = new DomainTemplateData();
     domainTemplate.setId(id);
     domainTemplate.setName(name);
     domainTemplate.setAuthority(authority);
     domainTemplate.setTemplateVersion(templateVersion);
-    domainTemplate.setRevision(revision);
 
     return domainTemplate;
   }

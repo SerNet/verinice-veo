@@ -4,12 +4,11 @@
   "description": "The DS-GVO DomainTemplate.",
   "authority": "SERNET",
   "templateVersion": "2.0.0",
-  "revision": "latest",
   "catalogs": [
     {
       "name": "DS-GVO",
       "domainTemplate": {
-        "targetUri": "/domaintemplates/e96dd67f-090e-52be-8b76-f66b75624b45"
+        "targetUri": "/domaintemplates/b492c7da-0033-59c3-a225-c749595d2b8d"
       },
       "catalogItems": [
         {
@@ -33,7 +32,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -66,7 +65,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -118,7 +117,7 @@
             "type": "control",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "CTL_TOM",
                 "status": "NEW",
                 "riskValues": {
@@ -151,7 +150,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -184,7 +183,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -217,7 +216,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -250,7 +249,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -283,7 +282,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -316,7 +315,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -349,7 +348,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -382,7 +381,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -415,7 +414,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -448,7 +447,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -481,7 +480,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -514,7 +513,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -566,7 +565,7 @@
             "type": "control",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "CTL_TOM",
                 "status": "NEW",
                 "riskValues": {
@@ -618,7 +617,7 @@
             "type": "control",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "CTL_TOM",
                 "status": "NEW",
                 "riskValues": {
@@ -670,7 +669,7 @@
             "type": "control",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "CTL_TOM",
                 "status": "NEW",
                 "riskValues": {
@@ -703,7 +702,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -755,7 +754,7 @@
             "type": "control",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "CTL_TOM",
                 "status": "NEW",
                 "riskValues": {
@@ -788,7 +787,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -821,7 +820,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -854,7 +853,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -887,7 +886,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1002,7 +1001,7 @@
             "type": "process",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "PRO_DataProcessing",
                 "status": "NEW",
                 "riskValues": {
@@ -1035,7 +1034,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1068,7 +1067,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1101,7 +1100,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1134,7 +1133,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1167,7 +1166,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1219,7 +1218,7 @@
             "type": "control",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "CTL_TOM",
                 "status": "NEW",
                 "riskValues": {
@@ -1252,7 +1251,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1285,7 +1284,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1318,7 +1317,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1351,7 +1350,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1384,7 +1383,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1417,7 +1416,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1450,7 +1449,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1483,7 +1482,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1516,7 +1515,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1549,7 +1548,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1582,7 +1581,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1615,7 +1614,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1648,7 +1647,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1681,7 +1680,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1714,7 +1713,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1747,7 +1746,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1780,7 +1779,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1813,7 +1812,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1846,7 +1845,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1879,7 +1878,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1912,7 +1911,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1945,7 +1944,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -1978,7 +1977,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -2011,7 +2010,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -2044,7 +2043,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -2077,7 +2076,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -2110,7 +2109,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -2143,7 +2142,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -2195,7 +2194,7 @@
             "type": "control",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "CTL_TOM",
                 "status": "NEW",
                 "riskValues": {
@@ -2228,7 +2227,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -2280,7 +2279,7 @@
             "type": "control",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "CTL_TOM",
                 "status": "NEW",
                 "riskValues": {
@@ -2313,7 +2312,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -2346,7 +2345,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -2379,7 +2378,7 @@
             "type": "scenario",
             "parts": [],
             "domains": {
-              "e96dd67f-090e-52be-8b76-f66b75624b45": {
+              "b492c7da-0033-59c3-a225-c749595d2b8d": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
                 "riskValues": {
@@ -3208,7 +3207,7 @@
       }
     }
   },
-  "id": "0482da04-fc3a-5af5-9911-54a1a326116c",
+  "id": "b492c7da-0033-59c3-a225-c749595d2b8d",
   "elementTypeDefinitions": {
     "process": {
       "subTypes": {

@@ -97,7 +97,6 @@ class CatalogSpec extends VeoMvcSpec {
                 abbreviation = "ISO"
                 name = "ISO"
                 authority = 'ta'
-                revision = '1'
                 templateVersion = '1.0'
                 domainTemplate = domainTemplate
                 riskDefinitions = [(RISK_DEF_ID): createRiskDefinition(RISK_DEF_ID)]
@@ -288,7 +287,6 @@ class CatalogSpec extends VeoMvcSpec {
                 abbreviation = "ISO"
                 name = "ISO"
                 authority = 'ta'
-                revision = '1'
                 templateVersion = '1.0'
             }
 
@@ -312,7 +310,6 @@ class CatalogSpec extends VeoMvcSpec {
                 abbreviation = "D1"
                 name = "Domain 1"
                 authority = 'ta'
-                revision = '1'
                 templateVersion = '1.0'
             }
 

@@ -26,7 +26,6 @@ class DomainTemplateSpec extends VeoSpec {
         given: "a domain template name, authority, ..."
         String name = 'Test domain'
         String auth = 'authority'
-        String rev = 'r1'
         String templateVersion = '1.0'
 
         when : "DomainTemplate is created"
@@ -34,7 +33,6 @@ class DomainTemplateSpec extends VeoSpec {
             it.name = name
             it.authority = auth
             it.templateVersion = templateVersion
-            it.revision = rev
             it.riskDefinitions = ["id":
                 createRiskDefinition("id1")
             ] as Map
@@ -44,7 +42,6 @@ class DomainTemplateSpec extends VeoSpec {
         domainTemplate.getName() == name
         domainTemplate.getAuthority() == auth
         domainTemplate.getTemplateVersion() == templateVersion
-        domainTemplate.getRevision() == rev
         domainTemplate.getRiskDefinitions() != null
     }
 }

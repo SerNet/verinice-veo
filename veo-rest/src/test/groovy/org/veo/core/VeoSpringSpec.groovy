@@ -65,16 +65,16 @@ import org.veo.test.VeoSpec
 @ComponentScan("org.veo")
 abstract class VeoSpringSpec extends VeoSpec {
     // Name-Based UUID: https://v.de/veo/domain-templates/dsgvo/v1.4.0
-    public static final String DSGVO_DOMAINTEMPLATE_UUID = "e96dd67f-090e-52be-8b76-f66b75624b45"
+    public static final String DSGVO_DOMAINTEMPLATE_UUID = "dbbf0dbd-073f-51fc-86d2-d890169a3083"
 
     // Name-Based UUID: https://v.de/veo/domain-templates/dsgvo/v2.0.0
-    public static final String DSGVO_DOMAINTEMPLATE_V2_UUID = "0482da04-fc3a-5af5-9911-54a1a326116c"
+    public static final String DSGVO_DOMAINTEMPLATE_V2_UUID = "b492c7da-0033-59c3-a225-c749595d2b8d"
 
     // dsgvo-test-1.json
-    public static final String DSGVO_TEST_DOMAIN_TEMPLATE_ID = "3d4321c8-8764-52fb-b6d4-2480672038ed"
+    public static final String DSGVO_TEST_DOMAIN_TEMPLATE_ID = "fece7858-8da5-59a3-b34a-6f8f831a256f"
 
     // test-domain.json
-    public static final String TEST_DOMAIN_TEMPLATE_ID = "6b27accf-594b-5750-8b4f-4f869762225c"
+    public static final String TEST_DOMAIN_TEMPLATE_ID = "b641354b-ca8f-5d43-9e87-d3369451de89"
 
     @Autowired
     ClientDataRepository clientDataRepository

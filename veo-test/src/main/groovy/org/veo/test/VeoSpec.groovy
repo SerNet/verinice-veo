@@ -152,7 +152,7 @@ abstract class VeoSpec extends Specification {
 
     static DomainData newDomain(Client owner, @DelegatesTo(value = Domain.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Domain") Closure init = null) {
-        return factory.createDomain(null,"","","").tap {
+        return factory.createDomain(null, "", "").tap {
             VeoSpec.execute(it, init)
             VeoSpec.name(it)
             VeoSpec.version(it)
@@ -182,7 +182,7 @@ abstract class VeoSpec extends Specification {
 
     static DomainTemplateData newDomainTemplate(@DelegatesTo(value = DomainTemplate.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.DomainTemplate") Closure init = null) {
-        return factory.createDomainTemplate(null, "me", "1.0", "1", Key.newUuid()).tap {
+        return factory.createDomainTemplate(null, "me", "1.0.0", Key.newUuid()).tap {
             VeoSpec.execute(it, init)
             VeoSpec.name(it)
             VeoSpec.version(it)

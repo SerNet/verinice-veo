@@ -293,7 +293,6 @@ public final class DtoToEntityTransformer {
   private void mapDomainTemplate(
       AbstractDomainTemplateDto source, IdRefResolver idRefResolver, DomainTemplate target) {
     target.setAuthority(source.getAuthority());
-    target.setRevision(source.getRevision());
     target.setTemplateVersion(source.getTemplateVersion());
     target.setProfiles(Map.copyOf(source.getProfiles()));
 
