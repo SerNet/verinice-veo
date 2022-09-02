@@ -35,7 +35,7 @@ veo:
       delayMs: 500
     publishing:
       lockExpirationMs: 20000
-      delayMs: 50
+      delayMs: 200
       processingChunkSize: 5000
   scheduler:
     resetAllDemoUnits:
