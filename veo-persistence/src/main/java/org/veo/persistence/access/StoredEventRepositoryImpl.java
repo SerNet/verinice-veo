@@ -18,7 +18,9 @@
 package org.veo.persistence.access;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -44,6 +46,11 @@ public class StoredEventRepositoryImpl implements StoredEventRepository {
   }
 
   @Override
+  public void saveAll(Collection<StoredEvent> events) {
+    dataRepository.saveAll(events.stream().map(StoredEventData.class::cast).toList());
+  }
+
+  @Override
   public Set<StoredEvent> findAll() {
     return dataRepository.findAll().stream()
         .map(StoredEvent.class::cast)
@@ -61,8 +68,12 @@ public class StoredEventRepositoryImpl implements StoredEventRepository {
   }
 
   @Override
-  public void deleteAll(Set<StoredEvent> events) {
-    dataRepository.deleteAll(
-        events.stream().map(StoredEventData.class::cast).collect(Collectors.toSet()));
+  public Optional<StoredEvent> findById(Long id) {
+    return dataRepository.findById(id).map(StoredEvent.class::cast);
+  }
+
+  @Override
+  public void delete(StoredEvent event) {
+    dataRepository.delete((StoredEventData) event);
   }
 }

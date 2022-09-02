@@ -17,7 +17,13 @@
  ******************************************************************************/
 package org.veo.message;
 
+import static java.lang.Long.parseLong;
+import static java.util.Objects.requireNonNull;
+
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -35,56 +41,48 @@ public class EventDispatcher {
 
   private final String exchange;
 
-  public static final ConfirmCallback NOP_CALLBACK =
-      (event, ack) -> {
-        /* NOP */
-      };
+  private final List<Consumer<Long>> ackCallbacks = new LinkedList<>();
 
   @Autowired
   EventDispatcher(
       RabbitTemplate rabbitTemplate, @Value("${veo.message.dispatch.exchange}") String exchange) {
     this.rabbitTemplate = rabbitTemplate;
     this.exchange = exchange;
+    rabbitTemplate.setConfirmCallback(
+        ((correlationData, ack, cause) -> {
+          requireNonNull(correlationData);
+          var messageId = parseLong(correlationData.getId());
+          var returnedMessage = correlationData.getReturned();
+          if (returnedMessage != null) {
+            log.warn(
+                "Message for event {} returned with code {}: {}",
+                messageId,
+                returnedMessage.getReplyCode(),
+                returnedMessage.getMessage());
+          } else if (!ack) {
+            log.warn("message with id {} was not acked", messageId);
+          } else {
+            log.debug("message with id {} was acked", messageId);
+            ackCallbacks.forEach(cb -> cb.accept(messageId));
+          }
+        }));
   }
 
-  private MessageTask send(EventMessage event, ConfirmCallback callback) {
+  public void send(EventMessage event) {
     log.debug(
         "Sending event id: {}, timestamp: {}, routing-key: {}",
         event.getId(),
         event.getTimestamp(),
         event.getRoutingKey());
-    var correlationData = new CorrelationData(event.getId().toString());
-    var future = correlationData.getFuture();
-    future.addCallback(
-        confirm -> {
-          var returnedMessage = correlationData.getReturned();
-          if (returnedMessage != null) {
-            log.warn(
-                "Message for event {} returned with code {}: {}",
-                event.getId(),
-                returnedMessage.getReplyCode(),
-                returnedMessage.getMessage());
-            callback.confirm(event, false);
-          } else {
-            callback.confirm(event, confirm != null && confirm.isAck());
-          }
-        },
-        fail -> log.error("Failed to confirm event: {}", fail.getLocalizedMessage()));
-
-    rabbitTemplate.convertAndSend(exchange, event.getRoutingKey(), event, correlationData);
-    return () -> future.cancel(true);
+    rabbitTemplate.convertAndSend(
+        exchange, event.getRoutingKey(), event, new CorrelationData(event.getId().toString()));
   }
 
-  public MessageTask sendAsync(EventMessage event, ConfirmCallback callback) {
-    return this.sendAsync(Set.of(event), callback);
+  public void send(Set<EventMessage> events) {
+    events.forEach(this::send);
   }
 
-  public MessageTask sendAsync(Set<EventMessage> events, ConfirmCallback callback) {
-    var tasks = events.stream().map(e -> this.send(e, callback)).toList();
-    return () -> tasks.forEach(MessageTask::cancel);
-  }
-
-  public interface MessageTask {
-    void cancel();
+  public void addAckCallback(Consumer<Long> ackCallback) {
+    ackCallbacks.add(ackCallback);
   }
 }

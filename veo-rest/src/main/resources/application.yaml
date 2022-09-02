@@ -31,10 +31,11 @@ veo:
     maxPoolSize: 4
     queueCapacity: 500
   messages:
+    deletion:
+      delayMs: 500
     publishing:
       lockExpirationMs: 20000
       delayMs: 50
-      confirmationWaitMs: 2000
       processingChunkSize: 5000
   scheduler:
     resetAllDemoUnits:

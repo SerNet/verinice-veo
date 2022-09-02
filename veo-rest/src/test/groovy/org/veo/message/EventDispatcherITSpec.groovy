@@ -17,26 +17,23 @@
  ******************************************************************************/
 package org.veo.message
 
+import static java.util.concurrent.TimeUnit.SECONDS
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS
 import static org.veo.rest.VeoRestConfiguration.PROFILE_BACKGROUND_TASKS
 
-import java.time.Instant
-import java.time.temporal.ChronoUnit
 import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
 
 import org.springframework.amqp.rabbit.core.RabbitAdmin
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.domain.PageRequest
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
 
 import org.veo.core.VeoSpringSpec
-import org.veo.core.entity.event.StoredEvent
+import org.veo.jobs.MessageDeletionJob
 import org.veo.jobs.MessagingJob
 import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.persistence.entity.jpa.StoredEventData
@@ -44,7 +41,7 @@ import org.veo.persistence.entity.jpa.StoredEventData
 import groovy.util.logging.Slf4j
 import spock.lang.AutoCleanup
 import spock.lang.Shared
-
+import spock.util.concurrent.PollingConditions
 
 /**
  * Tests messaging using a RabbitMQ container.
@@ -81,18 +78,17 @@ class EventDispatcherITSpec extends VeoSpringSpec {
     @Value('${veo.message.dispatch.routing-key-prefix}')
     String routingKeyPrefix
 
-    Set<EventMessage> sentEvents = new HashSet<>(NUM_EVENTS)
-
     @Autowired
     MessagingJob messagingJob
+
+    @Autowired
+    MessageDeletionJob messageDeletionJob
 
     @Autowired
     private RabbitAdmin rabbitAdmin
 
     @Value('${veo.message.consume.queue}')
     String testQueue
-
-    static final Instant FOREVER_AND_EVER = Instant.now().plus(365000, ChronoUnit.DAYS)
 
     def setupSpec() {
         if (!System.env.containsKey('SPRING_RABBITMQ_HOST')) {
@@ -112,73 +108,82 @@ class EventDispatcherITSpec extends VeoSpringSpec {
         }
     }
 
-    def "Message queue roundtrip"() {
-        given: "an event subscriber for a roundtrip check"
-        eventSubscriber.setExpectedEvents(NUM_EVENTS)
+    def setup() {
+        eventSubscriber.receivedEvents.clear()
+    }
+
+    def "jobs send messages from DB"() {
+        given:
         def confirmationLatch = new CountDownLatch(NUM_EVENTS)
+        eventDispatcher.addAckCallback { confirmationLatch.countDown() }
 
-        when: "the events are published"
-        Long id = 0
-        NUM_EVENTS.times {
-            StoredEvent event = StoredEventData.newInstance("testEvent", routingKeyPrefix + "veo.testmessage")
-            event.setId(id++)
-            sentEvents.add EventMessage.from(event)
+        when: "storing outgoing messages"
+        def events = (1..NUM_EVENTS)
+                .collect { new StoredEventData() }
+                .each { it.routingKey = routingKeyPrefix + "veo.testmessage" }
+                .each { storedEventRepository.save(it) }
+
+        then: "DB is filled and subscriber has not received anything yet"
+        storedEventRepository.findAll().size() == NUM_EVENTS
+        eventSubscriber.receivedEvents.size() == 0
+
+        when: "sending stored messages"
+        messagingJob.sendMessages()
+
+        then: "the table should be cleared by deletion job"
+        new PollingConditions().within(5) {
+            messageDeletionJob.deleteMessages()
+            storedEventRepository.findAll().isEmpty()
         }
-        eventDispatcher.sendAsync(sentEvents, { EventMessage e, boolean ack ->
-            if (ack) {
-                confirmationLatch.countDown()
-            }
-        })
 
-        then: "all events are received within an acceptable timeframe"
-        eventSubscriber.getLatch().await(10, TimeUnit.SECONDS)
-        eventSubscriber.getReceivedEvents().size() == NUM_EVENTS
+        and: "confirmations have been received"
+        confirmationLatch.await(2, SECONDS)
 
-        and: "the events are equal after marshalling and unmarshalling"
-        eventSubscriber.getReceivedEvents() as Set == sentEvents
+        and: "messages should have been received"
+        eventSubscriber.receivedEvents.size() == NUM_EVENTS
+        eventSubscriber.receivedEvents ==~ events.collect { EventMessage.from(it) }
+    }
 
-        and: "all publications has been confirmed"
-        confirmationLatch.await(2, TimeUnit.SECONDS)
+    def "deletion job tolerates already deleted message"() {
+        when: "storing and sending two messages"
+        def messages = (1..2)
+                .collect { new StoredEventData() }
+                .each { it.routingKey = routingKeyPrefix + "veo.testmessage" }
+                .each { storedEventRepository.save(it) }
+        messagingJob.sendMessages()
+
+        and: "one message is already deleted for some reason"
+        storedEventRepository.delete(messages.last())
+
+        then: "the deletion job should still clear the table"
+        new PollingConditions().within(5) {
+            messageDeletionJob.deleteMessages()
+            storedEventRepository.findAll().isEmpty()
+        }
     }
 
     def "Publisher receives no confirmation without a matching queue"() {
-        when: "an event for a routing key that nobody listens to is published"
-        def confirmationLatch = new CountDownLatch(1)
-        def event = new EventMessage("funky key that no one listens to", "content", 1, Instant.now())
-        eventDispatcher.sendAsync(event, { EventMessage e, boolean ack ->
-            if (ack) {
-                confirmationLatch.countDown()
-            }
-        })
-
-        then: "the publisher never receives a positive confirmation"
-        !confirmationLatch.await(2, TimeUnit.SECONDS)
-    }
-
-    def "Dispatch stored events with confirmations"() {
         given:
-        def events = new HashSet<StoredEventData>()
-        NUM_EVENTS.times {
-            events.add new StoredEventData().tap {
-                routingKey = routingKeyPrefix + "veo.testmessage"
-            }
-        }
+        def confirmationLatch = new CountDownLatch(1)
+        eventDispatcher.addAckCallback { confirmationLatch.countDown() }
 
-        when:
-        storedEventRepository.saveAll(events)
-
-        then:
-        storedEventRepository.findPendingEvents(FOREVER_AND_EVER, PageRequest.ofSize(1000)).size() == NUM_EVENTS
-
-        when:
+        when: "an event for a routing key that nobody listens to is published"
+        storedEventRepository.save(new StoredEventData().tap {
+            it.routingKey = "funky key that no one listens to"
+        })
         messagingJob.sendMessages()
 
-        then:
-        storedEventRepository.findPendingEvents(FOREVER_AND_EVER, PageRequest.ofSize(1000)).isEmpty()
+        then: "the publisher never receives a positive confirmation"
+        !confirmationLatch.await(2, SECONDS)
+
+        and: "the message is not deleted from the DB"
+        messageDeletionJob.deleteMessages()
+        storedEventRepository.findAll().size() == 1
     }
+
     def cleanup() {
         def purgeCount = rabbitAdmin.purgeQueue(testQueue)
-        if (purgeCount>0)
+        if (purgeCount > 0)
             log.info("Test cleanup: purged {} remaining messages in test queue.", purgeCount)
         eventStoreDataRepository.deleteAll()
     }

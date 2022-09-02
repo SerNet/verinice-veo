@@ -18,7 +18,9 @@
 package org.veo.persistence.access;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.veo.core.entity.event.StoredEvent;
@@ -40,5 +42,9 @@ public interface StoredEventRepository {
    */
   List<StoredEvent> findPendingEvents(Instant maxLockTime, int maxResults);
 
-  void deleteAll(Set<StoredEvent> events);
+  Optional<StoredEvent> findById(Long id);
+
+  void delete(StoredEvent event);
+
+  void saveAll(Collection<StoredEvent> events);
 }

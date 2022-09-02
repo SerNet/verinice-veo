@@ -21,12 +21,7 @@ import static org.veo.message.EventMessage.messagesFrom;
 import static org.veo.rest.VeoRestConfiguration.PROFILE_BACKGROUND_TASKS;
 
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -46,15 +41,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Profile(PROFILE_BACKGROUND_TASKS)
 public class MessagingJob {
-
-  /**
-   * Keep transaction open and wait until all events are acknowledged - but no longer than the
-   * configured wait time. Unacknowledged events will be sent again during the next publication
-   * after their established lock time.
-   */
-  @Value("${veo.messages.publishing.confirmationWaitMs:2000}")
-  public int confirmationWaitMs;
-
   @Value("${veo.messages.publishing.processingChunkSize:5000}")
   public int processingChunkSize;
 
@@ -75,74 +61,16 @@ public class MessagingJob {
 
   @Scheduled(fixedDelayString = "${veo.messages.publishing.delayMs:50}")
   public void sendMessages() {
-    var sender = new EventSender();
     var retriever = new EventRetriever();
-    sender.send(retriever.retrievePendingEvents());
+    List<StoredEvent> pendingEvents = retriever.retrievePendingEvents();
+    if (pendingEvents.isEmpty()) return;
+    log.debug("Dispatching messages for {} stored events.", pendingEvents.size());
+    eventDispatcher.send(messagesFrom(pendingEvents));
   }
 
   /**
-   * An inner class is used to wrap the event sender in a dedicated transaction. This is due to
-   * limitations of Spring AOP:
-   *
-   * <p>"In proxy mode (which is the default), only external method calls coming in through the
-   * proxy are intercepted. This means that self-invocation, in effect, a method within the target
-   * object calling another method of the target object, will not lead to an actual transaction at
-   * runtime even if the invoked method is marked with @Transactional."
-   */
-  public class EventSender {
-    @Transactional
-    public void send(List<StoredEvent> pendingEvents) {
-      if (pendingEvents.isEmpty()) return;
-
-      log.debug("Dispatching messages for {} stored events.", pendingEvents.size());
-      var latch = new CountDownLatch(pendingEvents.size());
-      var pending =
-          pendingEvents.stream().collect(Collectors.toMap(StoredEvent::getId, event -> event));
-      var dispatchedEvents = new HashSet<StoredEvent>(pendingEvents.size());
-      var abort = new AtomicBoolean();
-
-      var task =
-          eventDispatcher.sendAsync(
-              messagesFrom(pendingEvents),
-              (e, ack) -> {
-                if (abort.get()) {
-                  return;
-                }
-                if (ack) {
-                  var storedEvent = pending.remove(e.getId());
-                  if (storedEvent != null) {
-                    dispatchedEvents.add(storedEvent);
-                    latch.countDown();
-                  } else log.warn("Stored event {} was already processed", e.getId());
-                } else log.warn("Dispatch unsuccessful for stored event {}.", e.getId());
-              });
-
-      // keep this transaction open until all messages are confirmed - but no longer
-      // than CONFIRMATION_WAIT:
-      try {
-        if (!latch.await(confirmationWaitMs, TimeUnit.MILLISECONDS)) {
-          task.cancel();
-          abort.set(true);
-          log.warn(
-              "Timeout reached before receiving ACK for all dispatched messages. "
-                  + "{} remaining messages will not be removed and will be "
-                  + "re-sent during the next scheduled publication after the "
-                  + "lock period of {} seconds",
-              latch.getCount(),
-              config.getMessagePublishingLockExpiration().getSeconds());
-        } else {
-          log.debug("Success! Received ACK for all dispatched messages.");
-        }
-      } catch (InterruptedException e) {
-        log.warn("Interrupted while waiting for confirmation from published events.", e);
-      }
-      storedEventRepository.deleteAll(dispatchedEvents);
-    }
-  }
-
-  /**
-   * An inner class is used to wrap the event sender in a dedicated transaction. See the remarks on
-   * the EventSender class for a more detailed explanation.
+   * An inner class is used to wrap the event retrieval and locking in a dedicated transaction. See
+   * the remarks on the EventSender class for a more detailed explanation.
    *
    * <p>The event retrieval needs to run in its own read-write transaction because the retrieved
    * events are time-locked to prevent another MessagingJob from working on the same retrieved

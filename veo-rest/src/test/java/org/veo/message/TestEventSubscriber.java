@@ -19,7 +19,6 @@ package org.veo.message;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.rabbit.annotation.Exchange;
@@ -38,8 +37,6 @@ public class TestEventSubscriber {
 
   @Getter List<EventMessage> receivedEvents = new ArrayList<>();
 
-  @Getter CountDownLatch latch = new CountDownLatch(0);
-
   @RabbitListener(
       bindings =
           @QueueBinding(
@@ -56,16 +53,11 @@ public class TestEventSubscriber {
     try {
       // save received events for assertions:
       this.receivedEvents.add(event);
-      latch.countDown();
     } catch (Exception e) {
       log.error("Error while consuming event {}: {}", event.getId(), event.getContent());
       // prevent re-queue and reprocessing:
       // replace with DLX for failing messages if retry, log or alert are required
       throw new AmqpRejectAndDontRequeueException(e);
     }
-  }
-
-  public void setExpectedEvents(int count) {
-    latch = new CountDownLatch(count);
   }
 }
