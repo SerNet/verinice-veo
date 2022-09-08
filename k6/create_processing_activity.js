@@ -74,7 +74,9 @@ const DATA_TYPE = JSON.parse(open("./data_type.json"));
 const DATA_TRANSFER = JSON.parse(open("./data_transfer.json"));
 const IT_SYSTEM = JSON.parse(open("./it_system.json"));
 const APPLICATION = JSON.parse(open("./application.json"));
+let scenario = JSON.parse(open("./scenario.json"));
 const DATA_PROCESSING = JSON.parse(open("./data_processing.json"));
+let risk = JSON.parse(open("./risk.json"));
 
 // Token for Authorization "Bearer <TOKEN>"
 let TOKEN;
@@ -114,6 +116,11 @@ export default function () {
   }
   loadUnitSelection();
   loadDashboard();
+  let scenarioString = JSON.stringify(scenario);
+  scenarioString = scenarioString.replace("DOMAIN_ID", domainId);
+  scenarioString = scenarioString.replace("\"PROBABILITY\"", getRandomInt(3));
+  scenario = JSON.parse(scenarioString);
+  let scenarioId = createScenario();
   let responsibleBodyId = createResponsibleBody();
   let jointControllerId = createJointController();
   loadDashboard();
@@ -134,6 +141,25 @@ export default function () {
   DATA_PROCESSING.links.process_requiredITSystems[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + itSystemId;
   DATA_PROCESSING.links.process_dataTransmission[0].target.targetUri = "https://api." + HOSTNAME + "/veo/processes/" + dataTransferId;
   let dataProcessingId = createDataProcessing();
+  risk.scenario.targetUri = "https://api." + HOSTNAME + "/veo/scenarios/" + scenarioId;
+  risk.mitigation.targetUri = "https://api." + HOSTNAME + "/veo/controls/" + tomId;
+  risk.riskOwner.targetUri = "https://api." + HOSTNAME + "/veo/persons/" + personId;
+  risk.process.targetUri = "https://api." + HOSTNAME + "/veo/processes/" + dataProcessingId;
+  let riskString = JSON.stringify(risk);
+  riskString = riskString.replace("DOMAIN_ID", domainId);
+  riskString = riskString.replace("DOMAIN_ID", domainId);
+  riskString = riskString.replace("\"SPECIFIC_PROBABILITY\"", getRandomInt(3));
+  riskString = riskString.replace("\"SPECIFIC_IMPACT_I\"", getRandomInt(3));
+  riskString = riskString.replace("\"SPECIFIC_IMPACT_A\"", getRandomInt(3));
+  riskString = riskString.replace("\"SPECIFIC_IMPACT_R\"", getRandomInt(3));
+  riskString = riskString.replace("\"SPECIFIC_IMPACT_C\"", getRandomInt(3));
+  riskString = riskString.replace("\"RESIDUAL_RISK_I\"", getRandomInt(3));
+  riskString = riskString.replace("\"RESIDUAL_RISK_A\"", getRandomInt(3));
+  riskString = riskString.replace("\"RESIDUAL_RISK_R\"", getRandomInt(3));
+  riskString = riskString.replace("\"RESIDUAL_RISK_C\"", getRandomInt(3));
+  riskString = riskString.replace("\"SPECIFIC_PROBABILITY\"", getRandomInt(3));
+  risk = JSON.parse(riskString);
+  createRisk(dataProcessingId);
   
 
   deleteElement("/processes/", dataProcessingId);
@@ -209,6 +235,12 @@ export function loadElementStatusCount(unitId) {
   loadElementsAndSleep("/domains/" + domainId + "/element-status-count?unit=" + unitId, 0); // 3x
 }
 
+export function createRisk(processId) {
+  console.info("Creating risks...");
+  sleep(Math.random() * MAX_SLEEP_SECONDS);
+  return createElement("/processes/" + processId + "/risks", risk, undefined,domainId,undefined);
+}
+
 export function createDataProcessing() {
   console.info("Creating data processing...");
   loadForms();
@@ -237,6 +269,16 @@ export function createItSystem() {
   loadSchema("asset");
   loadHistory(unitId);
   return createElement("/assets", IT_SYSTEM, "AST_IT-System",domainId,unitId);
+}
+
+export function createScenario() {
+  console.info("Creating scenario...");
+  loadForms();
+  loadScenarios(unitId, "SCN_Scenario");
+  sleep(Math.random() * MAX_SLEEP_SECONDS);
+  loadSchema("scenario");
+  loadHistory(unitId);
+  return createElement("/scenarios", scenario, undefined, domainId,unitId);
 }
 
 export function createDataTransfer() {
@@ -318,8 +360,12 @@ export function createJointController() {
 }
 
 export function createElement(path, body, subType, domainId, unitId) {
-  body.owner.targetUri = VEO_BASE_URL + "/units/" + unitId;
-  body.domains[domainId] = {"subType":subType,"status":"NEW"};
+  if(!(unitId===undefined)) {
+    body.owner.targetUri = VEO_BASE_URL + "/units/" + unitId;
+  }
+  if(!(subType===undefined)) {
+    body.domains[domainId] = {"subType":subType,"status":"NEW"};
+  }
   var url = VEO_BASE_URL + path;
   var params = {
     headers: {
@@ -699,4 +745,8 @@ function checkIfValidUUID(str) {
   // Regular expression to check if string is a valid UUID
   const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
   return regexExp.test(str);
+}
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
 }
