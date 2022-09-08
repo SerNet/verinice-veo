@@ -103,6 +103,15 @@ export let options = {
 export default function () {
   console.info("Starting iteration...");
   getToken();
+  var domain = loadFirstDomain();
+  domainId = domain.id;
+  check(domainId, {
+    "Domain ID is a valid UUID": (id) => checkIfValidUUID(id),
+  });
+
+  if(!checkIfValidUUID(domainId)) {
+    console.error("Domain ID is not a valid UUID: " + domainId);
+  }
   loadUnitSelection();
   loadDashboard();
   let responsibleBodyId = createResponsibleBody();
@@ -162,40 +171,42 @@ export function loadUnitSelection() {
 
 export function loadDashboard() {
   console.info("Loading dashboard...");
-  loadElementAndSleep("/units/", unitId, 0);
-  var domain = loadFirstDomain();
-  domainId = domain.id;
-
-  check(domainId, {
-    "Domain ID is a valid UUID": (id) => checkIfValidUUID(id),
-  });
-
-  if(!checkIfValidUUID(domainId)) {
-    console.error("Domain ID is not a valid UUID: " + domainId);
-  }
 
   loadElementAndSleep("/domains/", domainId, 0);
-  loadElementAndSleep("/units/", unitId, 0);
-  loadForms();
   loadElementAndSleep("/domains/", domainId, 0);
+  loadElementAndSleep("/domains/", domainId, 0);
+  loadElementStatusCount(unitId) 
+  loadSchema("process"); 
+  loadElementsAndSleep("/domains", 0); 
+  loadElementsAndSleep("/translations?languages=de,en", 0);
+  loadSchema("incident");
   loadForms();
-  loadCatalogs(domainId);
+  loadSchema("document");
+  loadElementsAndSleep("/translations?languages=de,en", 0);
   loadForms();
+  loadSchema("scenario");
+  loadElementsAndSleep("/translations?languages=de,en", 0);
+  loadForms();
+  loadSchema("scope");
   loadHistory(unitId);
-  loadReports();
-  loadProcesses(unitId, "PRO_DataProcessing");
-  loadProcessingActivitiesByStatus(unitId);
-  loadProcesses(unitId, "PRO_DataTransfer");
-  loadScopes(unitId, "SCP_ResponsibleBody");
-  loadDocuments(unitId, "DOC_Document");
-  loadScopes(unitId, "SCP_Controller");
-  loadAssets(unitId, "AST_Application");
-  loadPersons(unitId, "PER_DataProtectionOfficer");
-  loadScenarios(unitId, "SCN_Scenario");
-  loadControls(unitId, "CTL_TOM");
-  loadAssets(unitId, "AST_IT-System");
-  loadPersons(unitId, "PER_Person");
-  loadScopes(unitId, "SCP_JointController");
+  loadElementsAndSleep("/translations?languages=de,en", 0);
+  loadForms();
+  loadForms();
+  loadElementsAndSleep("/translations?languages=de,en", 0);
+  loadSchema("asset");
+  loadElementsAndSleep("/translations?languages=de,en", 0);
+  loadForms();
+  loadElementsAndSleep("/translations?languages=de,en", 0);
+  loadSchema("person");
+  loadForms();
+  loadSchema("control");
+  loadElementsAndSleep("/translations?languages=de,en", 0);
+  loadForms();
+  loadForms();
+}
+
+export function loadElementStatusCount(unitId) {
+  loadElementsAndSleep("/domains/" + domainId + "/element-status-count?unit=" + unitId, 0); // 3x
 }
 
 export function createDataProcessing() {
