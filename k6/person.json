@@ -5,7 +5,7 @@
   "domains": {
     
   },
-  "name": "Hans Mustermann",
+  "name": "Person (created for k6 load test)",
   "customAspects": {
     "person_generalInformation": {
       "attributes": {

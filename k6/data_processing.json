@@ -1,5 +1,5 @@
 {
-  "name": "Bewerbermanagement",
+  "name": "Data processing (created for k6 load test)",
   "description": "Bewerbungen können postalisch und auf elektronischem Wege erfolgen. Dies ist insbesondere dann der Fall, wenn ein Bewerber entsprechende Bewerbungsunterlagen auf dem elektronischen Wege, beispielsweise per E-Mail, an den für die Verarbeitung Verantwortlichen übermittelt",
   "domains": {
     

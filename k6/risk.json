@@ -1,76 +1,76 @@
 {
-    "scenario": {
-        "targetUri": "https://api.develop.verinice.com/veo/scenarios/SCENARIO_ID"
-    },
-    "mitigation": {
-        "targetUri": "https://api.develop.verinice.com/veo/controls/MITIGATION_ID"
-    },
-    "riskOwner": {
-        "targetUri": "https://api.develop.verinice.com/veo/persons/RISK_OWNER"
-    },
-    "process": {
-        "targetUri": "https://api.develop.verinice.com/veo/processes/PROCESS_ID"
-    },
-    "domains": {
-        "DOMAIN_ID": {
-            "reference": {
-                "targetUri": "https://api.develop.verinice.com/veo/domains/DOMAIN_ID"
+  "scenario": {
+    "targetUri": "https://api.develop.verinice.com/veo/scenarios/SCENARIO_ID"
+  },
+  "mitigation": {
+    "targetUri": "https://api.develop.verinice.com/veo/controls/MITIGATION_ID"
+  },
+  "riskOwner": {
+    "targetUri": "https://api.develop.verinice.com/veo/persons/RISK_OWNER"
+  },
+  "process": {
+    "targetUri": "https://api.develop.verinice.com/veo/processes/PROCESS_ID"
+  },
+  "domains": {
+    "DOMAIN_ID": {
+      "reference": {
+        "targetUri": "https://api.develop.verinice.com/veo/domains/DOMAIN_ID"
+      },
+      "riskDefinitions": {
+        "DSRA": {
+          "probability": {
+            "specificProbability": "SPECIFIC_PROBABILITY"
+          },
+          "impactValues": [
+            {
+              "category": "I",
+              "specificImpact": "SPECIFIC_IMPACT_I"
             },
-            "riskDefinitions": {
-                "DSRA": {
-                    "probability": {
-                        "specificProbability": "SPECIFIC_PROBABILITY"
-                    },
-                    "impactValues": [
-                        {
-                            "category": "I",
-                            "specificImpact": "SPECIFIC_IMPACT_I"
-                        },
-                        {
-                            "category": "A",
-                            "specificImpact": "SPECIFIC_IMPACT_A"
-                        },
-                        {
-                            "category": "R",
-                            "specificImpact": "SPECIFIC_IMPACT_R"
-                        },
-                        {
-                            "category": "C",
-                            "specificImpact": "SPECIFIC_IMPACT_C"
-                        }
-                    ],
-                    "riskValues": [
-                        {
-                            "category": "I",
-                            "riskTreatments": [
-                                "RISK_TREATMENT_REDUCTION"
-                            ],
-                            "residualRisk": "RESIDUAL_RISK_I"
-                        },
-                        {
-                            "category": "A",
-                            "riskTreatments": [
-                                "RISK_TREATMENT_TRANSFER"
-                            ],
-                            "residualRisk": "RESIDUAL_RISK_A"
-                        },
-                        {
-                            "category": "R",
-                            "riskTreatments": [
-                                "RISK_TREATMENT_AVOIDANCE"
-                            ],
-                            "residualRisk": "RESIDUAL_RISK_R"
-                        },
-                        {
-                            "category": "C",
-                            "riskTreatments": [
-                                "RISK_TREATMENT_ACCEPTANCE"
-                            ],
-                            "residualRisk": "RESIDUAL_RISK_C"
-                        }
-                    ]
-                }
+            {
+              "category": "A",
+              "specificImpact": "SPECIFIC_IMPACT_A"
+            },
+            {
+              "category": "R",
+              "specificImpact": "SPECIFIC_IMPACT_R"
+            },
+            {
+              "category": "C",
+              "specificImpact": "SPECIFIC_IMPACT_C"
             }
+          ],
+          "riskValues": [
+            {
+              "category": "I",
+              "riskTreatments": [
+                "RISK_TREATMENT_REDUCTION"
+              ],
+              "residualRisk": "RESIDUAL_RISK_I"
+            },
+            {
+              "category": "A",
+              "riskTreatments": [
+                "RISK_TREATMENT_TRANSFER"
+              ],
+              "residualRisk": "RESIDUAL_RISK_A"
+            },
+            {
+              "category": "R",
+              "riskTreatments": [
+                "RISK_TREATMENT_AVOIDANCE"
+              ],
+              "residualRisk": "RESIDUAL_RISK_R"
+            },
+            {
+              "category": "C",
+              "riskTreatments": [
+                "RISK_TREATMENT_ACCEPTANCE"
+              ],
+              "residualRisk": "RESIDUAL_RISK_C"
+            }
+          ]
         }
+      }
     }
+  }
 }

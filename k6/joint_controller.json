@@ -5,7 +5,7 @@
   "domains": {
     
   },
-  "name": "Gemeinsam Verantwortliche",
+  "name": "Joint controller (created for k6 load test)",
   "customAspects": {
     "scope_address": {
       "attributes": {

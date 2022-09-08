@@ -1,41 +1,43 @@
 {
-    "name": "Phishing",
-    "abbreviation": "DS-G.33",
-    "owner": {
-        "targetUri": "https://api.develop.verinice.com/veo/units/UNIT_ID"
+  "name": "Scenario (created for k6 load test)",
+  "abbreviation": "DS-G.33",
+  "owner": {
+    "targetUri": "https://api.develop.verinice.com/veo/units/UNIT_ID"
+  },
+  "links": {
+    
+  },
+  "customAspects": {
+    "scenario_threat": {
+      "domains": [],
+      "attributes": {
+        "scenario_threat_type": "scenario_threat_type_criminalAct"
+      }
     },
-    "links": {},
-    "customAspects": {
-        "scenario_threat": {
-            "domains": [],
-            "attributes": {
-                "scenario_threat_type": "scenario_threat_type_criminalAct"
-            }
-        },
-        "scenario_generalInformation": {
-            "domains": [],
-            "attributes": {
-                "scenario_generalInformation_document": "https://en.wikipedia.org/wiki/Special:Random"
-            }
-        },
-        "scenario_vulnerability": {
-            "domains": [],
-            "attributes": {
-                "scenario_vulnerability_type": "scenario_vulnerability_type_organisationalDeficiencies"
-            }
-        }
+    "scenario_generalInformation": {
+      "domains": [],
+      "attributes": {
+        "scenario_generalInformation_document": "https://en.wikipedia.org/wiki/Special:Random"
+      }
     },
-    "type": "scenario",
-    "parts": [],
-    "domains": {
-        "DOMAIN_ID": {
-            "subType": "SCN_Scenario",
-            "status": "IN_PROGRESS",
-            "riskValues": {
-                "DSRA": {
-                    "potentialProbability": "PROBABILITY"
-                }
-            }
-        }
+    "scenario_vulnerability": {
+      "domains": [],
+      "attributes": {
+        "scenario_vulnerability_type": "scenario_vulnerability_type_organisationalDeficiencies"
+      }
     }
+  },
+  "type": "scenario",
+  "parts": [],
+  "domains": {
+    "DOMAIN_ID": {
+      "subType": "SCN_Scenario",
+      "status": "IN_PROGRESS",
+      "riskValues": {
+        "DSRA": {
+          "potentialProbability": "PROBABILITY"
+        }
+      }
+    }
+  }
 }

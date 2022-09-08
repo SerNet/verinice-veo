@@ -102,9 +102,9 @@ export let options = {
     http_req_duration: ["p(80)<200"] // 80% of requests must complete below 200ms
   },
   stages: [
-    { duration: "3m", target: 100, gracefulRampDown: '600s', gracefulStop: '600s' }, // Scale up, 3m to reach 100 VUS
-    { duration: "4m", target: 100, gracefulRampDown: '600s', gracefulStop: '600s' }, // 4m with 100 VUS
-    { duration: "3m", target: 0, gracefulRampDown: '600s', gracefulStop: '600s' } // Scale down, 3m from 100 to 0 VUS
+    { duration: "1m", target: 50 }, // Scale up, 3m to reach 100 VUS
+    { duration: "10m", target: 50 }, // 4m with 100 VUS
+    { duration: "1m", target: 0 } // Scale down, 3m from 100 to 0 VUS
   ],
 };
 
@@ -216,29 +216,29 @@ export function loadDashboard() {
   loadElementStatusCount(unitId) 
   loadSchema("process"); 
   loadElementsAndSleep("/domains", 0); 
-  loadElementsAndSleep("/translations?languages=de,en", 0);
+  loadTranslations()
   loadSchema("incident");
   loadForms();
   loadSchema("document");
-  loadElementsAndSleep("/translations?languages=de,en", 0);
+  loadTranslations()
   loadForms();
   loadSchema("scenario");
-  loadElementsAndSleep("/translations?languages=de,en", 0);
+  loadTranslations()
   loadForms();
   loadSchema("scope");
   loadHistory(unitId);
-  loadElementsAndSleep("/translations?languages=de,en", 0);
+  loadTranslations()
   loadForms();
   loadForms();
-  loadElementsAndSleep("/translations?languages=de,en", 0);
+  loadTranslations()
   loadSchema("asset");
-  loadElementsAndSleep("/translations?languages=de,en", 0);
+  loadTranslations()
   loadForms();
-  loadElementsAndSleep("/translations?languages=de,en", 0);
+  loadTranslations()
   loadSchema("person");
   loadForms();
   loadSchema("control");
-  loadElementsAndSleep("/translations?languages=de,en", 0);
+  loadTranslations()
   loadForms();
   loadForms();
 }
@@ -502,8 +502,12 @@ export function loadElementsPaged(typeUrl, unitId, size, page, subType, status) 
   return result;
 }
 
+export function loadTranslations() {
+  loadElementsAndSleep("/translations?languages=de,en", 0);
+}
+
 export function loadForms() {
-  var result = loadFormElementsAndSleep("", 0);
+  var result = loadFormElementsAndSleep("/?domainId=" + domainId, 0);
 
   var json = result.json();
   check(result, {
@@ -559,7 +563,7 @@ export function loadHistory(unitId) {
   return result;
 }
 
-export function loadCatalogs(domainId) {
+export function loadCatalogs() {
   check(domainId, {
     "Domain ID is a valid UUID": (id) => checkIfValidUUID(id),
   });

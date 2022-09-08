@@ -1,5 +1,5 @@
 {
-  "name": "Bewerberdaten",
+  "name": "Data type (created for k6 load test)",
   "description": "Angaben zur Person, Kontaktdaten, Lebenslauf, Zeugnisse",
   "domains": {
     

@@ -1,5 +1,5 @@
 {
-  "name": "Bewerberauswahlverfahren ",
+  "name": "Data transfer (created for k6 load test)",
   "description": "Eingegangene Bewerbungen werden an die Fachabteilungen zwecks Eignungsprüfung weitergeleitet ",
   "domains": {
     

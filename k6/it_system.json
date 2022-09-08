@@ -1,5 +1,5 @@
 {
-  "name": "E-Mail-Server",
+  "name": "IT system (created for k6 load test)",
   "description": "E-Mail Server auf Basis von CentOS 8",
   "domains": {
     
