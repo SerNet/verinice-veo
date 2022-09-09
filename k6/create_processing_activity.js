@@ -87,6 +87,13 @@ let unitId;
 // ID of the domain being processed
 let domainId;
 
+let scenarioIds = [];
+let scenarioRiskIds = [];
+let personIds = [];
+let tomIds = [];
+let dataProcessingId;
+let itSystemIds = [];
+let applicationIds = [];
 
 export let options = {
   thresholds: {
@@ -116,61 +123,66 @@ export default function () {
   }
   loadUnitSelection();
   loadDashboard();
-  let scenarioString = JSON.stringify(scenario);
-  scenarioString = scenarioString.replace("DOMAIN_ID", domainId);
-  scenarioString = scenarioString.replace("\"PROBABILITY\"", getRandomInt(3));
-  scenario = JSON.parse(scenarioString);
-  let scenarioId = createScenario();
+  let numberOfScenarios = getRandomInt(10) + 1;
+  for (let i = 0; i < numberOfScenarios; i++) {
+    scenarioIds.push(createScenario());
+  }
+
+  scenarioRiskIds = [...scenarioIds];
   let responsibleBodyId = createResponsibleBody();
   let jointControllerId = createJointController();
   loadDashboard();
-  let personId = createPerson();
-  let tomId = createTOM();
+  let numberOfPersons = getRandomInt(5) + 1;
+  for (let i = 0; i < numberOfPersons; i++) {
+    personIds.push(createPerson());
+  }
+  let numberOfToms = getRandomInt(8) + 1;
+  for (let i = 0; i < numberOfToms; i++) {
+    tomIds.push(createTOM());
+  }
   let dataTypeId = createDataType();
   DATA_TRANSFER.links.process_dataType[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + dataTypeId;
   let dataTransferId = createDataTransfer();
   loadDashboard();
-  let itSystemId = createItSystem();
-  let applicationId = createApplication();
+  let numberOfItSystems = getRandomInt(4) + 1;
+  for (let i = 0; i < numberOfItSystems; i++) {
+    itSystemIds.push(createItSystem());
+  }
+  let numberOfApplications = getRandomInt(6) + 1;
+  for (let i = 0; i < numberOfApplications; i++) {
+    applicationIds.push(createApplication());
+  }
   loadDashboard();
-  DATA_PROCESSING.links.process_responsiblePerson[0].target.targetUri = "https://api." + HOSTNAME + "/veo/persons/" + personId;
+  DATA_PROCESSING.links.process_responsiblePerson[0].target.targetUri = "https://api." + HOSTNAME + "/veo/persons/" + getRandom(personIds);
   DATA_PROCESSING.links.process_responsibleBody[0].target.targetUri = "https://api." + HOSTNAME + "/veo/scopes/" + responsibleBodyId;
   DATA_PROCESSING.links.process_jointControllership[0].target.targetUri = "https://api." + HOSTNAME + "/veo/scopes/" + jointControllerId;
   DATA_PROCESSING.links.process_dataType[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + dataTypeId;
-  DATA_PROCESSING.links.process_requiredApplications[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + applicationId;
-  DATA_PROCESSING.links.process_requiredITSystems[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + itSystemId;
+  DATA_PROCESSING.links.process_requiredApplications[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + getRandom(applicationIds);
+  DATA_PROCESSING.links.process_requiredITSystems[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + getRandom(itSystemIds);
   DATA_PROCESSING.links.process_dataTransmission[0].target.targetUri = "https://api." + HOSTNAME + "/veo/processes/" + dataTransferId;
-  let dataProcessingId = createDataProcessing();
-  risk.scenario.targetUri = "https://api." + HOSTNAME + "/veo/scenarios/" + scenarioId;
-  risk.mitigation.targetUri = "https://api." + HOSTNAME + "/veo/controls/" + tomId;
-  risk.riskOwner.targetUri = "https://api." + HOSTNAME + "/veo/persons/" + personId;
-  risk.process.targetUri = "https://api." + HOSTNAME + "/veo/processes/" + dataProcessingId;
-  let riskString = JSON.stringify(risk);
-  riskString = riskString.replace("DOMAIN_ID", domainId);
-  riskString = riskString.replace("DOMAIN_ID", domainId);
-  riskString = riskString.replace("\"SPECIFIC_PROBABILITY\"", getRandomInt(3));
-  riskString = riskString.replace("\"SPECIFIC_IMPACT_I\"", getRandomInt(3));
-  riskString = riskString.replace("\"SPECIFIC_IMPACT_A\"", getRandomInt(3));
-  riskString = riskString.replace("\"SPECIFIC_IMPACT_R\"", getRandomInt(3));
-  riskString = riskString.replace("\"SPECIFIC_IMPACT_C\"", getRandomInt(3));
-  riskString = riskString.replace("\"RESIDUAL_RISK_I\"", getRandomInt(3));
-  riskString = riskString.replace("\"RESIDUAL_RISK_A\"", getRandomInt(3));
-  riskString = riskString.replace("\"RESIDUAL_RISK_R\"", getRandomInt(3));
-  riskString = riskString.replace("\"RESIDUAL_RISK_C\"", getRandomInt(3));
-  riskString = riskString.replace("\"SPECIFIC_PROBABILITY\"", getRandomInt(3));
-  risk = JSON.parse(riskString);
-  createRisk(dataProcessingId);
+  dataProcessingId = createDataProcessing();
+  let numberOfRisks = getRandomInt(scenarioIds.length);
+  for (let i = 0; i < numberOfRisks; i++) {
+    createRisk(dataProcessingId);
+  }
   
 
   deleteElement("/processes/", dataProcessingId);
   deleteElement("/processes/", dataTransferId);
   deleteElement("/scopes/", responsibleBodyId);
   deleteElement("/scopes/", jointControllerId);
-  deleteElement("/persons/", personId);
-  deleteElement("/controls/", tomId);
+  personIds.forEach(id => {deleteElement("/persons/", id)});
+  personIds = [];
+  tomIds.forEach(id => {deleteElement("/controls/", id)});
+  tomIds = [];
   deleteElement("/assets/", dataTypeId);
-  deleteElement("/assets/", itSystemId);
-  deleteElement("/assets/", applicationId);
+  itSystemIds.forEach(id => {deleteElement("/assets/", id)});
+  itSystemIds = [];
+  applicationIds.forEach(id => {deleteElement("/assets/", id)});
+  applicationIds = [];
+  scenarioIds.forEach(id => {deleteElement("/scenarios/", id)});
+  scenarioIds = [];
+  
 }
 
 export function loadUnitSelection() {
@@ -236,15 +248,33 @@ export function loadElementStatusCount(unitId) {
 }
 
 export function createRisk(processId) {
-  console.info("Creating risks...");
+  console.info("Creating risk...");
   sleep(Math.random() * MAX_SLEEP_SECONDS);
+  risk.scenario.targetUri = "https://api." + HOSTNAME + "/veo/scenarios/" + scenarioRiskIds.pop();
+  risk.mitigation.targetUri = "https://api." + HOSTNAME + "/veo/controls/" + getRandom(tomIds);
+  risk.riskOwner.targetUri = "https://api." + HOSTNAME + "/veo/persons/" + getRandom(personIds);
+  risk.process.targetUri = "https://api." + HOSTNAME + "/veo/processes/" + dataProcessingId;
+  let riskString = JSON.stringify(risk);
+  riskString = riskString.replace("DOMAIN_ID", domainId);
+  riskString = riskString.replace("DOMAIN_ID", domainId);
+  riskString = riskString.replace("\"SPECIFIC_PROBABILITY\"", getRandomInt(3));
+  riskString = riskString.replace("\"SPECIFIC_IMPACT_I\"", getRandomInt(3));
+  riskString = riskString.replace("\"SPECIFIC_IMPACT_A\"", getRandomInt(3));
+  riskString = riskString.replace("\"SPECIFIC_IMPACT_R\"", getRandomInt(3));
+  riskString = riskString.replace("\"SPECIFIC_IMPACT_C\"", getRandomInt(3));
+  riskString = riskString.replace("\"RESIDUAL_RISK_I\"", getRandomInt(3));
+  riskString = riskString.replace("\"RESIDUAL_RISK_A\"", getRandomInt(3));
+  riskString = riskString.replace("\"RESIDUAL_RISK_R\"", getRandomInt(3));
+  riskString = riskString.replace("\"RESIDUAL_RISK_C\"", getRandomInt(3));
+  riskString = riskString.replace("\"SPECIFIC_PROBABILITY\"", getRandomInt(3));
+  risk = JSON.parse(riskString);
   return createElement("/processes/" + processId + "/risks", risk, undefined,domainId,undefined);
 }
 
 export function createDataProcessing() {
   console.info("Creating data processing...");
   loadForms();
-  loadScopes(unitId, "PRO_DataProcessing");
+  loadProcesses(unitId, "PRO_DataProcessing");
   sleep(Math.random() * MAX_SLEEP_SECONDS);
   loadSchema("process");
   loadHistory(unitId);
@@ -254,7 +284,7 @@ export function createDataProcessing() {
 export function createApplication() {
   console.info("Creating application...");
   loadForms();
-  loadScopes(unitId, "AST_Application");
+  loadAssets(unitId, "AST_Application");
   sleep(Math.random() * MAX_SLEEP_SECONDS);
   loadSchema("asset");
   loadHistory(unitId);
@@ -264,7 +294,7 @@ export function createApplication() {
 export function createItSystem() {
   console.info("Creating it system...");
   loadForms();
-  loadScopes(unitId, "AST_IT-System");
+  loadAssets(unitId, "AST_IT-System");
   sleep(Math.random() * MAX_SLEEP_SECONDS);
   loadSchema("asset");
   loadHistory(unitId);
@@ -278,6 +308,10 @@ export function createScenario() {
   sleep(Math.random() * MAX_SLEEP_SECONDS);
   loadSchema("scenario");
   loadHistory(unitId);
+  let scenarioString = JSON.stringify(scenario);
+  scenarioString = scenarioString.replace("DOMAIN_ID", domainId);
+  scenarioString = scenarioString.replace("\"PROBABILITY\"", getRandomInt(3));
+  scenario = JSON.parse(scenarioString);
   return createElement("/scenarios", scenario, undefined, domainId,unitId);
 }
 
@@ -294,7 +328,7 @@ export function createDataTransfer() {
 export function createDataType() {
   console.info("Creating data type...");
   loadForms();
-  loadScopes(unitId, "AST_Datatype");
+  loadAssets(unitId, "AST_Datatype");
   sleep(Math.random() * MAX_SLEEP_SECONDS);
   loadSchema("asset");
   loadHistory(unitId);
@@ -304,7 +338,7 @@ export function createDataType() {
 export function createTOM() {
   console.info("Creating TOM...");
   loadForms();
-  loadScopes(unitId, "CTL_TOM");
+  loadControls(unitId, "CTL_TOM");
   sleep(Math.random() * MAX_SLEEP_SECONDS);
   loadSchema("control");
   loadHistory(unitId);
@@ -314,7 +348,7 @@ export function createTOM() {
 export function createPerson() {
   console.info("Creating person...");
   loadForms();
-  loadScopes(unitId, "PER_Person");
+  loadPersons(unitId, "PER_Person");
   sleep(Math.random() * MAX_SLEEP_SECONDS);
   loadSchema("person");
   loadHistory(unitId);
@@ -705,7 +739,7 @@ function deleteElement(path, uuid) {
   };
   var result = http.del(url, "", params);
 
-  console.info("DEL element " + path + " / " + uuid + ", status: " + result.status);
+  console.info("DEL element " + path + uuid);
   check(result, {
     "Delete element result is status 204": (result) => result.status === 204,
   });
@@ -745,6 +779,10 @@ function checkIfValidUUID(str) {
   // Regular expression to check if string is a valid UUID
   const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
   return regexExp.test(str);
+}
+
+function getRandom(array) {
+  return array[getRandomInt(array.length)];
 }
 
 function getRandomInt(max) {
