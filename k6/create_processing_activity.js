@@ -158,6 +158,7 @@ export default function () {
   DATA_TRANSFER.links.process_dataType[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + dataTypeId;
   let dataTransferId = createDataTransfer();
   loadDashboard();
+  getToken();
   let numberOfItSystems = getRandomInt(4) + 1;
   for (let i = 0; i < numberOfItSystems; i++) {
     itSystemIds.push(createItSystem());
