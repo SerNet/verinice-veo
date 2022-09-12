@@ -20,7 +20,6 @@ package org.veo.persistence.access;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Repository;
 
@@ -44,12 +43,6 @@ public class DomainTemplateRepositoryImpl
       DomainTemplateDataRepository dataRepository, ValidationService validator) {
     super(dataRepository, validator);
     this.dataRepository = dataRepository;
-  }
-
-  public List<DomainTemplate> getAll() {
-    return StreamSupport.stream(dataRepository.findAll().spliterator(), false)
-        .map(DomainTemplate.class::cast)
-        .toList();
   }
 
   @Override

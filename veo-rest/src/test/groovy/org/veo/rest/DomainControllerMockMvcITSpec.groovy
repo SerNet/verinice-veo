@@ -32,7 +32,7 @@ import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.usecase.domaintemplate.EntityAlreadyExistsException
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.persistence.access.ClientRepositoryImpl
-import org.veo.persistence.access.DomainTemplateRepositoryImpl
+import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 
 import groovy.json.JsonSlurper
 
@@ -47,7 +47,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
     @Autowired
     private ClientRepositoryImpl clientRepository
     @Autowired
-    private DomainTemplateRepositoryImpl domainTemplateRepository
+    private DomainTemplateDataRepository domainTemplateRepository
 
     @Autowired
     TransactionTemplate txTemplate
@@ -265,7 +265,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
 
         when: "loading the domaintemplates from the database"
         def dt = txTemplate.execute {
-            domainTemplateRepository.getAll().find{ it.name == "Domain 1" }
+            domainTemplateRepository.findAll().find{ it.name == "Domain 1" }
         }
         then: "the version is set"
         dt.templateVersion == "1.0.0"
@@ -322,7 +322,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
 
         when: "loading the domaintemplates from the database"
         def dt = txTemplate.execute {
-            domainTemplateRepository.getAll()
+            domainTemplateRepository.findAll()
                     .find{ it.name == domain.name && it.templateVersion == "1.2.3"}
                     .tap{it.profiles  } // init proxy
         }
