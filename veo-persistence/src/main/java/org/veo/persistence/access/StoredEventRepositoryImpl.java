@@ -21,8 +21,6 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
@@ -48,13 +46,6 @@ public class StoredEventRepositoryImpl implements StoredEventRepository {
   @Override
   public void saveAll(Collection<StoredEvent> events) {
     dataRepository.saveAll(events.stream().map(StoredEventData.class::cast).toList());
-  }
-
-  @Override
-  public Set<StoredEvent> findAll() {
-    return dataRepository.findAll().stream()
-        .map(StoredEvent.class::cast)
-        .collect(Collectors.toSet());
   }
 
   @Override

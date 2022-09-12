@@ -30,7 +30,7 @@ import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.ScopeRepository
 import org.veo.core.usecase.common.NameableInputData
 import org.veo.core.usecase.unit.CreateUnitUseCase
-import org.veo.persistence.access.StoredEventRepository
+import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 class VersioningMessageITSpec extends VeoSpringSpec {
@@ -44,7 +44,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
     CreateUnitUseCase createUnitUseCase
 
     @Autowired
-    StoredEventRepository storedEventRepository
+    StoredEventDataRepository storedEventRepository
 
     @Autowired
     private ClientRepository clientRepository

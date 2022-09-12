@@ -25,16 +25,15 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
-import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.core.repository.DomainRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.StoredEventRepository
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
+import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.test.VeoSpec
 
 import spock.lang.Issue
-
 /**
  * Integration test to verify entity event generation. Performs operations on the REST API and performs assertions on the {@link StoredEventRepository}.
  */
@@ -53,7 +52,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
     private UnitRepositoryImpl unitRepository
 
     @Autowired
-    private StoredEventRepository storedEventRepository
+    private StoredEventDataRepository storedEventRepository
 
     private Client client
     private Domain domain
