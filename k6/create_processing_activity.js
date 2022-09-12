@@ -47,12 +47,15 @@ import { sleep } from "k6";
 import { IFrameElement } from "k6/html";
 import { URL } from 'https://jslib.k6.io/url/1.0.0/index.js';
 import http from "k6/http";
+import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 
 const HOSTNAME = __ENV.host;
 const USER_NAME = __ENV.name;
 const PASSWORD = __ENV.password;
 const KEYCLOAK_BASE_URL = __ENV.keycloak_url;
 const KEYCLOAK_CLIENT_ID = __ENV.keycloak_client; 
+// ID of the unit being processed
+let unitId = __ENV.unit; 
 
 // Base URLs of the APIs
 const VEO_BASE_URL = "https://api." + HOSTNAME + "/veo";
@@ -65,6 +68,9 @@ const KEYCLOAK_REALM = "verinice-veo";
 
 // Maximum number of seconds to sleep after a request
 const MAX_SLEEP_SECONDS = 5;
+
+// Maximum number of seconds to sleep before saving a new element
+const MAX_SLEEP_SECONDS_NEW_ELEMENT = 15;
 
 const RESPONSIBLE_BODY = JSON.parse(open("./responsible_body.json"));
 const JOINT_CONTROLLER = JSON.parse(open("./joint_controller.json"));
@@ -81,8 +87,7 @@ let risk = JSON.parse(open("./risk.json"));
 // Token for Authorization "Bearer <TOKEN>"
 let TOKEN;
 
-// ID of the unit being processed
-let unitId;
+
 
 // ID of the domain being processed
 let domainId;
@@ -106,6 +111,13 @@ export let options = {
     { duration: "10m", target: 50 }, // 4m with 100 VUS
     { duration: "1m", target: 0 } // Scale down, 3m from 100 to 0 VUS
   ],
+  ext: {
+    loadimpact: {
+      projectID: 3600296,
+      // Test runs with the same name groups test runs together
+      name: "Create Processing"
+    }
+  }
 };
 
 // This method is executed for each virtual user
@@ -121,7 +133,9 @@ export default function () {
   if(!checkIfValidUUID(domainId)) {
     console.error("Domain ID is not a valid UUID: " + domainId);
   }
-  loadUnitSelection();
+  if(unitId===undefined) {
+    loadUnitSelection();
+  }
   loadDashboard();
   let numberOfScenarios = getRandomInt(10) + 1;
   for (let i = 0; i < numberOfScenarios; i++) {
@@ -166,7 +180,6 @@ export default function () {
     createRisk(dataProcessingId);
   }
   
-
   deleteElement("/processes/", dataProcessingId);
   deleteElement("/processes/", dataTransferId);
   deleteElement("/scopes/", responsibleBodyId);
@@ -182,8 +195,19 @@ export default function () {
   applicationIds = [];
   scenarioIds.forEach(id => {deleteElement("/scenarios/", id)});
   scenarioIds = [];
-  
 }
+
+/**
+ * Creates an HTML report 
+ * See: https://github.com/benc-uk/k6-reporter
+ */
+/*
+export function handleSummary(data) {
+  return {
+    "summary.html": htmlReport(data),
+  };
+}
+*/
 
 export function loadUnitSelection() {
   console.info("Loading unit selection...");
@@ -249,7 +273,6 @@ export function loadElementStatusCount(unitId) {
 
 export function createRisk(processId) {
   console.info("Creating risk...");
-  sleep(Math.random() * MAX_SLEEP_SECONDS);
   risk.scenario.targetUri = "https://api." + HOSTNAME + "/veo/scenarios/" + scenarioRiskIds.pop();
   risk.mitigation.targetUri = "https://api." + HOSTNAME + "/veo/controls/" + getRandom(tomIds);
   risk.riskOwner.targetUri = "https://api." + HOSTNAME + "/veo/persons/" + getRandom(personIds);
@@ -268,6 +291,7 @@ export function createRisk(processId) {
   riskString = riskString.replace("\"RESIDUAL_RISK_C\"", getRandomInt(3));
   riskString = riskString.replace("\"SPECIFIC_PROBABILITY\"", getRandomInt(3));
   risk = JSON.parse(riskString);
+  sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/processes/" + processId + "/risks", risk, undefined,domainId,undefined);
 }
 
@@ -275,9 +299,9 @@ export function createDataProcessing() {
   console.info("Creating data processing...");
   loadForms();
   loadProcesses(unitId, "PRO_DataProcessing");
-  sleep(Math.random() * MAX_SLEEP_SECONDS);
   loadSchema("process");
   loadHistory(unitId);
+  sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/processes", DATA_PROCESSING, "PRO_DataProcessing",domainId,unitId);
 }
 
@@ -285,9 +309,9 @@ export function createApplication() {
   console.info("Creating application...");
   loadForms();
   loadAssets(unitId, "AST_Application");
-  sleep(Math.random() * MAX_SLEEP_SECONDS);
   loadSchema("asset");
   loadHistory(unitId);
+  sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/assets", APPLICATION, "AST_Application",domainId,unitId);
 }
 
@@ -295,9 +319,9 @@ export function createItSystem() {
   console.info("Creating it system...");
   loadForms();
   loadAssets(unitId, "AST_IT-System");
-  sleep(Math.random() * MAX_SLEEP_SECONDS);
   loadSchema("asset");
   loadHistory(unitId);
+  sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/assets", IT_SYSTEM, "AST_IT-System",domainId,unitId);
 }
 
@@ -305,13 +329,13 @@ export function createScenario() {
   console.info("Creating scenario...");
   loadForms();
   loadScenarios(unitId, "SCN_Scenario");
-  sleep(Math.random() * MAX_SLEEP_SECONDS);
   loadSchema("scenario");
   loadHistory(unitId);
   let scenarioString = JSON.stringify(scenario);
   scenarioString = scenarioString.replace("DOMAIN_ID", domainId);
   scenarioString = scenarioString.replace("\"PROBABILITY\"", getRandomInt(3));
   scenario = JSON.parse(scenarioString);
+  sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/scenarios", scenario, undefined, domainId,unitId);
 }
 
@@ -319,9 +343,9 @@ export function createDataTransfer() {
   console.info("Creating data transfer...");
   loadForms();
   loadScopes(unitId, "PRO_DataTransfer");
-  sleep(Math.random() * MAX_SLEEP_SECONDS);
   loadSchema("process");
   loadHistory(unitId);
+  sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/processes", DATA_TRANSFER, "PRO_DataTransfer",domainId,unitId);
 }
 
@@ -329,9 +353,9 @@ export function createDataType() {
   console.info("Creating data type...");
   loadForms();
   loadAssets(unitId, "AST_Datatype");
-  sleep(Math.random() * MAX_SLEEP_SECONDS);
   loadSchema("asset");
   loadHistory(unitId);
+  sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/assets", DATA_TYPE, "AST_Datatype",domainId,unitId);
 }
 
@@ -339,9 +363,9 @@ export function createTOM() {
   console.info("Creating TOM...");
   loadForms();
   loadControls(unitId, "CTL_TOM");
-  sleep(Math.random() * MAX_SLEEP_SECONDS);
   loadSchema("control");
   loadHistory(unitId);
+  sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/controls", TOM, "CTL_TOM",domainId,unitId);
 }
 
@@ -349,9 +373,9 @@ export function createPerson() {
   console.info("Creating person...");
   loadForms();
   loadPersons(unitId, "PER_Person");
-  sleep(Math.random() * MAX_SLEEP_SECONDS);
   loadSchema("person");
   loadHistory(unitId);
+  sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/persons", PERSON, "PER_Person",domainId,unitId);
 }
 
@@ -359,7 +383,6 @@ export function createResponsibleBody() {
   console.info("Creating responsible body...");
   loadForms();
   loadScopes(unitId, "SCP_ResponsibleBody");
-  sleep(Math.random() * MAX_SLEEP_SECONDS);
   loadSchema("scope");
   loadPersons(unitId, "PER_DataProtectionOfficer");
   loadPersons(unitId, "PER_Person");
@@ -371,6 +394,7 @@ export function createResponsibleBody() {
   loadForms();
   loadForms();
   loadForms();
+  sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/scopes", RESPONSIBLE_BODY, "SCP_ResponsibleBody",domainId,unitId);
 }
 
@@ -378,7 +402,6 @@ export function createJointController() {
   console.info("Creating joint controller...");
   loadForms();
   loadScopes(unitId, "SCP_JointController");
-  sleep(Math.random() * MAX_SLEEP_SECONDS);
   loadSchema("scope");
   loadPersons(unitId, "PER_DataProtectionOfficer");
   loadPersons(unitId, "PER_Person");
@@ -390,6 +413,7 @@ export function createJointController() {
   loadForms();
   loadForms();
   loadForms();
+  sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/scopes", JOINT_CONTROLLER, "SCP_JointController",domainId,unitId);
 }
 
@@ -401,14 +425,21 @@ export function createElement(path, body, subType, domainId, unitId) {
     body.domains[domainId] = {"subType":subType,"status":"NEW"};
   }
   var url = VEO_BASE_URL + path;
+  var tag = path;
+  if(tag.includes("risk")) {
+    tag = "/processes/ID/risks"
+  }
   var params = {
     headers: {
       "Content-Type": "application/json",
-      Authorization: TOKEN,
+      Authorization: TOKEN
     },
+    tags: { 
+      name: 'POST ' + tag
+    }
   };
-
   var result = http.post(url, JSON.stringify(body), params);
+
   check(result, {
     "Create element result is status 201": (result) => result.status === 201,
   });
@@ -740,6 +771,9 @@ function deleteElement(path, uuid) {
     headers: {
       Authorization: TOKEN,
     },
+    tags: { 
+      name: 'DELETE ' + path 
+    }
   };
   var result = http.del(url, "", params);
 
