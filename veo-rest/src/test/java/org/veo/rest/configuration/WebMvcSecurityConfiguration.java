@@ -19,6 +19,7 @@ package org.veo.rest.configuration;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,31 +46,68 @@ public class WebMvcSecurityConfiguration {
   @Bean
   @Primary
   public UserDetailsService userDetailsService() {
+    // A user with read and write access (used by most tests):
     ApplicationUser basicUser =
         ApplicationUser.authenticatedUser(
-            "user@domain.example", TESTCLIENT_UUID, "veo-user", List.of("veo-user"));
-    basicUser.setAuthorities(List.of(new SimpleGrantedAuthority("ROLE_veo-user")));
+            "user@domain.example", TESTCLIENT_UUID, "veo-user", List.of("veo-user", "veo-write"));
+    basicUser.setAuthorities(
+        List.of(
+            new SimpleGrantedAuthority("ROLE_veo-user"),
+            new SimpleGrantedAuthority("ROLE_veo-write")));
 
     ApplicationUser adminUser =
         ApplicationUser.authenticatedUser(
-            "admin", TESTCLIENT_UUID, "veo-admin", List.of("veo-user", "veo-admin"));
+            "admin", TESTCLIENT_UUID, "veo-admin", List.of("veo-user", "veo-admin", "veo-write"));
     adminUser.setAuthorities(
         List.of(
             new SimpleGrantedAuthority("ROLE_veo-user"),
-            new SimpleGrantedAuthority("ROLE_veo-admin")));
+            new SimpleGrantedAuthority("ROLE_veo-admin"),
+            new SimpleGrantedAuthority("ROLE_veo-write")));
 
     ApplicationUser contentCreatorUser =
         ApplicationUser.authenticatedUser(
             "content-creator",
             TESTCLIENT_UUID,
             "veo-content-creator",
-            List.of("veo-user", "veo-content-creator"));
+            List.of("veo-user", "veo-content-creator", "veo-write"));
     contentCreatorUser.setAuthorities(
+        List.of(
+            new SimpleGrantedAuthority("ROLE_veo-user"),
+            new SimpleGrantedAuthority("ROLE_veo-content-creator"),
+            new SimpleGrantedAuthority("ROLE_veo-write")));
+
+    // A user with read-only access:
+    ApplicationUser readOnlyUser =
+        ApplicationUser.authenticatedUser(
+            "read-only-user", TESTCLIENT_UUID, "veo-user", List.of("veo-user"));
+    readOnlyUser.setAuthorities(List.of(new SimpleGrantedAuthority("ROLE_veo-user")));
+
+    // A user with no rights:
+    ApplicationUser noRightsUser =
+        ApplicationUser.authenticatedUser(
+            "no-rights-user", TESTCLIENT_UUID, "veo-user", Collections.emptyList());
+    noRightsUser.setAuthorities(Collections.emptyList());
+
+    // A content-creator with no write access:
+    ApplicationUser contentCreatorUserReadonly =
+        ApplicationUser.authenticatedUser(
+            "content-creator-readonly",
+            TESTCLIENT_UUID,
+            "veo-content-creator",
+            List.of("veo-user", "veo-content-creator"));
+    contentCreatorUserReadonly.setAuthorities(
         List.of(
             new SimpleGrantedAuthority("ROLE_veo-user"),
             new SimpleGrantedAuthority("ROLE_veo-content-creator")));
 
-    return new CustomUserDetailsManager(Arrays.asList(basicUser, adminUser, contentCreatorUser));
+    return new CustomUserDetailsManager(
+        Arrays.asList(
+            basicUser,
+            adminUser,
+            contentCreatorUser,
+            readOnlyUser,
+            noRightsUser,
+            contentCreatorUserReadonly));
   }
 
   /**
@@ -83,10 +121,10 @@ public class WebMvcSecurityConfiguration {
    *
    * @author akoderman
    */
-  class CustomUserDetailsManager extends InMemoryUserDetailsManager {
+  static class CustomUserDetailsManager extends InMemoryUserDetailsManager {
 
     // This would be a repository or service in production:
-    private final Map<String, ApplicationUser> users = new HashMap<String, ApplicationUser>();
+    private final Map<String, ApplicationUser> users = new HashMap<>();
 
     public CustomUserDetailsManager(Collection<ApplicationUser> appUsers) {
       super(appUsers.stream().map(u -> (UserDetails) u).toList());

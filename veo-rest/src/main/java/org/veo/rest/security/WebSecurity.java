@@ -17,10 +17,13 @@
  ******************************************************************************/
 package org.veo.rest.security;
 
+import static java.util.function.Function.identity;
+
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -40,8 +43,15 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import org.veo.core.entity.EntityType;
 import org.veo.persistence.CurrentUserProvider;
 import org.veo.persistence.LenientCurrentUserProviderImpl;
+import org.veo.rest.CatalogController;
+import org.veo.rest.DomainController;
+import org.veo.rest.TypeDefinitionsController;
+import org.veo.rest.UnitController;
+import org.veo.rest.schemas.resource.EntitySchemaResource;
+import org.veo.rest.schemas.resource.TranslationsResource;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +60,75 @@ import lombok.extern.slf4j.Slf4j;
 @EnableWebSecurity
 @Slf4j
 public class WebSecurity {
+
+  private static final String ROOT_PATH = "/";
+
+  private static final String[] DOMAINTEMPLATE_PATHS = {
+    "/domaintemplates/**",
+  };
+
+  private static final String ZERO_OR_MORE_DIRECTORIES = "/**";
+
+  // Paths to domain specifications and resources that are part of the domain aggregate:
+  private static final String[] DOMAIN_RESOURCE_PATHS = {
+    DomainController.URL_BASE_PATH + ZERO_OR_MORE_DIRECTORIES,
+    EntitySchemaResource.URL_BASE_PATH + ZERO_OR_MORE_DIRECTORIES,
+    TranslationsResource.URL_BASE_PATH + ZERO_OR_MORE_DIRECTORIES,
+    CatalogController.URL_BASE_PATH + ZERO_OR_MORE_DIRECTORIES,
+    TypeDefinitionsController.URL_BASE_PATH + ZERO_OR_MORE_DIRECTORIES
+  };
+
+  // Paths to domain elements:
+  private static final Stream<String> ELEMENT_PATHS =
+      EntityType.ELEMENT_PLURAL_TERMS.stream().map("/%s/**"::formatted);
+
+  // Resources that are not domain elements (see above) but should be protected by the same
+  // policies:
+  private static final Stream<String> NON_ELEMENT_PATHS =
+      Stream.of(UnitController.URL_BASE_PATH + ZERO_OR_MORE_DIRECTORIES);
+
+  // Paths that should be writable by regular users (users that do not have a special role):
+  private static final String[] USER_EDITABLE_PATHS =
+      Stream.concat(ELEMENT_PATHS, NON_ELEMENT_PATHS).toArray(String[]::new);
+
+  // Paths that should be visible to regular users:
+  private static final String[] USER_VIEWABLE_PATHS =
+      Stream.of(
+              Stream.of(USER_EDITABLE_PATHS),
+              Stream.of(DOMAIN_RESOURCE_PATHS),
+              Stream.of(DOMAINTEMPLATE_PATHS))
+          .flatMap(identity())
+          .toArray(String[]::new);
+
+  // Paths that require the role 'content-creator' for write access:
+  private static final String[] CONTENT_CREATOR_EDITABLE_PATHS =
+      Stream.of(Stream.of(DOMAINTEMPLATE_PATHS), Stream.of(DOMAIN_RESOURCE_PATHS))
+          .flatMap(identity())
+          .toArray(String[]::new);
+
+  // Paths that require the role 'content-creator' for read access:
+  private static final String CONTENT_CREATOR_VIEWABLE_PATHS = "/domaintemplates/*/export";
+
+  // Paths that must only be accessible by the admin role:
+  private static final String[] ADMIN_PATHS = {"/admin/**", "/domaintemplates/*/createdomains"};
+
+  // Paths that never change state on the server:
+  // Searches and inspections are transient and may be POSTed by regular users.
+  private static final String[] TRANSIENT_PATHS = {"/**/searches/**", "/**/evaluation/**"};
+
+  // Paths to monitoring and metrics information:
+  private static final String ACTUATOR_PATHS = "/actuator/**";
+
+  // Paths to the Swagger-UI OpenAPI frontend:
+  private static final String[] SWAGGER_UI_PATHS = {
+    "/v2/api-docs/**",
+    "/v3/api-docs/**",
+    "/swagger.json",
+    "/swagger-ui.html",
+    "/swagger-resources/**",
+    "/webjars/**",
+    "/swagger-ui/**"
+  };
 
   @Value("${veo.cors.origins}")
   private String[] origins;
@@ -69,43 +148,62 @@ public class WebSecurity {
     // Make sure that no critical API can be accessed by an anonymous user!
     // .anonymous().disable()
 
-    http.authorizeRequests().antMatchers("/actuator/**").permitAll();
+    // public access to root and actuator endpoints:
+    http.authorizeRequests().antMatchers(ROOT_PATH, ACTUATOR_PATHS).permitAll();
 
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
     http.authorizeRequests()
-        .antMatchers(
-            HttpMethod.GET,
-            "/",
-            "/v2/api-docs/**",
-            "/v3/api-docs/**",
-            "/swagger.json",
-            "/swagger-ui.html",
-            "/swagger-resources/**",
-            "/webjars/**",
-            "/swagger-ui/**")
+        // public access to swagger-ui:
+        .antMatchers(HttpMethod.GET, SWAGGER_UI_PATHS)
         .permitAll()
-        .antMatchers(HttpMethod.POST, "/domains/**", "/domaintemplates", "/domaintemplates/")
-        .hasRole("veo-content-creator")
-        .antMatchers(HttpMethod.GET, "/domaintemplates/*/export")
-        .hasRole("veo-content-creator")
-        .antMatchers(
-            "/units/**",
-            "/assets/**",
-            "/controls/**",
-            "/scopes/**",
-            "/persons/**",
-            "/processes/**",
-            "/schemas/**",
-            "/translations/**",
-            "/domains/**")
-        .hasRole("veo-user")
-        .antMatchers("/admin/**", "/domaintemplates/*/createdomains")
+
+        // admin access:
+        .antMatchers(ADMIN_PATHS)
         .hasRole("veo-admin")
+
+        // content-creator write access:
+        .antMatchers(HttpMethod.POST, CONTENT_CREATOR_EDITABLE_PATHS)
+        .hasRole("veo-content-creator")
+        .antMatchers(HttpMethod.PUT, CONTENT_CREATOR_EDITABLE_PATHS)
+        .hasRole("veo-content-creator")
+        .antMatchers(HttpMethod.DELETE, CONTENT_CREATOR_EDITABLE_PATHS)
+        .hasRole("veo-content-creator")
+
+        // content-creator read access (will be required in addition to more general roles matched
+        // below):
+        .antMatchers(HttpMethod.GET, CONTENT_CREATOR_VIEWABLE_PATHS)
+        .hasRole("veo-content-creator")
+        .antMatchers(HttpMethod.HEAD, CONTENT_CREATOR_VIEWABLE_PATHS)
+        .hasRole("veo-content-creator")
+        .antMatchers(HttpMethod.OPTIONS, CONTENT_CREATOR_VIEWABLE_PATHS)
+        .hasRole("veo-content-creator")
+
+        // POST is allowed to transient paths for regular users:
+        .antMatchers(HttpMethod.POST, TRANSIENT_PATHS)
+        .hasRole("veo-user")
+
+        // read-only access:
+        .antMatchers(HttpMethod.GET, USER_VIEWABLE_PATHS)
+        .hasRole("veo-user")
+        .antMatchers(HttpMethod.HEAD, USER_VIEWABLE_PATHS)
+        .hasRole("veo-user")
+        .antMatchers(HttpMethod.OPTIONS, USER_VIEWABLE_PATHS)
+        .hasRole("veo-user")
+
+        // write-only access:
+        .antMatchers(HttpMethod.POST, USER_EDITABLE_PATHS)
+        .hasRole("veo-write")
+        .antMatchers(HttpMethod.PUT, USER_EDITABLE_PATHS)
+        .hasRole("veo-write")
+        .antMatchers(HttpMethod.PATCH, USER_EDITABLE_PATHS)
+        .hasRole("veo-write")
+        .antMatchers(HttpMethod.DELETE, USER_EDITABLE_PATHS)
+        .hasRole("veo-write")
+
+        // authentication without specific role requirements and fallback in case of missing paths:
         .anyRequest()
-        .authenticated(); // CAUTION:
-    // this includes anonymous users,
-    // see above
+        .hasRole("veo-user");
 
     http.oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter());
     return http.build();

@@ -99,6 +99,12 @@ class VeoRestTest extends Specification {
     @Value('${veo.resttest.users.content-creator.pass}')
     private String contentCreatorUserPass
 
+    @Value('${veo.resttest.users.read-only.name}')
+    String readOnlyUserName
+
+    @Value('${veo.resttest.users.read-only.pass}')
+    private String readOnlyUserPass
+
     @Value('${veo.resttest.proxyHost}')
     private String proxyHost
 
@@ -107,7 +113,7 @@ class VeoRestTest extends Specification {
 
     private userTokenCache = [:]
 
-    class Response{
+    class Response {
         Map headers
         Object body
         int statusCode
@@ -235,6 +241,9 @@ class VeoRestTest extends Specification {
         else if (userType == UserType.CONTENT_CREATOR) {
             user = contentCreatorUserName
             pass = contentCreatorUserPass
+        } else if (userType == UserType.READ_ONLY) {
+            user = readOnlyUserName
+            pass = readOnlyUserPass
         }
         if (userTokenCache.hasProperty(user)) {
             return userTokenCache[user]
