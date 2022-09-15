@@ -72,6 +72,8 @@ const MAX_SLEEP_SECONDS = 5;
 // Maximum number of seconds to sleep before saving a new element
 const MAX_SLEEP_SECONDS_NEW_ELEMENT = 15;
 
+const REQUEST_TIMEOUT = "8s";
+
 const RESPONSIBLE_BODY = JSON.parse(open("./responsible_body.json"));
 const JOINT_CONTROLLER = JSON.parse(open("./joint_controller.json"));
 const PERSON = JSON.parse(open("./person.json"));
@@ -437,7 +439,8 @@ export function createElement(path, body, subType, domainId, unitId) {
     },
     tags: { 
       name: 'POST ' + tag
-    }
+    },
+    timeout: REQUEST_TIMEOUT
   };
   var result = http.post(url, JSON.stringify(body), params);
 
@@ -511,6 +514,7 @@ export function loadElementsPaged(typeUrl, unitId, size, page, subType, status) 
     headers: {
       Authorization: TOKEN,
     },
+    timeout: REQUEST_TIMEOUT
   };
   if(!(status===undefined)) {
     url.searchParams.append("status", status );
@@ -555,6 +559,7 @@ export function loadReports() {
     headers: {
       Authorization: TOKEN,
     },
+    timeout: REQUEST_TIMEOUT
   };
   var result = http.get(url.toString(), params);
 
@@ -575,6 +580,7 @@ export function loadHistory(unitId) {
     headers: {
       Authorization: TOKEN,
     },
+    timeout: REQUEST_TIMEOUT
   };
   url.searchParams.append("owner", "/units/" + unitId);
   var result = http.get(url.toString(), params);
@@ -609,6 +615,7 @@ export function loadCatalogs() {
     headers: {
       Authorization: TOKEN,
     },
+    timeout: REQUEST_TIMEOUT
   };
   url.searchParams.append('domain', domainId);
   var result = http.get(url.toString(), params);
@@ -636,6 +643,7 @@ export function loadSchema(type) {
     headers: {
       Authorization: TOKEN,
     },
+    timeout: REQUEST_TIMEOUT
   };
   url.searchParams.append('domains', domainId);
   var result = http.get(url.toString(), params);
@@ -687,6 +695,7 @@ export function loadElementsWithBaseUrlAndSleep(baseUrl, path, sleepSeconds) {
     headers: {
       Authorization: TOKEN,
     },
+    timeout: REQUEST_TIMEOUT
   };
   var result = http.get(url, params);
 
@@ -736,6 +745,7 @@ export function loadElementWithBaseUrlAndSleep(baseUrl, path, uuid, sleepSeconds
     headers: {
       Authorization: TOKEN,
     },
+    timeout: REQUEST_TIMEOUT 
   };
   var result = http.get(url, params);
 
@@ -774,7 +784,8 @@ function deleteElement(path, uuid) {
     },
     tags: { 
       name: 'DELETE ' + path 
-    }
+    },
+    timeout: REQUEST_TIMEOUT
   };
   var result = http.del(url, "", params);
 
@@ -795,6 +806,7 @@ export function getToken() {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
+    timeout: REQUEST_TIMEOUT
   };
   let body = { 
     username:USER_NAME, 
