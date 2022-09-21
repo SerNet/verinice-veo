@@ -105,6 +105,12 @@ class VeoRestTest extends Specification {
     @Value('${veo.resttest.users.read-only.pass}')
     private String readOnlyUserPass
 
+    @Value('${veo.resttest.users.secondary-client.name}')
+    String secondaryClientUserName
+
+    @Value('${veo.resttest.users.secondary-client.pass}')
+    private String secondaryClientUserPass
+
     @Value('${veo.resttest.proxyHost}')
     private String proxyHost
 
@@ -171,7 +177,7 @@ class VeoRestTest extends Specification {
                 statusCode: resp.statusCodeValue)
     }
 
-    void put(String uri, Object requestBody, String etag, Integer assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
+    Response put(String uri, Object requestBody, String etag, Integer assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
         HttpHeaders headers = new HttpHeaders()
         headers.setIfMatch(etag)
         headers.setContentType(MediaType.APPLICATION_JSON)
@@ -180,13 +186,21 @@ class VeoRestTest extends Specification {
         assertStatusCode?.tap{
             assert resp.statusCodeValue == it
         }
+        new Response(
+                headers: resp.headers,
+                body: jsonSlurper.parseText(resp.body.toString()),
+                statusCode: resp.statusCodeValue)
     }
 
-    void delete(String uri, Integer assertStatusCode = 204, UserType userType = UserType.DEFAULT) {
+    Response delete(String uri, Integer assertStatusCode = 204, UserType userType = UserType.DEFAULT) {
         def resp = exchange(uri, HttpMethod.DELETE, new HttpHeaders(), null, userType)
         assertStatusCode?.tap{
             assert resp.statusCodeValue == it
         }
+        new Response(
+                headers: resp.headers,
+                body: jsonSlurper.parseText(resp.body.toString()),
+                statusCode: resp.statusCodeValue)
     }
 
     def getUnit(id) {
@@ -244,6 +258,10 @@ class VeoRestTest extends Specification {
         } else if (userType == UserType.READ_ONLY) {
             user = readOnlyUserName
             pass = readOnlyUserPass
+        }
+        else if (userType == UserType.SECONDARY_CLIENT_USER) {
+            user = secondaryClientUserName
+            pass = secondaryClientUserPass
         }
         if (userTokenCache.hasProperty(user)) {
             return userTokenCache[user]

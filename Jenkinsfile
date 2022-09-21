@@ -225,6 +225,7 @@ pipeline {
                         KEYCLOAK_ADMIN_CREDS = credentials('veo_admin_authentication_credentials')
                         KEYCLOAK_CONTENT_CREATOR_CREDS = credentials('veo_content_creator_authentication_credentials')
                         KEYCLOAK_READONLY_CREDS = credentials('veo_readonly_authentication_credentials')
+                        KEYCLOAK_SECONDARY_CLIENT_USER_CREDS = credentials('veo_secondary_client_user_authentication_credentials')
                         RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
                         VEO_MESSAGE_DISPATCH_ROUTINGKEYPREFIX =  "VEO_REST_TEST_${tag}."
                         VEO_MESSAGE_CONSUME_QUEUE = "VEO_REST_TEST_${tag}"
@@ -282,6 +283,8 @@ pipeline {
                                                    export VEO_RESTTEST_USERS_CONTENTCREATOR_PASS=\$KEYCLOAK_CONTENT_CREATOR_CREDS_PSW && \
                                                    export VEO_RESTTEST_USERS_READONLY_NAME=\$KEYCLOAK_READONLY_CREDS_USR && \
                                                    export VEO_RESTTEST_USERS_READONLY_PASS=\$KEYCLOAK_READONLY_CREDS_PSW && \
+                                                   export VEO_RESTTEST_USERS_SECONDARYCLIENT_NAME=\$KEYCLOAK_SECONDARY_CLIENT_USER_CREDS_USR && \
+                                                   export VEO_RESTTEST_USERS_SECONDARYCLIENT_PASS=\$KEYCLOAK_SECONDARY_CLIENT_USER_CREDS_PSW && \
                                                    ./gradlew -Dhttp.nonProxyHosts=\"localhost|veo-${n}\" -PciBuildNumber=\$BUILD_NUMBER -PciJobName=\$JOB_NAME veo-rest:restTest"""
                                                                 junit allowEmptyResults: true, testResults: 'veo-rest/build/test-results/restTest/*.xml'
                                                                 publishHTML([

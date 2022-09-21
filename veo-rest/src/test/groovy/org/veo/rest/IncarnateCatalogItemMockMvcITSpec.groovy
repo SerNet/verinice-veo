@@ -52,24 +52,24 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "retrieve the apply info unit of other client"() {
+    def "retrieve the apply info for a anotner client's unit"() {
         given: "the created catalogitems"
 
-        when: "a request is made to the server"
-        get("/${basePath}/${unitSecondClient.id.uuidValue()}/incarnations?itemIds=${item1.id.uuidValue()}", 400)
+        when: "trying to retrieve incarnation descriptions for other client's unit"
+        get("/${basePath}/${unitSecondClient.id.uuidValue()}/incarnations?itemIds=${item1.id.uuidValue()}", 404)
 
-        then: "the data is rejected"
+        then: "a client boundary violation is detected"
         thrown(ClientBoundaryViolationException)
     }
 
     @WithUserDetails("user@domain.example")
-    def "retrieve the apply info of other client catalogItem"() {
-        given: "the created catalogitems"
+    def "retrieve the apply info of another client's catalog item"() {
+        given: "the created catalog items"
 
-        when: "a request is made to the server"
-        get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${otherItem.id.uuidValue()}", 400)
+        when: "trying to retrieve incarnation descriptions for another client's catalog item"
+        get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${otherItem.id.uuidValue()}", 404)
 
-        then: "the data is rejected"
+        then: "a client boundary violation is detected"
         thrown(ClientBoundaryViolationException)
     }
 
@@ -285,17 +285,17 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "retrieve the apply info for item3 and post in other client unit"() {
+    def "retrieve the apply info for item3 and post in other client's unit"() {
         given: "the created catalogitems"
 
-        when: "a request is made to the server"
+        when: "retrieving incarnation descriptions for item 3"
         def result = getIncarnationDescriptions(unit,item3)
         then: "the parameter object is returned"
         result.parameters.size() == 3
 
-        when: "post the data"
-        post("/${basePath}/${unitSecondClient.id.uuidValue()}/incarnations",result, 400)
-        then: "the data is rejected"
+        when: "posting the incarnation descriptions in other client's unit"
+        post("/${basePath}/${unitSecondClient.id.uuidValue()}/incarnations",result, 404)
+        then: "a client boundary violation is detected"
         thrown(ClientBoundaryViolationException)
     }
 

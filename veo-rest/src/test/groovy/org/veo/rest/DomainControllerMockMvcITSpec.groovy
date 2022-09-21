@@ -51,8 +51,6 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
 
     @Autowired
     TransactionTemplate txTemplate
-    @Autowired
-    private CreateDemoUnitUseCase createDemoUnitUseCase
 
     private Domain testDomain
     private Domain completeDomain
@@ -148,13 +146,13 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "retrieve a Domain wrong client"() {
+    def "cannot retrieve other client's domain"() {
         given: "a saved domain"
 
-        when: "a request is made to the server"
-        get("/domains/${domainSecondClient.id.uuidValue()}", 400)
+        when: "trying to retrieve the other client's domain"
+        get("/domains/${domainSecondClient.id.uuidValue()}", 404)
 
-        then: "the data is rejected"
+        then: "a client boundary violation is detected"
         thrown(ClientBoundaryViolationException)
     }
 

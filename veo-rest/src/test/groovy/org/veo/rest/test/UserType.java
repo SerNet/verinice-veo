@@ -21,5 +21,6 @@ public enum UserType {
   DEFAULT,
   ADMIN,
   CONTENT_CREATOR,
-  READ_ONLY
+  READ_ONLY,
+  SECONDARY_CLIENT_USER,
 }

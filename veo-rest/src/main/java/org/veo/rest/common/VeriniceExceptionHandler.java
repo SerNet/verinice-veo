@@ -33,6 +33,7 @@ import org.veo.core.entity.DomainException;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.usecase.common.ETagMismatchException;
 import org.veo.core.usecase.domaintemplate.EntityAlreadyExistsException;
@@ -46,6 +47,14 @@ public class VeriniceExceptionHandler {
   @ExceptionHandler({DomainException.class})
   protected ResponseEntity<ApiResponseBody> handle(DomainException exception) {
     return handle(exception, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler({ClientBoundaryViolationException.class})
+  protected ResponseEntity<ApiResponseBody> handle(ClientBoundaryViolationException exception) {
+    log.warn("client boundary violation, mapping to 404", exception);
+    return handle(
+        new NotFoundException(exception.getEntityId(), exception.getEntityType()),
+        HttpStatus.NOT_FOUND);
   }
 
   @ExceptionHandler({IllegalArgumentException.class})

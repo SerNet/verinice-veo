@@ -17,16 +17,26 @@
  ******************************************************************************/
 package org.veo.core.entity.specification;
 
+import java.util.UUID;
+
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainException;
 import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.Key;
+
+import lombok.Getter;
 
 public class ClientBoundaryViolationException extends DomainException {
+
+  @Getter private final Key<UUID> entityId;
+  @Getter private final Class<? extends Identifiable> entityType;
 
   public ClientBoundaryViolationException(Identifiable entity, Client unauthorizedClient) {
     super(
         String.format(
             "The client boundary would be violated by the attempted operation on element: %s by client: %s",
             entity.getId(), unauthorizedClient.getId()));
+    this.entityId = entity.getId();
+    this.entityType = entity.getModelInterface();
   }
 }

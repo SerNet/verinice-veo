@@ -24,6 +24,9 @@ veo:
       read-only:
         name: ''
         pass: ''
+      secondary-client:
+        name: ''
+        pass: ''
     proxyHost: cache.int.company.de
     proxyPort: 3128
 

@@ -52,10 +52,10 @@ class CatalogControllerMockMvcITSpec extends CatalogSpec {
     def "retrieve a catalog for wrong client"() {
         given: "a catalog"
 
-        when: "a request is made to the server"
-        get("/catalogs/${catalog1.id.uuidValue()}", 400)
+        when: "trying to retrieve the other client's domain"
+        get("/catalogs/${catalog1.id.uuidValue()}", 404)
 
-        then: "the data is rejected"
+        then: "a client boundary violation is detected"
         thrown(ClientBoundaryViolationException)
     }
 
