@@ -38,7 +38,6 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.UnitRepository;
@@ -68,15 +67,8 @@ public class DeleteUnitUseCase
 
   @Override
   public EmptyOutput execute(InputData input) {
-    Client client =
-        clientRepository
-            .findById(input.getAuthenticatedClient().getId())
-            .orElseThrow(() -> new NotFoundException("Invalid client ID"));
-
-    Unit unit =
-        unitRepository
-            .findById(input.unitId)
-            .orElseThrow(() -> new NotFoundException("Invalid unit ID"));
+    Client client = clientRepository.getById(input.getAuthenticatedClient().getId());
+    Unit unit = unitRepository.getById(input.unitId);
     unit.checkSameClient(client);
 
     removeObjectsInUnit(unit);

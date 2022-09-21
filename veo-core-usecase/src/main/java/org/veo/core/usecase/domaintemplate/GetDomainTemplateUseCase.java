@@ -50,7 +50,7 @@ public class GetDomainTemplateUseCase
     DomainTemplate domainTemplate =
         templateService
             .getTemplate(client, input.getId())
-            .orElseThrow(() -> new NotFoundException("Invalid domain template"));
+            .orElseThrow(() -> new NotFoundException(input.getId(), DomainTemplate.class));
     return new OutputData(domainTemplate);
   }
 

@@ -17,7 +17,11 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import java.util.UUID;
+
 import org.veo.core.entity.Catalog;
+import org.veo.core.entity.Key;
+import org.veo.core.entity.exception.NotFoundException;
 
 /**
  * A repository for <code>Catalog</code> entities.
@@ -25,4 +29,8 @@ import org.veo.core.entity.Catalog;
  * <p>Implements basic CRUD operations from the superinterface and extends them with more specific
  * methods - i.e. queries based on particular fields.
  */
-public interface CatalogRepository extends IdentifiableVersionedRepository<Catalog> {}
+public interface CatalogRepository extends IdentifiableVersionedRepository<Catalog> {
+  default Catalog getById(Key<UUID> id) {
+    return findById(id).orElseThrow(() -> new NotFoundException(id, Catalog.class));
+  }
+}

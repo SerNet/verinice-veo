@@ -25,6 +25,6 @@ import org.veo.core.usecase.base.GetElementUseCase;
 public class GetControlUseCase extends GetElementUseCase<Control> {
 
   public GetControlUseCase(ControlRepository repository) {
-    super(repository);
+    super(repository, Control.class);
   }
 }

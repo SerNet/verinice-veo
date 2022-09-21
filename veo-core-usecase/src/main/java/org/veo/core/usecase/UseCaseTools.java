@@ -41,7 +41,7 @@ public final class UseCaseTools {
   public static Client checkClientExists(Key<UUID> clientId, ClientRepository clientRepository) {
     return clientRepository
         .findById(clientId)
-        .orElseThrow(() -> new NotFoundException("Invalid client ID"));
+        .orElseThrow(() -> new NotFoundException(clientId, Client.class));
   }
 
   /**

@@ -68,10 +68,7 @@ public class GetIncarnationDescriptionUseCase
   @Override
   public OutputData execute(InputData input) {
     log.info("GetIncarnationDescriptionUseCase: {}", input);
-    Unit unit =
-        unitRepository
-            .findByIdFetchClient(input.getContainerId())
-            .orElseThrow(() -> new NotFoundException("Unit %s not found.", input.getContainerId()));
+    Unit unit = unitRepository.getByIdFetchClient(input.getContainerId());
     unit.checkSameClient(input.authenticatedClient);
     validateInput(input);
     List<Key<UUID>> catalogItemIds = input.getCatalogItemIds();
@@ -84,7 +81,7 @@ public class GetIncarnationDescriptionUseCase
                 id -> {
                   CatalogItem catalogItem = catalogItemsbyId.get(id);
                   if (catalogItem == null) {
-                    throw new NotFoundException("CatalogItem not found %s", id);
+                    throw new NotFoundException(id, CatalogItem.class);
                   }
                   return catalogItem;
                 })

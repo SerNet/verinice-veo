@@ -67,8 +67,7 @@ public class CreateDomainTemplateFromDomainUseCase
         repository
             .findByIdWithProfilesAndRiskDefinitions(
                 input.getId(), input.authenticatedClient.getId())
-            .orElseThrow(
-                () -> new NotFoundException("Domain with id %s not found.", input.getId()));
+            .orElseThrow(() -> new NotFoundException(input.getId(), Domain.class));
     Client client = input.getAuthenticatedClient();
     if (!client.equals(domain.getOwner())) {
       throw new ClientBoundaryViolationException(domain, client);

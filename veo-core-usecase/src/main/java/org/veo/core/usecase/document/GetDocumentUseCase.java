@@ -25,6 +25,6 @@ import org.veo.core.usecase.base.GetElementUseCase;
 public class GetDocumentUseCase extends GetElementUseCase<Document> {
 
   public GetDocumentUseCase(DocumentRepository repository) {
-    super(repository);
+    super(repository, Document.class);
   }
 }

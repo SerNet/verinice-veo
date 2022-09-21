@@ -79,7 +79,7 @@ public class EntitySchemaController implements EntitySchemaResource {
           for (String domainId : domainIDs) {
             Domain domain = clientDomainsById.get(domainId);
             if (domain == null) {
-              throw new NotFoundException("Domain %s not found", domainId);
+              throw new NotFoundException(domainId, Domain.class);
             }
             domains.add(domain);
           }

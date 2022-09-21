@@ -21,7 +21,6 @@ import java.util.UUID;
 
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.UnitRepository;
@@ -46,13 +45,7 @@ public class DeleteClientUseCase
     if (!accountProvider.getCurrentUserAccount().isAdmin()) {
       throw new MissingAdminPrivilegesException();
     }
-    var client =
-        clientRepository
-            .findById(input.clientId)
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        String.format("Client %s does not exist", input.clientId)));
+    var client = clientRepository.getById(input.clientId);
     unitRepository
         .findByClient(client)
         .forEach(

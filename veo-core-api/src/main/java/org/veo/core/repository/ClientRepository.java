@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.exception.NotFoundException;
 
 /**
  * A repository for <code>Client</code> entities.
@@ -41,4 +42,8 @@ public interface ClientRepository extends IdentifiableVersionedRepository<Client
   Optional<Client> findByIdFetchTranslations(Key<UUID> id);
 
   List<Client> findAll();
+
+  default Client getById(Key<UUID> clientId) {
+    return findById(clientId).orElseThrow(() -> new NotFoundException(clientId, Client.class));
+  }
 }

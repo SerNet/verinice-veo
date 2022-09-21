@@ -51,18 +51,12 @@ public class GetRiskUseCase<T extends RiskAffected<T, R>, R extends AbstractRisk
         repositoryProvider
             .getRepositoryFor(entityClass)
             .findById(input.entityRef)
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        "Entity with UUID %s not found", input.entityRef.uuidValue()));
+            .orElseThrow(() -> new NotFoundException(input.entityRef, entityClass));
     var scenario =
         repositoryProvider
             .getRepositoryFor(Scenario.class)
             .findById(input.scenarioRef)
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        "Scenario with UUID %s not found", input.scenarioRef.uuidValue()));
+            .orElseThrow(() -> new NotFoundException(input.scenarioRef, Scenario.class));
 
     entity.checkSameClient(input.authenticatedClient);
     scenario.checkSameClient(input.authenticatedClient);

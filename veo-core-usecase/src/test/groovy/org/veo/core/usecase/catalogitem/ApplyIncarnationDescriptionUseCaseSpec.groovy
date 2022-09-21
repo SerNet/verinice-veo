@@ -220,7 +220,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         otherDomain.modelInterface >> Domain.class
         domainRepository
                 .findByCatalogItem(item2) >> Optional.of(otherDomain)
-        domainRepository.findById(otherDomainId) >> Optional.of(otherDomain)
+        domainRepository.getById(otherDomainId) >> otherDomain
 
         Catalog other = Mock()
         item2.catalog >> other

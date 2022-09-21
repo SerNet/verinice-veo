@@ -967,8 +967,10 @@ public class ModuleConfiguration {
 
   @Bean
   GetElementStatusCountUseCase getElementStatusCountUseCase(
-      DomainRepository domainRepository, RepositoryProvider repositoryProvider) {
-    return new GetElementStatusCountUseCase(domainRepository, repositoryProvider);
+      DomainRepository domainRepository,
+      UnitRepository unitRepository,
+      RepositoryProvider repositoryProvider) {
+    return new GetElementStatusCountUseCase(domainRepository, unitRepository, repositoryProvider);
   }
 
   @Bean

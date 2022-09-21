@@ -55,7 +55,8 @@ public class GetUnitsUseCase
     Client client =
         repository
             .findById(input.getAuthenticatedClient().getId())
-            .orElseThrow(() -> new NotFoundException("Invalid client-ID"));
+            .orElseThrow(
+                () -> new NotFoundException(input.getAuthenticatedClient().getId(), Client.class));
 
     if (input.getParentUuid().isEmpty()) return new OutputData(unitRepository.findByClient(client));
     else {
@@ -63,9 +64,7 @@ public class GetUnitsUseCase
       Unit parentUnit =
           unitRepository
               .findById(parentId)
-              .orElseThrow(
-                  () ->
-                      new NotFoundException("Invalid parent ID: %s", input.getParentUuid().get()));
+              .orElseThrow(() -> new NotFoundException(parentId, Unit.class));
       return new OutputData(unitRepository.findByParent(parentUnit));
     }
   }

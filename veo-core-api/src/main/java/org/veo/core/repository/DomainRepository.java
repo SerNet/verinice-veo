@@ -24,6 +24,7 @@ import java.util.UUID;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.exception.NotFoundException;
 
 /**
  * A repository for <code>Domain</code> entities.
@@ -46,4 +47,8 @@ public interface DomainRepository extends IdentifiableVersionedRepository<Domain
   Optional<Domain> findById(Key<UUID> domainId, Key<UUID> clientId);
 
   Optional<Domain> findByIdWithProfilesAndRiskDefinitions(Key<UUID> id, Key<UUID> clientId);
+
+  default Domain getById(Key<UUID> id) {
+    return findById(id).orElseThrow(() -> new NotFoundException(id, Domain.class));
+  }
 }

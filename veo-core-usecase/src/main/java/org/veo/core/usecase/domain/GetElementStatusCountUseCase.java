@@ -34,6 +34,7 @@ import org.veo.core.entity.statistics.ElementStatusCounts;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.SubTypeStatusCount;
+import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
@@ -48,14 +49,12 @@ public class GetElementStatusCountUseCase
         GetElementStatusCountUseCase.InputData, GetElementStatusCountUseCase.OutputData> {
 
   private final DomainRepository domainRepository;
+  private final UnitRepository unitRepository;
   private final RepositoryProvider repositoryProvider;
 
   @Override
   public OutputData execute(InputData input) {
-    Domain domain =
-        domainRepository
-            .findById(input.getDomainId())
-            .orElseThrow(() -> new NotFoundException(input.getDomainId().uuidValue()));
+    Domain domain = domainRepository.getById(input.getDomainId());
     Client client = input.getAuthenticatedClient();
     if (!client.equals(domain.getOwner())) {
       throw new ClientBoundaryViolationException(domain, client);
@@ -63,11 +62,7 @@ public class GetElementStatusCountUseCase
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }
-    Unit unit =
-        repositoryProvider
-            .getRepositoryFor(Unit.class)
-            .findById(input.getUnitId())
-            .orElseThrow(() -> new NotFoundException(input.getUnitId().uuidValue()));
+    Unit unit = unitRepository.getById(input.getUnitId());
     unit.checkSameClient(input.getAuthenticatedClient());
 
     ElementStatusCounts elementStatusCounts = new ElementStatusCounts(domain);

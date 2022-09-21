@@ -27,6 +27,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
@@ -64,9 +65,7 @@ public class EvaluateElementUseCase
         input.element.getDomains().stream()
             .filter(d -> d.getId().equals(input.domainId))
             .findFirst()
-            .orElseThrow(
-                () ->
-                    new NotFoundException("Domain {} not found", input.getDomainId().uuidValue()));
+            .orElseThrow(() -> new NotFoundException(input.getDomainId(), Domain.class));
 
     // FIXME VEO-209 support risk values on all risk affected types
     if (input.element.getId() != null && input.element instanceof Process process) {

@@ -24,6 +24,6 @@ import org.veo.core.usecase.base.GetElementUseCase;
 public class GetAssetUseCase extends GetElementUseCase<Asset> {
 
   public GetAssetUseCase(AssetRepository repository) {
-    super(repository);
+    super(repository, Asset.class);
   }
 }

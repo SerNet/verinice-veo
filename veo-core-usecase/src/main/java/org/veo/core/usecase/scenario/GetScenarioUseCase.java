@@ -25,6 +25,6 @@ import org.veo.core.usecase.base.GetElementUseCase;
 public class GetScenarioUseCase extends GetElementUseCase<Scenario> {
 
   public GetScenarioUseCase(ScenarioRepository repository) {
-    super(repository);
+    super(repository, Scenario.class);
   }
 }

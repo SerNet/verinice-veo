@@ -41,10 +41,7 @@ public class GetCatalogUseCase
 
   @Override
   public OutputData execute(IdAndClient input) {
-    Catalog catalog =
-        repository
-            .findById(input.getId())
-            .orElseThrow(() -> new NotFoundException(input.getId().uuidValue()));
+    Catalog catalog = repository.getById(input.getId());
     DomainTemplate domaintemplate = catalog.getDomainTemplate();
     UseCaseTools.checkDomainBelongsToClient(input.getAuthenticatedClient(), domaintemplate);
     if (!((Domain) domaintemplate).isActive()) {

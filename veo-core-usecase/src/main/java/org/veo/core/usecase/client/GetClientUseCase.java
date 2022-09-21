@@ -25,7 +25,6 @@ import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -49,10 +48,7 @@ public class GetClientUseCase
   @Override
   @Transactional(TxType.SUPPORTS)
   public OutputData execute(InputData input) {
-    return repository
-        .findById(input.getClientId())
-        .map(OutputData::new)
-        .orElseThrow(() -> new NotFoundException(input.getClientId().uuidValue()));
+    return new OutputData(repository.getById(input.getClientId()));
   }
 
   @Valid

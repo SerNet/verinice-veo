@@ -56,7 +56,7 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         control.getModelInterface() >> Control.class
         newControl.links >> []
 
-        catalogItemRepository.findById(id) >> Optional.of(item1)
+        catalogItemRepository.getById(id) >> item1
 
 
         when: "get the apply data for item"

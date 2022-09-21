@@ -22,6 +22,7 @@ import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
+import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.CatalogItemRepository
 import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.ElementQuery
@@ -51,9 +52,9 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
 
     def setup() {
         // state the obvious
-        unitRepo.findByIdFetchClient(existingUnit.id) >> Optional.of(existingUnit)
-        unitRepo.findByIdFetchClient(_) >> Optional.empty()
-        unitRepo.findById(_) >> Optional.empty()
+        unitRepo.getByIdFetchClient(existingUnit.id) >> existingUnit
+        unitRepo.getByIdFetchClient(_) >> { throw new NotFoundException("") }
+        unitRepo.getById(_) >> { throw new NotFoundException("") }
 
 
 
@@ -68,7 +69,7 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
         existingDomain.id >> existingDomainId
         existingDomain.owner >> existingClient
         existingDomain.modelInterface >> Domain.class
-        domainRepository.findById(existingDomainId) >> Optional.of(existingDomain)
+        domainRepository.getById(existingDomainId) >> existingDomain
 
         def id = Key.newUuid()
         item1.id >> id

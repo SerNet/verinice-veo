@@ -23,7 +23,6 @@ import java.util.UUID;
 
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.UnitRepository;
 
 /** Provides data from within unit hierarchies. */
@@ -41,10 +40,7 @@ public class UnitHierarchyProvider {
    * @return A flat collection containing the root unit and all its descendants.
    */
   public Set<Unit> findAllInRoot(Key<UUID> rootUnitId) {
-    Unit root =
-        unitRepository
-            .findById(rootUnitId)
-            .orElseThrow(() -> new NotFoundException("No Unit found with ID %s", rootUnitId));
+    Unit root = unitRepository.getById(rootUnitId);
     var units = new HashSet<Unit>();
     addUnitHierarchyToSet(root, units);
     return units;

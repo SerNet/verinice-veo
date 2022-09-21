@@ -41,10 +41,7 @@ public class ExportDomainUseCase
 
   @Override
   public OutputData execute(IdAndClient input) {
-    Domain domain =
-        repository
-            .findById(input.getId())
-            .orElseThrow(() -> new NotFoundException(input.getId().uuidValue()));
+    Domain domain = repository.getById(input.getId());
     Client client = input.getAuthenticatedClient();
     if (!client.equals(domain.getOwner())) {
       throw new ClientBoundaryViolationException(domain, client);

@@ -137,7 +137,7 @@ class UnitRestTestITSpec extends VeoRestTest {
         with(deletedResponse) {
             success == false
             resourceId == null
-            message == postResponse.resourceId
+            message == "Unit with ID ${postResponse.resourceId} not found"
         }
     }
 

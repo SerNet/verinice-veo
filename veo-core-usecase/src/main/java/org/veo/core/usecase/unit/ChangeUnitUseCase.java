@@ -21,7 +21,6 @@ import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -53,13 +52,7 @@ public abstract class ChangeUnitUseCase
   public OutputData execute(InputData input) {
     log.info("Updating unit with id {}", input.getChangedUnit().getId().uuidValue());
 
-    var storedUnit =
-        unitRepository
-            .findById(input.getChangedUnit().getId())
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        "Unit %s was not found.", input.getChangedUnit().getId().uuidValue()));
+    var storedUnit = unitRepository.getById(input.getChangedUnit().getId());
     checkSameClient(storedUnit, input);
     checkETag(storedUnit, input);
     var updatedUnit = update(storedUnit, input);

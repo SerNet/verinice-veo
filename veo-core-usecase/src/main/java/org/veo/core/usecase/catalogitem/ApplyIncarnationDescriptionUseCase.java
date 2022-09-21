@@ -47,7 +47,6 @@ import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TailoringReferenceTyped;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.transform.EntityFactory;
@@ -90,10 +89,7 @@ public class ApplyIncarnationDescriptionUseCase
   @Override
   public OutputData execute(InputData input) {
     log.info("ApplyIncarnationDescriptionUseCase: {}", input);
-    Unit unit =
-        unitRepository
-            .findByIdFetchClient(input.getContainerId())
-            .orElseThrow(() -> new NotFoundException("Unit %s not found.", input.getContainerId()));
+    Unit unit = unitRepository.getByIdFetchClient(input.getContainerId());
     Client authenticatedClient = input.authenticatedClient;
     unit.checkSameClient(authenticatedClient);
     List<IncarnateCatalogItemDescription> referencesToApply = input.getReferencesToApply();
@@ -131,14 +127,7 @@ public class ApplyIncarnationDescriptionUseCase
 
     Map<Key<UUID>, Domain> usedDomains =
         usedDomains1.stream()
-            .collect(
-                Collectors.toMap(
-                    Function.identity(),
-                    k ->
-                        domainRepository
-                            .findById(k)
-                            .orElseThrow(
-                                () -> new ReferenceTargetNotFoundException(k, Domain.class))));
+            .collect(Collectors.toMap(Function.identity(), domainRepository::getById));
 
     usedDomains
         .values()

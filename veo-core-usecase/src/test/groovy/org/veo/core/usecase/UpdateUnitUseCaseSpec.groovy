@@ -44,7 +44,7 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
         def output = updateUseCase.execute(new ChangeUnitUseCase.InputData(newUnit, this.existingClient, eTagNewUnit, USER_NAME))
 
         then: "the existing unit was retrieved"
-        1 * unitRepository.findById(_) >> Optional.of(this.existingUnit)
+        1 * unitRepository.getById(_) >> this.existingUnit
 
         and: "client boundaries were validated"
         1 * this.existingUnit.checkSameClient(existingClient)
@@ -77,7 +77,7 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
         updateUseCase.execute(new ChangeUnitUseCase.InputData(newUnit, maliciousClient, eTag, USER_NAME))
 
         then: "a unit was retrieved"
-        unitRepository.findById(_) >> Optional.of(this.existingUnit)
+        unitRepository.getById(_) >> this.existingUnit
         existingUnit.checkSameClient(_) >> { throw new ClientBoundaryViolationException(existingUnit, maliciousClient) }
 
         and: "the security violation was prevented"

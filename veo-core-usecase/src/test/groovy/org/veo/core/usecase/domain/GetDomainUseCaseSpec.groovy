@@ -36,8 +36,8 @@ class GetDomainUseCaseSpec extends UseCaseSpec {
         existingDomain.getId() >> existingDomainId
         existingDomain.owner >> existingClient
 
-        repository.findById(existingDomainId) >> Optional.of(existingDomain)
-        repository.findById(_) >> Optional.empty()
+        repository.getById(existingDomainId) >> existingDomain
+        repository.getById(_) >> {throw new NotFoundException("")}
     }
 
     def "retrieve a domain"() {

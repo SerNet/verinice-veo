@@ -24,6 +24,7 @@ import java.util.UUID;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.exception.NotFoundException;
 
 /**
  * A repository for <code>Unit</code> entities.
@@ -38,4 +39,12 @@ public interface UnitRepository extends IdentifiableVersionedRepository<Unit> {
   List<Unit> findByParent(Unit parent);
 
   Optional<Unit> findByIdFetchClient(Key<UUID> id);
+
+  default Unit getById(Key<UUID> unitId) {
+    return findById(unitId).orElseThrow(() -> new NotFoundException(unitId, Unit.class));
+  }
+
+  default Unit getByIdFetchClient(Key<UUID> unitId) {
+    return findByIdFetchClient(unitId).orElseThrow(() -> new NotFoundException(unitId, Unit.class));
+  }
 }

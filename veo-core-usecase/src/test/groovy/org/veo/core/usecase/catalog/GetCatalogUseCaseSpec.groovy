@@ -51,9 +51,9 @@ class GetCatalogUseCaseSpec extends UseCaseSpec {
         catalog1.getId() >> catalog1Id
         catalog1.getDomainTemplate() >> domaintemplate
 
-        repository.findById(catalogId) >> Optional.of(catalog)
-        repository.findById(catalog1Id) >> Optional.of(catalog1)
-        repository.findById(_) >> Optional.empty()
+        repository.getById(catalogId) >> catalog
+        repository.getById(catalog1Id) >> catalog1
+        repository.getById(_) >> { throw new NotFoundException("") }
     }
 
 

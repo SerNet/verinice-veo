@@ -25,22 +25,21 @@ import org.veo.core.repository.ElementRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
+@RequiredArgsConstructor
 public class GetElementUseCase<T extends CompositeElement<T>>
     implements TransactionalUseCase<UseCase.IdAndClient, GetElementUseCase.OutputData<T>> {
 
   private final ElementRepository<T> repository;
-
-  public GetElementUseCase(ElementRepository<T> repository) {
-    this.repository = repository;
-  }
+  private final Class<T> type;
 
   public OutputData<T> execute(IdAndClient input) {
     T element =
         repository
             .findById(input.getId())
-            .orElseThrow(() -> new NotFoundException(input.getId().uuidValue()));
+            .orElseThrow(() -> new NotFoundException(input.getId(), type));
     element.checkSameClient(input.getAuthenticatedClient());
     return new OutputData<>(element);
   }

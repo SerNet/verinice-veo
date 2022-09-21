@@ -52,7 +52,7 @@ public class GetCatalogItemUseCase
             .flatMap(c -> c.getCatalogItems().stream())
             .filter(item -> item.getId().equals(input.itemId))
             .findFirst()
-            .orElseThrow(() -> new NotFoundException(input.itemId.uuidValue()));
+            .orElseThrow(() -> new NotFoundException(input.itemId, CatalogItem.class));
 
     return new OutputData(catalogItem);
   }

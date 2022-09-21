@@ -25,6 +25,6 @@ import org.veo.core.usecase.base.GetElementUseCase;
 public class GetIncidentUseCase extends GetElementUseCase<Incident> {
 
   public GetIncidentUseCase(IncidentRepository repository) {
-    super(repository);
+    super(repository, Incident.class);
   }
 }

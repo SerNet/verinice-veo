@@ -25,6 +25,6 @@ import org.veo.core.usecase.base.GetElementUseCase;
 public class GetPersonUseCase extends GetElementUseCase<Person> {
 
   public GetPersonUseCase(PersonRepository repository) {
-    super(repository);
+    super(repository, Person.class);
   }
 }

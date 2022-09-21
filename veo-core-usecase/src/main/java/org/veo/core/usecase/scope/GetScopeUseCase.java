@@ -42,7 +42,7 @@ public class GetScopeUseCase
     Scope scope =
         scopeRepository
             .findById(input.getId())
-            .orElseThrow(() -> new NotFoundException(input.getId().uuidValue()));
+            .orElseThrow(() -> new NotFoundException(input.getId(), Scope.class));
     scope.checkSameClient(input.getAuthenticatedClient());
     return new OutputData(scope);
   }

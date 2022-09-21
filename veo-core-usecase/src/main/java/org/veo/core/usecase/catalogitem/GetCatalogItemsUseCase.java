@@ -51,7 +51,7 @@ public class GetCatalogItemsUseCase
             .flatMap(d -> d.getCatalogs().stream())
             .filter(EntitySpecifications.hasId(input.catalogId))
             .findFirst()
-            .orElseThrow(() -> new NotFoundException(input.catalogId.uuidValue()));
+            .orElseThrow(() -> new NotFoundException(input.catalogId, Catalog.class));
     List<CatalogItem> list =
         catalog.getCatalogItems().stream()
             .filter(

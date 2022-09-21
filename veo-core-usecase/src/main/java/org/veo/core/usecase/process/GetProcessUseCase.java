@@ -47,7 +47,7 @@ public class GetProcessUseCase
     var process =
         processRepository
             .findById(input.getId(), shouldEmbedRisks(input))
-            .orElseThrow(() -> new NotFoundException(input.getId().uuidValue()));
+            .orElseThrow(() -> new NotFoundException(input.getId(), Process.class));
     process.checkSameClient(input.getAuthenticatedClient());
     return new GetElementUseCase.OutputData<>(process);
   }

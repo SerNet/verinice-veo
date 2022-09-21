@@ -38,7 +38,7 @@ class UnitHierarchyProviderTest extends Specification{
         def rootChild1 = Mock(Unit)
         def rootChild1Child0 = Mock(Unit)
 
-        unitRepository.findById(rootId) >> Optional.of(root)
+        unitRepository.getById(rootId) >> root
         unitRepository.findByParent(root) >> [rootChild0, rootChild1]
         unitRepository.findByParent(rootChild0) >> [
             rootChild0Child0,

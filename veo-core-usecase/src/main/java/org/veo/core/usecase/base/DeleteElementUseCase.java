@@ -59,11 +59,7 @@ public class DeleteElementUseCase
     Element entity =
         repository
             .findById(input.getId())
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        "%s %s was not found.",
-                        input.entityClass.getSimpleName(), input.getId().uuidValue()));
+            .orElseThrow(() -> new NotFoundException(input.getId(), input.entityClass));
     entity.checkSameClient(input.authenticatedClient);
     entity.remove();
     repository.deleteById(entity.getId());

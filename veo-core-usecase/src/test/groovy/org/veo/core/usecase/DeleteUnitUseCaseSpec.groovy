@@ -77,8 +77,8 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
         2 * repositoryProvider.getElementRepositoryFor(Process) >> processRepository
         2 * repositoryProvider.getElementRepositoryFor(Scenario) >> scenarioRepository
         2 * repositoryProvider.getElementRepositoryFor(Scope) >> scopeRepository
-        1 * clientRepository.findById(_) >> Optional.of(existingClient)
-        1 * unitRepository.findById(_) >> Optional.of(existingUnit)
+        1 * clientRepository.getById(_) >> existingClient
+        1 * unitRepository.getById(_) >> existingUnit
         1 * scopeRepository.findByUnit(existingUnit) >> scopes
         1 * scopeRepository.deleteAll(scopes)
         1 * assetRepository.findByUnit(existingUnit) >> assets

@@ -47,7 +47,7 @@ public class GetUnitUseCase
     Unit unit =
         repository
             .findById(input.getId())
-            .orElseThrow(() -> new NotFoundException(input.getId().uuidValue()));
+            .orElseThrow(() -> new NotFoundException(input.getId(), Unit.class));
     unit.checkSameClient(input.getAuthenticatedClient());
     return new OutputData(unit);
   }
