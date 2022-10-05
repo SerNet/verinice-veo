@@ -21,6 +21,7 @@ import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -43,7 +44,12 @@ public abstract class ModifyElementUseCase<T extends Element>
   public OutputData<T> execute(InputData<T> input) {
     T entity = input.getElement();
     entity.checkSameClient(input.getAuthenticatedClient());
-    var storedEntity = repo.findById(input.element.getId()).orElseThrow();
+    var storedEntity =
+        repo.findById(input.element.getId())
+            .orElseThrow(
+                () ->
+                    new NotFoundException(
+                        input.element.getId(), input.element.getModelInterface()));
     checkETag(storedEntity, input);
     entity.version(input.username, storedEntity);
     checkClientBoundaries(input, storedEntity);
