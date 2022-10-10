@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jochen Kemnade
+ * Copyright (C) 2022  Jochen Kemnade.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,13 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core;
+package org.veo.rest;
 
-public interface Translations {
+/**
+ * The keys for the static veo i18n. All entries will be looked up in the application message and
+ * sent to the front-end via the {@link org.veo.rest.schemas.controller.TranslationController}.
+ */
+public enum VeoMessage {
+  ABBREVIATION("abbreviation"),
+  DESCRIPTION("description"),
+  NAME("name");
 
-  /**
-   * Adds an entry for a specific language to the translations. A potential existing entry will be
-   * overwritten.
-   */
-  void add(String language, String key, String message);
+  private final String messageKey;
+
+  VeoMessage(String messageKey) {
+    this.messageKey = messageKey;
+  }
+
+  public String getMessageKey() {
+    return messageKey;
+  }
 }

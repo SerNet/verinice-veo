@@ -17,10 +17,12 @@
  ******************************************************************************/
 package org.veo.rest.schemas.controller;
 
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -32,6 +34,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.service.EntitySchemaService;
+import org.veo.rest.VeoMessage;
 import org.veo.rest.schemas.resource.TranslationsResource;
 import org.veo.rest.security.ApplicationUser;
 
@@ -46,6 +49,8 @@ public class TranslationController implements TranslationsResource {
 
   private final ClientRepository clientRepository;
 
+  private final MessageSource messageSource;
+
   @Override
   public CompletableFuture<ResponseEntity<TranslationsDto>> getSchema(
       Authentication auth, @RequestParam(value = "languages") Set<String> languages) {
@@ -54,6 +59,18 @@ public class TranslationController implements TranslationsResource {
     return CompletableFuture.supplyAsync(
         () -> {
           Translations t10n = schemaService.findTranslations(client, languages);
+          // TODO VEO-526 evaluate languages parameter
+          Set.of("de", "en")
+              .forEach(
+                  lang -> {
+                    for (VeoMessage veoMessage : VeoMessage.values()) {
+                      t10n.add(
+                          lang,
+                          veoMessage.getMessageKey(),
+                          messageSource.getMessage(
+                              veoMessage.getMessageKey(), null, Locale.forLanguageTag(lang)));
+                    }
+                  });
           return ResponseEntity.ok().body((TranslationsDto) t10n);
         });
   }

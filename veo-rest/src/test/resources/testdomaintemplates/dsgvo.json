@@ -3977,9 +3977,6 @@
       },
       "translations": {
         "de": {
-          "abbreviation": "Abkürzung",
-          "description": "Beschreibung",
-          "name": "Name",
           "process_generalInformation_document": "Dokument",
           "process_processingDetails_responsibleDepartment": "Verantwortliche Fachabteilung",
           "process_processingDetails_typeOfSurvey": "Art der Erhebung",
@@ -4228,9 +4225,6 @@
           "process_PRO_DPIA_status_ARCHIVED": "Archiviert"
         },
         "en": {
-          "abbreviation": "Abbreviation",
-          "description": "Description",
-          "name": "Name",
           "process_generalInformation_document": "Document",
           "process_processingDetails_responsibleDepartment": "Responsible department",
           "process_processingDetails_typeOfSurvey": "Type of survey",
@@ -4561,9 +4555,6 @@
       },
       "translations": {
         "de": {
-          "abbreviation": "Abkürzung",
-          "description": "Beschreibung",
-          "name": "Name",
           "scenario_generalInformation_document": "Dokument",
           "scenario_vulnerability_type_organisationalDeficiencies": "Organisatorische Mängel",
           "scenario_vulnerability_type_technicalVulnerabilities": "Technische Schwachstellen",
@@ -4607,9 +4598,6 @@
           "scenario_SCN_Scenario_status_ARCHIVED": "Archiviert"
         },
         "en": {
-          "abbreviation": "Abbreviation",
-          "description": "Description",
-          "name": "Name",
           "scenario_generalInformation_document": "Document",
           "scenario_vulnerability_type_organisationalDeficiencies": "Organisational deficiencies",
           "scenario_vulnerability_type_technicalVulnerabilities": "Technical vulnerabilities",
@@ -4756,9 +4744,6 @@
       },
       "translations": {
         "de": {
-          "abbreviation": "Abkürzung",
-          "description": "Beschreibung",
-          "name": "Name",
           "person_generalInformation_salutation": "Anrede",
           "person_generalInformation_title": "Titel",
           "person_generalInformation_givenName": "Vorname",
@@ -4789,9 +4774,6 @@
           "person_PER_Person_status_ARCHIVED": "Archiviert"
         },
         "en": {
-          "abbreviation": "Abbreviation",
-          "description": "Description",
-          "name": "Name",
           "person_generalInformation_salutation": "Salutation",
           "person_generalInformation_title": "Title",
           "person_generalInformation_givenName": "Given name",
@@ -5092,9 +5074,6 @@
       },
       "translations": {
         "de": {
-          "abbreviation": "Abkürzung",
-          "description": "Beschreibung",
-          "name": "Name",
           "scope_management": "Leitung der Verantwortlichen Stelle",
           "scope_headOfDataProcessing": "Leitung der Datenverarbeitung / IT",
           "scope_informationSecurityOfficer": "Informationssicherheitsbeauftragte",
@@ -5176,9 +5155,6 @@
           "scope_SCP_Scope_status_ARCHIVED": "Archiviert"
         },
         "en": {
-          "abbreviation": "Abbreviation",
-          "description": "Description",
-          "name": "Name",
           "scope_management": "Head of the responsible body",
           "scope_headOfDataProcessing": "Head of data processing / IT",
           "scope_informationSecurityOfficer": "Information security officer",
@@ -5372,9 +5348,6 @@
       },
       "translations": {
         "de": {
-          "abbreviation": "Abkürzung",
-          "description": "Beschreibung",
-          "name": "Name",
           "document_generalInformation_externalLink": "Externer Link",
           "document_details_typeOfDocument": "Dokumententyp",
           "document_details_typeOfDocument_policy": "Richtlinie",
@@ -5417,9 +5390,6 @@
           "document_DOC_Document_status_ARCHIVED": "Archiviert"
         },
         "en": {
-          "abbreviation": "Abbreviation",
-          "description": "Description",
-          "name": "Name",
           "document_generalInformation_externalLink": "External link",
           "document_details_typeOfDocument": "Type of document",
           "document_details_typeOfDocument_policy": "Policy",
@@ -5544,9 +5514,6 @@
       },
       "translations": {
         "de": {
-          "abbreviation": "Abkürzung",
-          "description": "Beschreibung",
-          "name": "Name",
           "control_generalInformation_document": "Dokument",
           "control_implementation_status": "Umsetzungsstatus",
           "control_implementation_explanation": "Erläuterung",
@@ -5574,9 +5541,6 @@
           "control_CTL_TOM_status_ARCHIVED": "Archiviert"
         },
         "en": {
-          "abbreviation": "Abbreviation",
-          "description": "Description",
-          "name": "Name",
           "control_generalInformation_document": "Document",
           "control_implementation_status": "Implementation status",
           "control_implementation_explanation": "Explanation",
@@ -5666,9 +5630,6 @@
       },
       "translations": {
         "de": {
-          "abbreviation": "Abkürzung",
-          "description": "Beschreibung",
-          "name": "Name",
           "asset_generalInformation_document": "Dokument",
           "asset_details_number": "Anzahl",
           "asset_details_operatingStage": "Betriebsstadium",
@@ -5693,9 +5654,6 @@
           "asset_AST_IT-System_status_ARCHIVED": "Archiviert"
         },
         "en": {
-          "abbreviation": "Abbreviation",
-          "description": "Description",
-          "name": "Name",
           "asset_generalInformation_document": "Document",
           "asset_details_number": "Number",
           "asset_details_operatingStage": "Operating stage",
@@ -5741,9 +5699,6 @@
       },
       "translations": {
         "de": {
-          "abbreviation": "Abkürzung",
-          "description": "Beschreibung",
-          "name": "Name",
           "incident_INC_Incident_status_NEW": "Neu",
           "incident_INC_Incident_status_IN_PROGRESS": "In Bearbeitung",
           "incident_INC_Incident_status_FOR_REVIEW": "Zur Prüfung",
@@ -5751,9 +5706,6 @@
           "incident_INC_Incident_status_ARCHIVED": "Archiviert"
         },
         "en": {
-          "abbreviation": "Abbreviation",
-          "description": "Description",
-          "name": "Name",
           "incident_INC_Incident_status_NEW": "New",
           "incident_INC_Incident_status_IN_PROGRESS": "In progress",
           "incident_INC_Incident_status_FOR_REVIEW": "For review",

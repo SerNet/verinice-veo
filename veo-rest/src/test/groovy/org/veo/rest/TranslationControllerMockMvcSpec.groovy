@@ -42,5 +42,9 @@ class TranslationControllerMockMvcSpec extends VeoMvcSpec {
         then: "a correct response is returned"
         translations.lang.de.person_address_city == "Stadt"
         translations.lang.en.person_address_city == "City"
+
+        and: "the response contains translations for the standard properties"
+        translations.lang.de.name == 'Name'
+        translations.lang.en.description == 'Description'
     }
 }
