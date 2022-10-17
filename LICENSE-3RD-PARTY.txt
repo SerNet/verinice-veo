@@ -530,7 +530,7 @@ from the source code management (SCM) system project uses.
 
 --------------------------------------------------------------------------------
 
-9. Group: com.fasterxml.jackson.core  Name: jackson-databind  Version: 2.13.4
+9. Group: com.fasterxml.jackson.core  Name: jackson-databind  Version: 2.13.4.2
 
 Project URL: http://github.com/FasterXML/jackson
 
@@ -19433,5 +19433,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Fri Oct 14 14:59:54 CEST 2022.
+This report was generated at Mon Oct 17 05:06:26 UTC 2022.
 
