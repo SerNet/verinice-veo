@@ -24,7 +24,24 @@ package org.veo.rest;
 public enum VeoMessage {
   ABBREVIATION("abbreviation"),
   DESCRIPTION("description"),
-  NAME("name");
+  NAME("name"),
+
+  ASSET("asset"),
+  ASSETS("assets"),
+  CONTROL("control"),
+  CONTROLS("controls"),
+  DOCUMENT("document"),
+  DOCUMENTS("documents"),
+  INCIDENT("incident"),
+  INCIDENTS("incidents"),
+  PERSON("person"),
+  PERSONS("persons"),
+  PROCESS("process"),
+  PROCESSES("processes"),
+  SCENARIO("scenario"),
+  SCENARIOS("scenarios"),
+  SCOPE("scope"),
+  SCOPES("scopes");
 
   private final String messageKey;
 

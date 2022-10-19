@@ -47,5 +47,11 @@ class TranslationControllerMockMvcSpec extends VeoMvcSpec {
         translations.lang.de.name == 'Name'
         translations.lang.de.abbreviation == 'Abkürzung'
         translations.lang.en.description == 'Description'
+
+        and: "the response contains translations for the element types"
+        translations.lang.de.document == 'Dokument'
+        translations.lang.de.scopes == 'Scopes'
+        translations.lang.en.control == 'control'
+        translations.lang.en.persons == 'persons'
     }
 }
