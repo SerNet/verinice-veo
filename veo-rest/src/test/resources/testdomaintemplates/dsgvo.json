@@ -4022,13 +4022,11 @@
           "process_informationsObligations_status": "Informationspflichten Art. 13, 14 DS-GVO erfüllt?",
           "process_informationsObligations_explanation": "Erläuterung",
           "process_informationsObligations_document": "Dokument",
-          "process_privacyImpactAssessment_processingOnWhitelist": "Verarbeitung auf Negativliste, Art. 35 V DS-GVO?",
           "process_privacyImpactAssessment_processingOperationAccordingArt35": "Teil gemeinsamer Verarbeitung gemäß Art. 35 I S.2 DS-GVO?",
           "process_privacyImpactAssessment_comment": "Bemerkung",
           "process_privacyImpactAssessment_otherExclusions": "Sonstiger Ausschlusstatbestand?",
           "process_privacyImpactAssessment_otherExclusionsComment": "Bemerkung",
           "process_privacyImpactAssessment_processingOnBlacklistArt35": "Verarbeitung auf Positivliste, Art. 35 IV DS-GVO?",
-          "process_privacyImpactAssessment_blacklistComment": "Bemerkung",
           "process_privacyImpactAssessment_processingCriteria": "Verarbeitung entspricht den folgenden Kriterien",
           "process_privacyImpactAssessment_processingCriteria_profiling": "Bewertung oder Einstufung (Scoring), Profilbildung und Prognosen Betroffener",
           "process_privacyImpactAssessment_processingCriteria_automated": "Automatisierte Entscheidungen mit rechtlicher oder ähnlich beeinträchtigender Wirkung",
@@ -4113,7 +4111,6 @@
           "process_dataTransfer_explanation": "Erläuterung",
           "process_dataTransfer_document": "Dokument",
           "process_privacyImpactAssessment_document": "Dokument",
-          "process_privacyImpactAssessment_blacklistDocument": "Dokument",
           "process_requiredApplications": "Erforderliche Anwendungen",
           "process_requiredITSystems": "Erforderliche IT-Systeme",
           "process_tom": "Spezifische Maßnahmen",
@@ -4222,7 +4219,13 @@
           "process_PRO_DPIA_status_IN_PROGRESS": "In Bearbeitung",
           "process_PRO_DPIA_status_FOR_REVIEW": "Zur Prüfung",
           "process_PRO_DPIA_status_RELEASED": "Freigegeben",
-          "process_PRO_DPIA_status_ARCHIVED": "Archiviert"
+          "process_PRO_DPIA_status_ARCHIVED": "Archiviert",
+          "process_privacyImpactAssessment_supervisoryAuthorityComment": "Kommentar",
+          "process_privacyImpactAssessment_listed": "Gelistet",
+          "process_privacyImpactAssessment_supervisoryAuthorityConsulted": "Konsultiert",
+          "process_privacyImpactAssessment_listed_negative": "Verarbeitung auf Negativliste, Art. 35 V DS-GVO",
+          "process_privacyImpactAssessment_listed_positive": "Verarbeitung auf Positivliste, Art. 35 IV DS-GVO",
+          "process_privacyImpactAssessment_listed_neither": "Nix"
         },
         "en": {
           "process_generalInformation_document": "Document",
@@ -4270,13 +4273,11 @@
           "process_informationsObligations_status": "Information obligations Art. 13, 14 GDPR fullfilled?",
           "process_informationsObligations_explanation": "Explanation",
           "process_informationsObligations_document": "Document",
-          "process_privacyImpactAssessment_processingOnWhitelist": "Processing on Whitelist, Art.35 V GDPR?",
           "process_privacyImpactAssessment_processingOperationAccordingArt35": "Processing operation according to Art.35 I S.2 GDPR?",
           "process_privacyImpactAssessment_comment": "Comment",
           "process_privacyImpactAssessment_otherExclusions": "Other exclusions?",
           "process_privacyImpactAssessment_otherExclusionsComment": "Comment",
           "process_privacyImpactAssessment_processingOnBlacklistArt35": "Processing on Blacklist, Art.35 IV GDPR?",
-          "process_privacyImpactAssessment_blacklistComment": "Comment",
           "process_privacyImpactAssessment_processingCriteria": "Processing meets the following criteria",
           "process_privacyImpactAssessment_processingCriteria_profiling": "Evaluation or scoring, creation of personal profiles",
           "process_privacyImpactAssessment_processingCriteria_automated": "Automated decision making with legal or similar significant effect",
@@ -4361,7 +4362,6 @@
           "process_dataTransfer_explanation": "Explanation",
           "process_dataTransfer_document": "Document",
           "process_privacyImpactAssessment_document": "Document",
-          "process_privacyImpactAssessment_blacklistDocument": "Document",
           "process_requiredApplications": "Required applications",
           "process_requiredITSystems": "Required IT systems",
           "process_tom": "Specific measures",
@@ -4470,7 +4470,13 @@
           "process_PRO_DPIA_status_IN_PROGRESS": "In progress",
           "process_PRO_DPIA_status_FOR_REVIEW": "For review",
           "process_PRO_DPIA_status_RELEASED": "Released",
-          "process_PRO_DPIA_status_ARCHIVED": "Archived"
+          "process_PRO_DPIA_status_ARCHIVED": "Archived",
+          "process_privacyImpactAssessment_supervisoryAuthorityComment": "Comment",
+          "process_privacyImpactAssessment_listed": "Listed",
+          "process_privacyImpactAssessment_supervisoryAuthorityConsulted": "Consulted",
+          "process_privacyImpactAssessment_listed_negative": "Listed negative, Art. 35 V DS-GVO",
+          "process_privacyImpactAssessment_listed_positive": "Listed positive, Art. 35 IV DS-GVO",
+          "process_privacyImpactAssessment_listed_neither": "Nothing"
         }
       }
     },
@@ -4771,7 +4777,8 @@
           "person_PER_Person_status_IN_PROGRESS": "In Bearbeitung",
           "person_PER_Person_status_FOR_REVIEW": "Zur Prüfung",
           "person_PER_Person_status_RELEASED": "Freigegeben",
-          "person_PER_Person_status_ARCHIVED": "Archiviert"
+          "person_PER_Person_status_ARCHIVED": "Archiviert",
+          "person_favoriteScope": "Lieblings-Scope"
         },
         "en": {
           "person_generalInformation_salutation": "Salutation",
@@ -4801,7 +4808,8 @@
           "person_PER_Person_status_IN_PROGRESS": "In progress",
           "person_PER_Person_status_FOR_REVIEW": "For review",
           "person_PER_Person_status_RELEASED": "Released",
-          "person_PER_Person_status_ARCHIVED": "Archived"
+          "person_PER_Person_status_ARCHIVED": "Archived",
+          "person_favoriteScope": "Favorite Scope"
         }
       }
     },
