@@ -85,9 +85,8 @@ public class ElementTypeDefinitionData implements ElementTypeDefinition {
 
     if (this == o) return true;
 
-    if (!(o instanceof ElementTypeDefinitionData)) return false;
+    if (!(o instanceof ElementTypeDefinitionData other)) return false;
 
-    ElementTypeDefinitionData other = (ElementTypeDefinitionData) o;
     // Transient (unmanaged) entities have an ID of 'null'. Only managed
     // (persisted and detached) entities have an identity. JPA requires that
     // an entity's identity remains the same over all state changes.

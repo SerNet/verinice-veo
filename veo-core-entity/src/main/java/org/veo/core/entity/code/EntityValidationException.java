@@ -17,15 +17,12 @@
  ******************************************************************************/
 package org.veo.core.entity.code;
 
-import java.util.List;
-
 import org.veo.core.entity.DomainException;
 import org.veo.core.entity.specification.EntitySpecification;
 
 public class EntityValidationException extends DomainException {
 
   private static final long serialVersionUID = 2434637292465687030L;
-  private List<String> validationErrors;
 
   public <TEntity> EntityValidationException(
       TEntity entity, EntitySpecification<TEntity> failedSpecification) {

@@ -80,8 +80,8 @@ class DomainRestTestITSpec extends VeoRestTest {
             domains[dsgvoId].subType == "CTL_TOM"
             domains[dsgvoId].status == "NEW"
         }
-        with (dsg23) {
-            with (element) {
+        with(dsg23) {
+            with(element) {
                 name == "Keine Widerspruchsmöglichkeit für Betroffene gegen die Datenverarbeitung"
                 domains[dsgvoId].subType == "SCN_Scenario"
                 domains[dsgvoId].status == "NEW"
@@ -96,7 +96,7 @@ class DomainRestTestITSpec extends VeoRestTest {
         when: "we create a unit with elements and a risk"
         def profileSourceUnitId = postNewUnit("the unit formerly known as demo unit").resourceId
         def processId = post("/processes", [
-            name: "example process",
+            name   : "example process",
             domains: [
                 (oldDomain.id): [
                     subType: "PRO_DataProcessing",
@@ -242,7 +242,7 @@ class DomainRestTestITSpec extends VeoRestTest {
 
             with(newObject) {
                 items.size() == oldObject.items.size()
-                for(def i=0;i<items.size();i++) {
+                for (def i = 0; i < items.size(); i++) {
                     with(items[i]) {
                         name == oldObject.items.get(i).name
                         description == oldObject.items[i].description
