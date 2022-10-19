@@ -25,10 +25,13 @@ import javax.validation.Validator;
 
 import org.springframework.stereotype.Service;
 
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.code.EntityValidationException;
+import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.specification.EntityValidator;
+import org.veo.core.entity.specification.TranslationValidator;
 
 import lombok.RequiredArgsConstructor;
 
@@ -48,6 +51,14 @@ public class ValidationService {
     // execute JSR 380 validations on model entities:
     Set<ConstraintViolation<Identifiable>> violations = beanValidator.validate(identifiable);
     if (!violations.isEmpty()) throw new ConstraintViolationException(violations);
+
+    if (identifiable instanceof DomainTemplate domainTemplate) {
+      domainTemplate.getElementTypeDefinitions().forEach(TranslationValidator::validate);
+    }
+
+    if (identifiable instanceof ElementTypeDefinition entity) {
+      TranslationValidator.validate(entity);
+    }
 
     if (!(identifiable instanceof Element)) return;
 

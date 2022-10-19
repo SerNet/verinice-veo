@@ -21,6 +21,7 @@ import static org.veo.rest.test.UserType.CONTENT_CREATOR
 
 import org.apache.http.HttpStatus
 
+import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl
 import org.veo.core.entity.EntityType
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 
@@ -87,6 +88,29 @@ class DomainRestTestITSpec extends VeoRestTest {
                 domains[dsgvoId].status == "NEW"
             }
         }
+    }
+
+    def "post a domaintemplate with translation errors"() {
+        given: "a DS-GVO domaintemplate with translation errors"
+        def dsgvoId = getDomains().find { it.name == "DS-GVO" }.id
+        def domainDto = exportDomain(dsgvoId)
+        def modifiedDomain = [:] << domainDto
+
+        modifiedDomain.name = "Broken DSGVO_${UUID.randomUUID()}"
+        modifiedDomain.templateVersion = '6.6.6'
+        modifiedDomain.id = (new DomainTemplateIdGeneratorImpl()).createDomainTemplateId(
+                modifiedDomain.name,
+                modifiedDomain.templateVersion
+                )
+        modifiedDomain.elementTypeDefinitions.process.translations.de.remove('process_controller')
+        modifiedDomain.elementTypeDefinitions.process.translations.de.superfluous_key = "I'm not even supposed to be here today!"
+
+        when: " we post the domaintemplate"
+        def response = post("/domaintemplates", modifiedDomain, 422, UserType.CONTENT_CREATOR)
+
+        then: "the errors are recognized"
+        response.getStatusCode() == 422
+        response.body ==~ /.*Issues were found in the translations: Language 'de': MISSING: process_controller ; SUPERFLUOUS: superfluous_key.*/
     }
 
     def "create a new domain template version with a profile"() {

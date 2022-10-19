@@ -27,13 +27,17 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.aspects.Aspect;
 import org.veo.core.entity.code.EntityValidationException;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
+@Slf4j
 public class EntityValidator {
   private final AccountProvider accountProvider;
 
-  public void validate(Object entity) throws EntityValidationException {
+  public void validate(@NonNull Object entity) throws EntityValidationException {
+    log.debug("Validating entity {}", entity);
     List.of(
             new TypedValidator<>(
                 ClientOwned.class,
