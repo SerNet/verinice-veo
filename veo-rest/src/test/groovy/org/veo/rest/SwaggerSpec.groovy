@@ -68,6 +68,16 @@ class SwaggerSpec extends VeoSpringSpec {
         assetDtoSchema.properties.links.description == 'The links for the asset.'
     }
 
+    def "createdAt and updatedAt are read-only"() {
+        when:
+        def assetDtoSchema = parsedApiDocs.components.schemas.FullAssetDto
+        then:
+        assetDtoSchema.properties.createdAt != null
+        assetDtoSchema.properties.createdAt.readOnly == true
+        assetDtoSchema.properties.createdAt != null
+        assetDtoSchema.properties.updatedAt.readOnly == true
+    }
+
 
     def "displayName is not required for parts when putting composite elements"() {
         when:

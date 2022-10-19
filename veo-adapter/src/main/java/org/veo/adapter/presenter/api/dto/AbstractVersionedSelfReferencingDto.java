@@ -23,6 +23,7 @@ import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.Ref;
@@ -54,9 +55,9 @@ public abstract class AbstractVersionedSelfReferencingDto implements VersionedDt
 
   @Schema(
       description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
-      example = "1990-12-31T23:59:60Z",
-      accessMode = Schema.AccessMode.READ_ONLY)
+      example = "1990-12-31T23:59:60Z")
   @Pattern(regexp = Patterns.DATETIME)
+  @JsonProperty(access = Access.READ_ONLY)
   private String createdAt;
 
   @Schema(
@@ -67,9 +68,9 @@ public abstract class AbstractVersionedSelfReferencingDto implements VersionedDt
 
   @Schema(
       description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
-      example = "1990-12-31T23:59:60Z",
-      accessMode = Schema.AccessMode.READ_ONLY)
+      example = "1990-12-31T23:59:60Z")
   @Pattern(regexp = Patterns.DATETIME)
+  @JsonProperty(access = Access.READ_ONLY)
   private String updatedAt;
 
   @Schema(

@@ -122,6 +122,26 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
 
     @WithUserDetails("user@domain.example")
+    def "Invalid date values for versioned properties are ignored"() {
+        given: "a request body"
+
+        Map request = [
+            name: 'New Asset',
+            owner: [
+                displayName: 'test2',
+                targetUri: 'http://localhost/units/' + unit.id.uuidValue()
+            ],
+            createdAt: 'Hello World'
+        ]
+
+        when: "a request is made to the server"
+        def result = parseJson(post('/assets', request))
+
+        then: "the request is performed"
+        result.success == true
+    }
+
+    @WithUserDetails("user@domain.example")
     def "create a composite asset with parts"() {
         given: "an exsting asset and a request body"
         def asset = txTemplate.execute {
