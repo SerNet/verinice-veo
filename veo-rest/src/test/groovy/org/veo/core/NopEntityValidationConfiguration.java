@@ -24,15 +24,20 @@ import org.springframework.context.annotation.Primary;
 import org.veo.core.entity.code.EntityValidationException;
 import org.veo.core.entity.specification.EntityValidator;
 
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+
 @TestConfiguration
+@Slf4j
 public class NopEntityValidationConfiguration {
   @Bean
   @Primary
   EntityValidator nopEntityValidator() {
     return new EntityValidator(null) {
       @Override
-      public void validate(Object entity) throws EntityValidationException {
-        // ok
+      public void validate(@NonNull Object entity) throws EntityValidationException {
+        log.debug(
+            "Validation is disabled by the test configuration. Not validating entity {}!", entity);
       }
     };
   }
