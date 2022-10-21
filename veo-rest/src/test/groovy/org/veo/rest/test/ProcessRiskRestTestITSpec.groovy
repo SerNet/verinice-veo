@@ -75,7 +75,7 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
         risk.riskOwner = [targetUri: "$baseUrl/persons/$ownerPersonId"]
-        put("/processes/$processId/risks/$scenarioId", risk, retrievedRiskResponse.parseETag())
+        put("/processes/$processId/risks/$scenarioId", risk, retrievedRiskResponse.getETag())
 
         then: "the risk has an owner"
         get("/processes/$processId/risks/$scenarioId").body.riskOwner.targetUri ==~ /.*\/persons\/$ownerPersonId/

@@ -58,7 +58,7 @@ class DeletionRestTest extends VeoRestTest {
             ],
             owner: [targetUri: unitUri]
         ]).body.resourceId
-        def processETag = get("/processes/$processId").parseETag()
+        def processETag = get("/processes/$processId").getETag()
 
         when: "deleting the target"
         delete("/assets/$assetId")
@@ -66,7 +66,7 @@ class DeletionRestTest extends VeoRestTest {
         then: "the link has been removed and the ETag has changed"
         with(get("/processes/$processId")) {
             body.links.size() == 0
-            parseETag() != processETag
+            getETag() != processETag
         }
     }
 
@@ -106,7 +106,7 @@ class DeletionRestTest extends VeoRestTest {
                 ]
             ]
         ]).body.resourceId
-        def processETag = get("/processes/$processId").parseETag()
+        def processETag = get("/processes/$processId").getETag()
 
         when: "deleting the unit"
         delete(unitUri)
@@ -119,7 +119,7 @@ class DeletionRestTest extends VeoRestTest {
         and: "the link has been removed from the process"
         with(get("/processes/$processId")) {
             body.links.size() == 0
-            parseETag() != processETag
+            getETag() != processETag
         }
     }
 }

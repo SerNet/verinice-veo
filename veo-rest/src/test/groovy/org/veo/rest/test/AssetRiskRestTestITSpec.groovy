@@ -73,7 +73,7 @@ class AssetRiskRestTestITSpec extends VeoRestTest{
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
         risk.riskOwner = [targetUri: "$baseUrl/persons/$ownerPersonId"]
-        put("/assets/$assetId/risks/$scenarioId", risk, retrievedRiskResponse.parseETag())
+        put("/assets/$assetId/risks/$scenarioId", risk, retrievedRiskResponse.getETag())
 
         then: "the risk has an owner"
         get("/assets/$assetId/risks/$scenarioId").body.riskOwner.targetUri ==~ /.*\/persons\/$ownerPersonId/

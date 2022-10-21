@@ -60,7 +60,7 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
             parts: [
                 [targetUri: "$baseUrl/assets/$partBId"],
             ]
-        ], compositeResponse.parseETag())
+        ], compositeResponse.getETag())
 
         then: "the removed part is missing in the retrieved composite"
         get("/assets/$compositeId").body.parts*.targetUri =~ /.*\/assets\/$partBId/
@@ -129,7 +129,7 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
                 [targetUri: "$baseUrl/assets/$assetCompositeId"],
                 [targetUri: "$baseUrl/persons/$personCompositeId"],
             ]
-        ], scopeResponse.parseETag())
+        ], scopeResponse.getETag())
 
         then: "the retrieved scope points to both composites"
         with(get("/scopes/$scopeId").body.members.toSorted{it.displayName}*.targetUri) {
@@ -141,7 +141,7 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         get("/persons/$personCompositeId").body.parts.first().targetUri =~ /.*\/persons\/$personPartId/
 
         when: "removing the person from the scope"
-        def scopeETag = get("/scopes/$scopeId").parseETag()
+        def scopeETag = get("/scopes/$scopeId").getETag()
         put("/scopes/$scopeId", [
             name: "scope of everything",
             owner: [targetUri: "$baseUrl/units/$unitId"],
@@ -194,7 +194,7 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         ]).body.resourceId
 
         when: "updating the person"
-        def personETag = get("/persons/$personId").parseETag()
+        def personETag = get("/persons/$personId").getETag()
         put("/persons/$personId", [
             name: "little person in a scope and in a composite",
             owner: [targetUri: "$baseUrl/units/$unitId"]

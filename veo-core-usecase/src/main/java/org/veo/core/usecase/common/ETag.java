@@ -35,7 +35,7 @@ public final class ETag {
 
   public static String from(String id, long version) {
     try {
-      return createSHA256Hash(id + "_" + salt + "_" + version);
+      return "\"" + createSHA256Hash(id + "_" + salt + "_" + version) + "\"";
     } catch (NoSuchAlgorithmException e) {
       throw new IllegalStateException(e);
     }
@@ -50,7 +50,17 @@ public final class ETag {
       return false;
     }
     String hash = from(id, version);
-    return hash.equalsIgnoreCase(eTag);
+    return hash.equalsIgnoreCase(padEtagIfNecessary(eTag));
+  }
+
+  private static String padEtagIfNecessary(String etag) {
+    if (etag.isEmpty()) {
+      return etag;
+    }
+    if (etag.startsWith("\"") && etag.endsWith("\"")) {
+      return etag;
+    }
+    return "\"" + etag + "\"";
   }
 
   public static boolean matches(String compoundId1, String compundId2, long version, String eTag) {

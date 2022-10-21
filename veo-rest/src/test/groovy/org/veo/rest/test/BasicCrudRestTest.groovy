@@ -57,7 +57,7 @@ class BasicCrudRestTest extends VeoRestTest {
         getResponseAll.body*.name.contains(unitName)
 
         when: 'updating the unit'
-        def etag = getResponse.parseETag()
+        def etag = getResponse.getETag()
         unitName = "New name of Unit"
 
         then: 'RESTapi responds with status code 200'
@@ -89,7 +89,7 @@ class BasicCrudRestTest extends VeoRestTest {
         getResponse.body.owner.displayName == unitName
         getResponse.body.owner.targetUri == "$baseUrl/units/$unitId"
 
-        def assetEtag = getResponse.parseETag()
+        def assetEtag = getResponse.getETag()
         assetEtag instanceof String
 
         and: 'when loading all assets in the unit'
@@ -176,7 +176,7 @@ class BasicCrudRestTest extends VeoRestTest {
         getResponsePerson.body.id == personId
         getResponsePerson.body.name == personName
         getResponsePerson.body[1] == null
-        def personEtag = getResponsePerson.parseETag()
+        def personEtag = getResponsePerson.getETag()
         personEtag instanceof String
 
         and: 'Changing the name of the person'
@@ -251,7 +251,7 @@ class BasicCrudRestTest extends VeoRestTest {
         getControlResponse.body.name == controlName
         getControlResponse.body.owner.displayName == unitName
         getControlResponse.body.owner.targetUri == targetUri
-        def controlEtag = getControlResponse.parseETag()
+        def controlEtag = getControlResponse.getETag()
 
         controlEtag instanceof String
 

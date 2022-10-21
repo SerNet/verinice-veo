@@ -47,7 +47,7 @@ class ReadOnlyUserRestTest extends VeoRestTest {
             ],
             owner: [targetUri: unitUri]
         ]).body.resourceId
-        eTag = get("/processes/$processId").parseETag()
+        eTag = get("/processes/$processId").getETag()
     }
 
     def "user without write permission may GET a process"() {

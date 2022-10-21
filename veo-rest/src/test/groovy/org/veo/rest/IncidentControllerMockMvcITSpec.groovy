@@ -274,7 +274,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
 
         expect: "putting the retrieved incident back to be successful"
         put("/incidents/$id", parseJson(getResult), [
-            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+            "If-Match": getETag(getResult)
         ])
     }
 
@@ -303,7 +303,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
 
         expect: "putting the retrieved incident back to be successful"
         put("/incidents/$id", parseJson(getResult), [
-            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+            "If-Match": getETag(getResult)
         ])
     }
 

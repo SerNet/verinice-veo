@@ -90,7 +90,7 @@ class ProcessRestTestITSpec extends VeoRestTest{
         when: "updating and retrieving the process"
         def updatedProcess = retrievalResponse.body
         updatedProcess.name = "new name"
-        put("/processes/$processId", updatedProcess, retrievalResponse.parseETag())
+        put("/processes/$processId", updatedProcess, retrievalResponse.getETag())
 
         then: "the updated process can be retrieved"
         def newRetrievalResponse = get("/processes/$processId")
@@ -99,7 +99,7 @@ class ProcessRestTestITSpec extends VeoRestTest{
         }
 
         expect: "update to fail with outdated ETag"
-        put("/processes/$processId", updatedProcess, retrievalResponse.parseETag(), 412)
+        put("/processes/$processId", updatedProcess, retrievalResponse.getETag(), 412)
 
         when: "deleting the process"
         delete("/processes/$processId")

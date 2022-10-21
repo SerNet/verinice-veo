@@ -90,7 +90,7 @@ class DomainUpdateRestTest extends VeoRestTest {
                 target: [targetUri: "$baseUrl/processes/$processId"]
             ]
         ]
-        put("/scopes/$scopeId", scope, scopeResponse.parseETag())
+        put("/scopes/$scopeId", scope, scopeResponse.getETag())
 
         when: "incarnating the new domain template version"
         post("/domaintemplates/$newDomainTemplateId/createdomains", null, 204, ADMIN)

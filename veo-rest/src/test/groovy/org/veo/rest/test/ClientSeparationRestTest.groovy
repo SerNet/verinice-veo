@@ -66,7 +66,7 @@ class ClientSeparationRestTest extends VeoRestTest {
         }
 
         when: "default client tries to update the control and move it into their own unit"
-        def eTag = get("/controls/$secondaryClientControlId", 200, UserType.SECONDARY_CLIENT_USER).parseETag()
+        def eTag = get("/controls/$secondaryClientControlId", 200, UserType.SECONDARY_CLIENT_USER).getETag()
         def body = [
             name: "secondary client's control",
             owner: [targetUri: defaultClientUnitUrl],

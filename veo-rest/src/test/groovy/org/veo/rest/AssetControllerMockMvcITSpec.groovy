@@ -236,7 +236,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         when: "the asset is requested from the server again"
         results =
                 mvc.perform(MockMvcRequestBuilders.get("/assets/${asset.id.uuidValue()}").accept(MediaType.APPLICATION_JSON).header(
-                HttpHeaders.IF_NONE_MATCH, '"'+eTag+'"'
+                HttpHeaders.IF_NONE_MATCH, eTag
                 ))
         then: "the server returns not-modified"
         results.andReturn().response.status == HttpStatus.SC_NOT_MODIFIED
@@ -655,7 +655,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         expect: "putting the retrieved asset back to be successful"
         put("/assets/$id", parseJson(getResult), [
-            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+            "If-Match": getETag(getResult)
         ])
     }
 
@@ -684,7 +684,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         expect: "putting the retrieved asset back to be successful"
         put("/assets/$id", parseJson(getResult), [
-            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+            "If-Match": getETag(getResult)
         ])
     }
 

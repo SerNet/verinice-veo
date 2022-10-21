@@ -164,7 +164,7 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         impactI.potentialImpact = 2
         riskI.inherentRisk = 2
 
-        put("/processes/$processId/risks/$scenarioId", risk, retrievedRiskResponse.parseETag())
+        put("/processes/$processId/risks/$scenarioId", risk, retrievedRiskResponse.getETag())
 
 
         then: "the changed risk values can be retrieved"
@@ -353,7 +353,7 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         impactI.potentialImpact = 2
         riskI.inherentRisk = 2
 
-        put("/processes/$processId/risks/$scenarioId", risk, retrievedRiskResponse.parseETag())
+        put("/processes/$processId/risks/$scenarioId", risk, retrievedRiskResponse.getETag())
 
 
         then: "the changed risk values can be retrieved"

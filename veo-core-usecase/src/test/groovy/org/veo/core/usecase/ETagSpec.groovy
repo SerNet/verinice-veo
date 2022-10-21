@@ -38,7 +38,7 @@ public class ETagSpec extends Specification{
         String hash = DigestUtils.sha256Hex(idSaltVersion)
 
         then:
-        eTag.equalsIgnoreCase(hash)
+        eTag.equalsIgnoreCase('"' + hash + '"')
     }
 
     def "match an etag"() {
@@ -56,5 +56,6 @@ public class ETagSpec extends Specification{
         ETag.matches(id, version, hash)
         ETag.matches(id, version, hash.toLowerCase())
         ETag.matches(id, version, hash.toUpperCase())
+        ETag.matches(id, version, '"' + hash + '"')
     }
 }

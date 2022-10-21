@@ -75,12 +75,12 @@ class DecisionRestTest extends VeoRestTest {
         }
 
         when: "adding a risk"
-        def processETagBeforeRiskAddition = get("/processes/$processId").parseETag()
+        def processETagBeforeRiskAddition = get("/processes/$processId").getETag()
         addRiskValue(processId, 1)
 
         then: "the result has changed"
         with(get("/processes/$processId")) {
-            parseETag() != processETagBeforeRiskAddition
+            getETag() != processETagBeforeRiskAddition
             with(body.domains[domainId].decisionResults.piaMandatory) {
                 value == true
                 decision.rules[decisiveRule].description.en == "Two or more criteria applicable?"
@@ -115,7 +115,7 @@ class DecisionRestTest extends VeoRestTest {
                 ],
             ],
             owner: [targetUri: unitUri]
-        ], get("/processes/$processId").parseETag())
+        ], get("/processes/$processId").getETag())
 
         then: "added attribute is taken into consideration"
         with(get("/processes/$processId").body.domains[domainId].decisionResults.piaMandatory) {

@@ -309,7 +309,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
 
         expect: "putting the retrieved person back to be successful"
         put("/persons/$id", parseJson(getResult), [
-            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+            "If-Match": getETag(getResult)
         ])
     }
 }

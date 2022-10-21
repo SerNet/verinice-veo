@@ -433,7 +433,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
         expect: "putting the retrieved unit back to be successful"
         put("/units/$id", parseJson(getResult), [
-            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+            "If-Match": getETag(getResult)
         ])
     }
 

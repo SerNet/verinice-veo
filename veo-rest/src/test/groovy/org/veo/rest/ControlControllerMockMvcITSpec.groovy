@@ -397,7 +397,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
 
         expect: "putting the retrieved control back to be successful"
         put("/controls/$id", parseJson(getResult), [
-            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+            "If-Match": getETag(getResult)
         ])
     }
 }

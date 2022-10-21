@@ -272,7 +272,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
 
         expect: "putting the retrieved document back to be successful"
         put("/documents/$id", parseJson(getResult), [
-            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+            "If-Match": getETag(getResult)
         ])
     }
 

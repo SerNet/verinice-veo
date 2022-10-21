@@ -75,7 +75,7 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
 
         when: "putting the asset with current ETag"
         Map headers = [
-            'If-Match': getTextBetweenQuotes(eTag)
+            'If-Match': eTag
         ]
         put("/assets/${postResultJson.resourceId}", [
             name: 'E-Mail-Server Berlin',

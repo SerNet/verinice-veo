@@ -151,6 +151,6 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
     }
 
     String getETag(ResultActions resultActions) {
-        return getTextBetweenQuotes(resultActions.andReturn().response.getHeader("ETag"))
+        resultActions.andReturn().response.getHeader("ETag")
     }
 }

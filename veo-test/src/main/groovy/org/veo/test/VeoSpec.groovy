@@ -19,8 +19,6 @@ package org.veo.test
 
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Catalog
@@ -450,15 +448,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static String getTextBetweenQuotes(String text) {
-        Pattern p = Pattern.compile("\"([^\"]*)\"")
-        Matcher m = p.matcher(text)
-        if (m.find()) {
-            return m.group(1)
-        } else {
-            return text
-        }
-    }
+
 
     static Instant roundToMicros(Instant instant) {
         instant.plusNanos(500).truncatedTo(ChronoUnit.MICROS)

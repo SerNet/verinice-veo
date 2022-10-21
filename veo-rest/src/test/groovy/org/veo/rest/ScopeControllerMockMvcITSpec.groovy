@@ -230,7 +230,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
             [targetUri : "http://localhost/scenarios/${scenario.id.uuidValue()}"]
         ]
         put("/scopes/${scope.id.uuidValue()}", result, [
-            "If-Match": getTextBetweenQuotes(getETag(get("/scopes/${scope.id.uuidValue()}")))
+            "If-Match": getETag(get("/scopes/${scope.id.uuidValue()}"))
         ])
         then:
         txTemplate.execute { scopeRepository.findById(scope.id).get().members.size() }  == 2
@@ -439,7 +439,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
 
         expect: "putting the retrieved scope back to be successful"
         put("/scopes/$id", parseJson(getResult), [
-            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+            "If-Match": getETag(getResult)
         ])
     }
 

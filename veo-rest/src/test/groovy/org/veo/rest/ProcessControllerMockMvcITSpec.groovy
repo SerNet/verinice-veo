@@ -683,7 +683,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         expect: "putting the retrieved process back to be successful"
         put("/processes/$id", parseJson(getResult), [
-            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+            "If-Match": getETag(getResult)
         ])
     }
 

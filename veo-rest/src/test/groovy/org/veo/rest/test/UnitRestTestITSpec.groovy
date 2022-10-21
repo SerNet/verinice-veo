@@ -100,7 +100,7 @@ class UnitRestTestITSpec extends VeoRestTest {
         putRequestBody.name = NEW_UNIT_NAME
 
         // Carry over the ETag:
-        def etagHeader = getResponse.parseETag()
+        def etagHeader = getResponse.getETag()
 
         def beforeUpdate = Instant.now()
         put("/units/${postResponseBody.resourceId}", putRequestBody, etagHeader)

@@ -20,9 +20,6 @@ package org.veo.rest.test
 import static groovy.json.JsonOutput.toJson
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 
-import java.util.regex.Matcher
-import java.util.regex.Pattern
-
 import org.apache.http.HttpHost
 import org.apache.http.impl.client.HttpClientBuilder
 import org.keycloak.authorization.client.AuthzClient
@@ -120,21 +117,14 @@ class VeoRestTest extends Specification {
     private userTokenCache = [:]
 
     class Response {
-        Map headers
+        HttpHeaders headers
         Object body
         int statusCode
     }
 
     class GetResponse extends Response{
-        String parseETag() {
-            var text = headers["ETag"].toString()
-            Pattern p = Pattern.compile("\"([^\"]*)\"")
-            Matcher m = p.matcher(text)
-            if (m.find()) {
-                return m.group(1)
-            } else {
-                return text
-            }
+        String getETag() {
+            headers.getETag()
         }
     }
 

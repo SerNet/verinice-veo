@@ -282,7 +282,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
 
         expect: "putting the retrieved scenario back to be successful"
         put("/scenarios/$id", parseJson(getResult), [
-            "If-Match": getTextBetweenQuotes(getResult.andReturn().response.getHeader("ETag"))
+            "If-Match": getETag(getResult)
         ])
     }
 
