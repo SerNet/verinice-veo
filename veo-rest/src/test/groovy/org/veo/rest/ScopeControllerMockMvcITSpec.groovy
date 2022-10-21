@@ -413,7 +413,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
             "If-Match": ETag.from(id, 0)
         ])
         then: 'the ETag is returned'
-        parseETag(resultActions) == ETag.from(id, 1)
+        getETag(resultActions) == ETag.from(id, 1)
     }
 
     @WithUserDetails("user@domain.example")

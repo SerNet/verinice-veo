@@ -298,7 +298,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when: "trying to update the parent with an empty sub unit list"
-        def parentUnitETag = parseETag(get("/units/$parentUnitId"))
+        def parentUnitETag = getETag(get("/units/$parentUnitId"))
         put("/units/$parentUnitId", [
             id: parentUnitId,
             name: "parent",
@@ -452,7 +452,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         })
         when: "a put request tries to update unit 1 using the ID of unit 2"
         Map headers = [
-            'If-Match': parseETag(get("/units/${unit1.id.uuidValue()}"))
+            'If-Match': getETag(get("/units/${unit1.id.uuidValue()}"))
         ]
         put("/units/${unit2.id.uuidValue()}", [
             id: unit1.id.uuidValue(),

@@ -142,10 +142,6 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
         }
     }
 
-    String parseETag(ResultActions resultActions) {
-        getTextBetweenQuotes(resultActions.andReturn().response.getHeader("ETag"))
-    }
-
     def parseJson(ResultActions resultActions) {
         parseJson(resultActions.andReturn().response.getContentAsString(StandardCharsets.UTF_8))
     }

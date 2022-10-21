@@ -184,7 +184,7 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
                 targetUri: "http://localhost/units/${unit.id.uuidValue()}"
             ]
         ])).resourceId
-        def eTag = parseETag(get("/incidents/$incidentId"))
+        def eTag = getETag(get("/incidents/$incidentId"))
 
         when: "trying to update the designator"
         put("/incidents/$incidentId", [

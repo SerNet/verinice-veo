@@ -476,7 +476,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             decisionResults: [:]
         ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
-        parseETag(resultActions) == ETag.from(asset.idAsString, 1)
+        getETag(resultActions) == ETag.from(asset.idAsString, 1)
     }
 
     @WithUserDetails("user@domain.example")

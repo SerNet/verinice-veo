@@ -233,7 +233,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             name: "Im in control",
             owner: [targetUri: "http://localhost/units/${unit.id.uuidValue()}"]
         ])).resourceId
-        String riskETag = parseETag(get("/assets/$assetId/risks/$scenarioId"))
+        String riskETag = getETag(get("/assets/$assetId/risks/$scenarioId"))
         put("/assets/$assetId/risks/$scenarioId", [
             mitigation: [targetUri:  "/controls/$controlId"],
             scenario: [targetUri: "http://localhost/scenarios/$scenarioId"],
@@ -303,7 +303,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             name: "Im in control",
             owner: [targetUri: "http://localhost/units/${unit.id.uuidValue()}"]
         ])).resourceId
-        String riskETag = parseETag(get("/processes/$processId/risks/$scenarioId"))
+        String riskETag = getETag(get("/processes/$processId/risks/$scenarioId"))
         put("/processes/$processId/risks/$scenarioId", [
             mitigation: [targetUri:  "/controls/$controlId"],
             scenario: [targetUri: "http://localhost/scenarios/$scenarioId"],
