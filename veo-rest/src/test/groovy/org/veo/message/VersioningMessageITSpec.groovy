@@ -133,18 +133,12 @@ class VersioningMessageITSpec extends VeoSpringSpec {
         catalogItems.size() > 0
         catalogItems.forEach({ item ->
             def itemMessages = messages.findAll { it.uri?.contains("/items/$item.idAsString") }
-            assert itemMessages.size() == 2
+            assert itemMessages.size() == 1
 
-            def creation = itemMessages.find { it.type == "CREATION" }
-            with(creation) {
+            with(itemMessages.first()) {
+                type == "CREATION"
                 changeNumber == 0
                 time != null
-            }
-
-            def modification = itemMessages.find { it.type == "MODIFICATION" }
-            with(modification) {
-                changeNumber == 1
-                time > creation.time
             }
         })
     }
