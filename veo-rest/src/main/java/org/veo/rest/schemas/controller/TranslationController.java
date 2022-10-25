@@ -59,18 +59,16 @@ public class TranslationController implements TranslationsResource {
     return CompletableFuture.supplyAsync(
         () -> {
           Translations t10n = schemaService.findTranslations(client, languages);
-          // TODO VEO-526 evaluate languages parameter
-          Set.of("de", "en")
-              .forEach(
-                  lang -> {
-                    for (VeoMessage veoMessage : VeoMessage.values()) {
-                      t10n.add(
-                          lang,
-                          veoMessage.getMessageKey(),
-                          messageSource.getMessage(
-                              veoMessage.getMessageKey(), null, Locale.forLanguageTag(lang)));
-                    }
-                  });
+          languages.forEach(
+              lang -> {
+                for (VeoMessage veoMessage : VeoMessage.values()) {
+                  t10n.add(
+                      lang,
+                      veoMessage.getMessageKey(),
+                      messageSource.getMessage(
+                          veoMessage.getMessageKey(), null, Locale.forLanguageTag(lang)));
+                }
+              });
           return ResponseEntity.ok().body((TranslationsDto) t10n);
         });
   }

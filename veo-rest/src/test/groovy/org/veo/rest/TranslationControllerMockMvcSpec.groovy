@@ -30,14 +30,14 @@ import org.veo.core.VeoMvcSpec
 class TranslationControllerMockMvcSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
-    def "get the translation for all languages"() {
+    def "get the translation for multiple languages"() {
         given:
         createTestClient().tap {
             createTestDomain(it, DSGVO_DOMAINTEMPLATE_UUID)
         }
         when: "a request for t9ns is made"
 
-        def translations = parseJson(get('/translations?languages=all'))
+        def translations = parseJson(get('/translations?languages=de,en'))
 
         then: "a correct response is returned"
         translations.lang.de.person_address_city == "Stadt"
@@ -53,5 +53,36 @@ class TranslationControllerMockMvcSpec extends VeoMvcSpec {
         translations.lang.de.scopes == 'Scopes'
         translations.lang.en.control == 'control'
         translations.lang.en.persons == 'persons'
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "get the translation for a single language"() {
+        given:
+        createTestClient().tap {
+            createTestDomain(it, DSGVO_DOMAINTEMPLATE_UUID)
+        }
+        when: "a request for t9ns is made"
+        def translations = parseJson(get('/translations?languages=de'))
+
+        then: "a correct response is returned"
+        translations.lang.de != null
+        translations.lang.en == null
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "get the translation for an unsupported language"() {
+        given:
+        createTestClient().tap {
+            createTestDomain(it, DSGVO_DOMAINTEMPLATE_UUID)
+        }
+        when: "a request for t9ns is made"
+        def translations = parseJson(get('/translations?languages=tlh'))
+
+        then: "a fallback response is returned"
+        translations.lang.keySet() ==~ ['tlh']
+        with (translations.lang.tlh) {
+            asset == 'asset'
+            description == 'Description'
+        }
     }
 }

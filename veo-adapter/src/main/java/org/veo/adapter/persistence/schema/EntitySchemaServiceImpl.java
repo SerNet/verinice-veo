@@ -18,15 +18,12 @@
 package org.veo.adapter.persistence.schema;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.veo.adapter.presenter.api.dto.TranslationsDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
-import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.service.EntitySchemaService;
 
 import lombok.RequiredArgsConstructor;
@@ -64,16 +61,11 @@ public class EntitySchemaServiceImpl implements EntitySchemaService {
         "Getting full static translation content, ignoring requested language filter: {}",
         languages);
     TranslationsDto translations = new TranslationsDto();
-    for (Domain domain : client.getDomains()) {
-      for (ElementTypeDefinition definition : domain.getElementTypeDefinitions()) {
-        Map<String, Map<String, String>> translationsForDefinition = definition.getTranslations();
-        for (Entry<String, Map<String, String>> entry : translationsForDefinition.entrySet()) {
-          String lang = entry.getKey();
-          // TODO VEO-526 evaluate languages parameter
-          translations.add(lang, entry.getValue());
-        }
-      }
-    }
+    client.getDomains().stream()
+        .flatMap(domain -> domain.getElementTypeDefinitions().stream())
+        .flatMap(def -> def.getTranslations().entrySet().stream())
+        .filter(langEntry -> languages.contains(langEntry.getKey()))
+        .forEach(langEntry -> translations.add(langEntry.getKey(), langEntry.getValue()));
     return translations;
   }
 }
