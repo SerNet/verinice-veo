@@ -47,6 +47,6 @@ public class TranslationsDto implements Translations {
 
   @Override
   public void add(String language, String key, String message) {
-    translationsByLanguage.get(language).getTranslations().put(key, message);
+    add(language, Map.of(key, message));
   }
 }
