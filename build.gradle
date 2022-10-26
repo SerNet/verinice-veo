@@ -178,6 +178,7 @@ subprojects {
             "https.proxyPort"
         ])
         systemProperty 'user.language', 'en'
+        systemProperty 'user.country', 'US'
     }
 
     pmd {
