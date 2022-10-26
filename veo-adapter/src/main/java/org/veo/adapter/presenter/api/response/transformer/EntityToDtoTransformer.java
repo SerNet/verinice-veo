@@ -405,9 +405,6 @@ public final class EntityToDtoTransformer {
     mapNameableProperties(source, target);
 
     target.setDomains(convertReferenceSet(source.getDomains()));
-    if (source.getClient() != null) {
-      target.setClient(IdRef.from(source.getClient(), referenceAssembler));
-    }
     if (source.getParent() != null) {
       target.setParent(IdRef.from(source.getParent(), referenceAssembler));
     }

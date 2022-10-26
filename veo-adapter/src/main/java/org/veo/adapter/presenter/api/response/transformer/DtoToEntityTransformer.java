@@ -239,9 +239,6 @@ public final class DtoToEntityTransformer {
     mapNameableProperties(source, target);
 
     target.setDomains(idRefResolver.resolve(source.getDomains()));
-    if (source.getClient() != null) {
-      target.setClient(idRefResolver.resolve(source.getClient()));
-    }
     if (source.getParent() != null) {
       target.setParent(idRefResolver.resolve(source.getParent()));
     }

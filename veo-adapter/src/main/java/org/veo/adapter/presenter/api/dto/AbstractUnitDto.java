@@ -23,12 +23,9 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefDomains;
 import org.veo.adapter.presenter.api.openapi.IdRefUnitParent;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
@@ -57,8 +54,6 @@ public abstract class AbstractUnitDto extends AbstractVersionedSelfReferencingDt
       example = "This is currently the main and only unit for our organization.")
   @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
   private String description;
-
-  @JsonIgnore private IdRef<Client> client;
 
   @Schema(description = "The sub units for the Unit.", accessMode = Schema.AccessMode.READ_ONLY)
   private Set<IdRef<Unit>> units = Collections.emptySet();
