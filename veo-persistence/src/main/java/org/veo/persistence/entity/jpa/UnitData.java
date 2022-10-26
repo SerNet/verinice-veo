@@ -45,7 +45,7 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-public class UnitData extends ElementOwnerData implements NameableData, Unit {
+public class UnitData extends ElementOwnerData implements Unit {
 
   @Column(name = "name")
   @ToString.Include

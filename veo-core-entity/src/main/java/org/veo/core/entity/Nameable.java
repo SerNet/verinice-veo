@@ -21,6 +21,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /** Defines the basic properties of nameable elements. */
 public interface Nameable extends Displayable {
@@ -29,20 +32,24 @@ public interface Nameable extends Displayable {
   int ABBREVIATION_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
   int DESCRIPTION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
 
-  @NotNull
+  @NotNull(message = "A name must be present.")
+  @Size(max = Nameable.NAME_MAX_LENGTH)
   String getName();
 
   void setName(String aName);
 
+  @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
   String getAbbreviation();
 
   void setAbbreviation(String aAbbreviation);
 
+  @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
   String getDescription();
 
   void setDescription(String aDescription);
 
   /** A default implementation to render a user friendly display name. */
+  @JsonIgnore
   default String getDisplayName() {
     Stream<String> parts = Stream.of(getName());
     String abbreviation = getAbbreviation();

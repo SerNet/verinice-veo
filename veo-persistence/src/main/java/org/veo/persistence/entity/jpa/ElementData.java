@@ -68,8 +68,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @HasOwnerOrContainingCatalogItem
-public abstract class ElementData extends IdentifiableVersionedData
-    implements NameableData, Element {
+public abstract class ElementData extends IdentifiableVersionedData implements Element {
 
   @Id
   @ToString.Include

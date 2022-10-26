@@ -45,7 +45,7 @@ import lombok.ToString;
 @Entity(name = "catalog")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-public class CatalogData extends IdentifiableVersionedData implements Catalog, NameableData {
+public class CatalogData extends IdentifiableVersionedData implements Catalog {
   @Id
   @ToString.Include
   @GeneratedValue(generator = "UUID")

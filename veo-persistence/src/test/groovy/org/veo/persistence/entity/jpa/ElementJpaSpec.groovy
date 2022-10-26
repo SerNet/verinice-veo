@@ -19,7 +19,7 @@ package org.veo.persistence.entity.jpa
 
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
-import javax.persistence.PersistenceException
+import javax.validation.ConstraintViolationException
 
 import org.springframework.beans.factory.annotation.Autowired
 
@@ -222,6 +222,6 @@ class ElementJpaSpec extends AbstractJpaSpec {
         })
         entityManager.flush()
         then:
-        thrown(PersistenceException)
+        thrown(ConstraintViolationException)
     }
 }

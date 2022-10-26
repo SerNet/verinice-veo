@@ -79,7 +79,7 @@ class ProcessRepositoryITSpec extends VeoSpringSpec {
         assert cvex.constraintViolations*.messageTemplate as Set == [
             '{javax.validation.constraints.NotNull.message}',
             'Either owner or containingCatalogItem must be set',
-            '{javax.validation.constraints.NotNull.message}'
+            'A name must be present.'
         ] as Set
     }
 

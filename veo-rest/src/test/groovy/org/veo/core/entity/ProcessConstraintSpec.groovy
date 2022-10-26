@@ -50,7 +50,7 @@ class ProcessConstraintSpec extends Specification {
         assert errors*.messageTemplate as Set == [
             '{javax.validation.constraints.NotNull.message}',
             'Either owner or containingCatalogItem must be set',
-            '{javax.validation.constraints.NotNull.message}'
+            'A name must be present.'
         ] as Set
     }
 }
