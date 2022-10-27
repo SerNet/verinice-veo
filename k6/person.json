@@ -2,9 +2,7 @@
   "owner": {
     "targetUri": "/units/76d22240-5736-4a4d-ac93-a9adc9574bad"
   },
-  "domains": {
-    
-  },
+  "domains": {},
   "name": "Person (created for k6 load test)",
   "customAspects": {
     "person_generalInformation": {

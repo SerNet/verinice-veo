@@ -1,9 +1,7 @@
 {
   "name": "Data transfer (created for k6 load test)",
   "description": "Eingegangene Bewerbungen werden an die Fachabteilungen zwecks Eignungsprüfung weitergeleitet ",
-  "domains": {
-    
-  },
+  "domains": {},
   "owner": {
     "targetUri": "https://veo.develop.verinice.com/units/d8af429e-8706-4b05-b894-3c8cc262b9fd"
   },
@@ -11,9 +9,7 @@
     "process_dataType": [
       {
         "domains": [],
-        "attributes": {
-          
-        },
+        "attributes": {},
         "target": {
           "targetUri": "https://veo.develop.verinice.com/assets/fd6493d6-350f-412f-be93-333d5af5e579"
         }

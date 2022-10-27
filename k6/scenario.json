@@ -4,9 +4,7 @@
   "owner": {
     "targetUri": "https://api.develop.verinice.com/veo/units/UNIT_ID"
   },
-  "links": {
-    
-  },
+  "links": {},
   "customAspects": {
     "scenario_threat": {
       "domains": [],

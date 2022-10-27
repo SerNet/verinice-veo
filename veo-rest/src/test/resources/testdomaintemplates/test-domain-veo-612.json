@@ -18,9 +18,7 @@
           },
           "element": {
             "abbreviation": "CTLS",
-            "customAspects": {
-              
-            },
+            "customAspects": {},
             "description": "This is a composite control that contains all other controls.",
             "domains": {
               "40df37d5-cd23-528e-bfc2-7b73c0aa2c67": {
@@ -29,9 +27,7 @@
               }
             },
             "id": "b7920357-f810-4827-b6ce-d4eb753fb07c",
-            "links": {
-              
-            },
+            "links": {},
             "name": "All controls",
             "owner": {
               "targetUri": "/catalogitems/782a0b43-deb2-4e4c-a42f-d1314658697f"
@@ -55,9 +51,7 @@
           },
           "element": {
             "abbreviation": "c-1",
-            "customAspects": {
-              
-            },
+            "customAspects": {},
             "description": "This is the first control.",
             "domains": {
               "40df37d5-cd23-528e-bfc2-7b73c0aa2c67": {
@@ -66,9 +60,7 @@
               }
             },
             "id": "c3eea4f0-d20e-40a7-ac7c-c1e38c2dc0b1",
-            "links": {
-              
-            },
+            "links": {},
             "name": "Control-1",
             "owner": {
               "targetUri": "/catalogitems/35060217-5435-4047-96b1-8d9109e820b7"
@@ -85,9 +77,7 @@
           },
           "element": {
             "abbreviation": "c-2",
-            "customAspects": {
-              
-            },
+            "customAspects": {},
             "description": "This is the second control.",
             "domains": {
               "40df37d5-cd23-528e-bfc2-7b73c0aa2c67": {
@@ -96,9 +86,7 @@
               }
             },
             "id": "380a72c5-12a9-48f5-a2cd-b5cc9bc6c2fa",
-            "links": {
-              
-            },
+            "links": {},
             "name": "Control-2",
             "owner": {
               "targetUri": "/catalogitems/31d87c23-3112-4547-94ad-592cc25fc250"

@@ -1085,9 +1085,7 @@
             "properties": {
               "attributes": {
                 "additionalProperties": false,
-                "properties": {
-                  
-                },
+                "properties": {},
                 "type": "object"
               },
               "domains": {
@@ -1402,9 +1400,7 @@
             "properties": {
               "attributes": {
                 "additionalProperties": false,
-                "properties": {
-                  
-                },
+                "properties": {},
                 "type": "object"
               },
               "domains": {
@@ -1594,9 +1590,7 @@
             "properties": {
               "attributes": {
                 "additionalProperties": false,
-                "properties": {
-                  
-                },
+                "properties": {},
                 "type": "object"
               },
               "domains": {
@@ -1682,9 +1676,7 @@
             "properties": {
               "attributes": {
                 "additionalProperties": false,
-                "properties": {
-                  
-                },
+                "properties": {},
                 "type": "object"
               },
               "domains": {
@@ -1770,9 +1762,7 @@
             "properties": {
               "attributes": {
                 "additionalProperties": false,
-                "properties": {
-                  
-                },
+                "properties": {},
                 "type": "object"
               },
               "domains": {
@@ -2054,9 +2044,7 @@
             "properties": {
               "attributes": {
                 "additionalProperties": false,
-                "properties": {
-                  
-                },
+                "properties": {},
                 "type": "object"
               },
               "domains": {

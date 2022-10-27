@@ -1,18 +1,12 @@
 {
   "name": "Application (created for k6 load test)",
   "description": "Thunderbird",
-  "domains": {
-    
-  },
+  "domains": {},
   "owner": {
     "targetUri": "https://veo.develop.verinice.com/units/d8af429e-8706-4b05-b894-3c8cc262b9fd"
   },
-  "links": {
-    
-  },
-  "customAspects": {
-    
-  },
+  "links": {},
+  "customAspects": {},
   "type": "asset",
   "parts": []
 }

@@ -23,21 +23,15 @@
             "owner": {
               "targetUri": "/catalogitems/00e615a4-58cf-4953-a61a-43755000a73c"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "b9beedf7-1f56-49ec-a0bc-377a663c9fbf"
@@ -56,21 +50,15 @@
             "owner": {
               "targetUri": "/catalogitems/d5fb4ac2-ac69-438c-bea6-d6a3b5a367b9"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "79baae60-8a40-46c2-bc1d-0c298ce531e5"
@@ -88,9 +76,7 @@
               },
               "referenceType": "LINK_EXTERNAL",
               "linkType": "process_tom",
-              "attributes": {
-                
-              }
+              "attributes": {}
             }
           ],
           "namespace": "TOM.TOM-C",
@@ -101,9 +87,7 @@
             "owner": {
               "targetUri": "/catalogitems/e40d750a-24f3-40ac-84a7-746ac13f64d4"
             },
-            "links": {
-              
-            },
+            "links": {},
             "customAspects": {
               "control_dataProtection": {
                 "domains": [],
@@ -120,9 +104,7 @@
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "CTL_TOM",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e004"
@@ -141,21 +123,15 @@
             "owner": {
               "targetUri": "/catalogitems/97dd4533-8b55-44a3-a39c-6a3a442a1e22"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "a2f6f94b-326d-4c2b-8b78-9e5f16332e2a"
@@ -174,21 +150,15 @@
             "owner": {
               "targetUri": "/catalogitems/ca872478-b4f4-4767-88a6-f52fa22553dc"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "5d16e330-a4f8-4fdc-8637-e008ef164b73"
@@ -207,21 +177,15 @@
             "owner": {
               "targetUri": "/catalogitems/7329aaa6-1902-480f-a955-e424476ecb49"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "468f508f-038e-454e-83e3-726df976534f"
@@ -240,21 +204,15 @@
             "owner": {
               "targetUri": "/catalogitems/4b11925b-d5ad-4bf0-b296-86d239188a37"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "b606a32a-0d7f-4682-93b4-56ff0143b2c7"
@@ -273,21 +231,15 @@
             "owner": {
               "targetUri": "/catalogitems/8adafe5f-649f-4623-8d1f-5067139561f1"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "30e1ea81-67e5-469b-9d94-fd8c4fb69baa"
@@ -306,21 +258,15 @@
             "owner": {
               "targetUri": "/catalogitems/e19ae22b-d171-48ce-ae3a-f1e4b2d7fd9c"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "9be43c6d-d6c7-46f5-bf31-a463832ecc50"
@@ -339,21 +285,15 @@
             "owner": {
               "targetUri": "/catalogitems/42ed00c8-7194-4a6a-b394-378c149c695c"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "d89159e9-3746-4bcc-a8b1-c8a8903635a0"
@@ -372,21 +312,15 @@
             "owner": {
               "targetUri": "/catalogitems/30155753-99a3-4d2a-b6a7-d7f33c30653f"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "448c936e-eab2-4131-a9fe-3fa99fa5270e"
@@ -405,21 +339,15 @@
             "owner": {
               "targetUri": "/catalogitems/c17efe02-534a-40aa-9838-53d86ccad5f7"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "9fec24aa-72ec-4136-b453-2e7c139442e6"
@@ -438,21 +366,15 @@
             "owner": {
               "targetUri": "/catalogitems/cf505bc7-bc09-4e4a-8d7b-e022da12fe46"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "fbb3317c-bac9-4634-823c-379cebef09a9"
@@ -471,21 +393,15 @@
             "owner": {
               "targetUri": "/catalogitems/beb6f452-e4fa-4f30-80da-0affbcc1d265"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "3bf0b9f4-5ea9-4c4f-b7df-e3c48e1912bb"
@@ -504,21 +420,15 @@
             "owner": {
               "targetUri": "/catalogitems/d8000d73-16b7-43a9-af5e-8aa1dc6858bf"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "af592ea3-c3cc-49d5-9b92-e800217ddf71"
@@ -536,9 +446,7 @@
               },
               "referenceType": "LINK_EXTERNAL",
               "linkType": "process_tom",
-              "attributes": {
-                
-              }
+              "attributes": {}
             }
           ],
           "namespace": "TOM.TOM-E",
@@ -549,9 +457,7 @@
             "owner": {
               "targetUri": "/catalogitems/7a60f2cc-fb20-4669-9eda-d76863a29602"
             },
-            "links": {
-              
-            },
+            "links": {},
             "customAspects": {
               "control_dataProtection": {
                 "domains": [],
@@ -568,9 +474,7 @@
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "CTL_TOM",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e002"
@@ -588,9 +492,7 @@
               },
               "referenceType": "LINK_EXTERNAL",
               "linkType": "process_tom",
-              "attributes": {
-                
-              }
+              "attributes": {}
             }
           ],
           "namespace": "TOM.TOM-REC",
@@ -601,9 +503,7 @@
             "owner": {
               "targetUri": "/catalogitems/1a3f8704-4eee-45ed-b818-410fad32e412"
             },
-            "links": {
-              
-            },
+            "links": {},
             "customAspects": {
               "control_dataProtection": {
                 "domains": [],
@@ -620,9 +520,7 @@
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "CTL_TOM",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e007"
@@ -640,9 +538,7 @@
               },
               "referenceType": "LINK_EXTERNAL",
               "linkType": "process_tom",
-              "attributes": {
-                
-              }
+              "attributes": {}
             }
           ],
           "namespace": "TOM.TOM-A",
@@ -653,9 +549,7 @@
             "owner": {
               "targetUri": "/catalogitems/01f07484-ef75-445e-aeeb-8013bb34c8a9"
             },
-            "links": {
-              
-            },
+            "links": {},
             "customAspects": {
               "control_dataProtection": {
                 "domains": [],
@@ -672,9 +566,7 @@
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "CTL_TOM",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e000"
@@ -693,21 +585,15 @@
             "owner": {
               "targetUri": "/catalogitems/c0f71954-447c-4f4a-b286-000e1e9490ca"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "6da23c08-2870-4ac3-b189-22108a132740"
@@ -725,9 +611,7 @@
               },
               "referenceType": "LINK_EXTERNAL",
               "linkType": "process_tom",
-              "attributes": {
-                
-              }
+              "attributes": {}
             }
           ],
           "namespace": "TOM.TOM-I",
@@ -738,9 +622,7 @@
             "owner": {
               "targetUri": "/catalogitems/f78f6d65-2e36-4598-9628-76f0433742e0"
             },
-            "links": {
-              
-            },
+            "links": {},
             "customAspects": {
               "control_dataProtection": {
                 "domains": [],
@@ -757,9 +639,7 @@
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "CTL_TOM",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e001"
@@ -778,21 +658,15 @@
             "owner": {
               "targetUri": "/catalogitems/22c3f334-9875-450c-81e0-b27366b2a144"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "28b4a4ca-7981-4c64-b900-4d30e4060d54"
@@ -811,21 +685,15 @@
             "owner": {
               "targetUri": "/catalogitems/a4f330e1-86fb-4f27-a7f3-cc9b24499d93"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "8759faba-e8ff-40c5-a43d-6ad83dd5462c"
@@ -844,21 +712,15 @@
             "owner": {
               "targetUri": "/catalogitems/90fe5407-592a-47fc-80f5-3376c92866fe"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "cf850f7c-5223-409a-8347-beec964f8368"
@@ -877,21 +739,15 @@
             "owner": {
               "targetUri": "/catalogitems/427b6849-2ba7-47c4-887c-5aeb226fc0ac"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "b2f7e6e7-45d6-466c-92e3-a963baea39df"
@@ -909,9 +765,7 @@
               },
               "referenceType": "LINK",
               "linkType": "process_tom",
-              "attributes": {
-                
-              }
+              "attributes": {}
             },
             {
               "catalogItem": {
@@ -919,9 +773,7 @@
               },
               "referenceType": "LINK",
               "linkType": "process_tom",
-              "attributes": {
-                
-              }
+              "attributes": {}
             },
             {
               "catalogItem": {
@@ -929,9 +781,7 @@
               },
               "referenceType": "LINK",
               "linkType": "process_tom",
-              "attributes": {
-                
-              }
+              "attributes": {}
             },
             {
               "catalogItem": {
@@ -939,9 +789,7 @@
               },
               "referenceType": "LINK",
               "linkType": "process_tom",
-              "attributes": {
-                
-              }
+              "attributes": {}
             },
             {
               "catalogItem": {
@@ -949,9 +797,7 @@
               },
               "referenceType": "LINK",
               "linkType": "process_tom",
-              "attributes": {
-                
-              }
+              "attributes": {}
             },
             {
               "catalogItem": {
@@ -959,9 +805,7 @@
               },
               "referenceType": "LINK",
               "linkType": "process_tom",
-              "attributes": {
-                
-              }
+              "attributes": {}
             },
             {
               "catalogItem": {
@@ -969,9 +813,7 @@
               },
               "referenceType": "LINK",
               "linkType": "process_tom",
-              "attributes": {
-                
-              }
+              "attributes": {}
             },
             {
               "catalogItem": {
@@ -979,9 +821,7 @@
               },
               "referenceType": "LINK",
               "linkType": "process_tom",
-              "attributes": {
-                
-              }
+              "attributes": {}
             }
           ],
           "namespace": "TOM.VVT",
@@ -992,21 +832,15 @@
             "owner": {
               "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "process",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "PRO_DataProcessing",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "392a5687-b415-4b2c-afde-a0ea355751be"
@@ -1025,21 +859,15 @@
             "owner": {
               "targetUri": "/catalogitems/0706a55c-e38d-42e4-afcb-b99dad446ef8"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "d62f9fde-0bdb-4fec-b7b7-1f9be28ae32e"
@@ -1058,21 +886,15 @@
             "owner": {
               "targetUri": "/catalogitems/75d43e2f-a376-498a-ab5c-c09837605109"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "02a025b2-9e9b-483c-8945-9eb75d30cdf6"
@@ -1091,21 +913,15 @@
             "owner": {
               "targetUri": "/catalogitems/2747d87a-b61b-4b34-8566-fff8f6adbc10"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "1e55de12-b219-4f61-901b-1176f92cc23b"
@@ -1124,21 +940,15 @@
             "owner": {
               "targetUri": "/catalogitems/7d32e351-6e4a-4368-8d6f-08acc4bf7254"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "09f8c4cc-e4f8-4e98-8918-cf7c43c4cb48"
@@ -1157,21 +967,15 @@
             "owner": {
               "targetUri": "/catalogitems/1b73e686-f922-4eb3-aae9-356a49d4df6d"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "98fac979-da16-4538-a0d4-789e57c98f9f"
@@ -1189,9 +993,7 @@
               },
               "referenceType": "LINK_EXTERNAL",
               "linkType": "process_tom",
-              "attributes": {
-                
-              }
+              "attributes": {}
             }
           ],
           "namespace": "TOM.TOM-R",
@@ -1202,9 +1004,7 @@
             "owner": {
               "targetUri": "/catalogitems/c4f39b57-acc3-4edf-9a0b-7d8595607424"
             },
-            "links": {
-              
-            },
+            "links": {},
             "customAspects": {
               "control_dataProtection": {
                 "domains": [],
@@ -1221,9 +1021,7 @@
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "CTL_TOM",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e006"
@@ -1242,21 +1040,15 @@
             "owner": {
               "targetUri": "/catalogitems/37c95dff-cd20-43e5-a95a-19d743eebdb9"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "223129b8-9ab7-4b26-ac72-2c76c28d02f8"
@@ -1275,21 +1067,15 @@
             "owner": {
               "targetUri": "/catalogitems/c98a17c6-c896-43d2-ac40-bbc307050fec"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "45a7cda1-2e88-4cfe-a870-a52b49fdc208"
@@ -1308,21 +1094,15 @@
             "owner": {
               "targetUri": "/catalogitems/ed604045-d939-4ad1-91a6-eec17e4f9b28"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "66e01245-5348-4889-9466-eb8417207237"
@@ -1341,21 +1121,15 @@
             "owner": {
               "targetUri": "/catalogitems/780d9beb-cd8e-48cd-9890-923f03f3e62a"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "22ac634d-d4e7-4e35-a694-63f3a6d32353"
@@ -1374,21 +1148,15 @@
             "owner": {
               "targetUri": "/catalogitems/87d14fe1-0cca-4fa3-8bd6-70c506f2a541"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "3603b48f-6198-4b0c-9618-f8f366d98be2"
@@ -1407,21 +1175,15 @@
             "owner": {
               "targetUri": "/catalogitems/4c093853-49e0-4d93-8fbf-ebf390386b68"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "40ae37ef-916c-4ff5-892a-269101a930bf"
@@ -1440,21 +1202,15 @@
             "owner": {
               "targetUri": "/catalogitems/f0514b31-5868-480d-a5fb-24cd7a926e3b"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "16d5b34b-6757-4520-9c85-a8da950b93ba"
@@ -1473,21 +1229,15 @@
             "owner": {
               "targetUri": "/catalogitems/5339b295-34f1-496a-b663-9ce103a56ee5"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "f85fb012-5652-42c0-9883-b80a8e440719"
@@ -1506,21 +1256,15 @@
             "owner": {
               "targetUri": "/catalogitems/6734be97-537e-4626-a144-fb1a6ab1c136"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "6ce32735-5781-42f7-8e13-c70d1f5b9d55"
@@ -1539,21 +1283,15 @@
             "owner": {
               "targetUri": "/catalogitems/7875eff2-cad9-495d-a9d6-42df1f57746a"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "95054c19-d22e-4deb-bfb5-25cf467000af"
@@ -1572,21 +1310,15 @@
             "owner": {
               "targetUri": "/catalogitems/d3040e5b-9908-4d89-b901-204ad4c03eba"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "d52b8683-0324-48f7-8680-87f2c5de81a8"
@@ -1605,21 +1337,15 @@
             "owner": {
               "targetUri": "/catalogitems/615f9e1e-fc23-45e2-a21b-6564ee479781"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "c48e6ff8-fdd0-4e5c-8432-ac5cd8ab1572"
@@ -1638,21 +1364,15 @@
             "owner": {
               "targetUri": "/catalogitems/7c306d92-fb0c-4e4f-9bbc-f7d72932479e"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "edea7047-678f-45a7-92f4-12198bf80c95"
@@ -1671,21 +1391,15 @@
             "owner": {
               "targetUri": "/catalogitems/b9932a54-d023-4b57-9121-d852a614c59c"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "11df5681-efe9-4109-8d9e-961b1e20d1d6"
@@ -1704,21 +1418,15 @@
             "owner": {
               "targetUri": "/catalogitems/e2b43a73-0038-4f0f-8c3f-7d23a20fdf41"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "e3048694-faff-4fb1-9699-dc357ae43c7d"
@@ -1737,21 +1445,15 @@
             "owner": {
               "targetUri": "/catalogitems/56b98dc5-4c3f-4466-b6c2-48f9910d2adc"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "6d94aaf7-ebd1-44d4-bd57-a51bdc1c33b3"
@@ -1770,21 +1472,15 @@
             "owner": {
               "targetUri": "/catalogitems/3b7fa647-ae0e-40c2-8f83-ad2910eed369"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "84ea1151-0361-4eb7-8f7a-d21f331f4731"
@@ -1803,21 +1499,15 @@
             "owner": {
               "targetUri": "/catalogitems/0fcf3b61-014c-4ba6-9d38-6e869775198b"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "eb55389e-9202-4079-b2e5-5bab5a4a9bed"
@@ -1836,21 +1526,15 @@
             "owner": {
               "targetUri": "/catalogitems/9b777242-bf70-481c-807a-c5e0a0926c15"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "e5bae164-ef7e-4c99-9806-c90f99edf96e"
@@ -1869,21 +1553,15 @@
             "owner": {
               "targetUri": "/catalogitems/a920e1fe-db44-4cf3-ad2c-ce4c60fdf3ff"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "63955aed-2918-47e3-ab3f-a65dba3c8e70"
@@ -1902,21 +1580,15 @@
             "owner": {
               "targetUri": "/catalogitems/506776b1-133c-42cf-bf17-e51f921aec09"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "5695027b-b332-4fdf-bded-95f85f651038"
@@ -1935,21 +1607,15 @@
             "owner": {
               "targetUri": "/catalogitems/0614ebef-3a99-4a0b-a6dc-766f960cf079"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "6e674405-3217-4900-a65d-91b74e969b82"
@@ -1968,21 +1634,15 @@
             "owner": {
               "targetUri": "/catalogitems/6c513ced-0356-415c-ba00-dd1e833369d5"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "6025e6eb-b4e5-46a7-81e8-2d6c2a229659"
@@ -2001,21 +1661,15 @@
             "owner": {
               "targetUri": "/catalogitems/ad9895dd-0764-4dbb-a51a-d2dffbc0bc1e"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "5671ef60-568a-498d-95ef-ad06bb43cf35"
@@ -2034,21 +1688,15 @@
             "owner": {
               "targetUri": "/catalogitems/51df49d6-4f20-4d30-a5d6-64012ac4bce6"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "4046a7bc-4677-4dff-a680-7e9cfd2f0ab0"
@@ -2067,21 +1715,15 @@
             "owner": {
               "targetUri": "/catalogitems/0412a2be-8545-49e9-8660-992ea1988127"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "4ca2241e-b564-4757-a283-67dec9f87709"
@@ -2100,21 +1742,15 @@
             "owner": {
               "targetUri": "/catalogitems/cd6b3524-b0d7-49a8-b76c-4180722abfea"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "405c1ac5-33f4-49af-abc1-bd0e5848321d"
@@ -2133,21 +1769,15 @@
             "owner": {
               "targetUri": "/catalogitems/ba7435fd-6b48-43e7-9c88-236c7918f3cb"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "95e473ca-45ed-48c7-9a5a-955cbf8babd2"
@@ -2165,9 +1795,7 @@
               },
               "referenceType": "LINK_EXTERNAL",
               "linkType": "process_tom",
-              "attributes": {
-                
-              }
+              "attributes": {}
             }
           ],
           "namespace": "TOM.TOM-P",
@@ -2178,9 +1806,7 @@
             "owner": {
               "targetUri": "/catalogitems/545aa1a7-984d-42ab-a7d0-55682153b3b0"
             },
-            "links": {
-              
-            },
+            "links": {},
             "customAspects": {
               "control_dataProtection": {
                 "domains": [],
@@ -2197,9 +1823,7 @@
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "CTL_TOM",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e005"
@@ -2218,21 +1842,15 @@
             "owner": {
               "targetUri": "/catalogitems/2acd6766-8ed1-4517-923b-3a3232a7ddba"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "20297f89-4820-4f96-b313-1b85f1a2f6c8"
@@ -2250,9 +1868,7 @@
               },
               "referenceType": "LINK_EXTERNAL",
               "linkType": "process_tom",
-              "attributes": {
-                
-              }
+              "attributes": {}
             }
           ],
           "namespace": "TOM.TOM-EFF",
@@ -2263,9 +1879,7 @@
             "owner": {
               "targetUri": "/catalogitems/971b5250-3673-4c80-8343-7aec2f5980ae"
             },
-            "links": {
-              
-            },
+            "links": {},
             "customAspects": {
               "control_dataProtection": {
                 "domains": [],
@@ -2282,9 +1896,7 @@
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "CTL_TOM",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "2a7e4df3-2bfc-4f87-9b9c-764eaf07e003"
@@ -2303,21 +1915,15 @@
             "owner": {
               "targetUri": "/catalogitems/ec67bd2b-fbc5-45e3-b74a-7dd9a7d6b26c"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "7281af11-2037-4032-a926-f0d9e61c0162"
@@ -2336,21 +1942,15 @@
             "owner": {
               "targetUri": "/catalogitems/d4f16bde-812d-41e5-9217-50a95b27518b"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "33178781-c632-4b1d-a6d2-6c8e6a039c30"
@@ -2369,21 +1969,15 @@
             "owner": {
               "targetUri": "/catalogitems/34f29b65-a544-4d54-a998-90376469d56a"
             },
-            "links": {
-              
-            },
-            "customAspects": {
-              
-            },
+            "links": {},
+            "customAspects": {},
             "type": "scenario",
             "parts": [],
             "domains": {
               "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
                 "subType": "SCN_Scenario",
                 "status": "NEW",
-                "riskValues": {
-                  
-                }
+                "riskValues": {}
               }
             },
             "id": "d9576b30-a847-43af-98e2-4c360bdec678"
@@ -3752,9 +3346,7 @@
           "targetSubType": "AST_Datatype"
         },
         "process_PIAOtherPersonsInvolved": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "person",
           "targetSubType": "PER_Person"
         },
@@ -3782,9 +3374,7 @@
           "targetSubType": "PER_Person"
         },
         "process_responsiblePerson": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "person",
           "targetSubType": "PER_Person"
         },
@@ -3812,9 +3402,7 @@
           "targetSubType": "PER_Person"
         },
         "process_requiredITSystems": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "asset",
           "targetSubType": "AST_IT-System"
         },
@@ -3851,30 +3439,22 @@
           "targetSubType": "PER_Person"
         },
         "process_PIAOOtherOrganisationsInvolved": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "scope",
           "targetSubType": "SCP_Scope"
         },
         "process_PIADataProcessing": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "process",
           "targetSubType": "PRO_DataProcessing"
         },
         "process_requiredApplications": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "asset",
           "targetSubType": "AST_Application"
         },
         "process_PIAResponsibleBody": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "scope",
           "targetSubType": "SCP_ResponsibleBody"
         },
@@ -3888,23 +3468,17 @@
           "targetSubType": "PER_Person"
         },
         "process_PIAProcessor": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "scope",
           "targetSubType": "SCP_Processor"
         },
         "process_tom": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "control",
           "targetSubType": "CTL_TOM"
         },
         "process_PIADescriptionAdditionalApplications": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "asset",
           "targetSubType": "AST_Application"
         },
@@ -3918,16 +3492,12 @@
           "targetSubType": "PER_Person"
         },
         "process_PIADescriptionAdditionalITSystems": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "asset",
           "targetSubType": "AST_IT-System"
         },
         "process_responsibleBody": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "scope",
           "targetSubType": "SCP_ResponsibleBody"
         },
@@ -3954,23 +3524,17 @@
           "targetSubType": "SCP_JointController"
         },
         "process_dataTransmission": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "process",
           "targetSubType": "PRO_DataTransfer"
         },
         "process_PIAScenario": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "scenario",
           "targetSubType": "SCN_Scenario"
         },
         "process_PIAJointControllership": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "scope",
           "targetSubType": "SCP_JointController"
         }
@@ -4556,9 +4120,7 @@
           }
         }
       },
-      "links": {
-        
-      },
+      "links": {},
       "translations": {
         "de": {
           "scenario_generalInformation_document": "Dokument",
@@ -5018,16 +4580,12 @@
       },
       "links": {
         "scope_informationSecurityOfficer": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "person",
           "targetSubType": "PER_Person"
         },
         "scope_headOfDataProcessing": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "person",
           "targetSubType": "PER_Person"
         },
@@ -5059,23 +4617,17 @@
           "targetSubType": "PER_DataProtectionOfficer"
         },
         "scope_tom": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "control",
           "targetSubType": "CTL_TOM"
         },
         "scope_management": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "person",
           "targetSubType": "PER_Person"
         },
         "scope_contract": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "document",
           "targetSubType": "DOC_Contract"
         }
@@ -5351,9 +4903,7 @@
           }
         }
       },
-      "links": {
-        
-      },
+      "links": {},
       "translations": {
         "de": {
           "document_generalInformation_externalLink": "Externer Link",
@@ -5517,9 +5067,7 @@
           }
         }
       },
-      "links": {
-        
-      },
+      "links": {},
       "translations": {
         "de": {
           "control_generalInformation_document": "Dokument",
@@ -5633,9 +5181,7 @@
           }
         }
       },
-      "links": {
-        
-      },
+      "links": {},
       "translations": {
         "de": {
           "asset_generalInformation_document": "Dokument",
@@ -5699,12 +5245,8 @@
           ]
         }
       },
-      "customAspects": {
-        
-      },
-      "links": {
-        
-      },
+      "customAspects": {},
+      "links": {},
       "translations": {
         "de": {
           "incident_INC_Incident_status_NEW": "Neu",
@@ -5737,9 +5279,7 @@
             "scope_informationSecurityOfficer": [
               {
                 "domains": [],
-                "attributes": {
-                  
-                },
+                "attributes": {},
                 "target": {
                   "targetUri": "http://localhost/persons/164f3943-d327-48f7-a5c9-a68d52b2331a"
                 }
@@ -5748,9 +5288,7 @@
             "scope_headOfDataProcessing": [
               {
                 "domains": [],
-                "attributes": {
-                  
-                },
+                "attributes": {},
                 "target": {
                   "targetUri": "http://localhost/persons/e667fcb4-5b6e-4569-962f-b9408fb7fd28"
                 }
@@ -5807,9 +5345,7 @@
             "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
               "subType": "SCP_ResponsibleBody",
               "status": "IN_PROGRESS",
-              "decisionResults": {
-                
-              },
+              "decisionResults": {},
               "riskDefinition": "DSRA"
             }
           },
@@ -5941,12 +5477,8 @@
           "owner": {
             "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
           },
-          "links": {
-            
-          },
-          "customAspects": {
-            
-          },
+          "links": {},
+          "customAspects": {},
           "type": "person",
           "parts": [
             {
@@ -5960,9 +5492,7 @@
             "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
               "subType": "PER_Person",
               "status": "NEW",
-              "decisionResults": {
-                
-              }
+              "decisionResults": {}
             }
           },
           "id": "69ef9c7e-7306-404e-8907-a69e2dd02e07"
@@ -5983,18 +5513,14 @@
               }
             ]
           },
-          "customAspects": {
-            
-          },
+          "customAspects": {},
           "type": "person",
           "parts": [],
           "domains": {
             "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
               "subType": "PER_Person",
               "status": "NEW",
-              "decisionResults": {
-                
-              }
+              "decisionResults": {}
             }
           },
           "id": "164f3943-d327-48f7-a5c9-a68d52b2331a"
@@ -6006,9 +5532,7 @@
           "owner": {
             "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
           },
-          "links": {
-            
-          },
+          "links": {},
           "customAspects": {
             "person_generalInformation": {
               "domains": [
@@ -6055,9 +5579,7 @@
             "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
               "subType": "PER_Person",
               "status": "NEW",
-              "decisionResults": {
-                
-              }
+              "decisionResults": {}
             }
           },
           "id": "e667fcb4-5b6e-4569-962f-b9408fb7fd28"
@@ -6069,9 +5591,7 @@
           "owner": {
             "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
           },
-          "links": {
-            
-          },
+          "links": {},
           "customAspects": {
             "control_dataProtection": {
               "domains": [
@@ -6107,12 +5627,8 @@
           "owner": {
             "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
           },
-          "links": {
-            
-          },
-          "customAspects": {
-            
-          },
+          "links": {},
+          "customAspects": {},
           "type": "scenario",
           "parts": [],
           "domains": {

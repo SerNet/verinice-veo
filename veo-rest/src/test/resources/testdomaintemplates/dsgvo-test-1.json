@@ -17,9 +17,7 @@
             "targetUri": "/catalogs/08cd8562-48fe-4be8-9ab2-3fedd937bc2f"
           },
           "element": {
-            "customAspects": {
-              
-            },
+            "customAspects": {},
             "id": "f05ed626-1de1-4ff1-bb1a-eb741a64a87a",
             "domains": {
               "00000000-0000-0000-0000-000000000001": {
@@ -27,9 +25,7 @@
                 "status": "NEW"
               }
             },
-            "links": {
-              
-            },
+            "links": {},
             "name": "Test process-1",
             "parts": [],
             "type": "process"
@@ -44,9 +40,7 @@
           },
           "element": {
             "abbreviation": "c-1",
-            "customAspects": {
-              
-            },
+            "customAspects": {},
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
             "domains": {
               "fece7858-8da5-59a3-b34a-6f8f831a256f": {
@@ -55,9 +49,7 @@
               }
             },
             "id": "3a7e4df3-2bfc-4f87-9b9c-764eaf07e063",
-            "links": {
-              
-            },
+            "links": {},
             "name": "Control-1",
             "owner": {
               "targetUri": "/catalogitems/387b0990-10f7-4ef2-8ee5-13579f2cfe84"
@@ -83,9 +75,7 @@
           },
           "element": {
             "abbreviation": "cc-1",
-            "customAspects": {
-              
-            },
+            "customAspects": {},
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
             "domains": {
               "00000000-0000-0000-0000-000000000001": {
@@ -94,9 +84,7 @@
               }
             },
             "id": "6f7e4df3-2bfc-4f87-9b9c-764eaf07e001",
-            "links": {
-              
-            },
+            "links": {},
             "name": "Control-cc-1",
             "owner": {
               "targetUri": "/catalogitems/af1b9aaf-faf3-4539-9193-22a94b211bfa"
@@ -122,9 +110,7 @@
           },
           "element": {
             "abbreviation": "c-3",
-            "customAspects": {
-              
-            },
+            "customAspects": {},
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
             "domains": {
               "00000000-0000-0000-0000-000000000001": {
@@ -133,9 +119,7 @@
               }
             },
             "id": "6f7e4df3-2bfc-4f87-9b9c-764eaf07e061",
-            "links": {
-              
-            },
+            "links": {},
             "name": "Control-3",
             "owner": {
               "targetUri": "/catalogitems/7c47f8ff-d2a9-4568-b266-92afeac07d79"
@@ -161,9 +145,7 @@
           },
           "element": {
             "abbreviation": "cc-2",
-            "customAspects": {
-              
-            },
+            "customAspects": {},
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
             "domains": {
               "00000000-0000-0000-0000-000000000001": {
@@ -172,9 +154,7 @@
               }
             },
             "id": "6f7e4df3-2bfc-4f87-9b9c-764eaf07e002",
-            "links": {
-              
-            },
+            "links": {},
             "name": "Control-cc-2",
             "owner": {
               "targetUri": "/catalogitems/fdc7b58d-700c-48f2-a1ba-87816334a00d"
@@ -200,9 +180,7 @@
           },
           "element": {
             "abbreviation": "c-2",
-            "customAspects": {
-              
-            },
+            "customAspects": {},
             "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
             "domains": {
               "00000000-0000-0000-0000-000000000001": {
@@ -211,9 +189,7 @@
               }
             },
             "id": "4b7e4df3-2bfc-4f87-9b9c-764eaf07e063",
-            "links": {
-              
-            },
+            "links": {},
             "name": "Control-2",
             "owner": {
               "targetUri": "/catalogitems/0956cc50-2343-4432-9115-94052cd517a9"
@@ -623,9 +599,7 @@
           "targetSubType": "AST_Datatype"
         },
         "process_requiredApplications": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "asset",
           "targetSubType": "AST_Application"
         },
@@ -653,16 +627,12 @@
           "targetSubType": "PER_Person"
         },
         "process_responsiblePerson": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "person",
           "targetSubType": "PER_Person"
         },
         "process_tom": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "control",
           "targetSubType": "CTL_TOM"
         },
@@ -690,16 +660,12 @@
           "targetSubType": "PER_Person"
         },
         "process_requiredITSystems": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "asset",
           "targetSubType": "AST_IT-System"
         },
         "process_responsibleBody": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "scope",
           "targetSubType": "SCP_ResponsibleBody"
         },
@@ -738,9 +704,7 @@
           "targetSubType": "SCP_Processor"
         },
         "process_dataTransmission": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "process",
           "targetSubType": "PRO_DataTransfer"
         },
@@ -833,9 +797,7 @@
           }
         }
       },
-      "links": {
-        
-      }
+      "links": {}
     },
     "person": {
       "subTypes": {
@@ -932,9 +894,7 @@
           }
         }
       },
-      "links": {
-        
-      }
+      "links": {}
     },
     "scope": {
       "subTypes": {
@@ -1122,16 +1082,12 @@
       },
       "links": {
         "scope_informationSecurityOfficer": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "scope",
           "targetSubType": "SCP_Controller"
         },
         "scope_headOfDataProcessing": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "person",
           "targetSubType": "PER_Person"
         },
@@ -1163,9 +1119,7 @@
           "targetSubType": "PER_DataProtectionOfficer"
         },
         "scope_management": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "person",
           "targetSubType": "PER_Person"
         }
@@ -1252,9 +1206,7 @@
           }
         }
       },
-      "links": {
-        
-      }
+      "links": {}
     },
     "control": {
       "subTypes": {
@@ -1334,9 +1286,7 @@
       },
       "links": {
         "control_tom": {
-          "attributeSchemas": {
-            
-          },
+          "attributeSchemas": {},
           "targetType": "control"
         },
         "Control_details_Control": {
@@ -1400,9 +1350,7 @@
           }
         }
       },
-      "links": {
-        
-      }
+      "links": {}
     },
     "incident": {
       "subTypes": {
@@ -1416,12 +1364,8 @@
           ]
         }
       },
-      "customAspects": {
-        
-      },
-      "links": {
-        
-      }
+      "customAspects": {},
+      "links": {}
     }
   }
 }

@@ -84,10 +84,11 @@ allprojects  {
             indentWithTabs()
             endWithNewline()
         }
-        format 'json', {
+        json {
             target '**/*.json'
             targetExclude '**/bin/**', '**/target/**'
-            eclipseWtp('json').configFile rootProject.file('misc/eclipse/json-format.prefs')
+            gson()
+                    .indentWithSpaces(2)
             endWithNewline()
         }
         format 'Jenkinsfile', {
