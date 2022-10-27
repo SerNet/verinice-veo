@@ -44,7 +44,7 @@ allprojects  {
         java {
             target 'src/**/*.java', 'buildSrc/**/*.java'
             googleJavaFormat()
-            importOrderFile(rootProject.file('misc/eclipse/java.importorder'))
+            importOrder('java', 'javax', 'org', 'com', 'org.veo', '')
             addStep org.veo.LicenseHeaderStep.create(currentUserName)
             addStep org.veo.NoWildcardImportsStep.create()
             removeUnusedImports()
@@ -61,7 +61,7 @@ allprojects  {
             addStep org.veo.LicenseHeaderStep.create(currentUserName)
             addStep org.veo.NoWildcardImportsStep.create()
             greclipse()
-            importOrderFile(rootProject.file('misc/eclipse/java.importorder'))
+            importOrder('java', 'javax', 'org', 'com', 'org.veo', '')
             indentWithSpaces(4)
             trimTrailingWhitespace()
             replaceRegex('Extra space around equals sign', /(  += )|( =  +)/, ' = ')
