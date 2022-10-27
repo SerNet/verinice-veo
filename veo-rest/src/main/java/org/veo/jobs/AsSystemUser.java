@@ -44,22 +44,29 @@ class AsSystemUser {
   static void runAsAdmin(final Runnable function) {
     var user =
         ApplicationUser.authenticatedUser(
-            SYSTEMUSER_NAME, null, VEO_USER_SCOPE, List.of(VEO_ADMIN_ROLE));
+            SYSTEMUSER_NAME, null, VEO_USER_SCOPE, List.of(VEO_ADMIN_ROLE), Integer.MAX_VALUE);
     run(function, user);
   }
 
   static void runAsContentCreator(final Runnable function) {
     var user =
         ApplicationUser.authenticatedUser(
-            SYSTEMUSER_NAME, null, VEO_USER_SCOPE, List.of(VEO_CONTENT_CREATOR_ROLE));
+            SYSTEMUSER_NAME,
+            null,
+            VEO_USER_SCOPE,
+            List.of(VEO_CONTENT_CREATOR_ROLE),
+            Integer.MAX_VALUE);
     run(function, user);
   }
 
   static void runInClient(Client client, final Runnable function) {
     var user =
         ApplicationUser.authenticatedUser(
-            SYSTEMUSER_NAME, client.getIdAsString(),
-            VEO_USER_SCOPE, Collections.emptyList());
+            SYSTEMUSER_NAME,
+            client.getIdAsString(),
+            VEO_USER_SCOPE,
+            Collections.emptyList(),
+            Integer.MAX_VALUE);
     run(function, user);
   }
 

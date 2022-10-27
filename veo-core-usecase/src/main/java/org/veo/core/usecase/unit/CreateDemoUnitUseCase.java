@@ -63,11 +63,17 @@ public class CreateDemoUnitUseCase
     var demoUnit = entityFactory.createUnit(DEMO_UNIT_NAME, null);
     updateVersion(demoUnit);
     demoUnit.setClient(client);
+    client.incrementTotalUnits();
     unitRepository.save(demoUnit);
     client.getDomains().stream()
         .filter(d -> d.getDomainTemplate() != null)
         .forEach(d -> profileApplier.applyProfile(d, DEMO_UNIT_REF, demoUnit));
     return demoUnit;
+  }
+
+  @Override
+  public Isolation getIsolation() {
+    return Isolation.REPEATABLE_READ;
   }
 
   @Valid

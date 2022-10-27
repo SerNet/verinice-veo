@@ -35,6 +35,7 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
+import org.veo.core.entity.specification.MaxUnitsExceededException;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.usecase.common.ETagMismatchException;
 import org.veo.core.usecase.domaintemplate.EntityAlreadyExistsException;
@@ -100,6 +101,11 @@ public class VeriniceExceptionHandler {
 
   @ExceptionHandler({MissingAdminPrivilegesException.class})
   protected ResponseEntity<ApiResponseBody> handle(MissingAdminPrivilegesException exception) {
+    return handle(exception, HttpStatus.FORBIDDEN);
+  }
+
+  @ExceptionHandler({MaxUnitsExceededException.class})
+  protected ResponseEntity<ApiResponseBody> handle(MaxUnitsExceededException exception) {
     return handle(exception, HttpStatus.FORBIDDEN);
   }
 

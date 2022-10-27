@@ -28,9 +28,11 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
+import org.veo.core.entity.specification.MaxUnitsExceededException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.usecase.RetryableUseCase;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.NameableInputData;
@@ -56,7 +58,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class CreateUnitUseCase
-    implements TransactionalUseCase<CreateUnitUseCase.InputData, CreateUnitUseCase.OutputData> {
+    implements TransactionalUseCase<CreateUnitUseCase.InputData, CreateUnitUseCase.OutputData>,
+        RetryableUseCase {
+
+  private static final Integer DEFAULT_MAX_UNITS = 2;
 
   private final ClientRepository clientRepository;
   private final UnitRepository unitRepository;
@@ -77,6 +82,10 @@ public class CreateUnitUseCase
     // change event
     // which we listen to. This would require messaging middleware.
 
+    int effectiveMaxUnits = Optional.ofNullable(input.maxUnits).orElse(DEFAULT_MAX_UNITS);
+    if (client.getTotalUnits() + 1 > effectiveMaxUnits) {
+      throwTooManyUnits(effectiveMaxUnits);
+    }
     Unit newUnit;
     if (input.getParentUnitId().isEmpty()) {
       newUnit = entityFactory.createUnit(input.getNameableInput().getName(), null);
@@ -90,12 +99,20 @@ public class CreateUnitUseCase
                           format("Parent unit %s was not found", input.getParentUnitId().get())));
       newUnit = entityFactory.createUnit(input.getNameableInput().getName(), parentUnit);
     }
+
     newUnit.setAbbreviation(input.getNameableInput().getAbbreviation());
     newUnit.setDescription(input.getNameableInput().getDescription());
     newUnit.setClient(client);
+    client.incrementTotalUnits();
     newUnit.addToDomains(client.getDomains());
     Unit save = unitRepository.save(newUnit);
+
     return new OutputData(save);
+  }
+
+  private void throwTooManyUnits(int maxUnits) {
+    throw new MaxUnitsExceededException(
+        "This account may not create more than " + maxUnits + " units");
   }
 
   private Client createNewClient(InputData input) {
@@ -113,12 +130,23 @@ public class CreateUnitUseCase
     createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(savedClient.getId()));
   }
 
+  @Override
+  public Isolation getIsolation() {
+    return Isolation.REPEATABLE_READ;
+  }
+
+  @Override
+  public int getMaxAttempts() {
+    return 5;
+  }
+
   @Valid
   @Value
   public static class InputData implements UseCase.InputData {
     NameableInputData nameableInput;
     Key<UUID> clientId;
     Optional<Key<UUID>> parentUnitId;
+    Integer maxUnits;
   }
 
   @Valid

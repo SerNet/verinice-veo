@@ -41,6 +41,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.usecase.RetryableUseCase;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
@@ -50,7 +51,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class DeleteUnitUseCase
-    implements TransactionalUseCase<DeleteUnitUseCase.InputData, EmptyOutput> {
+    implements TransactionalUseCase<DeleteUnitUseCase.InputData, EmptyOutput>, RetryableUseCase {
 
   private final ClientRepository clientRepository;
   private final RepositoryProvider repositoryProvider;
@@ -73,6 +74,7 @@ public class DeleteUnitUseCase
 
     removeObjectsInUnit(unit);
     unitRepository.delete(unit);
+    client.decrementTotalUnits();
     return EmptyOutput.INSTANCE;
   }
 
@@ -110,6 +112,16 @@ public class DeleteUnitUseCase
                   .getElementRepositoryFor(clazz)
                   .deleteAll(entitiesInUnitByType.get(clazz));
             });
+  }
+
+  @Override
+  public Isolation getIsolation() {
+    return Isolation.REPEATABLE_READ;
+  }
+
+  @Override
+  public int getMaxAttempts() {
+    return 5;
   }
 
   @Valid

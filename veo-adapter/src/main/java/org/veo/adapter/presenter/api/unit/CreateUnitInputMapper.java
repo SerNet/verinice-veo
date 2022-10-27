@@ -46,7 +46,8 @@ import org.veo.core.usecase.unit.CreateUnitUseCase.InputData;
  */
 public final class CreateUnitInputMapper {
 
-  public static CreateUnitUseCase.InputData map(CreateUnitDto dto, String clientId) {
+  public static CreateUnitUseCase.InputData map(
+      CreateUnitDto dto, String clientId, Integer maxUnits) {
     Optional<Key<UUID>> parentId =
         Optional.ofNullable(dto.getParent()).map(IdRef::getId).map(Key::uuidFrom);
 
@@ -58,6 +59,6 @@ public final class CreateUnitInputMapper {
     namedInput.setAbbreviation(dto.getAbbreviation());
     namedInput.setDescription(dto.getDescription());
 
-    return new InputData(namedInput, Key.uuidFrom(clientId), parentId);
+    return new InputData(namedInput, Key.uuidFrom(clientId), parentId, maxUnits);
   }
 }

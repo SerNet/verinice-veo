@@ -33,8 +33,10 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity(name = "client")
@@ -54,6 +56,10 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
 
   @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
   private String description;
+
+  @Column(name = "total_units")
+  @Setter(value = AccessLevel.NONE)
+  private int totalUnits;
 
   @Column(name = "domains")
   @OneToMany(
@@ -98,5 +104,15 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
     if (aDomain.getOwner().equals(this)) throw new ClientBoundaryViolationException(aDomain, this);
     aDomain.setOwner(null);
     return this.domains.remove(aDomain);
+  }
+
+  @Override
+  public void incrementTotalUnits() {
+    totalUnits++;
+  }
+
+  @Override
+  public void decrementTotalUnits() {
+    totalUnits--;
   }
 }

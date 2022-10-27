@@ -22,7 +22,20 @@ import static org.hamcrest.Matchers.is
 import static org.hamcrest.Matchers.not
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 
+import java.util.concurrent.Callable
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
+
+import org.apache.http.HttpStatus
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.test.context.TestSecurityContextHolder
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
@@ -31,6 +44,7 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
+import org.veo.core.entity.specification.MaxUnitsExceededException
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
@@ -57,6 +71,9 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private TransactionTemplate txTemplate
+
+    @Autowired
+    private UserDetailsService userDetailsService
 
     private Client client
 
@@ -253,7 +270,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         allUnits.size() == 2
     }
 
-    @WithUserDetails("user@domain.example")
+    @WithUserDetails("manyunitscreator@domain.example")
     def "sub units are read-only when creating a unit"() {
         given: "a parent and sub unit"
         def parentUnitId = parseJson(post("/units", [
@@ -458,5 +475,59 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         ], headers, 400)
         then: "an exception is thrown"
         thrown(DeviatingIdException)
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "cannot create more than 2 units"() {
+        when: "the user tries to create a unit"
+        def result = parseJson(post('/units', [name: 'Unit 1']))
+        then: "the request is successful"
+        result.success
+        when: "the user tries to create another unit"
+        result = parseJson(post('/units', [name: 'Unit 2']))
+        then: "the request is successful"
+        result.success
+        when: "the user tries to create a third unit"
+        post('/units', [name: 'Unit 3'], HttpStatus.SC_FORBIDDEN)
+        then: "the action is not performed"
+        thrown(MaxUnitsExceededException)
+        and: 'only 2 units have been created'
+        parseJson(get("/units")).size() == 2
+    }
+
+    @WithUserDetails("manyunitscreator@domain.example")
+    def "cannot bypass maxUnits limit with parallel requests"() {
+        given:
+        int numRequests = 80
+        int allowedUnitsForUser = 50
+        def pool = Executors.newFixedThreadPool(8)
+        AtomicInteger failedAttempts = new AtomicInteger()
+        AtomicInteger successfulAttempts = new AtomicInteger()
+        def tasks = (1..numRequests).collect { n-> {
+                ->
+                try {
+                    UserDetails principal = userDetailsService.loadUserByUsername('manyunitscreator@domain.example')
+                    Authentication authentication = UsernamePasswordAuthenticationToken.authenticated(principal,
+                            principal.getPassword(), principal.getAuthorities())
+                    SecurityContext context = SecurityContextHolder.createEmptyContext()
+                    context.setAuthentication(authentication)
+                    TestSecurityContextHolder.setContext(context)
+                    post('/units', [name: "Unit ${n} "])
+                    successfulAttempts.incrementAndGet()
+                } catch(Throwable t) {
+                    failedAttempts.incrementAndGet()
+                }
+            } as Callable
+        }
+        when: "the user tries to create a lot of units"
+        pool.invokeAll(tasks)
+        pool.shutdown()
+        then: 'all the requests are performed'
+        pool.awaitTermination(30, TimeUnit.SECONDS)
+        and: 'only the allowed number of units have been created'
+        parseJson(get("/units")).size() == allowedUnitsForUser
+        successfulAttempts.get() == allowedUnitsForUser
+        and: 'the other creation attempts failed'
+        failedAttempts.get() == numRequests - allowedUnitsForUser
     }
 }

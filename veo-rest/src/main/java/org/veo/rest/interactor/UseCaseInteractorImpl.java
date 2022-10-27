@@ -23,15 +23,25 @@ import java.util.function.Supplier;
 
 import javax.validation.Valid;
 
+import org.springframework.retry.backoff.BackOffPolicy;
+import org.springframework.retry.backoff.BackOffPolicyBuilder;
+import org.springframework.retry.policy.SimpleRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.validation.annotation.Validated;
 
+import org.veo.core.usecase.RetryableUseCase;
+import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.InputData;
 import org.veo.core.usecase.UseCase.OutputData;
 import org.veo.core.usecase.UseCaseInteractor;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -47,15 +57,18 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Validated
 @Slf4j
+@RequiredArgsConstructor
 public class UseCaseInteractorImpl implements UseCaseInteractor {
+
+  private final PlatformTransactionManager transactionManager;
 
   @Override
   @Async
   public <R, I extends InputData, O extends OutputData> CompletableFuture<R> execute(
       UseCase<I, O> useCase, Supplier<I> inputSupplier, Function<O, R> outputMapper) {
     log.info("Executing {} with {}", useCase, inputSupplier);
-    return CompletableFuture.completedFuture(
-        useCase.executeAndTransformResult(inputSupplier, outputMapper));
+    return doExecuteWithRetry(
+        useCase, () -> useCase.executeAndTransformResult(inputSupplier, outputMapper));
   }
 
   @Override
@@ -65,10 +78,54 @@ public class UseCaseInteractorImpl implements UseCaseInteractor {
       @Valid I input, // TODO implement test to make sure all marked
       // complex types in fields are validated
       Function<O, R> outputMapper) {
+
     log.info("Executing {}", useCase);
     log.debug("Input: {}", input);
-    return CompletableFuture.completedFuture(
-        useCase.executeAndTransformResult(input, outputMapper));
+    return doExecuteWithRetry(
+        useCase, () -> useCase.executeAndTransformResult(input, outputMapper));
+  }
+
+  private <R, I extends InputData, O extends OutputData> CompletableFuture<R> doExecuteWithRetry(
+      UseCase<I, O> useCase, Supplier<R> resultSupplier) {
+
+    if (useCase instanceof RetryableUseCase r) {
+      RetryTemplate retryTemplate = new RetryTemplate();
+
+      SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy(r.getMaxAttempts());
+      retryTemplate.setRetryPolicy(retryPolicy);
+
+      BackOffPolicy backOffPolicy =
+          BackOffPolicyBuilder.newBuilder().delay(30l).maxDelay(500l).build();
+      retryTemplate.setBackOffPolicy(backOffPolicy);
+
+      return retryTemplate.execute(ctx -> doExecuteWithIsolation(useCase, resultSupplier));
+    }
+    return doExecuteWithIsolation(useCase, resultSupplier);
+  }
+
+  private <R, I extends InputData, O extends OutputData>
+      CompletableFuture<R> doExecuteWithIsolation(
+          UseCase<I, O> useCase, Supplier<R> resultSupplier) {
+    if (useCase instanceof TransactionalUseCase<?, ?> t) {
+      TransactionalUseCase.Isolation isolation = t.getIsolation();
+      TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+      switch (isolation) {
+        case DEFAULT:
+          transactionTemplate.setIsolationLevel(TransactionDefinition.ISOLATION_DEFAULT);
+          break;
+        case REPEATABLE_READ:
+          transactionTemplate.setIsolationLevel(TransactionDefinition.ISOLATION_REPEATABLE_READ);
+          break;
+        case SERIALIZABLE:
+          transactionTemplate.setIsolationLevel(TransactionDefinition.ISOLATION_SERIALIZABLE);
+          break;
+        default:
+          throw new IllegalStateException("Unhandled isolation level: " + isolation);
+      }
+      return CompletableFuture.completedFuture(
+          transactionTemplate.execute(status -> resultSupplier.get()));
+    }
+    return CompletableFuture.completedFuture(resultSupplier.get());
   }
 
   @Override

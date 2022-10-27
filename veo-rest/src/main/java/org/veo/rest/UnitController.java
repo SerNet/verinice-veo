@@ -275,10 +275,9 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createUnit(
       @Parameter(hidden = true) ApplicationUser user,
       @Valid @RequestBody CreateUnitDto createUnitDto) {
-
     return useCaseInteractor.execute(
         createUnitUseCase,
-        CreateUnitInputMapper.map(createUnitDto, user.getClientId()),
+        CreateUnitInputMapper.map(createUnitDto, user.getClientId(), user.getMaxUnits()),
         output -> {
           ApiResponseBody body = CreateOutputMapper.map(output.getUnit());
           return RestApiResponse.created(URL_BASE_PATH, body);

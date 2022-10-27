@@ -64,7 +64,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
         verifyAll {
             queryCounts.select == 89
             queryCounts.insert == 5
-            queryCounts.update == 2
+            queryCounts.update == 3
             queryCounts.delete in [39l, 40l]
             queryCounts.time < 1000
             // 200 is the currently observed count of 174 rows plus an acceptable safety margin
@@ -131,7 +131,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
         verifyAll {
             queryCounts.select == 106
             queryCounts.insert == 35
-            queryCounts.update == 0
+            queryCounts.update == 1
             queryCounts.delete == 342
             queryCounts.time < 5000
             // 12000 is the currently observed count of 11909 rows plus an acceptable safety margin

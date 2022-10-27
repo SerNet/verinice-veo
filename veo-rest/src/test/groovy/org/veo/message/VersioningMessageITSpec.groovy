@@ -64,7 +64,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
         executeInTransaction {
             createUnitUseCase.execute(new CreateUnitUseCase.InputData(
                     new NameableInputData(Optional.empty(), "non-demo-unit", "ndu", "whatever"),
-                    clientId, Optional.empty()
+                    clientId, Optional.empty(), 2
                     ))
         }
 

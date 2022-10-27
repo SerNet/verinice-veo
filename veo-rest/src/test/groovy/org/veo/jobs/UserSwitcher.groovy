@@ -37,12 +37,12 @@ class UserSwitcher {
             SecurityContextHolder.getContext().setAuthentication(originalAuthentication)
     }
 
-    void switchToUser(String username, String clientId) {
+    void switchToUser(String username, String clientId, int maxUnits = 2) {
         this.originalAuthentication = SecurityContextHolder.getContext()
                 .getAuthentication()
         var user = ApplicationUser.authenticatedUser(username,
                 clientId,
-                "veo-user", Collections.emptyList())
+                "veo-user", Collections.emptyList(), maxUnits)
         var token = new AnonymousAuthenticationToken(username, user,
                 List.of(new SimpleGrantedAuthority("SCOPE_veo-user")))
         SecurityContextHolder.getContext().setAuthentication(token)

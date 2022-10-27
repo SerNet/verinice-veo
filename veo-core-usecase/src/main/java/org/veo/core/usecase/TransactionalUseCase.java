@@ -43,4 +43,14 @@ public interface TransactionalUseCase<I extends UseCase.InputData, O extends Use
   default <R> R executeAndTransformResult(I input, Function<O, R> resultMapper) {
     return resultMapper.apply(execute(input));
   }
+
+  default Isolation getIsolation() {
+    return Isolation.DEFAULT;
+  }
+
+  enum Isolation {
+    DEFAULT,
+    REPEATABLE_READ,
+    SERIALIZABLE;
+  }
 }

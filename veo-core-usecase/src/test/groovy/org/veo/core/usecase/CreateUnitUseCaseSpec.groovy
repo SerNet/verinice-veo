@@ -44,7 +44,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
 
         and: "a clientId that does not yet exist"
         def newClientId = Key.newUuid()
-        def input = new InputData(namedInput, newClientId, Optional.empty())
+        def input = new InputData(namedInput, newClientId, Optional.empty(), 1)
 
         when: "the use case to create a unit is executed"
         def newUnit = usecase.execute(input).getUnit()
@@ -83,7 +83,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         entityFactory.createUnit(_,_) >> newUnit1
 
         and: "a parent unit in an existing client"
-        def input = new InputData(namedInput, this.existingClient.getId(), Optional.of(this.existingUnit.getId()))
+        def input = new InputData(namedInput, this.existingClient.getId(), Optional.of(this.existingUnit.getId()), 2)
 
         when: "the use case to create a unit is executed"
         def newUnit = usecase.execute(input).getUnit()

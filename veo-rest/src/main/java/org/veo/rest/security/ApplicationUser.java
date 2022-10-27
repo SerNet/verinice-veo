@@ -49,6 +49,7 @@ public class ApplicationUser implements UserDetails {
   private final String familyName;
   private final List<String> groups;
   private final List<String> roles;
+  private final Integer maxUnits;
 
   private Collection<? extends GrantedAuthority> authorities = Collections.emptyList();
   private boolean accountNonExpired = !false;
@@ -67,7 +68,8 @@ public class ApplicationUser implements UserDetails {
         jwt.getClaimAsString("given_name"),
         jwt.getClaimAsString("family_name"),
         jwt.getClaimAsStringList("groups"),
-        jwt.getClaimAsStringList("roles"));
+        jwt.getClaimAsStringList("roles"),
+        Optional.ofNullable(jwt.getClaimAsString("max_units")).map(Integer::parseInt).orElse(null));
     this.claims = jwt.getClaims();
   }
 
@@ -93,9 +95,9 @@ public class ApplicationUser implements UserDetails {
   }
 
   public static ApplicationUser authenticatedUser(
-      String username, String clientId, String scopes, List<String> roles) {
+      String username, String clientId, String scopes, List<String> roles, Integer maxUnits) {
     return new ApplicationUser(
-        username, clientId, scopes, "", "", "", "", Collections.emptyList(), roles);
+        username, clientId, scopes, "", "", "", "", Collections.emptyList(), roles, maxUnits);
   }
 
   public boolean isAdmin() {

@@ -59,4 +59,10 @@ public interface Client extends Identifiable, Versioned {
   default String getModelType() {
     return SINGULAR_TERM;
   }
+
+  int getTotalUnits();
+
+  void incrementTotalUnits();
+
+  void decrementTotalUnits();
 }
