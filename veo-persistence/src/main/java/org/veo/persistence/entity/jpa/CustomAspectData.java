@@ -29,7 +29,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -51,7 +50,7 @@ public class CustomAspectData implements CustomAspect {
 
   @Id @ToString.Include private String dbId = UUID.randomUUID().toString();
 
-  @NotNull @ToString.Include private String type;
+  @ToString.Include private String type;
 
   @ManyToOne(
       fetch = FetchType.LAZY,

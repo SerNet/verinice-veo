@@ -17,15 +17,24 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.veo.core.entity.Nameable;
+
 public interface NameableDto extends ModelDto {
+  @NotNull(message = "A name must be present.")
+  @Size(max = Nameable.NAME_MAX_LENGTH)
   String getName();
 
   void setName(String aName);
 
+  @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
   String getAbbreviation();
 
   void setAbbreviation(String aAbbreviation);
 
+  @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
   String getDescription();
 
   void setDescription(String aDescription);

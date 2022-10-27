@@ -33,7 +33,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.TypeDef;
 
@@ -60,7 +59,6 @@ public class DomainTemplateData extends IdentifiableVersionedData
     implements DomainTemplate, Nameable {
   @Id @ToString.Include private String dbId;
 
-  @NotNull
   @Column(name = "name")
   @ToString.Include
   private String name;
@@ -71,12 +69,10 @@ public class DomainTemplateData extends IdentifiableVersionedData
   @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
   private String description;
 
-  @NotNull
   @Column(name = "authority")
   @ToString.Include
   private String authority;
 
-  @NotNull
   @Column(name = "templateversion")
   @ToString.Include
   private String templateVersion;

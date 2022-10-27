@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefDomainCatalogs;
@@ -31,7 +30,6 @@ import org.veo.core.entity.Catalog;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Nameable;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
@@ -49,20 +47,16 @@ import lombok.ToString;
 public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencingDto
     implements NameableDto {
 
-  @NotNull(message = "A name must be present.")
   @Schema(description = "The name for the Domain.", example = "Data protection", required = true)
-  @Size(max = Nameable.NAME_MAX_LENGTH)
   @ToString.Include
   private String name;
 
   @Schema(description = "The abbreviation for the Domain.", example = "Data prot.")
-  @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
   private String abbreviation;
 
   @Schema(
       description = "The description for the Domain.",
       example = "Everything around data protection.")
-  @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
   private String description;
 
   @NotNull(message = "An authority must be present.")

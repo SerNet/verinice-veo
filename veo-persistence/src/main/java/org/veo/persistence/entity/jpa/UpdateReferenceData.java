@@ -19,7 +19,6 @@ package org.veo.persistence.entity.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.CatalogReference;
 import org.veo.core.entity.ItemUpdateType;
@@ -35,6 +34,5 @@ public class UpdateReferenceData extends CatalogReferenceData
     implements UpdateReference, CatalogReference {
 
   @Column(name = "updatetype")
-  @NotNull
   private ItemUpdateType updateType;
 }

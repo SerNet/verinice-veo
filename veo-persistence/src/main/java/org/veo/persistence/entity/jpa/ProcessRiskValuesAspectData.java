@@ -31,7 +31,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -99,7 +98,6 @@ public class ProcessRiskValuesAspectData implements RiskValuesAspect {
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
   private String dbId;
 
-  @NotNull
   @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainTemplateData.class, optional = false)
   @JoinColumn(name = "domain_id")
   private DomainTemplate domain;

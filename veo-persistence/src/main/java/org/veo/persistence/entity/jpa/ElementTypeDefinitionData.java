@@ -64,19 +64,15 @@ public class ElementTypeDefinitionData implements ElementTypeDefinition {
   private DomainTemplate owner;
 
   @Column(columnDefinition = "jsonb")
-  @NotNull
   private Map<String, SubTypeDefinition> subTypes = new HashMap<>();
 
   @Column(columnDefinition = "jsonb")
-  @NotNull
   private Map<String, CustomAspectDefinition> customAspects = new HashMap<>();
 
   @Column(columnDefinition = "jsonb")
-  @NotNull
   private Map<String, LinkDefinition> links = new HashMap<>();
 
   @Column(columnDefinition = "jsonb")
-  @NotNull
   private Map<String, Map<String, String>> translations = new HashMap<>();
 
   @Override

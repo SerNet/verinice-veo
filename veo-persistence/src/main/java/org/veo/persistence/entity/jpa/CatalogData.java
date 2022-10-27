@@ -30,7 +30,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -53,7 +52,6 @@ public class CatalogData extends IdentifiableVersionedData implements Catalog, N
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
   private String dbId;
 
-  @NotNull
   @Column(name = "name")
   private String name;
 

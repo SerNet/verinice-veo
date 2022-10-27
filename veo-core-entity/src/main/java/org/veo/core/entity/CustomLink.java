@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * A link connects two {@link Element} objects. It serves documentation purposes only. It's defined
  * by its source (owning) entity & target entity, but may also hold dynamic attributes that document
@@ -26,10 +28,12 @@ package org.veo.core.entity;
  */
 public interface CustomLink extends CustomAspect {
 
+  @NotNull
   Element getTarget();
 
   void setTarget(Element aTarget);
 
+  @NotNull
   Element getSource();
 
   void setSource(Element aSource);

@@ -48,6 +48,7 @@ public interface Unit extends Nameable, Identifiable, ElementOwner, Versioned {
     return Optional.of(getClient());
   }
 
+  @NotNull
   Client getClient();
 
   void setClient(Client aClient);

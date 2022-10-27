@@ -24,6 +24,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * CatalogItem The catalog item contains an element and/other related catalog item. It describes
  * currently two different abstract use cases: 1. Apply the contained element: defined by KEa.1 and
@@ -85,6 +87,7 @@ public interface CatalogItem extends ElementOwner {
   }
 
   /** The template element which will be applied. A copy of the object will be inserted. */
+  @NotNull
   Element getElement();
 
   void setElement(Element element);

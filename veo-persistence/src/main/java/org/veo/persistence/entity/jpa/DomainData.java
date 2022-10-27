@@ -22,7 +22,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -48,7 +47,6 @@ public class DomainData extends DomainTemplateData implements NameableData, Doma
 
   // This enforces the composition association Client-Domain
   @ManyToOne(targetEntity = ClientData.class, optional = false, fetch = FetchType.LAZY)
-  @NotNull
   @Valid
   private Client owner;
 

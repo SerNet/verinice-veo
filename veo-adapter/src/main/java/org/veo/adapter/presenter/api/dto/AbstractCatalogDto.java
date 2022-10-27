@@ -17,15 +17,11 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefCatalogDomainTemplate;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Nameable;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -35,17 +31,13 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public abstract class AbstractCatalogDto extends AbstractVersionedSelfReferencingDto
     implements NameableDto {
-  @NotNull(message = "A name must be present.")
   @Schema(description = "The name for the Catalog.", required = true)
-  @Size(max = Nameable.NAME_MAX_LENGTH)
   private String name;
 
   @Schema(description = "The abbreviation for the Catalog.")
-  @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
   private String abbreviation;
 
   @Schema(description = "The description for the Catalog.")
-  @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
   private String description;
 
   @Schema(implementation = IdRefCatalogDomainTemplate.class)

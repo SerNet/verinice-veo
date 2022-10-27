@@ -37,8 +37,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
@@ -79,7 +77,6 @@ public abstract class ElementData extends IdentifiableVersionedData
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
   private String dbId;
 
-  @NotNull
   @Column(name = "name")
   @ToString.Include
   private String name;
@@ -90,10 +87,8 @@ public abstract class ElementData extends IdentifiableVersionedData
   @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
   private String description;
 
-  @NotNull
   @Column(name = "designator")
   @ToString.Include
-  @Pattern(regexp = "([A-Z]{3}-\\d+)|NO_DESIGNATOR")
   private String designator;
 
   @Column(name = "domains")

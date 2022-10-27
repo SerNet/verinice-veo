@@ -28,7 +28,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
@@ -75,7 +74,6 @@ public class CatalogItemData extends ElementOwnerData implements CatalogItem, El
       fetch = FetchType.LAZY)
   // Note: 'optional = false' would not be validated because the relation is
   // mapped from the targetEntity. We have to rely on javax.validation here:
-  @NotNull
   @Valid
   private Element element;
 

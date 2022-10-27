@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * An update reference refers a catalog item of another catalog or version of the catalog. It
  * describes how the previous calalog item need to be modified to comply to the new version. The
@@ -29,6 +31,7 @@ public interface UpdateReference extends CatalogReference {
   String PLURAL_TERM = "updatereferences";
 
   /** The type of action for the update reference. */
+  @NotNull
   ItemUpdateType getUpdateType();
 
   void setUpdateType(ItemUpdateType aUpdateType);

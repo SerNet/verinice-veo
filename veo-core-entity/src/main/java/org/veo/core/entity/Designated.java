@@ -17,10 +17,15 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 public interface Designated {
   /**
    * @return A compact human-readable identifier that is unique within the client.
    */
+  @NotNull
+  @Pattern(regexp = "([A-Z]{3}-\\d+)|NO_DESIGNATOR")
   String getDesignator();
 
   /**

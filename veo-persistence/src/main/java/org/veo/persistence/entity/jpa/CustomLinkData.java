@@ -21,7 +21,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
@@ -35,7 +34,6 @@ import lombok.EqualsAndHashCode;
 @Data
 public class CustomLinkData extends CustomAspectData implements CustomLink {
 
-  @NotNull
   @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = true) // due to
   // the
   // single-table
@@ -47,7 +45,6 @@ public class CustomLinkData extends CustomAspectData implements CustomLink {
   @JoinColumn(name = "target_id")
   private Element target;
 
-  @NotNull
   @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = true) // due to
   // the
   // single-table

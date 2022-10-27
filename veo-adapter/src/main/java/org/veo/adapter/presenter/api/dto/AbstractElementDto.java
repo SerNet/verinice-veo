@@ -23,12 +23,10 @@ import java.util.Map;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefOwner;
 import org.veo.core.entity.ElementOwner;
-import org.veo.core.entity.Nameable;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -41,9 +39,7 @@ import lombok.ToString;
 public abstract class AbstractElementDto extends AbstractVersionedSelfReferencingDto
     implements NameableDto {
 
-  @NotNull(message = "A name must be present.")
   @Schema(description = "The name for the Element.", example = "Lock doors", required = true)
-  @Size(max = Nameable.NAME_MAX_LENGTH)
   @ToString.Include
   private String name;
 
@@ -55,14 +51,12 @@ public abstract class AbstractElementDto extends AbstractVersionedSelfReferencin
   private String designator;
 
   @Schema(description = "The abbreviation for the Element.", example = "Lock doors")
-  @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
   private String abbreviation;
 
   @Schema(
       description = "The description for the Element.",
       example = "Lock doors",
       required = false)
-  @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
   private String description;
 
   @NotNull(message = "An owner must be present.")

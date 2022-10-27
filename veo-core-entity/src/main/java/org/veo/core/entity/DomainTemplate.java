@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.validation.constraints.NotNull;
+
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.Rule;
@@ -47,14 +49,15 @@ public interface DomainTemplate extends Nameable, Identifiable, Versioned {
   int TEMPLATE_VERSION_MAX_LENGTH = 10;
 
   /** The authority of this domaintemplate. */
+  @NotNull
   String getAuthority();
 
-  void setAuthority(String aAuthority);
+  void setAuthority(@NotNull String aAuthority);
 
   /** The version */
   String getTemplateVersion();
 
-  void setTemplateVersion(String aTemplateVersion);
+  void setTemplateVersion(@NotNull String aTemplateVersion);
 
   /** The catalog describing the template element of this domaintemplate. */
   Set<Catalog> getCatalogs();

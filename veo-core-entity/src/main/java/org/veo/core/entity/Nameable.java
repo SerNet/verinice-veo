@@ -20,6 +20,8 @@ package org.veo.core.entity;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.validation.constraints.NotNull;
+
 /** Defines the basic properties of nameable elements. */
 public interface Nameable extends Displayable {
 
@@ -27,6 +29,7 @@ public interface Nameable extends Displayable {
   int ABBREVIATION_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
   int DESCRIPTION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
 
+  @NotNull
   String getName();
 
   void setName(String aName);

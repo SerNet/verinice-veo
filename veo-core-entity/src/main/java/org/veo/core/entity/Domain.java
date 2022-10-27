@@ -19,6 +19,8 @@ package org.veo.core.entity;
 
 import java.util.Optional;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * The domain should be referenced by the domain objects if applicable. It defines a standard, a
  * best practice or a company-specific context. It can be bound to a domain template, which
@@ -51,6 +53,7 @@ public interface Domain extends DomainTemplate, ClientOwned {
 
   void setOwner(Client owner);
 
+  @NotNull
   Client getOwner();
 
   default Optional<Client> getOwningClient() {

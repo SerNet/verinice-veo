@@ -20,15 +20,11 @@ package org.veo.adapter.presenter.api.dto;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefDomains;
 import org.veo.adapter.presenter.api.openapi.IdRefUnitParent;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Unit;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -40,19 +36,15 @@ import lombok.Data;
 public abstract class AbstractUnitDto extends AbstractVersionedSelfReferencingDto
     implements NameableDto {
 
-  @NotNull(message = "A name must be present.")
   @Schema(description = "The name for the Unit.", example = "My unit", required = true)
-  @Size(max = Nameable.NAME_MAX_LENGTH)
   private String name;
 
   @Schema(description = "The abbreviation for the Unit.", example = "U-96")
-  @Size(max = Nameable.ABBREVIATION_MAX_LENGTH)
   private String abbreviation;
 
   @Schema(
       description = "The description for the Unit.",
       example = "This is currently the main and only unit for our organization.")
-  @Size(max = Nameable.DESCRIPTION_MAX_LENGTH)
   private String description;
 
   @Schema(description = "The sub units for the Unit.", accessMode = Schema.AccessMode.READ_ONLY)

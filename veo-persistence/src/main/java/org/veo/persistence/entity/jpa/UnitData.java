@@ -47,7 +47,6 @@ import lombok.ToString;
 @Data
 public class UnitData extends ElementOwnerData implements NameableData, Unit {
 
-  @NotNull
   @Column(name = "name")
   @ToString.Include
   private String name;
@@ -58,7 +57,6 @@ public class UnitData extends ElementOwnerData implements NameableData, Unit {
   @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
   private String description;
 
-  @NotNull
   @ManyToOne(fetch = FetchType.LAZY, targetEntity = ClientData.class)
   @JoinColumn(name = "client_id")
   private Client client;

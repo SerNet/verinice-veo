@@ -43,12 +43,10 @@ import lombok.ToString;
 public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfReferencingDto
     implements NameableDto {
 
-  @NotNull(message = "A name must be present.")
   @Schema(
       description = "The name for the DomainTemplate.",
       example = "Data protection",
       required = true)
-  @Size(max = Nameable.NAME_MAX_LENGTH)
   private String name;
 
   @Schema(description = "The abbreviation for the DomainTemplate.", example = "DSGVO")

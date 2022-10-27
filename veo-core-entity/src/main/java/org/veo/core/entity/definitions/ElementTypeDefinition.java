@@ -20,17 +20,23 @@ package org.veo.core.entity.definitions;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.validation.constraints.NotNull;
+
 public interface ElementTypeDefinition {
+  @NotNull
   String getElementType();
 
+  @NotNull
   Map<String, SubTypeDefinition> getSubTypes();
 
   void setSubTypes(Map<String, SubTypeDefinition> definitions);
 
+  @NotNull
   Map<String, CustomAspectDefinition> getCustomAspects();
 
   void setCustomAspects(Map<String, CustomAspectDefinition> definitions);
 
+  @NotNull
   Map<String, LinkDefinition> getLinks();
 
   default Optional<LinkDefinition> findLink(String type) {
@@ -39,6 +45,7 @@ public interface ElementTypeDefinition {
 
   void setLinks(Map<String, LinkDefinition> definitions);
 
+  @NotNull
   Map<String, Map<String, String>> getTranslations();
 
   void setTranslations(Map<String, Map<String, String>> translations);

@@ -19,6 +19,8 @@ package org.veo.core.entity;
 
 import java.util.function.Predicate;
 
+import javax.validation.constraints.NotNull;
+
 /** All what provides a {@link TailoringReferenceType}. */
 public interface TailoringReferenceTyped {
   /**
@@ -45,5 +47,6 @@ public interface TailoringReferenceTyped {
     return IS_ALL_LINK_PREDICATE.test(this);
   }
 
+  @NotNull
   TailoringReferenceType getReferenceType();
 }
