@@ -60,7 +60,7 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
                     "mySecondRiskDefinition": createRiskDefinition("mySecondRiskDefinition"),
                     "myThirdRiskDefinition": createRiskDefinition("myThirdRiskDefinition"),
                     "theOneWithOnlyTwoImplementationStatuses": createRiskDefinition("theOneWithOnlyTwoImplementationStatuses") {
-                        implementationStateDefinition = new ImplementationStateDefinition("", "", "", [
+                        implementationStateDefinition = new ImplementationStateDefinition([
                             newCategoryLevel("not done"),
                             newCategoryLevel("done"),
                         ])

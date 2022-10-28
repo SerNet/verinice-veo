@@ -17,13 +17,20 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
+import java.util.Map;
+
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @NoArgsConstructor
-@ToString(onlyExplicitlyIncluded = true)
+@ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class CategoryLevel extends DiscreteValue {
-  public CategoryLevel(String name, String abbreviation, String description, String htmlColor) {
-    super(name, abbreviation, description, htmlColor);
+  public CategoryLevel(String htmlColor) {
+    super(htmlColor);
+  }
+
+  public CategoryLevel(
+      int ordinalValue, String htmlColor, Map<String, Map<String, String>> translations) {
+    super(ordinalValue, htmlColor, translations);
   }
 }

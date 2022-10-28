@@ -17,24 +17,21 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
-import java.util.Map;
+import java.util.Set;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import org.veo.core.entity.Nameable;
 
-@NoArgsConstructor
-@Data
-@EqualsAndHashCode(callSuper = true)
-@ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class ProbabilityLevel extends DiscreteValue {
-  public ProbabilityLevel(
-      int ordinalValue, String htmlColor, Map<String, Map<String, String>> translations) {
-    super(ordinalValue, htmlColor, translations);
-  }
+/** Collects the Attributes of the v1 version of the risk objects. */
+@Deprecated
+public final class DeprecatedAttributes {
+  static final String ABBREVIATION = Nameable.ABBREVIATION;
+  static final String DESCRIPTION = Nameable.DESCRIPTION;
+  static final String NAME = Nameable.NAME;
 
-  public ProbabilityLevel(String htmlColor) {
-    super(htmlColor);
+  static final Set<String> DEPRECATED_ATTRIBUTES =
+      Set.of(Nameable.NAME, Nameable.ABBREVIATION, Nameable.DESCRIPTION);
+
+  private DeprecatedAttributes() {
+    super();
   }
 }

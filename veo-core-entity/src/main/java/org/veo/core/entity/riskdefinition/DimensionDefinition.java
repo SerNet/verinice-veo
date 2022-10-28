@@ -17,12 +17,24 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
-import java.util.List;
+import static org.veo.core.entity.riskdefinition.DeprecatedAttributes.ABBREVIATION;
+import static org.veo.core.entity.riskdefinition.DeprecatedAttributes.DESCRIPTION;
+import static org.veo.core.entity.riskdefinition.DeprecatedAttributes.NAME;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 import org.veo.core.entity.Constraints;
+import org.veo.core.entity.TranslationProvider;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,7 +51,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class DimensionDefinition {
+public class DimensionDefinition implements TranslationProvider {
   protected static final String DIMENSION_PROBABILITY = "Prob";
   protected static final String DIMENSION_IMPLEMENTATION_STATE = "Ctr";
 
@@ -49,19 +61,57 @@ public class DimensionDefinition {
   @ToString.Include
   private String id;
 
-  @NotNull(message = "A name must be present.")
-  @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
-  @ToString.Include
-  private String name;
+  @NotNull @NotEmpty private Map<String, Map<String, String>> translations = new HashMap<>();
 
-  @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
-  private String abbreviation;
+  public DimensionDefinition(String id) {
+    this.id = id;
+  }
 
-  @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
-  private String description;
+  /**
+   * Provide compatibility with old clients and data structure. This will read the old data and
+   * transform it to the new data.
+   */
+  @JsonAnySetter
+  @Deprecated
+  // TODO: VEO-1739 remove
+  public void setOldValues(String name, String value) {
+    if (value == null) {
+      return;
+    }
+    if (DeprecatedAttributes.DEPRECATED_ATTRIBUTES.contains(name)) {
+      getDefaultTranslation().put(name, value);
+    } else {
+      throw new IllegalArgumentException("No property " + name);
+    }
+  }
+
+  @Deprecated
+  private Map<String, String> getDefaultTranslation() {
+    return translations.computeIfAbsent("de", t -> new HashMap<String, String>());
+  }
+
+  @Deprecated
+  @JsonProperty(access = Access.READ_ONLY)
+  public String getName() {
+    return getDefaultTranslation().get(NAME);
+  }
+
+  @Deprecated
+  @JsonProperty(access = Access.READ_ONLY)
+  public String getAbbreviation() {
+    return getDefaultTranslation().get(ABBREVIATION);
+  }
+
+  @Deprecated
+  @JsonProperty(access = Access.READ_ONLY)
+  public String getDescription() {
+    return getDefaultTranslation().get(DESCRIPTION);
+  }
 
   /** Initialize the ordinal value of each DiscreteValue in the list. */
   static void initLevel(List<? extends DiscreteValue> discretValues) {
-    discretValues.stream().forEachOrdered(cl -> cl.setOrdinalValue(discretValues.indexOf(cl)));
+    for (int i = 0; i < discretValues.size(); i++) {
+      discretValues.get(i).setOrdinalValue(i);
+    }
   }
 }

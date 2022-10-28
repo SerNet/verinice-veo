@@ -15,26 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.riskdefinition;
+package org.veo.core.entity;
 
 import java.util.Map;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
-@NoArgsConstructor
-@Data
-@EqualsAndHashCode(callSuper = true)
-@ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class ProbabilityLevel extends DiscreteValue {
-  public ProbabilityLevel(
-      int ordinalValue, String htmlColor, Map<String, Map<String, String>> translations) {
-    super(ordinalValue, htmlColor, translations);
-  }
-
-  public ProbabilityLevel(String htmlColor) {
-    super(htmlColor);
-  }
+public interface TranslationProvider {
+  Map<String, Map<String, String>> getTranslations();
 }

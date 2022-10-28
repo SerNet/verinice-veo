@@ -288,10 +288,10 @@ abstract class VeoSpec extends Specification {
         RiskDefinition rd = new RiskDefinition()
         rd.id = id
         rd.riskValues = [
-            new RiskValue(0,"gering","1","Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten.","#A0CF11","symbolic_risk_1"),
-            new RiskValue(1,"mittel","2","Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus.","#FFFF13","symbolic_risk_2"),
-            new RiskValue(2,"hoch","3","Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung.","#FF8E43","symbolic_risk_3"),
-            new RiskValue(3,"sehr hoch","4","Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert.","#FF1212","symbolic_risk_4")
+            new RiskValue(0,"#A0CF11","symbolic_risk_1",["de" : ["name": "gering","abbreviation":"1","description":"Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten einen ausreichenden Schutz. In der Praxis ist es üblich, geringe Risiken zu akzeptieren und die Gefährdung dennoch zu beobachten."]]),
+            new RiskValue(1,"#FFFF13","symbolic_risk_2",["de" : ["name": "mittel","abbreviation":"2","description":"Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen reichen möglicherweise nicht aus."]]),
+            new RiskValue(2,"#FF8E43","symbolic_risk_3",["de" : ["name": "hoch","abbreviation":"3","description":"Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung."]]),
+            new RiskValue(3,"#FF1212","symbolic_risk_4",["de" :["name": "sehr hoch","abbreviation":"4","description":"Die bereits umgesetzten oder zumindest im Sicherheitskonzept vorgesehenen Sicherheitsmaßnahmen bieten keinen ausreichenden Schutz vor der jeweiligen Gefährdung. In der Praxis werden sehr hohe Risiken selten akzeptiert."]])
         ] as List
 
         def riskMatrix = [
@@ -322,34 +322,38 @@ abstract class VeoSpec extends Specification {
         ] as List
 
         rd.categories = [
-            new CategoryDefinition("C","Vertraulichkeit","c","",riskMatrix,
-            createDefaultCategoryLevels()
+            new CategoryDefinition("C",riskMatrix,
+            createDefaultCategoryLevels(),
+            ["de":["name":"Vertraulichkeit","abbreviation":"c","description": ""]]
             ),
-            new CategoryDefinition("I","Integrität","i","",riskMatrix,
-            createDefaultCategoryLevels()
+            new CategoryDefinition("I",riskMatrix,
+            createDefaultCategoryLevels(),
+            ["de":["name":"Integrität","abbreviation":"i","description": ""]]
             ),
-            new CategoryDefinition("A","Verfügbarkeit","a","",riskMatrix,
-            createDefaultCategoryLevels()
+            new CategoryDefinition("A",riskMatrix,
+            createDefaultCategoryLevels(),
+            ["de":["name":"Belastbarkeit","abbreviation":"r","description": ""]]
             ),
-            new CategoryDefinition("R","Belastbarkeit","r","",riskMatrix,
-            createDefaultCategoryLevels()
+            new CategoryDefinition("R",riskMatrix,
+            createDefaultCategoryLevels(),
+            ["de":["name":"Vertraulichkeit","abbreviation":"c","description": ""]]
             )
         ] as List
 
-        rd.probability = new ProbabilityDefinition("prop-1","pro-name-1","",[
-            new ProbabilityLevel("selten","1","Ereignis könnte nach heutigem Kenntnisstand höchstens alle fünf Jahre eintreten.","#004643"),
-            new ProbabilityLevel("mittel","2","Ereignis tritt einmal alle fünf Jahre bis einmal im Jahr ein.","#004643"),
-            new ProbabilityLevel("häufig","3","Ereignis tritt einmal im Jahr bis einmal pro Monat ein.","#004643"),
-            new ProbabilityLevel("sehr häufig","4","Ereignis tritt mehrmals im Monat ein.","#004643")
+        rd.probability = new ProbabilityDefinition(["de":["name":"Wahrscheinlichkit","abbreviation":"w","description":""]],[
+            new ProbabilityLevel(0,"#004643",["de":["name":"selten","abbreviation":"1","description":"Ereignis könnte nach heutigem Kenntnisstand höchstens alle fünf Jahre eintreten."]]),
+            new ProbabilityLevel(1,"#004643",["de":["name":"mittel","abbreviation":"2","description":"Ereignis tritt einmal alle fünf Jahre bis einmal im Jahr ein."]]),
+            new ProbabilityLevel(2,"#004643",["de":["name":"häufig","abbreviation":"3","description":"Ereignis tritt einmal im Jahr bis einmal pro Monat ein."]]),
+            new ProbabilityLevel(3,"#004643",["de":["name":"sehr häufig","abbreviation":"4","description":"Ereignis tritt mehrmals im Monat ein."]])
         ] as List)
 
-        rd.implementationStateDefinition = new ImplementationStateDefinition("prop-1","pro-name-1","",[
-            new CategoryLevel("ja","J","Die Maßnahme ist vollständig umgesetzt.","#12AE0F"),
-            new CategoryLevel("nein","N","Die Maßnahme ist nicht umgesetzt.","#AE0D11"),
-            new CategoryLevel("teilweise","Tw","Die Maßnahme ist nicht vollständig umgesetzt.","#EDE92F"),
-            new CategoryLevel("nicht anwendbar","NA","Die Maßnahme ist für den Betrachtungsgegenstand nicht anwendbar.","#49A2ED")
+        rd.implementationStateDefinition = new ImplementationStateDefinition(["de":["name":"Umsetzungsstatus","abbreviation":"s","description":""]],[
+            new CategoryLevel(0,"#12AE0F",["de":["name":"ja","abbreviation":"J","description":"Die Maßnahme ist vollständig umgesetzt."]]),
+            new CategoryLevel(1,"#AE0D11",["de":["name":"nein","abbreviation":"N","description":"Die Maßnahme ist nicht umgesetzt."]]),
+            new CategoryLevel(2,"#EDE92F",["de":["name":"teilweise","abbreviation":"Tw","description":"Die Maßnahme ist nicht vollständig umgesetzt."]]),
+            new CategoryLevel(3,"#49A2ED",["de":["name":"nicht anwendbar","abbreviation":"NA","description":"Die Maßnahme ist für den Betrachtungsgegenstand nicht anwendbar."]])
         ] as List)
-        rd.riskMethod = new RiskMethod("highwatermark","description")
+        rd.riskMethod = new RiskMethod(["en":["impactMethod":"highwatermark","description":"description"]])
 
         execute(rd, init)
         return rd
@@ -357,7 +361,7 @@ abstract class VeoSpec extends Specification {
 
     static CategoryLevel newCategoryLevel(String name, @DelegatesTo(value = CategoryLevel.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.riskdefinition.CategoryLevel") Closure init = null) {
-        CategoryLevel categoryLevel = new CategoryLevel(name, "SCL", "whatever", "#000000")
+        CategoryLevel categoryLevel = new CategoryLevel("#000000")
         execute(categoryLevel, init)
         return categoryLevel
     }
@@ -394,10 +398,10 @@ abstract class VeoSpec extends Specification {
 
     private static List<CategoryLevel> createDefaultCategoryLevels() {
         return [
-            new CategoryLevel("vernachlässigbar","1","Die Schadensauswirkungen sind gering und können vernachlässigt werden.","#004643"),
-            new CategoryLevel("begrenzt","2","Die Schadensauswirkungen sind begrenzt und überschaubar.","#004643"),
-            new CategoryLevel("beträchtlich","3","Die Schadensauswirkungen können beträchtlich sein.","#004643"),
-            new CategoryLevel("existenzbedrohend","4","Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen.","#004643")
+            new CategoryLevel(0,"#004643",["de":["name":"vernachlässigbar","abbreviation":"1","description":"Die Schadensauswirkungen sind gering und können vernachlässigt werden."]]),
+            new CategoryLevel(1,"#004643",["de":["name":"begrenzt","abbreviation":"2","description":"Die Schadensauswirkungen sind begrenzt und überschaubar."]]),
+            new CategoryLevel(2,"#004643",["de":["name":"beträchtlich","abbreviation":"3","description":"Die Schadensauswirkungen können beträchtlich sein."]]),
+            new CategoryLevel(3,"#004643",["de":["name":"existenzbedrohend","abbreviation":"4","description":"Die Schadensauswirkungen können ein existenziell bedrohliches, katastrophales Ausmaß erreichen."]])
         ] as List
     }
 

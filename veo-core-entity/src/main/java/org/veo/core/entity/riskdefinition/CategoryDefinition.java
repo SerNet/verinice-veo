@@ -20,6 +20,7 @@ package org.veo.core.entity.riskdefinition;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -48,12 +49,20 @@ import lombok.ToString;
 public class CategoryDefinition extends DimensionDefinition {
   public CategoryDefinition(
       String id,
-      String name,
-      String abbreviation,
-      String description,
       @NotNull List<List<RiskValue>> valueMatrix,
       @NotNull List<CategoryLevel> potentialImpacts) {
-    super(id, name, abbreviation, description);
+    super(id);
+    this.valueMatrix = valueMatrix;
+    this.potentialImpacts = potentialImpacts;
+    initLevel(potentialImpacts);
+  }
+
+  public CategoryDefinition(
+      String id,
+      @NotNull List<List<RiskValue>> valueMatrix,
+      @NotNull List<CategoryLevel> potentialImpacts,
+      Map<String, Map<String, String>> translations) {
+    super(id, translations);
     this.valueMatrix = valueMatrix;
     this.potentialImpacts = potentialImpacts;
     initLevel(potentialImpacts);

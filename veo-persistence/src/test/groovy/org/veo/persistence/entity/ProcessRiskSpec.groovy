@@ -270,22 +270,20 @@ class ProcessRiskSpec extends VeoSpec {
             riskDefinitions = [
                 (riskDefId): newRiskDefinition(riskDefId) {
                     riskValues = [
-                        new RiskValue("low"),
-                        new RiskValue("high")
+                        new RiskValue(0,"","low"),
+                        new RiskValue(1,"","high")
                     ]
                     categories = [
                         newCategoryDefinition("C") {
                             potentialImpacts = [
-                                new CategoryLevel().tap{name = "low impact"},
-                                new CategoryLevel().tap{
-                                    name = "high impact"
-                                }
+                                new CategoryLevel(),
+                                new CategoryLevel()
                             ]
                         }
                     ]
-                    probability = new ProbabilityDefinition(null, null, null, [
-                        new ProbabilityLevel("unlikely", null, null, null),
-                        new ProbabilityLevel("likely", null, null, null),
+                    probability = new ProbabilityDefinition([
+                        new ProbabilityLevel("unlikely"),
+                        new ProbabilityLevel("likely"),
                     ])
                 }
             ]
@@ -301,16 +299,16 @@ class ProcessRiskSpec extends VeoSpec {
                     categories = [
                         newCategoryDefinition("C") {
                             potentialImpacts = [
-                                new CategoryLevel().tap{name = "low impact"},
-                                new CategoryLevel().tap{name = "medium impact"},
-                                new CategoryLevel().tap{name = "high impact"},
+                                new CategoryLevel(),
+                                new CategoryLevel(),
+                                new CategoryLevel(),
                             ]
                         }
                     ]
-                    probability = new ProbabilityDefinition(null, null, null, [
-                        new ProbabilityLevel("unlikely", null, null, null),
-                        new ProbabilityLevel("kind of likely", null, null, null),
-                        new ProbabilityLevel("likely", null, null, null),
+                    probability = new ProbabilityDefinition( [
+                        new ProbabilityLevel("unlikely"),
+                        new ProbabilityLevel("kind of likely"),
+                        new ProbabilityLevel("likely"),
                     ])
                 }
             ]

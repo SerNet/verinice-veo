@@ -19,25 +19,34 @@ package org.veo.core.entity.riskdefinition;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /** A special dimension defining the probability levels. */
-@NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
 public class ProbabilityDefinition extends DimensionDefinition {
 
   public ProbabilityDefinition(
-      String name, String abbreviation, String description, List<ProbabilityLevel> levels) {
-    super(DIMENSION_PROBABILITY, name, abbreviation, description);
+      Map<String, Map<String, String>> translations, List<ProbabilityLevel> levels) {
+    super(DIMENSION_PROBABILITY, translations);
     this.levels = levels;
     initLevel(levels);
+  }
+
+  public ProbabilityDefinition(List<ProbabilityLevel> levels) {
+    super(DIMENSION_PROBABILITY);
+    this.levels = levels;
+    initLevel(levels);
+  }
+
+  public ProbabilityDefinition() {
+    super(DIMENSION_PROBABILITY);
   }
 
   @EqualsAndHashCode.Include private List<ProbabilityLevel> levels = new ArrayList<>();

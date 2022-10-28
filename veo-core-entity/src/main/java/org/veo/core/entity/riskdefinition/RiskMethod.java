@@ -17,10 +17,16 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.veo.core.entity.Constraints;
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
+import org.veo.core.entity.TranslationProvider;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -34,13 +40,52 @@ import lombok.ToString;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RiskMethod {
-  @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
-  @NotNull
-  @ToString.Include
-  @EqualsAndHashCode.Include
-  private String impactMethod;
+public class RiskMethod implements TranslationProvider {
+  @ToString.Include @EqualsAndHashCode.Include @NotNull
+  private Map<String, Map<String, String>> translations = new HashMap<>();
 
-  @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
-  private String description;
+  /**
+   * Provide compatibility with old clients and data structure. This will read the old data and
+   * transform it to the new data.
+   */
+  @Deprecated
+  @JsonAnySetter
+  // TODO: VEO-1739 remove
+  public void setOldValues(String name, String value) {
+    if (value == null) {
+      return;
+    }
+    if ("impactMethod".equals(name)) {
+      getDefaultTranslation().put(name, value);
+    } else if ("description".equals(name)) {
+      getDefaultTranslation().put(name, value);
+    } else {
+      throw new IllegalArgumentException("No property " + name);
+    }
+  }
+
+  @Deprecated
+  private Map<String, String> getDefaultTranslation() {
+    return translations.computeIfAbsent("de", t -> new HashMap<String, String>());
+  }
+
+  /**
+   * Provide compatibility with old clients and data structure. This will provide the old data
+   * transformed by the new data.
+   */
+  @Deprecated
+  @JsonProperty(access = Access.READ_ONLY)
+  public String getDescription() {
+    return getDefaultTranslation().get("description");
+  }
+
+  /**
+   * Provide compatibility with old clients and data structure. This will provide the old data
+   * transformed by the new data.
+   */
+  @Deprecated
+  @JsonProperty(access = Access.READ_ONLY)
+  public String getImpactMethod() {
+    return getDefaultTranslation().get("impactMethod");
+  }
 }

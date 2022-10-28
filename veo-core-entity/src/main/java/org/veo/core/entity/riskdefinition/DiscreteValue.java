@@ -17,11 +17,25 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
+import static org.veo.core.entity.riskdefinition.DeprecatedAttributes.ABBREVIATION;
+import static org.veo.core.entity.riskdefinition.DeprecatedAttributes.DESCRIPTION;
+import static org.veo.core.entity.riskdefinition.DeprecatedAttributes.NAME;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.veo.core.entity.Constraints;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
+import org.veo.core.entity.Constraints;
+import org.veo.core.entity.TranslationProvider;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -34,36 +48,62 @@ import lombok.ToString;
  * hashcode are defined by id and name.
  */
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class DiscreteValue {
-  public DiscreteValue(
-      @NotNull(message = "A name must be present.") @Size(max = 120) String name,
-      @Size(max = 120) String abbreviation,
-      @Size(max = 120) String description,
-      @Size(max = 255) String htmlColor) {
+public class DiscreteValue implements TranslationProvider {
+
+  public DiscreteValue(@Size(max = 255) String htmlColor) {
     super();
-    this.name = name;
-    this.abbreviation = abbreviation;
-    this.description = description;
     this.htmlColor = htmlColor;
   }
 
   @EqualsAndHashCode.Include @ToString.Include private int ordinalValue;
 
-  @NotNull(message = "A name must be present.")
-  @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
-  @EqualsAndHashCode.Include
-  @ToString.Include
-  private String name;
-
-  @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
-  private String abbreviation;
-
-  @Size(max = Constraints.DEFAULT_CONSTANT_MAX_LENGTH)
-  private String description;
-
   @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH)
   @ToString.Include
   private String htmlColor;
+
+  @ToString.Exclude @NotNull @NotEmpty
+  private Map<String, Map<String, String>> translations = new HashMap<>();
+  /**
+   * Provide compatibility with old clients and data structure. This will read the old data and
+   * transform it to the new data.
+   */
+  @JsonAnySetter
+  @Deprecated
+  // TODO: VEO-1739 remove
+  public void setOldValues(String name, String value) {
+    if (value == null) {
+      return;
+    }
+    if (DeprecatedAttributes.DEPRECATED_ATTRIBUTES.contains(name)) {
+      getDefaultTranslation().put(name, value);
+    } else {
+      throw new IllegalArgumentException("No property " + name);
+    }
+  }
+
+  @Deprecated
+  private Map<String, String> getDefaultTranslation() {
+    return translations.computeIfAbsent("de", t -> new HashMap<String, String>());
+  }
+
+  @Deprecated
+  @JsonProperty(access = Access.READ_ONLY)
+  public String getName() {
+    return getDefaultTranslation().get(NAME);
+  }
+
+  @Deprecated
+  @JsonProperty(access = Access.READ_ONLY)
+  public String getAbbreviation() {
+    return getDefaultTranslation().get(ABBREVIATION);
+  }
+
+  @Deprecated
+  @JsonProperty(access = Access.READ_ONLY)
+  public String getDescription() {
+    return getDefaultTranslation().get(DESCRIPTION);
+  }
 }

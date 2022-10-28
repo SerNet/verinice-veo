@@ -25,14 +25,17 @@ import java.util.IllformedLocaleException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.veo.core.entity.Nameable;
 import org.veo.core.entity.TranslationException;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.SubTypeDefinition;
+import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -45,6 +48,9 @@ public class TranslationValidator {
    * <TYPE>_<SUBTYPE>_status_<STATUS>}
    */
   public static final String SUBTYPE_STATUS_PATTERN = "%s_%s_status_%s";
+
+  public static final Set<String> NAMEABLE_ATTRIBUTES =
+      Set.of(Nameable.NAME, Nameable.ABBREVIATION, Nameable.DESCRIPTION);
 
   public record Violation(String language, Reason reason, String key) {}
 
@@ -104,6 +110,103 @@ public class TranslationValidator {
     if (violations.size() > 0) {
       throw new TranslationException(violations);
     }
+  }
+
+  public static void validate(RiskDefinition riskDefinition) {
+    riskDefinition
+        .getRiskMethod()
+        .getTranslations()
+        .keySet()
+        .forEach(TranslationValidator::checkLanguage);
+    riskDefinition
+        .getProbability()
+        .getTranslations()
+        .keySet()
+        .forEach(TranslationValidator::checkLanguage);
+    riskDefinition
+        .getCategories()
+        .forEach(c -> c.getTranslations().keySet().forEach(TranslationValidator::checkLanguage));
+    riskDefinition
+        .getRiskValues()
+        .forEach(c -> c.getTranslations().keySet().forEach(TranslationValidator::checkLanguage));
+
+    List<Violation> violations = new ArrayList<>();
+
+    String validationContext = "riskDefinition " + riskDefinition.getId();
+    violations.addAll(
+        riskDefinition.getRiskMethod().getTranslations().entrySet().stream()
+            .map(
+                t -> {
+                  return validateAttributeTranslations(
+                      t.getKey(),
+                      t.getValue(),
+                      Set.of("impactMethod", Nameable.DESCRIPTION),
+                      validationContext + " risk method: ");
+                })
+            .flatMap(l -> l.stream())
+            .collect(Collectors.toList()));
+
+    violations.addAll(
+        riskDefinition.getProbability().getTranslations().entrySet().stream()
+            .map(
+                t ->
+                    validateNameableTranslations(
+                        t.getKey(), t.getValue(), validationContext + " probability: "))
+            .flatMap(l -> l.stream())
+            .collect(Collectors.toList()));
+
+    violations.addAll(
+        riskDefinition.getImplementationStateDefinition().getTranslations().entrySet().stream()
+            .map(
+                t ->
+                    validateNameableTranslations(
+                        t.getKey(), t.getValue(), validationContext + " implementation state: "))
+            .flatMap(l -> l.stream())
+            .collect(Collectors.toList()));
+
+    violations.addAll(
+        riskDefinition.getCategories().stream()
+            .flatMap(t -> t.getTranslations().entrySet().stream())
+            .map(
+                t ->
+                    validateNameableTranslations(
+                        t.getKey(),
+                        t.getValue(),
+                        validationContext + " category " + t.getKey() + ": "))
+            .flatMap(l -> l.stream())
+            .collect(Collectors.toList()));
+
+    violations.addAll(
+        riskDefinition.getRiskValues().stream()
+            .flatMap(t -> t.getTranslations().entrySet().stream())
+            .map(
+                t ->
+                    validateNameableTranslations(
+                        t.getKey(), t.getValue(), validationContext + " risk-values: "))
+            .flatMap(l -> l.stream())
+            .collect(Collectors.toList()));
+
+    if (violations.size() > 0) {
+      throw new TranslationException(violations);
+    }
+  }
+
+  private static List<Violation> validateNameableTranslations(
+      String lang, Map<String, String> translations, String context) {
+    return validateAttributeTranslations(lang, translations, NAMEABLE_ATTRIBUTES, context);
+  }
+
+  /** Checks if the translation contains only the given attributes. */
+  private static List<Violation> validateAttributeTranslations(
+      String lang, Map<String, String> translations, Set<String> attributes, String context) {
+    return Stream.concat(
+            attributes.stream()
+                .filter(key -> !translations.containsKey(key))
+                .map(key -> new Violation(lang, Reason.MISSING, context + key)),
+            translations.keySet().stream()
+                .filter(key -> !attributes.contains(key))
+                .map(key -> new Violation(lang, Reason.SUPERFLUOUS, context + key)))
+        .toList();
   }
 
   /** Link IDs are translated - custom-aspect-IDs are not. */

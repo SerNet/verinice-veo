@@ -19,6 +19,8 @@ package org.veo.core.entity.riskdefinition;
 
 import static org.veo.core.entity.Constraints.DEFAULT_CONSTANT_MAX_LENGTH;
 
+import java.util.Map;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -44,16 +46,24 @@ public class RiskValue extends DiscreteValue {
 
   public RiskValue(
       int ordinalValue,
-      String name,
-      String abbreviation,
-      String description,
       String htmlColor,
       @NotNull(message = "A symbolic risk value must be present.")
           @Size(max = DEFAULT_CONSTANT_MAX_LENGTH)
           String symbolicRisk) {
-    super(name, abbreviation, description, htmlColor);
+    super(htmlColor);
     this.symbolicRisk = symbolicRisk;
     setOrdinalValue(ordinalValue);
+  }
+
+  public RiskValue(
+      int ordinalValue,
+      String htmlColor,
+      @NotNull(message = "A symbolic risk value must be present.")
+          @Size(max = DEFAULT_CONSTANT_MAX_LENGTH)
+          String symbolicRisk,
+      Map<String, Map<String, String>> translations) {
+    super(ordinalValue, htmlColor, translations);
+    this.symbolicRisk = symbolicRisk;
   }
 
   @NotNull(message = "A symbolic risk value must be present.")

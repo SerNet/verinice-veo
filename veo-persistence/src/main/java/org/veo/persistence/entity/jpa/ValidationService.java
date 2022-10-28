@@ -54,6 +54,8 @@ public class ValidationService {
 
     if (identifiable instanceof DomainTemplate domainTemplate) {
       domainTemplate.getElementTypeDefinitions().forEach(TranslationValidator::validate);
+      domainTemplate.getRiskDefinitions().values().forEach(rd -> rd.validateRiskDefinition());
+      domainTemplate.getRiskDefinitions().values().forEach(TranslationValidator::validate);
     }
 
     if (identifiable instanceof ElementTypeDefinition entity) {

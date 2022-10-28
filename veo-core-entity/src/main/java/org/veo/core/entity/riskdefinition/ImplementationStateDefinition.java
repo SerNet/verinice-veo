@@ -19,6 +19,7 @@ package org.veo.core.entity.riskdefinition;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import lombok.Data;
@@ -32,9 +33,15 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
 public class ImplementationStateDefinition extends DimensionDefinition {
+  public ImplementationStateDefinition(List<CategoryLevel> levels) {
+    super(DIMENSION_IMPLEMENTATION_STATE);
+    this.levels = levels;
+    initLevel(levels);
+  }
+
   public ImplementationStateDefinition(
-      String name, String abbreviation, String description, List<CategoryLevel> levels) {
-    super(DIMENSION_IMPLEMENTATION_STATE, name, abbreviation, description);
+      Map<String, Map<String, String>> translations, List<CategoryLevel> levels) {
+    super(DIMENSION_IMPLEMENTATION_STATE, translations);
     this.levels = levels;
     initLevel(levels);
   }
