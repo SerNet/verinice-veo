@@ -65,7 +65,6 @@ class EventDispatcherITSpec extends VeoSpringSpec {
     @AutoCleanup("stop")
     private GenericContainer rabbit
 
-
     @Autowired
     EventDispatcher eventDispatcher
 

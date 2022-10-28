@@ -27,7 +27,6 @@ import org.veo.test.VeoSpec
 
 class ProcessRiskAspectSpec extends VeoSpec {
 
-
     Client client
     Unit unit
     public static final String RISK_DEF_ID = "r2d2"

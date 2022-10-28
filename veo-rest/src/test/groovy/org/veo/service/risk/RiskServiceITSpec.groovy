@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.service.risk
 
-
 import static org.veo.core.entity.event.RiskEvent.ChangedValues.PROBABILITY_VALUES_CHANGED
 import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_VALUES_CHANGED
 

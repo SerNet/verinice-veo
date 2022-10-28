@@ -60,7 +60,6 @@ class CompositeElementDtoTransformerSpec extends Specification {
         subUnit.getModelInterface() >> Unit.class
         subUnit.getDisplayName() >> subUnitName
 
-
         Unit unit = Mock()
         unit.getClient() >> null
         unit.getDomains() >> []
@@ -132,7 +131,6 @@ class CompositeElementDtoTransformerSpec extends Specification {
             it.modelType >> Asset.SINGULAR_TERM
         }
 
-
         when: "the composite element is transformed to a DTO"
         def compositeAssetDto = entityToDtoTransformer.transformAsset2Dto(compositeAsset)
         then: "the DTO contains references to both parts"
@@ -189,7 +187,6 @@ class CompositeElementDtoTransformerSpec extends Specification {
         compositeAsset.parts >> ([compositeAsset] as Set)
         compositeAsset.createdAt >> Instant.now()
         compositeAsset.updatedAt >> Instant.now()
-
 
         when: "the composite element is transformed"
         def dto = entityToDtoTransformer.transformAsset2Dto(compositeAsset)

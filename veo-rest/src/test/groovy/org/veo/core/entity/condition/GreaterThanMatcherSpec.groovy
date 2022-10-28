@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity.condition
 
-
 import spock.lang.Specification
 
 class GreaterThanMatcherSpec extends Specification{

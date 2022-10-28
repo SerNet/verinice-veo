@@ -671,7 +671,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         thrown(DeviatingIdException)
     }
 
-
     @WithUserDetails("user@domain.example")
     def "can put back process"() {
         given: "a new process"
@@ -847,7 +846,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def getResponse = get("/processes/" + process.id.uuidValue() + "/risks/" + scenario.id.uuidValue())
         def getResult = parseJson(getResponse)
         String eTag = getResponse.andReturn().response.getHeader("ETag").replace("\"", "")
-
 
         when: "the risk is updated"
         def beforeUpdate = Instant.now()

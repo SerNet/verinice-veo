@@ -35,8 +35,6 @@ class V13__add_translations_column extends BaseJavaMigration {
         'scope'
     ]
 
-
-
     @Override
     void migrate(Context context) throws Exception {
         new Sql(context.getConnection()).with { sql->

@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalogitem
 
-
 import org.veo.core.entity.Catalog
 import org.veo.core.entity.Control
 import org.veo.core.entity.CustomLink
@@ -56,8 +55,6 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
 
         item1.tailoringReferences >> []
         newControl.links >> []
-
-
 
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [
@@ -100,8 +97,6 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         TailoringReferenceParameter ref = Mock()
         ref.referenceType >> TailoringReferenceType.LINK
         ref.referencedElement >> control3
-
-
 
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [

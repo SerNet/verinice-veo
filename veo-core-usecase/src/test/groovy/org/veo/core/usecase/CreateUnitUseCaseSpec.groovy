@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
-
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.repository.RepositoryProvider

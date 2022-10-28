@@ -31,7 +31,6 @@ public class UpdatePersonUseCaseSpec extends UseCaseSpec {
     Decider decider = Mock()
     UpdatePersonUseCase usecase = new UpdatePersonUseCase(personRepository, decider)
 
-
     def "update a person"() {
         given:
         def id = Key.newUuid()

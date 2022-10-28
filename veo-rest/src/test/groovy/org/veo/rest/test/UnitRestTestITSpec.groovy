@@ -56,7 +56,6 @@ class UnitRestTestITSpec extends VeoRestTest {
         unit.name == CreateDemoUnitUseCase.DEMO_UNIT_NAME
     }
 
-
     def "Create a unit"() {
         def user = defaultUserName
 

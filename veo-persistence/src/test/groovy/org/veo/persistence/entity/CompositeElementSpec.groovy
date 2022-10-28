@@ -39,7 +39,6 @@ class CompositeElementSpec extends VeoSpec {
         this.unit = newUnit(client)
     }
 
-
     def "A composite element can be created"() {
         given: "a timestamp"
         Instant beforeCreation = Instant.now()
@@ -80,7 +79,6 @@ class CompositeElementSpec extends VeoSpec {
         then: "the composite contains the assets"
         assetComposite.parts.size() == 2
     }
-
 
     def "A composite can contain processes"() {
         given: "a set of two processes"

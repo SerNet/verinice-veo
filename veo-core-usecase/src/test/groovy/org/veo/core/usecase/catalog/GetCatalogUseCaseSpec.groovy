@@ -56,7 +56,6 @@ class GetCatalogUseCaseSpec extends UseCaseSpec {
         repository.getById(_) >> { throw new NotFoundException("") }
     }
 
-
     def "retrieve a catalog"() {
         when:
         existingDomain.isActive() >> true

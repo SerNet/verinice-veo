@@ -47,7 +47,6 @@ import org.veo.persistence.entity.jpa.ValidationService
 
 class CompositeElementAccessSpec extends AbstractJpaSpec {
 
-
     @Autowired
     AssetDataRepository assetDataRepository
 

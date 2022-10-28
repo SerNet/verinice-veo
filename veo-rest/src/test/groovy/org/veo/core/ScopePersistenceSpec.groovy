@@ -31,7 +31,6 @@ import org.veo.persistence.access.UnitRepositoryImpl
 @Transactional()
 class ScopePersistenceSpec extends VeoSpringSpec {
 
-
     @Autowired
     private ClientRepositoryImpl clientRepository
     @Autowired
@@ -46,7 +45,6 @@ class ScopePersistenceSpec extends VeoSpringSpec {
         client = clientRepository.save(newClient())
         unit = unitRepository.save(newUnit(this.client))
     }
-
 
     def "save a scope"() {
         given: "a client and a unit"

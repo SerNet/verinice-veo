@@ -113,7 +113,6 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         }
     }
 
-
     @WithUserDetails("user@domain.example")
     def "retrieve a Domain"() {
         given: "a saved domain"
@@ -385,7 +384,6 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         ]
         newDomain.profiles.demoUnit.risks.size() == 2
     }
-
 
     @WithUserDetails("user@domain.example")
     def "create a DomainTemplate forbidden for user"() {

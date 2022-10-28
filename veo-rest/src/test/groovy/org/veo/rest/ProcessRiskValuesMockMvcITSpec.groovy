@@ -456,7 +456,6 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
-
     def "Searching for processes with embedded risks"() {
         given: "a list of processes with risks"
         def processId = process.getIdAsString()
@@ -782,8 +781,6 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             residualRisk == 0
         }
     }
-
-
 
     def "Trying to create an existing risk updates its values"() {
         given: "a process and a scenario"

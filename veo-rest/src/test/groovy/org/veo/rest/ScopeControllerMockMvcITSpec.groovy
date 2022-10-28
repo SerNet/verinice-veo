@@ -88,7 +88,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
-
     @WithUserDetails("user@domain.example")
     def "create a scope"() {
         given: "a request body"
@@ -151,7 +150,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         result.members.first().displayName == 'AST-1 Test asset'
     }
 
-
     @WithUserDetails("user@domain.example")
     def "retrieve a scope with members"() {
         given: "a saved scope with a composite with two parts"
@@ -174,7 +172,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
                 members = [composite]
             })
         }
-
 
         when: "the server is queried for the scope"
         def result = parseJson(get("/scopes/${scope.id.uuidValue()}"))
@@ -209,7 +206,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
                 scope
             ]
         }
-
 
         when: "the server is queried for the scope"
         def result = parseJson(get("/scopes/${scope.id.uuidValue()}"))
@@ -299,7 +295,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         result.items*.name == ['Test scope 2']
     }
 
-
     @WithUserDetails("user@domain.example")
     def "put a scope with a custom aspect"() {
         given: "a saved scope"
@@ -373,8 +368,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
-
-
     @WithUserDetails("user@domain.example")
     def "can't put a scope with another scope ID"() {
         given: "two scopes"
@@ -396,8 +389,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }
-
-
 
     @WithUserDetails("user@domain.example")
     def "can put back scope"() {
@@ -464,7 +455,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
                 scope
             ]
         }
-
 
         when: "the asset is deleted"
         delete("/assets/${asset.id.uuidValue()}")

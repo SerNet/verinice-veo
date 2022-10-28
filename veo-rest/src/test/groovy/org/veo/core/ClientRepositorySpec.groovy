@@ -140,7 +140,6 @@ class ClientRepositorySpec extends VeoSpringSpec {
         client.addToDomains(domain)
         client = repository.save(client)
 
-
         Unit unit = newUnit(client) {
             name = "u1"
             domains = [domain] as Set

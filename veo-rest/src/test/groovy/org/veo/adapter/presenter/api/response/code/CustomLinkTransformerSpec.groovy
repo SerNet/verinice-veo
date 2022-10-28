@@ -41,7 +41,6 @@ class CustomLinkTransformerSpec extends Specification {
     def entityToDtoTransformer = new EntityToDtoTransformer(referenceAssembler, domainAssociationTransformer)
     def dtoToEntityTransformer = new DtoToEntityTransformer(factory, Mock(IdentifiableFactory), domainAssociationTransformer)
 
-
     def "transform custom link entity to DTO"() {
         given: "a custom link"
         def targetAsset = Mock(Asset) {

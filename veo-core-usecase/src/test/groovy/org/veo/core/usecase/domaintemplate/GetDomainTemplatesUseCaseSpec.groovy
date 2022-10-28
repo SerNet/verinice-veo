@@ -27,14 +27,12 @@ import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.domaintemplate.GetDomainTemplatesUseCase
 import org.veo.core.usecase.domaintemplate.GetDomainTemplatesUseCase.InputData
 
-
 class GetDomainTemplatesUseCaseSpec extends UseCaseSpec {
 
     DomainTemplateService templateService = Mock()
     ClientRepository clientRepository = Mock()
 
     GetDomainTemplatesUseCase usecase = new GetDomainTemplatesUseCase(templateService, clientRepository)
-
 
     def "retrieve all domaintemplates"() {
         given:

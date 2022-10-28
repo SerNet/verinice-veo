@@ -401,7 +401,6 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         ]
         put("/processes/${createProcessResult.resourceId}", putProcessRequest, headers)
 
-
         when: "the unit is loaded"
         def loadedUnit = txTemplate.execute {
             urepository.findById(unit.id)
@@ -421,7 +420,6 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the unit is no longer present"
         loadedUnit.empty
     }
-
 
     @WithUserDetails("user@domain.example")
     def "can put back unit"() {

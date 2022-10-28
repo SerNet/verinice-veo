@@ -76,7 +76,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
             ]as Map
         }
 
-
         when: "saving"
 
         domain0 = repository.save(domain0)
@@ -162,7 +161,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
         domainTemplate = newDomainTemplate()
         domainTemplateRepository.save(domainTemplate)
 
-
         domain0 = newDomain(client)
         domain0.domainTemplate = domainTemplate
 
@@ -219,7 +217,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
             }
         }
 
-
         when: "saving"
         domain0 = repository.save(domain0)
 
@@ -241,7 +238,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
             it[2].tailoringReferences[0].referenceType == TailoringReferenceType.COPY
         }
     }
-
 
     def 'domain with catalog with linked elements'() {
         given: "the domain template and a catalog"

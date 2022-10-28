@@ -50,7 +50,6 @@ class UpdateScopeUseCaseSpec extends UseCaseSpec {
             it.domains >> []
         }
 
-
         when:
         def eTag = ETag.from(scope.getId().uuidValue(), 0)
         def output = usecase.execute(new ModifyElementUseCase.InputData(scope, existingClient,  eTag, USER_NAME))

@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer
 
-
 import org.veo.adapter.IdRefResolver
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto
 import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto

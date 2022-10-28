@@ -89,7 +89,6 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
-
     @WithUserDetails("user@domain.example")
     def "create a scenario"() {
         given: "a request body"
@@ -121,7 +120,6 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
                 name = 'Test scenario-1'
             })
         }
-
 
         when: "a request is made to the server"
         def results = get("/scenarios/${scenario.id.uuidValue()}")
@@ -166,7 +164,6 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
     def "retrieving all scenarios for a unit returns composite elements and their parts"() {
         given: "a saved scenario  and a composite document containing it"
 
-
         txTemplate.execute {
             scenarioRepository.save(newScenario(unit) {
                 name = 'Test composite scenario-1'
@@ -210,7 +207,6 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
                 ]
             ]
         ]
-
 
         when: "a request is made to the server"
         Map headers = [

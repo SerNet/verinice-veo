@@ -50,7 +50,6 @@ class GetCatalogsUseCaseSpec extends UseCaseSpec {
         catalog1.getDomainTemplate() >> domaintemplate
     }
 
-
     def "retrieve all catalogs for client"() {
         when:
         def output = usecase.execute(new InputData(Optional.empty(),  existingClient))

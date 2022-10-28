@@ -70,7 +70,6 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
 
     Domain domain
 
-
     def setup() {
         createClient()
         this.riskDefinition = createRiskDefinition(RISK_DEFINITION_ID)
@@ -172,7 +171,6 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
             it.effectiveProbability == new ProbabilityRef(1)
             it.specificProbabilityExplanation == BAD_FEELINGS
         }
-
 
         with(retrievedRisk2.getImpactProvider(riskDefRef, domain)) {
             it.getPotentialImpact(confidentiality) == new ImpactRef(1)

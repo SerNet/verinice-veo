@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
-
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Control
 import org.veo.core.entity.Document

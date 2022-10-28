@@ -55,7 +55,6 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
     @Autowired
     EntitySchemaService entitySchemaService
 
-
     def "create a demo unit for a client"() {
         given: 'a client'
         Domain domain
@@ -260,7 +259,6 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                 riskDefinitionRef.idRef == 'DSRA'
             }
         }
-
 
         when: 'loading the demo unit elements and converting them to JSON'
         def demoElementsForUnitAsDtos = executeInTransaction{

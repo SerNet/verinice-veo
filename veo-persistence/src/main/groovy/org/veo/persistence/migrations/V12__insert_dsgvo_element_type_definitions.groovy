@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.persistence.migrations
 
-
 import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
 

@@ -54,7 +54,6 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
         output.elements.resultPage*.id == [id]
     }
 
-
     def "apply query conditions"() {
         given:
         def id = Key.newUuid()

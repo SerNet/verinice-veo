@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity
 
-
 import org.veo.test.VeoSpec
 
 class ClientSpec extends VeoSpec{

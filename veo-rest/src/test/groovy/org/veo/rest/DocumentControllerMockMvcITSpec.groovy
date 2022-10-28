@@ -90,7 +90,6 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
-
     @WithUserDetails("user@domain.example")
     def "create a document"() {
         given: "a request body"

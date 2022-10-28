@@ -34,7 +34,6 @@ class DomainRepositorySpec extends VeoSpringSpec {
     @Autowired
     private DomainDataRepository domainDataRepository
 
-
     def "cannot violate the composition association between Client and Domain"() {
         given: "a domain"
         Domain domain = new DomainData().tap{

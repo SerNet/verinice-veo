@@ -38,6 +38,7 @@ allprojects  {
             // https://github.com/diffplug/spotless/issues/304#issuecomment-426067801
             target 'Jenkinsfile', '*.gradle'
             greclipse()
+            replaceRegex('Excessive line breaks', /\n{3,}/, '\n\n')
             indentWithSpaces(4)
             trimTrailingWhitespace()
         }
@@ -64,6 +65,7 @@ allprojects  {
             importOrder('java', 'javax', 'org', 'com', 'org.veo', '')
             indentWithSpaces(4)
             trimTrailingWhitespace()
+            replaceRegex('Excessive line breaks', /\n{3,}/, '\n\n')
             replaceRegex('Extra space around equals sign', /(  += )|( =  +)/, ' = ')
             replaceRegex('Not one space between right round and left curly bracket', /\) *\{/, ') {')
         }

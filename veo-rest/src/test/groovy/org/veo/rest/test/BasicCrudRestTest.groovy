@@ -266,7 +266,6 @@ class BasicCrudRestTest extends VeoRestTest {
         and: 'Deleting the control'
         delete("$baseUrl/controls/$controlId", 204, UserType.DEFAULT)
 
-
         and: 'Creating a control inside the unit with properties'
         def propertiesControlName = 'CRUD test control'
         def postPropertiesControlBody = [

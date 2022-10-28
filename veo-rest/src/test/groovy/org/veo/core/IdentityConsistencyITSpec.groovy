@@ -49,7 +49,6 @@ import org.veo.persistence.entity.jpa.UnitData
 @WithUserDetails("user@domain.example")
 class IdentityConsistencyITSpec extends VeoSpringSpec {
 
-
     @PersistenceContext
     EntityManager entityManager
 
@@ -79,7 +78,6 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
 
         entityManager.flush()
     }
-
 
     def <T> void testIdentityConsistency(Class<T> clazz, T entity) {
         // HashSet requires correct implementations

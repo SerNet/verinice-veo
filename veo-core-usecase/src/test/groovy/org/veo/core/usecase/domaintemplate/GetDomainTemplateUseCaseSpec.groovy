@@ -25,7 +25,6 @@ import org.veo.core.service.DomainTemplateService
 import org.veo.core.usecase.UseCase.IdAndClient
 import org.veo.core.usecase.UseCaseSpec
 
-
 class GetDomainTemplateUseCaseSpec extends UseCaseSpec {
 
     DomainTemplateService templateService = Mock()

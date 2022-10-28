@@ -32,7 +32,6 @@ import org.veo.persistence.entity.jpa.CatalogItemData
 @Transactional()
 class CatalogItemRepositoryITSpec extends VeoSpringSpec {
 
-
     @Autowired
     private ClientRepositoryImpl clientRepository
     @Autowired

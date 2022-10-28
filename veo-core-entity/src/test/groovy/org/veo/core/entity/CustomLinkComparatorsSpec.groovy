@@ -37,7 +37,6 @@ class CustomLinkComparatorsSpec extends Specification {
     CustomLink lt2 = Mock()
     CustomLink lt3 = Mock()
 
-
     def setup() {
         item.element >> element
         item1.element >> element1

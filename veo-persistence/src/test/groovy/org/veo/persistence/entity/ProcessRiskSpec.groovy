@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.persistence.entity
 
-
 import org.veo.core.entity.Client
 import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.Unit

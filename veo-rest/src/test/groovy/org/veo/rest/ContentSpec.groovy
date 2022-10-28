@@ -140,7 +140,6 @@ class ContentSpec extends VeoMvcSpec {
         ]
     }
 
-
     protected createUnitWithRiskyElements(String domainId) {
         def unitId = parseJson(post("/units", [
             name   : "you knit",

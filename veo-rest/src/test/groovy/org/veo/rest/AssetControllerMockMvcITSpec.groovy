@@ -120,7 +120,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         result.message == 'Asset created successfully.'
     }
 
-
     @WithUserDetails("user@domain.example")
     def "Invalid date values for versioned properties are ignored"() {
         given: "a request body"
@@ -176,7 +175,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         result.parts.size() == 1
         result.parts.first().displayName == 'AST-1 Test asset'
     }
-
 
     @WithUserDetails("user@domain.example")
     def "retrieve an asset"() {
@@ -241,7 +239,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the server returns not-modified"
         results.andReturn().response.status == HttpStatus.SC_NOT_MODIFIED
     }
-
 
     @WithUserDetails("user@domain.example")
     def "search an asset"() {
@@ -678,7 +675,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             ]
         ]
 
-
         def id = parseJson(post("/assets/", request)).resourceId
         def getResult = get("/assets/$id")
 
@@ -831,7 +827,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         def getResponse = get("/assets/" + asset.id.uuidValue() + "/risks/" + scenario.id.uuidValue())
         def getResult = parseJson(getResponse)
         String eTag = getResponse.andReturn().response.getHeader("ETag").replace("\"", "")
-
 
         when: "The risk is updated"
         def beforeUpdate = Instant.now()

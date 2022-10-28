@@ -88,7 +88,6 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
-
     @WithUserDetails("user@domain.example")
     def "create an incident"() {
         given: "a request body"
@@ -120,7 +119,6 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
                 name = 'Test incident-1'
             })
         }
-
 
         when: "a request is made to the server"
         def results = get("/incidents/${incident.id.uuidValue()}")
@@ -203,7 +201,6 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
             ]
         ]
 
-
         when: "a request is made to the server"
         Map headers = [
             'If-Match': ETag.from(incident.id.uuidValue(), incident.version)
@@ -228,7 +225,6 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
         def incident = txTemplate.execute {
             incidentRepository.save(newIncident(unit))
         }
-
 
         when: "a delete request is sent to the server"
         delete("/incidents/${incident.id.uuidValue()}")
@@ -296,7 +292,6 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
                 [targetUri : "http://localhost/incidents/${incident.id.uuidValue()}"]
             ]
         ]
-
 
         def id = parseJson(post("/incidents/", request)).resourceId
         def getResult = get("/incidents/$id")

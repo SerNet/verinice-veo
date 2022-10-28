@@ -28,7 +28,6 @@ import spock.lang.Specification
 
 public class GetUnitsUseCaseSpec extends Specification {
 
-
     Client existingClient
     Unit existingUnit
 
@@ -64,7 +63,6 @@ public class GetUnitsUseCaseSpec extends Specification {
         subUnit2.getParent() >> existingUnit
         subUnit2.getName() >> "Subunit 2"
         subUnit2.getId() >> Key.newUuid()
-
 
         given: "fake repositories that record method calls"
         def clientRepo = Mock(ClientRepository)

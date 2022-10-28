@@ -83,7 +83,6 @@ class ProcessRiskITSpec extends VeoSpringSpec {
         def person1 = insertPerson(newPerson(unit))
         def control1 = insertControl(newControl(unit))
 
-
         when: "the risk is retrieved"
         ProcessRisk retrievedRisk1 = txTemplate.execute{
             Set<Process> processes = processRepository.findByRisk(scenario1)

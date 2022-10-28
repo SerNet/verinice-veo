@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalogitem
 
-
 import org.veo.core.entity.Control
 import org.veo.core.entity.Element
 import org.veo.core.entity.Key
@@ -47,7 +46,6 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
     def "get the apply information for a catalog-item without tailorref"() {
         given:
         item1.tailoringReferences >> []
-
 
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))

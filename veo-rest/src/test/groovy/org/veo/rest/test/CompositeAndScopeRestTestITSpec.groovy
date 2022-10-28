@@ -79,7 +79,6 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         notThrown(Exception)
     }
 
-
     def "CRUD a scope"() {
         given: "a composite asset"
         def assetPartId = post("/assets", [

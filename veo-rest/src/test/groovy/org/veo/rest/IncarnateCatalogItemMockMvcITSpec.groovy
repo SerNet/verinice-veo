@@ -153,7 +153,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         processResult.links.link_to_item_2.target.targetUri[0] == elementList[0]
     }
 
-
     @WithUserDetails("user@domain.example")
     def "retrieve the apply info for item5 and post"() {
         given: "the created catalogitems"
@@ -251,7 +250,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         then: "the process has a new link pointing to the created tom"
         processResult.links.size() == 3
         processResult.links.externallinktest.target.targetUri[0] == postResult[0].targetUri
-
 
         when: "we link to another created process (p3-all-features)"
         incarnationDescriptions = getIncarnationDescriptions(unit,item6)
@@ -428,7 +426,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     private postIncarnationDescriptions(Unit unit, incarnationDescriptions) {
         parseJson(post("/${basePath}/${unit.id.uuidValue()}/incarnations",incarnationDescriptions))
     }
-
 
     private validateNewElementAgainstCatalogItem(element, CatalogItem catalogItem, Domain domain) {
         verifyAll(catalogItem.element) {

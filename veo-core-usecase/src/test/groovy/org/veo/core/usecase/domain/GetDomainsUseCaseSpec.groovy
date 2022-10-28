@@ -23,7 +23,6 @@ import org.veo.core.repository.DomainRepository
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.domain.GetDomainsUseCase.InputData
 
-
 class GetDomainsUseCaseSpec extends UseCaseSpec {
 
     DomainRepository domainRepository = Mock()
@@ -37,7 +36,6 @@ class GetDomainsUseCaseSpec extends UseCaseSpec {
         existingDomain.owner >> existingClient
         existingDomain.active >> true
     }
-
 
     def "retrieve all domains for the client"() {
         given:

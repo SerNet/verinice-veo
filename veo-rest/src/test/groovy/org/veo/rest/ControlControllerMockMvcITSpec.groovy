@@ -68,7 +68,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
-
     @WithUserDetails("user@domain.example")
     def "create a control"() {
         given: "a request body"
@@ -151,7 +150,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             })
         }
 
-
         when: "a request is made to the server"
         def results = get("/controls/${control.id.uuidValue()}")
 
@@ -163,8 +161,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         result.name == 'Test control-1'
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
     }
-
-
 
     @WithUserDetails("user@domain.example")
     def "retrieve a composite control with parts"() {
@@ -197,7 +193,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             'CTL-2 c2'
         ] as Set
     }
-
 
     @WithUserDetails("user@domain.example")
     def "retrieve all controls for a unit"() {
@@ -267,7 +262,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
                 ]
             ]
         ]
-
 
         when: "a request is made to the server"
         Map headers = [
@@ -384,7 +378,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }
-
 
     @WithUserDetails("user@domain.example")
     def "can put back control"() {

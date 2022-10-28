@@ -31,7 +31,6 @@ class ObjectSchemaParserITSpec extends Specification {
     ObjectSchemaParser objectSchemaParser = new ObjectSchemaParser(entityFactory)
     static ObjectMapper objectMapper = new ObjectMapper()
 
-
     def "parse an object schema into an ElementTypeDefinition"() {
         given:
         def schemaNode = objectMapper.readTree(ObjectSchemaParserITSpec.getResourceAsStream('/os_process.json'))

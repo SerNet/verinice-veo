@@ -45,7 +45,6 @@ public class DeleteElementUseCaseSpec extends UseCaseSpec {
     ScopeRepository scopeRepository = Mock()
     EventPublisher eventPublisher = Mock()
 
-
     def usecase = new DeleteElementUseCase(repositoryProvider, eventPublisher)
 
     def setup() {

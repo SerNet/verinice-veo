@@ -97,7 +97,6 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         ]
         post("/processes/$processId/risks", riskBody)
 
-
         then: "categories were fully initialized including the provided values"
         def retrievedRiskResponse = get("/processes/$processId/risks/$scenarioId")
         def risk = retrievedRiskResponse.body
@@ -111,7 +110,6 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         def impactA = createdRiskValues.impactValues.find {it.category == "A"}
         def riskA = createdRiskValues.riskValues.find {it.category == "A"}
         def impactC = createdRiskValues.impactValues.find {it.category == "C"}
-
 
         // one json object for each category and one for probability was initialized:
         risk.domains.(domainId).riskDefinitions.values()[0].impactValues.size() == 4
@@ -129,7 +127,6 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
             inherentRisk == 1
             residualRisk == 1
         }
-
 
         impactA.size() == 3
         impactA.category == "A"
@@ -165,7 +162,6 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         riskI.inherentRisk = 2
 
         put("/processes/$processId/risks/$scenarioId", risk, retrievedRiskResponse.getETag())
-
 
         then: "the changed risk values can be retrieved"
         def updatedRisk = get("/processes/$processId/risks/$scenarioId").body
@@ -286,7 +282,6 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         ]
         post("/processes/$processId/risks", riskBody)
 
-
         then: "categories were fully initialized including the provided values"
         def retrievedRiskResponse = get("/processes/$processId/risks/$scenarioId")
         def risk = retrievedRiskResponse.body
@@ -300,7 +295,6 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         def impactA = createdRiskValues.impactValues.find {it.category == "A"}
         def riskA = createdRiskValues.riskValues.find {it.category == "A"}
         def impactC = createdRiskValues.impactValues.find {it.category == "C"}
-
 
         // one json object for each category and one for probability was initialized:
         risk.domains.(domainId).riskDefinitions.values()[0].impactValues.size() == 4
@@ -318,7 +312,6 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
             inherentRisk == 1
             residualRisk == 1
         }
-
 
         impactA.size() == 3
         impactA.category == "A"
@@ -354,7 +347,6 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         riskI.inherentRisk = 2
 
         put("/processes/$processId/risks/$scenarioId", risk, retrievedRiskResponse.getETag())
-
 
         then: "the changed risk values can be retrieved"
         def updatedRisk = get("/processes/$processId/risks/$scenarioId").body

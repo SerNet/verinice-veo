@@ -93,7 +93,6 @@ class RiskMatrixSpec extends Specification {
         ] as List
         def probabilities = new ProbabilityDefinition("P", null, null, probabilityLevels)
 
-
         when:"validate"
         cd.validateRiskCategory(riskValues, probabilities)
         then: "illegal Argument exception is thrown"
@@ -568,7 +567,6 @@ class RiskMatrixSpec extends Specification {
         then: "it validates nicely"
         rd.validateRiskDefinition()
     }
-
 
     def "test RiskDefinition getCategory"() {
         when: ""

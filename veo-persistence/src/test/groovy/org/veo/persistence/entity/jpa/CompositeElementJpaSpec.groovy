@@ -32,7 +32,6 @@ import org.veo.persistence.access.jpa.UnitDataRepository
 
 class CompositeElementJpaSpec extends AbstractJpaSpec {
 
-
     @Autowired
     AssetDataRepository assetDataRepository
 

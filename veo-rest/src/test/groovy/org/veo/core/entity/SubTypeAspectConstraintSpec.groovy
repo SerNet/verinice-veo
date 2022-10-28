@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity
 
-
 import javax.validation.Validation
 import javax.validation.Validator
 

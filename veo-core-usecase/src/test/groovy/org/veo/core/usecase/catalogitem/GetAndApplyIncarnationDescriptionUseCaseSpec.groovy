@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalogitem
 
-
 import org.veo.core.entity.Control
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Key
@@ -32,7 +31,6 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
 
     ApplyIncarnationDescriptionUseCase usecasePut = new ApplyIncarnationDescriptionUseCase(
     unitRepo, catalogItemRepository, domainRepository, entityRepo, designatorService, catalogItemservice, factory)
-
 
     def setup() {
         catalogItemservice.createInstance(item1, existingDomain) >> newControl
@@ -57,7 +55,6 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         newControl.links >> []
 
         catalogItemRepository.getById(id) >> item1
-
 
         when: "get the apply data for item"
         def output = usecaseGet.execute(new InputData(existingClient, existingUnit.id, [item1.id]))

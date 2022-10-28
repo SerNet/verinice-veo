@@ -31,7 +31,6 @@ import org.veo.persistence.access.UnitRepositoryImpl
 @Transactional()
 class PersonRepositoryITSpec extends VeoSpringSpec {
 
-
     @Autowired
     private ClientRepositoryImpl clientRepository
     @Autowired

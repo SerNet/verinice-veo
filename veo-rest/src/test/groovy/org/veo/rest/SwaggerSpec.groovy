@@ -35,7 +35,6 @@ class SwaggerSpec extends VeoSpringSpec {
     @Autowired
     private MockMvc mvc
 
-
     def "Swagger documentation is available"() {
         when:
         def response = mvc.perform(get('/swagger-ui.html')).andReturn().response
@@ -59,7 +58,6 @@ class SwaggerSpec extends VeoSpringSpec {
         !pageContent.contains('petstore')
     }
 
-
     def "response DTO contains links property"() {
         when:
         def assetDtoSchema = parsedApiDocs.components.schemas.FullAssetDto
@@ -77,7 +75,6 @@ class SwaggerSpec extends VeoSpringSpec {
         assetDtoSchema.properties.createdAt != null
         assetDtoSchema.properties.updatedAt.readOnly == true
     }
-
 
     def "displayName is not required for parts when putting composite elements"() {
         when:
@@ -248,7 +245,6 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
-
     def "endpoint documentation is correct for translation controller"() {
         when: "retrieving the information about the endpoint"
         def endPointInfo = parsedApiDocs.paths["/translations"]
@@ -278,7 +274,6 @@ class SwaggerSpec extends VeoSpringSpec {
             it.description == 'Translations for an entity type in a specific language'
         }
     }
-
 
     def "endpoint documentation is correct for CreateDomainUseCase"() {
         when: "retrieving the information about the endpoint"
@@ -375,7 +370,6 @@ class SwaggerSpec extends VeoSpringSpec {
             it[0].OAuth2.size() == 0
         }
     }
-
 
     @Memoized
     String getApiDocsString() {

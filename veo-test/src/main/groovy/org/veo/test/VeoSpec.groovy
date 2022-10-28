@@ -448,8 +448,6 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-
-
     static Instant roundToMicros(Instant instant) {
         instant.plusNanos(500).truncatedTo(ChronoUnit.MICROS)
     }

@@ -128,8 +128,6 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         unit.domains == [dsgvoDomainV2] as Set
     }
 
-
-
     def "Migrate a control with risk values"() {
         given: 'a client with an empty unit'
         RiskDefinitionRef riskDefinitionRef = new RiskDefinitionRef("xyz")
@@ -359,8 +357,6 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         and: 'the old domain is removed from all processes'
         processRepository.findByDomain(dsgvoDomain).empty
     }
-
-
 
     def runUseCase(String domainTemplateId) {
         executeInTransaction {

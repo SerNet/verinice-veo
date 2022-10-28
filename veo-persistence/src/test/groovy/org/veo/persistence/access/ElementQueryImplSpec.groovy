@@ -446,7 +446,6 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         }
     }
 
-
     def 'queries by sub type & status combined'() {
         given:
         def query = new ElementQueryImpl<>(processDataRepository, client)

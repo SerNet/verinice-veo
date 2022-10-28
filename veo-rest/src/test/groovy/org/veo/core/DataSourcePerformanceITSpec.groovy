@@ -113,7 +113,6 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.time < 500
     }
 
-
     def     "SQL performance for saving 1 process with 10 customAspects"() {
         given:
         createClient()
@@ -254,7 +253,6 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.select == 0
         queryCounts.time < 500
     }
-
 
     def     "SQL performance for saving 1 scope with 100 persons"() {
         given:

@@ -223,7 +223,6 @@ class ReferenceAssemblerImplSpec extends Specification {
         refs.contains(Key.uuidFrom(id1))
         refs.contains(Key.uuidFrom(id2))
 
-
         where:
         type     | id1                                    | id2
         Asset    | '40331ed5-be07-4c69-bf99-553811ce5454' | '5743c89a-5b17-4b50-8c21-72f2ac86faf3'

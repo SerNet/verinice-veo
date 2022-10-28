@@ -63,7 +63,6 @@ class CustomAspectPersistenceSpec extends VeoSpringSpec {
         then : "is all ok"
         savedAsset.present
 
-
         when: "add some properties"
         def assetData = savedAsset.get()
         cp = assetData.customAspects.first()

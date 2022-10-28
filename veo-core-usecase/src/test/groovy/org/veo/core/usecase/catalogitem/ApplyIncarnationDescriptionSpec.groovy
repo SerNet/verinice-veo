@@ -56,8 +56,6 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
         unitRepo.getByIdFetchClient(_) >> { throw new NotFoundException("") }
         unitRepo.getById(_) >> { throw new NotFoundException("") }
 
-
-
         control.getModelInterface() >> Control.class
         newControl.getModelInterface() >> Control.class
 

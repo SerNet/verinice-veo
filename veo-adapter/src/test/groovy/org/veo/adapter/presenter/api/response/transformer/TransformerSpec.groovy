@@ -62,7 +62,6 @@ class TransformerSpec extends Specification {
         subUnit.getUnits() >> []
         subUnit.getModelInterface() >> Unit.getClass()
 
-
         Unit unit = Mock()
         unit.getClient() >> null
         unit.getDomains() >> []
@@ -77,7 +76,6 @@ class TransformerSpec extends Specification {
         subUnit.getParent() >> unit
         return unit
     }
-
 
     AbstractUnitDto createUnitDto() {
         def subUnitDto = Mock(IdRef) {
@@ -111,7 +109,6 @@ class TransformerSpec extends Specification {
 
         Unit u=  Mock(Unit)
         u.id >> Key.uuidFrom(unitId)
-
 
         identifiableFactory.create(Unit.class, u.id) >> u
 

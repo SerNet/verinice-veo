@@ -36,7 +36,6 @@ import org.veo.persistence.access.UnitRepositoryImpl
 @Transactional()
 class CustomLinkPersistenceSpec extends VeoSpringSpec {
 
-
     @Autowired
     private ClientRepositoryImpl clientRepository
     @Autowired

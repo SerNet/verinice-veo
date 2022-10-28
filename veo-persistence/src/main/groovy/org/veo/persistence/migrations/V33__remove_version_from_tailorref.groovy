@@ -34,7 +34,6 @@ class V33__remove_version_from_tailorref extends BaseJavaMigration {
           drop column updated_by ,
           drop column version ;
 
-
 """)
     }
 }

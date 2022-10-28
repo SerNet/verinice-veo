@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.decision
 
-
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Process
 import org.veo.core.entity.ProcessRisk

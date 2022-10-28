@@ -139,7 +139,6 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
         }
     }
 
-
     def runUseCase(Unit unit) {
         executeInTransaction {
             deleteUnitUseCase.execute(new InputData(unit.id, unit.client))

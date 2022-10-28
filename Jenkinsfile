@@ -16,7 +16,6 @@ def withDockerNetwork(Closure inner) {
     }
 }
 
-
 pipeline {
     agent none
 

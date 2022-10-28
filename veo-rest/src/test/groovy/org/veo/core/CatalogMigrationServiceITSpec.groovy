@@ -42,7 +42,6 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
 
     Domain domain
 
-
     def setup() {
         def client = createTestClient()
         domain = domainRepository.save(newDomain(client) {domain ->
