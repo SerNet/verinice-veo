@@ -2,6 +2,8 @@ apply plugin: 'java-library'
 apply plugin: 'groovy'
 
 dependencies {
+    api 'org.springframework:spring-context'
+    api 'org.springframework.data:spring-data-commons'
     api 'org.spockframework:spock-core'
     api project(':veo-core-entity')
     api project(':veo-persistence')

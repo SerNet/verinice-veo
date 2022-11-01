@@ -21,31 +21,24 @@ import static java.util.function.Function.identity;
 
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
-import org.springframework.data.domain.AuditorAware;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import org.veo.core.entity.EntityType;
-import org.veo.persistence.CurrentUserProvider;
-import org.veo.persistence.LenientCurrentUserProviderImpl;
 import org.veo.rest.CatalogController;
 import org.veo.rest.DomainController;
 import org.veo.rest.TypeDefinitionsController;
@@ -241,26 +234,5 @@ public class WebSecurity {
     corsConfig.addExposedHeader(HttpHeaders.ETAG);
     source.registerCorsConfiguration("/**", corsConfig);
     return source;
-  }
-
-  @Bean
-  public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
-    final String nilUUID = "00000000-0000-0000-0000-000000000000";
-
-    ApplicationUser basicUser =
-        ApplicationUser.authenticatedUser("user", nilUUID, "veo-user", Collections.emptyList());
-    basicUser.setAuthorities(List.of(new SimpleGrantedAuthority("SCOPE_veo-user")));
-
-    ApplicationUser adminUser =
-        ApplicationUser.authenticatedUser("admin", nilUUID, "veo-admin", Collections.emptyList());
-    adminUser.setAuthorities(List.of(new SimpleGrantedAuthority("SCOPE_veo-admin")));
-
-    return new CustomUserDetailsManager(List.of(basicUser, adminUser));
-  }
-
-  @Bean
-  @Primary
-  public CurrentUserProvider testCurrentUserProvider(AuditorAware<String> auditorAware) {
-    return new LenientCurrentUserProviderImpl(auditorAware);
   }
 }

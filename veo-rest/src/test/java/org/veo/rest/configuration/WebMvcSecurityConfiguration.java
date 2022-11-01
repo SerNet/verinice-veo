@@ -18,22 +18,21 @@
 package org.veo.rest.configuration;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+import org.veo.persistence.CurrentUserProvider;
+import org.veo.persistence.LenientCurrentUserProviderImpl;
 import org.veo.rest.security.ApplicationUser;
+import org.veo.rest.security.CustomUserDetailsManager;
 
 @TestConfiguration
 public class WebMvcSecurityConfiguration {
@@ -110,36 +109,24 @@ public class WebMvcSecurityConfiguration {
             contentCreatorUserReadonly));
   }
 
-  /**
-   * In-memory implementation of a custom user details service for testing.
-   *
-   * <p>It returns ApplicationUser objects which hold information about the Client-ID in addition to
-   * credentials, enabled-status etc.
-   *
-   * <p>In production, this should use a user repository or even better a separate authorization
-   * (micro)service.
-   *
-   * @author akoderman
-   */
-  static class CustomUserDetailsManager extends InMemoryUserDetailsManager {
+  @Bean
+  public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
+    final String nilUUID = "00000000-0000-0000-0000-000000000000";
 
-    // This would be a repository or service in production:
-    private final Map<String, ApplicationUser> users = new HashMap<>();
+    ApplicationUser basicUser =
+        ApplicationUser.authenticatedUser("user", nilUUID, "veo-user", Collections.emptyList());
+    basicUser.setAuthorities(List.of(new SimpleGrantedAuthority("SCOPE_veo-user")));
 
-    public CustomUserDetailsManager(Collection<ApplicationUser> appUsers) {
-      super(appUsers.stream().map(u -> (UserDetails) u).toList());
-      appUsers.stream().forEach(this::storeUser);
-    }
+    ApplicationUser adminUser =
+        ApplicationUser.authenticatedUser("admin", nilUUID, "veo-admin", Collections.emptyList());
+    adminUser.setAuthorities(List.of(new SimpleGrantedAuthority("SCOPE_veo-admin")));
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-      ApplicationUser user = users.get(username);
-      if (user == null) throw new UsernameNotFoundException(username);
-      return user;
-    }
+    return new CustomUserDetailsManager(List.of(basicUser, adminUser));
+  }
 
-    private void storeUser(ApplicationUser user) {
-      users.put(user.getUsername(), user);
-    }
+  @Bean
+  @Primary
+  public CurrentUserProvider testCurrentUserProvider(AuditorAware<String> auditorAware) {
+    return new LenientCurrentUserProviderImpl(auditorAware);
   }
 }
