@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.concurrent.DelegatingSecurityContextRunnable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -82,13 +83,14 @@ public class AdminController {
         "Submit updateAllClientDomainsUseCase task for domainTemplate: {}",
         id.replaceAll("[\r\n]", ""));
     threadPoolTaskExecutor.execute(
-        // TODO: VEO-1397 wrap this lambda to job/task, maybe submit the task as event
-        () -> {
-          log.info("Start of updateAllClientDomainsUseCase task");
-          updateAllClientDomainsUseCase.executeAndTransformResult(
-              new UpdateAllClientDomainsUseCase.InputData(Key.uuidFrom(id)), out -> null);
-          log.info("end of updateAllClientDomainsUseCase task");
-        });
+        new DelegatingSecurityContextRunnable(
+            // TODO: VEO-1397 wrap this lambda to job/task, maybe submit the task as event
+            () -> {
+              log.info("Start of updateAllClientDomainsUseCase task");
+              updateAllClientDomainsUseCase.executeAndTransformResult(
+                  new UpdateAllClientDomainsUseCase.InputData(Key.uuidFrom(id)), out -> null);
+              log.info("end of updateAllClientDomainsUseCase task");
+            }));
     return CompletableFuture.completedFuture(ResponseEntity.noContent().build());
   }
 }
