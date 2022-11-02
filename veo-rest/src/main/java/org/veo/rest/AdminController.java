@@ -86,8 +86,7 @@ public class AdminController {
         () -> {
           log.info("Start of updateAllClientDomainsUseCase task");
           updateAllClientDomainsUseCase.executeAndTransformResult(
-              new UpdateAllClientDomainsUseCase.InputData(Key.uuidFrom(id)),
-              out -> ResponseEntity.noContent().build());
+              new UpdateAllClientDomainsUseCase.InputData(Key.uuidFrom(id)), out -> null);
           log.info("end of updateAllClientDomainsUseCase task");
         });
     return CompletableFuture.completedFuture(ResponseEntity.noContent().build());
