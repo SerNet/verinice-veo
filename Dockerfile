@@ -11,6 +11,8 @@ LABEL org.opencontainers.image.licenses=AGPL-3.0
 LABEL org.opencontainers.image.source=https://github.com/verinice/verinice-veo
 LABEL org.opencontainers.image.version=${VEO_VERSION}
 
+ENV JAVA_TOOL_OPTIONS "-Djdk.serialFilter=maxbytes=0"
+
 USER nonroot
 
 # If by accident we have more than one veo-rest-*.jar docker will complain, which is what we want.
