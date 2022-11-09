@@ -75,6 +75,9 @@ public class RiskDefinition {
    * valid.
    */
   public void validateRiskDefinition() {
+    if (riskMethod == null) {
+      throw new IllegalArgumentException("Risk method is empty.");
+    }
     if (probability == null) {
       throw new IllegalArgumentException("Probability unset.");
     }
@@ -88,6 +91,9 @@ public class RiskDefinition {
     validateCategoryUniqueness();
     validateSymbolicRiskUniqueness();
     categories.stream().forEach(cd -> cd.validateRiskCategory(riskValues, probability));
+    if (implementationStateDefinition == null) {
+      throw new IllegalArgumentException("ImplementationState is empty.");
+    }
   }
 
   private void validateSymbolicRiskUniqueness() {
