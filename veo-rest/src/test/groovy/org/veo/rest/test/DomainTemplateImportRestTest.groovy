@@ -432,9 +432,23 @@ class DomainTemplateImportRestTest extends VeoRestTest {
             'riskDefinitions': [
                 'RD1': [
                     'id': 'RD1',
+                    'riskMethod': [
+                        'translations': [
+                            'en': [
+                                'description': 'description',
+                                'impactMethod': 'highwatermark'
+                            ],
+                            'de': [
+                                'description': 'Beschreibung',
+                                'impactMethod': 'Hochwasser'
+                            ]
+                        ]
+                    ],
                     'probability': [
                         'id': 'prob',
                         'name': 'whatever',
+                        'abbreviation': 'p',
+                        'description': "the properbility",
                         'levels': [
                             [
                                 'ordinalValue': 0,
@@ -500,13 +514,13 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                                         'ordinalValue': 0,
                                         'name': 'medium',
                                         'htmlColor': '#A0CF11',
-                                        'symbolicRisk': 'r-2'
+                                        'symbolicRisk': 'r-1'
                                     ],
                                     [
                                         'ordinalValue': 1,
                                         'name': 'high',
                                         'htmlColor': '#A0CF11',
-                                        'symbolicRisk': 'r-3'
+                                        'symbolicRisk': 'r-2'
                                     ],
                                 ],
                             ],
