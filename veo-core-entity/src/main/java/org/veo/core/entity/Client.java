@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.Collections;
 import java.util.Set;
+
+import org.veo.core.entity.event.ClientEvent.ClientChangeType;
 
 /**
  * A client is the root object of the organizational structure. Usually a client is a company or
@@ -65,4 +68,34 @@ public interface Client extends Identifiable, Versioned {
   void incrementTotalUnits();
 
   void decrementTotalUnits();
+
+  ClientState getState();
+
+  boolean updateState(ClientChangeType changeType);
+
+  enum ClientState {
+    CREATED(Set.of(ClientChangeType.ACTIVATION)),
+    DELETED(Collections.emptySet()),
+    DEACTIVATED(Set.of(ClientChangeType.ACTIVATION, ClientChangeType.DELETION)),
+    ACTIVATED(Set.of(ClientChangeType.MODIFICATION, ClientChangeType.DEACTIVATION));
+
+    private ClientState(Set<ClientChangeType> validChanges) {
+      this.validChanges = validChanges;
+    }
+
+    private final Set<ClientChangeType> validChanges;
+
+    public boolean isValidChange(ClientChangeType changeType) {
+      return validChanges.contains(changeType);
+    }
+
+    public ClientState nextState(ClientChangeType changeType) {
+      return switch (changeType) {
+        case CREATION -> ClientState.CREATED;
+        case ACTIVATION, MODIFICATION -> ClientState.ACTIVATED;
+        case DEACTIVATION -> ClientState.DEACTIVATED;
+        case DELETION -> ClientState.DELETED;
+      };
+    }
+  }
 }

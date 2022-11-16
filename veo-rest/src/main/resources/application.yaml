@@ -26,6 +26,7 @@ veo:
       queue: 'veo'
       dlx: 'veo_dlx'
       autoDelete: 'false'
+      subscription-routing-key-prefix: 'veo-subscriptions.message.'
   threads:
     corePoolSize: 2
     maxPoolSize: 4

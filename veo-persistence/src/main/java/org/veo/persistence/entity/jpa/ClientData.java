@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
@@ -31,6 +33,7 @@ import javax.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Nameable;
+import org.veo.core.entity.event.ClientEvent.ClientChangeType;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 
 import lombok.AccessLevel;
@@ -61,6 +64,11 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
   @Setter(value = AccessLevel.NONE)
   private int totalUnits;
 
+  @Column(name = "state")
+  @Setter(value = AccessLevel.NONE)
+  @Enumerated(EnumType.STRING)
+  private ClientState state = ClientState.CREATED;
+
   @Column(name = "domains")
   @OneToMany(
       mappedBy = "owner",
@@ -69,6 +77,20 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
       targetEntity = DomainData.class)
   @Valid
   private final Set<Domain> domains = new HashSet<>();
+
+  public boolean updateState(ClientChangeType changeType) {
+    if (state.isValidChange(changeType)) {
+      ClientState nextState = state.nextState(changeType);
+      ClientState oldState = state;
+      state = nextState;
+      return state.equals(oldState);
+    }
+    throw new IllegalStateException(
+        "The client state: "
+            + state.name()
+            + " does not support the change type: "
+            + changeType.name());
+  }
 
   public void setDomains(Set<Domain> newDomains) {
     domains.clear();
@@ -101,7 +123,7 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
    * @return true if removed
    */
   public boolean removeFromDomains(Domain aDomain) {
-    if (aDomain.getOwner().equals(this)) throw new ClientBoundaryViolationException(aDomain, this);
+    if (!aDomain.getOwner().equals(this)) throw new ClientBoundaryViolationException(aDomain, this);
     aDomain.setOwner(null);
     return this.domains.remove(aDomain);
   }

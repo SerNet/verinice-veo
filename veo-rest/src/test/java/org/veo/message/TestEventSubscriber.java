@@ -17,8 +17,13 @@
  ******************************************************************************/
 package org.veo.message;
 
+import static org.veo.core.events.MessageCreatorImpl.ROUTING_KEY_ELEMENT_CLIENT_CHANGE;
+import static org.veo.core.events.MessageCreatorImpl.ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.rabbit.annotation.Exchange;
@@ -47,7 +52,13 @@ public class TestEventSubscriber {
                       durable = "false",
                       autoDelete = "true"),
               exchange = @Exchange(value = "${veo.message.dispatch.exchange}", type = "topic"),
-              key = "${veo.message.dispatch.routing-key-prefix}veo.testmessage"))
+              key = {
+                "${veo.message.dispatch.routing-key-prefix}"
+                    + ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE,
+                "${veo.message.consume.subscription-routing-key-prefix}"
+                    + ROUTING_KEY_ELEMENT_CLIENT_CHANGE,
+                "${veo.message.dispatch.routing-key-prefix}veo.testmessage"
+              }))
   void handleEntityEvent(EventMessage event) {
     log.debug("Consumed test event with content: {}", event.getContent());
     try {
@@ -59,5 +70,13 @@ public class TestEventSubscriber {
       // replace with DLX for failing messages if retry, log or alert are required
       throw new AmqpRejectAndDontRequeueException(e);
     }
+  }
+
+  public List<EventMessage> getMessagesByRoutingKey(String key) {
+    return getMessagesByRoutingKey().get(key);
+  }
+
+  private Map<String, List<EventMessage>> getMessagesByRoutingKey() {
+    return receivedEvents.stream().collect(Collectors.groupingBy(t -> t.routingKey));
   }
 }

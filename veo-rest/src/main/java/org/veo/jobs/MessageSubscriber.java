@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.jobs;
 
+import static org.veo.core.events.MessageCreatorImpl.ROUTING_KEY_ELEMENT_CLIENT_CHANGE;
 import static org.veo.core.events.MessageCreatorImpl.ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE;
 import static org.veo.rest.VeoRestConfiguration.PROFILE_BACKGROUND_TASKS;
 
@@ -25,15 +26,20 @@ import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.event.ClientChangedEvent;
+import org.veo.core.entity.event.ClientEvent.ClientChangeType;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.IncomingMessageHandler;
 import org.veo.message.EventMessage;
@@ -54,6 +60,7 @@ public class MessageSubscriber {
   private final ObjectMapper objectMapper;
   private final DomainRepository domainRepository;
   private final IncomingMessageHandler incomingMessageHandler;
+  @Autowired ApplicationEventPublisher publisher;
 
   @RabbitListener(
       bindings =
@@ -69,11 +76,24 @@ public class MessageSubscriber {
                               name = "x-dead-letter-exchange",
                               value = "${veo.message.consume.dlx}")),
               exchange = @Exchange(value = "${veo.message.dispatch.exchange}", type = "topic"),
-              key =
-                  "${veo.message.dispatch.routing-key-prefix}"
-                      + ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE))
-  public void handleElementTypeDefinitionUpdate(EventMessage event) throws JsonProcessingException {
+              key = {
+                "${veo.message.dispatch.routing-key-prefix}"
+                    + ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE,
+                "${veo.message.consume.subscription-routing-key-prefix}"
+                    + ROUTING_KEY_ELEMENT_CLIENT_CHANGE
+              }))
+  public void handleEventMessage(EventMessage event) throws JsonProcessingException {
+    log.info("handle message: {} {}", event.getRoutingKey(), event);
     var content = objectMapper.readTree(event.getContent());
+    if (content.has("eventType")) {
+      dispatchTypedEvent(content);
+    } else {
+      // TODO: VEO-1770 type event
+      dispatchElementTypeDefinitionUpdate(content);
+    }
+  }
+
+  private void dispatchElementTypeDefinitionUpdate(JsonNode content) {
     var domainId = Key.uuidFrom(content.get("domainId").asText());
     var elementType = EntityType.getBySingularTerm(content.get("elementType").asText());
     log.info(
@@ -90,5 +110,24 @@ public class MessageSubscriber {
                     () ->
                         incomingMessageHandler.handleElementTypeDefinitionUpdate(
                             domain, elementType)));
+  }
+
+  private void dispatchTypedEvent(JsonNode content) {
+    var eventType = content.get("eventType").asText();
+    switch (eventType) {
+      case ROUTING_KEY_ELEMENT_CLIENT_CHANGE -> dispatchClientStateEvent(content);
+      default -> throw new IllegalArgumentException("Unexpected event type value: " + eventType);
+    }
+  }
+
+  private void dispatchClientStateEvent(JsonNode content) {
+    var clientId = Key.uuidFrom(content.get("clientId").asText());
+    var clientState = ClientChangeType.valueOf(content.get("type").asText());
+    log.info(
+        "Received {} message for clientstate {} message type: {}",
+        ROUTING_KEY_ELEMENT_CLIENT_CHANGE,
+        clientId.uuidValue(),
+        clientState.name());
+    publisher.publishEvent(new ClientChangedEvent(clientId, clientState));
   }
 }
