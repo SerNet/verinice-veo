@@ -2,7 +2,7 @@
 // - OAuth Credentials plugin, org.jenkins-ci.plugins:oauth-credentials:0.4
 // - Google Container Registry Auth0, google-container-registry-auth:0.3
 
-def imageForGradleStages = 'openjdk:17-jdk-bullseye'
+def imageForGradleStages = 'eclipse-temurin:17-jdk'
 def dockerArgsForGradleStages = '-v /data/gradle-homes/executor-$EXECUTOR_NUMBER:/gradle-home -e GRADLE_USER_HOME=/gradle-home'
 def projectVersion
 
@@ -27,7 +27,7 @@ pipeline {
     environment {
         // In case the build server exports a custom JAVA_HOME, we fix the JAVA_HOME
         // to the one used by the docker image.
-        JAVA_HOME='/usr/local/openjdk-17'
+        JAVA_HOME='/opt/java/openjdk'
         GRADLE_OPTS='-Dhttp.proxyHost=cache.int.sernet.de -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.int.sernet.de -Dhttps.proxyPort=3128'
         // pass -Pci=true to gradle, https://docs.gradle.org/current/userguide/build_environment.html#sec:project_properties
         ORG_GRADLE_PROJECT_ci=true
