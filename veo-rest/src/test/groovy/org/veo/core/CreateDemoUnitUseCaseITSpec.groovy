@@ -162,10 +162,14 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
             }
         }
         then: 'the persons are returned'
-        persons.size() == 3
+        persons.size() == 5
         with(persons.find{it.name == "Personal"}) {
             it.domains*.name == ['DS-GVO']
-            it.parts*.name ==~ ["Jürgen Toast", "Hans Meiser"]
+            it.parts*.name ==~ [
+                "Jürgen Toast",
+                "Hans Meiser",
+                "Harald Wald"
+            ]
         }
         with(persons.find{it.name == "Jürgen Toast"}) {
             it.links.find{it.type == "person_favoriteScope"}.target.name == "Data GmbH"

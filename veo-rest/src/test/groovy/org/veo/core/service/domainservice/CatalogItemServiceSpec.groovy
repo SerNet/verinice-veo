@@ -80,7 +80,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
         when: "retrieving the demo unit elements for a client"
         def elements = domainTemplateService.getProfileElements(dsgvoDomain, new ProfileRef(DEMO_UNIT))
         then: "the elements for all the client's units are returned"
-        elements.size() == 7
+        elements.size() == 9
     }
 
     def "create an element from a catalog item"() {

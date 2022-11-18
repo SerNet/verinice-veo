@@ -5281,7 +5281,7 @@
                 "domains": [],
                 "attributes": {},
                 "target": {
-                  "targetUri": "http://localhost/persons/164f3943-d327-48f7-a5c9-a68d52b2331a"
+                  "targetUri": "http://localhost/persons/69ef9c7e-7306-404e-8907-a69e2dd02e07"
                 }
               }
             ],
@@ -5485,7 +5485,10 @@
               "targetUri": "http://localhost/persons/e667fcb4-5b6e-4569-962f-b9408fb7fd28"
             },
             {
-              "targetUri": "http://localhost/persons/164f3943-d327-48f7-a5c9-a68d52b2331a"
+              "targetUri": "http://localhost/persons/69ef9c7e-7306-404e-8907-a69e2dd02e07"
+            },
+            {
+              "targetUri": "http://localhost/persons/ba5f7302-b380-43c7-9a43-21a03bc80bdb"
             }
           ],
           "domains": {
@@ -5495,7 +5498,7 @@
               "decisionResults": {}
             }
           },
-          "id": "69ef9c7e-7306-404e-8907-a69e2dd02e07"
+          "id": "164f3943-d327-48f7-a5c9-a68d52b2331a"
         },
         {
           "name": "Jürgen Toast",
@@ -5523,7 +5526,31 @@
               "decisionResults": {}
             }
           },
-          "id": "164f3943-d327-48f7-a5c9-a68d52b2331a"
+          "id": "69ef9c7e-7306-404e-8907-a69e2dd02e07"
+        },
+        {
+          "name": "IT-Team",
+          "designator": "DMO-49",
+          "description": "Hans Meisers Team",
+          "owner": {
+            "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
+          },
+          "links": {},
+          "customAspects": {},
+          "type": "person",
+          "parts": [
+            {
+              "targetUri": "http://localhost/persons/e667fcb4-5b6e-4569-962f-b9408fb7fd28"
+            }
+          ],
+          "domains": {
+            "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
+              "subType": "PER_Person",
+              "status": "NEW",
+              "decisionResults": {}
+            }
+          },
+          "id": "10b0e22c-0e09-4148-904c-b4545ea4ce0c"
         },
         {
           "name": "Hans Meiser",
@@ -5574,7 +5601,11 @@
             }
           },
           "type": "person",
-          "parts": [],
+          "parts": [
+            {
+              "targetUri": "http://localhost/persons/ba5f7302-b380-43c7-9a43-21a03bc80bdb"
+            }
+          ],
           "domains": {
             "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
               "subType": "PER_Person",
@@ -5583,6 +5614,26 @@
             }
           },
           "id": "e667fcb4-5b6e-4569-962f-b9408fb7fd28"
+        },
+        {
+          "name": "Harald Wald",
+          "designator": "DMO-50",
+          "description": "Hans Meisers rechte Hand",
+          "owner": {
+            "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
+          },
+          "links": {},
+          "customAspects": {},
+          "type": "person",
+          "parts": [],
+          "domains": {
+            "dbbf0dbd-073f-51fc-86d2-d890169a3083": {
+              "subType": "PER_Person",
+              "status": "NEW",
+              "decisionResults": {}
+            }
+          },
+          "id": "ba5f7302-b380-43c7-9a43-21a03bc80bdb"
         },
         {
           "name": "TOM 1",

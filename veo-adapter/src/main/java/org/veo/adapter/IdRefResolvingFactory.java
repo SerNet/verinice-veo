@@ -99,4 +99,14 @@ public class IdRefResolvingFactory implements IdRefResolver, IdentifiableFactory
   public void setGlobalDomainTemplate(String domainTemplateId) {
     globalDomainTemplateId = Key.uuidFrom(domainTemplateId);
   }
+
+  /**
+   * Define an existing global domain template. When this is set, any reference to a domain or a
+   * domain template will be redirected to given domain template.
+   */
+  public void setGlobalDomainTemplate(DomainTemplate domainTemplate) {
+    setGlobalDomainTemplate(domainTemplate.getIdAsString());
+    registry.put(
+        SyntheticIdRef.from(domainTemplate.getIdAsString(), DomainTemplate.class), domainTemplate);
+  }
 }

@@ -338,7 +338,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
                 }
             }
         }
-        persons.size() == 3
+        persons.size() == 5
         persons.each {
             with(it) {
                 it.domains == [dsgvoDomainV2] as Set

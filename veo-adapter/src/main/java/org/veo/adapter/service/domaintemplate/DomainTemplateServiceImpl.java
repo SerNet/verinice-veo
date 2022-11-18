@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate;
 
+import static java.util.function.Function.identity;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,13 +30,14 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.veo.adapter.IdRefResolver;
+import org.veo.adapter.IdRefResolvingFactory;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
@@ -96,6 +99,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
   private final ReferenceAssembler assembler;
   private final ObjectMapper objectMapper;
+  private final IdentifiableFactory identifiableFactory;
 
   public DomainTemplateServiceImpl(
       DomainTemplateRepository domainTemplateRepository,
@@ -110,7 +114,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     this.factory = factory;
     this.preparations = preparations;
     this.domainTemplateIdGenerator = domainTemplateIdGenerator;
-
+    this.identifiableFactory = identifiableFactory;
     entityTransformer =
         new DtoToEntityTransformer(factory, identifiableFactory, domainAssociationTransformer);
     assembler = referenceAssembler;
@@ -176,17 +180,16 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
       Set<AbstractElementDto> demoUnitElements,
       Set<AbstractRiskDto> demoUnitRisks) {
     ref.cache.put(templateId, domain);
-    Map<String, Element> elementCache =
-        createElementCache(
-            ref,
-            demoUnitElements.stream()
-                .map(this::removeOwner)
-                .map(IdentifiableDto.class::cast)
-                .collect(Collectors.toMap(IdentifiableDto::getId, Function.identity())));
-
-    transformRisks(client, ref.cache, domain, templateId, elementCache.values(), demoUnitRisks);
-    elementCache.values().forEach(e -> e.setId(null));
-    return elementCache.values();
+    var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
+    resolvingFactory.setGlobalDomainTemplate(domain);
+    var transformer =
+        new DtoToEntityTransformer(factory, resolvingFactory, new DomainAssociationTransformer());
+    var elements =
+        demoUnitElements.stream()
+            .map(e -> transformer.transformDto2Element(e, resolvingFactory))
+            .toList();
+    transformRisks(client, resolvingFactory, domain, templateId, elements, demoUnitRisks);
+    return elements;
   }
 
   private Collection<Element> createElementsFromProfile(
@@ -215,90 +218,74 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
   private void transformRisks(
       Client client,
-      Map<String, Identifiable> cache,
+      IdRefResolver resolver,
       Domain domain,
       String domainTemplateId,
       Collection<Element> elements,
       Set<AbstractRiskDto> demoUnitRisks) {
-
-    Map<String, List<AbstractRiskDto>> risksByAffectedElementDbId =
-        demoUnitRisks.stream()
-            .collect(
-                Collectors.groupingBy(
-                    r -> {
-                      if (r instanceof ProcessRiskDto dto) {
-                        return dto.getProcess().getId();
-                      } else {
-                        throw new IllegalArgumentException(
-                            "Unprocessable risk '" + r.getSelf() + "' in profile unit.");
-                        // TODO: VEO-1558 handle more risk types
-                      }
-                    }));
     Unit dummyOwner = factory.createUnit(UUID.randomUUID().toString(), null);
     dummyOwner.setClient(client);
     elements.forEach(
         e -> {
           log.debug("Process element {}", e);
           DomainTemplateService.updateVersion(e);
-          if (e instanceof Process p) {
-            List<AbstractRiskDto> risks = risksByAffectedElementDbId.remove(p.getIdAsString());
-            if (risks != null) {
-              for (AbstractRiskDto riskDto : risks) {
-                log.debug("Transforming risk {}", riskDto);
-                Scenario scenario = (Scenario) cache.get(riskDto.getScenario().getId());
-                RiskDomainAssociationDto riskDomainData =
-                    riskDto.getDomains().get(domainTemplateId);
-                if (riskDomainData != null) {
-                  p.setOwner(dummyOwner);
-                  scenario.setOwner(dummyOwner);
-                  ProcessRisk risk = p.obtainRisk(scenario, domain);
-                  DomainTemplateService.updateVersion(risk);
-                  Set<RiskValues> riskValues = CategorizedRiskValueMapper.map(riskDto.getDomains());
-                  log.debug("transformed risk values: {}", riskValues);
-
-                  riskValues.forEach(
-                      it -> {
-                        if (it.getDomainId().uuidValue().equals(domainTemplateId)) {
-                          it.setDomainId(domain.getId());
-                        }
-                      });
-
-                  risk.defineRiskValues(riskValues);
-                  Optional.ofNullable(riskDto.getMitigation())
-                      .ifPresent(
-                          it -> {
-                            Control mitigation = (Control) cache.get(it.getId());
-                            risk.mitigate(mitigation);
-                          });
-                  Optional.ofNullable(riskDto.getRiskOwner())
-                      .ifPresent(
-                          it -> {
-                            Person riskOwner = (Person) cache.get(it.getId());
-                            risk.appoint(riskOwner);
-                          });
-                  p.setOwner(null);
-                  scenario.setOwner(null);
-                  log.debug("Transformed risk: {}", risk);
-                  if (log.isDebugEnabled()) {
-                    risk.getRiskDefinitions(domain)
-                        .forEach(
-                            rd -> {
-                              log.debug("Risk definition: {}", rd);
-                              ProbabilityValueProvider pp = risk.getProbabilityProvider(rd, domain);
-                              log.debug("Potential probability: {}", pp.getPotentialProbability());
-
-                              log.debug("Specific probability: {}", pp.getSpecificProbability());
-                            });
-                  }
-                }
-              }
-            }
-          }
         });
+    demoUnitRisks.forEach(r -> mapRisk(resolver, domain, domainTemplateId, dummyOwner, r));
     dummyOwner.setClient(null);
+  }
 
-    if (!risksByAffectedElementDbId.isEmpty()) {
-      throw new IllegalStateException("Unhandled risks found: " + risksByAffectedElementDbId);
+  private static void mapRisk(
+      IdRefResolver resolver,
+      Domain domain,
+      String domainTemplateId,
+      Unit dummyOwner,
+      AbstractRiskDto riskDto) {
+    log.debug("Transforming risk {}", riskDto);
+    Process p = resolver.resolve(((ProcessRiskDto) riskDto).getProcess().getId(), Process.class);
+    Scenario scenario = resolver.resolve(riskDto.getScenario().getId(), Scenario.class);
+    RiskDomainAssociationDto riskDomainData = riskDto.getDomains().get(domainTemplateId);
+    if (riskDomainData != null) {
+      p.setOwner(dummyOwner);
+      scenario.setOwner(dummyOwner);
+      ProcessRisk risk = p.obtainRisk(scenario, domain);
+      DomainTemplateService.updateVersion(risk);
+      Set<RiskValues> riskValues = CategorizedRiskValueMapper.map(riskDto.getDomains());
+      log.debug("transformed risk values: {}", riskValues);
+
+      riskValues.forEach(
+          it -> {
+            if (it.getDomainId().uuidValue().equals(domainTemplateId)) {
+              it.setDomainId(domain.getId());
+            }
+          });
+
+      risk.defineRiskValues(riskValues);
+      Optional.ofNullable(riskDto.getMitigation())
+          .ifPresent(
+              it -> {
+                Control mitigation = resolver.resolve(it.getId(), Control.class);
+                risk.mitigate(mitigation);
+              });
+      Optional.ofNullable(riskDto.getRiskOwner())
+          .ifPresent(
+              it -> {
+                Person riskOwner = resolver.resolve(it.getId(), Person.class);
+                risk.appoint(riskOwner);
+              });
+      p.setOwner(null);
+      scenario.setOwner(null);
+      log.debug("Transformed risk: {}", risk);
+      if (log.isDebugEnabled()) {
+        risk.getRiskDefinitions(domain)
+            .forEach(
+                rd -> {
+                  log.debug("Risk definition: {}", rd);
+                  ProbabilityValueProvider pp = risk.getProbabilityProvider(rd, domain);
+                  log.debug("Potential probability: {}", pp.getPotentialProbability());
+
+                  log.debug("Specific probability: {}", pp.getSpecificProbability());
+                });
+      }
     }
   }
 
@@ -459,7 +446,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
             .map(TransformCatalogItemDto::getElement)
             .map(this::removeOwner)
             .map(IdentifiableDto.class::cast)
-            .collect(Collectors.toMap(IdentifiableDto::getId, Function.identity())));
+            .collect(Collectors.toMap(IdentifiableDto::getId, identity())));
   }
 
   /** Fills the ref.cache and dtoCache with the elements and fix links. */

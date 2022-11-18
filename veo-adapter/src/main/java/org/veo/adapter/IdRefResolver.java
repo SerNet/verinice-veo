@@ -20,6 +20,7 @@ package org.veo.adapter;
 import java.util.Set;
 
 import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.service.domaintemplate.SyntheticIdRef;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.exception.NotFoundException;
 
@@ -40,6 +41,14 @@ public interface IdRefResolver {
    */
   <TEntity extends Identifiable> TEntity resolve(IdRef<TEntity> objectReference)
       throws NotFoundException;
+
+  /**
+   * @see IdRefResolver#resolve(IdRef)
+   */
+  default <TEntity extends Identifiable> TEntity resolve(String id, Class<TEntity> type)
+      throws NotFoundException {
+    return resolve(SyntheticIdRef.from(id, type));
+  }
 
   /**
    * Resolves the given references by fetching the target entities from a cache or a repository.
