@@ -17,11 +17,16 @@
  ******************************************************************************/
 package org.veo;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.time.YearMonth;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.eclipse.jgit.api.Git;
 
 import com.diffplug.spotless.FormatterStep;
 import com.diffplug.spotless.SerializableFileFilter;
@@ -59,6 +64,17 @@ public final class LicenseHeaderStep implements Serializable {
 
   private final String author;
   private final Pattern delimiterPattern;
+
+  public static FormatterStep create(File projectDirectory) throws IOException {
+    Objects.requireNonNull(projectDirectory, "projectDirectory");
+    String author;
+    try (Git git = Git.open(projectDirectory)) {
+      author =
+          Optional.ofNullable(git.getRepository().getConfig().getString("user", null, "name"))
+              .orElse("<name>");
+    }
+    return create(author);
+  }
 
   /** Creates a FormatterStep which forces the start of each file to match a license header. */
   public static FormatterStep create(String author) {
