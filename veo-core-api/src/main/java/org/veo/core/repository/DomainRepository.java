@@ -34,7 +34,7 @@ import org.veo.core.entity.exception.NotFoundException;
  */
 public interface DomainRepository extends IdentifiableVersionedRepository<Domain> {
 
-  Set<Domain> findAllByClient(Key<UUID> clientId);
+  Set<Domain> findAllActiveByClient(Key<UUID> clientId);
 
   Set<Domain> findActiveDomainsWithProfilesAndRiskDefinitions(Key<UUID> clientId);
 

@@ -57,7 +57,7 @@ public class EntityTypeSchemaProvider implements JsonSchemaProvider {
     var user =
         ApplicationUser.authenticatedUser(
             SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-    var domains = domainRepository.findAllByClient(Key.uuidFrom(user.getClientId()));
+    var domains = domainRepository.findAllActiveByClient(Key.uuidFrom(user.getClientId()));
     final String schema = schemaService.findSchema(type, domains);
     return jsonSchemaFactory.getSchema(schema, getSchemaValidatorsConfig());
   }

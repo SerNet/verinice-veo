@@ -47,8 +47,8 @@ public class DomainRepositoryImpl
   }
 
   @Override
-  public Set<Domain> findAllByClient(Key<UUID> clientId) {
-    return dataRepository.findAllByClient(clientId.uuidValue()).stream()
+  public Set<Domain> findAllActiveByClient(Key<UUID> clientId) {
+    return dataRepository.findAllActiveByClient(clientId.uuidValue()).stream()
         .map(Domain.class::cast)
         .collect(Collectors.toSet());
   }
