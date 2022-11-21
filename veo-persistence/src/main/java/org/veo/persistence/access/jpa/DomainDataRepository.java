@@ -36,8 +36,8 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
   Collection<Domain> findAllByDomainTemplateId(String domainTemplateId);
 
   @Query(
-      "select d from #{#entityName} d left join fetch d.elementTypeDefinitions where d.owner.id = ?1")
-  Set<DomainData> findAllByClient(String clientId);
+      "select d from #{#entityName} d left join fetch d.elementTypeDefinitions where d.owner.id = ?1 and d.active = true")
+  Set<DomainData> findAllActiveByClient(String clientId);
 
   @Query("select d from #{#entityName} d " + "where d.dbId = ?1 and d.owner.dbId = ?2")
   Optional<Domain> findById(String domainId, String clientId);
