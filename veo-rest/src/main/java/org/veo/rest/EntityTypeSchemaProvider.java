@@ -57,6 +57,8 @@ public class EntityTypeSchemaProvider implements JsonSchemaProvider {
     var user =
         ApplicationUser.authenticatedUser(
             SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    // TODO VEO-1765: we need to consider the active domains that are actually used in the
+    // element/the element's CAs/CLs
     var domains = domainRepository.findAllActiveByClient(Key.uuidFrom(user.getClientId()));
     final String schema = schemaService.findSchema(type, domains);
     return jsonSchemaFactory.getSchema(schema, getSchemaValidatorsConfig());
