@@ -78,7 +78,6 @@ public class CustomAspectDto {
 
   @Schema(
       description = "The properties of the element described by the schema of the type attribute.",
-      example = " name: 'value'",
-      required = false)
+      example = " name: 'value'")
   private Map<String, Object> attributes = Collections.emptyMap();
 }

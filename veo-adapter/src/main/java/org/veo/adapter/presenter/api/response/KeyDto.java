@@ -37,10 +37,7 @@ public class KeyDto {
           "ID can be null (for new entities) or a valid UUID string following RFC 4122. If a UUID is"
               + "given during creation of a new entity, it will be used as ID for the generated object. "
               + "When the same UUID is already present in the system an error will be raised instead.")
-  @Schema(
-      description = "The UUID of the entity",
-      example = "f35b982c-8ad4-4515-96ee-df5fdd4247b9",
-      required = false)
+  @Schema(description = "The UUID of the entity", example = "f35b982c-8ad4-4515-96ee-df5fdd4247b9")
   private String id;
 
   public KeyDto(String id) {

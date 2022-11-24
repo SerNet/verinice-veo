@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import javax.validation.constraints.NotNull;
 
 import org.veo.adapter.presenter.api.common.IdRef;
@@ -36,6 +38,6 @@ public class CustomLinkDto extends CustomAspectDto {
 
   @NotNull(message = "A target must be present.")
   @ToString.Include
-  @Schema(required = true, implementation = IdRefCustomLinkTarget.class)
+  @Schema(requiredMode = REQUIRED, implementation = IdRefCustomLinkTarget.class)
   private IdRef<Element> target;
 }

@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import java.util.Map;
 
 import javax.validation.constraints.NotNull;
@@ -31,11 +33,11 @@ import lombok.Data;
 @Data
 public class DomainAssociationDto {
   @NotNull
-  @Schema(minLength = 1, maxLength = SubTypeAspect.SUB_TYPE_MAX_LENGTH, required = true)
+  @Schema(minLength = 1, maxLength = SubTypeAspect.SUB_TYPE_MAX_LENGTH, requiredMode = REQUIRED)
   String subType;
 
   @NotNull
-  @Schema(minLength = 1, maxLength = SubTypeAspect.STATUS_MAX_LENGTH, required = true)
+  @Schema(minLength = 1, maxLength = SubTypeAspect.STATUS_MAX_LENGTH, requiredMode = REQUIRED)
   String status;
 
   @Schema(

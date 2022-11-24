@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import javax.validation.constraints.Size;
 
 import org.veo.adapter.presenter.api.common.IdRef;
@@ -47,7 +49,7 @@ public class TailoringReferenceParameterDto {
           "The actual reference to an existing element "
               + "in the unit(it may be set or left like it is), or NULL "
               + "when this reference should be resolved internally.",
-      required = true,
+      requiredMode = REQUIRED,
       accessMode = AccessMode.READ_WRITE,
       implementation = IdRefTailoringReferenceParameterReferencedElement.class)
   private IdRef<Element> referencedElement;
@@ -65,6 +67,6 @@ public class TailoringReferenceParameterDto {
       description = "The type of the Tailoringreference.",
       example = "LINK or LINK_EXTERNAL",
       accessMode = AccessMode.READ_ONLY,
-      required = true)
+      requiredMode = REQUIRED)
   private TailoringReferenceType referenceType;
 }

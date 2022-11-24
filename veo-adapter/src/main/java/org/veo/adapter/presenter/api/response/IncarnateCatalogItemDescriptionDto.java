@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import java.util.List;
 
 import org.veo.adapter.IdRefResolver;
@@ -41,7 +43,7 @@ public class IncarnateCatalogItemDescriptionDto {
 
   @Schema(
       title = "Reference the catalogitem to be incarnated.",
-      required = true,
+      requiredMode = REQUIRED,
       implementation = IdRefCatalogItemDescriptionItem.class)
   private IdRef<CatalogItem> item;
 

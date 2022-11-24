@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -47,7 +49,10 @@ import lombok.ToString;
 public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencingDto
     implements NameableDto {
 
-  @Schema(description = "The name for the Domain.", example = "Data protection", required = true)
+  @Schema(
+      description = "The name for the Domain.",
+      example = "Data protection",
+      requiredMode = REQUIRED)
   @ToString.Include
   private String name;
 
@@ -63,7 +68,7 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
   @Schema(
       description = "The orgnization that published a standard",
       example = "ISO",
-      required = true,
+      requiredMode = REQUIRED,
       accessMode = Schema.AccessMode.READ_ONLY)
   private String authority;
 
@@ -86,7 +91,7 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
 
   @Schema(
       description = "The profiles that belong to this domain keyed by their symbolic names.",
-      required = true)
+      requiredMode = REQUIRED)
   private Map<String, ProfileDefinition> profiles = new HashMap<>();
 
   @Override

@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -46,7 +48,7 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfRef
   @Schema(
       description = "The name for the DomainTemplate.",
       example = "Data protection",
-      required = true)
+      requiredMode = REQUIRED)
   private String name;
 
   @Schema(description = "The abbreviation for the DomainTemplate.", example = "DSGVO")
@@ -58,7 +60,10 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfRef
   private String description;
 
   @NotNull(message = "A authority must be present.")
-  @Schema(description = "The authority for the DomainTemplate.", example = "ISO", required = true)
+  @Schema(
+      description = "The authority for the DomainTemplate.",
+      example = "ISO",
+      requiredMode = REQUIRED)
   @Size(min = 1, max = DomainTemplate.AUTHORITY_MAX_LENGTH)
   private String authority;
 
@@ -66,7 +71,7 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfRef
   @Schema(
       description = "The templateVersion for the DomainTemplate.",
       example = "1.0.0",
-      required = true)
+      requiredMode = REQUIRED)
   @Size(min = 1, max = DomainTemplate.TEMPLATE_VERSION_MAX_LENGTH)
   private String templateVersion;
 
@@ -79,7 +84,7 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfRef
   @Schema(
       description =
           "The profiles that belong to this domain template keyed by their symbolic names.",
-      required = true)
+      requiredMode = REQUIRED)
   private Map<String, ProfileDefinition> profiles = new HashMap<>();
 
   @Override

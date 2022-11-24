@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.openapi;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import org.veo.adapter.presenter.api.common.IIdRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,7 +33,7 @@ public interface IdRefCatalogItemDescriptionItem extends IIdRef {
   String getDisplayName();
 
   @Schema(
-      required = true,
+      requiredMode = REQUIRED,
       description = "The resource URL of the referenced catalog item.",
       example =
           "http://<api.example.org>/api/v1/catalogs/<00000000-0000-0000-0000-000000000000>/items/<00000000-0000-0000-0000-000000000000>",

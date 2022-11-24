@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefCatalogDomainTemplate;
 import org.veo.core.entity.Catalog;
@@ -31,7 +33,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public abstract class AbstractCatalogDto extends AbstractVersionedSelfReferencingDto
     implements NameableDto {
-  @Schema(description = "The name for the Catalog.", required = true)
+  @Schema(description = "The name for the Catalog.", requiredMode = REQUIRED)
   private String name;
 
   @Schema(description = "The abbreviation for the Catalog.")

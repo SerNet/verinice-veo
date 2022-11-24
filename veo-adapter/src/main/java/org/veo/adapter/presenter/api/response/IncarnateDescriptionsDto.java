@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import java.util.List;
 
 import org.veo.adapter.IdRefResolver;
@@ -41,7 +43,7 @@ public class IncarnateDescriptionsDto {
   @Schema(
       description =
           "A list of CatalogItemDescription defining the structure of each catalog item to create.",
-      required = true)
+      requiredMode = REQUIRED)
   private List<IncarnateCatalogItemDescriptionDto> parameters;
 
   public IncarnateDescriptionsDto(

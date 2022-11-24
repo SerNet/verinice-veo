@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +41,10 @@ import lombok.ToString;
 public abstract class AbstractElementDto extends AbstractVersionedSelfReferencingDto
     implements NameableDto {
 
-  @Schema(description = "The name for the Element.", example = "Lock doors", required = true)
+  @Schema(
+      description = "The name for the Element.",
+      example = "Lock doors",
+      requiredMode = REQUIRED)
   @ToString.Include
   private String name;
 
@@ -53,14 +58,11 @@ public abstract class AbstractElementDto extends AbstractVersionedSelfReferencin
   @Schema(description = "The abbreviation for the Element.", example = "Lock doors")
   private String abbreviation;
 
-  @Schema(
-      description = "The description for the Element.",
-      example = "Lock doors",
-      required = false)
+  @Schema(description = "The description for the Element.", example = "Lock doors")
   private String description;
 
   @NotNull(message = "An owner must be present.")
-  @Schema(required = true, implementation = IdRefOwner.class)
+  @Schema(requiredMode = REQUIRED, implementation = IdRefOwner.class)
   private IdRef<ElementOwner> owner;
 
   @Valid

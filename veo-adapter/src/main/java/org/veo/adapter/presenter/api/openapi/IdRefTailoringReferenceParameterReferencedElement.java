@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.openapi;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import org.veo.adapter.presenter.api.common.IIdRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,7 +32,7 @@ public interface IdRefTailoringReferenceParameterReferencedElement extends IIdRe
   String getDisplayName();
 
   @Schema(
-      required = true,
+      requiredMode = REQUIRED,
       description = "The resource URL of the referenced element.",
       example = "http://<api.example.org>/api/v1/controls/<00000000-0000-0000-0000-000000000000>",
       format = "uri")

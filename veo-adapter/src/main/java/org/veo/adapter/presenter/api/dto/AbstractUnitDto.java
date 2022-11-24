@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+
 import java.util.Collections;
 import java.util.Set;
 
@@ -36,7 +38,7 @@ import lombok.Data;
 public abstract class AbstractUnitDto extends AbstractVersionedSelfReferencingDto
     implements NameableDto {
 
-  @Schema(description = "The name for the Unit.", example = "My unit", required = true)
+  @Schema(description = "The name for the Unit.", example = "My unit", requiredMode = REQUIRED)
   private String name;
 
   @Schema(description = "The abbreviation for the Unit.", example = "U-96")

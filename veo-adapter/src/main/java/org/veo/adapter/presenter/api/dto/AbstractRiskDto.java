@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import static org.veo.adapter.presenter.api.dto.MapFunctions.renameKey;
 
 import java.util.Collections;
@@ -61,7 +62,7 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
   @Schema(
       description = "Compact human-readable identifier that is unique within the client.",
       example = "A-155",
-      required = true,
+      requiredMode = REQUIRED,
       accessMode = Schema.AccessMode.READ_ONLY)
   @ToString.Include
   private String designator;
@@ -92,7 +93,7 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
 
   @Valid
   @NotNull(message = "A scenario must be present.")
-  @Schema(required = true, implementation = IdRefOwner.class)
+  @Schema(requiredMode = REQUIRED, implementation = IdRefOwner.class)
   private IdRef<Scenario> scenario;
 
   @Valid

@@ -179,6 +179,13 @@ class SwaggerSpec extends VeoSpringSpec {
         partReferenceSchema.required.contains('targetUri')
     }
 
+    def "link attributes are not required"() {
+        given:
+        def customLinkDtoSchema = parsedApiDocs.components.schemas.CustomLinkDto
+        expect:
+        !customLinkDtoSchema.required.contains("attributes")
+    }
+
     def "targetUri is required for scope owner"() {
         when:
         def scopeDtoSchema = parsedApiDocs.components.schemas.FullScopeDto
