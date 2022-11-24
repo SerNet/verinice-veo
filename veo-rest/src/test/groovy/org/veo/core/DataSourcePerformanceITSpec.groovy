@@ -392,7 +392,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.insert == 11
         queryCounts.update == 0
         queryCounts.select == 21
-        queryCounts.time < 1000
+        queryCounts.time < 2000
     }
 
     @Issue('VEO-689')
