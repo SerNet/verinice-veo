@@ -34,7 +34,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;

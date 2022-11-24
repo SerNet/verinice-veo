@@ -19,7 +19,7 @@ package org.veo.adapter.presenter.api.dto.full;
 
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 

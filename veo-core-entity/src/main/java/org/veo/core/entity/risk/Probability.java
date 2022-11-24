@@ -19,8 +19,8 @@ package org.veo.core.entity.risk;
 
 import static org.veo.core.entity.Nameable.DESCRIPTION_MAX_LENGTH;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Size;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 
 /**
  * The probability of a risk event occurring.

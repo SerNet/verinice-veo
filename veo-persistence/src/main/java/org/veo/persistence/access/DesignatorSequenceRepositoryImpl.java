@@ -17,11 +17,10 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
-import java.math.BigInteger;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -65,12 +64,9 @@ public class DesignatorSequenceRepositoryImpl implements DesignatorSequenceRepos
   @SuppressFBWarnings("SQL_INJECTION_JPA")
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public Long getNext(Key<UUID> clientId, String typeDesignator) {
-    var next =
-        (BigInteger)
-            em.createNativeQuery(
-                    "SELECT nextval('" + getSequenceName(clientId, typeDesignator) + "')")
-                .getSingleResult();
-    return next.longValue();
+    return (Long)
+        em.createNativeQuery("SELECT nextval('" + getSequenceName(clientId, typeDesignator) + "')")
+            .getSingleResult();
   }
 
   /**

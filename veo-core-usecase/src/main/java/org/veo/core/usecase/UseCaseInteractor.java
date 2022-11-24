@@ -21,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * All use cases can be executed using this interface.

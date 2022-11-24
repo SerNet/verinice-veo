@@ -19,8 +19,8 @@ package org.veo.core.entity.risk;
 
 import java.math.BigDecimal;
 
-import javax.validation.Valid;
-import javax.validation.constraints.PositiveOrZero;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.PositiveOrZero;
 
 import org.veo.core.entity.riskdefinition.RiskValue;
 

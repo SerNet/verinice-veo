@@ -20,8 +20,9 @@ package org.veo.core.entity;
 import java.util.Optional;
 import java.util.Set;
 
+import jakarta.validation.constraints.NotEmpty;
+
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotEmpty;
 
 import lombok.NonNull;
 

@@ -24,17 +24,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
@@ -62,7 +61,6 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @Setter
-@TypeDef(name = "json", typeClass = JsonType.class)
 public class ProcessRiskValuesAspectData implements RiskValuesAspect {
 
   ProcessRiskValuesAspectData(
@@ -132,15 +130,15 @@ public class ProcessRiskValuesAspectData implements RiskValuesAspect {
   }
 
   @Column(columnDefinition = "jsonb")
-  @Type(type = "json")
+  @Type(JsonType.class)
   private ProbabilityImpl probability;
 
   @Column(columnDefinition = "jsonb")
-  @Type(type = "json")
+  @Type(JsonType.class)
   private List<ImpactImpl> impactCategories = new ArrayList<>();
 
   @Column(columnDefinition = "jsonb")
-  @Type(type = "json")
+  @Type(JsonType.class)
   private List<DeterminedRiskImpl> riskCategories = new ArrayList<>();
 
   @Override

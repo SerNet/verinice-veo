@@ -17,21 +17,23 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import static javax.persistence.GenerationType.SEQUENCE;
+import static jakarta.persistence.GenerationType.SEQUENCE;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Type;
 
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.exception.NotFoundException;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -47,7 +49,7 @@ public class DecisionSetData {
   private Long id;
 
   @NotNull
-  @Column(columnDefinition = "jsonb")
+  @Type(JsonType.class)
   Map<String, Decision> decisions = new HashMap<>();
 
   public void setDecisions(Map<String, Decision> decisions) {

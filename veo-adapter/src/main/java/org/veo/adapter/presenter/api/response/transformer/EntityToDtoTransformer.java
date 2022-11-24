@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.adapter.presenter.api.common.IdRef;

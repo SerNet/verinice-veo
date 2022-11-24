@@ -20,7 +20,7 @@ package org.veo.persistence.entity.jpa;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.persistence.MappedSuperclass;
+import jakarta.persistence.MappedSuperclass;
 
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;

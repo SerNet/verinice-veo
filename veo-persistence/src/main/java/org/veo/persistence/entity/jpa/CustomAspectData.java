@@ -19,10 +19,10 @@ package org.veo.persistence.entity.jpa;
 
 import java.util.Map;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.DomainBase;
@@ -40,6 +40,7 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class CustomAspectData extends CustomAttributeContainerData implements CustomAspect {
+
   public CustomAspectData(String type, Map<String, Object> attributes, DomainBase domain) {
     super(type, attributes, domain);
   }

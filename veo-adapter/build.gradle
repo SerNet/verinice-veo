@@ -6,21 +6,21 @@ dependencies {
     api project(":veo-core-usecase")
     api 'com.fasterxml.uuid:java-uuid-generator'
 
-    implementation 'javax.validation:validation-api'
+    implementation 'jakarta.validation:jakarta.validation-api'
     implementation 'com.networknt:json-schema-validator'
     implementation 'com.github.victools:jsonschema-generator'
     implementation 'com.github.victools:jsonschema-module-jackson'
-    implementation 'com.github.victools:jsonschema-module-javax-validation'
+    implementation 'com.github.victools:jsonschema-module-jakarta-validation'
     implementation 'com.github.victools:jsonschema-module-swagger-2'
-    implementation 'io.swagger.core.v3:swagger-annotations'
-    implementation 'org.springdoc:springdoc-openapi-common'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta'
+    implementation 'org.springdoc:springdoc-openapi-starter-common'
     implementation 'com.github.zafarkhaja:java-semver'
 
     compileOnly('org.projectlombok:lombok')
-    compileOnly 'io.swagger.core.v3:swagger-core'
+    compileOnly 'io.swagger.core.v3:swagger-core-jakarta'
 
-    testImplementation 'io.swagger.core.v3:swagger-core'
+    testImplementation 'io.swagger.core.v3:swagger-core-jakarta'
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.codehaus.groovy:groovy-json'
+    testImplementation 'org.apache.groovy:groovy-json'
 }

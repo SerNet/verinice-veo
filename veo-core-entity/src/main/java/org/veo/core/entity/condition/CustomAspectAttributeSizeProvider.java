@@ -19,7 +19,7 @@ package org.veo.core.entity.condition;
 
 import java.util.Collection;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;

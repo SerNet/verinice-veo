@@ -19,12 +19,12 @@ package org.veo.core
 
 import java.time.Instant
 
-import javax.transaction.Transactional
-
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.persistence.access.StoredEventRepository
 import org.veo.persistence.entity.jpa.StoredEventData
+
+import jakarta.transaction.Transactional
 
 @Transactional()
 class StoredEventRepositorySpec extends VeoSpringSpec {

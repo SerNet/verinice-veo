@@ -2,7 +2,7 @@ import groovy.json.JsonSlurper
 import org.veo.SpockBlockFormatterStep
 
 plugins {
-    id 'org.springframework.boot' version '2.7.12' apply false
+    id 'org.springframework.boot' version '3.1.0' apply false
     id "com.github.spotbugs" version '5.0.14'
     id "com.diffplug.spotless" version "6.16.0" apply false
     id "io.freefair.lombok" version "8.0.1"
@@ -45,7 +45,7 @@ allprojects  {
         java {
             target 'src/**/*.java', 'buildSrc/**/*.java'
             googleJavaFormat()
-            importOrder('java', 'javax', 'org', 'com', 'org.veo', '')
+            importOrder('java', 'jakarta', 'javax', 'org', 'com', 'org.veo', '')
             addStep org.veo.LicenseHeaderStep.create(project.rootDir)
             addStep org.veo.NoWildcardImportsStep.create()
             removeUnusedImports()
@@ -118,6 +118,9 @@ task copy3rdPartyLicenseFile {
     }
 }
 
+// pull in fix for https://hibernate.atlassian.net/jira/software/c/projects/HHH/issues/HHH-16555
+ext['hibernate.version'] = '6.2.3.Final'
+
 subprojects {
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
@@ -134,20 +137,21 @@ subprojects {
 
     dependencyManagement {
         dependencies {
-            dependency 'io.hypersistence:hypersistence-utils-hibernate-52:3.3.2'
+            dependency 'io.hypersistence:hypersistence-utils-hibernate-62:3.3.2'
             dependency 'io.jsonwebtoken:jjwt-api:0.11.5'
             dependency 'io.jsonwebtoken:jjwt-impl:0.11.5'
             dependency 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-            dependency "org.spockframework:spock-core:2.3-groovy-3.0"
-            dependency "org.spockframework:spock-spring:2.3-groovy-3.0"
-            dependency 'org.springdoc:springdoc-openapi-ui:1.7.0'
-            dependency 'org.springdoc:springdoc-openapi-common:1.7.0'
-            dependency 'io.swagger.core.v3:swagger-core:2.2.10'
-            dependency 'io.swagger.core.v3:swagger-annotations:2.2.10'
+            // pull in fix for https://github.com/spockframework/spock/issues/1539
+            dependency "org.spockframework:spock-core:2.4-M1-groovy-4.0"
+            dependency "org.spockframework:spock-spring:2.4-M1-groovy-4.0"
+            dependency 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+            dependency 'org.springdoc:springdoc-openapi-starter-common:2.1.0'
+            dependency 'io.swagger.core.v3:swagger-core-jakarta:2.2.10'
+            dependency 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.10'
             dependency 'net.ttddyy:datasource-proxy:1.9'
             dependency 'com.github.victools:jsonschema-generator:4.31.1'
             dependency 'com.github.victools:jsonschema-module-jackson:4.31.1'
-            dependency 'com.github.victools:jsonschema-module-javax-validation:4.31.1'
+            dependency 'com.github.victools:jsonschema-module-jakarta-validation:4.31.1'
             dependency 'com.github.victools:jsonschema-module-swagger-2:4.31.1'
             dependency 'com.networknt:json-schema-validator:1.0.81'
             dependency "org.testcontainers:spock:1.18.1"

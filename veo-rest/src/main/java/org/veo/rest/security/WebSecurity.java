@@ -18,6 +18,7 @@
 package org.veo.rest.security;
 
 import static java.util.function.Function.identity;
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -26,10 +27,12 @@ import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
@@ -50,7 +53,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 
 /** This class bundles custom API security configurations. */
-@EnableWebSecurity
+@Configuration
 @Slf4j
 public class WebSecurity {
 
@@ -142,75 +145,92 @@ public class WebSecurity {
   private String[] allowedHeaders;
 
   @Bean
-  @SuppressFBWarnings("SPRING_CSRF_PROTECTION_DISABLED")
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.csrf().disable();
-    http.cors();
-    http.headers().cacheControl().disable();
+    http.csrf(
+        new Customizer<CsrfConfigurer<HttpSecurity>>() {
+          @Override
+          @SuppressFBWarnings("SPRING_CSRF_PROTECTION_DISABLED")
+          public void customize(CsrfConfigurer<HttpSecurity> csrf) {
+            csrf.disable();
+          }
+        });
+    http.cors(Customizer.withDefaults());
+    http.headers(headers -> headers.cacheControl(cc -> cc.disable()));
 
     // Anonymous access (a user with role "ROLE_ANONYMOUS" must be enabled for
     // swagger-ui). We cannot disable it.
     // Make sure that no critical API can be accessed by an anonymous user!
     // .anonymous().disable()
 
-    // public access to root and actuator endpoints:
-    http.authorizeRequests().antMatchers(ROOT_PATH, ACTUATOR_PATHS).permitAll();
+    http.sessionManagement(
+        sessionManagement ->
+            sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-    http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    http.authorizeHttpRequests(
+        auth -> {
+          // public access to root and actuator endpoints:
+          auth.requestMatchers(ROOT_PATH, ACTUATOR_PATHS).permitAll();
 
-    http.authorizeRequests()
-        // public access to swagger-ui:
-        .antMatchers(HttpMethod.GET, SWAGGER_UI_PATHS)
-        .permitAll()
+          // public access to swagger-ui:
+          auth.requestMatchers(HttpMethod.GET, SWAGGER_UI_PATHS).permitAll();
 
-        // admin access:
-        .antMatchers(ADMIN_PATHS)
-        .hasRole("veo-admin")
+          // admin access:
+          for (String path : ADMIN_PATHS) {
+            auth.requestMatchers(antMatcher(path)).hasRole("veo-admin");
+          }
 
-        // content-creator write access:
-        .antMatchers(HttpMethod.POST, CONTENT_CREATOR_EDITABLE_PATHS)
-        .hasRole("veo-content-creator")
-        .antMatchers(HttpMethod.PUT, CONTENT_CREATOR_EDITABLE_PATHS)
-        .hasRole("veo-content-creator")
-        .antMatchers(HttpMethod.DELETE, CONTENT_CREATOR_EDITABLE_PATHS)
-        .hasRole("veo-content-creator")
+          // content-creator write access:
+          auth.requestMatchers(HttpMethod.POST, CONTENT_CREATOR_EDITABLE_PATHS)
+              .hasRole("veo-content-creator")
+              .requestMatchers(HttpMethod.PUT, CONTENT_CREATOR_EDITABLE_PATHS)
+              .hasRole("veo-content-creator")
+              .requestMatchers(HttpMethod.DELETE, CONTENT_CREATOR_EDITABLE_PATHS)
+              .hasRole("veo-content-creator")
 
-        // content-creator read access (will be required in addition to more general roles matched
-        // below):
-        .antMatchers(HttpMethod.GET, CONTENT_CREATOR_VIEWABLE_PATHS)
-        .hasRole("veo-content-creator")
-        .antMatchers(HttpMethod.HEAD, CONTENT_CREATOR_VIEWABLE_PATHS)
-        .hasRole("veo-content-creator")
-        .antMatchers(HttpMethod.OPTIONS, CONTENT_CREATOR_VIEWABLE_PATHS)
-        .hasRole("veo-content-creator")
+              // content-creator read access (will be required in addition to more general roles
+              // matched below):
+              .requestMatchers(antMatcher(HttpMethod.GET, CONTENT_CREATOR_VIEWABLE_PATHS))
+              .hasRole("veo-content-creator")
+              .requestMatchers(antMatcher(HttpMethod.HEAD, CONTENT_CREATOR_VIEWABLE_PATHS))
+              .hasRole("veo-content-creator")
+              .requestMatchers(antMatcher(HttpMethod.OPTIONS, CONTENT_CREATOR_VIEWABLE_PATHS))
+              .hasRole("veo-content-creator");
 
-        // POST is allowed to transient paths for regular users:
-        .antMatchers(HttpMethod.POST, TRANSIENT_PATHS)
-        .hasRole("veo-user")
+          // POST is allowed to transient paths for regular users:
+          for (String path : TRANSIENT_PATHS) {
+            auth.requestMatchers(antMatcher(HttpMethod.POST, path)).hasRole("veo-user");
+          }
 
-        // read-only access:
-        .antMatchers(HttpMethod.GET, USER_VIEWABLE_PATHS)
-        .hasRole("veo-user")
-        .antMatchers(HttpMethod.HEAD, USER_VIEWABLE_PATHS)
-        .hasRole("veo-user")
-        .antMatchers(HttpMethod.OPTIONS, USER_VIEWABLE_PATHS)
-        .hasRole("veo-user")
+          // read-only access:
+          Stream.of(USER_VIEWABLE_PATHS)
+              .forEach(
+                  path ->
+                      Stream.of(HttpMethod.GET, HttpMethod.HEAD, HttpMethod.OPTIONS)
+                          .forEach(
+                              method ->
+                                  auth.requestMatchers(antMatcher(method, path))
+                                      .hasRole("veo-user")));
 
-        // write-only access:
-        .antMatchers(HttpMethod.POST, USER_EDITABLE_PATHS)
-        .hasRole("veo-write")
-        .antMatchers(HttpMethod.PUT, USER_EDITABLE_PATHS)
-        .hasRole("veo-write")
-        .antMatchers(HttpMethod.PATCH, USER_EDITABLE_PATHS)
-        .hasRole("veo-write")
-        .antMatchers(HttpMethod.DELETE, USER_EDITABLE_PATHS)
-        .hasRole("veo-write")
+          // write-only access:
+          Stream.of(USER_EDITABLE_PATHS)
+              .forEach(
+                  path ->
+                      Stream.of(
+                              HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH, HttpMethod.DELETE)
+                          .forEach(
+                              method ->
+                                  auth.requestMatchers(antMatcher(method, path))
+                                      .hasRole("veo-write")));
 
-        // authentication without specific role requirements and fallback in case of missing paths:
-        .anyRequest()
-        .hasRole("veo-user");
+          // authentication without specific role requirements and fallback in case of missing
+          // paths:
+          auth.anyRequest().hasRole("veo-user");
+        });
 
-    http.oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter());
+    http.oauth2ResourceServer(
+        oauth2ResourceServer ->
+            oauth2ResourceServer.jwt(
+                jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
     return http.build();
   }
 

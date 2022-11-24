@@ -17,14 +17,14 @@
  ******************************************************************************/
 package org.veo.core.usecase.decision;
 
-import static javax.transaction.Transactional.TxType.NEVER;
+import static jakarta.transaction.Transactional.TxType.NEVER;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-import javax.validation.Valid;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;

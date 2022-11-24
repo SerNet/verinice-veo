@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

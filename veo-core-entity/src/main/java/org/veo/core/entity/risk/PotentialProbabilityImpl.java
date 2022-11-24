@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

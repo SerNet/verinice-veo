@@ -19,7 +19,7 @@ package org.veo.core.entity;
 
 import java.util.function.Predicate;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /** All what provides a {@link TailoringReferenceType}. */
 public interface TailoringReferenceTyped {

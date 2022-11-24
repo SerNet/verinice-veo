@@ -17,13 +17,13 @@
  ******************************************************************************/
 package org.veo.core
 
-import javax.validation.ConstraintViolationException
-
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.UnitRepository
 import org.veo.persistence.entity.jpa.ClientData
+
+import jakarta.validation.ConstraintViolationException
 
 class UnitRepositoryITSpec extends VeoSpringSpec {
 

@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.core.entity.Element;

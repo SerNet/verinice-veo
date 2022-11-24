@@ -17,11 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity
 
-import javax.validation.Validation
-import javax.validation.Validator
-
 import org.veo.persistence.entity.jpa.ProcessData
 
+import jakarta.validation.Validation
+import jakarta.validation.Validator
 import spock.lang.Specification
 
 /**
@@ -48,7 +47,7 @@ class ProcessConstraintSpec extends Specification {
             "name"
         ] as Set
         assert errors*.messageTemplate as Set == [
-            '{javax.validation.constraints.NotNull.message}',
+            '{jakarta.validation.constraints.NotNull.message}',
             'Either owner or containingCatalogItem must be set',
             'A name must be present.'
         ] as Set

@@ -17,8 +17,8 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Scope;

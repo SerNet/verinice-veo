@@ -19,12 +19,11 @@ package org.veo.persistence.entity.jpa;
 
 import java.util.Map;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Scenario;
@@ -43,7 +42,6 @@ import lombok.ToString;
 @Entity(name = "scenario_risk_values_aspect")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-@TypeDef(name = "json", typeClass = JsonType.class, defaultForType = Map.class)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class ScenarioRiskValuesAspectData extends AspectData {
 
@@ -55,6 +53,6 @@ class ScenarioRiskValuesAspectData extends AspectData {
   @Setter
   @NotNull
   @Column(columnDefinition = "jsonb", name = "probability")
-  @Type(type = "json")
+  @Type(JsonType.class)
   Map<RiskDefinitionRef, PotentialProbabilityImpl> potentialProbability;
 }

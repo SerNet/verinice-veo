@@ -20,7 +20,7 @@ package org.veo.core.usecase.domain;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;

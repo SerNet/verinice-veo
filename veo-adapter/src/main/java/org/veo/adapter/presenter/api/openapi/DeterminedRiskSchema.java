@@ -20,8 +20,8 @@ package org.veo.adapter.presenter.api.openapi;
 import java.math.BigDecimal;
 import java.util.Set;
 
-import javax.validation.constraints.PositiveOrZero;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.DeterminedRisk;

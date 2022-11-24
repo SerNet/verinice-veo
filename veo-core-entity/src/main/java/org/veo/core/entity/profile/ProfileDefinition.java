@@ -19,7 +19,7 @@ package org.veo.core.entity.profile;
 
 import java.util.Set;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.Constraints;
 

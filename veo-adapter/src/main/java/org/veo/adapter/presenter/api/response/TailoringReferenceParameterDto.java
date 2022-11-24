@@ -19,7 +19,7 @@ package org.veo.adapter.presenter.api.response;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefTailoringReferenceParameterReferencedElement;

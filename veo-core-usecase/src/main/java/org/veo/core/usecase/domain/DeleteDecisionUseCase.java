@@ -19,7 +19,7 @@ package org.veo.core.usecase.domain;
 
 import java.util.UUID;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;

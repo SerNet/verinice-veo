@@ -19,7 +19,7 @@ package org.veo.core.entity;
 
 import java.util.Map;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * A custom aspect - it describes a subset of an {@link Element} object's attributes in a set of

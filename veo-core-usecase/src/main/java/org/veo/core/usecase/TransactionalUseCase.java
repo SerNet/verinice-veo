@@ -20,7 +20,7 @@ package org.veo.core.usecase;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 /**
  * A base-class for use-cases that require a transaction.

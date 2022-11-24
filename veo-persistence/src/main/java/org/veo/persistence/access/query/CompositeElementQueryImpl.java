@@ -19,7 +19,7 @@ package org.veo.persistence.access.query;
 
 import java.util.UUID;
 
-import javax.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.JoinType;
 
 import org.springframework.data.jpa.domain.Specification;
 

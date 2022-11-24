@@ -20,7 +20,7 @@ package org.veo.adapter.service.domaintemplate.dto;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

@@ -19,7 +19,7 @@ package org.veo.adapter.presenter.api.dto;
 
 import java.util.Set;
 
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
 

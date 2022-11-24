@@ -80,7 +80,7 @@ class UnitRestTestITSpec extends VeoRestTest {
         then: "the stored unit is retrieved"
         with(getResponse) {
             id == postResponse.resourceId
-            name == UNIT_NAME
+            name == UnitRestTestITSpec.UNIT_NAME
             createdBy == user
             updatedBy == user
             domains.size() > 0
@@ -113,7 +113,7 @@ class UnitRestTestITSpec extends VeoRestTest {
         then: "the response reflects the change"
         with(changedResponse) {
             id == postResponseBody.resourceId
-            name == NEW_UNIT_NAME
+            name == UnitRestTestITSpec.NEW_UNIT_NAME
             createdBy == user
             updatedBy == user
             domains.size() > 0

@@ -22,7 +22,7 @@ import static lombok.AccessLevel.PRIVATE;
 import java.util.Collection;
 import java.util.List;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.exception.InvalidAttributeException;
 

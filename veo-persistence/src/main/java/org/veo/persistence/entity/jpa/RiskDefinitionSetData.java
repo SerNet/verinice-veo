@@ -17,20 +17,23 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import static javax.persistence.GenerationType.SEQUENCE;
+import static jakarta.persistence.GenerationType.SEQUENCE;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Type;
 
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -47,6 +50,7 @@ public class RiskDefinitionSetData {
 
   @NotNull
   @Column(columnDefinition = "jsonb")
+  @Type(JsonType.class)
   Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
 
   public void setRiskDefinitions(Map<String, RiskDefinition> riskDefinitions) {

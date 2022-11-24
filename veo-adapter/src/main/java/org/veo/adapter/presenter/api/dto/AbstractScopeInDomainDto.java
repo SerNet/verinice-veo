@@ -22,7 +22,7 @@ import static org.veo.core.entity.riskdefinition.RiskDefinition.MAX_ID_SIZE;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.core.entity.Element;

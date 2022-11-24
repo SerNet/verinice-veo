@@ -17,13 +17,12 @@
  ******************************************************************************/
 package org.veo.persistence.migrations
 
-import javax.transaction.NotSupportedException
-
 import org.flywaydb.core.api.migration.BaseJavaMigration
 import org.flywaydb.core.api.migration.Context
 
 import groovy.sql.GroovyResultSet
 import groovy.sql.Sql
+import jakarta.transaction.NotSupportedException
 
 class V36__add_missing_subtype_aspects extends BaseJavaMigration {
     @Override

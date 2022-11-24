@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * An update reference refers a catalog item of another catalog or version of the catalog. It

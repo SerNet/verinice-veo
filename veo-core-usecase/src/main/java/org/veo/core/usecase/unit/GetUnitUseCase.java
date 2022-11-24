@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;

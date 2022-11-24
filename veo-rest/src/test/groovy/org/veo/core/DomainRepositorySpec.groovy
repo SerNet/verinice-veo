@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.core
 
-import javax.validation.ConstraintViolationException
-
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Domain
@@ -27,6 +25,8 @@ import org.veo.core.entity.exception.NotFoundException
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.entity.jpa.DomainData
+
+import jakarta.validation.ConstraintViolationException
 
 class DomainRepositorySpec extends VeoSpringSpec {
 

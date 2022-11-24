@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.core
 
-import javax.validation.ConstraintViolationException
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.TransactionSystemException
 import org.springframework.transaction.support.TransactionTemplate
@@ -31,6 +29,8 @@ import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.ProcessDataRepository
 import org.veo.persistence.entity.jpa.ProcessData
+
+import jakarta.validation.ConstraintViolationException
 
 /**
  * Integration test for the process repository. Uses mocked spring MVC environment.
@@ -80,7 +80,7 @@ class ProcessRepositoryITSpec extends VeoSpringSpec {
             "name"
         ] as Set
         assert cvex.constraintViolations*.messageTemplate as Set == [
-            '{javax.validation.constraints.NotNull.message}',
+            '{jakarta.validation.constraints.NotNull.message}',
             'Either owner or containingCatalogItem must be set',
             'A name must be present.'
         ] as Set

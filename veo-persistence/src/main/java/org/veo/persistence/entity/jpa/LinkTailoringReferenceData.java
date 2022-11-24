@@ -20,13 +20,14 @@ package org.veo.persistence.entity.jpa;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 
 import org.hibernate.annotations.Type;
 
 import org.veo.core.entity.LinkTailoringReference;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -39,7 +40,7 @@ public class LinkTailoringReferenceData extends TailoringReferenceData
 
   @ToString.Include private String linkType;
 
-  @Type(type = "json")
+  @Type(JsonType.class)
   @Column(columnDefinition = "jsonb")
   private Map<String, Object> attributes = new HashMap<>();
 }

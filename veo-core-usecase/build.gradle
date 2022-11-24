@@ -6,12 +6,12 @@ dependencies {
     api project(":veo-core-api")
     api project(":veo-core-entity")
     compileOnly 'org.projectlombok:lombok'
-    compileOnly 'javax.validation:validation-api'
+    compileOnly 'jakarta.validation:jakarta.validation-api'
 
     // Using JTA transaction annotations currently.
     // The alternative would be to use spring transactional annotations.
     // These would support readonly transactions among other additional features.
-    implementation 'javax.transaction:javax.transaction-api'
+    implementation 'jakarta.transaction:jakarta.transaction-api'
 
     implementation 'com.github.zafarkhaja:java-semver'
     testImplementation 'org.spockframework:spock-spring'

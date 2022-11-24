@@ -17,8 +17,8 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.Entity;
+import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;

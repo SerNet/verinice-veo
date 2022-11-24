@@ -17,8 +17,8 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 
 import org.springframework.context.ApplicationEventPublisher;
 

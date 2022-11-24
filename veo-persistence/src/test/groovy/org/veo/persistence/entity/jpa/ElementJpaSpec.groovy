@@ -17,10 +17,6 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa
 
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
-import javax.validation.ConstraintViolationException
-
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Client
@@ -31,6 +27,10 @@ import org.veo.core.entity.decision.DecisionRuleRef
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
+
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
+import jakarta.validation.ConstraintViolationException
 
 class ElementJpaSpec extends AbstractJpaSpec {
 

@@ -19,7 +19,7 @@ package org.veo.core.usecase.domaintemplate;
 
 import static org.veo.core.usecase.domaintemplate.DomainTemplateValidator.validateVersion;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;

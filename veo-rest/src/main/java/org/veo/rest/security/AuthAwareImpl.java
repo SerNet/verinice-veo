@@ -19,7 +19,7 @@ package org.veo.rest.security;
 
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;

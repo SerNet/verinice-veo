@@ -20,17 +20,20 @@ package org.veo.persistence.entity.jpa;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Type;
 
 import org.veo.core.entity.profile.ProfileDefinition;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -48,6 +51,7 @@ public class ProfileSetData {
   @NotNull
   @Column(columnDefinition = "jsonb")
   @Valid
+  @Type(JsonType.class)
   private Map<String, ProfileDefinition> profiles = new HashMap<>();
 
   public void setProfiles(Map<String, ProfileDefinition> profiles) {

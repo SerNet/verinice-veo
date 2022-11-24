@@ -21,8 +21,8 @@ import static com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY;
 
 import java.util.Optional;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -17,8 +17,8 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 
 import org.veo.core.entity.CatalogReference;
 import org.veo.core.entity.TailoringReference;
@@ -33,7 +33,7 @@ import lombok.EqualsAndHashCode;
 public class TailoringReferenceData extends CatalogReferenceData
     implements TailoringReference, CatalogReference {
 
-  @Column(name = "referencetype")
+  @Column(name = "referencetype", columnDefinition = "int4")
   @EqualsAndHashCode.Include
   private TailoringReferenceType referenceType;
 }

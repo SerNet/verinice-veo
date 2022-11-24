@@ -22,8 +22,8 @@ import static org.veo.core.service.DomainTemplateService.updateVersion;
 
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-import javax.validation.Valid;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;

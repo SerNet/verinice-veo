@@ -20,8 +20,8 @@ package org.veo.core.entity.profile;
 import static lombok.AccessLevel.PACKAGE;
 import static org.veo.core.entity.profile.ProfileDefinition.DEMO_UNIT;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Size;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.Constraints;
 import org.veo.core.entity.Domain;

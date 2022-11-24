@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.risk;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Control;

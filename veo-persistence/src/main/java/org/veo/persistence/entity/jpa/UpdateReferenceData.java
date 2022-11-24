@@ -17,8 +17,8 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 
 import org.veo.core.entity.CatalogReference;
 import org.veo.core.entity.ItemUpdateType;
@@ -33,6 +33,6 @@ import lombok.EqualsAndHashCode;
 public class UpdateReferenceData extends CatalogReferenceData
     implements UpdateReference, CatalogReference {
 
-  @Column(name = "updatetype")
+  @Column(name = "updatetype", columnDefinition = "int4")
   private ItemUpdateType updateType;
 }

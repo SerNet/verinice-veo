@@ -150,7 +150,7 @@ class AdminControllerMvcITSpec extends ContentSpec {
                 with(risks.find { it.asset != null }) {
                     domains.size() == 1
                     domains.(newDomainId) != null
-                    domains.(newDomainId).reference.displayName == DSGVO_NAME
+                    domains.(newDomainId).reference.displayName == AdminControllerMvcITSpec.DSGVO_NAME
                     domains.(newDomainId).riskDefinitions.size() == 0
                 }
 

@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * A link connects two {@link Element} objects. It serves documentation purposes only. It's defined

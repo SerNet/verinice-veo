@@ -23,7 +23,7 @@ import java.util.concurrent.Future;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.apache.commons.lang3.function.TriFunction;
 import org.hibernate.Hibernate;

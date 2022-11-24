@@ -19,7 +19,7 @@ package org.veo.core.entity;
 
 import java.util.Optional;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * The domain should be referenced by the domain objects if applicable. It defines a standard, a

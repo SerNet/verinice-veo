@@ -21,12 +21,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Process;
@@ -48,7 +47,6 @@ import lombok.ToString;
 @Entity(name = "process_impact_values_aspect")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-@TypeDef(name = "json", typeClass = JsonType.class, defaultForType = Map.class)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class ProcessImpactValuesAspectData extends AspectData {
 
@@ -59,7 +57,7 @@ class ProcessImpactValuesAspectData extends AspectData {
   @Getter
   @NotNull
   @Column(columnDefinition = "jsonb", name = "process_impact_values")
-  @Type(type = "json")
+  @Type(JsonType.class)
   Map<RiskDefinitionRef, ProcessImpactValues> values;
 
   public void setValues(Map<RiskDefinitionRef, ProcessImpactValues> values) {

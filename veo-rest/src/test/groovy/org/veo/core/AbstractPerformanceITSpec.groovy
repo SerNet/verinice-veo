@@ -17,9 +17,6 @@
  ******************************************************************************/
 package org.veo.core
 
-import javax.persistence.EntityManager
-import javax.persistence.SequenceGenerator
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository
 
@@ -27,6 +24,8 @@ import org.veo.persistence.entity.jpa.ProfileSetData
 import org.veo.persistence.entity.jpa.RiskDefinitionSetData
 import org.veo.persistence.entity.jpa.StoredEventData
 
+import jakarta.persistence.EntityManager
+import jakarta.persistence.SequenceGenerator
 import net.ttddyy.dsproxy.QueryCount
 import net.ttddyy.dsproxy.QueryCountHolder
 

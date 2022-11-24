@@ -66,8 +66,8 @@ class EntitySchemaServiceITSpec extends Specification {
         def schema = getSchema(Set.of(testDomain), "asset")
 
         expect:
-        with(schema.get(PROPS).get("domains")) {
-            get(PROPS).size() == 1
+        with(schema.get(PROPS).get("domains")) {d->
+            d.get(EntitySchemaServiceITSpec.PROPS).size() == 1
             // additional properties are allowed by default
             additionalProperties == null
         }
@@ -143,33 +143,35 @@ class EntitySchemaServiceITSpec extends Specification {
         def testDomain = getTestDomain()
         def extraTestDomain = getExtraTestDomain()
         def schema = getSchema(Set.of(testDomain, extraTestDomain), "asset")
+        // we cannot access the constant from within the `with` https://issues.apache.org/jira/browse/GROOVY-10604
+        def p = PROPS
 
         expect:
-        with(schema.get(PROPS).get("customAspects").get(PROPS)) {
-            get("test").get(PROPS).get("attributes").get(PROPS).get("testAttr").get("type").textValue() == "string"
-            get("extraTest").get(PROPS).get("attributes").get(PROPS).get("extraTestAttr").get("type").textValue() == "boolean"
+        with(schema.get(PROPS).get("customAspects").get(PROPS)) { ap->
+            ap.get("test").get(p).get("attributes").get(p).get("testAttr").get("type").textValue() == "string"
+            ap.get("extraTest").get(p).get("attributes").get(p).get("extraTestAttr").get("type").textValue() == "boolean"
         }
         with(schema.get(PROPS).get("links").get(PROPS)) {
-            get("test").get("items").get(PROPS).get("attributes").get(PROPS).get("linkTestAttr").get("type").textValue() == "string"
-            get("test").get("items").get(PROPS).get("target").get(PROPS).get("type").get("enum")*.textValue() == ["otherType"]
-            get("test").get("items").get(PROPS).get("target").get(PROPS).get("subType").get("enum")*.textValue() == ["otherSubType"]
+            get("test").get("items").get(p).get("attributes").get(p).get("linkTestAttr").get("type").textValue() == "string"
+            get("test").get("items").get(p).get("target").get(p).get("type").get("enum")*.textValue() == ["otherType"]
+            get("test").get("items").get(p).get("target").get(p).get("subType").get("enum")*.textValue() == ["otherSubType"]
 
-            get("extraTest").get("items").get(PROPS).get("attributes").get(PROPS).get("extraLinkTestAttr").get("type").textValue() == "integer"
-            get("extraTest").get("items").get(PROPS).get("target").get(PROPS).get("type").get("enum")*.textValue() == ["extraType"]
-            get("extraTest").get("items").get(PROPS).get("target").get(PROPS).get("subType").get("enum")*.textValue() == ["extraSubType"]
+            get("extraTest").get("items").get(p).get("attributes").get(p).get("extraLinkTestAttr").get("type").textValue() == "integer"
+            get("extraTest").get("items").get(p).get("target").get(p).get("type").get("enum")*.textValue() == ["extraType"]
+            get("extraTest").get("items").get(p).get("target").get(p).get("subType").get("enum")*.textValue() == ["extraSubType"]
         }
         with(schema.get(PROPS).get("domains").get(PROPS)) {
-            get(testDomain.idAsString).get(PROPS).get("subType").get("enum")*.textValue() == ["testSubType"]
-            get(testDomain.idAsString).get(PROPS).get("status").get("enum")*.textValue() ==~ ["NEW", "OLD"]
-            get(testDomain.idAsString).get("allOf").first().get("if").get(PROPS).get("subType").get("const").textValue() == "testSubType"
-            get(testDomain.idAsString).get("allOf").first().get("then").get(PROPS).get("status").get("enum")*.textValue() == ["NEW", "OLD"]
+            get(testDomain.idAsString).get(p).get("subType").get("enum")*.textValue() == ["testSubType"]
+            get(testDomain.idAsString).get(p).get("status").get("enum")*.textValue() ==~ ["NEW", "OLD"]
+            get(testDomain.idAsString).get("allOf").first().get("if").get(p).get("subType").get("const").textValue() == "testSubType"
+            get(testDomain.idAsString).get("allOf").first().get("then").get(p).get("status").get("enum")*.textValue() == ["NEW", "OLD"]
 
             with(get(extraTestDomain.idAsString)) {
-                get(PROPS).get("subType").get("enum")*.textValue() ==~ [
+                get(p).get("subType").get("enum")*.textValue() ==~ [
                     "extraTestSubType",
                     "extraSuperSubType"
                 ]
-                get(PROPS).get("status").get("enum")*.textValue() ==~ [
+                get(p).get("status").get("enum")*.textValue() ==~ [
                     "EXTRA_NEW",
                     "EXTRA_OLD",
                     "SUPER_NEW",
@@ -178,11 +180,11 @@ class EntitySchemaServiceITSpec extends Specification {
 
                 with(get("allOf")) { JsonNode allOf ->
                     allOf.size() == 2
-                    with(allOf.find { it.get("if").get(PROPS).get("subType").get("const").textValue() == "extraTestSubType" }) {
-                        get("then").get(PROPS).get("status").get("enum")*.textValue() ==~ ["EXTRA_NEW", "EXTRA_OLD"]
+                    with(allOf.find { it.get("if").get(p).get("subType").get("const").textValue() == "extraTestSubType" }) {
+                        get("then").get(p).get("status").get("enum")*.textValue() ==~ ["EXTRA_NEW", "EXTRA_OLD"]
                     }
-                    with(allOf.find { it.get("if").get(PROPS).get("subType").get("const").textValue() == "extraSuperSubType" }) {
-                        get("then").get(PROPS).get("status").get("enum")*.textValue() ==~ ["SUPER_NEW", "SUPER_OLD"]
+                    with(allOf.find { it.get("if").get(p).get("subType").get("const").textValue() == "extraSuperSubType" }) {
+                        get("then").get(p).get("status").get("enum")*.textValue() ==~ ["SUPER_NEW", "SUPER_OLD"]
                     }
                 }
             }

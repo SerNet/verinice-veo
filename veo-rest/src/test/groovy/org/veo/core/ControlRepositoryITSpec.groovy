@@ -17,9 +17,6 @@
  ******************************************************************************/
 package org.veo.core
 
-import javax.transaction.Transactional
-import javax.validation.ConstraintViolationException
-
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Client
@@ -27,6 +24,9 @@ import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
+
+import jakarta.transaction.Transactional
+import jakarta.validation.ConstraintViolationException
 
 @Transactional()
 class ControlRepositoryITSpec extends VeoSpringSpec {

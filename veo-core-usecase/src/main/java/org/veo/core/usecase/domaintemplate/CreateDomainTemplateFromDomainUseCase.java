@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import com.github.zafarkhaja.semver.Version;
 

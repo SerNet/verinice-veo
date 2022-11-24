@@ -17,15 +17,15 @@
  ******************************************************************************/
 package org.veo.persistence.access
 
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceException
-
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Document
 import org.veo.core.entity.Key
 import org.veo.persistence.entity.jpa.AbstractJpaSpec
+
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceException
 
 class DesignatorSequenceRepositoryImplSpec extends AbstractJpaSpec{
     @Autowired

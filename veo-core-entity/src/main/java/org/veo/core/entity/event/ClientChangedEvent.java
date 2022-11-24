@@ -19,7 +19,7 @@ package org.veo.core.entity.event;
 
 import java.util.UUID;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Key;
 

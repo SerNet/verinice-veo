@@ -2,7 +2,7 @@ apply plugin: 'groovy'
 
 dependencies {
 
-    compileOnly 'javax.validation:validation-api'
+    compileOnly 'jakarta.validation:jakarta.validation-api'
 
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
 

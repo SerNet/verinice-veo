@@ -19,8 +19,6 @@ package org.veo.core
 
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE
 
-import javax.transaction.Transactional
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 
@@ -32,6 +30,8 @@ import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
+
+import jakarta.transaction.Transactional
 
 @Transactional()
 @AutoConfigureTestDatabase(replace = NONE)

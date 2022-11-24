@@ -21,17 +21,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
 import org.veo.core.entity.CustomAttributeContainer;
 import org.veo.core.entity.DomainBase;
@@ -48,7 +47,6 @@ import lombok.ToString;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-@TypeDef(name = "json", typeClass = JsonType.class)
 public abstract class CustomAttributeContainerData implements CustomAttributeContainer {
 
   protected CustomAttributeContainerData(
@@ -66,7 +64,7 @@ public abstract class CustomAttributeContainerData implements CustomAttributeCon
   @JoinColumn(name = "domain_id")
   private DomainBase domain;
 
-  @Type(type = "json")
+  @Type(JsonType.class)
   @Column(columnDefinition = "jsonb")
   private Map<String, Object> attributes = new HashMap<>();
 

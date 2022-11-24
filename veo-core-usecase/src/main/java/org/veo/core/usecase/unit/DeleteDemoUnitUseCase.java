@@ -22,8 +22,8 @@ import static org.veo.core.usecase.unit.CreateDemoUnitUseCase.DEMO_UNIT_NAME;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-import javax.validation.Valid;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.ModelConsistencyException;

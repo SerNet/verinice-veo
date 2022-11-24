@@ -19,8 +19,8 @@ package org.veo.core.entity.condition;
 
 import static java.util.stream.Collectors.joining;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;

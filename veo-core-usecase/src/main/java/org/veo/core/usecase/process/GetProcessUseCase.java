@@ -19,7 +19,7 @@ package org.veo.core.usecase.process;
 
 import java.util.UUID;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;

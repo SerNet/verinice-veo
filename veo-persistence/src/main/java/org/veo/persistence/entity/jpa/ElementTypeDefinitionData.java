@@ -21,19 +21,18 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.TranslationMap;
@@ -48,7 +47,6 @@ import lombok.ToString;
 
 @Entity(name = "element_type_definition")
 @Data()
-@TypeDef(name = "json", typeClass = JsonType.class, defaultForType = Map.class)
 @EntityListeners({ElementTypeDefintionEntityListener.class})
 public class ElementTypeDefinitionData implements ElementTypeDefinition {
 
@@ -66,16 +64,19 @@ public class ElementTypeDefinitionData implements ElementTypeDefinition {
   private DomainBase owner;
 
   @Column(columnDefinition = "jsonb")
+  @Type(JsonType.class)
   private Map<String, SubTypeDefinition> subTypes = new HashMap<>();
 
   @Column(columnDefinition = "jsonb")
+  @Type(JsonType.class)
   private Map<String, CustomAspectDefinition> customAspects = new HashMap<>();
 
   @Column(columnDefinition = "jsonb")
+  @Type(JsonType.class)
   private Map<String, LinkDefinition> links = new HashMap<>();
 
   @Column(columnDefinition = "jsonb")
-  @Type(type = "json")
+  @Type(JsonType.class)
   private TranslationMap translations = new TranslationMap();
 
   @Override

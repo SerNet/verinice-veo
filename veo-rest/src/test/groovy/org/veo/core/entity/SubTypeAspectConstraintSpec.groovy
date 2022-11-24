@@ -17,12 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity
 
-import javax.validation.Validation
-import javax.validation.Validator
-
-import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.SubTypeAspectData
 
+import jakarta.validation.Validation
+import jakarta.validation.Validator
 import spock.lang.Specification
 /**
  * Test {@link ProcessData} property constraints.
@@ -45,8 +43,8 @@ class SubTypeAspectConstraintSpec extends Specification {
             "status",
         ] as Set
         assert errors*.messageTemplate as Set == [
-            '{javax.validation.constraints.NotNull.message}',
-            '{javax.validation.constraints.NotNull.message}',
+            '{jakarta.validation.constraints.NotNull.message}',
+            '{jakarta.validation.constraints.NotNull.message}',
         ] as Set
     }
 }

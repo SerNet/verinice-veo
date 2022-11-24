@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.domain;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;

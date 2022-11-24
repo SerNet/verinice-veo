@@ -20,7 +20,7 @@ package org.veo.rest;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

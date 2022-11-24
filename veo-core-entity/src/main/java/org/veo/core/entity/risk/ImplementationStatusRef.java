@@ -17,8 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
-import javax.validation.Valid;
-import javax.validation.constraints.PositiveOrZero;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.PositiveOrZero;
 
 import org.veo.core.entity.riskdefinition.CategoryLevel;
 

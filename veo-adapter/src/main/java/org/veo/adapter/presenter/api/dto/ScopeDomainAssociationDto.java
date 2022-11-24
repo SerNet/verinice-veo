@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.riskdefinition.RiskDefinition;

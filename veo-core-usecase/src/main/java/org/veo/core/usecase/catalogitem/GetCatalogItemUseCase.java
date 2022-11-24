@@ -20,7 +20,7 @@ package org.veo.core.usecase.catalogitem;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;

@@ -29,8 +29,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.jsonwebtoken:jjwt-api'
-    implementation 'org.springdoc:springdoc-openapi-ui'
-    implementation 'io.swagger.core.v3:swagger-core'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui'
+    implementation 'io.swagger.core.v3:swagger-core-jakarta'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'com.github.zafarkhaja:java-semver'
@@ -50,7 +50,7 @@ dependencies {
     testImplementation 'com.networknt:json-schema-validator'
     testImplementation 'commons-codec:commons-codec'
     testImplementation project(":veo-test")
-    testImplementation 'org.codehaus.groovy:groovy-json'
+    testImplementation 'org.apache.groovy:groovy-json'
 
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
@@ -144,7 +144,10 @@ tasks.register('restTest', Test) {
         "https.proxyHost",
         "https.proxyPort",
         "http.nonProxyHosts"
-    ])
+    ]) + [
+        // Enable Origin header for CORS tests
+        "sun.net.http.allowRestrictedHeaders": "true"
+    ]
 }
 
 // specific "continuous integration" settings needed by Jenkins

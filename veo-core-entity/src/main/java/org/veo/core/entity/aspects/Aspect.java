@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.aspects;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Versioned;

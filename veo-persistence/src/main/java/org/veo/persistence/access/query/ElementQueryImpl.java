@@ -27,10 +27,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Predicate;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -75,7 +75,6 @@ import org.veo.persistence.access.jpa.ScenarioDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.ElementData;
 import org.veo.persistence.entity.jpa.RiskAffectedData;
-import org.veo.persistence.entity.jpa.UnitData;
 
 /** Implements {@link ElementQuery} using {@link Specification} API. */
 class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementData>
@@ -384,15 +383,19 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   private Specification<TDataClass> createSpecification(Client client) {
     return (root, query, criteriaBuilder) -> {
       query.distinct(true);
-      Path<UnitData> unit = criteriaBuilder.treat(root.join("owner"), UnitData.class);
-      return criteriaBuilder.equal(unit.get("client"), client);
+      return criteriaBuilder.equal(root.join("owner").get("client"), client);
     };
   }
 
   private static Predicate in(
       Path<Object> column, Collection<?> values, CriteriaBuilder criteriaBuilder) {
     if (values.stream().anyMatch(Objects::isNull)) {
-      return criteriaBuilder.or(column.in(values), column.isNull());
+      if (values.size() == 1) {
+        return column.isNull();
+      } else {
+        return criteriaBuilder.or(
+            column.in(values.stream().filter(Objects::nonNull).toList()), column.isNull());
+      }
     } else {
       return criteriaBuilder.isTrue(column.in(values));
     }

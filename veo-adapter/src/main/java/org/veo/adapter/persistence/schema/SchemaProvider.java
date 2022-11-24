@@ -35,8 +35,8 @@ import com.github.victools.jsonschema.generator.SchemaGeneratorConfig;
 import com.github.victools.jsonschema.generator.SchemaGeneratorConfigBuilder;
 import com.github.victools.jsonschema.generator.SchemaVersion;
 import com.github.victools.jsonschema.module.jackson.JacksonModule;
-import com.github.victools.jsonschema.module.javax.validation.JavaxValidationModule;
-import com.github.victools.jsonschema.module.javax.validation.JavaxValidationOption;
+import com.github.victools.jsonschema.module.jakarta.validation.JakartaValidationModule;
+import com.github.victools.jsonschema.module.jakarta.validation.JakartaValidationOption;
 import com.github.victools.jsonschema.module.swagger2.Swagger2Module;
 
 import org.veo.adapter.presenter.api.dto.ControlDomainAssociationDto;
@@ -113,15 +113,15 @@ public class SchemaProvider {
 
   private SchemaGenerator createSchemaGenerator() {
     JacksonModule jacksonModule = new JacksonModule();
-    JavaxValidationModule javaxValidationModule =
-        new JavaxValidationModule(JavaxValidationOption.NOT_NULLABLE_FIELD_IS_REQUIRED);
+    JakartaValidationModule jakartaValidationModule =
+        new JakartaValidationModule(JakartaValidationOption.NOT_NULLABLE_FIELD_IS_REQUIRED);
     Module swagger2Module = new Swagger2Module();
 
     SchemaGeneratorConfigBuilder configBuilder =
         new SchemaGeneratorConfigBuilder(SchemaVersion.DRAFT_2019_09, OptionPreset.PLAIN_JSON)
             .with(jacksonModule)
             .with(swagger2Module)
-            .with(javaxValidationModule)
+            .with(jakartaValidationModule)
             .with(
                 Option.INLINE_ALL_SCHEMAS,
                 Option.NONSTATIC_NONVOID_NONGETTER_METHODS,

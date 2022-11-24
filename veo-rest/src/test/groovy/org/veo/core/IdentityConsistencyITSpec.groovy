@@ -17,9 +17,6 @@
  ******************************************************************************/
 package org.veo.core
 
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
-
 import org.hibernate.Session
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
@@ -43,6 +40,9 @@ import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.ScopeData
 import org.veo.persistence.entity.jpa.SubTypeAspectData
 import org.veo.persistence.entity.jpa.UnitData
+
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 
 @WithUserDetails("user@domain.example")
 class IdentityConsistencyITSpec extends VeoSpringSpec {

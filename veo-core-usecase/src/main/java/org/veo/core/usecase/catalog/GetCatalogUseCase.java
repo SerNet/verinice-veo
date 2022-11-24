@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalog;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.Domain;

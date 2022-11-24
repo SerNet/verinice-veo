@@ -20,8 +20,8 @@ package org.veo.core.entity.risk;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Size;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 
 import lombok.AccessLevel;
 import lombok.Data;

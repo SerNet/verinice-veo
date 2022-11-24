@@ -19,7 +19,7 @@ package org.veo.core.usecase.risk;
 
 import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_CREATED;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Domain;

@@ -87,7 +87,7 @@ spring:
           # transaction to check the autocommit status:
           # IMPORTANT: hikari.auto-commit=false must be set as well
           provider_disables_autocommit: true
-      javax:
+      jakarta:
         persistence:
           # This makes JPA stop updating the actual database and write DDL to a file instead.
           schema-generation:

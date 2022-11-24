@@ -19,8 +19,8 @@ package org.veo.core.entity.riskdefinition;
 
 import static org.veo.core.entity.Constraints.DEFAULT_CONSTANT_MAX_LENGTH;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.TranslationMap;

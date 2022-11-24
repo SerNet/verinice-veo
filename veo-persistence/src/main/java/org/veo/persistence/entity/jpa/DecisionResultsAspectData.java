@@ -19,12 +19,12 @@ package org.veo.persistence.entity.jpa;
 
 import java.util.Map;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 
-import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.Type;
 
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
@@ -42,7 +42,6 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@TypeDef(name = "json", typeClass = JsonType.class, defaultForType = Map.class)
 public class DecisionResultsAspectData extends AspectData {
   public DecisionResultsAspectData(
       DomainBase domain, Element owner, Map<DecisionRef, DecisionResult> results) {
@@ -53,6 +52,7 @@ public class DecisionResultsAspectData extends AspectData {
   @Access(value = AccessType.PROPERTY)
   @Column(columnDefinition = "jsonb")
   @Getter
+  @Type(JsonType.class)
   private Map<DecisionRef, DecisionResult> results;
 
   void setResults(Map<DecisionRef, DecisionResult> results) {

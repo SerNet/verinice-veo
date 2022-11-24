@@ -17,22 +17,16 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import java.util.Map;
-
-import javax.persistence.Entity;
-
-import org.hibernate.annotations.TypeDef;
+import jakarta.persistence.Entity;
 
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Nameable;
 
-import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity(name = "domaintemplate")
-@TypeDef(name = "json", typeClass = JsonType.class, defaultForType = Map.class)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true)
 @Data
