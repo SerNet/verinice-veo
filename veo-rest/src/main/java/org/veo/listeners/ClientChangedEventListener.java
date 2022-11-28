@@ -66,8 +66,8 @@ public class ClientChangedEventListener {
       throw new AmqpRejectAndDontRequeueException(illEx);
     }
     switch (event.getType()) {
-      case ACTIVATION -> activateClient(client);
-      case DEACTIVATION -> deactivateClient(client);
+      case ACTIVATION -> log.info("client {} activated", client.getIdAsString());
+      case DEACTIVATION -> log.info("client {} deactivated", client.getIdAsString());
       case DELETION -> deleteClient(client);
       case MODIFICATION -> modifyClient(client);
       default -> throw new NotImplementedException("Unexpected value: " + event.getType());
@@ -94,14 +94,6 @@ public class ClientChangedEventListener {
               client.removeFromDomains(domain);
             });
     repository.delete(client);
-  }
-
-  private void deactivateClient(Client client) {
-    // TODO VEO-VEO-1756
-  }
-
-  private void activateClient(Client client) {
-    // TODO VEO-1760
   }
 
   private void createClient(Key<UUID> clientId) {

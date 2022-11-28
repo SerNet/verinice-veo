@@ -20,6 +20,7 @@ package org.veo.core.repository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
@@ -32,6 +33,7 @@ import org.veo.core.entity.exception.NotFoundException;
  * methods - i.e. queries based on particular fields.
  */
 public interface ClientRepository extends IdentifiableVersionedRepository<Client> {
+  static Predicate<Client> IS_CLIENT_ACTIVE = c -> c.getState() == Client.ClientState.ACTIVATED;
 
   Optional<Client> findByIdFetchCatalogs(Key<UUID> id);
 
@@ -45,5 +47,24 @@ public interface ClientRepository extends IdentifiableVersionedRepository<Client
 
   default Client getById(Key<UUID> clientId) {
     return findById(clientId).orElseThrow(() -> new NotFoundException(clientId, Client.class));
+  }
+
+  default Client getActiveById(Key<UUID> clientId) {
+    Client client =
+        findById(clientId).orElseThrow(() -> new NotFoundException(clientId, Client.class));
+    if (!IS_CLIENT_ACTIVE.test(client)) {
+      throw new IllegalStateException("Client not active. " + client.getState());
+    }
+    return client;
+  }
+
+  default Optional<Client> findActiveById(Key<UUID> clientId) {
+    Optional<Client> oClient = findById(clientId);
+    if (oClient.isPresent()) {
+      if (IS_CLIENT_ACTIVE.test(oClient.get())) {
+        return oClient;
+      }
+    }
+    return Optional.empty();
   }
 }

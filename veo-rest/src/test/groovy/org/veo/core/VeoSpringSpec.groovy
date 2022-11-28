@@ -160,6 +160,7 @@ abstract class VeoSpringSpec extends VeoSpec {
     Client createTestClient() {
         return clientDataRepository.save(newClient {
             id = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
+            state = Client.ClientState.ACTIVATED
         })
     }
 

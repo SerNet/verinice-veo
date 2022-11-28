@@ -48,6 +48,7 @@ import org.veo.core.entity.Versioned;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.UseCaseInteractor;
+import org.veo.rest.common.ClientNotActiveException;
 import org.veo.rest.common.SearchResponse;
 import org.veo.rest.common.marshalling.ReferenceAssemblerImpl;
 import org.veo.rest.security.ApplicationUser;
@@ -91,7 +92,9 @@ public abstract class AbstractEntityController {
 
   protected Client getClient(String clientId) {
     Key<UUID> id = Key.uuidFrom(clientId);
-    return clientRepository.findById(id).orElseThrow();
+    return clientRepository
+        .findActiveById(id)
+        .orElseThrow(() -> new ClientNotActiveException(clientId));
   }
 
   protected Client getAuthenticatedClient(Authentication auth) {

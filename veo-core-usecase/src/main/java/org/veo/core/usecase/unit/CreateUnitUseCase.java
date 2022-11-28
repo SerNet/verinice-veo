@@ -27,6 +27,7 @@ import javax.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.event.ClientEvent.ClientChangeType;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.entity.specification.MaxUnitsExceededException;
 import org.veo.core.entity.transform.EntityFactory;
@@ -121,6 +122,7 @@ public class CreateUnitUseCase
     Client client =
         entityFactory.createClient(input.getClientId(), input.getNameableInput().getName());
     defaultDomainCreator.addDefaultDomains(client);
+    client.updateState(ClientChangeType.ACTIVATION);
     Client savedClient = clientRepository.save(client);
     createDemoUnitForClient(savedClient);
     return savedClient;

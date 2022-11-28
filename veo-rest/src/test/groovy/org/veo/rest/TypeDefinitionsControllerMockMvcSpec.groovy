@@ -25,6 +25,10 @@ import org.veo.core.entity.EntityType
 
 @WithUserDetails("user@domain.example")
 class TypeDefinitionsControllerMockMvcSpec extends VeoMvcSpec{
+    def setup() {
+        createTestClient()
+    }
+
     def "provides types with working links"() {
         when:
         def result = parseJson(get("/types"))

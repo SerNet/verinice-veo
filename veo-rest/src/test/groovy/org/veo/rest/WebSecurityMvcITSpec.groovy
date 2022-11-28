@@ -38,6 +38,10 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         it.replace("/**", "")
     }
 
+    def setup() {
+        createTestClient()
+    }
+
     def "unauthenticated requests fail"() {
         expect:
         mvc.perform(MockMvcRequestBuilders.get("/units"))

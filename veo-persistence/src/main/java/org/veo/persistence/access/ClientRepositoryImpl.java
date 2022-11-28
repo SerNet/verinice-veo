@@ -36,7 +36,6 @@ import org.veo.persistence.entity.jpa.ValidationService;
 public class ClientRepositoryImpl
     extends AbstractIdentifiableVersionedRepository<Client, ClientData>
     implements ClientRepository {
-
   private final ClientDataRepository clientDataRepository;
 
   public ClientRepositoryImpl(ClientDataRepository dataRepository, ValidationService validator) {
@@ -46,13 +45,17 @@ public class ClientRepositoryImpl
 
   @Override
   public Optional<Client> findByIdFetchCatalogs(Key<UUID> id) {
-    return clientDataRepository.findWithCatalogsByDbId(id.uuidValue()).map(Client.class::cast);
+    return clientDataRepository
+        .findWithCatalogsByDbId(id.uuidValue())
+        .filter(IS_CLIENT_ACTIVE)
+        .map(Client.class::cast);
   }
 
   @Override
   public Optional<Client> findByIdFetchCatalogsAndItems(Key<UUID> id) {
     return clientDataRepository
         .findWithCatalogsAndItemsByDbId(id.uuidValue())
+        .filter(IS_CLIENT_ACTIVE)
         .map(Client.class::cast);
   }
 
@@ -60,6 +63,7 @@ public class ClientRepositoryImpl
   public Optional<Client> findByIdFetchCatalogsAndItemsAndTailoringReferences(Key<UUID> id) {
     return clientDataRepository
         .findWithCatalogsAndItemsAndTailoringReferencesByDbId(id.uuidValue())
+        .filter(IS_CLIENT_ACTIVE)
         .map(Client.class::cast);
   }
 

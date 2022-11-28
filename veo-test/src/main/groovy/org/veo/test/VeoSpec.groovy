@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.test
 
+import java.sql.ClientInfoStatus
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
@@ -51,6 +52,8 @@ import org.veo.core.entity.UpdateReference
 import org.veo.core.entity.Versioned
 import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.SubTypeDefinition
+import org.veo.core.entity.event.ClientChangedEvent
+import org.veo.core.entity.event.ClientEvent
 import org.veo.core.entity.inspection.Inspection
 import org.veo.core.entity.inspection.Severity
 import org.veo.core.entity.risk.ProbabilityImpl
@@ -109,6 +112,7 @@ abstract class VeoSpec extends Specification {
     static ClientData newClient(@DelegatesTo(value = Client.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Client") Closure init = null) {
         return factory.createClient(Key.newUuid(), null).tap {
+            it.updateState(ClientEvent.ClientChangeType.ACTIVATION)
             VeoSpec.execute(it, init)
             if (it.name == null) {
                 it.name = it.modelType + it.id

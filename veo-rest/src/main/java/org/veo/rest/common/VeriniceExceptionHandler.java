@@ -119,6 +119,12 @@ public class VeriniceExceptionHandler {
     return handle(exception, HttpStatus.UNPROCESSABLE_ENTITY);
   }
 
+  @ExceptionHandler(ClientNotActiveException.class)
+  public ResponseEntity<ApiResponseBody> handleClientDecativatedExceptions(
+      ClientNotActiveException ex) {
+    return handle(ex, HttpStatus.FORBIDDEN);
+  }
+
   private ResponseEntity<ApiResponseBody> handle(Throwable exception, HttpStatus status) {
     log.error("Error handling request", exception);
     return new ResponseEntity<>(

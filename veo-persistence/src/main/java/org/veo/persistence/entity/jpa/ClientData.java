@@ -67,6 +67,7 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
   @Column(name = "state")
   @Setter(value = AccessLevel.NONE)
   @Enumerated(EnumType.STRING)
+  @ToString.Include
   private ClientState state = ClientState.CREATED;
 
   @Column(name = "domains")
