@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.listeners;
 
+import static org.veo.core.entity.Client.ClientState.DELETED;
+
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -57,6 +59,12 @@ public class VersioningEventListener {
           .getOwningClient()
           .ifPresent(
               client -> {
+                if (client.getState().equals(DELETED)) {
+                  log.debug(
+                      "Ignoring entity revision event for deleted client {}",
+                      client.getIdAsString());
+                  return;
+                }
                 log.debug(
                     "Creating entity revision message for {} event for entity {} modified by user {}",
                     event.getType(),
