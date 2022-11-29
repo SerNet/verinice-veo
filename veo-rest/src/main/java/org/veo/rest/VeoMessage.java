@@ -25,7 +25,12 @@ public enum VeoMessage {
   ABBREVIATION("abbreviation"),
   DESCRIPTION("description"),
   NAME("name"),
-
+  STATUS("status"),
+  SUBTYPE("subType"),
+  RISKDEFINITION("riskDefinition"),
+  IMPLEMENTATIONSTATUS("implementationStatus"),
+  POTENTIALIMPACT("potentialImpact"),
+  POTENTIALPROBABILITY("potentialProbability"),
   ASSET("asset"),
   ASSETS("assets"),
   CONTROL("control"),
