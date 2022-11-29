@@ -126,6 +126,9 @@ class DomainUpdateRestTest extends VeoRestTest {
             first().target.targetUri == "$owner.baseUrl/scopes/$scopeId"
         }
 
+        and: "decision results are present on migrated element"
+        migratedProcess.domains[newDomainId].decisionResults.piaMandatory.decisiveRule == 0
+
         when: "adding a link from a new process to an old scope"
         post("/processes", [
             name: "new process",

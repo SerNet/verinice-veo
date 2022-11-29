@@ -37,6 +37,7 @@ import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
+import org.veo.core.usecase.decision.Decider;
 import org.veo.service.ElementMigrationService;
 
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,7 @@ public class UpdateAllClientDomainsUseCase
   private final RepositoryProvider repositoryProvider;
   private final UnitRepository unitRepository;
   private final ElementMigrationService elementMigrationService;
+  private final Decider decider;
 
   @Override
   public EmptyOutput execute(InputData input) {
@@ -106,6 +108,9 @@ public class UpdateAllClientDomainsUseCase
     // domain. This must happen after all elements have been transferred, because link targets are
     // also validated and must have been transferred beforehand.
     elements.forEach(element -> elementMigrationService.migrate(element, newDomain));
+
+    elements.forEach(
+        element -> element.setDecisionResults(decider.decide(element, newDomain), newDomain));
   }
 
   @Valid

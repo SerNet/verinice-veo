@@ -887,9 +887,10 @@ public class ModuleConfiguration {
       DomainRepository domainRepository,
       RepositoryProvider repositoryProvider,
       UnitRepository unitRepository,
-      ElementMigrationService elementMigrationService) {
+      ElementMigrationService elementMigrationService,
+      Decider decider) {
     return new UpdateAllClientDomainsUseCase(
-        domainRepository, repositoryProvider, unitRepository, elementMigrationService);
+        domainRepository, repositoryProvider, unitRepository, elementMigrationService, decider);
   }
 
   @Bean
