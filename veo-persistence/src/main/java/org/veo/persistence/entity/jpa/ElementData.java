@@ -199,6 +199,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
       getCustomAspects().forEach(ca -> ca.removeFromDomains(domain));
       getLinks().forEach(ca -> ca.removeFromDomains(domain));
       removeAspect(subTypeAspects, domain);
+      removeAspect(decisionResultsAspects, domain);
     }
     return removed;
   }
