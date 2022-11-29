@@ -85,4 +85,13 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
     }
     return added;
   }
+
+  @Override
+  public boolean removeFromDomains(Domain domain) {
+    boolean removed = super.removeFromDomains(domain);
+    if (removed) {
+      getRisks().forEach(r -> r.removeFromDomains(domain));
+    }
+    return removed;
+  }
 }

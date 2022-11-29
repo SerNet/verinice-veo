@@ -144,15 +144,6 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
   }
 
   @Override
-  default boolean removeFromDomains(Domain aDomain) {
-    boolean removed = Element.super.removeFromDomains(aDomain);
-    if (removed) {
-      getRisks().forEach(r -> r.removeFromDomains(aDomain));
-    }
-    return removed;
-  }
-
-  @Override
   default void transferToDomain(Domain oldDomain, Domain newDomain) {
     Element.super.transferToDomain(oldDomain, newDomain);
   }

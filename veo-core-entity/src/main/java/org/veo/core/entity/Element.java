@@ -49,15 +49,7 @@ public interface Element
    *
    * @return true if removed
    */
-  default boolean removeFromDomains(Domain aDomain) {
-    boolean removed = this.getDomains().remove(aDomain);
-    if (removed) {
-      getCustomAspects().forEach(ca -> ca.removeFromDomains(aDomain));
-      getLinks().forEach(ca -> ca.removeFromDomains(aDomain));
-      getSubTypeAspects().removeIf(sa -> sa.getDomain().equals(aDomain));
-    }
-    return removed;
-  }
+  boolean removeFromDomains(Domain domain);
 
   Set<Domain> getDomains();
 
