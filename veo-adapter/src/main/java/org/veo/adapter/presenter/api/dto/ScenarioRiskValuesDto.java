@@ -18,6 +18,9 @@
 package org.veo.adapter.presenter.api.dto;
 
 import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
+
+import org.veo.core.entity.risk.ExplainedPotentialProbability;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -31,4 +34,10 @@ public class ScenarioRiskValuesDto {
               + "level in the risk definition. Enter the ordinal value of a probability level.",
       example = "2")
   int potentialProbability;
+
+  @Size(max = ExplainedPotentialProbability.EXPLANATION_MAX_LENGTH)
+  @Schema(
+      description = "The optional potential probability explanation.",
+      example = "Because of sience.")
+  private String potentialProbabilityExplanation;
 }

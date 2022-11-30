@@ -235,7 +235,10 @@ public class DomainAssociationTransformer {
                         format(
                             "Risk definition %s contains no implementation status with ordinal value %d",
                             riskDefinitionId, riskValuesDto.getPotentialProbability())));
+
     riskValues.setPotentialProbability(probability);
+    riskValues.setPotentialProbabilityExplanation(
+        riskValuesDto.getPotentialProbabilityExplanation());
     return riskValues;
   }
 
@@ -356,6 +359,8 @@ public class DomainAssociationTransformer {
     var riskValuesDto = new ScenarioRiskValuesDto();
     riskValuesDto.setPotentialProbability(
         entry.getValue().getPotentialProbability().getIdRef().intValue());
+    riskValuesDto.setPotentialProbabilityExplanation(
+        entry.getValue().getPotentialProbabilityExplanation());
     return riskValuesDto;
   }
 
