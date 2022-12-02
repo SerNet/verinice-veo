@@ -20,6 +20,7 @@ package org.veo.listeners;
 import java.util.UUID;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -55,7 +56,10 @@ public class ClientChangedEventListener {
       return;
     }
 
-    Client client = repository.getById(clientId);
+    Client client =
+        repository
+            .findById(clientId)
+            .orElseThrow(() -> new AmqpRejectAndDontRequeueException("Client not found"));
     if (!client.getState().isValidChange(event.getType())) {
       log.info("Change type: {} is not valid for state: {}", event.getType(), client.getState());
       return;
