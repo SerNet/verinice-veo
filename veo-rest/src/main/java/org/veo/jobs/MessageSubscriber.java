@@ -133,6 +133,7 @@ public class MessageSubscriber {
         ROUTING_KEY_ELEMENT_CLIENT_CHANGE,
         clientId.uuidValue(),
         clientState.name());
-    publisher.publishEvent(new ClientChangedEvent(clientId, clientState));
+    AsSystemUser.runAsAdmin(
+        () -> publisher.publishEvent(new ClientChangedEvent(clientId, clientState)));
   }
 }
