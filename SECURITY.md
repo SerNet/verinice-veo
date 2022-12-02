@@ -12,7 +12,13 @@ We explicitly allow ethical hackers to test our application, but only under thes
 ### Scope
 
 To be clear, you're only allowed to test veo-web.verinice.com, api.verinice.com, auth.verinice.com, account.verinice.com and nothing else.
-And of course you can use the source code in SerNet/verinice-veo and other repos.
+And of course you can use the open source code in our and other repositories:
+- [github.com/SerNet/verinice-veo-web](https://github.com/SerNet/verinice-veo-web)
+- [github.com/SerNet/verinice-veo](https://github.com/SerNet/verinice-veo)
+- [github.com/SerNet/verinice-veo-accounts](https://github.com/SerNet/verinice-veo-accounts)
+- [github.com/SerNet/verinice-veo-reporting](https://github.com/SerNet/verinice-veo-reporting)
+- [github.com/SerNet/verincie-veo-history](https://github.com/SerNet/verincie-veo-history)
+- [github.com/SerNet/verinice-veo-forms](https://github.com/SerNet/verinice-veo-forms)
 
 ## Reporting a vulnerability
 

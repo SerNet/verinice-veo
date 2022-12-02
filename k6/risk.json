@@ -1,20 +1,20 @@
 {
   "scenario": {
-    "targetUri": "https://api.develop.verinice.com/veo/scenarios/SCENARIO_ID"
+    "targetUri": "https://api.verinice.com/veo/scenarios/SCENARIO_ID"
   },
   "mitigation": {
-    "targetUri": "https://api.develop.verinice.com/veo/controls/MITIGATION_ID"
+    "targetUri": "https://api.verinice.com/veo/controls/MITIGATION_ID"
   },
   "riskOwner": {
-    "targetUri": "https://api.develop.verinice.com/veo/persons/RISK_OWNER"
+    "targetUri": "https://api.verinice.com/veo/persons/RISK_OWNER"
   },
   "process": {
-    "targetUri": "https://api.develop.verinice.com/veo/processes/PROCESS_ID"
+    "targetUri": "https://api.verinice.com/veo/processes/PROCESS_ID"
   },
   "domains": {
     "DOMAIN_ID": {
       "reference": {
-        "targetUri": "https://api.develop.verinice.com/veo/domains/DOMAIN_ID"
+        "targetUri": "https://api.verinice.com/veo/domains/DOMAIN_ID"
       },
       "riskDefinitions": {
         "DSRA": {

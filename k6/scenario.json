@@ -2,7 +2,7 @@
   "name": "Scenario (created for k6 load test)",
   "abbreviation": "DS-G.33",
   "owner": {
-    "targetUri": "https://api.develop.verinice.com/veo/units/UNIT_ID"
+    "targetUri": "https://api.verinice.com/veo/units/UNIT_ID"
   },
   "links": {},
   "customAspects": {

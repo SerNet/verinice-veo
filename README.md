@@ -1,5 +1,5 @@
 
-# verinice veo
+# verinice.veo
 
 verinice.veo is a cloud-native application for managing information security and data protection.
 
@@ -35,7 +35,7 @@ export JAVA_HOME=/path/to/jdk-11
 If you want to build a Docker image, you can then run
 
 ```bash
-docker build --build-arg VEO_VERSON='0.1.0-SNAPSHOT' .
+docker build --build-arg VEO_VERSION='1.2.3-SNAPSHOT'
 ```
 
 ## Configuration
@@ -46,20 +46,20 @@ means the following are equivalent:
 -	System Environment:
 
 	```bash
-	export spring_datasource_url=jdbc:postgresql://127.0.0.1:5432/v2020
-	java -jar ./veo-rest/build/libs/veo-rest-0.1.0-SNAPSHOT.jar
+	export spring_datasource_url=jdbc:postgresql://127.0.0.1:5432/veo
+	java -jar ./veo-rest/build/libs/veo-rest-VERSION.jar
 	```
 
 -	Java system property value:
 
 	```base
-	java -Dspring.datasource.url=jdbc:postgresql://127.0.0.1:5432/v2020 -jar ./veo-rest/build/libs/veo-rest-0.1.0-SNAPSHOT.jar
+	java -Dspring.datasource.url=jdbc:postgresql://127.0.0.1:5432/veo -jar ./veo-rest/build/libs/veo-rest-VERSION.jar
 	```
 
 -	Adding the line to application.properties:
 
 	```base
-	spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/v2020
+	spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/veo
 	```
 
 The system environment variable approach has the advantage, that it works when running the built jar.
@@ -73,9 +73,9 @@ The following sections describe commonly changed properties.
 The database connection can be modified by setting the following properties as needed:
 
 ```bash
-export spring_datasource_url=jdbc:postgresql://127.0.0.1:5432/v2020
-export spring_datasource_username=verinice
-export spring_datasource_password=verinice
+export spring_datasource_url=jdbc:postgresql://127.0.0.1:5432/veo
+export spring_datasource_username=veo
+export spring_datasource_password=veo
 ```
 
 ### Profiles
@@ -86,7 +86,7 @@ Profiles can be activated via the command line on launch:
 ```bash
 ./gradlew -P springProfiles=stats veo-rest:bootRun
 or
-java -Dspring.profiles.active=stats,local -jar veo-rest/build/libs/veo-rest-0.1.0-SNAPSHOT.jar
+java -Dspring.profiles.active=stats,local -jar veo-rest/build/libs/veo-rest-VERSION.jar
 ```
 
 Profiles can also be set using environment variables:
@@ -139,30 +139,18 @@ You can use `application-resttest.yaml` or your own `application-local.yaml` to 
 parameters.
 
 If you need to pass proxy parameters (i.e. if the backend server has to use a proxy to reach the
-Keycloak service to verifx access tokens) you can pass them on the command line as project properties:
+Keycloak service to verify access tokens) you can pass them on the command line as project properties:
 
 ```shell
 ./gradlew veo-rest:restTest \
--Phttp.proxyHost=cache.int.sernet.de -Phttp.proxyPort=3128 \
--Phttps.proxyHost=cache.int.sernet.de -Phttps.proxyPort=3128
+-Phttp.proxyHost=cache.myhost.com -Phttp.proxyPort=3128 \
+-Phttps.proxyHost=cache.myhost.com -Phttps.proxyPort=3128
 ```
 
 The REST API tests will spin up a local server. All tests execute purely as HTTP requests
 against this server. No address space is shared between REST client and server. It is not
 possible to access repositories or any other server-side objects from the tests directly.
 All communication has to occur using HTTP calls like a regular client would use the service.
-
-It is also possible to run these tests against a running remote server. Simply set the `baseUrl` parameter
-in your application properties accordingly, i.e.:
-
-```yaml
-veo:
-resttest:
-	baseUrl: 'https://veo.develop.verinice.com'
-```
-
-Leave the `baseUrl` empty to run the tests against a local bootstrapped server
-(this is the default).
 
 #### Profile 'development'
 This profile is active in the dev environment only.
@@ -263,7 +251,7 @@ or
 
 ```bash
 ./gradlew veo-rest:jar
-java -jar veo-rest/build/libs/veo-rest-0.1.0-SNAPSHOT.jar
+java -jar veo-rest/build/libs/veo-rest-VERSION.jar
 ```
 
 ### Run jMeter GUI
@@ -277,7 +265,7 @@ java -jar veo-rest/build/libs/veo-rest-0.1.0-SNAPSHOT.jar
 
 ### Access Swagger-UI
 
-The Swagger-UI is available after strarting the REST service at:
+[Swagger-UI](https://swagger.io/tools/swagger-ui/) can be accessed online at [api.verinice.com/veo](https://api.verinice.com/veo/swagger-ui/index.html) or after the REST service has been started locally at:
 
 ```
 http://localhost:8070/swagger-ui.html
@@ -287,7 +275,7 @@ CAUTION: this URL will redirect you to `http://localhost:8070/swagger-ui/index.h
 
 ### Access with Postman
 
-You can use [postman](https://www.postman.com/) to access and test the REST API. To set up the necessary authentication, got to the tab 'Authoization -> Get new access token'.
+You can use [postman](https://www.postman.com/) to access and test the REST API. To set up the necessary OAuth 2.0 authentication, got to the tab 'Authorization -> Configure New Token'.
 
 Enter the following details:
 
@@ -295,10 +283,18 @@ Enter the following details:
 
 Use the following values:
 
-* Auth URL: https://\<KEYCLOAK_SERVER\>/auth/realms/\<REALM\>/protocol/openid-connect/auth
-* Access Token URL: https://\<KEYCLOAK_SERVER\>/auth/realms/\<REALM\>/protocol/openid-connect/token
+- Token Name: Can be freely set
+- Callback URL: `https://api.verinice.com`
+- Authorize using browser: _disabled_
+- Auth URL: `https://auth.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/auth`
+- Access Token URL: `https://auth.verinice.com/auth/realms/verinice-veo/protocol/openid-connect/token`
+- Client ID: `veo-prod`
+- Client Secret: _empty_
+- Scope: `veo-user`
+- State: _empty_
+- Client Authentication: `Send client credentials in body`
 
-Click on 'Request Token'. Enter your credentials. Then select the aquired token in the dropdown box 'Available Tokens'.
+Click on 'Get New Access Token'. Enter your credentials. Then select the acquired token in the dropdown box 'Available Tokens'.
 
 You can now send your HTTP request. The access token will time out (usually after 1-5 minutes) nad has to be requested again for another request.
 
@@ -329,9 +325,9 @@ VEO records changes to entities and publishes them to an external message broker
 
 ### Rules for event consumers
 
-VEO uses a local event store to save model changes and corresponding events in the same transaction boundary. This ensures transactional consistency between events and model changes without the use of the XA protocol (two-phase commits). Please note: in rare cases an event may be published multiple times. This can happen if the message broker crashes after sending the event but before confirming the transmission to the publisher. Therefore:
+Veo uses a local event store to save model changes and corresponding events in the same transaction boundary. This ensures transactional consistency between events and model changes without the use of the XA protocol (two-phase commits). Please note: in rare cases an event may be published multiple times. This can happen if the message broker crashes after sending the event but before confirming the transmission to the publisher. Therefore:
 
-- consumers of VEO-events MUST perform message deduplication for all received events. Each event carries a unique ID that may be used for this purpose.
+- consumers of veo-events MUST perform message deduplication for all received events. Each event carries a unique ID that may be used for this purpose.
 - Due to how those events are handled internally, gaps may occur in the IDs, so consumers MUST NOT rely on event IDs being consecutive.
 
 
