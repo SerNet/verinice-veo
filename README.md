@@ -1,7 +1,10 @@
 
 # verinice veo
 
-A prototype of a new verinice version.
+verinice.veo is a cloud-native application for managing information security and data protection.
+
+![Dashbaord of verinice.veo](doc/readme_pics/dashboard.png)
+
 
 ## Build
 
