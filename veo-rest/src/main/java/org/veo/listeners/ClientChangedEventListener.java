@@ -60,12 +60,11 @@ public class ClientChangedEventListener {
         repository
             .findById(clientId)
             .orElseThrow(() -> new AmqpRejectAndDontRequeueException("Client not found"));
-    if (!client.getState().isValidChange(event.getType())) {
-      log.info("Change type: {} is not valid for state: {}", event.getType(), client.getState());
-      return;
+    try {
+      client.updateState(event.getType());
+    } catch (IllegalStateException illEx) {
+      throw new AmqpRejectAndDontRequeueException(illEx);
     }
-
-    client.updateState(event.getType());
     switch (event.getType()) {
       case ACTIVATION -> activateClient(client);
       case DEACTIVATION -> deactivateClient(client);
