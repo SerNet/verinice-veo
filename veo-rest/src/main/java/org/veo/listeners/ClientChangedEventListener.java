@@ -20,10 +20,10 @@ package org.veo.listeners;
 import java.util.UUID;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.event.TransactionalEventListener;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
@@ -45,7 +45,7 @@ public class ClientChangedEventListener {
   private final UnitRepository unitRepository;
   private final DomainRepository domainRepository;
 
-  @TransactionalEventListener()
+  @EventListener()
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void handle(ClientChangedEvent event) {
     log.info("ClientChangedEventListener ----> {}", event);
