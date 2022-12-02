@@ -84,12 +84,17 @@ public class MessageSubscriber {
               }))
   public void handleEventMessage(EventMessage event) throws JsonProcessingException {
     log.info("handle message: {} {}", event.getRoutingKey(), event);
-    var content = objectMapper.readTree(event.getContent());
-    if (content.has("eventType")) {
-      dispatchTypedEvent(content);
-    } else {
-      // TODO: VEO-1770 type event
-      dispatchElementTypeDefinitionUpdate(content);
+    try {
+      var content = objectMapper.readTree(event.getContent());
+      if (content.has("eventType")) {
+        dispatchTypedEvent(content);
+      } else {
+        // TODO: VEO-1770 type event
+        dispatchElementTypeDefinitionUpdate(content);
+      }
+    } catch (Exception e) {
+      log.error("Error while handleEventMessage", e);
+      throw e;
     }
   }
 
