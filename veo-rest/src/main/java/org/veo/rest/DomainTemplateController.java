@@ -52,7 +52,7 @@ import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
-import org.veo.core.usecase.domain.CreateDomainUseCase;
+import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.FindDomainTemplatesUseCase;
 import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase;
@@ -85,7 +85,7 @@ public class DomainTemplateController extends AbstractEntityController {
   public static final String URL_BASE_PATH = "/" + DomainTemplate.PLURAL_TERM;
 
   private final UseCaseInteractor useCaseInteractor;
-  private final CreateDomainUseCase createDomainUseCase;
+  private final CreateDomainFromTemplateUseCase createDomainFromTemplateUseCase;
   private final CreateDomainTemplateUseCase createDomainTemplatesUseCase;
   private final EntityFactory entityFactory;
   private final IdentifiableFactory identifiableFactory;
@@ -125,8 +125,8 @@ public class DomainTemplateController extends AbstractEntityController {
       @PathVariable String id,
       @RequestParam(value = "clientids", required = false) List<String> clientIds) {
     return useCaseInteractor.execute(
-        createDomainUseCase,
-        new CreateDomainUseCase.InputData(id, Optional.ofNullable(clientIds)),
+        createDomainFromTemplateUseCase,
+        new CreateDomainFromTemplateUseCase.InputData(id, Optional.ofNullable(clientIds)),
         out -> ResponseEntity.noContent().build());
   }
 

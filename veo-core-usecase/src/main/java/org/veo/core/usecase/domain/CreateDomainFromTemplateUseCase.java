@@ -41,8 +41,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 @RequiredArgsConstructor
-public class CreateDomainUseCase
-    implements TransactionalUseCase<CreateDomainUseCase.InputData, EmptyOutput> {
+public class CreateDomainFromTemplateUseCase
+    implements TransactionalUseCase<CreateDomainFromTemplateUseCase.InputData, EmptyOutput> {
 
   private final AccountProvider accountProvider;
   private final ClientRepository clientRepository;

@@ -40,7 +40,7 @@ import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
-import org.veo.core.usecase.domain.CreateDomainUseCase;
+import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
 
 import lombok.RequiredArgsConstructor;
@@ -61,7 +61,7 @@ public class SpringSpecDomainTemplateCreator {
   private final EntityFactory entityFactory;
   private final DomainAssociationTransformer domainAssociationTransformer;
   private final CreateDomainTemplateUseCase createDomainTemplateUseCase;
-  private final CreateDomainUseCase createDomainUseCase;
+  private final CreateDomainFromTemplateUseCase createDomainFromTemplateUseCase;
   private final DomainRepository domainRepository;
 
   /**
@@ -75,8 +75,8 @@ public class SpringSpecDomainTemplateCreator {
     }
     AsSystemUser.runAsAdmin(
         () -> {
-          createDomainUseCase.execute(
-              new CreateDomainUseCase.InputData(
+          createDomainFromTemplateUseCase.execute(
+              new CreateDomainFromTemplateUseCase.InputData(
                   templateId, Optional.of(List.of(client.getIdAsString()))));
         });
     return domainRepository.findAllActiveByClient(client.getId()).stream()

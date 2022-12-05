@@ -112,7 +112,7 @@ import org.veo.core.usecase.document.GetDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentsUseCase;
 import org.veo.core.usecase.document.UpdateDocumentUseCase;
 import org.veo.core.usecase.domain.ApplyProfileUseCase;
-import org.veo.core.usecase.domain.CreateDomainUseCase;
+import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
@@ -852,11 +852,12 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public CreateDomainUseCase getCreateDomainUseCase(
+  public CreateDomainFromTemplateUseCase createDomainFromTemplateUseCase(
       AccountProvider accountProvider,
       ClientRepository clientRepository,
       DomainTemplateService domainTemplateService) {
-    return new CreateDomainUseCase(accountProvider, clientRepository, domainTemplateService);
+    return new CreateDomainFromTemplateUseCase(
+        accountProvider, clientRepository, domainTemplateService);
   }
 
   @Bean
