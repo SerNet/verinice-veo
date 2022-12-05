@@ -32,13 +32,32 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private ClientRepository clientRepo
-    @Autowired
-    private UnitRepository unitRepo
-    @Autowired
-    private DocumentRepository documentRepo
 
     def setup() {
         createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
+    }
+
+    def "list all domain templates"() {
+        given:
+        createTestDomainTemplate(TEST_DOMAIN_TEMPLATE_ID)
+
+        when:
+        def templates = parseJson(get("/domaintemplates"))
+
+        then:
+        templates.size() == 2
+        with(templates.find { it.name == "DS-GVO" }) {
+            id instanceof String
+            templateVersion == "1.4.0"
+            createdAt instanceof String
+            _self.endsWith("/domaintemplates/$id")
+        }
+        with(templates.find { it.name == "test-domain" }) {
+            id instanceof String
+            templateVersion == "1.0.0"
+            createdAt instanceof String
+            _self.endsWith("/domaintemplates/$id")
+        }
     }
 
     def "create DSGVO domain for a single client"() {

@@ -38,6 +38,7 @@ import org.veo.adapter.presenter.api.dto.AbstractVersionedSelfReferencingDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
+import org.veo.adapter.presenter.api.dto.DomainTemplateMetadataDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.VersionedDto;
@@ -494,5 +495,15 @@ public final class EntityToDtoTransformer {
   private Map<String, CustomAspectDto> mapCustomAspects(Set<CustomAspect> customAspects) {
     return customAspects.stream()
         .collect(toMap(CustomAspect::getType, this::transformCustomAspect2Dto));
+  }
+
+  public DomainTemplateMetadataDto transformDomainTemplateMetadata2Dto(DomainTemplate source) {
+    var target = new DomainTemplateMetadataDto();
+    target.setId(source.getId().uuidValue());
+    target.setSelfRef(IdRef.from(source, referenceAssembler));
+    target.setName(source.getName());
+    target.setTemplateVersion(source.getTemplateVersion());
+    target.setCreatedAt(source.getCreatedAt().toString());
+    return target;
   }
 }

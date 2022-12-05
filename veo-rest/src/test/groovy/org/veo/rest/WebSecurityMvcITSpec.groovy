@@ -72,8 +72,19 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("content-creator")
-    def "content-creator endpoints are allowed for a content-creator"() {
-        expect: "domain template import to be allowed"
+    def "domain template metadata is allowed for a normal user"() {
+        expect:
+        mvc.perform(MockMvcRequestBuilders
+                .get("/domaintemplates")).andReturn().response.status == 200
+    }
+
+    @WithUserDetails("content-creator")
+    def "domain template endpoints are allowed for a content-creator"() {
+        expect: "domain template metadata to be allowed"
+        mvc.perform(MockMvcRequestBuilders
+                .get("/domaintemplates")).andReturn().response.status == 200
+
+        and: "domain template import to be allowed"
         mvc.perform(MockMvcRequestBuilders
                 .post("/domaintemplates")).andReturn().response.status == 400
         mvc.perform(MockMvcRequestBuilders

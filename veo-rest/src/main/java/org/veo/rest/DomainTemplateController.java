@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.dto.DomainTemplateMetadataDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateDomainTemplateInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
@@ -53,6 +54,7 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
+import org.veo.core.usecase.domaintemplate.FindDomainTemplatesUseCase;
 import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase;
 import org.veo.rest.common.RestApiResponse;
 
@@ -88,7 +90,32 @@ public class DomainTemplateController extends AbstractEntityController {
   private final EntityFactory entityFactory;
   private final IdentifiableFactory identifiableFactory;
   private final DomainAssociationTransformer domainAssociationTransformer;
+  private final FindDomainTemplatesUseCase findDomainTemplatesUseCase;
   private final GetDomainTemplateUseCase getDomainTemplateUseCase;
+
+  @GetMapping
+  @Operation(summary = "Loads all domain templates (metadata only)")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "DomainTemplates loaded",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = FullDomainDto.class)))
+      })
+  public @Valid Future<ResponseEntity<List<DomainTemplateMetadataDto>>> getDomainTemplates() {
+    return useCaseInteractor.execute(
+        findDomainTemplatesUseCase,
+        UseCase.EmptyInput.INSTANCE,
+        out ->
+            ResponseEntity.ok()
+                .body(
+                    out.getGetDomainTemplates().stream()
+                        .map(entityToDtoTransformer::transformDomainTemplateMetadata2Dto)
+                        .toList()));
+  }
 
   @PostMapping(value = "/{id}/createdomains")
   @Operation(summary = "Creates domains from a domain template")

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler.
+ * Copyright (C) 2022  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,31 +15,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.repository;
+package org.veo.core.usecase.domaintemplate;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
-import com.github.zafarkhaja.semver.Version;
+import javax.validation.Valid;
 
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Key;
+import org.veo.core.repository.DomainTemplateRepository;
+import org.veo.core.usecase.TransactionalUseCase;
+import org.veo.core.usecase.UseCase;
 
-/**
- * A repository for <code>DomainTemplate</code> entities.
- *
- * <p>Implements basic CRUD operations from the superinterface and extends them with more specific
- * methods - i.e. queries based on particular fields.
- */
-public interface DomainTemplateRepository extends Repository<DomainTemplate, Key<UUID>> {
-  List<DomainTemplate> findAll();
+import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
-  List<Key<UUID>> getDomainTemplateIds(String name);
+@RequiredArgsConstructor
+public class FindDomainTemplatesUseCase
+    implements TransactionalUseCase<UseCase.EmptyInput, FindDomainTemplatesUseCase.OutputData> {
+  private final DomainTemplateRepository repository;
 
-  Optional<Key<UUID>> getLatestDomainTemplateId(String name);
+  @Override
+  public OutputData execute(EmptyInput input) {
+    return new OutputData(repository.findAll());
+  }
 
-  Optional<Version> findCurrentTemplateVersion(String templateName);
-
-  Optional<DomainTemplate> findByIdWithProfilesAndRiskDefinitions(Key<UUID> id);
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid List<DomainTemplate> getDomainTemplates;
+  }
 }

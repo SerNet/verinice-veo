@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
+import static java.util.stream.StreamSupport.stream;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -43,6 +45,13 @@ public class DomainTemplateRepositoryImpl
       DomainTemplateDataRepository dataRepository, ValidationService validator) {
     super(dataRepository, validator);
     this.dataRepository = dataRepository;
+  }
+
+  @Override
+  public List<DomainTemplate> findAll() {
+    return stream(dataRepository.findAll().spliterator(), false)
+        .map(DomainTemplate.class::cast)
+        .toList();
   }
 
   @Override
