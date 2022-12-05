@@ -261,7 +261,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "can put back document"() {
         given: "a new document"
-        def id = parseJson(post("/documents/", [
+        def id = parseJson(post("/documents", [
             name: "new name",
             owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
         ])).resourceId
@@ -276,7 +276,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "can't post excessively long document description"() {
         when:
-        post("/documents/", [
+        post("/documents", [
             description: "!".repeat(Nameable.DESCRIPTION_MAX_LENGTH+1),
             name: "new name",
             owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]

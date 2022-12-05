@@ -65,7 +65,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "admin endpoints are forbidden for a normal user"() {
         given: "a unit"
-        def unitId = parseJson(post("/units/", [name: "my little unit"])).resourceId
+        def unitId = parseJson(post("/units", [name: "my little unit"])).resourceId
         expect: "unit dump to be forbidden"
         mvc.perform(MockMvcRequestBuilders
                 .get("/admin/unit-dump/$unitId")).andReturn().response.status == 403
@@ -92,7 +92,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         mvc.perform(MockMvcRequestBuilders
                 .post("/domaintemplates")).andReturn().response.status == 400
         mvc.perform(MockMvcRequestBuilders
-                .post("/domaintemplates/")).andReturn().response.status == 400
+                .post("/domaintemplates")).andReturn().response.status == 400
     }
 
     @WithUserDetails("user@domain.example")
@@ -101,7 +101,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         mvc.perform(MockMvcRequestBuilders
                 .post("/domaintemplates")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
-                .post("/domaintemplates/")).andReturn().response.status == 403
+                .post("/domaintemplates")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
                 .get("/domaintemplates/" + TEST_DOMAIN_TEMPLATE_ID + "/export"))
                 .andReturn().response.status == 403
@@ -113,7 +113,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         mvc.perform(MockMvcRequestBuilders
                 .post("/domaintemplates")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
-                .post("/domaintemplates/")).andReturn().response.status == 403
+                .post("/domaintemplates")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
                 .get("/domaintemplates/" + TEST_DOMAIN_TEMPLATE_ID + "/export"))
                 .andReturn().response.status == 403

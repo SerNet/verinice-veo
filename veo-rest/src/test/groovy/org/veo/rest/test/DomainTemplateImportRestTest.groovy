@@ -100,7 +100,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         ], 201, UserType.CONTENT_CREATOR)
 
         and: "posting a previous version number again to cause a conflict"
-        post("/domaintemplates/", [
+        post("/domaintemplates", [
             name: name,
             templateVersion: "2.1.0",
             authority: "me"
@@ -119,7 +119,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         ], 201, UserType.CONTENT_CREATOR)
 
         and: "posting an invalid version to fail"
-        post("/domaintemplates/", [
+        post("/domaintemplates", [
             name: name,
             templateVersion: "1.1",
             authority: "me"

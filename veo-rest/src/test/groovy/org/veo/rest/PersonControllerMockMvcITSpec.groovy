@@ -300,7 +300,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "can put back person"() {
         given: "a new person"
-        def id = parseJson(post("/persons/", [
+        def id = parseJson(post("/persons", [
             name: "new name",
             owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
         ])).resourceId

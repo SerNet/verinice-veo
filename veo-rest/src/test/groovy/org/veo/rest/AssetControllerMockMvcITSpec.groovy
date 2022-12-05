@@ -644,7 +644,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "can put back asset"() {
         given: "a new asset"
-        def id = parseJson(post("/assets/", [
+        def id = parseJson(post("/assets", [
             name: "new name",
             owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
         ])).resourceId
@@ -675,7 +675,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             ]
         ]
 
-        def id = parseJson(post("/assets/", request)).resourceId
+        def id = parseJson(post("/assets", request)).resourceId
         def getResult = get("/assets/$id")
 
         expect: "putting the retrieved asset back to be successful"
@@ -781,7 +781,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "The risks are queried"
         def getResult = parseJson(
-                get("/assets/${asset.id.uuidValue()}/risks/"))
+                get("/assets/${asset.id.uuidValue()}/risks"))
 
         then: "The risks are retreived"
         getResult.size() == 3

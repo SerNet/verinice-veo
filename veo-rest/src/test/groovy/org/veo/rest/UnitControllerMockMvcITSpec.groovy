@@ -441,7 +441,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "can put back unit"() {
         given: "a new unit"
-        def id = parseJson(post("/units/", [
+        def id = parseJson(post("/units", [
             name: "new name"
         ])).resourceId
         def getResult = get("/units/$id")

@@ -260,7 +260,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "can put back incident"() {
         given: "a new incident"
-        def id = parseJson(post("/incidents/", [
+        def id = parseJson(post("/incidents", [
             name: "new name",
             owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
         ])).resourceId
@@ -291,7 +291,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
             ]
         ]
 
-        def id = parseJson(post("/incidents/", request)).resourceId
+        def id = parseJson(post("/incidents", request)).resourceId
         def getResult = get("/incidents/$id")
 
         expect: "putting the retrieved incident back to be successful"

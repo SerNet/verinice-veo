@@ -674,7 +674,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "can put back process"() {
         given: "a new process"
-        def id = parseJson(post("/processes/", [
+        def id = parseJson(post("/processes", [
             name: "new name",
             owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
         ])).resourceId
@@ -753,7 +753,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "the risks are queried"
         def getResult = parseJson(
-                get("/processes/${process.id.uuidValue()}/risks/"))
+                get("/processes/${process.id.uuidValue()}/risks"))
 
         then: "the risks are retreived"
         getResult.size() == 3

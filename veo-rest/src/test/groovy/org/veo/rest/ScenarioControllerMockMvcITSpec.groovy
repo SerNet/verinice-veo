@@ -268,7 +268,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "can put back scenario"() {
         given: "a new scenario"
-        def id = parseJson(post("/scenarios/", [
+        def id = parseJson(post("/scenarios", [
             name: "new name",
             owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
         ])).resourceId

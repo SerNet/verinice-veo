@@ -349,7 +349,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         }).idAsString
 
         when: "trying to assign a new document to the other client's domain"
-        post("/documents/", [
+        post("/documents", [
             name: "bad document",
             owner: [targetUri: "http://localhost/units/$unit.idAsString"],
             domains: [

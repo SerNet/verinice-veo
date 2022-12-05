@@ -382,7 +382,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "can put back control"() {
         given: "a new control"
-        def id = parseJson(post("/controls/", [
+        def id = parseJson(post("/controls", [
             name: "new name",
             owner: [targetUri: "http://localhost/units/"+unit.id.uuidValue()]
         ])).resourceId
