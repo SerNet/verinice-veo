@@ -33,7 +33,9 @@ public interface DomainTemplateDataRepository
       nativeQuery = true)
   Optional<String> findLatestTemplateIdByName(String name);
 
-  @Query(value = "select id from domaintemplate where name = ?1 order by templateVersion")
+  @Query(
+      value =
+          "select id from domaintemplate d where type(d) = #{#entityName} and name = ?1 order by templateVersion")
   List<String> findTemplateIdsByName(String name);
 
   @Query(
@@ -46,7 +48,7 @@ public interface DomainTemplateDataRepository
         select dt from #{#entityName} dt
           join fetch dt.profileSet
           join fetch dt.riskDefinitionSet
-          where dt.dbId = ?1
+          where type(dt) = #{#entityName} and dt.dbId = ?1
       """)
   Optional<DomainTemplateData> findByIdWithProfilesAndRiskDefinitions(String id);
 }

@@ -25,12 +25,16 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.profile.ProfileDefinition
 import org.veo.core.entity.transform.EntityFactory
+import org.veo.core.repository.ClientRepository
+import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.test.VeoSpec
 
 class DomainTemplateJpaSpec extends AbstractJpaSpec {
+    @Autowired
+    ClientDataRepository clientRepository
     @Autowired
     DomainTemplateDataRepository repository
     @Autowired
@@ -276,5 +280,21 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
 
         then:
         currentVersion.get() == "10.1.1"
+    }
+
+    def "queries do not fetch domains"() {
+        given: "a domain"
+        def client = clientRepository.save(newClient())
+        def domainId = domainRepository.save(newDomain(client) {
+            name = "main"
+            templateVersion = "0.1.0"
+        }).idAsString
+        clientRepository.save(client)
+
+        expect: "template queries to ignore the domain"
+        repository.findCurrentTemplateVersion("main").empty
+        repository.findLatestTemplateIdByName("main").empty
+        repository.findTemplateIdsByName("main").empty
+        repository.findByIdWithProfilesAndRiskDefinitions(domainId).empty
     }
 }
