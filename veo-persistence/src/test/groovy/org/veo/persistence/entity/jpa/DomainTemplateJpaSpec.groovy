@@ -277,23 +277,4 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         then:
         currentVersion.get() == "10.1.1"
     }
-
-    // TODO VEO-1072 becomes obsolete once we've abolished non-sem-vers from the DB
-    def 'sem-ver beats pseudo-sem-ver'() {
-        given: "a valid sem-ver and a two-number version"
-        repository.save(newDomainTemplate {
-            name = "ISO"
-            templateVersion = "1.0.0"
-        })
-        repository.save(newDomainTemplate {
-            name = "ISO"
-            templateVersion = "1.1.0"
-        })
-
-        when:
-        def currentVersion = repository.findCurrentTemplateVersion("ISO")
-
-        then:
-        currentVersion.get() == "1.1.0"
-    }
 }
