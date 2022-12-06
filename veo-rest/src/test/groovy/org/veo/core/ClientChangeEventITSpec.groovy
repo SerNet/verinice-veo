@@ -33,6 +33,7 @@ import org.testcontainers.containers.wait.strategy.Wait
 import org.veo.core.entity.Client
 import org.veo.core.entity.Client.ClientState
 import org.veo.core.entity.Domain
+import org.veo.core.entity.Key
 import org.veo.core.events.MessageCreatorImpl
 import org.veo.message.EventDispatcher
 import org.veo.message.EventMessage
@@ -119,6 +120,56 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         new PollingConditions().within(5) {
             !unitRepository.exists(unit.id)
             !repository.exists(client.id)
+        }
+    }
+
+    def "sync the maxUnits attribute"() {
+        given: "a client and two units"
+        Client client = repository.save(newClient {
+            name = "Demo Client"
+            state = ACTIVATED
+        })
+
+        def cId = client.getIdAsString()
+        unitRepository.save(newUnit(client))
+        unitRepository.save(newUnit(client))
+        when:"we send the event"
+        eventDispatcher.send(new EventMessage(routingKey,"""{
+            "eventType": "$messageType",
+            "clientId": "$cId",
+            "type": "MODIFICATION",
+            "maxUnits": 5
+        }""",1,Instant.now()))
+
+        then: "the event is sent"
+        new PollingConditions().within(5) {
+            repository.findById(Key.uuidFrom(cId)).get().maxUnits == 5
+        }
+
+        when:"we send the next change"
+        eventDispatcher.send(new EventMessage(routingKey,"""{
+            "eventType": "$messageType",
+            "clientId": "$cId",
+            "type": "MODIFICATION",
+            "maxUnits": 15
+        }""",1,Instant.now()))
+
+        then: "the event is sent and the maxUnits is updated"
+        new PollingConditions().within(5) {
+            repository.findById(Key.uuidFrom(cId)).get().maxUnits == 15
+        }
+
+        when:"we send the next change -> less units than exiting"
+        eventDispatcher.send(new EventMessage(routingKey,"""{
+            "eventType": "$messageType",
+            "clientId": "$cId",
+            "type": "MODIFICATION",
+            "maxUnits": 1
+        }""",1,Instant.now()))
+
+        then: "the event is sent and the maxUnits is updated"
+        new PollingConditions().within(5) {
+            repository.findById(Key.uuidFrom(cId)).get().maxUnits == 1
         }
     }
 

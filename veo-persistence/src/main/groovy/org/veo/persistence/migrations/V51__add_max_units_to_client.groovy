@@ -15,20 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.event;
+package org.veo.persistence.migrations
 
-import java.util.UUID;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-import org.veo.core.entity.Key;
+import groovy.sql.Sql
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-@Data
-@AllArgsConstructor
-public class ClientChangedEvent implements ClientEvent {
-
-  private final Key<UUID> clientId;
-  private final ClientChangeType type;
-  private final Integer maxUnits;
+class V51__add_max_units_to_client extends BaseJavaMigration {
+    @Override
+    void migrate(Context context) throws Exception {
+        new Sql(context.connection).execute("""
+        alter table client add column max_units int4 default 2;
+""")
+    }
 }

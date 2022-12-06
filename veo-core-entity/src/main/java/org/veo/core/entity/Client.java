@@ -71,6 +71,10 @@ public interface Client extends Identifiable, Versioned {
 
   ClientState getState();
 
+  int getMaxUnits();
+
+  void setMaxUnits(int newMaxunits);
+
   boolean updateState(ClientChangeType changeType);
 
   enum ClientState {

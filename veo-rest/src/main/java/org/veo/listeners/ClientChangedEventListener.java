@@ -69,13 +69,17 @@ public class ClientChangedEventListener {
       case ACTIVATION -> log.info("client {} activated", client.getIdAsString());
       case DEACTIVATION -> log.info("client {} deactivated", client.getIdAsString());
       case DELETION -> deleteClient(client);
-      case MODIFICATION -> modifyClient(client);
+      case MODIFICATION -> modifyClient(client, event);
       default -> throw new NotImplementedException("Unexpected value: " + event.getType());
     }
   }
 
-  private void modifyClient(Client client) {
-    // TODO VEO-1760
+  private void modifyClient(Client client, ClientChangedEvent event) {
+    Integer maxUnits = event.getMaxUnits();
+    if (maxUnits != null) {
+      log.info("Modify max units for client {} {}", client, maxUnits);
+      client.setMaxUnits(maxUnits);
+    }
   }
 
   private void deleteClient(Client client) {

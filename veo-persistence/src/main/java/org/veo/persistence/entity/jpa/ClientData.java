@@ -70,6 +70,9 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
   @ToString.Include
   private ClientState state = ClientState.CREATED;
 
+  @Column(name = "max_units")
+  private int maxUnits;
+
   @Column(name = "domains")
   @OneToMany(
       mappedBy = "owner",

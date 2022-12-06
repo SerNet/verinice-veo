@@ -128,12 +128,13 @@ public class MessageSubscriber {
   private void dispatchClientStateEvent(JsonNode content) {
     var clientId = Key.uuidFrom(content.get("clientId").asText());
     var clientState = ClientChangeType.valueOf(content.get("type").asText());
+    var maxUnits = content.has("maxUnits") ? content.get("maxUnits").asInt() : null;
     log.info(
         "Received {} message for clientstate {} message type: {}",
         ROUTING_KEY_ELEMENT_CLIENT_CHANGE,
         clientId.uuidValue(),
         clientState.name());
     AsSystemUser.runAsAdmin(
-        () -> publisher.publishEvent(new ClientChangedEvent(clientId, clientState)));
+        () -> publisher.publishEvent(new ClientChangedEvent(clientId, clientState, maxUnits)));
   }
 }
