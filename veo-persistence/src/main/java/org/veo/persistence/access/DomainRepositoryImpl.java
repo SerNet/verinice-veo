@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.DomainRepository;
@@ -96,5 +97,10 @@ public class DomainRepositoryImpl
     return dataRepository
         .findByIdWithProfilesAndRiskDefinitions(id.uuidValue(), clientId.uuidValue())
         .map(Domain.class::cast);
+  }
+
+  @Override
+  public boolean nameExistsInClient(String name, Client client) {
+    return dataRepository.nameExistsInClient(name, client);
   }
 }

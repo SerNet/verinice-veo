@@ -65,7 +65,9 @@ import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.UnitDumpDto;
+import org.veo.adapter.presenter.api.dto.create.CreateDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
+import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.UnitDumpMapper;
 import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.adapter.service.domaintemplate.dto.CreateDomainTemplateFromDomainParameterDto;
@@ -80,6 +82,7 @@ import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.statistics.ElementStatusCounts;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.domain.ApplyProfileUseCase;
+import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
@@ -89,6 +92,7 @@ import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.persistence.entity.jpa.ProfileReferenceFactoryImpl;
 import org.veo.rest.annotations.UnitUuidParam;
+import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.security.ApplicationUser;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -124,6 +128,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   private final GetDomainsUseCase getDomainsUseCase;
   private final ExportDomainUseCase exportDomainUseCase;
   private final UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase;
+  private final CreateDomainUseCase createDomainUseCase;
   private final CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase;
   private final GetElementStatusCountUseCase getElementStatusCountUseCase;
 
@@ -218,6 +223,31 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             ExportDomainUseCase.OutputData::getExportDomain);
     return domainFuture.thenApply(
         domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
+  }
+
+  @PostMapping
+  @Operation(summary = "Creates blank new domain")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "201", description = "Domain created"),
+        @ApiResponse(responseCode = "409", description = "Templates with name already exist")
+      })
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomain(
+      Authentication auth,
+      @Pattern(
+              regexp = Patterns.UUID,
+              message = "ID must be a valid UUID string following RFC 4122.")
+          @Valid
+          @RequestBody
+          CreateDomainDto domainDto) {
+    return useCaseInteractor.execute(
+        createDomainUseCase,
+        new CreateDomainUseCase.InputData(
+            getAuthenticatedClient(auth), domainDto.getName(), domainDto.getAuthority()),
+        output -> {
+          ApiResponseBody body = CreateOutputMapper.map(output.getDomain());
+          return RestApiResponse.created(URL_BASE_PATH, body);
+        });
   }
 
   @PostMapping(value = "/{id}/createdomaintemplate")

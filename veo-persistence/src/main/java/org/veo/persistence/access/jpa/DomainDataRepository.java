@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.springframework.data.jpa.repository.Query;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.persistence.entity.jpa.DomainData;
 
@@ -68,4 +69,7 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
           where d.owner.id = ?1
       """)
   Set<Domain> findAllByClientWithEntityTypeDefinitionsAndRiskDefinitions(String clientId);
+
+  @Query("select count(d.id) > 0 from domain d where d.name = ?1 and d.owner = ?2")
+  boolean nameExistsInClient(String name, Client client);
 }

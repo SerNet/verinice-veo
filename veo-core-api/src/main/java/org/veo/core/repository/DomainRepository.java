@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
@@ -51,4 +52,6 @@ public interface DomainRepository extends IdentifiableVersionedRepository<Domain
   default Domain getById(Key<UUID> id) {
     return findById(id).orElseThrow(() -> new NotFoundException(id, Domain.class));
   }
+
+  boolean nameExistsInClient(String name, Client client);
 }
