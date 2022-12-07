@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa.transformer;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.function.Function;
@@ -33,6 +35,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementOwner;
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.ItemUpdateType;
 import org.veo.core.entity.Key;
@@ -154,7 +157,10 @@ public class EntityDataFactory implements EntityFactory {
     domain.setName(name);
     domain.setAuthority(authority);
     domain.setTemplateVersion(templateVersion);
-
+    domain.setElementTypeDefinitions(
+        EntityType.ELEMENT_TYPES.stream()
+            .map(t -> createElementTypeDefinition(t.getSingularTerm(), domain))
+            .collect(toSet()));
     return domain;
   }
 
