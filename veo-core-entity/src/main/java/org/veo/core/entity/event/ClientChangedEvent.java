@@ -19,6 +19,8 @@ package org.veo.core.entity.event;
 
 import java.util.UUID;
 
+import javax.validation.constraints.NotNull;
+
 import org.veo.core.entity.Key;
 
 import lombok.AllArgsConstructor;
@@ -28,7 +30,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class ClientChangedEvent implements ClientEvent {
 
-  private final Key<UUID> clientId;
-  private final ClientChangeType type;
+  @NotNull private final Key<UUID> clientId;
+  @NotNull private final ClientChangeType type;
   private final Integer maxUnits;
+  private final String name;
 }

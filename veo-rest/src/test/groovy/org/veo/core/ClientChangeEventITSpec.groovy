@@ -95,9 +95,36 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
 
     def setup() {
         routingKey = routingKeyPrefix + MessageCreatorImpl.ROUTING_KEY_ELEMENT_CLIENT_CHANGE
+        createTestDomainTemplate(DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
+        createTestDomainTemplate(TEST_DOMAIN_TEMPLATE_ID)
     }
 
-    def"publish the deletion event"() {
+    def "publish create client event"() {
+        when: "a create client event is send"
+        def cId = Key.newUuid()
+        def clientName = "new client"
+
+        eventDispatcher.send(new EventMessage(routingKey,"""{
+            "eventType": "$messageType",
+            "clientId": "${cId.uuidValue()}",
+            "type": "CREATION",
+            "name": "${clientName}"
+        }""",1,Instant.now()))
+
+        then: "the client is created, activated, the demoUnit and domains exist"
+        new PollingConditions().within(5) {
+            repository.exists(cId)
+            with(repository.findById(cId).get()) {
+                domains.size() == 2
+                state == ACTIVATED
+                name == clientName
+            }
+            unitDataRepository.findByClientId(cId.uuidValue()).size() == 1
+        }
+    }
+
+    def "publish the deletion event"() {
         given: "a client and an unit"
         Client client = repository.save(newClient {
             name = "Demo Client"

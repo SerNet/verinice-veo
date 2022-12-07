@@ -117,6 +117,7 @@ public class CreateUnitUseCase
   }
 
   private Client createNewClient(InputData input) {
+    // TODO: VEO-1817 remove client creation code
     // By default, the client is created with the unit's name, description,
     // and abbreviation:
     Client client =
@@ -129,6 +130,7 @@ public class CreateUnitUseCase
   }
 
   private void createDemoUnitForClient(Client savedClient) {
+    // TODO: VEO-1817 remove demo unit creation code
     createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(savedClient.getId()));
   }
 

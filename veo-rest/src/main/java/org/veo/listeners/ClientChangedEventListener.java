@@ -29,10 +29,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.event.ClientChangedEvent;
+import org.veo.core.entity.event.ClientEvent.ClientChangeType;
+import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.UnitRepository;
+import org.veo.core.usecase.unit.CreateDemoUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
+import org.veo.service.DefaultDomainCreator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +49,9 @@ public class ClientChangedEventListener {
   private final DeleteUnitUseCase deleteUnitUseCase;
   private final UnitRepository unitRepository;
   private final DomainRepository domainRepository;
+  private final EntityFactory entityFactory;
+  private final DefaultDomainCreator defaultDomainCreator;
+  private final CreateDemoUnitUseCase createDemoUnitUseCase;
 
   @EventListener()
   @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -52,7 +59,7 @@ public class ClientChangedEventListener {
     log.info("ClientChangedEventListener ----> {}", event);
     Key<UUID> clientId = event.getClientId();
     if (event.getType() == ClientChangedEvent.ClientChangeType.CREATION) {
-      createClient(clientId);
+      createClient(event);
       return;
     }
 
@@ -72,6 +79,22 @@ public class ClientChangedEventListener {
       case MODIFICATION -> modifyClient(client, event);
       default -> throw new NotImplementedException("Unexpected value: " + event.getType());
     }
+  }
+
+  private void createClient(ClientChangedEvent event) {
+    log.info("create new client {}", event);
+    if (repository.exists(event.getClientId())) {
+      throw new AmqpRejectAndDontRequeueException("Client allready exist!");
+    }
+
+    Client client = entityFactory.createClient(event.getClientId(), event.getName());
+    if (event.getMaxUnits() != null) {
+      client.setMaxUnits(event.getMaxUnits());
+    }
+    client.updateState(ClientChangeType.ACTIVATION);
+    defaultDomainCreator.addDefaultDomains(client);
+    repository.save(client);
+    createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(client.getId()));
   }
 
   private void modifyClient(Client client, ClientChangedEvent event) {
@@ -98,15 +121,5 @@ public class ClientChangedEventListener {
               client.removeFromDomains(domain);
             });
     repository.delete(client);
-  }
-
-  private void createClient(Key<UUID> clientId) {
-    // TODO VEO-1760
-    //  create client here: see
-    // org.veo.core.usecase.unit.CreateUnitUseCase.createNewClient(InputData)
-    if (repository.exists(clientId)) {
-      log.warn("client already exist: {}", clientId);
-      return;
-    }
   }
 }
