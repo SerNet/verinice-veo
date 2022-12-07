@@ -40,34 +40,30 @@ class JsonSchemaProviderITSpec extends VeoSpringSpec {
         def client = createTestClient()
         def domain1 = domainDataRepository.save(newDomain(client) {
             active = false
-            elementTypeDefinitions = [
-                newElementTypeDefinition("asset", it) {
-                    customAspects = [
-                        inactiveFoo: new CustomAspectDefinition().tap{
-                            attributeSchemas = [
-                                inactiveFooAttr: [
-                                    enum: ["one", "two", "three"]
-                                ]
+            applyElementTypeDefinition(newElementTypeDefinition("asset", it) {
+                customAspects = [
+                    inactiveFoo: new CustomAspectDefinition().tap{
+                        attributeSchemas = [
+                            inactiveFooAttr: [
+                                enum: ["one", "two", "three"]
                             ]
-                        }
-                    ]
-                }
-            ]
+                        ]
+                    }
+                ]
+            })
         })
         def domain2 = domainDataRepository.save(newDomain(client) {
-            elementTypeDefinitions = [
-                newElementTypeDefinition("asset", it) {
-                    customAspects = [
-                        foo: new CustomAspectDefinition().tap{
-                            attributeSchemas = [
-                                fooAttr: [
-                                    enum: ["one", "two", "three"]
-                                ]
+            applyElementTypeDefinition(newElementTypeDefinition("asset", it) {
+                customAspects = [
+                    foo: new CustomAspectDefinition().tap{
+                        attributeSchemas = [
+                            fooAttr: [
+                                enum: ["one", "two", "three"]
                             ]
-                        }
-                    ]
-                }
-            ]
+                        ]
+                    }
+                ]
+            })
         })
         when:
         def schema = jsonSchemaProvider.loadSchema('asset')

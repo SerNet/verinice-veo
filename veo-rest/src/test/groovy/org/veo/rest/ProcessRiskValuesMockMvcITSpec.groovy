@@ -27,7 +27,6 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
-import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException
 import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -71,18 +70,16 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
                 "r1d1": createRiskDefinition("r1d1"),
                 "r2d2": createRiskDefinition("r2d2")
             ]
-            elementTypeDefinitions = [
-                newElementTypeDefinition("process", it) {
-                    subTypes = [
-                        DifficultProcess: newSubTypeDefinition()
-                    ]
-                },
-                newElementTypeDefinition("scenario", it) {
-                    subTypes = [
-                        BestCase: newSubTypeDefinition()
-                    ]
-                },
-            ]
+            applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+                subTypes = [
+                    DifficultProcess: newSubTypeDefinition()
+                ]
+            })
+            applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+                subTypes = [
+                    BestCase: newSubTypeDefinition()
+                ]
+            })
         }
         domainId = domain.idAsString
 
@@ -90,18 +87,16 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             riskDefinitions = [
                 "r1d1": createRiskDefinition("r1d1"),
             ]
-            elementTypeDefinitions = [
-                newElementTypeDefinition("process", it) {
-                    subTypes = [
-                        RiskyProcess: newSubTypeDefinition()
-                    ]
-                },
-                newElementTypeDefinition("scenario", it) {
-                    subTypes = [
-                        HypotheticalScenario: newSubTypeDefinition()
-                    ]
-                },
-            ]
+            applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+                subTypes = [
+                    RiskyProcess: newSubTypeDefinition()
+                ]
+            })
+            applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+                subTypes = [
+                    HypotheticalScenario: newSubTypeDefinition()
+                ]
+            })
         }).idAsString
 
         unit = newUnit(client)

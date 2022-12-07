@@ -52,35 +52,33 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             def client = createTestClient()
             domainId = newDomain(client) {
-                it.elementTypeDefinitions = [
-                    newElementTypeDefinition(Person.SINGULAR_TERM, it) {
-                        subTypes["Normal"] = new SubTypeDefinition().tap{
-                            it.statuses = ["NEW"]
-                        }
-                        subTypes["Nice"] = new SubTypeDefinition().tap{
-                            it.statuses = ["NEW"]
-                        }
-                    },
-                    newElementTypeDefinition(Scope.SINGULAR_TERM, it) {
-                        subTypes["Normal"] = new SubTypeDefinition().tap{
-                            it.statuses = ["NEW"]
-                        }
-                        links["linkToWhateverPersonA"] = new LinkDefinition().tap{
-                            targetType = Person.SINGULAR_TERM
-                        }
-                        links["linkToWhateverPersonB"] = new LinkDefinition().tap{
-                            targetType = Person.SINGULAR_TERM
-                        }
-                        links["linkToNormalPerson"] = new LinkDefinition().tap{
-                            targetType = Person.SINGULAR_TERM
-                            targetSubType = "Normal"
-                        }
-                        links["linkToNicePerson"] = new LinkDefinition().tap{
-                            targetType = Person.SINGULAR_TERM
-                            targetSubType = "Nice"
-                        }
-                    },
-                ]
+                applyElementTypeDefinition(newElementTypeDefinition(Person.SINGULAR_TERM, it) {
+                    subTypes["Normal"] = new SubTypeDefinition().tap{
+                        it.statuses = ["NEW"]
+                    }
+                    subTypes["Nice"] = new SubTypeDefinition().tap{
+                        it.statuses = ["NEW"]
+                    }
+                })
+                applyElementTypeDefinition(newElementTypeDefinition(Scope.SINGULAR_TERM, it) {
+                    subTypes["Normal"] = new SubTypeDefinition().tap{
+                        it.statuses = ["NEW"]
+                    }
+                    links["linkToWhateverPersonA"] = new LinkDefinition().tap{
+                        targetType = Person.SINGULAR_TERM
+                    }
+                    links["linkToWhateverPersonB"] = new LinkDefinition().tap{
+                        targetType = Person.SINGULAR_TERM
+                    }
+                    links["linkToNormalPerson"] = new LinkDefinition().tap{
+                        targetType = Person.SINGULAR_TERM
+                        targetSubType = "Normal"
+                    }
+                    links["linkToNicePerson"] = new LinkDefinition().tap{
+                        targetType = Person.SINGULAR_TERM
+                        targetSubType = "Nice"
+                    }
+                })
             }.idAsString
             unitId = unitRepository.save(newUnit(client)).id.uuidValue()
         }

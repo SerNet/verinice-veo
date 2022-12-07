@@ -22,7 +22,6 @@ import static org.veo.core.entity.EntityType.DOCUMENT
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Domain
-import org.veo.core.entity.EntityType
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.LinkDefinition
@@ -45,32 +44,30 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
     def setup() {
         def client = createTestClient()
         domain = domainRepository.save(newDomain(client) {domain ->
-            elementTypeDefinitions = [
-                newElementTypeDefinition("document", domain) {
-                    customAspects = [
-                        file: new CustomAspectDefinition().tap{
-                            attributeSchemas = [
-                                extension: [
-                                    enum: ["pdf", "md", "txt"]
-                                ]
+            applyElementTypeDefinition(newElementTypeDefinition("document", domain) {
+                customAspects = [
+                    file: new CustomAspectDefinition().tap {
+                        attributeSchemas = [
+                            extension: [
+                                enum: ["pdf", "md", "txt"]
                             ]
-                        }
-                    ]
-                    links = [
-                        author: new LinkDefinition().tap{
-                            attributeSchemas = [
-                                copyrightYear: [
-                                    type: "number"
-                                ],
-                                placeOfAuthoring: [
-                                    type: "string"
-                                ],
-                            ]
-                            targetType = "person"
-                        }
-                    ]
-                }
-            ]
+                        ]
+                    }
+                ]
+                links = [
+                    author: new LinkDefinition().tap {
+                        attributeSchemas = [
+                            copyrightYear: [
+                                type: "number"
+                            ],
+                            placeOfAuthoring: [
+                                type: "string"
+                            ],
+                        ]
+                        targetType = "person"
+                    }
+                ]
+            })
         })
     }
 

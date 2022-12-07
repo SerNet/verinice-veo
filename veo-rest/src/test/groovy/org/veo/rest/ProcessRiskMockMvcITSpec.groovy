@@ -19,17 +19,13 @@ package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.test.web.servlet.ResultActions
 import org.springframework.transaction.support.TransactionTemplate
 
 import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-
-import spock.lang.Issue
 
 /**
  * Test risk related functionality on controls.
@@ -52,13 +48,11 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             def client = createTestClient()
             def domain = newDomain(client) {
-                elementTypeDefinitions = [
-                    newElementTypeDefinition("process", it) {
-                        subTypes = [
-                            DifficultProcess: newSubTypeDefinition()
-                        ]
-                    }
-                ]
+                applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+                    subTypes = [
+                        DifficultProcess: newSubTypeDefinition()
+                    ]
+                })
                 riskDefinitions = [
                     "myFirstRiskDefinition": createRiskDefinition("myFirstRiskDefinition"),
                     "mySecondRiskDefinition": createRiskDefinition("mySecondRiskDefinition"),

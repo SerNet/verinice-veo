@@ -23,7 +23,6 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
-import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
@@ -43,23 +42,21 @@ class DesignatorMockMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             def client = createTestClient()
             newDomain(client) {
-                elementTypeDefinitions = [
-                    newElementTypeDefinition("asset", it) {
-                        subTypes = [
-                            Server: newSubTypeDefinition()
-                        ]
-                    },
-                    newElementTypeDefinition("process", it) {
-                        subTypes = [
-                            Development: newSubTypeDefinition()
-                        ]
-                    },
-                    newElementTypeDefinition("scenario", it) {
-                        subTypes = [
-                            WorstCase: newSubTypeDefinition()
-                        ]
-                    },
-                ]
+                applyElementTypeDefinition(newElementTypeDefinition("asset", it) {
+                    subTypes = [
+                        Server: newSubTypeDefinition()
+                    ]
+                })
+                applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+                    subTypes = [
+                        Development: newSubTypeDefinition()
+                    ]
+                })
+                applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+                    subTypes = [
+                        WorstCase: newSubTypeDefinition()
+                    ]
+                })
             }
             unit = newUnit(client) {
                 name = "Test unit"

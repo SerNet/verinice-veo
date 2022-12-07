@@ -23,8 +23,6 @@ import org.springframework.security.test.context.support.WithUserDetails
 import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.definitions.SubTypeDefinition
-import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -52,13 +50,11 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
                     "mySecondRiskDefinition": createRiskDefinition("mySecondRiskDefinition"),
                     "myThirdRiskDefinition": createRiskDefinition("myThirdRiskDefinition")
                 ]
-                elementTypeDefinitions = [
-                    newElementTypeDefinition("scenario", it) {
-                        subTypes = [
-                            RiskyScenario: newSubTypeDefinition()
-                        ]
-                    }
-                ]
+                applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+                    subTypes = [
+                        RiskyScenario: newSubTypeDefinition()
+                    ]
+                })
             }
             domainId = domain.idAsString
             unitId = unitRepository.save(newUnit(client)).idAsString

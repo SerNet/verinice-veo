@@ -64,13 +64,11 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
             domain = domainRepository.save(newDomain(client) {
                 abbreviation = "D"
                 name = "Domain"
-                elementTypeDefinitions = [
-                    newElementTypeDefinition("incident", it) {
-                        subTypes = [
-                            NormalIncident: newSubTypeDefinition()
-                        ]
-                    }
-                ]
+                applyElementTypeDefinition(newElementTypeDefinition("incident", it) {
+                    subTypes = [
+                        NormalIncident: newSubTypeDefinition()
+                    ]
+                })
             })
 
             domain1 = domainRepository.save(newDomain(client) {

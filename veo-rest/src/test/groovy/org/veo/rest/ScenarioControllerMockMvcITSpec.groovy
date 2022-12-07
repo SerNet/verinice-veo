@@ -65,13 +65,11 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
             domain = domainRepository.save(newDomain(client) {
                 abbreviation = "D"
                 name = "Domain"
-                elementTypeDefinitions = [
-                    newElementTypeDefinition("scenario", it) {
-                        subTypes = [
-                            WorstCase: newSubTypeDefinition()
-                        ]
-                    }
-                ]
+                applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+                    subTypes = [
+                        WorstCase: newSubTypeDefinition()
+                    ]
+                })
             })
 
             domain1 = domainRepository.save(newDomain(client) {

@@ -160,11 +160,6 @@ abstract class VeoSpec extends Specification {
             VeoSpec.name(it)
             VeoSpec.version(it)
             owner.addToDomains(it)
-            EntityType
-                    .ELEMENT_TYPES
-                    .collect { it.singularTerm }
-                    .findAll { type -> it.findElementTypeDefinition(type).empty}
-                    .each { type -> it.elementTypeDefinitions.add(newElementTypeDefinition(type, it)) }
         }
     }
 

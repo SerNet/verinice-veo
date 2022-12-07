@@ -72,18 +72,16 @@ class ProcessRiskRowCountMockMvcITSpec extends VeoMvcSpec {
                 "r1d1": createRiskDefinition("r1d1"),
                 "r2d2": createRiskDefinition("r2d2")
             ]
-            elementTypeDefinitions = [
-                newElementTypeDefinition("process", it) {
-                    subTypes = [
-                        DifficultProcess: newSubTypeDefinition()
-                    ]
-                },
-                newElementTypeDefinition("scenario", it) {
-                    subTypes = [
-                        BestCase: newSubTypeDefinition()
-                    ]
-                },
-            ]
+            applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+                subTypes = [
+                    DifficultProcess: newSubTypeDefinition()
+                ]
+            })
+            applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+                subTypes = [
+                    BestCase: newSubTypeDefinition()
+                ]
+            })
         }
         domainId = domain.idAsString
 
@@ -91,18 +89,16 @@ class ProcessRiskRowCountMockMvcITSpec extends VeoMvcSpec {
             riskDefinitions = [
                 "r1d1": createRiskDefinition("r1d1"),
             ]
-            elementTypeDefinitions = [
-                newElementTypeDefinition("process", it) {
-                    subTypes = [
-                        RiskyProcess: newSubTypeDefinition()
-                    ]
-                },
-                newElementTypeDefinition("scenario", it) {
-                    subTypes = [
-                        HypotheticalScenario: newSubTypeDefinition()
-                    ]
-                },
-            ]
+            applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+                subTypes = [
+                    RiskyProcess: newSubTypeDefinition()
+                ]
+            })
+            applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+                subTypes = [
+                    HypotheticalScenario: newSubTypeDefinition()
+                ]
+            })
         }).idAsString
 
         unit = newUnit(client)

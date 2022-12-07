@@ -65,23 +65,21 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             domain = domainRepository.save(newDomain(client) {
                 domainTemplate = template
                 name = "ISO"
-                elementTypeDefinitions = [
-                    newElementTypeDefinition("asset", it) {
-                        subTypes = [
-                            EventfulAsset: newSubTypeDefinition()
-                        ]
-                    },
-                    newElementTypeDefinition("process", it) {
-                        subTypes = [
-                            EventfulProcess: newSubTypeDefinition()
-                        ]
-                    },
-                    newElementTypeDefinition("scenario", it) {
-                        subTypes = [
-                            EventfulScenario: newSubTypeDefinition()
-                        ]
-                    },
-                ]
+                applyElementTypeDefinition(newElementTypeDefinition("asset", it) {
+                    subTypes = [
+                        EventfulAsset: newSubTypeDefinition()
+                    ]
+                })
+                applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+                    subTypes = [
+                        EventfulProcess: newSubTypeDefinition()
+                    ]
+                })
+                applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
+                    subTypes = [
+                        EventfulScenario: newSubTypeDefinition()
+                    ]
+                })
             })
 
             unit = newUnit(client) {

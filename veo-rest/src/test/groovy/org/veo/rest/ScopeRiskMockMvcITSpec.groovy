@@ -19,13 +19,11 @@ package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.test.web.servlet.ResultActions
 import org.springframework.transaction.support.TransactionTemplate
 
 import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
@@ -54,20 +52,11 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
                     "default-risk-definition": createRiskDefinition("default-risk-definition"),
                     "risk-definition-for-projects": createRiskDefinition("risk-definition-for-projects"),
                 ]
-                elementTypeDefinitions = [
-                    newElementTypeDefinition("scope", it) {
-                        subTypes = [
-                            RiskyScope: newSubTypeDefinition()
-                        ]
-                    }
-                ]
-                elementTypeDefinitions = [
-                    newElementTypeDefinition("scope", it) {
-                        subTypes = [
-                            RiskyScope: newSubTypeDefinition()
-                        ]
-                    }
-                ]
+                applyElementTypeDefinition(newElementTypeDefinition("scope", it) {
+                    subTypes = [
+                        RiskyScope: newSubTypeDefinition()
+                    ]
+                })
             }.idAsString
             unitId = unitRepository.save(newUnit(client)).idAsString
             clientRepository.save(client)

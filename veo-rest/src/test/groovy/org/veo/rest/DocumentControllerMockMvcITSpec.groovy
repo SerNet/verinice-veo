@@ -66,13 +66,11 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
             domain = domainRepository.save(newDomain(client) {
                 abbreviation = "D"
                 name = "Domain"
-                elementTypeDefinitions = [
-                    newElementTypeDefinition("document", it) {
-                        subTypes = [
-                            Manual: newSubTypeDefinition()
-                        ]
-                    }
-                ]
+                applyElementTypeDefinition(newElementTypeDefinition("document", it) {
+                    subTypes = [
+                        Manual: newSubTypeDefinition()
+                    ]
+                })
             })
 
             domain1 = domainRepository.save(newDomain(client) {
