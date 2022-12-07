@@ -44,6 +44,7 @@ import org.veo.core.entity.Nameable;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
+import org.veo.core.entity.specification.TranslationValidator;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -135,6 +136,18 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
     elementTypeDefinitions.forEach(d -> ((ElementTypeDefinitionData) d).setOwner(this));
     this.elementTypeDefinitions.clear();
     this.elementTypeDefinitions.addAll(elementTypeDefinitions);
+  }
+
+  @Override
+  public void applyElementTypeDefinition(ElementTypeDefinition definition) {
+    TranslationValidator.validate(definition);
+
+    ElementTypeDefinition existingDefinition =
+        getElementTypeDefinition(definition.getElementType());
+    existingDefinition.setCustomAspects(definition.getCustomAspects());
+    existingDefinition.setLinks(definition.getLinks());
+    existingDefinition.setSubTypes(definition.getSubTypes());
+    existingDefinition.setTranslations(definition.getTranslations());
   }
 
   @Override

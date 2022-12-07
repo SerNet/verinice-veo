@@ -28,7 +28,6 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
-import org.veo.core.entity.specification.TranslationValidator;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -58,17 +57,7 @@ public class UpdateElementTypeDefinitionUseCase
     if (!domain.isActive()) {
       throw new NotFoundException("Domain is inactive.");
     }
-
-    ElementTypeDefinition existingDefinition =
-        domain.getElementTypeDefinition(input.entityType.getSingularTerm());
-    ElementTypeDefinition updatedDefinition = input.elementTypeDefinition;
-    TranslationValidator.validate(updatedDefinition);
-
-    existingDefinition.setCustomAspects(updatedDefinition.getCustomAspects());
-    existingDefinition.setLinks(updatedDefinition.getLinks());
-    existingDefinition.setSubTypes(updatedDefinition.getSubTypes());
-    existingDefinition.setTranslations(updatedDefinition.getTranslations());
-
+    domain.applyElementTypeDefinition(input.elementTypeDefinition);
     return EmptyOutput.INSTANCE;
   }
 

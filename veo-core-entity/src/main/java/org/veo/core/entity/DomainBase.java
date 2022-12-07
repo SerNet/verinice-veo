@@ -68,6 +68,8 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
 
   void setElementTypeDefinitions(Set<ElementTypeDefinition> elementTypeDefinitions);
 
+  void applyElementTypeDefinition(ElementTypeDefinition definition);
+
   default Optional<ElementTypeDefinition> findElementTypeDefinition(String type) {
     return getElementTypeDefinitions().stream()
         .filter(d -> d.getElementType().equals(type))
