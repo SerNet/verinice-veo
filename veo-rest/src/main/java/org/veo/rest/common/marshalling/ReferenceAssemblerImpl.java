@@ -475,11 +475,15 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     if (Domain.class.isAssignableFrom(type)) {
       return linkTo(methodOn(DomainController.class).getDomains(ANY_AUTH)).withSelfRel().getHref();
     }
+    if (DomainTemplate.class.isAssignableFrom(type)) {
+      return linkTo(methodOn(DomainTemplateController.class).getDomainTemplates())
+          .withSelfRel()
+          .getHref();
+    }
     // Some types have no endpoint.
     if (Client.class.isAssignableFrom(type)
         || Catalog.class.isAssignableFrom(type)
-        || CatalogItem.class.isAssignableFrom(type)
-        || DomainTemplate.class.isAssignableFrom(type)) {
+        || CatalogItem.class.isAssignableFrom(type)) {
       return null;
     }
     throw new NotImplementedException("Unsupported collection reference type " + type);
