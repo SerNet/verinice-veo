@@ -90,9 +90,9 @@ public interface Scope extends Element, RiskAffected<Scope, ScopeRisk> {
     return TYPE_DESIGNATOR;
   }
 
-  Optional<RiskDefinitionRef> getRiskDefinition(DomainTemplate domain);
+  Optional<RiskDefinitionRef> getRiskDefinition(DomainBase domain);
 
-  void setRiskDefinition(DomainTemplate domain, RiskDefinitionRef riskDefinition);
+  void setRiskDefinition(DomainBase domain, RiskDefinitionRef riskDefinition);
 
   @Override
   default void remove() {

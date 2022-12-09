@@ -35,7 +35,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Nameable;
 
 import lombok.Data;
@@ -73,8 +73,8 @@ public class CatalogData extends IdentifiableVersionedData implements Catalog {
   private Set<CatalogItem> catalogItems = new HashSet<>();
 
   @ToString.Exclude
-  @ManyToOne(targetEntity = DomainTemplateData.class, optional = false)
+  @ManyToOne(targetEntity = DomainBaseData.class, optional = false)
   @JoinColumn(name = "domaintemplate_id")
   @Valid
-  private DomainTemplate domainTemplate;
+  private DomainBase domainTemplate;
 }

@@ -18,7 +18,7 @@
 package org.veo.core.usecase.base;
 
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.TailoringReference;
 
@@ -39,7 +39,7 @@ public class CatalogItemValidator {
     }
   }
 
-  public static void validate(TailoringReference tailoringReference, DomainTemplate domain) {
+  public static void validate(TailoringReference tailoringReference, DomainBase domain) {
     if (tailoringReference instanceof LinkTailoringReference linkRef) {
       DomainSensitiveElementValidator.validateLink(
           linkRef.getLinkType(),

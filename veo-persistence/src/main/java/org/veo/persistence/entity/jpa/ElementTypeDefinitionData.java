@@ -35,7 +35,7 @@ import org.hibernate.annotations.TypeDef;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
 
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
@@ -58,10 +58,10 @@ public class ElementTypeDefinitionData implements ElementTypeDefinition {
 
   @NotNull private String elementType;
 
-  @ManyToOne(targetEntity = DomainTemplateData.class, optional = false, fetch = FetchType.LAZY)
+  @ManyToOne(targetEntity = DomainBaseData.class, optional = false, fetch = FetchType.LAZY)
   @NotNull
   @Valid
-  private DomainTemplate owner;
+  private DomainBase owner;
 
   @Column(columnDefinition = "jsonb")
   private Map<String, SubTypeDefinition> subTypes = new HashMap<>();

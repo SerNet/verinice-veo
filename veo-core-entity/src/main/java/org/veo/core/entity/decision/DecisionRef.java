@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.decision;
 
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -35,7 +35,7 @@ import lombok.Value;
 public class DecisionRef {
   @Getter String keyRef;
 
-  public DecisionRef(String keyRef, DomainTemplate domain) {
+  public DecisionRef(String keyRef, DomainBase domain) {
     this(keyRef);
     if (!domain.getDecisions().containsKey(keyRef)) {
       throw new IllegalArgumentException();

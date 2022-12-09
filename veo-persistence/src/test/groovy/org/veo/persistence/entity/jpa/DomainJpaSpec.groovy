@@ -79,7 +79,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         when: "saving"
 
         domain0 = repository.save(domain0)
-        DomainTemplate d = repository.findById(domain0.dbId).get()
+        Domain d = repository.findById(domain0.dbId).get()
 
         then: "saved and loaded"
 

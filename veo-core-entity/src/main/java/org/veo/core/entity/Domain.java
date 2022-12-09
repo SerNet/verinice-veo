@@ -28,7 +28,7 @@ import javax.validation.constraints.NotNull;
  * other stuff needed to define a specific view on the data. For example the risk definition, which
  * describes what risk values exist and how they relates to each other.
  */
-public interface Domain extends DomainTemplate, ClientOwned {
+public interface Domain extends DomainBase, ClientOwned {
 
   String SINGULAR_TERM = "domain";
   String PLURAL_TERM = "domains";

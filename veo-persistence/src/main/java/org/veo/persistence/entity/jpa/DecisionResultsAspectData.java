@@ -28,7 +28,7 @@ import org.hibernate.annotations.TypeDef;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
 
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
@@ -46,7 +46,7 @@ import lombok.ToString;
 @TypeDef(name = "json", typeClass = JsonType.class, defaultForType = Map.class)
 public class DecisionResultsAspectData extends AspectData {
   public DecisionResultsAspectData(
-      DomainTemplate domain, Element owner, Map<DecisionRef, DecisionResult> results) {
+      DomainBase domain, Element owner, Map<DecisionRef, DecisionResult> results) {
     super(domain, owner);
     this.results = Map.copyOf(results);
   }

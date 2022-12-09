@@ -49,14 +49,14 @@ public interface Scenario extends Element, CompositeElement<Scenario> {
   }
 
   Optional<Map<RiskDefinitionRef, PotentialProbabilityImpl>> getPotentialProbability(
-      DomainTemplate domain);
+      DomainBase domain);
 
   default Optional<PotentialProbabilityImpl> getPotentialProbability(
-      DomainTemplate domain, RiskDefinitionRef riskDefinition) {
+      DomainBase domain, RiskDefinitionRef riskDefinition) {
     return getPotentialProbability(domain)
         .map(probabilityByRiskDefinition -> probabilityByRiskDefinition.get((riskDefinition)));
   }
 
   void setPotentialProbability(
-      DomainTemplate domain, Map<RiskDefinitionRef, PotentialProbabilityImpl> potentialProbability);
+      DomainBase domain, Map<RiskDefinitionRef, PotentialProbabilityImpl> potentialProbability);
 }

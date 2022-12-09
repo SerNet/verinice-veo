@@ -29,6 +29,7 @@ import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementOwner;
@@ -80,7 +81,7 @@ public interface EntityFactory {
 
   Scope createScope(String name, ElementOwner owner);
 
-  Catalog createCatalog(DomainTemplate owner);
+  Catalog createCatalog(DomainBase owner);
 
   DomainTemplate createDomainTemplate(
       String name, String authority, String templateVersion, Key<UUID> id);
@@ -96,5 +97,5 @@ public interface EntityFactory {
   LinkTailoringReference createLinkTailoringReference(
       CatalogItem catalogItem, TailoringReferenceType referenceType);
 
-  ElementTypeDefinition createElementTypeDefinition(String elementType, DomainTemplate owner);
+  ElementTypeDefinition createElementTypeDefinition(String elementType, DomainBase owner);
 }

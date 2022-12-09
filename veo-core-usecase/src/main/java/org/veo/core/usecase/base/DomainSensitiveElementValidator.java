@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.veo.core.entity.CustomAspect;
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.exception.UnprocessableDataException;
@@ -88,8 +88,7 @@ class DomainSensitiveElementValidator {
     element.getDomainTemplates().forEach(d -> SubTypeValidator.validate(element, d));
   }
 
-  private static void validateCustomAspect(
-      Element element, CustomAspect ca, DomainTemplate domain) {
+  private static void validateCustomAspect(Element element, CustomAspect ca, DomainBase domain) {
     var caDefinition =
         domain
             .getElementTypeDefinition(element.getModelType())
@@ -110,7 +109,7 @@ class DomainSensitiveElementValidator {
       Element source,
       Element target,
       Map<String, Object> attributes,
-      DomainTemplate domain) {
+      DomainBase domain) {
     var linkDefinition =
         domain.getElementTypeDefinition(source.getModelType()).getLinks().get(linkType);
     if (linkDefinition == null) {
@@ -140,7 +139,7 @@ class DomainSensitiveElementValidator {
   }
 
   private static void validateLinkTargetSubType(
-      String linkType, Element target, DomainTemplate domain, LinkDefinition linkDefinition) {
+      String linkType, Element target, DomainBase domain, LinkDefinition linkDefinition) {
     if (linkDefinition.getTargetSubType() == null) {
       return;
     }
@@ -154,7 +153,7 @@ class DomainSensitiveElementValidator {
   }
 
   // TODO VEO-661 get rid of this mess
-  private static List<DomainTemplate> getDomains(Element element) {
+  private static List<DomainBase> getDomains(Element element) {
     var domains = new ArrayList<>(element.getDomainTemplates());
     element.getOwningClient().ifPresent(client -> domains.addAll(client.getDomains()));
     return domains;

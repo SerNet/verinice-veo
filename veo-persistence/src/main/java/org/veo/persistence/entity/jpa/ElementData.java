@@ -45,7 +45,7 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Scope;
@@ -157,24 +157,22 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   @Setter(AccessLevel.NONE)
   private String designatorLength;
 
-  protected <T extends Aspect> Optional<T> findAspectByDomain(
-      Set<T> source, DomainTemplate domain) {
+  protected <T extends Aspect> Optional<T> findAspectByDomain(Set<T> source, DomainBase domain) {
     return source.stream().filter(aspect -> aspect.getDomain() == domain).findFirst();
   }
 
   @Override
-  public Optional<String> getSubType(DomainTemplate domain) {
+  public Optional<String> getSubType(DomainBase domain) {
     return findAspectByDomain(subTypeAspects, domain).map(SubTypeAspect::getSubType);
   }
 
   @Override
-  public Optional<String> getStatus(DomainTemplate domain) {
+  public Optional<String> getStatus(DomainBase domain) {
     return findAspectByDomain(subTypeAspects, domain).map(SubTypeAspect::getStatus);
   }
 
   @Override
-  public boolean associateWithDomain(
-      @NonNull DomainTemplate domain, String subType, String status) {
+  public boolean associateWithDomain(@NonNull DomainBase domain, String subType, String status) {
     var added = false;
     if (this.getContainingCatalogItem() == null) {
       if (domain instanceof Domain) {
@@ -222,7 +220,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   @Override
-  public Map<DecisionRef, DecisionResult> getDecisionResults(DomainTemplate domain) {
+  public Map<DecisionRef, DecisionResult> getDecisionResults(DomainBase domain) {
     return findAspectByDomain(decisionResultsAspects, domain)
         .map(DecisionResultsAspectData::getResults)
         .orElse(Map.of());
@@ -293,14 +291,14 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
 
   @Transient
   @Override
-  public Set<DomainTemplate> getDomainTemplates() {
+  public Set<DomainBase> getDomainTemplates() {
     if (containingCatalogItem != null) {
       return Set.of(containingCatalogItem.getCatalog().getDomainTemplate());
     }
-    return domains.stream().map(DomainTemplate.class::cast).collect(Collectors.toSet());
+    return domains.stream().map(DomainBase.class::cast).collect(Collectors.toSet());
   }
 
-  private void removeAspect(Set<? extends Aspect> aspects, DomainTemplate domain) {
+  private void removeAspect(Set<? extends Aspect> aspects, DomainBase domain) {
     aspects.removeIf(a -> a.getDomain().equals(domain));
   }
 

@@ -21,7 +21,7 @@ import javax.validation.Valid;
 
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.CatalogRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -42,7 +42,7 @@ public class GetCatalogUseCase
   @Override
   public OutputData execute(IdAndClient input) {
     Catalog catalog = repository.getById(input.getId());
-    DomainTemplate domaintemplate = catalog.getDomainTemplate();
+    DomainBase domaintemplate = catalog.getDomainTemplate();
     UseCaseTools.checkDomainBelongsToClient(input.getAuthenticatedClient(), domaintemplate);
     if (!((Domain) domaintemplate).isActive()) {
       throw new NotFoundException("Domain is inactive.");

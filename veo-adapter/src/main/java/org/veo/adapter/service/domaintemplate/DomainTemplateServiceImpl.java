@@ -63,6 +63,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
@@ -181,7 +182,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
       Set<AbstractRiskDto> demoUnitRisks) {
     ref.cache.put(templateId, domain);
     var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
-    resolvingFactory.setGlobalDomainTemplate(domain);
+    resolvingFactory.setGlobalDomain(domain);
     var transformer =
         new DtoToEntityTransformer(factory, resolvingFactory, new DomainAssociationTransformer());
     var elements =
@@ -318,7 +319,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   }
 
   /** Transform the given domainTemplateDto to a new domain. */
-  private DomainTemplate processDomainTemplate(
+  private DomainBase processDomainTemplate(
       TransformDomainTemplateDto domainTemplateDto, DomainTemplate newDomain) {
     newDomain.setDescription(domainTemplateDto.getDescription());
     newDomain.setAbbreviation(domainTemplateDto.getAbbreviation());
@@ -336,7 +337,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
               CatalogItemPrepareStrategy.updateVersion(createCatalog);
               ref.cache.put(((IdentifiableDto) c).getId(), createCatalog);
               c.setDomainTemplate(
-                  new SyntheticIdRef<>(domainTemplateDto.getId(), DomainTemplate.class));
+                  new SyntheticIdRef<>(domainTemplateDto.getId(), DomainBase.class));
             });
 
     Map<String, Element> elementCache =
@@ -379,7 +380,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
               Catalog createCatalog = factory.createCatalog(newDomain);
               ref.cache.put(((IdentifiableDto) c).getId(), createCatalog);
               c.setDomainTemplate(
-                  new SyntheticIdRef<>(domainTemplateDto.getId(), DomainTemplate.class));
+                  new SyntheticIdRef<>(domainTemplateDto.getId(), DomainBase.class));
             });
 
     Map<String, Element> elementCache =
@@ -392,7 +393,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     return domain;
   }
 
-  private void initCatalog(DomainTemplate newDomain, Map<String, CatalogItem> itemCache) {
+  private void initCatalog(DomainBase newDomain, Map<String, CatalogItem> itemCache) {
     newDomain
         .getCatalogs()
         .forEach(

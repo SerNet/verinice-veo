@@ -32,7 +32,7 @@ import javax.persistence.OneToMany;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
@@ -81,7 +81,7 @@ public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implemen
 
   @Override
   public void setImpactValues(
-      DomainTemplate domain, Map<RiskDefinitionRef, ProcessImpactValues> riskValues) {
+      DomainBase domain, Map<RiskDefinitionRef, ProcessImpactValues> riskValues) {
     var aspect =
         findAspectByDomain(riskValuesAspects, domain)
             .orElseGet(
@@ -93,15 +93,14 @@ public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implemen
     aspect.setValues(riskValues);
   }
 
-  public Optional<Map<RiskDefinitionRef, ProcessImpactValues>> getImpactValues(
-      DomainTemplate domain) {
+  public Optional<Map<RiskDefinitionRef, ProcessImpactValues>> getImpactValues(DomainBase domain) {
     return findAspectByDomain(riskValuesAspects, domain)
         .map(ProcessImpactValuesAspectData::getValues);
   }
 
   @Override
   public Optional<ProcessImpactValues> getImpactValues(
-      DomainTemplate domain, RiskDefinitionRef riskDefinition) {
+      DomainBase domain, RiskDefinitionRef riskDefinition) {
     return getImpactValues(domain)
         .map(impactValuesByRiskDefinition -> impactValuesByRiskDefinition.get(riskDefinition));
   }

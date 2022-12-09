@@ -19,7 +19,7 @@ package org.veo.core.entity.aspects;
 
 import javax.validation.constraints.NotNull;
 
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Versioned;
 
 /**
@@ -28,9 +28,9 @@ import org.veo.core.entity.Versioned;
 public interface Aspect {
 
   @NotNull
-  DomainTemplate getDomain();
+  DomainBase getDomain();
 
-  void setDomain(DomainTemplate domain);
+  void setDomain(DomainBase domain);
 
   Versioned getOwner();
 }

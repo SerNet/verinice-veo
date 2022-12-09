@@ -20,7 +20,7 @@ package org.veo.core.entity.risk;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -29,9 +29,9 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class DomainRiskReferenceProvider extends RiskReferenceProvider {
 
-  @Getter private DomainTemplate domain;
+  @Getter private DomainBase domain;
 
-  public static DomainRiskReferenceProvider referencesForDomain(DomainTemplate domain) {
+  public static DomainRiskReferenceProvider referencesForDomain(DomainBase domain) {
     return new DomainRiskReferenceProvider(domain);
   }
 

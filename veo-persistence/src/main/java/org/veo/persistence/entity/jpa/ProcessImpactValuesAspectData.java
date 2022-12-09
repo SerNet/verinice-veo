@@ -30,7 +30,7 @@ import org.hibernate.annotations.TypeDef;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
 
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ProcessImpactValues;
@@ -53,7 +53,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class ProcessImpactValuesAspectData extends AspectData {
 
-  public ProcessImpactValuesAspectData(DomainTemplate domain, Process owner) {
+  public ProcessImpactValuesAspectData(DomainBase domain, Process owner) {
     super(domain, owner);
   }
 

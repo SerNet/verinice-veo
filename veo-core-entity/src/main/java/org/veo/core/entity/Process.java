@@ -46,11 +46,10 @@ public interface Process
     return TYPE_DESIGNATOR;
   }
 
-  Optional<Map<RiskDefinitionRef, ProcessImpactValues>> getImpactValues(DomainTemplate domain);
+  Optional<Map<RiskDefinitionRef, ProcessImpactValues>> getImpactValues(DomainBase domain);
 
   Optional<ProcessImpactValues> getImpactValues(
-      DomainTemplate domain, RiskDefinitionRef riskDefinition);
+      DomainBase domain, RiskDefinitionRef riskDefinition);
 
-  void setImpactValues(
-      DomainTemplate domain, Map<RiskDefinitionRef, ProcessImpactValues> riskValues);
+  void setImpactValues(DomainBase domain, Map<RiskDefinitionRef, ProcessImpactValues> riskValues);
 }

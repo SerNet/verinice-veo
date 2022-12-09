@@ -22,7 +22,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefCatalogDomainTemplate;
 import org.veo.core.entity.Catalog;
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Identifiable;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -43,7 +43,7 @@ public abstract class AbstractCatalogDto extends AbstractVersionedSelfReferencin
   private String description;
 
   @Schema(implementation = IdRefCatalogDomainTemplate.class)
-  private IdRef<DomainTemplate> domainTemplate;
+  private IdRef<DomainBase> domainTemplate;
 
   @Override
   public Class<? extends Identifiable> getModelInterface() {

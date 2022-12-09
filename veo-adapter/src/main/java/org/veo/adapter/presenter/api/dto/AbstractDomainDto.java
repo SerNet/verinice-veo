@@ -82,7 +82,7 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
   @ArraySchema(schema = @Schema(implementation = IdRefDomainCatalogs.class))
   private Set<IdRef<Catalog>> catalogs = new HashSet<>();
 
-  @Schema(description = "A list of risk definitions belonging to the DomainTemplate.")
+  @Schema(description = "A list of risk definitions belonging to the domain.")
   private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
 
   private IdRef<DomainTemplate> domainTemplate;

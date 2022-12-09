@@ -63,6 +63,7 @@ import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
@@ -173,7 +174,7 @@ public final class DtoToEntityTransformer {
   }
 
   private void mapTransformDomainTemplate(
-      TransformDomainTemplateDto source, IdRefResolver idRefResolver, DomainTemplate target) {
+      TransformDomainTemplateDto source, IdRefResolver idRefResolver, DomainBase target) {
     mapDomainTemplate(source, idRefResolver, target);
 
     target.setElementTypeDefinitions(
@@ -184,7 +185,7 @@ public final class DtoToEntityTransformer {
   }
 
   public ElementTypeDefinition mapElementTypeDefinition(
-      String type, ElementTypeDefinitionDto source, DomainTemplate owner) {
+      String type, ElementTypeDefinitionDto source, DomainBase owner) {
     var target = factory.createElementTypeDefinition(type, owner);
     target.setSubTypes(source.getSubTypes());
     target.setCustomAspects(source.getCustomAspects());
@@ -288,7 +289,7 @@ public final class DtoToEntityTransformer {
   }
 
   private void mapDomainTemplate(
-      AbstractDomainTemplateDto source, IdRefResolver idRefResolver, DomainTemplate target) {
+      AbstractDomainTemplateDto source, IdRefResolver idRefResolver, DomainBase target) {
     target.setAuthority(source.getAuthority());
     target.setTemplateVersion(source.getTemplateVersion());
     target.setProfiles(Map.copyOf(source.getProfiles()));

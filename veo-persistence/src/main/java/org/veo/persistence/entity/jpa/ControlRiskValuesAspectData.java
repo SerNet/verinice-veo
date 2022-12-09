@@ -29,7 +29,7 @@ import org.hibernate.annotations.TypeDef;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 
 import org.veo.core.entity.Control;
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
@@ -48,7 +48,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class ControlRiskValuesAspectData extends AspectData {
 
-  public ControlRiskValuesAspectData(DomainTemplate domain, Control owner) {
+  public ControlRiskValuesAspectData(DomainBase domain, Control owner) {
     super(domain, owner);
   }
 

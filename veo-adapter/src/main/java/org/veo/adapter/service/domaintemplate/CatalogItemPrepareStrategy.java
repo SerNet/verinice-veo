@@ -22,7 +22,7 @@ import java.time.Instant;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Versioned;
 
@@ -44,7 +44,7 @@ public class CatalogItemPrepareStrategy {
     }
   }
 
-  public void prepareCatalogItem(DomainTemplate domain, Catalog catalog, CatalogItem item) {
+  public void prepareCatalogItem(DomainBase domain, Catalog catalog, CatalogItem item) {
     item.setId(null);
     item.setCatalog(catalog);
     updateVersion(item);
@@ -58,7 +58,7 @@ public class CatalogItemPrepareStrategy {
    * Clean up and relink a {@link Element}. Add the domain to each sub element. Prepare the {@link
    * Element} for usage in a catalog or as an incarnation.
    */
-  public void prepareElement(DomainTemplate domain, Element element, boolean isCatalogElement) {
+  public void prepareElement(DomainBase domain, Element element, boolean isCatalogElement) {
     element.setId(null);
     element.setDesignator(isCatalogElement ? NO_DESIGNATOR : null);
     element.getDomains().clear();
@@ -108,7 +108,7 @@ public class CatalogItemPrepareStrategy {
             });
   }
 
-  private void processSubTypes(DomainTemplate domain, Element est) {
+  private void processSubTypes(DomainBase domain, Element est) {
     est.getSubTypeAspects().forEach(oldAspect -> oldAspect.setDomain(domain));
   }
 }

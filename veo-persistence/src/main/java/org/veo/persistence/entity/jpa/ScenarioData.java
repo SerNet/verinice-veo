@@ -32,7 +32,7 @@ import javax.persistence.OneToMany;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.risk.PotentialProbabilityImpl;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -72,8 +72,7 @@ public class ScenarioData extends ElementData implements Scenario {
   private final Set<Scenario> composites = new HashSet<>();
 
   public void setPotentialProbability(
-      DomainTemplate domain,
-      Map<RiskDefinitionRef, PotentialProbabilityImpl> potentialProbability) {
+      DomainBase domain, Map<RiskDefinitionRef, PotentialProbabilityImpl> potentialProbability) {
     var aspect =
         findAspectByDomain(this.riskValuesAspects, domain)
             .orElseGet(
@@ -86,7 +85,7 @@ public class ScenarioData extends ElementData implements Scenario {
   }
 
   public Optional<Map<RiskDefinitionRef, PotentialProbabilityImpl>> getPotentialProbability(
-      DomainTemplate domain) {
+      DomainBase domain) {
     return findAspectByDomain(riskValuesAspects, domain)
         .map(ScenarioRiskValuesAspectData::getPotentialProbability);
   }

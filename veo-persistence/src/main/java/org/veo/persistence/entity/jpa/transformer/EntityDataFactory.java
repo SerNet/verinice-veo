@@ -32,6 +32,7 @@ import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementOwner;
@@ -187,7 +188,7 @@ public class EntityDataFactory implements EntityFactory {
   }
 
   @Override
-  public Catalog createCatalog(DomainTemplate owner) {
+  public Catalog createCatalog(DomainBase owner) {
     Catalog catalog = new CatalogData();
     catalog.setDomainTemplate(owner);
     owner.addToCatalogs(catalog);
@@ -237,8 +238,7 @@ public class EntityDataFactory implements EntityFactory {
   }
 
   @Override
-  public ElementTypeDefinition createElementTypeDefinition(
-      String elementType, DomainTemplate owner) {
+  public ElementTypeDefinition createElementTypeDefinition(String elementType, DomainBase owner) {
     var definition = new ElementTypeDefinitionData();
     definition.setElementType(elementType);
     definition.setOwner(owner);

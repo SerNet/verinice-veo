@@ -32,7 +32,7 @@ import javax.persistence.OneToMany;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
@@ -85,7 +85,7 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
   private final Set<ScopeRiskValuesAspectData> riskValuesAspects = new HashSet<>();
 
   @Override
-  public void setRiskDefinition(DomainTemplate domain, RiskDefinitionRef riskDefinition) {
+  public void setRiskDefinition(DomainBase domain, RiskDefinitionRef riskDefinition) {
     var aspect =
         findAspectByDomain(riskValuesAspects, domain)
             .orElseGet(
@@ -97,7 +97,7 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
     aspect.setRiskDefinitionRef(riskDefinition);
   }
 
-  public Optional<RiskDefinitionRef> getRiskDefinition(DomainTemplate domain) {
+  public Optional<RiskDefinitionRef> getRiskDefinition(DomainBase domain) {
     return findAspectByDomain(riskValuesAspects, domain)
         .map(ScopeRiskValuesAspectData::getRiskDefinitionRef);
   }

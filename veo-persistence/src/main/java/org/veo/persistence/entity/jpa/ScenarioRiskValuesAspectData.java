@@ -28,7 +28,7 @@ import org.hibernate.annotations.TypeDef;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
 
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.risk.PotentialProbabilityImpl;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -48,7 +48,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class ScenarioRiskValuesAspectData extends AspectData {
 
-  public ScenarioRiskValuesAspectData(DomainTemplate domain, Scenario owner) {
+  public ScenarioRiskValuesAspectData(DomainBase domain, Scenario owner) {
     super(domain, owner);
   }
 

@@ -20,7 +20,7 @@ package org.veo.persistence.entity.jpa;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
@@ -39,7 +39,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ScopeRiskValuesAspectData extends AspectData {
 
-  public ScopeRiskValuesAspectData(DomainTemplate domain, Scope owner) {
+  public ScopeRiskValuesAspectData(DomainBase domain, Scope owner) {
     super(domain, owner);
   }
 

@@ -94,11 +94,11 @@ public interface Element
 
   void setLinks(Set<CustomLink> aLinks);
 
-  Optional<String> getSubType(DomainTemplate domain);
+  Optional<String> getSubType(DomainBase domain);
 
-  Optional<String> getStatus(DomainTemplate domain);
+  Optional<String> getStatus(DomainBase domain);
 
-  boolean associateWithDomain(DomainTemplate domain, String subType, String status);
+  boolean associateWithDomain(DomainBase domain, String subType, String status);
 
   /**
    * Add the given {@link CustomAspect} to the collection customAspects.
@@ -182,7 +182,7 @@ public interface Element
   /** Detach this element from related elements to prepare for deletion. */
   void remove();
 
-  Map<DecisionRef, DecisionResult> getDecisionResults(DomainTemplate domain);
+  Map<DecisionRef, DecisionResult> getDecisionResults(DomainBase domain);
 
   /**
    * Update all decision results in given domain.
@@ -206,5 +206,5 @@ public interface Element
    * Retrieve all domains or domain templates this element is associated with. If this is a catalog
    * item, the catalog's domain (template) is returned.
    */
-  Set<DomainTemplate> getDomainTemplates();
+  Set<DomainBase> getDomainTemplates();
 }

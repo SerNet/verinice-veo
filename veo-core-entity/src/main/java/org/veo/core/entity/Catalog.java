@@ -43,9 +43,9 @@ public interface Catalog extends Identifiable, Nameable, ClientOwned, Versioned 
   }
 
   /** The owner of the catalog is always a domain template. */
-  DomainTemplate getDomainTemplate();
+  DomainBase getDomainTemplate();
 
-  void setDomainTemplate(DomainTemplate aDomaintemplate);
+  void setDomainTemplate(DomainBase aDomaintemplate);
 
   @Override
   default Class<? extends Identifiable> getModelInterface() {

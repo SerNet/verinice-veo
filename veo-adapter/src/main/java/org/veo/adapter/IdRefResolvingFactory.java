@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.service.domaintemplate.SyntheticIdRef;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
@@ -57,6 +58,7 @@ public class IdRefResolvingFactory implements IdRefResolver, IdentifiableFactory
   private final IdentifiableFactory factory;
   private final Map<IdRef<?>, Identifiable> registry = new HashMap<>();
   private Key<UUID> globalDomainTemplateId;
+  private Domain globalDomain;
 
   @Override
   public <TEntity extends Identifiable> TEntity resolve(IdRef<TEntity> objectReference)
@@ -71,8 +73,13 @@ public class IdRefResolvingFactory implements IdRefResolver, IdentifiableFactory
 
   @Override
   public <T extends Identifiable> T create(Class<T> type, Key<UUID> id) {
-    if (globalDomainTemplateId != null && (type == Domain.class || type == DomainTemplate.class)) {
-      return findOrCreate((Class<T>) DomainTemplate.class, globalDomainTemplateId);
+    if (DomainBase.class.isAssignableFrom(type)) {
+      if (globalDomain != null) {
+        return (T) globalDomain;
+      }
+      if (globalDomainTemplateId != null) {
+        return findOrCreate((Class<T>) DomainTemplate.class, globalDomainTemplateId);
+      }
     }
     return findOrCreate(type, id);
   }
@@ -96,17 +103,23 @@ public class IdRefResolvingFactory implements IdRefResolver, IdentifiableFactory
    * Define a global domain template ID. When this is set, any reference to a domain or a domain
    * template will be redirected to given domain template.
    */
-  public void setGlobalDomainTemplate(String domainTemplateId) {
+  public void setGlobalDomainTemplateId(String domainTemplateId) {
+    if (globalDomain != null) {
+      throw new IllegalStateException(
+          "Global domain and global domain template ID cannot be combined.");
+    }
     globalDomainTemplateId = Key.uuidFrom(domainTemplateId);
   }
 
   /**
-   * Define an existing global domain template. When this is set, any reference to a domain or a
-   * domain template will be redirected to given domain template.
+   * Define an existing global domain. When this is set, any reference to a domain or a domain
+   * template will be redirected to given domain.
    */
-  public void setGlobalDomainTemplate(DomainTemplate domainTemplate) {
-    setGlobalDomainTemplate(domainTemplate.getIdAsString());
-    registry.put(
-        SyntheticIdRef.from(domainTemplate.getIdAsString(), DomainTemplate.class), domainTemplate);
+  public void setGlobalDomain(Domain domain) {
+    if (globalDomainTemplateId != null) {
+      throw new IllegalStateException(
+          "Global domain and global domain template ID cannot be combined.");
+    }
+    globalDomain = domain;
   }
 }

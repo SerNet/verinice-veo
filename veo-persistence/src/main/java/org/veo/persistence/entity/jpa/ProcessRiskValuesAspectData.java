@@ -39,7 +39,7 @@ import org.hibernate.annotations.TypeDef;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.aspects.RiskValuesAspect;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
@@ -98,9 +98,9 @@ public class ProcessRiskValuesAspectData implements RiskValuesAspect {
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
   private String dbId;
 
-  @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainTemplateData.class, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainBaseData.class, optional = false)
   @JoinColumn(name = "domain_id")
-  private DomainTemplate domain;
+  private DomainBase domain;
 
   @Setter(AccessLevel.NONE)
   @Column(length = RiskDefinition.MAX_ID_SIZE)

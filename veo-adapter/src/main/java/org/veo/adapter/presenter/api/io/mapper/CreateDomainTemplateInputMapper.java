@@ -42,7 +42,7 @@ public class CreateDomainTemplateInputMapper {
     // references to our domain template (so we can import not only domain templates
     // but also domains).
     domainTemplateDto.setId(Key.newUuid().uuidValue());
-    resolvingFactory.setGlobalDomainTemplate(domainTemplateDto.getId());
+    resolvingFactory.setGlobalDomainTemplateId(domainTemplateDto.getId());
 
     var transformer =
         new DtoToEntityTransformer(entityFactory, resolvingFactory, domainAssociationTransformer);

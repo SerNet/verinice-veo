@@ -52,7 +52,7 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Person;
@@ -95,7 +95,7 @@ public class DomainAssociationTransformer {
 
   private Collector<
           Map.Entry<String, ControlRiskValuesDto>, ?, Map<RiskDefinitionRef, ControlRiskValues>>
-      groupRiskDefinitionsByDomain(DomainTemplate domain) {
+      groupRiskDefinitionsByDomain(DomainBase domain) {
     var referenceProvider = referencesForDomain(domain);
     return Collectors.toMap(
         kv ->
@@ -213,7 +213,7 @@ public class DomainAssociationTransformer {
           Map.Entry<String, ScenarioRiskValuesDto>,
           ?,
           Map<RiskDefinitionRef, PotentialProbabilityImpl>>
-      groupScenarioRiskValuesByDomain(DomainTemplate domain) {
+      groupScenarioRiskValuesByDomain(DomainBase domain) {
     var referenceProvider = referencesForDomain(domain);
     return Collectors.toMap(
         kv -> toRiskDefinitionRef(kv.getKey(), domain),
@@ -379,13 +379,13 @@ public class DomainAssociationTransformer {
   }
 
   private <T extends DomainAssociationDto> Map<String, T> extractDomainAssociations(
-      Element source, Function<DomainTemplate, T> supplier) {
+      Element source, Function<DomainBase, T> supplier) {
     // Catalog item elements in a domain template may have aspects for
     // domains that
     // the element is not assigned to. Seems invalid, but that's the
     // situation we
     // have to deal with here.
-    var domains = new HashSet<DomainTemplate>();
+    var domains = new HashSet<DomainBase>();
     domains.addAll(source.getDomains());
     domains.addAll(
         source.getSubTypeAspects().stream().map(Aspect::getDomain).collect(Collectors.toSet()));
@@ -412,13 +412,13 @@ public class DomainAssociationTransformer {
       Map<String, TAssociationDto> domains,
       Element target,
       IdRefResolver idRefResolver,
-      BiConsumer<DomainTemplate, TAssociationDto> customMapper) {
+      BiConsumer<DomainBase, TAssociationDto> customMapper) {
     domains
         .entrySet()
         .forEach(
             entry -> {
               var associationDto = entry.getValue();
-              DomainTemplate domainTemplate =
+              DomainBase domainTemplate =
                   idRefResolver.resolve(SyntheticIdRef.from(entry.getKey(), Domain.class));
               target.associateWithDomain(
                   domainTemplate, associationDto.getSubType(), associationDto.getStatus());
@@ -426,7 +426,7 @@ public class DomainAssociationTransformer {
             });
   }
 
-  private RiskDefinitionRef toRiskDefinitionRef(String riskDefId, DomainTemplate domain) {
+  private RiskDefinitionRef toRiskDefinitionRef(String riskDefId, DomainBase domain) {
     if (riskDefId == null) {
       return null;
     }

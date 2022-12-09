@@ -26,6 +26,7 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
@@ -64,7 +65,7 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfRef
       description = "The authority for the DomainTemplate.",
       example = "ISO",
       requiredMode = REQUIRED)
-  @Size(min = 1, max = DomainTemplate.AUTHORITY_MAX_LENGTH)
+  @Size(min = 1, max = DomainBase.AUTHORITY_MAX_LENGTH)
   private String authority;
 
   @NotNull(message = "A templateVersion must be present.")

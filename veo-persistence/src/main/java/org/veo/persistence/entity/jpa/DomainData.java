@@ -35,8 +35,7 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class DomainData extends DomainTemplateData implements Domain {
-
+public class DomainData extends DomainBaseData implements Domain {
   @Column(name = "active")
   @ToString.Include
   private boolean active = true;

@@ -31,7 +31,7 @@ import javax.validation.Valid;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
@@ -112,7 +112,7 @@ public class GetIncarnationDescriptionUseCase
                                 appliedItem ->
                                     referencedItemsByCatalogItemId.put(
                                         appliedItem.getId(), element))));
-    Set<DomainTemplate> usedDomains =
+    Set<DomainBase> usedDomains =
         itemsToCreate.stream()
             .map(ci -> ci.getCatalog().getDomainTemplate())
             .collect(Collectors.toSet());

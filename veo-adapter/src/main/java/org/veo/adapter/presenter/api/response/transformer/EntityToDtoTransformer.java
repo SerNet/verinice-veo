@@ -75,6 +75,7 @@ import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
@@ -261,20 +262,20 @@ public final class EntityToDtoTransformer {
     return target;
   }
 
-  public TransformDomainTemplateDto transformDomainTemplate2Dto(@Valid DomainTemplate source) {
+  public TransformDomainTemplateDto transformDomainTemplate2Dto(@Valid DomainBase source) {
     var target = new TransformDomainTemplateDto();
-    mapDomainTemplate(source, target);
+    mapDomain(source, target);
     return target;
   }
 
   public TransformDomainDto transformDomain2ExportDto(@Valid Domain source) {
     var target = new TransformDomainDto();
-    mapDomainTemplate(source, target);
+    mapDomain(source, target);
     target.setDomainTemplate(IdRef.from(source.getDomainTemplate(), referenceAssembler));
     return target;
   }
 
-  private void mapDomainTemplate(DomainTemplate source, TransformDomainTemplateDto target) {
+  private void mapDomain(DomainBase source, TransformDomainTemplateDto target) {
     target.setId(source.getId().uuidValue());
     target.setVersion(source.getVersion());
     target.setAuthority(source.getAuthority());

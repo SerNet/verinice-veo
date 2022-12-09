@@ -25,7 +25,7 @@ import javax.validation.Validator;
 
 import org.springframework.stereotype.Service;
 
-import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.code.EntityValidationException;
@@ -52,10 +52,10 @@ public class ValidationService {
     Set<ConstraintViolation<Identifiable>> violations = beanValidator.validate(identifiable);
     if (!violations.isEmpty()) throw new ConstraintViolationException(violations);
 
-    if (identifiable instanceof DomainTemplate domainTemplate) {
-      domainTemplate.getElementTypeDefinitions().forEach(TranslationValidator::validate);
-      domainTemplate.getRiskDefinitions().values().forEach(rd -> rd.validateRiskDefinition());
-      domainTemplate.getRiskDefinitions().values().forEach(TranslationValidator::validate);
+    if (identifiable instanceof DomainBase domain) {
+      domain.getElementTypeDefinitions().forEach(TranslationValidator::validate);
+      domain.getRiskDefinitions().values().forEach(rd -> rd.validateRiskDefinition());
+      domain.getRiskDefinitions().values().forEach(TranslationValidator::validate);
     }
 
     if (identifiable instanceof ElementTypeDefinition entity) {

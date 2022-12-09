@@ -30,6 +30,7 @@ import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Designated
 import org.veo.core.entity.Document
 import org.veo.core.entity.Domain
+import org.veo.core.entity.DomainBase
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Element
 import org.veo.core.entity.ElementOwner
@@ -187,7 +188,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static CatalogData newCatalog(DomainTemplate domainTemplate, @DelegatesTo(value = Catalog.class, strategy = Closure.DELEGATE_FIRST)
+    static CatalogData newCatalog(DomainBase domainTemplate, @DelegatesTo(value = Catalog.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Catalog") Closure init = null) {
         return factory.createCatalog(domainTemplate).tap {
             VeoSpec.execute(it, init)
@@ -276,7 +277,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static ElementTypeDefinition newElementTypeDefinition(DomainTemplate domain, String type, @DelegatesTo(value = CustomLink.class)
+    static ElementTypeDefinition newElementTypeDefinition(DomainBase domain, String type, @DelegatesTo(value = CustomLink.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.ElementTypeDefinition") Closure init = null) {
         return factory.createElementTypeDefinition(type, domain).tap{
             VeoSpec.execute(it, init)
