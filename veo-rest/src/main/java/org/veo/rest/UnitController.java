@@ -285,10 +285,11 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
   }
 
   @PutMapping(value = "/{id}")
-  // @Operation(summary = "Updates a unit")
-  // @ApiResponses(value = { @ApiResponse(responseCode = "200", description =
-  // "Unit updated"),
-  // @ApiResponse(responseCode = "404", description = "Unit not found") })
+  @Operation(summary = "Updates a unit")
+  @ApiResponses({
+    @ApiResponse(responseCode = "204", description = "Unit updated"),
+    @ApiResponse(responseCode = "404", description = "Unit not found")
+  })
   public CompletableFuture<FullUnitDto> updateUnit(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,

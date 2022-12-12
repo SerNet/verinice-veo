@@ -40,6 +40,7 @@ import org.veo.core.usecase.client.DeleteClientUseCase;
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +61,9 @@ public class AdminController {
   public static final String URL_BASE_PATH = "/admin";
 
   @DeleteMapping("/client/{clientId}")
+  @Operation(
+      summary =
+          "Deletes client and all associated data (including units, domains, elements & risks)")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteClient(
       @PathVariable String clientId) {
     return useCaseInteractor.execute(
@@ -69,6 +73,7 @@ public class AdminController {
   }
 
   @GetMapping("/unit-dump/{unitId}")
+  @Operation(summary = "Exports given unit, including unit metadata, domains, elements & risks")
   public CompletableFuture<UnitDumpDto> getUnitDump(@PathVariable String unitId) {
     return useCaseInteractor.execute(
         getUnitDumpUseCase,
@@ -77,6 +82,10 @@ public class AdminController {
   }
 
   @PostMapping("domaintemplates/{id}/allclientsupdate")
+  @Operation(
+      summary = "Migrates all clients to the domain created from given domain template",
+      description =
+          "Runs as a background task. For each client, elements associated with a previous version of the domain are migrated to the given version and the old domain is deactivated.")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateAllClientDomains(
       @PathVariable String id) {
     log.info(
