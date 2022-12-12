@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.veo.adapter.presenter.api.TypeDefinition;
 import org.veo.adapter.presenter.api.TypeDefinitionProvider;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 
@@ -42,6 +43,7 @@ public class TypeDefinitionsController {
   private final TypeDefinitionProvider provider;
 
   @GetMapping
+  @Operation(summary = "Retrieves meta information for element types")
   public CompletableFuture<Map<String, TypeDefinition>> getAll() {
     return CompletableFuture.supplyAsync(provider::getAll);
   }

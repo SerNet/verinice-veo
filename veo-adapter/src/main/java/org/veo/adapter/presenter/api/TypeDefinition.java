@@ -25,12 +25,21 @@ import lombok.Data;
 @Schema(accessMode = Schema.AccessMode.READ_ONLY)
 @AllArgsConstructor
 public class TypeDefinition {
-  @Schema(description = "GET all entities of this type at this location.")
+  @Schema(
+      description = "GET all entities of this type at this location.",
+      example = "http://<api.example.org>/api/v1/assets",
+      format = "uri")
   private String collectionUri;
 
-  @Schema(description = "POST an entity search at this location.")
+  @Schema(
+      description = "POST an entity search at this location.",
+      example = "http://<api.example.org>/api/v1/assets/searches",
+      format = "uri")
   private String searchUri;
 
-  @Schema(description = "GET the JSON schema for this type at this location.")
+  @Schema(
+      description = "GET the JSON schema for this type at this location.",
+      example = "http://<api.example.org>/api/v1/schemas/asset",
+      format = "uri")
   private String schemaUri;
 }
