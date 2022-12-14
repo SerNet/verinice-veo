@@ -22,8 +22,8 @@ import java.time.Instant;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -52,12 +52,18 @@ public class MessageCreatorImpl implements MessageCreator {
   private final ReferenceAssembler referenceAssembler;
   private final EntityToDtoTransformer entityToDtoTransformer;
 
-  // TODO VEO-1084 rename routing keys
+  public static final String EVENT_TYPE = "eventType";
+  public static final String EVENT_TYPE_DOMAIN_CREATION = "domain_creation";
+  public static final String EVENT_TYPE_CLIENT_CHANGE = "client_change";
+  public static final String EVENT_TYPE_ENTITY_REVISION = "entity_revision";
+  public static final String EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE =
+      "element_type_definition_update";
+
+  // TODO VEO-1829 remove routing key constants and use event types as routing keys
   public static final String ROUTING_KEY_DOMAIN_CREATION = "domain_creation_event";
   public static final String ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE =
-      "element_type_definition_update";
-  public static final String ROUTING_KEY_ELEMENT_CLIENT_CHANGE = "client_change";
-
+      EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE;
+  public static final String ROUTING_KEY_ELEMENT_CLIENT_CHANGE = EVENT_TYPE_CLIENT_CHANGE;
   public static final String ROUTING_KEY_ENTITY_REVISION = "versioning_event";
 
   @Value("${veo.message.dispatch.routing-key-prefix}")
@@ -72,7 +78,7 @@ public class MessageCreatorImpl implements MessageCreator {
             versioningEvent.getAuthor(),
             versioningEvent.getTime(),
             client);
-    storeMessage(ROUTING_KEY_ENTITY_REVISION, json);
+    storeMessage(ROUTING_KEY_ENTITY_REVISION, EVENT_TYPE_ENTITY_REVISION, json);
   }
 
   @Override
@@ -83,8 +89,7 @@ public class MessageCreatorImpl implements MessageCreator {
     if (domain.getDomainTemplate() != null) {
       json.put("domainTemplateId", domain.getDomainTemplate().getId().uuidValue());
     }
-
-    storeMessage(ROUTING_KEY_DOMAIN_CREATION, json);
+    storeMessage(ROUTING_KEY_DOMAIN_CREATION, EVENT_TYPE_DOMAIN_CREATION, json);
   }
 
   @Override
@@ -92,15 +97,19 @@ public class MessageCreatorImpl implements MessageCreator {
     var json = objectMapper.createObjectNode();
     json.put("domainId", domain.getId().uuidValue());
     json.put("elementType", entityType.getSingularTerm());
-    storeMessage(ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE, json);
+    storeMessage(
+        ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE,
+        EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE,
+        json);
   }
 
-  private void storeMessage(String routingKey, JsonNode content) {
+  private void storeMessage(String routingKey, String eventType, ObjectNode content) {
+    content.put(EVENT_TYPE, eventType);
     storedEventRepository.save(
         StoredEventData.newInstance(content.toString(), routingKeyPrefix + routingKey));
   }
 
-  private JsonNode createEntityRevisionJson(
+  private ObjectNode createEntityRevisionJson(
       Versioned entity, VersioningEvent.Type type, String author, Instant time, Client client) {
     var tree = objectMapper.createObjectNode();
     tree.put("uri", getUri(entity));

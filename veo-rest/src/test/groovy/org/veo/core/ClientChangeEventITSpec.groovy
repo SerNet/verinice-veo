@@ -72,7 +72,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
     @Value('${veo.message.consume.subscription-routing-key-prefix}')
     String routingKeyPrefix
 
-    String messageType = MessageCreatorImpl.ROUTING_KEY_ELEMENT_CLIENT_CHANGE
+    String messageType = MessageCreatorImpl.EVENT_TYPE_CLIENT_CHANGE
     String routingKey
 
     def setupSpec() {

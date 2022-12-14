@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.jobs;
 
+import static org.veo.core.events.MessageCreatorImpl.EVENT_TYPE_CLIENT_CHANGE;
+import static org.veo.core.events.MessageCreatorImpl.EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE;
 import static org.veo.core.events.MessageCreatorImpl.ROUTING_KEY_ELEMENT_CLIENT_CHANGE;
 import static org.veo.core.events.MessageCreatorImpl.ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE;
 import static org.veo.rest.VeoRestConfiguration.PROFILE_BACKGROUND_TASKS;
@@ -120,7 +122,9 @@ public class MessageSubscriber {
   private void dispatchTypedEvent(JsonNode content) {
     var eventType = content.get("eventType").asText();
     switch (eventType) {
-      case ROUTING_KEY_ELEMENT_CLIENT_CHANGE -> dispatchClientStateEvent(content);
+      case EVENT_TYPE_CLIENT_CHANGE -> dispatchClientStateEvent(content);
+      case EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE -> dispatchElementTypeDefinitionUpdate(
+          content);
       default -> throw new IllegalArgumentException("Unexpected event type value: " + eventType);
     }
   }
@@ -132,7 +136,7 @@ public class MessageSubscriber {
     var clientName = content.has("name") ? content.get("name").asText() : null;
     log.info(
         "Received {} message for clientstate {} message type: {}",
-        ROUTING_KEY_ELEMENT_CLIENT_CHANGE,
+        EVENT_TYPE_CLIENT_CHANGE,
         clientId.uuidValue(),
         clientState.name());
     AsSystemUser.runAsAdmin(

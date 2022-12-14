@@ -98,6 +98,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
 
             def creation = elementMessages.find{it.type == "CREATION"}
             with(creation) {
+                eventType == "entity_revision"
                 changeNumber == 0
                 content.designator.contains("DMO-")
                 time != null
@@ -105,6 +106,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
 
             def modification = elementMessages.find{it.type == "MODIFICATION"}
             with(modification) {
+                eventType == "entity_revision"
                 changeNumber == 1
                 content.designator.contains("DMO-")
                 time > creation.time
@@ -118,6 +120,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
             def elementMessages = messages.findAll { it.uri?.endsWith("/scopes/${scope.idAsString}") }
             assert elementMessages.size() == 1
             elementMessages.first().with{
+                eventType == "entity_revision"
                 assert type == "CREATION"
                 assert changeNumber == 0
                 assert content.designator.contains("DMO-")
@@ -136,6 +139,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
             assert itemMessages.size() == 1
 
             with(itemMessages.first()) {
+                eventType == "entity_revision"
                 type == "CREATION"
                 changeNumber == 0
                 time != null
