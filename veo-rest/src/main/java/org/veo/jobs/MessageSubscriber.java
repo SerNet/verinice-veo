@@ -89,10 +89,10 @@ public class MessageSubscriber {
     try {
       var content = objectMapper.readTree(event.getContent());
       if (content.has("eventType")) {
-        dispatchTypedEvent(content);
+        handleTypedEvent(content);
       } else {
         // TODO: VEO-1770 type event
-        dispatchElementTypeDefinitionUpdate(content);
+        handleElementTypeDefinitionUpdate(content);
       }
     } catch (Exception e) {
       log.error("Error while handleEventMessage", e);
@@ -100,7 +100,7 @@ public class MessageSubscriber {
     }
   }
 
-  private void dispatchElementTypeDefinitionUpdate(JsonNode content) {
+  private void handleElementTypeDefinitionUpdate(JsonNode content) {
     var domainId = Key.uuidFrom(content.get("domainId").asText());
     var elementType = EntityType.getBySingularTerm(content.get("elementType").asText());
     log.info(
@@ -119,17 +119,16 @@ public class MessageSubscriber {
                             domain, elementType)));
   }
 
-  private void dispatchTypedEvent(JsonNode content) {
+  private void handleTypedEvent(JsonNode content) {
     var eventType = content.get("eventType").asText();
     switch (eventType) {
-      case EVENT_TYPE_CLIENT_CHANGE -> dispatchClientStateEvent(content);
-      case EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE -> dispatchElementTypeDefinitionUpdate(
-          content);
+      case EVENT_TYPE_CLIENT_CHANGE -> handleClientStateEvent(content);
+      case EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE -> handleElementTypeDefinitionUpdate(content);
       default -> throw new IllegalArgumentException("Unexpected event type value: " + eventType);
     }
   }
 
-  private void dispatchClientStateEvent(JsonNode content) {
+  private void handleClientStateEvent(JsonNode content) {
     var clientId = Key.uuidFrom(content.get("clientId").asText());
     var clientState = ClientChangeType.valueOf(content.get("type").asText());
     var maxUnits = content.has("maxUnits") ? content.get("maxUnits").asInt() : null;
