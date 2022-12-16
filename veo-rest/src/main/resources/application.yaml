@@ -1,4 +1,6 @@
 server:
+  compression:
+    enabled: true
   port: 8070
 
 veo:
