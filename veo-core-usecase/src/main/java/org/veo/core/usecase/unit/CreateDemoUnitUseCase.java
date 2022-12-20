@@ -76,6 +76,11 @@ public class CreateDemoUnitUseCase
     return Isolation.REPEATABLE_READ;
   }
 
+  @Override
+  public boolean isReadOnly() {
+    return false;
+  }
+
   @Valid
   @Value
   public static class InputData implements UseCase.InputData {

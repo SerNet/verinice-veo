@@ -93,4 +93,9 @@ public abstract class UpdateRiskUseCase<T extends RiskAffected<T, R>, R extends 
               riskAffectedId, scenarioId));
     }
   }
+
+  @Override
+  public boolean isReadOnly() {
+    return false;
+  }
 }

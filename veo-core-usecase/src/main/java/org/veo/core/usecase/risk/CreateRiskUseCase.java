@@ -91,4 +91,9 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
     riskEvent.addChange(RISK_CREATED);
     eventPublisher.publish(new RiskAffectingElementChangeEvent(riskAffected, this, riskEvent));
   }
+
+  @Override
+  public boolean isReadOnly() {
+    return false;
+  }
 }

@@ -113,6 +113,11 @@ public class UpdateAllClientDomainsUseCase
         element -> element.setDecisionResults(decider.decide(element, newDomain), newDomain));
   }
 
+  @Override
+  public boolean isReadOnly() {
+    return false;
+  }
+
   @Valid
   @Value
   public static class InputData implements UseCase.InputData {

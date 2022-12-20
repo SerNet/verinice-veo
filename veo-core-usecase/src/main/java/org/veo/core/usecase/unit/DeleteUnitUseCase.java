@@ -115,6 +115,11 @@ public class DeleteUnitUseCase
   }
 
   @Override
+  public boolean isReadOnly() {
+    return false;
+  }
+
+  @Override
   public Isolation getIsolation() {
     return Isolation.REPEATABLE_READ;
   }

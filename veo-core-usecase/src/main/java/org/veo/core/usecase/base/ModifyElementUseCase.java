@@ -106,6 +106,11 @@ public abstract class ModifyElementUseCase<T extends Element>
     entity.checkSameClient(input.getAuthenticatedClient());
   }
 
+  @Override
+  public boolean isReadOnly() {
+    return false;
+  }
+
   @Valid
   @Value
   public static class InputData<T> implements UseCase.InputData {

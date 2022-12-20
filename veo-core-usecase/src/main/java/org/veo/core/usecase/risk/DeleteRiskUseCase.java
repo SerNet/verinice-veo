@@ -70,6 +70,11 @@ public class DeleteRiskUseCase
     eventPublisher.publish(new RiskAffectingElementChangeEvent(element, this, riskEvent));
   }
 
+  @Override
+  public boolean isReadOnly() {
+    return false;
+  }
+
   @Valid
   @Value
   public static class InputData implements UseCase.InputData {

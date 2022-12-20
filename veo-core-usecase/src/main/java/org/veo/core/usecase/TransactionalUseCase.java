@@ -48,6 +48,10 @@ public interface TransactionalUseCase<I extends UseCase.InputData, O extends Use
     return Isolation.DEFAULT;
   }
 
+  default boolean isReadOnly() {
+    return true;
+  }
+
   enum Isolation {
     DEFAULT,
     REPEATABLE_READ,

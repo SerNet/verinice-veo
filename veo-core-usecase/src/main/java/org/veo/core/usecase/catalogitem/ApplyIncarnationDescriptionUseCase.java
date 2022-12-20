@@ -363,6 +363,11 @@ public class ApplyIncarnationDescriptionUseCase
     return referencesToApply.stream().filter(typePredicate).toList();
   }
 
+  @Override
+  public boolean isReadOnly() {
+    return false;
+  }
+
   @Valid
   @Value
   public static class InputData implements UseCase.InputData {

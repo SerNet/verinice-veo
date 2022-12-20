@@ -83,6 +83,11 @@ public abstract class CreateElementUseCase<TEntity extends Element>
         .forEach(domain -> entity.setDecisionResults(decider.decide(entity, domain), domain));
   }
 
+  @Override
+  public boolean isReadOnly() {
+    return false;
+  }
+
   @Valid
   @Value
   public static class InputData<TEntity> implements UseCase.InputData {

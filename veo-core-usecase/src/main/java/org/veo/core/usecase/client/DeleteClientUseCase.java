@@ -55,6 +55,11 @@ public class DeleteClientUseCase
     return EmptyOutput.INSTANCE;
   }
 
+  @Override
+  public boolean isReadOnly() {
+    return false;
+  }
+
   @AllArgsConstructor
   @Getter
   public static class InputData implements UseCase.InputData {

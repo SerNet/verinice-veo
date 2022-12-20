@@ -61,6 +61,11 @@ public class UpdateElementTypeDefinitionUseCase
     return EmptyOutput.INSTANCE;
   }
 
+  @Override
+  public boolean isReadOnly() {
+    return false;
+  }
+
   @Valid
   @Value
   public static class InputData implements UseCase.InputData {

@@ -56,6 +56,11 @@ public class ApplyProfileUseCase
     return EmptyOutput.INSTANCE;
   }
 
+  @Override
+  public boolean isReadOnly() {
+    return false;
+  }
+
   @Value
   public static class InputData implements UseCase.InputData {
     Key<UUID> clientId;

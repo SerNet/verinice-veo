@@ -107,8 +107,9 @@ public class UseCaseInteractorImpl implements UseCaseInteractor {
       CompletableFuture<R> doExecuteWithIsolation(
           UseCase<I, O> useCase, Supplier<R> resultSupplier) {
     if (useCase instanceof TransactionalUseCase<?, ?> t) {
-      TransactionalUseCase.Isolation isolation = t.getIsolation();
       TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+      transactionTemplate.setReadOnly(t.isReadOnly());
+      TransactionalUseCase.Isolation isolation = t.getIsolation();
       switch (isolation) {
         case DEFAULT:
           transactionTemplate.setIsolationLevel(TransactionDefinition.ISOLATION_DEFAULT);
