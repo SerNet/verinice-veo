@@ -164,6 +164,10 @@ abstract class VeoSpringSpec extends VeoSpec {
         })
     }
 
+    def deleteTestClient() {
+        clientDataRepository.deleteById(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
+    }
+
     Domain createTestDomain(Client client, String templateId) {
         return txTemplate.execute {
             return domainTemplateCreator.createDomainFromTemplate(templateId, client)
