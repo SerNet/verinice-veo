@@ -92,6 +92,12 @@ public abstract class AbstractEntityController {
 
   protected Client getClient(String clientId) {
     Key<UUID> id = Key.uuidFrom(clientId);
+    // TODO VEO-1815 Remove this special case
+    // It is used to determine that a client needs to be
+    // created by the frontends currently. Throws NoSuchElementException like in the good old
+    // days if no client is present at all:
+    clientRepository.findById(id).orElseThrow();
+
     return clientRepository
         .findActiveById(id)
         .orElseThrow(() -> new ClientNotActiveException(clientId));

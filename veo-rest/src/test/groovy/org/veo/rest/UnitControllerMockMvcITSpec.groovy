@@ -144,6 +144,20 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
+    // TODO VEO-1815 Remove this special case, returning 403 instead:
+    @WithUserDetails("user@domain.example")
+    def "Requesting units for a non-existing client returns empty array"() {
+        given: "no client"
+        deleteTestClient()
+
+        when: "a request is made to the server"
+        def result = parseJson(get("/units"))
+
+        then: "no units are returned"
+        result != null
+        result.empty
+    }
+
     @WithUserDetails("user@domain.example")
     def "update a unit"() {
         given: "a unit"
@@ -152,13 +166,13 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         when: "the unit is updated by changing the name and adding a domain"
 
         Map request = [
-            id: unit.id.uuidValue(),
-            name: 'New unit-2',
+            id          : unit.id.uuidValue(),
+            name        : 'New unit-2',
             abbreviation: 'u-2',
-            description: 'desc',
-            domains: [
+            description : 'desc',
+            domains     : [
                 [
-                    targetUri: 'http://localhost/domains/'+client.domains.first().id.uuidValue(),
+                    targetUri  : 'http://localhost/domains/' + client.domains.first().id.uuidValue(),
                     displayName: 'test ddd'
                 ]
             ]
@@ -503,7 +517,8 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         def pool = Executors.newFixedThreadPool(8)
         AtomicInteger failedAttempts = new AtomicInteger()
         AtomicInteger successfulAttempts = new AtomicInteger()
-        def tasks = (1..numRequests).collect { n-> {
+        def tasks = (1..numRequests).collect { n->
+            {
                 ->
                 try {
                     UserDetails principal = userDetailsService.loadUserByUsername('manyunitscreator@domain.example')
