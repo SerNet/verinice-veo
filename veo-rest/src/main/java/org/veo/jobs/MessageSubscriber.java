@@ -85,11 +85,12 @@ public class MessageSubscriber {
     log.info("handle message: {} {}", event.getRoutingKey(), event);
     try {
       var content = objectMapper.readTree(event.getContent());
-      if (content.has("eventType")) {
-        handleTypedEvent(content);
-      } else {
-        // TODO: VEO-1770 type event
-        handleElementTypeDefinitionUpdate(content);
+      var eventType = content.get("eventType").asText();
+      switch (eventType) {
+        case EVENT_TYPE_CLIENT_CHANGE -> handleClientStateEvent(content);
+        case EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE -> handleElementTypeDefinitionUpdate(
+            content);
+        default -> throw new IllegalArgumentException("Unexpected event type value: " + eventType);
       }
     } catch (Exception e) {
       log.error("Error while handleEventMessage", e);
@@ -114,15 +115,6 @@ public class MessageSubscriber {
                     () ->
                         incomingMessageHandler.handleElementTypeDefinitionUpdate(
                             domain, elementType)));
-  }
-
-  private void handleTypedEvent(JsonNode content) {
-    var eventType = content.get("eventType").asText();
-    switch (eventType) {
-      case EVENT_TYPE_CLIENT_CHANGE -> handleClientStateEvent(content);
-      case EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE -> handleElementTypeDefinitionUpdate(content);
-      default -> throw new IllegalArgumentException("Unexpected event type value: " + eventType);
-    }
   }
 
   private void handleClientStateEvent(JsonNode content) {
