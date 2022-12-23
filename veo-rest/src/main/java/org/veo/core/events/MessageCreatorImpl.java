@@ -59,13 +59,6 @@ public class MessageCreatorImpl implements MessageCreator {
   public static final String EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE =
       "element_type_definition_update";
 
-  // TODO VEO-1829 remove routing key constants and use event types as routing keys
-  public static final String ROUTING_KEY_DOMAIN_CREATION = "domain_creation_event";
-  public static final String ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE =
-      EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE;
-  public static final String ROUTING_KEY_ELEMENT_CLIENT_CHANGE = EVENT_TYPE_CLIENT_CHANGE;
-  public static final String ROUTING_KEY_ENTITY_REVISION = "versioning_event";
-
   @Value("${veo.message.dispatch.routing-key-prefix}")
   private String routingKeyPrefix;
 
@@ -78,7 +71,7 @@ public class MessageCreatorImpl implements MessageCreator {
             versioningEvent.getAuthor(),
             versioningEvent.getTime(),
             client);
-    storeMessage(ROUTING_KEY_ENTITY_REVISION, EVENT_TYPE_ENTITY_REVISION, json);
+    storeMessage(EVENT_TYPE_ENTITY_REVISION, json);
   }
 
   @Override

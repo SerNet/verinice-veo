@@ -18,6 +18,7 @@
 package org.veo.core
 
 import static org.veo.core.entity.Client.ClientState.*
+import static org.veo.core.events.MessageCreatorImpl.EVENT_TYPE_CLIENT_CHANGE
 import static org.veo.rest.VeoRestConfiguration.PROFILE_BACKGROUND_TASKS
 
 import java.time.Instant
@@ -72,7 +73,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
     @Value('${veo.message.consume.subscription-routing-key-prefix}')
     String routingKeyPrefix
 
-    String messageType = MessageCreatorImpl.EVENT_TYPE_CLIENT_CHANGE
+    String messageType = EVENT_TYPE_CLIENT_CHANGE
     String routingKey
 
     def setupSpec() {
@@ -94,7 +95,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
     }
 
     def setup() {
-        routingKey = routingKeyPrefix + MessageCreatorImpl.ROUTING_KEY_ELEMENT_CLIENT_CHANGE
+        routingKey = routingKeyPrefix + EVENT_TYPE_CLIENT_CHANGE
         createTestDomainTemplate(DSGVO_TEST_DOMAIN_TEMPLATE_ID)
         createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
         createTestDomainTemplate(TEST_DOMAIN_TEMPLATE_ID)
@@ -216,7 +217,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "clientId": "$cId",
             "type": "$eventType"
         }"""
-        def msg = new EventMessage(routingKeyPrefix+MessageCreatorImpl.ROUTING_KEY_ELEMENT_CLIENT_CHANGE,eContent,1,Instant.now())
+        def msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE,eContent,1,Instant.now())
         log.info("publish event: {}", msg)
         eventDispatcher.send(msg)
 
@@ -267,7 +268,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "clientId": "$cId",
             "type": "$eventType"
         }"""
-        def msg = new EventMessage(routingKeyPrefix+MessageCreatorImpl.ROUTING_KEY_ELEMENT_CLIENT_CHANGE,eContent,1,Instant.now())
+        def msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE,eContent,1,Instant.now())
         log.info("publish event: {}", msg)
         eventDispatcher.send(msg)
 
@@ -309,7 +310,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "type": "ACTIVATION"
         }"""
 
-        def msg = new EventMessage(routingKeyPrefix+MessageCreatorImpl.ROUTING_KEY_ELEMENT_CLIENT_CHANGE,eContent,1,Instant.now())
+        def msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE,eContent,1,Instant.now())
         log.info("publish event: {}", msg)
         eventDispatcher.send(msg)
 
@@ -324,7 +325,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "clientId": "$cId",
             "type": "MODIFICATION"
         }"""
-        msg = new EventMessage(routingKeyPrefix+MessageCreatorImpl.ROUTING_KEY_ELEMENT_CLIENT_CHANGE,eContent,1,Instant.now())
+        msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE,eContent,1,Instant.now())
         log.info("publish event: {}", msg)
         eventDispatcher.send(msg)
 
@@ -340,7 +341,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "type": "DEACTIVATION"
         }"""
 
-        msg = new EventMessage(routingKeyPrefix+MessageCreatorImpl.ROUTING_KEY_ELEMENT_CLIENT_CHANGE,eContent,1,Instant.now())
+        msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE,eContent,1,Instant.now())
         log.info("publish event: {}", msg)
         eventDispatcher.send(msg)
 
@@ -356,7 +357,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "clientId": "$cId",
             "type": "DELETION"
         }"""
-        msg = new EventMessage(routingKeyPrefix+MessageCreatorImpl.ROUTING_KEY_ELEMENT_CLIENT_CHANGE,eContent,1,Instant.now())
+        msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE,eContent,1,Instant.now())
         log.info("publish event: {}", msg)
         eventDispatcher.send(msg)
 

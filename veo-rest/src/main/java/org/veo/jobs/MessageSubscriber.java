@@ -19,8 +19,6 @@ package org.veo.jobs;
 
 import static org.veo.core.events.MessageCreatorImpl.EVENT_TYPE_CLIENT_CHANGE;
 import static org.veo.core.events.MessageCreatorImpl.EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE;
-import static org.veo.core.events.MessageCreatorImpl.ROUTING_KEY_ELEMENT_CLIENT_CHANGE;
-import static org.veo.core.events.MessageCreatorImpl.ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE;
 import static org.veo.rest.VeoRestConfiguration.PROFILE_BACKGROUND_TASKS;
 
 import org.springframework.amqp.rabbit.annotation.Argument;
@@ -80,9 +78,8 @@ public class MessageSubscriber {
               exchange = @Exchange(value = "${veo.message.dispatch.exchange}", type = "topic"),
               key = {
                 "${veo.message.dispatch.routing-key-prefix}"
-                    + ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE,
-                "${veo.message.consume.subscription-routing-key-prefix}"
-                    + ROUTING_KEY_ELEMENT_CLIENT_CHANGE
+                    + EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE,
+                "${veo.message.consume.subscription-routing-key-prefix}" + EVENT_TYPE_CLIENT_CHANGE
               }))
   public void handleEventMessage(EventMessage event) throws JsonProcessingException {
     log.info("handle message: {} {}", event.getRoutingKey(), event);
@@ -105,7 +102,7 @@ public class MessageSubscriber {
     var elementType = EntityType.getBySingularTerm(content.get("elementType").asText());
     log.info(
         "Received {} message for element type {} in domain {}",
-        ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE,
+        EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE,
         elementType,
         domainId.uuidValue());
     domainRepository
