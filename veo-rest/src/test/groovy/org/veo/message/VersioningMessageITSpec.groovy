@@ -70,7 +70,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
 
         and: "fetching all messages"
         def messages = storedEventRepository.findAll()
-                .findAll { it.routingKey.contains("versioning_event") }
+                .findAll { it.routingKey.contains("entity_revision") }
                 .collect { new ObjectMapper().readValue(it.content, Map.class) }
 
         then: "no message with uri null"

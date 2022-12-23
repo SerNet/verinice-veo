@@ -89,7 +89,7 @@ public class MessageCreatorImpl implements MessageCreator {
     if (domain.getDomainTemplate() != null) {
       json.put("domainTemplateId", domain.getDomainTemplate().getId().uuidValue());
     }
-    storeMessage(ROUTING_KEY_DOMAIN_CREATION, EVENT_TYPE_DOMAIN_CREATION, json);
+    storeMessage(EVENT_TYPE_DOMAIN_CREATION, json);
   }
 
   @Override
@@ -97,16 +97,13 @@ public class MessageCreatorImpl implements MessageCreator {
     var json = objectMapper.createObjectNode();
     json.put("domainId", domain.getId().uuidValue());
     json.put("elementType", entityType.getSingularTerm());
-    storeMessage(
-        ROUTING_KEY_ELEMENT_TYPE_DEFINITION_UPDATE,
-        EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE,
-        json);
+    storeMessage(EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE, json);
   }
 
-  private void storeMessage(String routingKey, String eventType, ObjectNode content) {
+  private void storeMessage(String eventType, ObjectNode content) {
     content.put(EVENT_TYPE, eventType);
     storedEventRepository.save(
-        StoredEventData.newInstance(content.toString(), routingKeyPrefix + routingKey));
+        StoredEventData.newInstance(content.toString(), routingKeyPrefix + eventType));
   }
 
   private ObjectNode createEntityRevisionJson(

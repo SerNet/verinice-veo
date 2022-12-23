@@ -94,7 +94,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "domain creation event is generated"() {
         when:
-        def event = getLatestStoredEventContent("domain_creation_event")
+        def event = getLatestStoredEventContent("domain_creation")
 
         then:
         event.clientId == client.id.uuidValue()
