@@ -22,7 +22,15 @@
       "matchPackagePatterns": [
         "^com.diffplug.spotless"
       ],
-      "groupName": "Spotless"
+      "groupName": "Spotless",
+      "postUpgradeTasks": {
+        "commands": [
+          "./gradlew spotlessApply"
+        ],
+        "fileFilters": [
+          "**/*"
+        ]
+      }
     },
     {
       "matchPackagePatterns": [
@@ -62,7 +70,6 @@
     },
     {
       "matchPackagePatterns": [
-        "^com.diffplug.spotless",
         "^org.spockframework:",
         "^com.github.jk1.dependency-license-report$",
         "^com.github.spotbugs$",
