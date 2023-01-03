@@ -36,6 +36,7 @@ import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
+import org.veo.jobs.CreateDemoUnitJob;
 import org.veo.service.DefaultDomainCreator;
 
 import lombok.RequiredArgsConstructor;
@@ -94,7 +95,7 @@ public class ClientChangedEventListener {
     client.updateState(ClientChangeType.ACTIVATION);
     defaultDomainCreator.addDefaultDomains(client);
     repository.save(client);
-    createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(client.getId()));
+    new CreateDemoUnitJob(createDemoUnitUseCase) {}.createDemoUnitForClient(client);
   }
 
   private void modifyClient(Client client, ClientChangedEvent event) {
