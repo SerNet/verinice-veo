@@ -18,6 +18,7 @@
 package org.veo.core.service;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.veo.core.Translations;
@@ -42,7 +43,7 @@ public interface EntitySchemaService {
    * Returns a translations for the given language identifiers. If no translation is present for any
    * identifier, it will be ignored.
    */
-  Translations findTranslations(Client client, Set<String> languages);
+  Translations findTranslations(Client client, Set<Locale> languages);
 
   /**
    * Filter the inputSchema to remove attributes that do not match the given user roles

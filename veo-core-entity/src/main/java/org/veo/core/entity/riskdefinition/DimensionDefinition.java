@@ -17,12 +17,14 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
+import static org.veo.core.entity.TranslationProvider.convertLocales;
 import static org.veo.core.entity.riskdefinition.DeprecatedAttributes.ABBREVIATION;
 import static org.veo.core.entity.riskdefinition.DeprecatedAttributes.DESCRIPTION;
 import static org.veo.core.entity.riskdefinition.DeprecatedAttributes.NAME;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.validation.constraints.NotEmpty;
@@ -36,7 +38,6 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import org.veo.core.entity.Constraints;
 import org.veo.core.entity.TranslationProvider;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -49,7 +50,6 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
-@AllArgsConstructor
 @Data
 public class DimensionDefinition implements TranslationProvider {
   protected static final String DIMENSION_PROBABILITY = "Prob";
@@ -61,10 +61,15 @@ public class DimensionDefinition implements TranslationProvider {
   @ToString.Include
   private String id;
 
-  @NotNull @NotEmpty private Map<String, Map<String, String>> translations = new HashMap<>();
+  @NotNull @NotEmpty private Map<Locale, Map<String, String>> translations = new HashMap<>();
 
   public DimensionDefinition(String id) {
     this.id = id;
+  }
+
+  public DimensionDefinition(String id, Map<String, Map<String, String>> translations) {
+    this.id = id;
+    this.translations = convertLocales(translations);
   }
 
   /**
@@ -87,7 +92,8 @@ public class DimensionDefinition implements TranslationProvider {
 
   @Deprecated
   private Map<String, String> getDefaultTranslation() {
-    return translations.computeIfAbsent("de", t -> new HashMap<String, String>());
+    return translations.computeIfAbsent(
+        new Locale.Builder().setLanguage("de").build(), t -> new HashMap<>());
   }
 
   @Deprecated

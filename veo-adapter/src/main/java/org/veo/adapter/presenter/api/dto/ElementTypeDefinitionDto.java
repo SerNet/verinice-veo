@@ -18,6 +18,7 @@
 package org.veo.adapter.presenter.api.dto;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.veo.core.entity.definitions.CustomAspectDefinition;
@@ -31,5 +32,5 @@ public class ElementTypeDefinitionDto {
   Map<String, SubTypeDefinition> subTypes = new HashMap<>();
   Map<String, CustomAspectDefinition> customAspects = new HashMap<>();
   Map<String, LinkDefinition> links = new HashMap<>();
-  Map<String, Map<String, String>> translations = new HashMap<>();
+  Map<Locale, Map<String, String>> translations = new HashMap<>();
 }

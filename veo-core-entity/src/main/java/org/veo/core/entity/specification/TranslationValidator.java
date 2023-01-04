@@ -21,7 +21,6 @@ import static java.util.function.Predicate.not;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.IllformedLocaleException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -41,8 +40,10 @@ import org.veo.core.entity.riskdefinition.RiskDefinition;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Slf4j
 public class TranslationValidator {
   /**
    * The naming convention used for the translation of subtype statuses is: {@code
@@ -53,20 +54,11 @@ public class TranslationValidator {
   public static final Set<String> NAMEABLE_ATTRIBUTES =
       Set.of(Nameable.NAME, Nameable.ABBREVIATION, Nameable.DESCRIPTION);
 
-  public record Violation(String language, Reason reason, String key) {}
+  public record Violation(Locale language, Reason reason, String key) {}
 
   public enum Reason {
     MISSING,
     SUPERFLUOUS
-  }
-
-  private static void checkLanguage(String lang) {
-    try {
-      new Locale.Builder().setLanguage(lang).build();
-    } catch (IllformedLocaleException e) {
-      throw new TranslationException(
-          "Unknown language %s for translation in object schema.".formatted(lang));
-    }
   }
 
   public static void validate(ElementTypeDefinition definition) {
@@ -89,13 +81,11 @@ public class TranslationValidator {
    * @param subTypes
    */
   public static void validate(
-      Map<String, Map<String, String>> translations,
+      Map<Locale, Map<String, String>> translations,
       String type,
       Map<String, CustomAspectDefinition> customAspects,
       Map<String, LinkDefinition> links,
       Map<String, SubTypeDefinition> subTypes) {
-
-    translations.keySet().forEach(TranslationValidator::checkLanguage);
 
     List<String> allEntityKeys = new ArrayList<>();
     allEntityKeys.addAll(attributeTranslationKeys(customAspects));
@@ -114,23 +104,6 @@ public class TranslationValidator {
   }
 
   public static void validate(RiskDefinition riskDefinition) {
-    riskDefinition
-        .getRiskMethod()
-        .getTranslations()
-        .keySet()
-        .forEach(TranslationValidator::checkLanguage);
-    riskDefinition
-        .getProbability()
-        .getTranslations()
-        .keySet()
-        .forEach(TranslationValidator::checkLanguage);
-    riskDefinition
-        .getCategories()
-        .forEach(c -> c.getTranslations().keySet().forEach(TranslationValidator::checkLanguage));
-    riskDefinition
-        .getRiskValues()
-        .forEach(c -> c.getTranslations().keySet().forEach(TranslationValidator::checkLanguage));
-
     List<Violation> violations = new ArrayList<>();
 
     String validationContext = "riskDefinition " + riskDefinition.getId();
@@ -193,13 +166,13 @@ public class TranslationValidator {
   }
 
   private static List<Violation> validateNameableTranslations(
-      String lang, Map<String, String> translations, String context) {
+      Locale lang, Map<String, String> translations, String context) {
     return validateAttributeTranslations(lang, translations, NAMEABLE_ATTRIBUTES, context);
   }
 
   /** Checks if the translation contains only the given attributes. */
   private static List<Violation> validateAttributeTranslations(
-      String lang, Map<String, String> translations, Set<String> attributes, String context) {
+      Locale lang, Map<String, String> translations, Set<String> attributes, String context) {
     return Stream.concat(
             attributes.stream()
                 .filter(key -> !translations.containsKey(key))
@@ -217,23 +190,24 @@ public class TranslationValidator {
   }
 
   private static Stream<Violation> validateLanguage(
-      String lang, Map<String, String> translations, List<String> entityKeys) {
+      Locale lang, Map<String, String> translations, List<String> entityKeys) {
     List<Violation> violations = new ArrayList<>();
     var translationKeys = translations.keySet().stream().toList();
+    log.debug("Validating language: {}", lang.toLanguageTag());
     violations.addAll(noMissingTranslations(lang, entityKeys, translationKeys));
     violations.addAll(noSuperfluousTranslations(lang, entityKeys, translationKeys));
     return violations.stream();
   }
 
   private static List<Violation> noSuperfluousTranslations(
-      String lang, List<String> entityKeys, List<String> translations) {
+      Locale lang, List<String> entityKeys, List<String> translations) {
     return keysInAButNotB(translations, entityKeys).stream()
         .map(k -> new Violation(lang, Reason.SUPERFLUOUS, k))
         .toList();
   }
 
   private static List<Violation> noMissingTranslations(
-      String lang, List<String> entityKeys, List<String> translations) {
+      Locale lang, List<String> entityKeys, List<String> translations) {
     return keysInAButNotB(entityKeys, translations).stream()
         .map(k -> new Violation(lang, Reason.MISSING, k))
         .toList();

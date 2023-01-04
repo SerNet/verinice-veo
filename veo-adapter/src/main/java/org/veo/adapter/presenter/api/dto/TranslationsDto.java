@@ -18,6 +18,7 @@
 package org.veo.adapter.presenter.api.dto;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -31,9 +32,9 @@ import lombok.Value;
 @Schema(description = "Translations for an entity type")
 public class TranslationsDto implements Translations {
 
-  private final Map<String, TranslationDto> translationsByLanguage = new HashMap<>();
+  private final Map<Locale, TranslationDto> translationsByLanguage = new HashMap<>();
 
-  public void add(String lang, Map<String, String> translations) {
+  public void add(Locale lang, Map<String, String> translations) {
     TranslationDto translationsForLanguage =
         translationsByLanguage.computeIfAbsent(lang, k -> new TranslationDto(new HashMap<>()));
     translationsForLanguage.getTranslations().putAll(translations);
@@ -41,12 +42,12 @@ public class TranslationsDto implements Translations {
 
   @JsonProperty("lang")
   @Schema(description = "The keys are language codes, the values are the translations")
-  public Map<String, TranslationDto> getTranslationsByLanguage() {
+  public Map<Locale, TranslationDto> getTranslationsByLanguage() {
     return translationsByLanguage;
   }
 
   @Override
-  public void add(String language, String key, String message) {
+  public void add(Locale language, String key, String message) {
     add(language, Map.of(key, message));
   }
 }

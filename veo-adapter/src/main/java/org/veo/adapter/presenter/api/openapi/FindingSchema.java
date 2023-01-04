@@ -18,6 +18,7 @@
 package org.veo.adapter.presenter.api.openapi;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.veo.core.entity.inspection.Finding;
@@ -29,13 +30,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "A problem or observation yielded by an inspection")
 public abstract class FindingSchema extends Finding {
   public FindingSchema(
-      Severity severity, Map<String, String> description, List<Suggestion> suggestions) {
+      Severity severity, Map<Locale, String> description, List<Suggestion> suggestions) {
     super(severity, description, suggestions);
   }
 
   @Override
   @Schema(description = "Key is ISO language key, value is human-readable description")
-  public abstract Map<String, String> getDescription();
+  public abstract Map<Locale, String> getDescription();
 
   @Override
   @Schema(description = "Rating of how problematic this finding is")

@@ -18,6 +18,7 @@
 package org.veo.persistence.entity.jpa;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -254,6 +255,42 @@ public class ReferenceSerializationModule extends SimpleModule {
           @Override
           public RiskRef deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             return refFactory.createRiskRef(p.getDecimalValue());
+          }
+        });
+
+    addKeySerializer(
+        Locale.class,
+        new JsonSerializer<>() {
+          @Override
+          public void serialize(Locale value, JsonGenerator gen, SerializerProvider serializers)
+              throws IOException {
+            gen.writeFieldName(value.toLanguageTag());
+          }
+        });
+    addKeyDeserializer(
+        Locale.class,
+        new KeyDeserializer() {
+          @Override
+          public Object deserializeKey(String key, DeserializationContext ctxt) throws IOException {
+            return Locale.forLanguageTag(key);
+          }
+        });
+    addSerializer(
+        Locale.class,
+        new JsonSerializer<>() {
+          @Override
+          public void serialize(Locale value, JsonGenerator gen, SerializerProvider serializers)
+              throws IOException {
+            gen.writeFieldName(value.toLanguageTag());
+          }
+        });
+
+    addDeserializer(
+        Locale.class,
+        new JsonDeserializer<>() {
+          @Override
+          public Locale deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+            return Locale.forLanguageTag(p.getValueAsString());
           }
         });
   }

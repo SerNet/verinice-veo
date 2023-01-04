@@ -17,11 +17,13 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
+import static org.veo.core.entity.TranslationProvider.convertLocales;
 import static org.veo.core.entity.riskdefinition.DeprecatedAttributes.ABBREVIATION;
 import static org.veo.core.entity.riskdefinition.DeprecatedAttributes.DESCRIPTION;
 import static org.veo.core.entity.riskdefinition.DeprecatedAttributes.NAME;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.validation.constraints.NotEmpty;
@@ -35,7 +37,6 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import org.veo.core.entity.Constraints;
 import org.veo.core.entity.TranslationProvider;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -48,7 +49,6 @@ import lombok.ToString;
  * hashcode are defined by id and name.
  */
 @NoArgsConstructor
-@AllArgsConstructor
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class DiscreteValue implements TranslationProvider {
@@ -65,7 +65,15 @@ public class DiscreteValue implements TranslationProvider {
   private String htmlColor;
 
   @ToString.Exclude @NotNull @NotEmpty
-  private Map<String, Map<String, String>> translations = new HashMap<>();
+  private Map<Locale, Map<String, String>> translations = new HashMap<>();
+
+  public DiscreteValue(
+      int ordinalValue, String htmlColor, Map<String, Map<String, String>> translations) {
+    this.ordinalValue = ordinalValue;
+    this.htmlColor = htmlColor;
+    this.translations = convertLocales(translations);
+  }
+
   /**
    * Provide compatibility with old clients and data structure. This will read the old data and
    * transform it to the new data.
@@ -86,7 +94,7 @@ public class DiscreteValue implements TranslationProvider {
 
   @Deprecated
   private Map<String, String> getDefaultTranslation() {
-    return translations.computeIfAbsent("de", t -> new HashMap<String, String>());
+    return translations.computeIfAbsent(Locale.forLanguageTag("de"), t -> new HashMap<>());
   }
 
   @Deprecated

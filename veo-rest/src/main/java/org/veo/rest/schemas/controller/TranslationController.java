@@ -21,6 +21,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
@@ -56,17 +57,18 @@ public class TranslationController implements TranslationsResource {
       Authentication auth, @RequestParam(value = "languages") Set<String> languages) {
     ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
     Client client = getClient(user.getClientId());
+    var locales = languages.stream().map(Locale::forLanguageTag).collect(Collectors.toSet());
+
     return CompletableFuture.supplyAsync(
         () -> {
-          Translations t10n = schemaService.findTranslations(client, languages);
-          languages.forEach(
-              lang -> {
+          Translations t10n = schemaService.findTranslations(client, locales);
+          locales.forEach(
+              loc -> {
                 for (VeoMessage veoMessage : VeoMessage.values()) {
                   t10n.add(
-                      lang,
+                      loc,
                       veoMessage.getMessageKey(),
-                      messageSource.getMessage(
-                          veoMessage.getMessageKey(), null, Locale.forLanguageTag(lang)));
+                      messageSource.getMessage(veoMessage.getMessageKey(), null, loc));
                 }
               });
           return ResponseEntity.ok().body((TranslationsDto) t10n);

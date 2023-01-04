@@ -18,6 +18,7 @@
 package org.veo.adapter.persistence.schema;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.veo.adapter.presenter.api.dto.TranslationsDto;
@@ -56,16 +57,24 @@ public class EntitySchemaServiceImpl implements EntitySchemaService {
   }
 
   @Override
-  public TranslationsDto findTranslations(Client client, Set<String> languages) {
-    log.debug(
-        "Getting full static translation content, ignoring requested language filter: {}",
-        languages);
+  public TranslationsDto findTranslations(Client client, Set<Locale> requestedLanguages) {
+    log.debug("Getting translation content for requested languages: {}", requestedLanguages);
     TranslationsDto translations = new TranslationsDto();
     client.getDomains().stream()
         .flatMap(domain -> domain.getElementTypeDefinitions().stream())
         .flatMap(def -> def.getTranslations().entrySet().stream())
-        .filter(langEntry -> languages.contains(langEntry.getKey()))
+        .filter(langEntry -> isRequested(requestedLanguages, langEntry.getKey()))
         .forEach(langEntry -> translations.add(langEntry.getKey(), langEntry.getValue()));
     return translations;
+  }
+
+  static boolean isRequested(Set<Locale> requestedLanguages, Locale languageEntry) {
+    if (requestedLanguages.contains(languageEntry)) return true;
+
+    // if no match for language+region, try to find generic language entry:
+    return requestedLanguages.stream()
+        .map(Locale::getLanguage)
+        .anyMatch(
+            l -> l.equals(languageEntry.getLanguage()) && languageEntry.getCountry().isEmpty());
   }
 }

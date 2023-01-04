@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Jonas Jordan
+ * Copyright (C) 2023  Alexander Koderman
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,20 +15,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.inspection;
+package org.veo.core.entity;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import javax.validation.constraints.NotNull;
 
-/** A problem or observation yielded by an {@link Inspection}. */
-@AllArgsConstructor
-@Getter
-public class Finding {
-  Severity severity;
-  Map<Locale, String> description;
-  List<Suggestion> suggestions;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * A collection of translation-keys and -values for different languages. Defines the representation
+ * of such a collection in JSON form.
+ */
+@Data
+@NoArgsConstructor
+public class TranslationMap {
+
+  @NotNull @JsonValue private Map<Locale, Map<String, String>> translations = new HashMap<>();
+
+  @JsonCreator
+  public TranslationMap(Map<Locale, Map<String, String>> themap) {
+    this.translations = themap;
+  }
 }

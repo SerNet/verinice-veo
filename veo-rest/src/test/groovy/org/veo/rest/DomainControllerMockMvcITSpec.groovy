@@ -217,7 +217,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             }
             with(it.translations) {
                 it.size() == 2
-                with (it.en) {
+                with(it.get(Locale.forLanguageTag("en"))) {
                     it.scope_management == 'Head of the responsible body'
                 }
             }
@@ -280,7 +280,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             }
             with(it.translations) {
                 it.size() == 1
-                with (it.en) {
+                with (it[Locale.ENGLISH]) {
                     it.scope_SCP_Container_status_Empty == 'Empty'
                 }
             }

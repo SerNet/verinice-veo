@@ -76,7 +76,8 @@ public interface TranslationsResource {
                   "The language(s) for which the translation key-value pairs are returned.",
               example = "de,en,pr",
               allowReserved = false,
-              schema = @Schema(type = "string", description = "IANA language subtag"))
+              schema =
+                  @Schema(type = "string", description = "IETF BCP 47 language tag (see RFC 5646)"))
           @RequestParam(value = "languages", required = true)
           Set<String> languages);
 }

@@ -18,6 +18,7 @@
 package org.veo.persistence.entity.jpa;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.persistence.Column;
@@ -31,11 +32,13 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
 import com.vladmihalcea.hibernate.type.json.JsonType;
 
 import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.TranslationMap;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
@@ -73,7 +76,8 @@ public class ElementTypeDefinitionData implements ElementTypeDefinition {
   private Map<String, LinkDefinition> links = new HashMap<>();
 
   @Column(columnDefinition = "jsonb")
-  private Map<String, Map<String, String>> translations = new HashMap<>();
+  @Type(type = "json")
+  private TranslationMap translations = new TranslationMap();
 
   @Override
   public boolean equals(Object o) {
@@ -94,5 +98,15 @@ public class ElementTypeDefinitionData implements ElementTypeDefinition {
   @Override
   public int hashCode() {
     return getClass().hashCode();
+  }
+
+  @Override
+  public Map<Locale, Map<String, String>> getTranslations() {
+    return translations.getTranslations();
+  }
+
+  @Override
+  public void setTranslations(Map<Locale, Map<String, String>> translations) {
+    this.translations.setTranslations(translations);
   }
 }

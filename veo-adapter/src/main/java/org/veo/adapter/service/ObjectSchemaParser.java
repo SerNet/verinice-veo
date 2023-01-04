@@ -20,6 +20,7 @@ package org.veo.adapter.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -30,6 +31,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.veo.core.entity.EntityType;
+import org.veo.core.entity.TranslationProvider;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
@@ -178,9 +180,11 @@ public class ObjectSchemaParser {
     return links;
   }
 
-  private Map<String, Map<String, String>> extractTranslations(JsonNode properties)
+  @SuppressWarnings("unchecked")
+  private Map<Locale, Map<String, String>> extractTranslations(JsonNode properties)
       throws JsonProcessingException {
     JsonNode translationsNode = properties.get("translations");
-    return OBJECTMAPPER.treeToValue(translationsNode, Map.class);
+    return TranslationProvider.convertLocales(
+        OBJECTMAPPER.treeToValue(translationsNode, Map.class));
   }
 }

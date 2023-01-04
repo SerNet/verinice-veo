@@ -628,14 +628,14 @@ class RiskMatrixSpec extends Specification {
         def rd = createRiskDefinition()
         rd.id = "my-risk-def"
 
-        then:"it validates nicely"
+        then: "it validates nicely"
         TranslationValidator.validate(rd)
 
-        when:"we add translation with additonal field"
-        rd.riskMethod.translations.put("de",
-                [impactMethod: "my method",
-                    description: "a description",
-                    unkownfeature:"some unknown"]
+        when: "we add a translation with an additional field"
+        rd.riskMethod.defineTranslations("de",
+                [impactMethod : "my method",
+                    description  : "a description",
+                    unkownfeature: "some unknown"]
                 )
 
         TranslationValidator.validate(rd)
@@ -644,8 +644,8 @@ class RiskMatrixSpec extends Specification {
         TranslationException ex = thrown()
         ex.message =~ /SUPERFLUOUS.*unkownfeature/
 
-        when:"we add translation with missing fields"
-        rd.riskMethod.translations.put("de",
+        when: "we add a translation with missing fields"
+        rd.riskMethod.defineTranslations("de",
                 [:]
                 )
 
@@ -655,14 +655,14 @@ class RiskMatrixSpec extends Specification {
         ex = thrown()
         ex.message =~ /MISSING.*description.*impactMethod/
 
-        when:"we add translation with all fields"
-        rd.riskMethod.translations.put("de",
+        when: "we add a translation with all fields"
+        rd.riskMethod.defineTranslations("de",
                 [
                     impactMethod: "my method",
-                    description: "a description"]
+                    description : "a description"]
                 )
 
-        then:"it validates nicely"
+        then: "it validates nicely"
         TranslationValidator.validate(rd)
     }
 
@@ -671,7 +671,7 @@ class RiskMatrixSpec extends Specification {
         TranslationValidator.validate(myRisk)
 
         when:"missing all translations"
-        tp.translations.put("de",[:])
+        tp.defineTranslations("de", [:])
 
         TranslationValidator.validate(myRisk)
 
@@ -680,7 +680,7 @@ class RiskMatrixSpec extends Specification {
         ex.message =~ /de.*MISSING.*abbreviation.*description.*name/
 
         when:"missing translations name abbre..."
-        tp.translations.put("de",
+        tp.defineTranslations("de",
                 [
                     description: "a description"]
                 )
@@ -692,10 +692,10 @@ class RiskMatrixSpec extends Specification {
         ex.message =~ /de.*MISSING.*abbreviation.*name/
 
         when:"missing translations name"
-        tp.translations.put("de",
+        tp.defineTranslations("de",
                 [
-                    abbreviation:"abb",
-                    description: "a description"]
+                    abbreviation: "abb",
+                    description : "a description"]
                 )
 
         TranslationValidator.validate(myRisk)
@@ -705,10 +705,10 @@ class RiskMatrixSpec extends Specification {
         ex.message =~ /de.*MISSING.*name/
 
         when:"missing translations description"
-        tp.translations.put("de",
+        tp.defineTranslations("de",
                 [
-                    abbreviation:"abb",
-                    name: "a name"]
+                    abbreviation: "abb",
+                    name        : "a name"]
                 )
 
         TranslationValidator.validate(myRisk)
@@ -718,12 +718,12 @@ class RiskMatrixSpec extends Specification {
         ex.message =~ /de.*MISSING.*description/
 
         when:"additional translations addition"
-        tp.translations.put("de",
+        tp.defineTranslations("de",
                 [
-                    addition: "unkown field",
-                    name:"my name",
-                    abbreviation:"abb",
-                    description: "a description"]
+                    addition    : "unkown field",
+                    name        : "my name",
+                    abbreviation: "abb",
+                    description : "a description"]
                 )
 
         TranslationValidator.validate(myRisk)
@@ -733,11 +733,11 @@ class RiskMatrixSpec extends Specification {
         ex.message =~ /de.*SUPERFLUOUS.*addition/
 
         when:"all is good"
-        tp.translations.put("de",
+        tp.defineTranslations("de",
                 [
-                    name:"my name",
-                    abbreviation:"abb",
-                    description: "a description"]
+                    name        : "my name",
+                    abbreviation: "abb",
+                    description : "a description"]
                 )
 
         then:"it validates nicely"

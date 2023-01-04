@@ -17,11 +17,13 @@
  ******************************************************************************/
 package org.veo.core;
 
+import java.util.Locale;
+
 public interface Translations {
 
   /**
    * Adds an entry for a specific language to the translations. A potential existing entry will be
    * overwritten.
    */
-  void add(String language, String key, String message);
+  void add(Locale language, String key, String message);
 }

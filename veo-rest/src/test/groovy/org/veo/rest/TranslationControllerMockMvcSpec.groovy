@@ -69,7 +69,7 @@ class TranslationControllerMockMvcSpec extends VeoMvcSpec {
         when: "a request for t9ns is made"
         def translations = parseJson(get('/translations?languages=de'))
 
-        then: "a correct response is returned"
+        then: "only the requested t9n is returned"
         translations.lang.de != null
         translations.lang.en == null
     }
@@ -81,14 +81,49 @@ class TranslationControllerMockMvcSpec extends VeoMvcSpec {
             createTestDomain(it, DSGVO_DOMAINTEMPLATE_UUID)
         }
 
-        when: "a request for t9ns is made"
+        when: "an unsupported language is requested"
         def translations = parseJson(get('/translations?languages=tlh'))
 
         then: "a fallback response is returned"
         translations.lang.keySet() ==~ ['tlh']
-        with (translations.lang.tlh) {
+        with(translations.lang.tlh) {
             asset == 'asset'
             description == 'Description'
         }
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "get the translation for an invalid language"() {
+        given:
+        createTestClient().tap {
+            createTestDomain(it, DSGVO_DOMAINTEMPLATE_UUID)
+        }
+
+        when: "a request for a non-existing ISO country code is made"
+        def translations = parseJson(get('/translations?languages=vulcan'))
+
+        then: "no translations are returned"
+        translations.lang.de == null
+        translations.lang.en == null
+
+        then: "...except for a deprecated default translation for risk definitions"
+        // TODO VEO-1739 remove deprecated "default translation"
+        // translations.lang.vulcan == null
+        translations.lang.vulcan.riskDefinition != null
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "get a translation with a region"() {
+        given:
+        createTestClient().tap {
+            createTestDomain(it, DSGVO_DOMAINTEMPLATE_UUID)
+        }
+
+        when: "a request with a region is made"
+        def translations = parseJson(get('/translations?languages=de-CH'))
+
+        then: "the matching language is returned"
+        translations.lang.de != null
+        translations.lang.en == null
     }
 }

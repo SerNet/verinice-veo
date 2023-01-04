@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
+import static org.veo.core.entity.TranslationProvider.convertLocales;
+
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.validation.constraints.NotNull;
@@ -28,7 +31,6 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import org.veo.core.entity.TranslationProvider;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -38,11 +40,14 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class RiskMethod implements TranslationProvider {
   @ToString.Include @EqualsAndHashCode.Include @NotNull
-  private Map<String, Map<String, String>> translations = new HashMap<>();
+  private Map<Locale, Map<String, String>> translations = new HashMap<>();
+
+  public RiskMethod(Map<String, Map<String, String>> translations) {
+    this.translations = convertLocales(translations);
+  }
 
   /**
    * Provide compatibility with old clients and data structure. This will read the old data and
@@ -66,7 +71,8 @@ public class RiskMethod implements TranslationProvider {
 
   @Deprecated
   private Map<String, String> getDefaultTranslation() {
-    return translations.computeIfAbsent("de", t -> new HashMap<String, String>());
+    return translations.computeIfAbsent(
+        new Locale.Builder().setLanguage("de").build(), t -> new HashMap<String, String>());
   }
 
   /**

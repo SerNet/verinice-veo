@@ -22,6 +22,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.veo.core.entity.specification.TranslationValidator;
 import org.veo.core.entity.specification.TranslationValidator.Violation;
@@ -32,10 +33,6 @@ import org.veo.core.entity.specification.TranslationValidator.Violation;
  */
 public class TranslationException extends DomainException {
 
-  public TranslationException(String msg) {
-    super(msg);
-  }
-
   public TranslationException(List<Violation> issues) {
     super(
         "Issues were found in the translations: "
@@ -45,7 +42,7 @@ public class TranslationException extends DomainException {
                 .collect(joining("    /    ")));
   }
 
-  private static String printViolationsForLanguage(String lang, List<Violation> issues) {
+  private static String printViolationsForLanguage(Locale lang, List<Violation> issues) {
     var violationTexts =
         issues.stream().collect(groupingBy(Violation::reason)).entrySet().stream()
             .map(group -> printViolationsForReason(group.getKey(), group.getValue()))

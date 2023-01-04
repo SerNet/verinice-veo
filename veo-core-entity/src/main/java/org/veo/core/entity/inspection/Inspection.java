@@ -19,11 +19,13 @@ package org.veo.core.entity.inspection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.TranslationProvider;
 import org.veo.core.entity.condition.Condition;
 import org.veo.core.entity.condition.DecisionResultValueProvider;
 import org.veo.core.entity.condition.EqualsMatcher;
@@ -34,7 +36,6 @@ import org.veo.core.entity.decision.DecisionRef;
 
 import lombok.Data;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 /**
  * Configurable check that can be performed on an {@link Element}. If all {@link Condition}s match
@@ -42,7 +43,6 @@ import lombok.RequiredArgsConstructor;
  * {@link Severity} & {@link Suggestion}s.
  */
 @Data
-@RequiredArgsConstructor
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public class Inspection {
   public Inspection(
@@ -56,11 +56,16 @@ public class Inspection {
   }
 
   @NonNull Severity severity;
-  final Map<String, String> description;
+  final Map<Locale, String> description;
   String elementType;
   String elementSubType;
   final List<Condition> conditions = new ArrayList<>();
   final List<Suggestion> suggestions = new ArrayList<>();
+
+  public Inspection(Severity severity, Map<String, String> description) {
+    this.severity = severity;
+    this.description = TranslationProvider.convertLocales(description);
+  }
 
   public Optional<Finding> run(Element element, Domain domain) {
     if (elementType != null && !elementType.equals(element.getModelType())) {

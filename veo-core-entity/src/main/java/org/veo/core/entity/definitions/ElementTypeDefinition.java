@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.definitions;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -46,7 +47,7 @@ public interface ElementTypeDefinition {
   void setLinks(Map<String, LinkDefinition> definitions);
 
   @NotNull
-  Map<String, Map<String, String>> getTranslations();
+  Map<Locale, Map<String, String>> getTranslations();
 
-  void setTranslations(Map<String, Map<String, String>> translations);
+  void setTranslations(Map<Locale, Map<String, String>> translations);
 }
