@@ -180,7 +180,7 @@ pipeline {
                         timeout(time: 20, unit: 'MINUTES'){
                             script {
                                 withDockerNetwork{ n ->
-                                    docker.image('postgres:13.4-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
+                                    docker.image('postgres:13.9-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
                                         docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages} --network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
                                             unstash "classes"
                                             unstash "test-classes"
@@ -241,7 +241,7 @@ pipeline {
                         timeout(time: 20, unit: 'MINUTES'){
                             script {
                                 withDockerNetwork{ n ->
-                                    docker.image('postgres:13.4-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
+                                    docker.image('postgres:13.9-alpine').withRun("--network ${n} --name database-${n} -e POSTGRES_USER=test -e POSTGRES_PASSWORD=test") { db ->
                                         docker.image("eu.gcr.io/veo-projekt/veo:git-${env.GIT_COMMIT}").withRun("\
                                 --network ${n}\
                                 --name veo-${n}\
