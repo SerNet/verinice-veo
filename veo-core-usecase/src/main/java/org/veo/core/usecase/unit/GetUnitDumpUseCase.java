@@ -26,8 +26,6 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.specification.ClientBoundaryViolationException;
-import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.UnitRepository;
@@ -49,13 +47,8 @@ public class GetUnitDumpUseCase
   public OutputData execute(InputData input) {
     var unit = unitRepository.getById(input.unitId);
     if (!accountProvider.getCurrentUserAccount().isAdmin()) {
-      try {
-        unit.checkSameClient(accountProvider.getCurrentUserAccount().getClient());
-      } catch (ClientBoundaryViolationException e) {
-        throw new MissingAdminPrivilegesException();
-      }
+      unit.checkSameClient(accountProvider.getCurrentUserAccount().getClient());
     }
-
     return new OutputData(unit, getElements(unit));
   }
 

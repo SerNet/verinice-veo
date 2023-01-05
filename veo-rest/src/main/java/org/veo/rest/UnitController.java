@@ -57,9 +57,11 @@ import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
+import org.veo.adapter.presenter.api.dto.UnitDumpDto;
 import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
+import org.veo.adapter.presenter.api.io.mapper.UnitDumpMapper;
 import org.veo.adapter.presenter.api.openapi.IdRefTailoringReferenceParameterReferencedElement;
 import org.veo.adapter.presenter.api.response.IncarnateDescriptionsDto;
 import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
@@ -73,6 +75,7 @@ import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase;
 import org.veo.core.usecase.unit.ChangeUnitUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
+import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitsUseCase;
 import org.veo.core.usecase.unit.UpdateUnitUseCase;
@@ -114,6 +117,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
   private final GetUnitsUseCase getUnitsUseCase;
   private final ApplyIncarnationDescriptionUseCase applyIncarnationDescriptionUseCase;
   private final GetIncarnationDescriptionUseCase getIncarnationDescriptionUseCase;
+  private final GetUnitDumpUseCase getUnitDumpUseCase;
 
   @GetMapping(value = "/{unitId}/incarnations")
   @Operation(
@@ -257,6 +261,27 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
             output -> entityToDtoTransformer.transformUnit2Dto(output.getUnit()));
     return unitFuture.thenApply(
         unitDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(unitDto));
+  }
+
+  @GetMapping(value = "/{id}/export")
+  @Operation(summary = "Exports given unit, including unit metadata, domains, elements & risks")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Unit export",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = UnitDumpDto.class))),
+        @ApiResponse(responseCode = "404", description = "Unit not found")
+      })
+  public CompletableFuture<UnitDumpDto> exportUnit(
+      @Parameter(required = false, hidden = true) Authentication auth, @PathVariable String id) {
+    return useCaseInteractor.execute(
+        getUnitDumpUseCase,
+        (Supplier<GetUnitDumpUseCase.InputData>) () -> UnitDumpMapper.mapInput(id),
+        out -> UnitDumpMapper.mapOutput(out, entityToDtoTransformer));
   }
 
   // TODO: veo-279 use the complete dto

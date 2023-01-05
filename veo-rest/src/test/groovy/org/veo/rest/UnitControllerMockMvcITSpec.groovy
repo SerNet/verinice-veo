@@ -44,10 +44,12 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
+import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.entity.specification.MaxUnitsExceededException
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
+import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
 import groovy.json.JsonSlurper
@@ -65,6 +67,9 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private ClientRepositoryImpl repository
+
+    @Autowired
+    private ScopeRepositoryImpl sRepository
 
     @Autowired
     private DomainRepositoryImpl domainRepository
@@ -544,5 +549,43 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         successfulAttempts.get() == allowedUnitsForUser
         and: 'the other creation attempts failed'
         failedAttempts.get() == numRequests - allowedUnitsForUser
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "export a unit"() {
+        given:
+        def unit = urepository.save(newUnit(client) {
+            name = "My unit"
+            addToDomains(domain)
+        })
+        sRepository.save(newScope(unit) {
+            name = 'My scope'
+        })
+
+        when:
+        def result = parseJson(get("/units/${unit.id.uuidValue()}/export"))
+        then:
+        with(result.unit) {
+            name == "My unit"
+        }
+        with(result.domains) {
+            size() == 1
+            first().name == 'DSGVO-test'
+        }
+        with(result.elements) {
+            size() == 1
+            first().name == 'My scope'
+        }
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "cannot export a unit from another client"() {
+        given:
+        def otherClient = repository.save(newClient())
+        def otherClientsUnit = urepository.save(newUnit(otherClient))
+        when:
+        get("/units/${otherClientsUnit.id.uuidValue()}/export", 404)
+        then: "an exception is thrown"
+        thrown(ClientBoundaryViolationException)
     }
 }
