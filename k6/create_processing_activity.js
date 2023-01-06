@@ -804,7 +804,7 @@ function deleteElement(path, uuid) {
 
 export function getToken() {
   console.log("Getting token...");
-  var url = KEYCLOAK_BASE_URL + "/auth/realms/" + KEYCLOAK_REALM + "/protocol/openid-connect/token";
+  var url = KEYCLOAK_BASE_URL + "/realms/" + KEYCLOAK_REALM + "/protocol/openid-connect/token";
   var params = {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
