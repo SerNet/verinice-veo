@@ -25,11 +25,12 @@ To run the script behind a proxy set environment variables before executing:
 
 Parameters to run the script:
 
- -e name=<USER_NAME> required
- -e password=<PASSWORD> required
- -e host=<HOSTNAME> e.g. verinice.com
- -e keycloak_url=<KEYCLOAK_BASE_URL> e.g. https://auth.verinice.com
- -e keycloak_client=<KEYCLOAK_CLIENT_ID> e.g. veo-prod
+ -e name=<USER_NAME> Username of an account for veo (required)
+ -e password=<PASSWORD> Password of an account for veo (required)
+ -e host=<HOSTNAME> Hostname of the veo services (e.g. verinice.com)
+ -e keycloak_url=<KEYCLOAK_BASE_URL> Keycloak base URL (e.g. https://auth.verinice.com)
+ -e keycloak_client=<KEYCLOAK_CLIENT_ID> Keycloak Client ID (e.g. veo-prod)
+ -e unit=<UNIT_ID> The ID of the unit that will be used for the test.
 
 After installing k6, this script is started with:
 
