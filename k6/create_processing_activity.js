@@ -116,9 +116,11 @@ export let options = {
   ],
   ext: {
     loadimpact: {
-      projectID: 3600296,
+      projectID: 3621988,
       // Test runs with the same name groups test runs together
-      name: "Create Processing"
+      name: "Create Processing Activity",distribution: {
+        distributionLabel1: { loadZone: 'amazon:de:frankfurt', percent: 100 }
+      }
     }
   }
 };
