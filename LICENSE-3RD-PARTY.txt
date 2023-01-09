@@ -856,7 +856,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-14. Group: com.fasterxml.uuid  Name: java-uuid-generator  Version: 4.0.1
+14. Group: com.fasterxml.uuid  Name: java-uuid-generator  Version: 4.1.0
 
 Project URL: https://github.com/cowtowncoder/java-uuid-generator
 
@@ -19439,5 +19439,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Fri Jan 06 15:31:55 UTC 2023.
+This report was generated at Mon Jan 09 16:31:58 UTC 2023.
 
