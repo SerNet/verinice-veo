@@ -120,7 +120,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
                 state == ACTIVATED
                 name == clientName
             }
-            unitDataRepository.findByClientId(cId.uuidValue()).size() == 1
+            unitDataRepository.findByClientId(cId.uuidValue()).size() == 2
         }
     }
 

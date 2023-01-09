@@ -62,7 +62,7 @@ public class CreateUnitUseCase
     implements TransactionalUseCase<CreateUnitUseCase.InputData, CreateUnitUseCase.OutputData>,
         RetryableUseCase {
 
-  private static final Integer DEFAULT_MAX_UNITS = 2;
+  public static final Integer DEFAULT_MAX_UNITS = 2;
 
   private final ClientRepository clientRepository;
   private final UnitRepository unitRepository;

@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.listeners;
 
+import static org.veo.core.usecase.unit.CreateUnitUseCase.DEFAULT_MAX_UNITS;
+
 import java.util.UUID;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -35,8 +37,9 @@ import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase;
+import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
-import org.veo.jobs.CreateDemoUnitJob;
+import org.veo.jobs.CreateClientUnitsJob;
 import org.veo.service.DefaultDomainCreator;
 
 import lombok.RequiredArgsConstructor;
@@ -53,6 +56,7 @@ public class ClientChangedEventListener {
   private final EntityFactory entityFactory;
   private final DefaultDomainCreator defaultDomainCreator;
   private final CreateDemoUnitUseCase createDemoUnitUseCase;
+  private final CreateUnitUseCase createUnitUseCase;
 
   @EventListener()
   @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -91,11 +95,13 @@ public class ClientChangedEventListener {
     Client client = entityFactory.createClient(event.getClientId(), event.getName());
     if (event.getMaxUnits() != null) {
       client.setMaxUnits(event.getMaxUnits());
+    } else {
+      client.setMaxUnits(DEFAULT_MAX_UNITS);
     }
     client.updateState(ClientChangeType.ACTIVATION);
     defaultDomainCreator.addDefaultDomains(client);
-    repository.save(client);
-    new CreateDemoUnitJob(createDemoUnitUseCase) {}.createDemoUnitForClient(client);
+    new CreateClientUnitsJob(createDemoUnitUseCase, createUnitUseCase) {}.createUnitsForClient(
+        repository.save(client));
   }
 
   private void modifyClient(Client client, ClientChangedEvent event) {

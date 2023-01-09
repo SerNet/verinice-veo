@@ -17,18 +17,34 @@
  ******************************************************************************/
 package org.veo.jobs;
 
+import java.util.Optional;
+
 import org.veo.core.entity.Client;
+import org.veo.core.usecase.common.NameableInputData;
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase;
+import org.veo.core.usecase.unit.CreateUnitUseCase;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
-public abstract class CreateDemoUnitJob {
+public abstract class CreateClientUnitsJob {
   private final CreateDemoUnitUseCase createDemoUnitUseCase;
+  private final CreateUnitUseCase createUnitUseCase;
 
-  public void createDemoUnitForClient(Client client) {
+  public void createUnitsForClient(Client client) {
+    log.info("create unit and demo unit for client: {}/{}", client, client.getMaxUnits());
     AsSystemUser.runInClient(
         client,
-        () -> createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(client.getId())));
+        () -> {
+          createUnitUseCase.execute(
+              new CreateUnitUseCase.InputData(
+                  new NameableInputData(Optional.empty(), "Unit 1", "", ""),
+                  client.getId(),
+                  Optional.empty(),
+                  client.getMaxUnits()));
+          createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(client.getId()));
+        });
   }
 }
