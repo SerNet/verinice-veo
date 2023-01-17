@@ -3,7 +3,7 @@ import groovy.json.JsonSlurper
 plugins {
     id 'org.springframework.boot' version '2.7.7' apply false
     id "com.github.spotbugs" version '5.0.13'
-    id "com.diffplug.spotless" version "6.12.1" apply false
+    id "com.diffplug.spotless" version "6.13.0" apply false
     id "io.freefair.lombok" version "6.6.1"
     id 'com.github.jk1.dependency-license-report' version '2.1'
 }
