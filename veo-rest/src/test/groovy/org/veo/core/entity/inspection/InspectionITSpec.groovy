@@ -71,7 +71,7 @@ class InspectionITSpec extends VeoSpec {
         then: "there is a warning"
         with(finding.get()) {
             severity == Severity.WARNING
-            description.en == "Every computer running linux needs a tux sticker"
+            description.translations.en == "Every computer running linux needs a tux sticker"
             with(suggestions[0]) {
                 it instanceof AddPartSuggestion
                 partSubType == "tuxSticker"

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Jonas Jordan
+ * Copyright (C) 2023  Alexander Koderman
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,28 +15,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.inspection;
+package org.veo.core.entity;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.veo.core.entity.TranslatedText;
+import javax.validation.constraints.NotNull;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
-/** A problem or observation yielded by an {@link Inspection}. */
-@AllArgsConstructor
-@Getter
-public class Finding {
-  Severity severity;
-  TranslatedText description;
-  List<Suggestion> suggestions;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-  public Finding(Severity severity, Map<Locale, String> description, List<Suggestion> suggestions) {
-    this.severity = severity;
-    this.description = new TranslatedText(description);
-    this.suggestions = suggestions;
+/** A collection of translations of one particular term in different languages. */
+@Data
+@NoArgsConstructor
+public class TranslatedText {
+
+  @NotNull @JsonValue private Map<Locale, String> translations = new HashMap<>();
+
+  @JsonCreator
+  public TranslatedText(Map<Locale, String> themap) {
+    this.translations = themap;
+  }
+
+  public static TranslatedText of(Map<String, String> description) {
+    return new TranslatedText(TranslationProvider.convertLocales(description));
   }
 }

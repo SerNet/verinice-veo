@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
-import static org.veo.core.entity.TranslationProvider.convertLocales;
 import static org.veo.core.entity.riskdefinition.DeprecatedAttributes.ABBREVIATION;
 import static org.veo.core.entity.riskdefinition.DeprecatedAttributes.DESCRIPTION;
 import static org.veo.core.entity.riskdefinition.DeprecatedAttributes.NAME;
@@ -36,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import org.veo.core.entity.Constraints;
+import org.veo.core.entity.TranslationMap;
 import org.veo.core.entity.TranslationProvider;
 
 import lombok.Data;
@@ -61,7 +61,7 @@ public class DimensionDefinition implements TranslationProvider {
   @ToString.Include
   private String id;
 
-  @NotNull @NotEmpty private Map<Locale, Map<String, String>> translations = new HashMap<>();
+  @NotNull @NotEmpty private TranslationMap translations = new TranslationMap();
 
   public DimensionDefinition(String id) {
     this.id = id;
@@ -69,7 +69,7 @@ public class DimensionDefinition implements TranslationProvider {
 
   public DimensionDefinition(String id, Map<String, Map<String, String>> translations) {
     this.id = id;
-    this.translations = convertLocales(translations);
+    this.translations = TranslationMap.of(translations);
   }
 
   /**
@@ -90,10 +90,15 @@ public class DimensionDefinition implements TranslationProvider {
     }
   }
 
+  public Map<Locale, Map<String, String>> getTranslations() {
+    return translations.getTranslations();
+  }
+
   @Deprecated
   private Map<String, String> getDefaultTranslation() {
-    return translations.computeIfAbsent(
-        new Locale.Builder().setLanguage("de").build(), t -> new HashMap<>());
+    return translations
+        .getTranslations()
+        .computeIfAbsent(new Locale.Builder().setLanguage("de").build(), t -> new HashMap<>());
   }
 
   @Deprecated

@@ -21,15 +21,14 @@ import static org.veo.core.entity.Element.ELEMENT_TYPE_MAX_LENGTH;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.aspects.SubTypeAspect;
 import org.veo.core.entity.event.ElementEvent;
 
@@ -43,7 +42,7 @@ import lombok.Data;
 @Data
 public class Decision {
   /** Translated human-readable text. Key is ISO language code, value is text. */
-  @NotNull private final Map<Locale, String> name;
+  @NotNull private final TranslatedText name;
 
   @Size(max = ELEMENT_TYPE_MAX_LENGTH)
   private final String elementType;
@@ -61,9 +60,7 @@ public class Decision {
       String elementSubType,
       List<Rule> rules,
       Boolean defaultResultValue) {
-    this.name =
-        name.entrySet().stream()
-            .collect(Collectors.toMap(e -> Locale.forLanguageTag(e.getKey()), Map.Entry::getValue));
+    this.name = TranslatedText.of(name);
     this.elementType = elementType;
     this.elementSubType = elementSubType;
     this.rules = rules;

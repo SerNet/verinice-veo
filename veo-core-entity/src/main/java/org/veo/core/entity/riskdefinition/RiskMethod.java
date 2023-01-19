@@ -17,18 +17,15 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
-import static org.veo.core.entity.TranslationProvider.convertLocales;
-
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
+import org.veo.core.entity.TranslationMap;
 import org.veo.core.entity.TranslationProvider;
 
 import lombok.Data;
@@ -42,11 +39,11 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 public class RiskMethod implements TranslationProvider {
-  @ToString.Include @EqualsAndHashCode.Include @NotNull
-  private Map<Locale, Map<String, String>> translations = new HashMap<>();
+  @ToString.Include @EqualsAndHashCode.Include
+  private TranslationMap translations = new TranslationMap();
 
   public RiskMethod(Map<String, Map<String, String>> translations) {
-    this.translations = convertLocales(translations);
+    this.translations = TranslationMap.of(translations);
   }
 
   /**
@@ -69,10 +66,15 @@ public class RiskMethod implements TranslationProvider {
     }
   }
 
+  public Map<Locale, Map<String, String>> getTranslations() {
+    return translations.getTranslations();
+  }
+
   @Deprecated
   private Map<String, String> getDefaultTranslation() {
-    return translations.computeIfAbsent(
-        new Locale.Builder().setLanguage("de").build(), t -> new HashMap<String, String>());
+    return translations
+        .getTranslations()
+        .computeIfAbsent(new Locale.Builder().setLanguage("de").build(), t -> new HashMap<>());
   }
 
   /**

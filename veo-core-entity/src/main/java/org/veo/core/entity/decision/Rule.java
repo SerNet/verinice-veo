@@ -20,14 +20,13 @@ package org.veo.core.entity.decision;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.TranslationProvider;
+import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.condition.Condition;
 import org.veo.core.entity.condition.CustomAspectAttributeSizeProvider;
 import org.veo.core.entity.condition.CustomAspectAttributeValueProvider;
@@ -54,11 +53,11 @@ public class Rule {
 
   public Rule(Boolean output, Map<String, String> description) {
     this.output = output;
-    this.description = TranslationProvider.convertLocales(description);
+    this.description = TranslatedText.of(description);
   }
 
   /** Translated human-readable texts. Key is ISO language code, value is text. */
-  @NotNull private final Map<Locale, String> description;
+  @NotNull private final TranslatedText description;
 
   /** The rule only matches an element if any of these conditions match the element. */
   private final List<Condition> conditions = new ArrayList<>();
