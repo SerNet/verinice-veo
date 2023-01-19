@@ -252,6 +252,7 @@ pipeline {
                                 -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver\
                                 -e SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=${env.VEO_AUTH_URL}\
                                 -e SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=${env.VEO_AUTH_URL}/protocol/openid-connect/certs\
+                                -e SPRING_JACKSON_DESERIALIZATION_FAIL_ON_UNKNOWN_PROPERTIES=true\
                                 -e 'VEO_CORS_ORIGINS=https://*.verinice.example, https://frontend.somewhereelse.example'\
                                 -e VEO_DEFAULT_DOMAINTEMPLATE_NAMES=DS-GVO,test-domain\
                                 -e VEO_ETAG_SALT=zuL4Q8JKdy\
