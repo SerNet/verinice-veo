@@ -243,7 +243,11 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     return useCaseInteractor.execute(
         createDomainUseCase,
         new CreateDomainUseCase.InputData(
-            getAuthenticatedClient(auth), domainDto.getName(), domainDto.getAuthority()),
+            getAuthenticatedClient(auth),
+            domainDto.getName(),
+            domainDto.getAbbreviation(),
+            domainDto.getDescription(),
+            domainDto.getAuthority()),
         output -> {
           ApiResponseBody body = CreateOutputMapper.map(output.getDomain());
           return RestApiResponse.created(URL_BASE_PATH, body);

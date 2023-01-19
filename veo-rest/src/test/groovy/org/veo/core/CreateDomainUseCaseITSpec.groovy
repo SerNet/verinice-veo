@@ -53,12 +53,14 @@ class CreateDomainUseCaseITSpec extends VeoSpringSpec{
         })
 
         when: "creating a domain"
-        useCase.execute(new CreateDomainUseCase.InputData(client, "do-main", "st. nic"))
+        useCase.execute(new CreateDomainUseCase.InputData(client, "do-main", "dom", "it's great", "st. nic"))
 
         then: "it has been persisted"
         def domain = domainRepository
                 .findAllActiveByClient(client.idAsString)
                 .find { it.name == "do-main" }
+        domain.abbreviation == "dom"
+        domain.description == "it's great"
         domain.authority == "st. nic"
     }
 
@@ -69,7 +71,7 @@ class CreateDomainUseCaseITSpec extends VeoSpringSpec{
         })
 
         when: "attempting to create a domain with the same name"
-        useCase.execute(new CreateDomainUseCase.InputData(client, "do-main", "st. nic"))
+        useCase.execute(new CreateDomainUseCase.InputData(client, "do-main", "dom", "it's great", "st. nic"))
 
         then: "it fails"
         def ex = thrown(EntityAlreadyExistsException)
@@ -83,7 +85,7 @@ class CreateDomainUseCaseITSpec extends VeoSpringSpec{
         })
 
         when: "attempting to create a domain with the same name"
-        useCase.execute(new CreateDomainUseCase.InputData(client, "do-main", "st. nic"))
+        useCase.execute(new CreateDomainUseCase.InputData(client, "do-main", "dom", "it's great", "st. nic"))
 
         then: "it fails"
         def ex = thrown(EntityAlreadyExistsException)

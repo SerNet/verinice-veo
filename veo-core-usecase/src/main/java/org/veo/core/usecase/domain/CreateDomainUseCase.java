@@ -51,6 +51,8 @@ public class CreateDomainUseCase
     }
 
     var domain = entityFactory.createDomain(input.name, input.authority, null);
+    domain.setAbbreviation(input.abbreviation);
+    domain.setDescription(input.description);
     domain.setOwner(input.client);
     // TODO VEO-1812: Remove assignment because domains should not have a template version
     domain.setTemplateVersion("0.1.0");
@@ -67,6 +69,8 @@ public class CreateDomainUseCase
   public static class InputData implements UseCase.InputData {
     Client client;
     String name;
+    String abbreviation;
+    String description;
     String authority;
   }
 

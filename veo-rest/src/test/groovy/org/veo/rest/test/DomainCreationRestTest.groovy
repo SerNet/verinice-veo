@@ -34,12 +34,16 @@ class DomainCreationRestTest extends VeoRestTest {
         def domainName = "Domain creation test ${randomUUID()}"
         def domainId = post("/domains", [
             name: domainName,
+            abbreviation: "dct",
+            description: "best one ever",
             authority: "JJ",
         ], 201, CONTENT_CREATOR).body.resourceId
 
         then: "it can be retrieved"
         with(get("/domains/$domainId").body) {
             name == domainName
+            abbreviation == "dct"
+            description == "best one ever"
             authority == "JJ"
             templateVersion == "0.1.0"
             domainTemplate == null
