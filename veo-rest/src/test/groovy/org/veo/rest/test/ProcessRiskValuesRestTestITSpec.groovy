@@ -63,7 +63,8 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
                     status: "NEW",
                     riskValues: [
                         DSRA : [
-                            potentialProbability: 2
+                            potentialProbability           : 2,
+                            potentialProbabilityExplanation: "$IT_HAPPENED"
                         ]
                     ]
                 ]
@@ -145,7 +146,6 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         when: "the risk is updated with additional values"
         probability.specificProbability = 2
         probability.specificProbabilityExplanation = NO_DICE
-        probability.potentialProbabilityExplanation = IT_HAPPENED
 
         impactI.specificImpact = 3
         impactI.specificImpactExplanation = BRACE_FOR_IMPACT
