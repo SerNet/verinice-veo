@@ -254,6 +254,11 @@ public final class EntityToDtoTransformer {
     target.setTemplateVersion(source.getTemplateVersion());
     target.setDecisions(source.getDecisions());
     target.setProfiles(Map.copyOf(source.getProfiles()));
+    target.setElementTypeDefinitions(
+        source.getElementTypeDefinitions().stream()
+            .collect(
+                Collectors.toMap(
+                    ElementTypeDefinition::getElementType, this::mapElementTypeDefinition)));
 
     mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);

@@ -49,6 +49,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,6 +64,7 @@ import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
+import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.UnitDumpDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainDto;
@@ -349,8 +351,32 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     }
   }
 
+  @PutMapping(value = "/{id}/element-type-definitions/{type:[\\w]+}")
+  @Operation(summary = "Updates an element type definition in a domain")
+  @ApiResponses(
+      value = {@ApiResponse(responseCode = "204", description = "Element type definition updated")})
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> updateElementTypeDefinition(
+      Authentication auth,
+      @PathVariable String id,
+      @PathVariable EntityType type,
+      @RequestBody ElementTypeDefinitionDto elementTypeDefinitionDto) {
+    Client client = getAuthenticatedClient(auth);
+    return useCaseInteractor.execute(
+        updateElementTypeDefinitionUseCase,
+        new UpdateElementTypeDefinitionUseCase.InputData(
+            client,
+            Key.uuidFrom(id),
+            type,
+            dtoToEntityTransformer.mapElementTypeDefinition(
+                type.getSingularTerm(), elementTypeDefinitionDto, null)),
+        out -> ResponseEntity.noContent().build());
+  }
+
   @PostMapping(value = "/{id}/elementtypedefinitions/{type:[\\w]+}/updatefromobjectschema")
-  @Operation(summary = "Updates a domain with an entity schema.")
+  @Operation(
+      summary =
+          "Updates a domain with an entity schema. Deprecated, use PUT /domains/{id}/element-type-definitions/{type}",
+      deprecated = true)
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Schema updated")})
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateDomainWithSchema(
       Authentication auth,

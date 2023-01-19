@@ -30,7 +30,6 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.usecase.domaintemplate.EntityAlreadyExistsException
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 
@@ -127,6 +126,17 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         result._self == "http://localhost/domains/${testDomain.id.uuidValue()}"
         result.name == testDomain.name
         result.catalogs.size() == 1
+        result.elementTypeDefinitions.size() == 8
+        result.elementTypeDefinitions.keySet() =~ [
+            'asset',
+            'control',
+            'process',
+            'scope',
+            'scenario',
+            'person',
+            'document',
+            'incident'
+        ]
         with(result.decisions.piaMandatory) {
             name.en == "Data Protection Impact Assessment mandatory"
             elementSubType == "PRO_DataProcessing"
@@ -209,6 +219,67 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         }
     }
 
+    @WithUserDetails("content-creator")
+    def "update an element type definition in a domain"() {
+        given:
+        def schemaJson = [
+            subTypes:[
+                SCP_Container:[
+                    statuses:['Empty', 'Full']
+                ]
+            ],
+            customAspects:[
+                container_lid:[
+                    attributeDefinitions: [
+                        container_lid_present : [type: 'boolean']
+                    ]
+                ]
+            ],
+            links:[
+                container_owner:[
+                    targetType: 'person'
+                ]
+            ],
+            translations:[
+                en:[
+                    scope_SCP_Container_status_Empty: 'Empty',
+                    scope_SCP_Container_status_Full: 'Full',
+                    container_lid_present: 'Lid present?',
+                    container_owner: 'Owner'
+                ]
+            ],
+        ]
+        when: "updating the scope definition"
+        def result = put("/domains/${testDomain.id.uuidValue()}/element-type-definitions/scope", schemaJson, 204)
+        and: 'reloading the updated domain from the database'
+        def updatedDomain = txTemplate.execute {
+            def client = clientRepository.findById(testDomain.owningClient.get().id).get()
+            def d = client.domains.find{it.id == testDomain.id}
+            //initialize lazy associations
+            d.elementTypeDefinitions.each {
+                it.subTypes.each {
+                    it.value.statuses
+                }
+            }
+            d
+        }
+        then: 'the entity schemas are updated'
+
+        with(updatedDomain.getElementTypeDefinition('scope')) {
+            with(it.subTypes) {
+                it.keySet() ==~ [
+                    'SCP_Container'
+                ]
+            }
+            with(it.translations) {
+                it.size() == 1
+                with (it.en) {
+                    it.scope_SCP_Container_status_Empty == 'Empty'
+                }
+            }
+        }
+    }
+
     @WithUserDetails("user@domain.example")
     def "cannot update element type schema as regular user"() {
 
@@ -220,6 +291,14 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         def status = postUnauthorized("/domains/${testDomain.id.uuidValue()}/elementtypedefinitions/scope/updatefromobjectschema", schemaJson)
         then: "it is forbidden"
         status.andReturn().response.status == 403
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "cannot update element type definition as regular user"() {
+        when:
+        def response = putUnauthorized("/domains/${testDomain.id.uuidValue()}/element-type-definitions/scope", [:])
+        then:
+        response.andReturn().response.status == 403
     }
 
     @WithUserDetails("user@domain.example")

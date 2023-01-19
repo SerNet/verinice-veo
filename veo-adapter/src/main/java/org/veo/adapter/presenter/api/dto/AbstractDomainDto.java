@@ -94,6 +94,11 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
       requiredMode = REQUIRED)
   private Map<String, ProfileDefinition> profiles = new HashMap<>();
 
+  @Schema(
+      description = "The definitions of domain-specific element properties",
+      requiredMode = REQUIRED)
+  private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions = new HashMap<>();
+
   @Override
   public Class<? extends Identifiable> getModelInterface() {
     return Domain.class;

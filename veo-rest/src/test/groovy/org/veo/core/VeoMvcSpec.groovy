@@ -63,6 +63,15 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
         return asyncActions.andExpect(status().is4xxClientError())
     }
 
+    ResultActions putUnauthorized(String url, Map content) {
+        ResultActions asyncActions = mvc
+                .perform(
+                MockMvcRequestBuilders.put(url)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON))
+        return asyncActions.andExpect(status().is4xxClientError())
+    }
+
     ResultActions post(String url, Map content, int expectedStatusCode = 201) {
         doRequest(MockMvcRequestBuilders.post(url)
                 .contentType(APPLICATION_JSON)
