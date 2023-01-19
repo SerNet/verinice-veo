@@ -303,6 +303,20 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "endpoint documentation is correct for GET /domaintemplates"() {
+        given: "the endpoint docs"
+        def endPointInfo = parsedApiDocs.paths["/domaintemplates"].get
+
+        expect: "that the correct schema is used"
+        endPointInfo.responses['200'].content['application/json'].schema['$ref'] == '#/components/schemas/DomainTemplateMetadataDto'
+
+        and: "that the schema only contains metadata"
+        with(parsedApiDocs.components.schemas.DomainTemplateMetadataDto) {
+            properties.name != null
+            properties.riskDefinitions == null
+        }
+    }
+
     def "endpoint documentation is correct for CreateDomainUseCase"() {
         when: "retrieving the information about the endpoint"
         def endPointInfo = parsedApiDocs.paths["/domaintemplates/{id}/createdomains"]

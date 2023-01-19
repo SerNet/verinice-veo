@@ -103,7 +103,7 @@ public class DomainTemplateController extends AbstractEntityController {
             content =
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = FullDomainDto.class)))
+                    schema = @Schema(implementation = DomainTemplateMetadataDto.class)))
       })
   public @Valid Future<ResponseEntity<List<DomainTemplateMetadataDto>>> getDomainTemplates() {
     return useCaseInteractor.execute(
