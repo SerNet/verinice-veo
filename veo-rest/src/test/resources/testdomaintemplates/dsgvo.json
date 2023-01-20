@@ -2835,34 +2835,33 @@
       },
       "customAspects": {
         "process_processing": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_processing_asProcessor": {
               "type": "boolean"
             }
           }
         },
         "process_accessAuthorization": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_accessAuthorization_concept": {
               "type": "boolean"
             },
             "process_accessAuthorization_description": {
-              "type": "string"
+              "type": "text"
             },
             "process_accessAuthorization_document": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             }
           }
         },
         "process_processingDetails": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_processingDetails_comment": {
-              "type": "string"
+              "type": "text"
             },
             "process_processingDetails_operatingStage": {
-              "enum": [
+              "type": "enum",
+              "allowedValues": [
                 "process_processingDetails_operatingStage_operation",
                 "process_processingDetails_operatingStage_planning",
                 "process_processingDetails_operatingStage_test",
@@ -2870,14 +2869,14 @@
               ]
             },
             "process_processingDetails_responsibleDepartment": {
-              "type": "string"
+              "type": "text"
             },
             "process_processingDetails_surveyConductedOn": {
-              "format": "date",
-              "type": "string"
+              "type": "date"
             },
             "process_processingDetails_typeOfSurvey": {
-              "enum": [
+              "type": "enum",
+              "allowedValues": [
                 "process_processingDetails_typeOfSurvey_new",
                 "process_processingDetails_typeOfSurvey_change"
               ]
@@ -2885,18 +2884,18 @@
           }
         },
         "process_PIADescription": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_PIADescription_accessAuthorisation": {
               "type": "boolean"
             },
             "process_PIADescription_accessAuthorisationAdditions": {
-              "type": "string"
+              "type": "text"
             },
             "process_PIADescription_affectedPersons": {
               "type": "boolean"
             },
             "process_PIADescription_affectedPersonsAdditions": {
-              "type": "string"
+              "type": "text"
             },
             "process_PIADescription_applicationsSystems": {
               "type": "boolean"
@@ -2905,47 +2904,48 @@
               "type": "boolean"
             },
             "process_PIADescription_dataTransferAdditions": {
-              "type": "string"
+              "type": "text"
             },
             "process_PIADescription_dataType": {
               "type": "boolean"
             },
             "process_PIADescription_dataTypeAdditions": {
-              "type": "string"
+              "type": "text"
             },
             "process_PIADescription_deletionPeriods": {
               "type": "boolean"
             },
             "process_PIADescription_deletionPeriodsAdditions": {
-              "type": "string"
+              "type": "text"
             },
             "process_PIADescription_informationObligations": {
               "type": "boolean"
             },
             "process_PIADescription_informationObligationsAdditions": {
-              "type": "string"
+              "type": "text"
             },
             "process_PIADescription_intendedPurpose": {
               "type": "boolean"
             },
             "process_PIADescription_intendedPurposeAdditions": {
-              "type": "string"
+              "type": "text"
             },
             "process_PIADescription_legalBasis": {
               "type": "boolean"
             },
             "process_PIADescription_legalBasisAdditions": {
-              "type": "string"
+              "type": "text"
             },
             "process_PIADescription_testObject": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
         "process_recipient": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_recipient_type": {
-              "enum": [
+              "type": "enum",
+              "allowedValues": [
                 "process_recipient_type_internal",
                 "process_recipient_type_external",
                 "process_recipient_type_processor"
@@ -2954,13 +2954,13 @@
           }
         },
         "process_PIADetails": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_PIADetails_date": {
-              "format": "date",
-              "type": "string"
+              "type": "date"
             },
             "process_PIADetails_reason": {
-              "enum": [
+              "type": "enum",
+              "allowedValues": [
                 "process_PIADetails_reason_new",
                 "process_PIADetails_reason_revision"
               ]
@@ -2968,18 +2968,18 @@
           }
         },
         "process_dataProcessing": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_dataProcessing_document": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             },
             "process_dataProcessing_explanation": {
-              "type": "string"
+              "type": "text"
             },
             "process_dataProcessing_legalBasis": {
-              "items": {
-                "enum": [
+              "type": "list",
+              "itemDefinition": {
+                "type": "enum",
+                "allowedValues": [
                   "process_dataProcessing_legalBasis_Art6Abs1litaDSGVO",
                   "process_dataProcessing_legalBasis_Art6Abs1litbDSGVO",
                   "process_dataProcessing_legalBasis_Art6Abs1litcDSGVO",
@@ -3002,42 +3002,39 @@
                   "process_dataProcessing_legalBasis_P26Abs4Satz1BDSG",
                   "process_dataProcessing_legalBasis_P4BDSG"
                 ]
-              },
-              "type": "array"
+              }
             },
             "process_dataProcessing_otherLegalBasis": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
         "process_PIADPO": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_PIADPO_advice": {
               "type": "boolean"
             },
             "process_PIADPO_comment": {
-              "type": "string"
+              "type": "text"
             },
             "process_PIADPO_document": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             }
           }
         },
         "process_dataTransfer": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_dataTransfer_document": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             },
             "process_dataTransfer_explanation": {
-              "type": "string"
+              "type": "text"
             },
             "process_dataTransfer_legalBasis": {
-              "items": {
-                "enum": [
+              "type": "list",
+              "itemDefinition": {
+                "type": "enum",
+                "allowedValues": [
                   "process_dataTransfer_legalBasis_Art6Abs2DSGVO",
                   "process_dataTransfer_legalBasis_Art6Abs3DSGVO",
                   "process_dataTransfer_legalBasis_Art9Abs2litfDSGVO",
@@ -3054,21 +3051,20 @@
                   "process_dataTransfer_legalBasis_P138_139StGB",
                   "process_dataTransfer_legalBasis_P64SGBVIII"
                 ]
-              },
-              "type": "array"
+              }
             },
             "process_dataTransfer_otherLegalBasis": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
         "process_opinionDPO": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_opinionDPO_comment": {
-              "type": "string"
+              "type": "text"
             },
             "process_opinionDPO_consultationComment": {
-              "type": "string"
+              "type": "text"
             },
             "process_opinionDPO_consultationConducted": {
               "type": "boolean"
@@ -3077,28 +3073,26 @@
               "type": "boolean"
             },
             "process_opinionDPO_document": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             },
             "process_opinionDPO_findings": {
-              "type": "string"
+              "type": "text"
             },
             "process_opinionDPO_privacyImpactAssessment": {
               "type": "boolean"
             },
             "process_opinionDPO_recommendations": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
         "process_PIAAssessment": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_PIAAssessment_necessity": {
-              "type": "string"
+              "type": "text"
             },
             "process_PIAAssessment_rules": {
-              "type": "string"
+              "type": "text"
             },
             "process_PIAAssessment_rulesExisting": {
               "type": "boolean"
@@ -3106,10 +3100,12 @@
           }
         },
         "process_dataSubjects": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_dataSubjects_dataSubjects": {
-              "items": {
-                "enum": [
+              "type": "list",
+              "itemDefinition": {
+                "type": "enum",
+                "allowedValues": [
                   "process_dataSubjects_dataSubjects_shareholders",
                   "process_dataSubjects_dataSubjects_employers",
                   "process_dataSubjects_dataSubjects_employees",
@@ -3131,47 +3127,42 @@
                   "process_dataSubjects_dataSubjects_students",
                   "process_dataSubjects_dataSubjects_websiteVisitors"
                 ]
-              },
-              "type": "array"
+              }
             },
             "process_dataSubjects_otherDataSubjects": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
         "process_intendedPurpose": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_intendedPurpose_intendedPurpose": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
         "process_PIAInvolvement": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_PIAInvolvement_affectedPersons": {
-              "type": "string"
+              "type": "text"
             },
             "process_PIAInvolvement_affectedPersonsComment": {
-              "type": "string"
+              "type": "text"
             },
             "process_PIAInvolvement_affectedPersonsDocument": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             },
             "process_PIAInvolvement_affectedPersonsPOV": {
               "type": "boolean"
             },
             "process_PIAInvolvement_stakeholder": {
-              "type": "string"
+              "type": "text"
             },
             "process_PIAInvolvement_stakeholderComment": {
-              "type": "string"
+              "type": "text"
             },
             "process_PIAInvolvement_stakeholderDocument": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             },
             "process_PIAInvolvement_stakeholderPOV": {
               "type": "boolean"
@@ -3182,45 +3173,42 @@
           }
         },
         "process_generalInformation": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_generalInformation_document": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             }
           }
         },
         "process_privacyImpactAssessment": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_privacyImpactAssessment_listed": {
-              "items": {
-                "enum": [
-                  "process_privacyImpactAssessment_listed_positive",
-                  "process_privacyImpactAssessment_listed_negative",
-                  "process_privacyImpactAssessment_listed_neither"
-                ]
-              }
+              "type": "enum",
+              "allowedValues": [
+                "process_privacyImpactAssessment_listed_positive",
+                "process_privacyImpactAssessment_listed_negative",
+                "process_privacyImpactAssessment_listed_neither"
+              ]
             },
             "process_privacyImpactAssessment_comment": {
-              "type": "string"
+              "type": "text"
             },
             "process_privacyImpactAssessment_document": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             },
             "process_privacyImpactAssessment_otherExclusions": {
               "type": "boolean"
             },
             "process_privacyImpactAssessment_otherExclusionsComment": {
-              "type": "string"
+              "type": "text"
             },
             "process_privacyImpactAssessment_otherReasons": {
-              "type": "string"
+              "type": "text"
             },
             "process_privacyImpactAssessment_processingCriteria": {
-              "items": {
-                "enum": [
+              "type": "list",
+              "itemDefinition": {
+                "type": "enum",
+                "allowedValues": [
                   "process_privacyImpactAssessment_processingCriteria_profiling",
                   "process_privacyImpactAssessment_processingCriteria_automated",
                   "process_privacyImpactAssessment_processingCriteria_monitoring",
@@ -3232,8 +3220,7 @@
                   "process_privacyImpactAssessment_processingCriteria_newTechnology",
                   "process_privacyImpactAssessment_processingCriteria_execution"
                 ]
-              },
-              "type": "array"
+              }
             },
             "process_privacyImpactAssessment_processingOnBlacklistArt35": {
               "type": "boolean"
@@ -3242,7 +3229,7 @@
               "type": "boolean"
             },
             "process_privacyImpactAssessment_supervisoryAuthorityComment": {
-              "type": "string"
+              "type": "text"
             },
             "process_privacyImpactAssessment_supervisoryAuthorityConsulted": {
               "type": "boolean"
@@ -3251,17 +3238,17 @@
               "type": "boolean"
             },
             "process_privacyImpactAssessment_twoProcessingCriteriaComment": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
         "process_informationsObligations": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_informationsObligations_document": {
-              "type": "string"
+              "type": "text"
             },
             "process_informationsObligations_explanation": {
-              "type": "string"
+              "type": "text"
             },
             "process_informationsObligations_status": {
               "type": "boolean"
@@ -3269,30 +3256,27 @@
           }
         },
         "process_PIAResult": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_PIAResult_comment": {
-              "type": "string"
+              "type": "text"
             },
             "process_PIAResult_consultationConducted": {
               "type": "boolean"
             },
             "process_PIAResult_consultationDate": {
-              "format": "date",
-              "type": "string"
+              "type": "date"
             },
             "process_PIAResult_consultationDokument": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             },
             "process_PIAResult_consultationJustification": {
-              "type": "string"
+              "type": "text"
             },
             "process_PIAResult_consultationRequired": {
               "type": "boolean"
             },
             "process_PIAResult_consultationResult": {
-              "type": "string"
+              "type": "text"
             },
             "process_PIAResult_risk": {
               "type": "boolean"
@@ -3302,19 +3286,21 @@
       },
       "links": {
         "process_dataType": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_dataType_comment": {
-              "type": "string"
+              "type": "text"
             },
             "process_dataType_dataOrigin": {
-              "enum": [
+              "type": "enum",
+              "allowedValues": [
                 "process_dataType_dataOrigin_direct",
                 "process_dataType_dataOrigin_transmission",
                 "process_dataType_dataOrigin_other"
               ]
             },
             "process_dataType_deletionPeriod": {
-              "enum": [
+              "type": "enum",
+              "allowedValues": [
                 "process_dataType_deletionPeriod_immediately",
                 "process_dataType_deletionPeriod_day",
                 "process_dataType_deletionPeriod_month",
@@ -3325,7 +3311,8 @@
               "type": "integer"
             },
             "process_dataType_deletionPeriodStart": {
-              "enum": [
+              "type": "enum",
+              "allowedValues": [
                 "process_dataType_deletionPeriodStart_completion",
                 "process_dataType_deletionPeriodStart_appplicationClosure",
                 "process_dataType_deletionPeriodStart_deletionRequest",
@@ -3336,35 +3323,33 @@
               ]
             },
             "process_dataType_descriptionDeletionProcedure": {
-              "type": "string"
+              "type": "text"
             },
             "process_dataType_otherDeletionPeriodStart": {
-              "type": "string"
+              "type": "text"
             }
           },
           "targetType": "asset",
           "targetSubType": "AST_Datatype"
         },
         "process_PIAOtherPersonsInvolved": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "person",
           "targetSubType": "PER_Person"
         },
         "process_internalRecipient": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_internalRecipient_thirdCountryDocument": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             },
             "process_internalRecipient_thirdCountryExplanation": {
-              "type": "string"
+              "type": "text"
             },
             "process_internalRecipient_thirdCountryGuarantees": {
-              "type": "string"
+              "type": "text"
             },
             "process_internalRecipient_thirdCountryName": {
-              "type": "string"
+              "type": "text"
             },
             "process_internalRecipient_thirdCountryProcessing": {
               "type": "boolean"
@@ -3374,25 +3359,23 @@
           "targetSubType": "PER_Person"
         },
         "process_responsiblePerson": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "person",
           "targetSubType": "PER_Person"
         },
         "process_externalRecipient": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_externalRecipient_thirdCountryDocument": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             },
             "process_externalRecipient_thirdCountryExplanation": {
-              "type": "string"
+              "type": "text"
             },
             "process_externalRecipient_thirdCountryGuarantees": {
-              "type": "string"
+              "type": "text"
             },
             "process_externalRecipient_thirdCountryName": {
-              "type": "string"
+              "type": "text"
             },
             "process_externalRecipient_thirdCountryProcessing": {
               "type": "boolean"
@@ -3402,25 +3385,23 @@
           "targetSubType": "PER_Person"
         },
         "process_requiredITSystems": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "asset",
           "targetSubType": "AST_IT-System"
         },
         "process_processor": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_processor_thirdCountryDocument": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             },
             "process_processor_thirdCountryExplanation": {
-              "type": "string"
+              "type": "text"
             },
             "process_processor_thirdCountryGuarantees": {
-              "type": "string"
+              "type": "text"
             },
             "process_processor_thirdCountryName": {
-              "type": "string"
+              "type": "text"
             },
             "process_processor_thirdCountryProcessing": {
               "type": "boolean"
@@ -3430,111 +3411,107 @@
           "targetSubType": "SCP_Processor"
         },
         "process_PIAAuditor": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_PIAAuditor_role": {
-              "type": "string"
+              "type": "text"
             }
           },
           "targetType": "person",
           "targetSubType": "PER_Person"
         },
         "process_PIAOOtherOrganisationsInvolved": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "scope",
           "targetSubType": "SCP_Scope"
         },
         "process_PIADataProcessing": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "process",
           "targetSubType": "PRO_DataProcessing"
         },
         "process_requiredApplications": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "asset",
           "targetSubType": "AST_Application"
         },
         "process_PIAResponsibleBody": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "scope",
           "targetSubType": "SCP_ResponsibleBody"
         },
         "process_PIAProcessOwner": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_PIAProcessOwner_role": {
-              "type": "string"
+              "type": "text"
             }
           },
           "targetType": "person",
           "targetSubType": "PER_Person"
         },
         "process_PIAProcessor": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "scope",
           "targetSubType": "SCP_Processor"
         },
         "process_tom": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "control",
           "targetSubType": "CTL_TOM"
         },
         "process_PIADescriptionAdditionalApplications": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "asset",
           "targetSubType": "AST_Application"
         },
         "process_PIARepresentatives": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_PIARepresentatives_role": {
-              "type": "string"
+              "type": "text"
             }
           },
           "targetType": "person",
           "targetSubType": "PER_Person"
         },
         "process_PIADescriptionAdditionalITSystems": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "asset",
           "targetSubType": "AST_IT-System"
         },
         "process_responsibleBody": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "scope",
           "targetSubType": "SCP_ResponsibleBody"
         },
         "process_controller": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_controller_document": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             }
           },
           "targetType": "scope",
           "targetSubType": "SCP_Controller"
         },
         "process_jointControllership": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "process_jointControllership_document": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             }
           },
           "targetType": "scope",
           "targetSubType": "SCP_JointController"
         },
         "process_dataTransmission": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "process",
           "targetSubType": "PRO_DataTransfer"
         },
         "process_PIAScenario": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "scenario",
           "targetSubType": "SCN_Scenario"
         },
         "process_PIAJointControllership": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "scope",
           "targetSubType": "SCP_JointController"
         }
@@ -4058,12 +4035,13 @@
       },
       "customAspects": {
         "scenario_threat": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "scenario_threat_otherType": {
-              "type": "string"
+              "type": "text"
             },
             "scenario_threat_type": {
-              "enum": [
+              "type": "enum",
+              "allowedValues": [
                 "scenario_threat_type_undirectedAttacks",
                 "scenario_threat_type_criminalAct",
                 "scenario_threat_type_forceMajeure",
@@ -4091,21 +4069,20 @@
           }
         },
         "scenario_generalInformation": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "scenario_generalInformation_document": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             }
           }
         },
         "scenario_vulnerability": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "scenario_vulnerability_otherType": {
-              "type": "string"
+              "type": "text"
             },
             "scenario_vulnerability_type": {
-              "enum": [
+              "type": "enum",
+              "allowedValues": [
                 "scenario_vulnerability_type_organisationalDeficiencies",
                 "scenario_vulnerability_type_technicalVulnerabilities",
                 "scenario_vulnerability_type_technicalBreakdown",
@@ -4233,74 +4210,72 @@
       },
       "customAspects": {
         "person_generalInformation": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "person_generalInformation_familyName": {
-              "type": "string"
+              "type": "text"
             },
             "person_generalInformation_givenName": {
-              "type": "string"
+              "type": "text"
             },
             "person_generalInformation_salutation": {
-              "type": "string"
+              "type": "text"
             },
             "person_generalInformation_title": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
         "person_address": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "person_address_address1": {
-              "type": "string"
+              "type": "text"
             },
             "person_address_address2": {
-              "type": "string"
+              "type": "text"
             },
             "person_address_city": {
-              "type": "string"
+              "type": "text"
             },
             "person_address_country": {
-              "type": "string"
+              "type": "text"
             },
             "person_address_postcode": {
-              "type": "string"
+              "type": "text"
             },
             "person_address_state": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
         "person_dataProtectionOfficer": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "person_dataProtectionOfficer_expertise": {
               "type": "boolean"
             },
             "person_dataProtectionOfficer_profession": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
         "person_contactInformation": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "person_contactInformation_email": {
-              "type": "string"
+              "type": "text"
             },
             "person_contactInformation_fax": {
-              "type": "string"
+              "type": "text"
             },
             "person_contactInformation_mobile": {
-              "type": "string"
+              "type": "text"
             },
             "person_contactInformation_office": {
-              "type": "string"
+              "type": "text"
             },
             "person_contactInformation_private": {
-              "type": "string"
+              "type": "text"
             },
             "person_contactInformation_website": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             }
           }
         }
@@ -4425,152 +4400,146 @@
       },
       "customAspects": {
         "scope_generalInformation": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "scope_generalInformation_document": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             }
           }
         },
         "scope_thirdCountry": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "scope_thirdCountry_address1": {
-              "type": "string"
+              "type": "text"
             },
             "scope_thirdCountry_address2": {
-              "type": "string"
+              "type": "text"
             },
             "scope_thirdCountry_city": {
-              "type": "string"
+              "type": "text"
             },
             "scope_thirdCountry_country": {
-              "type": "string"
+              "type": "text"
             },
             "scope_thirdCountry_description": {
-              "type": "string"
+              "type": "text"
             },
             "scope_thirdCountry_email": {
-              "type": "string"
+              "type": "text"
             },
             "scope_thirdCountry_fax": {
-              "type": "string"
+              "type": "text"
             },
             "scope_thirdCountry_name": {
-              "type": "string"
+              "type": "text"
             },
             "scope_thirdCountry_phone": {
-              "type": "string"
+              "type": "text"
             },
             "scope_thirdCountry_postcode": {
-              "type": "string"
+              "type": "text"
             },
             "scope_thirdCountry_state": {
-              "type": "string"
+              "type": "text"
             },
             "scope_thirdCountry_status": {
               "type": "boolean"
             },
             "scope_thirdCountry_website": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             }
           }
         },
         "scope_address": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "scope_address_address1": {
-              "type": "string"
+              "type": "text"
             },
             "scope_address_address2": {
-              "type": "string"
+              "type": "text"
             },
             "scope_address_city": {
-              "type": "string"
+              "type": "text"
             },
             "scope_address_country": {
-              "type": "string"
+              "type": "text"
             },
             "scope_address_postcode": {
-              "type": "string"
+              "type": "text"
             },
             "scope_address_state": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
         "scope_regulatoryAuthority": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "scope_regulatoryAuthority_address1": {
-              "type": "string"
+              "type": "text"
             },
             "scope_regulatoryAuthority_address2": {
-              "type": "string"
+              "type": "text"
             },
             "scope_regulatoryAuthority_city": {
-              "type": "string"
+              "type": "text"
             },
             "scope_regulatoryAuthority_country": {
-              "type": "string"
+              "type": "text"
             },
             "scope_regulatoryAuthority_description": {
-              "type": "string"
+              "type": "text"
             },
             "scope_regulatoryAuthority_email": {
-              "type": "string"
+              "type": "text"
             },
             "scope_regulatoryAuthority_fax": {
-              "type": "string"
+              "type": "text"
             },
             "scope_regulatoryAuthority_name": {
-              "type": "string"
+              "type": "text"
             },
             "scope_regulatoryAuthority_phone": {
-              "type": "string"
+              "type": "text"
             },
             "scope_regulatoryAuthority_postcode": {
-              "type": "string"
+              "type": "text"
             },
             "scope_regulatoryAuthority_state": {
-              "type": "string"
+              "type": "text"
             },
             "scope_regulatoryAuthority_website": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             }
           }
         },
         "scope_contactInformation": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "scope_contactInformation_email": {
-              "type": "string"
+              "type": "text"
             },
             "scope_contactInformation_fax": {
-              "type": "string"
+              "type": "text"
             },
             "scope_contactInformation_phone": {
-              "type": "string"
+              "type": "text"
             },
             "scope_contactInformation_website": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
         "scope_tomAssessment": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "scope_tomAssessment_certification": {
               "type": "boolean"
             },
             "scope_tomAssessment_certificationStandard": {
-              "type": "string"
+              "type": "text"
             },
             "scope_tomAssessment_comment": {
-              "type": "string"
+              "type": "text"
             },
             "scope_tomAssessment_overallAssessment": {
-              "type": "string"
+              "type": "text"
             },
             "scope_tomAssessment_securityConcept": {
               "type": "boolean"
@@ -4580,54 +4549,52 @@
       },
       "links": {
         "scope_informationSecurityOfficer": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "person",
           "targetSubType": "PER_Person"
         },
         "scope_headOfDataProcessing": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "person",
           "targetSubType": "PER_Person"
         },
         "scope_dataProtectionOfficer": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "scope_dataProtectionOfficer_affiliation": {
-              "enum": [
+              "type": "enum",
+              "allowedValues": [
                 "scope_dataProtectionOfficer_affiliation_internal",
                 "scope_dataProtectionOfficer_affiliation_external"
               ]
             },
             "scope_dataProtectionOfficer_comment": {
-              "type": "string"
+              "type": "text"
             },
             "scope_dataProtectionOfficer_nomination": {
               "type": "boolean"
             },
             "scope_dataProtectionOfficer_nominationDate": {
-              "format": "date",
-              "type": "string"
+              "type": "date"
             },
             "scope_dataProtectionOfficer_nominationEvidence": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             }
           },
           "targetType": "person",
           "targetSubType": "PER_DataProtectionOfficer"
         },
         "scope_tom": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "control",
           "targetSubType": "CTL_TOM"
         },
         "scope_management": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "person",
           "targetSubType": "PER_Person"
         },
         "scope_contract": {
-          "attributeSchemas": {},
+          "attributeDefinitions": {},
           "targetType": "document",
           "targetSubType": "DOC_Contract"
         }
@@ -4820,12 +4787,13 @@
       },
       "customAspects": {
         "document_contract": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "document_contract_description": {
-              "type": "string"
+              "type": "text"
             },
             "document_contract_location": {
-              "enum": [
+              "type": "enum",
+              "allowedValues": [
                 "document_contract_location_germany",
                 "document_contract_location_eu",
                 "document_contract_location_thirdCountry"
@@ -4835,10 +4803,11 @@
               "type": "boolean"
             },
             "document_contract_thirdCountry": {
-              "type": "string"
+              "type": "text"
             },
             "document_contract_type": {
-              "enum": [
+              "type": "enum",
+              "allowedValues": [
                 "document_contract_type_processorContract",
                 "document_contract_type_EUstandard"
               ]
@@ -4846,13 +4815,13 @@
           }
         },
         "document_details": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "document_details_approvalDate": {
-              "format": "date",
-              "type": "string"
+              "type": "date"
             },
             "document_details_classification": {
-              "enum": [
+              "type": "enum",
+              "allowedValues": [
                 "document_details_classification_public",
                 "document_details_classification_internalUse",
                 "document_details_classification_confidential",
@@ -4860,10 +4829,11 @@
               ]
             },
             "document_details_otherTypeOfDocument": {
-              "type": "string"
+              "type": "text"
             },
             "document_details_typeOfDocument": {
-              "enum": [
+              "type": "enum",
+              "allowedValues": [
                 "document_details_typeOfDocument_policy",
                 "document_details_typeOfDocument_contract",
                 "document_details_typeOfDocument_agreement",
@@ -4874,31 +4844,27 @@
               ]
             },
             "document_details_version": {
-              "type": "string"
+              "type": "text"
             }
           }
         },
         "document_revision": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "document_revision_comment": {
-              "type": "string"
+              "type": "text"
             },
             "document_revision_last": {
-              "format": "date",
-              "type": "string"
+              "type": "date"
             },
             "document_revision_next": {
-              "format": "date",
-              "type": "string"
+              "type": "date"
             }
           }
         },
         "document_generalInformation": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "document_generalInformation_externalLink": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             }
           }
         }
@@ -5005,16 +4971,16 @@
       },
       "customAspects": {
         "control_implementation": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "control_implementation_date": {
-              "format": "date",
-              "type": "string"
+              "type": "date"
             },
             "control_implementation_explanation": {
-              "type": "string"
+              "type": "text"
             },
             "control_implementation_status": {
-              "enum": [
+              "type": "enum",
+              "allowedValues": [
                 "control_implementation_status_yes",
                 "control_implementation_status_no",
                 "control_implementation_status_partially",
@@ -5024,19 +4990,19 @@
           }
         },
         "control_generalInformation": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "control_generalInformation_document": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             }
           }
         },
         "control_dataProtection": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "control_dataProtection_objectives": {
-              "items": {
-                "enum": [
+              "type": "list",
+              "itemDefinition": {
+                "type": "enum",
+                "allowedValues": [
                   "control_dataProtection_objectives_pseudonymization",
                   "control_dataProtection_objectives_encryption",
                   "control_dataProtection_objectives_confidentiality",
@@ -5046,23 +5012,20 @@
                   "control_dataProtection_objectives_recoverability",
                   "control_dataProtection_objectives_effectiveness"
                 ]
-              },
-              "type": "array"
+              }
             }
           }
         },
         "control_revision": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "control_revision_comment": {
-              "type": "string"
+              "type": "text"
             },
             "control_revision_last": {
-              "format": "date",
-              "type": "string"
+              "type": "date"
             },
             "control_revision_next": {
-              "format": "date",
-              "type": "string"
+              "type": "date"
             }
           }
         }
@@ -5157,12 +5120,13 @@
       },
       "customAspects": {
         "asset_details": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "asset_details_number": {
               "type": "integer"
             },
             "asset_details_operatingStage": {
-              "enum": [
+              "type": "enum",
+              "allowedValues": [
                 "asset_details_operatingStage_operation",
                 "asset_details_operatingStage_planning",
                 "asset_details_operatingStage_test",
@@ -5172,11 +5136,9 @@
           }
         },
         "asset_generalInformation": {
-          "attributeSchemas": {
+          "attributeDefinitions": {
             "asset_generalInformation_document": {
-              "format": "uri",
-              "pattern": "^(https?|ftp)://",
-              "type": "string"
+              "type": "externalDocument"
             }
           }
         }

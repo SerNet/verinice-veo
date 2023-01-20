@@ -65,7 +65,7 @@ public class CatalogMigrationService {
                         linkDef -> {
                           elementMigrationService.migrateAttributes(
                               linkTailoringReference.getAttributes(),
-                              linkDef.getAttributeSchemas());
+                              linkDef.getAttributeDefinitions());
                           try {
                             CatalogItemValidator.validate(linkTailoringReference, domain);
                           } catch (IllegalArgumentException illEx) {

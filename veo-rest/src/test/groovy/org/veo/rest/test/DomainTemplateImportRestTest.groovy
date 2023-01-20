@@ -140,7 +140,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         def response = post("/domaintemplates", template, 400, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
-        response.message.endsWith("Invalid value for attribute 'process_accessAuthorization_description': \$: integer found, string expected")
+        response.message.endsWith("Invalid value for attribute 'process_accessAuthorization_description': must be a string")
     }
 
     def "cannot import template with invalid catalog link"() {
@@ -364,27 +364,25 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                 'process': [
                     'customAspects': [
                         'process_accessAuthorization': [
-                            'attributeSchemas': [
+                            'attributeDefinitions': [
                                 'process_accessAuthorization_concept': [
                                     'type': 'boolean'],
                                 'process_accessAuthorization_description': [
-                                    'type': 'string'],
+                                    'type': 'text'],
                                 'process_accessAuthorization_document': [
-                                    'format': 'uri',
-                                    'pattern': '^(https?|ftp)://',
-                                    'type': 'string']]],
+                                    'type': 'externalDocument']]],
                         'process_processing': [
-                            'attributeSchemas': [
+                            'attributeDefinitions': [
                                 'process_processing_asProcessor': [
                                     'type': 'boolean']]]],
                     'links': [
                         'process_tom': [
-                            'attributeSchemas': [:],
+                            'attributeDefinitions': [:],
                             'targetSubType': 'CTL_TOM',
                             'targetType': 'control'
                         ],
                         'process_manager': [
-                            'attributeSchemas': [:],
+                            'attributeDefinitions': [:],
                             'targetType': 'person'
                         ],
                     ],

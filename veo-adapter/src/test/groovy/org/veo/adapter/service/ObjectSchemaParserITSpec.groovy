@@ -21,6 +21,14 @@ import com.fasterxml.jackson.databind.ObjectMapper
 
 import org.veo.core.entity.EntityType
 import org.veo.core.entity.definitions.ElementTypeDefinition
+import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition
+import org.veo.core.entity.definitions.attribute.DateAttributeDefinition
+import org.veo.core.entity.definitions.attribute.DateTimeAttributeDefinition
+import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition
+import org.veo.core.entity.definitions.attribute.ExternalDocumentAttributeDefinition
+import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
+import org.veo.core.entity.definitions.attribute.ListAttributeDefinition
+import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.transform.EntityFactory
 
 import spock.lang.Specification
@@ -63,18 +71,36 @@ class ObjectSchemaParserITSpec extends Specification {
 
         1 * elementDefinition.setCustomAspects({
             it.size() == 12
-            with( it.process_dataProcessing.attributeSchemas) {
+            with(it.process_dataProcessing.attributeDefinitions) {
                 with (process_dataProcessing_legalBasis) {
-                    it.type == 'array'
-                    with(it.items.enum) {
+                    it instanceof ListAttributeDefinition
+                    itemDefinition instanceof EnumAttributeDefinition
+                    with(itemDefinition.allowedValues) {
                         size() == 21
                         it.contains('process_dataProcessing_legalBasis_Art6Abs1litaDSGVO')
                     }
                 }
             }
 
-            with(it.process_opinionDPO.attributeSchemas) {
-                process_opinionDPO_document == [format : 'uri', type : 'string', pattern : '^(https?|ftp)://' ]
+            with(it.process_opinionDPO.attributeDefinitions) {
+                with(process_opinionDPO_document) {
+                    it instanceof ExternalDocumentAttributeDefinition
+                }
+            }
+
+            with(it.process_processingDetails.attributeDefinitions) {
+                with(process_processingDetails_surveyConductedOn) {
+                    it instanceof DateAttributeDefinition
+                }
+            }
+
+            with(it.process_accessAuthorization.attributeDefinitions) {
+                with(process_accessAuthorization_concept) {
+                    it instanceof BooleanAttributeDefinition
+                }
+                with(process_accessAuthorization_reviewTime) {
+                    it instanceof DateTimeAttributeDefinition
+                }
             }
         })
         1 * elementDefinition.setLinks({
@@ -82,20 +108,24 @@ class ObjectSchemaParserITSpec extends Specification {
             with( it.process_requiredApplications) {
                 it.targetType == 'asset'
                 it.targetSubType == 'AST_Application'
-                it.attributeSchemas == [:]
+                it.attributeDefinitions == [:]
             }
             with( it.process_dataType) {
                 it.targetType == 'asset'
                 it.targetSubType == 'AST_Datatype'
-                with( it.attributeSchemas) {
+                with( it.attributeDefinitions) {
                     with (process_dataType_comment) {
-                        it.type == 'string'
+                        it instanceof TextAttributeDefinition
                     }
                     with (process_dataType_deletionPeriod) {
-                        with(it.enum) {
+                        it instanceof EnumAttributeDefinition
+                        with(it.allowedValues) {
                             size() == 4
                             it.contains('process_dataType_deletionPeriod_immediately')
                         }
+                    }
+                    with(process_dataType_deletionPeriodCount) {
+                        it instanceof IntegerAttributeDefinition
                     }
                 }
             }

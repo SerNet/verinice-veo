@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.NotImplementedException;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.IntNode;
@@ -45,6 +47,15 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.SubTypeDefinition;
+import org.veo.core.entity.definitions.attribute.AttributeDefinition;
+import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition;
+import org.veo.core.entity.definitions.attribute.DateAttributeDefinition;
+import org.veo.core.entity.definitions.attribute.DateTimeAttributeDefinition;
+import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition;
+import org.veo.core.entity.definitions.attribute.ExternalDocumentAttributeDefinition;
+import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition;
+import org.veo.core.entity.definitions.attribute.ListAttributeDefinition;
+import org.veo.core.entity.definitions.attribute.TextAttributeDefinition;
 import org.veo.core.entity.riskdefinition.DiscreteValue;
 
 /** Add domain-specific sub schemas to an element schema. */
@@ -244,13 +255,13 @@ public class SchemaExtender {
 
   private ObjectNode createCustomAspectSchema(CustomAspectDefinition definition) {
     var caSchema = SchemaProvider.getInstance().getSchema(CustomAspectDto.class);
-    addAttributes(caSchema, definition.getAttributeSchemas());
+    addAttributes(caSchema, definition.getAttributeDefinitions());
     return caSchema;
   }
 
   private ObjectNode createLinkSchema(LinkDefinition definition) {
     var linkSchema = SchemaProvider.getInstance().getSchema(CustomLinkDto.class);
-    addAttributes(linkSchema, definition.getAttributeSchemas());
+    addAttributes(linkSchema, definition.getAttributeDefinitions());
 
     // Add target type & sub type constraints. These constraints can't be enforced
     // by JSON schema validation and are only addded to the schema as meta
@@ -263,13 +274,47 @@ public class SchemaExtender {
     return linkSchema;
   }
 
-  private void addAttributes(ObjectNode parentSchema, Map<String, Object> attributeSchemas) {
+  private void addAttributes(
+      ObjectNode parentSchema, Map<String, AttributeDefinition> attributeDefinitions) {
     var attributesNode = (ObjectNode) parentSchema.get(PROPS).get("attributes");
     attributesNode.put(ADDITIONAL_PROPERTIES, false);
 
     var attributePropsNode = attributesNode.putObject(PROPS);
-    attributeSchemas.forEach(
-        (attributeKey, attributeSchema) ->
-            attributePropsNode.set(attributeKey, mapper.valueToTree(attributeSchema)));
+    attributeDefinitions.forEach(
+        (attributeKey, definition) -> {
+          attributePropsNode.set(attributeKey, buildAttributeJsonSchema(definition));
+        });
+  }
+
+  private JsonNode buildAttributeJsonSchema(AttributeDefinition attributeDefinition) {
+    var schema = mapper.createObjectNode();
+    if (attributeDefinition instanceof BooleanAttributeDefinition) {
+      schema.put("type", "boolean");
+    } else if (attributeDefinition instanceof DateAttributeDefinition) {
+      schema.put("type", "string");
+      schema.put("format", "date");
+    } else if (attributeDefinition instanceof DateTimeAttributeDefinition) {
+      schema.put("type", "string");
+      schema.put("format", "date-time");
+    } else if (attributeDefinition instanceof EnumAttributeDefinition enumDefinition) {
+      schema.put("type", "string");
+      var allowedValues = schema.putArray("enum");
+      enumDefinition.getAllowedValues().forEach(allowedValues::add);
+    } else if (attributeDefinition instanceof ExternalDocumentAttributeDefinition) {
+      schema.put("type", "string");
+      schema.put("format", "uri");
+      schema.put("pattern", ExternalDocumentAttributeDefinition.PROTOCOL_PATTERN);
+    } else if (attributeDefinition instanceof IntegerAttributeDefinition) {
+      schema.put("type", "integer");
+    } else if (attributeDefinition instanceof ListAttributeDefinition listDefinition) {
+      schema.put("type", "array");
+      schema.set("items", buildAttributeJsonSchema(listDefinition.getItemDefinition()));
+    } else if (attributeDefinition instanceof TextAttributeDefinition) {
+      schema.put("type", "string");
+    } else
+      throw new NotImplementedException(
+          "JSON schema creation not implemented for attribute type %s"
+              .formatted(attributeDefinition.getClass().getSimpleName()));
+    return schema;
   }
 }

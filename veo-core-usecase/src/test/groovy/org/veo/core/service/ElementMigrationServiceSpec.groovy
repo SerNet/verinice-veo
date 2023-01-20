@@ -26,6 +26,7 @@ import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.SubTypeDefinition
+import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.service.ElementMigrationService
 
 import spock.lang.Specification
@@ -39,8 +40,8 @@ class ElementMigrationServiceSpec extends Specification{
         domain.getElementTypeDefinition("asset") >> Spy(ElementTypeDefinition) {
             customAspects >> [
                 typeA: Spy(CustomAspectDefinition) {
-                    attributeSchemas >> [
-                        attrA: [:]
+                    attributeDefinitions >> [
+                        attrA: new TextAttributeDefinition()
                     ]
                 }
             ]
@@ -78,8 +79,8 @@ class ElementMigrationServiceSpec extends Specification{
         domain.getElementTypeDefinition("asset") >> Spy(ElementTypeDefinition) {
             customAspects >> [
                 typeA: Spy(CustomAspectDefinition) {
-                    attributeSchemas >> [
-                        attrA: [:]
+                    attributeDefinitions >> [
+                        attrA: new TextAttributeDefinition()
                     ]
                 }
             ]
@@ -112,7 +113,7 @@ class ElementMigrationServiceSpec extends Specification{
         domain.getElementTypeDefinition("asset") >> Spy(ElementTypeDefinition) {
             links >> [
                 typeA: Mock(LinkDefinition) {
-                    attributeSchemas >> [:]
+                    attributeDefinitions >> [:]
                     targetType >> "person"
                     targetSubType >> "PER_Person"
                 }
@@ -153,8 +154,8 @@ class ElementMigrationServiceSpec extends Specification{
         domain.getElementTypeDefinition("asset") >>  Spy(ElementTypeDefinition) {
             links >> [
                 typeA: Spy(LinkDefinition) {
-                    attributeSchemas >> [
-                        attrA: [:]
+                    attributeDefinitions >> [
+                        attrA: new TextAttributeDefinition()
                     ]
                     targetType >> "person"
                     targetSubType >> "PER_Person"
@@ -194,13 +195,9 @@ class ElementMigrationServiceSpec extends Specification{
         domain.getElementTypeDefinition("asset") >>  Spy(ElementTypeDefinition) {
             customAspects >> [
                 typeA: Spy(CustomAspectDefinition) {
-                    attributeSchemas >> [
-                        firstName: [
-                            type: "string"
-                        ],
-                        lastName: [
-                            type: "string"
-                        ]
+                    attributeDefinitions >> [
+                        firstName: new TextAttributeDefinition(),
+                        lastName: new TextAttributeDefinition()
                     ]
                 }
             ]
@@ -238,17 +235,17 @@ class ElementMigrationServiceSpec extends Specification{
         domain.getElementTypeDefinition("asset") >>  Spy(ElementTypeDefinition) {
             links >> [
                 veryNicePersonLink: Spy(LinkDefinition) {
-                    attributeSchemas >> [:]
+                    attributeDefinitions >> [:]
                     targetType >> "person"
                     targetSubType >> "PER_VeryNice"
                 },
                 verySmartPeronLink: Spy(LinkDefinition) {
-                    attributeSchemas >> [:]
+                    attributeDefinitions >> [:]
                     targetType >> "person"
                     targetSubType >> "PER_VerySmart"
                 },
                 serverLink: Spy(LinkDefinition) {
-                    attributeSchemas >> [:]
+                    attributeDefinitions >> [:]
                     targetType >> "asset"
                     targetSubType >> "AST_Server"
                 },

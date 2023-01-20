@@ -18,41 +18,29 @@
 package org.veo.core.usecase.base;
 
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.networknt.schema.JsonSchemaFactory;
-import com.networknt.schema.SpecVersion;
-import com.networknt.schema.ValidationMessage;
+import org.veo.core.entity.definitions.attribute.AttributeDefinition;
+import org.veo.core.entity.exception.InvalidAttributeException;
 
 /** Validates custom aspect / link attributes according to the domain's element type definitions. */
 public class AttributeValidator {
-  // TODO VEO-1258 remove these
-  private static final JsonSchemaFactory JSON_SCHEMA_FACTORY =
-      JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909);
-  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-  static void validate(Map<String, Object> attributes, Map<String, Object> attributeSchemas) {
-    attributes.forEach((attrKey, attrValue) -> validate(attrKey, attrValue, attributeSchemas));
+  static void validate(
+      Map<String, Object> attributes, Map<String, AttributeDefinition> attributeDefinitions) {
+    attributes.forEach((attrKey, attrValue) -> validate(attrKey, attrValue, attributeDefinitions));
   }
 
   public static void validate(
-      String attrKey, Object attrValue, Map<String, Object> attributeSchemas) {
-    var attrSchema = attributeSchemas.get(attrKey);
-    if (attrSchema == null) {
+      String attrKey, Object attrValue, Map<String, AttributeDefinition> definitions) {
+    var attrDefinition = definitions.get(attrKey);
+    if (attrDefinition == null) {
       throw new IllegalArgumentException(String.format("Attribute '%s' is not defined", attrKey));
     }
-    // TODO-1258 use custom validation instead of JSON schema validation
-    var errors =
-        JSON_SCHEMA_FACTORY
-            .getSchema(OBJECT_MAPPER.valueToTree(attrSchema))
-            .validate(OBJECT_MAPPER.valueToTree(attrValue));
-    if (!errors.isEmpty()) {
+    try {
+      attrDefinition.validate(attrValue);
+    } catch (InvalidAttributeException e) {
       throw new IllegalArgumentException(
-          String.format(
-              "Invalid value for attribute '%s': %s",
-              attrKey,
-              errors.stream().map(ValidationMessage::getMessage).collect(Collectors.joining())));
+          String.format("Invalid value for attribute '%s': %s", attrKey, e.getMessage()));
     }
   }
 }

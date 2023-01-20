@@ -23,8 +23,11 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.EntityType
+import org.veo.core.entity.definitions.attribute.AttributeDefinition
 
 import groovy.json.JsonSlurper
 import groovy.transform.Memoized
@@ -314,6 +317,24 @@ class SwaggerSpec extends VeoSpringSpec {
         with(parsedApiDocs.components.schemas.DomainTemplateMetadataDto) {
             properties.name != null
             properties.riskDefinitions == null
+        }
+    }
+
+    def "attribute definition types are mapped"() {
+        given: "correct map of sub types extracted from the jackson annotation"
+        def expectedSubTypeMap = AttributeDefinition
+                .getAnnotation(JsonSubTypes)
+                .value()
+                .collectEntries {
+                    [
+                        it.name(),
+                        "#/components/schemas/${it.value().simpleName}"
+                    ]
+                }
+
+        expect: "that the docs contain the expected mapping"
+        with(parsedApiDocs.components.schemas.AttributeDefinitionSchema) {
+            discriminator.mapping == expectedSubTypeMap
         }
     }
 

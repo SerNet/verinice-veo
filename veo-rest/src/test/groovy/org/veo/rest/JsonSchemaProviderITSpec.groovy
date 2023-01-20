@@ -25,6 +25,7 @@ import com.github.JanLoebel.jsonschemavalidation.provider.JsonSchemaProvider
 
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.definitions.CustomAspectDefinition
+import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition
 
 @WithUserDetails("user@domain.example")
 class JsonSchemaProviderITSpec extends VeoSpringSpec {
@@ -43,10 +44,8 @@ class JsonSchemaProviderITSpec extends VeoSpringSpec {
             applyElementTypeDefinition(newElementTypeDefinition("asset", it) {
                 customAspects = [
                     inactiveFoo: new CustomAspectDefinition().tap{
-                        attributeSchemas = [
-                            inactiveFooAttr: [
-                                enum: ["one", "two", "three"]
-                            ]
+                        attributeDefinitions = [
+                            inactiveFooAttr: new EnumAttributeDefinition(["one", "two", "three"])
                         ]
                     }
                 ]
@@ -56,10 +55,8 @@ class JsonSchemaProviderITSpec extends VeoSpringSpec {
             applyElementTypeDefinition(newElementTypeDefinition("asset", it) {
                 customAspects = [
                     foo: new CustomAspectDefinition().tap{
-                        attributeSchemas = [
-                            fooAttr: [
-                                enum: ["one", "two", "three"]
-                            ]
+                        attributeDefinitions = [
+                            fooAttr: new EnumAttributeDefinition(["one", "two", "three"])
                         ]
                     }
                 ]

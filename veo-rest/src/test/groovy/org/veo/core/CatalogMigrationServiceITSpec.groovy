@@ -25,6 +25,9 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.LinkDefinition
+import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition
+import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
+import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.repository.CatalogRepository
 import org.veo.core.repository.DomainRepository
 import org.veo.service.CatalogMigrationService
@@ -47,22 +50,16 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
             applyElementTypeDefinition(newElementTypeDefinition("document", domain) {
                 customAspects = [
                     file: new CustomAspectDefinition().tap {
-                        attributeSchemas = [
-                            extension: [
-                                enum: ["pdf", "md", "txt"]
-                            ]
+                        attributeDefinitions = [
+                            extension: new EnumAttributeDefinition(["pdf", "md", "txt"])
                         ]
                     }
                 ]
                 links = [
                     author: new LinkDefinition().tap {
-                        attributeSchemas = [
-                            copyrightYear: [
-                                type: "number"
-                            ],
-                            placeOfAuthoring: [
-                                type: "string"
-                            ],
+                        attributeDefinitions = [
+                            copyrightYear: new IntegerAttributeDefinition(),
+                            placeOfAuthoring: new TextAttributeDefinition(),
                         ]
                         targetType = "person"
                     }

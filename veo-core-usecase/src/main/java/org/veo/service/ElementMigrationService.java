@@ -25,6 +25,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
+import org.veo.core.entity.definitions.attribute.AttributeDefinition;
 import org.veo.core.usecase.base.AttributeValidator;
 
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +51,7 @@ public class ElementMigrationService {
                 element.getCustomAspects().remove(ca);
                 return;
               }
-              migrateAttributes(ca.getAttributes(), caDefinition.getAttributeSchemas());
+              migrateAttributes(ca.getAttributes(), caDefinition.getAttributeDefinitions());
             });
     new HashSet<>(element.getLinks())
         .forEach(
@@ -72,7 +73,7 @@ public class ElementMigrationService {
                 element.getLinks().remove(link);
                 return;
               }
-              migrateAttributes(link.getAttributes(), linkDefinition.getAttributeSchemas());
+              migrateAttributes(link.getAttributes(), linkDefinition.getAttributeDefinitions());
             });
     migrateSubType(domain, definition, element);
   }
@@ -107,12 +108,12 @@ public class ElementMigrationService {
 
   /** Removes all invalid attributes from given custom aspect / link attributes. */
   public void migrateAttributes(
-      Map<String, Object> attributes, Map<String, Object> attributeSchemas) {
+      Map<String, Object> attributes, Map<String, AttributeDefinition> definitions) {
     new HashMap<>(attributes)
         .forEach(
             (attrKey, attrValue) -> {
               try {
-                AttributeValidator.validate(attrKey, attrValue, attributeSchemas);
+                AttributeValidator.validate(attrKey, attrValue, definitions);
               } catch (IllegalArgumentException illEx) {
                 log.debug("Attribute validation failed", illEx);
                 log.debug("Removing invalidate attribute {}", attrKey);

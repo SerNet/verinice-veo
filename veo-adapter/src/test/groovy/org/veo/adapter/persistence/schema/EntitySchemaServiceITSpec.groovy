@@ -29,6 +29,9 @@ import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.SubTypeDefinition
+import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition
+import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
+import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.riskdefinition.CategoryDefinition
 import org.veo.core.entity.riskdefinition.CategoryLevel
 import org.veo.core.entity.riskdefinition.ImplementationStateDefinition
@@ -207,19 +210,15 @@ class EntitySchemaServiceITSpec extends Specification {
             getElementTypeDefinition("asset") >> Mock(ElementTypeDefinition) {
                 customAspects >> [
                     test: Mock(CustomAspectDefinition) {
-                        attributeSchemas >> [
-                            testAttr: [
-                                type: "string"
-                            ]
+                        attributeDefinitions >> [
+                            testAttr: new TextAttributeDefinition()
                         ]
                     }
                 ]
                 links >> [
                     test: Mock(LinkDefinition) {
-                        attributeSchemas >> [
-                            linkTestAttr: [
-                                type: "string"
-                            ]
+                        attributeDefinitions >> [
+                            linkTestAttr: new TextAttributeDefinition()
                         ]
                         targetType >> "otherType"
                         targetSubType >> "otherSubType"
@@ -348,19 +347,15 @@ class EntitySchemaServiceITSpec extends Specification {
             getElementTypeDefinition("asset") >> Mock(ElementTypeDefinition) {
                 customAspects >> [
                     extraTest: Mock(CustomAspectDefinition) {
-                        attributeSchemas >> [
-                            extraTestAttr: [
-                                type: "boolean"
-                            ]
+                        attributeDefinitions >> [
+                            extraTestAttr: new BooleanAttributeDefinition()
                         ]
                     }
                 ]
                 links >> [
                     extraTest: Mock(LinkDefinition) {
-                        attributeSchemas >> [
-                            extraLinkTestAttr: [
-                                type: "integer"
-                            ]
+                        attributeDefinitions >> [
+                            extraLinkTestAttr: new IntegerAttributeDefinition()
                         ]
                         targetType >> "extraType"
                         targetSubType >> "extraSubType"

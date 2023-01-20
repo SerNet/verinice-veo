@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -33,6 +34,15 @@ import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.SubTypeDefinition;
+import org.veo.core.entity.definitions.attribute.AttributeDefinition;
+import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition;
+import org.veo.core.entity.definitions.attribute.DateAttributeDefinition;
+import org.veo.core.entity.definitions.attribute.DateTimeAttributeDefinition;
+import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition;
+import org.veo.core.entity.definitions.attribute.ExternalDocumentAttributeDefinition;
+import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition;
+import org.veo.core.entity.definitions.attribute.ListAttributeDefinition;
+import org.veo.core.entity.definitions.attribute.TextAttributeDefinition;
 import org.veo.core.entity.transform.EntityFactory;
 
 /**
@@ -86,8 +96,7 @@ public class ObjectSchemaParser {
                 }));
   }
 
-  private Map<String, CustomAspectDefinition> extractCustomAspectDefinitions(JsonNode properties)
-      throws JsonProcessingException {
+  private Map<String, CustomAspectDefinition> extractCustomAspectDefinitions(JsonNode properties) {
     JsonNode customAspectsProperties = properties.get("customAspects").get(PROPERTIES);
     Iterator<Entry<String, JsonNode>> aspectIt = customAspectsProperties.fields();
     Map<String, CustomAspectDefinition> customAspects =
@@ -99,21 +108,48 @@ public class ObjectSchemaParser {
           entry.getValue().get(PROPERTIES).get("attributes").get(PROPERTIES);
       CustomAspectDefinition aspectDefinition = new CustomAspectDefinition();
       Iterator<Entry<String, JsonNode>> attributeIt = aspectAttributes.fields();
-      Map<String, Object> attributeSchemas = new HashMap<>(aspectAttributes.size());
+      Map<String, AttributeDefinition> attributeDefinitions =
+          new HashMap<>(aspectAttributes.size());
       while (attributeIt.hasNext()) {
         Entry<String, JsonNode> attributeEntry = attributeIt.next();
-        attributeSchemas.put(
-            attributeEntry.getKey(),
-            OBJECTMAPPER.treeToValue(attributeEntry.getValue(), Map.class));
+        attributeDefinitions.put(
+            attributeEntry.getKey(), parseAttributeDefinition(attributeEntry.getValue()));
       }
-      aspectDefinition.setAttributeSchemas(attributeSchemas);
+      aspectDefinition.setAttributeDefinitions(attributeDefinitions);
       customAspects.put(aspectName, aspectDefinition);
     }
     return customAspects;
   }
 
-  private Map<String, LinkDefinition> extractLinkDefinitions(JsonNode properties)
-      throws JsonProcessingException {
+  private AttributeDefinition parseAttributeDefinition(JsonNode jsonSchema) {
+    if (jsonSchema.has("items")) {
+      return new ListAttributeDefinition(parseAttributeDefinition(jsonSchema.get("items")));
+    }
+    if (jsonSchema.has("enum")) {
+      var allowedValues = new ArrayList<String>();
+      jsonSchema.get("enum").elements().forEachRemaining(n -> allowedValues.add(n.textValue()));
+      return new EnumAttributeDefinition(allowedValues);
+    }
+    if (jsonSchema.has("format")) {
+      return switch (jsonSchema.get("format").textValue()) {
+        case "date" -> new DateAttributeDefinition();
+        case "date-time" -> new DateTimeAttributeDefinition();
+        case "uri" -> new ExternalDocumentAttributeDefinition();
+        default -> throw new IllegalArgumentException("Unsupported format");
+      };
+    }
+    if (jsonSchema.has("type")) {
+      return switch (jsonSchema.get("type").textValue()) {
+        case "integer" -> new IntegerAttributeDefinition();
+        case "boolean" -> new BooleanAttributeDefinition();
+        case "string" -> new TextAttributeDefinition();
+        default -> throw new IllegalArgumentException("Unsupported type");
+      };
+    }
+    throw new IllegalArgumentException("Unsupported attribute schema");
+  }
+
+  private Map<String, LinkDefinition> extractLinkDefinitions(JsonNode properties) {
     JsonNode linksProperties = properties.get("links").get(PROPERTIES);
     Iterator<Entry<String, JsonNode>> linkIt = linksProperties.fields();
     Map<String, LinkDefinition> links = new HashMap<>(linksProperties.size());
@@ -124,14 +160,14 @@ public class ObjectSchemaParser {
       LinkDefinition linkDefinition = new LinkDefinition();
       JsonNode attributeProperties = linkProperties.get("attributes").get(PROPERTIES);
       Iterator<Entry<String, JsonNode>> attributeIt = attributeProperties.fields();
-      Map<String, Object> attributeSchemas = new HashMap<>(attributeProperties.size());
+      Map<String, AttributeDefinition> attributeDefinitions =
+          new HashMap<>(attributeProperties.size());
       while (attributeIt.hasNext()) {
         Entry<String, JsonNode> attributeEntry = attributeIt.next();
-        attributeSchemas.put(
-            attributeEntry.getKey(),
-            OBJECTMAPPER.treeToValue(attributeEntry.getValue(), Map.class));
+        attributeDefinitions.put(
+            attributeEntry.getKey(), parseAttributeDefinition(attributeEntry.getValue()));
       }
-      linkDefinition.setAttributeSchemas(attributeSchemas);
+      linkDefinition.setAttributeDefinitions(attributeDefinitions);
 
       JsonNode targetProperties = linkProperties.get("target").get(PROPERTIES);
 

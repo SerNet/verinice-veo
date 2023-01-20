@@ -41,6 +41,10 @@
                 "process_accessAuthorization_description": {
                   "type": "string"
                 },
+                "process_accessAuthorization_reviewTime": {
+                  "format": "date-time",
+                  "type": "string"
+                },
                 "process_accessAuthorization_document": {
                   "format": "uri",
                   "pattern": "^(https?|ftp)://",

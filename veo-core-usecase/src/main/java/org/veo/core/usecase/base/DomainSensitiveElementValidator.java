@@ -95,7 +95,7 @@ class DomainSensitiveElementValidator {
             .getCustomAspects()
             .get(ca.getType());
     try {
-      AttributeValidator.validate(ca.getAttributes(), caDefinition.getAttributeSchemas());
+      AttributeValidator.validate(ca.getAttributes(), caDefinition.getAttributeDefinitions());
     } catch (IllegalArgumentException ex) {
       throw new IllegalArgumentException(
           String.format(
@@ -121,7 +121,7 @@ class DomainSensitiveElementValidator {
     validateLinkTargetType(linkType, target, linkDefinition);
     validateLinkTargetSubType(linkType, target, domain, linkDefinition);
     try {
-      AttributeValidator.validate(attributes, linkDefinition.getAttributeSchemas());
+      AttributeValidator.validate(attributes, linkDefinition.getAttributeDefinitions());
     } catch (IllegalArgumentException ex) {
       throw new IllegalArgumentException(
           String.format("Invalid attributes for link type '%s': %s", linkType, ex.getMessage()),

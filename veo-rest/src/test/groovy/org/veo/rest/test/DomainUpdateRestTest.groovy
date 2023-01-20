@@ -218,7 +218,7 @@ class DomainUpdateRestTest extends VeoRestTest {
                     'customAspects': [:],
                     'links': [
                         (processToScopeLinkName): [
-                            'attributeSchemas': [:],
+                            'attributeDefinitions': [:],
                             'targetSubType': 'SCP_ResponsibleBody',
                             'targetType': 'scope'
                         ]
@@ -246,7 +246,7 @@ class DomainUpdateRestTest extends VeoRestTest {
                     'customAspects': [:],
                     'links': [
                         (scopeToProcessLinkName): [
-                            attributeSchemas: [:],
+                            attributeDefinitions: [:],
                             targetSubType: 'PRO_DataProcessing',
                             targetType: 'process',
                         ]

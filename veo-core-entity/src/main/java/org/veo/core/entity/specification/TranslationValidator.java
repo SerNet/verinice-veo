@@ -35,6 +35,7 @@ import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.SubTypeDefinition;
+import org.veo.core.entity.definitions.attribute.AttributeDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import lombok.AccessLevel;
@@ -263,7 +264,7 @@ public class TranslationValidator {
   private static List<String> attributeTranslationKeys(
       @NonNull Map<String, ? extends CustomAspectDefinition> customAspects) {
     return customAspects.values().stream()
-        .flatMap(ca -> ca.getAttributeSchemas().entrySet().stream())
+        .flatMap(ca -> ca.getAttributeDefinitions().entrySet().stream())
         .flatMap(
             attrPair ->
                 attributeSchemaTranslationKeys(attrPair.getKey(), attrPair.getValue()).stream())
@@ -272,19 +273,9 @@ public class TranslationValidator {
 
   @SuppressWarnings("unchecked")
   private static List<String> attributeSchemaTranslationKeys(
-      String attributeKey, Object attributeSchema) {
+      String attributeKey, AttributeDefinition attributeDefinition) {
     var result = new ArrayList<>(List.of(attributeKey));
-    if (attributeSchema instanceof Map schemaMap) {
-      // add string attribute enums:
-      if (schemaMap.containsKey("enum")) {
-        result.addAll((List<String>) schemaMap.get("enum"));
-      }
-      // add array attribute enums:
-      if (schemaMap.containsKey("items")) {
-        var itemSchema = (Map<String, List<String>>) schemaMap.get("items");
-        result.addAll(itemSchema.get("enum"));
-      }
-    }
+    result.addAll(attributeDefinition.getTranslationKeys());
     return result;
   }
 }

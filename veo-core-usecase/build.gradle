@@ -13,9 +13,6 @@ dependencies {
     // These would support readonly transactions among other additional features.
     implementation 'javax.transaction:javax.transaction-api'
 
-    // TODO VEO-1258 remove
-    implementation 'com.networknt:json-schema-validator'
-
     implementation 'com.github.zafarkhaja:java-semver'
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
