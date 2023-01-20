@@ -31,7 +31,6 @@ import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DocumentRepositoryImpl
-import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
 /**
@@ -51,9 +50,6 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
     private DocumentRepositoryImpl documentRepository
 
     @Autowired
-    private DomainRepositoryImpl domainRepository
-
-    @Autowired
     TransactionTemplate txTemplate
 
     private Unit unit
@@ -63,7 +59,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
     def setup() {
         txTemplate.execute {
             def client= createTestClient()
-            domain = domainRepository.save(newDomain(client) {
+            domain = newDomain(client) {
                 abbreviation = "D"
                 name = "Domain"
                 applyElementTypeDefinition(newElementTypeDefinition("document", it) {
@@ -71,12 +67,12 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
                         Manual: newSubTypeDefinition()
                     ]
                 })
-            })
+            }
 
-            domain1 = domainRepository.save(newDomain(client) {
+            domain1 = newDomain(client) {
                 abbreviation = "D1"
                 name = "Domain 1"
-            })
+            }
 
             unit = newUnit(client) {
                 name = "Test unit"

@@ -28,7 +28,6 @@ import org.veo.core.entity.Scenario
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
-import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.ScenarioRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
@@ -46,9 +45,6 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
     private UnitRepositoryImpl unitRepository
 
     @Autowired
-    private DomainRepositoryImpl domainRepository
-
-    @Autowired
     private ScenarioRepositoryImpl scenarioRepository
 
     @Autowired
@@ -62,7 +58,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             def client = createTestClient()
 
-            domain = domainRepository.save(newDomain(client) {
+            domain = newDomain(client) {
                 abbreviation = "D"
                 name = "Domain"
                 applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
@@ -70,12 +66,12 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
                         WorstCase: newSubTypeDefinition()
                     ]
                 })
-            })
+            }
 
-            domain1 = domainRepository.save(newDomain(client) {
+            domain1 = newDomain(client) {
                 abbreviation = "D1"
                 name = "Domain 1"
-            })
+            }
 
             unit = newUnit(client) {
                 name = "Test unit"

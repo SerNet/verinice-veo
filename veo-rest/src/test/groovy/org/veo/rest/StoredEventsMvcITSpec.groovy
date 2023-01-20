@@ -25,9 +25,7 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
-import org.veo.core.repository.DomainRepository
 import org.veo.persistence.access.ClientRepositoryImpl
-import org.veo.persistence.access.StoredEventRepository
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 import org.veo.persistence.access.jpa.StoredEventDataRepository
@@ -41,9 +39,6 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
-
-    @Autowired
-    private DomainRepository domainRepository
 
     @Autowired
     private DomainTemplateDataRepository domainTemplateRepository
@@ -62,7 +57,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             client = createTestClient()
             def template = domainTemplateRepository.save(newDomainTemplate())
-            domain = domainRepository.save(newDomain(client) {
+            domain = newDomain(client) {
                 domainTemplate = template
                 name = "ISO"
                 applyElementTypeDefinition(newElementTypeDefinition("asset", it) {
@@ -80,7 +75,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
                         EventfulScenario: newSubTypeDefinition()
                     ]
                 })
-            })
+            }
 
             unit = newUnit(client) {
                 name = "Test unit"
