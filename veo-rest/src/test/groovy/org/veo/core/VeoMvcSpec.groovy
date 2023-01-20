@@ -98,7 +98,7 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
                 .contentType(APPLICATION_JSON)
                 .content(toJson(content))
                 .accept(APPLICATION_JSON),
-                200)
+                expectedStatusCode)
     }
 
     ResultActions delete(String url, int expectedStatusCode = 204) {
