@@ -21,7 +21,6 @@ import static org.veo.core.entity.Element.ELEMENT_TYPE_MAX_LENGTH;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -33,6 +32,7 @@ import org.veo.core.entity.aspects.SubTypeAspect;
 import org.veo.core.entity.event.ElementEvent;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Configurable logic for a specific decision on a type of element. Accepts an element and checks it
@@ -40,8 +40,8 @@ import lombok.Data;
  * highest priority) that matches determines the result (first hit policy).
  */
 @Data
+@RequiredArgsConstructor
 public class Decision {
-  /** Translated human-readable text. Key is ISO language code, value is text. */
   @NotNull private final TranslatedText name;
 
   @Size(max = ELEMENT_TYPE_MAX_LENGTH)
@@ -53,19 +53,6 @@ public class Decision {
   private final List<Rule> rules;
   /** The decision result value in the case that none of the rules apply (can be null) */
   private final Boolean defaultResultValue;
-
-  public Decision(
-      Map<String, String> name,
-      String elementType,
-      String elementSubType,
-      List<Rule> rules,
-      Boolean defaultResultValue) {
-    this.name = TranslatedText.of(name);
-    this.elementType = elementType;
-    this.elementSubType = elementSubType;
-    this.rules = rules;
-    this.defaultResultValue = defaultResultValue;
-  }
 
   public DecisionResult evaluate(Element element, Domain domain) {
     // Find all matching rules

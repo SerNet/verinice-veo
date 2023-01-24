@@ -20,7 +20,6 @@ package org.veo.core.entity.decision;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.constraints.NotNull;
 
@@ -37,6 +36,7 @@ import org.veo.core.entity.condition.MaxRiskProvider;
 import org.veo.core.entity.event.ElementEvent;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Configurable rule for a {@link Decision} with a list of conditions and an output value that
@@ -44,17 +44,13 @@ import lombok.Data;
  * takes precedence). An element only matches the rule if any of the rule conditions match.
  */
 @Data
+@RequiredArgsConstructor
 public class Rule {
   /**
    * Should become the decision's result value if this rule matches (unless it is overruled). Can be
    * null.
    */
   private final Boolean output;
-
-  public Rule(Boolean output, Map<String, String> description) {
-    this.output = output;
-    this.description = TranslatedText.of(description);
-  }
 
   /** Translated human-readable texts. Key is ISO language code, value is text. */
   @NotNull private final TranslatedText description;

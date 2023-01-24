@@ -18,8 +18,6 @@
 package org.veo.core.entity.inspection;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import org.veo.core.entity.TranslatedText;
 
@@ -33,10 +31,4 @@ public class Finding {
   Severity severity;
   TranslatedText description;
   List<Suggestion> suggestions;
-
-  public Finding(Severity severity, Map<Locale, String> description, List<Suggestion> suggestions) {
-    this.severity = severity;
-    this.description = new TranslatedText(description);
-    this.suggestions = suggestions;
-  }
 }

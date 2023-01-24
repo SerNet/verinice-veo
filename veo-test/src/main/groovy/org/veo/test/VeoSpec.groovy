@@ -47,6 +47,7 @@ import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
 import org.veo.core.entity.TailoringReference
 import org.veo.core.entity.TailoringReferenceType
+import org.veo.core.entity.TranslatedText
 import org.veo.core.entity.Unit
 import org.veo.core.entity.UpdateReference
 import org.veo.core.entity.Versioned
@@ -391,7 +392,7 @@ abstract class VeoSpec extends Specification {
 
     static Inspection newInspection(@DelegatesTo(value = Inspection.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.inspection.Inspection") Closure init = null) {
-        return new Inspection(Severity.HINT, [:]).tap {
+        return new Inspection(Severity.HINT, TranslatedText.empty()).tap {
             VeoSpec.execute(it, init)
         }
     }

@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import static java.util.Locale.ENGLISH;
+import static java.util.Locale.GERMAN;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -109,58 +112,73 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
     return Map.of(
         "piaMandatory",
         new Decision(
-            Map.of(
-                "en", "Data Protection Impact Assessment mandatory",
-                "de", "Datenschutz-Folgenabschätzung verpflichtend"),
+            TranslatedText.builder()
+                .translation(ENGLISH, "Data Protection Impact Assessment mandatory")
+                .translation(GERMAN, "Datenschutz-Folgenabschätzung verpflichtend")
+                .build(),
             Process.SINGULAR_TERM,
             "PRO_DataProcessing",
             List.of(
                 new Rule(
-                        null, Map.of("en", "Missing risk analysis", "de", "Fehlende Risikoanalyse"))
+                        null,
+                        TranslatedText.builder()
+                            .translation(ENGLISH, "Missing risk analysis")
+                            .translation(GERMAN, "Fehlende Risikoanalyse")
+                            .build())
                     .ifNoRiskValuesPresent(),
                 new Rule(
                         false,
-                        Map.of(
-                            "en",
-                                "Processing on list of the kinds of processing operations not subject to a Data Protection Impact Assessment",
-                            "de", "VT auf Negativliste"))
+                        TranslatedText.builder()
+                            .translation(
+                                ENGLISH,
+                                "Processing on list of the kinds of processing operations not subject to a Data Protection Impact Assessment")
+                            .translation(GERMAN, "VT auf Negativliste")
+                            .build())
                     .ifAttributeEquals(piaCa + "_listed_negative", piaCa + "_listed", piaCa),
                 new Rule(
                         false,
-                        Map.of(
-                            "en", "Part of a joint processing",
-                            "de", "Gemeinsame VT"))
+                        TranslatedText.builder()
+                            .translation(ENGLISH, "Part of a joint processing")
+                            .translation(GERMAN, "Gemeinsame VT")
+                            .build())
                     .ifAttributeEquals(true, piaCa + "_processingOperationAccordingArt35", piaCa),
                 new Rule(
                         false,
-                        Map.of(
-                            "en", "Other exclusions",
-                            "de", "Anderer Ausschlusstatbestand"))
+                        TranslatedText.builder()
+                            .translation(ENGLISH, "Other exclusions")
+                            .translation(GERMAN, "Anderer Ausschlusstatbestand")
+                            .build())
                     .ifAttributeEquals(true, piaCa + "_otherExclusions", piaCa),
                 new Rule(
                         true,
-                        Map.of(
-                            "en", "High risk present",
-                            "de", "Hohes Risiko vorhanden"))
+                        TranslatedText.builder()
+                            .translation(ENGLISH, "High risk present")
+                            .translation(GERMAN, "Hohes Risiko vorhanden")
+                            .build())
                     .ifMaxRiskGreaterThan(BigDecimal.valueOf(1)),
                 new Rule(
                         true,
-                        Map.of(
-                            "en",
-                                "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment",
-                            "de", "VT auf Positivliste"))
+                        TranslatedText.builder()
+                            .translation(
+                                ENGLISH,
+                                "Processing on list of the kinds of processing operations subject"
+                                    + " to a Data Protection Impact Assessment")
+                            .translation(GERMAN, "VT auf Positivliste")
+                            .build())
                     .ifAttributeEquals(piaCa + "_listed_positive", piaCa + "_listed", piaCa),
                 new Rule(
                         true,
-                        Map.of(
-                            "en", "Two or more criteria applicable",
-                            "de", "Mehrere Kriterien zutreffend"))
+                        TranslatedText.builder()
+                            .translation(ENGLISH, "Two or more criteria applicable")
+                            .translation(GERMAN, "Mehrere Kriterien zutreffend")
+                            .build())
                     .ifAttributeSizeGreaterThan(1, piaCa + "_processingCriteria", piaCa),
                 new Rule(
                         null,
-                        Map.of(
-                            "en", "DPIA-relevant attributes incomplete",
-                            "de", "DSFA-relevante Attribute unvollständig"))
+                        TranslatedText.builder()
+                            .translation(ENGLISH, "DPIA-relevant attributes incomplete")
+                            .translation(GERMAN, "DSFA-relevante Attribute unvollständig")
+                            .build())
                     .ifAttributeIsNull(piaCa + "_processingCriteria", piaCa)
                     .ifAttributeIsNull(piaCa + "_listed", piaCa)
                     .ifAttributeIsNull(piaCa + "_otherExclusions", piaCa)
@@ -178,11 +196,15 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
         "dpiaMissing",
         new Inspection(
                 Severity.WARNING,
-                Map.of(
-                    "de",
-                    "Datenschutz-Folgenabschätzung wurde nicht durchgeführt, sie ist aber erforderlich.",
-                    "en",
-                    "Data Protection Impact Assessment was not carried out, but it is mandatory."),
+                TranslatedText.builder()
+                    .translation(
+                        GERMAN,
+                        "Datenschutz-Folgenabschätzung wurde nicht durchgeführt, sie ist aber "
+                            + "erforderlich.")
+                    .translation(
+                        ENGLISH,
+                        "Data Protection Impact Assessment was not carried out, but it is mandatory.")
+                    .build(),
                 Process.SINGULAR_TERM,
                 "PRO_DataProcessing")
             .ifDecisionResultEquals(true, new DecisionRef("piaMandatory", this))

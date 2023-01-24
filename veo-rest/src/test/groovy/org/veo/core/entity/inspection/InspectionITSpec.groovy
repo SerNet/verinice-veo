@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.inspection
 
+import static java.util.Locale.ENGLISH
+
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
@@ -39,7 +41,7 @@ class InspectionITSpec extends VeoSpec {
         given:
         def stickerInspection = newInspection() {
             severity = Severity.WARNING
-            description.en = "Every computer running linux needs a tux sticker"
+            description.translations.(Locale.ENGLISH) = "Every computer running linux needs a tux sticker"
             elementType = Asset.SINGULAR_TERM
             elementSubType = "computer"
             addCondition(new CustomAspectAttributeValueProvider("software", "os"), new EqualsMatcher("linux"))

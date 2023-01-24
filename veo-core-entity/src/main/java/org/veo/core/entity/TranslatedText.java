@@ -26,21 +26,28 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Singular;
 
 /** A collection of translations of one particular term in different languages. */
 @Data
-@NoArgsConstructor
+@Builder
 public class TranslatedText {
 
-  @NotNull @JsonValue private Map<Locale, String> translations = new HashMap<>();
+  public static TranslatedText empty() {
+    return new TranslatedText(new HashMap<>());
+  }
+
+  @Getter @NotNull @JsonValue @Singular private Map<Locale, String> translations;
 
   @JsonCreator
   public TranslatedText(Map<Locale, String> themap) {
     this.translations = themap;
   }
 
+  /** Convert a map of language tags and translations. */
   public static TranslatedText of(Map<String, String> description) {
     return new TranslatedText(TranslationProvider.convertLocales(description));
   }
