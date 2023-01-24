@@ -28,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import org.veo.core.entity.TranslationMap;
 import org.veo.core.entity.TranslationProvider;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -38,13 +39,10 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class RiskMethod implements TranslationProvider {
   @ToString.Include @EqualsAndHashCode.Include
   private TranslationMap translations = new TranslationMap();
-
-  public RiskMethod(Map<String, Map<String, String>> translations) {
-    this.translations = TranslationMap.of(translations);
-  }
 
   /**
    * Provide compatibility with old clients and data structure. This will read the old data and

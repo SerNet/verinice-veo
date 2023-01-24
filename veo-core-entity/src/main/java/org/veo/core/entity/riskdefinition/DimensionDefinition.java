@@ -38,6 +38,7 @@ import org.veo.core.entity.Constraints;
 import org.veo.core.entity.TranslationMap;
 import org.veo.core.entity.TranslationProvider;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -51,6 +52,7 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @Data
+@AllArgsConstructor
 public class DimensionDefinition implements TranslationProvider {
   protected static final String DIMENSION_PROBABILITY = "Prob";
   protected static final String DIMENSION_IMPLEMENTATION_STATE = "Ctr";
@@ -65,11 +67,6 @@ public class DimensionDefinition implements TranslationProvider {
 
   public DimensionDefinition(String id) {
     this.id = id;
-  }
-
-  public DimensionDefinition(String id, Map<String, Map<String, String>> translations) {
-    this.id = id;
-    this.translations = TranslationMap.of(translations);
   }
 
   /**

@@ -37,6 +37,7 @@ import org.veo.core.entity.Constraints;
 import org.veo.core.entity.TranslationMap;
 import org.veo.core.entity.TranslationProvider;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -51,6 +52,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@AllArgsConstructor
 public class DiscreteValue implements TranslationProvider {
 
   public DiscreteValue(@Size(max = 255) String htmlColor) {
@@ -65,13 +67,6 @@ public class DiscreteValue implements TranslationProvider {
   private String htmlColor;
 
   @ToString.Exclude @NotNull @NotEmpty private TranslationMap translations = new TranslationMap();
-
-  public DiscreteValue(
-      int ordinalValue, String htmlColor, Map<String, Map<String, String>> translations) {
-    this.ordinalValue = ordinalValue;
-    this.htmlColor = htmlColor;
-    this.translations = TranslationMap.of(translations);
-  }
 
   /**
    * Provide compatibility with old clients and data structure. This will read the old data and

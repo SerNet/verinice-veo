@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
-import java.util.Map;
+import org.veo.core.entity.TranslationMap;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,8 +29,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class ProbabilityLevel extends DiscreteValue {
-  public ProbabilityLevel(
-      int ordinalValue, String htmlColor, Map<String, Map<String, String>> translations) {
+  public ProbabilityLevel(int ordinalValue, String htmlColor, TranslationMap translations) {
     super(ordinalValue, htmlColor, translations);
   }
 

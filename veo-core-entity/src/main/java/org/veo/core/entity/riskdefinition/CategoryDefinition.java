@@ -20,13 +20,13 @@ package org.veo.core.entity.riskdefinition;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.NotNull;
 
+import org.veo.core.entity.TranslationMap;
 import org.veo.core.entity.risk.ImpactRef;
 import org.veo.core.entity.risk.ProbabilityRef;
 
@@ -61,7 +61,7 @@ public class CategoryDefinition extends DimensionDefinition {
       String id,
       @NotNull List<List<RiskValue>> valueMatrix,
       @NotNull List<CategoryLevel> potentialImpacts,
-      Map<String, Map<String, String>> translations) {
+      TranslationMap translations) {
     super(id, translations);
     this.valueMatrix = valueMatrix;
     this.potentialImpacts = potentialImpacts;

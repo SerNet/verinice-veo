@@ -44,7 +44,7 @@ public class TranslationMap {
     this.translations = themap;
   }
 
-  public static TranslationMap of(Map<String, Map<String, String>> translations) {
-    return new TranslationMap(TranslationProvider.convertLocales(translations));
+  public static TranslationMap of(Map<Locale, Map<String, String>> translations) {
+    return new TranslationMap(translations);
   }
 }

@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity.riskdefinition;
 
-import java.util.Map;
+import org.veo.core.entity.TranslationMap;
 
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -29,8 +29,7 @@ public class CategoryLevel extends DiscreteValue {
     super(htmlColor);
   }
 
-  public CategoryLevel(
-      int ordinalValue, String htmlColor, Map<String, Map<String, String>> translations) {
+  public CategoryLevel(int ordinalValue, String htmlColor, TranslationMap translations) {
     super(ordinalValue, htmlColor, translations);
   }
 }
