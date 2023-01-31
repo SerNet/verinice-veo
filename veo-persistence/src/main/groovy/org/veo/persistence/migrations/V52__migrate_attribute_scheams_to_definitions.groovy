@@ -90,6 +90,7 @@ class V52__migrate_attribute_scheams_to_definitions extends BaseJavaMigration {
         }
         if (schema.containsKey("type")) {
             switch (schema.type) {
+                case "number": return [type: "integer"]
                 case "integer": return [type: "integer"]
                 case "boolean": return [type: "boolean"]
                 case "string": return [type: "text"]
