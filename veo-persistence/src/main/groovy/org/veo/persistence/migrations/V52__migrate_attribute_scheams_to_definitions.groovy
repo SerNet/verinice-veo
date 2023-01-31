@@ -85,7 +85,7 @@ class V52__migrate_attribute_scheams_to_definitions extends BaseJavaMigration {
                 case "date": return [type: "date"]
                 case "date-time": return [type: "dateTime"]
                 case "uri": return [type: "externalDocument"]
-                default: throw new IllegalArgumentException("Unsupported format")
+                default: throw new IllegalArgumentException("Unsupported format ${schema.format}")
             }
         }
         if (schema.containsKey("type")) {
@@ -94,9 +94,9 @@ class V52__migrate_attribute_scheams_to_definitions extends BaseJavaMigration {
                 case "integer": return [type: "integer"]
                 case "boolean": return [type: "boolean"]
                 case "string": return [type: "text"]
-                default: throw new IllegalArgumentException("Unsupported type")
+                default: throw new IllegalArgumentException("Unsupported type ${schema.type}")
             }
         }
-        throw new IllegalArgumentException("Unsupported attribute schema")
+        throw new IllegalArgumentException("Unsupported attribute schema ${schema}")
     }
 }
