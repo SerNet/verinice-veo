@@ -93,9 +93,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "create a unit for an existing client"() {
-
         given: "a request body"
-
         Map request = [
             name: 'New unit'
         ]
@@ -169,7 +167,6 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         def unit = createTestClientUnit()
 
         when: "the unit is updated by changing the name and adding a domain"
-
         Map request = [
             id          : unit.id.uuidValue(),
             name        : 'New unit-2',
@@ -196,7 +193,6 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "Update a unit multiple times"() {
-
         given: "a unit"
         Unit unit = createTestClientUnit()
 
@@ -484,6 +480,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
                 name = "old name 2"
             }))
         })
+
         when: "a put request tries to update unit 1 using the ID of unit 2"
         Map headers = [
             'If-Match': getETag(get("/units/${unit1.id.uuidValue()}"))
@@ -492,6 +489,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
             id: unit1.id.uuidValue(),
             name: "new name 1"
         ], headers, 400)
+
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }
@@ -500,16 +498,22 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
     def "cannot create more than 2 units"() {
         when: "the user tries to create a unit"
         def result = parseJson(post('/units', [name: 'Unit 1']))
+
         then: "the request is successful"
         result.success
+
         when: "the user tries to create another unit"
         result = parseJson(post('/units', [name: 'Unit 2']))
+
         then: "the request is successful"
         result.success
+
         when: "the user tries to create a third unit"
         post('/units', [name: 'Unit 3'], HttpStatus.SC_FORBIDDEN)
+
         then: "the action is not performed"
         thrown(MaxUnitsExceededException)
+
         and: 'only 2 units have been created'
         parseJson(get("/units")).size() == 2
     }
@@ -539,14 +543,18 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
                 }
             } as Callable
         }
+
         when: "the user tries to create a lot of units"
         pool.invokeAll(tasks)
         pool.shutdown()
+
         then: 'all the requests are performed'
         pool.awaitTermination(30, TimeUnit.SECONDS)
+
         and: 'only the allowed number of units have been created'
         parseJson(get("/units")).size() == allowedUnitsForUser
         successfulAttempts.get() == allowedUnitsForUser
+
         and: 'the other creation attempts failed'
         failedAttempts.get() == numRequests - allowedUnitsForUser
     }
@@ -564,6 +572,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
         when:
         def result = parseJson(get("/units/${unit.id.uuidValue()}/export"))
+
         then:
         with(result.unit) {
             name == "My unit"
@@ -583,8 +592,10 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         given:
         def otherClient = repository.save(newClient())
         def otherClientsUnit = urepository.save(newUnit(otherClient))
+
         when:
         get("/units/${otherClientsUnit.id.uuidValue()}/export", 404)
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }

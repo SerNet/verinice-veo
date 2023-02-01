@@ -134,6 +134,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
 
         def cId = client.getIdAsString()
         def unit = unitRepository.save(newUnit(client))
+
         when:"we send the event"
         def eContent = """{
             "eventType": "$messageType",
@@ -161,6 +162,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         def cId = client.getIdAsString()
         unitRepository.save(newUnit(client))
         unitRepository.save(newUnit(client))
+
         when:"we send the event"
         eventDispatcher.send(new EventMessage(routingKey,"""{
             "eventType": "$messageType",
@@ -210,8 +212,8 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
 
         def cId = client.getIdAsString()
         def unit = unitRepository.save(newUnit(client))
-        when:"we send the event"
 
+        when:"we send the event"
         def eContent = """{
             "eventType": "$messageType",
             "clientId": "$cId",
@@ -228,7 +230,6 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         }
 
         where:
-
         startState | eventType
         //when created only activation is valid
         CREATED | "DELETION"
@@ -262,6 +263,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
 
         def cId = client.getIdAsString()
         def unit = unitRepository.save(newUnit(client))
+
         when:"we send the event"
         def eContent = """{
             "eventType": "$messageType",
@@ -278,7 +280,6 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         }
 
         where:
-
         startState | eventType | nextState
         //all valid state transitions
         CREATED | "ACTIVATION" | ACTIVATED
@@ -303,6 +304,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
 
         def cId = client.getIdAsString()
         def unit = unitRepository.save(newUnit(client))
+
         when:"we send the event for activation"
         def eContent = """{
             "eventType": "$messageType",

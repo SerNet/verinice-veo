@@ -44,6 +44,7 @@ class ClientCreationMvcITSpec extends VeoMvcSpec {
         given:
         createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
         createTestDomainTemplate(TEST_DOMAIN_TEMPLATE_ID)
+
         when: "posting a unit as a new client"
         post("/units", ["name": "nova"])
 
@@ -56,6 +57,7 @@ class ClientCreationMvcITSpec extends VeoMvcSpec {
         then: "the default domains are created"
         client.domains.size() == 2
         client.domains*.domainTemplate*.dbId.contains(DSGVO_DOMAINTEMPLATE_UUID)
+
         and: "the state is active"
         client.state == ACTIVATED
 

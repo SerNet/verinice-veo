@@ -43,6 +43,7 @@ class DesignatorSequenceRepositoryImplSpec extends AbstractJpaSpec{
         def clientId2 = Key.newUuid()
         designatorSequenceRepo.createSequences(clientId1)
         designatorSequenceRepo.createSequences(clientId2)
+
         expect:
         designatorSequenceRepo.getNext(clientId1, Asset.TYPE_DESIGNATOR) == 1
         designatorSequenceRepo.getNext(clientId1, Asset.TYPE_DESIGNATOR) == 2
@@ -57,6 +58,7 @@ class DesignatorSequenceRepositoryImplSpec extends AbstractJpaSpec{
     def "can't get value without creating sequence first"() {
         when:
         designatorSequenceRepo.getNext(Key.newUuid(), Asset.TYPE_DESIGNATOR)
+
         then:
         thrown(PersistenceException)
     }
@@ -66,8 +68,10 @@ class DesignatorSequenceRepositoryImplSpec extends AbstractJpaSpec{
         def clientId = Key.newUuid()
         designatorSequenceRepo.createSequences(clientId)
         designatorSequenceRepo.deleteSequences(clientId)
+
         when:
         designatorSequenceRepo.getNext(clientId, Asset.TYPE_DESIGNATOR)
+
         then:
         thrown(PersistenceException)
     }
@@ -76,8 +80,10 @@ class DesignatorSequenceRepositoryImplSpec extends AbstractJpaSpec{
         given:
         def clientId = Key.newUuid()
         designatorSequenceRepo.createSequences(clientId)
+
         when:
         designatorSequenceRepo.createSequences(clientId)
+
         then:
         notThrown(Exception)
     }
@@ -87,8 +93,10 @@ class DesignatorSequenceRepositoryImplSpec extends AbstractJpaSpec{
         def clientId = Key.newUuid()
         designatorSequenceRepo.createSequences(clientId)
         designatorSequenceRepo.deleteSequences(clientId)
+
         when:
         designatorSequenceRepo.deleteSequences(clientId)
+
         then:
         notThrown(Exception)
     }

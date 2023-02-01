@@ -42,15 +42,19 @@ class UnitRestTestITSpec extends VeoRestTest {
         post("/units", [
             name: UNIT_NAME
         ], 201)
+
         when: "retrieving the client's units"
         def units = get("/units").body
         log.info("==> units:  {}", units)
+
         then: 'the demo unit is included'
         def demoUnit = units.find { it.name == CreateDemoUnitUseCase.DEMO_UNIT_NAME }
         demoUnit != null
+
         when: 'retrieving the demo unit from the backend'
         def unit = getUnit(demoUnit.id)
         log.info("==> unit:  {}", unit)
+
         then: 'the demo unit is returned'
         unit != null
         unit.name == CreateDemoUnitUseCase.DEMO_UNIT_NAME
@@ -74,7 +78,6 @@ class UnitRestTestITSpec extends VeoRestTest {
         def getResponse = getUnit(postResponse.resourceId)
 
         then: "the stored unit is retrieved"
-
         with(getResponse) {
             id == postResponse.resourceId
             name == UNIT_NAME

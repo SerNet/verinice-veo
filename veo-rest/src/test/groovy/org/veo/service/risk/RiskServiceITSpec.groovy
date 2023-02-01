@@ -186,6 +186,7 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
             event.clientId == client.id
             event.changedRisks ==~ [riskValueEvent]
         }
+
         and: "the DB operations are within reasonable limits"
         verifyAll {
             queryCounts.select == 7
@@ -267,6 +268,7 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
             event.clientId == client.id
             event.changedRisks ==~ [riskProbabilityEvent]
         }
+
         and: "the DB operations are within reasonable limits"
         verifyAll {
             queryCounts.select == 6
@@ -341,6 +343,7 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
             event.clientId == client.id
             event.changedRisks ==~ [riskImpactEvent]
         }
+
         and: "the DB operations are within reasonable limits"
         verifyAll {
             queryCounts.select == 4

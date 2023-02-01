@@ -43,11 +43,13 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
         Process process = Mock()
         process.getOwner() >> existingUnit
         process.getId() >> id
+
         when:
         def output = usecase.execute(new GetProcessesUseCase.InputData(existingClient,
                 null, null, null, null, null,
                 null, null, null, null, null,
                 null, pagingConfiguration, false))
+
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * query.execute(pagingConfiguration) >> singleResult(process, pagingConfiguration)
@@ -65,8 +67,10 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
         def input = new GetProcessesUseCase.InputData(existingClient, Mock(QueryCondition) {
             getValues() >> [existingUnit.id]
         }, null, Mock(QueryCondition), null, null, null, null, null, null, null, Mock(QueryCondition), pagingConfiguration, false)
+
         when:
         def output = usecase.execute(input)
+
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers

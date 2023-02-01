@@ -27,8 +27,10 @@ class AdminRestTest extends VeoRestTest{
         def unitId = post("/units", [
             name: "my little unit"
         ]).body.resourceId
+
         when:
         def dump = get("/admin/unit-dump/$unitId", 200, UserType.ADMIN).body
+
         then:
         dump.unit.name == "my little unit"
     }
@@ -55,6 +57,7 @@ class AdminRestTest extends VeoRestTest{
         when:
         def dump = get("/admin/unit-dump/$unitId", 200, UserType.ADMIN).body
         log.info("===> {}",JsonOutput.toJson(dump))
+
         then:
         dump.unit.name == "my catalog unit"
 

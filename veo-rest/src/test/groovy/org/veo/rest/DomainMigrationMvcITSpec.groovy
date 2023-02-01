@@ -185,6 +185,7 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         // TODO VEO-399 create catalog item via API endpoint
+
         and: "a catalog item that conforms to the element type definition"
         catalogRepository.save(newCatalog(domain) {
             catalogItems = [

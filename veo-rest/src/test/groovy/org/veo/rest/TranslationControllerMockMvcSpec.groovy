@@ -35,8 +35,8 @@ class TranslationControllerMockMvcSpec extends VeoMvcSpec {
         createTestClient().tap {
             createTestDomain(it, DSGVO_DOMAINTEMPLATE_UUID)
         }
-        when: "a request for t9ns is made"
 
+        when: "a request for t9ns is made"
         def translations = parseJson(get('/translations?languages=de,en'))
 
         then: "a correct response is returned"
@@ -65,6 +65,7 @@ class TranslationControllerMockMvcSpec extends VeoMvcSpec {
         createTestClient().tap {
             createTestDomain(it, DSGVO_DOMAINTEMPLATE_UUID)
         }
+
         when: "a request for t9ns is made"
         def translations = parseJson(get('/translations?languages=de'))
 
@@ -79,6 +80,7 @@ class TranslationControllerMockMvcSpec extends VeoMvcSpec {
         createTestClient().tap {
             createTestDomain(it, DSGVO_DOMAINTEMPLATE_UUID)
         }
+
         when: "a request for t9ns is made"
         def translations = parseJson(get('/translations?languages=tlh'))
 

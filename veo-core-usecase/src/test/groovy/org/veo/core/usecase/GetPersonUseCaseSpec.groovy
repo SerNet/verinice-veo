@@ -30,14 +30,15 @@ class GetPersonUseCaseSpec extends UseCaseSpec {
 
     def "retrieve a person"() {
         given:
-
         def id = Key.newUuid()
         Person person = Mock() {
             getOwner() >> existingUnit
             getId() >> id
         }
+
         when:
         def output = usecase.execute(new UseCase.IdAndClient(id,  existingClient))
+
         then:
         1 * personRepository.findById(id) >> Optional.of(person)
         output.element != null

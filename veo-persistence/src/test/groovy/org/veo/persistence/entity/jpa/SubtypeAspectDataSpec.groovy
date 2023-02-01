@@ -29,6 +29,7 @@ class SubtypeAspectDataSpec extends Specification{
         def commonDomain = Mock(Domain)
         def aspect1 = new SubTypeAspectData(commonDomain, commonOwner, "a", "NEW")
         def aspect2 = new SubTypeAspectData(commonDomain, commonOwner, "a", "NEW")
+
         expect: "objects are not equal"
         aspect1 != aspect2
     }
@@ -43,6 +44,7 @@ class SubtypeAspectDataSpec extends Specification{
         def aspect2 = new SubTypeAspectData(commonDomain, commonOwner, "a", "NEW").tap {
             dbId = 'abcd'
         }
+
         expect: "objects are not equal"
         aspect1 != aspect2
     }
@@ -57,8 +59,10 @@ class SubtypeAspectDataSpec extends Specification{
         def aspect2 = new SubTypeAspectData(commonDomain, commonOwner, "a", "new").tap {
             dbId = 'abcde'
         }
+
         expect: "objects are equal"
         aspect1 == aspect2
+
         and: 'have the same hashCode'
         aspect1.hashCode() == aspect2.hashCode()
     }

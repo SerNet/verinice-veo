@@ -62,7 +62,6 @@ class CatalogControllerMockMvcITSpec extends CatalogSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve all catalogs"() {
         given: "two catalogs"
-
         newCatalog(domain1) {
             name = 'c'
         }
@@ -88,6 +87,7 @@ class CatalogControllerMockMvcITSpec extends CatalogSpec {
 
         then: "the eTag is set"
         getETag(results) != null
+
         and:
         def result = parseJson(results)
         result.id == item1.id.uuidValue()
@@ -113,8 +113,10 @@ class CatalogControllerMockMvcITSpec extends CatalogSpec {
 
         then: "the domains are returned"
         result.size() == catalog.catalogItems.size()
+
         when: "the catalog item 'item4' is retrieved from the list of items"
         def item4FromResult = result.find { it.id == item4.id.uuidValue() }
+
         then: "the catalog item contains the element's description"
         item4FromResult.description == item4.element.description
         item4FromResult._self == "http://localhost/catalogs/${catalog.dbId}/items/${item4.id.uuidValue()}"

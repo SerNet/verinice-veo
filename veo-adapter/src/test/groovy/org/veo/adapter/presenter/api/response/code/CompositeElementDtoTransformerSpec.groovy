@@ -133,6 +133,7 @@ class CompositeElementDtoTransformerSpec extends Specification {
 
         when: "the composite element is transformed to a DTO"
         def compositeAssetDto = entityToDtoTransformer.transformAsset2Dto(compositeAsset)
+
         then: "the DTO contains references to both parts"
         compositeAssetDto.parts.size() == 2
         compositeAssetDto.parts.sort {
@@ -176,7 +177,6 @@ class CompositeElementDtoTransformerSpec extends Specification {
 
     def "Transform composite element that contains itself"() {
         given: "A composite element that contains itself"
-
         Asset compositeAsset = Mock()
         compositeAsset.id >> (Key.newUuid())
         compositeAsset.name >> "Composite Asset"

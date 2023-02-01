@@ -36,7 +36,6 @@ class RiskMatrixSpec extends Specification {
 
     def "test CategoryDefinition equals"() {
         when: "comparing"
-
         CategoryDefinition cd = new CategoryDefinition()
         cd.id = "1"
 
@@ -48,6 +47,7 @@ class RiskMatrixSpec extends Specification {
 
         when:"id is change"
         cd.id = "2"
+
         then: "not equals"
         cd != cd1
 
@@ -56,6 +56,7 @@ class RiskMatrixSpec extends Specification {
         cd.potentialImpacts = [
             new CategoryLevel("color-1")
         ]
+
         then: "not equals"
         cd != cd1
 
@@ -63,11 +64,13 @@ class RiskMatrixSpec extends Specification {
         cd1.potentialImpacts = [
             new CategoryLevel("color-1")
         ]
+
         then: "both are equals"
         cd == cd1
 
         when: "put in set"
         def set = [cd, cd1] as Set
+
         then: "only one remains"
         set.size() == 1
     }
@@ -90,6 +93,7 @@ class RiskMatrixSpec extends Specification {
 
         when:"validate"
         cd.validateRiskCategory(riskValues, probabilities)
+
         then: "illegal Argument exception is thrown"
         IllegalArgumentException ex = thrown()
         ex.message == "Risk matrix is empty."
@@ -109,6 +113,7 @@ class RiskMatrixSpec extends Specification {
 
         and:"validate"
         cd.validateRiskCategory(riskValues, probabilities)
+
         then: "illegal Argument exception is thrown"
         ex = thrown()
         ex.message == "Value matrix does not conform to impacts."
@@ -120,6 +125,7 @@ class RiskMatrixSpec extends Specification {
         ]
 
         cd.potentialImpacts = impacts
+
         then: "it validates ok"
         cd.validateRiskCategory(riskValues, probabilities)
 
@@ -127,8 +133,10 @@ class RiskMatrixSpec extends Specification {
         cd.potentialImpacts = [
             new CategoryLevel("color-1")
         ]
+
         and:"validate"
         cd.validateRiskCategory(riskValues, probabilities)
+
         then: "illegal Argument exception is thrown"
         ex = thrown()
         ex.message == "Value matrix does not conform to impacts."
@@ -140,6 +148,7 @@ class RiskMatrixSpec extends Specification {
                 riskValues[1]
             ]
         ]
+
         then: "it validates ok"
         cd.validateRiskCategory(riskValues, probabilities)
 
@@ -150,12 +159,14 @@ class RiskMatrixSpec extends Specification {
             ]
         ]
         cd.validateRiskCategory(riskValues, probabilities)
+
         then: "illegal Argument exception is thrown"
         ex = thrown()
         ex.message == "Value matrix does not conform to probability."
 
         when: "we create a complete CategoryDefinition"
         CategoryDefinition cd1 = new CategoryDefinition("2",rmatrix,impacts)
+
         then: "it validates ok"
         cd1.validateRiskCategory(riskValues, probabilities)
     }
@@ -170,11 +181,13 @@ class RiskMatrixSpec extends Specification {
 
         when: "changed"
         isd1.id = "id"
+
         then: "not equals"
         isd1 != isd2
 
         when: "set same id"
         isd2.id = "id"
+
         then: "both are equals"
         isd1 == isd2
 
@@ -182,6 +195,7 @@ class RiskMatrixSpec extends Specification {
         isd1.levels = [
             new CategoryLevel("color-1")
         ]
+
         then: "not equals"
         isd1 != isd2
 
@@ -192,11 +206,13 @@ class RiskMatrixSpec extends Specification {
         isd2 =new ImplementationStateDefinition([
             new CategoryLevel("color-1")
         ])
+
         then: "both are equals"
         isd1 == isd2
 
         when: "put in set"
         def set = [isd1, isd2] as Set
+
         then: "only one remains"
         set.size() == 1
     }
@@ -211,11 +227,13 @@ class RiskMatrixSpec extends Specification {
 
         when: "changed"
         pd1.id = "id"
+
         then: "not equals"
         pd1 != pd2
 
         when: "set same id"
         pd2.id = "id"
+
         then: "both are equals"
         pd1 == pd2
 
@@ -223,6 +241,7 @@ class RiskMatrixSpec extends Specification {
         pd1.levels = [
             new ProbabilityLevel("color-1")
         ]
+
         then: "not equals"
         pd1 != pd2
 
@@ -233,11 +252,13 @@ class RiskMatrixSpec extends Specification {
         pd2 =new ImplementationStateDefinition([
             new CategoryLevel("color-1")
         ])
+
         then: "both are equals"
         pd1 == pd2
 
         when: "put in set"
         def set = [pd1, pd2] as Set
+
         then: "only one remains"
         set.size() == 1
     }
@@ -252,21 +273,25 @@ class RiskMatrixSpec extends Specification {
 
         when: "one id is changed"
         rd1.id = "id"
+
         then: "not equals"
         rd1 != rd2
 
         when: "one id is the same"
         rd2.id = "id"
+
         then: "both are equals"
         rd1 == rd2
 
         when: "content differs"
         rd1.categories = [new CategoryDefinition()]
+
         then: "not equals"
         rd1 != rd2
 
         when: "content is the same"
         rd2.categories = [new CategoryDefinition()]
+
         then: "both are equals"
         rd1 == rd2
 
@@ -274,6 +299,7 @@ class RiskMatrixSpec extends Specification {
         rd1.probability = new ProbabilityDefinition([
             new ProbabilityLevel("color-1")
         ])
+
         then: "not equals"
         rd1 != rd2
 
@@ -281,6 +307,7 @@ class RiskMatrixSpec extends Specification {
         rd2.probability = new ProbabilityDefinition( [
             new ProbabilityLevel("color-1")
         ])
+
         then: "both are equals"
         rd1 == rd2
 
@@ -288,6 +315,7 @@ class RiskMatrixSpec extends Specification {
         rd1.implementationStateDefinition = new ImplementationStateDefinition([
             new CategoryLevel("color-1")
         ])
+
         then: "not equals"
         rd1 != rd2
 
@@ -295,23 +323,27 @@ class RiskMatrixSpec extends Specification {
         rd2.implementationStateDefinition = new ImplementationStateDefinition([
             new CategoryLevel("color-1")
         ])
+
         then: "both are equals"
         rd1 == rd2
 
         when: "content differs"
         rd1.riskMethod = new RiskMethod()
         rd1.riskMethod.setOldValues("impactMethod", "sum")
+
         then: "not equals"
         rd1 != rd2
 
         when: "content is the same"
         rd2.riskMethod = new RiskMethod()
         rd2.riskMethod.setOldValues("impactMethod", "sum")
+
         then: "both are equals"
         rd1 == rd2
 
         when: "put in set"
         def set = [rd1, rd2] as Set
+
         then: "only one remains"
         set.size() == 1
     }
@@ -335,7 +367,6 @@ class RiskMatrixSpec extends Specification {
 
     def "test RiskDefinition validation"() {
         when: "we create a simple RiskDefinition"
-
         RiskDefinition rd = new RiskDefinition()
         rd.id = "2"
         rd.riskMethod = new RiskMethod()
@@ -351,6 +382,7 @@ class RiskMatrixSpec extends Specification {
         then: "the ordinal value is set"
         rd.categories[0].potentialImpacts[0].ordinalValue == 0
         rd.categories[0].potentialImpacts[1].ordinalValue == 1
+
         when: "we add risk values"
         rd.id = "i1"
         rd.riskValues = [
@@ -364,6 +396,7 @@ class RiskMatrixSpec extends Specification {
 
         when: "we validate"
         rd.validateRiskDefinition()
+
         then: "illegal Argument exception is thrown"
         IllegalArgumentException iae = thrown()
         iae.message == "Probability unset."
@@ -377,6 +410,7 @@ class RiskMatrixSpec extends Specification {
         ]
 
         rd.validateRiskDefinition()
+
         then: "illegal Argument exception is thrown"
         iae = thrown()
         iae.message == "Risk matrix is empty."
@@ -400,7 +434,6 @@ class RiskMatrixSpec extends Specification {
         iae.message == "ImplementationState is empty."
 
         when: "We add the imp state"
-
         rd.implementationStateDefinition = new ImplementationStateDefinition([
             new CategoryLevel("color-1")
         ])
@@ -420,6 +453,7 @@ class RiskMatrixSpec extends Specification {
             ]
         ]
         rd.validateRiskDefinition()
+
         then: "illegal Argument exception is thrown"
         iae = thrown()
         iae.message == "Invalid risk values: [RiskValue(symbolicRisk=symbolic_risk_5)]"
@@ -435,6 +469,7 @@ class RiskMatrixSpec extends Specification {
                 rd.riskValues[0]
             ]
         ]
+
         then: "it validates nicely"
         rd.validateRiskDefinition()
 
@@ -445,6 +480,7 @@ class RiskMatrixSpec extends Specification {
             new CategoryLevel("color-3")
         ]
         rd.validateRiskDefinition()
+
         then: "illegal Argument exception is thrown"
         iae = thrown()
         iae.message == "Value matrix does not conform to impacts."
@@ -464,6 +500,7 @@ class RiskMatrixSpec extends Specification {
                 rd.riskValues[0]
             ]
         ]
+
         then: "it validates nicely"
         rd.validateRiskDefinition()
 
@@ -475,6 +512,7 @@ class RiskMatrixSpec extends Specification {
         ProbabilityLevel pl = new ProbabilityLevel("color-1")
         pl.ordinalValue = 10
         cd.getRiskValue(pl,  cd.potentialImpacts[0])
+
         then: "illegal Argument exception is thrown"
         iae = thrown()
         iae.message == "No risk value for probability: 10"
@@ -483,6 +521,7 @@ class RiskMatrixSpec extends Specification {
         CategoryLevel cl = new CategoryLevel("color-1")
         cl.setOrdinalValue(10)
         cd.getRiskValue(rd.probability.levels[0], cl)
+
         then: "illegal Argument exception is thrown"
         iae = thrown()
         iae.message == "CategoryLevel not part of potentialImpacts: CategoryLevel(super=DiscreteValue(ordinalValue=10, htmlColor=color-1))"
@@ -490,13 +529,13 @@ class RiskMatrixSpec extends Specification {
         when: "the implact level is right"
         cl = new CategoryLevel("color-4")
         cl.setOrdinalValue(0)
+
         then: "the value is returned"
         cd.getRiskValue(rd.probability.levels[0], cl) == rd.riskValues[1]
     }
 
     def "test RiskDefinition validation categories"() {
         when: "we create a simple RiskDefinition"
-
         RiskDefinition rd = new RiskDefinition()
         rd.riskMethod = new RiskMethod()
         rd.probability = new ProbabilityDefinition()
@@ -536,24 +575,28 @@ class RiskMatrixSpec extends Specification {
         when: "we change make the ids not unique"
         rd.categories[0].id = "2"
         rd.validateRiskDefinition()
+
         then: "illegal Argument exception is thrown"
         IllegalArgumentException ex = thrown()
         ex.message == "Categories not unique."
 
         when: "we fix the risk definition"
         rd.categories[0].id = "1"
+
         then: "it validates nicely"
         rd.validateRiskDefinition()
 
         when: "we remove the risk method"
         rd.riskMethod = null
         rd.validateRiskDefinition()
+
         then: "illegal Argument exception is thrown"
         ex = thrown()
         ex.message == "Risk method is empty."
 
         when: "we fix the risk definition"
         rd.riskMethod = new RiskMethod()
+
         then: "it validates nicely"
         rd.validateRiskDefinition()
     }
@@ -568,12 +611,14 @@ class RiskMatrixSpec extends Specification {
         when: "we change make the sybolic risk not unique"
         rd.riskValues[0].symbolicRisk = "symbolic_risk_3"
         rd.validateRiskDefinition()
+
         then: "illegal Argument exception is thrown"
         IllegalArgumentException ex = thrown()
         ex.message == "SymbolicRisk not unique."
 
         when: "make unique again"
         rd.riskValues[1].symbolicRisk = "new"
+
         then: "it validates nicely"
         rd.validateRiskDefinition()
     }
@@ -594,6 +639,7 @@ class RiskMatrixSpec extends Specification {
                 )
 
         TranslationValidator.validate(rd)
+
         then: "illegal Argument exception is thrown"
         TranslationException ex = thrown()
         ex.message =~ /SUPERFLUOUS.*unkownfeature/
@@ -604,6 +650,7 @@ class RiskMatrixSpec extends Specification {
                 )
 
         TranslationValidator.validate(rd)
+
         then: "illegal Argument exception is thrown"
         ex = thrown()
         ex.message =~ /MISSING.*description.*impactMethod/
@@ -627,6 +674,7 @@ class RiskMatrixSpec extends Specification {
         tp.translations.put("de",[:])
 
         TranslationValidator.validate(myRisk)
+
         then:"error message is thrown"
         TranslationException ex = thrown()
         ex.message =~ /de.*MISSING.*abbreviation.*description.*name/
@@ -638,6 +686,7 @@ class RiskMatrixSpec extends Specification {
                 )
 
         TranslationValidator.validate(myRisk)
+
         then:"error message is thrown"
         ex = thrown()
         ex.message =~ /de.*MISSING.*abbreviation.*name/
@@ -650,6 +699,7 @@ class RiskMatrixSpec extends Specification {
                 )
 
         TranslationValidator.validate(myRisk)
+
         then:"error message is thrown"
         ex = thrown()
         ex.message =~ /de.*MISSING.*name/
@@ -662,6 +712,7 @@ class RiskMatrixSpec extends Specification {
                 )
 
         TranslationValidator.validate(myRisk)
+
         then:"error message is thrown"
         ex = thrown()
         ex.message =~ /de.*MISSING.*description/
@@ -676,6 +727,7 @@ class RiskMatrixSpec extends Specification {
                 )
 
         TranslationValidator.validate(myRisk)
+
         then:"error message is thrown"
         ex = thrown()
         ex.message =~ /de.*SUPERFLUOUS.*addition/

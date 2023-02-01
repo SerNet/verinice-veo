@@ -59,9 +59,11 @@ class AspectJpaSpec extends AbstractJpaSpec {
         def asset = newAsset(unit) {
             associateWithDomain(domain0, "foo", "NEW")
         }
+
         when: "saving and retrieving the asset"
         assetRepository.save(asset)
         def retrievedAsset = assetRepository.findById(asset.dbId)
+
         then: "the aspect exists"
         with(retrievedAsset.get().subTypeAspects) {
             size() == 1
@@ -76,10 +78,12 @@ class AspectJpaSpec extends AbstractJpaSpec {
             associateWithDomain(domain1, "bar", "NEW")
         }
         assetRepository.save(asset)
+
         when: "changing the sub type for domain 1, saving & retrieving"
         asset.associateWithDomain(domain1, "tar", "NEW")
         assetRepository.save(asset)
         def retrievedAsset = assetRepository.findById(asset.dbId)
+
         then: "the new sub type has been applied"
         with(retrievedAsset.get().subTypeAspects.sort { it.subType }) {
             size() == 2

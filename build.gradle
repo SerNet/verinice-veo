@@ -1,4 +1,5 @@
 import groovy.json.JsonSlurper
+import org.veo.SpockBlockFormatterStep
 
 plugins {
     id 'org.springframework.boot' version '2.7.8' apply false
@@ -60,6 +61,7 @@ allprojects  {
             target 'src/**/*.groovy', 'buildSrc/**/*.groovy'
             addStep org.veo.LicenseHeaderStep.create(project.rootDir)
             addStep org.veo.NoWildcardImportsStep.create()
+            addStep SpockBlockFormatterStep.create()
             greclipse()
             importOrder('java', 'javax', 'org', 'com', 'org.veo', '')
             indentWithSpaces(4)

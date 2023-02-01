@@ -49,7 +49,6 @@ class CustomLinkPersistenceSpec extends VeoSpringSpec {
 
     def "create an asset with a customLink and save-load it"() {
         given: "a person and an asset"
-
         Client client = clientRepository.save(newClient())
         Unit unit = newUnit(client)
         Person person = newPerson(unit)
@@ -64,7 +63,6 @@ class CustomLinkPersistenceSpec extends VeoSpringSpec {
         assetRepository.save(asset)
 
         when: "loaded from db"
-
         Optional<Asset> savedAsset = assetRepository.findById(asset.id)
 
         then : "is all ok"
@@ -80,8 +78,8 @@ class CustomLinkPersistenceSpec extends VeoSpringSpec {
         assetRepository.save(savedAsset.get())
 
         assetData = assetRepository.findById(asset.id).get()
-        then: "The properties are also transformed"
 
+        then: "The properties are also transformed"
         assetData.getLinks().size() == 1
         with(assetData.getLinks().first()) {
             getType() == cp.getType()
@@ -90,15 +88,16 @@ class CustomLinkPersistenceSpec extends VeoSpringSpec {
         }
 
         when: "add properties of type number"
-
         cp.attributes = [
             "my.key.1": 10.0
         ]
 
         assetRepository.save(assetData)
         savedAsset = assetRepository.findById(asset.id)
+
         then:
         savedAsset.present
+
         when:
         assetData = savedAsset.get()
         CustomAspect savedCp = assetData.getLinks().first()

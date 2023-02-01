@@ -59,12 +59,14 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
             it
         }
         compositePerson = personRepository.save(compositePerson)
+
         then:
         compositePerson != null
         compositePerson.parts  == [john, jane] as Set
 
         when:
         compositePerson = personRepository.findById(compositePerson.id)
+
         then:
         compositePerson.present
         compositePerson.get().name == 'My composite person'
@@ -87,6 +89,7 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
             ]
             associateWithDomain(newDomain(client), null, null)
         })
+
         then:
         def ex = thrown(ConstraintViolationException)
         ex.constraintViolations*.propertyPath*.toString().sort() == [
@@ -114,8 +117,10 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
                 associateWithDomain(domain, 'PER_DataProtectionOfficer', 'RELEASED')
             })
         }
+
         when:
         def counts = personRepository.getCountsBySubType(unit, domain).toSorted{[it.subType, it.status]}
+
         then:
         counts.size() == 3
         with(counts[0]) {

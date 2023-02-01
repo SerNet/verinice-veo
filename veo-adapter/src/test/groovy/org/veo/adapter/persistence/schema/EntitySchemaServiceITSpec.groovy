@@ -56,6 +56,7 @@ class EntitySchemaServiceITSpec extends Specification {
         given:
         def schema201909 = getMetaSchemaV2019_09()
         def schema = getSchema(Set.of(getTestDomain()), "asset")
+
         expect:
         schema201909.validate(schema).empty
     }
@@ -63,6 +64,7 @@ class EntitySchemaServiceITSpec extends Specification {
     def "schema for a single domain allows other domains"() {
         given:
         def schema = getSchema(Set.of(testDomain), "asset")
+
         expect:
         with(schema.get(PROPS).get("domains")) {
             get(PROPS).size() == 1
@@ -80,6 +82,7 @@ class EntitySchemaServiceITSpec extends Specification {
     def "_self is marked read-only in entity schema #schema.title"() {
         given:
         def schema = getSchema(Set.of(getTestDomain()), "asset")
+
         expect:
         schema.get(PROPS).get("_self").get("readOnly").booleanValue()
     }
@@ -87,8 +90,10 @@ class EntitySchemaServiceITSpec extends Specification {
     def "control schema domain association is complete"() {
         given:
         def testDomain = getTestDomain()
+
         when:
         def schema = getSchema(Set.of(testDomain), "control")
+
         then:
         def riskValueProps = schema.get(PROPS).get("domains").get(PROPS).get(testDomain.idAsString).get(PROPS).get("riskValues").get(PROPS)
         riskValueProps.get("riskDefA").get(PROPS).get("implementationStatus").get("enum").asList()*.asInt() == [0, 1, 2]
@@ -98,8 +103,10 @@ class EntitySchemaServiceITSpec extends Specification {
     def "scenario schema domain association is complete"() {
         given:
         def testDomain = getTestDomain()
+
         when:
         def schema = getSchema(Set.of(testDomain), "scenario")
+
         then:
         def riskValueProps = schema.get(PROPS).get("domains").get(PROPS).get(testDomain.idAsString).get(PROPS).get("riskValues").get(PROPS)
         riskValueProps.get("riskDefA").get(PROPS).get("potentialProbability").get("enum").asList()*.asInt() == [0, 1, 2]
@@ -110,8 +117,10 @@ class EntitySchemaServiceITSpec extends Specification {
         given:
         def testDomain = getTestDomain()
         def extraTestDomain = getExtraTestDomain()
+
         when:
         def schema = getSchema(Set.of(testDomain, extraTestDomain), "scope")
+
         then:
         schema.get(PROPS).domains.get(PROPS).get(testDomain.idAsString).get(PROPS).riskDefinition.enum*.textValue() ==~ ["riskDefA", "riskDefB"]
         schema.get(PROPS).domains.get(PROPS).get(extraTestDomain.idAsString).get(PROPS).riskDefinition.enum*.textValue() ==~ ["extraRiskDef"]

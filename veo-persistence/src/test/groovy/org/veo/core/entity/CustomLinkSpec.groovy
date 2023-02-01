@@ -38,6 +38,7 @@ class CustomLinkSpec extends Specification{
             setSource(commonSource)
             setTarget(commonTarget)
         }
+
         expect: "objects are not equal"
         link1 != link2
     }
@@ -59,6 +60,7 @@ class CustomLinkSpec extends Specification{
             setTarget(commonTarget)
             dbId = 'b'
         }
+
         expect: "objects are not equal"
         link1 != link2
     }
@@ -80,8 +82,10 @@ class CustomLinkSpec extends Specification{
             setTarget(commonTarget)
             dbId = 'a'
         }
+
         expect: "objects are equal"
         link1 == link2
+
         and: 'have the same hashCode'
         link1.hashCode() == link2.hashCode()
     }

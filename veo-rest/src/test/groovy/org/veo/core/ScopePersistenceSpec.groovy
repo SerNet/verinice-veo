@@ -64,12 +64,14 @@ class ScopePersistenceSpec extends VeoSpringSpec {
             it
         }
         scope = scopeRepository.save(scope)
+
         then:
         scope != null
         scope.members  == [john, jane] as Set
 
         when:
         scope = scopeRepository.findById(scope.id)
+
         then:
         scope.present
         scope.get().name == 'My scope'
@@ -92,6 +94,7 @@ class ScopePersistenceSpec extends VeoSpringSpec {
             ]
             associateWithDomain(newDomain(client), null, null)
         })
+
         then:
         def ex = thrown(ConstraintViolationException)
         ex.constraintViolations*.propertyPath*.toString().sort() == [

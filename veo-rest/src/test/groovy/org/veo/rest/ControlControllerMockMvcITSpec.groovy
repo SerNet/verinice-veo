@@ -71,7 +71,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "create a control"() {
         given: "a request body"
-
         Map request = [
             name: 'New Control',
             owner: [
@@ -94,7 +93,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "create a control with a custom aspect"() {
         given: "a request body"
-
         Map request = [
             name: 'New Control',
             owner: [
@@ -155,6 +153,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the eTag is set"
         getETag(results) != null
+
         and:
         def result = parseJson(results)
         result._self == "http://localhost/controls/${control.id.uuidValue()}"
@@ -209,6 +208,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         def result = parseJson(get("/controls?unit=${unit.id.uuidValue()}"))
+
         then: "the controls are returned"
         result.items*.name.sort() == [
             'Test control-1',
@@ -230,6 +230,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         def result = parseJson(get("/controls?unit=${unit.id.uuidValue()}"))
+
         then: "the controls are returned"
         result.items*.name as Set == [
             'Test control-1',
@@ -284,7 +285,6 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "put a control with a custom aspect"() {
         given: "a saved control"
-
         def customAspect = newCustomAspect("my.new.type")
 
         def control = txTemplate.execute {
@@ -366,6 +366,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
                 name = "old name 2"
             }))
         })
+
         when: "a put request tries to update control 1 using the ID of control 2"
         Map headers = [
             'If-Match': ETag.from(control1.id.uuidValue(), 1)
@@ -375,6 +376,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
             name: "new name 1",
             owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
         ], headers, 400)
+
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }

@@ -28,6 +28,7 @@ public class ApplicationUserSpec extends Specification {
         def clientId = UUID.randomUUID().toString()
         def jwt = new Jwt.Builder('foo').header('Foo', 'Bar').claim('groups', "/veo_client:$clientId").build()
         ApplicationUser user = ApplicationUser.authenticatedUser(jwt)
+
         then:
         user != null
         user.clientId == clientId
@@ -37,6 +38,7 @@ public class ApplicationUserSpec extends Specification {
         when:
         def jwt = new Jwt.Builder('foo').header('Foo', 'Bar').claim('name', 'Arthur').build()
         ApplicationUser.authenticatedUser(jwt)
+
         then:
         Exception e = thrown()
         e.message =~ /Expected 1 client/

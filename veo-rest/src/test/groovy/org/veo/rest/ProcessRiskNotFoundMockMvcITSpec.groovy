@@ -73,7 +73,6 @@ class ProcessRiskNotFoundMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "Get on nonexistent risk returns error code 404"() {
-
         given: "a process and scenario are created but no risk"
         def processId = parseJson(post("/processes", [
             domains: [
@@ -105,7 +104,6 @@ class ProcessRiskNotFoundMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "Getting risk on nonexistent process returns 404"() {
-
         given: "a scenario is created but no process"
         def scenarioId = parseJson(post("/scenarios", [
             name: "process risk test scenario",
@@ -127,7 +125,6 @@ class ProcessRiskNotFoundMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "Getting risk on nonexistent scenario returns 404"() {
-
         given: "a process is created"
         def processId = parseJson(post("/processes", [
             domains: [

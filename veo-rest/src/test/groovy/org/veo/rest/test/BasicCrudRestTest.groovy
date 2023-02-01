@@ -41,7 +41,6 @@ class BasicCrudRestTest extends VeoRestTest {
     }
 
     def "CRUD unit"() {
-
         when: 'loading the unit'
         def getResponse = get("/units/$unitId", 200, UserType.DEFAULT)
 
@@ -229,7 +228,6 @@ class BasicCrudRestTest extends VeoRestTest {
     }
 
     def "CRUD control"() {
-
         when: 'Creating a control inside the unit'
         def targetUri = "$baseUrl/units/$unitId"
         def initialControlCount = get("$baseUrl//controls?unit=$unitId", 200, UserType.DEFAULT).body.items.size()
@@ -435,6 +433,7 @@ class BasicCrudRestTest extends VeoRestTest {
         get("$baseUrl/scenarios?unit=$nonExistingUnitId", 404, UserType.DEFAULT)
 
         // TODO VEO-1250 Delete the sub-unit first
+
         and: 'Deleting the sub unit'
         delete("$baseUrl/units/$subUnitId", 204, UserType.DEFAULT)
 
@@ -443,7 +442,6 @@ class BasicCrudRestTest extends VeoRestTest {
     }
 
     def "Search elements"() {
-
         when: 'Creating a unit'
         def unitName = 'Search functions test unit'
         def unitBody = [name: unitName]

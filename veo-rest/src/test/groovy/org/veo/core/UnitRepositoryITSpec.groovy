@@ -44,6 +44,7 @@ class UnitRepositoryITSpec extends VeoSpringSpec {
                 newUnit(null)
             ]
         })
+
         then:
         def ex = thrown(ConstraintViolationException)
         with(ex.constraintViolations) {

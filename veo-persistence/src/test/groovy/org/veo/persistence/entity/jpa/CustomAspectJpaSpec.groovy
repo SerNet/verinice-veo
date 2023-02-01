@@ -54,9 +54,11 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
                 }
             ]
         }
+
         when:
         assetRepository.save(asset)
         def retrievedAsset = assetRepository.findById(asset.dbId)
+
         then:
         retrievedAsset.present
         retrievedAsset.get().customAspects[0].attributes == [
@@ -77,12 +79,14 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
             ]
         }
         assetRepository.save(asset)
+
         when: 'replacing the string prop with an int prop'
         asset.customAspects[0].attributes = [
             "k1": 1
         ]
         assetRepository.save(asset)
         def retrievedAsset = assetRepository.findById(asset.dbId)
+
         then: 'the change has been applied'
         retrievedAsset.get().customAspects[0].attributes == [
             "k1": 1
@@ -102,10 +106,12 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
             ]
         }
         assetRepository.save(asset)
+
         when: 'removing the first prop'
         asset.customAspects[0].attributes = ["k2": "due"]
         assetRepository.save(asset)
         def retrievedAsset = assetRepository.findById(asset.dbId)
+
         then: 'only the second prop remains'
         retrievedAsset.get().customAspects[0].attributes == ["k2": "due"]
     }
@@ -121,13 +127,17 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
                 }
             ]
         }
+
         when:
         assetRepository.save(asset)
         def retrievedAsset = assetRepository.findById(asset.getId().uuidValue())
+
         then:
         retrievedAsset.present
+
         when:
         def savedValue = retrievedAsset.get().customAspects.first().attributes["p"]
+
         then:
         savedValue.length() == stringLength
         savedValue == longString

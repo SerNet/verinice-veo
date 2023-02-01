@@ -27,6 +27,7 @@ class TypeDefinitionsRestTest extends VeoRestTest {
     def "Fetch type definitions"() {
         when:
         def response = get("/types")
+
         then:
         response.body.size() == EntityType.ELEMENT_TYPES.size()
     }

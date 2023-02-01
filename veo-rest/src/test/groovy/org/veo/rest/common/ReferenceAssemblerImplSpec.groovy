@@ -124,8 +124,10 @@ class ReferenceAssemblerImplSpec extends Specification {
             getId () >> Key.uuidFrom(id)
             getModelInterface() >> type
         }
+
         expect:
         referenceAssembler.targetReferenceOf(entity) == reference
+
         where:
         type     | id                                     | reference
         Asset    | '40331ed5-be07-4c69-bf99-553811ce5454' | '/assets/40331ed5-be07-4c69-bf99-553811ce5454'
@@ -148,6 +150,7 @@ class ReferenceAssemblerImplSpec extends Specification {
             getCatalog()  >> catalog
             getModelInterface() >> CatalogItem
         }
+
         expect:
         referenceAssembler.targetReferenceOf(catalogItem) == "/catalogs/${catalogId}/items/${itemId}"
     }
@@ -155,6 +158,7 @@ class ReferenceAssemblerImplSpec extends Specification {
     def "resources reference for #type is #reference"() {
         expect:
         referenceAssembler.resourcesReferenceOf(type) == reference
+
         where:
         type           | reference
         Asset          | '/assets{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
@@ -189,6 +193,7 @@ class ReferenceAssemblerImplSpec extends Specification {
                 id >> Key.uuidFrom(scenarioId)
             }
         }
+
         when:
         def result = referenceAssembler.targetReferenceOf(risk)
 

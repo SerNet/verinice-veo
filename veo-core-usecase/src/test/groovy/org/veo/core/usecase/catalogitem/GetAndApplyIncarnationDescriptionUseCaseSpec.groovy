@@ -45,7 +45,6 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
 
     def "get the apply information for a catalog-item without tailor reference and apply it"() {
         given:
-
         def id = Key.newUuid()
         item1.id >> id
         item1.catalog >> catalog
@@ -58,6 +57,7 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
 
         when: "get the apply data for item"
         def output = usecaseGet.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
+
         then: "the parameter object is return"
         output.references.size() == 1
         output.references.first().item == item1

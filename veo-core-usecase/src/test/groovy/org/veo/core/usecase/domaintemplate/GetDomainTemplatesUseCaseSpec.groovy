@@ -42,8 +42,10 @@ class GetDomainTemplatesUseCaseSpec extends UseCaseSpec {
 
         clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         templateService.getTemplates(existingClient) >> Collections.singletonList(domaintemplate)
+
         when:
         def output = usecase.execute(new InputData(existingClient))
+
         then:
         output.objects != null
         output.objects.size() == 1
@@ -62,8 +64,10 @@ class GetDomainTemplatesUseCaseSpec extends UseCaseSpec {
         clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         clientRepository.findById(client.id) >> Optional.empty()
         templateService.getTemplates(existingClient) >> Collections.singletonList(domaintemplate)
+
         when:
         usecase.execute(new InputData(client))
+
         then:
         thrown(NotFoundException)
     }

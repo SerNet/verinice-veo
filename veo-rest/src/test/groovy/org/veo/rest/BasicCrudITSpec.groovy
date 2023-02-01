@@ -53,6 +53,7 @@ class BasicCrudITSpec extends VeoMvcSpec {
 
         then:
         result != null
+
         when:
         def unitId = result.resourceId
         result = parseJson(post('/assets', [
@@ -67,8 +68,10 @@ class BasicCrudITSpec extends VeoMvcSpec {
                 targetUri: "http://localhost/units/$unitId"
             ]
         ]))
+
         then:
         result != null
+
         when:
         def assetId = result.resourceId
         result = parseJson(post('/processes', [
@@ -93,8 +96,10 @@ class BasicCrudITSpec extends VeoMvcSpec {
                 ]
             ]
         ]))
+
         then:
         result != null
+
         when:
         def processId = result.resourceId
         def process = txTemplate.execute{
@@ -103,8 +108,10 @@ class BasicCrudITSpec extends VeoMvcSpec {
                 it.ifPresent{ it.links.first().target.id }
             }
         }
+
         then:
         process.present
+
         when:
         def links = process.get().links
 
@@ -139,10 +146,13 @@ class BasicCrudITSpec extends VeoMvcSpec {
                 ]
             ]
         ]))
+
         then:
         result != null
+
         when:
         delete("/units/$unitId")
+
         then:
         notThrown(Exception)
     }

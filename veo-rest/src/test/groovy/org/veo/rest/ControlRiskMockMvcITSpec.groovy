@@ -143,6 +143,7 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
                 ]
             ]
         ])
+
         then:
         notThrown(Exception)
 

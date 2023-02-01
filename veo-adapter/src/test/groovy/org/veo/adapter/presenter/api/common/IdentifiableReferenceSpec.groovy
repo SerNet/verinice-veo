@@ -34,8 +34,10 @@ class IdentifiableReferenceSpec extends Specification {
             getDisplayName() >> null
         }
         ReferenceAssembler referenceAssembler = Mock()
+
         when:
         def mor = IdRef.from(catalogItem, referenceAssembler)
+
         then:
         mor.displayName == null
     }

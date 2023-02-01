@@ -40,7 +40,6 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
     def "create specific domain from template"() {
         given: "a client"
-
         def domainFromTemplate = null
         def client = null
         txTemplate.execute {
@@ -176,10 +175,12 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         txTemplate.execute {
             domainTemplateService.createDomainTemplateFromDomain(domainFromTemplate)
         }
+
         when:"created with same name/version"
         txTemplate.execute {
             domainTemplateService.createDomainTemplateFromDomain(domainFromTemplate)
         }
+
         then: "an exception is thrown"
         thrown(ModelConsistencyException)
     }

@@ -72,6 +72,7 @@ class SchemaControllerMockMvcSpec extends VeoMvcSpec {
     def "get the schema for an unknown domain"() {
         given:
         def someRandomUUID = UUID.randomUUID().toString()
+
         when: "a request for the asset schema is made"
         parseJson(get("/schemas/asset?domains=${someRandomUUID}", 404))
 
@@ -83,6 +84,7 @@ class SchemaControllerMockMvcSpec extends VeoMvcSpec {
     def "domains parameter is required"() {
         when: "a request is made without specifying the domains parameter"
         get('/schemas/asset', 400)
+
         then:
         thrown(MissingServletRequestParameterException)
     }

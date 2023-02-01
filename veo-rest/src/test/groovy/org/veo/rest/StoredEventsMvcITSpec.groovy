@@ -179,6 +179,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "asset risk events are generated"() {
         given: "an asset risk"
+
         when: "creating an asset risk"
         String assetId = parseJson(post("/assets", [
             name: "acid",
@@ -249,6 +250,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "process risk events are generated"() {
         given: "a process risk"
+
         when: "creating a process risk"
         String processId = parseJson(post("/processes", [
             name: "pro",
@@ -322,6 +324,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         given:
         def numberOfStoredEventsBefore = storedEventRepository.findAll().size()
         println "Found $numberOfStoredEventsBefore events"
+
         when: "creating a domain template"
         def domainTemplate = domainTemplateRepository.save(newDomainTemplate() {
             templateVersion = '1'
@@ -346,6 +349,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             })
         })
         domainTemplate = domainTemplateRepository.save(domainTemplate)
+
         then: "no event is stored"
         storedEventRepository.findAll().size() == numberOfStoredEventsBefore
 

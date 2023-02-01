@@ -59,6 +59,7 @@ class DomainAssociationTransformerSpec extends Specification {
 
         when: "the sub types are mapped"
         domainAssociationTransformer.mapDomainsToEntity(dto, entity, idRefResolver)
+
         then: "it is set"
         1 * entity.associateWithDomain(domain0, "foo", "NEW_FOO")
         1 * entity.associateWithDomain(domain1, "bar", "NEW_BAR")

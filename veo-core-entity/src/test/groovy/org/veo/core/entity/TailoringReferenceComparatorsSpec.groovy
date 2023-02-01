@@ -85,7 +85,6 @@ class TailoringReferenceComparatorsSpec extends Specification{
         list.sort(TailoringReferenceComparators.BY_EXECUTION)
 
         then:
-
         list[0].referenceType == TailoringReferenceType.OMIT
         list[1].referenceType == TailoringReferenceType.LINK
         list[2].referenceType == TailoringReferenceType.COPY
@@ -95,7 +94,6 @@ class TailoringReferenceComparatorsSpec extends Specification{
         list1.sort(TailoringReferenceComparators.BY_EXECUTION)
 
         then:
-
         list1[0].referenceType == TailoringReferenceType.OMIT
         list1[1].referenceType == TailoringReferenceType.LINK
         list1[1].catalogItem == item
@@ -105,7 +103,6 @@ class TailoringReferenceComparatorsSpec extends Specification{
 
     def "filter copy TailoringReference"() {
         expect:
-
         TailoringReferenceTyped.IS_COPY_PREDICATE.test(r1)
         !TailoringReferenceTyped.IS_COPY_PREDICATE.test(r2)
         !TailoringReferenceTyped.IS_COPY_PREDICATE.test(r3)
@@ -114,7 +111,6 @@ class TailoringReferenceComparatorsSpec extends Specification{
 
     def "filter link TailoringReference"() {
         expect:
-
         !TailoringReferenceTyped.IS_LINK_PREDICATE.test(r1)
         !TailoringReferenceTyped.IS_LINK_PREDICATE.test(r2)
         TailoringReferenceTyped.IS_LINK_PREDICATE.test(r3)

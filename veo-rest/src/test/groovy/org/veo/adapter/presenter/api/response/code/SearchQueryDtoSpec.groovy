@@ -69,6 +69,7 @@ class SearchQueryDtoSpec extends Specification {
     def "legacy search query DTO can still be decoded"() {
         when:
         def decoded = SearchQueryDto.decodeFromSearchId(LEGACY_SEARCH_ID)
+
         then:
         decoded != null
         decoded.unitId.values == [unitUuid] as Set

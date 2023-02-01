@@ -54,6 +54,7 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
         when:
         existingDomain.isActive() >> true
         def output = usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, catalogId, Optional.of(existingDomainId),existingClient))
+
         then:
         output.catalogItem != null
         output.catalogItem.id == catalogItemId
@@ -63,6 +64,7 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
         when:
         existingDomain.isActive() >> false
         usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId,catalogId, Optional.of(existingDomainId), existingClient))
+
         then:
         thrown(NotFoundException)
     }
@@ -71,6 +73,7 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
         when:
         existingDomain.isActive() >> true
         usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, catalogId, Optional.empty(),anotherClient))
+
         then:
         thrown(NotFoundException)
     }
@@ -79,6 +82,7 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
         when:
         existingDomain.isActive() >> true
         usecase.execute(new GetCatalogItemUseCase.InputData(Key.newUuid(), catalogId,  Optional.of(existingDomainId),existingClient))
+
         then:
         thrown(NotFoundException)
     }

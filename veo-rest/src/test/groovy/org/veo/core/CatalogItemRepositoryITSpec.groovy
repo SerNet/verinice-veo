@@ -85,6 +85,7 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
             newDomain(it)
         })
         def catalog = catalogDataRepository.save(newCatalog(client.domains.first()))
+
         when:
         catalogItemRepository.save(newCatalogItem(catalog, {
             newControl(it) {
@@ -94,6 +95,7 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
             newUpdateReference(it, null)
             newTailoringReference(it, null)
         }))
+
         then:
         def ex = thrown(ConstraintViolationException)
         ex.constraintViolations*.propertyPath*.toString().sort() == [

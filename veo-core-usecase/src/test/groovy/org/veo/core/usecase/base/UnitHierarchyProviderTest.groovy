@@ -48,8 +48,10 @@ class UnitHierarchyProviderTest extends Specification{
         unitRepository.findByParent(rootChild0Child1) >> []
         unitRepository.findByParent(rootChild1) >> [rootChild1Child0]
         unitRepository.findByParent(rootChild1Child0) >> []
+
         when:
         def output = sut.findAllInRoot(rootId)
+
         then:
         output == [
             root,

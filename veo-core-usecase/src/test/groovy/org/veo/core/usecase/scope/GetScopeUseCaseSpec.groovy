@@ -35,8 +35,10 @@ class GetScopeUseCaseSpec extends UseCaseSpec {
             getOwner() >> existingUnit
             getId() >> scopeId
         }
+
         when:
         def output = usecase.execute(new UseCase.IdAndClient(scopeId, existingClient))
+
         then:
         1 * scopeRepository.findById(scopeId) >> Optional.of(scope)
         output.scope != null

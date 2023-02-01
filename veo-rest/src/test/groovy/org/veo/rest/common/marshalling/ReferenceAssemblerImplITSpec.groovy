@@ -38,6 +38,7 @@ class ReferenceAssemblerImplITSpec extends VeoSpringSpec {
 
         when: "creating a target URL"
         def targetUrl = referenceAssembler.targetReferenceOf(entity)
+
         then: "it can be parsed back"
         if(targetUrl != null) {
             assert referenceAssembler.parseType(targetUrl) == type

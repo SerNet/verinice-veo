@@ -257,7 +257,6 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         incarnate(incarnationDescription)
 
         and: "We add the same control from the catalog"
-
         def idTom = get("/units/${unitId}/incarnations?itemIds=${tomi}").body
         def toms = incarnate(idTom)
         def tom1 = get(toms[0].targetUri).body

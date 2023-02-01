@@ -32,6 +32,7 @@ class TypeDefinitionsControllerMockMvcSpec extends VeoMvcSpec{
     def "provides types with working links"() {
         when:
         def result = parseJson(get("/types"))
+
         then:
         result.size() == EntityType.ELEMENT_TYPES.size()
         result.values().each {

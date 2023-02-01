@@ -53,6 +53,7 @@ class GetCatalogsUseCaseSpec extends UseCaseSpec {
     def "retrieve all catalogs for client"() {
         when:
         def output = usecase.execute(new InputData(Optional.empty(),  existingClient))
+
         then:
         output.catalogs.size() == 1
     }
@@ -60,6 +61,7 @@ class GetCatalogsUseCaseSpec extends UseCaseSpec {
     def "retrieve all catalogs for a domain"() {
         when:
         def output = usecase.execute(new InputData(Optional.of(existingDomainId),  existingClient))
+
         then:
         output.catalogs.size() == 1
     }
@@ -67,6 +69,7 @@ class GetCatalogsUseCaseSpec extends UseCaseSpec {
     def "retrieve a catalog for a domain of another client"() {
         when:
         def output = usecase.execute(new InputData(Optional.of(existingDomainId),  anotherClient))
+
         then:
         output.catalogs.size() == 0
     }
@@ -74,6 +77,7 @@ class GetCatalogsUseCaseSpec extends UseCaseSpec {
     def "retrieve a catalog for an unknown domain"() {
         when:
         def output = usecase.execute(new InputData(Optional.of(Key.newUuid()),  existingClient))
+
         then:
         output.catalogs.size() == 0
     }

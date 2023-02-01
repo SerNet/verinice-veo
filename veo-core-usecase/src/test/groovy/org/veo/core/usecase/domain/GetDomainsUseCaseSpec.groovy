@@ -44,6 +44,7 @@ class GetDomainsUseCaseSpec extends UseCaseSpec {
 
         when:
         def output = usecase.execute(new InputData(existingClient))
+
         then:
         output.objects ==~ [existingDomain, domain]
     }

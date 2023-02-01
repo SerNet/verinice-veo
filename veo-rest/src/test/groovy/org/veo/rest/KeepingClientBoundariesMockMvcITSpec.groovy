@@ -89,6 +89,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
     def "can't create an asset in another client"() {
         when: "a post request tries to create an asset in another client"
         postEntityInAnotherUnit("/" + Asset.PLURAL_TERM,)
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -97,6 +98,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
     def "can't create a control in another client"() {
         when: "a post request tries to create a control in another client"
         postEntityInAnotherUnit("/" + Control.PLURAL_TERM,)
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -105,6 +107,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
     def "can't create a person in another client"() {
         when: "a post request tries to create a person in another client"
         postEntityInAnotherUnit("/" + Person.PLURAL_TERM,)
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -113,6 +116,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
     def "can't create a process in another client"() {
         when: "a post request tries to create a process in another client"
         postEntityInAnotherUnit("/" + Process.PLURAL_TERM,)
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -125,6 +129,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             unit.setParent(otherClientsUnit)
             unitRepository.save(unit)
         })
+
         when: "a put request tries to move the asset to the user's unit"
         Map headers = [
             'If-Match': ETag.from(otherClientsUnit.id.uuidValue(), 0)
@@ -135,6 +140,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             parent: [displayName: 'Test unit',
                 targetUri: 'http://localhost//units/' + unit.id.value()]
         ], headers, 404)
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -145,8 +151,10 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         def otherClientsAsset = txTemplate.execute({
             assetRepository.save(newAsset(otherClientsUnit))
         })
+
         when: "a put request tries to move the asset to the user's unit"
         putEntityToAnotherUnit("/" + Asset.PLURAL_TERM, otherClientsAsset.getId().uuidValue())
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -157,8 +165,10 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         def otherClientsControl = txTemplate.execute({
             controlRepository.save(newControl(otherClientsUnit))
         })
+
         when: "a put request tries to move the control to the user's unit"
         putEntityToAnotherUnit("/" + Control.PLURAL_TERM, otherClientsControl.getId().uuidValue())
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -169,8 +179,10 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         def otherClientsPerson = txTemplate.execute({
             personRepository.save(newPerson(otherClientsUnit))
         })
+
         when: "a put request tries to move the person to the user's unit"
         putEntityToAnotherUnit("/" + Person.PLURAL_TERM, otherClientsPerson.getId().uuidValue())
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -181,8 +193,10 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         def otherClientsProcess = txTemplate.execute({
             processRepository.save(newProcess(otherClientsUnit))
         })
+
         when: "a put request tries to move the process to the user's unit"
         putEntityToAnotherUnit("/" + Process.PLURAL_TERM, otherClientsProcess.getId().uuidValue())
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -193,8 +207,10 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         def otherClientsUnit = txTemplate.execute({
             unitRepository.save(newUnit(otherClient))
         })
+
         when: "a delete request tries to delete the unit"
         delete("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.getId().uuidValue(), 404)
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -205,8 +221,10 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         def otherClientsAsset = txTemplate.execute({
             assetRepository.save(newAsset(otherClientsUnit))
         })
+
         when: "a delete request tries to delete the asset"
         delete("/" + Asset.PLURAL_TERM + "/" + otherClientsAsset.getId().uuidValue(), 404)
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -217,8 +235,10 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         def otherClientsControl = txTemplate.execute({
             controlRepository.save(newControl(otherClientsUnit))
         })
+
         when: "a delete request tries to delete the control"
         delete("/" + Control.PLURAL_TERM + "/" + otherClientsControl.getId().uuidValue(), 404)
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -229,8 +249,10 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         def otherClientsPerson = txTemplate.execute({
             personRepository.save(newPerson(otherClientsUnit))
         })
+
         when: "a delete request tries to delete the person"
         delete("/" + Person.PLURAL_TERM + "/" + otherClientsPerson.getId().uuidValue(), 404)
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -241,8 +263,10 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         def otherClientsProcess = txTemplate.execute({
             processRepository.save(newProcess(otherClientsUnit))
         })
+
         when: "a delete request tries to delete the process"
         delete("/" + Process.PLURAL_TERM + "/" + otherClientsProcess.getId().uuidValue(), 404)
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -253,8 +277,10 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         def otherClientsAsset = txTemplate.execute({
             assetRepository.save(newAsset(otherClientsUnit))
         })
+
         when: "a get request tries to get the asset"
         get("/" + Asset.PLURAL_TERM + "/" + otherClientsAsset.getId().uuidValue(), 404)
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -265,8 +291,10 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         def otherClientsControl = txTemplate.execute({
             controlRepository.save(newControl(otherClientsUnit))
         })
+
         when: "aa get request tries to get the control"
         get("/" + Control.PLURAL_TERM + "/" + otherClientsControl.getId().uuidValue(), 404)
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -277,8 +305,10 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         def otherClientsPerson = txTemplate.execute({
             personRepository.save(newPerson(otherClientsUnit))
         })
+
         when: "a get request tries to get the person"
         get("/" + Person.PLURAL_TERM + "/" + otherClientsPerson.getId().uuidValue(), 404)
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -289,8 +319,10 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         def otherClientsProcess = txTemplate.execute({
             processRepository.save(newProcess(otherClientsUnit))
         })
+
         when: "a get request tries to get the process"
         get("/" + Process.PLURAL_TERM + "/" + otherClientsProcess.getId().uuidValue(), 404)
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -303,8 +335,10 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             unit.setParent(otherClientsUnit)
             unitRepository.save(unit)
         })
+
         when: "a get request tries to get the unit"
         get("/" + Unit.PLURAL_TERM + "/" + otherClientsUnit.getId().uuidValue(), 404)
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }
@@ -315,6 +349,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
         def otherClientsAsset = txTemplate.execute({
             assetRepository.save(newAsset(otherClientsUnit))
         })
+
         when: "a post request tries to link a process to the asset of the other client"
         post('/processes', [
             name : 'My process',
@@ -332,6 +367,7 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
                 ]
             ]
         ], 404)
+
         then: "an exception is thrown"
         thrown(ClientBoundaryViolationException)
     }

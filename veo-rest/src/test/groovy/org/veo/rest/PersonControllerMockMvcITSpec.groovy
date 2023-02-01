@@ -74,7 +74,6 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "create a person"() {
         given: "a request body"
-
         Map request = [
             name: 'New Person',
             owner: [
@@ -108,6 +107,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the eTag is set"
         getETag(results) != null
+
         and:
         def result = parseJson(results)
         result._self == "http://localhost/persons/${person.id.uuidValue()}"
@@ -183,7 +183,6 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "put a person with a custom aspect"() {
         given: "a saved person"
-
         CustomAspect customAspect = newCustomAspect("my.new.type")
 
         def person = txTemplate.execute {
@@ -256,7 +255,6 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "delete a person"() {
-
         given: "an existing person"
         def person = txTemplate.execute {
             personRepository.save(newPerson(unit) {
@@ -284,6 +282,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
                 name = "old name 2"
             }))
         })
+
         when: "a put request tries to update person 1 using the ID of person 2"
         Map headers = [
             'If-Match': ETag.from(person1.id.uuidValue(), 1)
@@ -293,6 +292,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
             name: "new name 1",
             owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
         ], headers, 403)
+
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }

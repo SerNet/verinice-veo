@@ -73,6 +73,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         def queryCounts = trackQueryCounts{
             createClient()
         }
+
         then:
         queryCounts.delete == 0
         queryCounts.insert == 8
@@ -89,6 +90,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         def queryCounts = trackQueryCounts{
             saveProcess("process1")
         }
+
         then:
         queryCounts.delete == 0
         queryCounts.insert == 2
@@ -105,6 +107,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         def queryCounts = trackQueryCounts{
             saveProcessWithLinks()
         }
+
         then:
         queryCounts.delete == 0
         queryCounts.insert == 5
@@ -121,6 +124,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         def queryCounts = trackQueryCounts{
             saveProcessWithCustomAspects(10)
         }
+
         then:
         queryCounts.delete == 0
         queryCounts.insert == 3
@@ -137,6 +141,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         def queryCounts = trackQueryCounts{
             saveProcessWithCustomAspect()
         }
+
         then:
         queryCounts.delete == 0
         queryCounts.insert == 3
@@ -208,6 +213,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         def queryCounts = trackQueryCounts{
             updateProcessWithCustomAspect(process)
         }
+
         then:
         queryCounts.delete == 0
         queryCounts.insert == 0
@@ -227,6 +233,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
                 newPerson(unit)
             ])
         }
+
         then:
         queryCounts.delete == 0
         queryCounts.insert == 3
@@ -246,6 +253,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
                 newPerson(unit)
             ])
         }
+
         then:
         queryCounts.delete == 0
         queryCounts.insert == 4
@@ -264,6 +272,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
                 newPerson(unit)
             })
         }
+
         then:
         queryCounts.delete == 0
         queryCounts.insert == 13
@@ -287,6 +296,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
                 }
             })
         }
+
         then:
         queryCounts.delete == 0
         queryCounts.insert == 33
@@ -309,6 +319,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
                 }
             })
         }
+
         then:
         queryCounts.delete == 0
         queryCounts.insert == 14
@@ -326,6 +337,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         def queryCounts = trackQueryCounts{
             saveWithAddedCompositePersons(100, "person", scope )
         }
+
         then:
         queryCounts.delete == 0
         queryCounts.insert == 35
@@ -344,6 +356,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         def queryCounts = trackQueryCounts{
             units = selectUnits()
         }
+
         then:
         units.size() == 101
         queryCounts.delete == 0
@@ -363,6 +376,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         def queryCounts = trackQueryCounts{
             units = selectSubUnits(unit)
         }
+
         then:
         units.size() == 100
         queryCounts.delete == 0
@@ -387,6 +401,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
             personRepository.deleteAll(personRepository.findByUnit(unit))
             unitRepository.delete(unit)
         }
+
         then:
         queryCounts.delete == 16
         queryCounts.insert == 11
@@ -456,6 +471,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
             }
             unitRepository.saveAll(units)
         }
+
         then:
         queryCounts.delete == 0
         queryCounts.insert == 2

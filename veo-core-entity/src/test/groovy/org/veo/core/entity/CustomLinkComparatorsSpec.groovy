@@ -78,7 +78,6 @@ class CustomLinkComparatorsSpec extends Specification {
         list[2] == l3
 
         when:
-
         list = [l3, l2, l1] as List
         list.sort(CustomLinkComparators.BY_LINK_EXECUTION)
 

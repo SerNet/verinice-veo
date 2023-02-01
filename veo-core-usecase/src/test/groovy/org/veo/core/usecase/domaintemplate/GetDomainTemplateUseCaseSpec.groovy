@@ -42,6 +42,7 @@ class GetDomainTemplateUseCaseSpec extends UseCaseSpec {
 
         when:
         def output = usecase.execute(new IdAndClient(id,  existingClient))
+
         then:
         output.domainTemplate != null
         output.domainTemplate.id == id
@@ -54,8 +55,10 @@ class GetDomainTemplateUseCaseSpec extends UseCaseSpec {
         domaintemplate.getId() >> id
 
         clientRepository.findById(existingClient.id) >> Optional.empty()
+
         when:
         usecase.execute(new IdAndClient(id,  existingClient))
+
         then:
         thrown(NotFoundException)
     }

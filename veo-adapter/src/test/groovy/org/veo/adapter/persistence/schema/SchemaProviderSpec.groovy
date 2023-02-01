@@ -26,10 +26,13 @@ class SchemaProviderSpec extends Specification {
     def "Schema contains constraints on description property"() {
         when:
         def schema = schemaProvier.getSchema("document")
+
         then:
         schema != null
+
         when:
         def descriptionSchema = schema.get('properties').get('description')
+
         then:
         descriptionSchema != null
         descriptionSchema.get('maxLength').intValue() == 65535

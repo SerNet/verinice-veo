@@ -64,7 +64,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
 
     def 'domain is inserted'() {
         given: "the domain"
-
         domain0 = newDomain(client) {
             abbreviation = 'd-1'
             name = 'domain'
@@ -77,12 +76,10 @@ class DomainJpaSpec extends AbstractJpaSpec {
         }
 
         when: "saving"
-
         domain0 = repository.save(domain0)
         Domain d = repository.findById(domain0.dbId).get()
 
         then: "saved and loaded"
-
         d.abbreviation == domain0.abbreviation
         d.name == domain0.name
         d.description == domain0.description
@@ -93,7 +90,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
 
     def 'domain with catalog is inserted'() {
         given: "the domain template"
-
         domain0 = newDomain(client) {
             name = 'domain'
             authority = 'ISO'
@@ -101,7 +97,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
         }
 
         when: "saving"
-
         domain0 = repository.save(domain0)
         Catalog c = newCatalog(domain0) {
             abbreviation = 'c-1'
@@ -113,7 +108,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
         Domain d = repository.findById(domain0.dbId).get()
 
         then: "saved and loaded"
-
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
@@ -125,7 +119,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
 
     def 'domain with catalog and catalog items'() {
         given: "the domain template and a catalog"
-
         domain0 = newDomain(client) {}
         Catalog catalog = newCatalog(domain0) {
             abbreviation = 'c-1'
@@ -142,7 +135,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
         Domain d = repository.findById(domain0.dbId).get()
 
         then: "saved and loaded"
-
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
@@ -157,7 +149,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
 
     def 'domain with catalog and catalog items and a domain template'() {
         given: "the domain template and a catalog"
-
         domainTemplate = newDomainTemplate()
         domainTemplateRepository.save(domainTemplate)
 
@@ -174,13 +165,11 @@ class DomainJpaSpec extends AbstractJpaSpec {
         domain0.addToCatalogs(catalog)
 
         when: "saving"
-
         domain0 = repository.save(domain0)
 
         Domain d = repository.findById(domain0.dbId).get()
 
         then: "saved and loaded"
-
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
@@ -192,7 +181,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
 
     def 'domain with catalog and catalog items and controls'() {
         given: "the domain template and a catalog"
-
         domain0 = newDomain(client)
         newCatalog(domain0) {
             name = 'a'
@@ -223,7 +211,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
         Domain d = repository.findById(domain0.dbId).get()
 
         then: "saved and loaded"
-
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
@@ -241,7 +228,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
 
     def 'domain with catalog with linked elements'() {
         given: "the domain template and a catalog"
-
         domain0 = newDomain(client)
         domain0 = repository.save(domain0)
         Unit unit = newUnit(client)
@@ -316,20 +302,21 @@ class DomainJpaSpec extends AbstractJpaSpec {
         ] as Set
 
         catalog = catalogRepository.save(catalog)
-        when: "saving"
 
+        when: "saving"
         domain0 = repository.save(domain0)
 
         Domain d = repository.findById(domain0.dbId).get()
 
         then: "saved and loaded"
-
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
         d.catalogs.size() == 1
+
         when:
         def loadedCatalog = d.catalogs.first()
+
         then:
         loadedCatalog.id == catalog.id
         loadedCatalog.catalogItems.size() == 6
@@ -367,6 +354,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         clientRepository.save(client)
 
         Control c = controlRepository.findById(controlEntity.dbId).get()
+
         then: "the link remains"
         c.appliedCatalogItems.size() == 1
         c.appliedCatalogItems.first() == firstItemFromCatalog

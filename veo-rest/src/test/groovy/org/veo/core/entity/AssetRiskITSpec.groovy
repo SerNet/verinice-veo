@@ -65,7 +65,6 @@ class AssetRiskITSpec extends VeoSpringSpec {
     }
 
     def "a risk can be modified persistently"() {
-
         given: "predefined entities"
         def scenario1 = insertScenario(newScenario(unit))
         def domain1 = insertDomain(newDomain(client))

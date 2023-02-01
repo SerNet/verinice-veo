@@ -52,7 +52,6 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
 
     def "apply an element from item"() {
         given:
-
         item1.tailoringReferences >> []
         newControl.links >> []
 
@@ -60,6 +59,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [
             new IncarnateCatalogItemDescription(item1, [])
         ]))
+
         then:
         1* repo.save(newControl) >> newControl
         1* newControl.setOwner(existingUnit)
@@ -71,7 +71,6 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
 
     def "apply an element from item with tailor refs"() {
         given:
-
         Control control2 = Mock()
         Control control3 = Mock()
 
@@ -102,6 +101,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [
             new IncarnateCatalogItemDescription(item1, [ref])
         ]))
+
         then:
         1* repo.save(newControl) >> newControl
         1* newControl.setOwner(existingUnit)
@@ -114,7 +114,6 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
 
     def "apply an element from item with external tailor refs"() {
         given:
-
         CustomLink newLink = Mock()
 
         factory.createCustomLink(_, _, _) >> newLink
@@ -152,6 +151,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [
             new IncarnateCatalogItemDescription(item1, [ref])
         ]))
+
         then:
         1* repo.save(newControl) >> newControl
         1* newControl.setOwner(existingUnit)
@@ -163,7 +163,6 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
 
     def "apply an element from item with  less tailor refs"() {
         given:
-
         Control control2 = Mock()
 
         def id2 = Key.newUuid()
@@ -183,13 +182,13 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         usecase.execute(new InputData(existingClient, existingUnit.id, [
             new IncarnateCatalogItemDescription(item1, [])
         ]))
+
         then:
         thrown(IllegalArgumentException)
     }
 
     def "wrong unit"() {
         given:
-
         item1.tailoringReferences >> []
 
         def unitId = Key.newUuid()
@@ -200,13 +199,13 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         usecase.execute(new InputData(existingClient, anotherUnit.id, [
             new IncarnateCatalogItemDescription(item1, [])
         ]))
+
         then:
         thrown(NotFoundException)
     }
 
     def "wrong item id"() {
         given:
-
         item1.tailoringReferences >> []
 
         def otherDomainId = Key.newUuid()
@@ -225,13 +224,13 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         usecase.execute(new InputData(existingClient, existingUnit.id, [
             new IncarnateCatalogItemDescription(item2, [])
         ]))
+
         then:
         thrown(ClientBoundaryViolationException)
     }
 
     def "wrong tailorref"() {
         given:
-
         item1.tailoringReferences >> []
 
         TailoringReferenceParameter ref = Mock()
@@ -242,6 +241,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
                 [
                     new IncarnateCatalogItemDescription(item1, [ref])
                 ]))
+
         then:
         thrown(IllegalArgumentException)
     }

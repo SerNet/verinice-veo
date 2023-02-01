@@ -57,7 +57,6 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "put an asset concurrently"() {
         given: "an asset"
-
         Map request = [
             name: 'E-Mail-Server',
             owner: [
@@ -69,7 +68,6 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
         def postResultJson = new JsonSlurper().parseText(postResult.andReturn().response.contentAsString)
 
         and: "get the asset"
-
         def results = get("/assets/${postResultJson.resourceId}")
         String eTag = results.andReturn().response.getHeader("ETag")
 
@@ -84,6 +82,7 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
                 targetUri: 'http://localhost/units/' + unit.id.uuidValue()
             ]
         ], headers)
+
         then: "it was successful"
         noExceptionThrown()
 
@@ -95,6 +94,7 @@ class OptimisticLockingMvcITSpec extends VeoMvcSpec {
                 targetUri: 'http://localhost/units/' + unit.id.uuidValue()
             ]
         ], headers, 412)
+
         then: "a ETagMismatchException is thrown"
         thrown ETagMismatchException
     }

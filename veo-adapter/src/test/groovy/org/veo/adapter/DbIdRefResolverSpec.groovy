@@ -51,9 +51,11 @@ class DbIdRefResolverSpec extends Specification {
 
         when: "resolving references to the asset"
         def result = referenceResolver.resolve(IdRef.from(asset, Mock(ReferenceAssembler)))
+
         then: "the asset is returned"
         1 * assetRepo.findByIds(Set.of(asset.id)) >> [asset]
         result == asset
+
         and: "the client was validated"
         1 * asset.checkSameClient(client)
     }
@@ -86,6 +88,7 @@ class DbIdRefResolverSpec extends Specification {
         referenceResolver.resolve(IdRef.from(asset2, Mock(ReferenceAssembler)))
         referenceResolver.resolve(IdRef.from(person1, Mock(ReferenceAssembler)))
         referenceResolver.resolve(IdRef.from(person2, Mock(ReferenceAssembler)))
+
         then: "the entities are fetched from the repo"
         1 * assetRepo.findByIds(Set.of(asset1.id)) >> [asset1]
         1 * assetRepo.findByIds(Set.of(asset2.id)) >> [asset2]
@@ -97,9 +100,11 @@ class DbIdRefResolverSpec extends Specification {
         def retrievedAsset2 = referenceResolver.resolve(IdRef.from(asset2, Mock(ReferenceAssembler)))
         def retrievedPerson1 = referenceResolver.resolve(IdRef.from(person1, Mock(ReferenceAssembler)))
         def retrievedPerson2 = referenceResolver.resolve(IdRef.from(person2, Mock(ReferenceAssembler)))
+
         then: "they are not fetched again"
         0 * assetRepo.findByIds(_)
         0 * personRepo.findByIds(_)
+
         and: "they are returned from a cache"
         retrievedAsset1 == asset1
         retrievedAsset2 == asset2
@@ -111,6 +116,7 @@ class DbIdRefResolverSpec extends Specification {
             IdRef.from(asset1, Mock(ReferenceAssembler)),
             IdRef.from(asset3, Mock(ReferenceAssembler))
         ] as Set)
+
         then: "only the uncached asset is fetched"
         1 * assetRepo.findByIds(Set.of(asset3.id)) >> [asset3]
         0 * assetRepo.findByIds(_)

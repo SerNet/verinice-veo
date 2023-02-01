@@ -283,7 +283,6 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         }
 
         when:"we create all controls"
-
         def allItems = catalog.catalogItems.collect{extractLastId(it.targetUri)}.join(',')
         log.debug("==> allItems: {}", allItems)
 
@@ -291,6 +290,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         def elementResults = postIncarnationDescriptions(postResponse.resourceId, incarnationDescription)
 
         log.debug("==> elementResults: {}", elementResults)
+
         then: "all elements are created"
         elementResults.size() == 65
 
@@ -346,6 +346,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
 
                         def postApply = postIncarnationDescriptions(unitId, applyInfo, succesful ? 201 : 400)
                         if(succesful) {
+
                             and: "get the created element"
                             def elementResult = get(postApply.first().targetUri).body
                             log.info("Incarnated element {}", elementResult)

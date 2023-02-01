@@ -126,6 +126,7 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
         def invalidDomainId = UUID.randomUUID().toString()
+
         when: "trying to create a risk with an invalid domain"
         def error = post("/processes/$processId/risks", [
             domains: [

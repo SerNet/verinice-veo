@@ -37,11 +37,13 @@ class AttributeDefinitionSpec extends Specification{
         when: "validating booleans"
         definition.validate(true)
         definition.validate(false)
+
         then:
         noExceptionThrown()
 
         when: "validating an integer"
         definition.validate(5)
+
         then:
         thrown(InvalidAttributeException)
     }
@@ -54,26 +56,31 @@ class AttributeDefinitionSpec extends Specification{
         definition.validate("2020-01-01")
         definition.validate("2023-01-20")
         definition.validate("1969-12-31")
+
         then:
         noExceptionThrown()
 
         when: "validating a date in a bad format"
         definition.validate("2023-10-5")
+
         then:
         thrown(InvalidAttributeException)
 
         when: "validating a date in a non-existing month"
         definition.validate("2023-20-01")
+
         then:
         thrown(InvalidAttributeException)
 
         when: "validating a date on a non-existing day"
         definition.validate("2023-02-29")
+
         then:
         thrown(InvalidAttributeException)
 
         when: "validating a date time"
         definition.validate("2023-01-26T13:50:47+01:00")
+
         then:
         thrown(InvalidAttributeException)
     }
@@ -85,21 +92,25 @@ class AttributeDefinitionSpec extends Specification{
         when: "validating date times"
         definition.validate("2023-01-26T13:50:47+01:00")
         definition.validate("2023-01-26T13:50:47Z")
+
         then:
         noExceptionThrown()
 
         when: "validating a date time in a bad format"
         definition.validate("2023-1-26T13:50:47+01:00")
+
         then:
         thrown(InvalidAttributeException)
 
         when: "validating a date time in a non-existing month"
         definition.validate("2023-13-26T13:50:47+01:00")
+
         then:
         thrown(InvalidAttributeException)
 
         when: "validating a date time without a timezone"
         definition.validate("2023-01-26T13:50:47")
+
         then:
         thrown(InvalidAttributeException)
     }
@@ -112,16 +123,19 @@ class AttributeDefinitionSpec extends Specification{
         definition.validate("red")
         definition.validate("green")
         definition.validate("blue")
+
         then:
         noExceptionThrown()
 
         when: "validating an invalid string"
         definition.validate("yellow")
+
         then:
         thrown(InvalidAttributeException)
 
         when: "validating an int"
         definition.validate(1)
+
         then:
         thrown(InvalidAttributeException)
     }
@@ -134,26 +148,31 @@ class AttributeDefinitionSpec extends Specification{
         definition.validate("http://test.example/doc.html")
         definition.validate("https://test.example/doc.html")
         definition.validate("ftp://test.example/doc.html")
+
         then:
         noExceptionThrown()
 
         when: "validating a URL with an invalid char"
         definition.validate("https://test.example/doc html")
+
         then:
         thrown(InvalidAttributeException)
 
         when: "validating a URL with an invalid protocol"
         definition.validate("about://test.example/doc.html")
+
         then:
         thrown(InvalidAttributeException)
 
         when: "validating a URL with no protocol"
         definition.validate("test.example/https://test.example/doc.html")
+
         then:
         thrown(InvalidAttributeException)
 
         when: "validating an int"
         definition.validate(5)
+
         then:
         thrown(InvalidAttributeException)
     }
@@ -165,16 +184,19 @@ class AttributeDefinitionSpec extends Specification{
         when: "validating integers"
         definition.validate(42)
         definition.validate(-5)
+
         then:
         noExceptionThrown()
 
         when: "validating a string"
         definition.validate("42")
+
         then:
         thrown(InvalidAttributeException)
 
         when: "validating a float"
         definition.validate(42.0f)
+
         then:
         thrown(InvalidAttributeException)
     }
@@ -187,16 +209,19 @@ class AttributeDefinitionSpec extends Specification{
         definition.validate([])
         definition.validate([42])
         definition.validate([1, 3, 4, 6])
+
         then:
         noExceptionThrown()
 
         when: "validating a list with an invalid item"
         definition.validate([1, 2, 3, '4'])
+
         then:
         thrown(InvalidAttributeException)
 
         when: "validating an int"
         definition.validate(1)
+
         then:
         thrown(InvalidAttributeException)
     }
@@ -209,11 +234,13 @@ class AttributeDefinitionSpec extends Specification{
         definition.validate("T3XT M3")
         definition.validate("PL3453")
         definition.validate("!!!!!!!!1111111")
+
         then:
         noExceptionThrown()
 
         when: "validating an integer"
         definition.validate(5)
+
         then:
         thrown(InvalidAttributeException)
     }

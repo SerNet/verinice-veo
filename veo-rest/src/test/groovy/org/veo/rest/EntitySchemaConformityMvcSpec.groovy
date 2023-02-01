@@ -102,10 +102,13 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             owner: [
                 targetUri: "http://localhost/units/"+unitId,
             ]]
+
         when: "posting the asset"
         (post("/assets", asset))
+
         then: "an exception is thrown"
         JsonSchemaValidationException ex = thrown()
+
         and: "the reason is given"
         ex.message ==~ /.*customAspects.asset_foo: is not defined.*/
     }
@@ -136,8 +139,10 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
         when: "posting the scope"
         (post("/scopes", scope))
+
         then: "an exception is thrown"
         JsonSchemaValidationException ex = thrown()
+
         and: "the reason is given"
         ex.message ==~ /.*links.scope_bar: is not defined.*/
     }
@@ -159,8 +164,10 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
         when: "posting the scope"
         (post("/controls", control))
+
         then: "an exception is thrown"
         JsonSchemaValidationException ex = thrown()
+
         and: "the reason is given"
         ex.message ==~ /.*subType: does not have a value in the enumeration.*/
     }
@@ -179,6 +186,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                 ]
             ]
         ])
+
         then: "an exception is thrown"
         def ex = thrown(JsonSchemaValidationException)
         ex.message ==~ /.*status: null found, string expected.*/
@@ -196,6 +204,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                 ]
             ]
         ])
+
         then: "an exception is thrown"
         ex = thrown(JsonSchemaValidationException)
         ex.message ==~ /.*status: does not have a value in the enumeration.*/
@@ -213,6 +222,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                 ]
             ]
         ])
+
         then: "no exception is thrown"
         notThrown(Exception)
     }

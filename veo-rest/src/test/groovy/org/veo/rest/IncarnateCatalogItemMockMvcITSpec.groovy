@@ -85,6 +85,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         when: "post the data"
         def postResult = postIncarnationDescriptions(unit,result)
+
         then: "the 3 elements are created"
         postResult.size() == 3
     }
@@ -95,17 +96,20 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         when: "a request is made to the server to create a c-3 element"
         def result = getIncarnationDescriptions(unit,item3)
+
         then: "it contains 3 elements to create, item1 item2 item3, because of the tailor references in item3"
         result.parameters.size() == 3
 
         when: "we create Item1/2/3"
         def postResult = postIncarnationDescriptions(unit,result)
         def elementList = postResult.collect{it.targetUri}
+
         then: "3 objects are created"
         postResult.size() == 3
 
         when: "we apply item4, the process links two previously created controls"
         result = getIncarnationDescriptions(unit,item4)
+
         then: "the parameter object is returned and the links are set to item1 and item2"
         result.parameters.size() == 1
         result.parameters[0].references.size() == 2
@@ -114,12 +118,14 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         when: "post the data to create item4 with the unaltered links set to item1 and item2"
         postResult = postIncarnationDescriptions(unit,result)
+
         then: "the parameter object is returned"
         postResult.size() == 1
         postResult[0].searchesUri == "http://localhost/processes/searches"
 
         when: "we get the created process"
         def processResult = parseJson(get(postResult[0].targetUri))
+
         then: "the process is created and linked with the controls created from item1 and item2"
         validateNewElementAgainstCatalogItem(processResult, item4, domain)
         processResult.owner.displayName == 'Test unit'
@@ -142,12 +148,14 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters[0].references[1].referencedElement.targetUri = elementList[0]
 
         postResult = postIncarnationDescriptions(unit,result)
+
         then: "the parameter object is returned"
         postResult.size() == 1
         postResult[0].searchesUri == "http://localhost/processes/searches"
 
         when: "we get the created process"
         def processResult = parseJson(get(postResult[0].targetUri))
+
         then: "the process is created and linked with c-3"
         processResult.links.link_to_item_1.target.targetUri[0] == elementList[0]
         processResult.links.link_to_item_2.target.targetUri[0] == elementList[0]
@@ -156,6 +164,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve the apply info for item5 and post"() {
         given: "the created catalogitems"
+
         when: "a request is made to the server to create a p2 element"
         def result = getIncarnationDescriptions(unit,item5)
 
@@ -164,13 +173,14 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         when: "we create Item5"
         def postResult = postIncarnationDescriptions(unit,result)
+
         then: "1 objects are created"
         postResult.size() == 1
 
         when: "we get the created process"
         def processResult = parseJson(get(postResult[0].targetUri))
-        then: "the process is created and the subtype is set"
 
+        then: "the process is created and the subtype is set"
         validateNewElementAgainstCatalogItem(processResult, item5, domain)
         processResult.owner.displayName == 'Test unit'
         processResult.domains[domain.id.uuidValue()].subType == "MY_SUBTYPE"
@@ -179,7 +189,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve the apply info for item6 and post"() {
         given: "the created catalogitems and the control c1"
-
         def result = getIncarnationDescriptions(unit,item1)
         postIncarnationDescriptions(unit,result)
 
@@ -191,13 +200,14 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         when: "we create Item6"
         def postResult = postIncarnationDescriptions(unit,result)
+
         then: "1 object is created"
         postResult.size() == 1
 
         when: "we get the created process"
         def processResult = parseJson(get(postResult[0].targetUri))
-        then: "the process is created and all the features are set"
 
+        then: "the process is created and all the features are set"
         validateNewElementAgainstCatalogItem(processResult, item6, domain)
         processResult.owner.displayName == 'Test unit'
         processResult.domains[domain.id.uuidValue()].subType == "MY_SUBTYPE"
@@ -217,7 +227,6 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve the apply info for item7 and post"() {
         given: "the created catalogitems and the control p1, also the linked controls"
-
         def incarnationDescriptions = getIncarnationDescriptions(unit,item1,item2)
         postIncarnationDescriptions(unit,incarnationDescriptions)
 
@@ -232,6 +241,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         when: "we create Item7"
         def postResult = postIncarnationDescriptions(unit,incarnationDescriptions)
+
         then: "1 object is created"
         postResult.size() == 1
 
@@ -255,17 +265,22 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         incarnationDescriptions = getIncarnationDescriptions(unit,item6)
         postResult = postIncarnationDescriptions(unit,incarnationDescriptions)
         processUri = postResult[0].targetUri
+
         and: "we get the process"
         processResult = parseJson(get(processUri))
+
         then: "there is one link"
         processResult.links.size() == 1
 
         when: "we get the description for the tom"
         incarnationDescriptions = getIncarnationDescriptions(unit,item7)
+
         and: "we set the link to p3"
         incarnationDescriptions.parameters[0].references[0].referencedElement.targetUri = postResult[0].targetUri
+
         and:"create the tom and a link in p3"
         postResult = postIncarnationDescriptions(unit,incarnationDescriptions)
+
         and: "we get the created tom"
         tomResult = parseJson(get(postResult[0].targetUri))
 
@@ -288,11 +303,13 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         when: "retrieving incarnation descriptions for item 3"
         def result = getIncarnationDescriptions(unit,item3)
+
         then: "the parameter object is returned"
         result.parameters.size() == 3
 
         when: "posting the incarnation descriptions in other client's unit"
         post("/${basePath}/${unitSecondClient.id.uuidValue()}/incarnations",result, 404)
+
         then: "a client boundary violation is detected"
         thrown(ClientBoundaryViolationException)
     }
@@ -309,6 +326,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         when: "post the data"
         def postResult = postIncarnationDescriptions(unit,result)
+
         then: "the 2 elements are created"
         postResult.size() == 2
 
@@ -346,6 +364,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         when: "post the data"
         post("/${basePath}/${unit.id.uuidValue()}/incarnations",result, 422)
+
         then: "the data is rejected"
         thrown(UnprocessableDataException)
     }
@@ -353,6 +372,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve the apply info for processImpactExample and post"() {
         given: "the created catalogitems"
+
         when: "a request is made to the server to create a processImpactExample element"
         def result = getIncarnationDescriptions(unit,processImpactExample)
 
@@ -361,13 +381,14 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         when: "we create processImpactExample"
         def postResult = postIncarnationDescriptions(unit,result)
+
         then: "1 objects are created"
         postResult.size() == 1
 
         when: "we get the created process"
         def processResult = parseJson(get(postResult[0].targetUri))
-        then: "the process is created and the risk values are set"
 
+        then: "the process is created and the risk values are set"
         validateNewElementAgainstCatalogItem(processResult, processImpactExample, domain)
         processResult.owner.displayName == 'Test unit'
         processResult.domains[domain.id.uuidValue()].riskValues.id.potentialImpacts.C == 2
@@ -376,6 +397,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve the apply info for controlImpactExample and post"() {
         given: "the created catalogitems"
+
         when: "a request is made to the server to create a controlImpactExample element"
         def result = getIncarnationDescriptions(unit,controlImpactExample)
 
@@ -384,13 +406,14 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         when: "we create controlImpactExample"
         def postResult = postIncarnationDescriptions(unit,result)
+
         then: "1 objects are created"
         postResult.size() == 1
 
         when: "we get the created Control"
         def controlResult = parseJson(get(postResult[0].targetUri))
-        then: "the control is created and the risk values are set"
 
+        then: "the control is created and the risk values are set"
         validateNewElementAgainstCatalogItem(controlResult, controlImpactExample, domain)
         controlResult.owner.displayName == 'Test unit'
         controlResult.domains[domain.id.uuidValue()].riskValues.id.implementationStatus == 1
@@ -399,6 +422,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve the apply info for scenarioProbabilityExample and post"() {
         given: "the created catalogitems"
+
         when: "a request is made to the server to create a scenarioProbabilityExample element"
         def result = getIncarnationDescriptions(unit,scenarioProbabilityExample)
 
@@ -407,13 +431,14 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         when: "we create scenarioProbabilityExample"
         def postResult = postIncarnationDescriptions(unit,result)
+
         then: "1 objects are created"
         postResult.size() == 1
 
         when: "we get the created scenario"
         def scenarioResult = parseJson(get(postResult[0].targetUri))
-        then: "the scenario is created and the risk values are set"
 
+        then: "the scenario is created and the risk values are set"
         validateNewElementAgainstCatalogItem(scenarioResult, scenarioProbabilityExample, domain)
         scenarioResult.owner.displayName == 'Test unit'
         scenarioResult.domains[domain.id.uuidValue()].riskValues.id.potentialProbability == 3

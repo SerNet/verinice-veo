@@ -106,6 +106,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         when: 'executing the UpdateAllClientDomainsUseCase'
         runUseCase(DSGVO_DOMAINTEMPLATE_V2_UUID)
         client = clientRepository.findById(client.id).get()
+
         then: 'the old domain is disabled'
         !client.getAllDomains().find{it.id == dsgvoDomain.id}.active
         client.domains.find{it.id == dsgvoDomainV2.id}.active
@@ -116,6 +117,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         Unit unit = unitRepository.save(newUnit(client) {
             addToDomains(dsgvoDomain)
         })
+
         when: 'executing the UpdateAllClientDomainsUseCase'
         runUseCase(DSGVO_DOMAINTEMPLATE_V2_UUID)
         unit = executeInTransaction {
@@ -124,6 +126,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
                 it.domains*.name
             }
         }
+
         then: 'the unit is moved to the new domain'
         unit.domains == [dsgvoDomainV2] as Set
     }
@@ -143,6 +146,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             associateWithDomain(dsgvoDomain, "CTL_TOM", "NEW")
             setRiskValues(dsgvoDomain, riskValues)
         })
+
         when: 'executing the UpdateAllClientDomainsUseCase'
         runUseCase(DSGVO_DOMAINTEMPLATE_V2_UUID)
         unit = executeInTransaction {
@@ -260,6 +264,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             associateWithDomain(dsgvoDomain, "PRO_DataProcessing", "NEW")
             setImpactValues(dsgvoDomain, impactValues)
         })
+
         when: 'executing the UpdateAllClientDomainsUseCase'
         runUseCase(DSGVO_DOMAINTEMPLATE_V2_UUID)
         unit = executeInTransaction {
@@ -289,6 +294,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
     def "Migrate a client with the demo unit"() {
         given: 'a client with a demo unit'
         def demoUnit = createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(client.id)).unit
+
         when: 'executing the UpdateAllClientDomainsUseCase'
         runUseCase(DSGVO_DOMAINTEMPLATE_V2_UUID)
         demoUnit = executeInTransaction {
@@ -297,8 +303,10 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
                 it.domains*.name
             }
         }
+
         then: 'the demo unit belongs to the new domain'
         demoUnit.domains == [dsgvoDomainV2] as Set
+
         and: 'the scope elements belong to the new domain'
         List<Scope> scopes = executeInTransaction {
             scopeRepository.query(client).whereOwnerIs(demoUnit).execute(PagingConfiguration.UNPAGED).resultPage.tap {
@@ -328,6 +336,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
                 it.domains == [dsgvoDomainV2] as Set
             }
         }
+
         and: 'the person elements belong to the new domain'
         def persons = executeInTransaction {
             personRepository.query(client).whereOwnerIs(demoUnit).execute(PagingConfiguration.UNPAGED).resultPage.tap {

@@ -46,8 +46,10 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
             getOwner() >> existingUnit
             getId() >> id
         }
+
         when:
         def output = usecase.execute(new InputData(existingClient, null, null, null, null, null, null, null, null, null, null, null, pagingConfiguration))
+
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * query.execute(pagingConfiguration) >> singleResult(asset, pagingConfiguration)
@@ -64,8 +66,10 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
         def input = new InputData(existingClient, Mock(QueryCondition) {
             getValues() >> [existingUnit.id]
         }, null, Mock(QueryCondition), null, null, null, null, null, null, null, null, pagingConfiguration)
+
         when:
         def output = usecase.execute(input)
+
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
         1 * unitHierarchyProvider.findAllInRoot(existingUnit.id) >> existingUnitHierarchyMembers

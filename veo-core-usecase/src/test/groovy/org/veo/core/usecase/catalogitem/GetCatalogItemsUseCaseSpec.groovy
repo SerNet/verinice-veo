@@ -77,6 +77,7 @@ class GetCatalogItemsUseCaseSpec extends UseCaseSpec {
     def "retrieve all catalogitems for an unkown catalog"() {
         when:
         usecase.execute(new InputData(Optional.empty(),Key.newUuid(),Optional.empty(),  anotherClient))
+
         then:
         thrown(NotFoundException)
     }
@@ -84,6 +85,7 @@ class GetCatalogItemsUseCaseSpec extends UseCaseSpec {
     def "retrieve all catalogitems for an other catalog"() {
         when:
         usecase.execute(new InputData(Optional.empty(),catalog1Id,Optional.empty(),  existingClient))
+
         then:
         thrown(NotFoundException)
     }
@@ -91,6 +93,7 @@ class GetCatalogItemsUseCaseSpec extends UseCaseSpec {
     def "retrieve all catalogitems for a catalog"() {
         when:
         def output = usecase.execute(new InputData(Optional.empty(),catalogId,Optional.empty(),  anotherClient))
+
         then:
         output.catalogItems.size() == 3
     }
@@ -98,16 +101,19 @@ class GetCatalogItemsUseCaseSpec extends UseCaseSpec {
     def "retrieve all catalogitems for a namspace"() {
         when:
         def output = usecase.execute(new InputData(Optional.of('A.B.C.D'),catalogId,Optional.empty(),  anotherClient))
+
         then:
         output.catalogItems.size() == 2
 
         when:
         output = usecase.execute(new InputData(Optional.of('A.B.C'),catalogId,Optional.empty(),  anotherClient))
+
         then:
         output.catalogItems.size() == 1
 
         when:
         output = usecase.execute(new InputData(Optional.of('A.B.C.LL'),catalogId,Optional.empty(),  anotherClient))
+
         then:
         output.catalogItems.size() == 0
     }

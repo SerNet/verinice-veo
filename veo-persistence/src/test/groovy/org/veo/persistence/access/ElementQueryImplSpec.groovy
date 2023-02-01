@@ -87,6 +87,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
         when:
         def result = query.execute(PagingConfiguration.UNPAGED)
+
         then:
         result.totalResults == 1
         result.resultPage.first().name == "client process"
@@ -355,8 +356,10 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
             newProcess(unit),
             newProcess(unit)
         ])
+
         when:
         def all = query.execute(PagingConfiguration.UNPAGED)
+
         then:
         all.totalResults == 3
     }
@@ -375,6 +378,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         when:
         query.whereUnitIn([unit, unit3] as Set)
         def result = query.execute(PagingConfiguration.UNPAGED)
+
         then:
         result.totalResults == 2
         with(result.resultPage) {
@@ -404,6 +408,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         when:
         query.whereSubTypeMatches(new QueryCondition<>(["VT"] as Set))
         def result = query.execute(PagingConfiguration.UNPAGED)
+
         then:
         result.totalResults == 2
         with(result.resultPage) {
@@ -437,6 +442,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         when:
         query.whereStatusMatches(new QueryCondition<>(["GOOD", "OK"] as Set))
         def result = query.execute(PagingConfiguration.UNPAGED)
+
         then:
         result.totalResults == 2
         with(result.resultPage) {
@@ -472,6 +478,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         query.whereSubTypeMatches(new QueryCondition<>(["VT"] as Set))
         query.whereStatusMatches(new QueryCondition<>(["GOOD"] as Set))
         def result = query.execute(PagingConfiguration.UNPAGED)
+
         then:
         result.totalResults == 1
         with(result.resultPage) {
@@ -499,6 +506,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         when:
         query.whereSubTypeMatches(new QueryCondition<>([null] as Set))
         def result = query.execute(PagingConfiguration.UNPAGED)
+
         then:
         result.totalResults == 2
         with(result.resultPage) {
@@ -529,8 +537,8 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         when:
         query.whereUnitIn([unit2, unit3] as Set)
         def result = query.execute(PagingConfiguration.UNPAGED)
-        then:
 
+        then:
         result.totalResults == 1
         result.resultPage.first().name == "process 2"
     }
@@ -692,8 +700,10 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         given: 'a repository'
         AssetDataRepository dataRepository = Mock()
         def query = new ElementQueryImpl<>(dataRepository, client)
+
         when:
         query.execute(new PagingConfiguration(2, 0, 'foo', SortOrder.ASCENDING))
+
         then:
         1 * dataRepository.findAll(_, { Pageable pageable->
             pageable.pageSize == 2
@@ -713,6 +723,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
                 designator = "PER-$n"
             }
         })
+
         when: "querying processes sorted by designator ascending"
         def query = new ElementQueryImpl<>(personDataRepository, client)
 

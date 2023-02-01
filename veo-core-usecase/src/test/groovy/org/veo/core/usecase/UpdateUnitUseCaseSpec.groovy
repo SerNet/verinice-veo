@@ -38,7 +38,6 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
         }
 
         when: "the use case to create a unit is executed"
-
         def eTagNewUnit = ETag.from(this.existingUnit.getId().uuidValue(), 0)
         def output = updateUseCase.execute(new ChangeUnitUseCase.InputData(newUnit, this.existingClient, eTagNewUnit, USER_NAME))
 

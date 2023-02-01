@@ -56,6 +56,7 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         then:
         1 * scopeRepository.save(_) >> { it[0] }
         1 * designatorService.assignDesignator(scope, existingClient)
+
         when:
         def scope1 = output.entity
 

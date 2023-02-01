@@ -42,12 +42,16 @@ class SwaggerSpec extends VeoSpringSpec {
         when:
         def response = mvc.perform(get('/swagger-ui.html')).andReturn().response
         def redirectedUrl = response.redirectedUrl
+
         then:
         redirectedUrl != null
+
         when:
         response = mvc.perform(get(redirectedUrl)).andReturn().response
+
         then:
         response.contentAsString.contains('Swagger UI')
+
         and:
         apiDocsString.contains('verinice.VEO')
     }
@@ -56,6 +60,7 @@ class SwaggerSpec extends VeoSpringSpec {
         when:
         def response = mvc.perform(get('/swagger-ui/index.html')).andReturn().response
         def pageContent = response.contentAsString
+
         then:
         pageContent.contains('Swagger UI')
         !pageContent.contains('petstore')
@@ -64,6 +69,7 @@ class SwaggerSpec extends VeoSpringSpec {
     def "response DTO contains links property"() {
         when:
         def assetDtoSchema = parsedApiDocs.components.schemas.FullAssetDto
+
         then:
         assetDtoSchema.properties.links != null
         assetDtoSchema.properties.links.description == 'The links for the asset.'
@@ -93,6 +99,7 @@ class SwaggerSpec extends VeoSpringSpec {
     def "createdAt and updatedAt are read-only"() {
         when:
         def assetDtoSchema = parsedApiDocs.components.schemas.FullAssetDto
+
         then:
         assetDtoSchema.properties.createdAt != null
         assetDtoSchema.properties.createdAt.readOnly == true
@@ -103,13 +110,16 @@ class SwaggerSpec extends VeoSpringSpec {
     def "displayName is not required for parts when putting composite elements"() {
         when:
         def scenarioDtoSchema = parsedApiDocs.components.schemas.FullScenarioDto
+
         then:
         scenarioDtoSchema.properties.parts != null
         scenarioDtoSchema.properties.parts.type == 'array'
         scenarioDtoSchema.properties.parts.items != null
         scenarioDtoSchema.properties.parts.items.'$ref' == '#/components/schemas/PartReference'
+
         when:
         def partReferenceSchema = parsedApiDocs.components.schemas.PartReference
+
         then:
         !partReferenceSchema.required.contains('displayName')
     }
@@ -192,13 +202,16 @@ class SwaggerSpec extends VeoSpringSpec {
     def "targetUri is required for parts when putting composite elements"() {
         when:
         def scenarioDtoSchema = parsedApiDocs.components.schemas.FullScenarioDto
+
         then:
         scenarioDtoSchema.properties.parts != null
         scenarioDtoSchema.properties.parts.type == 'array'
         scenarioDtoSchema.properties.parts.items != null
         scenarioDtoSchema.properties.parts.items.'$ref' == '#/components/schemas/PartReference'
+
         when:
         def partReferenceSchema = parsedApiDocs.components.schemas.PartReference
+
         then:
         partReferenceSchema.required.contains('targetUri')
     }
@@ -206,6 +219,7 @@ class SwaggerSpec extends VeoSpringSpec {
     def "link attributes are not required"() {
         given:
         def customLinkDtoSchema = parsedApiDocs.components.schemas.CustomLinkDto
+
         expect:
         !customLinkDtoSchema.required.contains("attributes")
     }
@@ -213,10 +227,13 @@ class SwaggerSpec extends VeoSpringSpec {
     def "targetUri is required for scope owner"() {
         when:
         def scopeDtoSchema = parsedApiDocs.components.schemas.FullScopeDto
+
         then:
         scopeDtoSchema.properties.owner.'$ref' == '#/components/schemas/OwnerReference'
+
         when:
         def ownerReferenceSchema = parsedApiDocs.components.schemas.OwnerReference
+
         then:
         ownerReferenceSchema.required.contains('targetUri')
     }
@@ -224,10 +241,13 @@ class SwaggerSpec extends VeoSpringSpec {
     def "catalog item element is a reference"() {
         when:
         def catalogItemDtoSchema = parsedApiDocs.components.schemas.FullCatalogItemDto
+
         then:
         catalogItemDtoSchema.properties.element.'$ref' == '#/components/schemas/CatalogItemElement'
+
         when:
         def elementReferenceSchema = parsedApiDocs.components.schemas.CatalogItemElement
+
         then:
         elementReferenceSchema.required.contains('targetUri')
     }
@@ -240,6 +260,7 @@ class SwaggerSpec extends VeoSpringSpec {
 
         when: "fetching allowed schemas from OpenAPI parameter doc"
         List<String> allowedTypes = parsedApiDocs.paths["/schemas/{type}"].get.parameters[0].schema.enum
+
         then: "they also contain all entity types"
         allowedTypes.sort() == schemaTypes
     }
@@ -247,6 +268,7 @@ class SwaggerSpec extends VeoSpringSpec {
     def "endpoint documentation is correct for CreateAssetUseCase"() {
         when: "retrieving the endpoint docs"
         def endPointInfo = parsedApiDocs.paths["/assets"].post
+
         then: "it contains a summary and a parameter schema"
         endPointInfo != null
         endPointInfo.summary == "Creates an asset"
@@ -260,10 +282,13 @@ class SwaggerSpec extends VeoSpringSpec {
     def "endpoint documentation is correct for GetIncarnationDescriptionUseCase"() {
         when: "retrieving the information about the endpoint"
         def endPointInfo = parsedApiDocs.paths["/units/{unitId}/incarnations"]
+
         then: "the information is found"
         endPointInfo != null
+
         and: 'it handles get requests'
         endPointInfo.get != null
+
         and: 'it contains information about the query parameters'
         with(endPointInfo.get.parameters[1]) {
             name == 'itemIds'
@@ -279,16 +304,21 @@ class SwaggerSpec extends VeoSpringSpec {
     def "endpoint documentation is correct for translation controller"() {
         when: "retrieving the information about the endpoint"
         def endPointInfo = parsedApiDocs.paths["/translations"]
+
         then: "the information is found"
         endPointInfo != null
+
         and: 'it handles get requests'
         endPointInfo.get != null
+
         and: 'it contains information about the query parameters'
         with(endPointInfo.get) {
             summary == 'Retrieves a map of UI translation key-value pairs.'
         }
+
         when:
         def translationsSchema = parsedApiDocs.components.schemas.TranslationsDto
+
         then:
         with(translationsSchema) {
             it.description == 'Translations for an entity type'
@@ -298,8 +328,10 @@ class SwaggerSpec extends VeoSpringSpec {
                 it.additionalProperties.'$ref' == '#/components/schemas/TranslationDto'
             }
         }
+
         when:
         def translationSchema = parsedApiDocs.components.schemas.TranslationDto
+
         then:
         with(translationSchema) {
             it.description == 'Translations for an entity type in a specific language'
@@ -341,12 +373,16 @@ class SwaggerSpec extends VeoSpringSpec {
     def "endpoint documentation is correct for CreateDomainUseCase"() {
         when: "retrieving the information about the endpoint"
         def endPointInfo = parsedApiDocs.paths["/domaintemplates/{id}/createdomains"]
+
         then: "the information is found"
         endPointInfo != null
+
         and: 'it handles post requests'
         endPointInfo.post != null
+
         and: 'it has a meaningful description'
         endPointInfo.post.summary == 'Creates domains from a domain template'
+
         and: 'it contains information about the query parameters'
         with(endPointInfo.post.parameters[1]) {
             name == 'clientids'
@@ -362,12 +398,16 @@ class SwaggerSpec extends VeoSpringSpec {
     def "endpoint documentation is correct for ExportDomainUseCase"() {
         when: "retrieving the information about the endpoint"
         def endPointInfo = parsedApiDocs.paths["/domains/{id}/export"]
+
         then: "the information is found"
         endPointInfo != null
+
         and: 'it handles get requests'
         endPointInfo.get != null
+
         and: 'it has a meaningful description'
         endPointInfo.get.summary == 'Export a domain'
+
         and: 'it contains information about the query parameters'
         with(endPointInfo.get.parameters[0]) {
             name == 'id'
@@ -382,12 +422,16 @@ class SwaggerSpec extends VeoSpringSpec {
     def "endpoint documentation is correct for CreateDomainTemplateUseCase"() {
         when: "retrieving the information about the endpoint"
         def endPointInfo = parsedApiDocs.paths["/domains/{id}/createdomaintemplate"]
+
         then: "the information is found"
         endPointInfo != null
+
         and: 'it handles post requests'
         endPointInfo.post != null
+
         and: 'it has a meaningful description'
         endPointInfo.post.summary == 'Creates a domaintemplate from a domain'
+
         and: 'parameter is described'
         with(endPointInfo.post.parameters[0]) {
             name == 'id'
@@ -403,7 +447,6 @@ class SwaggerSpec extends VeoSpringSpec {
     }
 
     def "endpoint documentation is correct for GetElementStatusCountUseCase"() {
-
         when: "retrieving the information about the endpoint"
         def endPointInfo = parsedApiDocs.paths["/domains/{id}/element-status-count"]
 

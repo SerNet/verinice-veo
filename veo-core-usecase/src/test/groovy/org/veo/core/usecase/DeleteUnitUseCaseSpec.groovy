@@ -94,6 +94,7 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
         1 * processRepository.deleteAll(processes)
         1 * scenarioRepository.findByUnit(existingUnit) >> scenarios
         1 * scenarioRepository.deleteAll(scenarios)
+
         and: "the unit is deleted"
         1 * unitRepository.delete(_)
     }

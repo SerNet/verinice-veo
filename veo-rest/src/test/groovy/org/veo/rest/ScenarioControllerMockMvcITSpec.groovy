@@ -86,7 +86,6 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "create a scenario"() {
         given: "a request body"
-
         Map request = [
             name: 'New Scenario',
             owner: [
@@ -120,6 +119,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the eTag is set"
         getETag(results) != null
+
         and:
         def result = parseJson(results)
         result._self == "http://localhost/scenarios/${scenario.id.uuidValue()}"
@@ -157,7 +157,6 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieving all scenarios for a unit returns composite elements and their parts"() {
         given: "a saved scenario  and a composite document containing it"
-
         txTemplate.execute {
             scenarioRepository.save(newScenario(unit) {
                 name = 'Test composite scenario-1'
@@ -222,7 +221,6 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "delete a scenario"() {
-
         given: "an existing scenario"
         def scenario = txTemplate.execute {
             scenarioDataRepository.save(newScenario(unit))
@@ -248,6 +246,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
                 name = "old name 2"
             }))
         })
+
         when: "a put request tries to update scenario 1 using the ID of scenario 2"
         Map headers = [
             'If-Match': ETag.from(scenario1.id.uuidValue(), 1)
@@ -257,6 +256,7 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
             name: "new name 1",
             owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
         ], headers, 403)
+
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }

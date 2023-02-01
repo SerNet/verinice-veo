@@ -67,7 +67,6 @@ class ElementJpaSpec extends AbstractJpaSpec {
 
     def 'finds elements by owners'() {
         given: "three assets from different owners"
-
         assetRepository.save(newAsset(owner0) {
             name = "asset 0"
         })
@@ -135,7 +134,6 @@ class ElementJpaSpec extends AbstractJpaSpec {
 
     def 'increment version id'() {
         given: "one unit db ID"
-
         def dbId = owner0.getDbId()
 
         when: "load and save the asset"
@@ -213,6 +211,7 @@ class ElementJpaSpec extends AbstractJpaSpec {
             description = "-".repeat(DESCRIPTION_MAX_LENGTH)
         })
         entityManager.flush()
+
         then:
         noExceptionThrown()
 
@@ -221,6 +220,7 @@ class ElementJpaSpec extends AbstractJpaSpec {
             description = "-".repeat(DESCRIPTION_MAX_LENGTH + 1)
         })
         entityManager.flush()
+
         then:
         thrown(ConstraintViolationException)
     }

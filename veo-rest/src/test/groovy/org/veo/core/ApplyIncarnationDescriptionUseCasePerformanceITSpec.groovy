@@ -74,16 +74,18 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
         createClient()
         Catalog catalog = createCatalog()
         QueryCountHolder.clear()
-        when:
 
+        when:
         def inputDataGetIncarnationDescription = new GetIncarnationDescriptionUseCase.InputData(client, unit.id, catalog.catalogItems.collect{it.id})
         GetIncarnationDescriptionUseCase.OutputData description = executeInTransaction {
             synchronousUseCaseInteractor.execute(getIncarnationDescriptionUseCase, inputDataGetIncarnationDescription, Function.identity()).get()
         }
         def queryCounts = QueryCountHolder.grandTotal
+
         then:
         description.references.size() == 8
         queryCounts.select == 8
+
         when:
         def inputData = new  ApplyIncarnationDescriptionUseCase.InputData(client, unit.id, description.references)
         QueryCountHolder.clear()
@@ -91,6 +93,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
             synchronousUseCaseInteractor.execute(applyIncarnationDescriptionUseCase, inputData, Function.identity()).get()
         }
         queryCounts = QueryCountHolder.grandTotal
+
         then:
         queryCounts.select == 30
         queryCounts.insert == 24

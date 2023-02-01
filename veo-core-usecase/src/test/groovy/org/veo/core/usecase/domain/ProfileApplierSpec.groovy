@@ -51,7 +51,6 @@ class ProfileApplierSpec extends Specification {
 
     def "apply a profile to a unit"() {
         given: "starting values for a unit"
-
         Client existingClient = Mock()
         Unit unit = Mock()
         Domain domain = Mock() {

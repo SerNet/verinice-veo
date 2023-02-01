@@ -53,8 +53,8 @@ class UpdateScopeUseCaseSpec extends UseCaseSpec {
         when:
         def eTag = ETag.from(scope.getId().uuidValue(), 0)
         def output = usecase.execute(new ModifyElementUseCase.InputData(scope, existingClient,  eTag, USER_NAME))
-        then:
 
+        then:
         1 * scopeRepository.findById(scopeId) >> Optional.of(existingScope)
         1 * scope.version(USER_NAME, existingScope)
         1 * scopeRepository.save(_) >> scope

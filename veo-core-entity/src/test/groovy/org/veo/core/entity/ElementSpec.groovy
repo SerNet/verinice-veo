@@ -28,6 +28,7 @@ class ElementSpec extends Specification {
         spy.abbreviation >> "FF"
         spy.name >> "Fun foo"
         spy.designator >> 'XXX-23'
+
         then: "all three elements appear in the display name"
         spy.displayName == "XXX-23 FF Fun foo"
     }
@@ -40,6 +41,7 @@ class ElementSpec extends Specification {
         spy.abbreviation >> null
         spy.name >> "Fun foo"
         spy.designator >> 'XXX-42'
+
         then: "the abbreviation is omitted"
         spy.displayName == "XXX-42 Fun foo"
     }

@@ -25,13 +25,14 @@ class VeoSpecSpec extends VeoSpec {
 
     def "Create a new asset with a name"() {
         given:
-
         def assetName = 'Asset 1'
         def unit = Mock(Unit)
+
         when:
         def asset = newAsset unit, {
             name = assetName
         }
+
         then:
         asset.name == assetName
         asset.owner == unit
@@ -40,10 +41,12 @@ class VeoSpecSpec extends VeoSpec {
     def "Create a new client with a name"() {
         given:
         def clientName = 'Client 1'
+
         when:
         def client = newClient {
             name = clientName
         }
+
         then:
         client.name == clientName
     }
@@ -51,8 +54,10 @@ class VeoSpecSpec extends VeoSpec {
     def "Create a new unit"() {
         given:
         def client = Mock(Client)
+
         when:
         def unit = newUnit(client)
+
         then:
         unit instanceof Unit
         unit != null
@@ -62,10 +67,12 @@ class VeoSpecSpec extends VeoSpec {
         given:
         def id = Key.newUuid()
         def client = Mock(Client)
+
         when:
         def unit = newUnit client, {
             it.id = id
         }
+
         then:
         unit instanceof Unit
         unit != null

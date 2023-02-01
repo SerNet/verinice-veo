@@ -85,7 +85,6 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "create an incident"() {
         given: "a request body"
-
         Map request = [
             name: 'New Incident',
             owner: [
@@ -119,6 +118,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the eTag is set"
         getETag(results) != null
+
         and:
         def result = parseJson(results)
         result._self == "http://localhost/incidents/${incident.id.uuidValue()}"
@@ -141,6 +141,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "requesting all incidents in the unit"
         def result = parseJson(get("/incidents?unit=${unit.id.uuidValue()}"))
+
         then: "the incidents are returned"
         result.items*.name.sort() == [
             'Test incident-1',
@@ -162,6 +163,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "requesting all incidents in the unit"
         def result = parseJson(get("/incidents?unit=${unit.id.uuidValue()}"))
+
         then: "the incidents are returned"
         result.items*.name as Set == [
             'Test incident-1',
@@ -214,7 +216,6 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "delete an incident"() {
-
         given: "an existing incident"
         def incident = txTemplate.execute {
             incidentRepository.save(newIncident(unit))
@@ -240,6 +241,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
                 name = "old name 2"
             }))
         })
+
         when: "a put request tries to update incident 1 using the ID of incident 2"
         Map headers = [
             'If-Match': ETag.from(incident1.id.uuidValue(), 1)
@@ -249,6 +251,7 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
             name: "new name 1",
             owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
         ], headers, 400)
+
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }
@@ -271,7 +274,6 @@ class IncidentControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "can put back incident with parts"() {
         given: "a saved incident and a composite"
-
         def incident = txTemplate.execute {
             incidentRepository.save(newIncident(unit) {
                 name = 'Test incident'

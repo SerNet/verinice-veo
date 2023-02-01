@@ -62,9 +62,11 @@ class JsonSchemaProviderITSpec extends VeoSpringSpec {
                 ]
             })
         })
+
         when:
         def schema = jsonSchemaProvider.loadSchema('asset')
         def schemaText = schema.schemaNode.toString()
+
         then:
         schemaText.contains('foo')
         schemaText.contains('fooAttr')

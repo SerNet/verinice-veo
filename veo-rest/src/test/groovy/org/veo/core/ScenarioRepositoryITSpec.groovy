@@ -62,6 +62,7 @@ class ScenarioRepositoryITSpec extends VeoSpringSpec {
             ]
             associateWithDomain(newDomain(client), null, null)
         })
+
         then:
         def ex = thrown(ConstraintViolationException)
         ex.constraintViolations*.propertyPath*.toString().sort() == [

@@ -87,7 +87,6 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "create a document"() {
         given: "a request body"
-
         Map request = [
             name: 'New Document',
             owner: [
@@ -121,6 +120,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the eTag is set"
         getETag(results) != null
+
         and:
         def result = parseJson(results)
         result._self == "http://localhost/documents/${document.id.uuidValue()}"
@@ -143,6 +143,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "all documents in the unit are requested"
         def result = parseJson(get("/documents?unit=${unit.id.uuidValue()}"))
+
         then:
         result.items*.name.sort() == [
             'Test document-1',
@@ -153,7 +154,6 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieving all documents for a unit returns composite elements and their parts"() {
         given: "a saved document and a composite document containing it"
-
         txTemplate.execute {
             documentRepository.save( newDocument(unit) {
                 name = 'Test composite document-1'
@@ -165,6 +165,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         def result = parseJson(get("/documents?unit=${unit.id.uuidValue()}"))
+
         then: "the documents are returned"
         result.items*.name as Set == [
             'Test document-1',
@@ -241,6 +242,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
                 name = "old name 2"
             }))
         })
+
         when: "a put request tries to update document 1 using the ID of document 2"
         Map headers = [
             'If-Match': ETag.from(document1.id.uuidValue(), 1)
@@ -250,6 +252,7 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
             name: "new name 1",
             owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
         ], headers, 403)
+
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }

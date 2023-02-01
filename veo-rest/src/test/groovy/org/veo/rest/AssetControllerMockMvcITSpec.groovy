@@ -99,7 +99,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "create an asset"() {
         given: "a request body"
-
         Map request = [
             name: 'New Asset',
             owner: [
@@ -109,7 +108,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         when: "a request is made to the server"
-
         def result = parseJson(post('/assets', request))
 
         then: "the location of the new asset is returned"
@@ -123,7 +121,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "Invalid date values for versioned properties are ignored"() {
         given: "a request body"
-
         Map request = [
             name: 'New Asset',
             owner: [
@@ -161,16 +158,20 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "the request is sent"
         def result = parseJson(post('/assets', request))
+
         then: "the location of the new composite asset is returned"
         result.success
         def resourceId = result.resourceId
         resourceId != null
         resourceId != ''
         result.message == 'Asset created successfully.'
+
         when: "the server is queried for the asset"
         result = parseJson(get("/assets/${resourceId}"))
+
         then: "the expected name is present"
         result.name == 'My Assets'
+
         and: "the composite asset contains the other asset"
         result.parts.size() == 1
         result.parts.first().displayName == 'AST-1 Test asset'
@@ -179,7 +180,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve an asset"() {
         given: "a saved asset"
-
         CustomAspect simpleProps = newCustomAspect("simpleAspect") {
             attributes = [
                 "simpleProp": "simpleValue"
@@ -199,9 +199,11 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the eTag is set"
         String eTag = getETag(results)
         eTag != null
+
         and: "the caching headers are set"
         def cacheControl = results.andReturn().response.getHeader(HttpHeaders.CACHE_CONTROL)
         cacheControl == 'no-cache'
+
         and: "the response contains the expected data"
         def result = parseJson(results)
         result == [
@@ -231,11 +233,13 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             updatedBy: "user@domain.example",
             updatedAt: roundToMicros(asset.updatedAt).toString()
         ]
+
         when: "the asset is requested from the server again"
         results =
                 mvc.perform(MockMvcRequestBuilders.get("/assets/${asset.id.uuidValue()}").accept(MediaType.APPLICATION_JSON).header(
                 HttpHeaders.IF_NONE_MATCH, eTag
                 ))
+
         then: "the server returns not-modified"
         results.andReturn().response.status == HttpStatus.SC_NOT_MODIFIED
     }
@@ -284,8 +288,10 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "a request is made to the server"
         def results = get("/assets/${sourceAsset.id.uuidValue()}")
+
         then: "the asset is found"
         getETag(results) != null
+
         and: "the response contains the expected link"
         def result = parseJson(results)
         result.name == 'Test asset-1'
@@ -296,6 +302,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "all assets are queried"
         def allAssets = parseJson(get("/assets"))
+
         then: "the asset with the link is retrieved"
         allAssets.items.sort{it.name}.first() == result
     }
@@ -303,7 +310,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve all assets for a client"() {
         given: "a saved asset"
-
         def asset = newAsset(unit) {
             name = "Test asset-1"
             associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
@@ -333,7 +339,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve all assets for a unit"() {
         given: "a saved asset"
-
         def asset = newAsset(unit) {
             name = "Test asset-1"
         }
@@ -348,11 +353,13 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "all assets in the first unit is queried"
         def result = parseJson(get("/assets?unit=${unit.id.uuidValue()}"))
+
         then: "asset 1 is returned"
         result.items*.name == ['Test asset-1']
 
         when: "a request is made to the server"
         result = parseJson(get("/assets?unit=${unit2.id.uuidValue()}"))
+
         then: "the asset of unit 2 is returned"
         result.items*.name == ['Test asset-2']
     }
@@ -360,7 +367,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve all assets for a unit recursively"() {
         given: "A sub unit and a sub sub unit with one asset each"
-
         def subUnit = unitRepository.save(newUnit(unit.client) {
             parent = unit
         })
@@ -377,6 +383,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "all assets for the root unit are queried"
         def result = parseJson(get("/assets?unit=${unit.id.uuidValue()}"))
+
         then: "both assets from the unit's hierarchy are returned"
         result.items*.name.sort() == ['asset 0', 'asset 1']
     }
@@ -384,7 +391,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve all assets for a unit filtering by displayName"() {
         given: "A sub unit and a sub sub unit with one asset each"
-
         def subUnit = unitRepository.save(newUnit(unit.client) {
             parent = unit
         })
@@ -401,6 +407,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "all assets for the root unit matching the filter"
         def result = parseJson(get("/assets?unit=${unit.id.uuidValue()}&displayName=sset 1"))
+
         then: "only the matching asset from the unit's hierarchy is returned"
         result.items*.name == ["asset 1"]
     }
@@ -408,7 +415,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve all assets for a unit filtering by displayName with special characters"() {
         given: "A sub unit and a sub sub unit with one asset each"
-
         def subUnit = unitRepository.save(newUnit(unit.client) {
             parent = unit
         })
@@ -425,6 +431,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "all assets for the root unit matching the filter"
         def result = parseJson(get("/assets?unit=${unit.id.uuidValue()}&displayName=ballverein Äächen 1"))
+
         then: "only the matching asset from the unit's hierarchy is returned"
         result.items*.name == ["Fußballverein Äächen 1"]
     }
@@ -432,7 +439,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "put an asset"() {
         given: "a saved asset"
-
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
                 name = 'New asset-2'
@@ -479,7 +485,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "put an asset with a custom aspect"() {
         given: "a saved asset"
-
         CustomAspect customAspect = newCustomAspect("my.new.type")
 
         def asset = txTemplate.execute {
@@ -554,7 +559,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "delete an asset"() {
-
         given: "an existing asset"
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
@@ -564,8 +568,8 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         when: "a delete request is sent to the server"
-
         delete("/assets/${asset.id.uuidValue()}")
+
         then: "the asset is deleted"
         assetRepository.findById(asset.id).empty
     }
@@ -573,7 +577,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "delete an asset that is a link target"() {
         given: "two assets with a link between them"
-
         def targetAsset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
                 associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
@@ -597,7 +600,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "deleting a composite asset does not delete its parts"() {
-
         given: "an asset and a composite that contains it"
         def (asset, composite) = txTemplate.execute {
             def asset = assetRepository.save(newAsset(unit))
@@ -606,11 +608,13 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             })
             [asset, composite]
         }
+
         when: "a delete request is sent to the server"
         delete("/assets/${composite.id.uuidValue()}")
 
         then: "the composite is deleted"
         assetRepository.findById(composite.id).empty
+
         and: "the asset is not deleted"
         !assetRepository.findById(asset.id).empty
     }
@@ -628,6 +632,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 name = "old name 2"
             }))
         })
+
         when: "a put request tries to update asset 1 using the ID of asset 2"
         Map headers = [
             'If-Match': ETag.from(asset1.id.uuidValue(), 1)
@@ -637,6 +642,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             name: "new name 1",
             owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
         ], headers, 403)
+
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }
@@ -659,7 +665,6 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "can put back asset with parts"() {
         given: "a saved asset and a composite"
-
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
                 name = 'Test asset'

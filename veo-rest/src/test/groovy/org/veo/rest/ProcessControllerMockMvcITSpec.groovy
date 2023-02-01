@@ -105,7 +105,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "create a process"() {
         given: "a request body"
-
         Map request = [
             name: 'New process',
             owner: [
@@ -128,7 +127,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "try to create a process without owner"() {
         given: "a request body without an owner"
-
         Map request = [
             name: 'New process'
         ]
@@ -167,7 +165,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "try to put a process without a name"() {
         given: "a saved process"
-
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
                 associateWithDomain(dsgvoDomain, "PRO_DataProcessing", "NEW")
@@ -205,7 +202,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "put a process"() {
         given: "a saved process"
-
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
                 associateWithDomain(dsgvoDomain, "PRO_DataTransfer", "NEW")
@@ -250,7 +246,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
     @WithUserDetails("user@domain.example")
     def "delete a process"() {
-
         given: "an existing process"
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
@@ -268,7 +263,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "put a process with custom aspect"() {
         given: "a saved process"
-
         CustomAspect cp = newCustomAspect("my.new.type")
 
         def process = txTemplate.execute {
@@ -346,7 +340,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def     "overwrite a custom aspect attribute"() {
         given: "a saved process"
-
         CustomAspect cp = newCustomAspect("process_privacyImpactAssessment") {
             attributes = [
                 'process_privacyImpactAssessment_blacklistComment': 'old comment'
@@ -500,9 +493,11 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             riskValues: [:],
         ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
+
         and: 'there is one type of links'
         def links = result.links
         links.size() == 1
+
         and: 'there is one link of the expected type'
         def linksOfExpectedType = links.'process_dataType'
         linksOfExpectedType.size() == 1
@@ -555,6 +550,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             }
             return process
         }
+
         then:
         process1 != null
     }
@@ -562,7 +558,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve all processes for a client"() {
         given: "two saved processes in different units of the same client"
-
         txTemplate.execute {
             processRepository.save(newProcess(unit) {
                 name = 'Test process-1'
@@ -588,7 +583,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve all processes for a unit"() {
         given: "two saved process in different units"
-
         txTemplate.execute {
             processRepository.save(newProcess(unit) {
                 name = 'Test process-1'
@@ -618,7 +612,6 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "filter processes by sub type"() {
         given: "one VT and one process without a sub type"
-
         txTemplate.execute {
             processRepository.save(newProcess(unit) {
                 name = 'Test process-1'
@@ -631,16 +624,19 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
 
         when: "the sub type param is omitted"
         def result = parseJson(get("/processes"))
+
         then: "both processes are returned"
         result.items.size() == 2
 
         when: "VT processes are queried"
         result = parseJson(get("/processes?subType=VT"))
+
         then: "only the VT process is returned"
         result.items*.name == ['Test process-1']
 
         when: "processes without a sub type are queried"
         result = parseJson(get("/processes?subType="))
+
         then: "only the process without a sub type is returned"
         result.items*.name == ['Test process-2']
     }
@@ -658,6 +654,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
                 name = "old name 2"
             }))
         })
+
         when: "a put request tries to update process 1 using the ID of process 2"
         Map headers = [
             'If-Match': ETag.from(process1.id.uuidValue(), 1)
@@ -667,6 +664,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             name: "new name 1",
             owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
         ], headers, 403)
+
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }

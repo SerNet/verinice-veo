@@ -40,7 +40,6 @@ class GetAllWithNoClientSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve all assets"() {
         when: "if the client was not created and request is made to the server"
-
         def result = parseJson(get("/assets"))
 
         then: "an empty result is returned"

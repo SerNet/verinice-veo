@@ -54,6 +54,7 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
     def "create a person"() {
         when:
         def output = usecase.execute(new CreateElementUseCase.InputData(person, existingClient, [] as Set))
+
         then:
         1 * personRepository.save(person) >> person
         1 * designatorService.assignDesignator(person, existingClient)

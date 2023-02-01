@@ -56,6 +56,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
         def demoUnit = createDemoUnit(client)
         QueryCountHolder.clear()
         def rowCountBefore = DataSourceProxyBeanPostProcessor.totalResultSetRowsRead
+
         when: 'executing the DeleteUnitUseCase'
         def unit = runUseCase(demoUnit)
         def queryCounts = QueryCountHolder.grandTotal
@@ -123,6 +124,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
         }
         QueryCountHolder.clear()
         def rowCountBefore = DataSourceProxyBeanPostProcessor.totalResultSetRowsRead
+
         when: 'executing the DeleteUnitUseCase'
         runUseCase(unit)
         def queryCounts = QueryCountHolder.grandTotal

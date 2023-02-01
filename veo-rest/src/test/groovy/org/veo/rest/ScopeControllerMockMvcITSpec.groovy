@@ -91,7 +91,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "create a scope"() {
         given: "a request body"
-
         Map request = [
             name: 'My Scope',
             owner: [
@@ -130,7 +129,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         when: "the request is sent"
-
         def result = parseJson(post('/scopes', request))
 
         then: "the location of the new scope is returned"
@@ -145,6 +143,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the expected name is present"
         result.name == 'My Assets'
+
         and: "the scope contains the asset"
         result.members.size() == 1
         result.members.first().displayName == 'AST-1 Test asset'
@@ -180,6 +179,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         result._self == "http://localhost/scopes/${scope.id.uuidValue()}"
         result.name == 'Test scope'
         result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
+
         and: "is has the correct members"
         result.members.size() == 1
         result.members.first().displayName == 'PER-1 Composite person'
@@ -188,7 +188,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "query and modify a scope's members"() {
         given: "a saved scope and two composites"
-
         def (asset, scenario,scope ) = txTemplate.execute {
 
             def asset = assetRepository.save(newAsset(unit) {
@@ -228,11 +227,13 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         put("/scopes/${scope.id.uuidValue()}", result, [
             "If-Match": getETag(get("/scopes/${scope.id.uuidValue()}"))
         ])
+
         then:
         txTemplate.execute { scopeRepository.findById(scope.id).get().members.size() }  == 2
 
         when: "querying the members again"
         def members = parseJson(get("/scopes/${scope.id.uuidValue()}/members"))
+
         then:
         with(members.sort{it.name}) {
             it.size() == 2
@@ -282,6 +283,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
                 txTemplate.execute {
                     [scope1, scope2].collect(assetRepository.&save)
                 }
+
         when: "a request is made to the server for all scopes of a unit"
         def result = parseJson(get("/scopes?unit=${unit.id.uuidValue()}"))
 
@@ -298,7 +300,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "put a scope with a custom aspect"() {
         given: "a saved scope"
-
         CustomAspect customAspect = newCustomAspect("my.new.type")
 
         def scope = txTemplate.execute {
@@ -377,6 +378,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         def scope2 = txTemplate.execute({
             scopeRepository.save(newScope(unit))
         })
+
         when: "a put request tries to update scope 1 using the ID of scope 2"
         Map headers = [
             'If-Match': ETag.from(scope2.id.uuidValue(), 1)
@@ -386,6 +388,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
             name: "new name 1",
             owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
         ], headers, 400)
+
         then: "an exception is thrown"
         thrown(DeviatingIdException)
     }
@@ -403,6 +406,7 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         def resultActions = put("/scopes/$id", parseJson(getResult), [
             "If-Match": ETag.from(id, 0)
         ])
+
         then: 'the ETag is returned'
         getETag(resultActions) == ETag.from(id, 1)
     }
@@ -437,7 +441,6 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "removing an entity that is a member of a scope does not remove the scope"() {
         given: "a saved scope with two members"
-
         def (asset, scope) = txTemplate.execute {
             def asset = assetRepository.save(newAsset(unit) {
                 name = 'Test asset'

@@ -43,7 +43,6 @@ class ClientRepositorySpec extends VeoSpringSpec {
     private DomainRepositoryImpl domainRepository
 
     def "create a simple client and a domain together"() {
-
         given: "a domain and a client"
         Client client = repository.save(newClient {
             name = "Demo Client"
@@ -90,7 +89,6 @@ class ClientRepositorySpec extends VeoSpringSpec {
 
     def "create a simple client with unit"() {
         given: "a domain and a client"
-
         Key clientId = Key.newUuid()
         Client client = repository.save(newClient {
             id = clientId
@@ -102,8 +100,8 @@ class ClientRepositorySpec extends VeoSpringSpec {
         }
         client.addToDomains(domain)
         repository.save(client)
-        when: "loaded from db"
 
+        when: "loaded from db"
         Optional<Client> newClient = repository.findById(clientId)
 
         Client c = newClient.get()
@@ -116,6 +114,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
 
         then:
         newClient.isPresent()
+
         when:
         c = newClient.get()
 
@@ -127,7 +126,6 @@ class ClientRepositorySpec extends VeoSpringSpec {
 
     def "create simple client, unit and some objects"() {
         given: "a domain and a client"
-
         Key clientId = Key.newUuid()
         Client client = repository.save(newClient{
             id = clientId
@@ -162,7 +160,6 @@ class ClientRepositorySpec extends VeoSpringSpec {
         }
 
         when:"save and load the client"
-
         client = repository.save(client)
         unit.client = client
         unitRepository.save(unit)
@@ -171,7 +168,6 @@ class ClientRepositorySpec extends VeoSpringSpec {
         def units = unitRepository.findByClient(newClient)
 
         then:"all data is present"
-
         newClient.name == client.name
         newClient.domains == client.domains
         //        newClient.units == client.units
@@ -185,7 +181,6 @@ class ClientRepositorySpec extends VeoSpringSpec {
     }
 
     def "create a simple client and a domain together with catalog"() {
-
         given: "a domain and a client"
         Domain domain = newDomain(newClient()) {
             name = "27001"

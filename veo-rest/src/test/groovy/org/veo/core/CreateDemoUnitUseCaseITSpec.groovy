@@ -63,8 +63,10 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                 domain = createTestDomain(it, DSGVO_DOMAINTEMPLATE_UUID)
             }
         }
+
         when: 'executing the CreateDemoUnitUseCase'
         def unit = runUseCase(client)
+
         then: 'the demo unit is created'
         unit != null
         with(unit) {
@@ -72,6 +74,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
             it.domains*.name == ['DS-GVO']
         }
         unitRepository.findByClient(client).size() == 1
+
         when: 'loading the controls'
         def controls = txTemplate.execute{
             findByUnit(controlDataRepository, unit).each {
@@ -84,6 +87,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                 it.domains*.name
             }
         }
+
         then: 'the controls are returned'
         controls.size() == 1
 
@@ -99,6 +103,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                 }
             }
         }
+
         when: 'loading the scenarios'
         def scenarios = txTemplate.execute{
             findByUnit(scenarioDataRepository, unit).each {
@@ -108,6 +113,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                 }
             }
         }
+
         then: 'the scenarios are returned'
         scenarios.size() == 1
 
@@ -123,6 +129,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                 }
             }
         }
+
         when: 'loading the processes'
         def processes = txTemplate.execute{
             findByUnit(processDataRepository, unit).each {
@@ -141,6 +148,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                 }
             }
         }
+
         then: 'the processes are returned'
         processes.size() == 1
         with(processes.first()) {
@@ -161,6 +169,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                 it*.links*.target*.name
             }
         }
+
         then: 'the persons are returned'
         persons.size() == 5
         with(persons.find{it.name == "Personal"}) {
@@ -230,6 +239,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                 }
             }
         }
+
         when: 'loading the scopes'
         def scopes = txTemplate.execute{
             findByUnit(scopeDataRepository, unit).tap{
@@ -241,6 +251,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                 it*.members*.name
             }
         }
+
         then: 'the scope is returned'
         scopes.size() == 1
         with(scopes.first()) {
@@ -281,6 +292,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                 }
             }
         }
+
         then: 'the demo unit elements conform to the object schemas'
         ObjectMapper om = new ObjectMapper().tap{
             setSerializationInclusion(Include.NON_NULL)
@@ -296,10 +308,12 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
     def "create multiple demo units for a client"() {
         given:
         def client = createClient()
+
         when:
         def unit1 = runUseCase(client)
         def unit2 = runUseCase(client)
         def unit3 = runUseCase(client)
+
         then:
         unit1 != null
         unit2 != null
@@ -321,10 +335,12 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         def client1 = createClient()
         def client2 = createClient()
         def client3 = createClient()
+
         when:
         def unit1 = runUseCase(client1)
         def unit2 = runUseCase(client2)
         def unit3 = runUseCase(client3)
+
         then:
         unit1 != null
         unit2 != null
@@ -348,8 +364,10 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         def client = createClient()
         newDomain(client)
         client = clientRepository.save(client)
+
         when:
         def unit = runUseCase(client)
+
         then:
         unit != null
         with(unit) {
@@ -364,8 +382,10 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
             it.active = false
         }
         client = clientRepository.save(client)
+
         when:
         def unit = runUseCase(client)
+
         then:
         unit != null
         with(unit) {
@@ -382,8 +402,10 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
             it.domainTemplate = template
         }
         client = clientRepository.save(client)
+
         when:
         def unit = runUseCase(client)
+
         then:
         unit != null
         with(unit) {

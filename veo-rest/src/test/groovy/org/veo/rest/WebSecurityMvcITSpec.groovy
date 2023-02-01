@@ -66,9 +66,11 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
     def "admin endpoints are forbidden for a normal user"() {
         given: "a unit"
         def unitId = parseJson(post("/units", [name: "my little unit"])).resourceId
+
         expect: "unit dump to be forbidden"
         mvc.perform(MockMvcRequestBuilders
                 .get("/admin/unit-dump/$unitId")).andReturn().response.status == 403
+
         and: "domain creation to be forbidden"
         mvc.perform(MockMvcRequestBuilders
                 .post("/domaintemplates/f8ed22b1-b277-56ec-a2ce-0dbd94e24824/createdomains"))
@@ -154,6 +156,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
                 assert mvc.perform(MockMvcRequestBuilders.get(entity))
                 .andReturn().response.status == 200
         }
+
         where:
         entity << USER_EDITABLE_PATHS + CONTENT_CREATOR_EDITABLE_PATHS
     }
@@ -183,6 +186,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
                 assert mvc.perform(MockMvcRequestBuilders
                 .get(entity)).andReturn().response.status == 403
         }
+
         where:
         entity << USER_EDITABLE_PATHS + CONTENT_CREATOR_EDITABLE_PATHS
     }
@@ -192,6 +196,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         expect:
         mvc.perform(MockMvcRequestBuilders.post(entity))
                 .andReturn().response.status == 403
+
         where:
         entity << USER_EDITABLE_PATHS + CONTENT_CREATOR_EDITABLE_PATHS
     }
@@ -219,6 +224,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         expect:
         mvc.perform(MockMvcRequestBuilders.put(entity))
                 .andReturn().response.status == 403
+
         where:
         entity << USER_EDITABLE_PATHS + CONTENT_CREATOR_EDITABLE_PATHS
     }
@@ -228,6 +234,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         expect:
         mvc.perform(MockMvcRequestBuilders.delete(entity))
                 .andReturn().response.status == 403
+
         where:
         entity << USER_EDITABLE_PATHS + CONTENT_CREATOR_EDITABLE_PATHS
     }
@@ -264,6 +271,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
                 assert mvc.perform(MockMvcRequestBuilders.post(entity))
                 .andReturn().response.status == 403
         }
+
         where:
         entity << USER_EDITABLE_PATHS + CONTENT_CREATOR_EDITABLE_PATHS
     }

@@ -54,7 +54,6 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
 
     def 'domainTemplate is inserted'() {
         given: "the domain template"
-
         Map data = [name: "Meeting-Metadaten",
             id: "40cd6764-830c-4af2-b88d-4bf02c9018e5",
             description: "z.B. Datum, Uhrzeit und Dauer der Kommunikation, Name des Meetings, Teilnehmer-IP-Adresse",
@@ -82,7 +81,6 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         }
 
         when: "saving"
-
         domain0 = txTemplate.execute {
             return repository.save(domain0)
         }
@@ -91,7 +89,6 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         }
 
         then: "saved and loaded"
-
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
@@ -106,6 +103,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
                 newCatalog(it)
             })
         }
+
         and: "retrieving it"
         def d = txTemplate.execute {
             return repository.findById(domain0.dbId).get()
@@ -120,7 +118,6 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
 
     def 'domainTemplate with catalog and catalog items'() {
         given: "the domain template and a catalog"
-
         domain0 = newDomainTemplate() {
             newCatalog(it) {
                 name = "a"
@@ -131,7 +128,6 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         }
 
         when: "saving"
-
         domain0 = txTemplate.execute {
             return repository.save(domain0)
         }
@@ -140,7 +136,6 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         }
 
         then: "saved and loaded"
-
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
@@ -150,7 +145,6 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
 
     def 'domainTemplate with catalog and catalog items with subtype'() {
         given: "the domain template and a catalog"
-
         domain0 = newDomainTemplate()
         Catalog catalog = newCatalog(domain0) {
             name = "a"
@@ -167,7 +161,6 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         domain0.elementTypeDefinitions.add(newElementTypeDefinition(domain0, "process"))
 
         when: "saving"
-
         domain0 = txTemplate.execute {
             return repository.save(domain0)
         }
@@ -176,7 +169,6 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         }
 
         then: "saved and loaded"
-
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
@@ -189,7 +181,6 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
 
     def 'domainTemplate with catalog and catalog items with subtype and link'() {
         given: "the domain template and a catalog"
-
         domain0 = newDomainTemplate()
         Catalog catalog = newCatalog(domain0) {
             name = "a"
@@ -215,7 +206,6 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         domain0.elementTypeDefinitions.add(newElementTypeDefinition(domain0, "process"))
 
         when: "saving"
-
         domain0 = txTemplate.execute {
             return repository.save(domain0)
         }
@@ -224,7 +214,6 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         }
 
         then: "saved and loaded"
-
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion

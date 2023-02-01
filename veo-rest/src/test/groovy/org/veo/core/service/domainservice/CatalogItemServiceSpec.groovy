@@ -79,14 +79,15 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
     def "retrieve demo unit elements for default client"() {
         when: "retrieving the demo unit elements for a client"
         def elements = domainTemplateService.getProfileElements(dsgvoDomain, new ProfileRef(DEMO_UNIT))
+
         then: "the elements for all the client's units are returned"
         elements.size() == 9
     }
 
     def "create an element from a catalog item"() {
         given: "a client and a domain"
-        expect: "the element is created and initialized"
 
+        expect: "the element is created and initialized"
         element.name == "Control-1"
         element.abbreviation == item.element.abbreviation
         element.description == item.element.description
@@ -96,12 +97,10 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
         element.domains.contains(testDomain)
 
         when: "we take another item"
-
         item = testDomain.catalogs.first().catalogItems.sort({it.namespace})[2]
         element = catalogItemService.createInstance(item, testDomain)
 
         then: "the element is created and initialized"
-
         element.name == "Control-3"
         element.abbreviation == item.element.abbreviation
         element.description == item.element.description
@@ -118,8 +117,8 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
                 name = "Test unit1"
             })
         }
-        expect: "the element is created and initalized"
 
+        expect: "the element is created and initalized"
         element.name == "Control-1"
         element.abbreviation == item.element.abbreviation
         element.description == item.element.description
@@ -146,7 +145,6 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
         result.resultPage.first().appliedCatalogItems.contains(item)
 
         when: "searched in another unit"
-
         result = repo.query(client).with {
             whereOwnerIs(unit1)
             whereAppliedItemsContain([item])

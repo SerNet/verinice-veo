@@ -49,6 +49,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
+
         then:
         output.references.size() == 1
         output.references.first().item == item1
@@ -57,7 +58,6 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
     def "get the apply information for a catalog-item with one copy ref"() {
         given:
-
         Control control2 = Mock()
         control2.modelInterface >> Control
 
@@ -76,6 +76,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
+
         then:
         output.references.size() == 2
         output.references.first().item == item1
@@ -84,7 +85,6 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
     def "get the apply information for a catalog-item with link"() {
         given:
-
         Control control2 = Mock()
         control2.getModelInterface() >> Control.class
 
@@ -104,6 +104,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
+
         then:
         output.references.size()== 1
         with(output.references.first()) {
@@ -116,7 +117,6 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
     def "get the apply information for a catalog-item with external link"() {
         given:
-
         Control control2 = Mock()
         control2.getModelInterface() >> Control.class
 
@@ -136,6 +136,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
+
         then:
         output.references.size()== 1
         with(output.references.first()) {
@@ -159,6 +160,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
         when:
         usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
+
         then:
         thrown(RuntimeModelException)
     }
@@ -173,6 +175,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
         when:
         usecase.execute(new InputData(existingClient, anotherUnit.id, [item1.id]))
+
         then:
         thrown(NotFoundException)
     }
@@ -183,6 +186,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
         when:
         usecase.execute(new InputData(existingClient, existingUnit.id, [Key.newUuid()]))
+
         then:
         thrown(NotFoundException)
     }
@@ -193,6 +197,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
         when:
         usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id, item1.id]))
+
         then:
         thrown(IllegalArgumentException)
     }

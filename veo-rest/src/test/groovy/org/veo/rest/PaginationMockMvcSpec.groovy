@@ -55,6 +55,7 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
                 ]
             ])
         }
+
         expect: "pagination works when getting all elements"
         with(parseJson(get("/$type?size=2&sortBy=abbreviation&sortOrder=desc"))) {
             items*.abbreviation == ["5", "4"]
@@ -97,6 +98,7 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
 
         when: "setting page size to zero"
         get("/$type?size=0&sortBy=abbreviation&sortOrder=desc", 400)
+
         then:
         thrown(IllegalArgumentException)
 
@@ -143,6 +145,7 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
 
         when: "setting page size to zero"
         get(new URI("$searchUri?size=0&sortBy=abbreviation&sortOrder=desc"), 400)
+
         then:
         thrown(IllegalArgumentException)
 

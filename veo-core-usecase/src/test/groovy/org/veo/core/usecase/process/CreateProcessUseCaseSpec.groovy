@@ -62,6 +62,7 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
     def "create a process"() {
         when:
         def output = usecase.execute(new CreateElementUseCase.InputData(process, existingClient, [] as Set))
+
         then:
         1 * processRepository.save(process) >> process
         1 * designatorService.assignDesignator(process, existingClient)

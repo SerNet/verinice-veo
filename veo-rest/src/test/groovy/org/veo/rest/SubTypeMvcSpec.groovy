@@ -65,11 +65,13 @@ class SubTypeMvcSpec extends VeoMvcSpec {
                 ]
             ]
         ])).resourceId
+
         then: "it is saved"
         processId != null
 
         when: "retrieving the sub type"
         def retrievedProcess = parseJson(get("/processes/$processId"))
+
         then: "the sub type is present"
         retrievedProcess.domains[domainId].subType == "PRO_DataProcessing"
         retrievedProcess.domains[domainId].status == "NEW"

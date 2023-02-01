@@ -121,6 +121,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
 
         then: "the eTag is set"
         getETag(results) != null
+
         and:
         def result = parseJson(results)
         result._self == "http://localhost/domains/${testDomain.id.uuidValue()}"
@@ -147,8 +148,10 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             rules[5].conditions[0].inputMatcher.type == "equals"
             rules[5].conditions[0].inputMatcher.comparisonValue == "process_privacyImpactAssessment_listed_positive"
         }
+
         when:
         def firstCatalog = result.catalogs.first()
+
         then:
         firstCatalog.displayName == 'a'
         firstCatalog.targetUri == "http://localhost/catalogs/${catalog.dbId}"
@@ -181,11 +184,13 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         def schemaJson = DomainControllerMockMvcITSpec.getResourceAsStream('/os_scope.json').withCloseable {
             new JsonSlurper().parse(it)
         }
+
         when: "a request is made to the server"
         def result = post("/domains/${testDomain.id.uuidValue()}/elementtypedefinitions/scope/updatefromobjectschema", schemaJson, 204)
 
         then: "the domains are returned"
         result.andReturn().response.getContentAsString(StandardCharsets.UTF_8) == ''
+
         when: 'reloading the updated domain from the database'
         def updatedDomain = txTemplate.execute {
             def client = clientRepository.findById(testDomain.owningClient.get().id).get()
@@ -198,8 +203,8 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             }
             d
         }
-        then: 'the entity schemas are updated'
 
+        then: 'the entity schemas are updated'
         with(updatedDomain.getElementTypeDefinition('scope')) {
             with(it.subTypes) {
                 it.keySet() == [
@@ -249,8 +254,10 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
                 ]
             ],
         ]
+
         when: "updating the scope definition"
         def result = put("/domains/${testDomain.id.uuidValue()}/element-type-definitions/scope", schemaJson, 204)
+
         and: 'reloading the updated domain from the database'
         def updatedDomain = txTemplate.execute {
             def client = clientRepository.findById(testDomain.owningClient.get().id).get()
@@ -263,8 +270,8 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             }
             d
         }
-        then: 'the entity schemas are updated'
 
+        then: 'the entity schemas are updated'
         with(updatedDomain.getElementTypeDefinition('scope')) {
             with(it.subTypes) {
                 it.keySet() ==~ [
@@ -282,13 +289,14 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
 
     @WithUserDetails("user@domain.example")
     def "cannot update element type schema as regular user"() {
-
         given:
         def schemaJson = DomainControllerMockMvcITSpec.getResourceAsStream('/os_scope.json').withCloseable {
             new JsonSlurper().parse(it)
         }
+
         when: "a request is made to the server"
         def status = postUnauthorized("/domains/${testDomain.id.uuidValue()}/elementtypedefinitions/scope/updatefromobjectschema", schemaJson)
+
         then: "it is forbidden"
         status.andReturn().response.status == 403
     }
@@ -297,6 +305,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
     def "cannot update element type definition as regular user"() {
         when:
         def response = putUnauthorized("/domains/${testDomain.id.uuidValue()}/element-type-definitions/scope", [:])
+
         then:
         response.andReturn().response.status == 403
     }
@@ -314,8 +323,10 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         result.catalogs.size() == 1
         result.elementTypeDefinitions != null
         result.riskDefinitions !=null
+
         when:
         def firstCatalog = result.catalogs.first()
+
         then:
         with(firstCatalog) {
             name == 'a'
@@ -334,8 +345,10 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
 
         when: "a template is created"
         def result = parseJson(post("/domains/${testDomain.id.uuidValue()}/createdomaintemplate",[version : "1.0.0"]))
+
         then: "a result is returned"
         result != null
+
         and: "there is one more template in the repo"
         domainTemplateDataRepository.count() == initialTemplateCount + 1
 
@@ -343,6 +356,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         def dt = txTemplate.execute {
             domainTemplateRepository.findAll().find{ it.name == "Domain 1" }
         }
+
         then: "the version is set"
         dt.templateVersion == "1.0.0"
 
@@ -391,8 +405,10 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         def result = parseJson(post("/domains/${domain.id.uuidValue()}/createdomaintemplate", [version : "1.2.3",
             profiles: ["demoUnit": (unitId)]
         ]))
+
         then: "a result is returned"
         result != null
+
         and: "there is one more template in the repo"
         domainTemplateDataRepository.count() == initialTemplateCount + 1
 
@@ -402,8 +418,10 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
                     .find{ it.name == domain.name && it.templateVersion == "1.2.3"}
                     .tap{it.profiles  } // init proxy
         }
+
         then: "the template is found, the version is set"
         dt.templateVersion == "1.2.3"
+
         and: "the profile data for the demo unit exists"
         dt.profiles.demoUnit.elements != null
         dt.profiles.demoUnit.risks != null
@@ -467,8 +485,10 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
     @WithUserDetails("user@domain.example")
     def "create a DomainTemplate forbidden for user"() {
         given: "a saved domain"
+
         when: "a request is made to the server"
         def status = postUnauthorized("/domains/${testDomain.id.uuidValue()}/createdomaintemplate", [version : "1.0.0"])
+
         then: "it is forbidden"
         status.andReturn().response.status == 403
     }
