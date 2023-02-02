@@ -20,8 +20,6 @@ package org.veo.rest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
-import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
-
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.riskdefinition.ImplementationStateDefinition
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -162,10 +160,10 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ])
+        ], 400)
 
         then: "it is rejected"
-        def ex = thrown(JsonSchemaValidationException)
-        ex.message.contains("implementationStatus: does not have a value in the enumeration [0, 1]")
+        def ex = thrown(IllegalArgumentException)
+        ex.message == "Risk definition theOneWithOnlyTwoImplementationStatuses contains no implementation status with ordinal value 2"
     }
 }

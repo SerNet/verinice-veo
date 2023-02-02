@@ -22,8 +22,7 @@ import java.time.Instant
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
-
-import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
+import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
@@ -135,10 +134,10 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         post('/processes', request, 400)
 
         then: "the process is not created"
-        JsonSchemaValidationException ex = thrown()
+        MethodArgumentNotValidException ex = thrown()
 
         and: "the reason is given"
-        ex.message ==~ /.*owner: is missing but it is required.*/
+        ex.message ==~ /.*An owner must be present.*/
     }
 
     @WithUserDetails("user@domain.example")
@@ -193,10 +192,10 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         put("/processes/${process.id.uuidValue()}", request, headers, 403)
 
         then: "the process is not updated"
-        JsonSchemaValidationException ex = thrown()
+        MethodArgumentNotValidException ex = thrown()
 
         and: "the reason is given"
-        ex.message ==~ /.*.name: is missing but it is required.*/
+        ex.message ==~ /.*A name must be present.*/
     }
 
     @WithUserDetails("user@domain.example")

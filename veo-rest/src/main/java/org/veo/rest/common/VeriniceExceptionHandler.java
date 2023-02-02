@@ -25,8 +25,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException;
-
 import org.veo.adapter.presenter.api.DeviatingIdException;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.core.entity.DomainException;
@@ -76,11 +74,6 @@ public class VeriniceExceptionHandler {
 
   @ExceptionHandler({DeviatingIdException.class})
   protected ResponseEntity<ApiResponseBody> handle(DeviatingIdException exception) {
-    return handle(exception, HttpStatus.BAD_REQUEST);
-  }
-
-  @ExceptionHandler({JsonSchemaValidationException.class})
-  protected ResponseEntity<ApiResponseBody> handle(JsonSchemaValidationException exception) {
     return handle(exception, HttpStatus.BAD_REQUEST);
   }
 

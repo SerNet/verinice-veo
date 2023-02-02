@@ -20,8 +20,7 @@ package org.veo.rest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
-
-import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
+import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
@@ -282,9 +281,9 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         ], 400)
 
         then:
-        def ex = thrown(JsonSchemaValidationException)
+        def ex = thrown(MethodArgumentNotValidException)
         with(ex.message) {
-            contains("description: may only be $Nameable.DESCRIPTION_MAX_LENGTH characters long")
+            contains("size must be between 0 and 65535")
         }
     }
 

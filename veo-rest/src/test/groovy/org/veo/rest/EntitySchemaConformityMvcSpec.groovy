@@ -20,16 +20,17 @@ package org.veo.rest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.ResultActions
+import org.springframework.web.bind.MethodArgumentNotValidException
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
 import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SpecVersion
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
+import org.veo.core.entity.exception.ReferenceTargetNotFoundException
 import org.veo.core.repository.UnitRepository
 import org.veo.core.service.EntitySchemaService
 
@@ -104,13 +105,13 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
             ]]
 
         when: "posting the asset"
-        (post("/assets", asset))
+        post("/assets", asset, 400)
 
         then: "an exception is thrown"
-        JsonSchemaValidationException ex = thrown()
+        IllegalArgumentException ex = thrown()
 
         and: "the reason is given"
-        ex.message ==~ /.*customAspects.asset_foo: is not defined.*/
+        ex.message == "Element cannot contain custom aspects or links without being associated with a domain"
     }
 
     def "can't create a scope when link not conforms to schema"() {
@@ -138,13 +139,13 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         ]
 
         when: "posting the scope"
-        (post("/scopes", scope))
+        post("/scopes", scope, 422)
 
         then: "an exception is thrown"
-        JsonSchemaValidationException ex = thrown()
+        ReferenceTargetNotFoundException ex = thrown()
 
         and: "the reason is given"
-        ex.message ==~ /.*links.scope_bar: is not defined.*/
+        ex.message == "Unable to resolve references of type interface org.veo.core.entity.Person to objects: missing IDs: 906cf5e9-91c9-4035-b25d-ea1b3ba4ca05"
     }
 
     def "can't create a control when subType not conforms to schema"() {
@@ -163,16 +164,16 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         ]
 
         when: "posting the scope"
-        (post("/controls", control))
+        post("/controls", control, 400)
 
         then: "an exception is thrown"
-        JsonSchemaValidationException ex = thrown()
+        IllegalArgumentException ex = thrown()
 
         and: "the reason is given"
-        ex.message ==~ /.*subType: does not have a value in the enumeration.*/
+        ex.message == "Sub type 'CTL_Foo' is not defined for element type control"
     }
 
-    def "status is validated by schema"() {
+    def "status is validated"() {
         when: "posting a control with a sub type but null status"
         post("/controls", [
             name: "control",
@@ -188,8 +189,8 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         ])
 
         then: "an exception is thrown"
-        def ex = thrown(JsonSchemaValidationException)
-        ex.message ==~ /.*status: null found, string expected.*/
+        def ex = thrown(MethodArgumentNotValidException)
+        ex.message ==~ /.*domains\[$domainId\]\.status.*must not be null.*/
 
         when: "posting a control with an invalid status"
         post("/controls", [
@@ -203,11 +204,11 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                     status: "CRAZY"
                 ]
             ]
-        ])
+        ], 400)
 
         then: "an exception is thrown"
-        ex = thrown(JsonSchemaValidationException)
-        ex.message ==~ /.*status: does not have a value in the enumeration.*/
+        ex = thrown(IllegalArgumentException)
+        ex.message == "Status 'CRAZY' is not allowed for sub type 'CTL_TOM'"
 
         when: "posting a control with a valid status"
         post("/controls", [

@@ -82,8 +82,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
-import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
-
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
@@ -252,8 +250,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
   @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Process created")})
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createProcess(
       @Parameter(hidden = true) ApplicationUser user,
-      @Valid @NotNull @RequestBody @JsonSchemaValidation(Process.SINGULAR_TERM)
-          CreateProcessDto dto,
+      @Valid @NotNull @RequestBody CreateProcessDto dto,
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<String> scopeIds) {
@@ -286,7 +283,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
       @PathVariable String id,
-      @Valid @RequestBody @JsonSchemaValidation(Process.SINGULAR_TERM) FullProcessDto processDto) {
+      @Valid @RequestBody FullProcessDto processDto) {
     processDto.applyResourceId(id);
     return useCaseInteractor.execute(
         updateProcessUseCase,

@@ -79,8 +79,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
-import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
-
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
@@ -270,8 +268,7 @@ public class DocumentController extends AbstractElementController<Document, Full
   @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Document created")})
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createDocument(
       @Parameter(hidden = true) ApplicationUser user,
-      @Valid @NotNull @RequestBody @JsonSchemaValidation(Document.SINGULAR_TERM)
-          CreateDocumentDto dto,
+      @Valid @NotNull @RequestBody CreateDocumentDto dto,
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<String> scopeIds) {
@@ -303,8 +300,7 @@ public class DocumentController extends AbstractElementController<Document, Full
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
       @PathVariable String id,
-      @Valid @NotNull @RequestBody @JsonSchemaValidation(Document.SINGULAR_TERM)
-          FullDocumentDto documentDto) {
+      @Valid @NotNull @RequestBody FullDocumentDto documentDto) {
     documentDto.applyResourceId(id);
     return useCaseInteractor.execute(
         updateDocumentUseCase,

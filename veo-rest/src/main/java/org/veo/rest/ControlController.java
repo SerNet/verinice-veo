@@ -79,8 +79,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
-import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
-
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
@@ -271,8 +269,7 @@ public class ControlController extends AbstractElementController<Control, FullCo
   @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Control created")})
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createControl(
       @Parameter(hidden = true) ApplicationUser user,
-      @Valid @NotNull @RequestBody @JsonSchemaValidation(Control.SINGULAR_TERM)
-          CreateControlDto dto,
+      @Valid @NotNull @RequestBody CreateControlDto dto,
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<String> scopeIds) {
@@ -306,8 +303,7 @@ public class ControlController extends AbstractElementController<Control, FullCo
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid,
-      @Valid @NotNull @RequestBody @JsonSchemaValidation(Control.SINGULAR_TERM)
-          FullControlDto controlDto) {
+      @Valid @NotNull @RequestBody FullControlDto controlDto) {
     controlDto.applyResourceId(uuid);
     return useCaseInteractor.execute(
         updateControlUseCase,

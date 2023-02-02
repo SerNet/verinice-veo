@@ -79,8 +79,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
-import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
-
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
@@ -271,7 +269,7 @@ public class PersonController extends AbstractElementController<Person, FullPers
   @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Person created")})
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createPerson(
       @Parameter(hidden = true) ApplicationUser user,
-      @Valid @NotNull @RequestBody @JsonSchemaValidation(Person.SINGULAR_TERM) CreatePersonDto dto,
+      @Valid @NotNull @RequestBody CreatePersonDto dto,
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<String> scopeIds) {
@@ -303,8 +301,7 @@ public class PersonController extends AbstractElementController<Person, FullPers
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid,
-      @Valid @NotNull @RequestBody @JsonSchemaValidation(Person.SINGULAR_TERM)
-          FullPersonDto personDto) {
+      @Valid @NotNull @RequestBody FullPersonDto personDto) {
     personDto.applyResourceId(uuid);
     return useCaseInteractor.execute(
         updatePersonUseCase,

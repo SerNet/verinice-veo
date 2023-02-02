@@ -80,8 +80,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
-import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
-
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
@@ -314,8 +312,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
   @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Scope created")})
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createScope(
       @Parameter(hidden = true) ApplicationUser user,
-      @Valid @NotNull @RequestBody @JsonSchemaValidation(Scope.SINGULAR_TERM)
-          CreateScopeDto createScopeDto,
+      @Valid @NotNull @RequestBody CreateScopeDto createScopeDto,
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<String> scopeIds) {
@@ -355,8 +352,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid,
-      @Valid @NotNull @RequestBody @JsonSchemaValidation(Scope.SINGULAR_TERM)
-          FullScopeDto scopeDto) {
+      @Valid @NotNull @RequestBody FullScopeDto scopeDto) {
     scopeDto.applyResourceId(uuid);
     return useCaseInteractor.execute(
         updateScopeUseCase,

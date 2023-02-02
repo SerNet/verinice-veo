@@ -79,8 +79,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
-import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidation;
-
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
@@ -270,8 +268,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
   @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Incident created")})
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createIncident(
       @Parameter(hidden = true) ApplicationUser user,
-      @Valid @NotNull @RequestBody @JsonSchemaValidation(Incident.SINGULAR_TERM)
-          CreateIncidentDto dto,
+      @Valid @NotNull @RequestBody CreateIncidentDto dto,
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<String> scopeIds) {
@@ -303,8 +300,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
       @PathVariable String id,
-      @Valid @NotNull @RequestBody @JsonSchemaValidation(Incident.SINGULAR_TERM)
-          FullIncidentDto incidentDto) {
+      @Valid @NotNull @RequestBody FullIncidentDto incidentDto) {
     incidentDto.applyResourceId(id);
     return useCaseInteractor.execute(
         updateIncidentUseCase,

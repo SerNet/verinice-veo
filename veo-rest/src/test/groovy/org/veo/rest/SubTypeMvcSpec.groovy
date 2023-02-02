@@ -19,8 +19,7 @@ package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
-
-import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
+import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.repository.UnitRepository
@@ -162,7 +161,7 @@ class SubTypeMvcSpec extends VeoMvcSpec {
         ], ['If-Match': processETag], 400)
 
         then:
-        JsonSchemaValidationException jsEx = thrown()
-        jsEx.message.contains("subType: is missing but it is required")
+        MethodArgumentNotValidException manvEx = thrown()
+        manvEx.message ==~ /.*subType.*must not be null.*/
     }
 }

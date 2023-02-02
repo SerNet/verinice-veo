@@ -33,7 +33,6 @@ dependencies {
     implementation 'io.swagger.core.v3:swagger-core'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-    implementation 'com.github.JanLoebel:json-schema-validation-starter'
     implementation 'com.github.zafarkhaja:java-semver'
 
     runtimeOnly 'io.jsonwebtoken:jjwt-impl'

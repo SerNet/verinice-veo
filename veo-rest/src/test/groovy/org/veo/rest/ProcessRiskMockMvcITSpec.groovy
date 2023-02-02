@@ -20,8 +20,7 @@ package org.veo.rest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
-
-import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
+import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.core.VeoMvcSpec
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -143,6 +142,8 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
+                    subType: "DifficultProcess",
+                    status: "NEW",
                     riskValues: [
                         myFirstWrongDefinition: [
                             potentialImpacts: [
@@ -161,7 +162,7 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         ],400)
 
         then: "an exception is thrown"
-        JsonSchemaValidationException ex = thrown()
+        IllegalArgumentException ex = thrown()
         ex.message.contains( 'myFirstWrongDefinition' )
     }
 
@@ -172,6 +173,8 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
+                    subType: "DifficultProcess",
+                    status: "NEW",
                     riskValues: [
                         myFirstRiskDefinition: [
                             potentialImpacts: [
@@ -187,11 +190,11 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ])
+        ], 400)
 
         then: "an exception is thrown"
-        JsonSchemaValidationException ex = thrown()
-        ex.message.contains( 'potentialImpacts.E' )
+        IllegalArgumentException ex = thrown()
+        ex.message == "Category: 'E' not defined in myFirstRiskDefinition"
     }
 
     def "can't create process with wrong impact value"() {
@@ -201,6 +204,8 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
+                    subType: "DifficultProcess",
+                    status: "NEW",
                     riskValues: [
                         mySecondRiskDefinition: [
                             potentialImpacts: [
@@ -213,7 +218,7 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
         ], 400)
 
         then: "an exception is thrown"
-        JsonSchemaValidationException ex = thrown()
-        ex.message.contains( 'potentialImpacts.C' )
+        IllegalArgumentException ex = thrown()
+        ex.message == "Impact value for category 'C' is out of range 10"
     }
 }

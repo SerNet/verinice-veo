@@ -108,10 +108,8 @@ class DomainAssociationRestTest extends VeoRestTest {
         ], 400)
 
         then:
-        with(response.body.message) {
-            contains("subType: is missing but it is required")
-            contains("status: is missing but it is required")
-        }
+        response.body["domains[$dsgvoDomainId].subType"] == "must not be null"
+        response.body["domains[$dsgvoDomainId].status"] == "must not be null"
     }
 
     def "cannot use non-existing domains"() {

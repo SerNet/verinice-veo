@@ -18,9 +18,9 @@
 package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.test.context.support.WithUserDetails
-
-import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
+import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException
@@ -148,6 +148,8 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
             owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
+                    subType: "RiskyScenario",
+                    status: "NEW",
                     riskValues: [
                         myFirstRiskDefinition : [
                             potentialProbability: 12345
@@ -158,8 +160,8 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
         ], 400)
 
         then: "an exception is thrown"
-        def ex = thrown(JsonSchemaValidationException)
-        ex.message.contains("potentialProbability: does not have a value in the enumeration")
+        def ex = thrown(IllegalArgumentException)
+        ex.message == "Risk definition myFirstRiskDefinition contains no implementation status with ordinal value 12345"
 
         when: "creating a scenario with an undefined risk definition"
         def undefinedName = "undefinedRiskDefinition"
@@ -200,7 +202,7 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
         ], 400)
 
         then: "an exception is thrown"
-        ex = thrown(JsonSchemaValidationException)
-        ex.message.contains("implementationStatus: is not defined in the schema")
+        ex = thrown(HttpMessageNotReadableException)
+        ex.message.contains('Unrecognized field "implementationStatus"')
     }
 }

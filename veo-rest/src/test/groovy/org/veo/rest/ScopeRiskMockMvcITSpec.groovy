@@ -21,9 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
-import com.github.JanLoebel.jsonschemavalidation.JsonSchemaValidationException
-
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.exception.ReferenceTargetNotFoundException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
@@ -185,10 +184,10 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
                     riskDefinition: "fantasy-definition"
                 ]
             ]
-        ], 400)
+        ], 422)
 
         then:
-        JsonSchemaValidationException ex = thrown()
-        ex.message ==~ /.*riskDefinition: does not have a value in the enumeration.*/
+        ReferenceTargetNotFoundException ex = thrown()
+        ex.message == "Risk definition 'fantasy-definition' was not found for domain '$domainId'"
     }
 }
