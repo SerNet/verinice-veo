@@ -20,7 +20,6 @@ package org.veo.core.usecase.domain;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +31,7 @@ import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Process;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
@@ -96,11 +96,9 @@ public class ProfileApplier {
         .forEach(e -> prepareElement(e, unit, counter));
     elementsGroupedByType.forEach(this::saveElements);
 
-    Set<Element> elementsToSave = new HashSet<>(profileElements.size());
     links.forEach(
         (element, elementLinks) -> {
           elementLinks.forEach(element::addToLinks);
-          elementsToSave.add(element);
         });
 
     risks.forEach(
@@ -110,20 +108,14 @@ public class ProfileApplier {
                 r.setDesignator(DESIGNATOR_PREFIX + counter.incrementAndGet());
                 element.addRisk(r);
               });
-          elementsToSave.add(element);
         });
 
     profileElements.forEach(
-        element -> {
-          var results = decider.decide(element, domain);
-          if (!results.isEmpty()) {
-            element.setDecisionResults(results, domain);
-            elementsToSave.add(element);
-          }
-        });
-    groupByType(elementsToSave).forEach(this::saveElements);
-    elementsToSave.forEach(
-        it -> eventPublisher.publish(new RiskAffectingElementChangeEvent(it, this)));
+        element -> element.setDecisionResults(decider.decide(element, domain), domain));
+
+    profileElements.stream()
+        .filter(pr -> pr instanceof Process)
+        .forEach(it -> eventPublisher.publish(new RiskAffectingElementChangeEvent(it, this)));
     log.info("{} profile elements added to unit {}", profileElements.size(), unit.getIdAsString());
   }
 

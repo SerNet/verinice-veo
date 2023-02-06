@@ -119,9 +119,9 @@ class ProfileApplierSpec extends Specification {
         and: "everything is saved in the database"
         1 * unitRepository.save(_) >> unit
         1 * repositoryProvider.getElementRepositoryFor(Asset) >> assetRepository
-        2 * repositoryProvider.getElementRepositoryFor(Process) >> processRepository
+        1 * repositoryProvider.getElementRepositoryFor(Process) >> processRepository
         1 * assetRepository.saveAll([asset1, asset2] as Set)
-        2 * processRepository.saveAll([process] as Set)
+        1 * processRepository.saveAll([process] as Set)
         1 * eventPublisher.publish(_ as RiskAffectingElementChangeEvent)
     }
 }
