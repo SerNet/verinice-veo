@@ -92,7 +92,9 @@ public class ProfileApplier {
     elementsGroupedByType.entrySet().stream()
         // sort entries by model type to get predictable designators
         .sorted(Comparator.comparing(entry -> entry.getKey().getSimpleName()))
-        .forEach(e -> prepareAndSaveElements(e.getKey(), e.getValue(), unit, counter));
+        .flatMap(entry -> entry.getValue().stream())
+        .forEach(e -> prepareElement(e, unit, counter));
+    elementsGroupedByType.forEach(this::saveElements);
 
     Set<Element> elementsToSave = new HashSet<>(profileElements.size());
     links.forEach(
@@ -129,12 +131,6 @@ public class ProfileApplier {
   private Map<Class<Element>, List<Element>> groupByType(Collection<Element> elements) {
     return elements.stream()
         .collect(Collectors.groupingBy(e1 -> (Class<Element>) e1.getModelInterface()));
-  }
-
-  private <T extends Element> void prepareAndSaveElements(
-      Class<T> entityType, List<T> elementsWithType, Unit unit, AtomicInteger counter) {
-    elementsWithType.forEach(element -> prepareElement(element, unit, counter));
-    saveElements(entityType, elementsWithType);
   }
 
   private <T extends Element> void saveElements(Class<T> entityType, List<T> elementsWithType) {
