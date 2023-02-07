@@ -30,7 +30,6 @@ import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
-import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.CatalogDataRepository
 import org.veo.persistence.entity.jpa.AssetData
@@ -54,9 +53,6 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
 
     @Autowired
     ClientRepositoryImpl clientRepository
-
-    @Autowired
-    DomainRepositoryImpl domainRepository
 
     @Autowired
     UnitRepositoryImpl unitRepository
@@ -252,12 +248,7 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
         given:
         def asset = newAsset(unit)
         def scenario = newScenario(unit)
-        def domain = domainRepository.save(newDomain(client) {
-            name = "domain1"
-        })
-        client.addToDomains(domain)
         asset.associateWithDomain(domain, "NormalAsset", "NEW")
-        clientRepository.save(client)
         assetDataRepository.save(asset)
         scenarioDataRepository.save(scenario)
         entityManager.flush()

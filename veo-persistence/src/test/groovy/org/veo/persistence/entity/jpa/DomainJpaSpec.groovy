@@ -228,11 +228,11 @@ class DomainJpaSpec extends AbstractJpaSpec {
 
     def 'domain with catalog with linked elements'() {
         given: "the domain template and a catalog"
-        domain0 = newDomain(client)
-        domain0 = repository.save(domain0)
+        newDomain(client)
         Unit unit = newUnit(client)
         unit = unitRepository.save(unit)
         client = clientRepository.save(client)
+        domain0 = client.domains.first()
 
         Catalog catalog = newCatalog(domain0) {
             name = 'a'

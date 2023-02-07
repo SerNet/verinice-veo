@@ -27,7 +27,6 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
-import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
 @Transactional
@@ -38,9 +37,6 @@ class ClientRepositorySpec extends VeoSpringSpec {
 
     @Autowired
     private UnitRepositoryImpl unitRepository
-
-    @Autowired
-    private DomainRepositoryImpl domainRepository
 
     def "create a simple client and a domain together"() {
         given: "a domain and a client"
@@ -130,11 +126,11 @@ class ClientRepositorySpec extends VeoSpringSpec {
         Client client = repository.save(newClient{
             id = clientId
         })
-        Domain domain = domainRepository.save(newDomain(client) {
+        Domain domain = newDomain(client) {
             name = "27001"
             description = "ISO/IEC"
             abbreviation = "ISO"
-        })
+        }
         client.addToDomains(domain)
         client = repository.save(client)
 

@@ -30,7 +30,6 @@ import org.veo.core.entity.decision.DecisionResult
 import org.veo.core.entity.decision.DecisionRuleRef
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
-import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 
 class ElementJpaSpec extends AbstractJpaSpec {
@@ -44,9 +43,6 @@ class ElementJpaSpec extends AbstractJpaSpec {
     @Autowired
     ClientDataRepository clientRepository
 
-    @Autowired
-    DomainDataRepository domainRepository
-
     @PersistenceContext
     private EntityManager entityManager
 
@@ -58,8 +54,9 @@ class ElementJpaSpec extends AbstractJpaSpec {
 
     def setup() {
         client = clientRepository.save(newClient())
-        domain = domainRepository.save(newDomain(client))
+        newDomain(client)
         client = clientRepository.save(client)
+        domain = client.domains.first()
         owner0 = unitRepository.save(newUnit(client))
         owner1 = unitRepository.save(newUnit(client))
         owner2 = unitRepository.save(newUnit(client))

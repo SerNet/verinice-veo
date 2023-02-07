@@ -63,13 +63,13 @@ class ElementTypeDefinitionEntityListenerJpaSpec extends AbstractJpaSpec {
         when: "creating a domain with an asset definition"
         def domainId = txTemplate.execute {
             def client = clientRepo.save(newClient())
-            def domain = domainRepo.save(newDomain(client) {
+            def domain = newDomain(client) {
                 applyElementTypeDefinition(newElementTypeDefinition(it, "asset") { assetDefinition ->
                     assetDefinition.subTypes["AST_Server"] = new SubTypeDefinition().tap {
                         it.statuses = ["NEW"]
                     }
                 })
-            })
+            }
             clientRepo.save(client)
             domain.idAsString
         }

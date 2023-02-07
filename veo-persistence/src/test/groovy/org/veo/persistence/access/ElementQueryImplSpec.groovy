@@ -28,7 +28,6 @@ import org.veo.core.repository.PagingConfiguration.SortOrder
 import org.veo.core.repository.QueryCondition
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
-import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.access.jpa.PersonDataRepository
 import org.veo.persistence.access.jpa.ProcessDataRepository
 import org.veo.persistence.access.jpa.ScopeDataRepository
@@ -56,9 +55,6 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     @Autowired
     AssetDataRepository assetDataRepository
-
-    @Autowired
-    DomainDataRepository domainDataRepository
 
     ClientData client
     Domain domain
@@ -740,9 +736,13 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by domain'() {
         given:
-        def domain1 = domainDataRepository.save(newDomain(client))
-        def domain2 = domainDataRepository.save(newDomain(client))
+        newDomain(client) { name = "one" }
+        newDomain(client) { name = "two" }
         client = clientDataRepository.save(client)
+        def domain1 = client.domains.find{it.name == "one"}
+        def domain2 = client.domains.find{it.name == "two"}
+
+        and:
         assetDataRepository.saveAll([
             newAsset(unit) {
                 name = "one"
