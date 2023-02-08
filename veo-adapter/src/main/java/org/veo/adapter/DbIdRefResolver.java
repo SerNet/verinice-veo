@@ -133,8 +133,8 @@ public class DbIdRefResolver implements IdRefResolver {
     if (!copyOfReferences.isEmpty()) {
       throw new ReferenceTargetNotFoundException(
           format(
-              "Unable to resolve references of type %s to objects: missing IDs: %s",
-              entityType,
+              "Reference targets of type %s with IDs %s not found",
+              entityType.getSimpleName(),
               copyOfReferences.stream().map(IdRef::getId).collect(Collectors.joining(", "))));
     }
     return result;

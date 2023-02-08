@@ -145,7 +145,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
         ReferenceTargetNotFoundException ex = thrown()
 
         and: "the reason is given"
-        ex.message == "Unable to resolve references of type interface org.veo.core.entity.Person to objects: missing IDs: 906cf5e9-91c9-4035-b25d-ea1b3ba4ca05"
+        ex.message == "Reference targets of type Person with IDs 906cf5e9-91c9-4035-b25d-ea1b3ba4ca05 not found"
     }
 
     def "can't create a control when subType not conforms to schema"() {
