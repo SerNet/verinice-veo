@@ -91,10 +91,8 @@ class ProcessImpactValuesAspectData extends AspectData {
                             || impactValueId
                                 > categoryDefinition.getPotentialImpacts().size() - 1) {
                           throw new IllegalArgumentException(
-                              "Impact value for category '"
-                                  + categoryDefinition.getId()
-                                  + "' is out of range "
-                                  + impactValueId);
+                              "Impact value %d for category '%s' is out of range"
+                                  .formatted(impactValueId, categoryDefinition.getId()));
                         }
                       });
             });

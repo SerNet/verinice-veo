@@ -219,6 +219,6 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
 
         then: "an exception is thrown"
         IllegalArgumentException ex = thrown()
-        ex.message == "Impact value for category 'C' is out of range 10"
+        ex.message == "Impact value 10 for category 'C' is out of range"
     }
 }
