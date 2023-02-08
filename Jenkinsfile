@@ -28,7 +28,6 @@ pipeline {
         // In case the build server exports a custom JAVA_HOME, we fix the JAVA_HOME
         // to the one used by the docker image.
         JAVA_HOME='/opt/java/openjdk'
-        GRADLE_OPTS='-Dhttp.proxyHost=cache.int.sernet.de -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.int.sernet.de -Dhttps.proxyPort=3128'
         // pass -Pci=true to gradle, https://docs.gradle.org/current/userguide/build_environment.html#sec:project_properties
         ORG_GRADLE_PROJECT_ci=true
     }
