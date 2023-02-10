@@ -19,6 +19,7 @@ package org.veo.persistence.entity.jpa
 
 import org.springframework.beans.factory.annotation.Autowired
 
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
@@ -34,10 +35,14 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
     @Autowired
     ClientDataRepository clientDataRepository
 
+    Domain domain
     Unit unit
 
     def setup() {
-        def client = clientDataRepository.save(newClient())
+        def client = clientDataRepository.save(newClient() {
+            newDomain(it)
+        })
+        domain = client.domains.first()
         unit = newUnit(client)
         unit = unitRepository.save(unit)
     }
@@ -45,8 +50,9 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
     def 'attributes are inserted'() {
         given:
         def asset = newAsset(unit) {
+            associateWithDomain(domain, "goodSubType", "goodStatus")
             customAspects = [
-                newCustomAspect("goodAspect") {
+                newCustomAspect("goodAspect", domain) {
                     attributes = [
                         "k1": "uno",
                         "k2": 2
@@ -70,8 +76,9 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
     def 'attribute type can be changed'() {
         given: 'a saved asset with a string prop'
         def asset = newAsset(unit) {
+            associateWithDomain(domain, "goodSubType", "goodStatus")
             customAspects = [
-                newCustomAspect("goodAspect") {
+                newCustomAspect("goodAspect", domain) {
                     attributes = [
                         "k1": "uno"
                     ]
@@ -96,8 +103,9 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
     def 'attribute can be removed'() {
         given: 'a saved asset with two props'
         def asset = newAsset(unit) {
+            associateWithDomain(domain, "goodSubType", "goodStatus")
             customAspects = [
-                newCustomAspect("goodAspect") {
+                newCustomAspect("goodAspect", domain) {
                     attributes = [
                         "k1": "uno",
                         "k2": "due",
@@ -121,8 +129,9 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
         def stringLength = 18000
         def longString = "X" * stringLength
         def asset = newAsset(unit) {
+            associateWithDomain(domain, "goodSubType", "goodStatus")
             customAspects = [
-                newCustomAspect("goodAspect") {
+                newCustomAspect("goodAspect", domain) {
                     attributes = ["p": longString]
                 }
             ]

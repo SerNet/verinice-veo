@@ -18,16 +18,14 @@
 package org.veo.persistence.entity.jpa;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.Type;
@@ -36,7 +34,7 @@ import org.hibernate.annotations.TypeDef;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 
 import org.veo.core.entity.CustomAspect;
-import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 
 import lombok.Data;
@@ -62,36 +60,13 @@ public class CustomAspectData implements CustomAspect {
       optional = true)
   private Element owner;
 
-  @ManyToMany(targetEntity = DomainData.class)
-  protected final Set<Domain> domains = new HashSet<>();
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainBaseData.class, optional = false)
+  @JoinColumn(name = "domain_id")
+  private DomainBase domain;
 
   @Type(type = "json")
   @Column(columnDefinition = "jsonb")
   private Map<String, Object> attributes = new HashMap<>();
-
-  /**
-   * Add the given Domain to the collection domains.
-   *
-   * @return true if added
-   */
-  public boolean addToDomains(Domain aDomain) {
-    return this.domains.add(aDomain);
-  }
-
-  /**
-   * Remove the given Domain from the collection domains.
-   *
-   * @return true if removed
-   */
-  public boolean removeFromDomains(Domain aDomain) {
-    return this.domains.remove(aDomain);
-  }
-
-  @Override
-  public void setDomains(Set<Domain> newDomains) {
-    domains.clear();
-    domains.addAll(newDomains);
-  }
 
   @Override
   public boolean equals(Object o) {

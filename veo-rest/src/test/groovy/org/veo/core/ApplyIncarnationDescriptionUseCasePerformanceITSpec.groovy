@@ -96,7 +96,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
 
         then:
         queryCounts.select == 30
-        queryCounts.insert == 24
+        queryCounts.insert == 23
         queryCounts.time < 500
     }
 

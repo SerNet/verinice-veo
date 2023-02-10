@@ -18,7 +18,6 @@
 package org.veo.core.entity;
 
 import java.util.Map;
-import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
@@ -38,23 +37,9 @@ public interface CustomAspect {
 
   void setType(String aType);
 
-  /**
-   * Add the given Domain to the collection domains.
-   *
-   * @return true if added
-   */
-  boolean addToDomains(Domain aDomain);
+  DomainBase getDomain();
 
-  /**
-   * Remove the given Domain from the collection domains.
-   *
-   * @return true if removed
-   */
-  boolean removeFromDomains(Domain aDomain);
-
-  Set<Domain> getDomains();
-
-  void setDomains(Set<Domain> aDomains);
+  void setDomain(DomainBase domain);
 
   Map<String, Object> getAttributes();
 

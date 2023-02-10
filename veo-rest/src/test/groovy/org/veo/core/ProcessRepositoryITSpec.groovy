@@ -24,6 +24,7 @@ import org.springframework.transaction.TransactionSystemException
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.entity.Client
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
@@ -52,9 +53,11 @@ class ProcessRepositoryITSpec extends VeoSpringSpec {
 
     private Client client
     private Unit unit
+    private Domain domain
 
     def setup() {
         client = clientRepository.save(newClient())
+        domain = newDomain(client)
         unit = unitRepository.save(newUnit(this.client))
     }
 
@@ -87,10 +90,10 @@ class ProcessRepositoryITSpec extends VeoSpringSpec {
         when:
         processRepository.save(newProcess(unit) {
             customAspects = [
-                newCustomAspect(null)
+                newCustomAspect(null, domain)
             ]
             links = [
-                newCustomLink(null, "goodLink")
+                newCustomLink(null, "goodLink", domain)
             ]
             parts = [
                 newProcess(unit) {

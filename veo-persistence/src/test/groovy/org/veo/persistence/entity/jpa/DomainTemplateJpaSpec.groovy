@@ -195,7 +195,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
             newProcess(c) {
                 name = 'p2'
                 associateWithDomain(domain0, "Test1", "NOT-NEW")
-                addToLinks(newCustomLink(itemP1.element, "p2->p1"))
+                addToLinks(newCustomLink(itemP1.element, "p2->p1", domain0))
             }
         })
 

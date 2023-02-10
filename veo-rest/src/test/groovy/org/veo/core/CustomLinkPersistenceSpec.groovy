@@ -25,6 +25,7 @@ import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.CustomLink
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Person
 import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
@@ -49,12 +50,15 @@ class CustomLinkPersistenceSpec extends VeoSpringSpec {
 
     def "create an asset with a customLink and save-load it"() {
         given: "a person and an asset"
-        Client client = clientRepository.save(newClient())
+        Client client = clientRepository.save(newClient{
+            newDomain(it)
+        })
+        Domain domain = client.domains.first()
         Unit unit = newUnit(client)
         Person person = newPerson(unit)
         Asset asset = newAsset(unit)
 
-        CustomLink cp = newCustomLink(person, 'my.new.linktype')
+        CustomLink cp = newCustomLink(person, 'my.new.linktype', domain)
 
         asset.setLinks([cp] as Set)
 

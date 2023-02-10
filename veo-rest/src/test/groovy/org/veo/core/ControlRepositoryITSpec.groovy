@@ -49,18 +49,19 @@ class ControlRepositoryITSpec extends VeoSpringSpec {
     def "cascading relations are validated"() {
         when:
         controlRepository.save(newControl(unit) {
+            def domain = newDomain(client)
             customAspects = [
-                newCustomAspect(null)
+                newCustomAspect(null, domain)
             ]
             links = [
-                newCustomLink(null, "goodLink")
+                newCustomLink(null, "goodLink", domain)
             ]
             parts = [
                 newControl(unit) {
                     designator = "super bad designator"
                 }
             ]
-            associateWithDomain(newDomain(client), null, null)
+            associateWithDomain(domain, null, null)
         })
 
         then:

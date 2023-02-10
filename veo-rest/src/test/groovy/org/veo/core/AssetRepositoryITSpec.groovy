@@ -23,6 +23,7 @@ import javax.validation.ConstraintViolationException
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Client
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -40,20 +41,23 @@ class AssetRepositoryITSpec extends VeoSpringSpec {
 
     private Client client
     private Unit unit
+    private Domain domain
 
     def setup() {
         client = clientRepository.save(newClient())
+        domain = newDomain(client)
         unit = unitRepository.save(newUnit(this.client))
     }
 
     def "cascading relations are validated"() {
         when:
         assetRepository.save(newAsset(unit) {
+            associateWithDomain(domain, "", "")
             customAspects = [
-                newCustomAspect(null)
+                newCustomAspect(null, domain)
             ]
             links = [
-                newCustomLink(null, "goodLink")
+                newCustomLink(null, "goodLink", domain)
             ]
             parts = [
                 newAsset(unit) {

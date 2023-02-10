@@ -24,7 +24,6 @@ import org.springframework.test.context.DynamicPropertySource
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
-import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -109,9 +108,6 @@ class ProcessRiskRowCountMockMvcITSpec extends VeoMvcSpec {
     def "Searching for 10 processes with embedded risks"() {
         given: "a list of processes with risks"
         NUM_PROCESSES.times {
-            CustomAspect cp1 = newCustomAspect('my.new.customaspect')
-            CustomAspect cp2 = newCustomAspect('my.newer.customaspect')
-
             def scenario = newScenario(unit) {
                 associateWithDomain(domain, "NormalScenario", "NEW")
             }
@@ -126,7 +122,10 @@ class ProcessRiskRowCountMockMvcITSpec extends VeoMvcSpec {
 
             def process2 = newProcess(unit) {
                 associateWithDomain(domain, "NormalProcess", "NEW")
-                customAspects = [cp1, cp2] as Set
+                customAspects = [
+                    newCustomAspect('my.new.customaspect', domain),
+                    newCustomAspect('my.newer.customaspect', domain)
+                ]
             }
             processRepository.save(process2)
             postRisk1(process2.idAsString, scenarioId)

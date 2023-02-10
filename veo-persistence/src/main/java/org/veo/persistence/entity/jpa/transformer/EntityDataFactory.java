@@ -75,8 +75,9 @@ import org.veo.persistence.entity.jpa.UpdateReferenceData;
 public class EntityDataFactory implements EntityFactory {
 
   @Override
-  public CustomAspect createCustomAspect(String type) {
+  public CustomAspect createCustomAspect(String type, DomainBase domain) {
     var aspect = new CustomAspectData();
+    aspect.setDomain(domain);
     aspect.setType(type);
     return aspect;
   }
@@ -166,8 +167,10 @@ public class EntityDataFactory implements EntityFactory {
   }
 
   @Override
-  public CustomLink createCustomLink(Element linkTarget, Element linkSource, String type) {
+  public CustomLink createCustomLink(
+      Element linkTarget, Element linkSource, String type, DomainBase domain) {
     CustomLink link = new CustomLinkData();
+    link.setDomain(domain);
     link.setType(type);
     link.setTarget(linkTarget);
     link.setSource(linkSource);

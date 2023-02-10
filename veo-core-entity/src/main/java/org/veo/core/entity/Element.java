@@ -61,18 +61,8 @@ public interface Element
       throw new IllegalArgumentException(this + " is already a member of " + newDomain);
     }
     associateWithDomain(newDomain, getSubType(oldDomain).get(), getStatus(oldDomain).get());
-    getCustomAspects()
-        .forEach(
-            ca -> {
-              ca.removeFromDomains(oldDomain);
-              ca.addToDomains(newDomain);
-            });
-    getLinks()
-        .forEach(
-            cl -> {
-              cl.removeFromDomains(oldDomain);
-              cl.addToDomains(newDomain);
-            });
+    getCustomAspects().forEach(ca -> ca.setDomain(newDomain));
+    getLinks().forEach(cl -> cl.setDomain(newDomain));
     removeFromDomains(oldDomain);
   }
 

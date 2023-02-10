@@ -194,8 +194,8 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   public boolean removeFromDomains(Domain domain) {
     boolean removed = this.getDomains().remove(domain);
     if (removed) {
-      getCustomAspects().forEach(ca -> ca.removeFromDomains(domain));
-      getLinks().forEach(ca -> ca.removeFromDomains(domain));
+      getCustomAspects().removeIf(ca -> ca.getDomain().equals(domain));
+      getLinks().removeIf(l -> l.getDomain().equals(domain));
       removeAspect(subTypeAspects, domain);
       removeAspect(decisionResultsAspects, domain);
     }

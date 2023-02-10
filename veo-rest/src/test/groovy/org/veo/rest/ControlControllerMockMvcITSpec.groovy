@@ -285,7 +285,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "put a control with a custom aspect"() {
         given: "a saved control"
-        def customAspect = newCustomAspect("my.new.type")
+        def customAspect = newCustomAspect("my.new.type", dsgvoDomain)
 
         def control = txTemplate.execute {
             controlRepository.save(newControl(unit) {

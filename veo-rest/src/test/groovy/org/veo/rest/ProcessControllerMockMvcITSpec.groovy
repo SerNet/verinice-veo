@@ -26,7 +26,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
@@ -262,12 +261,12 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "put a process with custom aspect"() {
         given: "a saved process"
-        CustomAspect cp = newCustomAspect("my.new.type")
-
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
                 associateWithDomain(dsgvoDomain, "PRO_DataTransfer", "NEW")
-                customAspects = [cp] as Set
+                customAspects = [
+                    newCustomAspect("my.new.type", dsgvoDomain)
+                ]
             })
         }
 
@@ -339,16 +338,16 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def     "overwrite a custom aspect attribute"() {
         given: "a saved process"
-        CustomAspect cp = newCustomAspect("process_privacyImpactAssessment") {
-            attributes = [
-                'process_privacyImpactAssessment_blacklistComment': 'old comment'
-            ]
-        }
-
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
                 associateWithDomain(dsgvoDomain, "PRO_DataTransfer", "NEW")
-                customAspects = [cp] as Set
+                customAspects = [
+                    newCustomAspect("process_privacyImpactAssessment", dsgvoDomain) {
+                        attributes = [
+                            'process_privacyImpactAssessment_blacklistComment': 'old comment'
+                        ]
+                    }
+                ]
             })
         }
 

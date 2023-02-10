@@ -77,7 +77,9 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.aspects.SubTypeAspect;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
+import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
 
@@ -93,57 +95,57 @@ public final class DtoToEntityTransformer {
 
   public Person transformDto2Person(AbstractPersonDto source, IdRefResolver idRefResolver) {
     var target = createIdentifiable(Person.class, source);
-    mapCompositeEntity(source, target, idRefResolver);
     domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
+    mapCompositeEntity(source, target, idRefResolver);
     return target;
   }
 
   public Asset transformDto2Asset(AbstractAssetDto source, IdRefResolver idRefResolver) {
     var target = createIdentifiable(Asset.class, source);
-    mapCompositeEntity(source, target, idRefResolver);
     domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
+    mapCompositeEntity(source, target, idRefResolver);
     return target;
   }
 
   public Process transformDto2Process(AbstractProcessDto source, IdRefResolver idRefResolver) {
     var target = createIdentifiable(Process.class, source);
-    mapCompositeEntity(source, target, idRefResolver);
     domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
+    mapCompositeEntity(source, target, idRefResolver);
     return target;
   }
 
   public Document transformDto2Document(AbstractDocumentDto source, IdRefResolver idRefResolver) {
     var target = createIdentifiable(Document.class, source);
-    mapCompositeEntity(source, target, idRefResolver);
     domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
+    mapCompositeEntity(source, target, idRefResolver);
     return target;
   }
 
   public Control transformDto2Control(AbstractControlDto source, IdRefResolver idRefResolver) {
     var target = createIdentifiable(Control.class, source);
-    mapCompositeEntity(source, target, idRefResolver);
     domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
+    mapCompositeEntity(source, target, idRefResolver);
     return target;
   }
 
   public Incident transformDto2Incident(AbstractIncidentDto source, IdRefResolver idRefResolver) {
     var target = createIdentifiable(Incident.class, source);
-    mapCompositeEntity(source, target, idRefResolver);
     domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
+    mapCompositeEntity(source, target, idRefResolver);
     return target;
   }
 
   public Scenario transformDto2Scenario(AbstractScenarioDto source, IdRefResolver idRefResolver) {
     var target = createIdentifiable(Scenario.class, source);
-    mapCompositeEntity(source, target, idRefResolver);
     domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
+    mapCompositeEntity(source, target, idRefResolver);
     return target;
   }
 
   public Scope transformDto2Scope(AbstractScopeDto source, IdRefResolver idRefResolver) {
     var target = createIdentifiable(Scope.class, source);
-    mapElement(source, target, idRefResolver);
     domainAssociationTransformer.mapDomainsToEntity(source, target, idRefResolver);
+    mapElement(source, target, idRefResolver);
     Set<IdRef<Element>> memberReferences = source.getMembers();
     Map<Class<Element>, Set<IdRef<Element>>> memberReferencesByType =
         memberReferences.stream()
@@ -248,21 +250,21 @@ public final class DtoToEntityTransformer {
   }
 
   public CustomLink transformDto2CustomLink(
-      CustomLinkDto source, String type, IdRefResolver idRefResolver) {
+      CustomLinkDto source, String type, IdRefResolver idRefResolver, DomainBase domain) {
     Element linkTarget = null;
     if (source.getTarget() != null) {
       linkTarget = idRefResolver.resolve(source.getTarget());
     }
 
-    var target = factory.createCustomLink(linkTarget, null, type);
+    var target = factory.createCustomLink(linkTarget, null, type, domain);
 
     target.setAttributes(source.getAttributes());
     return target;
   }
 
   public CustomAspect transformDto2CustomAspect(
-      EntityFactory factory, CustomAspectDto source, String type) {
-    var target = factory.createCustomAspect(type);
+      EntityFactory factory, CustomAspectDto source, String type, DomainBase domain) {
+    var target = factory.createCustomAspect(type, domain);
     target.setAttributes(source.getAttributes());
     return target;
   }
@@ -314,7 +316,7 @@ public final class DtoToEntityTransformer {
       TDto source, TEntity target, IdRefResolver idRefResolver) {
     mapNameableProperties(source, target);
     target.setLinks(mapLinks(target, source, idRefResolver));
-    target.setCustomAspects(mapCustomAspects(source, factory));
+    target.setCustomAspects(mapCustomAspects(target, source, factory));
     if (source.getOwner() != null) {
       target.setOwnerOrContainingCatalogItem(idRefResolver.resolve(source.getOwner()));
     }
@@ -329,7 +331,11 @@ public final class DtoToEntityTransformer {
                     .map(
                         linktDto -> {
                           var customLink =
-                              transformDto2CustomLink(linktDto, entry.getKey(), idRefResolver);
+                              transformDto2CustomLink(
+                                  linktDto,
+                                  entry.getKey(),
+                                  idRefResolver,
+                                  getCustomAspectOrLinkDomain(entity));
                           customLink.setSource(entity);
                           return customLink;
                         }))
@@ -350,10 +356,27 @@ public final class DtoToEntityTransformer {
     return new HashSet<>();
   }
 
-  private Set<CustomAspect> mapCustomAspects(AbstractElementDto dto, EntityFactory factory) {
+  private Set<CustomAspect> mapCustomAspects(
+      Element entity, AbstractElementDto dto, EntityFactory factory) {
     return dto.getCustomAspects().entrySet().stream()
-        .map(entry -> transformDto2CustomAspect(factory, entry.getValue(), entry.getKey()))
+        .map(
+            entry ->
+                transformDto2CustomAspect(
+                    factory, entry.getValue(), entry.getKey(), getCustomAspectOrLinkDomain(entity)))
         .collect(Collectors.toSet());
+  }
+
+  private static DomainBase getCustomAspectOrLinkDomain(Element entity) {
+    var domains = entity.getSubTypeAspects().stream().map(SubTypeAspect::getDomain).toList();
+    if (domains.size() == 1) {
+      return domains.get(0);
+    }
+    if (domains.size() == 0) {
+      throw new IllegalArgumentException(
+          "Element cannot contain custom aspects or links without being associated with a domain");
+    }
+    throw new UnprocessableDataException(
+        "Using custom aspects or links in a multi-domain element is not supported by this API");
   }
 
   public CatalogItem transformDto2CatalogItem(

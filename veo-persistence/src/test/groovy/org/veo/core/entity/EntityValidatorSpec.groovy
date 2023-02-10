@@ -207,9 +207,7 @@ class EntityValidatorSpec extends VeoSpec {
         Process process = newProcess(unit) {
             associateWithDomain(domain, "NormalProcess", "NEW")
         }
-        process.addToCustomAspects( newCustomAspect("a") {
-            addToDomains(otherDomain)
-        })
+        process.addToCustomAspects( newCustomAspect("a", otherDomain))
 
         when : "it is validated"
         validator.validate(process)
@@ -227,9 +225,7 @@ class EntityValidatorSpec extends VeoSpec {
         Control control = newControl(unit) {
             associateWithDomain(domain, "NormalControl", "NEW")
         }
-        process.addToLinks( newCustomLink(control, "a") {
-            addToDomains(otherDomain)
-        })
+        process.addToLinks( newCustomLink(control, "a", otherDomain))
 
         when : "it is validated"
         validator.validate(process)

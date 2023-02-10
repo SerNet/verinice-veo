@@ -312,8 +312,8 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             scopeRepository.query(client).whereOwnerIs(demoUnit).execute(PagingConfiguration.UNPAGED).resultPage.tap {
                 //initialize lazy associations
                 it.each {
-                    it.customAspects*.domains*.name
-                    it.links*.domains*.name
+                    it.customAspects*.domain.name
+                    it.links*.domain.name
                     it.risks*.domains*.name
                 }
             }
@@ -323,10 +323,10 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             domains == [dsgvoDomainV2] as Set
             customAspects.size() == 4
             customAspects.every {
-                it.domains == [dsgvoDomainV2] as Set
+                it.domain == dsgvoDomainV2
             }
             it.links.every {
-                it.domains == [dsgvoDomainV2] as Set
+                it.domain == dsgvoDomainV2
             }
             subTypeAspects.size() == 1
             subTypeAspects.every {
@@ -342,7 +342,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             personRepository.query(client).whereOwnerIs(demoUnit).execute(PagingConfiguration.UNPAGED).resultPage.tap {
                 //initialize lazy associations
                 it.each {
-                    it.customAspects*.domains*.name
+                    it.customAspects*.domain.name
                     it.links*.domains*.name
                 }
             }
@@ -352,10 +352,10 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             with(it) {
                 it.domains == [dsgvoDomainV2] as Set
                 it.customAspects.every {
-                    it.domains == [dsgvoDomainV2] as Set
+                    it.domain == dsgvoDomainV2
                 }
                 it.links.every {
-                    it.domains == [dsgvoDomainV2] as Set
+                    it.domain == dsgvoDomainV2
                 }
                 it.subTypeAspects.every {
                     it.domain == dsgvoDomainV2

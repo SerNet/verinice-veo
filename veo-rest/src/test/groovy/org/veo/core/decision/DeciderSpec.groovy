@@ -426,7 +426,7 @@ class DeciderSpec extends VeoSpec {
     Process createProcess(Map<String, Object> piaAttributes) {
         return newProcess(unit) {
             associateWithDomain(domain, "PRO_DataProcessing", "NEW")
-            addToCustomAspects(newCustomAspect("process_privacyImpactAssessment") {
+            addToCustomAspects(newCustomAspect("process_privacyImpactAssessment", null) {
                 attributes = piaAttributes
             })
         }

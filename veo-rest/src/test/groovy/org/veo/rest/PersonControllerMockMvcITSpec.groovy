@@ -23,7 +23,6 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.common.ETag
@@ -183,13 +182,13 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "put a person with a custom aspect"() {
         given: "a saved person"
-        CustomAspect customAspect = newCustomAspect("my.new.type")
-
         def person = txTemplate.execute {
             personRepository.save(newPerson(unit) {
                 name = 'Test person-1'
                 associateWithDomain(dsgvoDomain, "PER_Person", "NEW")
-                customAspects = [customAspect] as Set
+                customAspects = [
+                    newCustomAspect("my.new.type", dsgvoDomain)
+                ]
             })
         }
 

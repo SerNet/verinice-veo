@@ -106,7 +106,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         1* repo.save(newControl) >> newControl
         1* newControl.setOwner(existingUnit)
         1* designatorService.assignDesignator(newControl, existingClient)
-        1* factory.createCustomLink(control3, _, "link.type") >> newLink
+        1* factory.createCustomLink(control3, _, "link.type", _) >> newLink
 
         output.newElements.size() == 1
         output.newElements.first() == newControl
@@ -116,7 +116,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         given:
         CustomLink newLink = Mock()
 
-        factory.createCustomLink(_, _, _) >> newLink
+        factory.createCustomLink(_, _, _, _) >> newLink
 
         Control control2 = Mock()
         Control control3 = Mock()

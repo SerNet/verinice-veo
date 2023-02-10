@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity.inspection
 
-import static java.util.Locale.ENGLISH
-
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
@@ -52,7 +50,7 @@ class InspectionITSpec extends VeoSpec {
         when: "a mac has no tux sticker"
         def mac = newAsset(unit) {
             associateWithDomain(domain, "computer", "NEW")
-            customAspects.add(newCustomAspect("software") {
+            customAspects.add(newCustomAspect("software", null) {
                 attributes["os"] = "macOs"
             })
         }
@@ -64,7 +62,7 @@ class InspectionITSpec extends VeoSpec {
         when: "a linux pc has no sticker"
         def linuxPc = newAsset(unit) {
             associateWithDomain(domain, "computer", "NEW")
-            customAspects.add(newCustomAspect("software") {
+            customAspects.add(newCustomAspect("software", null) {
                 attributes["os"] = "linux"
             })
         }

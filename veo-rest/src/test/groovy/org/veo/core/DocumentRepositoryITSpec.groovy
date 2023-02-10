@@ -23,6 +23,7 @@ import javax.validation.ConstraintViolationException
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Client
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DocumentRepositoryImpl
@@ -40,9 +41,11 @@ class DocumentRepositoryITSpec extends VeoSpringSpec {
 
     private Client client
     private Unit unit
+    private Domain domain
 
     def setup() {
         client = clientRepository.save(newClient())
+        domain = newDomain(client)
         unit = unitRepository.save(newUnit(this.client))
     }
 
@@ -50,10 +53,10 @@ class DocumentRepositoryITSpec extends VeoSpringSpec {
         when:
         documentRepository.save(newDocument(unit) {
             customAspects = [
-                newCustomAspect(null)
+                newCustomAspect(null, domain)
             ]
             links = [
-                newCustomLink(null, "goodLink")
+                newCustomLink(null, "goodLink", domain)
             ]
             parts = [
                 newDocument(unit) {

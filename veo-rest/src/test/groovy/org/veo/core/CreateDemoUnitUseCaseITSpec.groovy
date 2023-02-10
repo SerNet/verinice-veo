@@ -93,6 +93,11 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
 
         with(controls.first()) {
             it.domains*.name == ['DS-GVO']
+            it.customAspects.size() == 1
+            with(it.customAspects.first()) {
+                it.domain.name == 'DS-GVO'
+                type == 'control_dataProtection'
+            }
             riskValuesAspects.size() == 1
             with(riskValuesAspects.first()) {
                 domain.name == 'DS-GVO'
@@ -153,12 +158,19 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
         processes.size() == 1
         with(processes.first()) {
             it.domains*.name == ['DS-GVO']
-            it.links.find{it.type == "process_PIAOOtherOrganisationsInvolved"}.target.name == "Data GmbH"
+            with(it.links.find { it.type == "process_PIAOOtherOrganisationsInvolved" }) {
+                it.domain.name == 'DS-GVO'
+                it.target.name == "Data GmbH"
+            }
             decisionResultsAspects.size() == 1
             with(decisionResultsAspects.first()) {
                 domain.name == 'DS-GVO'
                 results.keySet()*.keyRef ==~ ['piaMandatory']
                 results.values().first().value == true
+            }
+            it.customAspects.size() == 8
+            it.customAspects.each {
+                assert it.domain.name == 'DS-GVO'
             }
         }
 
@@ -167,6 +179,7 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
             findByUnit(personDataRepository, unit).tap{
                 it*.parts*.name
                 it*.links*.target*.name
+                it*.links*.domain.name
             }
         }
 
@@ -181,7 +194,10 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
             ]
         }
         with(persons.find{it.name == "Jürgen Toast"}) {
-            it.links.find{it.type == "person_favoriteScope"}.target.name == "Data GmbH"
+            with(it.links.find{it.type == "person_favoriteScope"}) {
+                it.domain.name == "DS-GVO"
+                it.target.name == "Data GmbH"
+            }
         }
 
         with(processes.first()) {
@@ -245,6 +261,8 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
             findByUnit(scopeDataRepository, unit).tap{
                 //initialize lazy associations
                 it*.links*.target*.name
+                it*.links*.domain.name
+                it*.customAspects*.domain.name
                 it*.riskValuesAspects*.each {
                     it.riskDefinitionRef
                 }
@@ -263,10 +281,15 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
                 it.name == 'Durchführung Befragungen'
             }
             it.links.size() == 2
-            with(it.links.find{
+            with(it.links.find {
                 it.type == 'scope_informationSecurityOfficer'
             }) {
+                domain.name == 'DS-GVO'
                 target.name == 'Jürgen Toast'
+            }
+            it.customAspects.size() == 4
+            it.customAspects.each{
+                assert it.domain.name == 'DS-GVO'
             }
             riskValuesAspects.size() == 1
             with(riskValuesAspects.first()) {

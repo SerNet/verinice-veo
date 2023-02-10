@@ -56,9 +56,11 @@ class ElementQueryImplPerformanceSpec extends AbstractPerformanceITSpec {
     private Unit unit
 
     def setup() {
-        client = clientRepository.save(newClient {})
+        client = clientRepository.save(newClient {
+            newDomain(it)
+        })
+        domain = client.domains.first()
         unit = unitRepository.save(newUnit(client))
-        domain = domainRepository.save(newDomain(client))
     }
 
     def "query efficiently fetches results"() {
@@ -71,19 +73,15 @@ class ElementQueryImplPerformanceSpec extends AbstractPerformanceITSpec {
         for(int i = 0; i < testProcessCount; i++) {
             processes.add(newProcess(unit) {
                 customAspects = [
-                    new CustomAspectData().tap {
-                        it.type = "my_custom_aspect"
-                        it.attributes = [
+                    newCustomAspect("my_custom_aspect", domain) {
+                        attributes = [
                             "foo": "bar"
                         ]
                     }
-                ] as Set
+                ]
                 links = [
-                    new CustomLinkData().tap {
-                        it.type = "my_little_link"
-                        it.target = asset
-                    }
-                ] as Set
+                    newCustomLink(asset, "my_little_link", domain)
+                ]
                 associateWithDomain(domain, "VT", "NEW")
             })
         }

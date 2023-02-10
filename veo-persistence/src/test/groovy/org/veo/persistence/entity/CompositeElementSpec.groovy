@@ -244,10 +244,10 @@ class CompositeElementSpec extends VeoSpec {
         def p1 = newProcess(unit)
         def p2 = newProcess(unit)
 
-        def link = newCustomLink(p2, "goodLink")
+        def link = newCustomLink(p2, "goodLink", null)
         p1.addToLinks(link)
 
-        def customAspect = newCustomAspect("type")
+        def customAspect = newCustomAspect("type", null)
         p1.addToCustomAspects(customAspect)
 
         when: "a composite is reinstantiated with the processes:"
@@ -257,10 +257,10 @@ class CompositeElementSpec extends VeoSpec {
         and: "another object should be compared"
         def p3 = newProcess(unit)
 
-        def customAspect2 = newCustomAspect("type2")
+        def customAspect2 = newCustomAspect("type2", null)
         p3.addToCustomAspects(customAspect2)
 
-        def link2 = newCustomLink(p2, "goodLink")
+        def link2 = newCustomLink(p2, "goodLink", null)
         p3.addToLinks(link2)
 
         then: "the same method can be called on the composite (branch node) or element (leaf node)"

@@ -26,6 +26,7 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Asset
 import org.veo.core.entity.CustomLink
+import org.veo.core.entity.DomainBase
 import org.veo.core.entity.Key
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.entity.transform.IdentifiableFactory
@@ -66,6 +67,7 @@ class CustomLinkTransformerSpec extends Specification {
 
     def "transform custom link DTO to entity"() {
         given: "a custom link"
+        def domain = Mock(DomainBase)
         def targetAsset = Mock(Asset) {
             it.id >> Key.newUuid()
             it.modelInterface >> Asset
@@ -77,11 +79,11 @@ class CustomLinkTransformerSpec extends Specification {
         }
 
         when: "transforming it to an entity"
-        def entity = dtoToEntityTransformer.transformDto2CustomLink(linkDto, "goodType", idRefResolver)
+        def entity = dtoToEntityTransformer.transformDto2CustomLink(linkDto, "goodType", idRefResolver, domain)
 
         then: "all properties are transformed"
         1 * idRefResolver.resolve(linkDto.target) >> targetAsset
-        1 * factory.createCustomLink(targetAsset, null, "goodType") >> newLink
+        1 * factory.createCustomLink(targetAsset, null, "goodType", domain) >> newLink
         entity == newLink
         1 * newLink.setAttributes(linkDto.attributes)
     }

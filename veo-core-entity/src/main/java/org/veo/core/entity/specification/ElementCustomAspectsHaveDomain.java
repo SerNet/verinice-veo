@@ -18,8 +18,9 @@
 package org.veo.core.entity.specification;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 
 /** Checks that an element's custom aspects's domain is contained in the element's domains. */
@@ -27,8 +28,15 @@ public class ElementCustomAspectsHaveDomain implements EntitySpecification<Eleme
 
   @Override
   public boolean test(Element element) {
-    Set<Domain> domains = element.getDomains();
-    return element.getCustomAspects().stream().allMatch(ca -> domains.containsAll(ca.getDomains()))
-        && element.getLinks().stream().allMatch(l -> domains.containsAll(l.getDomains()));
+    var domains = getDomains(element);
+    return element.getCustomAspects().stream().allMatch(ca -> domains.contains(ca.getDomain()))
+        && element.getLinks().stream().allMatch(l -> domains.contains(l.getDomain()));
+  }
+
+  private static Set<DomainBase> getDomains(Element element) {
+    if (element.getContainingCatalogItem() != null) {
+      return Set.of(element.getContainingCatalogItem().getCatalog().getDomainTemplate());
+    }
+    return element.getDomains().stream().map(DomainBase.class::cast).collect(Collectors.toSet());
   }
 }

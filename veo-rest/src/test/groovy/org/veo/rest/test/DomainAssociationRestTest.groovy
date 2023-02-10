@@ -20,10 +20,12 @@ package org.veo.rest.test
 class DomainAssociationRestTest extends VeoRestTest {
     String unitUri
     String dsgvoDomainId
+    String testDomainId
 
     def setup() {
         unitUri = "$baseUrl/units/" + postNewUnit("some unit").resourceId
         dsgvoDomainId = domains.find { it.name == "DS-GVO" }.id
+        testDomainId = domains.find { it.name == "test-domain" }.id
     }
 
     def "can associate element with domains"() {
@@ -47,7 +49,6 @@ class DomainAssociationRestTest extends VeoRestTest {
         }
     }
 
-    // TODO VEO-661 remove (it will be impossible to specify custom aspects without a domain association in the new DTO structure)
     def "cannot create element with custom aspects and without domains"() {
         when:
         def response = post("/assets", [
@@ -68,7 +69,36 @@ class DomainAssociationRestTest extends VeoRestTest {
         response.body.message == "Element cannot contain custom aspects or links without being associated with a domain"
     }
 
-    // TODO VEO-661 remove (it will be impossible to specify links without a domain association in the new DTO structure)
+    def "cannot create multi-domain element with custom aspect using non-domain-specific API"() {
+        when:
+        def response = post("/assets", [
+            name: "multi-domain asset",
+            owner: [
+                targetUri: unitUri
+            ],
+            domains:[
+                (dsgvoDomainId): [
+                    subType: "AST_Asset",
+                    status: "NEW"
+                ],
+                (testDomainId): [
+                    subType: "ItSystem",
+                    status: "NEW"
+                ],
+            ],
+            customAspects: [
+                asset_details: [
+                    attributes: [
+                        asset_details_number: 5
+                    ]
+                ]
+            ],
+        ], 422)
+
+        then:
+        response.body.message == "Using custom aspects or links in a multi-domain element is not supported by this API"
+    }
+
     def "cannot create element with links and without domains"() {
         when:
         def targetPersonId = post("/persons", [
@@ -93,6 +123,42 @@ class DomainAssociationRestTest extends VeoRestTest {
 
         then:
         response.body.message == "Element cannot contain custom aspects or links without being associated with a domain"
+    }
+
+    def "cannot create multi-domain element with link using non-domain-specific API"() {
+        when:
+        def targetPersonId = post("/persons", [
+            name: "Kim",
+            owner: [
+                targetUri: unitUri
+            ]
+        ]).body.resourceId
+        def response = post("/scopes", [
+            name: "multi-domain scope",
+            owner: [
+                targetUri: unitUri
+            ],
+            domains:[
+                (dsgvoDomainId): [
+                    subType: "SCP_Scope",
+                    status: "NEW"
+                ],
+                (testDomainId): [
+                    subType: "Organization",
+                    status: "NEW"
+                ],
+            ],
+            links: [
+                scope_informationSecurityOfficer: [
+                    [
+                        target: [targetUri: "$baseUrl/persons/$targetPersonId"]
+                    ]
+                ]
+            ]
+        ], 422)
+
+        then:
+        response.body.message == "Using custom aspects or links in a multi-domain element is not supported by this API"
     }
 
     def "cannot associate element with domain without a sub type"() {

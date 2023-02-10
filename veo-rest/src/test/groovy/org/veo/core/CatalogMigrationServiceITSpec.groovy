@@ -75,7 +75,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
                 newCatalogItem(it, {
                     newDocument(it) {
                         customAspects = [
-                            newCustomAspect("file") {
+                            newCustomAspect("file", domain) {
                                 attributes = [
                                     extension: "pdf",
                                     size: 5000,

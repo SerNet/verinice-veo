@@ -112,7 +112,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.delete == 0
         queryCounts.insert == 5
         queryCounts.update == 0
-        queryCounts.select == 0
+        queryCounts.select == 1
         queryCounts.time < 500
     }
 
@@ -129,7 +129,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.delete == 0
         queryCounts.insert == 3
         queryCounts.update == 0
-        queryCounts.select == 0
+        queryCounts.select == 1
         queryCounts.time < 500
     }
 
@@ -146,7 +146,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.delete == 0
         queryCounts.insert == 3
         queryCounts.update == 0
-        queryCounts.select == 0
+        queryCounts.select == 1
         queryCounts.time < 500
     }
 
@@ -486,7 +486,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
                 newDomain(it)
             })
 
-            def domain = client.domains.first()
+            domain = client.domains.first()
 
             unit = newUnit(client)
             unit.setClient(client)
@@ -552,8 +552,8 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
             def person = savePerson()
 
             process.setLinks([
-                newCustomLink(asset, "aLink"),
-                newCustomLink(person, "anotherLink")
+                newCustomLink(asset, "aLink", domain),
+                newCustomLink(person, "anotherLink", domain)
             ] as Set)
             processRepository.save(process)
         }
@@ -590,7 +590,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         executeInTransaction {
             def process = newProcess(unit)
             for (i in 0..<count) {
-                CustomAspect customAspect = newCustomAspect("aType $i")
+                CustomAspect customAspect = newCustomAspect("aType $i", domain)
                 process.addToCustomAspects(customAspect)
             }
             processRepository.save(process)
@@ -646,7 +646,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
     Process saveProcessWithCustomAspect() {
         executeInTransaction {
             def process = newProcess(unit)
-            CustomAspect customAspect = newCustomAspect("aType")
+            CustomAspect customAspect = newCustomAspect("aType", domain)
             customAspect.attributes = [
                 PROP_KEY: "ok"
             ]
@@ -707,21 +707,21 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
             def process = newProcess(unit)
             process = processRepository.save(process)
 
-            def link_person_asset = newCustomLink(asset, " type1")
+            def link_person_asset = newCustomLink(asset, " type1", domain)
             compositePerson.addToLinks(link_person_asset)
             compositePerson = personRepository.save(compositePerson)
 
-            def link_asset_person = newCustomLink(compositePerson, "type2")
-            def link_asset_process = newCustomLink(process, "type3")
+            def link_asset_person = newCustomLink(compositePerson, "type2", domain)
+            def link_asset_process = newCustomLink(process, "type3", domain)
             asset.addToLinks(link_asset_process)
             asset.addToLinks(link_asset_person)
             asset = assetRepository.save(asset)
 
-            def link_process_person = newCustomLink(compositePerson, "type4")
+            def link_process_person = newCustomLink(compositePerson, "type4", domain)
             process.addToLinks(link_process_person)
             processRepository.save(process)
 
-            def link_asset_asset = newCustomLink(asset2, "type5")
+            def link_asset_asset = newCustomLink(asset2, "type5", domain)
             asset.addToLinks(link_asset_asset)
             assetRepository.save(asset)
         }

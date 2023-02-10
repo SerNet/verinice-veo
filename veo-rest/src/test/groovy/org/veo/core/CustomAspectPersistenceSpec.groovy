@@ -45,14 +45,15 @@ class CustomAspectPersistenceSpec extends VeoSpringSpec {
 
     def "create an asset with a customAspect and save-load it"() {
         given: "a Unit and an asset"
-        CustomAspect cp = newCustomAspect('my.new.linktype')
-
-        Client client = clientRepository.save(newClient())
+        Client client = clientRepository.save(newClient{
+            newDomain(it)
+        })
+        def domain = client.domains.first()
         Unit unit = newUnit(client)
+        CustomAspect cp = newCustomAspect('my.new.linktype', domain)
         Asset asset = newAsset(unit) {
             customAspects = [cp] as Set
         }
-
         unitRepository.save(unit)
         assetRepository.save(asset)
 
@@ -70,9 +71,7 @@ class CustomAspectPersistenceSpec extends VeoSpringSpec {
             "my.key.2": "my test value 2",
             "my.key.3": 10.0,
         ]
-
         assetRepository.save(assetData)
-
         savedAsset = assetRepository.findById(asset.id)
 
         then:

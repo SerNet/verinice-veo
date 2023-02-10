@@ -23,6 +23,7 @@ import javax.validation.ConstraintViolationException
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Client
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
@@ -40,9 +41,11 @@ class ScopePersistenceSpec extends VeoSpringSpec {
 
     private Client client
     private Unit unit
+    private Domain domain
 
     def setup() {
         client = clientRepository.save(newClient())
+        domain = newDomain(client)
         unit = unitRepository.save(newUnit(this.client))
     }
 
@@ -82,10 +85,10 @@ class ScopePersistenceSpec extends VeoSpringSpec {
         when:
         scopeRepository.save(newScope(unit) {
             customAspects = [
-                newCustomAspect(null)
+                newCustomAspect(null, domain)
             ]
             links = [
-                newCustomLink(null, "goodLink")
+                newCustomLink(null, "goodLink", domain)
             ]
             members = [
                 newScope(unit) {

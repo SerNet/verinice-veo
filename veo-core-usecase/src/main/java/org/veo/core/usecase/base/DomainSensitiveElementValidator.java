@@ -17,80 +17,40 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.definitions.LinkDefinition;
-import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.specification.ElementCustomAspectsHaveDomain;
 
 /** Validates elements considering domain-specific rules (e.g. element type definitions). */
 class DomainSensitiveElementValidator {
 
   public static void validate(Element element) {
-    // TODO VEO-661 validate that the element is associated with each domain that it has custom
-    // aspects or links for. This is not possible at the moment because we don't maintain the
-    // individual domain associations of custom aspects and links consistently.
-    if (element.getDomainTemplates().isEmpty()
-        && (!element.getCustomAspects().isEmpty() || !element.getLinks().isEmpty())) {
+    if (!new ElementCustomAspectsHaveDomain().test(element)) {
       throw new IllegalArgumentException(
           "Element cannot contain custom aspects or links without being associated with a domain");
     }
-    element
-        .getCustomAspects()
-        .forEach(
-            ca -> {
-              // TODO VEO-661 use the domain that the custom aspect is associated with (as soon as
-              // each custom aspect belongs to exactly one domain). Right now a custom aspect could
-              // also belong to zero or multiple domains, both of which are problematic.
-              var domain =
-                  getDomains(element).stream()
-                      .filter(
-                          d ->
-                              d.getElementTypeDefinition(element.getModelType())
-                                  .getCustomAspects()
-                                  .containsKey(ca.getType()))
-                      .findAny()
-                      .orElseThrow(
-                          () ->
-                              new UnprocessableDataException(
-                                  String.format(
-                                      "Custom aspect type '%s' is not defined in any domain used by the element.",
-                                      ca.getType())));
-              validateCustomAspect(element, ca, domain);
-            });
+    element.getCustomAspects().forEach(ca -> validateCustomAspect(element, ca));
     element
         .getLinks()
         .forEach(
             link -> {
-              // TODO VEO-661 use the domain that the link object is associated with (as soon
-              // as each link belongs to exactly one domain). Right now a link could also
-              // belong to zero or multiple domains, both of which are problematic.
-              var domain =
-                  getDomains(element).stream()
-                      .filter(
-                          d ->
-                              d.getElementTypeDefinition(element.getModelType())
-                                  .getLinks()
-                                  .containsKey(link.getType()))
-                      .findAny()
-                      .orElseThrow(
-                          () ->
-                              new IllegalArgumentException(
-                                  String.format(
-                                      "Link type '%s' is not defined in any domain used by the element.",
-                                      link.getType())));
-              validateLink(link.getType(), element, link.getTarget(), link.getAttributes(), domain);
+              validateLink(
+                  link.getType(),
+                  element,
+                  link.getTarget(),
+                  link.getAttributes(),
+                  link.getDomain());
             });
     element.getDomainTemplates().forEach(d -> SubTypeValidator.validate(element, d));
   }
 
-  private static void validateCustomAspect(Element element, CustomAspect ca, DomainBase domain) {
+  private static void validateCustomAspect(Element element, CustomAspect ca) {
     var caDefinition =
-        domain
+        ca.getDomain()
             .getElementTypeDefinition(element.getModelType())
             .getCustomAspects()
             .get(ca.getType());
@@ -150,12 +110,5 @@ class DomainSensitiveElementValidator {
               "Expected target of link '%s' ('%s') to have sub type '%s' but found '%s'",
               linkType, target.getName(), linkDefinition.getTargetSubType(), targetSubType));
     }
-  }
-
-  // TODO VEO-661 get rid of this mess
-  private static List<DomainBase> getDomains(Element element) {
-    var domains = new ArrayList<>(element.getDomainTemplates());
-    element.getOwningClient().ifPresent(client -> domains.addAll(client.getDomains()));
-    return domains;
   }
 }

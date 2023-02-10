@@ -117,7 +117,7 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         1* repo.save(newControl) >> newControl
         1* newControl.setOwner(existingUnit)
         1* designatorService.assignDesignator(newControl, existingClient)
-        1* factory.createCustomLink(control2, newControl, "link.type") >> newLink
+        1* factory.createCustomLink(control2, newControl, "link.type", _) >> newLink
 
         o1.newElements.size() == 1
         o1.newElements.first() == newControl

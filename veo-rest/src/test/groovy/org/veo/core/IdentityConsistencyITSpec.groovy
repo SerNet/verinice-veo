@@ -231,7 +231,7 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
         entityManager.flush()
 
         when:
-        def aspect = newCustomAspect("goodAspect")
+        def aspect = newCustomAspect("goodAspect", domain)
         asset.setCustomAspects([aspect] as Set<CustomAspect>)
 
         testIdentityConsistency(CustomAspectData.class, aspect)
@@ -291,7 +291,7 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
         entityManager.flush()
 
         when:
-        def link = newCustomLink(process, "goodLink")
+        def link = newCustomLink(process, "goodLink", domain)
         asset.setLinks([link] as Set)
         testIdentityConsistency(CustomLinkData.class, link)
 

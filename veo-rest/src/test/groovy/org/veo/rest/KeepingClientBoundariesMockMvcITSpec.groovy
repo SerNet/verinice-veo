@@ -25,6 +25,7 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
@@ -68,13 +69,14 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
 
     private Client client
     private Client otherClient
+    private String domainId
     private Unit unit
     private Unit otherClientsUnit
 
     def setup() {
         txTemplate.execute {
             client = createTestClient()
-            createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+            domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
 
             unit = unitRepository.save(newUnit(client) {
                 name = "Test unit"
@@ -355,6 +357,12 @@ class KeepingClientBoundariesMockMvcITSpec extends VeoMvcSpec {
             name : 'My process',
             owner: [
                 targetUri: 'http://localhost/units/'+unit.id.uuidValue()
+            ],
+            domains: [
+                (domainId): [
+                    subType: "PRO_DataTransfer",
+                    status: "NEW"
+                ]
             ],
             links: [
                 'process_dataType': [

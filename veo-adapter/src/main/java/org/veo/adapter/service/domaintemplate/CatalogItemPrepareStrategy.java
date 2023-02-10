@@ -58,8 +58,8 @@ public class CatalogItemPrepareStrategy {
     element.setDesignator(isCatalogElement ? NO_DESIGNATOR : null);
     element.getDomains().clear();
     processSubTypes(domain, element);
-    processLinks(null, element);
-    processCustomAspects(null, element);
+    processLinks(domain, element);
+    processCustomAspects(domain, element);
     updateVersion(element);
     // TODO: VEO-612 add parts from CompositeEntity
   }
@@ -85,21 +85,19 @@ public class CatalogItemPrepareStrategy {
     v.setCreatedAt(Instant.now());
   }
 
-  private void processCustomAspects(Domain domain, Element est) {
+  private void processCustomAspects(DomainBase domain, Element est) {
     est.getCustomAspects()
         .forEach(
             ca -> {
-              ca.getDomains().clear();
-              ca.addToDomains(domain);
+              ca.setDomain(domain);
             });
   }
 
-  private void processLinks(Domain domain, Element est) {
+  private void processLinks(DomainBase domain, Element est) {
     est.getLinks()
         .forEach(
             link -> {
-              link.getDomains().clear();
-              link.addToDomains(domain);
+              link.setDomain(domain);
             });
   }
 

@@ -27,21 +27,11 @@ class DomainUpdateRestTest extends VeoRestTest {
     String oldDomainTemplateId
     String newDomainTemplateId
     String templateName
-    String processToScopeLinkName
-    String scopeToProcessLinkName
     String unitId
 
     def setup() {
         unitId = postNewUnit("you knit").resourceId
         templateName = "domain update test template ${UUID.randomUUID()}"
-
-        // TODO VEO-661 use constant link name once each link is assigned to one domain and the
-        // DomainSensitiveElementValidator has been fixed.
-        // Currently link names must be unique across different domains. If this link name was static now there could
-        // be conflicts when there are still domains created by this test left in the DB from a previous test run
-        // (because rest-tests never cleanup the DB by design).
-        processToScopeLinkName = "processToScopeLink_${UUID.randomUUID()}"
-        scopeToProcessLinkName = "scopeToProcessLink_${UUID.randomUUID()}"
 
         def template = getTemplate()
         oldDomainTemplateId = post("/domaintemplates", template, 201, CONTENT_CREATOR).body.resourceId
@@ -74,7 +64,7 @@ class DomainUpdateRestTest extends VeoRestTest {
                 ]
             ],
             links: [
-                (processToScopeLinkName): [
+                processToScopeLink: [
                     [
                         target: [targetUri: "$baseUrl/scopes/$scopeId"]
                     ]
@@ -85,7 +75,7 @@ class DomainUpdateRestTest extends VeoRestTest {
         and: "a link back from the scope to the process"
         def scopeResponse = get("/scopes/$scopeId")
         def scope = scopeResponse.body
-        scope.links[scopeToProcessLinkName] = [
+        scope.links.scopeToProcessLink = [
             [
                 target: [targetUri: "$baseUrl/processes/$processId"]
             ]
@@ -110,7 +100,7 @@ class DomainUpdateRestTest extends VeoRestTest {
         then: "the sub type and link are still present under the new domain"
         migratedScope.domains.keySet() =~ [newDomainId]
         migratedScope.domains[newDomainId].subType == "SCP_ResponsibleBody"
-        with(migratedScope.links[scopeToProcessLinkName]) {
+        with(migratedScope.links.scopeToProcessLink) {
             size() == 1
             first().target.targetUri == "$owner.baseUrl/processes/$processId"
         }
@@ -121,7 +111,7 @@ class DomainUpdateRestTest extends VeoRestTest {
         then: "the sub type & link are still present under the new domain"
         migratedProcess.domains.keySet() =~ [newDomainId]
         migratedProcess.domains[newDomainId].subType == "PRO_DataProcessing"
-        with(migratedProcess.links[processToScopeLinkName]) {
+        with(migratedProcess.links.processToScopeLink) {
             size() == 1
             first().target.targetUri == "$owner.baseUrl/scopes/$scopeId"
         }
@@ -140,7 +130,7 @@ class DomainUpdateRestTest extends VeoRestTest {
                 ]
             ],
             links: [
-                (processToScopeLinkName): [
+                processToScopeLink: [
                     [
                         target: [targetUri: "$baseUrl/scopes/$scopeId"]
                     ]
@@ -217,7 +207,7 @@ class DomainUpdateRestTest extends VeoRestTest {
                 'process': [
                     'customAspects': [:],
                     'links': [
-                        (processToScopeLinkName): [
+                        'processToScopeLink': [
                             'attributeDefinitions': [:],
                             'targetSubType': 'SCP_ResponsibleBody',
                             'targetType': 'scope'
@@ -245,7 +235,7 @@ class DomainUpdateRestTest extends VeoRestTest {
                 'scope': [
                     'customAspects': [:],
                     'links': [
-                        (scopeToProcessLinkName): [
+                        'scopeToProcessLink': [
                             attributeDefinitions: [:],
                             targetSubType: 'PRO_DataProcessing',
                             targetType: 'process',

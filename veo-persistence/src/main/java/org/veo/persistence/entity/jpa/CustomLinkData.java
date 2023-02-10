@@ -23,7 +23,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.veo.core.entity.CustomLink;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 
 import lombok.Data;
@@ -55,26 +54,6 @@ public class CustomLinkData extends CustomAspectData implements CustomLink {
   // nullable
   @JoinColumn(name = "source_id")
   private Element source;
-
-  /**
-   * Add the given Domain to the collection domains.
-   *
-   * @return true if added
-   */
-  @Override
-  public boolean addToDomains(Domain aDomain) {
-    return this.domains.add(aDomain);
-  }
-
-  /**
-   * Remove the given Domain from the collection domains.
-   *
-   * @return true if removed
-   */
-  @Override
-  public boolean removeFromDomains(Domain aDomain) {
-    return this.domains.remove(aDomain);
-  }
 
   public void setSource(Element aSource) {
     this.source = aSource;

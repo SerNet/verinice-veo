@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.test
 
-import java.sql.ClientInfoStatus
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
@@ -35,7 +34,6 @@ import org.veo.core.entity.DomainBase
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Element
 import org.veo.core.entity.ElementOwner
-import org.veo.core.entity.EntityType
 import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Incident
 import org.veo.core.entity.ItemUpdateType
@@ -54,7 +52,6 @@ import org.veo.core.entity.UpdateReference
 import org.veo.core.entity.Versioned
 import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.SubTypeDefinition
-import org.veo.core.entity.event.ClientChangedEvent
 import org.veo.core.entity.event.ClientEvent
 import org.veo.core.entity.inspection.Inspection
 import org.veo.core.entity.inspection.Severity
@@ -267,16 +264,16 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static CustomAspectData newCustomAspect(String type, @DelegatesTo(value = CustomAspect.class, strategy = Closure.DELEGATE_FIRST)
+    static CustomAspectData newCustomAspect(String type, DomainBase domain, @DelegatesTo(value = CustomAspect.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CustomAspect") Closure init = null) {
-        return factory.createCustomAspect(type).tap{
+        return factory.createCustomAspect(type, domain).tap{
             VeoSpec.execute(it, init)
         }
     }
 
-    static CustomLinkData newCustomLink(Element linkTarget, String type, @DelegatesTo(value = CustomLink.class)
+    static CustomLinkData newCustomLink(Element linkTarget, String type, DomainBase domain, @DelegatesTo(value = CustomLink.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CustomLink") Closure init = null) {
-        return factory.createCustomLink(linkTarget, null, type).tap{
+        return factory.createCustomLink(linkTarget, null, type, domain).tap{
             VeoSpec.execute(it, init)
         }
     }

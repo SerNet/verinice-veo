@@ -282,9 +282,8 @@ public class ApplyIncarnationDescriptionUseCase
    */
   private CustomLink createLink(
       Element source, Element target, Domain domain, String type, Map<String, Object> attributes) {
-    CustomLink link = factory.createCustomLink(target, source, type);
+    CustomLink link = factory.createCustomLink(target, source, type, domain);
     link.setAttributes(attributes == null ? null : new HashMap<>(attributes));
-    link.addToDomains(domain);
     link.setType(type);
     source.addToLinks(link);
     return link;

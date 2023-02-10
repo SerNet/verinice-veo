@@ -180,7 +180,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve an asset"() {
         given: "a saved asset"
-        CustomAspect simpleProps = newCustomAspect("simpleAspect") {
+        CustomAspect simpleProps = newCustomAspect("simpleAspect", dsgvoDomain) {
             attributes = [
                 "simpleProp": "simpleValue"
             ]
@@ -280,7 +280,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             assetRepository.save(newAsset(unit) {
                 associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
                 links = [
-                    newCustomLink(targetAsset, "mypreciouslink")
+                    newCustomLink(targetAsset, "mypreciouslink", dsgvoDomain)
                 ]
                 name = "Test asset-1"
             })
@@ -485,7 +485,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "put an asset with a custom aspect"() {
         given: "a saved asset"
-        CustomAspect customAspect = newCustomAspect("my.new.type")
+        CustomAspect customAspect = newCustomAspect("my.new.type", dsgvoDomain)
 
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
@@ -588,7 +588,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 associateWithDomain(dsgvoDomain, "AST_Datatype", "NEW")
             })
         }
-        CustomLink link = newCustomLink(targetAsset, "goodLink")
+        CustomLink link = newCustomLink(targetAsset, "goodLink", dsgvoDomain)
         sourceAsset.links =[link] as Set
 
         when: "a delete request is sent to the server for link target"
