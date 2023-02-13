@@ -158,7 +158,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   private String designatorLength;
 
   protected <T extends Aspect> Optional<T> findAspectByDomain(Set<T> source, DomainBase domain) {
-    return source.stream().filter(aspect -> aspect.getDomain() == domain).findFirst();
+    return source.stream().filter(aspect -> aspect.getDomain().equals(domain)).findFirst();
   }
 
   @Override
