@@ -25,6 +25,8 @@ import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
+import org.veo.core.entity.Control
+import org.veo.core.entity.Process
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.exception.ModelConsistencyException
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -68,28 +70,46 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             first().catalogItems.size() == 6
         }
         with (domainFromTemplate.catalogs.first().catalogItems.sort { it.element.name }) {
-            it[0].element.name == 'Control-1'
-            it[0].element.abbreviation == 'c-1'
-            it[0].element.description.startsWith('Lore')
             it[0].tailoringReferences.size()==1
             it[0].tailoringReferences.first().referenceType == TailoringReferenceType.LINK_EXTERNAL
             it[0].tailoringReferences.first().catalogItem == it[5]
+            with(it[0].element as Control) {
+                name == 'Control-1'
+                abbreviation == 'c-1'
+                description.startsWith('Lore')
+                getRiskValues(domainFromTemplate).present
+            }
 
-            it[1].element.name == 'Control-2'
-            it[1].element.abbreviation == 'c-2'
             it[1].tailoringReferences.size() == 0
+            with(it[1].element as Control) {
+                name == 'Control-2'
+                abbreviation == 'c-2'
+                getRiskValues(domainFromTemplate).present
+            }
 
-            it[2].element.name == 'Control-3'
-            it[2].element.abbreviation == 'c-3'
             it[2].tailoringReferences.size()==1
             it[2].tailoringReferences.first().referenceType == TailoringReferenceType.LINK
             it[2].tailoringReferences.first().catalogItem == it[0]
+            with(it[2].element as Control) {
+                name == 'Control-3'
+                abbreviation == 'c-3'
+                getRiskValues(domainFromTemplate).present
+            }
 
-            it[3].element.name == 'Control-cc-1'
+            with(it[3].element as Control) {
+                name == 'Control-cc-1'
+                getRiskValues(domainFromTemplate).present
+            }
 
-            it[4].element.name == 'Control-cc-2'
+            with(it[4].element as Control) {
+                name == 'Control-cc-2'
+                getRiskValues(domainFromTemplate).present
+            }
 
-            it[5].element.name == 'Test process-1'
+            with(it[5].element as Process) {
+                name == 'Test process-1'
+                getImpactValues(domainFromTemplate).present
+            }
         }
     }
 

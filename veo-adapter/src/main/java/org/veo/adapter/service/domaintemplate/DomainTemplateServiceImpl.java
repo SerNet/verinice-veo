@@ -101,6 +101,8 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   private final ReferenceAssembler assembler;
   private final ObjectMapper objectMapper;
   private final IdentifiableFactory identifiableFactory;
+  private final DomainAssociationTransformer domainAssociationTransformer;
+  private final EntityFactory entityFactory;
 
   public DomainTemplateServiceImpl(
       DomainTemplateRepository domainTemplateRepository,
@@ -116,6 +118,8 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     this.preparations = preparations;
     this.domainTemplateIdGenerator = domainTemplateIdGenerator;
     this.identifiableFactory = identifiableFactory;
+    this.domainAssociationTransformer = domainAssociationTransformer;
+    this.entityFactory = factory;
     entityTransformer =
         new DtoToEntityTransformer(factory, identifiableFactory, domainAssociationTransformer);
     assembler = referenceAssembler;
@@ -150,12 +154,15 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
     TransformDomainTemplateDto domainTemplateDto =
         dtoTransformer.transformDomainTemplate2Dto(domainTemplate);
-    Domain domainPlaceholder =
-        factory.createDomain(
-            domainTemplateDto.getName(),
-            domainTemplateDto.getAuthority(),
-            domainTemplateDto.getTemplateVersion());
-    Domain domain = processDomainTemplate(domainTemplateDto, domainPlaceholder);
+
+    var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
+    resolvingFactory.setGlobalDomain(identifiableFactory.create(Domain.class, Key.newUuid()));
+    var domain =
+        new DtoToEntityTransformer(entityFactory, resolvingFactory, domainAssociationTransformer)
+            .transformTransformDomainTemplateDto2Domain(domainTemplateDto, resolvingFactory);
+    domain.getCatalogs().stream()
+        .flatMap((Catalog catalog) -> catalog.getCatalogItems().stream())
+        .forEach(preparations::prepareCatalogItem);
     domain.setDomainTemplate(domainTemplate);
     client.addToDomains(domain);
     log.info("Domain {} created for client {}", domain.getName(), client);
@@ -364,33 +371,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
     initCatalog(newDomain, itemCache);
     return newDomain;
-  }
-
-  private Domain processDomainTemplate(
-      TransformDomainTemplateDto domainTemplateDto, Domain newDomain) {
-    newDomain.setDescription(domainTemplateDto.getDescription());
-    newDomain.setAbbreviation(domainTemplateDto.getAbbreviation());
-    PlaceholderResolver ref = new PlaceholderResolver(entityTransformer);
-
-    ref.cache.put(domainTemplateDto.getId(), newDomain);
-
-    domainTemplateDto.getCatalogs().stream()
-        .forEach(
-            c -> {
-              Catalog createCatalog = factory.createCatalog(newDomain);
-              ref.cache.put(((IdentifiableDto) c).getId(), createCatalog);
-              c.setDomainTemplate(
-                  new SyntheticIdRef<>(domainTemplateDto.getId(), DomainBase.class));
-            });
-
-    Map<String, Element> elementCache =
-        createElementCacheFromDomainTemplateDto(domainTemplateDto, ref);
-    Map<String, CatalogItem> itemCache =
-        createCatalogItemCache(domainTemplateDto, ref, elementCache);
-    Domain domain =
-        entityTransformer.transformTransformDomainTemplateDto2Domain(domainTemplateDto, ref);
-    initCatalog(domain, itemCache);
-    return domain;
   }
 
   private void initCatalog(DomainBase newDomain, Map<String, CatalogItem> itemCache) {

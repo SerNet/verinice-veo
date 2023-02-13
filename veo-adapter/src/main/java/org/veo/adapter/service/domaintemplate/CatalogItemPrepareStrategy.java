@@ -34,14 +34,9 @@ public class CatalogItemPrepareStrategy {
   private static final String NO_DESIGNATOR = "NO_DESIGNATOR";
   public static final String SYSTEM_USER = "system";
 
-  /** Clean up and relink a catalogItem. Add the domain to each sub element. */
-  public void prepareCatalogItem(Domain domain, Catalog catalog, CatalogItem item) {
-    item.setId(null);
-    item.setCatalog(catalog);
-    Element element = item.getElement();
-    if (element != null) {
-      prepareElement(domain, element, true);
-    }
+  /** Assigns designator to catalog item. */
+  public void prepareCatalogItem(CatalogItem item) {
+    item.getElement().setDesignator(NO_DESIGNATOR);
   }
 
   public void prepareCatalogItem(DomainBase domain, Catalog catalog, CatalogItem item) {
