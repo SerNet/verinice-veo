@@ -19,12 +19,12 @@ package org.veo.adapter.presenter.api.response.transformer;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -204,7 +204,7 @@ public final class EntityToDtoTransformer {
           source.getRisks().stream()
               .map(this::transform2Dto)
               .map(ProcessRiskDto.class::cast)
-              .collect(Collectors.toSet()));
+              .collect(toSet()));
     }
 
     return target;
@@ -256,9 +256,7 @@ public final class EntityToDtoTransformer {
     target.setProfiles(Map.copyOf(source.getProfiles()));
     target.setElementTypeDefinitions(
         source.getElementTypeDefinitions().stream()
-            .collect(
-                Collectors.toMap(
-                    ElementTypeDefinition::getElementType, this::mapElementTypeDefinition)));
+            .collect(toMap(ElementTypeDefinition::getElementType, this::mapElementTypeDefinition)));
 
     mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);
@@ -293,9 +291,7 @@ public final class EntityToDtoTransformer {
 
     Map<String, ElementTypeDefinitionDto> elementTypeDefinitionsByType =
         source.getElementTypeDefinitions().stream()
-            .collect(
-                Collectors.toMap(
-                    ElementTypeDefinition::getElementType, this::mapElementTypeDefinition));
+            .collect(toMap(ElementTypeDefinition::getElementType, this::mapElementTypeDefinition));
 
     target.setElementTypeDefinitions(elementTypeDefinitionsByType);
     target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
@@ -336,7 +332,7 @@ public final class EntityToDtoTransformer {
     target.setTailoringReferences(
         source.getTailoringReferences().stream()
             .map(this::transformTailoringReference2Dto)
-            .collect(Collectors.toSet()));
+            .collect(toSet()));
 
     return target;
   }
@@ -356,7 +352,7 @@ public final class EntityToDtoTransformer {
     target.setTailoringReferences(
         source.getTailoringReferences().stream()
             .map(this::transformTailoringReference2Dto)
-            .collect(Collectors.toSet()));
+            .collect(toSet()));
     return target;
   }
 
@@ -487,11 +483,11 @@ public final class EntityToDtoTransformer {
   }
 
   private static <TIn, TOut> Set<TOut> convertSet(Set<TIn> input, Function<TIn, TOut> mapper) {
-    return input.stream().map(mapper).collect(Collectors.toSet());
+    return input.stream().map(mapper).collect(toSet());
   }
 
   private <T extends Identifiable> Set<IdRef<T>> convertReferenceSet(Set<T> domains) {
-    return domains.stream().map(o -> IdRef.from(o, referenceAssembler)).collect(Collectors.toSet());
+    return domains.stream().map(o -> IdRef.from(o, referenceAssembler)).collect(toSet());
   }
 
   private Map<String, List<CustomLinkDto>> mapLinks(Set<CustomLink> links) {
