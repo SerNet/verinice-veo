@@ -17,11 +17,6 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import javax.validation.constraints.Pattern;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefCatalogReferenceCatalogItem;
 import org.veo.core.entity.CatalogItem;
@@ -38,37 +33,8 @@ import lombok.Data;
  */
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class AbstractCatalogReferenceDto implements VersionedDto {
+public abstract class AbstractCatalogReferenceDto extends AbstractVersionedDto {
 
   @Schema(implementation = IdRefCatalogReferenceCatalogItem.class)
   private IdRef<CatalogItem> catalogItem;
-
-  @Schema(
-      description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
-      example = "1990-12-31T23:59:60Z",
-      accessMode = Schema.AccessMode.READ_ONLY)
-  @Pattern(regexp = Patterns.DATETIME)
-  private String createdAt;
-
-  @Schema(
-      description = "The username of the user who created this object.",
-      example = "jane_doe",
-      accessMode = Schema.AccessMode.READ_ONLY)
-  private String createdBy;
-
-  @Schema(
-      description =
-          "A timestamp acc. to RFC 3339 specifying when this version of the entity was saved.",
-      example = "1990-12-31T23:59:60Z",
-      accessMode = Schema.AccessMode.READ_ONLY)
-  @Pattern(regexp = Patterns.DATETIME)
-  private String updatedAt;
-
-  @Schema(
-      description = "The username of the user who last updated this object.",
-      example = "jane_doe",
-      accessMode = Schema.AccessMode.READ_ONLY)
-  private String updatedBy;
-
-  @JsonIgnore private long version;
 }

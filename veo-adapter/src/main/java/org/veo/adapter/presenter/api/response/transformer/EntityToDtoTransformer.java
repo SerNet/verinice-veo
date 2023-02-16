@@ -34,6 +34,7 @@ import org.veo.adapter.presenter.api.dto.AbstractCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
+import org.veo.adapter.presenter.api.dto.AbstractVersionedDto;
 import org.veo.adapter.presenter.api.dto.AbstractVersionedSelfReferencingDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
@@ -41,7 +42,6 @@ import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.DomainTemplateMetadataDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
-import org.veo.adapter.presenter.api.dto.VersionedDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.dto.full.FullCatalogDto;
@@ -106,7 +106,7 @@ public final class EntityToDtoTransformer {
     this.domainAssociationTransformer = domainAssociationTransformer;
   }
 
-  public VersionedDto transform2Dto(Versioned source) {
+  public AbstractVersionedDto transform2Dto(Versioned source) {
     if (source instanceof Element element) {
       return transform2Dto(element);
     }
@@ -479,7 +479,7 @@ public final class EntityToDtoTransformer {
     target.setDescription(source.getDescription());
   }
 
-  private static void mapVersionedProperties(Versioned source, VersionedDto target) {
+  private static void mapVersionedProperties(Versioned source, AbstractVersionedDto target) {
     target.setCreatedAt(source.getCreatedAt().toString());
     target.setCreatedBy(source.getCreatedBy());
     target.setUpdatedAt(source.getUpdatedAt().toString());

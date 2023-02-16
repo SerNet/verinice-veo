@@ -17,30 +17,45 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import java.util.Optional;
+import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
-import org.veo.adapter.presenter.api.common.Ref;
+import org.veo.adapter.presenter.api.Patterns;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class AbstractSelfReferencingDto {
+public abstract class AbstractVersionedDto {
+  @Schema(
+      description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      example = "1990-12-31T23:59:60Z")
+  @Pattern(regexp = Patterns.DATETIME)
+  @JsonProperty(access = Access.READ_ONLY)
+  private String createdAt;
 
-  @JsonIgnore
-  @Getter(AccessLevel.NONE)
-  private Ref selfRef;
+  @Schema(
+      description = "The username of the user who created this object.",
+      example = "jane_doe",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  private String createdBy;
 
-  @JsonProperty(value = "_self", access = Access.READ_ONLY)
-  @Schema(description = "A valid reference to this resource.", format = "uri")
-  public String getSelf() {
-    return Optional.ofNullable(selfRef).map(Ref::getTargetUri).orElse(null);
-  }
+  @Schema(
+      description = "A timestamp acc. to RFC 3339 specifying when this entity was created.",
+      example = "1990-12-31T23:59:60Z")
+  @Pattern(regexp = Patterns.DATETIME)
+  @JsonProperty(access = Access.READ_ONLY)
+  private String updatedAt;
+
+  @Schema(
+      description = "The username of the user who last updated this object.",
+      example = "jane_doe",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  private String updatedBy;
+
+  @JsonIgnore private long version;
 }

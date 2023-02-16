@@ -17,24 +17,40 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
+import static com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY;
+
+import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.veo.adapter.presenter.api.Patterns;
+import org.veo.adapter.presenter.api.common.Ref;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-@Schema(accessMode = READ_ONLY)
-public class DomainTemplateMetadataDto extends AbstractSelfReferencingDto
-    implements IdentifiableDto {
+@Schema(accessMode = Schema.AccessMode.READ_ONLY)
+public class DomainTemplateMetadataDto implements IdentifiableDto {
+
+  @JsonIgnore
+  @Getter(AccessLevel.NONE)
+  private Ref selfRef;
+
+  @JsonProperty(value = "_self", access = READ_ONLY)
+  @Schema(description = "Absolute target URL of this domain template", format = "uri")
+  public String getSelf() {
+    return Optional.ofNullable(selfRef).map(Ref::getTargetUri).orElse(null);
+  }
+
   @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
   @Schema(
       description = "ID must be a valid UUID string following RFC 4122.",
