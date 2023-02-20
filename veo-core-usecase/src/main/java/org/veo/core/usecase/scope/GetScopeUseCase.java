@@ -17,39 +17,13 @@
  ******************************************************************************/
 package org.veo.core.usecase.scope;
 
-import javax.validation.Valid;
-
 import org.veo.core.entity.Scope;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ScopeRepository;
-import org.veo.core.usecase.TransactionalUseCase;
-import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCase.IdAndClient;
+import org.veo.core.usecase.base.GetElementUseCase;
 
-import lombok.Value;
+public class GetScopeUseCase extends GetElementUseCase<Scope> {
 
-public class GetScopeUseCase
-    implements TransactionalUseCase<IdAndClient, GetScopeUseCase.OutputData> {
-
-  private final ScopeRepository scopeRepository;
-
-  public GetScopeUseCase(ScopeRepository scopeRepository) {
-    this.scopeRepository = scopeRepository;
-  }
-
-  @Override
-  public OutputData execute(IdAndClient input) {
-    Scope scope =
-        scopeRepository
-            .findById(input.getId())
-            .orElseThrow(() -> new NotFoundException(input.getId(), Scope.class));
-    scope.checkSameClient(input.getAuthenticatedClient());
-    return new OutputData(scope);
-  }
-
-  @Valid
-  @Value
-  public static class OutputData implements UseCase.OutputData {
-    @Valid Scope scope;
+  public GetScopeUseCase(ScopeRepository repository) {
+    super(repository, Scope.class);
   }
 }

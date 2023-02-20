@@ -38,8 +38,6 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.usecase.InspectElementUseCase;
-import org.veo.core.usecase.TransactionalUseCase;
-import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
@@ -54,8 +52,7 @@ public abstract class AbstractElementController<
 
   private final Class<T> modelType;
 
-  private final TransactionalUseCase<UseCase.IdAndClient, GetElementUseCase.OutputData<T>>
-      getElementUseCase;
+  private final GetElementUseCase<T> getElementUseCase;
   private final EvaluateElementUseCase evaluateElementUseCase;
   private final InspectElementUseCase inspectElementUseCase;
 
@@ -80,7 +77,7 @@ public abstract class AbstractElementController<
     CompletableFuture<E> entityFuture =
         useCaseInteractor.execute(
             getElementUseCase,
-            new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
+            new GetElementUseCase.InputData(Key.uuidFrom(uuid), client),
             output -> entity2Dto(output.getElement()));
     return entityFuture.thenApply(
         dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
@@ -94,7 +91,7 @@ public abstract class AbstractElementController<
     }
     return useCaseInteractor.execute(
         getElementUseCase,
-        new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
+        new GetElementUseCase.InputData(Key.uuidFrom(uuid), client),
         output -> {
           T element = output.getElement();
           return ResponseEntity.ok()

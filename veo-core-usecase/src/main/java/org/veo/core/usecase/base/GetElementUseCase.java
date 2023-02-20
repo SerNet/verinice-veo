@@ -17,31 +17,46 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
+import java.util.UUID;
+
 import javax.validation.Valid;
 
-import org.veo.core.entity.CompositeElement;
+import org.veo.core.entity.Client;
+import org.veo.core.entity.Element;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 @RequiredArgsConstructor
-public class GetElementUseCase<T extends CompositeElement<T>>
-    implements TransactionalUseCase<UseCase.IdAndClient, GetElementUseCase.OutputData<T>> {
+public class GetElementUseCase<T extends Element>
+    implements TransactionalUseCase<GetElementUseCase.InputData, GetElementUseCase.OutputData<T>> {
 
   private final ElementRepository<T> repository;
   private final Class<T> type;
 
-  public OutputData<T> execute(IdAndClient input) {
+  public OutputData<T> execute(InputData input) {
     T element =
         repository
             .findById(input.getId())
             .orElseThrow(() -> new NotFoundException(input.getId(), type));
     element.checkSameClient(input.getAuthenticatedClient());
     return new OutputData<>(element);
+  }
+
+  @EqualsAndHashCode(callSuper = true)
+  @Valid
+  @Getter
+  public static class InputData extends IdAndClient {
+    public InputData(Key<UUID> id, Client authenticatedClient) {
+      super(id, authenticatedClient);
+    }
   }
 
   @Valid

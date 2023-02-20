@@ -96,10 +96,10 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.usecase.InspectElementUseCase;
-import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
+import org.veo.core.usecase.base.GetElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.common.ETag;
@@ -264,8 +264,8 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
     CompletableFuture<FullScopeDto> scopeFuture =
         useCaseInteractor.execute(
             getScopeUseCase,
-            new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
-            output -> entityToDtoTransformer.transformScope2Dto(output.getScope()));
+            new GetElementUseCase.InputData(Key.uuidFrom(uuid), client),
+            output -> entityToDtoTransformer.transformScope2Dto(output.getElement()));
     return scopeFuture.thenApply(
         scopeDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(scopeDto));
   }
@@ -295,9 +295,9 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
     }
     return useCaseInteractor.execute(
         getScopeUseCase,
-        new UseCase.IdAndClient(Key.uuidFrom(uuid), client),
+        new GetElementUseCase.InputData(Key.uuidFrom(uuid), client),
         output -> {
-          Scope scope = output.getScope();
+          Scope scope = output.getElement();
           return ResponseEntity.ok()
               .cacheControl(defaultCacheControl)
               .body(

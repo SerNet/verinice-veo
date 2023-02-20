@@ -26,43 +26,34 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ProcessRepository;
-import org.veo.core.usecase.TransactionalUseCase;
-import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 /** Reinstantiate a persisted process object. */
-public class GetProcessUseCase
-    implements TransactionalUseCase<UseCase.IdAndClient, GetElementUseCase.OutputData<Process>> {
+public class GetProcessUseCase extends GetElementUseCase<Process> {
 
   private final ProcessRepository processRepository;
 
   public GetProcessUseCase(ProcessRepository repository) {
+    super(repository, Process.class);
     processRepository = repository;
   }
 
-  public GetElementUseCase.OutputData<Process> execute(IdAndClient input) {
+  public GetElementUseCase.OutputData<Process> execute(InputData input) {
     var process =
         processRepository
-            .findById(input.getId(), shouldEmbedRisks(input))
+            .findById(input.getId(), input.embedRisks)
             .orElseThrow(() -> new NotFoundException(input.getId(), Process.class));
     process.checkSameClient(input.getAuthenticatedClient());
     return new GetElementUseCase.OutputData<>(process);
   }
 
-  private boolean shouldEmbedRisks(IdAndClient input) {
-    if (input instanceof InputData inputData) {
-      return inputData.embedRisks;
-    }
-    return false;
-  }
-
   @Value
   @EqualsAndHashCode(callSuper = true)
   @Valid
-  public static class InputData extends IdAndClient {
+  public static class InputData extends GetElementUseCase.InputData {
     boolean embedRisks;
 
     public InputData(Key<UUID> id, Client authenticatedClient, boolean embedRisks) {
