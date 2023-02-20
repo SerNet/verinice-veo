@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import java.math.BigDecimal;
+
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
@@ -33,7 +35,7 @@ public class ScenarioRiskValuesDto {
           "The potential probability for occurrence of the scenario, a reference to a probability "
               + "level in the risk definition. Enter the ordinal value of a probability level.",
       example = "2")
-  int potentialProbability;
+  BigDecimal potentialProbability;
 
   @Size(max = ExplainedPotentialProbability.EXPLANATION_MAX_LENGTH)
   @Schema(

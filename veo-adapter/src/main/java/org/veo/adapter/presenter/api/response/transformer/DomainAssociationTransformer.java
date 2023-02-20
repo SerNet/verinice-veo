@@ -19,10 +19,10 @@ package org.veo.adapter.presenter.api.response.transformer;
 
 import static org.veo.core.entity.risk.DomainRiskReferenceProvider.referencesForDomain;
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -64,6 +64,7 @@ import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.entity.risk.ImpactRef;
 import org.veo.core.entity.risk.PotentialProbabilityImpl;
+import org.veo.core.entity.risk.ProbabilityRef;
 import org.veo.core.entity.risk.ProcessImpactValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
@@ -197,11 +198,11 @@ public class DomainAssociationTransformer {
       ScenarioRiskValuesDto riskValuesDto,
       DomainRiskReferenceProvider referenceProvider) {
     var riskValues = new PotentialProbabilityImpl();
-    var probability =
-        referenceProvider.getProbabilityRef(
-            riskDefinitionId, BigDecimal.valueOf(riskValuesDto.getPotentialProbability()));
 
-    riskValues.setPotentialProbability(probability);
+    riskValues.setPotentialProbability(
+        Optional.ofNullable(riskValuesDto.getPotentialProbability())
+            .map(pp -> referenceProvider.getProbabilityRef(riskDefinitionId, pp))
+            .orElse(null));
     riskValues.setPotentialProbabilityExplanation(
         riskValuesDto.getPotentialProbabilityExplanation());
     return riskValues;
@@ -323,7 +324,9 @@ public class DomainAssociationTransformer {
       Map.Entry<RiskDefinitionRef, PotentialProbabilityImpl> entry) {
     var riskValuesDto = new ScenarioRiskValuesDto();
     riskValuesDto.setPotentialProbability(
-        entry.getValue().getPotentialProbability().getIdRef().intValue());
+        Optional.ofNullable(entry.getValue().getPotentialProbability())
+            .map(ProbabilityRef::getIdRef)
+            .orElse(null));
     riskValuesDto.setPotentialProbabilityExplanation(
         entry.getValue().getPotentialProbabilityExplanation());
     return riskValuesDto;

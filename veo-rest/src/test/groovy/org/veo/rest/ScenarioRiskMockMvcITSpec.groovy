@@ -20,7 +20,6 @@ package org.veo.rest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.test.context.support.WithUserDetails
-import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException
@@ -142,6 +141,30 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
         updatedScenario.domains[domainId].riskValues.myFirstRiskDefinition.potentialProbability == 2
         updatedScenario.domains[domainId].riskValues.mySecondRiskDefinition == null
         updatedScenario.domains[domainId].riskValues.myThirdRiskDefinition.potentialProbability == 3
+    }
+
+    def "missing potential probability is handled"() {
+        when: "creating a scenario without potential probability values for risk definitions"
+        def scenarioId = parseJson(post("/scenarios", [
+            name: "Flood",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [
+                    subType: "RiskyScenario",
+                    status: "NEW",
+                    riskValues: [
+                        myFirstRiskDefinition : [:],
+                        myThirdRiskDefinition : [:]
+                    ]
+                ]
+            ]
+        ])).resourceId
+
+        then: "potential probability values are missing in response"
+        with(parseJson(get("/scenarios/$scenarioId"))) {
+            domains[owner.domainId].riskValues.myFirstRiskDefinition.potentialProbability == null
+            domains[owner.domainId].riskValues.myThirdRiskDefinition.potentialProbability == null
+        }
     }
 
     def "can not create a scenario with an undefined value"() {

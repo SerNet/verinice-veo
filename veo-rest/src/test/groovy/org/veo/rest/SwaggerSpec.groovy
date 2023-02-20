@@ -151,7 +151,7 @@ class SwaggerSpec extends VeoSpringSpec {
         scenarioDomainAssociationSchema.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ScenarioRiskValuesDto"
 
         def scenarioRiskValuesSchema = schemas.ScenarioRiskValuesDto
-        scenarioRiskValuesSchema.properties.potentialProbability.type == "integer"
+        scenarioRiskValuesSchema.properties.potentialProbability.type == "number"
     }
 
     def "scope risk values are mapped correctly"() {
