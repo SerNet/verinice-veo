@@ -17,10 +17,12 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
+import static java.lang.String.format;
+
 import java.math.BigDecimal;
-import java.util.Optional;
 
 import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.exception.RiskConsistencyException;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -36,57 +38,93 @@ public class DomainRiskReferenceProvider extends RiskReferenceProvider {
   }
 
   @Override
-  public Optional<RiskRef> getRiskRef(String riskDefinitionId, BigDecimal ordinalValue) {
+  public RiskRef getRiskRef(String riskDefinitionId, BigDecimal ordinalValue) {
     return domain
         .getRiskDefinition(riskDefinitionId)
         .orElseThrow()
         .getRiskValue(ordinalValue.intValue())
-        .map(RiskRef::from);
+        .map(RiskRef::from)
+        .orElseThrow(
+            () ->
+                new RiskConsistencyException(
+                    format(
+                        "Risk definition %s contains no risk value with ordinal value %s",
+                        riskDefinitionId, ordinalValue)));
   }
 
   @Override
-  public Optional<ProbabilityRef> getProbabilityRef(
-      String riskDefinitionId, BigDecimal probabilityId) {
+  public ProbabilityRef getProbabilityRef(String riskDefinitionId, BigDecimal probabilityId) {
     return domain
         .getRiskDefinition(riskDefinitionId)
         .orElseThrow()
         .getProbability()
         .getLevel(probabilityId.intValue())
-        .map(ProbabilityRef::from);
+        .map(ProbabilityRef::from)
+        .orElseThrow(
+            () ->
+                new RiskConsistencyException(
+                    format(
+                        "Risk definition %s contains no probability with ordinal value %s",
+                        riskDefinitionId, probabilityId)));
   }
 
   @Override
-  public Optional<ImpactRef> getImpactRef(
-      String riskDefinitionId, String category, BigDecimal impactId) {
+  public ImpactRef getImpactRef(String riskDefinitionId, String category, BigDecimal impactId) {
     return domain
         .getRiskDefinition(riskDefinitionId)
         .orElseThrow()
         .getCategory(category)
         .orElseThrow()
         .getLevel(impactId.intValue())
-        .map(ImpactRef::from);
+        .map(ImpactRef::from)
+        .orElseThrow(
+            () ->
+                new RiskConsistencyException(
+                    format(
+                        "Risk definition %s contains no impact with ordinal value %s",
+                        riskDefinitionId, impactId)));
   }
 
   @Override
-  public Optional<CategoryRef> getCategoryRef(String riskDefinitionId, String categoryId) {
+  public CategoryRef getCategoryRef(String riskDefinitionId, String categoryId) {
     return domain
         .getRiskDefinition(riskDefinitionId)
         .orElseThrow()
         .getCategory(categoryId)
-        .map(CategoryRef::from);
+        .map(CategoryRef::from)
+        .orElseThrow(
+            () ->
+                new RiskConsistencyException(
+                    format(
+                        "Risk definition %s contains no category with ID %s",
+                        riskDefinitionId, categoryId)));
   }
 
   @Override
-  public Optional<ImplementationStatusRef> getImplementationStatus(
+  public ImplementationStatusRef getImplementationStatus(
       String riskDefinitionId, int ordinalValue) {
     return domain
         .getRiskDefinition(riskDefinitionId)
         .flatMap(rd -> rd.getImplementationStateDefinition().getLevel(ordinalValue))
-        .map(ImplementationStatusRef::from);
+        .map(ImplementationStatusRef::from)
+        .orElseThrow(
+            () ->
+                new RiskConsistencyException(
+                    format(
+                        "Risk definition %s contains no implementation status with ordinal value %d",
+                        riskDefinitionId, ordinalValue)));
   }
 
   @Override
-  public Optional<RiskDefinitionRef> getRiskDefinitionRef(String riskDefinitionId) {
-    return domain.getRiskDefinition(riskDefinitionId).map(RiskDefinitionRef::from);
+  public RiskDefinitionRef getRiskDefinitionRef(String riskDefinitionId) {
+    return domain
+        .getRiskDefinition(riskDefinitionId)
+        .map(RiskDefinitionRef::from)
+        .orElseThrow(
+            () ->
+                new RiskConsistencyException(
+                    format(
+                        "Domain %s %s contains no risk definition with ID %s",
+                        domain.getName(), domain.getTemplateVersion(), riskDefinitionId)));
   }
 }

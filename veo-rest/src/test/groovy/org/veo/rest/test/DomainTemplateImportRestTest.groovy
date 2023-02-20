@@ -205,10 +205,10 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         ]
 
         when: "trying to create the template"
-        def response = post("/domaintemplates", template, 400, UserType.CONTENT_CREATOR).body
+        def response = post("/domaintemplates", template, 422, UserType.CONTENT_CREATOR).body
 
         then: "it fails"
-        response.message.contains("Undefined risk definition: RDX")
+        response.message.contains("Domain $template.name 1.0.0 contains no risk definition with ID RDX")
     }
 
     def "cannot import template with invalid translation in the risk definition"() {

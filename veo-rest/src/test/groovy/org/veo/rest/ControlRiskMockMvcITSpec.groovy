@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.exception.RiskConsistencyException
 import org.veo.core.entity.riskdefinition.ImplementationStateDefinition
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -160,10 +161,10 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ], 400)
+        ], 422)
 
         then: "it is rejected"
-        def ex = thrown(IllegalArgumentException)
+        def ex = thrown(RiskConsistencyException)
         ex.message == "Risk definition theOneWithOnlyTwoImplementationStatuses contains no implementation status with ordinal value 2"
     }
 }

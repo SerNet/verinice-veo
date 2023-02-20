@@ -31,6 +31,7 @@ import org.veo.core.entity.DomainException;
 import org.veo.core.entity.TranslationException;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
+import org.veo.core.entity.exception.RiskConsistencyException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.MaxUnitsExceededException;
@@ -109,6 +110,11 @@ public class VeriniceExceptionHandler {
 
   @ExceptionHandler({ReferenceTargetNotFoundException.class})
   protected ResponseEntity<ApiResponseBody> handle(ReferenceTargetNotFoundException exception) {
+    return handle(exception, HttpStatus.UNPROCESSABLE_ENTITY);
+  }
+
+  @ExceptionHandler({RiskConsistencyException.class})
+  protected ResponseEntity<ApiResponseBody> handle(RiskConsistencyException exception) {
     return handle(exception, HttpStatus.UNPROCESSABLE_ENTITY);
   }
 

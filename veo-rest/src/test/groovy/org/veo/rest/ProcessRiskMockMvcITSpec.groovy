@@ -23,6 +23,7 @@ import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.exception.RiskConsistencyException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
@@ -159,10 +160,10 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ],400)
+        ],422)
 
         then: "an exception is thrown"
-        IllegalArgumentException ex = thrown()
+        RiskConsistencyException ex = thrown()
         ex.message.contains( 'myFirstWrongDefinition' )
     }
 
@@ -190,11 +191,11 @@ class ProcessRiskMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ], 400)
+        ], 422)
 
         then: "an exception is thrown"
-        IllegalArgumentException ex = thrown()
-        ex.message == "Category: 'E' not defined in myFirstRiskDefinition"
+        RiskConsistencyException ex = thrown()
+        ex.message == "Risk definition myFirstRiskDefinition contains no category with ID E"
     }
 
     def "can't create process with wrong impact value"() {

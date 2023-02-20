@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
-import org.veo.core.entity.exception.RiskConsistencyException;
-
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -32,41 +30,21 @@ public class DomainRiskReferenceValidator extends ReferenceValidator {
   public ProbabilityRef validate(ProbabilityRef probabilityRef) {
     return probabilityRef == null
         ? null
-        : refProvider
-            .getProbabilityRef(riskDefinition.getIdRef(), probabilityRef.getIdRef())
-            .orElseThrow(
-                () ->
-                    new RiskConsistencyException(
-                        String.format(
-                            "Probability reference %s is not valid in the present context.",
-                            probabilityRef.getIdRef())));
+        : refProvider.getProbabilityRef(riskDefinition.getIdRef(), probabilityRef.getIdRef());
   }
 
   @Override
   public ImpactRef validate(CategoryRef category, ImpactRef impactRef) {
     return impactRef == null
         ? null
-        : refProvider
-            .getImpactRef(riskDefinition.getIdRef(), category.getIdRef(), impactRef.getIdRef())
-            .orElseThrow(
-                () ->
-                    new RiskConsistencyException(
-                        String.format(
-                            "Impact reference %s for category %s is not valid in the present context.",
-                            impactRef.getIdRef(), category.getIdRef())));
+        : refProvider.getImpactRef(
+            riskDefinition.getIdRef(), category.getIdRef(), impactRef.getIdRef());
   }
 
   @Override
   public RiskRef validate(CategoryRef category, RiskRef riskRef) {
     return riskRef == null
         ? null
-        : refProvider
-            .getRiskRef(riskDefinition.getIdRef(), riskRef.getIdRef())
-            .orElseThrow(
-                () ->
-                    new RiskConsistencyException(
-                        String.format(
-                            "Risk reference %s for category %s is not valid in the present context.",
-                            riskRef.getIdRef(), category.getIdRef())));
+        : refProvider.getRiskRef(riskDefinition.getIdRef(), riskRef.getIdRef());
   }
 }

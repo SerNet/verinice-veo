@@ -24,6 +24,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException
+import org.veo.core.entity.exception.RiskConsistencyException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
@@ -45,6 +46,8 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
         executeInTransaction {
             def client = createTestClient()
             def domain = newDomain(client) {
+                name = "Scenario Risk Test"
+                templateVersion = "5.3.1"
                 riskDefinitions = [
                     "myFirstRiskDefinition": createRiskDefinition("myFirstRiskDefinition"),
                     "mySecondRiskDefinition": createRiskDefinition("mySecondRiskDefinition"),
@@ -157,11 +160,11 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
                     ]
                 ]
             ]
-        ], 400)
+        ], 422)
 
         then: "an exception is thrown"
-        def ex = thrown(IllegalArgumentException)
-        ex.message == "Risk definition myFirstRiskDefinition contains no implementation status with ordinal value 12345"
+        def ex = thrown(RiskConsistencyException)
+        ex.message == "Risk definition myFirstRiskDefinition contains no probability with ordinal value 12345"
 
         when: "creating a scenario with an undefined risk definition"
         def undefinedName = "undefinedRiskDefinition"
@@ -182,8 +185,8 @@ class ScenarioRiskMockMvcITSpec extends VeoMvcSpec {
         ], 422)
 
         then: "an exception is thrown"
-        ex = thrown(ReferenceTargetNotFoundException)
-        ex.message.contains("Risk definition '$undefinedName' was not found for domain")
+        ex = thrown(RiskConsistencyException)
+        ex.message.contains("Domain Scenario Risk Test 5.3.1 contains no risk definition with ID $undefinedName")
 
         when: "creating a scenario with an undefined risk value"
         post("/scenarios", [

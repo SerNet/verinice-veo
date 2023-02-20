@@ -251,8 +251,8 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         DomainRiskReferenceProvider riskreferenceProvider = DomainRiskReferenceProvider.referencesForDomain(dsgvoDomain)
 
         ProcessImpactValues processImpactValues = new ProcessImpactValues()
-        def categoryref = riskreferenceProvider.getCategoryRef(riskDefinitionRef.getIdRef(), "C").get()
-        def impactValue = riskreferenceProvider.getImpactRef(riskDefinitionRef.getIdRef(), categoryref.getIdRef(), new BigDecimal("2")).get()
+        def categoryref = riskreferenceProvider.getCategoryRef(riskDefinitionRef.getIdRef(), "C")
+        def impactValue = riskreferenceProvider.getImpactRef(riskDefinitionRef.getIdRef(), categoryref.getIdRef(), new BigDecimal("2"))
         processImpactValues.potentialImpacts = [(categoryref) : impactValue]
         Map impactValues = [
             (riskDefinitionRef) : processImpactValues

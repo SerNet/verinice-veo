@@ -23,6 +23,7 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException
+import org.veo.core.entity.exception.RiskConsistencyException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
@@ -47,6 +48,8 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
         txTemplate.execute {
             def client = createTestClient()
             domainId = newDomain(client) {
+                name = "Scope Risk Test"
+                templateVersion = "1.1.0"
                 riskDefinitions = [
                     "default-risk-definition": createRiskDefinition("default-risk-definition"),
                     "risk-definition-for-projects": createRiskDefinition("risk-definition-for-projects"),
@@ -187,7 +190,7 @@ class ScopeRiskMockMvcITSpec extends VeoMvcSpec {
         ], 422)
 
         then:
-        ReferenceTargetNotFoundException ex = thrown()
-        ex.message == "Risk definition 'fantasy-definition' was not found for domain '$domainId'"
+        RiskConsistencyException ex = thrown()
+        ex.message == "Domain Scope Risk Test 1.1.0 contains no risk definition with ID fantasy-definition"
     }
 }
