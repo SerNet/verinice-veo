@@ -125,6 +125,30 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
         updatedControl.domains[domainId].riskValues.myThirdRiskDefinition.implementationStatus == 3
     }
 
+    def "missing implementation status is handled"() {
+        when: "creating a control with no implementation statuses"
+        def controlId = parseJson(post("/controls", [
+            name: "Super CTL",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            domains: [
+                (domainId): [
+                    subType: "NormalControl",
+                    status: "NEW",
+                    riskValues: [
+                        myFirstRiskDefinition : [:],
+                        mySecondRiskDefinition : [:],
+                    ]
+                ]
+            ]
+        ])).resourceId
+
+        then: "implementation statuses are missing from the response"
+        with(parseJson(get("/controls/$controlId"))) {
+            domains[owner.domainId].riskValues.myFirstRiskDefinition.implementationStatus == null
+            domains[owner.domainId].riskValues.mySecondRiskDefinition.implementationStatus == null
+        }
+    }
+
     def "undefined implementation status is rejected"() {
         when: "creating a control with a valid implementation status"
         post("/controls", [

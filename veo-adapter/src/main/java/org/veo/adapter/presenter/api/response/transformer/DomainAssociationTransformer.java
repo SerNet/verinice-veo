@@ -63,6 +63,7 @@ import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.entity.risk.ImpactRef;
+import org.veo.core.entity.risk.ImplementationStatusRef;
 import org.veo.core.entity.risk.PotentialProbabilityImpl;
 import org.veo.core.entity.risk.ProbabilityRef;
 import org.veo.core.entity.risk.ProcessImpactValues;
@@ -107,8 +108,9 @@ public class DomainAssociationTransformer {
       DomainRiskReferenceProvider referenceProvider) {
     var riskValues = new ControlRiskValues();
     riskValues.setImplementationStatus(
-        referenceProvider.getImplementationStatus(
-            riskDefinitionId, riskValuesDto.getImplementationStatus()));
+        Optional.ofNullable(riskValuesDto.getImplementationStatus())
+            .map(status -> referenceProvider.getImplementationStatus(riskDefinitionId, status))
+            .orElse(null));
     return riskValues;
   }
 
@@ -248,7 +250,9 @@ public class DomainAssociationTransformer {
       Map.Entry<RiskDefinitionRef, ControlRiskValues> entry) {
     var riskValuesDto = new ControlRiskValuesDto();
     riskValuesDto.setImplementationStatus(
-        entry.getValue().getImplementationStatus().getOrdinalValue());
+        Optional.ofNullable(entry.getValue().getImplementationStatus())
+            .map(ImplementationStatusRef::getOrdinalValue)
+            .orElse(null));
     return riskValuesDto;
   }
 

@@ -28,5 +28,5 @@ public class ControlRiskValuesDto {
   @Schema(
       description = "Reference to an implementation status level in the risk definition",
       example = "2")
-  int implementationStatus;
+  Integer implementationStatus;
 }
