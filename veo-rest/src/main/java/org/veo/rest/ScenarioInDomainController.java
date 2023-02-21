@@ -17,13 +17,35 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import static org.veo.rest.ControllerConstants.CHILD_ELEMENT_IDS_PARAM;
+import static org.veo.rest.ControllerConstants.DESCRIPTION_PARAM;
+import static org.veo.rest.ControllerConstants.DESIGNATOR_PARAM;
+import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
+import static org.veo.rest.ControllerConstants.HAS_CHILD_ELEMENTS_PARAM;
+import static org.veo.rest.ControllerConstants.HAS_PARENT_ELEMENTS_PARAM;
+import static org.veo.rest.ControllerConstants.NAME_PARAM;
+import static org.veo.rest.ControllerConstants.PAGE_NUMBER_DEFAULT_VALUE;
+import static org.veo.rest.ControllerConstants.PAGE_NUMBER_PARAM;
+import static org.veo.rest.ControllerConstants.PAGE_SIZE_DEFAULT_VALUE;
+import static org.veo.rest.ControllerConstants.PAGE_SIZE_PARAM;
+import static org.veo.rest.ControllerConstants.SORT_COLUMN_DEFAULT_VALUE;
+import static org.veo.rest.ControllerConstants.SORT_COLUMN_PARAM;
+import static org.veo.rest.ControllerConstants.SORT_ORDER_DEFAULT_VALUE;
+import static org.veo.rest.ControllerConstants.SORT_ORDER_PARAM;
+import static org.veo.rest.ControllerConstants.SORT_ORDER_PATTERN;
+import static org.veo.rest.ControllerConstants.STATUS_PARAM;
+import static org.veo.rest.ControllerConstants.SUB_TYPE_PARAM;
+import static org.veo.rest.ControllerConstants.UNIT_PARAM;
+import static org.veo.rest.ControllerConstants.UPDATED_BY_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
 
+import java.util.List;
 import java.util.concurrent.Future;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,13 +53,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
+import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioInDomainDto;
+import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
+import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scenario;
 import org.veo.core.usecase.scenario.GetScenarioUseCase;
+import org.veo.core.usecase.scenario.GetScenariosUseCase;
+import org.veo.rest.annotations.UnitUuidParam;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -53,8 +81,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ScenarioInDomainController
     extends AbstractElementInDomainController<Scenario, FullScenarioInDomainDto> {
-  public ScenarioInDomainController(GetScenarioUseCase getScenarioUseCase) {
+  private final GetScenariosUseCase getScenariosUseCase;
+
+  public ScenarioInDomainController(
+      GetScenarioUseCase getScenarioUseCase, GetScenariosUseCase getScenariosUseCase) {
     super(Scenario.class, getScenarioUseCase);
+    this.getScenariosUseCase = getScenariosUseCase;
   }
   // TODO VEO-2000 replace /domians with Domain.PLURAL_TERM
   public static final String URL_BASE_PATH = "/domians/{domainId}/" + Scenario.PLURAL_TERM;
@@ -85,6 +117,76 @@ public class ScenarioInDomainController
           String uuid,
       WebRequest request) {
     return super.getElement(auth, domainId, uuid, request);
+  }
+
+  @GetMapping
+  @Operation(summary = "Loads all scenarios in a domain")
+  public @Valid Future<PageDto<FullScenarioInDomainDto>> getScenarios(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
+      @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
+      @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
+      @RequestParam(value = STATUS_PARAM, required = false) String status,
+      @RequestParam(value = CHILD_ELEMENT_IDS_PARAM, required = false) List<String> childElementIds,
+      @RequestParam(value = HAS_PARENT_ELEMENTS_PARAM, required = false) Boolean hasParentElements,
+      @RequestParam(value = HAS_CHILD_ELEMENTS_PARAM, required = false) Boolean hasChildElements,
+      @RequestParam(value = DESCRIPTION_PARAM, required = false) String description,
+      @RequestParam(value = DESIGNATOR_PARAM, required = false) String designator,
+      @RequestParam(value = NAME_PARAM, required = false) String name,
+      @RequestParam(value = UPDATED_BY_PARAM, required = false) String updatedBy,
+      @RequestParam(
+              value = PAGE_SIZE_PARAM,
+              required = false,
+              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          Integer pageSize,
+      @RequestParam(
+              value = PAGE_NUMBER_PARAM,
+              required = false,
+              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
+          Integer pageNumber,
+      @RequestParam(
+              value = SORT_COLUMN_PARAM,
+              required = false,
+              defaultValue = SORT_COLUMN_DEFAULT_VALUE)
+          String sortColumn,
+      @RequestParam(
+              value = SORT_ORDER_PARAM,
+              required = false,
+              defaultValue = SORT_ORDER_DEFAULT_VALUE)
+          @Pattern(regexp = SORT_ORDER_PATTERN)
+          String sortOrder) {
+    return useCaseInteractor.execute(
+        getScenariosUseCase,
+        GetElementsInputMapper.map(
+            getAuthenticatedClient(auth),
+            unitUuid,
+            domainId,
+            displayName,
+            subType,
+            status,
+            childElementIds,
+            hasChildElements,
+            hasParentElements,
+            description,
+            designator,
+            name,
+            updatedBy,
+            PagingMapper.toConfig(
+                pageSize, pageNumber,
+                sortColumn, sortOrder)),
+        output ->
+            PagingMapper.toPage(
+                output.getElements(),
+                e ->
+                    entity2Dto(
+                        e,
+                        e.getDomains().stream()
+                            .filter(d -> d.getIdAsString().equals(domainId))
+                            .findFirst()
+                            .orElseThrow())));
   }
 
   @Override

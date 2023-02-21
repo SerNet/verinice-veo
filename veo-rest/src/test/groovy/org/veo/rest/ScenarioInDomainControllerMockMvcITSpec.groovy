@@ -131,6 +131,44 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].subType == "Attack"
     }
 
+    def "get all scenarios in a domain"() {
+        given: "15 scenarios in the domain & one unassociated scenario"
+        (1..15).forEach {
+            post("/scenarios", [
+                name: "scenario $it",
+                owner: [targetUri: "/units/$unitId"],
+                domains: [
+                    (testDomainId): [
+                        subType: "Attack",
+                        status: "NEW",
+                    ]
+                ]
+            ])
+        }
+        post("/scenarios", [
+            name: "unassociated scenario",
+            owner: [targetUri: "/units/$unitId"]
+        ])
+
+        expect: "page 1 to be available"
+        with(parseJson(get("/domians/$testDomainId/scenarios?size=10&sortBy=designator"))) {
+            totalItemCount == 15
+            page == 0
+            pageCount == 2
+            items*.name == (1..10).collect { "scenario $it" }
+            items*.subType =~ ["Attack"]
+        }
+
+        and: "page 2 to be available"
+        with(parseJson(get("/domians/$testDomainId/scenarios?size=10&page=1&sortBy=designator"))) {
+            totalItemCount == 15
+            page == 1
+            pageCount == 2
+            items*.name == (11..15).collect { "scenario $it" }
+            items*.subType =~ ["Attack"]
+        }
+    }
+
     def "missing scenario is handled"() {
         given: "a non-existing scenario ID"
         def randomScenarioId = randomUUID()

@@ -125,6 +125,44 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.members[0].subType == "Company"
     }
 
+    def "get all scopes in a domain"() {
+        given: "15 scopes in the domain & one unassociated scope"
+        (1..15).forEach {
+            post("/scopes", [
+                name: "scope $it",
+                owner: [targetUri: "/units/$unitId"],
+                domains: [
+                    (testDomainId): [
+                        subType: "Company",
+                        status: "NEW",
+                    ]
+                ]
+            ])
+        }
+        post("/scopes", [
+            name: "unassociated scope",
+            owner: [targetUri: "/units/$unitId"]
+        ])
+
+        expect: "page 1 to be available"
+        with(parseJson(get("/domians/$testDomainId/scopes?size=10&sortBy=designator"))) {
+            totalItemCount == 15
+            page == 0
+            pageCount == 2
+            items*.name == (1..10).collect { "scope $it" }
+            items*.subType =~ ["Company"]
+        }
+
+        and: "page 2 to be available"
+        with(parseJson(get("/domians/$testDomainId/scopes?size=10&page=1&sortBy=designator"))) {
+            totalItemCount == 15
+            page == 1
+            pageCount == 2
+            items*.name == (11..15).collect { "scope $it" }
+            items*.subType =~ ["Company"]
+        }
+    }
+
     def "missing scope is handled"() {
         given: "a non-existing scope ID"
         def randomScopeId = randomUUID()

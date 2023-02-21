@@ -123,6 +123,44 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].subType == "DISASTER"
     }
 
+    def "get all incidents in a domain"() {
+        given: "15 incidents in the domain & one unassociated incident"
+        (1..15).forEach {
+            post("/incidents", [
+                name: "incident $it",
+                owner: [targetUri: "/units/$unitId"],
+                domains: [
+                    (testDomainId): [
+                        subType: "DISASTER",
+                        status: "DETECTED",
+                    ]
+                ]
+            ])
+        }
+        post("/incidents", [
+            name: "unassociated incident",
+            owner: [targetUri: "/units/$unitId"]
+        ])
+
+        expect: "page 1 to be available"
+        with(parseJson(get("/domians/$testDomainId/incidents?size=10&sortBy=designator"))) {
+            totalItemCount == 15
+            page == 0
+            pageCount == 2
+            items*.name == (1..10).collect { "incident $it" }
+            items*.subType =~ ["DISASTER"]
+        }
+
+        and: "page 2 to be available"
+        with(parseJson(get("/domians/$testDomainId/incidents?size=10&page=1&sortBy=designator"))) {
+            totalItemCount == 15
+            page == 1
+            pageCount == 2
+            items*.name == (11..15).collect { "incident $it" }
+            items*.subType =~ ["DISASTER"]
+        }
+    }
+
     def "missing incident is handled"() {
         given: "a non-existing incident ID"
         def randomIncidentId = randomUUID()

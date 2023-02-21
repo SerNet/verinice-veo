@@ -123,6 +123,44 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].subType == "Server"
     }
 
+    def "get all assets in a domain"() {
+        given: "15 assets in the domain & one unassociated asset"
+        (1..15).forEach {
+            post("/assets", [
+                name: "asset $it",
+                owner: [targetUri: "/units/$unitId"],
+                domains: [
+                    (testDomainId): [
+                        subType: "Server",
+                        status: "RUNNING",
+                    ]
+                ]
+            ])
+        }
+        post("/assets", [
+            name: "unassociated asset",
+            owner: [targetUri: "/units/$unitId"]
+        ])
+
+        expect: "page 1 to be available"
+        with(parseJson(get("/domians/$testDomainId/assets?size=10&sortBy=designator"))) {
+            totalItemCount == 15
+            page == 0
+            pageCount == 2
+            items*.name == (1..10).collect { "asset $it" }
+            items*.subType =~ ["Server"]
+        }
+
+        and: "page 2 to be available"
+        with(parseJson(get("/domians/$testDomainId/assets?size=10&page=1&sortBy=designator"))) {
+            totalItemCount == 15
+            page == 1
+            pageCount == 2
+            items*.name == (11..15).collect { "asset $it" }
+            items*.subType =~ ["Server"]
+        }
+    }
+
     def "missing asset is handled"() {
         given: "a non-existing asset ID"
         def randomAssetId = randomUUID()

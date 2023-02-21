@@ -123,6 +123,44 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].subType == "Manual"
     }
 
+    def "get all documents in a domain"() {
+        given: "15 documents in the domain & one unassociated document"
+        (1..15).forEach {
+            post("/documents", [
+                name: "document $it",
+                owner: [targetUri: "/units/$unitId"],
+                domains: [
+                    (testDomainId): [
+                        subType: "Manual",
+                        status: "CURRENT",
+                    ]
+                ]
+            ])
+        }
+        post("/documents", [
+            name: "unassociated document",
+            owner: [targetUri: "/units/$unitId"]
+        ])
+
+        expect: "page 1 to be available"
+        with(parseJson(get("/domians/$testDomainId/documents?size=10&sortBy=designator"))) {
+            totalItemCount == 15
+            page == 0
+            pageCount == 2
+            items*.name == (1..10).collect { "document $it" }
+            items*.subType =~ ["Manual"]
+        }
+
+        and: "page 2 to be available"
+        with(parseJson(get("/domians/$testDomainId/documents?size=10&page=1&sortBy=designator"))) {
+            totalItemCount == 15
+            page == 1
+            pageCount == 2
+            items*.name == (11..15).collect { "document $it" }
+            items*.subType =~ ["Manual"]
+        }
+    }
+
     def "missing document is handled"() {
         given: "a non-existing document ID"
         def randomDocumentId = randomUUID()

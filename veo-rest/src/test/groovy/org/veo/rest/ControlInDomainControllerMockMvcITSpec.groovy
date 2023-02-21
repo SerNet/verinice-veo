@@ -129,6 +129,44 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].subType == "TOM"
     }
 
+    def "get all controls in a domain"() {
+        given: "15 controls in the domain & one unassociated control"
+        (1..15).forEach {
+            post("/controls", [
+                name: "control $it",
+                owner: [targetUri: "/units/$unitId"],
+                domains: [
+                    (testDomainId): [
+                        subType: "TOM",
+                        status: "NEW",
+                    ]
+                ]
+            ])
+        }
+        post("/controls", [
+            name: "unassociated control",
+            owner: [targetUri: "/units/$unitId"]
+        ])
+
+        expect: "page 1 to be available"
+        with(parseJson(get("/domians/$testDomainId/controls?size=10&sortBy=designator"))) {
+            totalItemCount == 15
+            page == 0
+            pageCount == 2
+            items*.name == (1..10).collect { "control $it" }
+            items*.subType =~ ["TOM"]
+        }
+
+        and: "page 2 to be available"
+        with(parseJson(get("/domians/$testDomainId/controls?size=10&page=1&sortBy=designator"))) {
+            totalItemCount == 15
+            page == 1
+            pageCount == 2
+            items*.name == (11..15).collect { "control $it" }
+            items*.subType =~ ["TOM"]
+        }
+    }
+
     def "missing control is handled"() {
         given: "a non-existing control ID"
         def randomControlId = randomUUID()

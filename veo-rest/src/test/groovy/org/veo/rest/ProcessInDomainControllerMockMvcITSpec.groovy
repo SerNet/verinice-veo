@@ -131,6 +131,44 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].subType == "BusinessProcess"
     }
 
+    def "get all processes in a domain"() {
+        given: "15 processes in the domain & one unassociated asset"
+        (1..15).forEach {
+            post("/processes", [
+                name: "process $it",
+                owner: [targetUri: "/units/$unitId"],
+                domains: [
+                    (testDomainId): [
+                        subType: "BusinessProcess",
+                        status: "NEW",
+                    ]
+                ]
+            ])
+        }
+        post("/processes", [
+            name: "unassociated process",
+            owner: [targetUri: "/units/$unitId"]
+        ])
+
+        expect: "page 1 to be available"
+        with(parseJson(get("/domians/$testDomainId/processes?size=10&sortBy=designator"))) {
+            totalItemCount == 15
+            page == 0
+            pageCount == 2
+            items*.name == (1..10).collect { "process $it" }
+            items*.subType =~ ["BusinessProcess"]
+        }
+
+        and: "page 2 to be available"
+        with(parseJson(get("/domians/$testDomainId/processes?size=10&page=1&sortBy=designator"))) {
+            totalItemCount == 15
+            page == 1
+            pageCount == 2
+            items*.name == (11..15).collect { "process $it" }
+            items*.subType =~ ["BusinessProcess"]
+        }
+    }
+
     def "missing process is handled"() {
         given: "a non-existing process ID"
         def randomProcessId = randomUUID()
