@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Key;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.usecase.process.GetProcessesUseCase;
 
@@ -36,6 +37,7 @@ public class GetProcessesInputMapper {
   public static GetProcessesUseCase.InputData map(
       Client client,
       String unitUuid,
+      String domainId,
       String displayName,
       String subType,
       String status,
@@ -51,6 +53,7 @@ public class GetProcessesInputMapper {
     return new GetProcessesUseCase.InputData(
         client,
         createUuidCondition(unitUuid),
+        createSingleValueCondition(Key.uuidFrom(domainId)),
         createStringFilter(displayName),
         createNonEmptyCondition(subType),
         createNonEmptyCondition(status),
@@ -73,6 +76,7 @@ public class GetProcessesInputMapper {
     return new GetProcessesUseCase.InputData(
         client,
         transformCondition(searchQuery.getUnitId()),
+        null,
         transformCondition(searchQuery.getDisplayName()),
         transformCondition(searchQuery.getSubType()),
         transformCondition(searchQuery.getStatus()),

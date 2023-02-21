@@ -193,6 +193,7 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
         GetElementsInputMapper.map(
             client,
             unitUuid,
+            null,
             displayName,
             subType,
             status,

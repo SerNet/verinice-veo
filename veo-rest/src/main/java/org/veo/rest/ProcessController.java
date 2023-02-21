@@ -370,6 +370,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
         GetProcessesInputMapper.map(
             client,
             parentUuid,
+            null,
             displayName,
             subType,
             status,

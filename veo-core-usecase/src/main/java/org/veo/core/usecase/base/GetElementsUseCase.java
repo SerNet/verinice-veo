@@ -23,8 +23,10 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.ElementRepository;
@@ -83,6 +85,14 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
                       unitHierarchyProvider.findAllInRoot(rootUnitId).stream())
               .collect(Collectors.toSet()));
     }
+    if (input.getDomainId() != null) {
+      query.whereDomainsContain(
+          input.getAuthenticatedClient().getDomains().stream()
+              .filter(d -> d.getId().equals(input.getDomainId().getValue()))
+              .findFirst()
+              .orElseThrow(
+                  () -> new NotFoundException(input.getDomainId().getValue(), Domain.class)));
+    }
     if (input.getSubType() != null) {
       query.whereSubTypeMatches(input.getSubType());
     }
@@ -129,6 +139,7 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
   public static class InputData implements UseCase.InputData {
     Client authenticatedClient;
     QueryCondition<Key<UUID>> unitUuid;
+    SingleValueQueryCondition<Key<UUID>> domainId;
     QueryCondition<String> displayName;
     QueryCondition<String> subType;
     QueryCondition<String> status;

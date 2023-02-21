@@ -68,6 +68,7 @@ public class GetProcessesUseCase
     public InputData(
         Client authenticatedClient,
         QueryCondition<Key<UUID>> unitUuid,
+        SingleValueQueryCondition<Key<UUID>> domainId,
         QueryCondition<String> displayName,
         QueryCondition<String> subType,
         QueryCondition<String> status,
@@ -83,6 +84,7 @@ public class GetProcessesUseCase
       super(
           authenticatedClient,
           unitUuid,
+          domainId,
           displayName,
           subType,
           status,

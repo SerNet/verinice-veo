@@ -215,6 +215,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
         GetElementsInputMapper.map(
             client,
             unitUuid,
+            null,
             displayName,
             subType,
             status,

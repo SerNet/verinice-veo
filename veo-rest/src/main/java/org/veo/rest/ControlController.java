@@ -195,6 +195,7 @@ public class ControlController extends AbstractElementController<Control, FullCo
         GetElementsInputMapper.map(
             client,
             unitUuid,
+            null,
             displayName,
             subType,
             status,

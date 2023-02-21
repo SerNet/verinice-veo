@@ -39,6 +39,7 @@ public class GetElementsInputMapper {
   public static GetElementsUseCase.InputData map(
       Client client,
       String unitUuid,
+      String domainId,
       String displayName,
       String subType,
       String status,
@@ -53,6 +54,7 @@ public class GetElementsInputMapper {
     return new GetElementsUseCase.InputData(
         client,
         createUuidCondition(unitUuid),
+        createSingleValueCondition(Key.uuidFrom(domainId)),
         createStringFilter(displayName),
         createNonEmptyCondition(subType),
         createNonEmptyCondition(status),
@@ -71,6 +73,7 @@ public class GetElementsInputMapper {
     return new GetElementsUseCase.InputData(
         client,
         transformCondition(searchQuery.getUnitId()),
+        null,
         transformCondition(searchQuery.getDisplayName()),
         transformCondition(searchQuery.getSubType()),
         transformCondition(searchQuery.getStatus()),

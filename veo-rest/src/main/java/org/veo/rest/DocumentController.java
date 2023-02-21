@@ -193,6 +193,7 @@ public class DocumentController extends AbstractElementController<Document, Full
         GetElementsInputMapper.map(
             client,
             unitUuid,
+            null,
             displayName,
             subType,
             status,

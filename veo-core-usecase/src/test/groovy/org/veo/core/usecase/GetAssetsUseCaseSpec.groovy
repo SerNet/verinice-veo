@@ -48,7 +48,7 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
         }
 
         when:
-        def output = usecase.execute(new InputData(existingClient, null, null, null, null, null, null, null, null, null, null, null, pagingConfiguration))
+        def output = usecase.execute(new InputData(existingClient, null, null, null, null, null, null, null, null, null, null, null, null, pagingConfiguration))
 
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
@@ -65,7 +65,7 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
         }
         def input = new InputData(existingClient, Mock(QueryCondition) {
             getValues() >> [existingUnit.id]
-        }, null, Mock(QueryCondition), null, null, null, null, null, null, null, null, pagingConfiguration)
+        }, null, null, Mock(QueryCondition), null, null, null, null, null, null, null, null, pagingConfiguration)
 
         when:
         def output = usecase.execute(input)

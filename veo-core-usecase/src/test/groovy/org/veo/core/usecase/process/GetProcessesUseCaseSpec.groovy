@@ -46,7 +46,7 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
 
         when:
         def output = usecase.execute(new GetProcessesUseCase.InputData(existingClient,
-                null, null, null, null, null,
+                null, null, null, null, null, null,
                 null, null, null, null, null,
                 null, pagingConfiguration, false))
 
@@ -66,7 +66,7 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
         }
         def input = new GetProcessesUseCase.InputData(existingClient, Mock(QueryCondition) {
             getValues() >> [existingUnit.id]
-        }, null, Mock(QueryCondition), null, null, null, null, null, null, null, Mock(QueryCondition), pagingConfiguration, false)
+        }, null, null, Mock(QueryCondition), null, null, null, null, null, null, null, Mock(QueryCondition), pagingConfiguration, false)
 
         when:
         def output = usecase.execute(input)

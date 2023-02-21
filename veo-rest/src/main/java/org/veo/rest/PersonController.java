@@ -194,6 +194,7 @@ public class PersonController extends AbstractElementController<Person, FullPers
         GetElementsInputMapper.map(
             client,
             unitUuid,
+            null,
             displayName,
             subType,
             status,

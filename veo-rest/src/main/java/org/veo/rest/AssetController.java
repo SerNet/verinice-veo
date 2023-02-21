@@ -219,6 +219,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
         GetElementsInputMapper.map(
             client,
             unitUuid,
+            null,
             displayName,
             subType,
             status,

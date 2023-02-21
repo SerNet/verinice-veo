@@ -193,6 +193,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
         GetElementsInputMapper.map(
             client,
             unitUuid,
+            null,
             displayName,
             subType,
             status,
