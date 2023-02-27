@@ -28,7 +28,7 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQSenderConfiguration {
 
   @Bean
-  public TopicExchange veoEntityExchange(@Value("${veo.message.dispatch.exchange}") String name) {
+  public TopicExchange veoEntityExchange(@Value("${veo.message.exchanges.veo}") String name) {
     return new TopicExchange(name);
   }
 

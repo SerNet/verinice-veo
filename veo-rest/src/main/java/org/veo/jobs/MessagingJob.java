@@ -44,6 +44,9 @@ public class MessagingJob {
   @Value("${veo.messages.publishing.processingChunkSize:5000}")
   public int processingChunkSize;
 
+  @Value("${veo.message.exchanges.veo}")
+  private String exchange;
+
   private final StoredEventRepository storedEventRepository;
 
   private final VeoRestConfiguration config;
@@ -65,7 +68,7 @@ public class MessagingJob {
     List<StoredEvent> pendingEvents = retriever.retrievePendingEvents();
     if (pendingEvents.isEmpty()) return;
     log.debug("Dispatching messages for {} stored events.", pendingEvents.size());
-    eventDispatcher.send(messagesFrom(pendingEvents));
+    eventDispatcher.send(exchange, messagesFrom(pendingEvents));
   }
 
   /**

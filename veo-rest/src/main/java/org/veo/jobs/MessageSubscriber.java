@@ -67,7 +67,7 @@ public class MessageSubscriber {
           @QueueBinding(
               value =
                   @Queue(
-                      value = "${veo.message.consume.queue}",
+                      value = "${veo.message.queues.veo}",
                       exclusive = "false",
                       durable = "true",
                       autoDelete = "${veo.message.consume.autoDelete:false}",
@@ -75,11 +75,9 @@ public class MessageSubscriber {
                           @Argument(
                               name = "x-dead-letter-exchange",
                               value = "${veo.message.consume.dlx}")),
-              exchange = @Exchange(value = "${veo.message.dispatch.exchange}", type = "topic"),
+              exchange = @Exchange(value = "${veo.message.exchanges.veo}", type = "topic"),
               key = {
-                "${veo.message.dispatch.routing-key-prefix}"
-                    + EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE,
-                "${veo.message.consume.subscription-routing-key-prefix}" + EVENT_TYPE_CLIENT_CHANGE
+                "${veo.message.routing-key-prefix}" + EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE
               }))
   public void handleEventMessage(EventMessage event) throws JsonProcessingException {
     log.info("handle message: {} {}", event.getRoutingKey(), event);
@@ -87,9 +85,39 @@ public class MessageSubscriber {
       var content = objectMapper.readTree(event.getContent());
       var eventType = content.get("eventType").asText();
       switch (eventType) {
-        case EVENT_TYPE_CLIENT_CHANGE -> handleClientStateEvent(content);
         case EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE -> handleElementTypeDefinitionUpdate(
             content);
+        default -> throw new IllegalArgumentException("Unexpected event type value: " + eventType);
+      }
+    } catch (Exception e) {
+      log.error("Error while handleEventMessage", e);
+      throw e;
+    }
+  }
+
+  @RabbitListener(
+      bindings =
+          @QueueBinding(
+              value =
+                  @Queue(
+                      value = "${veo.message.queues.veo-subscriptions}",
+                      exclusive = "false",
+                      durable = "true",
+                      autoDelete = "${veo.message.consume.autoDelete:false}",
+                      arguments =
+                          @Argument(
+                              name = "x-dead-letter-exchange",
+                              value = "${veo.message.consume.dlx}")),
+              exchange =
+                  @Exchange(value = "${veo.message.exchanges.veo-subscriptions}", type = "topic"),
+              key = {"${veo.message.routing-key-prefix}" + EVENT_TYPE_CLIENT_CHANGE}))
+  public void handleSubscriptionMessage(EventMessage event) throws JsonProcessingException {
+    log.info("handle subscription message: {} {}", event.getRoutingKey(), event);
+    try {
+      var content = objectMapper.readTree(event.getContent());
+      var eventType = content.get("eventType").asText();
+      switch (eventType) {
+        case EVENT_TYPE_CLIENT_CHANGE -> handleClientStateEvent(content);
         default -> throw new IllegalArgumentException("Unexpected event type value: " + eventType);
       }
     } catch (Exception e) {

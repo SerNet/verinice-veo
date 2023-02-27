@@ -74,7 +74,7 @@ class EventDispatcherITSpec extends VeoSpringSpec {
     @Autowired
     StoredEventDataRepository storedEventRepository
 
-    @Value('${veo.message.dispatch.routing-key-prefix}')
+    @Value('${veo.message.routing-key-prefix}')
     String routingKeyPrefix
 
     @Autowired
@@ -86,7 +86,7 @@ class EventDispatcherITSpec extends VeoSpringSpec {
     @Autowired
     private RabbitAdmin rabbitAdmin
 
-    @Value('${veo.message.consume.queue}')
+    @Value('${veo.message.queues.veo}')
     String testQueue
 
     def setupSpec() {

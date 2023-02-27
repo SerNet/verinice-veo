@@ -28,7 +28,6 @@ import java.util.function.Consumer;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,15 +38,11 @@ public class EventDispatcher {
 
   private final RabbitTemplate rabbitTemplate;
 
-  private final String exchange;
-
   private final List<Consumer<Long>> ackCallbacks = new LinkedList<>();
 
   @Autowired
-  EventDispatcher(
-      RabbitTemplate rabbitTemplate, @Value("${veo.message.dispatch.exchange}") String exchange) {
+  EventDispatcher(RabbitTemplate rabbitTemplate) {
     this.rabbitTemplate = rabbitTemplate;
-    this.exchange = exchange;
     rabbitTemplate.setConfirmCallback(
         ((correlationData, ack, cause) -> {
           requireNonNull(correlationData);
@@ -68,7 +63,7 @@ public class EventDispatcher {
         }));
   }
 
-  public void send(EventMessage event) {
+  public void send(String exchange, EventMessage event) {
     log.debug(
         "Sending event id: {}, timestamp: {}, routing-key: {}",
         event.getId(),
@@ -78,8 +73,8 @@ public class EventDispatcher {
         exchange, event.getRoutingKey(), event, new CorrelationData(event.getId().toString()));
   }
 
-  public void send(Set<EventMessage> events) {
-    events.forEach(this::send);
+  public void send(String exchange, Set<EventMessage> events) {
+    events.forEach(event -> send(exchange, event));
   }
 
   public void addAckCallback(Consumer<Long> ackCallback) {

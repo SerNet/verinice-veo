@@ -171,8 +171,9 @@ pipeline {
                     environment {
                         def tag = "${env.BUILD_TAG}".replaceAll("[^A-Za-z0-9]", "_")
                         RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
-                        VEO_MESSAGE_DISPATCH_ROUTINGKEYPREFIX =  "VEO_TEST_${tag}."
-                        VEO_MESSAGE_CONSUME_QUEUE = "VEO_TEST_${tag}"
+                        VEO_MESSAGE_ROUTINGKEYPREFIX =  "VEO_TEST_${tag}."
+                        VEO_MESSAGE_QUEUES_VEO = "VEO_TEST_${tag}"
+                        VEO_MESSAGE_QUEUES_VEOSUBSCRIPTIONS = "VEO_TEST_VEOSUBSCRIPTIONS_${tag}"
                     }
                     agent any
                     steps {
@@ -225,8 +226,9 @@ pipeline {
                         KEYCLOAK_READONLY_CREDS = credentials('veo_readonly_authentication_credentials')
                         KEYCLOAK_SECONDARY_CLIENT_USER_CREDS = credentials('veo_secondary_client_user_authentication_credentials')
                         RABBITMQ_CREDS = credentials('veo_rabbit_credentials')
-                        VEO_MESSAGE_DISPATCH_ROUTINGKEYPREFIX =  "VEO_REST_TEST_${tag}."
-                        VEO_MESSAGE_CONSUME_QUEUE = "VEO_REST_TEST_${tag}"
+                        VEO_MESSAGE_ROUTINGKEYPREFIX =  "VEO_REST_TEST_${tag}."
+                        VEO_MESSAGE_QUEUES_VEO = "VEO_REST_TEST_${tag}"
+                        VEO_MESSAGE_QUEUES_VEOSUBSCRIPTIONS = "VEO_REST_TEST_VEOSUBSCRIPTIONS_${tag}"
                         VEO_RESTTEST_OIDCURL = "${env.OIDC_URL_DEV}"
                         VEO_RESTTEST_REALM = "${env.OIDC_REALM_DEV}"
                         VEO_RESTTEST_CLIENTID = "${env.OIDC_CLIENT_DEV}"

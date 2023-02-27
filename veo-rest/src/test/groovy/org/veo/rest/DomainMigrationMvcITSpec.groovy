@@ -50,7 +50,7 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
     @Autowired
     private RabbitAdmin rabbitAdmin
 
-    @Value('${veo.message.consume.queue:veo}')
+    @Value('${veo.message.queues.veo:veo}')
     String queue
 
     @Autowired

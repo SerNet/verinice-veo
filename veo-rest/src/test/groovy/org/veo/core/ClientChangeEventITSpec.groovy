@@ -35,7 +35,6 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Client.ClientState
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
-import org.veo.core.events.MessageCreatorImpl
 import org.veo.message.EventDispatcher
 import org.veo.message.EventMessage
 import org.veo.message.RabbitMQSenderConfiguration
@@ -70,8 +69,11 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
     @Autowired
     private DomainRepositoryImpl domainRepository
 
-    @Value('${veo.message.consume.subscription-routing-key-prefix}')
+    @Value('${veo.message.routing-key-prefix}')
     String routingKeyPrefix
+
+    @Value('${veo.message.exchanges.veo-subscriptions}')
+    String exchange
 
     String messageType = EVENT_TYPE_CLIENT_CHANGE
     String routingKey
@@ -106,12 +108,12 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         def cId = Key.newUuid()
         def clientName = "new client"
 
-        eventDispatcher.send(new EventMessage(routingKey,"""{
+        eventDispatcher.send(exchange, new EventMessage(routingKey, """{
             "eventType": "$messageType",
             "clientId": "${cId.uuidValue()}",
             "type": "CREATION",
             "name": "${clientName}"
-        }""",1,Instant.now()))
+        }""", 1, Instant.now()))
 
         then: "the client is created, activated, the demoUnit and domains exist"
         new PollingConditions().within(5) {
@@ -143,7 +145,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         }"""
         def msg = new EventMessage(routingKey,eContent,1,Instant.now())
         log.info("publish event: {}", msg)
-        eventDispatcher.send(msg)
+        eventDispatcher.send(exchange, msg)
 
         then: "the event is sent"
         new PollingConditions().within(5) {
@@ -164,12 +166,12 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         unitRepository.save(newUnit(client))
 
         when:"we send the event"
-        eventDispatcher.send(new EventMessage(routingKey,"""{
+        eventDispatcher.send(exchange, new EventMessage(routingKey, """{
             "eventType": "$messageType",
             "clientId": "$cId",
             "type": "MODIFICATION",
             "maxUnits": 5
-        }""",1,Instant.now()))
+        }""", 1, Instant.now()))
 
         then: "the event is sent"
         new PollingConditions().within(5) {
@@ -177,12 +179,12 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         }
 
         when:"we send the next change"
-        eventDispatcher.send(new EventMessage(routingKey,"""{
+        eventDispatcher.send(exchange, new EventMessage(routingKey, """{
             "eventType": "$messageType",
             "clientId": "$cId",
             "type": "MODIFICATION",
             "maxUnits": 15
-        }""",1,Instant.now()))
+        }""", 1, Instant.now()))
 
         then: "the event is sent and the maxUnits is updated"
         new PollingConditions().within(5) {
@@ -190,7 +192,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         }
 
         when:"we send the next change -> less units than exiting"
-        eventDispatcher.send(new EventMessage(routingKey,"""{
+        eventDispatcher.send(exchange, new EventMessage(routingKey, """{
             "eventType": "$messageType",
             "clientId": "$cId",
             "type": "MODIFICATION",
@@ -221,7 +223,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         }"""
         def msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE,eContent,1,Instant.now())
         log.info("publish event: {}", msg)
-        eventDispatcher.send(msg)
+        eventDispatcher.send(exchange, msg)
 
         then: "the event is sent"
         new PollingConditions().within(5) {
@@ -272,7 +274,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         }"""
         def msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE,eContent,1,Instant.now())
         log.info("publish event: {}", msg)
-        eventDispatcher.send(msg)
+        eventDispatcher.send(exchange, msg)
 
         then: "the event is sent"
         new PollingConditions().within(5) {
@@ -314,7 +316,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
 
         def msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE,eContent,1,Instant.now())
         log.info("publish event: {}", msg)
-        eventDispatcher.send(msg)
+        eventDispatcher.send(exchange, msg)
 
         then: "the event is sent"
         new PollingConditions().within(5) {
@@ -329,7 +331,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         }"""
         msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE,eContent,1,Instant.now())
         log.info("publish event: {}", msg)
-        eventDispatcher.send(msg)
+        eventDispatcher.send(exchange, msg)
 
         then: "the event is sent"
         new PollingConditions().within(5) {
@@ -345,7 +347,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
 
         msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE,eContent,1,Instant.now())
         log.info("publish event: {}", msg)
-        eventDispatcher.send(msg)
+        eventDispatcher.send(exchange, msg)
 
         then: "the event is sent"
         new PollingConditions().within(5) {
@@ -361,7 +363,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         }"""
         msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE,eContent,1,Instant.now())
         log.info("publish event: {}", msg)
-        eventDispatcher.send(msg)
+        eventDispatcher.send(exchange, msg)
 
         then: "the event is sent and all data is deleted"
         new PollingConditions().within(5) {

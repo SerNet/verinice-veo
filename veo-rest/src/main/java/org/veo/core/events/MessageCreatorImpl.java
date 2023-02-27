@@ -59,7 +59,7 @@ public class MessageCreatorImpl implements MessageCreator {
   public static final String EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE =
       "element_type_definition_update";
 
-  @Value("${veo.message.dispatch.routing-key-prefix}")
+  @Value("${veo.message.routing-key-prefix}")
   private String routingKeyPrefix;
 
   @Override

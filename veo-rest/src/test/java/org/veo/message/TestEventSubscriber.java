@@ -47,18 +47,36 @@ public class TestEventSubscriber {
           @QueueBinding(
               value =
                   @Queue(
-                      value = "${veo.message.consume.queue}_TestEventSubscriber",
+                      value = "${veo.message.queues.veo}_TestEventSubscriber",
                       exclusive = "false",
                       durable = "false",
                       autoDelete = "true"),
-              exchange = @Exchange(value = "${veo.message.dispatch.exchange}", type = "topic"),
+              exchange = @Exchange(value = "${veo.message.exchanges.veo}", type = "topic"),
               key = {
-                "${veo.message.dispatch.routing-key-prefix}"
-                    + EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE,
-                "${veo.message.consume.subscription-routing-key-prefix}" + EVENT_TYPE_CLIENT_CHANGE,
-                "${veo.message.dispatch.routing-key-prefix}veo.testmessage"
+                "${veo.message.routing-key-prefix}" + EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE,
+                "${veo.message.routing-key-prefix}veo.testmessage"
               }))
   void handleEntityEvent(EventMessage event) {
+    handleEvent(event);
+  }
+
+  @RabbitListener(
+      bindings =
+          @QueueBinding(
+              value =
+                  @Queue(
+                      value = "${veo.message.queues.veo-subscriptions}_TestEventSubscriber",
+                      exclusive = "false",
+                      durable = "false",
+                      autoDelete = "true"),
+              exchange =
+                  @Exchange(value = "${veo.message.exchanges.veo-subscriptions}", type = "topic"),
+              key = {"${veo.message.routing-key-prefix}" + EVENT_TYPE_CLIENT_CHANGE}))
+  void handleSubscriptionEvent(EventMessage event) {
+    handleEvent(event);
+  }
+
+  private void handleEvent(EventMessage event) {
     log.debug("Consumed test event with content: {}", event.getContent());
     try {
       // save received events for assertions:

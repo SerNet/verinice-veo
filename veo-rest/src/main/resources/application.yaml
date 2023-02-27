@@ -21,14 +21,16 @@ veo:
   logging:
     properties: 'spring.datasource.url,spring.jpa.database-platform'
   message:
-    dispatch:
-      exchange: 'veo.entity_exchange'
-      routing-key-prefix: 'veo.message.'
+    routing-key-prefix: 'veo.message.'
+    exchanges:
+      veo: 'veo.entity_exchange'
+      veo-subscriptions: 'veo.subscriptions'
+    queues:
+      veo: 'veo'
+      veo-subscriptions: 'veo/subscriptions'
     consume:
-      queue: 'veo'
       dlx: 'veo_dlx'
       autoDelete: 'false'
-      subscription-routing-key-prefix: 'veo-subscriptions.message.'
   threads:
     corePoolSize: 2
     maxPoolSize: 4
