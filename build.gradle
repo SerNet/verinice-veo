@@ -184,7 +184,7 @@ subprojects {
     }
 
     pmd {
-        toolVersion = '6.54.0'
+        toolVersion = '6.55.0'
         ruleSetConfig = rootProject.resources.text.fromFile('misc/pmd/rules.xml')
         ruleSets = []
         rulesMinimumPriority = 2
