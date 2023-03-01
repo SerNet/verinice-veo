@@ -95,6 +95,9 @@ spring:
   rabbitmq:
     publisher-confirm-type: correlated
     publisher-returns: false
+    listener:
+      simple:
+        defaultRequeueRejected: false
     #host: localhost
     #port: 5672
     #username: <username>
