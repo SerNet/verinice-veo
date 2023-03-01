@@ -44,7 +44,7 @@ import org.veo.core.entity.Nameable;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
-import org.veo.core.entity.specification.TranslationValidator;
+import org.veo.core.entity.specification.ElementTypeDefinitionValidator;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -140,7 +140,7 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
 
   @Override
   public void applyElementTypeDefinition(ElementTypeDefinition definition) {
-    TranslationValidator.validate(definition);
+    ElementTypeDefinitionValidator.validate(definition);
 
     ElementTypeDefinition existingDefinition =
         getElementTypeDefinition(definition.getElementType());

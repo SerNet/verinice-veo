@@ -30,6 +30,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.code.EntityValidationException;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
+import org.veo.core.entity.specification.ElementTypeDefinitionValidator;
 import org.veo.core.entity.specification.EntityValidator;
 import org.veo.core.entity.specification.TranslationValidator;
 
@@ -53,13 +54,13 @@ public class ValidationService {
     if (!violations.isEmpty()) throw new ConstraintViolationException(violations);
 
     if (identifiable instanceof DomainBase domain) {
-      domain.getElementTypeDefinitions().forEach(TranslationValidator::validate);
+      domain.getElementTypeDefinitions().forEach(ElementTypeDefinitionValidator::validate);
       domain.getRiskDefinitions().values().forEach(rd -> rd.validateRiskDefinition());
       domain.getRiskDefinitions().values().forEach(TranslationValidator::validate);
     }
 
     if (identifiable instanceof ElementTypeDefinition entity) {
-      TranslationValidator.validate(entity);
+      ElementTypeDefinitionValidator.validate(entity);
     }
 
     if (!(identifiable instanceof Element)) return;
