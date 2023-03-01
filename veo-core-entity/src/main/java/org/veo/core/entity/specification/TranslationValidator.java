@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,6 +52,9 @@ public class TranslationValidator {
    */
   public static final String SUBTYPE_STATUS_PATTERN = "%s_%s_status_%s";
 
+  private static final Pattern LEADING_SPACE_PATTERN = Pattern.compile("^\\s.*$");
+  private static final Pattern TRAILING_SPACE_PATTERN = Pattern.compile("^.*\\s$");
+
   public static final Set<String> NAMEABLE_ATTRIBUTES =
       Set.of(Nameable.NAME, Nameable.ABBREVIATION, Nameable.DESCRIPTION);
 
@@ -58,7 +62,9 @@ public class TranslationValidator {
 
   public enum Reason {
     MISSING,
-    SUPERFLUOUS
+    SUPERFLUOUS,
+    LEADING_SPACES,
+    TRAILING_SPACES
   }
 
   public static void validate(ElementTypeDefinition definition) {
@@ -196,7 +202,25 @@ public class TranslationValidator {
     log.debug("Validating language: {}", lang.toLanguageTag());
     violations.addAll(noMissingTranslations(lang, entityKeys, translationKeys));
     violations.addAll(noSuperfluousTranslations(lang, entityKeys, translationKeys));
+    violations.addAll(noLeadingSpaces(lang, translations));
+    violations.addAll(noTrailingSpaces(lang, translations));
     return violations.stream();
+  }
+
+  private static Collection<Violation> noLeadingSpaces(
+      Locale lang, Map<String, String> translationKeys) {
+    return translationKeys.entrySet().stream()
+        .filter(entry -> LEADING_SPACE_PATTERN.matcher(entry.getValue()).find())
+        .map(entry -> new Violation(lang, Reason.LEADING_SPACES, entry.getKey()))
+        .collect(Collectors.toSet());
+  }
+
+  private static Collection<Violation> noTrailingSpaces(
+      Locale lang, Map<String, String> translationKeys) {
+    return translationKeys.entrySet().stream()
+        .filter(entry -> TRAILING_SPACE_PATTERN.matcher(entry.getValue()).find())
+        .map(entry -> new Violation(lang, Reason.TRAILING_SPACES, entry.getKey()))
+        .collect(Collectors.toSet());
   }
 
   private static List<Violation> noSuperfluousTranslations(

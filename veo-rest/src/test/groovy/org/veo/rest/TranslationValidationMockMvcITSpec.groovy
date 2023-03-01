@@ -62,6 +62,8 @@ class TranslationValidationMockMvcITSpec extends ContentSpec {
             new JsonSlurper().parse(it)
         }
         def modifiedSchema = [:] << schemaJson
+        modifiedSchema.properties.translations.de.scope_SCP_Scope_status_NEW = ' Neu'
+        modifiedSchema.properties.translations.de.scope_SCP_Scope_status_RELEASED = 'Freigegeben '
         modifiedSchema.properties.translations.de.remove('scope_management') // remove an attribute
         modifiedSchema.properties.translations.de.remove('scope_informationSecurityOfficer') // remove a link id
         modifiedSchema.properties.translations.en.remove('scope_SCP_Scope_status_IN_PROGRESS') // remove a subtype status
@@ -73,6 +75,6 @@ class TranslationValidationMockMvcITSpec extends ContentSpec {
 
         then: "all missing and  mistyped/superfluous translations are listed"
         Exception ex = thrown()
-        ex.message == "Issues were found in the translations: Language 'de': MISSING: scope_informationSecurityOfficer, scope_management ; SUPERFLUOUS: superfluous_key    /    Language 'en': MISSING: scope_SCP_Scope_status_IN_PROGRESS, scope_dataProtectionOfficer_affiliation_external"
+        ex.message == "Issues were found in the translations: Language 'de': LEADING_SPACES: scope_SCP_Scope_status_NEW ; MISSING: scope_informationSecurityOfficer, scope_management ; SUPERFLUOUS: superfluous_key ; TRAILING_SPACES: scope_SCP_Scope_status_RELEASED    /    Language 'en': MISSING: scope_SCP_Scope_status_IN_PROGRESS, scope_dataProtectionOfficer_affiliation_external"
     }
 }
