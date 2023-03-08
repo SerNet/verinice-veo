@@ -27,6 +27,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.veo.core.entity.Catalog
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.DomainException
 import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.usecase.domaintemplate.EntityAlreadyExistsException
@@ -285,6 +286,35 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
                 }
             }
         }
+    }
+
+    @WithUserDetails("content-creator")
+    def "invalid attribute names are rejected"() {
+        when: "updating the scope definition with space in attribute name is rejected"
+        put("/domains/${testDomain.idAsString}/element-type-definitions/scope", [
+            subTypes: [
+                SCP_Container: [
+                    statuses: ['Empty']
+                ]
+            ],
+            customAspects: [
+                container_lid: [
+                    attributeDefinitions: [
+                        'container_lid present': [type: 'boolean']
+                    ]
+                ]
+            ],
+            translations: [
+                en: [
+                    scope_SCP_Container_status_Empty: 'Empty',
+                    'container_lid present': 'Lid present?',
+                ]
+            ],
+        ], 422)
+
+        then:
+        UnprocessableDataException ex = thrown()
+        ex.message ==~ /Invalid key 'container_lid present' - .*/
     }
 
     @WithUserDetails("user@domain.example")
