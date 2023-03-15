@@ -47,6 +47,15 @@ class DomainAssociationRestTest extends VeoRestTest {
         with(get("/incidents/$incidentId").body) {
             domains[owner.dsgvoDomainId].status == "NEW"
         }
+
+        and:
+        with(get("/domians/$dsgvoDomainId/incidents/$incidentId").body) {
+            id == incidentId
+            subType == "INC_Incident"
+            status == "NEW"
+            it.owner.targetUri == owner.unitUri // "owner" is both a DTO property and a groovy keyword
+            _self == "$owner.baseUrl/domians/$owner.dsgvoDomainId/incidents/$incidentId"
+        }
     }
 
     def "cannot create element with custom aspects and without domains"() {

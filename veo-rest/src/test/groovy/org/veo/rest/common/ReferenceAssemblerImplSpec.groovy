@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.rest.common
 
+import static java.util.UUID.randomUUID
+
 import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
@@ -34,8 +36,10 @@ import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Element
+import org.veo.core.entity.EntityType
 import org.veo.core.entity.Incident
 import org.veo.core.entity.Key
+import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.Scenario
@@ -136,6 +140,26 @@ class ReferenceAssemblerImplSpec extends Specification {
         Incident | '7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac' | '/incidents/7b4aa38a-117f-40c0-a5e8-ee5a59fe79ac'
         Scope    | '59d3c21d-2f21-4085-950d-1273056d664a' | '/scopes/59d3c21d-2f21-4085-950d-1273056d664a'
         Domain   | '28df429d-da5e-431a-a2d8-488c0741fb9f' | '/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'
+    }
+
+    def "create #entityType.singularTerm references in domain"() {
+        given:
+        def clazz = entityType.type as Class<Element>
+        def elementId = randomUUID().toString()
+        def domainId = randomUUID().toString()
+        def element = Stub(clazz) {
+            idAsString >> elementId
+            modelInterface >> clazz
+        }
+        def domain = Stub(Domain) {
+            idAsString >> domainId
+        }
+
+        expect:
+        referenceAssembler.elementInDomainRefOf(element, domain) == "/domians/$domainId/${entityType.pluralTerm}/$elementId"
+
+        where:
+        entityType << EntityType.ELEMENT_TYPES
     }
 
     def "create target URI for catalog item"() {

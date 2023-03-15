@@ -98,4 +98,12 @@ public enum EntityType {
         .findFirst()
         .orElseThrow();
   }
+
+  public static String getSingularTermByType(Class<? extends Identifiable> type) {
+    return Stream.of(values())
+        .filter(et -> et.type.equals(type))
+        .findFirst()
+        .orElseThrow()
+        .getSingularTerm();
+  }
 }

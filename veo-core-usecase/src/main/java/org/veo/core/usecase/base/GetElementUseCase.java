@@ -17,14 +17,17 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -38,6 +41,7 @@ import lombok.Value;
 public class GetElementUseCase<T extends Element>
     implements TransactionalUseCase<GetElementUseCase.InputData, GetElementUseCase.OutputData<T>> {
 
+  private final DomainRepository domainRepository;
   private final ElementRepository<T> repository;
   private final Class<T> type;
 
@@ -47,7 +51,23 @@ public class GetElementUseCase<T extends Element>
             .findById(input.getId())
             .orElseThrow(() -> new NotFoundException(input.getId(), type));
     element.checkSameClient(input.getAuthenticatedClient());
-    return new OutputData<>(element);
+    return new OutputData<>(element, getDomain(element, input).orElse(null));
+  }
+
+  protected Optional<Domain> getDomain(T element, InputData input) {
+    return Optional.ofNullable(input.domainId)
+        .map(id -> domainRepository.getById(id, input.getAuthenticatedClient().getId()))
+        .map(
+            domain -> {
+              if (!element.isAssociatedWithDomain(domain)) {
+                throw new NotFoundException(
+                    "%s %s is not associated with domain %s",
+                    element.getModelInterface().getSimpleName(),
+                    element.getIdAsString(),
+                    domain.getIdAsString());
+              }
+              return domain;
+            });
   }
 
   @EqualsAndHashCode(callSuper = true)
@@ -56,12 +76,21 @@ public class GetElementUseCase<T extends Element>
   public static class InputData extends IdAndClient {
     public InputData(Key<UUID> id, Client authenticatedClient) {
       super(id, authenticatedClient);
+      this.domainId = null;
     }
+
+    public InputData(Key<UUID> id, Client authenticatedClient, Key<UUID> domainId) {
+      super(id, authenticatedClient);
+      this.domainId = domainId;
+    }
+
+    Key<UUID> domainId;
   }
 
   @Valid
   @Value
   public static class OutputData<T> implements UseCase.OutputData {
     @Valid T element;
+    @Valid Domain domain;
   }
 }

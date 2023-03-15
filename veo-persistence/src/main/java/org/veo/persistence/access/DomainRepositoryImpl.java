@@ -28,6 +28,7 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.persistence.access.jpa.DomainDataRepository;
 import org.veo.persistence.entity.jpa.DomainData;
@@ -90,6 +91,13 @@ public class DomainRepositoryImpl
   @Override
   public Optional<Domain> findById(@NonNull Key<UUID> domainId, @NonNull Key<UUID> clientId) {
     return dataRepository.findById(domainId.uuidValue(), clientId.uuidValue());
+  }
+
+  @Override
+  public Domain getById(@NonNull Key<UUID> domainId, @NonNull Key<UUID> clientId) {
+    return dataRepository
+        .findById(domainId.uuidValue(), clientId.uuidValue())
+        .orElseThrow(() -> new NotFoundException(domainId, Domain.class));
   }
 
   @Override

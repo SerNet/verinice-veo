@@ -28,32 +28,47 @@ import java.util.function.Function;
 
 import javax.validation.Valid;
 
+import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogItemDto;
+import org.veo.adapter.presenter.api.dto.AbstractCompositeElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
+import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractVersionedDto;
 import org.veo.adapter.presenter.api.dto.AbstractVersionedSelfReferencingDto;
+import org.veo.adapter.presenter.api.dto.AttributesDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
+import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.DomainTemplateMetadataDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
+import org.veo.adapter.presenter.api.dto.LinkDto;
+import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
+import org.veo.adapter.presenter.api.dto.full.FullAssetInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullCatalogDto;
 import org.veo.adapter.presenter.api.dto.full.FullCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
+import org.veo.adapter.presenter.api.dto.full.FullControlInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
+import org.veo.adapter.presenter.api.dto.full.FullDocumentInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullIncidentDto;
+import org.veo.adapter.presenter.api.dto.full.FullIncidentInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
+import org.veo.adapter.presenter.api.dto.full.FullPersonInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
+import org.veo.adapter.presenter.api.dto.full.FullProcessInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
+import org.veo.adapter.presenter.api.dto.full.FullScenarioInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
+import org.veo.adapter.presenter.api.dto.full.FullScopeInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
@@ -511,5 +526,111 @@ public final class EntityToDtoTransformer {
     target.setTemplateVersion(source.getTemplateVersion());
     target.setCreatedAt(source.getCreatedAt().toString());
     return target;
+  }
+
+  public FullAssetInDomainDto transformAsset2Dto(Asset source, Domain domain) {
+    var target = new FullAssetInDomainDto(source.getIdAsString());
+    mapCompositeElementProperties(source, target, domain);
+    return target;
+  }
+
+  public FullControlInDomainDto transformControl2Dto(Control source, Domain domain) {
+    var target = new FullControlInDomainDto(source.getIdAsString());
+    mapCompositeElementProperties(source, target, domain);
+    target.setRiskValues(domainAssociationTransformer.mapRiskValues(source, domain));
+    return target;
+  }
+
+  public FullDocumentInDomainDto transformDocument2Dto(Document source, Domain domain) {
+    var target = new FullDocumentInDomainDto(source.getIdAsString());
+    mapCompositeElementProperties(source, target, domain);
+    return target;
+  }
+
+  public FullIncidentInDomainDto transformIncident2Dto(Incident source, Domain domain) {
+    var target = new FullIncidentInDomainDto(source.getIdAsString());
+    mapCompositeElementProperties(source, target, domain);
+    return target;
+  }
+
+  public FullPersonInDomainDto transformPerson2Dto(Person source, Domain domain) {
+    var target = new FullPersonInDomainDto(source.getIdAsString());
+    mapCompositeElementProperties(source, target, domain);
+    return target;
+  }
+
+  public FullProcessInDomainDto transformProcess2Dto(Process source, Domain domain) {
+    var target = new FullProcessInDomainDto(source.getIdAsString());
+    mapCompositeElementProperties(source, target, domain);
+    target.setRiskValues(domainAssociationTransformer.mapRiskValues(source, domain));
+    return target;
+  }
+
+  public FullScenarioInDomainDto transformScenario2Dto(Scenario source, Domain domain) {
+    var target = new FullScenarioInDomainDto(source.getIdAsString());
+    mapCompositeElementProperties(source, target, domain);
+    target.setRiskValues(domainAssociationTransformer.mapRiskValues(source, domain));
+    return target;
+  }
+
+  public FullScopeInDomainDto transformScope2Dto(Scope source, Domain domain) {
+    var target = new FullScopeInDomainDto(source.getIdAsString());
+    mapElementProperties(source, target, domain);
+    target.setMembers(
+        source.getMembers().stream()
+            .map(m -> ElementInDomainIdRef.from(m, domain, referenceAssembler))
+            .collect(toSet()));
+    target.setRiskDefinition(domainAssociationTransformer.mapRiskDefinition(source, domain));
+    return target;
+  }
+
+  private <TElement extends CompositeElement<TElement>> void mapCompositeElementProperties(
+      TElement source, AbstractCompositeElementInDomainDto<TElement> target, Domain domain) {
+    mapElementProperties(source, target, domain);
+    target.setParts(
+        source.getParts().stream()
+            .map(p -> ElementInDomainIdRef.from(p, domain, referenceAssembler))
+            .collect(toSet()));
+  }
+
+  private <TElement extends Element> void mapElementProperties(
+      TElement source, AbstractElementInDomainDto<TElement> target, Domain domain) {
+    mapNameableProperties(source, target);
+    mapVersionedProperties(source, target);
+    target.setSelfRef(ElementInDomainIdRef.from(source, domain, referenceAssembler));
+    target.setDesignator(source.getDesignator());
+    target.setSubType(source.getSubType(domain).orElseThrow());
+    target.setStatus(source.getStatus(domain).orElseThrow());
+    target.setCustomAspects(mapCustomAspects(source, domain));
+    target.setLinks(mapLinks(source, domain));
+    target.setOwner(IdRef.from(source.getOwner(), referenceAssembler));
+  }
+
+  private LinkMapDto mapLinks(Element source, Domain domain) {
+    return new LinkMapDto(
+        source.getLinks(domain).stream()
+            .collect(groupingBy(CustomLink::getType))
+            .entrySet()
+            .stream()
+            .collect(
+                toMap(
+                    Map.Entry::getKey,
+                    kv -> kv.getValue().stream().map(l -> mapLink(l, domain)).toList())));
+  }
+
+  private CustomAspectMapDto mapCustomAspects(Element source, Domain domain) {
+    return new CustomAspectMapDto(
+        source.getCustomAspects(domain).stream()
+            .collect(toMap(CustomAspect::getType, this::mapCustomAspect)));
+  }
+
+  private AttributesDto mapCustomAspect(CustomAspect source) {
+    return new AttributesDto(source.getAttributes());
+  }
+
+  private LinkDto mapLink(CustomLink source, Domain domain) {
+    return new LinkDto(
+        ElementInDomainIdRef.from(source.getTarget(), domain, referenceAssembler),
+        mapCustomAspect(source));
   }
 }

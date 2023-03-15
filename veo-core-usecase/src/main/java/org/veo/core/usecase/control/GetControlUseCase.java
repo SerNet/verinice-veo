@@ -19,12 +19,13 @@ package org.veo.core.usecase.control;
 
 import org.veo.core.entity.Control;
 import org.veo.core.repository.ControlRepository;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.base.GetElementUseCase;
 
 /** Reinstantiate a persisted control object. */
 public class GetControlUseCase extends GetElementUseCase<Control> {
 
-  public GetControlUseCase(ControlRepository repository) {
-    super(repository, Control.class);
+  public GetControlUseCase(ControlRepository repository, DomainRepository domainRepository) {
+    super(domainRepository, repository, Control.class);
   }
 }

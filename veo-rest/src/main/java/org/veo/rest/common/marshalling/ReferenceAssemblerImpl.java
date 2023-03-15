@@ -53,6 +53,7 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
@@ -64,18 +65,26 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.Unit;
 import org.veo.rest.AssetController;
+import org.veo.rest.AssetInDomainController;
 import org.veo.rest.AssetRiskResource;
 import org.veo.rest.CatalogController;
 import org.veo.rest.ControlController;
+import org.veo.rest.ControlInDomainController;
 import org.veo.rest.DocumentController;
+import org.veo.rest.DocumentInDomainController;
 import org.veo.rest.DomainController;
 import org.veo.rest.DomainTemplateController;
 import org.veo.rest.IncidentController;
+import org.veo.rest.IncidentInDomainController;
 import org.veo.rest.PersonController;
+import org.veo.rest.PersonInDomainController;
 import org.veo.rest.ProcessController;
+import org.veo.rest.ProcessInDomainController;
 import org.veo.rest.ProcessRiskResource;
 import org.veo.rest.ScenarioController;
+import org.veo.rest.ScenarioInDomainController;
 import org.veo.rest.ScopeController;
+import org.veo.rest.ScopeInDomainController;
 import org.veo.rest.ScopeRiskResource;
 import org.veo.rest.UnitController;
 import org.veo.rest.configuration.TypeExtractor;
@@ -186,6 +195,78 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     }
 
     throw new NotImplementedException("Unsupported reference type " + type);
+  }
+
+  @Override
+  @SuppressFBWarnings // ignore warning on call to method proxy factory
+  public String elementInDomainRefOf(Element element, Domain domain) {
+    var type = element.getModelInterface();
+    if (Asset.class.isAssignableFrom(type)) {
+      return linkTo(
+              methodOn(AssetInDomainController.class)
+                  .getElement(
+                      ANY_AUTH, domain.getIdAsString(), element.getIdAsString(), ANY_REQUEST))
+          .withRel(AssetInDomainController.URL_BASE_PATH)
+          .getHref();
+    }
+    if (Control.class.isAssignableFrom(type)) {
+      return linkTo(
+              methodOn(ControlInDomainController.class)
+                  .getElement(
+                      ANY_AUTH, domain.getIdAsString(), element.getIdAsString(), ANY_REQUEST))
+          .withRel(ControlInDomainController.URL_BASE_PATH)
+          .getHref();
+    }
+    if (Document.class.isAssignableFrom(type)) {
+      return linkTo(
+              methodOn(DocumentInDomainController.class)
+                  .getElement(
+                      ANY_AUTH, domain.getIdAsString(), element.getIdAsString(), ANY_REQUEST))
+          .withRel(DocumentInDomainController.URL_BASE_PATH)
+          .getHref();
+    }
+    if (Incident.class.isAssignableFrom(type)) {
+      return linkTo(
+              methodOn(IncidentInDomainController.class)
+                  .getElement(
+                      ANY_AUTH, domain.getIdAsString(), element.getIdAsString(), ANY_REQUEST))
+          .withRel(IncidentInDomainController.URL_BASE_PATH)
+          .getHref();
+    }
+    if (Person.class.isAssignableFrom(type)) {
+      return linkTo(
+              methodOn(PersonInDomainController.class)
+                  .getElement(
+                      ANY_AUTH, domain.getIdAsString(), element.getIdAsString(), ANY_REQUEST))
+          .withRel(PersonInDomainController.URL_BASE_PATH)
+          .getHref();
+    }
+    if (Process.class.isAssignableFrom(type)) {
+      return linkTo(
+              methodOn(ProcessInDomainController.class)
+                  .getElement(
+                      ANY_AUTH, domain.getIdAsString(), element.getIdAsString(), ANY_REQUEST))
+          .withRel(ProcessInDomainController.URL_BASE_PATH)
+          .getHref();
+    }
+    if (Scenario.class.isAssignableFrom(type)) {
+      return linkTo(
+              methodOn(ScenarioInDomainController.class)
+                  .getElement(
+                      ANY_AUTH, domain.getIdAsString(), element.getIdAsString(), ANY_REQUEST))
+          .withRel(ScenarioInDomainController.URL_BASE_PATH)
+          .getHref();
+    }
+    if (Scope.class.isAssignableFrom(type)) {
+      return linkTo(
+              methodOn(ScopeInDomainController.class)
+                  .getElement(
+                      ANY_AUTH, domain.getIdAsString(), element.getIdAsString(), ANY_REQUEST))
+          .withRel(ScopeInDomainController.URL_BASE_PATH)
+          .getHref();
+    }
+    throw new NotImplementedException(
+        "%s references in domain context not supported".formatted(type.getSimpleName()));
   }
 
   /**

@@ -19,14 +19,17 @@ package org.veo.core.usecase
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
+import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.PersonRepository
+import org.veo.core.usecase.base.GetElementUseCase
 import org.veo.core.usecase.person.GetPersonUseCase
 
 class GetPersonUseCaseSpec extends UseCaseSpec {
 
     PersonRepository personRepository = Mock()
+    DomainRepository domainRepository = Mock()
 
-    GetPersonUseCase usecase = new GetPersonUseCase(personRepository)
+    GetPersonUseCase usecase = new GetPersonUseCase(personRepository, domainRepository)
 
     def "retrieve a person"() {
         given:
@@ -37,7 +40,7 @@ class GetPersonUseCaseSpec extends UseCaseSpec {
         }
 
         when:
-        def output = usecase.execute(new UseCase.IdAndClient(id,  existingClient))
+        def output = usecase.execute(new GetElementUseCase.InputData(id,  existingClient))
 
         then:
         1 * personRepository.findById(id) >> Optional.of(person)

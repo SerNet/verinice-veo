@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jonas Jordan.
+ * Copyright (C) 2023  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,17 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.document;
+package org.veo.adapter.presenter.api.dto;
 
-import org.veo.core.entity.Document;
-import org.veo.core.repository.DocumentRepository;
-import org.veo.core.repository.DomainRepository;
-import org.veo.core.usecase.base.GetElementUseCase;
+import java.util.Collections;
+import java.util.Map;
 
-/** Reinstantiate a persisted document object. */
-public class GetDocumentUseCase extends GetElementUseCase<Document> {
+import com.fasterxml.jackson.annotation.JsonValue;
 
-  public GetDocumentUseCase(DocumentRepository repository, DomainRepository domainRepository) {
-    super(domainRepository, repository, Document.class);
-  }
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class AttributesDto {
+  @JsonValue private Map<String, Object> attributes = Collections.emptyMap();
 }

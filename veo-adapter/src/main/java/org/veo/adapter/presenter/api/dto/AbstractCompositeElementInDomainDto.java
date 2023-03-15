@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jonas Jordan.
+ * Copyright (C) 2023  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,17 +15,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.document;
+package org.veo.adapter.presenter.api.dto;
 
-import org.veo.core.entity.Document;
-import org.veo.core.repository.DocumentRepository;
-import org.veo.core.repository.DomainRepository;
-import org.veo.core.usecase.base.GetElementUseCase;
+import java.util.Collections;
+import java.util.Set;
 
-/** Reinstantiate a persisted document object. */
-public class GetDocumentUseCase extends GetElementUseCase<Document> {
+import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
+import org.veo.core.entity.CompositeElement;
 
-  public GetDocumentUseCase(DocumentRepository repository, DomainRepository domainRepository) {
-    super(domainRepository, repository, Document.class);
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(onlyExplicitlyIncluded = true, callSuper = true)
+public abstract class AbstractCompositeElementInDomainDto<T extends CompositeElement<T>>
+    extends AbstractElementInDomainDto<T> {
+
+  private Set<ElementInDomainIdRef<T>> parts = Collections.emptySet();
+
+  @Schema(description = "Elements contained in this composite element")
+  public Set<ElementInDomainIdRef<T>> getParts() {
+    return parts;
   }
 }

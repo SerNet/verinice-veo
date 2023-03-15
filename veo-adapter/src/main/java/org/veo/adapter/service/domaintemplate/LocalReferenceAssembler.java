@@ -23,6 +23,8 @@ import java.util.UUID;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.core.entity.AbstractRisk;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 
@@ -31,6 +33,11 @@ public class LocalReferenceAssembler implements ReferenceAssembler {
   @Override
   public String targetReferenceOf(Identifiable identifiable) {
     return SyntheticIdRef.toUrl(identifiable.getModelInterface(), identifiable.getId().uuidValue());
+  }
+
+  @Override
+  public String elementInDomainRefOf(Element element, Domain domain) {
+    return null;
   }
 
   @Override

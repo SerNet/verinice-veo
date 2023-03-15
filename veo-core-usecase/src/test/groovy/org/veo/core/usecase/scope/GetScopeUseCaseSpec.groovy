@@ -19,15 +19,18 @@ package org.veo.core.usecase.scope
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Scope
+import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.ScopeRepository
-import org.veo.core.usecase.UseCase
 import org.veo.core.usecase.UseCaseSpec
+import org.veo.core.usecase.base.GetElementUseCase
 
 class GetScopeUseCaseSpec extends UseCaseSpec {
 
+    DomainRepository domainRepository = Mock()
     ScopeRepository scopeRepository = Mock()
 
-    GetScopeUseCase usecase = new GetScopeUseCase(scopeRepository)
+    GetScopeUseCase usecase = new GetScopeUseCase(domainRepository, scopeRepository)
+
     def "retrieve a scope"() {
         given:
         def scopeId = Key.newUuid()
@@ -37,11 +40,11 @@ class GetScopeUseCaseSpec extends UseCaseSpec {
         }
 
         when:
-        def output = usecase.execute(new UseCase.IdAndClient(scopeId, existingClient))
+        def output = usecase.execute(new GetElementUseCase.InputData(scopeId, existingClient))
 
         then:
         1 * scopeRepository.findById(scopeId) >> Optional.of(scope)
-        output.scope != null
-        output.scope.id == scopeId
+        output.element != null
+        output.element.id == scopeId
     }
 }

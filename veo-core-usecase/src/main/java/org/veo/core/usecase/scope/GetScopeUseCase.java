@@ -18,12 +18,13 @@
 package org.veo.core.usecase.scope;
 
 import org.veo.core.entity.Scope;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.usecase.base.GetElementUseCase;
 
 public class GetScopeUseCase extends GetElementUseCase<Scope> {
 
-  public GetScopeUseCase(ScopeRepository repository) {
-    super(repository, Scope.class);
+  public GetScopeUseCase(DomainRepository domainRepository, ScopeRepository repository) {
+    super(domainRepository, repository, Scope.class);
   }
 }

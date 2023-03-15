@@ -210,11 +210,64 @@
     }
   ],
   "elementTypeDefinitions": {
-    "asset": {},
+    "asset": {
+      "subTypes": {
+        "Server": {
+          "statuses": [
+            "RUNNING",
+            "DOWN"
+          ]
+        }
+      },
+      "customAspects": {
+        "storage": {
+          "attributeDefinitions": {
+            "totalCapacityInTb": {
+              "type": "integer"
+            }
+          }
+        }
+      },
+      "links": {
+        "admin": {
+          "targetType": "person",
+          "attributeDefinitions": {
+            "accessProtocol": {
+              "type": "enum",
+              "allowedValues": [
+                "ssh",
+                "rdp",
+                "physical"
+              ]
+            }
+          }
+        }
+      }
+    },
     "control": {
+      "customAspects": {
+        "implementation": {
+          "attributeDefinitions": {
+            "explanation": {
+              "type": "text"
+            }
+          }
+        }
+      },
       "links": {
         "Control_details_Control": {
           "targetType": "control"
+        },
+        "literature": {
+          "targetType": "document",
+          "attributeDefinitions": {
+            "chapters": {
+              "type": "list",
+              "itemDefinition": {
+                "type": "integer"
+              }
+            }
+          }
         }
       },
       "subTypes": {
@@ -226,11 +279,390 @@
         }
       }
     },
-    "document": {},
-    "incident": {},
-    "person": {},
-    "process": {},
-    "scenario": {},
-    "scope": {}
+    "document": {
+      "customAspects": {
+        "details": {
+          "attributeDefinitions": {
+            "numberOfPages": {
+              "type": "integer"
+            }
+          }
+        }
+      },
+      "links": {
+        "author": {
+          "targetType": "person",
+          "attributeDefinitions": {
+            "writingFinished": {
+              "type": "date"
+            }
+          }
+        }
+      },
+      "subTypes": {
+        "Manual": {
+          "statuses": [
+            "CURRENT",
+            "OUTDATED"
+          ]
+        }
+      }
+    },
+    "incident": {
+      "subTypes": {
+        "DISASTER": {
+          "statuses": [
+            "DETECTED",
+            "INVESTIGATED"
+          ]
+        }
+      },
+      "customAspects": {
+        "general": {
+          "attributeDefinitions": {
+            "timeOfOccurrence": {
+              "type": "dateTime"
+            }
+          }
+        }
+      },
+      "links": {
+        "responsiblePerson": {
+          "targetType": "person",
+          "attributeDefinitions": {
+            "takesAllTheBlame": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "person": {
+      "subTypes": {
+        "Programmer": {
+          "statuses": [
+            "CODING",
+            "REVIEWING"
+          ]
+        }
+      },
+      "customAspects": {
+        "general": {
+          "attributeDefinitions": {
+            "dateOfBirth": {
+              "type": "date"
+            }
+          }
+        }
+      },
+      "links": {
+        "employer": {
+          "targetType": "scope",
+          "attributeDefinitions": {
+            "employedSince": {
+              "type": "date"
+            }
+          }
+        }
+      }
+    },
+    "process": {
+      "subTypes": {
+        "BusinessProcess": {
+          "statuses": [
+            "NEW"
+          ]
+        }
+      },
+      "customAspects": {
+        "general": {
+          "attributeDefinitions": {
+            "complexity": {
+              "type": "enum",
+              "allowedValues": [
+                "low",
+                "medium",
+                "high"
+              ]
+            }
+          }
+        }
+      },
+      "links": {
+        "necessaryData": {
+          "targetType": "asset",
+          "attributeDefinitions": {
+            "essential": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "scenario": {
+      "subTypes": {
+        "Attack": {
+          "statuses": [
+            "NEW"
+          ]
+        }
+      },
+      "customAspects": {
+        "help": {
+          "attributeDefinitions": {
+            "technicalArticle": {
+              "type": "externalDocument"
+            }
+          }
+        }
+      },
+      "links": {
+        "expert": {
+          "targetType": "person",
+          "attributeDefinitions": {
+            "experienceSince": {
+              "type": "date"
+            }
+          }
+        }
+      }
+    },
+    "scope": {
+      "subTypes": {
+        "Company": {
+          "statuses": [
+            "NEW"
+          ]
+        }
+      },
+      "customAspects": {
+        "staff": {
+          "attributeDefinitions": {
+            "numberOfEmployees": {
+              "type": "integer"
+            }
+          }
+        }
+      },
+      "links": {
+        "dataProtectionOfficer": {
+          "targetType": "person",
+          "attributeDefinitions": {
+            "experienceSince": {
+              "type": "date"
+            }
+          }
+        }
+      }
+    }
+  },
+  "riskDefinitions": {
+    "riskyDef": {
+      "id": "riskyDef",
+      "probability": {
+        "id": "",
+        "levels": [
+          {
+            "ordinalValue": 0
+          },
+          {
+            "ordinalValue": 1
+          },
+          {
+            "ordinalValue": 2
+          }
+        ],
+        "translations": {
+          "de": {
+            "name": "",
+            "abbreviation": "",
+            "description": ""
+          }
+        }
+      },
+      "implementationStateDefinition": {
+        "id": "",
+        "levels": [
+          {
+            "ordinalValue": 0
+          },
+          {
+            "ordinalValue": 1
+          }
+        ],
+        "translations": {
+          "de": {
+            "name": "",
+            "abbreviation": "",
+            "description": ""
+          }
+        }
+      },
+      "categories": [
+        {
+          "id": "C",
+          "potentialImpacts": [
+            {
+              "ordinalValue": 0,
+              "translations": {
+                "de": {
+                  "name": "",
+                  "abbreviation": "",
+                  "description": ""
+                }
+              }
+            },
+            {
+              "ordinalValue": 1,
+              "translations": {
+                "de": {
+                  "name": "",
+                  "abbreviation": "",
+                  "description": ""
+                }
+              }
+            }
+          ],
+          "valueMatrix": [
+            [
+              {
+                "ordinalValue": 0,
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 0,
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 1,
+                "symbolicRisk": "symbolic_risk_2"
+              }
+            ],
+            [
+              {
+                "ordinalValue": 1,
+                "symbolicRisk": "symbolic_risk_2"
+              },
+              {
+                "ordinalValue": 2,
+                "symbolicRisk": "symbolic_risk_3"
+              },
+              {
+                "ordinalValue": 2,
+                "symbolicRisk": "symbolic_risk_3"
+              }
+            ]
+          ],
+          "translations": {
+            "de": {
+              "name": "",
+              "abbreviation": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "id": "I",
+          "potentialImpacts": [
+            {
+              "ordinalValue": 0,
+              "translations": {
+                "de": {
+                  "name": "",
+                  "abbreviation": "",
+                  "description": ""
+                }
+              }
+            },
+            {
+              "ordinalValue": 1,
+              "translations": {
+                "de": {
+                  "name": "",
+                  "abbreviation": "",
+                  "description": ""
+                }
+              }
+            }
+          ],
+          "valueMatrix": [
+            [
+              {
+                "ordinalValue": 0,
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 0,
+                "symbolicRisk": "symbolic_risk_1"
+              },
+              {
+                "ordinalValue": 1,
+                "symbolicRisk": "symbolic_risk_2"
+              }
+            ],
+            [
+              {
+                "ordinalValue": 1,
+                "symbolicRisk": "symbolic_risk_2"
+              },
+              {
+                "ordinalValue": 2,
+                "symbolicRisk": "symbolic_risk_3"
+              },
+              {
+                "ordinalValue": 2,
+                "symbolicRisk": "symbolic_risk_3"
+              }
+            ]
+          ],
+          "translations": {
+            "de": {
+              "name": "",
+              "abbreviation": "",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "riskValues": [
+        {
+          "ordinalValue": 0,
+          "symbolicRisk": "symbolic_risk_1",
+          "translations": {
+            "de": {
+              "name": "",
+              "abbreviation": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "ordinalValue": 1,
+          "symbolicRisk": "symbolic_risk_2",
+          "translations": {
+            "de": {
+              "name": "",
+              "abbreviation": "",
+              "description": ""
+            }
+          }
+        },
+        {
+          "ordinalValue": 2,
+          "symbolicRisk": "symbolic_risk_3",
+          "translations": {
+            "de": {
+              "name": "",
+              "abbreviation": "",
+              "description": ""
+            }
+          }
+        }
+      ],
+      "riskMethod": {
+        "impactMethod": "highwatermark",
+        "description": "description"
+      }
+    }
   }
 }

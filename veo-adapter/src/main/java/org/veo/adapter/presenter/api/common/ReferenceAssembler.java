@@ -21,6 +21,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.AbstractRisk;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 
@@ -40,6 +42,10 @@ public interface ReferenceAssembler {
    */
   String targetReferenceOf(Identifiable identifiable);
 
+  /**
+   * Returns an absolute reference to the target element from the viewpoint of the target domain.
+   */
+  String elementInDomainRefOf(Element element, Domain domain);
   /**
    * Returns an absolute reference to the target object, where the target object is identified using
    * a compound key.

@@ -19,11 +19,12 @@ package org.veo.core.usecase.asset;
 
 import org.veo.core.entity.Asset;
 import org.veo.core.repository.AssetRepository;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.usecase.base.GetElementUseCase;
 
 public class GetAssetUseCase extends GetElementUseCase<Asset> {
 
-  public GetAssetUseCase(AssetRepository repository) {
-    super(repository, Asset.class);
+  public GetAssetUseCase(AssetRepository repository, DomainRepository domainRepository) {
+    super(domainRepository, repository, Asset.class);
   }
 }

@@ -18,13 +18,14 @@
 package org.veo.core.usecase.person;
 
 import org.veo.core.entity.Person;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.PersonRepository;
 import org.veo.core.usecase.base.GetElementUseCase;
 
 /** Reinstantiate a persisted person object. */
 public class GetPersonUseCase extends GetElementUseCase<Person> {
 
-  public GetPersonUseCase(PersonRepository repository) {
-    super(repository, Person.class);
+  public GetPersonUseCase(PersonRepository repository, DomainRepository domainRepository) {
+    super(domainRepository, repository, Person.class);
   }
 }

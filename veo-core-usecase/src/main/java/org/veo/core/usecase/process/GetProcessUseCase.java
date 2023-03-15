@@ -25,6 +25,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.usecase.base.GetElementUseCase;
 
@@ -36,8 +37,8 @@ public class GetProcessUseCase extends GetElementUseCase<Process> {
 
   private final ProcessRepository processRepository;
 
-  public GetProcessUseCase(ProcessRepository repository) {
-    super(repository, Process.class);
+  public GetProcessUseCase(ProcessRepository repository, DomainRepository domainRepository) {
+    super(domainRepository, repository, Process.class);
     processRepository = repository;
   }
 
@@ -47,7 +48,7 @@ public class GetProcessUseCase extends GetElementUseCase<Process> {
             .findById(input.getId(), input.embedRisks)
             .orElseThrow(() -> new NotFoundException(input.getId(), Process.class));
     process.checkSameClient(input.getAuthenticatedClient());
-    return new GetElementUseCase.OutputData<>(process);
+    return new GetElementUseCase.OutputData<>(process, getDomain(process, input).orElse(null));
   }
 
   @Value
@@ -55,6 +56,12 @@ public class GetProcessUseCase extends GetElementUseCase<Process> {
   @Valid
   public static class InputData extends GetElementUseCase.InputData {
     boolean embedRisks;
+
+    public InputData(
+        Key<UUID> id, Client authenticatedClient, Key<UUID> domainId, boolean embedRisks) {
+      super(id, authenticatedClient, domainId);
+      this.embedRisks = embedRisks;
+    }
 
     public InputData(Key<UUID> id, Client authenticatedClient, boolean embedRisks) {
       super(id, authenticatedClient);

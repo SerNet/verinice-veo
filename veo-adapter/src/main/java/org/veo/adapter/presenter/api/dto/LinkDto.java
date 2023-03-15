@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jonas Jordan.
+ * Copyright (C) 2019  Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,17 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.document;
+package org.veo.adapter.presenter.api.dto;
 
-import org.veo.core.entity.Document;
-import org.veo.core.repository.DocumentRepository;
-import org.veo.core.repository.DomainRepository;
-import org.veo.core.usecase.base.GetElementUseCase;
+import javax.validation.constraints.NotNull;
 
-/** Reinstantiate a persisted document object. */
-public class GetDocumentUseCase extends GetElementUseCase<Document> {
+import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
+import org.veo.core.entity.Element;
 
-  public GetDocumentUseCase(DocumentRepository repository, DomainRepository domainRepository) {
-    super(domainRepository, repository, Document.class);
-  }
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class LinkDto {
+
+  @NotNull(message = "A target must be present.")
+  private ElementInDomainIdRef<Element> target;
+
+  @Schema(
+      description = "Domain-specific attributes",
+      example = "{\"startOfRelationship\": \"2022-07-05\", \"critical\": true}")
+  private AttributesDto attributes = new AttributesDto();
 }

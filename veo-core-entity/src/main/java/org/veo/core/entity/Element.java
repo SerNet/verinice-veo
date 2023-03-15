@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -197,4 +199,19 @@ public interface Element
    * item, the catalog's domain (template) is returned.
    */
   Set<DomainBase> getDomainTemplates();
+
+  default Set<CustomAspect> getCustomAspects(Domain domain) {
+    return getCustomAspects().stream().filter(ca -> ca.getDomain().equals(domain)).collect(toSet());
+  }
+
+  default Set<CustomLink> getLinks(Domain domain) {
+    return getLinks().stream().filter(l -> l.getDomain().equals(domain)).collect(toSet());
+  }
+
+  default boolean isAssociatedWithDomain(DomainBase domain) {
+    if (getContainingCatalogItem() != null) {
+      return getContainingCatalogItem().getCatalog().getDomainTemplate().equals(domain);
+    }
+    return getDomains().contains(domain);
+  }
 }

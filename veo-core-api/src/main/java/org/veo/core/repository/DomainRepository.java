@@ -27,6 +27,8 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 
+import lombok.NonNull;
+
 /**
  * A repository for <code>Domain</code> entities.
  *
@@ -46,6 +48,8 @@ public interface DomainRepository extends IdentifiableVersionedRepository<Domain
   Optional<Domain> findByCatalogItem(CatalogItem catalogItem);
 
   Optional<Domain> findById(Key<UUID> domainId, Key<UUID> clientId);
+
+  Domain getById(@NonNull Key<UUID> domainId, @NonNull Key<UUID> clientId);
 
   Optional<Domain> findByIdWithProfilesAndRiskDefinitions(Key<UUID> id, Key<UUID> clientId);
 

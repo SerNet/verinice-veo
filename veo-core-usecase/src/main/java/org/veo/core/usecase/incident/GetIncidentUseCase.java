@@ -18,13 +18,14 @@
 package org.veo.core.usecase.incident;
 
 import org.veo.core.entity.Incident;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.IncidentRepository;
 import org.veo.core.usecase.base.GetElementUseCase;
 
 /** Reinstantiate a persisted incident object. */
 public class GetIncidentUseCase extends GetElementUseCase<Incident> {
 
-  public GetIncidentUseCase(IncidentRepository repository) {
-    super(repository, Incident.class);
+  public GetIncidentUseCase(IncidentRepository repository, DomainRepository domainRepository) {
+    super(domainRepository, repository, Incident.class);
   }
 }

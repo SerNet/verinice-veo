@@ -47,7 +47,7 @@ public class IdRef<T extends Identifiable> implements IIdRef {
 
   @JsonIgnore @EqualsAndHashCode.Include private final Class<T> type;
 
-  @JsonIgnore private final ReferenceAssembler urlAssembler;
+  @JsonIgnore protected final ReferenceAssembler urlAssembler;
 
   @JsonIgnore
   @Setter(AccessLevel.NONE)

@@ -222,8 +222,9 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetAssetUseCase getAssetUseCase(AssetRepositoryImpl assetRepository) {
-    return new GetAssetUseCase(assetRepository);
+  public GetAssetUseCase getAssetUseCase(
+      AssetRepositoryImpl assetRepository, DomainRepository domainRepository) {
+    return new GetAssetUseCase(assetRepository, domainRepository);
   }
 
   @Bean
@@ -252,8 +253,9 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetControlUseCase getControlUseCase(ControlRepositoryImpl controlRepository) {
-    return new GetControlUseCase(controlRepository);
+  public GetControlUseCase getControlUseCase(
+      ControlRepositoryImpl controlRepository, DomainRepository domainRepository) {
+    return new GetControlUseCase(controlRepository, domainRepository);
   }
 
   @Bean
@@ -282,8 +284,9 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetDocumentUseCase getDocumentUseCase(DocumentRepositoryImpl documentRepository) {
-    return new GetDocumentUseCase(documentRepository);
+  public GetDocumentUseCase getDocumentUseCase(
+      DocumentRepositoryImpl documentRepository, DomainRepository domainRepository) {
+    return new GetDocumentUseCase(documentRepository, domainRepository);
   }
 
   @Bean
@@ -312,8 +315,9 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetScenarioUseCase getScenarioUseCase(ScenarioRepositoryImpl scenarioRepository) {
-    return new GetScenarioUseCase(scenarioRepository);
+  public GetScenarioUseCase getScenarioUseCase(
+      ScenarioRepositoryImpl scenarioRepository, DomainRepository domainRepository) {
+    return new GetScenarioUseCase(scenarioRepository, domainRepository);
   }
 
   @Bean
@@ -342,8 +346,9 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetIncidentUseCase getIncidentUseCase(IncidentRepositoryImpl incidentRepository) {
-    return new GetIncidentUseCase(incidentRepository);
+  public GetIncidentUseCase getIncidentUseCase(
+      IncidentRepositoryImpl incidentRepository, DomainRepository domainRepository) {
+    return new GetIncidentUseCase(incidentRepository, domainRepository);
   }
 
   @Bean
@@ -386,8 +391,9 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetProcessUseCase getProcessUseCase(ProcessRepositoryImpl processRepository) {
-    return new GetProcessUseCase(processRepository);
+  public GetProcessUseCase getProcessUseCase(
+      ProcessRepositoryImpl processRepository, DomainRepository domainRepository) {
+    return new GetProcessUseCase(processRepository, domainRepository);
   }
 
   @Bean
@@ -489,8 +495,9 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetPersonUseCase getPersonUseCase(PersonRepositoryImpl personRepository) {
-    return new GetPersonUseCase(personRepository);
+  public GetPersonUseCase getPersonUseCase(
+      PersonRepositoryImpl personRepository, DomainRepository domainRepository) {
+    return new GetPersonUseCase(personRepository, domainRepository);
   }
 
   @Bean
@@ -517,8 +524,9 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetScopeUseCase getScopeUseCase(ScopeRepositoryImpl scopeRepository) {
-    return new GetScopeUseCase(scopeRepository);
+  public GetScopeUseCase getScopeUseCase(
+      DomainRepository domainRepository, ScopeRepositoryImpl scopeRepository) {
+    return new GetScopeUseCase(domainRepository, scopeRepository);
   }
 
   @Bean

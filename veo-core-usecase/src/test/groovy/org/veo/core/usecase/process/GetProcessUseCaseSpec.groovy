@@ -19,15 +19,18 @@ package org.veo.core.usecase.process
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
+import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.usecase.UseCase
 import org.veo.core.usecase.UseCaseSpec
+import org.veo.core.usecase.base.GetElementUseCase
 
 class GetProcessUseCaseSpec extends UseCaseSpec {
 
     ProcessRepository processRepository = Mock()
+    DomainRepository domainRepository = Mock()
 
-    GetProcessUseCase usecase = new GetProcessUseCase(processRepository)
+    GetProcessUseCase usecase = new GetProcessUseCase(processRepository, domainRepository)
 
     def "retrieve a process"() {
         given:
@@ -37,7 +40,7 @@ class GetProcessUseCaseSpec extends UseCaseSpec {
         process.getId() >> id
 
         when:
-        def output = usecase.execute(new UseCase.IdAndClient(id,  existingClient))
+        def output = usecase.execute(new GetElementUseCase.InputData(id,  existingClient))
 
         then:
         1 * processRepository.findById(*_) >> Optional.of(process)
