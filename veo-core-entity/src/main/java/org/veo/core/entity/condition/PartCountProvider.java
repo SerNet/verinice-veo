@@ -45,7 +45,7 @@ public class PartCountProvider implements InputProvider {
                         partSubType.equals(
                             // TODO VEO-1569: this fails if the part's subtypeAspects are a
                             // hibernate proxy
-                            c.getSubType(domain).orElse(null)))
+                            c.findSubType(domain).orElse(null)))
                 .collect(Collectors.toSet());
       }
       return parts.size();

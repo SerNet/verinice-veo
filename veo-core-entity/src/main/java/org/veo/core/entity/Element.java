@@ -62,7 +62,7 @@ public interface Element
     if (getDomains().contains(newDomain)) {
       throw new IllegalArgumentException(this + " is already a member of " + newDomain);
     }
-    associateWithDomain(newDomain, getSubType(oldDomain).get(), getStatus(oldDomain).get());
+    associateWithDomain(newDomain, getSubType(oldDomain), getStatus(oldDomain));
     getCustomAspects().forEach(ca -> ca.setDomain(newDomain));
     getLinks().forEach(cl -> cl.setDomain(newDomain));
     removeFromDomains(oldDomain);
@@ -86,9 +86,27 @@ public interface Element
 
   void setLinks(Set<CustomLink> aLinks);
 
-  Optional<String> getSubType(DomainBase domain);
+  Optional<String> findSubType(DomainBase domain);
 
-  Optional<String> getStatus(DomainBase domain);
+  Optional<String> findStatus(DomainBase domain);
+
+  default String getSubType(DomainBase domain) {
+    return findSubType(domain)
+        .orElseThrow(
+            () ->
+                new IllegalArgumentException(
+                    "%s %s not associated with domain %s"
+                        .formatted(getModelType(), getIdAsString(), domain.getIdAsString())));
+  }
+
+  default String getStatus(DomainBase domain) {
+    return findStatus(domain)
+        .orElseThrow(
+            () ->
+                new IllegalArgumentException(
+                    "%s %s not associated with domain %s"
+                        .formatted(getModelType(), getIdAsString(), domain.getIdAsString())));
+  }
 
   boolean associateWithDomain(DomainBase domain, String subType, String status);
 

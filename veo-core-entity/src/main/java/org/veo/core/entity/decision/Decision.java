@@ -85,7 +85,7 @@ public class Decision {
 
   public boolean isApplicableToElement(Element element, Domain domain) {
     return getElementType().equals(element.getModelType())
-        && getElementSubType().equals(element.getSubType(domain).orElse(null));
+        && getElementSubType().equals(element.findSubType(domain).orElse(null));
   }
 
   /** Determines whether this decision may yield a different result after given event. */

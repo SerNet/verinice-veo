@@ -24,7 +24,7 @@ import org.veo.core.entity.Element;
 class SubTypeValidator {
   static void validate(Element element, DomainBase domain) {
     element
-        .getSubType(domain)
+        .findSubType(domain)
         .ifPresentOrElse(
             subType -> {
               var definition =
@@ -38,7 +38,7 @@ class SubTypeValidator {
                         "Sub type '%s' is not defined for element type %s",
                         subType, element.getModelType()));
               }
-              var status = element.getStatus(domain).orElseThrow();
+              var status = element.getStatus(domain);
               if (!definition.getStatuses().contains(status)) {
                 throw new IllegalArgumentException(
                     String.format("Status '%s' is not allowed for sub type '%s'", status, subType));

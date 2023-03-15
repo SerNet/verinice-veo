@@ -377,8 +377,8 @@ public class DomainAssociationTransformer {
                 domain -> domain.getId().uuidValue(),
                 domain -> {
                   var association = supplier.apply(domain);
-                  association.setSubType(source.getSubType(domain).orElse(null));
-                  association.setStatus(source.getStatus(domain).orElse(null));
+                  association.setSubType(source.findSubType(domain).orElse(null));
+                  association.setStatus(source.findStatus(domain).orElse(null));
                   association.setDecisionResults(source.getDecisionResults(domain));
                   return association;
                 }));

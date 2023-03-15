@@ -87,11 +87,11 @@ class DomainAssociationTransformerSpec extends Specification {
         def decisionResults0 = ["decision0": Mock(DecisionResult)]
         def decisionResults1 = ["decision1": Mock(DecisionResult)]
 
-        entity.getSubType(domain0) >> Optional.of("foo")
-        entity.getStatus(domain0) >> Optional.of("NEW_FOO")
+        entity.findSubType(domain0) >> Optional.of("foo")
+        entity.findStatus(domain0) >> Optional.of("NEW_FOO")
         entity.getDecisionResults(domain0) >> decisionResults0
-        entity.getSubType(domain1) >> Optional.of("bar")
-        entity.getStatus(domain1) >> Optional.of("NEW_BAR")
+        entity.findSubType(domain1) >> Optional.of("bar")
+        entity.findStatus(domain1) >> Optional.of("NEW_BAR")
         entity.getDecisionResults(domain1) >> decisionResults1
 
         when: "the sub types are mapped"

@@ -76,6 +76,6 @@ public class ElementInDomainIdRef<TElement extends Element> extends IdRef<TEleme
         urlAssembler,
         null,
         element,
-        element.getSubType(domain).orElse(null));
+        element.findSubType(domain).orElse(null));
   }
 }

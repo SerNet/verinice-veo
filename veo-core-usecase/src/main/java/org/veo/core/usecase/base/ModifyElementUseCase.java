@@ -73,12 +73,12 @@ public abstract class ModifyElementUseCase<T extends Element>
         .forEach(
             domain ->
                 oldElement
-                    .getSubType(domain)
+                    .findSubType(domain)
                     .ifPresent(
                         oldSubType -> {
                           var newSubType =
                               newElement
-                                  .getSubType(domain)
+                                  .findSubType(domain)
                                   .orElseThrow(
                                       (() ->
                                           new IllegalArgumentException(

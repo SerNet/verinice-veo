@@ -80,7 +80,7 @@ public class ElementMigrationService {
 
   private void migrateSubType(Domain domain, ElementTypeDefinition definition, Element element) {
     element
-        .getSubType(domain)
+        .findSubType(domain)
         .ifPresent(
             subType -> {
               var subTypeDefinition = definition.getSubTypes().get(subType);
@@ -92,7 +92,7 @@ public class ElementMigrationService {
                 element.associateWithDomain(domain, null, null);
                 return;
               }
-              var status = element.getStatus(domain).orElseThrow();
+              var status = element.getStatus(domain);
               if (!subTypeDefinition.getStatuses().contains(status)) {
                 var fallbackStatus =
                     subTypeDefinition.getStatuses().stream().findFirst().orElseThrow();
@@ -124,6 +124,6 @@ public class ElementMigrationService {
 
   private boolean isValidTarget(Element target, Domain domain, LinkDefinition linkDef) {
     return linkDef.getTargetType().equals(target.getModelType())
-        && linkDef.getTargetSubType().equals(target.getSubType(domain).orElse(null));
+        && linkDef.getTargetSubType().equals(target.findSubType(domain).orElse(null));
   }
 }

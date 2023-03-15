@@ -63,7 +63,8 @@ public class Inspection {
     if (elementType != null && !elementType.equals(element.getModelType())) {
       return Optional.empty();
     }
-    if (elementSubType != null && !elementSubType.equals(element.getSubType(domain).orElse(null))) {
+    if (elementSubType != null
+        && !elementSubType.equals(element.findSubType(domain).orElse(null))) {
       return Optional.empty();
     }
     if (conditions.stream().allMatch(c -> c.matches(element, domain))) {

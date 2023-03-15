@@ -64,7 +64,7 @@ class ElementMigrationServiceSpec extends Specification{
                 }
             ] as Set)
             links >> ([] as Set)
-            getSubType(domain) >> Optional.empty()
+            findSubType(domain) >> Optional.empty()
         }
 
         when:
@@ -98,7 +98,7 @@ class ElementMigrationServiceSpec extends Specification{
                 }
             ] as Set)
             links >> ([] as Set)
-            getSubType(domain) >> Optional.empty()
+            findSubType(domain) >> Optional.empty()
         }
 
         when:
@@ -121,7 +121,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
         def targetPerson = Mock(Element) {
             modelType >> "person"
-            getSubType(domain) >> Optional.of("PER_Person")
+            findSubType(domain) >> Optional.of("PER_Person")
         }
         def element = Spy(Element) {
             id >> Key.newUuid()
@@ -139,7 +139,7 @@ class ElementMigrationServiceSpec extends Specification{
                     target >> targetPerson
                 }
             ] as Set)
-            getSubType(domain) >> Optional.empty()
+            findSubType(domain) >> Optional.empty()
         }
 
         when:
@@ -164,7 +164,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
         def targetPerson = Mock(Element) {
             modelType >> "person"
-            getSubType(domain) >> Optional.of("PER_Person")
+            findSubType(domain) >> Optional.of("PER_Person")
         }
         def element = Spy(Element) {
             id >> Key.newUuid()
@@ -180,7 +180,7 @@ class ElementMigrationServiceSpec extends Specification{
                     target >> targetPerson
                 }
             ] as Set)
-            getSubType(domain) >> Optional.empty()
+            findSubType(domain) >> Optional.empty()
         }
 
         when:
@@ -204,7 +204,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
         def targetPerson = Mock(Element) {
             modelType >> "person"
-            getSubType(domain) >> Optional.of("PER_Person")
+            findSubType(domain) >> Optional.of("PER_Person")
         }
         def element = Spy(Element) {
             id >> Key.newUuid()
@@ -220,7 +220,7 @@ class ElementMigrationServiceSpec extends Specification{
                 }
             ]
             links >> []
-            getSubType(domain) >> Optional.empty()
+            findSubType(domain) >> Optional.empty()
         }
 
         when:
@@ -253,7 +253,7 @@ class ElementMigrationServiceSpec extends Specification{
         }
         def veryNiceTargetPerson = Spy(Element) {
             modelType >> "person"
-            getSubType(domain) >> Optional.of("PER_VeryNice")
+            findSubType(domain) >> Optional.of("PER_VeryNice")
         }
         def element = Spy(Element) {
             id >> Key.newUuid()
@@ -276,7 +276,7 @@ class ElementMigrationServiceSpec extends Specification{
                     target >> veryNiceTargetPerson
                 }
             ] as Set)
-            getSubType(domain) >> Optional.empty()
+            findSubType(domain) >> Optional.empty()
         }
 
         when:
@@ -305,8 +305,8 @@ class ElementMigrationServiceSpec extends Specification{
             modelType >> "asset"
             customAspects >> ([] as Set)
             links >> ([] as Set)
-            getSubType(domain) >> Optional.of("AST_Building")
-            getStatus(domain) >> Optional.of("NEW")
+            findSubType(domain) >> Optional.of("AST_Building")
+            getStatus(domain) >> "NEW"
         }
 
         when:
@@ -332,8 +332,8 @@ class ElementMigrationServiceSpec extends Specification{
             modelType >> "asset"
             customAspects >> ([] as Set)
             links >> ([] as Set)
-            getSubType(domain) >> Optional.of("AST_Server")
-            getStatus(domain) >> Optional.of("OLD")
+            findSubType(domain) >> Optional.of("AST_Server")
+            getStatus(domain) >> "OLD"
         }
 
         when:

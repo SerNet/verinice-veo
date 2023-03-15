@@ -162,12 +162,12 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   @Override
-  public Optional<String> getSubType(DomainBase domain) {
+  public Optional<String> findSubType(DomainBase domain) {
     return findAspectByDomain(subTypeAspects, domain).map(SubTypeAspect::getSubType);
   }
 
   @Override
-  public Optional<String> getStatus(DomainBase domain) {
+  public Optional<String> findStatus(DomainBase domain) {
     return findAspectByDomain(subTypeAspects, domain).map(SubTypeAspect::getStatus);
   }
 

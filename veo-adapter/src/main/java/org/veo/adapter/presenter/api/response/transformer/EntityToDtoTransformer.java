@@ -599,8 +599,8 @@ public final class EntityToDtoTransformer {
     mapVersionedProperties(source, target);
     target.setSelfRef(ElementInDomainIdRef.from(source, domain, referenceAssembler));
     target.setDesignator(source.getDesignator());
-    target.setSubType(source.getSubType(domain).orElseThrow());
-    target.setStatus(source.getStatus(domain).orElseThrow());
+    target.setSubType(source.getSubType(domain));
+    target.setStatus(source.getStatus(domain));
     target.setCustomAspects(mapCustomAspects(source, domain));
     target.setLinks(mapLinks(source, domain));
     target.setOwner(IdRef.from(source.getOwner(), referenceAssembler));

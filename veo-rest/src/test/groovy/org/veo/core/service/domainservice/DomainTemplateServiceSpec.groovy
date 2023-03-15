@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.security.test.context.support.WithUserDetails
 
-import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
@@ -170,7 +169,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             it[3].element.name == 'Control-cc-1'
 
             it[4].element.name == 'Control-cc-2'
-            it[4].element.getSubType(domainFromTemplate).get() == "CTL_TOM"
+            it[4].element.getSubType(domainFromTemplate) == "CTL_TOM"
 
             it[5].element.name == 'Test process-1'
         }

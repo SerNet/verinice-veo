@@ -171,7 +171,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.catalogs.first().id != null
         d.catalogs.first().name == 'a'
         d.catalogs.first().catalogItems.size() == 4
-        d.catalogs.first().catalogItems.find { it.element.name == 'p1' }.element.getSubType(d).get() == 'Test'
+        d.catalogs.first().catalogItems.find { it.element.name == 'p1' }.element.findSubType(d).get() == 'Test'
         d.elementTypeDefinitions.size() == 1
     }
 
@@ -217,12 +217,12 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.catalogs.first().name == 'a'
         d.catalogs.first().catalogItems.size() == 5
         with (d.catalogs.first().catalogItems.find { it.element.name == 'p1' }) {
-            element.getSubType(d).get() == 'Test'
-            element.getStatus(d).get() == 'NEW'
+            element.getSubType(d) == 'Test'
+            element.getStatus(d) == 'NEW'
         }
         with (d.catalogs.first().catalogItems.find { it.element.name == 'p2' }) {
-            element.getSubType(d).get() == 'Test1'
-            element.getStatus(d).get() == 'NOT-NEW'
+            element.getSubType(d) == 'Test1'
+            element.getStatus(d) == 'NOT-NEW'
             element.links.size() == 1
             element.links[0].type == 'p2->p1'
             element.links[0].target.name == 'p1'

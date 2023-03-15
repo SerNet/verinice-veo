@@ -103,7 +103,7 @@ class DomainSensitiveElementValidator {
     if (linkDefinition.getTargetSubType() == null) {
       return;
     }
-    var targetSubType = target.getSubType(domain).orElse(null);
+    var targetSubType = target.findSubType(domain).orElse(null);
     if (!linkDefinition.getTargetSubType().equals(targetSubType)) {
       throw new IllegalArgumentException(
           String.format(
