@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer;
 
+import static java.util.Map.copyOf;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.HashSet;
@@ -183,7 +184,7 @@ public final class DtoToEntityTransformer {
         source.getElementTypeDefinitions().entrySet().stream()
             .map(entry -> mapElementTypeDefinition(entry.getKey(), entry.getValue(), target))
             .collect(Collectors.toSet()));
-    target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
+    target.setRiskDefinitions(copyOf(source.getRiskDefinitions()));
   }
 
   public ElementTypeDefinition mapElementTypeDefinition(
@@ -294,7 +295,7 @@ public final class DtoToEntityTransformer {
       AbstractDomainTemplateDto source, IdRefResolver idRefResolver, DomainBase target) {
     target.setAuthority(source.getAuthority());
     target.setTemplateVersion(source.getTemplateVersion());
-    target.setProfiles(Map.copyOf(source.getProfiles()));
+    target.setProfiles(copyOf(source.getProfiles()));
 
     mapNameableProperties(source, target);
     if (source.getCatalogs() != null) {
@@ -303,7 +304,7 @@ public final class DtoToEntityTransformer {
               .map(c -> transformDto2Catalog(c, idRefResolver))
               .collect(Collectors.toSet()));
     }
-    target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
+    target.setRiskDefinitions(copyOf(source.getRiskDefinitions()));
   }
 
   private <T extends CompositeElement> void mapCompositeEntity(
