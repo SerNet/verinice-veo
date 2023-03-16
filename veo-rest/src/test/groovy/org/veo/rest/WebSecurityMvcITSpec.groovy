@@ -30,6 +30,8 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
     @Autowired
     private ClientRepositoryImpl clientRepository
 
+    private String domainId
+
     static def USER_EDITABLE_PATHS = WebSecurity.USER_EDITABLE_PATHS.collect {
         it.replace("/**", "")
     }
@@ -39,7 +41,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
     }
 
     def setup() {
-        createTestClient()
+        domainId = createTestDomain(createTestClient(), TEST_DOMAIN_TEMPLATE_ID).idAsString
     }
 
     def "unauthenticated requests fail"() {
@@ -150,6 +152,12 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
                 assert mvc.perform(
                 MockMvcRequestBuilders
                 .get("/domaintemplates/$TEST_DOMAIN_TEMPLATE_ID"))
+                .andReturn().response.status == 200
+                break
+            case ~/\/domians\/.+/:
+                assert mvc.perform(
+                MockMvcRequestBuilders
+                .get(entity.replace("/domians", "/domians/$domainId")))
                 .andReturn().response.status == 200
                 break
             default:

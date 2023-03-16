@@ -73,7 +73,11 @@ public class WebSecurity {
 
   // Paths to domain elements:
   private static final Stream<String> ELEMENT_PATHS =
-      EntityType.ELEMENT_PLURAL_TERMS.stream().map("/%s/**"::formatted);
+      EntityType.ELEMENT_PLURAL_TERMS.stream()
+          .flatMap(
+              pluralTerm ->
+                  Stream.of(
+                      "/%s/**".formatted(pluralTerm), "/domians/**/%s/**".formatted(pluralTerm)));
 
   // Resources that are not domain elements (see above) but should be protected by the same
   // policies:
