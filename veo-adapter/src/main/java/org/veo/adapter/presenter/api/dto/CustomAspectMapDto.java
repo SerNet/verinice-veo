@@ -20,15 +20,19 @@ package org.veo.adapter.presenter.api.dto;
 import java.util.Collections;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class CustomAspectMapDto {
-  @JsonValue private Map<String, AttributesDto> customAspects = Collections.emptyMap();
+  @JsonCreator
+  public CustomAspectMapDto(Map<String, AttributesDto> value) {
+    this.value = value;
+  }
+
+  @JsonValue private Map<String, AttributesDto> value = Collections.emptyMap();
 }

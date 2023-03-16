@@ -110,6 +110,7 @@ public abstract class AbstractElementInDomainDto<TElement extends Element>
   private CustomAspectMapDto customAspects = new CustomAspectMapDto();
 
   @Schema(description = "Element type identifier", accessMode = Schema.AccessMode.READ_ONLY)
+  @JsonProperty(access = READ_ONLY)
   public String getType() {
     return EntityType.getSingularTermByType(getModelInterface());
   }

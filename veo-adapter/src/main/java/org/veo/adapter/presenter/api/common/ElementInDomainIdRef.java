@@ -53,6 +53,19 @@ public class ElementInDomainIdRef<TElement extends Element> extends IdRef<TEleme
     this.subType = subType;
   }
 
+  public static ElementInDomainIdRef<?> fromTargetUri(
+      String targetUri, ReferenceAssembler urlAssembler) {
+    return new ElementInDomainIdRef<>(
+        urlAssembler.parseId(targetUri),
+        null,
+        null,
+        (Class<Element>) urlAssembler.parseType(targetUri),
+        urlAssembler,
+        targetUri,
+        null,
+        null);
+  }
+
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   public String getTargetInDomainUri() {
     return urlAssembler.elementInDomainRefOf(element, domain);

@@ -21,15 +21,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class LinkMapDto {
-  @JsonValue private Map<String, List<LinkDto>> links = Collections.emptyMap();
+  @JsonCreator
+  public LinkMapDto(Map<String, List<LinkDto>> value) {
+    this.value = value;
+  }
+
+  @JsonValue private Map<String, List<LinkDto>> value = Collections.emptyMap();
 }
