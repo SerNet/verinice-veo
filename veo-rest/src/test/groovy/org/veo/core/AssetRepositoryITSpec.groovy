@@ -53,12 +53,8 @@ class AssetRepositoryITSpec extends VeoSpringSpec {
         when:
         assetRepository.save(newAsset(unit) {
             associateWithDomain(domain, "", "")
-            customAspects = [
-                newCustomAspect(null, domain)
-            ]
-            links = [
-                newCustomLink(null, "goodLink", domain)
-            ]
+            applyCustomAspect(newCustomAspect(null, domain))
+            applyLink(newCustomLink(null, "goodLink", domain))
             parts = [
                 newAsset(unit) {
                     designator = "super bad designator"

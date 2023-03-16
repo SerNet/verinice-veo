@@ -406,7 +406,6 @@ class DeciderSpec extends VeoSpec {
     def "no pia custom aspect means no result"() {
         given:
         def process = createProcess([:])
-        process.customAspects = []
         addRisk(process, [
             (riskCategoryC): riskValueLow
         ])
@@ -426,7 +425,7 @@ class DeciderSpec extends VeoSpec {
     Process createProcess(Map<String, Object> piaAttributes) {
         return newProcess(unit) {
             associateWithDomain(domain, "PRO_DataProcessing", "NEW")
-            addToCustomAspects(newCustomAspect("process_privacyImpactAssessment", null) {
+            applyCustomAspect(newCustomAspect("process_privacyImpactAssessment", domain) {
                 attributes = piaAttributes
             })
         }

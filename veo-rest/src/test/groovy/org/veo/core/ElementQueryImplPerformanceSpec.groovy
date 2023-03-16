@@ -72,13 +72,11 @@ class ElementQueryImplPerformanceSpec extends AbstractPerformanceITSpec {
         def processes = new HashSet<ProcessData>()
         for(int i = 0; i < testProcessCount; i++) {
             processes.add(newProcess(unit) {
-                customAspects = [
-                    newCustomAspect("my_custom_aspect", domain) {
-                        attributes = [
-                            "foo": "bar"
-                        ]
-                    }
-                ]
+                applyCustomAspect(newCustomAspect("my_custom_aspect", domain) {
+                    attributes = [
+                        "foo": "bar"
+                    ]
+                })
                 links = [
                     newCustomLink(asset, "my_little_link", domain)
                 ]

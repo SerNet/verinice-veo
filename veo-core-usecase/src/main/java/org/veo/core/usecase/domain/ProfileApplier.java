@@ -98,7 +98,7 @@ public class ProfileApplier {
 
     links.forEach(
         (element, elementLinks) -> {
-          elementLinks.forEach(element::addToLinks);
+          elementLinks.forEach(element::applyLink);
         });
 
     risks.forEach(

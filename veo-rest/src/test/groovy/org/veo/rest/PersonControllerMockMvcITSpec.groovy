@@ -186,9 +186,7 @@ class PersonControllerMockMvcITSpec extends VeoMvcSpec {
             personRepository.save(newPerson(unit) {
                 name = 'Test person-1'
                 associateWithDomain(dsgvoDomain, "PER_Person", "NEW")
-                customAspects = [
-                    newCustomAspect("my.new.type", dsgvoDomain)
-                ]
+                applyCustomAspect(newCustomAspect("my.new.type", dsgvoDomain))
             })
         }
 

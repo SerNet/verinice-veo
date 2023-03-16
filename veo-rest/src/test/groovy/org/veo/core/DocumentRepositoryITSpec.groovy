@@ -52,11 +52,10 @@ class DocumentRepositoryITSpec extends VeoSpringSpec {
     def "cascading relations are validated"() {
         when:
         documentRepository.save(newDocument(unit) {
-            customAspects = [
-                newCustomAspect(null, domain)
-            ]
+            // bypass setters to sneak in invalid values
+            customAspects = [newCustomAspect(null, domain)]
             links = [
-                newCustomLink(null, "goodLink", domain)
+                newCustomLink(null, null, domain)
             ]
             parts = [
                 newDocument(unit) {
@@ -68,9 +67,10 @@ class DocumentRepositoryITSpec extends VeoSpringSpec {
 
         then:
         def ex = thrown(ConstraintViolationException)
-        ex.constraintViolations*.propertyPath*.toString().sort() == [
+        ex.constraintViolations*.propertyPath*.toString() ==~ [
             "customAspects[].type",
             "links[].target",
+            "links[].type",
             "parts[].designator",
             "subTypeAspects[].status",
             "subTypeAspects[].subType",

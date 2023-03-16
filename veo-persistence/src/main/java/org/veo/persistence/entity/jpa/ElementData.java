@@ -237,17 +237,6 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   /**
-   * Add the given CustomLink to the collection of links. Manages the association between Element
-   * and CustomLink.
-   *
-   * @return true if the link was successfully added
-   */
-  public boolean addToLinks(CustomLink aCustomLink) {
-    aCustomLink.setSource(this);
-    return this.links.add(aCustomLink);
-  }
-
-  /**
    * Remove the given CustomLink from the collection links.
    *
    * @return true if removed
@@ -260,23 +249,16 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   /**
-   * Add the given {@link CustomAspect} to the collection customAspects.
-   *
-   * @return true if added
-   */
-  public boolean addToCustomAspects(CustomAspect aCustomAspect) {
-    if (aCustomAspect instanceof CustomAspectData customAspectData) {
-      customAspectData.setOwner(this);
-    }
-    return this.customAspects.add(aCustomAspect);
-  }
-
-  /**
    * Remove the given {@link CustomAspect} from the collection customAspects.
    *
    * @return true if removed
    */
   public boolean removeFromCustomAspects(CustomAspect aCustomAspect) {
+    // TODO VEO-1763 propagate change to other domains with identical custom aspect definition
+    // TODO VEO-931 check becomes obsolete once custom link no longer extends custom aspect
+    if (customAspect instanceof CustomLink) {
+      throw new IllegalArgumentException("Cannot remove custom aspect - got custom link");
+    }
     if (aCustomAspect instanceof CustomAspectData propertiesData) {
       propertiesData.setOwner(null);
     }
@@ -296,6 +278,66 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
       return Set.of(containingCatalogItem.getCatalog().getDomainTemplate());
     }
     return domains.stream().map(DomainBase.class::cast).collect(Collectors.toSet());
+  }
+
+  @Override
+  public boolean applyCustomAspect(CustomAspect customAspect) {
+    // TODO VEO-1763 propagate change to other domains with identical custom aspect definition
+    // TODO VEO-931 check becomes obsolete once custom link no longer extends custom aspect
+    if (customAspect instanceof CustomLink) {
+      throw new IllegalArgumentException("Cannot apply custom aspect - got custom link");
+    }
+    return findCustomAspect(customAspect.getDomain(), customAspect.getType())
+        // TODO VEO-931 implement and use CustomAspect::apply(CustomAspect)
+        .map(ca -> ca.setAttributes(customAspect.getAttributes()))
+        .orElseGet(() -> addToCustomAspects(customAspect));
+  }
+
+  @Override
+  public boolean applyLink(CustomLink newLink) {
+    return findLink(newLink.getType(), newLink.getTarget(), newLink.getDomain())
+        // TODO VEO-931 implement and use CustomLink::apply(CustomLink)
+        .map(oldLink -> oldLink.setAttributes(newLink.getAttributes()))
+        .orElseGet(() -> addToLinks(newLink));
+  }
+
+  private Optional<CustomLink> findLink(String type, Element target, DomainBase domain) {
+    return links.stream()
+        .filter(
+            l ->
+                // TODO VEO-931 implement and use CustomLink::matches(CustomLink)
+                l.getDomain().equals(domain)
+                    && l.getType().matches(type)
+                    && l.getTarget().equals(target))
+        .findFirst();
+  }
+
+  /**
+   * Add the given CustomLink to the collection of links. Manages the association between Element
+   * and CustomLink.
+   *
+   * @return true if the link was successfully added
+   */
+  private boolean addToLinks(CustomLink aCustomLink) {
+    aCustomLink.setSource(this);
+    return this.links.add(aCustomLink);
+  }
+
+  private Optional<CustomAspect> findCustomAspect(DomainBase domain, String type) {
+    // TODO VEO-931 implement and use CustomLink::matches(CustomLink)
+    return getCustomAspects(domain).stream().filter(ca -> ca.getType().equals(type)).findFirst();
+  }
+
+  /**
+   * Add the given {@link CustomAspect} to the collection customAspects.
+   *
+   * @return true if added
+   */
+  private boolean addToCustomAspects(CustomAspect aCustomAspect) {
+    if (aCustomAspect instanceof CustomAspectData customAspectData) {
+      customAspectData.setOwner(this);
+    }
+    return this.customAspects.add(aCustomAspect);
   }
 
   private void removeAspect(Set<? extends Aspect> aspects, DomainBase domain) {

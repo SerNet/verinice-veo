@@ -289,7 +289,7 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
 
         def control = txTemplate.execute {
             controlRepository.save(newControl(unit) {
-                customAspects = [customAspect] as Set
+                applyCustomAspect(customAspect)
                 associateWithDomain(dsgvoDomain, "CTL_TOM", "NEW")
             })
         }

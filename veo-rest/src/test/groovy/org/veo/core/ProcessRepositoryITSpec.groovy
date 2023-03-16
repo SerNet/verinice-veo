@@ -89,12 +89,8 @@ class ProcessRepositoryITSpec extends VeoSpringSpec {
     def "cascading relations are validated"() {
         when:
         processRepository.save(newProcess(unit) {
-            customAspects = [
-                newCustomAspect(null, domain)
-            ]
-            links = [
-                newCustomLink(null, "goodLink", domain)
-            ]
+            applyCustomAspect(newCustomAspect(null, domain))
+            applyLink(newCustomLink(null, "goodLink", domain))
             parts = [
                 newProcess(unit) {
                     designator = "super bad designator"

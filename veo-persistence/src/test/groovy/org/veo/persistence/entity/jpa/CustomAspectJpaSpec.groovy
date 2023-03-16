@@ -51,14 +51,12 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
         given:
         def asset = newAsset(unit) {
             associateWithDomain(domain, "goodSubType", "goodStatus")
-            customAspects = [
-                newCustomAspect("goodAspect", domain) {
-                    attributes = [
-                        "k1": "uno",
-                        "k2": 2
-                    ]
-                }
-            ]
+            applyCustomAspect(newCustomAspect("goodAspect", domain) {
+                attributes = [
+                    "k1": "uno",
+                    "k2": 2
+                ]
+            })
         }
 
         when:
@@ -77,13 +75,11 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
         given: 'a saved asset with a string prop'
         def asset = newAsset(unit) {
             associateWithDomain(domain, "goodSubType", "goodStatus")
-            customAspects = [
-                newCustomAspect("goodAspect", domain) {
-                    attributes = [
-                        "k1": "uno"
-                    ]
-                }
-            ]
+            applyCustomAspect(newCustomAspect("goodAspect", domain) {
+                attributes = [
+                    "k1": "uno"
+                ]
+            })
         }
         assetRepository.save(asset)
 
@@ -104,14 +100,12 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
         given: 'a saved asset with two props'
         def asset = newAsset(unit) {
             associateWithDomain(domain, "goodSubType", "goodStatus")
-            customAspects = [
-                newCustomAspect("goodAspect", domain) {
-                    attributes = [
-                        "k1": "uno",
-                        "k2": "due",
-                    ]
-                }
-            ]
+            applyCustomAspect(newCustomAspect("goodAspect", domain) {
+                attributes = [
+                    "k1": "uno",
+                    "k2": "due",
+                ]
+            })
         }
         assetRepository.save(asset)
 
@@ -130,11 +124,9 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
         def longString = "X" * stringLength
         def asset = newAsset(unit) {
             associateWithDomain(domain, "goodSubType", "goodStatus")
-            customAspects = [
-                newCustomAspect("goodAspect", domain) {
-                    attributes = ["p": longString]
-                }
-            ]
+            applyCustomAspect(newCustomAspect("goodAspect", domain) {
+                attributes = ["p": longString]
+            })
         }
 
         when:

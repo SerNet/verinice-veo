@@ -264,9 +264,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
                 associateWithDomain(dsgvoDomain, "PRO_DataTransfer", "NEW")
-                customAspects = [
-                    newCustomAspect("my.new.type", dsgvoDomain)
-                ]
+                applyCustomAspect(newCustomAspect("my.new.type", dsgvoDomain))
             })
         }
 
@@ -341,13 +339,11 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
                 associateWithDomain(dsgvoDomain, "PRO_DataTransfer", "NEW")
-                customAspects = [
-                    newCustomAspect("process_privacyImpactAssessment", dsgvoDomain) {
-                        attributes = [
-                            'process_privacyImpactAssessment_blacklistComment': 'old comment'
-                        ]
-                    }
-                ]
+                applyCustomAspect(newCustomAspect("process_privacyImpactAssessment", dsgvoDomain) {
+                    attributes = [
+                        'process_privacyImpactAssessment_blacklistComment': 'old comment'
+                    ]
+                })
             })
         }
 

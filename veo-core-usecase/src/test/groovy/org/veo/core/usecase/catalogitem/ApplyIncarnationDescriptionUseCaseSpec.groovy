@@ -156,7 +156,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         1* repo.save(newControl) >> newControl
         1* newControl.setOwner(existingUnit)
         1* designatorService.assignDesignator(newControl, existingClient)
-        1* control3.addToLinks(_)
+        1* control3.applyLink(_)
         output.newElements.size() == 1
         output.newElements.first() == newControl
     }

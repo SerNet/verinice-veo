@@ -43,5 +43,8 @@ public interface CustomAspect {
 
   Map<String, Object> getAttributes();
 
-  void setAttributes(Map<String, Object> attributes);
+  /**
+   * @return {@code true} if any attributes have changed
+   */
+  boolean setAttributes(Map<String, Object> attributes);
 }

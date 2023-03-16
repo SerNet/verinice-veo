@@ -591,7 +591,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
             def process = newProcess(unit)
             for (i in 0..<count) {
                 CustomAspect customAspect = newCustomAspect("aType $i", domain)
-                process.addToCustomAspects(customAspect)
+                process.applyCustomAspect(customAspect)
             }
             processRepository.save(process)
         }
@@ -650,7 +650,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
             customAspect.attributes = [
                 PROP_KEY: "ok"
             ]
-            process.addToCustomAspects(customAspect)
+            process.applyCustomAspect(customAspect)
             return processRepository.save(process)
         }
     }
@@ -708,21 +708,21 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
             process = processRepository.save(process)
 
             def link_person_asset = newCustomLink(asset, " type1", domain)
-            compositePerson.addToLinks(link_person_asset)
+            compositePerson.applyLink(link_person_asset)
             compositePerson = personRepository.save(compositePerson)
 
             def link_asset_person = newCustomLink(compositePerson, "type2", domain)
             def link_asset_process = newCustomLink(process, "type3", domain)
-            asset.addToLinks(link_asset_process)
-            asset.addToLinks(link_asset_person)
+            asset.applyLink(link_asset_process)
+            asset.applyLink(link_asset_person)
             asset = assetRepository.save(asset)
 
             def link_process_person = newCustomLink(compositePerson, "type4", domain)
-            process.addToLinks(link_process_person)
+            process.applyLink(link_process_person)
             processRepository.save(process)
 
             def link_asset_asset = newCustomLink(asset2, "type5", domain)
-            asset.addToLinks(link_asset_asset)
+            asset.applyLink(link_asset_asset)
             assetRepository.save(asset)
         }
     }

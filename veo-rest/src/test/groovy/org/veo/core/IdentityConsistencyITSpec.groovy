@@ -232,7 +232,7 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
 
         when:
         def aspect = newCustomAspect("goodAspect", domain)
-        asset.setCustomAspects([aspect] as Set<CustomAspect>)
+        asset.applyCustomAspect(aspect)
 
         testIdentityConsistency(CustomAspectData.class, aspect)
 

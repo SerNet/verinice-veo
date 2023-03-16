@@ -315,8 +315,8 @@ public final class DtoToEntityTransformer {
   private <TDto extends AbstractElementDto, TEntity extends Element> void mapElement(
       TDto source, TEntity target, IdRefResolver idRefResolver) {
     mapNameableProperties(source, target);
-    target.setLinks(mapLinks(target, source, idRefResolver));
-    target.setCustomAspects(mapCustomAspects(target, source, factory));
+    mapLinks(target, source, idRefResolver).forEach(target::applyLink);
+    mapCustomAspects(target, source, factory).forEach(target::applyCustomAspect);
     if (source.getOwner() != null) {
       target.setOwnerOrContainingCatalogItem(idRefResolver.resolve(source.getOwner()));
     }

@@ -189,7 +189,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
                 name = 'Test asset-1'
-                customAspects = [simpleProps] as Set
+                applyCustomAspect(simpleProps)
             })
         }
 
@@ -491,7 +491,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             assetRepository.save(newAsset(unit) {
                 name = "Test asset-1"
                 associateWithDomain(dsgvoDomain, "AST_Application", "NEW")
-                customAspects = [customAspect] as Set
+                applyCustomAspect(customAspect)
             })
         }
 

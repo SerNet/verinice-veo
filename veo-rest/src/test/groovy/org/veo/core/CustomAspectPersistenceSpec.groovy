@@ -52,7 +52,7 @@ class CustomAspectPersistenceSpec extends VeoSpringSpec {
         Unit unit = newUnit(client)
         CustomAspect cp = newCustomAspect('my.new.linktype', domain)
         Asset asset = newAsset(unit) {
-            customAspects = [cp] as Set
+            applyCustomAspect(cp)
         }
         unitRepository.save(unit)
         assetRepository.save(asset)

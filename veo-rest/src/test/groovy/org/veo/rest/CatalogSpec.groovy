@@ -161,19 +161,17 @@ class CatalogSpec extends VeoMvcSpec {
                     name = 'p3-all-features'
                     description = "a process with subtype"
                     associateWithDomain(domain, "MY_SUBTYPE", "START")
-                    customAspects = [
-                        newCustomAspect("process_resilience", domain) {
-                            attributes = [
-                                "process_resilience_impact":"process_resilience_impact_low"
-                            ]
-                        },
-                        newCustomAspect("process_processingDetails", domain) {
-                            attributes = [
-                                "process_processingDetails_comment":"my comment",
-                                "process_processingDetails_operatingStage":"process_processingDetails_operatingStage_operation"
-                            ]
-                        }
-                    ]
+                    applyCustomAspect(newCustomAspect("process_resilience", domain) {
+                        attributes = [
+                            "process_resilience_impact": "process_resilience_impact_low"
+                        ]
+                    })
+                    applyCustomAspect(newCustomAspect("process_processingDetails", domain) {
+                        attributes = [
+                            "process_processingDetails_comment": "my comment",
+                            "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation"
+                        ]
+                    })
                 }
             })
 
@@ -187,19 +185,17 @@ class CatalogSpec extends VeoMvcSpec {
                     name = 'tom1'
                     description = "a control with external tailorref"
                     associateWithDomain(domain, "CTL_TOM", "NEW1")
-                    customAspects = [
-                        newCustomAspect("process_resilience", domain) {
-                            attributes = [
-                                "process_resilience_impact":"process_resilience_impact_low"
-                            ]
-                        },
-                        newCustomAspect("process_processingDetails", domain) {
-                            attributes = [
-                                "process_processingDetails_comment":"another comment",
-                                "process_processingDetails_operatingStage":"process_processingDetails_operatingStage_operation"
-                            ]
-                        }
-                    ]
+                    applyCustomAspect(newCustomAspect("process_resilience", domain) {
+                        attributes = [
+                            "process_resilience_impact": "process_resilience_impact_low"
+                        ]
+                    })
+                    applyCustomAspect(newCustomAspect("process_processingDetails", domain) {
+                        attributes = [
+                            "process_processingDetails_comment": "another comment",
+                            "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation"
+                        ]
+                    })
                 }
             })
             newLinkTailoringReference(item7, TailoringReferenceType.LINK_EXTERNAL) {

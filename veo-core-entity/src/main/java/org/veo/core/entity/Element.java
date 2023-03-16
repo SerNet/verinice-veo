@@ -69,13 +69,6 @@ public interface Element
   }
 
   /**
-   * Add the given CustomLink to the collection links. Adding will set the source to this.
-   *
-   * @return true if added
-   */
-  boolean addToLinks(CustomLink aCustomLink);
-
-  /**
    * Remove the given CustomLink from the collection links. Removing will set the source to null.
    *
    * @return true if removed
@@ -111,13 +104,6 @@ public interface Element
   boolean associateWithDomain(DomainBase domain, String subType, String status);
 
   /**
-   * Add the given {@link CustomAspect} to the collection customAspects.
-   *
-   * @return true if added
-   */
-  boolean addToCustomAspects(CustomAspect aCustomAspect);
-
-  /**
    * Remove the given {@link CustomAspect} from the collection customAspects.
    *
    * @return true if removed
@@ -125,8 +111,6 @@ public interface Element
   boolean removeFromCustomAspects(CustomAspect aCustomAspect);
 
   Set<CustomAspect> getCustomAspects();
-
-  void setCustomAspects(Set<CustomAspect> aCustomAspects);
 
   /**
    * @throws ClientBoundaryViolationException if the passed client is not equal to the client in the
@@ -218,7 +202,7 @@ public interface Element
    */
   Set<DomainBase> getDomainTemplates();
 
-  default Set<CustomAspect> getCustomAspects(Domain domain) {
+  default Set<CustomAspect> getCustomAspects(DomainBase domain) {
     return getCustomAspects().stream().filter(ca -> ca.getDomain().equals(domain)).collect(toSet());
   }
 
@@ -232,4 +216,22 @@ public interface Element
     }
     return getDomains().contains(domain);
   }
+
+  /**
+   * Applies given custom aspect, by either applying its attributes to a corresponding existing
+   * custom aspect or by adding it as a new custom aspect (if no corresponding custom aspect
+   * exists). The change is propagated to all domains that have a definition for the given custom
+   * aspect type that is identical to the definition in the target domain.
+   *
+   * @return {@code true} if anything has changed on the element
+   */
+  boolean applyCustomAspect(CustomAspect customAspect);
+
+  /**
+   * Applies given link, by either applying its attributes to a corresponding existing link or by
+   * adding it as a new link (if no corresponding link exists).
+   *
+   * @return {@code true} if anything has changed on the element
+   */
+  boolean applyLink(CustomLink customLink);
 }

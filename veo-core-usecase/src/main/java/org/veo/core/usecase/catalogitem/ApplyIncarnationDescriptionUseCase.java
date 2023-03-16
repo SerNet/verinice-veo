@@ -285,7 +285,7 @@ public class ApplyIncarnationDescriptionUseCase
     CustomLink link = factory.createCustomLink(target, source, type, domain);
     link.setAttributes(attributes == null ? null : new HashMap<>(attributes));
     link.setType(type);
-    source.addToLinks(link);
+    source.applyLink(link);
     return link;
   }
 
@@ -311,7 +311,7 @@ public class ApplyIncarnationDescriptionUseCase
                               ri.source.getName())));
       CustomLink link =
           createLink(ri.source, internalTarget, ri.domain, ri.linkType, ri.attributes);
-      ri.source.addToLinks(link);
+      ri.source.applyLink(link);
     }
   }
 

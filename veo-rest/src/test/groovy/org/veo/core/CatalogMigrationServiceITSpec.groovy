@@ -74,14 +74,12 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
             catalogItems = [
                 newCatalogItem(it, {
                     newDocument(it) {
-                        customAspects = [
-                            newCustomAspect("file", domain) {
-                                attributes = [
-                                    extension: "pdf",
-                                    size: 5000,
-                                ]
-                            }
-                        ]
+                        applyCustomAspect(newCustomAspect("file", domain) {
+                            attributes = [
+                                extension: "pdf",
+                                size: 5000,
+                            ]
+                        })
                     }
                 }) {
                     it.namespace = "routerManual"

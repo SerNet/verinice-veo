@@ -122,10 +122,8 @@ class ProcessRiskRowCountMockMvcITSpec extends VeoMvcSpec {
 
             def process2 = newProcess(unit) {
                 associateWithDomain(domain, "NormalProcess", "NEW")
-                customAspects = [
-                    newCustomAspect('my.new.customaspect', domain),
-                    newCustomAspect('my.newer.customaspect', domain)
-                ]
+                applyCustomAspect(newCustomAspect('my.new.customaspect', domain))
+                applyCustomAspect(newCustomAspect('my.newer.customaspect', domain))
             }
             processRepository.save(process2)
             postRisk1(process2.idAsString, scenarioId)

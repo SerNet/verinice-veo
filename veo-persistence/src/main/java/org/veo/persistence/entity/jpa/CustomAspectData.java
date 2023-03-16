@@ -38,6 +38,7 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 
 import lombok.Data;
+import lombok.NonNull;
 import lombok.ToString;
 
 @Entity(name = "custom_aspect")
@@ -67,6 +68,15 @@ public class CustomAspectData implements CustomAspect {
   @Type(type = "json")
   @Column(columnDefinition = "jsonb")
   private Map<String, Object> attributes = new HashMap<>();
+
+  @Override
+  public boolean setAttributes(@NonNull Map<String, Object> newAttributes) {
+    if (!attributes.equals(newAttributes)) {
+      attributes = newAttributes;
+      return true;
+    }
+    return false;
+  }
 
   @Override
   public boolean equals(Object o) {

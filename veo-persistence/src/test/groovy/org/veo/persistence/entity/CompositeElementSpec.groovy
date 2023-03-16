@@ -241,14 +241,15 @@ class CompositeElementSpec extends VeoSpec {
      */
     def "A composite can be used just like a single element of the same type"() {
         given: "a set of two processes"
+        def domain = newDomain(client)
         def p1 = newProcess(unit)
         def p2 = newProcess(unit)
 
-        def link = newCustomLink(p2, "goodLink", null)
-        p1.addToLinks(link)
+        def link = newCustomLink(p2, "goodLink", domain)
+        p1.applyLink(link)
 
-        def customAspect = newCustomAspect("type", null)
-        p1.addToCustomAspects(customAspect)
+        def customAspect = newCustomAspect("type", domain)
+        p1.applyCustomAspect(customAspect)
 
         when: "a composite is reinstantiated with the processes:"
         def processComposite = newProcess(unit)
@@ -257,11 +258,11 @@ class CompositeElementSpec extends VeoSpec {
         and: "another object should be compared"
         def p3 = newProcess(unit)
 
-        def customAspect2 = newCustomAspect("type2", null)
-        p3.addToCustomAspects(customAspect2)
+        def customAspect2 = newCustomAspect("type2", domain)
+        p3.applyCustomAspect(customAspect2)
 
-        def link2 = newCustomLink(p2, "goodLink", null)
-        p3.addToLinks(link2)
+        def link2 = newCustomLink(p2, "goodLink", domain)
+        p3.applyLink(link2)
 
         then: "the same method can be called on the composite (branch node) or element (leaf node)"
         p1.links.first() == link
