@@ -61,6 +61,6 @@ public class CustomLinkData extends CustomAspectData implements CustomLink {
 
   @Override
   public void remove() {
-    this.getSource().removeFromLinks(this);
+    this.getSource().removeLink(this);
   }
 }

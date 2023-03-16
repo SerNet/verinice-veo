@@ -236,33 +236,23 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     return false;
   }
 
-  /**
-   * Remove the given CustomLink from the collection links.
-   *
-   * @return true if removed
-   */
   @Override
-  public boolean removeFromLinks(CustomLink aCustomLink) {
+  public boolean removeLink(CustomLink link) {
     forceUpdate();
-    aCustomLink.setSource(null);
-    return this.links.remove(aCustomLink);
+    link.setSource(null);
+    return this.links.remove(link);
   }
 
-  /**
-   * Remove the given {@link CustomAspect} from the collection customAspects.
-   *
-   * @return true if removed
-   */
-  public boolean removeFromCustomAspects(CustomAspect aCustomAspect) {
+  public boolean removeCustomAspect(CustomAspect customAspect) {
     // TODO VEO-1763 propagate change to other domains with identical custom aspect definition
     // TODO VEO-931 check becomes obsolete once custom link no longer extends custom aspect
     if (customAspect instanceof CustomLink) {
       throw new IllegalArgumentException("Cannot remove custom aspect - got custom link");
     }
-    if (aCustomAspect instanceof CustomAspectData propertiesData) {
+    if (customAspect instanceof CustomAspectData propertiesData) {
       propertiesData.setOwner(null);
     }
-    return this.customAspects.remove(aCustomAspect);
+    return this.customAspects.remove(customAspect);
   }
 
   @Transient

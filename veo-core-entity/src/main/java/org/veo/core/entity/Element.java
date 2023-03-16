@@ -69,11 +69,11 @@ public interface Element
   }
 
   /**
-   * Remove the given CustomLink from the collection links. Removing will set the source to null.
+   * Removes given {@link CustomLink} from this element.
    *
-   * @return true if removed
+   * @return {@code true} if removed
    */
-  boolean removeFromLinks(CustomLink aCustomLink);
+  boolean removeLink(CustomLink aCustomLink);
 
   Set<CustomLink> getLinks();
 
@@ -104,11 +104,11 @@ public interface Element
   boolean associateWithDomain(DomainBase domain, String subType, String status);
 
   /**
-   * Remove the given {@link CustomAspect} from the collection customAspects.
+   * Removes given {@link CustomAspect} from this element.
    *
-   * @return true if removed
+   * @return {@code true} if removed
    */
-  boolean removeFromCustomAspects(CustomAspect aCustomAspect);
+  boolean removeCustomAspect(CustomAspect customAspect);
 
   Set<CustomAspect> getCustomAspects();
 
