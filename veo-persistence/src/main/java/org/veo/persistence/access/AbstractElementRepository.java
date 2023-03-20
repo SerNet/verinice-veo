@@ -19,6 +19,7 @@ package org.veo.persistence.access;
 
 import static java.util.Collections.singleton;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -102,6 +103,11 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
     elements.forEach(Element::remove);
 
     dataRepository.deleteAllById(elementIds);
+  }
+
+  @Override
+  public Optional<T> findById(Key<UUID> id, Key<UUID> clientId) {
+    return dataRepository.findById(id.uuidValue(), clientId.uuidValue()).map(e -> (T) e);
   }
 
   @Override

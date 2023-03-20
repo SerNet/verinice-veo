@@ -23,29 +23,40 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Domain
+import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.repository.AssetRepository
 import org.veo.core.repository.UnitRepository
 
 @WithUserDetails("user@domain.example")
 class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     @Autowired
     private UnitRepository unitRepository
+    @Autowired
+    private AssetRepository assetRepository
 
     private String unitId
     private String testDomainId
+    private String dsgvoTestDomainId
+    // TODO VEO-1871 remove field
+    private Domain dsgvoTestDomain
 
     def setup() {
         def client = createTestClient()
         testDomainId = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID).idAsString
+        dsgvoTestDomain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        dsgvoTestDomainId = dsgvoTestDomain.idAsString
         unitId = unitRepository.save(newUnit(client)).idAsString
     }
 
-    def "get asset in a domain"() {
+    def "CRUD asset in domain contexts"() {
         given: "an asset with linked person and a part"
         def personId = parseJson(post("/persons", [
             name: "Anne Admin",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
+        // TODO VEO-1891 use new domain-specific POST endpoint for element creation
         def partId = parseJson(post("/assets", [
             name: "Git server",
             owner: [targetUri: "/units/$unitId"],
@@ -121,6 +132,62 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].targetInDomainUri == "http://localhost/domians/$testDomainId/assets/$partId"
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "Server"
+
+        when: "associating asset with a second domain"
+        // TODO VEO-1871 associate using new POST endpoint
+        txTemplate.execute {
+            assetRepository.findById(Key.uuidFrom(assetId)).get().with {
+                associateWithDomain(dsgvoTestDomain, "AST_IT-System", "RELEASED")
+            }
+        }
+
+        and: "fetching asset in second domain"
+        def assetInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/assets/$assetId")) as Map
+
+        then: "it contains basic values"
+        assetInDsgvo.name == "My little server farm"
+        assetInDsgvo.description == "Bunch of servers"
+
+        and: "values for second domain"
+        assetInDsgvo.subType == "AST_IT-System"
+        assetInDsgvo.status == "RELEASED"
+
+        and: "no values for original domain"
+        assetInDsgvo.customAspects.storage == null
+
+        when: "updating and reloading the asset from the viewpoint of the second domain"
+        assetInDsgvo.description = "New description"
+        assetInDsgvo.status = "ARCHIVED"
+        assetInDsgvo.customAspects.asset_details = [
+            asset_details_number: 3000
+        ]
+        put("/domians/$dsgvoTestDomainId/assets/$assetId", assetInDsgvo, [
+            'If-Match': getETag(get("/domians/$dsgvoTestDomainId/assets/$assetId"))
+        ], 200)
+        assetInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/assets/$assetId"))
+
+        then: "updated values are present"
+        assetInDsgvo.description == "New description"
+        assetInDsgvo.status == "ARCHIVED"
+        assetInDsgvo.customAspects.asset_details.asset_details_number == 3000
+
+        and: "values for original domain are still absent"
+        assetInDsgvo.customAspects.storage == null
+
+        when: "fetching the asset from the viewpoint of the original domain again"
+        def assetInTestdomain = parseJson(get("/domians/$testDomainId/assets/$assetId"))
+
+        then: "values for original domain are unchanged"
+        assetInTestdomain.subType == "Server"
+        assetInTestdomain.status == "RUNNING"
+        assetInTestdomain.customAspects.storage.totalCapacityInTb == 32
+
+        and: "some basic values have been updated"
+        assetInTestdomain.name == "My little server farm"
+        assetInTestdomain.description == "New description"
+
+        and: "values for the second domain are absent"
+        assetInTestdomain.customAspects.asset_details == null
     }
 
     def "get all assets in a domain"() {

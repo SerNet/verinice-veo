@@ -23,29 +23,40 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Domain
+import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.repository.DocumentRepository
 import org.veo.core.repository.UnitRepository
 
 @WithUserDetails("user@domain.example")
 class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     @Autowired
     private UnitRepository unitRepository
+    @Autowired
+    private DocumentRepository documentRepository
 
     private String unitId
     private String testDomainId
+    private String dsgvoTestDomainId
+    // TODO VEO-1871 remove field
+    private Domain dsgvoTestDomain
 
     def setup() {
         def client = createTestClient()
         testDomainId = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID).idAsString
+        dsgvoTestDomain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        dsgvoTestDomainId = dsgvoTestDomain.idAsString
         unitId = unitRepository.save(newUnit(client)).idAsString
     }
 
-    def "get document in a domain"() {
+    def "CRUD document in domain contexts"() {
         given: "an document with linked person and a part"
         def personId = parseJson(post("/persons", [
             name: "Ricky Writer",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
+        // TODO VEO-1891 use new domain-specific POST endpoint for element creation
         def partId = parseJson(post("/documents", [
             name: "ISMS manual changelog",
             owner: [targetUri: "/units/$unitId"],
@@ -75,7 +86,7 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
                 ]
             ],
             parts: [
-                [ targetUri:"/documents/$partId" ]
+                [targetUri: "/documents/$partId"]
             ],
             links: [
                 author: [
@@ -121,6 +132,62 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].targetInDomainUri == "http://localhost/domians/$testDomainId/documents/$partId"
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "Manual"
+
+        when: "associating document with a second domain"
+        // TODO VEO-1871 associate using new POST endpoint
+        txTemplate.execute {
+            documentRepository.findById(Key.uuidFrom(documentId)).get().with {
+                associateWithDomain(dsgvoTestDomain, "DOC_Document", "IN_PROGRESS")
+            }
+        }
+
+        and: "fetching document in second domain"
+        def documentInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/documents/$documentId")) as Map
+
+        then: "it contains basic values"
+        documentInDsgvo.name == "ISMS manual"
+        documentInDsgvo.description == "How we do ISMS"
+
+        and: "values for second domain"
+        documentInDsgvo.subType == "DOC_Document"
+        documentInDsgvo.status == "IN_PROGRESS"
+
+        and: "no values for original domain"
+        documentInDsgvo.customAspects.details == null
+
+        when: "updating and reloading the document from the viewpoint of the second domain"
+        documentInDsgvo.description = "New description"
+        documentInDsgvo.status = "ARCHIVED"
+        documentInDsgvo.customAspects.document_revision = [
+            document_revision_comment: "Well worded"
+        ]
+        put("/domians/$dsgvoTestDomainId/documents/$documentId", documentInDsgvo, [
+            'If-Match': getETag(get("/domians/$dsgvoTestDomainId/documents/$documentId"))
+        ], 200)
+        documentInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/documents/$documentId"))
+
+        then: "updated values are present"
+        documentInDsgvo.description == "New description"
+        documentInDsgvo.status == "ARCHIVED"
+        documentInDsgvo.customAspects.document_revision.document_revision_comment == "Well worded"
+
+        and: "values for original domain are still absent"
+        documentInDsgvo.customAspects.details == null
+
+        when: "fetching the document from the viewpoint of the original domain again"
+        def documentInTestdomain = parseJson(get("/domians/$testDomainId/documents/$documentId"))
+
+        then: "values for original domain are unchanged"
+        documentInTestdomain.subType == "Manual"
+        documentInTestdomain.status == "CURRENT"
+        documentInTestdomain.customAspects.details.numberOfPages == 84
+
+        and: "some basic values have been updated"
+        documentInTestdomain.name == "ISMS manual"
+        documentInTestdomain.description == "New description"
+
+        and: "values for the second domain are absent"
+        documentInTestdomain.customAspects.document_revision == null
     }
 
     def "get all documents in a domain"() {

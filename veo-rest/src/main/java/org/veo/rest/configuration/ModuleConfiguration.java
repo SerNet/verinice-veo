@@ -64,14 +64,20 @@ import org.veo.core.entity.specification.EntityValidator;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.events.MessageCreatorImpl;
+import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.CatalogRepository;
 import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.ControlRepository;
 import org.veo.core.repository.DesignatorSequenceRepository;
+import org.veo.core.repository.DocumentRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
+import org.veo.core.repository.IncidentRepository;
+import org.veo.core.repository.PersonRepository;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.repository.ScenarioRepository;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.service.CatalogItemService;
@@ -93,6 +99,14 @@ import org.veo.core.usecase.asset.UpdateAssetRiskUseCase;
 import org.veo.core.usecase.asset.UpdateAssetUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
+import org.veo.core.usecase.base.UpdateAssetInDomainUseCase;
+import org.veo.core.usecase.base.UpdateControlInDomainUseCase;
+import org.veo.core.usecase.base.UpdateDocumentInDomainUseCase;
+import org.veo.core.usecase.base.UpdateIncidentInDomainUseCase;
+import org.veo.core.usecase.base.UpdatePersonInDomainUseCase;
+import org.veo.core.usecase.base.UpdateProcessInDomainUseCase;
+import org.veo.core.usecase.base.UpdateScenarioInDomainUseCase;
+import org.veo.core.usecase.base.UpdateScopeInDomainUseCase;
 import org.veo.core.usecase.catalog.GetCatalogUseCase;
 import org.veo.core.usecase.catalog.GetCatalogsUseCase;
 import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase;
@@ -1022,5 +1036,53 @@ public class ModuleConfiguration {
         eventPublisher,
         decider,
         elementMigrationService);
+  }
+
+  @Bean
+  UpdateAssetInDomainUseCase updateAssetDomainAssociationUseCase(
+      DomainRepository domainRepository, AssetRepository assetRepository, Decider decider) {
+    return new UpdateAssetInDomainUseCase(domainRepository, assetRepository, decider);
+  }
+
+  @Bean
+  UpdateControlInDomainUseCase updateControlInDomainUseCase(
+      DomainRepository domainRepository, ControlRepository controlRepository, Decider decider) {
+    return new UpdateControlInDomainUseCase(domainRepository, controlRepository, decider);
+  }
+
+  @Bean
+  UpdateDocumentInDomainUseCase updateDocumentInDomainUseCase(
+      DomainRepository domainRepository, DocumentRepository controlRepository, Decider decider) {
+    return new UpdateDocumentInDomainUseCase(domainRepository, controlRepository, decider);
+  }
+
+  @Bean
+  UpdateIncidentInDomainUseCase updateIncidentInDomainUseCase(
+      DomainRepository domainRepository, IncidentRepository incidentRepository, Decider decider) {
+    return new UpdateIncidentInDomainUseCase(domainRepository, incidentRepository, decider);
+  }
+
+  @Bean
+  UpdatePersonInDomainUseCase updatePersonInDomainUseCase(
+      DomainRepository domainRepository, PersonRepository personRepository, Decider decider) {
+    return new UpdatePersonInDomainUseCase(domainRepository, personRepository, decider);
+  }
+
+  @Bean
+  UpdateProcessInDomainUseCase updateProcessInDomainUseCase(
+      DomainRepository domainRepository, ProcessRepository processRepository, Decider decider) {
+    return new UpdateProcessInDomainUseCase(domainRepository, processRepository, decider);
+  }
+
+  @Bean
+  UpdateScenarioInDomainUseCase updateScenarioInDomainUseCase(
+      DomainRepository domainRepository, ScenarioRepository scenarioRepository, Decider decider) {
+    return new UpdateScenarioInDomainUseCase(domainRepository, scenarioRepository, decider);
+  }
+
+  @Bean
+  UpdateScopeInDomainUseCase updateScopeInDomainUseCase(
+      DomainRepository domainRepository, ScopeRepository scopeRepository, Decider decider) {
+    return new UpdateScopeInDomainUseCase(domainRepository, scopeRepository, decider);
   }
 }

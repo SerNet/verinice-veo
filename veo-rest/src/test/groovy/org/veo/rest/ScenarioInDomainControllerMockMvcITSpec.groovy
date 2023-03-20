@@ -23,29 +23,40 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Domain
+import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.repository.ScenarioRepository
 import org.veo.core.repository.UnitRepository
 
 @WithUserDetails("user@domain.example")
 class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     @Autowired
     private UnitRepository unitRepository
+    @Autowired
+    private ScenarioRepository scenarioRepository
 
     private String unitId
     private String testDomainId
+    private String dsgvoTestDomainId
+    // TODO VEO-1871 remove field
+    private Domain dsgvoTestDomain
 
     def setup() {
         def client = createTestClient()
         testDomainId = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID).idAsString
+        dsgvoTestDomain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        dsgvoTestDomainId = dsgvoTestDomain.idAsString
         unitId = unitRepository.save(newUnit(client)).idAsString
     }
 
-    def "get scenario in a domain"() {
+    def "CRUD scenario in domain contexts"() {
         given: "an scenario with linked person and a part"
         def personId = parseJson(post("/persons", [
             name: "Mac Hack",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
+        // TODO VEO-1891 use new domain-specific POST endpoint for element creation
         def partId = parseJson(post("/scenarios", [
             name: "Credential recycling",
             owner: [targetUri: "/units/$unitId"],
@@ -129,6 +140,62 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].targetInDomainUri == "http://localhost/domians/$testDomainId/scenarios/$partId"
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "Attack"
+
+        when: "associating scenario with a second domain"
+        // TODO VEO-1871 associate using new POST endpoint
+        txTemplate.execute {
+            scenarioRepository.findById(Key.uuidFrom(scenarioId)).get().with {
+                associateWithDomain(dsgvoTestDomain, "SCN_Scenario", "IN_PROGRESS")
+            }
+        }
+
+        and: "fetching scenario in second domain"
+        def scenarioInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/scenarios/$scenarioId")) as Map
+
+        then: "it contains basic values"
+        scenarioInDsgvo.name == "Brute-force attack"
+        scenarioInDsgvo.description == "An attacker guesses a password by trying out many random strings"
+
+        and: "values for second domain"
+        scenarioInDsgvo.subType == "SCN_Scenario"
+        scenarioInDsgvo.status == "IN_PROGRESS"
+
+        and: "no values for original domain"
+        scenarioInDsgvo.customAspects.help == null
+
+        when: "updating and reloading the scenario from the viewpoint of the second domain"
+        scenarioInDsgvo.description = "New description"
+        scenarioInDsgvo.status = "ARCHIVED"
+        scenarioInDsgvo.customAspects.scenario_threat = [
+            scenario_threat_type: "scenario_threat_type_criminalAct"
+        ]
+        put("/domians/$dsgvoTestDomainId/scenarios/$scenarioId", scenarioInDsgvo, [
+            'If-Match': getETag(get("/domians/$dsgvoTestDomainId/scenarios/$scenarioId"))
+        ], 200)
+        scenarioInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/scenarios/$scenarioId"))
+
+        then: "updated values are present"
+        scenarioInDsgvo.description == "New description"
+        scenarioInDsgvo.status == "ARCHIVED"
+        scenarioInDsgvo.customAspects.scenario_threat.scenario_threat_type == "scenario_threat_type_criminalAct"
+
+        and: "values for original domain are still absent"
+        scenarioInDsgvo.customAspects.help == null
+
+        when: "fetching the scenario from the viewpoint of the original domain again"
+        def scenarioInTestdomain = parseJson(get("/domians/$testDomainId/scenarios/$scenarioId"))
+
+        then: "values for original domain are unchanged"
+        scenarioInTestdomain.subType == "Attack"
+        scenarioInTestdomain.status == "NEW"
+        scenarioInTestdomain.customAspects.help.technicalArticle == "https://test.test/brute-force.html"
+
+        and: "some basic values have been updated"
+        scenarioInTestdomain.name == "Brute-force attack"
+        scenarioInTestdomain.description == "New description"
+
+        and: "values for the second domain are absent"
+        scenarioInTestdomain.customAspects.scenario_threat == null
     }
 
     def "get all scenarios in a domain"() {
@@ -166,6 +233,41 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             pageCount == 2
             items*.name == (11..15).collect { "scenario $it" }
             items*.subType =~ ["Attack"]
+        }
+    }
+
+    def "risk values can be updated"() {
+        given: "a scenario with risk values"
+        // TODO VEO-1891 use new domain-specific POST endpoint for element creation
+        def scenarioId = parseJson(post("/scenarios", [
+            name: "Risky scenario",
+            owner: [targetUri: "/units/$unitId"],
+            domains: [
+                (testDomainId): [
+                    subType: "Attack",
+                    status: "NEW",
+                    riskValues: [
+                        riskyDef: [
+                            potentialProbability: 0,
+                            potentialProbabilityExplanation: "Unlikely"
+                        ]
+                    ]
+                ]
+            ]
+        ])).resourceId
+
+        when: "updating risk values"
+        get("/domians/$testDomainId/scenarios/$scenarioId").with{getResults ->
+            def scenario = parseJson(getResults)
+            scenario.riskValues.riskyDef.potentialProbability = 1
+            scenario.riskValues.riskyDef.potentialProbabilityExplanation = "Most likely"
+            put(scenario._self, scenario, ["If-Match": getETag(getResults)], 200)
+        }
+
+        then: "risk values have been altered"
+        with(parseJson(get("/domians/$testDomainId/scenarios/$scenarioId"))) {
+            riskValues.riskyDef.potentialProbability == 1
+            riskValues.riskyDef.potentialProbabilityExplanation == "Most likely"
         }
     }
 

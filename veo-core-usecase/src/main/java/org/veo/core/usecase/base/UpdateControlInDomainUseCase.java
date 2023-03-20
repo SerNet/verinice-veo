@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jonas Jordan.
+ * Copyright (C) 2023  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,20 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.aspects;
+package org.veo.core.usecase.base;
 
-import org.veo.core.entity.Constraints;
+import java.util.HashMap;
 
-/**
- * Marks an entity as being of a sub type. Sub types are specific to the domain and the entity type.
- */
-public interface SubTypeAspect extends Aspect {
-  int SUB_TYPE_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
-  int STATUS_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
+import org.veo.core.entity.Control;
+import org.veo.core.entity.Domain;
+import org.veo.core.repository.ControlRepository;
+import org.veo.core.repository.DomainRepository;
+import org.veo.core.usecase.decision.Decider;
 
-  String getStatus();
+public class UpdateControlInDomainUseCase extends UpdateElementInDomainUseCase<Control> {
 
-  String getSubType();
+  public UpdateControlInDomainUseCase(
+      DomainRepository domainRepository, ControlRepository repo, Decider decider) {
+    super(domainRepository, repo, decider);
+  }
 
-  void setStatus(String status);
+  @Override
+  protected void applyChanges(Control source, Control target, Domain domain) {
+    super.applyChanges(source, target, domain);
+    target.setRiskValues(domain, source.getRiskValues(domain).orElse(new HashMap<>()));
+  }
 }

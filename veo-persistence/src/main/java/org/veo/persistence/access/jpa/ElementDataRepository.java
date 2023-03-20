@@ -56,6 +56,21 @@ public interface ElementDataRepository<T extends ElementData>
   @Nonnull
   Optional<T> findById(@Nonnull String id);
 
+  @Query(
+      "select e from #{#entityName} as e "
+          + "left join fetch e.customAspects "
+          + "left join fetch e.containingCatalogItem as ci "
+          + "left join fetch ci.catalog as c "
+          + "left join fetch c.domainTemplate "
+          + "left join fetch e.domains "
+          + "left join fetch e.decisionResultsAspects "
+          + "left join fetch e.subTypeAspects "
+          + "left join fetch e.appliedCatalogItems "
+          + "left join fetch e.links "
+          + "where e.dbId = ?1 and e.owner.client.dbId = ?2")
+  @Nonnull
+  Optional<T> findById(@Nonnull String id, @Nonnull String clientId);
+
   @Nonnull
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = {"domains", "links", "decisionResultsAspects"})

@@ -1333,7 +1333,15 @@
           ]
         }
       },
-      "customAspects": {},
+      "customAspects": {
+        "incident_cause": {
+          "attributeDefinitions": {
+            "incident_cause_details": {
+              "type": "text"
+            }
+          }
+        }
+      },
       "links": {}
     }
   }

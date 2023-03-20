@@ -172,6 +172,11 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   @Override
+  public void setStatus(String status, Domain domain) {
+    findAspectByDomain(subTypeAspects, domain).orElseThrow().setStatus(status);
+  }
+
+  @Override
   public boolean associateWithDomain(@NonNull DomainBase domain, String subType, String status) {
     var added = false;
     if (this.getContainingCatalogItem() == null) {

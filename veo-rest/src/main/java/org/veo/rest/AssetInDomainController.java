@@ -42,9 +42,12 @@ import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.springframework.http.MediaType;
@@ -52,6 +55,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,10 +67,12 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Asset;
 import org.veo.core.usecase.asset.GetAssetUseCase;
 import org.veo.core.usecase.asset.GetAssetsUseCase;
+import org.veo.core.usecase.base.UpdateAssetInDomainUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.ClientLookup;
 import org.veo.rest.common.ElementInDomainService;
@@ -89,7 +97,9 @@ public class AssetInDomainController {
   private final ClientLookup clientLookup;
   private final GetAssetUseCase getAssetUseCase;
   private final GetAssetsUseCase getAssetsUseCase;
+  private final UpdateAssetInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
+  private final DtoToEntityTransformer dtoToEntityTransformer;
   private final EntityToDtoTransformer entityToDtoTransformer;
 
   @Operation(summary = "Loads an asset from the viewpoint of a domain")
@@ -184,6 +194,34 @@ public class AssetInDomainController {
             PagingMapper.toConfig(
                 pageSize, pageNumber,
                 sortColumn, sortOrder)),
+        entityToDtoTransformer::transformAsset2Dto);
+  }
+
+  @Operation(summary = "Updates an asset from the viewpoint of a domain")
+  @PutMapping(UUID_PARAM_SPEC)
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Asset updated"),
+    @ApiResponse(responseCode = "404", description = "Asset not found"),
+    @ApiResponse(responseCode = "404", description = "Asset not associated with domain"),
+  })
+  public CompletableFuture<ResponseEntity<FullAssetInDomainDto>> updateElement(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      @Valid @NotNull @RequestBody FullAssetInDomainDto dto) {
+    return elementService.update(
+        auth,
+        domainId,
+        eTag,
+        uuid,
+        dto,
+        updateUseCase,
+        dtoToEntityTransformer::transformDto2Asset,
         entityToDtoTransformer::transformAsset2Dto);
   }
 }

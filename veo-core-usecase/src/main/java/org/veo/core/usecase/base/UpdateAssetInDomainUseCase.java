@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jonas Jordan.
+ * Copyright (C) 2023  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,20 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.aspects;
+package org.veo.core.usecase.base;
 
-import org.veo.core.entity.Constraints;
+import org.veo.core.entity.Asset;
+import org.veo.core.repository.AssetRepository;
+import org.veo.core.repository.DomainRepository;
+import org.veo.core.usecase.decision.Decider;
 
-/**
- * Marks an entity as being of a sub type. Sub types are specific to the domain and the entity type.
- */
-public interface SubTypeAspect extends Aspect {
-  int SUB_TYPE_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
-  int STATUS_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
+public class UpdateAssetInDomainUseCase extends UpdateElementInDomainUseCase<Asset> {
 
-  String getStatus();
-
-  String getSubType();
-
-  void setStatus(String status);
+  public UpdateAssetInDomainUseCase(
+      DomainRepository domainRepository, AssetRepository repo, Decider decider) {
+    super(domainRepository, repo, decider);
+  }
 }

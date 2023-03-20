@@ -17,11 +17,14 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 
 public interface ElementRepository<T extends Element> extends IdentifiableVersionedRepository<T> {
@@ -35,4 +38,6 @@ public interface ElementRepository<T extends Element> extends IdentifiableVersio
   Set<SubTypeStatusCount> getCountsBySubType(Unit u, Domain domain);
 
   void deleteAll(Set<T> entities);
+
+  Optional<T> findById(Key<UUID> id, Key<UUID> clientId);
 }

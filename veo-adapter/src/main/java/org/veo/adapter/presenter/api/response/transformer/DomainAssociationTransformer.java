@@ -88,19 +88,18 @@ public class DomainAssociationTransformer {
         target,
         idRefResolver,
         (domain, associationDto) ->
-            target.setRiskValues(
-                domain,
-                associationDto.getRiskValues().entrySet().stream()
-                    .collect(groupRiskDefinitionsByDomain(domain))));
+            target.setRiskValues(domain, mapRiskValues(associationDto.getRiskValues(), domain)));
   }
 
-  private Collector<
-          Map.Entry<String, ControlRiskValuesDto>, ?, Map<RiskDefinitionRef, ControlRiskValues>>
-      groupRiskDefinitionsByDomain(DomainBase domain) {
+  public Map<RiskDefinitionRef, ControlRiskValues> mapRiskValues(
+      Map<String, ControlRiskValuesDto> riskValues, DomainBase domain) {
     var referenceProvider = referencesForDomain(domain);
-    return Collectors.toMap(
-        kv -> referenceProvider.getRiskDefinitionRef(kv.getKey()),
-        kv -> mapControlRiskValuesDto2Entity(kv.getKey(), kv.getValue(), referenceProvider));
+    return riskValues.entrySet().stream()
+        .collect(
+            Collectors.toMap(
+                kv -> referenceProvider.getRiskDefinitionRef(kv.getKey()),
+                kv ->
+                    mapControlRiskValuesDto2Entity(kv.getKey(), kv.getValue(), referenceProvider)));
   }
 
   private ControlRiskValues mapControlRiskValuesDto2Entity(
@@ -136,18 +135,19 @@ public class DomainAssociationTransformer {
         source.getDomains(),
         target,
         idRefResolver,
-        (domain, associationDto) -> {
-          var referenceProvider = referencesForDomain(domain);
-          target.setImpactValues(
-              domain,
-              associationDto.getRiskValues().entrySet().stream()
-                  .collect(
-                      Collectors.toMap(
-                          e -> referenceProvider.getRiskDefinitionRef(e.getKey()),
-                          e ->
-                              mapProcessImpactValues(
-                                  e.getKey(), e.getValue(), referenceProvider))));
-        });
+        (domain, associationDto) ->
+            target.setImpactValues(
+                domain, mapImpactValues(associationDto.getRiskValues(), domain)));
+  }
+
+  public Map<RiskDefinitionRef, ProcessImpactValues> mapImpactValues(
+      Map<String, ProcessRiskValuesDto> riskValues, DomainBase domain) {
+    var referenceProvider = referencesForDomain(domain);
+    return riskValues.entrySet().stream()
+        .collect(
+            Collectors.toMap(
+                e -> referenceProvider.getRiskDefinitionRef(e.getKey()),
+                e -> mapProcessImpactValues(e.getKey(), e.getValue(), referenceProvider)));
   }
 
   private ProcessImpactValues mapProcessImpactValues(
@@ -180,9 +180,12 @@ public class DomainAssociationTransformer {
         idRefResolver,
         (domain, associationDto) ->
             target.setPotentialProbability(
-                domain,
-                associationDto.getRiskValues().entrySet().stream()
-                    .collect(groupScenarioRiskValuesByDomain(domain))));
+                domain, mapPotentialProbability(associationDto.getRiskValues(), domain)));
+  }
+
+  public Map<RiskDefinitionRef, PotentialProbabilityImpl> mapPotentialProbability(
+      Map<String, ScenarioRiskValuesDto> riskValues, DomainBase domain) {
+    return riskValues.entrySet().stream().collect(groupScenarioRiskValuesByDomain(domain));
   }
 
   private Collector<
@@ -407,7 +410,7 @@ public class DomainAssociationTransformer {
             });
   }
 
-  private RiskDefinitionRef toRiskDefinitionRef(String riskDefId, DomainBase domain) {
+  RiskDefinitionRef toRiskDefinitionRef(String riskDefId, DomainBase domain) {
     if (riskDefId == null) {
       return null;
     }

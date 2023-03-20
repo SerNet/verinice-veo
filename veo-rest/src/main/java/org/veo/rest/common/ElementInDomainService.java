@@ -17,17 +17,22 @@
  ******************************************************************************/
 package org.veo.rest.common;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.function.TriFunction;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.WebRequest;
 
+import org.veo.adapter.DbIdRefResolver;
+import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
@@ -35,9 +40,13 @@ import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.GetElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
+import org.veo.core.usecase.base.UpdateElementInDomainUseCase;
+import org.veo.core.usecase.common.ETag;
+import org.veo.rest.security.ApplicationUser;
 import org.veo.service.EtagService;
 
 import lombok.RequiredArgsConstructor;
@@ -46,6 +55,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class ElementInDomainService {
   private final ClientLookup clientLookup;
+  private final RepositoryProvider repositoryProvider;
   private final EtagService etagService;
   private final UseCaseInteractor useCaseInteractor;
   private final CacheControl defaultCacheControl = CacheControl.noCache();
@@ -95,5 +105,50 @@ public class ElementInDomainService {
                             .filter(d -> d.getIdAsString().equals(domainId))
                             .findFirst()
                             .orElseThrow())));
+  }
+
+  public <
+          TElement extends Element,
+          TFullDto extends AbstractElementInDomainDto<TElement> & IdentifiableDto>
+      CompletableFuture<ResponseEntity<TFullDto>> update(
+          Authentication auth,
+          String domainId,
+          String eTag,
+          String id,
+          TFullDto dto,
+          UpdateElementInDomainUseCase<TElement> updateUseCase,
+          TriFunction<TFullDto, String, IdRefResolver, TElement> toEntityMapper,
+          BiFunction<TElement, Domain, TFullDto> toDtoMapper) {
+    dto.applyResourceId(id);
+    return useCaseInteractor.execute(
+        updateUseCase,
+        (Supplier<UpdateElementInDomainUseCase.InputData<TElement>>)
+            () -> {
+              var user = ApplicationUser.authenticatedUser(auth.getPrincipal());
+              var client = clientLookup.getClient(user);
+              var idRefResolver = new DbIdRefResolver(repositoryProvider, client);
+              return new UpdateElementInDomainUseCase.InputData<>(
+                  toEntityMapper.apply(dto, domainId, idRefResolver),
+                  Key.uuidFrom(domainId),
+                  client,
+                  eTag,
+                  user.getUsername());
+            },
+        output ->
+            toResponseEntity(
+                output.getEntity(),
+                toDtoMapper,
+                output.getEntity().getDomains().stream()
+                    .filter(d -> d.getIdAsString().equals(domainId))
+                    .findFirst()
+                    .orElseThrow()));
+  }
+
+  private <TElement extends Element, TFullDto extends AbstractElementInDomainDto<TElement>>
+      ResponseEntity<TFullDto> toResponseEntity(
+          TElement entity, BiFunction<TElement, Domain, TFullDto> toDtoMapper, Domain domain) {
+    return ResponseEntity.ok()
+        .eTag(ETag.from(entity.getIdAsString(), entity.getVersion() + 1))
+        .body(toDtoMapper.apply(entity, domain));
   }
 }

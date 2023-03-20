@@ -28,6 +28,7 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity(name = "subtype_aspect")
@@ -43,5 +44,5 @@ public class SubTypeAspectData extends AspectData implements SubTypeAspect {
 
   @NotNull @Getter @ToString.Include private String subType;
 
-  @NotNull @Getter @ToString.Include private String status;
+  @NotNull @Getter @Setter @ToString.Include private String status;
 }

@@ -23,29 +23,40 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Domain
+import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.UnitRepository
 
 @WithUserDetails("user@domain.example")
 class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     @Autowired
     private UnitRepository unitRepository
+    @Autowired
+    private PersonRepository personRepository
 
     private String unitId
     private String testDomainId
+    private String dsgvoTestDomainId
+    // TODO VEO-1871 remove field
+    private Domain dsgvoTestDomain
 
     def setup() {
         def client = createTestClient()
         testDomainId = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID).idAsString
+        dsgvoTestDomain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        dsgvoTestDomainId = dsgvoTestDomain.idAsString
         unitId = unitRepository.save(newUnit(client)).idAsString
     }
 
-    def "get person in a domain"() {
+    def "CRUD person in domain contexts"() {
         given: "a person with linked scope and a part"
         def scopeId = parseJson(post("/scopes", [
             name: "Hack Inc.",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
+        // TODO VEO-1891 use new domain-specific POST endpoint for element creation
         def partId = parseJson(post("/persons", [
             name: "Harry's rubber duck",
             owner: [targetUri: "/units/$unitId"],
@@ -121,6 +132,62 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].targetInDomainUri == "http://localhost/domians/$testDomainId/persons/$partId"
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "Programmer"
+
+        when: "associating person with a second domain"
+        // TODO VEO-1871 associate using new POST endpoint
+        txTemplate.execute {
+            personRepository.findById(Key.uuidFrom(personId)).get().with {
+                associateWithDomain(dsgvoTestDomain, "PER_Person", "IN_PROGRESS")
+            }
+        }
+
+        and: "fetching person in second domain"
+        def personInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/persons/$personId")) as Map
+
+        then: "it contains basic values"
+        personInDsgvo.name == "Harry Larry"
+        personInDsgvo.description == "Typing swiftly, thinking slowly"
+
+        and: "values for second domain"
+        personInDsgvo.subType == "PER_Person"
+        personInDsgvo.status == "IN_PROGRESS"
+
+        and: "no values for original domain"
+        personInDsgvo.customAspects.general == null
+
+        when: "updating and reloading the person from the viewpoint of the second domain"
+        personInDsgvo.description = "New description"
+        personInDsgvo.status = "ARCHIVED"
+        personInDsgvo.customAspects.person_generalInformation = [
+            person_generalInformation_givenName: "Harry"
+        ]
+        put("/domians/$dsgvoTestDomainId/persons/$personId", personInDsgvo, [
+            'If-Match': getETag(get("/domians/$dsgvoTestDomainId/persons/$personId"))
+        ], 200)
+        personInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/persons/$personId"))
+
+        then: "updated values are present"
+        personInDsgvo.description == "New description"
+        personInDsgvo.status == "ARCHIVED"
+        personInDsgvo.customAspects.person_generalInformation.person_generalInformation_givenName == "Harry"
+
+        and: "values for original domain are still absent"
+        personInDsgvo.customAspects.general == null
+
+        when: "fetching the person from the viewpoint of the original domain again"
+        def personInTestdomain = parseJson(get("/domians/$testDomainId/persons/$personId"))
+
+        then: "values for original domain are unchanged"
+        personInTestdomain.subType == "Programmer"
+        personInTestdomain.status == "CODING"
+        personInTestdomain.customAspects.general.dateOfBirth == "1999-12-31"
+
+        and: "some basic values have been updated"
+        personInTestdomain.name == "Harry Larry"
+        personInTestdomain.description == "New description"
+
+        and: "values for the second domain are absent"
+        personInTestdomain.customAspects.person_generalInformation == null
     }
 
     def "missing person is handled"() {

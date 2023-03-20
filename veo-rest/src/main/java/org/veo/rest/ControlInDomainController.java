@@ -42,9 +42,12 @@ import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.springframework.http.MediaType;
@@ -52,6 +55,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,8 +67,10 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Control;
+import org.veo.core.usecase.base.UpdateControlInDomainUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
 import org.veo.core.usecase.control.GetControlsUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
@@ -89,7 +97,9 @@ public class ControlInDomainController {
   private final ClientLookup clientLookup;
   private final GetControlUseCase getControlUseCase;
   private final GetControlsUseCase getControlsUseCase;
+  private final UpdateControlInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
+  private final DtoToEntityTransformer dtoToEntityTransformer;
   private final EntityToDtoTransformer entityToDtoTransformer;
 
   @Operation(summary = "Loads a control from the viewpoint of a domain")
@@ -184,6 +194,34 @@ public class ControlInDomainController {
             PagingMapper.toConfig(
                 pageSize, pageNumber,
                 sortColumn, sortOrder)),
+        entityToDtoTransformer::transformControl2Dto);
+  }
+
+  @Operation(summary = "Updates a control from the viewpoint of a domain")
+  @PutMapping(UUID_PARAM_SPEC)
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Control updated"),
+    @ApiResponse(responseCode = "404", description = "Control not found"),
+    @ApiResponse(responseCode = "404", description = "Control not associated with domain"),
+  })
+  public CompletableFuture<ResponseEntity<FullControlInDomainDto>> updateElement(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      @Valid @NotNull @RequestBody FullControlInDomainDto assetDto) {
+    return elementService.update(
+        auth,
+        domainId,
+        eTag,
+        uuid,
+        assetDto,
+        updateUseCase,
+        dtoToEntityTransformer::transformDto2Control,
         entityToDtoTransformer::transformControl2Dto);
   }
 }

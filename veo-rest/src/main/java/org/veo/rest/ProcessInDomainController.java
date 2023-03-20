@@ -42,9 +42,12 @@ import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.springframework.http.MediaType;
@@ -52,6 +55,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,8 +67,10 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.GetProcessesInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
+import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Process;
+import org.veo.core.usecase.base.UpdateProcessInDomainUseCase;
 import org.veo.core.usecase.process.GetProcessUseCase;
 import org.veo.core.usecase.process.GetProcessesUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
@@ -89,7 +97,9 @@ public class ProcessInDomainController {
   private final ClientLookup clientLookup;
   private final GetProcessUseCase getProcessUseCase;
   private final GetProcessesUseCase getProcessesUseCase;
+  private final UpdateProcessInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
+  private final DtoToEntityTransformer dtoToEntityTransformer;
   private final EntityToDtoTransformer entityToDtoTransformer;
 
   @Operation(summary = "Loads a process from the viewpoint of a domain")
@@ -185,6 +195,34 @@ public class ProcessInDomainController {
                 pageSize, pageNumber,
                 sortColumn, sortOrder),
             false),
+        entityToDtoTransformer::transformProcess2Dto);
+  }
+
+  @Operation(summary = "Updates a process from the viewpoint of a domain")
+  @PutMapping(UUID_PARAM_SPEC)
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Process updated"),
+    @ApiResponse(responseCode = "404", description = "Process not found"),
+    @ApiResponse(responseCode = "404", description = "Process not associated with domain"),
+  })
+  public CompletableFuture<ResponseEntity<FullProcessInDomainDto>> updateElement(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      @Valid @NotNull @RequestBody FullProcessInDomainDto dto) {
+    return elementService.update(
+        auth,
+        domainId,
+        eTag,
+        uuid,
+        dto,
+        updateUseCase,
+        dtoToEntityTransformer::transformDto2Process,
         entityToDtoTransformer::transformProcess2Dto);
   }
 }

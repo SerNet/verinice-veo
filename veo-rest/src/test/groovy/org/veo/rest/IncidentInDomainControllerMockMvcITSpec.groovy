@@ -23,29 +23,40 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Domain
+import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.repository.IncidentRepository
 import org.veo.core.repository.UnitRepository
 
 @WithUserDetails("user@domain.example")
 class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     @Autowired
     private UnitRepository unitRepository
+    @Autowired
+    private IncidentRepository incidentRepository
 
     private String unitId
     private String testDomainId
+    private String dsgvoTestDomainId
+    // TODO VEO-1871 remove field
+    private Domain dsgvoTestDomain
 
     def setup() {
         def client = createTestClient()
         testDomainId = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID).idAsString
+        dsgvoTestDomain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        dsgvoTestDomainId = dsgvoTestDomain.idAsString
         unitId = unitRepository.save(newUnit(client)).idAsString
     }
 
-    def "get incident in a domain"() {
+    def "CRUD incident in domain contexts"() {
         given: "an incident with linked person and a part"
         def personId = parseJson(post("/persons", [
             name: "Master of disaster",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
+        // TODO VEO-1891 use new domain-specific POST endpoint for element creation
         def partId = parseJson(post("/incidents", [
             name: "part of the disaster",
             owner: [targetUri: "/units/$unitId"],
@@ -121,6 +132,62 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].targetInDomainUri == "http://localhost/domians/$testDomainId/incidents/$partId"
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "DISASTER"
+
+        when: "associating incident with a second domain"
+        // TODO VEO-1871 associate using new POST endpoint
+        txTemplate.execute {
+            incidentRepository.findById(Key.uuidFrom(incidentId)).get().with {
+                associateWithDomain(dsgvoTestDomain, "INC_Incident", "IN_PROGRESS")
+            }
+        }
+
+        and: "fetching incident in second domain"
+        def incidentInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/incidents/$incidentId")) as Map
+
+        then: "it contains basic values"
+        incidentInDsgvo.name == "Big disaster"
+        incidentInDsgvo.description == "Something really bad happened."
+
+        and: "values for second domain"
+        incidentInDsgvo.subType == "INC_Incident"
+        incidentInDsgvo.status == "IN_PROGRESS"
+
+        and: "no values for original domain"
+        incidentInDsgvo.customAspects.general == null
+
+        when: "updating and reloading the incident from the viewpoint of the second domain"
+        incidentInDsgvo.description = "New description"
+        incidentInDsgvo.status = "ARCHIVED"
+        incidentInDsgvo.customAspects.incident_cause = [
+            incident_cause_details: "Somebody made a big mistake"
+        ]
+        put("/domians/$dsgvoTestDomainId/incidents/$incidentId", incidentInDsgvo, [
+            'If-Match': getETag(get("/domians/$dsgvoTestDomainId/incidents/$incidentId"))
+        ], 200)
+        incidentInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/incidents/$incidentId"))
+
+        then: "updated values are present"
+        incidentInDsgvo.description == "New description"
+        incidentInDsgvo.status == "ARCHIVED"
+        incidentInDsgvo.customAspects.incident_cause.incident_cause_details == "Somebody made a big mistake"
+
+        and: "values for original domain are still absent"
+        incidentInDsgvo.customAspects.details == null
+
+        when: "fetching the incident from the viewpoint of the original domain again"
+        def incidentInTestdomain = parseJson(get("/domians/$testDomainId/incidents/$incidentId"))
+
+        then: "values for original domain are unchanged"
+        incidentInTestdomain.subType == "DISASTER"
+        incidentInTestdomain.status == "DETECTED"
+        incidentInTestdomain.customAspects.general.timeOfOccurrence == "2023-02-10T12:00:00.000Z"
+
+        and: "some basic values have been updated"
+        incidentInTestdomain.name == "Big disaster"
+        incidentInTestdomain.description == "New description"
+
+        and: "values for the second domain are absent"
+        incidentInTestdomain.customAspects.incident_cause == null
     }
 
     def "get all incidents in a domain"() {

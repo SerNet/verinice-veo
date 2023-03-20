@@ -234,4 +234,6 @@ public interface Element
    * @return {@code true} if anything has changed on the element
    */
   boolean applyLink(CustomLink customLink);
+
+  void setStatus(String status, Domain domain);
 }

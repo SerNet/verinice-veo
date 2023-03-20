@@ -23,29 +23,40 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Domain
+import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.UnitRepository
 
 @WithUserDetails("user@domain.example")
 class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     @Autowired
     private UnitRepository unitRepository
+    @Autowired
+    private ProcessRepository processRepository
 
     private String unitId
     private String testDomainId
+    private String dsgvoTestDomainId
+    // TODO VEO-1871 remove field
+    private Domain dsgvoTestDomain
 
     def setup() {
         def client = createTestClient()
         testDomainId = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID).idAsString
+        dsgvoTestDomain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        dsgvoTestDomainId = dsgvoTestDomain.idAsString
         unitId = unitRepository.save(newUnit(client)).idAsString
     }
 
-    def "get process in a domain"() {
+    def "CRUD process in domain contexts"() {
         given: "an process with linked process and a part"
         def assetId = parseJson(post("/assets", [
             name: "Market investigation results",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
+        // TODO VEO-1891 use new domain-specific POST endpoint for element creation
         def partId = parseJson(post("/processes", [
             name: "Promotion",
             owner: [targetUri: "/units/$unitId"],
@@ -129,6 +140,62 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].targetInDomainUri == "http://localhost/domians/$testDomainId/processes/$partId"
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "BusinessProcess"
+
+        when: "associating process with a second domain"
+        // TODO VEO-1871 associate using new POST endpoint
+        txTemplate.execute {
+            processRepository.findById(Key.uuidFrom(processId)).get().with {
+                associateWithDomain(dsgvoTestDomain, "PRO_DataProcessing", "IN_PROGRESS")
+            }
+        }
+
+        and: "fetching process in second domain"
+        def processInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/processes/$processId")) as Map
+
+        then: "it contains basic values"
+        processInDsgvo.name == "Marketing"
+        processInDsgvo.description == "Catering to the target market"
+
+        and: "values for second domain"
+        processInDsgvo.subType == "PRO_DataProcessing"
+        processInDsgvo.status == "IN_PROGRESS"
+
+        and: "no values for original domain"
+        processInDsgvo.customAspects.general == null
+
+        when: "updating and reloading the process from the viewpoint of the second domain"
+        processInDsgvo.description = "New description"
+        processInDsgvo.status = "ARCHIVED"
+        processInDsgvo.customAspects.process_accessAuthorization = [
+            process_accessAuthorization_description: "Uhm..."
+        ]
+        put("/domians/$dsgvoTestDomainId/processes/$processId", processInDsgvo, [
+            'If-Match': getETag(get("/domians/$dsgvoTestDomainId/processes/$processId"))
+        ], 200)
+        processInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/processes/$processId"))
+
+        then: "updated values are present"
+        processInDsgvo.description == "New description"
+        processInDsgvo.status == "ARCHIVED"
+        processInDsgvo.customAspects.process_accessAuthorization.process_accessAuthorization_description == "Uhm..."
+
+        and: "values for original domain are still absent"
+        processInDsgvo.customAspects.general == null
+
+        when: "fetching the process from the viewpoint of the original domain again"
+        def processInTestdomain = parseJson(get("/domians/$testDomainId/processes/$processId"))
+
+        then: "values for original domain are unchanged"
+        processInTestdomain.subType == "BusinessProcess"
+        processInTestdomain.status == "NEW"
+        processInTestdomain.customAspects.general.complexity == "high"
+
+        and: "some basic values have been updated"
+        processInTestdomain.name == "Marketing"
+        processInTestdomain.description == "New description"
+
+        and: "values for the second domain are absent"
+        processInTestdomain.customAspects.process_accessAuthorization == null
     }
 
     def "get all processes in a domain"() {
@@ -179,6 +246,40 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         then:
         def nfEx = thrown(NotFoundException)
         nfEx.message == "Process with ID $randomProcessId not found"
+    }
+
+    def "risk values can be updated"() {
+        given: "a process with risk values"
+        // TODO VEO-1891 use new domain-specific POST endpoint for element creation
+        def processId = parseJson(post("/processes", [
+            name: "Risky process",
+            owner: [targetUri: "/units/$unitId"],
+            domains: [
+                (testDomainId): [
+                    subType: "BusinessProcess",
+                    status: "NEW",
+                    riskValues: [
+                        riskyDef: [
+                            potentialImpacts: [
+                                C: 0
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ])).resourceId
+
+        when: "updating risk values"
+        get("/domians/$testDomainId/processes/$processId").with{getResults ->
+            def process = parseJson(getResults)
+            process.riskValues.riskyDef.potentialImpacts.C = 1
+            put(process._self, process, ["If-Match": getETag(getResults)], 200)
+        }
+
+        then: "risk values have been altered"
+        with(parseJson(get("/domians/$testDomainId/processes/$processId"))) {
+            riskValues.riskyDef.potentialImpacts.C == 1
+        }
     }
 
     def "missing domain is handled"() {

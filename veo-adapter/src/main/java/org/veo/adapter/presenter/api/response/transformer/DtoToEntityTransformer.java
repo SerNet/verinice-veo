@@ -32,10 +32,12 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.AbstractAssetDto;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogItemDto;
+import org.veo.adapter.presenter.api.dto.AbstractCompositeElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
 import org.veo.adapter.presenter.api.dto.AbstractDocumentDto;
 import org.veo.adapter.presenter.api.dto.AbstractDomainTemplateDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
+import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractIncidentDto;
 import org.veo.adapter.presenter.api.dto.AbstractPersonDto;
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto;
@@ -50,6 +52,14 @@ import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogDto;
 import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogItemDto;
+import org.veo.adapter.presenter.api.dto.full.FullAssetInDomainDto;
+import org.veo.adapter.presenter.api.dto.full.FullControlInDomainDto;
+import org.veo.adapter.presenter.api.dto.full.FullDocumentInDomainDto;
+import org.veo.adapter.presenter.api.dto.full.FullIncidentInDomainDto;
+import org.veo.adapter.presenter.api.dto.full.FullPersonInDomainDto;
+import org.veo.adapter.presenter.api.dto.full.FullProcessInDomainDto;
+import org.veo.adapter.presenter.api.dto.full.FullScenarioInDomainDto;
+import org.veo.adapter.presenter.api.dto.full.FullScopeInDomainDto;
 import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogDto;
 import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogItemDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
@@ -427,5 +437,135 @@ public final class DtoToEntityTransformer {
       key = Key.uuidFrom(identifiable.getId());
     }
     return identifiableFactory.create(type, key);
+  }
+
+  public Asset transformDto2Asset(
+      FullAssetInDomainDto source, String domainId, IdRefResolver idRefResolver) {
+    var target = createIdentifiable(Asset.class, source);
+    var domain = idRefResolver.resolve(domainId, Domain.class);
+    mapCompositeElement(source, target, domain, idRefResolver);
+    return target;
+  }
+
+  public Control transformDto2Control(
+      FullControlInDomainDto source, String domainId, IdRefResolver idRefResolver) {
+    var target = createIdentifiable(Control.class, source);
+    var domain = idRefResolver.resolve(domainId, Domain.class);
+    mapCompositeElement(source, target, domain, idRefResolver);
+    target.setRiskValues(
+        domain, domainAssociationTransformer.mapRiskValues(source.getRiskValues(), domain));
+    return target;
+  }
+
+  public Document transformDto2Document(
+      FullDocumentInDomainDto source, String domainId, IdRefResolver idRefResolver) {
+    var target = createIdentifiable(Document.class, source);
+    var domain = idRefResolver.resolve(domainId, Domain.class);
+    mapCompositeElement(source, target, domain, idRefResolver);
+    return target;
+  }
+
+  public Incident transformDto2Incident(
+      FullIncidentInDomainDto source, String domainId, IdRefResolver idRefResolver) {
+    var target = createIdentifiable(Incident.class, source);
+    var domain = idRefResolver.resolve(domainId, Domain.class);
+    mapCompositeElement(source, target, domain, idRefResolver);
+    return target;
+  }
+
+  public Person transformDto2Person(
+      FullPersonInDomainDto source, String domainId, IdRefResolver idRefResolver) {
+    var target = createIdentifiable(Person.class, source);
+    var domain = idRefResolver.resolve(domainId, Domain.class);
+    mapCompositeElement(source, target, domain, idRefResolver);
+    return target;
+  }
+
+  public Process transformDto2Process(
+      FullProcessInDomainDto source, String domainId, IdRefResolver idRefResolver) {
+    var target = createIdentifiable(Process.class, source);
+    var domain = idRefResolver.resolve(domainId, Domain.class);
+    mapCompositeElement(source, target, domain, idRefResolver);
+    target.setImpactValues(
+        domain, domainAssociationTransformer.mapImpactValues(source.getRiskValues(), domain));
+    return target;
+  }
+
+  public Scenario transformDto2Scenario(
+      FullScenarioInDomainDto source, String domainId, IdRefResolver idRefResolver) {
+    var target = createIdentifiable(Scenario.class, source);
+    var domain = idRefResolver.resolve(domainId, Domain.class);
+    mapCompositeElement(source, target, domain, idRefResolver);
+    target.setPotentialProbability(
+        domain,
+        domainAssociationTransformer.mapPotentialProbability(source.getRiskValues(), domain));
+    return target;
+  }
+
+  public Scope transformDto2Scope(
+      FullScopeInDomainDto source, String domainId, IdRefResolver idRefResolver) {
+    var target = createIdentifiable(Scope.class, source);
+    var domain = idRefResolver.resolve(domainId, Domain.class);
+    mapElement(source, target, domain, idRefResolver);
+    target.setMembers(convertSet(source.getMembers(), idRefResolver::resolve));
+    target.setRiskDefinition(
+        domain,
+        domainAssociationTransformer.toRiskDefinitionRef(source.getRiskDefinition(), domain));
+    return target;
+  }
+
+  private <TElement extends CompositeElement<TElement>> void mapCompositeElement(
+      AbstractCompositeElementInDomainDto<TElement> source,
+      TElement target,
+      Domain domain,
+      IdRefResolver idRefResolver) {
+    mapElement(source, target, domain, idRefResolver);
+    target.setParts(source.getParts().stream().map(idRefResolver::resolve).collect(toSet()));
+  }
+
+  private <TElement extends Element> void mapElement(
+      AbstractElementInDomainDto<TElement> source,
+      TElement target,
+      Domain domain,
+      IdRefResolver idRefResolver) {
+    mapNameableProperties(source, target);
+    target.setOwnerOrContainingCatalogItem(idRefResolver.resolve(source.getOwner()));
+    target.associateWithDomain(domain, source.getSubType(), source.getStatus());
+    mapCustomAspects(source, target, domain);
+    mapLinks(source, target, domain, idRefResolver);
+  }
+
+  private <TElement extends Element> void mapCustomAspects(
+      AbstractElementInDomainDto<TElement> source, TElement target, Domain domain) {
+    source
+        .getCustomAspects()
+        .getValue()
+        .forEach(
+            (type, attributes) -> {
+              var ca = factory.createCustomAspect(type, domain);
+              ca.setAttributes(attributes.getValue());
+              target.applyCustomAspect(ca);
+            });
+  }
+
+  private <TElement extends Element> void mapLinks(
+      AbstractElementInDomainDto<TElement> source,
+      TElement target,
+      Domain domain,
+      IdRefResolver resolver) {
+    source
+        .getLinks()
+        .getValue()
+        .forEach(
+            (type, linkDtos) -> {
+              linkDtos.forEach(
+                  linkDto -> {
+                    var link =
+                        factory.createCustomLink(
+                            resolver.resolve(linkDto.getTarget()), target, type, domain);
+                    link.setAttributes(linkDto.getAttributes().getValue());
+                    target.applyLink(link);
+                  });
+            });
   }
 }

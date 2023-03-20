@@ -23,24 +23,34 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Domain
+import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.repository.ScopeRepository
 import org.veo.core.repository.UnitRepository
 
 @WithUserDetails("user@domain.example")
 class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     @Autowired
     private UnitRepository unitRepository
+    @Autowired
+    private ScopeRepository scopeRepository
 
     private String unitId
     private String testDomainId
+    private String dsgvoTestDomainId
+    // TODO VEO-1871 remove field
+    private Domain dsgvoTestDomain
 
     def setup() {
         def client = createTestClient()
         testDomainId = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID).idAsString
+        dsgvoTestDomain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        dsgvoTestDomainId = dsgvoTestDomain.idAsString
         unitId = unitRepository.save(newUnit(client)).idAsString
     }
 
-    def "get scope in a domain"() {
+    def "CRUD scope in domain contexts"() {
         given: "an scope with linked person and a part"
         def personId = parseJson(post("/persons", [
             name: "Lou Vice",
@@ -123,6 +133,62 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.members[0].targetInDomainUri == "http://localhost/domians/$testDomainId/scopes/$memberId"
         response.members[0].associatedWithDomain
         response.members[0].subType == "Company"
+
+        when: "associating scope with a second domain"
+        // TODO VEO-1871 associate using new POST endpoint
+        txTemplate.execute {
+            scopeRepository.findById(Key.uuidFrom(scopeId)).get().with {
+                associateWithDomain(dsgvoTestDomain, "SCP_Processor", "IN_PROGRESS")
+            }
+        }
+
+        and: "fetching scope in second domain"
+        def scopeInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/scopes/$scopeId")) as Map
+
+        then: "it contains basic values"
+        scopeInDsgvo.name == "Data Inc."
+        scopeInDsgvo.description == "Some company dealing with IT"
+
+        and: "values for second domain"
+        scopeInDsgvo.subType == "SCP_Processor"
+        scopeInDsgvo.status == "IN_PROGRESS"
+
+        and: "no values for original domain"
+        scopeInDsgvo.customAspects.staff == null
+
+        when: "updating and reloading the scope from the viewpoint of the second domain"
+        scopeInDsgvo.description = "New description"
+        scopeInDsgvo.status = "ARCHIVED"
+        scopeInDsgvo.customAspects.scope_thirdCountry = [
+            scope_thirdCountry_country: "Pizzaland"
+        ]
+        put("/domians/$dsgvoTestDomainId/scopes/$scopeId", scopeInDsgvo, [
+            'If-Match': getETag(get("/domians/$dsgvoTestDomainId/scopes/$scopeId"))
+        ], 200)
+        scopeInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/scopes/$scopeId"))
+
+        then: "updated values are present"
+        scopeInDsgvo.description == "New description"
+        scopeInDsgvo.status == "ARCHIVED"
+        scopeInDsgvo.customAspects.scope_thirdCountry.scope_thirdCountry_country == "Pizzaland"
+
+        and: "values for original domain are still absent"
+        scopeInDsgvo.customAspects.staff == null
+
+        when: "fetching the scope from the viewpoint of the original domain again"
+        def scopeInTestdomain = parseJson(get("/domians/$testDomainId/scopes/$scopeId"))
+
+        then: "values for original domain are unchanged"
+        scopeInTestdomain.subType == "Company"
+        scopeInTestdomain.status == "NEW"
+        scopeInTestdomain.customAspects.staff.numberOfEmployees == 638
+
+        and: "some basic values have been updated"
+        scopeInTestdomain.name == "Data Inc."
+        scopeInTestdomain.description == "New description"
+
+        and: "values for the second domain are absent"
+        scopeInTestdomain.customAspects.scope_thirdCountry == null
     }
 
     def "get all scopes in a domain"() {

@@ -21,6 +21,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -514,8 +515,9 @@ public final class EntityToDtoTransformer {
   }
 
   private Map<String, CustomAspectDto> mapCustomAspects(Set<CustomAspect> customAspects) {
-    return customAspects.stream()
-        .collect(toMap(CustomAspect::getType, this::transformCustomAspect2Dto));
+    var map = new HashMap<String, CustomAspectDto>();
+    customAspects.forEach(ca -> map.putIfAbsent(ca.getType(), transformCustomAspect2Dto(ca)));
+    return map;
   }
 
   public DomainTemplateMetadataDto transformDomainTemplateMetadata2Dto(DomainTemplate source) {

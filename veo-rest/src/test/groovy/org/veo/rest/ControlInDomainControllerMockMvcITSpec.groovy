@@ -23,29 +23,40 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.core.entity.Domain
+import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.UnitRepository
 
 @WithUserDetails("user@domain.example")
 class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     @Autowired
     private UnitRepository unitRepository
+    @Autowired
+    private ControlRepository controlRepository
 
     private String unitId
     private String testDomainId
+    private String dsgvoTestDomainId
+    // TODO VEO-1871 remove field
+    private Domain dsgvoTestDomain
 
     def setup() {
         def client = createTestClient()
         testDomainId = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID).idAsString
+        dsgvoTestDomain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        dsgvoTestDomainId = dsgvoTestDomain.idAsString
         unitId = unitRepository.save(newUnit(client)).idAsString
     }
 
-    def "get control in a domain"() {
+    def "CRUD control in domain contexts"() {
         given: "a control with linked document and a part"
         def documentId = parseJson(post("/documents", [
             name: "Encryption for dummies",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
+        // TODO VEO-1891 use new domain-specific POST endpoint for element creation
         def partId = parseJson(post("/controls", [
             name: "Encrypt user messages",
             owner: [targetUri: "/units/$unitId"],
@@ -127,6 +138,66 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].targetInDomainUri == "http://localhost/domians/$testDomainId/controls/$partId"
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "TOM"
+
+        when: "associating control with a second domain"
+        // TODO VEO-1871 associate using new POST endpoint
+        txTemplate.execute {
+            controlRepository.findById(Key.uuidFrom(controlId)).get().with {
+                associateWithDomain(dsgvoTestDomain, "CTL_TOM", "IN_PROGRESS")
+            }
+        }
+
+        and: "fetching control in second domain"
+        def controlInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/controls/$controlId")) as Map
+
+        then: "it contains basic values"
+        controlInDsgvo.name == "End-to-end encryption"
+        controlInDsgvo.description == "A security method that keeps messages secure"
+
+        and: "values for second domain"
+        controlInDsgvo.subType == "CTL_TOM"
+        controlInDsgvo.status == "IN_PROGRESS"
+
+        and: "no values for original domain"
+        controlInDsgvo.customAspects.implementation == null
+
+        when: "updating and reloading the control from the viewpoint of the second domain"
+        controlInDsgvo.description = "New description"
+        controlInDsgvo.status = "ARCHIVED"
+        controlInDsgvo.customAspects.control_dataProtection = [
+            control_dataProtection_objectives: [
+                "control_dataProtection_objectives_integrity"
+            ]
+        ]
+        put("/domians/$dsgvoTestDomainId/controls/$controlId", controlInDsgvo, [
+            'If-Match': getETag(get("/domians/$dsgvoTestDomainId/controls/$controlId"))
+        ], 200)
+        controlInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/controls/$controlId"))
+
+        then: "updated values are present"
+        controlInDsgvo.description == "New description"
+        controlInDsgvo.status == "ARCHIVED"
+        controlInDsgvo.customAspects.control_dataProtection.control_dataProtection_objectives == [
+            "control_dataProtection_objectives_integrity"
+        ]
+
+        and: "values for original domain are still absent"
+        controlInDsgvo.customAspects.implementation == null
+
+        when: "fetching the control from the viewpoint of the original domain again"
+        def controlInTestdomain = parseJson(get("/domians/$testDomainId/controls/$controlId"))
+
+        then: "values for original domain are unchanged"
+        controlInTestdomain.subType == "TOM"
+        controlInTestdomain.status == "NEW"
+        controlInTestdomain.customAspects.implementation.explanation == "Data is encrypted / decrypted by the clients, not by the server"
+
+        and: "some basic values have been updated"
+        controlInTestdomain.name == "End-to-end encryption"
+        controlInTestdomain.description == "New description"
+
+        and: "values for the second domain are absent"
+        controlInTestdomain.customAspects.control_dataProtection == null
     }
 
     def "get all controls in a domain"() {
@@ -164,6 +235,38 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             pageCount == 2
             items*.name == (11..15).collect { "control $it" }
             items*.subType =~ ["TOM"]
+        }
+    }
+
+    def "risk values can be updated"() {
+        given: "a control with risk values"
+        // TODO VEO-1891 use new domain-specific POST endpoint for element creation
+        def controlId = parseJson(post("/controls", [
+            name: "Risky control",
+            owner: [targetUri: "/units/$unitId"],
+            domains: [
+                (testDomainId): [
+                    subType: "TOM",
+                    status: "NEW",
+                    riskValues: [
+                        riskyDef: [
+                            implementationStatus: 0
+                        ]
+                    ]
+                ]
+            ]
+        ])).resourceId
+
+        when: "updating risk values"
+        get("/domians/$testDomainId/controls/$controlId").with{getResults ->
+            def control = parseJson(getResults)
+            control.riskValues.riskyDef.implementationStatus = 1
+            put(control._self, control, ["If-Match": getETag(getResults)], 200)
+        }
+
+        then: "risk values have been altered"
+        with(parseJson(get("/domians/$testDomainId/controls/$controlId"))) {
+            riskValues.riskyDef.implementationStatus == 1
         }
     }
 
