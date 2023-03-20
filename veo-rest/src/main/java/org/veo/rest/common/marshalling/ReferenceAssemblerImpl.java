@@ -54,6 +54,7 @@ import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
@@ -64,6 +65,7 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.rest.AssetController;
 import org.veo.rest.AssetInDomainController;
 import org.veo.rest.AssetRiskResource;
@@ -103,6 +105,9 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
       "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
 
   private static final Pattern UUID_PATTERN = Pattern.compile(UUID_REGEX);
+  // TODO VEO-2000 replace domians with Domain.PLURAL_TERM
+  private static final Pattern ELEMENT_IN_DOMAIN_URI_PATTERN =
+      Pattern.compile("/domians/" + UUID_REGEX + "/(.+)/(" + UUID_REGEX + ")");
 
   private final TypeExtractor typeExtractor;
 
@@ -631,5 +636,29 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                 .getSchema(ANY_AUTH, typeSingularTerm, ANY_STRING_LIST))
         .withSelfRel()
         .getHref();
+  }
+
+  @Override
+  public String parseElementIdInDomain(String targetInDomainUri) {
+    var matcher =
+        ELEMENT_IN_DOMAIN_URI_PATTERN.matcher(
+            UriComponentsBuilder.fromUriString(targetInDomainUri).build().getPath());
+    if (matcher.find()) {
+      return matcher.group(2);
+    }
+    throw new UnprocessableDataException(
+        "Invalid element reference: %s".formatted(targetInDomainUri));
+  }
+
+  @Override
+  public Class<Element> parseElementTypeInDomain(String targetInDomainUri) {
+    var matcher =
+        ELEMENT_IN_DOMAIN_URI_PATTERN.matcher(
+            UriComponentsBuilder.fromUriString(targetInDomainUri).build().getPath());
+    if (matcher.find()) {
+      return (Class<Element>) EntityType.getTypeForPluralTerm(matcher.group(1));
+    }
+    throw new UnprocessableDataException(
+        "Invalid element reference: %s".formatted(targetInDomainUri));
   }
 }

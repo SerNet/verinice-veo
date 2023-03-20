@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
 
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.core.entity.exception.UnprocessableDataException;
 
 /**
  * Deserializes resource references from JSON. Uses {@link ReferenceAssembler} to deconstruct URLs.
@@ -38,6 +39,7 @@ public class ElementInDomainReferenceDeserializer
     extends JsonDeserializer<ElementInDomainIdRef<?>> {
 
   public static final String TARGET_URI = "targetUri";
+  public static final String TARGET_IN_DOMAIN_URI = "targetInDomainUri";
 
   @Autowired ReferenceAssembler urlAssembler;
 
@@ -45,7 +47,16 @@ public class ElementInDomainReferenceDeserializer
   public ElementInDomainIdRef<?> deserialize(JsonParser p, DeserializationContext ctxt)
       throws IOException {
     var treeNode = p.getCodec().readTree(p);
-    var targetUri = (TextNode) treeNode.get(TARGET_URI);
-    return ElementInDomainIdRef.fromTargetUri(targetUri.asText(), urlAssembler);
+    var targetUri = treeNode.get(TARGET_URI);
+    if (targetUri != null) {
+      return ElementInDomainIdRef.fromTargetUri(((TextNode) targetUri).asText(), urlAssembler);
+    }
+    var targetInDomain = treeNode.get(TARGET_IN_DOMAIN_URI);
+    if (targetInDomain != null) {
+      return ElementInDomainIdRef.fromTargetInDomainUri(
+          ((TextNode) targetInDomain).asText(), urlAssembler);
+    }
+    throw new UnprocessableDataException(
+        "Element reference must contain %s or %s".formatted(TARGET_URI, TARGET_IN_DOMAIN_URI));
   }
 }

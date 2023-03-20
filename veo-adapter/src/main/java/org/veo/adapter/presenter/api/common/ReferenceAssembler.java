@@ -99,4 +99,8 @@ public interface ReferenceAssembler {
   Set<Key<UUID>> toKeys(Set<? extends IdRef<?>> references);
 
   String schemaReferenceOf(String typeSingularTerm);
+
+  String parseElementIdInDomain(String targetInDomainUri);
+
+  Class<Element> parseElementTypeInDomain(String targetInDomainUri);
 }

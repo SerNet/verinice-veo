@@ -79,4 +79,14 @@ public class LocalReferenceAssembler implements ReferenceAssembler {
   public String schemaReferenceOf(String typeSingularTerm) {
     return null;
   }
+
+  @Override
+  public String parseElementIdInDomain(String targetInDomainUri) {
+    return null;
+  }
+
+  @Override
+  public Class<Element> parseElementTypeInDomain(String targetInDomainUri) {
+    return null;
+  }
 }

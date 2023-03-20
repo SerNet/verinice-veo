@@ -106,4 +106,12 @@ public enum EntityType {
         .orElseThrow()
         .getSingularTerm();
   }
+
+  public static String getPluralTermByType(Class<? extends Identifiable> type) {
+    return Stream.of(values())
+        .filter(et -> et.type.equals(type))
+        .findFirst()
+        .orElseThrow()
+        .getPluralTerm();
+  }
 }
