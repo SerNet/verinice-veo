@@ -205,34 +205,24 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         cacheControl == 'no-cache'
 
         and: "the response contains the expected data"
-        def result = parseJson(results)
-        result == [
-            _self: "http://localhost/assets/${asset.id.uuidValue()}",
-            customAspects:[
-                simpleAspect:[
-                    attributes:[
-                        simpleProp:'simpleValue'
-                    ],
-                    domains:[]]
-            ],
-            designator: asset.designator,
-            domains:[:],
-            id: asset.id.uuidValue(),
-            links:[:],
-            name:'Test asset-1',
-            owner:[
-                displayName:'Test unit',
-                targetUri   : "http://localhost/units/${unit.id.uuidValue()}",
-                searchesUri : "http://localhost/units/searches",
-                resourcesUri: "http://localhost/units{?parent,displayName}"
-            ],
-            type: 'asset',
-            parts: [],
-            createdBy: "user@domain.example",
-            createdAt: roundToMicros(asset.createdAt).toString(),
-            updatedBy: "user@domain.example",
-            updatedAt: roundToMicros(asset.updatedAt).toString()
-        ]
+        with(parseJson(results)) {
+            _self == "http://localhost/assets/${asset.id.uuidValue()}"
+            customAspects.simpleAspect.attributes.simpleProp == "simpleValue"
+            customAspects.simpleAspect.domains == []
+            designator == asset.designator
+            domains == [:]
+            id == asset.idAsString
+            links == [:]
+            name == 'Test asset-1'
+            it.owner.displayName == "Test unit"
+            it.owner.targetUri == "http://localhost/units/$owner.unit.idAsString"
+            type == 'asset'
+            parts == []
+            createdBy == "user@domain.example"
+            createdAt == roundToMicros(asset.createdAt).toString()
+            updatedBy == "user@domain.example"
+            updatedAt == roundToMicros(asset.updatedAt).toString()
+        }
 
         when: "the asset is requested from the server again"
         results =
