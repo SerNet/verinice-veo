@@ -30,6 +30,7 @@ import org.testcontainers.containers.GenericContainer
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
+import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.repository.CatalogRepository
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.UnitRepository
@@ -75,7 +76,28 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
 
     def setup() {
         def client = createTestClient()
-        domain = newDomain(client)
+        domain = newDomain(client) {
+            applyElementTypeDefinition(newElementTypeDefinition("asset", it) {
+                subTypes = [
+                    NormalAsset: newSubTypeDefinition {
+                        statuses = ["NEW"]
+                    }
+                ]
+                customAspects = [
+                    aspectOne: newCustomAspectDefinition {
+                        attributeDefinitions = [
+                            attrOne: new TextAttributeDefinition(),
+                            attrTwo: new TextAttributeDefinition(),
+                        ]
+                    },
+                    aspectTwo: newCustomAspectDefinition {
+                        attributeDefinitions = [
+                            attrOne: new TextAttributeDefinition(),
+                        ]
+                    }
+                ]
+            })
+        }
         domainId = domain.id.uuidValue()
         clientRepo.save(client)
 
@@ -83,69 +105,7 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
     }
 
     def 'data is migrated when element type definition is changed'() {
-        given: "a domain where assets can have the custom aspects aspectOne & aspectTwo"
-        def schema = [
-            properties: [
-                customAspects: [
-                    properties: [
-                        aspectOne: [
-                            properties: [
-                                attributes: [
-                                    properties:[
-                                        attrOne: [
-                                            type: "string"
-                                        ],
-                                        attrTwo: [
-                                            type: "string"
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        aspectTwo: [
-                            properties: [
-                                attributes: [
-                                    properties:[
-                                        attrOne: [
-                                            type: "string"
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ],
-                domains: [
-                    properties: [
-                        "70e5c01d-2f81-4940-8635-1078c057c34c": [
-                            allOf: [
-                                [
-                                    if: [
-                                        properties: [
-                                            subType: [
-                                                const: "NormalAsset"
-                                            ]
-                                        ]
-                                    ],
-                                    then: [
-                                        properties: [
-                                            status: [
-                                                enum: ["NEW"]
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ],
-                links: [properties:[:]],
-                translations: [:]
-            ]
-        ]
-        post("/domains/$domainId/elementtypedefinitions/asset/updatefromobjectschema", schema, 204)
-
-        and: "an asset that conforms to the element type definition"
+        given: "an asset that conforms to the element type definition"
         def assetId = parseJson(post("/assets", [
             domains: [
                 (domainId): [
@@ -190,9 +150,10 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
         })
 
         when: "removing one custom aspect type and one custom aspect attribute from the element type definition"
-        schema.properties.customAspects.properties.remove("aspectTwo")
-        schema.properties.customAspects.properties.aspectOne.properties.attributes.properties.remove("attrTwo")
-        post("/domains/$domainId/elementtypedefinitions/asset/updatefromobjectschema", schema, 204)
+        def etd = parseJson(get("/domains/$domainId")).elementTypeDefinitions.asset
+        etd.customAspects.remove("aspectTwo")
+        etd.customAspects.aspectOne.attributeDefinitions.remove("attrTwo")
+        put("/domains/$domainId/element-type-definitions/asset", etd, 204)
 
         and: "triggering message processing"
         messagingJob.sendMessages()
