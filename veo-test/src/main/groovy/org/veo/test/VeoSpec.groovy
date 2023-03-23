@@ -50,6 +50,7 @@ import org.veo.core.entity.TranslationMap
 import org.veo.core.entity.Unit
 import org.veo.core.entity.UpdateReference
 import org.veo.core.entity.Versioned
+import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.core.entity.event.ClientEvent
@@ -176,6 +177,13 @@ abstract class VeoSpec extends Specification {
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.definitions.SubTypeDefinition") Closure init = null) {
         return new SubTypeDefinition().tap{
             statuses = ["NEW"]
+            VeoSpec.execute(it, init)
+        }
+    }
+
+    static CustomAspectDefinition newCustomAspectDefinition(@DelegatesTo(value = CustomAspectDefinition.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.definitions.CustomAspectDefinition") Closure init = null) {
+        return new CustomAspectDefinition().tap{
             VeoSpec.execute(it, init)
         }
     }

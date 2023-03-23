@@ -75,6 +75,10 @@ class ProcessRiskRowCountMockMvcITSpec extends VeoMvcSpec {
                 subTypes = [
                     DifficultProcess: newSubTypeDefinition()
                 ]
+                customAspects = [
+                    "myNewCa": newCustomAspectDefinition {},
+                    "myNewerCa": newCustomAspectDefinition {},
+                ]
             })
             applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
                 subTypes = [
@@ -122,8 +126,8 @@ class ProcessRiskRowCountMockMvcITSpec extends VeoMvcSpec {
 
             def process2 = newProcess(unit) {
                 associateWithDomain(domain, "NormalProcess", "NEW")
-                applyCustomAspect(newCustomAspect('my.new.customaspect', domain))
-                applyCustomAspect(newCustomAspect('my.newer.customaspect', domain))
+                applyCustomAspect(newCustomAspect('myNewCa', domain))
+                applyCustomAspect(newCustomAspect('myNewerCa', domain))
             }
             processRepository.save(process2)
             postRisk1(process2.idAsString, scenarioId)

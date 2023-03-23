@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
+import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.PagingConfiguration
 import org.veo.persistence.access.AssetRepositoryImpl
@@ -57,7 +58,22 @@ class ElementQueryImplPerformanceSpec extends AbstractPerformanceITSpec {
 
     def setup() {
         client = clientRepository.save(newClient {
-            newDomain(it)
+            newDomain(it) {
+                getElementTypeDefinition("process").with{
+                    subTypes = [
+                        "NormalProcess": newSubTypeDefinition {
+                            statuses = ["NEW"]
+                        }
+                    ]
+                    customAspects = [
+                        my_custom_aspect: newCustomAspectDefinition {
+                            attributeDefinitions = [
+                                foo: new TextAttributeDefinition()
+                            ]
+                        }
+                    ]
+                }
+            }
         })
         domain = client.domains.first()
         unit = unitRepository.save(newUnit(client))
@@ -72,6 +88,7 @@ class ElementQueryImplPerformanceSpec extends AbstractPerformanceITSpec {
         def processes = new HashSet<ProcessData>()
         for(int i = 0; i < testProcessCount; i++) {
             processes.add(newProcess(unit) {
+                associateWithDomain(domain, "NormalProcess", "NEW")
                 applyCustomAspect(newCustomAspect("my_custom_aspect", domain) {
                     attributes = [
                         "foo": "bar"

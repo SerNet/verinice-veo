@@ -23,6 +23,8 @@ import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.Process
 import org.veo.core.entity.Unit
+import org.veo.core.entity.definitions.LinkDefinition
+import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.entity.specification.EntitySpecifications
 import org.veo.core.entity.specification.InvalidUnitException
@@ -241,34 +243,60 @@ class CompositeElementSpec extends VeoSpec {
      */
     def "A composite can be used just like a single element of the same type"() {
         given: "a set of two processes"
-        def domain = newDomain(client)
-        def p1 = newProcess(unit)
-        def p2 = newProcess(unit)
+        def domain = newDomain(client) {
+            applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+                subTypes = [
+                    ST: newSubTypeDefinition {
+                        statuses = ["NEW"]
+                    }
+                ]
+                customAspects = [
+                    type: newCustomAspectDefinition {
+                        attributeDefinitions = [
+                            val: new TextAttributeDefinition()
+                        ]
+                    },
+                    type2: newCustomAspectDefinition {
+                        attributeDefinitions = [
+                            val: new TextAttributeDefinition()
+                        ]
+                    }
+                ]
+                links = [
+                    goodLink: new LinkDefinition()
+                ]
+            })
+        }
+        def p1 = newProcess(unit) {
+            associateWithDomain(domain, "ST", "NEW")
+            applyCustomAspect(newCustomAspect("type", domain) {
+                attributes.val = "val1"
+            })
+        }
+        def p2 = newProcess(unit) {
+            associateWithDomain(domain, "ST", "NEW")
+        }
 
-        def link = newCustomLink(p2, "goodLink", domain)
-        p1.applyLink(link)
-
-        def customAspect = newCustomAspect("type", domain)
-        p1.applyCustomAspect(customAspect)
+        p1.applyLink(newCustomLink(p2, "goodLink", domain))
 
         when: "a composite is reinstantiated with the processes:"
         def processComposite = newProcess(unit)
         processComposite.parts = [p1, p2] as Set
 
         and: "another object should be compared"
-        def p3 = newProcess(unit)
-
-        def customAspect2 = newCustomAspect("type2", domain)
-        p3.applyCustomAspect(customAspect2)
-
-        def link2 = newCustomLink(p2, "goodLink", domain)
-        p3.applyLink(link2)
+        def p3 = newProcess(unit) {
+            associateWithDomain(domain, "ST", "NEW")
+            applyCustomAspect(newCustomAspect("type2", domain) {
+                attributes.val = "val3"
+            })
+            applyLink(newCustomLink(p2, "goodLink", domain))
+        }
 
         then: "the same method can be called on the composite (branch node) or element (leaf node)"
-        p1.links.first() == link
-        p3.links.first() == link2
-        p1.customAspects.first() == customAspect
-        p3.customAspects.first() == customAspect2
+        p1.links.first().target == p2
+        p3.links.first().target == p2
+        p1.customAspects.first().attributes.val == "val1"
+        p3.customAspects.first().attributes.val == "val3"
     }
 
 }

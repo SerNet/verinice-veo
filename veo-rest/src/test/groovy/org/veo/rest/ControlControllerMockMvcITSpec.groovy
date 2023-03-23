@@ -285,12 +285,10 @@ class ControlControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "put a control with a custom aspect"() {
         given: "a saved control"
-        def customAspect = newCustomAspect("my.new.type", dsgvoDomain)
-
         def control = txTemplate.execute {
             controlRepository.save(newControl(unit) {
-                applyCustomAspect(customAspect)
                 associateWithDomain(dsgvoDomain, "CTL_TOM", "NEW")
+                applyCustomAspect(newCustomAspect("control_dataProtection", dsgvoDomain))
             })
         }
         Map request = [

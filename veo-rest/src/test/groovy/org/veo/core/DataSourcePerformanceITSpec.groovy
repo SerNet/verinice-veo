@@ -22,13 +22,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.CompositeElement
-import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
+import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.repository.PagingConfiguration
 import org.veo.persistence.access.AssetRepositoryImpl
@@ -127,7 +127,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
 
         then:
         queryCounts.delete == 0
-        queryCounts.insert == 3
+        queryCounts.insert == 5
         queryCounts.update == 0
         queryCounts.select == 1
         queryCounts.time < 500
@@ -144,7 +144,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
 
         then:
         queryCounts.delete == 0
-        queryCounts.insert == 3
+        queryCounts.insert == 5
         queryCounts.update == 0
         queryCounts.select == 1
         queryCounts.time < 500
@@ -483,7 +483,11 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
     void createClient() {
         executeInTransaction {
             client = clientRepository.save(newClient() {
-                newDomain(it)
+                newDomain(it) {
+                    applyElementTypeDefinition(newElementTypeDefinition("process",it) {
+                        customAspects.aType = newCustomAspectDefinition {}
+                    })
+                }
             })
 
             domain = client.domains.first()
@@ -500,6 +504,13 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         executeInTransaction {
             client = clientRepository.save(newClient() {
                 newDomain(it) {
+                    applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+                        customAspects.aType = newCustomAspectDefinition {
+                            attributeDefinitions = [
+                                PROP_KEY: new TextAttributeDefinition()
+                            ]
+                        }
+                    })
                     it.riskDefinitions = [ "r2d2":
                         createRiskDefinition("r2d2")
                     ] as Map
@@ -588,10 +599,13 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
 
     def saveProcessWithCustomAspects(int count) {
         executeInTransaction {
-            def process = newProcess(unit)
+            def process = newProcess(unit) {
+                associateWithDomain(domain, "NormalProcess", "NEW")
+            }
             for (i in 0..<count) {
-                CustomAspect customAspect = newCustomAspect("aType $i", domain)
-                process.applyCustomAspect(customAspect)
+                def type = "aType $i"
+                domain.getElementTypeDefinition("process").customAspects[type] = newCustomAspectDefinition {}
+                process.applyCustomAspect(newCustomAspect(type, domain))
             }
             processRepository.save(process)
         }
@@ -645,12 +659,14 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
 
     Process saveProcessWithCustomAspect() {
         executeInTransaction {
-            def process = newProcess(unit)
-            CustomAspect customAspect = newCustomAspect("aType", domain)
-            customAspect.attributes = [
-                PROP_KEY: "ok"
-            ]
-            process.applyCustomAspect(customAspect)
+            def process = newProcess(unit) {
+                associateWithDomain(domain, "NormalProcess", "NEW")
+            }
+            process.applyCustomAspect(newCustomAspect("aType", domain) {
+                attributes = [
+                    PROP_KEY: "ok"
+                ]
+            })
             return processRepository.save(process)
         }
     }

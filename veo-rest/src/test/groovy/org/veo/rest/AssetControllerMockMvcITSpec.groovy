@@ -30,7 +30,6 @@ import org.springframework.transaction.support.TransactionTemplate
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Asset
-import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
@@ -180,16 +179,15 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve an asset"() {
         given: "a saved asset"
-        CustomAspect simpleProps = newCustomAspect("simpleAspect", dsgvoDomain) {
-            attributes = [
-                "simpleProp": "simpleValue"
-            ]
-        }
-
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
+                associateWithDomain(dsgvoDomain, "AST_DataType", "NEW")
                 name = 'Test asset-1'
-                applyCustomAspect(simpleProps)
+                applyCustomAspect(newCustomAspect("asset_details", dsgvoDomain) {
+                    attributes = [
+                        asset_details_number: 42
+                    ]
+                })
             })
         }
 
@@ -207,10 +205,11 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         and: "the response contains the expected data"
         with(parseJson(results)) {
             _self == "http://localhost/assets/${asset.id.uuidValue()}"
-            customAspects.simpleAspect.attributes.simpleProp == "simpleValue"
-            customAspects.simpleAspect.domains == []
+            customAspects.asset_details.attributes.asset_details_number == 42
+            customAspects.asset_details.domains[0].targetUri == "http://localhost/domains/$owner.dsgvoDomain.idAsString"
             designator == asset.designator
-            domains == [:]
+            domains[owner.dsgvoDomain.idAsString].subType == "AST_DataType"
+            domains[owner.dsgvoDomain.idAsString].status == "NEW"
             id == asset.idAsString
             links == [:]
             name == 'Test asset-1'
@@ -475,13 +474,11 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "put an asset with a custom aspect"() {
         given: "a saved asset"
-        CustomAspect customAspect = newCustomAspect("my.new.type", dsgvoDomain)
-
         def asset = txTemplate.execute {
             assetRepository.save(newAsset(unit) {
                 name = "Test asset-1"
                 associateWithDomain(dsgvoDomain, "AST_Application", "NEW")
-                applyCustomAspect(customAspect)
+                applyCustomAspect(newCustomAspect("asset_details", dsgvoDomain))
             })
         }
 

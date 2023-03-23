@@ -138,6 +138,7 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
                 newCatalogItem(it) {
                     it.element = newAsset(null) {
                         name = "my little catalog asset"
+                        associateWithDomain(domain, "NormalAsset", "NEW")
                         applyCustomAspect(newCustomAspect("aspectOne", domain) {
                             attributes = [
                                 'attrOne': "catalogValueOne",

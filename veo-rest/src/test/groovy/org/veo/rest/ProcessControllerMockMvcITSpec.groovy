@@ -264,7 +264,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {
                 associateWithDomain(dsgvoDomain, "PRO_DataTransfer", "NEW")
-                applyCustomAspect(newCustomAspect("my.new.type", dsgvoDomain))
+                applyCustomAspect(newCustomAspect("process_processingDetails", dsgvoDomain))
             })
         }
 

@@ -28,6 +28,9 @@ import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
+import org.veo.core.entity.definitions.CustomAspectDefinition
+import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition
+import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.ControlRiskValues
 import org.veo.core.entity.risk.ImpactRef
@@ -100,6 +103,24 @@ class CatalogSpec extends VeoMvcSpec {
                 templateVersion = '1.0'
                 domainTemplate = domainTemplate
                 riskDefinitions = [(RISK_DEF_ID): createRiskDefinition(RISK_DEF_ID)]
+                applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+                    customAspects = [
+                        process_resilience: newCustomAspectDefinition {
+                            attributeDefinitions = [
+                                process_resilience_impact: new EnumAttributeDefinition(List.of("process_resilience_impact_low", "process_resilience_impact_high"))
+                            ]
+                        },
+                        process_processingDetails: new CustomAspectDefinition().tap{
+                            attributeDefinitions = [
+                                process_processingDetails_comment: new TextAttributeDefinition(),
+                                process_processingDetails_operatingStage: new EnumAttributeDefinition([
+                                    "process_processingDetails_operatingStage_planning",
+                                    "process_processingDetails_operatingStage_operation",
+                                ])
+                            ]
+                        }
+                    ]
+                })
             }
             catalog = newCatalog(domain) {
                 name= 'a'
@@ -185,17 +206,6 @@ class CatalogSpec extends VeoMvcSpec {
                     name = 'tom1'
                     description = "a control with external tailorref"
                     associateWithDomain(domain, "CTL_TOM", "NEW1")
-                    applyCustomAspect(newCustomAspect("process_resilience", domain) {
-                        attributes = [
-                            "process_resilience_impact": "process_resilience_impact_low"
-                        ]
-                    })
-                    applyCustomAspect(newCustomAspect("process_processingDetails", domain) {
-                        attributes = [
-                            "process_processingDetails_comment": "another comment",
-                            "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation"
-                        ]
-                    })
                 }
             })
             newLinkTailoringReference(item7, TailoringReferenceType.LINK_EXTERNAL) {

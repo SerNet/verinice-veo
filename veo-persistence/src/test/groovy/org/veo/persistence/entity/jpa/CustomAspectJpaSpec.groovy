@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
+import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
+import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
@@ -40,7 +42,16 @@ class CustomAspectJpaSpec extends AbstractJpaSpec {
 
     def setup() {
         def client = clientDataRepository.save(newClient() {
-            newDomain(it)
+            newDomain(it) {
+                applyElementTypeDefinition(newElementTypeDefinition("asset", it) {
+                    customAspects.goodAspect = newCustomAspectDefinition {
+                        attributeDefinitions = [
+                            k1: new TextAttributeDefinition(),
+                            k2: new IntegerAttributeDefinition(),
+                        ]
+                    }
+                })
+            }
         })
         domain = client.domains.first()
         unit = newUnit(client)

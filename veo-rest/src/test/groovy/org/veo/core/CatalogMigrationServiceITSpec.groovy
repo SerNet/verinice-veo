@@ -48,6 +48,11 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
         def client = createTestClient()
         domain = domainRepository.save(newDomain(client) {domain ->
             applyElementTypeDefinition(newElementTypeDefinition("document", domain) {
+                subTypes = [
+                    Manual: newSubTypeDefinition {
+                        statuses = ["NEW"]
+                    }
+                ]
                 customAspects = [
                     file: new CustomAspectDefinition().tap {
                         attributeDefinitions = [
@@ -74,6 +79,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
             catalogItems = [
                 newCatalogItem(it, {
                     newDocument(it) {
+                        associateWithDomain(domain, "Manual", "NEW")
                         applyCustomAspect(newCustomAspect("file", domain) {
                             attributes = [
                                 extension: "pdf",

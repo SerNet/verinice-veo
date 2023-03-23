@@ -301,8 +301,8 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         given: "a saved scope"
         def scope = txTemplate.execute {
             scopeRepository.save(newScope(unit) {
-                applyCustomAspect(newCustomAspect("my.new.type", dsgvoDomain))
                 associateWithDomain(dsgvoDomain, "SCP_Scope", "NEW")
+                applyCustomAspect(newCustomAspect("scope_generalInformation", dsgvoDomain))
             })
         }
 

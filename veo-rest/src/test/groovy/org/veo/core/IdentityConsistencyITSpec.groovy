@@ -26,7 +26,6 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.annotation.Transactional
 
 import org.veo.core.entity.Client
-import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -67,7 +66,14 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
     @Transactional
     def setup() {
         client = clientRepository.save(newClient() {
-            domain = newDomain(it)
+            domain = newDomain(it) {
+                applyElementTypeDefinition(newElementTypeDefinition("asset", it) {
+                    subTypes.NormalAsset = newSubTypeDefinition {
+                        statuses = ["NEW"]
+                    }
+                    customAspects.goodAspect = newCustomAspectDefinition {}
+                })
+            }
         })
         unit = newUnit(this.client)
         unitRepository.save(this.unit)
@@ -226,7 +232,9 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
     @Transactional
     def "The identity of the entity CustomAspectData is consistent over state transitions"() {
         given:
-        def asset = newAsset(unit)
+        def asset = newAsset(unit) {
+            associateWithDomain(domain, "NormalAsset", "NEW")
+        }
         assetDataRepository.save(asset)
         entityManager.flush()
 
