@@ -38,7 +38,6 @@ import org.veo.adapter.presenter.api.dto.AbstractControlDto;
 import org.veo.adapter.presenter.api.dto.AbstractControlInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractDocumentDto;
 import org.veo.adapter.presenter.api.dto.AbstractDocumentInDomainDto;
-import org.veo.adapter.presenter.api.dto.AbstractDomainTemplateDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractIncidentDto;
@@ -188,13 +187,21 @@ public final class DtoToEntityTransformer {
 
   private void mapTransformDomainTemplate(
       TransformDomainTemplateDto source, IdRefResolver idRefResolver, DomainBase target) {
-    mapDomainTemplate(source, idRefResolver, target);
-
+    target.setAuthority(source.getAuthority());
+    target.setTemplateVersion(source.getTemplateVersion());
+    mapNameableProperties(source, target);
     target.setElementTypeDefinitions(
         source.getElementTypeDefinitions().entrySet().stream()
             .map(entry -> mapElementTypeDefinition(entry.getKey(), entry.getValue(), target))
             .collect(Collectors.toSet()));
     target.setRiskDefinitions(copyOf(source.getRiskDefinitions()));
+    if (source.getCatalogs() != null) {
+      target.setCatalogs(
+          source.getCatalogs().stream()
+              .map(c -> transformDto2Catalog(c, idRefResolver))
+              .collect(Collectors.toSet()));
+    }
+    target.setProfiles(copyOf(source.getProfiles()));
   }
 
   public ElementTypeDefinition mapElementTypeDefinition(
@@ -299,22 +306,6 @@ public final class DtoToEntityTransformer {
       return transformDto2Scope(scope, idRefResolver);
     }
     throw new IllegalArgumentException("unkown type: " + elementDto.getClass().getName());
-  }
-
-  private void mapDomainTemplate(
-      AbstractDomainTemplateDto source, IdRefResolver idRefResolver, DomainBase target) {
-    target.setAuthority(source.getAuthority());
-    target.setTemplateVersion(source.getTemplateVersion());
-    target.setProfiles(copyOf(source.getProfiles()));
-
-    mapNameableProperties(source, target);
-    if (source.getCatalogs() != null) {
-      target.setCatalogs(
-          source.getCatalogs().stream()
-              .map(c -> transformDto2Catalog(c, idRefResolver))
-              .collect(Collectors.toSet()));
-    }
-    target.setRiskDefinitions(copyOf(source.getRiskDefinitions()));
   }
 
   private <T extends CompositeElement> void mapCompositeEntity(

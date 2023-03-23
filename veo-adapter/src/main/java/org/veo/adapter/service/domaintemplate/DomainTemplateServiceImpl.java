@@ -330,6 +330,14 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
       TransformDomainTemplateDto domainTemplateDto, DomainTemplate newDomain) {
     newDomain.setDescription(domainTemplateDto.getDescription());
     newDomain.setAbbreviation(domainTemplateDto.getAbbreviation());
+    domainTemplateDto.getElementTypeDefinitions().entrySet().stream()
+        .map(
+            entry ->
+                entityTransformer.mapElementTypeDefinition(
+                    entry.getKey(), entry.getValue(), newDomain))
+        .forEach(newDomain::applyElementTypeDefinition);
+    newDomain.setRiskDefinitions(Map.copyOf(domainTemplateDto.getRiskDefinitions()));
+
     PlaceholderResolver ref = new PlaceholderResolver(entityTransformer);
 
     ref.cache.put(domainTemplateDto.getId(), newDomain);
@@ -361,13 +369,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                         i ->
                             entityTransformer.transformDto2CatalogItem(
                                 i, ref, (Catalog) ref.cache.get(c.getId()))));
-    domainTemplateDto.getElementTypeDefinitions().entrySet().stream()
-        .map(
-            entry ->
-                entityTransformer.mapElementTypeDefinition(
-                    entry.getKey(), entry.getValue(), newDomain))
-        .forEach(etd -> newDomain.getElementTypeDefinitions().add(etd));
-    newDomain.setRiskDefinitions(Map.copyOf(domainTemplateDto.getRiskDefinitions()));
 
     initCatalog(newDomain, itemCache);
     return newDomain;
