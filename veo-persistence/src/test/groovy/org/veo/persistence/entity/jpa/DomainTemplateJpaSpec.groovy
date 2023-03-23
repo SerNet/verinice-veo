@@ -154,7 +154,6 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
                 associateWithDomain(domain0, "Test", "NEW")
             }
         })
-        domain0.elementTypeDefinitions.add(newElementTypeDefinition(domain0, "process"))
 
         when: "saving"
         domain0 = txTemplate.execute {
@@ -172,7 +171,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.catalogs.first().name == 'a'
         d.catalogs.first().catalogItems.size() == 4
         d.catalogs.first().catalogItems.find { it.element.name == 'p1' }.element.findSubType(d).get() == 'Test'
-        d.elementTypeDefinitions.size() == 1
+        d.elementTypeDefinitions.size() == 8
     }
 
     def 'domainTemplate with catalog and catalog items with subtype and link'() {
@@ -198,8 +197,6 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
                 applyLink(newCustomLink(itemP1.element, "p2->p1", domain0))
             }
         })
-
-        domain0.elementTypeDefinitions.add(newElementTypeDefinition(domain0, "process"))
 
         when: "saving"
         domain0 = txTemplate.execute {
@@ -227,7 +224,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
             element.links[0].type == 'p2->p1'
             element.links[0].target.name == 'p1'
         }
-        d.elementTypeDefinitions.size() == 1
+        d.elementTypeDefinitions.size() == 8
     }
 
     def 'fetches latest template by name'() {

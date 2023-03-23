@@ -159,10 +159,7 @@ public class EntityDataFactory implements EntityFactory {
     domain.setName(name);
     domain.setAuthority(authority);
     domain.setTemplateVersion(templateVersion);
-    domain.setElementTypeDefinitions(
-        EntityType.ELEMENT_TYPES.stream()
-            .map(t -> createElementTypeDefinition(t.getSingularTerm(), domain))
-            .collect(toSet()));
+    initElementTypeDefinitions(domain);
     return domain;
   }
 
@@ -206,6 +203,7 @@ public class EntityDataFactory implements EntityFactory {
     domainTemplate.setName(name);
     domainTemplate.setAuthority(authority);
     domainTemplate.setTemplateVersion(templateVersion);
+    initElementTypeDefinitions(domainTemplate);
 
     return domainTemplate;
   }
@@ -255,5 +253,12 @@ public class EntityDataFactory implements EntityFactory {
     updateReference.setUpdateType(updateType);
     catalogItem.getUpdateReferences().add(updateReference);
     return updateReference;
+  }
+
+  private void initElementTypeDefinitions(DomainBase domainTemplate) {
+    domainTemplate.setElementTypeDefinitions(
+        EntityType.ELEMENT_TYPES.stream()
+            .map(t -> createElementTypeDefinition(t.getSingularTerm(), domainTemplate))
+            .collect(toSet()));
   }
 }
