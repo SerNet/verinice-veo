@@ -56,40 +56,29 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             name: "Market investigation results",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
-        // TODO VEO-1891 use new domain-specific POST endpoint for element creation
-        def partId = parseJson(post("/processes", [
+        def partId = parseJson(post("/domians/$testDomainId/processes", [
             name: "Promotion",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "BusinessProcess",
-                    status: "NEW"
-                ]
-            ]
+            subType: "BusinessProcess",
+            status: "NEW"
         ])).resourceId
-        def processId = parseJson(post("/processes", [
+        def processId = parseJson(post("/domians/$testDomainId/processes", [
             name: "Marketing",
             abbreviation: "M",
             description: "Catering to the target market",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "BusinessProcess",
-                    status: "NEW",
-                    riskValues: [
-                        riskyDef: [
-                            potentialImpacts: [
-                                C: 1
-                            ]
-                        ]
+            subType: "BusinessProcess",
+            status: "NEW",
+            riskValues: [
+                riskyDef: [
+                    potentialImpacts: [
+                        C: 1
                     ]
                 ]
             ],
             customAspects: [
                 general: [
-                    attributes: [
-                        complexity: "high"
-                    ]
+                    complexity: "high"
                 ]
             ],
             parts: [
@@ -250,20 +239,15 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "risk values can be updated"() {
         given: "a process with risk values"
-        // TODO VEO-1891 use new domain-specific POST endpoint for element creation
-        def processId = parseJson(post("/processes", [
+        def processId = parseJson(post("/domians/$testDomainId/processes", [
             name: "Risky process",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "BusinessProcess",
-                    status: "NEW",
-                    riskValues: [
-                        riskyDef: [
-                            potentialImpacts: [
-                                C: 0
-                            ]
-                        ]
+            subType: "BusinessProcess",
+            status: "NEW",
+            riskValues: [
+                riskyDef: [
+                    potentialImpacts: [
+                        C: 0
                     ]
                 ]
             ]

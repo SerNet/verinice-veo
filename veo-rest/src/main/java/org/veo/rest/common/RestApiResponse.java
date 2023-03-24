@@ -23,6 +23,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseEntity.BodyBuilder;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
+import org.veo.core.entity.Element;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -37,6 +40,22 @@ public class RestApiResponse {
     URI location = URI.create(urlBasePath + "/" + resourceId);
     BodyBuilder bodyBuilder = ResponseEntity.created(location);
     return bodyBuilder.body(body);
+  }
+
+  @Schema(
+      description =
+          "A response body for a new element that was created within a domain, containing resource ID, success message & Location header.")
+  public static ResponseEntity<ApiResponseBody> created(
+      Element element, String domainId, ReferenceAssembler refAssembler) {
+    return ResponseEntity.created(
+            URI.create(
+                refAssembler.elementInDomainRefOf(
+                    element,
+                    element.getDomains().stream()
+                        .filter(d -> d.getIdAsString().equals(domainId))
+                        .findFirst()
+                        .orElseThrow())))
+        .body(CreateOutputMapper.map(element));
   }
 
   public static ResponseEntity<ApiResponseBody> noContent() {

@@ -56,33 +56,22 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             name: "Anne Admin",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
-        // TODO VEO-1891 use new domain-specific POST endpoint for element creation
-        def partId = parseJson(post("/assets", [
+        def partId = parseJson(post("/domians/$testDomainId/assets", [
             name: "Git server",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "Server",
-                    status: "DOWN"
-                ]
-            ]
+            subType: "Server",
+            status: "DOWN"
         ])).resourceId
-        def assetId = parseJson(post("/assets", [
+        def assetId = parseJson(post("/domians/$testDomainId/assets", [
             name: "My little server farm",
             abbreviation: "SF",
             description: "Bunch of servers",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "Server",
-                    status: "RUNNING"
-                ]
-            ],
+            subType: "Server",
+            status: "RUNNING",
             customAspects: [
                 storage: [
-                    attributes: [
-                        totalCapacityInTb: 32
-                    ]
+                    totalCapacityInTb: 32
                 ]
             ],
             parts: [
@@ -193,15 +182,11 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     def "get all assets in a domain"() {
         given: "15 assets in the domain & one unassociated asset"
         (1..15).forEach {
-            post("/assets", [
+            post("/domians/$testDomainId/assets", [
                 name: "asset $it",
                 owner: [targetUri: "/units/$unitId"],
-                domains: [
-                    (testDomainId): [
-                        subType: "Server",
-                        status: "RUNNING",
-                    ]
-                ]
+                subType: "Server",
+                status: "RUNNING",
             ])
         }
         post("/assets", [
@@ -242,15 +227,11 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "missing domain is handled"() {
         given: "an asset in a domain"
-        def assetId = parseJson(post("/assets", [
+        def assetId = parseJson(post("/domians/$testDomainId/assets", [
             name: "Some asset",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "Server",
-                    status: "DOWN"
-                ]
-            ]
+            subType: "Server",
+            status: "DOWN"
         ])).resourceId
         def randomDomainId = randomUUID()
 

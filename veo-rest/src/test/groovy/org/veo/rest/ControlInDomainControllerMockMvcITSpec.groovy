@@ -56,38 +56,27 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             name: "Encryption for dummies",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
-        // TODO VEO-1891 use new domain-specific POST endpoint for element creation
-        def partId = parseJson(post("/controls", [
+        def partId = parseJson(post("/domians/$testDomainId/controls", [
             name: "Encrypt user messages",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "TOM",
-                    status: "NEW"
-                ]
-            ]
+            subType: "TOM",
+            status: "NEW"
         ])).resourceId
-        def controlId = parseJson(post("/controls", [
+        def controlId = parseJson(post("/domians/$testDomainId/controls", [
             name: "End-to-end encryption",
             abbreviation: "E2EE",
             description: "A security method that keeps messages secure",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "TOM",
-                    status: "NEW",
-                    riskValues: [
-                        riskyDef: [
-                            implementationStatus: 1
-                        ]
-                    ]
+            subType: "TOM",
+            status: "NEW",
+            riskValues: [
+                riskyDef: [
+                    implementationStatus: 1
                 ]
             ],
             customAspects: [
                 implementation: [
-                    attributes: [
-                        explanation: "Data is encrypted / decrypted by the clients, not by the server"
-                    ]
+                    explanation: "Data is encrypted / decrypted by the clients, not by the server"
                 ]
             ],
             parts: [
@@ -240,19 +229,14 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "risk values can be updated"() {
         given: "a control with risk values"
-        // TODO VEO-1891 use new domain-specific POST endpoint for element creation
-        def controlId = parseJson(post("/controls", [
+        def controlId = parseJson(post("/domians/$testDomainId/controls", [
             name: "Risky control",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "TOM",
-                    status: "NEW",
-                    riskValues: [
-                        riskyDef: [
-                            implementationStatus: 0
-                        ]
-                    ]
+            subType: "TOM",
+            status: "NEW",
+            riskValues: [
+                riskyDef: [
+                    implementationStatus: 0
                 ]
             ]
         ])).resourceId

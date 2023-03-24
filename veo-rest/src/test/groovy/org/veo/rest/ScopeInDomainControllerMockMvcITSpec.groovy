@@ -56,33 +56,23 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             name: "Lou Vice",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
-        def memberId = parseJson(post("/scopes", [
+        def memberId = parseJson(post("/domians/$testDomainId/scopes", [
             name: "Data Party Inc.",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "Company",
-                    status: "NEW"
-                ]
-            ]
+            subType: "Company",
+            status: "NEW"
         ])).resourceId
-        def scopeId = parseJson(post("/scopes", [
+        def scopeId = parseJson(post("/domians/$testDomainId/scopes", [
             name: "Data Inc.",
             abbreviation: "DT",
             description: "Some company dealing with IT",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "Company",
-                    status: "NEW",
-                    riskDefinition: "riskyDef"
-                ]
-            ],
+            subType: "Company",
+            status: "NEW",
+            riskDefinition: "riskyDef",
             customAspects: [
                 staff: [
-                    attributes: [
-                        numberOfEmployees: 638
-                    ]
+                    numberOfEmployees: 638
                 ]
             ],
             members: [

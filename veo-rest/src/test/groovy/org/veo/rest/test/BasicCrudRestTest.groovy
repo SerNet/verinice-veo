@@ -147,6 +147,52 @@ class BasicCrudRestTest extends VeoRestTest {
         getPropertiesAssetResponse.body.customAspects.containsKey('asset_details')
     }
 
+    def "CRUD person in domain context"() {
+        when: "creating a new person within a domain"
+        def creationResponse = post("/domians/$domainId/persons", [
+            name: "test person",
+            owner: [targetUri: "/units/$unitId`"],
+            subType: "PER_Person",
+            status: "NEW"
+        ])
+        def personId = creationResponse.body.resourceId
+        def personInDomainUri = creationResponse.location
+
+        then: "the response is correct"
+        creationResponse.body.success
+        creationResponse.body.message == "Person created successfully."
+        personId.size() == 36
+        personInDomainUri == "/domians/$domainId/persons/$personId"
+
+        when: "retrieving the person from the viewpoint of the domain"
+        def getResponse = get(personInDomainUri)
+        def person = getResponse.body
+        def eTag = getResponse.getETag()
+
+        then: "the response is correct"
+        person._self == baseUrl + personInDomainUri
+        person.name == "test person"
+        person.subType == "PER_Person"
+        person.status == "NEW"
+        eTag.size() > 2
+
+        when: "updating the person"
+        person.status = "ARCHIVED"
+        put(personInDomainUri, person, eTag)
+
+        then: "the change has been applied"
+        with(get(personInDomainUri).body) {
+            status == "ARCHIVED"
+        }
+
+        when: "deleting the domain association"
+        // TODO VEO-2015
+        // delete(personInDomainUri)
+
+        then: "it's gone"
+        // get(personInDomainUri, 404)
+    }
+
     def "CRUD person"() {
         when: 'Creating a person inside the unit'
         def personName = 'CRUD test person'

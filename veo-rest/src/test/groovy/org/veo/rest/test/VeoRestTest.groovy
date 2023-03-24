@@ -123,6 +123,9 @@ class VeoRestTest extends Specification {
         String getETag() {
             headers.getETag()
         }
+        String getLocation() {
+            return headers.getLocation()?.toString()
+        }
     }
 
     def setupSpec() {

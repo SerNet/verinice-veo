@@ -56,24 +56,17 @@ class LinkingRestTest extends VeoRestTest{
         ]).body.resourceId
 
         when: "creating an asset with a link to the target"
-        // TODO VEO-1891 create completely with new POST endpoint
-        def sourceId = post("/assets", [
+        def sourceId = post("/domians/$domainId/assets", [
             name: "source asset",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (domainId): [
-                    subType: "ST",
-                    status: "NEW"
+            subType: "ST",
+            status: "NEW",
+            links: [
+                someLink: [
+                    [target: [targetInDomainUri: "/domians/$domainId/$targetType.pluralTerm/$targetId"]]
                 ]
             ]
         ]).body.resourceId
-        get("/domians/$domainId/assets/$sourceId").with{getResponse ->
-            def asset = getResponse.body
-            asset.links.someLink = [
-                [target: [targetInDomainUri: "/domians/$domainId/$targetType.pluralTerm/$targetId"]]
-            ]
-            put(asset._self, asset, getResponse.getETag())
-        }
 
         then: "the target has been set"
         with(get("/domians/$domainId/assets/$sourceId").body) {

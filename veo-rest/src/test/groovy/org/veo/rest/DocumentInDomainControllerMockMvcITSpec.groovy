@@ -56,33 +56,22 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             name: "Ricky Writer",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
-        // TODO VEO-1891 use new domain-specific POST endpoint for element creation
-        def partId = parseJson(post("/documents", [
+        def partId = parseJson(post("/domians/$testDomainId/documents", [
             name: "ISMS manual changelog",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "Manual",
-                    status: "CURRENT"
-                ]
-            ]
+            subType: "Manual",
+            status: "CURRENT",
         ])).resourceId
-        def documentId = parseJson(post("/documents", [
+        def documentId = parseJson(post("/domians/$testDomainId/documents", [
             name: "ISMS manual",
             abbreviation: "KM",
             description: "How we do ISMS",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "Manual",
-                    status: "CURRENT"
-                ]
-            ],
+            subType: "Manual",
+            status: "CURRENT",
             customAspects: [
                 details: [
-                    attributes: [
-                        numberOfPages: 84
-                    ]
+                    numberOfPages: 84
                 ]
             ],
             parts: [

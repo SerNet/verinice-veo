@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.rest.common;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.BiFunction;
@@ -33,8 +34,11 @@ import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.DbIdRefResolver;
 import org.veo.adapter.IdRefResolver;
+import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
+import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.Domain;
@@ -42,6 +46,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.UseCaseInteractor;
+import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.UpdateElementInDomainUseCase;
@@ -58,6 +63,7 @@ public class ElementInDomainService {
   private final RepositoryProvider repositoryProvider;
   private final EtagService etagService;
   private final UseCaseInteractor useCaseInteractor;
+  private final ReferenceAssembler referenceAssembler;
   private final CacheControl defaultCacheControl = CacheControl.noCache();
 
   public @Valid <
@@ -105,6 +111,28 @@ public class ElementInDomainService {
                             .filter(d -> d.getIdAsString().equals(domainId))
                             .findFirst()
                             .orElseThrow())));
+  }
+
+  public <TElement extends Element, TBaseDto extends AbstractElementInDomainDto<TElement>>
+      CompletableFuture<ResponseEntity<ApiResponseBody>> createElement(
+          ApplicationUser user,
+          String domainId,
+          TBaseDto dto,
+          List<String> scopeIds,
+          CreateElementUseCase<TElement> createUseCase,
+          TriFunction<TBaseDto, String, IdRefResolver, TElement> toEntityMapper) {
+    return useCaseInteractor.execute(
+        createUseCase,
+        (Supplier<CreateElementUseCase.InputData<TElement>>)
+            () -> {
+              var client = clientLookup.getClient(user);
+              return CreateElementInputMapper.map(
+                  toEntityMapper.apply(
+                      dto, domainId, new DbIdRefResolver(repositoryProvider, client)),
+                  client,
+                  scopeIds);
+            },
+        output -> RestApiResponse.created(output.getEntity(), domainId, referenceAssembler));
   }
 
   public <

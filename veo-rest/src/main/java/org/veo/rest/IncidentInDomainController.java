@@ -28,6 +28,8 @@ import static org.veo.rest.ControllerConstants.PAGE_NUMBER_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_PARAM;
 import static org.veo.rest.ControllerConstants.PAGE_SIZE_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_SIZE_PARAM;
+import static org.veo.rest.ControllerConstants.SCOPE_IDS_DESCRIPTION;
+import static org.veo.rest.ControllerConstants.SCOPE_IDS_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_COLUMN_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.SORT_COLUMN_PARAM;
 import static org.veo.rest.ControllerConstants.SORT_ORDER_DEFAULT_VALUE;
@@ -55,6 +57,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -63,7 +66,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
+import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
+import org.veo.adapter.presenter.api.dto.create.CreateIncidentInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullIncidentInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
@@ -71,14 +76,17 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Incident;
 import org.veo.core.usecase.base.UpdateIncidentInDomainUseCase;
+import org.veo.core.usecase.incident.CreateIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentsUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.ClientLookup;
 import org.veo.rest.common.ElementInDomainService;
+import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -97,6 +105,7 @@ public class IncidentInDomainController {
   private final ClientLookup clientLookup;
   private final GetIncidentUseCase getIncidentUseCase;
   private final GetIncidentsUseCase getIncidentsUseCase;
+  private final CreateIncidentUseCase createUseCase;
   private final UpdateIncidentInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
   private final DtoToEntityTransformer dtoToEntityTransformer;
@@ -195,6 +204,34 @@ public class IncidentInDomainController {
                 pageSize, pageNumber,
                 sortColumn, sortOrder)),
         entityToDtoTransformer::transformIncident2Dto);
+  }
+
+  @Operation(summary = "Creates an incident, assigning it to the domain")
+  @PostMapping
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "201",
+            description = "Incident created",
+            headers = @Header(name = "Location")),
+        @ApiResponse(responseCode = "404", description = "Domain not found"),
+      })
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> createElement(
+      @Parameter(required = true, hidden = true) ApplicationUser user,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Valid @NotNull @RequestBody CreateIncidentInDomainDto dto,
+      @Parameter(description = SCOPE_IDS_DESCRIPTION)
+          @RequestParam(name = SCOPE_IDS_PARAM, required = false)
+          List<String> scopeIds) {
+    return elementService.createElement(
+        user,
+        domainId,
+        dto,
+        scopeIds,
+        createUseCase,
+        dtoToEntityTransformer::transformDto2Incident);
   }
 
   @Operation(summary = "Updates a incident from the viewpoint of a domain")

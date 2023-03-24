@@ -30,19 +30,27 @@ import java.util.stream.Collectors;
 import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.AbstractAssetDto;
+import org.veo.adapter.presenter.api.dto.AbstractAssetInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.AbstractCompositeElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
+import org.veo.adapter.presenter.api.dto.AbstractControlInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractDocumentDto;
+import org.veo.adapter.presenter.api.dto.AbstractDocumentInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractDomainTemplateDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractIncidentDto;
+import org.veo.adapter.presenter.api.dto.AbstractIncidentInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractPersonDto;
+import org.veo.adapter.presenter.api.dto.AbstractPersonInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto;
+import org.veo.adapter.presenter.api.dto.AbstractProcessInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractScenarioDto;
+import org.veo.adapter.presenter.api.dto.AbstractScenarioInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
+import org.veo.adapter.presenter.api.dto.AbstractScopeInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
@@ -52,14 +60,6 @@ import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogDto;
 import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogItemDto;
-import org.veo.adapter.presenter.api.dto.full.FullAssetInDomainDto;
-import org.veo.adapter.presenter.api.dto.full.FullControlInDomainDto;
-import org.veo.adapter.presenter.api.dto.full.FullDocumentInDomainDto;
-import org.veo.adapter.presenter.api.dto.full.FullIncidentInDomainDto;
-import org.veo.adapter.presenter.api.dto.full.FullPersonInDomainDto;
-import org.veo.adapter.presenter.api.dto.full.FullProcessInDomainDto;
-import org.veo.adapter.presenter.api.dto.full.FullScenarioInDomainDto;
-import org.veo.adapter.presenter.api.dto.full.FullScopeInDomainDto;
 import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogDto;
 import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogItemDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
@@ -440,7 +440,7 @@ public final class DtoToEntityTransformer {
   }
 
   public Asset transformDto2Asset(
-      FullAssetInDomainDto source, String domainId, IdRefResolver idRefResolver) {
+      AbstractAssetInDomainDto source, String domainId, IdRefResolver idRefResolver) {
     var target = createIdentifiable(Asset.class, source);
     var domain = idRefResolver.resolve(domainId, Domain.class);
     mapCompositeElement(source, target, domain, idRefResolver);
@@ -448,7 +448,7 @@ public final class DtoToEntityTransformer {
   }
 
   public Control transformDto2Control(
-      FullControlInDomainDto source, String domainId, IdRefResolver idRefResolver) {
+      AbstractControlInDomainDto source, String domainId, IdRefResolver idRefResolver) {
     var target = createIdentifiable(Control.class, source);
     var domain = idRefResolver.resolve(domainId, Domain.class);
     mapCompositeElement(source, target, domain, idRefResolver);
@@ -458,7 +458,7 @@ public final class DtoToEntityTransformer {
   }
 
   public Document transformDto2Document(
-      FullDocumentInDomainDto source, String domainId, IdRefResolver idRefResolver) {
+      AbstractDocumentInDomainDto source, String domainId, IdRefResolver idRefResolver) {
     var target = createIdentifiable(Document.class, source);
     var domain = idRefResolver.resolve(domainId, Domain.class);
     mapCompositeElement(source, target, domain, idRefResolver);
@@ -466,7 +466,7 @@ public final class DtoToEntityTransformer {
   }
 
   public Incident transformDto2Incident(
-      FullIncidentInDomainDto source, String domainId, IdRefResolver idRefResolver) {
+      AbstractIncidentInDomainDto source, String domainId, IdRefResolver idRefResolver) {
     var target = createIdentifiable(Incident.class, source);
     var domain = idRefResolver.resolve(domainId, Domain.class);
     mapCompositeElement(source, target, domain, idRefResolver);
@@ -474,7 +474,7 @@ public final class DtoToEntityTransformer {
   }
 
   public Person transformDto2Person(
-      FullPersonInDomainDto source, String domainId, IdRefResolver idRefResolver) {
+      AbstractPersonInDomainDto source, String domainId, IdRefResolver idRefResolver) {
     var target = createIdentifiable(Person.class, source);
     var domain = idRefResolver.resolve(domainId, Domain.class);
     mapCompositeElement(source, target, domain, idRefResolver);
@@ -482,7 +482,7 @@ public final class DtoToEntityTransformer {
   }
 
   public Process transformDto2Process(
-      FullProcessInDomainDto source, String domainId, IdRefResolver idRefResolver) {
+      AbstractProcessInDomainDto source, String domainId, IdRefResolver idRefResolver) {
     var target = createIdentifiable(Process.class, source);
     var domain = idRefResolver.resolve(domainId, Domain.class);
     mapCompositeElement(source, target, domain, idRefResolver);
@@ -492,7 +492,7 @@ public final class DtoToEntityTransformer {
   }
 
   public Scenario transformDto2Scenario(
-      FullScenarioInDomainDto source, String domainId, IdRefResolver idRefResolver) {
+      AbstractScenarioInDomainDto source, String domainId, IdRefResolver idRefResolver) {
     var target = createIdentifiable(Scenario.class, source);
     var domain = idRefResolver.resolve(domainId, Domain.class);
     mapCompositeElement(source, target, domain, idRefResolver);
@@ -503,7 +503,7 @@ public final class DtoToEntityTransformer {
   }
 
   public Scope transformDto2Scope(
-      FullScopeInDomainDto source, String domainId, IdRefResolver idRefResolver) {
+      AbstractScopeInDomainDto source, String domainId, IdRefResolver idRefResolver) {
     var target = createIdentifiable(Scope.class, source);
     var domain = idRefResolver.resolve(domainId, Domain.class);
     mapElement(source, target, domain, idRefResolver);

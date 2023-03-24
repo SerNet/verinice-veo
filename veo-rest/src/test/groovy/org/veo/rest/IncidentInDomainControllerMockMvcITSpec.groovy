@@ -56,33 +56,22 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             name: "Master of disaster",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
-        // TODO VEO-1891 use new domain-specific POST endpoint for element creation
-        def partId = parseJson(post("/incidents", [
+        def partId = parseJson(post("/domians/$testDomainId/incidents", [
             name: "part of the disaster",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "DISASTER",
-                    status: "INVESTIGATED"
-                ]
-            ]
+            subType: "DISASTER",
+            status: "INVESTIGATED",
         ])).resourceId
-        def incidentId = parseJson(post("/incidents", [
+        def incidentId = parseJson(post("/domians/$testDomainId/incidents", [
             name: "Big disaster",
             abbreviation: "BD",
             description: "Something really bad happened.",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "DISASTER",
-                    status: "DETECTED"
-                ]
-            ],
+            subType: "DISASTER",
+            status: "DETECTED",
             customAspects: [
                 general: [
-                    attributes: [
-                        timeOfOccurrence: "2023-02-10T12:00:00.000Z"
-                    ]
+                    timeOfOccurrence: "2023-02-10T12:00:00.000Z"
                 ]
             ],
             parts: [

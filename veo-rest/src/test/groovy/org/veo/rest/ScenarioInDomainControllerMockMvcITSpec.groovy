@@ -56,39 +56,28 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             name: "Mac Hack",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
-        // TODO VEO-1891 use new domain-specific POST endpoint for element creation
-        def partId = parseJson(post("/scenarios", [
+        def partId = parseJson(post("/domians/$testDomainId/scenarios", [
             name: "Credential recycling",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "Attack",
-                    status: "NEW"
-                ]
-            ]
+            subType: "Attack",
+            status: "NEW",
         ])).resourceId
-        def scenarioId = parseJson(post("/scenarios", [
+        def scenarioId = parseJson(post("/domians/$testDomainId/scenarios", [
             name: "Brute-force attack",
             abbreviation: "BFA",
             description: "An attacker guesses a password by trying out many random strings",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "Attack",
-                    status: "NEW",
-                    riskValues: [
-                        riskyDef: [
-                            potentialProbability: 1,
-                            potentialProbabilityExplanation: "It happens"
-                        ]
-                    ]
+            subType: "Attack",
+            status: "NEW",
+            riskValues: [
+                riskyDef: [
+                    potentialProbability: 1,
+                    potentialProbabilityExplanation: "It happens"
                 ]
             ],
             customAspects: [
                 help: [
-                    attributes: [
-                        technicalArticle: "https://test.test/brute-force.html"
-                    ]
+                    technicalArticle: "https://test.test/brute-force.html"
                 ]
             ],
             parts: [
@@ -238,20 +227,15 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "risk values can be updated"() {
         given: "a scenario with risk values"
-        // TODO VEO-1891 use new domain-specific POST endpoint for element creation
-        def scenarioId = parseJson(post("/scenarios", [
+        def scenarioId = parseJson(post("/domians/$testDomainId/scenarios", [
             name: "Risky scenario",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (testDomainId): [
-                    subType: "Attack",
-                    status: "NEW",
-                    riskValues: [
-                        riskyDef: [
-                            potentialProbability: 0,
-                            potentialProbabilityExplanation: "Unlikely"
-                        ]
-                    ]
+            subType: "Attack",
+            status: "NEW",
+            riskValues: [
+                riskyDef: [
+                    potentialProbability: 0,
+                    potentialProbabilityExplanation: "Unlikely"
                 ]
             ]
         ])).resourceId
