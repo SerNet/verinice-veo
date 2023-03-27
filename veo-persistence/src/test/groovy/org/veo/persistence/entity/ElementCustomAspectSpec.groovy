@@ -20,6 +20,7 @@ package org.veo.persistence.entity
 import org.veo.core.entity.Element
 import org.veo.core.entity.EntityType
 import org.veo.core.entity.definitions.CustomAspectDefinition
+import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.persistence.entity.jpa.CustomAspectData
@@ -33,7 +34,6 @@ class ElementCustomAspectSpec extends Specification {
     private identifiableFactory = new IdentifiableDataFactory()
     private factory = new EntityDataFactory()
 
-    // TODO VEO-1763 test CA synchronization with identically defined CAs
     def "custom aspects are handled correctly on #entityType.pluralTerm"() {
         given: "two domains with some CA definitions"
         def domainA = factory.createDomain("", "", "").tap {
@@ -41,6 +41,11 @@ class ElementCustomAspectSpec extends Specification {
                 someType: new CustomAspectDefinition().tap {
                     attributeDefinitions = [
                         attr: new TextAttributeDefinition()
+                    ]
+                },
+                identicalType: new CustomAspectDefinition().tap{
+                    attributeDefinitions = [
+                        attr: new BooleanAttributeDefinition()
                     ]
                 }
             ]
@@ -55,6 +60,11 @@ class ElementCustomAspectSpec extends Specification {
                 someOtherType: new CustomAspectDefinition().tap {
                     attributeDefinitions = [
                         attr: new IntegerAttributeDefinition()
+                    ]
+                },
+                identicalType: new CustomAspectDefinition().tap{
+                    attributeDefinitions = [
+                        attr: new BooleanAttributeDefinition()
                     ]
                 }
             ]
@@ -136,6 +146,42 @@ class ElementCustomAspectSpec extends Specification {
         with(element.getCustomAspects(domainA)) {
             size() == 1
             first().attributes.attr == "newValA"
+        }
+
+        when: "adding an identically defined custom aspect in domain A"
+        element.applyCustomAspect(new CustomAspectData().tap{
+            domain = domainA
+            type = "identicalType"
+            attributes = [
+                attr: true
+            ]
+        })
+
+        then: "the new CA exists in both domains"
+        with(element.getCustomAspects(domainA)) { cas ->
+            cas.size() == 2
+            cas.find { it.type == "identicalType" }.attributes.attr == true
+        }
+        with(element.getCustomAspects(domainB)) { cas ->
+            cas.size() == 3
+            cas.find { it.type == "identicalType" }.attributes.attr == true
+        }
+
+        when: "updating the identically defined custom aspect in domain B"
+        element.applyCustomAspect(new CustomAspectData().tap{
+            domain = domainB
+            type = "identicalType"
+            attributes = [
+                attr: false
+            ]
+        })
+
+        then: "the new CA has been updated in both domain"
+        with(element.getCustomAspects(domainA)) { cas ->
+            cas.find { it.type == "identicalType" }.attributes.attr == false
+        }
+        with(element.getCustomAspects(domainB)) { cas ->
+            cas.find { it.type == "identicalType" }.attributes.attr == false
         }
 
         where:

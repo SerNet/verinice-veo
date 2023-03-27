@@ -32,6 +32,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class CustomLinkData extends CustomAspectData implements CustomLink {
+  public CustomLinkData() {
+    super();
+  }
 
   @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = true) // due to
   // the

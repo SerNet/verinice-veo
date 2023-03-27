@@ -37,6 +37,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
@@ -54,6 +55,7 @@ import org.veo.core.entity.aspects.Aspect;
 import org.veo.core.entity.aspects.SubTypeAspect;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
+import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.persistence.entity.jpa.validation.HasOwnerOrContainingCatalogItem;
 
 import lombok.AccessLevel;
@@ -249,15 +251,15 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   public boolean removeCustomAspect(CustomAspect customAspect) {
-    // TODO VEO-1763 propagate change to other domains with identical custom aspect definition
     // TODO VEO-931 check becomes obsolete once custom link no longer extends custom aspect
     if (customAspect instanceof CustomLink) {
       throw new IllegalArgumentException("Cannot remove custom aspect - got custom link");
     }
-    if (customAspect instanceof CustomAspectData propertiesData) {
-      propertiesData.setOwner(null);
-    }
-    return this.customAspects.remove(customAspect);
+    requireAssociationWithDomain(customAspect.getDomain());
+    return getDomainsContainingSameCustomAspectDefinition(customAspect).stream()
+        .map(d -> removeCustomAspectInIndividualDomain(customAspect.getType(), d))
+        .toList()
+        .contains(true);
   }
 
   @Transient
@@ -276,16 +278,24 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   @Override
+  public Set<DomainBase> getAssociatedDomains() {
+    return subTypeAspects.stream().map(SubTypeAspect::getDomain).collect(Collectors.toSet());
+  }
+
+  @Override
   public boolean applyCustomAspect(CustomAspect customAspect) {
-    // TODO VEO-1763 propagate change to other domains with identical custom aspect definition
     // TODO VEO-931 check becomes obsolete once custom link no longer extends custom aspect
     if (customAspect instanceof CustomLink) {
       throw new IllegalArgumentException("Cannot apply custom aspect - got custom link");
     }
-    return findCustomAspect(customAspect.getDomain(), customAspect.getType())
-        // TODO VEO-931 implement and use CustomAspect::apply(CustomAspect)
-        .map(ca -> ca.setAttributes(customAspect.getAttributes()))
-        .orElseGet(() -> addToCustomAspects(customAspect));
+    requireAssociationWithDomain(customAspect.getDomain());
+    return getDomainsContainingSameCustomAspectDefinition(customAspect).stream()
+        .map(
+            d ->
+                applyCustomAspectInIndividualDomain(
+                    customAspect.getType(), customAspect.getAttributes(), d))
+        .toList()
+        .contains(true);
   }
 
   @Override
@@ -294,6 +304,64 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
         // TODO VEO-931 implement and use CustomLink::apply(CustomLink)
         .map(oldLink -> oldLink.setAttributes(newLink.getAttributes()))
         .orElseGet(() -> addToLinks(newLink));
+  }
+
+  /**
+   * @return all associated domains that have a custom aspect definition that is identical to how
+   *     given custom aspect in its domain
+   */
+  private Set<DomainBase> getDomainsContainingSameCustomAspectDefinition(CustomAspect ca) {
+    return ca.getDomain()
+        .findCustomAspectDefinition(getModelType(), ca.getType())
+        .map(
+            definition ->
+                getAssociatedDomains().stream()
+                    .filter(
+                        d ->
+                            d.containsCustomAspectDefinition(
+                                getModelType(), ca.getType(), definition))
+                    .collect(Collectors.toSet()))
+        // TODO VEO-2011 throw an exception if the custom aspect type is not defined in the target
+        // domain. This workaround here (applying the custom aspect to the target domain anyway) is
+        // necessary, because profile elements are persisted as JSON and not migrated when element
+        // type definitions change. When the DTOs are deserialized from the profile JSON from the
+        // DB they are mapped to entities and this method may be called for a custom aspect that is
+        // no longer defined in the target domain (because the custom aspect definition has been
+        // removed from the target domain).
+        .orElse(Set.of(ca.getDomain()));
+  }
+
+  /**
+   * Applies given custom aspect values only to the target domain, without checking custom aspect
+   * definitions.
+   *
+   * @return {@code true} if any values were changed, otherwise {@code false}
+   */
+  private boolean applyCustomAspectInIndividualDomain(
+      @NotNull String type, @NotNull Map<String, Object> attributes, @NotNull DomainBase domain) {
+    return findCustomAspect(domain, type)
+        // TODO VEO-931 implement and use CustomAspect::apply(CustomAspect)
+        .map(ca -> ca.setAttributes(attributes))
+        .orElseGet(() -> addToCustomAspects(new CustomAspectData(type, attributes, domain)));
+  }
+
+  /**
+   * Removes given custom aspect only from given domain, without checking custom aspect definitions.
+   *
+   * @return {@code true} if a custom aspect was found and removed, otherwise {@code false}
+   */
+  private boolean removeCustomAspectInIndividualDomain(
+      @NotNull String type, @NotNull DomainBase domain) {
+    return findCustomAspect(domain, type)
+        .map(
+            customAspect -> {
+              if (customAspect instanceof CustomAspectData propertiesData) {
+                propertiesData.setOwner(null);
+              }
+              this.customAspects.remove(customAspect);
+              return true;
+            })
+        .orElse(false);
   }
 
   private Optional<CustomLink> findLink(String type, Element target, DomainBase domain) {
@@ -337,6 +405,14 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
 
   private void removeAspect(Set<? extends Aspect> aspects, DomainBase domain) {
     aspects.removeIf(a -> a.getDomain().equals(domain));
+  }
+
+  private void requireAssociationWithDomain(DomainBase domain) {
+    if (!isAssociatedWithDomain(domain)) {
+      throw new UnprocessableDataException(
+          "%s %s is not associated with domain %s"
+              .formatted(getModelType(), getIdAsString(), domain.getIdAsString()));
+    }
   }
 
   /**

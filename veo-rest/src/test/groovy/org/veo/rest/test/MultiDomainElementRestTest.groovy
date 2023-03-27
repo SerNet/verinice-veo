@@ -120,6 +120,89 @@ class MultiDomainElementRestTest extends VeoRestTest {
         type << EntityType.ELEMENT_TYPES
     }
 
+    def "identically defined custom aspects for #type.pluralTerm are synced across domains"() {
+        given: "an element associated with both domains"
+        putElementTypeDefinitions(type)
+        def elementId = post("/$type.pluralTerm", [
+            name: "my little element",
+            owner: [targetUri: "/units/$unitId"],
+            domains: [
+                (domainIdA): [
+                    subType: "STA",
+                    status: "NEW"
+                ],
+                (domainIdB): [
+                    subType: "STB",
+                    status: "ON"
+                ]
+            ]
+        ]).body.resourceId
+
+        when: "adding CAs in domain A"
+        get("/domians/$domainIdA/$type.pluralTerm/$elementId").with {
+            def element = body
+            element.customAspects = [
+                identicalCa: [
+                    someAttr: 7
+                ],
+                separateCa: [
+                    someAttr: "magic"
+                ]
+            ]
+            put(element._self, element, getETag())
+        }
+
+        then: "identical CA has been applied in both domains"
+        with(get("/domians/$domainIdA/$type.pluralTerm/$elementId").body) {
+            customAspects.identicalCa.someAttr == 7
+            customAspects.separateCa.someAttr == "magic"
+        }
+        with(get("/domians/$domainIdB/$type.pluralTerm/$elementId").body) {
+            customAspects.identicalCa.someAttr == 7
+            customAspects.separateCa == null
+        }
+
+        when: "updating CAs in domain B"
+        get("/domians/$domainIdB/$type.pluralTerm/$elementId").with {
+            def element = body
+            element.customAspects.identicalCa.someAttr = 8
+            element.customAspects.separateCa = [
+                someAttr: 9000
+            ]
+            put(element._self, element, getETag())
+        }
+
+        then: "identical CA has been applied in both domains"
+        with(get("/domians/$domainIdA/$type.pluralTerm/$elementId").body) {
+            customAspects.identicalCa.someAttr == 8
+            customAspects.separateCa.someAttr == "magic"
+        }
+        with(get("/domians/$domainIdB/$type.pluralTerm/$elementId").body) {
+            customAspects.identicalCa.someAttr == 8
+            customAspects.separateCa.someAttr == 9000
+        }
+
+        when: "removing CA in domain B"
+        get("/domians/$domainIdB/$type.pluralTerm/$elementId").with {
+            def element = body
+            element.customAspects.remove("identicalCa")
+            put(element._self, element, getETag())
+        }
+
+        then: "it's missing from both domains"
+        with(get("/domians/$domainIdB/$type.pluralTerm/$elementId").body) {
+            customAspects.identicalCa == null
+            customAspects.separateCa.someAttr == 9000
+        }
+        with(get("/domians/$domainIdA/$type.pluralTerm/$elementId").body) {
+            customAspects.identicalCa == null
+            customAspects.separateCa.someAttr == "magic"
+        }
+
+        where:
+        type << EntityType.ELEMENT_TYPES
+    }
+
     // TODO VEO-1874 expect element to be versioned independently in different domain contexts
     def "#type.singularTerm ETags are handled correctly across domains"() {
         given: "an element in two domains"

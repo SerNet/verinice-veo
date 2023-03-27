@@ -19,6 +19,7 @@ package org.veo.persistence.entity.jpa.transformer;
 
 import static java.util.stream.Collectors.toSet;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.function.Function;
@@ -76,10 +77,7 @@ public class EntityDataFactory implements EntityFactory {
 
   @Override
   public CustomAspect createCustomAspect(String type, DomainBase domain) {
-    var aspect = new CustomAspectData();
-    aspect.setDomain(domain);
-    aspect.setType(type);
-    return aspect;
+    return new CustomAspectData(type, new HashMap<>(), domain);
   }
 
   @Override

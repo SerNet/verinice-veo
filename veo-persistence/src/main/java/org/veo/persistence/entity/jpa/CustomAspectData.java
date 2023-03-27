@@ -37,15 +37,24 @@ import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.ToString;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity(name = "custom_aspect")
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @TypeDef(name = "json", typeClass = JsonType.class)
 public class CustomAspectData implements CustomAspect {
+
+  public CustomAspectData(String type, Map<String, Object> attributes, DomainBase domain) {
+    this.type = type;
+    this.attributes = attributes;
+    this.domain = domain;
+  }
 
   @Id @ToString.Include private String dbId = UUID.randomUUID().toString();
 

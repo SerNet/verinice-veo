@@ -52,7 +52,8 @@ class ScenarioRepositoryITSpec extends VeoSpringSpec {
     def "cascading relations are validated"() {
         when:
         scenarioRepository.save(newScenario(unit) {
-            applyCustomAspect(newCustomAspect(null, domain))
+            // bypass apply method to sneak in invalid custom aspect
+            customAspects = [newCustomAspect(null, domain)]
             applyLink(newCustomLink(null, "goodLink", domain))
             parts = [
                 newScenario(unit) {

@@ -84,7 +84,8 @@ class ScopePersistenceSpec extends VeoSpringSpec {
     def "cascading relations are validated"() {
         when:
         scopeRepository.save(newScope(unit) {
-            applyCustomAspect(newCustomAspect(null, domain))
+            // bypass apply method to sneak in invalid CA
+            customAspects = [newCustomAspect(null, domain)]
             applyLink(newCustomLink(null, "goodLink", domain))
             members = [
                 newScope(unit) {

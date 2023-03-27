@@ -207,7 +207,10 @@ class EntityValidatorSpec extends VeoSpec {
         Process process = newProcess(unit) {
             associateWithDomain(domain, "NormalProcess", "NEW")
         }
-        process.applyCustomAspect(newCustomAspect("a", otherDomain))
+        // bypass apply method to sneak in invalid CA
+        process.customAspects = [
+            newCustomAspect("a", otherDomain)
+        ]
 
         when : "it is validated"
         validator.validate(process)

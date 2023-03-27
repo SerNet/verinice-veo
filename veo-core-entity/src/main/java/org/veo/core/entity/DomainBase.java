@@ -31,6 +31,7 @@ import javax.validation.constraints.NotNull;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.Rule;
+import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.inspection.Inspection;
@@ -210,5 +211,20 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
             .ifDecisionResultEquals(true, new DecisionRef("piaMandatory", this))
             .ifPartAbsent("PRO_DPIA")
             .suggestAddingPart("PRO_DPIA"));
+  }
+
+  /**
+   * @return {@code true} if this domain contains a definition for given custom aspect type that is
+   *     identical to given definition, otherwise {@code false}
+   */
+  default boolean containsCustomAspectDefinition(
+      String elementType, String caType, CustomAspectDefinition definition) {
+    return findCustomAspectDefinition(elementType, caType).map(definition::equals).orElse(false);
+  }
+
+  default Optional<CustomAspectDefinition> findCustomAspectDefinition(
+      String elementType, String caType) {
+    return Optional.ofNullable(
+        getElementTypeDefinition(elementType).getCustomAspects().get(caType));
   }
 }

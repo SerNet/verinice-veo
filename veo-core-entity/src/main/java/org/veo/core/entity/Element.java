@@ -53,6 +53,10 @@ public interface Element
    */
   boolean removeFromDomains(Domain domain);
 
+  /**
+   * @return all domains that this element is associated with (if it is an element in a unit) or an
+   *     empty list (if it is a catalog item element).
+   */
   Set<Domain> getDomains();
 
   default void transferToDomain(Domain oldDomain, Domain newDomain) {
@@ -211,11 +215,13 @@ public interface Element
   }
 
   default boolean isAssociatedWithDomain(DomainBase domain) {
-    if (getContainingCatalogItem() != null) {
-      return getContainingCatalogItem().getCatalog().getDomainTemplate().equals(domain);
-    }
-    return getDomains().contains(domain);
+    return getAssociatedDomains().contains(domain);
   }
+
+  /**
+   * @return all domains that this element is associated with
+   */
+  Set<DomainBase> getAssociatedDomains();
 
   /**
    * Applies given custom aspect, by either applying its attributes to a corresponding existing

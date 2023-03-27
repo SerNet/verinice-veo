@@ -53,7 +53,8 @@ class AssetRepositoryITSpec extends VeoSpringSpec {
         when:
         assetRepository.save(newAsset(unit) {
             associateWithDomain(domain, "", "")
-            applyCustomAspect(newCustomAspect(null, domain))
+            // bypass apply method to sneak in invalid CA
+            customAspects = [newCustomAspect(null, domain)]
             applyLink(newCustomLink(null, "goodLink", domain))
             parts = [
                 newAsset(unit) {
