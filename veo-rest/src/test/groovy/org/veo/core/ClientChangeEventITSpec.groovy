@@ -29,7 +29,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.Pageable
 import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.containers.GenericContainer
-import org.testcontainers.containers.wait.strategy.Wait
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Client.ClientState
@@ -38,6 +37,7 @@ import org.veo.core.entity.Key
 import org.veo.message.EventDispatcher
 import org.veo.message.EventMessage
 import org.veo.message.RabbitMQSenderConfiguration
+import org.veo.message.TestContainersUtil
 import org.veo.message.TestEventSubscriber
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
@@ -60,7 +60,8 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
     @AutoCleanup("stop")
     private GenericContainer rabbit
 
-    @Autowired EventDispatcher eventDispatcher;
+    @Autowired
+    EventDispatcher eventDispatcher
 
     @Autowired
     private ClientRepositoryImpl repository
@@ -79,21 +80,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
     String routingKey
 
     def setupSpec() {
-        if (!System.env.containsKey('SPRING_RABBITMQ_HOST')) {
-            println("Test will start RabbitMQ container...")
-
-            rabbit = new GenericContainer("rabbitmq:3-management")
-                    .withExposedPorts(5672, 15672)
-                    .waitingFor(Wait.forListeningPort())
-                    .tap {
-                        it.start()
-                    }
-
-            System.properties.putAll([
-                "spring.rabbitmq.host": rabbit.getContainerIpAddress(),
-                "spring.rabbitmq.port": rabbit.getMappedPort(5672),
-            ])
-        }
+        rabbit = TestContainersUtil.startRabbitMqContainer()
     }
 
     def setup() {

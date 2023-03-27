@@ -30,7 +30,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.containers.GenericContainer
-import org.testcontainers.containers.wait.strategy.Wait
 
 import org.veo.core.VeoSpringSpec
 import org.veo.jobs.MessageDeletionJob
@@ -90,21 +89,7 @@ class EventDispatcherITSpec extends VeoSpringSpec {
     String testQueue
 
     def setupSpec() {
-        if (!System.env.containsKey('SPRING_RABBITMQ_HOST')) {
-            println("Test will start RabbitMQ container...")
-
-            rabbit = new GenericContainer("rabbitmq:3-management")
-                    .withExposedPorts(5672, 15672)
-                    .waitingFor(Wait.forListeningPort())
-                    .tap {
-                        it.start()
-                    }
-
-            System.properties.putAll([
-                "spring.rabbitmq.host": rabbit.getContainerIpAddress(),
-                "spring.rabbitmq.port": rabbit.getMappedPort(5672),
-            ])
-        }
+        rabbit = TestContainersUtil.startRabbitMqContainer()
     }
 
     def setup() {
