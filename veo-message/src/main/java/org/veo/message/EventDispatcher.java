@@ -20,9 +20,8 @@ package org.veo.message;
 import static java.lang.Long.parseLong;
 import static java.util.Objects.requireNonNull;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
 
 import org.springframework.amqp.rabbit.connection.CorrelationData;
@@ -38,7 +37,7 @@ public class EventDispatcher {
 
   private final RabbitTemplate rabbitTemplate;
 
-  private final List<Consumer<Long>> ackCallbacks = new LinkedList<>();
+  private final ConcurrentLinkedQueue<Consumer<Long>> ackCallbacks = new ConcurrentLinkedQueue<>();
 
   @Autowired
   EventDispatcher(RabbitTemplate rabbitTemplate) {

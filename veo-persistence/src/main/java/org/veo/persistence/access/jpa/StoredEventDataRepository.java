@@ -19,10 +19,12 @@ package org.veo.persistence.access.jpa;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.event.StoredEvent;
@@ -35,4 +37,7 @@ public interface StoredEventDataRepository extends JpaRepository<StoredEventData
           + "where e.lockTime is null or e.lockTime < ?1 "
           + "order by e.id")
   List<StoredEvent> findPendingEvents(Instant maxLockTime, Pageable pageable);
+
+  @Query("SELECT e.id FROM #{#entityName} as e WHERE e.id IN (:ids)")
+  Set<Long> findExistingIds(@Param("ids") Set<Long> ids);
 }

@@ -21,6 +21,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.veo.core.entity.event.StoredEvent;
 
@@ -41,7 +42,7 @@ public interface StoredEventRepository {
 
   Optional<StoredEvent> findById(Long id);
 
-  void delete(StoredEvent event);
+  void delete(Set<Long> ids);
 
   void saveAll(Collection<StoredEvent> events);
 }

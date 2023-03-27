@@ -33,6 +33,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Getter
@@ -40,6 +41,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@Slf4j
 public class StoredEventData implements StoredEvent {
 
   /**
@@ -66,7 +68,12 @@ public class StoredEventData implements StoredEvent {
 
   @Override
   public void lock() {
-    lockTime = Instant.now();
+    var newLockTime = Instant.now();
+    log.debug("Setting lockTime on event {} to: {}", id, newLockTime);
+    if (lockTime != null) {
+      log.warn("Event {} was previously locked at {}. Relocking to {}", id, lockTime, newLockTime);
+    }
+    lockTime = newLockTime;
   }
 
   @Override
@@ -75,9 +82,8 @@ public class StoredEventData implements StoredEvent {
 
     if (this == o) return true;
 
-    if (!(o instanceof StoredEventData)) return false;
+    if (!(o instanceof StoredEventData other)) return false;
 
-    StoredEventData other = (StoredEventData) o;
     // Transient (unmanaged) entities have an ID of 'null'. Only managed
     // (persisted and detached) entities have an identity. JPA requires that
     // an entity's identity remains the same over all state changes.

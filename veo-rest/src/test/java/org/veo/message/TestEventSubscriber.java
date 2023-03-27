@@ -18,11 +18,15 @@
 package org.veo.message;
 
 import static org.veo.core.events.MessageCreatorImpl.EVENT_TYPE_CLIENT_CHANGE;
+import static org.veo.core.events.MessageCreatorImpl.EVENT_TYPE_DOMAIN_CREATION;
 import static org.veo.core.events.MessageCreatorImpl.EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE;
+import static org.veo.core.events.MessageCreatorImpl.EVENT_TYPE_ENTITY_REVISION;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
@@ -40,7 +44,10 @@ import lombok.extern.slf4j.Slf4j;
 // @Profile(value = { "testrabbit" })
 public class TestEventSubscriber {
 
-  @Getter List<EventMessage> receivedEvents = new ArrayList<>();
+  @Getter ConcurrentLinkedQueue<EventMessage> receivedEvents = new ConcurrentLinkedQueue<>();
+  Set<Long> receivedIds = ConcurrentHashMap.newKeySet();
+
+  boolean hasReceivedDuplicates = false;
 
   @RabbitListener(
       bindings =
@@ -54,6 +61,8 @@ public class TestEventSubscriber {
               exchange = @Exchange(value = "${veo.message.exchanges.veo}", type = "topic"),
               key = {
                 "${veo.message.routing-key-prefix}" + EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE,
+                "${veo.message.routing-key-prefix}" + EVENT_TYPE_ENTITY_REVISION,
+                "${veo.message.routing-key-prefix}" + EVENT_TYPE_DOMAIN_CREATION,
                 "${veo.message.routing-key-prefix}veo.testmessage"
               }))
   void handleEntityEvent(EventMessage event) {
@@ -80,7 +89,14 @@ public class TestEventSubscriber {
     log.debug("Consumed test event with content: {}", event.getContent());
     try {
       // save received events for assertions:
+      if (receivedIds.contains(event.getId())) {
+        this.hasReceivedDuplicates = true;
+        var msg = "Duplicate event: was already received with ID %s".formatted(event.getId());
+        log.warn(msg);
+        throw new AmqpRejectAndDontRequeueException(msg);
+      }
       this.receivedEvents.add(event);
+      this.receivedIds.add(event.getId());
     } catch (Exception e) {
       log.error("Error while consuming event {}: {}", event.getId(), event.getContent());
       // prevent re-queue and reprocessing:

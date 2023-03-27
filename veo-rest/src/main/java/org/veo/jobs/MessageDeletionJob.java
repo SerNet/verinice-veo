@@ -49,6 +49,7 @@ public class MessageDeletionJob {
   @Autowired
   public MessageDeletionJob(
       StoredEventRepository storedEventRepository, EventDispatcher eventDispatcher) {
+    log.debug("Creating MessageDeletionJob");
     this.storedEventRepository = storedEventRepository;
     eventDispatcher.addAckCallback(ackedMessageIds::add);
   }
@@ -59,6 +60,8 @@ public class MessageDeletionJob {
     if (!messageIdsToDelete.isEmpty()) {
       new EventDeleter().delete(messageIdsToDelete);
       ackedMessageIds.removeAll(messageIdsToDelete);
+    } else {
+      log.debug("Nothing to delete");
     }
   }
 
@@ -74,15 +77,8 @@ public class MessageDeletionJob {
   public class EventDeleter {
     @Transactional
     public void delete(Set<Long> messageIds) {
-      log.debug("Deleting {} acked messages", messageIds.size());
-      messageIds.forEach(
-          id -> {
-            storedEventRepository
-                .findById(id)
-                .ifPresentOrElse(
-                    storedEventRepository::delete,
-                    () -> log.warn("Message with ID {} not found, cannot delete", id));
-          });
+      log.info("Deleting {} acked messages", messageIds.size());
+      storedEventRepository.delete(messageIds);
     }
   }
 }

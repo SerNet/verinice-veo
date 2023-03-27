@@ -20,18 +20,15 @@ package org.veo.jobs;
 import static org.veo.message.EventMessage.messagesFrom;
 import static org.veo.rest.VeoRestConfiguration.PROFILE_BACKGROUND_TASKS;
 
-import java.time.Instant;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.event.StoredEvent;
 import org.veo.message.EventDispatcher;
-import org.veo.persistence.access.StoredEventRepository;
 import org.veo.rest.VeoRestConfiguration;
 
 import lombok.extern.slf4j.Slf4j;
@@ -47,49 +44,26 @@ public class MessagingJob {
   @Value("${veo.message.exchanges.veo}")
   private String exchange;
 
-  private final StoredEventRepository storedEventRepository;
-
   private final VeoRestConfiguration config;
 
   private final EventDispatcher eventDispatcher;
 
+  private final EventRetriever retriever;
+
   public MessagingJob(
-      StoredEventRepository storedEventRepository,
-      VeoRestConfiguration config,
-      EventDispatcher eventDispatcher) {
-    this.storedEventRepository = storedEventRepository;
+      VeoRestConfiguration config, EventDispatcher eventDispatcher, EventRetriever retriever) {
     this.config = config;
     this.eventDispatcher = eventDispatcher;
+    this.retriever = retriever;
   }
 
-  @Scheduled(fixedDelayString = "${veo.messages.publishing.delayMs:200}")
+  @Scheduled(fixedDelayString = "${veo.messages.publishing.delayMs:500}")
   public void sendMessages() {
-    var retriever = new EventRetriever();
-    List<StoredEvent> pendingEvents = retriever.retrievePendingEvents();
+    List<StoredEvent> pendingEvents =
+        retriever.retrievePendingEvents(
+            config.getMessagePublishingLockExpiration(), processingChunkSize);
     if (pendingEvents.isEmpty()) return;
-    log.debug("Dispatching messages for {} stored events.", pendingEvents.size());
+    log.info("Dispatching messages for {} stored events.", pendingEvents.size());
     eventDispatcher.send(exchange, messagesFrom(pendingEvents));
-  }
-
-  /**
-   * An inner class is used to wrap the event retrieval and locking in a dedicated transaction. See
-   * the remarks on the EventSender class for a more detailed explanation.
-   *
-   * <p>The event retrieval needs to run in its own read-write transaction because the retrieved
-   * events are time-locked to prevent another MessagingJob from working on the same retrieved
-   * events. This needs to be an atomic transaction that is committed before this MessagingJob
-   * begins working on the retrieved events.
-   */
-  public class EventRetriever {
-    @Transactional
-    public List<StoredEvent> retrievePendingEvents() {
-      var events =
-          storedEventRepository.findPendingEvents(
-              Instant.now().minus(config.getMessagePublishingLockExpiration()),
-              processingChunkSize);
-      events.forEach(StoredEvent::lock);
-      storedEventRepository.saveAll(events);
-      return events;
-    }
   }
 }

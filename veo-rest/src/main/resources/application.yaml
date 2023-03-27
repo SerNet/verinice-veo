@@ -40,13 +40,17 @@ veo:
       delayMs: 500
     publishing:
       lockExpirationMs: 20000
-      delayMs: 200
+      delayMs: 500
       processingChunkSize: 5000
   scheduler:
     resetAllDemoUnits:
       cron: '0 0 3 * * *'
 
 spring:
+  task:
+    scheduling:
+      pool:
+        size: 5
   data:
     rest:
       detection-strategy: annotated

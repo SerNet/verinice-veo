@@ -21,6 +21,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
@@ -64,7 +65,9 @@ public class StoredEventRepositoryImpl implements StoredEventRepository {
   }
 
   @Override
-  public void delete(StoredEvent event) {
-    dataRepository.delete((StoredEventData) event);
+  public void delete(Set<Long> ids) {
+    // gracefully delete the existing IDs:
+    var existingIds = dataRepository.findExistingIds(ids);
+    dataRepository.deleteAllById(existingIds);
   }
 }
