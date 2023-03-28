@@ -61,11 +61,13 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.full.FullIncidentInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
-import org.veo.core.entity.Domain;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Incident;
 import org.veo.core.usecase.incident.GetIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentsUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
+import org.veo.rest.common.ClientLookup;
+import org.veo.rest.common.ElementInDomainService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -73,25 +75,23 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /** REST service which provides methods to manage incidents from the viewpoint of a domain. */
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(IncidentInDomainController.URL_BASE_PATH)
 @Slf4j
-public class IncidentInDomainController
-    extends AbstractElementInDomainController<Incident, FullIncidentInDomainDto> {
-  private final GetIncidentsUseCase getIncidentsUseCase;
-
-  public IncidentInDomainController(
-      GetIncidentUseCase getIncidentUseCase, GetIncidentsUseCase getIncidentsUseCase) {
-    super(Incident.class, getIncidentUseCase);
-    this.getIncidentsUseCase = getIncidentsUseCase;
-  }
+public class IncidentInDomainController {
   // TODO VEO-2000 replace /domians with Domain.PLURAL_TERM
   public static final String URL_BASE_PATH = "/domians/{domainId}/" + Incident.PLURAL_TERM;
+  private final ClientLookup clientLookup;
+  private final GetIncidentUseCase getIncidentUseCase;
+  private final GetIncidentsUseCase getIncidentsUseCase;
+  private final ElementInDomainService elementService;
+  private final EntityToDtoTransformer entityToDtoTransformer;
 
-  @Override
   @GetMapping(UUID_PARAM_SPEC)
   @Operation(summary = "Loads an incident from the viewpoint of a domain")
   @ApiResponses(
@@ -116,7 +116,14 @@ public class IncidentInDomainController
           @PathVariable
           String uuid,
       WebRequest request) {
-    return super.getElement(auth, domainId, uuid, request);
+    return elementService.getElement(
+        auth,
+        domainId,
+        uuid,
+        request,
+        Incident.class,
+        getIncidentUseCase,
+        entityToDtoTransformer::transformIncident2Dto);
   }
 
   @GetMapping
@@ -158,10 +165,11 @@ public class IncidentInDomainController
               defaultValue = SORT_ORDER_DEFAULT_VALUE)
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
-    return useCaseInteractor.execute(
+    return elementService.getElements(
+        domainId,
         getIncidentsUseCase,
         GetElementsInputMapper.map(
-            getAuthenticatedClient(auth),
+            clientLookup.getClient(auth),
             unitUuid,
             domainId,
             displayName,
@@ -177,20 +185,6 @@ public class IncidentInDomainController
             PagingMapper.toConfig(
                 pageSize, pageNumber,
                 sortColumn, sortOrder)),
-        output ->
-            PagingMapper.toPage(
-                output.getElements(),
-                e ->
-                    entity2Dto(
-                        e,
-                        e.getDomains().stream()
-                            .filter(d -> d.getIdAsString().equals(domainId))
-                            .findFirst()
-                            .orElseThrow())));
-  }
-
-  @Override
-  protected FullIncidentInDomainDto entity2Dto(Incident entity, Domain domain) {
-    return entityToDtoTransformer.transformIncident2Dto(entity, domain);
+        entityToDtoTransformer::transformIncident2Dto);
   }
 }

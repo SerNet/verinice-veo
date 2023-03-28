@@ -61,11 +61,13 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Domain;
 import org.veo.core.usecase.control.GetControlUseCase;
 import org.veo.core.usecase.control.GetControlsUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
+import org.veo.rest.common.ClientLookup;
+import org.veo.rest.common.ElementInDomainService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -73,25 +75,23 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /** REST service which provides methods to manage controls from the viewpoint of a domain. */
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(ControlInDomainController.URL_BASE_PATH)
 @Slf4j
-public class ControlInDomainController
-    extends AbstractElementInDomainController<Control, FullControlInDomainDto> {
-  private final GetControlsUseCase getControlsUseCase;
-
-  public ControlInDomainController(
-      GetControlUseCase getControlUseCase, GetControlsUseCase getControlsUseCase) {
-    super(Control.class, getControlUseCase);
-    this.getControlsUseCase = getControlsUseCase;
-  }
+public class ControlInDomainController {
   // TODO VEO-2000 replace /domians with Domain.PLURAL_TERM
   public static final String URL_BASE_PATH = "/domians/{domainId}/" + Control.PLURAL_TERM;
+  private final ClientLookup clientLookup;
+  private final GetControlUseCase getControlUseCase;
+  private final GetControlsUseCase getControlsUseCase;
+  private final ElementInDomainService elementService;
+  private final EntityToDtoTransformer entityToDtoTransformer;
 
-  @Override
   @Operation(summary = "Loads a control from the viewpoint of a domain")
   @ApiResponses(
       value = {
@@ -116,7 +116,14 @@ public class ControlInDomainController
           @PathVariable
           String uuid,
       WebRequest request) {
-    return super.getElement(auth, domainId, uuid, request);
+    return elementService.getElement(
+        auth,
+        domainId,
+        uuid,
+        request,
+        Control.class,
+        getControlUseCase,
+        entityToDtoTransformer::transformControl2Dto);
   }
 
   @GetMapping
@@ -158,10 +165,11 @@ public class ControlInDomainController
               defaultValue = SORT_ORDER_DEFAULT_VALUE)
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
-    return useCaseInteractor.execute(
+    return elementService.getElements(
+        domainId,
         getControlsUseCase,
         GetElementsInputMapper.map(
-            getAuthenticatedClient(auth),
+            clientLookup.getClient(auth),
             unitUuid,
             domainId,
             displayName,
@@ -177,20 +185,6 @@ public class ControlInDomainController
             PagingMapper.toConfig(
                 pageSize, pageNumber,
                 sortColumn, sortOrder)),
-        output ->
-            PagingMapper.toPage(
-                output.getElements(),
-                e ->
-                    entity2Dto(
-                        e,
-                        e.getDomains().stream()
-                            .filter(d -> d.getIdAsString().equals(domainId))
-                            .findFirst()
-                            .orElseThrow())));
-  }
-
-  @Override
-  protected FullControlInDomainDto entity2Dto(Control entity, Domain domain) {
-    return entityToDtoTransformer.transformControl2Dto(entity, domain);
+        entityToDtoTransformer::transformControl2Dto);
   }
 }

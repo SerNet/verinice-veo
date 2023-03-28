@@ -61,11 +61,13 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Document;
-import org.veo.core.entity.Domain;
 import org.veo.core.usecase.document.GetDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentsUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
+import org.veo.rest.common.ClientLookup;
+import org.veo.rest.common.ElementInDomainService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -73,25 +75,23 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /** REST service which provides methods to manage documents from the viewpoint of a domain. */
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(DocumentInDomainController.URL_BASE_PATH)
 @Slf4j
-public class DocumentInDomainController
-    extends AbstractElementInDomainController<Document, FullDocumentInDomainDto> {
-  private final GetDocumentsUseCase getDocumentsUseCase;
-
-  public DocumentInDomainController(
-      GetDocumentUseCase getDocumentUseCase, GetDocumentsUseCase getDocumentsUseCase) {
-    super(Document.class, getDocumentUseCase);
-    this.getDocumentsUseCase = getDocumentsUseCase;
-  }
+public class DocumentInDomainController {
   // TODO VEO-2000 replace /domians with Domain.PLURAL_TERM
   public static final String URL_BASE_PATH = "/domians/{domainId}/" + Document.PLURAL_TERM;
+  private final ClientLookup clientLookup;
+  private final GetDocumentUseCase getDocumentUseCase;
+  private final GetDocumentsUseCase getDocumentsUseCase;
+  private final ElementInDomainService elementService;
+  private final EntityToDtoTransformer entityToDtoTransformer;
 
-  @Override
   @Operation(summary = "Loads a document from the viewpoint of a domain")
   @ApiResponses(
       value = {
@@ -116,7 +116,14 @@ public class DocumentInDomainController
           @PathVariable
           String uuid,
       WebRequest request) {
-    return super.getElement(auth, domainId, uuid, request);
+    return elementService.getElement(
+        auth,
+        domainId,
+        uuid,
+        request,
+        Document.class,
+        getDocumentUseCase,
+        entityToDtoTransformer::transformDocument2Dto);
   }
 
   @GetMapping
@@ -158,10 +165,11 @@ public class DocumentInDomainController
               defaultValue = SORT_ORDER_DEFAULT_VALUE)
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
-    return useCaseInteractor.execute(
+    return elementService.getElements(
+        domainId,
         getDocumentsUseCase,
         GetElementsInputMapper.map(
-            getAuthenticatedClient(auth),
+            clientLookup.getClient(auth),
             unitUuid,
             domainId,
             displayName,
@@ -177,20 +185,6 @@ public class DocumentInDomainController
             PagingMapper.toConfig(
                 pageSize, pageNumber,
                 sortColumn, sortOrder)),
-        output ->
-            PagingMapper.toPage(
-                output.getElements(),
-                e ->
-                    entity2Dto(
-                        e,
-                        e.getDomains().stream()
-                            .filter(d -> d.getIdAsString().equals(domainId))
-                            .findFirst()
-                            .orElseThrow())));
-  }
-
-  @Override
-  protected FullDocumentInDomainDto entity2Dto(Document entity, Domain domain) {
-    return entityToDtoTransformer.transformDocument2Dto(entity, domain);
+        entityToDtoTransformer::transformDocument2Dto);
   }
 }

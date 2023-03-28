@@ -61,11 +61,13 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
-import org.veo.core.entity.Domain;
+import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Person;
 import org.veo.core.usecase.person.GetPersonUseCase;
 import org.veo.core.usecase.person.GetPersonsUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
+import org.veo.rest.common.ClientLookup;
+import org.veo.rest.common.ElementInDomainService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -73,25 +75,23 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /** REST service which provides methods to manage persons from the viewpoint of a domain. */
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(PersonInDomainController.URL_BASE_PATH)
 @Slf4j
-public class PersonInDomainController
-    extends AbstractElementInDomainController<Person, FullPersonInDomainDto> {
-  private final GetPersonsUseCase getPersonsUseCase;
-
-  public PersonInDomainController(
-      GetPersonUseCase getPersonUseCase, GetPersonsUseCase getPersonsUseCase) {
-    super(Person.class, getPersonUseCase);
-    this.getPersonsUseCase = getPersonsUseCase;
-  }
+public class PersonInDomainController {
   // TODO VEO-2000 replace /domians with Domain.PLURAL_TERM
   public static final String URL_BASE_PATH = "/domians/{domainId}/" + Person.PLURAL_TERM;
+  private final ClientLookup clientLookup;
+  private final GetPersonUseCase getPersonUseCase;
+  private final GetPersonsUseCase getPersonsUseCase;
+  private final ElementInDomainService elementService;
+  private final EntityToDtoTransformer entityToDtoTransformer;
 
-  @Override
   @Operation(summary = "Loads a person from the viewpoint of a domain")
   @ApiResponses(
       value = {
@@ -116,7 +116,14 @@ public class PersonInDomainController
           @PathVariable
           String uuid,
       WebRequest request) {
-    return super.getElement(auth, domainId, uuid, request);
+    return elementService.getElement(
+        auth,
+        domainId,
+        uuid,
+        request,
+        Person.class,
+        getPersonUseCase,
+        entityToDtoTransformer::transformPerson2Dto);
   }
 
   @GetMapping
@@ -158,10 +165,11 @@ public class PersonInDomainController
               defaultValue = SORT_ORDER_DEFAULT_VALUE)
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
-    return useCaseInteractor.execute(
+    return elementService.getElements(
+        domainId,
         getPersonsUseCase,
         GetElementsInputMapper.map(
-            getAuthenticatedClient(auth),
+            clientLookup.getClient(auth),
             unitUuid,
             domainId,
             displayName,
@@ -177,20 +185,6 @@ public class PersonInDomainController
             PagingMapper.toConfig(
                 pageSize, pageNumber,
                 sortColumn, sortOrder)),
-        output ->
-            PagingMapper.toPage(
-                output.getElements(),
-                e ->
-                    entity2Dto(
-                        e,
-                        e.getDomains().stream()
-                            .filter(d -> d.getIdAsString().equals(domainId))
-                            .findFirst()
-                            .orElseThrow())));
-  }
-
-  @Override
-  protected FullPersonInDomainDto entity2Dto(Person entity, Domain domain) {
-    return entityToDtoTransformer.transformPerson2Dto(entity, domain);
+        entityToDtoTransformer::transformPerson2Dto);
   }
 }
