@@ -93,19 +93,18 @@ public class ScopeInDomainController {
   private final EntityToDtoTransformer entityToDtoTransformer;
 
   @Operation(summary = "Loads a scope from the viewpoint of a domain")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Scope loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = FullScopeInDomainDto.class))),
-        @ApiResponse(responseCode = "404", description = "Scope not found"),
-        @ApiResponse(responseCode = "404", description = "Domain not found"),
-        @ApiResponse(responseCode = "404", description = "Scope not associated with domain"),
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Scope loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = FullScopeInDomainDto.class))),
+    @ApiResponse(responseCode = "404", description = "Scope not found"),
+    @ApiResponse(responseCode = "404", description = "Domain not found"),
+    @ApiResponse(responseCode = "404", description = "Scope not associated with domain"),
+  })
   @GetMapping(UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullScopeInDomainDto>> getElement(
       @Parameter(required = true, hidden = true) Authentication auth,

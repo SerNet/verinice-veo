@@ -93,19 +93,18 @@ public class DocumentInDomainController {
   private final EntityToDtoTransformer entityToDtoTransformer;
 
   @Operation(summary = "Loads a document from the viewpoint of a domain")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Document loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = FullDocumentInDomainDto.class))),
-        @ApiResponse(responseCode = "404", description = "Document not found"),
-        @ApiResponse(responseCode = "404", description = "Domain not found"),
-        @ApiResponse(responseCode = "404", description = "Document not associated with domain"),
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Document loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = FullDocumentInDomainDto.class))),
+    @ApiResponse(responseCode = "404", description = "Document not found"),
+    @ApiResponse(responseCode = "404", description = "Domain not found"),
+    @ApiResponse(responseCode = "404", description = "Document not associated with domain"),
+  })
   @GetMapping(UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullDocumentInDomainDto>> getElement(
       @Parameter(required = true, hidden = true) Authentication auth,

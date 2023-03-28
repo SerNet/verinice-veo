@@ -159,17 +159,16 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
 
   @GetMapping
   @Operation(summary = "Loads all scopes")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Members loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(schema = @Schema(implementation = FullScopeDto.class)))),
-        @ApiResponse(responseCode = "404", description = "Scope not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Members loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                array = @ArraySchema(schema = @Schema(implementation = FullScopeDto.class)))),
+    @ApiResponse(responseCode = "404", description = "Scope not found")
+  })
   public @Valid Future<PageDto<FullScopeDto>> getScopes(
       @Parameter(required = false, hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
@@ -241,17 +240,16 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
 
   @GetMapping(UUID_PARAM_SPEC)
   @Operation(summary = "Loads a scope")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Scope loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = FullScopeDto.class))),
-        @ApiResponse(responseCode = "404", description = "Scope not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Scope loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = FullScopeDto.class))),
+    @ApiResponse(responseCode = "404", description = "Scope not found")
+  })
   public @Valid Future<ResponseEntity<FullScopeDto>> getScope(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -273,17 +271,16 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
 
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/members")
   @Operation(summary = "Loads the members of a scope")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Members loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(schema = @Schema(implementation = FullScopeDto.class)))),
-        @ApiResponse(responseCode = "404", description = "Scope not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Members loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                array = @ArraySchema(schema = @Schema(implementation = FullScopeDto.class)))),
+    @ApiResponse(responseCode = "404", description = "Scope not found")
+  })
   public @Valid CompletableFuture<ResponseEntity<List<AbstractElementDto>>> getMembers(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -342,11 +339,10 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
 
   @PutMapping(UUID_PARAM_SPEC)
   @Operation(summary = "Updates a scope")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200", description = "Scope updated"),
-        @ApiResponse(responseCode = "404", description = "Scope not found")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Scope updated"),
+    @ApiResponse(responseCode = "404", description = "Scope not found")
+  })
   public CompletableFuture<ResponseEntity<FullScopeDto>> updateScope(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
@@ -377,11 +373,10 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
 
   @DeleteMapping(UUID_PARAM_SPEC)
   @Operation(summary = "Deletes a scope")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "204", description = "Scope deleted"),
-        @ApiResponse(responseCode = "404", description = "Scope not found")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "204", description = "Scope deleted"),
+    @ApiResponse(responseCode = "404", description = "Scope not found")
+  })
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteScope(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -538,17 +533,16 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
   }
 
   @Operation(summary = "Runs inspections on a persisted scope")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Inspections have run",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(schema = @Schema(implementation = Finding.class)))),
-        @ApiResponse(responseCode = "404", description = "Scope not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Inspections have run",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                array = @ArraySchema(schema = @Schema(implementation = Finding.class)))),
+    @ApiResponse(responseCode = "404", description = "Scope not found")
+  })
   @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
   public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
       @Parameter(required = true, hidden = true) Authentication auth,
@@ -567,16 +561,15 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
   @Operation(
       summary =
           "Evaluates decisions and inspections on a transient scope without persisting anything")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Element evaluated",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Element evaluated",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
+  })
   @PostMapping(value = "/evaluation")
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
       @Parameter(required = true, hidden = true) Authentication auth,

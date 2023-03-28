@@ -94,19 +94,18 @@ public class IncidentInDomainController {
 
   @GetMapping(UUID_PARAM_SPEC)
   @Operation(summary = "Loads an incident from the viewpoint of a domain")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Incident loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = FullIncidentInDomainDto.class))),
-        @ApiResponse(responseCode = "404", description = "Incident not found"),
-        @ApiResponse(responseCode = "404", description = "Domain not found"),
-        @ApiResponse(responseCode = "404", description = "Incident not associated with domain"),
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Incident loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = FullIncidentInDomainDto.class))),
+    @ApiResponse(responseCode = "404", description = "Incident not found"),
+    @ApiResponse(responseCode = "404", description = "Domain not found"),
+    @ApiResponse(responseCode = "404", description = "Incident not associated with domain"),
+  })
   public @Valid Future<ResponseEntity<FullIncidentInDomainDto>> getElement(
       @Parameter(required = true, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)

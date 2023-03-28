@@ -59,33 +59,31 @@ public interface ProcessRiskResource {
 
   @GetMapping(value = RELPATH, produces = MediaType.APPLICATION_JSON_VALUE)
   @Operation(summary = "Returns all risks for this process")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Risks returned",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(schema = @Schema(implementation = ProcessRiskDto.class))))
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Risks returned",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                array = @ArraySchema(schema = @Schema(implementation = ProcessRiskDto.class))))
+  })
   @Valid
   CompletableFuture<List<ProcessRiskDto>> getRisks(
       @Parameter(hidden = true) ApplicationUser user, @PathVariable String processId);
 
   @GetMapping(value = RELPATH + "/{scenarioId}")
   @Operation(summary = "Retrieves an process risk")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Risk retrieved",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ProcessRiskDto.class))),
-        @ApiResponse(responseCode = "404", description = "Risk not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Risk retrieved",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = ProcessRiskDto.class))),
+    @ApiResponse(responseCode = "404", description = "Risk not found")
+  })
   @Valid
   Future<ResponseEntity<ProcessRiskDto>> getRisk(
       @Parameter(hidden = true) ApplicationUser user,
@@ -102,11 +100,10 @@ public interface ProcessRiskResource {
 
   @PutMapping(value = RELPATH + "/{scenarioId}")
   @Operation(summary = "Updates a risk")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200", description = "Risk updated"),
-        @ApiResponse(responseCode = "404", description = "Risk not found")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Risk updated"),
+    @ApiResponse(responseCode = "404", description = "Risk not found")
+  })
   @Valid
   CompletableFuture<ResponseEntity<ProcessRiskDto>> updateRisk(
       @Parameter(hidden = true) ApplicationUser user,
@@ -117,11 +114,10 @@ public interface ProcessRiskResource {
 
   @DeleteMapping(value = RELPATH + "/{scenarioId}")
   @Operation(summary = "Removes a risk")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "204", description = "Risk deleted"),
-        @ApiResponse(responseCode = "404", description = "Risk not found")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "204", description = "Risk deleted"),
+    @ApiResponse(responseCode = "404", description = "Risk not found")
+  })
   CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRisk(
       @Parameter(hidden = true) ApplicationUser user,
       @PathVariable String processId,

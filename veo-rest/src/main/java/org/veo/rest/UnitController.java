@@ -123,17 +123,16 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
   @Operation(
       summary = "Get the information to incarnate a set of catalogItems in a unit.",
       tags = "modeling")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "incarnation description provided",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = IncarnateDescriptionsDto.class))),
-        @ApiResponse(responseCode = "404", description = "incarnation description not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "incarnation description provided",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = IncarnateDescriptionsDto.class))),
+    @ApiResponse(responseCode = "404", description = "incarnation description not found")
+  })
   public @Valid CompletableFuture<ResponseEntity<IncarnateDescriptionsDto>> getIncarnations(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(description = "The target unit for the catalog items.") @PathVariable
@@ -160,22 +159,21 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
               + "This description need to be obtained by the system via the corresponding "
               + "GET operation for a set of catalog items.",
       tags = "modeling")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "201",
-            description = "Catalog items incarnated.",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array =
-                        @ArraySchema(
-                            schema =
-                                @Schema(
-                                    implementation =
-                                        IdRefTailoringReferenceParameterReferencedElement.class,
-                                    description = "A reference list of the created elements"))))
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "201",
+        description = "Catalog items incarnated.",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                array =
+                    @ArraySchema(
+                        schema =
+                            @Schema(
+                                implementation =
+                                    IdRefTailoringReferenceParameterReferencedElement.class,
+                                description = "A reference list of the created elements"))))
+  })
   public CompletableFuture<ResponseEntity<List<IdRef<Element>>>> applyIncarnations(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(description = "The target unit for the catalog items.") @PathVariable
@@ -200,16 +198,15 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
 
   @GetMapping
   @Operation(summary = "Loads all units")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Units loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(schema = @Schema(implementation = FullUnitDto.class))))
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Units loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                array = @ArraySchema(schema = @Schema(implementation = FullUnitDto.class))))
+  })
   public @Valid Future<List<FullUnitDto>> getUnits(
       @Parameter(required = false, hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = PARENT_PARAM, required = false) String parentUuid,
@@ -236,17 +233,16 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
 
   @GetMapping(value = "/{id}")
   @Operation(summary = "Loads a unit")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Unit loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = FullUnitDto.class))),
-        @ApiResponse(responseCode = "404", description = "Unit not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Unit loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = FullUnitDto.class))),
+    @ApiResponse(responseCode = "404", description = "Unit not found")
+  })
   public @Valid Future<ResponseEntity<FullUnitDto>> getUnit(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String id,
@@ -265,17 +261,16 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
 
   @GetMapping(value = "/{id}/export")
   @Operation(summary = "Exports given unit, including unit metadata, domains, elements & risks")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Unit export",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = UnitDumpDto.class))),
-        @ApiResponse(responseCode = "404", description = "Unit not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Unit export",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = UnitDumpDto.class))),
+    @ApiResponse(responseCode = "404", description = "Unit not found")
+  })
   public CompletableFuture<UnitDumpDto> exportUnit(
       @Parameter(required = false, hidden = true) Authentication auth, @PathVariable String id) {
     return useCaseInteractor.execute(
@@ -287,16 +282,15 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
   // TODO: veo-279 use the complete dto
   @PostMapping()
   @Operation(summary = "Creates a unit")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "201",
-            description = "Unit created",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = RestApiResponse.class)))
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "201",
+        description = "Unit created",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = RestApiResponse.class)))
+  })
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createUnit(
       @Parameter(hidden = true) ApplicationUser user,
       @Valid @RequestBody CreateUnitDto createUnitDto) {
@@ -338,11 +332,10 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
 
   @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
   @Operation(summary = "Deletes a unit")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "204", description = "Unit deleted"),
-        @ApiResponse(responseCode = "404", description = "Unit not found")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "204", description = "Unit deleted"),
+    @ApiResponse(responseCode = "404", description = "Unit not found")
+  })
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteUnit(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)

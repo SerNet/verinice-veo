@@ -57,16 +57,15 @@ public interface TranslationsResource {
               description = "Languages are specified as IANA language subtags",
               url =
                   "https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry"))
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Translations for requested languages", // TODO
-            // add
-            // meta-schema
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
-        @ApiResponse(responseCode = "404", description = "Translation not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Translations for requested languages", // TODO
+        // add
+        // meta-schema
+        content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
+    @ApiResponse(responseCode = "404", description = "Translation not found")
+  })
   CompletableFuture<ResponseEntity<TranslationsDto>> getSchema(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(

@@ -219,17 +219,16 @@ public class IncidentController extends AbstractElementController<Incident, Full
 
   @Override
   @Operation(summary = "Loads an incident")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Incident loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = FullIncidentDto.class))),
-        @ApiResponse(responseCode = "404", description = "Incident not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Incident loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = FullIncidentDto.class))),
+    @ApiResponse(responseCode = "404", description = "Incident not found")
+  })
   @GetMapping(UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullIncidentDto>> getElement(
       @Parameter(required = false, hidden = true) Authentication auth,
@@ -242,18 +241,16 @@ public class IncidentController extends AbstractElementController<Incident, Full
 
   @Override
   @Operation(summary = "Loads the parts of an incident")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Parts loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array =
-                        @ArraySchema(schema = @Schema(implementation = FullIncidentDto.class)))),
-        @ApiResponse(responseCode = "404", description = "Incident not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Parts loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                array = @ArraySchema(schema = @Schema(implementation = FullIncidentDto.class)))),
+    @ApiResponse(responseCode = "404", description = "Incident not found")
+  })
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
   public @Valid CompletableFuture<ResponseEntity<List<FullIncidentDto>>> getElementParts(
       @Parameter(required = false, hidden = true) Authentication auth,
@@ -292,11 +289,10 @@ public class IncidentController extends AbstractElementController<Incident, Full
 
   @PutMapping(value = "/{id}")
   @Operation(summary = "Updates an incident")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200", description = "Incident updated"),
-        @ApiResponse(responseCode = "404", description = "Incident not found")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Incident updated"),
+    @ApiResponse(responseCode = "404", description = "Incident not found")
+  })
   public CompletableFuture<ResponseEntity<FullIncidentDto>> updateIncident(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
@@ -322,11 +318,10 @@ public class IncidentController extends AbstractElementController<Incident, Full
 
   @DeleteMapping(UUID_PARAM_SPEC)
   @Operation(summary = "Deletes an incident")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "204", description = "Incident deleted"),
-        @ApiResponse(responseCode = "404", description = "Incident not found")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "204", description = "Incident deleted"),
+    @ApiResponse(responseCode = "404", description = "Incident not found")
+  })
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteIncident(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -391,16 +386,15 @@ public class IncidentController extends AbstractElementController<Incident, Full
   @Operation(
       summary =
           "Evaluates decisions and inspections on a transient incident without persisting anything")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Element evaluated",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Element evaluated",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
+  })
   @PostMapping(value = "/evaluation")
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
       @Parameter(required = true, hidden = true) Authentication auth,
@@ -410,17 +404,16 @@ public class IncidentController extends AbstractElementController<Incident, Full
   }
 
   @Operation(summary = "Runs inspections on a persisted incident")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Inspections have run",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(schema = @Schema(implementation = Finding.class)))),
-        @ApiResponse(responseCode = "404", description = "Incident not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Inspections have run",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                array = @ArraySchema(schema = @Schema(implementation = Finding.class)))),
+    @ApiResponse(responseCode = "404", description = "Incident not found")
+  })
   @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
   public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
       @Parameter(required = true, hidden = true) Authentication auth,

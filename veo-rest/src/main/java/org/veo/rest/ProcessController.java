@@ -180,17 +180,16 @@ public class ProcessController extends AbstractElementController<Process, FullPr
   }
 
   @Operation(summary = "Loads a process")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Process loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = FullProcessDto.class))),
-        @ApiResponse(responseCode = "404", description = "Process not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Process loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = FullProcessDto.class))),
+    @ApiResponse(responseCode = "404", description = "Process not found")
+  })
   @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullProcessDto>> getProcess(
       @Parameter(required = false, hidden = true) Authentication auth,
@@ -224,17 +223,16 @@ public class ProcessController extends AbstractElementController<Process, FullPr
 
   @Override
   @Operation(summary = "Loads the parts of a process")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Parts loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(schema = @Schema(implementation = FullProcessDto.class)))),
-        @ApiResponse(responseCode = "404", description = "Process not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Parts loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                array = @ArraySchema(schema = @Schema(implementation = FullProcessDto.class)))),
+    @ApiResponse(responseCode = "404", description = "Process not found")
+  })
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
   public @Valid CompletableFuture<ResponseEntity<List<FullProcessDto>>> getElementParts(
       @Parameter(required = false, hidden = true) Authentication auth,
@@ -274,11 +272,10 @@ public class ProcessController extends AbstractElementController<Process, FullPr
 
   @PutMapping(value = "/{id}")
   @Operation(summary = "Updates a process")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200", description = "Process updated"),
-        @ApiResponse(responseCode = "404", description = "Process not found")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Process updated"),
+    @ApiResponse(responseCode = "404", description = "Process not found")
+  })
   public @Valid CompletableFuture<ResponseEntity<FullProcessDto>> updateProcess(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
@@ -302,11 +299,10 @@ public class ProcessController extends AbstractElementController<Process, FullPr
 
   @DeleteMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}")
   @Operation(summary = "Deletes a process")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "204", description = "Process deleted"),
-        @ApiResponse(responseCode = "404", description = "Process not found")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "204", description = "Process deleted"),
+    @ApiResponse(responseCode = "404", description = "Process not found")
+  })
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteProcess(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -452,16 +448,15 @@ public class ProcessController extends AbstractElementController<Process, FullPr
   @Operation(
       summary =
           "Evaluates decisions and inspections on a transient process without persisting anything")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Element evaluated",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Element evaluated",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
+  })
   @PostMapping(value = "/evaluation")
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
       @Parameter(required = true, hidden = true) Authentication auth,
@@ -590,17 +585,16 @@ public class ProcessController extends AbstractElementController<Process, FullPr
   }
 
   @Operation(summary = "Runs inspections on a persisted process")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Inspections have run",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(schema = @Schema(implementation = Finding.class)))),
-        @ApiResponse(responseCode = "404", description = "Process not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Inspections have run",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                array = @ArraySchema(schema = @Schema(implementation = Finding.class)))),
+    @ApiResponse(responseCode = "404", description = "Process not found")
+  })
   @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
   public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
       @Parameter(required = true, hidden = true) Authentication auth,

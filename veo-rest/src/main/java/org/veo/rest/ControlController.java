@@ -221,17 +221,16 @@ public class ControlController extends AbstractElementController<Control, FullCo
 
   @Override
   @Operation(summary = "Loads a control")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Control loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = AbstractControlDto.class))),
-        @ApiResponse(responseCode = "404", description = "Control not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Control loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = AbstractControlDto.class))),
+    @ApiResponse(responseCode = "404", description = "Control not found")
+  })
   @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullControlDto>> getElement(
       @Parameter(required = false, hidden = true) Authentication auth,
@@ -244,17 +243,16 @@ public class ControlController extends AbstractElementController<Control, FullCo
 
   @Override
   @Operation(summary = "Loads the parts of a control")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Parts loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(schema = @Schema(implementation = FullControlDto.class)))),
-        @ApiResponse(responseCode = "404", description = "Control not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Parts loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                array = @ArraySchema(schema = @Schema(implementation = FullControlDto.class)))),
+    @ApiResponse(responseCode = "404", description = "Control not found")
+  })
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
   public @Valid CompletableFuture<ResponseEntity<List<FullControlDto>>> getElementParts(
       @Parameter(required = false, hidden = true) Authentication auth,
@@ -293,11 +291,10 @@ public class ControlController extends AbstractElementController<Control, FullCo
 
   @PutMapping(ControllerConstants.UUID_PARAM_SPEC)
   @Operation(summary = "Updates a control")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200", description = "Control updated"),
-        @ApiResponse(responseCode = "404", description = "Control not found")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Control updated"),
+    @ApiResponse(responseCode = "404", description = "Control not found")
+  })
   public CompletableFuture<ResponseEntity<FullControlDto>> updateControl(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
@@ -325,11 +322,10 @@ public class ControlController extends AbstractElementController<Control, FullCo
 
   @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
   @Operation(summary = "Deletes a control")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "204", description = "Control deleted"),
-        @ApiResponse(responseCode = "404", description = "Control not found")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "204", description = "Control deleted"),
+    @ApiResponse(responseCode = "404", description = "Control not found")
+  })
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteControl(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -393,16 +389,15 @@ public class ControlController extends AbstractElementController<Control, FullCo
   @Operation(
       summary =
           "Evaluates decisions and inspections on a transient control without persisting anything")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Element evaluated",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Element evaluated",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
+  })
   @PostMapping(value = "/evaluation")
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
       @Parameter(required = true, hidden = true) Authentication auth,
@@ -412,17 +407,16 @@ public class ControlController extends AbstractElementController<Control, FullCo
   }
 
   @Operation(summary = "Runs inspections on a persisted control")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Inspections have run",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(schema = @Schema(implementation = Finding.class)))),
-        @ApiResponse(responseCode = "404", description = "Control not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Inspections have run",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                array = @ArraySchema(schema = @Schema(implementation = Finding.class)))),
+    @ApiResponse(responseCode = "404", description = "Control not found")
+  })
   @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
   public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
       @Parameter(required = true, hidden = true) Authentication auth,

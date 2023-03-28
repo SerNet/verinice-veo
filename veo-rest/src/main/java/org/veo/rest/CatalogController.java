@@ -99,17 +99,16 @@ public class CatalogController extends AbstractEntityController {
 
   @GetMapping(value = "/{id}")
   @Operation(summary = "Loads a catalog")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Catalog loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = FullCatalogDto.class))),
-        @ApiResponse(responseCode = "404", description = "Catalog not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Catalog loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = FullCatalogDto.class))),
+    @ApiResponse(responseCode = "404", description = "Catalog not found")
+  })
   public @Valid Future<ResponseEntity<FullCatalogDto>> getCatalog(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String id,
@@ -129,16 +128,15 @@ public class CatalogController extends AbstractEntityController {
 
   @GetMapping
   @Operation(summary = "Loads all catalogs")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Catalogs loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(schema = @Schema(implementation = FullCatalogDto.class))))
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Catalogs loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                array = @ArraySchema(schema = @Schema(implementation = FullCatalogDto.class))))
+  })
   public @Valid CompletableFuture<List<FullCatalogDto>> getCatalogs(
       @Parameter(required = false, hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = DOMAIN_PARAM, required = false) String domainUuid,
@@ -165,17 +163,15 @@ public class CatalogController extends AbstractEntityController {
 
   @GetMapping(value = "/{id}/items")
   @Operation(summary = "Loads all items of a catalog")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "CatalogItems loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array =
-                        @ArraySchema(schema = @Schema(implementation = FullCatalogItemDto.class))))
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "CatalogItems loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                array = @ArraySchema(schema = @Schema(implementation = FullCatalogItemDto.class))))
+  })
   public @Valid CompletableFuture<ResponseEntity<List<FullCatalogItemDto>>> getCatalogItems(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String id,
@@ -212,17 +208,16 @@ public class CatalogController extends AbstractEntityController {
 
   @GetMapping(value = "/{id}/items/{itemId}")
   @Operation(summary = "Loads a catalogitem")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "CatalogItem loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = FullCatalogItemDto.class))),
-        @ApiResponse(responseCode = "404", description = "CatalogItem not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "CatalogItem loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = FullCatalogItemDto.class))),
+    @ApiResponse(responseCode = "404", description = "CatalogItem not found")
+  })
   public @Valid Future<ResponseEntity<FullCatalogItemDto>> getCatalogItem(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String id,

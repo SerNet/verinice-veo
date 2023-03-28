@@ -221,17 +221,16 @@ public class PersonController extends AbstractElementController<Person, FullPers
 
   @Override
   @Operation(summary = "Loads a person")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Person loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = FullPersonDto.class))),
-        @ApiResponse(responseCode = "404", description = "Person not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Person loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = FullPersonDto.class))),
+    @ApiResponse(responseCode = "404", description = "Person not found")
+  })
   @GetMapping(UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullPersonDto>> getElement(
       @Parameter(required = false, hidden = true) Authentication auth,
@@ -244,17 +243,16 @@ public class PersonController extends AbstractElementController<Person, FullPers
 
   @Override
   @Operation(summary = "Loads the parts of a person")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Parts loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(schema = @Schema(implementation = FullPersonDto.class)))),
-        @ApiResponse(responseCode = "404", description = "Person not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Parts loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                array = @ArraySchema(schema = @Schema(implementation = FullPersonDto.class)))),
+    @ApiResponse(responseCode = "404", description = "Person not found")
+  })
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
   public @Valid CompletableFuture<ResponseEntity<List<FullPersonDto>>> getElementParts(
       @Parameter(required = false, hidden = true) Authentication auth,
@@ -291,11 +289,10 @@ public class PersonController extends AbstractElementController<Person, FullPers
 
   @PutMapping(UUID_PARAM_SPEC)
   @Operation(summary = "Updates a person")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200", description = "Person updated"),
-        @ApiResponse(responseCode = "404", description = "Person not found")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Person updated"),
+    @ApiResponse(responseCode = "404", description = "Person not found")
+  })
   public CompletableFuture<ResponseEntity<FullPersonDto>> updatePerson(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
@@ -323,11 +320,10 @@ public class PersonController extends AbstractElementController<Person, FullPers
 
   @DeleteMapping(UUID_PARAM_SPEC)
   @Operation(summary = "Deletes a person")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "204", description = "Person deleted"),
-        @ApiResponse(responseCode = "404", description = "Person not found")
-      })
+  @ApiResponses({
+    @ApiResponse(responseCode = "204", description = "Person deleted"),
+    @ApiResponse(responseCode = "404", description = "Person not found")
+  })
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deletePerson(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -391,16 +387,15 @@ public class PersonController extends AbstractElementController<Person, FullPers
   @Operation(
       summary =
           "Evaluates decisions and inspections on a transient person without persisting anything")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Element evaluated",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Element evaluated",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
+  })
   @PostMapping(value = "/evaluation")
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
       @Parameter(required = true, hidden = true) Authentication auth,
@@ -410,17 +405,16 @@ public class PersonController extends AbstractElementController<Person, FullPers
   }
 
   @Operation(summary = "Runs inspections on a persisted person")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Inspections have run",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(schema = @Schema(implementation = Finding.class)))),
-        @ApiResponse(responseCode = "404", description = "Person not found")
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Inspections have run",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                array = @ArraySchema(schema = @Schema(implementation = Finding.class)))),
+    @ApiResponse(responseCode = "404", description = "Person not found")
+  })
   @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
   public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
       @Parameter(required = true, hidden = true) Authentication auth,

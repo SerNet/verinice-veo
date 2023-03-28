@@ -64,15 +64,14 @@ public interface EntitySchemaResource {
 
   @GetMapping(value = "/{type:[\\w]+}")
   @Operation(summary = "Retrieves an entity schema.")
-  @ApiResponses(
-      value = {
-        // TODO reference new metaschema here (not yet available):
-        @ApiResponse(
-            responseCode = "200",
-            description = "Schema loaded",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
-        @ApiResponse(responseCode = "404", description = "Schema not found")
-      })
+  @ApiResponses({
+    // TODO reference new metaschema here (not yet available):
+    @ApiResponse(
+        responseCode = "200",
+        description = "Schema loaded",
+        content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
+    @ApiResponse(responseCode = "404", description = "Schema not found")
+  })
   Future<ResponseEntity<String>> getSchema(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(

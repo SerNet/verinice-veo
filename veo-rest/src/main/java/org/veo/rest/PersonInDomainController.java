@@ -93,19 +93,18 @@ public class PersonInDomainController {
   private final EntityToDtoTransformer entityToDtoTransformer;
 
   @Operation(summary = "Loads a person from the viewpoint of a domain")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Person loaded",
-            content =
-                @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = FullPersonInDomainDto.class))),
-        @ApiResponse(responseCode = "404", description = "Person not found"),
-        @ApiResponse(responseCode = "404", description = "Domain not found"),
-        @ApiResponse(responseCode = "404", description = "Person not associated with domain"),
-      })
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Person loaded",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = FullPersonInDomainDto.class))),
+    @ApiResponse(responseCode = "404", description = "Person not found"),
+    @ApiResponse(responseCode = "404", description = "Domain not found"),
+    @ApiResponse(responseCode = "404", description = "Person not associated with domain"),
+  })
   @GetMapping(UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullPersonInDomainDto>> getElement(
       @Parameter(required = true, hidden = true) Authentication auth,
