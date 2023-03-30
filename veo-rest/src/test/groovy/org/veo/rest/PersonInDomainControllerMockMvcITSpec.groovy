@@ -23,8 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.UnitRepository
@@ -39,14 +37,11 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     private String unitId
     private String testDomainId
     private String dsgvoTestDomainId
-    // TODO VEO-1871 remove field
-    private Domain dsgvoTestDomain
 
     def setup() {
         def client = createTestClient()
         testDomainId = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID).idAsString
-        dsgvoTestDomain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        dsgvoTestDomainId = dsgvoTestDomain.idAsString
+        dsgvoTestDomainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
         unitId = unitRepository.save(newUnit(client)).idAsString
     }
 
@@ -123,12 +118,10 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].subType == "Programmer"
 
         when: "associating person with a second domain"
-        // TODO VEO-1871 associate using new POST endpoint
-        txTemplate.execute {
-            personRepository.findById(Key.uuidFrom(personId)).get().with {
-                associateWithDomain(dsgvoTestDomain, "PER_Person", "IN_PROGRESS")
-            }
-        }
+        post("/domians/$dsgvoTestDomainId/persons/$personId", [
+            subType: "PER_Person",
+            status: "IN_PROGRESS"
+        ], 200)
 
         and: "fetching person in second domain"
         def personInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/persons/$personId")) as Map

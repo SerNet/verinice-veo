@@ -205,22 +205,11 @@ class MultiDomainElementRestTest extends VeoRestTest {
 
     // TODO VEO-1874 expect element to be versioned independently in different domain contexts
     def "#type.singularTerm ETags are handled correctly across domains"() {
-        given: "an element in two domains"
+        given: "an unassociated element"
         putElementTypeDefinitions(type)
-        // TODO VEO-1871 associate using new POST endpoint
         def elementId = post("/$type.pluralTerm", [
             name: "my little element",
             owner: [targetUri: "/units/$unitId"],
-            domains: [
-                (domainIdA): [
-                    subType: "STA",
-                    status: "NEW"
-                ],
-                (domainIdB): [
-                    subType: "STB",
-                    status: "ON"
-                ]
-            ]
         ]).body.resourceId
 
         when: "fetching ETag on element root resource"
@@ -229,14 +218,30 @@ class MultiDomainElementRestTest extends VeoRestTest {
         then: "it's set"
         initialETag =~ /".+"/
 
+        when: "assigning the element to both domains"
+        post("/domians/$domainIdA/$type.pluralTerm/$elementId", [
+            subType: "STA",
+            status: "NEW"
+        ], 200)
+        post("/domians/$domainIdB/$type.pluralTerm/$elementId", [
+            subType: "STB",
+            status: "ON",
+        ], 200)
+
+        and: "fetching the ETag again"
+        final def eTagAfterAssociating = get("/$type.pluralTerm/$elementId").getETag()
+
+        then: "the ETag has changed"
+        eTagAfterAssociating != initialETag
+
         and: "domain-specific ETags are identical"
-        get("/domians/$domainIdA/$type.pluralTerm/$elementId").getETag() == initialETag
-        get("/domians/$domainIdB/$type.pluralTerm/$elementId").getETag() == initialETag
+        get("/domians/$domainIdA/$type.pluralTerm/$elementId").getETag() == eTagAfterAssociating
+        get("/domians/$domainIdB/$type.pluralTerm/$elementId").getETag() == eTagAfterAssociating
 
         when: "updating element in one domain"
         def putETag = get("/domians/$domainIdA/$type.pluralTerm/$elementId").body.with {
             it.status = "OLD"
-            put(it._self, it, initialETag, 200).getETag()
+            put(it._self, it, eTagAfterAssociating, 200).getETag()
         }
 
         then: "the correct new ETag has been returned"
@@ -244,14 +249,14 @@ class MultiDomainElementRestTest extends VeoRestTest {
         putETag == get("/$type.pluralTerm/$elementId").getETag()
 
         and: "ETags have changed on all resources"
-        putETag != initialETag
+        putETag != eTagAfterAssociating
         get("/domians/$domainIdA/$type.pluralTerm/$elementId").getETag() == putETag
         get("/domians/$domainIdB/$type.pluralTerm/$elementId").getETag() == putETag
 
         expect: "updating the element with old ETag to fail"
         get("/domians/$domainIdB/$type.pluralTerm/$elementId").body.with {
             it.status = "OFF"
-            put(it._self, it, initialETag, 412)
+            put(it._self, it, eTagAfterAssociating, 412)
         }.body.message == "The eTag does not match for the element with the ID $elementId"
 
         and: "updating the element with new ETag to succeed"

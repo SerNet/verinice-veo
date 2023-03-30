@@ -23,8 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.IncidentRepository
 import org.veo.core.repository.UnitRepository
@@ -39,14 +37,11 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     private String unitId
     private String testDomainId
     private String dsgvoTestDomainId
-    // TODO VEO-1871 remove field
-    private Domain dsgvoTestDomain
 
     def setup() {
         def client = createTestClient()
         testDomainId = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID).idAsString
-        dsgvoTestDomain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        dsgvoTestDomainId = dsgvoTestDomain.idAsString
+        dsgvoTestDomainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
         unitId = unitRepository.save(newUnit(client)).idAsString
     }
 
@@ -123,12 +118,10 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].subType == "DISASTER"
 
         when: "associating incident with a second domain"
-        // TODO VEO-1871 associate using new POST endpoint
-        txTemplate.execute {
-            incidentRepository.findById(Key.uuidFrom(incidentId)).get().with {
-                associateWithDomain(dsgvoTestDomain, "INC_Incident", "IN_PROGRESS")
-            }
-        }
+        post("/domians/$dsgvoTestDomainId/incidents/$incidentId", [
+            subType: "INC_Incident",
+            status: "IN_PROGRESS"
+        ], 200)
 
         and: "fetching incident in second domain"
         def incidentInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/incidents/$incidentId")) as Map

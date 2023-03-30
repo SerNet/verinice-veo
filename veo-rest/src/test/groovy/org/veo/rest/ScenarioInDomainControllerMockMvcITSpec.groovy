@@ -23,8 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.ScenarioRepository
 import org.veo.core.repository.UnitRepository
@@ -39,14 +37,11 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     private String unitId
     private String testDomainId
     private String dsgvoTestDomainId
-    // TODO VEO-1871 remove field
-    private Domain dsgvoTestDomain
 
     def setup() {
         def client = createTestClient()
         testDomainId = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID).idAsString
-        dsgvoTestDomain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        dsgvoTestDomainId = dsgvoTestDomain.idAsString
+        dsgvoTestDomainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
         unitId = unitRepository.save(newUnit(client)).idAsString
     }
 
@@ -131,12 +126,10 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].subType == "Attack"
 
         when: "associating scenario with a second domain"
-        // TODO VEO-1871 associate using new POST endpoint
-        txTemplate.execute {
-            scenarioRepository.findById(Key.uuidFrom(scenarioId)).get().with {
-                associateWithDomain(dsgvoTestDomain, "SCN_Scenario", "IN_PROGRESS")
-            }
-        }
+        post("/domians/$dsgvoTestDomainId/scenarios/$scenarioId", [
+            subType: "SCN_Scenario",
+            status: "IN_PROGRESS"
+        ], 200)
 
         and: "fetching scenario in second domain"
         def scenarioInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/scenarios/$scenarioId")) as Map

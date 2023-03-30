@@ -70,6 +70,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
+import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.create.CreatePersonInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
@@ -299,6 +300,24 @@ public class PersonInDomainController {
           List<String> scopeIds) {
     return elementService.createElement(
         user, domainId, dto, scopeIds, createUseCase, dtoToEntityTransformer::transformDto2Person);
+  }
+
+  @Operation(summary = "Associates an existing person with a domain")
+  @PostMapping(UUID_PARAM_SPEC)
+  @ApiResponse(responseCode = "200", description = "Person associated with domain")
+  @ApiResponse(responseCode = "404", description = "Person not found")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  public CompletableFuture<ResponseEntity<FullPersonInDomainDto>> associateElementWithDomain(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      @Valid @NotNull @RequestBody CreateDomainAssociationDto dto) {
+    return elementService.associateElementWithDomain(
+        auth, domainId, uuid, dto, Person.class, entityToDtoTransformer::transformPerson2Dto);
   }
 
   @Operation(summary = "Updates a person from the viewpoint of a domain")

@@ -39,6 +39,7 @@ import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
+import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
@@ -49,6 +50,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.UseCaseInteractor;
+import org.veo.core.usecase.base.AssociateElementWithDomainUseCase;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
@@ -68,6 +70,7 @@ public class ElementInDomainService {
   private final RepositoryProvider repositoryProvider;
   private final EtagService etagService;
   private final UseCaseInteractor useCaseInteractor;
+  private final AssociateElementWithDomainUseCase associateUseCase;
   private final ReferenceAssembler referenceAssembler;
   private final EvaluateElementUseCase evaluateElementUseCase;
   private final TransactionalRunner runner;
@@ -150,6 +153,26 @@ public class ElementInDomainService {
                   scopeIds);
             },
         output -> RestApiResponse.created(output.getEntity(), domainId, referenceAssembler));
+  }
+
+  public <TElement extends Element, TFullDto extends AbstractElementInDomainDto<TElement>>
+      CompletableFuture<ResponseEntity<TFullDto>> associateElementWithDomain(
+          Authentication auth,
+          String domainId,
+          String uuid,
+          CreateDomainAssociationDto dto,
+          Class<TElement> modelType,
+          BiFunction<TElement, Domain, TFullDto> toDtoMapper) {
+    return useCaseInteractor.execute(
+        associateUseCase,
+        new AssociateElementWithDomainUseCase.InputData(
+            clientLookup.getClient(auth),
+            modelType,
+            Key.uuidFrom(uuid),
+            Key.uuidFrom(domainId),
+            dto.getSubType(),
+            dto.getStatus()),
+        o -> ResponseEntity.ok().body(toDtoMapper.apply((TElement) o.getElement(), o.getDomain())));
   }
 
   public <

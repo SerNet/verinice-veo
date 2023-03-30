@@ -23,8 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.UnitRepository
@@ -39,14 +37,11 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     private String unitId
     private String testDomainId
     private String dsgvoTestDomainId
-    // TODO VEO-1871 remove field
-    private Domain dsgvoTestDomain
 
     def setup() {
         def client = createTestClient()
         testDomainId = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID).idAsString
-        dsgvoTestDomain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        dsgvoTestDomainId = dsgvoTestDomain.idAsString
+        dsgvoTestDomainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
         unitId = unitRepository.save(newUnit(client)).idAsString
     }
 
@@ -131,12 +126,10 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].subType == "BusinessProcess"
 
         when: "associating process with a second domain"
-        // TODO VEO-1871 associate using new POST endpoint
-        txTemplate.execute {
-            processRepository.findById(Key.uuidFrom(processId)).get().with {
-                associateWithDomain(dsgvoTestDomain, "PRO_DataProcessing", "IN_PROGRESS")
-            }
-        }
+        post("/domians/$dsgvoTestDomainId/processes/$processId", [
+            subType: "PRO_DataProcessing",
+            status: "IN_PROGRESS"
+        ], 200)
 
         and: "fetching process in second domain"
         def processInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/processes/$processId")) as Map

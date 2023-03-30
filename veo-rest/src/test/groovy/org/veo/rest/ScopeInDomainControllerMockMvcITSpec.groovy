@@ -23,8 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.repository.ScopeRepository
 import org.veo.core.repository.UnitRepository
@@ -39,14 +37,11 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     private String unitId
     private String testDomainId
     private String dsgvoTestDomainId
-    // TODO VEO-1871 remove field
-    private Domain dsgvoTestDomain
 
     def setup() {
         def client = createTestClient()
         testDomainId = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID).idAsString
-        dsgvoTestDomain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
-        dsgvoTestDomainId = dsgvoTestDomain.idAsString
+        dsgvoTestDomainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
         unitId = unitRepository.save(newUnit(client)).idAsString
     }
 
@@ -125,12 +120,10 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.members[0].subType == "Company"
 
         when: "associating scope with a second domain"
-        // TODO VEO-1871 associate using new POST endpoint
-        txTemplate.execute {
-            scopeRepository.findById(Key.uuidFrom(scopeId)).get().with {
-                associateWithDomain(dsgvoTestDomain, "SCP_Processor", "IN_PROGRESS")
-            }
-        }
+        post("/domians/$dsgvoTestDomainId/scopes/$scopeId", [
+            subType: "SCP_Processor",
+            status: "IN_PROGRESS"
+        ], 200)
 
         and: "fetching scope in second domain"
         def scopeInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/scopes/$scopeId")) as Map

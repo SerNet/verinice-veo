@@ -97,6 +97,7 @@ import org.veo.core.usecase.asset.GetAssetUseCase;
 import org.veo.core.usecase.asset.GetAssetsUseCase;
 import org.veo.core.usecase.asset.UpdateAssetRiskUseCase;
 import org.veo.core.usecase.asset.UpdateAssetUseCase;
+import org.veo.core.usecase.base.AssociateElementWithDomainUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 import org.veo.core.usecase.base.UpdateAssetInDomainUseCase;
@@ -1084,5 +1085,11 @@ public class ModuleConfiguration {
   UpdateScopeInDomainUseCase updateScopeInDomainUseCase(
       DomainRepository domainRepository, ScopeRepository scopeRepository, Decider decider) {
     return new UpdateScopeInDomainUseCase(domainRepository, scopeRepository, decider);
+  }
+
+  @Bean
+  AssociateElementWithDomainUseCase associateElementWithDomainUseCase(
+      RepositoryProvider repositoryProvider, DomainRepository domainRepository) {
+    return new AssociateElementWithDomainUseCase(repositoryProvider, domainRepository);
   }
 }

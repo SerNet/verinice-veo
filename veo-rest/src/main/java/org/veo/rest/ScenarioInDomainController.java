@@ -70,6 +70,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
+import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
@@ -304,6 +305,24 @@ public class ScenarioInDomainController {
         scopeIds,
         createUseCase,
         dtoToEntityTransformer::transformDto2Scenario);
+  }
+
+  @Operation(summary = "Associates an existing scenario with a domain")
+  @PostMapping(UUID_PARAM_SPEC)
+  @ApiResponse(responseCode = "200", description = "Scenario associated with domain")
+  @ApiResponse(responseCode = "404", description = "Scenario not found")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  public CompletableFuture<ResponseEntity<FullScenarioInDomainDto>> associateElementWithDomain(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      @Valid @NotNull @RequestBody CreateDomainAssociationDto dto) {
+    return elementService.associateElementWithDomain(
+        auth, domainId, uuid, dto, Scenario.class, entityToDtoTransformer::transformScenario2Dto);
   }
 
   @Operation(summary = "Updates a scenario from the viewpoint of a domain")
