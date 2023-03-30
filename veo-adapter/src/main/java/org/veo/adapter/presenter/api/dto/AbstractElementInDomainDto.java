@@ -18,8 +18,12 @@
 package org.veo.adapter.presenter.api.dto;
 
 import static com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY;
+import static org.veo.core.entity.aspects.SubTypeAspect.STATUS_DESCRIPTION;
 import static org.veo.core.entity.aspects.SubTypeAspect.STATUS_MAX_LENGTH;
+import static org.veo.core.entity.aspects.SubTypeAspect.STATUS_NOT_NULL_MESSAGE;
+import static org.veo.core.entity.aspects.SubTypeAspect.SUB_TYPE_DESCRIPTION;
 import static org.veo.core.entity.aspects.SubTypeAspect.SUB_TYPE_MAX_LENGTH;
+import static org.veo.core.entity.aspects.SubTypeAspect.SUB_TYPE_NOT_NULL_MESSAGE;
 
 import java.util.Map;
 import java.util.Optional;
@@ -84,17 +88,13 @@ public abstract class AbstractElementInDomainDto<TElement extends Element>
   @NotNull(message = "An owner must be present.")
   private IdRef<ElementOwner> owner;
 
-  @Schema(
-      description =
-          "Domain-specific sub type - available sub types are listed in the domain's element type definition. The sub type cannot be changed once the element has been associated with the domain.")
-  @NotNull(message = "A sub type must be present")
+  @Schema(description = SUB_TYPE_DESCRIPTION)
+  @NotNull(message = SUB_TYPE_NOT_NULL_MESSAGE)
   @Size(min = 1, max = SUB_TYPE_MAX_LENGTH)
   private String subType;
 
-  @Schema(
-      description =
-          "Domain-specific status - available statuses depend on the sub type and are specified in the domain's element type definition.")
-  @NotNull(message = "A status must be present")
+  @Schema(description = STATUS_DESCRIPTION)
+  @NotNull(message = STATUS_NOT_NULL_MESSAGE)
   @Size(min = 1, max = STATUS_MAX_LENGTH)
   private String status;
 
