@@ -61,9 +61,6 @@ public class CatalogItemServiceImpl implements CatalogItemService {
     placeholderResolver.cache.put(idAsString, domain);
     Element newElement = entityTransformer.transformDto2Element(dto, placeholderResolver);
     preparations.prepareElement(domain, newElement, false);
-    catalogElement
-        .getSubTypeAspects()
-        .forEach(st -> newElement.associateWithDomain(domain, st.getSubType(), st.getStatus()));
     if (newElement instanceof Process pn) {
       Process po = (Process) catalogElement;
       po.getImpactValues(item.getCatalog().getDomainTemplate())
