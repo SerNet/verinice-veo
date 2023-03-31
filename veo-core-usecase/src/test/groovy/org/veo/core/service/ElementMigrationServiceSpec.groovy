@@ -281,7 +281,7 @@ class ElementMigrationServiceSpec extends Specification{
         element.links*.type.sort() == ["veryNicePersonLink"]
     }
 
-    def 'removes obsolete sub type'() {
+    def 'removes element with obsolete sub type from domain'() {
         given:
         domain.getElementTypeDefinition("asset") >>  Mock(ElementTypeDefinition) {
             customAspects >> []
@@ -308,7 +308,7 @@ class ElementMigrationServiceSpec extends Specification{
         elementMigrationService.migrate(element, domain)
 
         then:
-        1 * element.associateWithDomain(domain, null, null)
+        1 * element.removeFromDomains(domain)
     }
 
     def 'removes obsolete status'() {
