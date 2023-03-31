@@ -43,6 +43,12 @@ import lombok.ToString;
 public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
     extends ElementData implements RiskAffected<T, R> {
 
+  @Override
+  public void transferToDomain(Domain oldDomain, Domain newDomain) {
+    super.transferToDomain(oldDomain, newDomain);
+    risks.forEach(r -> r.transferToDomain(oldDomain, newDomain));
+  }
+
   @OneToMany(
       cascade = CascadeType.ALL,
       orphanRemoval = true,

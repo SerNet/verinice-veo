@@ -283,6 +283,7 @@ public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> impl
 
   @Override
   public void transferToDomain(Domain oldDomain, Domain newDomain) {
+    super.transferToDomain(oldDomain, newDomain);
     // TODO VEO-1351 Validate compatibility of risk-definitions before migration
     this.riskAspects.stream()
         .filter(ra -> ra.getDomain().equals(oldDomain))

@@ -142,6 +142,13 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
   }
 
   @Override
+  public void transferToDomain(Domain oldDomain, Domain newDomain) {
+    if (domains.remove(oldDomain)) {
+      domains.add(newDomain);
+    }
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (o == null) return false;
 

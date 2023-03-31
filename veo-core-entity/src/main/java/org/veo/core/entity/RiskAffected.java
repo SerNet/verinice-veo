@@ -142,9 +142,4 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
       throw new ModelConsistencyException(
           "The provided domain '%s' is not yet known to this object. ", domain.getDisplayName());
   }
-
-  @Override
-  default void transferToDomain(Domain oldDomain, Domain newDomain) {
-    Element.super.transferToDomain(oldDomain, newDomain);
-  }
 }

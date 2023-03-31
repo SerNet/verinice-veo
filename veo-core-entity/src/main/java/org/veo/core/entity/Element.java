@@ -59,18 +59,7 @@ public interface Element
    */
   Set<Domain> getDomains();
 
-  default void transferToDomain(Domain oldDomain, Domain newDomain) {
-    if (!getDomains().contains(oldDomain)) {
-      throw new IllegalArgumentException(this + " is not a member of " + oldDomain);
-    }
-    if (getDomains().contains(newDomain)) {
-      throw new IllegalArgumentException(this + " is already a member of " + newDomain);
-    }
-    associateWithDomain(newDomain, getSubType(oldDomain), getStatus(oldDomain));
-    getCustomAspects().forEach(ca -> ca.setDomain(newDomain));
-    getLinks().forEach(cl -> cl.setDomain(newDomain));
-    removeFromDomains(oldDomain);
-  }
+  void transferToDomain(Domain oldDomain, Domain newDomain);
 
   /**
    * Removes given {@link CustomLink} from this element.

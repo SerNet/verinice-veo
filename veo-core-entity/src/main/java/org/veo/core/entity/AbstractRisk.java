@@ -98,4 +98,6 @@ public interface AbstractRisk<T extends RiskAffected<T, R>, R extends AbstractRi
   default Optional<Client> getOwningClient() {
     return getEntity().getOwningClient();
   }
+
+  void transferToDomain(Domain oldDomain, Domain newDomain);
 }
