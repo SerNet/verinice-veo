@@ -50,6 +50,7 @@ class ControlRepositoryITSpec extends VeoSpringSpec {
         when:
         controlRepository.save(newControl(unit) {
             def domain = newDomain(client)
+            associateWithDomain(domain, null, null)
             // bypass setters to sneak in invalid values
             customAspects = [newCustomAspect(null, domain)]
             links = [
@@ -60,7 +61,6 @@ class ControlRepositoryITSpec extends VeoSpringSpec {
                     designator = "super bad designator"
                 }
             ]
-            associateWithDomain(domain, null, null)
         })
 
         then:

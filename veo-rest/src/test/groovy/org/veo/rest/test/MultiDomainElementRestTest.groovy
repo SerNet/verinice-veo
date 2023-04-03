@@ -203,6 +203,56 @@ class MultiDomainElementRestTest extends VeoRestTest {
         type << EntityType.ELEMENT_TYPES
     }
 
+    def "identically defined custom aspects are synced when associating a #type.singularTerm with a domain"() {
+        given: "an element associated with domain A"
+        putElementTypeDefinitions(type)
+        def elementId = post("/domians/$domainIdA/$type.pluralTerm", [
+            name: "my little element",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "STA",
+            status: "NEW"
+        ]).body.resourceId
+
+        when: "adding CAs in domain A"
+        get("/domians/$domainIdA/$type.pluralTerm/$elementId").with {
+            def element = body
+            element.customAspects = [
+                identicalCa: [
+                    someAttr: 7
+                ],
+                separateCa: [
+                    someAttr: "magic"
+                ]
+            ]
+            put(element._self, element, getETag())
+        }
+
+        then: "CAs have been applied in domain A"
+        with(get("/domians/$domainIdA/$type.pluralTerm/$elementId").body) {
+            customAspects.identicalCa.someAttr == 7
+            customAspects.separateCa.someAttr == "magic"
+        }
+
+        and: "not in domain B"
+        get("/domians/$domainIdB/$type.pluralTerm/$elementId", 404)
+
+        when: "associating element with domain B"
+        post("/domians/$domainIdB/$type.pluralTerm/$elementId", [
+            subType: "STB",
+            status: "ON"
+        ], 200)
+        def elementInDomainB = get("/domians/$domainIdB/$type.pluralTerm/$elementId").body
+
+        then: "identical CA has been applied in domain B"
+        elementInDomainB.customAspects.identicalCa.someAttr == 7
+
+        and: "different CA has not been applied"
+        elementInDomainB.customAspects.separateCa == null
+
+        where:
+        type << EntityType.ELEMENT_TYPES
+    }
+
     // TODO VEO-1874 expect element to be versioned independently in different domain contexts
     def "#type.singularTerm ETags are handled correctly across domains"() {
         given: "an unassociated element"

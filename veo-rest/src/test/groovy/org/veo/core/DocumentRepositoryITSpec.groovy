@@ -52,6 +52,7 @@ class DocumentRepositoryITSpec extends VeoSpringSpec {
     def "cascading relations are validated"() {
         when:
         documentRepository.save(newDocument(unit) {
+            associateWithDomain(newDomain(client), null, null)
             // bypass setters to sneak in invalid values
             customAspects = [newCustomAspect(null, domain)]
             links = [
@@ -62,7 +63,6 @@ class DocumentRepositoryITSpec extends VeoSpringSpec {
                     designator = "super bad designator"
                 }
             ]
-            associateWithDomain(newDomain(client), null, null)
         })
 
         then:

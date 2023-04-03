@@ -89,6 +89,7 @@ class ProcessRepositoryITSpec extends VeoSpringSpec {
     def "cascading relations are validated"() {
         when:
         processRepository.save(newProcess(unit) {
+            associateWithDomain(newDomain(client), null, null)
             // bypass apply method to sneak in invalid custom aspect
             customAspects = [newCustomAspect(null, domain)]
             applyLink(newCustomLink(null, "goodLink", domain))
@@ -97,7 +98,6 @@ class ProcessRepositoryITSpec extends VeoSpringSpec {
                     designator = "super bad designator"
                 }
             ]
-            associateWithDomain(newDomain(client), null, null)
         })
 
         then:

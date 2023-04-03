@@ -79,6 +79,7 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
     def "cascading relations are validated"() {
         when:
         personRepository.save(newPerson(unit) {
+            associateWithDomain(newDomain(client), null, null)
             // bypass setters to sneak in invalid values
             customAspects = [newCustomAspect(null, domain)]
             links = [
@@ -89,7 +90,6 @@ class PersonRepositoryITSpec extends VeoSpringSpec {
                     designator = "super bad designator"
                 }
             ]
-            associateWithDomain(newDomain(client), null, null)
         })
 
         then:

@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import static java.util.List.copyOf;
+
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Map;
@@ -215,6 +217,9 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
 
     removeAspect(subTypeAspects, domain);
     subTypeAspects.add(new SubTypeAspectData(domain, this, subType, status));
+
+    // apply identically-defined custom aspects from old domains to new domain
+    copyOf(customAspects).forEach(this::applyCustomAspect);
   }
 
   @Override
