@@ -31,6 +31,7 @@ public enum VeoMessage {
   IMPLEMENTATION_STATUS("implementationStatus"),
   POTENTIAL_IMPACT("potentialImpact"),
   POTENTIAL_PROBABILITY("potentialProbability"),
+  POTENTIAL_PROBABILITY_EXPLANATION("potentialProbabilityExplanation"),
   ASSET("asset"),
   ASSETS("assets"),
   CONTROL("control"),

@@ -51,6 +51,7 @@ class TranslationControllerMockMvcSpec extends VeoMvcSpec {
         translations.lang.en.description == 'Description'
         translations.lang.en.implementationStatus == 'Implementation status'
         translations.lang.en.potentialProbability == 'Potential probability'
+        translations.lang.en.potentialProbabilityExplanation == 'Explanation'
 
         and: "the response contains translations for the element types"
         translations.lang.de.document == 'Dokument'
