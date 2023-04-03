@@ -25,6 +25,10 @@ import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.support.TransactionTemplate
 
+import com.networknt.schema.JsonSchema
+import com.networknt.schema.JsonSchemaFactory
+import com.networknt.schema.SpecVersion
+
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
@@ -32,6 +36,7 @@ import org.veo.core.entity.Element
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.repository.PagingConfiguration
+import org.veo.core.service.EntitySchemaService
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.jobs.SpringSpecDomainTemplateCreator
 import org.veo.persistence.access.ElementQueryImpl
@@ -132,6 +137,9 @@ abstract class VeoSpringSpec extends VeoSpec {
     @Autowired
     SpringSpecDomainTemplateCreator domainTemplateCreator
 
+    @Autowired
+    EntitySchemaService entitySchemaService
+
     def deleteUnitRecursively(Unit unit) {
         unit.units.each {
             deleteUnitRecursively(it)
@@ -188,5 +196,9 @@ abstract class VeoSpringSpec extends VeoSpec {
 
     List<Element> findByUnit(ElementDataRepository repository, Unit unit) {
         new ElementQueryImpl(repository, unit.client).whereOwnerIs(unit).execute(PagingConfiguration.UNPAGED).resultPage
+    }
+
+    JsonSchema getSchema(Client client, String type) {
+        JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909).getSchema(entitySchemaService.findSchema(type, client.domains))
     }
 }

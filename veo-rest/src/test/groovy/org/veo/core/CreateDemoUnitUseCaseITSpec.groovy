@@ -22,15 +22,11 @@ import org.springframework.security.test.context.support.WithUserDetails
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.networknt.schema.JsonSchema
-import com.networknt.schema.JsonSchemaFactory
-import com.networknt.schema.SpecVersion
 
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
-import org.veo.core.service.EntitySchemaService
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase.InputData
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -51,9 +47,6 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
 
     @Autowired
     EntityToDtoTransformer entityToDtoTransformer
-
-    @Autowired
-    EntitySchemaService entitySchemaService
 
     def "create a demo unit for a client"() {
         given: 'a client'
@@ -448,10 +441,5 @@ class CreateDemoUnitUseCaseITSpec extends VeoSpringSpec {
             defaultDomainCreator.addDefaultDomains(client)
             return clientRepository.save(client)
         }
-    }
-
-    private JsonSchema getSchema(Client client, String type) {
-        def schemaString = entitySchemaService.findSchema(type, client.domains)
-        JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909).getSchema(schemaString)
     }
 }

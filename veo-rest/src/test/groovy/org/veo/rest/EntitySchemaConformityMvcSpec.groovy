@@ -24,24 +24,17 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.networknt.schema.JsonSchema
-import com.networknt.schema.JsonSchemaFactory
-import com.networknt.schema.SpecVersion
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException
 import org.veo.core.repository.UnitRepository
-import org.veo.core.service.EntitySchemaService
 
 /**
  * Tests if resources returned by the API conform to the entity schema.
  */
 @WithUserDetails("user@domain.example")
 class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
-
-    @Autowired
-    EntitySchemaService entitySchemaService
 
     @Autowired
     UnitRepository unitRepository
@@ -61,7 +54,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     def "created asset with custom aspect conforms to schema"() {
         given: "the asset schema and a newly created asset"
-        def schema = getSchema("asset")
+        def schema = getSchema(client, "asset")
         def assetId = (String)parseJson(post("/assets", [
             customAspects: [
                 asset_details: [
@@ -230,7 +223,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     def "control with custom aspect and risk value conforms to schema"() {
         given: "the control schema and a newly created control in a scope"
-        def schema = getSchema("control")
+        def schema = getSchema(client, "control")
         def controlId = (String)parseJson(post("/controls", [
             domains: [
                 (domainId): [
@@ -296,7 +289,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     def "created document with custom aspect conforms to schema"() {
         given: "the document schema and a newly created document"
-        def documentSchema = getSchema("document")
+        def documentSchema = getSchema(client, "document")
         def documentId = (String)parseJson(post("/documents", [
             name: "doc",
             owner: [
@@ -327,7 +320,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     def "created incident conforms to schema"() {
         given: "the incident schema and a newly created incident"
-        def incidentSchema = getSchema("incident")
+        def incidentSchema = getSchema(client, "incident")
         // TODO VEO-320 add custom aspect & link.
         def incidentId = (String)parseJson(post("/incidents", [
             name: "incident",
@@ -352,7 +345,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     def "created person with custom aspect conforms to schema"() {
         given: "the person schema and a newly created person"
-        def personSchema = getSchema("person")
+        def personSchema = getSchema(client, "person")
         def personId = (String)parseJson(post("/persons", [
             name: "person",
             owner: [
@@ -383,7 +376,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     def "created process with custom aspect & links conforms to schema"() {
         given: "the process schema and a newly created process"
-        def processSchema = getSchema("process")
+        def processSchema = getSchema(client, "process")
         def scopeId = (String)parseJson(post("/scopes", [
             domains: [
                 (domainId): [
@@ -438,7 +431,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     def "created scenario with custom aspect conforms to schema"() {
         given: "the scenario schema and a newly created scenario"
-        def scenarioSchema = getSchema("scenario")
+        def scenarioSchema = getSchema(client, "scenario")
         def scenarioId = (String)parseJson(post("/scenarios", [
             name: "scenario",
             owner: [
@@ -469,7 +462,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
     def "created scope with custom aspect, link & member conforms to schema"() {
         given: "the scope schema and a scope with one member"
-        def schema = getSchema("scope")
+        def schema = getSchema(client, "scope")
         def memberAssetId = parseJson(post("/assets", [
             name: "member",
             owner: [
@@ -526,11 +519,6 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
 
         then:
         validationMessages.empty
-    }
-
-    private JsonSchema getSchema(String type) {
-        def schemaString = entitySchemaService.findSchema(type, client.domains)
-        return JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909).getSchema(schemaString)
     }
 
     JsonNode parseNode(ResultActions resultActions) {
