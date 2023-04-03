@@ -27,6 +27,7 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
+import com.networknt.schema.SchemaValidatorsConfig
 import com.networknt.schema.SpecVersion
 
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
@@ -199,6 +200,11 @@ abstract class VeoSpringSpec extends VeoSpec {
     }
 
     JsonSchema getSchema(Client client, String type) {
-        JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909).getSchema(entitySchemaService.findSchema(type, client.domains))
+        JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909).getSchema(
+                entitySchemaService.findSchema(type, client.domains),
+                new SchemaValidatorsConfig().tap {
+                    // tolerate read-only properties
+                    writeMode = false
+                })
     }
 }
