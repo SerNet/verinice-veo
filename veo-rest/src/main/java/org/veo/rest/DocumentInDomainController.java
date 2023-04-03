@@ -313,6 +313,7 @@ public class DocumentInDomainController {
   @ApiResponse(responseCode = "200", description = "Document associated with domain")
   @ApiResponse(responseCode = "404", description = "Document not found")
   @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "409", description = "Document already associated with domain")
   public CompletableFuture<ResponseEntity<FullDocumentInDomainDto>> associateElementWithDomain(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)

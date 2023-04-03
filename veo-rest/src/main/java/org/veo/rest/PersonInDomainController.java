@@ -307,6 +307,7 @@ public class PersonInDomainController {
   @ApiResponse(responseCode = "200", description = "Person associated with domain")
   @ApiResponse(responseCode = "404", description = "Person not found")
   @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "409", description = "Person already associated with domain")
   public CompletableFuture<ResponseEntity<FullPersonInDomainDto>> associateElementWithDomain(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)

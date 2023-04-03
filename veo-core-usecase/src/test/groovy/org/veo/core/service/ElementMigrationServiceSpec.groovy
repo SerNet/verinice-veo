@@ -335,6 +335,6 @@ class ElementMigrationServiceSpec extends Specification{
         elementMigrationService.migrate(element, domain)
 
         then:
-        1 * element.associateWithDomain(domain, "AST_Server", 'NEW')
+        1 * element.setStatus('NEW', domain)
     }
 }

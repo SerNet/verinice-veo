@@ -307,6 +307,7 @@ public class AssetInDomainController {
   @ApiResponse(responseCode = "200", description = "Asset associated with domain")
   @ApiResponse(responseCode = "404", description = "Asset not found")
   @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "409", description = "Asset already associated with domain")
   public CompletableFuture<ResponseEntity<FullAssetInDomainDto>> associateElementWithDomain(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)

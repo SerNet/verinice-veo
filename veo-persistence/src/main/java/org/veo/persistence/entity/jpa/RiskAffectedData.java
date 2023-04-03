@@ -83,12 +83,11 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
   abstract R createRisk(Scenario scenario);
 
   @Override
-  public boolean associateWithDomain(@NonNull DomainBase domain, String subType, String status) {
-    var added = super.associateWithDomain(domain, subType, status);
-    if (added && domain instanceof Domain d) {
+  public void associateWithDomain(@NonNull DomainBase domain, String subType, String status) {
+    super.associateWithDomain(domain, subType, status);
+    if (domain instanceof Domain d) {
       risks.forEach(r -> r.addToDomains(d));
     }
-    return added;
   }
 
   @Override

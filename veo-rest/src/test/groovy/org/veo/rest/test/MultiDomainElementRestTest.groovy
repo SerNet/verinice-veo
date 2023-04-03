@@ -269,6 +269,28 @@ class MultiDomainElementRestTest extends VeoRestTest {
         type << EntityType.ELEMENT_TYPES
     }
 
+    def "cannot re-associate #type.singularTerm with domain"() {
+        given: "an element associated with domain A"
+        putElementTypeDefinitions(type)
+        def elementId = post("/$type.pluralTerm", [
+            name: "some element",
+            owner: [targetUri: "/units/$unitId"]
+        ]).body.resourceId
+        post("/domians/$domainIdA/$type.pluralTerm/$elementId", [
+            subType: "STA",
+            status: "NEW",
+        ], 200)
+
+        expect: "re-assigning the element with domain A to fail"
+        post("/domians/$domainIdA/$type.pluralTerm/$elementId", [
+            subType: "STA",
+            status: "OLD",
+        ], 409).body.message == "$type.singularTerm $elementId is already associated with domain $domainIdA"
+
+        where:
+        type << EntityType.ELEMENT_TYPES
+    }
+
     // TODO VEO-1294 once decisions are configurable, test evaluation endpoints for all element types
 
     private void putElementTypeDefinitions(EntityType type) {

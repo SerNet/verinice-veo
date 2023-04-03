@@ -56,6 +56,7 @@ import org.veo.core.entity.aspects.SubTypeAspect;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.usecase.domaintemplate.EntityAlreadyExistsException;
 import org.veo.persistence.entity.jpa.validation.HasOwnerOrContainingCatalogItem;
 
 import lombok.AccessLevel;
@@ -195,11 +196,15 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   @Override
-  public boolean associateWithDomain(@NonNull DomainBase domain, String subType, String status) {
-    var added = false;
+  public void associateWithDomain(@NonNull DomainBase domain, String subType, String status) {
+    if (isAssociatedWithDomain(domain)) {
+      throw new EntityAlreadyExistsException(
+          "%s %s is already associated with domain %s"
+              .formatted(getModelType(), getIdAsString(), domain.getIdAsString()));
+    }
     if (this.getContainingCatalogItem() == null) {
       if (domain instanceof Domain) {
-        added = domains.add((Domain) domain);
+        domains.add((Domain) domain);
       }
     } else if (!domain.equals(getContainingCatalogItem().getCatalog().getDomainTemplate())) {
       throw new IllegalArgumentException(
@@ -210,7 +215,6 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
 
     removeAspect(subTypeAspects, domain);
     subTypeAspects.add(new SubTypeAspectData(domain, this, subType, status));
-    return added;
   }
 
   @Override

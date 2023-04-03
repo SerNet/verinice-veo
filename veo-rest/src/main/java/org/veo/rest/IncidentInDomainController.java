@@ -313,6 +313,7 @@ public class IncidentInDomainController {
   @ApiResponse(responseCode = "200", description = "Incident associated with domain")
   @ApiResponse(responseCode = "404", description = "Incident not found")
   @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "409", description = "Incident already associated with domain")
   public CompletableFuture<ResponseEntity<FullIncidentInDomainDto>> associateElementWithDomain(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)

@@ -88,7 +88,7 @@ class ElementQueryImplPerformanceSpec extends AbstractPerformanceITSpec {
         def processes = new HashSet<ProcessData>()
         for(int i = 0; i < testProcessCount; i++) {
             processes.add(newProcess(unit) {
-                associateWithDomain(domain, "NormalProcess", "NEW")
+                associateWithDomain(domain, "VT", "NEW")
                 applyCustomAspect(newCustomAspect("my_custom_aspect", domain) {
                     attributes = [
                         "foo": "bar"
@@ -97,7 +97,6 @@ class ElementQueryImplPerformanceSpec extends AbstractPerformanceITSpec {
                 links = [
                     newCustomLink(asset, "my_little_link", domain)
                 ]
-                associateWithDomain(domain, "VT", "NEW")
             })
         }
         processRepository.saveAll(processes)

@@ -312,6 +312,7 @@ public class ScenarioInDomainController {
   @ApiResponse(responseCode = "200", description = "Scenario associated with domain")
   @ApiResponse(responseCode = "404", description = "Scenario not found")
   @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "409", description = "Scenario already associated with domain")
   public CompletableFuture<ResponseEntity<FullScenarioInDomainDto>> associateElementWithDomain(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)

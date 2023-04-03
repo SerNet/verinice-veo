@@ -308,6 +308,7 @@ public class ControlInDomainController {
   @ApiResponse(responseCode = "200", description = "Control associated with domain")
   @ApiResponse(responseCode = "404", description = "Control not found")
   @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "409", description = "Control already associated with domain")
   public CompletableFuture<ResponseEntity<FullControlInDomainDto>> associateElementWithDomain(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)

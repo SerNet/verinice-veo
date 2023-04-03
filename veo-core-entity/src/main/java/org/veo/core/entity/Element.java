@@ -94,7 +94,7 @@ public interface Element
                         .formatted(getModelType(), getIdAsString(), domain.getIdAsString())));
   }
 
-  boolean associateWithDomain(DomainBase domain, String subType, String status);
+  void associateWithDomain(DomainBase domain, String subType, String status);
 
   /**
    * Removes given {@link CustomAspect} from this element.

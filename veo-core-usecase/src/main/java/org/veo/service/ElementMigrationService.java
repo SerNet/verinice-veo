@@ -110,7 +110,7 @@ public class ElementMigrationService {
                     status,
                     element.getIdAsString(),
                     fallbackStatus);
-                element.associateWithDomain(domain, subType, fallbackStatus);
+                element.setStatus(fallbackStatus, domain);
               }
             });
   }

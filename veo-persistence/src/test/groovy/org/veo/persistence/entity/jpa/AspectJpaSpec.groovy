@@ -79,18 +79,20 @@ class AspectJpaSpec extends AbstractJpaSpec {
         }
         assetRepository.save(asset)
 
-        when: "changing the sub type for domain 1, saving & retrieving"
-        asset.associateWithDomain(domain1, "tar", "NEW")
+        when: "changing the status for domain 1, saving & retrieving"
+        asset.setStatus("OLD", domain1)
         assetRepository.save(asset)
         def retrievedAsset = assetRepository.findById(asset.dbId)
 
-        then: "the new sub type has been applied"
+        then: "the new status has been applied"
         with(retrievedAsset.get().subTypeAspects.sort { it.subType }) {
             size() == 2
-            it[0].subType == "foo"
-            it[0].domain == domain0
-            it[1].subType == "tar"
-            it[1].domain == domain1
+            it[0].subType == "bar"
+            it[0].status == "OLD"
+            it[0].domain == domain1
+            it[1].subType == "foo"
+            it[1].status == "NEW"
+            it[1].domain == domain0
         }
     }
 }

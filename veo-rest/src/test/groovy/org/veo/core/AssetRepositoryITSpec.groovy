@@ -52,7 +52,7 @@ class AssetRepositoryITSpec extends VeoSpringSpec {
     def "cascading relations are validated"() {
         when:
         assetRepository.save(newAsset(unit) {
-            associateWithDomain(domain, "", "")
+            associateWithDomain(domain, null, null)
             // bypass apply method to sneak in invalid CA
             customAspects = [newCustomAspect(null, domain)]
             applyLink(newCustomLink(null, "goodLink", domain))
@@ -61,7 +61,6 @@ class AssetRepositoryITSpec extends VeoSpringSpec {
                     designator = "super bad designator"
                 }
             ]
-            associateWithDomain(newDomain(client), null, null)
         })
 
         then:

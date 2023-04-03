@@ -310,6 +310,7 @@ public class ProcessInDomainController {
   @ApiResponse(responseCode = "200", description = "Process associated with domain")
   @ApiResponse(responseCode = "404", description = "Process not found")
   @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "409", description = "Process already associated with domain")
   public CompletableFuture<ResponseEntity<FullProcessInDomainDto>> associateElementWithDomain(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)

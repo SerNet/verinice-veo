@@ -238,6 +238,7 @@ public class ScopeInDomainController {
   @ApiResponse(responseCode = "200", description = "Scope associated with domain")
   @ApiResponse(responseCode = "404", description = "Scope not found")
   @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "409", description = "Scope already associated with domain")
   public CompletableFuture<ResponseEntity<FullScopeInDomainDto>> associateElementWithDomain(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
