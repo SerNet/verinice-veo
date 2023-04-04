@@ -54,7 +54,7 @@ public class ControlRepositoryImpl
       ScopeDataRepository scopeDataRepository,
       AssetDataRepository assetDataRepository,
       ProcessDataRepository processDataRepository) {
-    super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+    super(dataRepository, validation, linkDataRepository, scopeDataRepository, Control.class);
     this.assetDataRepository = assetDataRepository;
     this.processDataRepository = processDataRepository;
   }

@@ -33,6 +33,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.PagingConfiguration;
@@ -52,16 +53,19 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
   private final CustomLinkDataRepository linkDataRepository;
 
   final ScopeDataRepository scopeDataRepository;
+  final Class<T> elementType;
 
   AbstractElementRepository(
       ElementDataRepository<S> dataRepository,
       ValidationService validation,
       CustomLinkDataRepository linkDataRepository,
-      ScopeDataRepository scopeDataRepository) {
+      ScopeDataRepository scopeDataRepository,
+      Class<T> elementType) {
     super(dataRepository, validation);
     this.dataRepository = dataRepository;
     this.linkDataRepository = linkDataRepository;
     this.scopeDataRepository = scopeDataRepository;
+    this.elementType = elementType;
   }
 
   @Override
@@ -108,6 +112,11 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
   @Override
   public Optional<T> findById(Key<UUID> id, Key<UUID> clientId) {
     return dataRepository.findById(id.uuidValue(), clientId.uuidValue()).map(e -> (T) e);
+  }
+
+  @Override
+  public T getById(Key<UUID> id, Key<UUID> clientId) {
+    return findById(id, clientId).orElseThrow(() -> new NotFoundException(id, elementType));
   }
 
   @Override

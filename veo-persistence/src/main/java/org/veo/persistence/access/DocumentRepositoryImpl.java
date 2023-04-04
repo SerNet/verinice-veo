@@ -37,6 +37,6 @@ public class DocumentRepositoryImpl
       ValidationService validation,
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository) {
-    super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+    super(dataRepository, validation, linkDataRepository, scopeDataRepository, Document.class);
   }
 }

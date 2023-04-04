@@ -51,12 +51,7 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
   public OutputData<T> execute(InputData<T> input) {
     var domain = domainRepository.getById(input.getDomainId());
     var inputElement = input.getElement();
-    var storedElement =
-        repo.findById(input.element.getId(), input.authenticatedClient.getId())
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        input.element.getId(), input.element.getModelInterface()));
+    var storedElement = repo.getById(input.element.getId(), input.authenticatedClient.getId());
     storedElement.checkSameClient(input.authenticatedClient); // Client boundary safety net
     if (!storedElement.isAssociatedWithDomain(domain)) {
       throw new NotFoundException(

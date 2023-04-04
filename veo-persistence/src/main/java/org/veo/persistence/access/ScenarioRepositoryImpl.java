@@ -54,7 +54,7 @@ public class ScenarioRepositoryImpl
       ScopeDataRepository scopeDataRepository,
       AssetDataRepository assetDataRepository,
       ProcessDataRepository processDataRepository) {
-    super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+    super(dataRepository, validation, linkDataRepository, scopeDataRepository, Scenario.class);
     this.assetDataRepository = assetDataRepository;
     this.processDataRepository = processDataRepository;
   }

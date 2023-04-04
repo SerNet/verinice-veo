@@ -37,6 +37,6 @@ public class IncidentRepositoryImpl
       ValidationService validation,
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository) {
-    super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+    super(dataRepository, validation, linkDataRepository, scopeDataRepository, Incident.class);
   }
 }

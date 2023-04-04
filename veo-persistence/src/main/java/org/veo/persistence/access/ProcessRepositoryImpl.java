@@ -55,7 +55,7 @@ public class ProcessRepositoryImpl
       ValidationService validation,
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository) {
-    super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+    super(dataRepository, validation, linkDataRepository, scopeDataRepository, Process.class);
     processDataRepository = dataRepository;
   }
 

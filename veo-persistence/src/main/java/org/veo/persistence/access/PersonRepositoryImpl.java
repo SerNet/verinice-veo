@@ -51,7 +51,7 @@ public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<
       ScopeDataRepository scopeDataRepository,
       AssetDataRepository assetDataRepository,
       ProcessDataRepository processDataRepository) {
-    super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+    super(dataRepository, validation, linkDataRepository, scopeDataRepository, Person.class);
     this.assetDataRepository = assetDataRepository;
     this.processDataRepository = processDataRepository;
   }

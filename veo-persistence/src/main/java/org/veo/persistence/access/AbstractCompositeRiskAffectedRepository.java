@@ -50,8 +50,9 @@ abstract class AbstractCompositeRiskAffectedRepository<
       CompositeRiskAffectedDataRepository<T> riskAffectedRepo,
       ValidationService validation,
       CustomLinkDataRepository linkDataRepository,
-      ScopeDataRepository scopeDataRepository) {
-    super(riskAffectedRepo, validation, linkDataRepository, scopeDataRepository);
+      ScopeDataRepository scopeDataRepository,
+      Class<S> elementType) {
+    super(riskAffectedRepo, validation, linkDataRepository, scopeDataRepository, elementType);
     this.riskAffectedRepo = riskAffectedRepo;
   }
 

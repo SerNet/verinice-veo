@@ -48,7 +48,7 @@ abstract class AbstractScopeRiskAffectedRepository
       ValidationService validation,
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository) {
-    super(riskAffectedRepo, validation, linkDataRepository, scopeDataRepository);
+    super(riskAffectedRepo, validation, linkDataRepository, scopeDataRepository, Scope.class);
     this.riskAffectedRepo = riskAffectedRepo;
   }
 

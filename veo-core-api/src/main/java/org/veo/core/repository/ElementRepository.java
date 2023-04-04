@@ -40,4 +40,6 @@ public interface ElementRepository<T extends Element> extends IdentifiableVersio
   void deleteAll(Set<T> entities);
 
   Optional<T> findById(Key<UUID> id, Key<UUID> clientId);
+
+  T getById(Key<UUID> id, Key<UUID> clientId);
 }

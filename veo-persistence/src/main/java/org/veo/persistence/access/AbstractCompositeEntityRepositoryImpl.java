@@ -45,8 +45,9 @@ abstract class AbstractCompositeEntityRepositoryImpl<
       CompositeEntityDataRepository<T> dataRepository,
       ValidationService validation,
       CustomLinkDataRepository linkDataRepository,
-      ScopeDataRepository scopeDataRepository) {
-    super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+      ScopeDataRepository scopeDataRepository,
+      Class<S> elementType) {
+    super(dataRepository, validation, linkDataRepository, scopeDataRepository, elementType);
     this.compositeRepo = dataRepository;
   }
 
