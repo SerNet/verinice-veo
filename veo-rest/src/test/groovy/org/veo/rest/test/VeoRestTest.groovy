@@ -120,9 +120,6 @@ class VeoRestTest extends Specification {
         HttpHeaders headers
         Object body
         int statusCode
-    }
-
-    class GetResponse extends Response{
         String getETag() {
             headers.getETag()
         }
@@ -141,13 +138,13 @@ class VeoRestTest extends Specification {
         domainTemplateCreator.create('test-domain', this)
     }
 
-    GetResponse get(String uri, Integer assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
+    Response get(String uri, Integer assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
         def resp = exchange(uri, HttpMethod.GET, new HttpHeaders(), null, userType)
         assertStatusCode?.tap{
             assert resp.statusCodeValue == it
         }
         log.debug("retrieved data: {}", resp.body)
-        new GetResponse(
+        new Response(
                 headers: resp.headers,
                 body: jsonSlurper.parseText(resp.body.toString()),
                 statusCode: resp.statusCodeValue)
