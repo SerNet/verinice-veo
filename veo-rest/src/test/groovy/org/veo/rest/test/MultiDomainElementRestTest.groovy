@@ -144,28 +144,38 @@ class MultiDomainElementRestTest extends VeoRestTest {
         final def initialETag = get("/$type.pluralTerm/$elementId").getETag()
 
         then: "it's set"
-        initialETag.size() > 2
+        initialETag =~ /".+"/
 
         and: "domain-specific ETags are identical"
         get("/domians/$domainIdA/$type.pluralTerm/$elementId").getETag() == initialETag
         get("/domians/$domainIdB/$type.pluralTerm/$elementId").getETag() == initialETag
 
         when: "updating element in one domain"
-        get("/domians/$domainIdA/$type.pluralTerm/$elementId").body.with {
+        def putETag = get("/domians/$domainIdA/$type.pluralTerm/$elementId").body.with {
             it.status = "OLD"
-            put(it._self, it, initialETag, 200)
+            put(it._self, it, initialETag, 200).getETag()
         }
 
-        then: "ETags have changed on all resources"
-        get("/$type.pluralTerm/$elementId").getETag() != initialETag
-        get("/domians/$domainIdA/$type.pluralTerm/$elementId").getETag() != initialETag
-        get("/domians/$domainIdB/$type.pluralTerm/$elementId").getETag() != initialETag
+        then: "the correct new ETag has been returned"
+        putETag =~ /".+"/
+        putETag == get("/$type.pluralTerm/$elementId").getETag()
+
+        and: "ETags have changed on all resources"
+        putETag != initialETag
+        get("/domians/$domainIdA/$type.pluralTerm/$elementId").getETag() == putETag
+        get("/domians/$domainIdB/$type.pluralTerm/$elementId").getETag() == putETag
 
         expect: "updating the element with old ETag to fail"
         get("/domians/$domainIdB/$type.pluralTerm/$elementId").body.with {
             it.status = "OFF"
             put(it._self, it, initialETag, 412)
         }.body.message == "The eTag does not match for the element with the ID $elementId"
+
+        and: "updating the element with new ETag to succeed"
+        get("/domians/$domainIdB/$type.pluralTerm/$elementId").body.with {
+            it.status = "OFF"
+            put(it._self, it, putETag, 200)
+        }
 
         where:
         type << EntityType.ELEMENT_TYPES

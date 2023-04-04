@@ -64,7 +64,9 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
     applyChanges(inputElement, storedElement, domain);
     storedElement.setDecisionResults(decider.decide(storedElement, domain), domain);
     DomainSensitiveElementValidator.validate(inputElement);
-    return new OutputData<>(repo.save(storedElement));
+    repo.save(storedElement);
+    // re-fetch element to make sure it is returned with updated versioning information
+    return new OutputData<>(repo.getById(storedElement.getId(), input.authenticatedClient.getId()));
   }
 
   protected void applyChanges(T source, T target, Domain domain) {

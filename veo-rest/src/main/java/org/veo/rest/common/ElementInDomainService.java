@@ -148,7 +148,7 @@ public class ElementInDomainService {
       ResponseEntity<TFullDto> toResponseEntity(
           TElement entity, BiFunction<TElement, Domain, TFullDto> toDtoMapper, Domain domain) {
     return ResponseEntity.ok()
-        .eTag(ETag.from(entity.getIdAsString(), entity.getVersion() + 1))
+        .eTag(ETag.from(entity.getIdAsString(), entity.getVersion()))
         .body(toDtoMapper.apply(entity, domain));
   }
 }
