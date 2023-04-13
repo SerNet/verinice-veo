@@ -17,18 +17,23 @@
  ******************************************************************************/
 package org.veo.core.entity.condition;
 
+import javax.validation.constraints.NotNull;
+
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /** Provides the value for a certain custom aspect attribute on an element. */
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class CustomAspectAttributeValueProvider implements InputProvider {
-  private final String customAspect;
-  private final String attribute;
+  private @NotNull String customAspect;
+  private @NotNull String attribute;
 
   @Override
   public Object getValue(Element element, Domain domain) {

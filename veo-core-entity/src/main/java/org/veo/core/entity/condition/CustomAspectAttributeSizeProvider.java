@@ -19,21 +19,26 @@ package org.veo.core.entity.condition;
 
 import java.util.Collection;
 
+import javax.validation.constraints.NotNull;
+
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * Provides the size/length of a collection value for a certain custom aspect attribute on an
  * element.
  */
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class CustomAspectAttributeSizeProvider implements InputProvider {
-  private final String customAspectType;
-  private final String attributeType;
+  private @NotNull String customAspectType;
+  private @NotNull String attributeType;
 
   @Override
   public Object getValue(Element element, Domain domain) {

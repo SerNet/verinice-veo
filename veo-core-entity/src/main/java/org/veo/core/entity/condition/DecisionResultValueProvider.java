@@ -17,18 +17,23 @@
  ******************************************************************************/
 package org.veo.core.entity.condition;
 
+import javax.validation.constraints.NotNull;
+
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.decision.DecisionRef;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /** Provides the element's result value of a certain type of decision. */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @Data
 public class DecisionResultValueProvider implements InputProvider {
-  DecisionRef decision;
+  @NotNull DecisionRef decision;
 
   @Override
   public Object getValue(Element element, Domain domain) {

@@ -35,8 +35,10 @@ import org.veo.core.entity.condition.IsNullMatcher;
 import org.veo.core.entity.condition.MaxRiskProvider;
 import org.veo.core.entity.event.ElementEvent;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * Configurable rule for a {@link Decision} with a list of conditions and an output value that
@@ -44,19 +46,20 @@ import lombok.RequiredArgsConstructor;
  * takes precedence). An element only matches the rule if any of the rule conditions match.
  */
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class Rule {
   /**
    * Should become the decision's result value if this rule matches (unless it is overruled). Can be
    * null.
    */
-  private final Boolean output;
+  private Boolean output;
 
   /** Translated human-readable texts. Key is ISO language code, value is text. */
-  @NotNull private final TranslatedText description;
+  @NotNull private TranslatedText description;
 
   /** The rule only matches an element if any of these conditions match the element. */
-  private final List<Condition> conditions = new ArrayList<>();
+  @NotNull private final List<Condition> conditions = new ArrayList<>();
 
   /** Determines whether the element matches any rule conditions */
   public boolean matches(Element element, Domain domain) {

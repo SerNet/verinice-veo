@@ -19,14 +19,20 @@ package org.veo.core.entity.condition;
 
 import javax.validation.constraints.NotNull;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /** Matches if the value matches an injectable comparison value. */
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class EqualsMatcher implements InputMatcher {
-  @NotNull private final Object comparisonValue;
+  private @NotNull(
+      message =
+          "Comparison value for 'equals' matcher cannot be null, use 'isNull' matcher instead.")
+  Object comparisonValue;
 
   @Override
   public boolean matches(Object value) {

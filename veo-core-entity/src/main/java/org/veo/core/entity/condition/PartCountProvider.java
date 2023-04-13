@@ -19,19 +19,24 @@ package org.veo.core.entity.condition;
 
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotNull;
+
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /** Provides the amount of a composite element's parts. */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @Data
 public class PartCountProvider implements InputProvider {
   /** Define this to only count parts of a certain subtype */
-  private final String partSubType;
+  private @NotNull String partSubType;
 
   @Override
   public Object getValue(Element element, Domain domain) {

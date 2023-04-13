@@ -17,19 +17,25 @@
  ******************************************************************************/
 package org.veo.core.entity.condition;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.event.ElementEvent;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /** Configurable condition which checks elements using an injectable input provider and matcher. */
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class Condition {
-  private final InputProvider inputProvider;
-  private final InputMatcher inputMatcher;
+  @Valid @NotNull private InputProvider inputProvider;
+  @Valid @NotNull private InputMatcher inputMatcher;
 
   /**
    * Determines whether the data provided by the {@link InputProvider} for the given element is
