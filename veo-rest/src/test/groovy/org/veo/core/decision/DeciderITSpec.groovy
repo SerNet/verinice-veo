@@ -17,27 +17,23 @@
  ******************************************************************************/
 package org.veo.core.decision
 
+import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Process
 import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Unit
 import org.veo.core.entity.decision.DecisionRef
-import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition
-import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition
-import org.veo.core.entity.definitions.attribute.ListAttributeDefinition
 import org.veo.core.entity.risk.CategorizedRiskValueProvider
 import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.DeterminedRiskImpl
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.risk.RiskRef
-import org.veo.core.entity.riskdefinition.RiskValue
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.RepositoryProvider
 import org.veo.core.usecase.decision.Decider
-import org.veo.test.VeoSpec
 
-class DeciderSpec extends VeoSpec {
+class DeciderITSpec extends VeoSpringSpec {
     def piaMandatoryRef = new DecisionRef("piaMandatory")
     Decider decider = new Decider(Mock(ClientRepository), Mock(RepositoryProvider))
 
@@ -54,56 +50,11 @@ class DeciderSpec extends VeoSpec {
     Scenario scenarioB
 
     def setup() {
-        def client = newClient {}
-        domain = newDomain(client) {
-            getElementTypeDefinition("process").with{
-                customAspects = [
-                    process_privacyImpactAssessment: newCustomAspectDefinition {
-                        attributeDefinitions = [
-                            process_privacyImpactAssessment_listed: new EnumAttributeDefinition([
-                                "process_privacyImpactAssessment_listed_positive",
-                                "process_privacyImpactAssessment_listed_negative",
-                                "process_privacyImpactAssessment_listed_neither",
-                            ]),
-                            process_privacyImpactAssessment_otherExclusions: new BooleanAttributeDefinition(),
-                            process_privacyImpactAssessment_processingCriteria: new ListAttributeDefinition(
-                            new EnumAttributeDefinition([
-                                "process_privacyImpactAssessment_processingCriteria_profiling",
-                                "process_privacyImpactAssessment_processingCriteria_automated",
-                                "process_privacyImpactAssessment_processingCriteria_monitoring",
-                                "process_privacyImpactAssessment_processingCriteria_specialCategories",
-                                "process_privacyImpactAssessment_processingCriteria_Art9",
-                                "process_privacyImpactAssessment_processingCriteria_Art10",
-                                "process_privacyImpactAssessment_processingCriteria_matching",
-                                "process_privacyImpactAssessment_processingCriteria_vulnerability",
-                                "process_privacyImpactAssessment_processingCriteria_newTechnology",
-                                "process_privacyImpactAssessment_processingCriteria_execution",
-                            ])
-                            ),
-                            process_privacyImpactAssessment_processingOperationAccordingArt35: new BooleanAttributeDefinition(),
-                        ]
-                    }
-                ]
-            }
-        }
+        def client = createTestClient()
+        domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
         unit = newUnit(client)
 
-        def riskDefinition = newRiskDefinition("testRiskDef") {
-            categories = [
-                newCategoryDefinition("C"),
-                newCategoryDefinition("I"),
-            ]
-            riskValues = [
-                new RiskValue("low"),
-                new RiskValue("medium"),
-                new RiskValue("high"),
-                new RiskValue("ultra"),
-            ]
-        }
-        domain.riskDefinitions = [
-            (riskDefinition.id): riskDefinition
-        ]
-
+        def riskDefinition = domain.riskDefinitions["DSRA"]
         riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
         riskCategoryC = CategoryRef.from(riskDefinition.categories[0])
         riskCategoryI = CategoryRef.from(riskDefinition.categories[1])
