@@ -21,6 +21,7 @@ import static com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY;
 import static org.veo.core.entity.aspects.SubTypeAspect.STATUS_MAX_LENGTH;
 import static org.veo.core.entity.aspects.SubTypeAspect.SUB_TYPE_MAX_LENGTH;
 
+import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -36,6 +37,8 @@ import org.veo.adapter.presenter.api.openapi.IdRefOwner;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.EntityType;
+import org.veo.core.entity.decision.DecisionRef;
+import org.veo.core.entity.decision.DecisionResult;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -108,6 +111,13 @@ public abstract class AbstractElementInDomainDto<TElement extends Element>
           "{\"address\": {\"street\":\"Bahnhofsallee 1b\", \"postalCode\": \"37081\", \"city\": \"Göttingen\"}}")
   @Valid
   private CustomAspectMapDto customAspects = new CustomAspectMapDto();
+
+  @Schema(
+      description =
+          "Results of all decisions concerning this element within this domain. Key is decision key, value is results.",
+      accessMode = Schema.AccessMode.READ_ONLY)
+  @JsonProperty(access = READ_ONLY)
+  private Map<DecisionRef, DecisionResult> decisionResults;
 
   @Schema(description = "Element type identifier", accessMode = Schema.AccessMode.READ_ONLY)
   @JsonProperty(access = READ_ONLY)

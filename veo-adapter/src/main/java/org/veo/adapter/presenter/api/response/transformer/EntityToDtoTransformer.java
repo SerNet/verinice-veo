@@ -606,6 +606,7 @@ public final class EntityToDtoTransformer {
     target.setCustomAspects(mapCustomAspects(source, domain));
     target.setLinks(mapLinks(source, domain));
     target.setOwner(IdRef.from(source.getOwner(), referenceAssembler));
+    target.setDecisionResults(source.getDecisionResults(domain));
   }
 
   private LinkMapDto mapLinks(Element source, Domain domain) {
