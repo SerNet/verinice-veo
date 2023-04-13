@@ -117,7 +117,7 @@ class DomainUpdateRestTest extends VeoRestTest {
         }
 
         and: "decision results are present on migrated element"
-        migratedProcess.domains[newDomainId].decisionResults.piaMandatory.decisiveRule == 0
+        migratedProcess.domains[newDomainId].decisionResults.riskAnalyzed.decisiveRule == 0
 
         when: "adding a link from a new process to an old scope"
         post("/processes", [
@@ -250,6 +250,30 @@ class DomainUpdateRestTest extends VeoRestTest {
                     ]
                 ]
             ],
+            decisions: [
+                riskAnalyzed: [
+                    name: [en: "Risk analysed?"],
+                    elementType: "process",
+                    elementSubType: "PRO_DataProcessing",
+                    rules: [
+                        [
+                            description: [en: "no risk values present"],
+                            conditions: [
+                                [
+                                    inputProvider: [
+                                        type: "maxRisk"
+                                    ],
+                                    inputMatcher: [
+                                        type: "isNull"
+                                    ]
+                                ]
+                            ],
+                            output: false
+                        ]
+                    ],
+                    defaultResultValue: true
+                ]
+            ]
         ]
     }
 }

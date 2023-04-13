@@ -341,7 +341,59 @@ class MultiDomainElementRestTest extends VeoRestTest {
         type << EntityType.ELEMENT_TYPES
     }
 
-    // TODO VEO-1294 once decisions are configurable, test evaluation endpoints for all element types
+    def "decisions are evaluated for #type.pluralTerm"() {
+        given: "a decision in domain B that outputs whether someAttr is greater than 5"
+        putElementTypeDefinitions(type)
+        put("/content-creation/domains/$domainIdB/decisions/easyDecision", [
+            name: [en: "Easy decision"],
+            elementType: type.singularTerm,
+            elementSubType: "STB",
+            rules: [
+                [
+                    conditions: [
+                        [
+                            inputProvider: [
+                                type: "customAspectAttributeValue",
+                                customAspect: "separateCa",
+                                attribute: "someAttr",
+                            ],
+                            inputMatcher: [
+                                type: "greaterThan",
+                                comparisonValue: 5
+                            ]
+                        ]
+                    ],
+                    output: true
+                ]
+            ],
+            defaultResultValue: false
+        ], null, 201, UserType.CONTENT_CREATOR)
+
+        and: "a transient element where someAttr is 3"
+        def element = [
+            name: "decision test element",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "STB",
+            status: "ON",
+            customAspects: [
+                separateCa: [
+                    someAttr: 3
+                ]
+            ]
+        ]
+
+        expect: "the decision result to be false"
+        !post("/domains/$domainIdB/$type.pluralTerm/evaluation", element, 200).body.decisionResults.easyDecision.value
+
+        when: "changing someAttr to 6"
+        element.customAspects.separateCa.someAttr = 6
+
+        then: "the decision result should be true"
+        post("/domains/$domainIdB/$type.pluralTerm/evaluation", element, 200).body.decisionResults.easyDecision.value
+
+        where:
+        type << EntityType.ELEMENT_TYPES
+    }
 
     private void putElementTypeDefinitions(EntityType type) {
         put("/content-creation/domains/$domainIdA/element-type-definitions/$type.singularTerm", [

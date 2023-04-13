@@ -30,6 +30,7 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
+import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
@@ -92,6 +93,8 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfRef
       description = "The definitions of domain-specific element properties",
       requiredMode = REQUIRED)
   private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions = new HashMap<>();
+
+  private Map<String, Decision> decisions = new HashMap<>();
 
   @Override
   public Class<? extends Identifiable> getModelInterface() {

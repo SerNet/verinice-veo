@@ -18,6 +18,8 @@
 package org.veo.rest;
 
 import static org.veo.adapter.presenter.api.io.mapper.VersionMapper.parseVersion;
+import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
+import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +42,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.ServletWebRequest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -62,15 +65,19 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
+import org.veo.core.usecase.domain.SaveDecisionUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.rest.common.RestApiResponse;
+import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -88,6 +95,7 @@ public class ContentCreationController extends AbstractVeoController {
   private final GetUnitDumpUseCase getUnitDumpUseCase;
   private final EntityToDtoTransformer entityToDtoTransformer;
   private final UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase;
+  private final SaveDecisionUseCase saveDecisionUseCase;
   private final CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase;
 
   public static final String URL_BASE_PATH = "/content-creation";
@@ -164,6 +172,33 @@ public class ContentCreationController extends AbstractVeoController {
       log.error("Cannot parse object schema: {}", e.getLocalizedMessage());
       throw new IllegalArgumentException("Cannot parse object schema.");
     }
+  }
+
+  @PutMapping("/domains/{domainId}/decisions/{decisionKey}")
+  @Operation(summary = "Create or update decision with given key")
+  @ApiResponse(responseCode = "201", description = "Decision created")
+  @ApiResponse(responseCode = "200", description = "Decision updated")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> saveDecision(
+      @Parameter(hidden = true) ApplicationUser user,
+      @Parameter(hidden = true) ServletWebRequest request,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(
+              required = true,
+              example = "dpiaMandatory",
+              description = "Decision identifier - unique within this domain")
+          @PathVariable
+          String decisionKey,
+      @RequestBody Decision decision) {
+    return useCaseInteractor.execute(
+        saveDecisionUseCase,
+        new SaveDecisionUseCase.InputData(
+            Key.uuidFrom(user.getClientId()), Key.uuidFrom(domainId), decisionKey, decision),
+        out ->
+            out.isNewDecision()
+                ? RestApiResponse.created(request.getRequest().getRequestURI(), "Decision created")
+                : RestApiResponse.ok("Decision updated"));
   }
 
   @PostMapping(value = "/domains/{id}/template")

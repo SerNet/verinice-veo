@@ -39,6 +39,9 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         domain.authority == template.authority
         domain.templateVersion == template.templateVersion
 
+        and: "the domain contains the decision"
+        domain.decisions.negativeDecision.elementSubType == "AST_Application"
+
         and: "the domain contains the risk definition"
         with(domain.riskDefinitions.RD1) {
             it.probability.levels[1].name == "often"
@@ -427,6 +430,15 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                                 'FOR_REVIEW',
                                 'ARCHIVED'
                             ]]]]],
+            'decisions': [
+                'negativeDecision': [
+                    'name': ['en': 'silly asset decision that always returns false'],
+                    'elementType': 'asset',
+                    'elementSubType': 'AST_Application',
+                    'rules': [],
+                    'defaultResultValue': false
+                ]
+            ],
             'riskDefinitions': [
                 'RD1': [
                     'id': 'RD1',

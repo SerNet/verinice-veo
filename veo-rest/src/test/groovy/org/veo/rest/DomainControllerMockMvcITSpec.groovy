@@ -24,6 +24,9 @@ import org.springframework.transaction.support.TransactionTemplate
 import org.veo.core.entity.Catalog
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.condition.Condition
+import org.veo.core.entity.condition.GreaterThanMatcher
+import org.veo.core.entity.condition.PartCountProvider
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.persistence.access.ClientRepositoryImpl
 
@@ -58,6 +61,22 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
                 newCatalog(it) {
                     name = 'a'
                 }
+                applyElementTypeDefinition(newElementTypeDefinition("person", it) {
+                    subTypes = [
+                        Team: newSubTypeDefinition {},
+                        Employee: newSubTypeDefinition {},
+                    ]
+                })
+                applyDecision('isBigTeam', newDecision('person', 'Team') {
+                    it.name = newTranslatedText("Big team")
+                    it.rules.add(newRule(true) {
+                        description = newTranslatedText("Team has more than 10 members")
+                        conditions.add(new Condition(
+                                new PartCountProvider("Employee"),
+                                new GreaterThanMatcher(BigDecimal.valueOf(10))
+                                ))
+                    })
+                })
             }
             newDomain(client) {
                 name = "Domain 2"
@@ -128,15 +147,14 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             'document',
             'incident'
         ]
-        with(result.decisions.piaMandatory) {
-            name.en == "Data Protection Impact Assessment mandatory"
-            elementSubType == "PRO_DataProcessing"
-            rules[5].description.en == "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment"
-            rules[5].conditions[0].inputProvider.type == "customAspectAttributeValue"
-            rules[5].conditions[0].inputProvider.customAspect == "process_privacyImpactAssessment"
-            rules[5].conditions[0].inputProvider.attribute == "process_privacyImpactAssessment_listed"
-            rules[5].conditions[0].inputMatcher.type == "equals"
-            rules[5].conditions[0].inputMatcher.comparisonValue == "process_privacyImpactAssessment_listed_positive"
+        with(result.decisions.isBigTeam) {
+            name.en == "Big team"
+            elementSubType == "Team"
+            rules[0].description.en == "Team has more than 10 members"
+            rules[0].conditions[0].inputProvider.type == "partCount"
+            rules[0].conditions[0].inputProvider.partSubType == "Employee"
+            rules[0].conditions[0].inputMatcher.type == "greaterThan"
+            rules[0].conditions[0].inputMatcher.comparisonValue == 10
         }
 
         when:

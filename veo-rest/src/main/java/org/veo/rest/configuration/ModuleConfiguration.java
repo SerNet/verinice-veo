@@ -136,6 +136,7 @@ import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
 import org.veo.core.usecase.domain.ProfileApplier;
+import org.veo.core.usecase.domain.SaveDecisionUseCase;
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
@@ -996,7 +997,7 @@ public class ModuleConfiguration {
       RepositoryProvider repositoryProvider,
       Decider decider,
       Inspector inspector) {
-    return new EvaluateElementUseCase(repositoryProvider, decider, inspector);
+    return new EvaluateElementUseCase(domainRepository, repositoryProvider, decider, inspector);
   }
 
   @Bean
@@ -1104,5 +1105,10 @@ public class ModuleConfiguration {
   AssociateElementWithDomainUseCase associateElementWithDomainUseCase(
       RepositoryProvider repositoryProvider, DomainRepository domainRepository) {
     return new AssociateElementWithDomainUseCase(repositoryProvider, domainRepository);
+  }
+
+  @Bean
+  SaveDecisionUseCase saveDecisionUseCase(DomainRepository domainRepository) {
+    return new SaveDecisionUseCase(domainRepository);
   }
 }

@@ -311,6 +311,7 @@ public final class EntityToDtoTransformer {
             .collect(toMap(ElementTypeDefinition::getElementType, this::mapElementTypeDefinition));
 
     target.setElementTypeDefinitions(elementTypeDefinitionsByType);
+    target.setDecisions(Map.copyOf(source.getDecisions()));
     target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
   }
 

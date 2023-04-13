@@ -39,6 +39,7 @@ import org.hibernate.annotations.TypeDef;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Nameable;
+import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
@@ -106,6 +107,10 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
   @JoinColumn(name = "risk_definition_set_id")
   private RiskDefinitionSetData riskDefinitionSet = new RiskDefinitionSetData();
 
+  @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JoinColumn(name = "decision_set_id")
+  protected DecisionSetData decisionSet = new DecisionSetData();
+
   @Override
   public Map<String, RiskDefinition> getRiskDefinitions() {
     return riskDefinitionSet.getRiskDefinitions();
@@ -113,6 +118,21 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
 
   public void setRiskDefinitions(Map<String, RiskDefinition> riskDefinitions) {
     this.riskDefinitionSet.setRiskDefinitions(riskDefinitions);
+  }
+
+  @Override
+  public Map<String, Decision> getDecisions() {
+    return decisionSet.getDecisions();
+  }
+
+  @Override
+  public boolean applyDecision(String key, Decision decision) {
+    return decisionSet.applyDecision(key, decision);
+  }
+
+  @Override
+  public void setDecisions(Map<String, Decision> decisions) {
+    this.decisionSet.setDecisions(decisions);
   }
 
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

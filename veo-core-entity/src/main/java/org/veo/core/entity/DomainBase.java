@@ -20,8 +20,7 @@ package org.veo.core.entity;
 import static java.util.Locale.ENGLISH;
 import static java.util.Locale.GERMAN;
 
-import java.math.BigDecimal;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -30,7 +29,6 @@ import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.decision.DecisionRef;
-import org.veo.core.entity.decision.Rule;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.exception.NotFoundException;
@@ -107,85 +105,17 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
 
   void setRiskDefinitions(Map<String, RiskDefinition> definitions);
 
-  default Map<String, Decision> getDecisions() {
-    // TODO VEO-1294 use configurable persisted decisions
-    final var piaCa = "process_privacyImpactAssessment";
-    return Map.of(
-        "piaMandatory",
-        new Decision(
-            TranslatedText.builder()
-                .translation(ENGLISH, "Data Protection Impact Assessment mandatory")
-                .translation(GERMAN, "Datenschutz-Folgenabschätzung verpflichtend")
-                .build(),
-            Process.SINGULAR_TERM,
-            "PRO_DataProcessing",
-            List.of(
-                new Rule(
-                        null,
-                        TranslatedText.builder()
-                            .translation(ENGLISH, "Missing risk analysis")
-                            .translation(GERMAN, "Fehlende Risikoanalyse")
-                            .build())
-                    .ifNoRiskValuesPresent(),
-                new Rule(
-                        false,
-                        TranslatedText.builder()
-                            .translation(
-                                ENGLISH,
-                                "Processing on list of the kinds of processing operations not subject to a Data Protection Impact Assessment")
-                            .translation(GERMAN, "VT auf Negativliste")
-                            .build())
-                    .ifAttributeEquals(piaCa + "_listed_negative", piaCa + "_listed", piaCa),
-                new Rule(
-                        false,
-                        TranslatedText.builder()
-                            .translation(ENGLISH, "Part of a joint processing")
-                            .translation(GERMAN, "Gemeinsame VT")
-                            .build())
-                    .ifAttributeEquals(true, piaCa + "_processingOperationAccordingArt35", piaCa),
-                new Rule(
-                        false,
-                        TranslatedText.builder()
-                            .translation(ENGLISH, "Other exclusions")
-                            .translation(GERMAN, "Anderer Ausschlusstatbestand")
-                            .build())
-                    .ifAttributeEquals(true, piaCa + "_otherExclusions", piaCa),
-                new Rule(
-                        true,
-                        TranslatedText.builder()
-                            .translation(ENGLISH, "High risk present")
-                            .translation(GERMAN, "Hohes Risiko vorhanden")
-                            .build())
-                    .ifMaxRiskGreaterThan(BigDecimal.valueOf(1)),
-                new Rule(
-                        true,
-                        TranslatedText.builder()
-                            .translation(
-                                ENGLISH,
-                                "Processing on list of the kinds of processing operations subject"
-                                    + " to a Data Protection Impact Assessment")
-                            .translation(GERMAN, "VT auf Positivliste")
-                            .build())
-                    .ifAttributeEquals(piaCa + "_listed_positive", piaCa + "_listed", piaCa),
-                new Rule(
-                        true,
-                        TranslatedText.builder()
-                            .translation(ENGLISH, "Two or more criteria applicable")
-                            .translation(GERMAN, "Mehrere Kriterien zutreffend")
-                            .build())
-                    .ifAttributeSizeGreaterThan(1, piaCa + "_processingCriteria", piaCa),
-                new Rule(
-                        null,
-                        TranslatedText.builder()
-                            .translation(ENGLISH, "DPIA-relevant attributes incomplete")
-                            .translation(GERMAN, "DSFA-relevante Attribute unvollständig")
-                            .build())
-                    .ifAttributeIsNull(piaCa + "_processingCriteria", piaCa)
-                    .ifAttributeIsNull(piaCa + "_listed", piaCa)
-                    .ifAttributeIsNull(piaCa + "_otherExclusions", piaCa)
-                    .ifAttributeIsNull(piaCa + "_processingOperationAccordingArt35", piaCa)),
-            false));
-  }
+  Map<String, Decision> getDecisions();
+
+  void setDecisions(Map<String, Decision> decisions);
+
+  /**
+   * Adds or updates decision with given key
+   *
+   * @return {@code true} if a new decision was added, {@code false} if an existing decision was
+   *     updated
+   */
+  boolean applyDecision(String key, Decision decision);
 
   default Optional<Decision> getDecision(String decisionKey) {
     return Optional.ofNullable(getDecisions().get(decisionKey));

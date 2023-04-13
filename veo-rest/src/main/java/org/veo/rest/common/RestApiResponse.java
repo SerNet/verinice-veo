@@ -31,6 +31,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class RestApiResponse {
 
+  public static ResponseEntity<ApiResponseBody> ok(String message) {
+    return ResponseEntity.ok().body(new ApiResponseBody(true, message));
+  }
+
   @Schema(
       description =
           "A response body that corresponds to the performed API call. "
@@ -40,6 +44,10 @@ public class RestApiResponse {
     URI location = URI.create(urlBasePath + "/" + resourceId);
     BodyBuilder bodyBuilder = ResponseEntity.created(location);
     return bodyBuilder.body(body);
+  }
+
+  public static ResponseEntity<ApiResponseBody> created(String location, String message) {
+    return ResponseEntity.created(URI.create(location)).body(new ApiResponseBody(true, message));
   }
 
   @Schema(

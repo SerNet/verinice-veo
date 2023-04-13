@@ -5227,6 +5227,201 @@
       }
     }
   },
+  "decisions": {
+    "piaMandatory": {
+      "name": {
+        "en": "Data Protection Impact Assessment mandatory",
+        "de": "Datenschutz-Folgenabschätzung verpflichtend"
+      },
+      "elementType": "process",
+      "elementSubType": "PRO_DataProcessing",
+      "rules": [
+        {
+          "description": {
+            "en": "Missing risk analysis",
+            "de": "Fehlende Risikoanalyse"
+          },
+          "conditions": [
+            {
+              "inputProvider": {
+                "type": "maxRisk"
+              },
+              "inputMatcher": {
+                "type": "isNull"
+              }
+            }
+          ]
+        },
+        {
+          "output": false,
+          "description": {
+            "en": "Processing on list of the kinds of processing operations not subject to a Data Protection Impact Assessment",
+            "de": "VT auf Negativliste"
+          },
+          "conditions": [
+            {
+              "inputProvider": {
+                "type": "customAspectAttributeValue",
+                "customAspect": "process_privacyImpactAssessment",
+                "attribute": "process_privacyImpactAssessment_listed"
+              },
+              "inputMatcher": {
+                "type": "equals",
+                "comparisonValue": "process_privacyImpactAssessment_listed_negative"
+              }
+            }
+          ]
+        },
+        {
+          "output": false,
+          "description": {
+            "en": "Part of a joint processing",
+            "de": "Gemeinsame VT"
+          },
+          "conditions": [
+            {
+              "inputProvider": {
+                "type": "customAspectAttributeValue",
+                "customAspect": "process_privacyImpactAssessment",
+                "attribute": "process_privacyImpactAssessment_processingOperationAccordingArt35"
+              },
+              "inputMatcher": {
+                "type": "equals",
+                "comparisonValue": true
+              }
+            }
+          ]
+        },
+        {
+          "output": false,
+          "description": {
+            "en": "Other exclusions",
+            "de": "Anderer Ausschlusstatbestand"
+          },
+          "conditions": [
+            {
+              "inputProvider": {
+                "type": "customAspectAttributeValue",
+                "customAspect": "process_privacyImpactAssessment",
+                "attribute": "process_privacyImpactAssessment_otherExclusions"
+              },
+              "inputMatcher": {
+                "type": "equals",
+                "comparisonValue": true
+              }
+            }
+          ]
+        },
+        {
+          "output": true,
+          "description": {
+            "en": "High risk present",
+            "de": "Hohes Risiko vorhanden"
+          },
+          "conditions": [
+            {
+              "inputProvider": {
+                "type": "maxRisk"
+              },
+              "inputMatcher": {
+                "type": "greaterThan",
+                "comparisonValue": 1
+              }
+            }
+          ]
+        },
+        {
+          "output": true,
+          "description": {
+            "en": "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment",
+            "de": "VT auf Positivliste"
+          },
+          "conditions": [
+            {
+              "inputProvider": {
+                "type": "customAspectAttributeValue",
+                "customAspect": "process_privacyImpactAssessment",
+                "attribute": "process_privacyImpactAssessment_listed"
+              },
+              "inputMatcher": {
+                "type": "equals",
+                "comparisonValue": "process_privacyImpactAssessment_listed_positive"
+              }
+            }
+          ]
+        },
+        {
+          "output": true,
+          "description": {
+            "en": "Two or more criteria applicable",
+            "de": "Mehrere Kriterien zutreffend"
+          },
+          "conditions": [
+            {
+              "inputProvider": {
+                "type": "customAspectAttributeSize",
+                "customAspectType": "process_privacyImpactAssessment",
+                "attributeType": "process_privacyImpactAssessment_processingCriteria"
+              },
+              "inputMatcher": {
+                "type": "greaterThan",
+                "comparisonValue": 1
+              }
+            }
+          ]
+        },
+        {
+          "description": {
+            "en": "DPIA-relevant attributes incomplete",
+            "de": "DSFA-relevante Attribute unvollständig"
+          },
+          "conditions": [
+            {
+              "inputProvider": {
+                "type": "customAspectAttributeValue",
+                "customAspect": "process_privacyImpactAssessment",
+                "attribute": "process_privacyImpactAssessment_processingCriteria"
+              },
+              "inputMatcher": {
+                "type": "isNull"
+              }
+            },
+            {
+              "inputProvider": {
+                "type": "customAspectAttributeValue",
+                "customAspect": "process_privacyImpactAssessment",
+                "attribute": "process_privacyImpactAssessment_listed"
+              },
+              "inputMatcher": {
+                "type": "isNull"
+              }
+            },
+            {
+              "inputProvider": {
+                "type": "customAspectAttributeValue",
+                "customAspect": "process_privacyImpactAssessment",
+                "attribute": "process_privacyImpactAssessment_otherExclusions"
+              },
+              "inputMatcher": {
+                "type": "isNull"
+              }
+            },
+            {
+              "inputProvider": {
+                "type": "customAspectAttributeValue",
+                "customAspect": "process_privacyImpactAssessment",
+                "attribute": "process_privacyImpactAssessment_processingOperationAccordingArt35"
+              },
+              "inputMatcher": {
+                "type": "isNull"
+              }
+            }
+          ]
+        }
+      ],
+      "defaultResultValue": false
+    }
+  },
   "profiles": {
     "demoUnit": {
       "name": "Demo",

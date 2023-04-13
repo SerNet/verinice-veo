@@ -27,14 +27,13 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.inspection.Finding;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -52,6 +51,7 @@ import lombok.Value;
 @RequiredArgsConstructor
 public class EvaluateElementUseCase
     implements UseCase<EvaluateElementUseCase.InputData, EvaluateElementUseCase.OutputData> {
+  private final DomainRepository domainRepository;
   private final RepositoryProvider repositoryProvider;
   private final Decider decider;
   private final Inspector inspector;
@@ -59,14 +59,8 @@ public class EvaluateElementUseCase
   @Override
   @Transactional(NEVER)
   public OutputData execute(InputData input) {
-    // TODO VEO-1171 fetch domain using repository
-    // This is a workaround to make sure there is only one instance of the domain.
     var domain =
-        input.element.getDomains().stream()
-            .filter(d -> d.getId().equals(input.domainId))
-            .findFirst()
-            .orElseThrow(() -> new NotFoundException(input.getDomainId(), Domain.class));
-
+        domainRepository.getByIdWithDecisions(input.domainId, input.authenticatedClient.getId());
     // FIXME VEO-209 support risk values on all risk affected types
     if (input.element.getId() != null && input.element instanceof Process process) {
       loadRisks(process);
