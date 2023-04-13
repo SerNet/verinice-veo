@@ -204,9 +204,9 @@ class VeoRestTest extends Specification {
                 statusCode: resp.statusCodeValue)
     }
 
-    Response put(String uri, Object requestBody, String etag, Integer assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
+    Response put(String uri, Object requestBody, String etag = null, Integer assertStatusCode = 200, UserType userType = UserType.DEFAULT) {
         HttpHeaders headers = new HttpHeaders()
-        headers.setIfMatch(etag)
+        etag?.with { headers.setIfMatch(it) }
         headers.setContentType(MediaType.APPLICATION_JSON)
 
         def resp = exchange(uri, HttpMethod.PUT, headers, requestBody, userType)
