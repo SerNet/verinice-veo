@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.function.TriFunction;
+import org.hibernate.Hibernate;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -41,6 +42,7 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
@@ -51,6 +53,8 @@ import org.veo.core.usecase.base.GetElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.UpdateElementInDomainUseCase;
 import org.veo.core.usecase.common.ETag;
+import org.veo.core.usecase.decision.EvaluateElementUseCase;
+import org.veo.rest.TransactionalRunner;
 import org.veo.rest.security.ApplicationUser;
 import org.veo.service.EtagService;
 
@@ -64,6 +68,8 @@ public class ElementInDomainService {
   private final EtagService etagService;
   private final UseCaseInteractor useCaseInteractor;
   private final ReferenceAssembler referenceAssembler;
+  private final EvaluateElementUseCase evaluateElementUseCase;
+  private final TransactionalRunner runner;
   private final CacheControl defaultCacheControl = CacheControl.noCache();
 
   public @Valid <
@@ -170,6 +176,33 @@ public class ElementInDomainService {
                     .filter(d -> d.getIdAsString().equals(domainId))
                     .findFirst()
                     .orElseThrow()));
+  }
+
+  public @Valid <TElement extends Element, TDto extends AbstractElementInDomainDto<TElement>>
+      CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
+          Authentication auth,
+          @Valid TDto dto,
+          String domainId,
+          TriFunction<TDto, String, IdRefResolver, TElement> toEntityMapper) {
+    var client = clientLookup.getClient(auth);
+    var element =
+        runner.run(
+            () -> {
+              var e =
+                  toEntityMapper.apply(
+                      dto, domainId, new DbIdRefResolver(repositoryProvider, client));
+              if (e instanceof CompositeElement) {
+                // initialize subtypeAspects field for PartCountProvider
+                // TODO VEO-1569: remove this when the PartCountProvider uses a repository method
+                var ce = (CompositeElement<CompositeElement>) e;
+                ce.getParts().forEach(p -> Hibernate.initialize(p.getSubTypeAspects()));
+              }
+              return e;
+            });
+    return useCaseInteractor.execute(
+        evaluateElementUseCase,
+        new EvaluateElementUseCase.InputData(client, Key.uuidFrom(domainId), element),
+        output -> ResponseEntity.ok().body(output));
   }
 
   private <TElement extends Element, TFullDto extends AbstractElementInDomainDto<TElement>>

@@ -264,6 +264,8 @@ class MultiDomainElementRestTest extends VeoRestTest {
         type << EntityType.ELEMENT_TYPES
     }
 
+    // TODO VEO-1294 once decisions are configurable, test evaluation endpoints for all element types
+
     private void putElementTypeDefinitions(EntityType type) {
         put("/domains/$domainIdA/element-type-definitions/$type.singularTerm", [
             subTypes: [

@@ -107,7 +107,17 @@ class ReadOnlyUserRestTest extends VeoRestTest {
 
     def "user without write access may POST evaluations"() {
         expect:
+        // TODO VEO-1987 remove legacy endpoint call
         post("/processes/evaluation?domain=$domainId", [
+            name: "you can evaluate this",
+            domains: [
+                (domainId): [
+                    subType: "PRO_DataProcessing",
+                    status: "NEW"
+                ],
+            ]
+        ], 400, UserType.READ_ONLY)
+        post("/domians/$domainId/processes/evaluation", [
             name: "you can evaluate this",
             domains: [
                 (domainId): [

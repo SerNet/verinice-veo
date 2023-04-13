@@ -222,7 +222,11 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("read-only-user")
     def "user without write access may POST evaluations"() {
         expect:
+        // TODO VEO-1987 remove legacy endpoint call
         mvc.perform(MockMvcRequestBuilders.post("/processes/evaluation", [
+            name: "can i haz evaluehshon?"
+        ])).andReturn().response.status == 400
+        mvc.perform(MockMvcRequestBuilders.post("/domians/$domainId/processes/evaluation", [
             name: "can i haz evaluehshon?"
         ])).andReturn().response.status == 400
     }

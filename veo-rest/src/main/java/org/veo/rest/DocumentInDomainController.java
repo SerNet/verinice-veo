@@ -76,12 +76,14 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Document;
 import org.veo.core.usecase.base.UpdateDocumentInDomainUseCase;
+import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.document.CreateDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentsUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.ClientLookup;
 import org.veo.rest.common.ElementInDomainService;
+import org.veo.rest.schemas.EvaluateElementOutputSchema;
 import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -260,5 +262,29 @@ public class DocumentInDomainController {
         updateUseCase,
         dtoToEntityTransformer::transformDto2Document,
         entityToDtoTransformer::transformDocument2Dto);
+  }
+
+  @Operation(
+      summary =
+          "Evaluates decisions and inspections on a transient document without persisting anything")
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Element evaluated",
+        content =
+            @Content(
+                mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = EvaluateElementOutputSchema.class))),
+    @ApiResponse(responseCode = "404", description = "Domain not found")
+  })
+  @PostMapping(value = "/evaluation")
+  public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
+      @Parameter(required = true, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Valid @RequestBody FullDocumentInDomainDto dto) {
+    return elementService.evaluate(
+        auth, dto, domainId, dtoToEntityTransformer::transformDto2Document);
   }
 }
