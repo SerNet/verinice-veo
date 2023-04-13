@@ -193,6 +193,9 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
 
   default Map<String, Inspection> getInspections() {
     // TODO VEO-1355 use configurable persisted inspections
+    if (!getName().equals("DS-GVO")) {
+      return new HashMap<>();
+    }
     return Map.of(
         "dpiaMissing",
         new Inspection(
