@@ -50,6 +50,8 @@ import org.veo.core.entity.TranslationMap
 import org.veo.core.entity.Unit
 import org.veo.core.entity.UpdateReference
 import org.veo.core.entity.Versioned
+import org.veo.core.entity.decision.Decision
+import org.veo.core.entity.decision.Rule
 import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.ElementTypeDefinition
 import org.veo.core.entity.definitions.SubTypeDefinition
@@ -399,6 +401,24 @@ abstract class VeoSpec extends Specification {
     static RiskValues newRiskValues(RiskDefinitionRef riskDefinitionRef, Domain domain, @DelegatesTo(value = RiskValues.class)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.risk.RiskValues") Closure init = null) {
         return new RiskValues(new ProbabilityImpl(), [], [], new Key<String>(riskDefinitionRef.idRef), domain.id).tap {
+            VeoSpec.execute(it, init)
+        }
+    }
+
+    static Decision newDecision(String elementType, String elementSubType, @DelegatesTo(value = Decision.class)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.decision.Decision") Closure init = null) {
+        return new Decision(new TranslatedText(Map.of()), elementType, elementSubType, [], null).tap {
+            VeoSpec.execute(it, init)
+        }
+    }
+
+    static TranslatedText newTranslatedText(String enTranslation) {
+        return new TranslatedText([(Locale.ENGLISH): enTranslation])
+    }
+
+    static Rule newRule(Boolean output, @DelegatesTo(value = Rule.class)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.decision.Rule") Closure init = null) {
+        return new Rule(output, new TranslatedText(Map.of())).tap {
             VeoSpec.execute(it, init)
         }
     }
