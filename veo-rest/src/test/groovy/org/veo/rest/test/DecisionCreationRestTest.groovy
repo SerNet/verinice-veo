@@ -36,6 +36,9 @@ class DecisionCreationRestTest extends VeoRestTest {
             customAspects: [
                 metrics: [
                     attributeDefinitions: [
+                        mostCommonWord: [
+                            type: "text"
+                        ],
                         numberOfWords: [
                             type: "integer"
                         ]
@@ -97,5 +100,184 @@ class DecisionCreationRestTest extends VeoRestTest {
         with(get("/domains/$domainId").body) {
             it.decisions.TLDR == null
         }
+    }
+
+    def "invalid element type is detected"() {
+        when: "trying to create a decision with an invalid element type"
+        def response = put("/content-creation/domains/$domainId/decisions/elephantInTheRoom", [
+            name: [en: "I like elephants"],
+            elementType: "elephant",
+            elementSubType: "AfricanElephant",
+            rules: [],
+            defaultResultValue: true
+        ], null, 422, CONTENT_CREATOR)
+
+        then: "there is an error"
+        response.body.message == "Validation error in decision 'elephantInTheRoom': Domain has no definition for entity type elephant"
+    }
+
+    def "invalid element sub type is detected"() {
+        when: "trying to create a decision with an invalid element type"
+        def response = put("/content-creation/domains/$domainId/decisions/toDo", [
+            name: [en: "I like lists"],
+            elementType: "document",
+            elementSubType: "ToDoList",
+            rules: [],
+            defaultResultValue: true
+        ], null, 422, CONTENT_CREATOR)
+
+        then: "there is an error"
+        response.body.message == "Validation error in decision 'toDo': Sub type ToDoList is not defined"
+    }
+
+    def "missing custom aspect is detected"() {
+        when: "trying to create a decision referencing an absent custom aspect"
+        def response = put("/content-creation/domains/$domainId/decisions/numPresent", [
+            name: [en: "number of words counted"],
+            elementType: "document",
+            elementSubType: "Article",
+            rules: [
+                [
+                    conditions: [
+                        [
+                            inputProvider: [
+                                type: "customAspectAttributeValue",
+                                customAspect: "absent",
+                                attribute: "numberOfWords"
+                            ],
+                            inputMatcher: [
+                                type: "isNull"
+                            ],
+                        ]
+                    ],
+                    output: false
+                ]
+            ],
+            defaultResultValue: true
+        ], null, 422, CONTENT_CREATOR)
+
+        then: "there is an error"
+        response.body.message == "Validation error in decision 'numPresent': Custom aspect 'absent' is not defined"
+    }
+
+    def "missing custom aspect attribute is detected"() {
+        when: "trying to create a decision with an invalid attribute"
+        def response = put("/content-creation/domains/$domainId/decisions/numPresent", [
+            name: [en: "number of words counted"],
+            elementType: "document",
+            elementSubType: "Article",
+            rules: [
+                [
+                    conditions: [
+                        [
+                            inputProvider: [
+                                type: "customAspectAttributeValue",
+                                customAspect: "metrics",
+                                attribute: "absent"
+                            ],
+                            inputMatcher: [
+                                type: "isNull"
+                            ],
+                        ]
+                    ],
+                    output: false
+                ]
+            ],
+            defaultResultValue: true
+        ], null, 422, CONTENT_CREATOR)
+
+        then: "there is an error"
+        response.body.message == "Validation error in decision 'numPresent': Attribute 'absent' is not defined"
+    }
+
+    def "comparison between different types is detected"() {
+        when: "trying to create a decision that compares a number with a boolean"
+        def response = put("/content-creation/domains/$domainId/decisions/unfairComparison", [
+            name: [en: "apples & oranges"],
+            elementType: "document",
+            elementSubType: "Article",
+            rules: [
+                [
+                    conditions: [
+                        [
+                            inputProvider: [
+                                type: "maxRisk"
+                            ],
+                            inputMatcher: [
+                                type: "equals",
+                                comparisonValue: true
+                            ],
+                        ]
+                    ],
+                    output: true
+                ]
+            ],
+            defaultResultValue: false
+        ], null, 422, CONTENT_CREATOR)
+
+        then: "there is an error"
+        response.body.message == "Validation error in decision 'unfairComparison': Provider yields BigDecimal, but matcher only supports [Boolean]"
+    }
+
+    def "greater-than comparison between text and number is detected"() {
+        when: "trying to create a decision that compares a text with a number"
+        def response = put("/content-creation/domains/$domainId/decisions/unfairComparison", [
+            name: [en: "apples & oranges"],
+            elementType: "document",
+            elementSubType: "Article",
+            rules: [
+                [
+                    conditions: [
+                        [
+                            inputProvider: [
+                                type: "customAspectAttributeValue",
+                                customAspect: "metrics",
+                                attribute: "mostCommonWord"
+                            ],
+                            inputMatcher: [
+                                type: "greaterThan",
+                                comparisonValue: 5
+                            ],
+                        ]
+                    ],
+                    output: false
+                ]
+            ],
+            defaultResultValue: true
+        ], null, 422, CONTENT_CREATOR)
+
+        then: "there is an error"
+        response.body.message == "Validation error in decision 'unfairComparison': Provider yields String, but matcher only supports [BigDecimal,Integer,Long]"
+    }
+
+    def "size check on non-list attribute is detected"() {
+        when: "trying to create a decision that gets the size of a number attribute"
+        def response = put("/content-creation/domains/$domainId/decisions/sillySize", [
+            name: [en: "implausible size check"],
+            elementType: "document",
+            elementSubType: "Article",
+            rules: [
+                [
+                    conditions: [
+                        [
+                            inputProvider: [
+                                type: "customAspectAttributeSize",
+                                customAspectType: "metrics",
+                                attributeType: "numberOfWords",
+                            ],
+                            inputMatcher: [
+                                type: "greaterThan",
+                                comparisonValue: 1
+                            ],
+                        ]
+                    ],
+                    output: true
+                ]
+            ],
+            defaultResultValue: false
+        ], null, 422, CONTENT_CREATOR)
+
+        then: "there is an error"
+        response.body.message == "Validation error in decision 'sillySize': Cannot get size of Integer attribute 'numberOfWords', expected list attribute"
     }
 }

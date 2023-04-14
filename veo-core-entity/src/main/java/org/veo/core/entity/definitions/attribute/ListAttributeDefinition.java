@@ -59,4 +59,9 @@ public class ListAttributeDefinition extends AttributeDefinition {
   public Collection<String> getTranslationKeys() {
     return itemDefinition.getTranslationKeys();
   }
+
+  @Override
+  public Class<?> getValueType() {
+    return List.class;
+  }
 }

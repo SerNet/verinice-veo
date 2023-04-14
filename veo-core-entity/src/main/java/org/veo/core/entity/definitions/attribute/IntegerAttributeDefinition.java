@@ -33,4 +33,9 @@ public class IntegerAttributeDefinition extends AttributeDefinition {
       throw new InvalidAttributeException("must be an integer");
     }
   }
+
+  @Override
+  public Class<?> getValueType() {
+    return Integer.class;
+  }
 }

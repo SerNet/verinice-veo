@@ -22,6 +22,7 @@ import java.util.Collection;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 
 import lombok.AccessLevel;
@@ -56,5 +57,25 @@ public class CustomAspectAttributeSizeProvider implements InputProvider {
         String.format(
             "Cannot determine size for custom aspect %s attribute %s because the value is not a collection",
             customAspectType, attributeType));
+  }
+
+  @Override
+  public void selfValidate(DomainBase domain, String elementType) {
+    var type =
+        domain
+            .getElementTypeDefinition(elementType)
+            .getCustomAspectDefinition(customAspectType)
+            .getAttributeDefinition(attributeType)
+            .getValueType();
+    if (!Collection.class.isAssignableFrom(type)) {
+      throw new IllegalArgumentException(
+          "Cannot get size of %s attribute '%s', expected list attribute"
+              .formatted(type.getSimpleName(), attributeType));
+    }
+  }
+
+  @Override
+  public Class<?> getValueType(DomainBase domain, String elementType) {
+    return Integer.class;
   }
 }

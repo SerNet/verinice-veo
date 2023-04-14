@@ -129,6 +129,18 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         ], 400, UserType.CONTENT_CREATOR)
     }
 
+    def "cannot import template with invalid sub type in decision"() {
+        given: "a template with an invalid sub type in a decision"
+        var template = getTemplateBody()
+        template.decisions.negativeDecision.elementSubType = "sillySub"
+
+        when: "trying to create the template"
+        def response = post("/domaintemplates", template, 422, UserType.CONTENT_CREATOR).body
+
+        then: "it fails with a helpful message"
+        response.message == "Validation error in decision 'negativeDecision': Sub type sillySub is not defined"
+    }
+
     def "cannot import template with invalid catalog item attribute"() {
         given: "a template with an invalid catalog item attribute"
         var template = getTemplateBody()

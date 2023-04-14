@@ -19,6 +19,7 @@ package org.veo.core.entity.definitions;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.veo.core.entity.definitions.attribute.AttributeDefinition;
 
@@ -27,4 +28,12 @@ import lombok.Data;
 @Data
 public class CustomAspectDefinition {
   Map<String, AttributeDefinition> attributeDefinitions = new HashMap<>();
+
+  public AttributeDefinition getAttributeDefinition(String attributeKey) {
+    return Optional.ofNullable(attributeDefinitions.get(attributeKey))
+        .orElseThrow(
+            () ->
+                new IllegalArgumentException(
+                    "Attribute '%s' is not defined".formatted(attributeKey)));
+  }
 }

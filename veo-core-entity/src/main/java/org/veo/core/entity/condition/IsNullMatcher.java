@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.condition;
 
+import java.util.Set;
+
 import lombok.Data;
 
 /** Matches value if it is null. */
@@ -25,5 +27,10 @@ public class IsNullMatcher implements InputMatcher {
   @Override
   public boolean matches(Object value) {
     return value == null;
+  }
+
+  @Override
+  public Set<Class<?>> getSupportedTypes() {
+    return Set.of(Object.class);
   }
 }

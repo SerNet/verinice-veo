@@ -18,6 +18,7 @@
 package org.veo.core.entity.condition;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
@@ -52,5 +53,10 @@ public class GreaterThanMatcher implements InputMatcher {
     }
     throw new IllegalArgumentException(
         "Cannot compare BigDecimal to " + value.getClass().getSimpleName());
+  }
+
+  @Override
+  public Set<Class<?>> getSupportedTypes() {
+    return Set.of(BigDecimal.class, Integer.class, Long.class);
   }
 }

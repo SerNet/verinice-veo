@@ -52,4 +52,9 @@ public class EnumAttributeDefinition extends AttributeDefinition {
   public Collection<String> getTranslationKeys() {
     return allowedValues;
   }
+
+  @Override
+  public Class<?> getValueType() {
+    return String.class;
+  }
 }

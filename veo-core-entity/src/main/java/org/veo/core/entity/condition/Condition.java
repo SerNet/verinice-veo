@@ -17,12 +17,16 @@
  ******************************************************************************/
 package org.veo.core.entity.condition;
 
+import static java.util.stream.Collectors.joining;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.event.ElementEvent;
+import org.veo.core.entity.exception.NotFoundException;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -48,5 +52,25 @@ public class Condition {
   /** Determines whether this condition may yield a different result after given event. */
   public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
     return inputProvider.isAffectedByEvent(event, domain);
+  }
+
+  /**
+   * @throws NotFoundException if a reference inside this condition cannot be resolved
+   * @throws IllegalArgumentException for other validation errors
+   */
+  public void selfValidate(DomainBase domain, String elementType) {
+    inputProvider.selfValidate(domain, elementType);
+    var supportedTypes = inputMatcher.getSupportedTypes();
+    var inputType = inputProvider.getValueType(domain, elementType);
+    if (supportedTypes.stream().noneMatch(t -> t.isAssignableFrom(inputType))) {
+      throw new IllegalArgumentException(
+          "Provider yields %s, but matcher only supports [%s]"
+              .formatted(
+                  inputType.getSimpleName(),
+                  supportedTypes.stream()
+                      .map(Class::getSimpleName)
+                      .sorted()
+                      .collect(joining(","))));
+    }
   }
 }

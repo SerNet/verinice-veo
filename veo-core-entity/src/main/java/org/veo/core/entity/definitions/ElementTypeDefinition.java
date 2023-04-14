@@ -50,4 +50,18 @@ public interface ElementTypeDefinition {
   Map<Locale, Map<String, String>> getTranslations();
 
   void setTranslations(Map<Locale, Map<String, String>> translations);
+
+  default CustomAspectDefinition getCustomAspectDefinition(String caType) {
+    return Optional.ofNullable(getCustomAspects().get(caType))
+        .orElseThrow(
+            () ->
+                new IllegalArgumentException(
+                    "Custom aspect '%s' is not defined".formatted(caType)));
+  }
+
+  default SubTypeDefinition getSubTypeDefinition(String subType) {
+    return Optional.ofNullable(getSubTypes().get(subType))
+        .orElseThrow(
+            () -> new IllegalArgumentException("Sub type %s is not defined".formatted(subType)));
+  }
 }

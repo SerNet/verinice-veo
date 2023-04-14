@@ -27,10 +27,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.aspects.SubTypeAspect;
 import org.veo.core.entity.event.ElementEvent;
+import org.veo.core.entity.exception.NotFoundException;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -97,5 +99,14 @@ public class Decision {
   /** Determines whether this decision may yield a different result after given event. */
   public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
     return rules.stream().anyMatch(r -> r.isAffectedByEvent(event, domain));
+  }
+
+  /**
+   * @throws NotFoundException if a reference inside this decision cannot be resolved
+   * @throws IllegalArgumentException for other validation errors
+   */
+  public void selfValidate(DomainBase domain) {
+    domain.getElementTypeDefinition(getElementType()).getSubTypeDefinition(getElementSubType());
+    rules.forEach(r -> r.selfValidate(domain, getElementType()));
   }
 }

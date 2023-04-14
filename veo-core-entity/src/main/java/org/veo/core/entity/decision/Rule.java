@@ -24,6 +24,7 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.condition.Condition;
@@ -34,6 +35,7 @@ import org.veo.core.entity.condition.GreaterThanMatcher;
 import org.veo.core.entity.condition.IsNullMatcher;
 import org.veo.core.entity.condition.MaxRiskProvider;
 import org.veo.core.entity.event.ElementEvent;
+import org.veo.core.entity.exception.NotFoundException;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -123,5 +125,13 @@ public class Rule {
   /** Determines whether this rule may yield a different result after given event. */
   public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
     return conditions.stream().anyMatch(c -> c.isAffectedByEvent(event, domain));
+  }
+
+  /**
+   * @throws NotFoundException if a reference inside this rule cannot be resolved
+   * @throws IllegalArgumentException for other validation errors
+   */
+  public void selfValidate(DomainBase domain, String elementType) {
+    conditions.forEach(c -> c.selfValidate(domain, elementType));
   }
 }

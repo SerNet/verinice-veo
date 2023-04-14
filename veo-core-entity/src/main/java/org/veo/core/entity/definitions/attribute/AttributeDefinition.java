@@ -62,4 +62,10 @@ public abstract class AttributeDefinition {
   public Collection<String> getTranslationKeys() {
     return emptyList();
   }
+
+  /**
+   * @return expected type for values of this attribute
+   */
+  @JsonIgnore
+  public abstract Class<?> getValueType();
 }

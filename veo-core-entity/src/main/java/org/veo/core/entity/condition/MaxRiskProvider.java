@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.RiskAffected;
@@ -70,6 +71,11 @@ public class MaxRiskProvider implements InputProvider {
               });
     }
     return false;
+  }
+
+  @Override
+  public Class<?> getValueType(DomainBase domain, String elementType) {
+    return BigDecimal.class;
   }
 
   private BigDecimal getMaxRisk(RiskAffected<?, ?> element, Domain domain) {

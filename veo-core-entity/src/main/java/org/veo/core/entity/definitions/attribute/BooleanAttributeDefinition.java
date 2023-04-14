@@ -33,4 +33,9 @@ public class BooleanAttributeDefinition extends AttributeDefinition {
       throw new InvalidAttributeException("must be a boolean");
     }
   }
+
+  @Override
+  public Class<?> getValueType() {
+    return Boolean.class;
+  }
 }

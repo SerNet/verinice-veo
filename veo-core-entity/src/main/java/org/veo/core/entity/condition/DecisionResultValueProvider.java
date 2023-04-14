@@ -20,6 +20,7 @@ package org.veo.core.entity.condition;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.decision.DecisionRef;
 
@@ -42,5 +43,10 @@ public class DecisionResultValueProvider implements InputProvider {
       return null;
     }
     return result.getValue();
+  }
+
+  @Override
+  public Class<?> getValueType(DomainBase domain, String elementType) {
+    return Boolean.class;
   }
 }

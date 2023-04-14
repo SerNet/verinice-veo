@@ -20,7 +20,9 @@ package org.veo.core.entity.condition;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.definitions.attribute.AttributeDefinition;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -42,5 +44,22 @@ public class CustomAspectAttributeValueProvider implements InputProvider {
         .findFirst()
         .map(ca -> ca.getAttributes().get(attribute))
         .orElse(null);
+  }
+
+  @Override
+  public void selfValidate(DomainBase domain, String elementType) {
+    getAttributeDefinition(domain, elementType);
+  }
+
+  @Override
+  public Class<?> getValueType(DomainBase domain, String elementType) {
+    return getAttributeDefinition(domain, elementType).getValueType();
+  }
+
+  private AttributeDefinition getAttributeDefinition(DomainBase domain, String elementType) {
+    return domain
+        .getElementTypeDefinition(elementType)
+        .getCustomAspectDefinition(customAspect)
+        .getAttributeDefinition(attribute);
   }
 }

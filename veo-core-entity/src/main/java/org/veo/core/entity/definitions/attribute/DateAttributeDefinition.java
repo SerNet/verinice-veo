@@ -41,4 +41,9 @@ public class DateAttributeDefinition extends AttributeDefinition {
       }
     } else throw new InvalidAttributeException("must be a string");
   }
+
+  @Override
+  public Class<?> getValueType() {
+    return String.class;
+  }
 }

@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.event.ElementEvent;
 
@@ -44,4 +45,14 @@ public interface InputProvider {
   default boolean isAffectedByEvent(ElementEvent event, Domain domain) {
     return false;
   }
+
+  /**
+   * @throws RuntimeException If this provider is invalid for given domain & element type
+   */
+  default void selfValidate(DomainBase domain, String elementType) {}
+
+  /**
+   * @return type of the values that this provider will yield in given domain for given element type
+   */
+  Class<?> getValueType(DomainBase domain, String elementType);
 }

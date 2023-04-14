@@ -41,6 +41,8 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
+import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.entity.specification.ElementTypeDefinitionValidator;
@@ -127,6 +129,7 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
 
   @Override
   public boolean applyDecision(String key, Decision decision) {
+    validate(key, decision);
     return decisionSet.applyDecision(key, decision);
   }
 
@@ -137,7 +140,17 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
 
   @Override
   public void setDecisions(Map<String, Decision> decisions) {
+    decisions.forEach(this::validate);
     this.decisionSet.setDecisions(decisions);
+  }
+
+  private void validate(String key, Decision decision) {
+    try {
+      decision.selfValidate(this);
+    } catch (IllegalArgumentException | NotFoundException ex) {
+      throw new UnprocessableDataException(
+          "Validation error in decision '%s': %s".formatted(key, ex.getMessage()));
+    }
   }
 
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

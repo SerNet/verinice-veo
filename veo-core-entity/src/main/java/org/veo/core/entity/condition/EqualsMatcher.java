@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity.condition;
 
+import java.util.Set;
+
 import javax.validation.constraints.NotNull;
 
 import lombok.AccessLevel;
@@ -37,5 +39,10 @@ public class EqualsMatcher implements InputMatcher {
   @Override
   public boolean matches(Object value) {
     return comparisonValue.equals(value);
+  }
+
+  @Override
+  public Set<Class<?>> getSupportedTypes() {
+    return Set.of(comparisonValue.getClass());
   }
 }

@@ -107,6 +107,9 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
 
   Map<String, Decision> getDecisions();
 
+  /**
+   * @throws org.veo.core.entity.exception.UnprocessableDataException if any decisions are invalid
+   */
   void setDecisions(Map<String, Decision> decisions);
 
   /**
@@ -114,6 +117,7 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
    *
    * @return {@code true} if a new decision was added, {@code false} if an existing decision was
    *     updated
+   * @throws org.veo.core.entity.exception.UnprocessableDataException if the decision is invalid
    */
   boolean applyDecision(String key, Decision decision);
 

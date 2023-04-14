@@ -23,6 +23,7 @@ import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 
 import lombok.AccessLevel;
@@ -56,5 +57,15 @@ public class PartCountProvider implements InputProvider {
       return parts.size();
     }
     return 0;
+  }
+
+  @Override
+  public void selfValidate(DomainBase domain, String elementType) {
+    domain.getElementTypeDefinition(elementType).getSubTypeDefinition(getPartSubType());
+  }
+
+  @Override
+  public Class<?> getValueType(DomainBase domain, String elementType) {
+    return Integer.class;
   }
 }

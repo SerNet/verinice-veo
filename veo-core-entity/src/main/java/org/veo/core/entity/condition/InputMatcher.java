@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.core.entity.condition;
 
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -29,4 +32,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 public interface InputMatcher {
   boolean matches(Object value);
+
+  /**
+   * @return all value types that this matcher can match
+   */
+  @JsonIgnore
+  Set<Class<?>> getSupportedTypes();
 }
