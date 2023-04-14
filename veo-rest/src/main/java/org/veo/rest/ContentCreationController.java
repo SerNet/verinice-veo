@@ -35,6 +35,7 @@ import javax.validation.constraints.Pattern;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,6 +70,7 @@ import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
+import org.veo.core.usecase.domain.DeleteDecisionUseCase;
 import org.veo.core.usecase.domain.SaveDecisionUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
@@ -96,6 +98,7 @@ public class ContentCreationController extends AbstractVeoController {
   private final EntityToDtoTransformer entityToDtoTransformer;
   private final UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase;
   private final SaveDecisionUseCase saveDecisionUseCase;
+  private final DeleteDecisionUseCase deleteDecisionUseCase;
   private final CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase;
 
   public static final String URL_BASE_PATH = "/content-creation";
@@ -199,6 +202,29 @@ public class ContentCreationController extends AbstractVeoController {
             out.isNewDecision()
                 ? RestApiResponse.created(request.getRequest().getRequestURI(), "Decision created")
                 : RestApiResponse.ok("Decision updated"));
+  }
+
+  @DeleteMapping("/domains/{domainId}/decisions/{decisionKey}")
+  @Operation(summary = "Delete decision with given key")
+  @ApiResponse(responseCode = "204", description = "Decision deleted")
+  @ApiResponse(responseCode = "404", description = "Decision not found")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteDecision(
+      @Parameter(hidden = true) ApplicationUser user,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(
+              required = true,
+              example = "dpiaMandatory",
+              description = "Decision identifier - unique within this domain")
+          @PathVariable
+          String decisionKey) {
+    return useCaseInteractor.execute(
+        deleteDecisionUseCase,
+        new DeleteDecisionUseCase.InputData(
+            Key.uuidFrom(user.getClientId()), Key.uuidFrom(domainId), decisionKey),
+        out -> RestApiResponse.noContent());
   }
 
   @PostMapping(value = "/domains/{id}/template")

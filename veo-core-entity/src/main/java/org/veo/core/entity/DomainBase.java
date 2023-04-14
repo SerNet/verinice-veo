@@ -117,6 +117,11 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
    */
   boolean applyDecision(String key, Decision decision);
 
+  /**
+   * @throws NotFoundException if decision does not exist
+   */
+  void removeDecision(String decisionKey);
+
   default Optional<Decision> getDecision(String decisionKey) {
     return Optional.ofNullable(getDecisions().get(decisionKey));
   }

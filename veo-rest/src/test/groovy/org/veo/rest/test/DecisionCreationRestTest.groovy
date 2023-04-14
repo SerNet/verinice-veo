@@ -45,7 +45,7 @@ class DecisionCreationRestTest extends VeoRestTest {
         ], null, 204, CONTENT_CREATOR)
     }
 
-    def "CRU valid decision"() {
+    def "CRUD valid decision"() {
         given: "a transient valid decision"
         def decisionUri = "/content-creation/domains/$domainId/decisions/TLDR"
         def decision = [
@@ -88,6 +88,14 @@ class DecisionCreationRestTest extends VeoRestTest {
         then: "the change has been applied"
         with(get("/domains/$domainId").body) {
             it.decisions.TLDR.rules[0].conditions[0].inputMatcher.comparisonValue == 10000
+        }
+
+        when: "deleting the decision"
+        delete(decisionUri)
+
+        then: "it is gone"
+        with(get("/domains/$domainId").body) {
+            it.decisions.TLDR == null
         }
     }
 }

@@ -30,6 +30,7 @@ import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.decision.Decision;
+import org.veo.core.entity.exception.NotFoundException;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -61,6 +62,13 @@ public class DecisionSetData {
     var created = !decisions.containsKey(key);
     decisions.put(key, value);
     return created;
+  }
+
+  public void removeDecision(String decisionKey) {
+    if (!decisions.containsKey(decisionKey)) {
+      throw new NotFoundException("Decision '%s' not found", decisionKey);
+    }
+    decisions.remove(decisionKey);
   }
 
   @Override

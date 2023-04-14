@@ -131,6 +131,11 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
   }
 
   @Override
+  public void removeDecision(String decisionKey) {
+    decisionSet.removeDecision(decisionKey);
+  }
+
+  @Override
   public void setDecisions(Map<String, Decision> decisions) {
     this.decisionSet.setDecisions(decisions);
   }
