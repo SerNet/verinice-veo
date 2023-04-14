@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.veo.rest.test
 
-class DecisionRestTest extends VeoRestTest {
+class EvaluationRestTest extends VeoRestTest {
     def PIA = "process_privacyImpactAssessment"
     String unitUri
     String unitId
@@ -33,7 +33,7 @@ class DecisionRestTest extends VeoRestTest {
         decisions = domain.decisions
     }
 
-    def "piaMandatory decision is persisted"() {
+    def "piaMandatory decision result is persisted"() {
         given:
         def decision = decisions.piaMandatory
 
