@@ -19,23 +19,15 @@ package org.veo.adapter.persistence.schema;
 
 import static org.apache.commons.lang3.StringUtils.capitalize;
 
-import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.springframework.core.annotation.AnnotationUtils;
-
-import com.fasterxml.classmate.ResolvedType;
-import com.fasterxml.classmate.ResolvedTypeWithMembers;
-import com.fasterxml.classmate.members.ResolvedField;
+import com.fasterxml.classmate.AnnotationInclusion;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.victools.jsonschema.generator.FieldScope;
-import com.github.victools.jsonschema.generator.MemberScope;
-import com.github.victools.jsonschema.generator.MethodScope;
 import com.github.victools.jsonschema.generator.Module;
 import com.github.victools.jsonschema.generator.Option;
 import com.github.victools.jsonschema.generator.OptionPreset;
@@ -43,7 +35,7 @@ import com.github.victools.jsonschema.generator.SchemaGenerator;
 import com.github.victools.jsonschema.generator.SchemaGeneratorConfig;
 import com.github.victools.jsonschema.generator.SchemaGeneratorConfigBuilder;
 import com.github.victools.jsonschema.generator.SchemaVersion;
-import com.github.victools.jsonschema.generator.TypeContext;
+import com.github.victools.jsonschema.generator.impl.TypeContextFactory;
 import com.github.victools.jsonschema.module.jackson.JacksonModule;
 import com.github.victools.jsonschema.module.javax.validation.JavaxValidationModule;
 import com.github.victools.jsonschema.module.javax.validation.JavaxValidationOption;
@@ -124,30 +116,7 @@ public class SchemaProvider {
   private SchemaGenerator createSchemaGenerator() {
     JacksonModule jacksonModule = new JacksonModule();
     JavaxValidationModule javaxValidationModule =
-        new JavaxValidationModule(JavaxValidationOption.NOT_NULLABLE_FIELD_IS_REQUIRED) {
-          @Override
-          protected <A extends Annotation> A getAnnotationFromFieldOrGetter(
-              MemberScope<?, ?> member,
-              Class<A> annotationClass,
-              Function<A, Class<?>[]> validationGroupsLookup) {
-
-            if (member instanceof FieldScope f && !f.isFakeContainerItemScope()) {
-              // work around https://github.com/victools/jsonschema-generator/issues/297
-              FieldScope wrappingScope =
-                  new FieldScopeWrapper(
-                      f.getMember(),
-                      f.getOverriddenType(),
-                      f.getOverriddenName(),
-                      f.getDeclaringTypeMembers(),
-                      f.getContext());
-              return super.getAnnotationFromFieldOrGetter(
-                  wrappingScope, annotationClass, validationGroupsLookup);
-            } else {
-              return super.getAnnotationFromFieldOrGetter(
-                  member, annotationClass, validationGroupsLookup);
-            }
-          }
-        };
+        new JavaxValidationModule(JavaxValidationOption.NOT_NULLABLE_FIELD_IS_REQUIRED);
     Module swagger2Module = new Swagger2Module();
 
     SchemaGeneratorConfigBuilder configBuilder =
@@ -167,30 +136,8 @@ public class SchemaProvider {
                     && method.getAnnotation(Schema.class) == null);
 
     SchemaGeneratorConfig config = configBuilder.build();
-    return new SchemaGenerator(config);
-  }
-
-  private static final class FieldScopeWrapper extends FieldScope {
-    private FieldScopeWrapper(
-        ResolvedField field,
-        ResolvedType overriddenType,
-        String overriddenName,
-        ResolvedTypeWithMembers declaringTypeMembers,
-        TypeContext context) {
-      super(field, overriddenType, overriddenName, declaringTypeMembers, null, context);
-    }
-
-    @Override
-    public <A extends Annotation> A getAnnotationConsideringFieldAndGetter(
-        Class<A> annotationClass) {
-      A annotation = this.getAnnotation(annotationClass);
-      if (annotation == null) {
-        MethodScope associatedGetter = this.findGetter();
-        return associatedGetter == null
-            ? null
-            : AnnotationUtils.findAnnotation(associatedGetter.getRawMember(), annotationClass);
-      }
-      return annotation;
-    }
+    return new SchemaGenerator(
+        config,
+        TypeContextFactory.createTypeContext(AnnotationInclusion.INCLUDE_AND_INHERIT, config));
   }
 }
