@@ -421,7 +421,7 @@ class SwaggerSpec extends VeoSpringSpec {
 
     def "endpoint documentation is correct for CreateDomainTemplateUseCase"() {
         when: "retrieving the information about the endpoint"
-        def endPointInfo = parsedApiDocs.paths["/domains/{id}/createdomaintemplate"]
+        def endPointInfo = parsedApiDocs.paths["/content-creation/domains/{id}/template"]
 
         then: "the information is found"
         endPointInfo != null

@@ -159,7 +159,7 @@ class DomainRestTestITSpec extends VeoRestTest {
         ])
 
         and: "create a new domain template with the a profile based on the unit"
-        def newTemplateVersionId = post("/domains/${oldDomain.id}/createdomaintemplate", [
+        def newTemplateVersionId = post("/content-creation/domains/${oldDomain.id}/template", [
             version: "1.4.1",
             profiles: ["exampleUnit": (profileSourceUnitId)]
         ], 201, CONTENT_CREATOR).body.targetUri.split('/').last()
@@ -241,7 +241,7 @@ class DomainRestTestITSpec extends VeoRestTest {
         def demoUnit = units.find { it.name == CreateDemoUnitUseCase.DEMO_UNIT_NAME }
 
         when: "creating a new domain template with a profile based on the demo unit"
-        def newTemplateVersionId = post("/domains/${oldDomain.id}/createdomaintemplate", [
+        def newTemplateVersionId = post("/content-creation/domains/${oldDomain.id}/template", [
             version: "1.4.3",
             profiles: ["orgDemoUnit": (demoUnit.id)]
         ], 201, CONTENT_CREATOR).body.targetUri.split('/').last()

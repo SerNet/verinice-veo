@@ -19,24 +19,18 @@ package org.veo.rest;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-import static org.veo.adapter.presenter.api.io.mapper.VersionMapper.parseVersion;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.function.Supplier;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
@@ -61,26 +55,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.common.IdRef;
-import org.veo.adapter.presenter.api.dto.AbstractElementDto;
-import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
-import org.veo.adapter.presenter.api.dto.UnitDumpDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.presenter.api.io.mapper.UnitDumpMapper;
 import org.veo.adapter.service.ObjectSchemaParser;
-import org.veo.adapter.service.domaintemplate.dto.CreateDomainTemplateFromDomainParameterDto;
 import org.veo.core.ExportDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
-import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.statistics.ElementStatusCounts;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.domain.ApplyProfileUseCase;
@@ -90,7 +76,6 @@ import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
-import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.persistence.entity.jpa.ProfileReferenceFactoryImpl;
 import org.veo.rest.annotations.UnitUuidParam;
@@ -131,7 +116,6 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   private final ExportDomainUseCase exportDomainUseCase;
   private final UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase;
   private final CreateDomainUseCase createDomainUseCase;
-  private final CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase;
   private final GetElementStatusCountUseCase getElementStatusCountUseCase;
 
   private final GetUnitDumpUseCase getUnitDumpUseCase;
@@ -230,6 +214,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     @ApiResponse(responseCode = "201", description = "Domain created"),
     @ApiResponse(responseCode = "409", description = "Templates with name already exist")
   })
+  // TODO VEO-2000: remove this endpoint
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomain(
       Authentication auth,
       @Pattern(
@@ -250,79 +235,6 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
           ApiResponseBody body = CreateOutputMapper.map(output.getDomain());
           return RestApiResponse.created(URL_BASE_PATH, body);
         });
-  }
-
-  @PostMapping(value = "/{id}/createdomaintemplate")
-  @Operation(summary = "Creates a domaintemplate from a domain")
-  @ApiResponses({
-    @ApiResponse(responseCode = "201", description = "DomainTemplate created"),
-    @ApiResponse(responseCode = "400", description = "Invalid version"),
-    @ApiResponse(responseCode = "409", description = "Template with version already exists"),
-    @ApiResponse(
-        responseCode = "422",
-        description = "Version is lower than current template version"),
-  })
-  public CompletableFuture<ResponseEntity<IdRef<DomainTemplate>>> createDomainTemplatefromDomain(
-      Authentication auth,
-      @Pattern(
-              regexp = Patterns.UUID,
-              message = "ID must be a valid UUID string following RFC 4122.")
-          @PathVariable
-          String id,
-      @Valid @RequestBody CreateDomainTemplateFromDomainParameterDto createParameter) {
-    Client client = getAuthenticatedClient(auth);
-    if (createParameter == null) {
-      throw new IllegalArgumentException("create parameter cannot be null");
-    }
-    CompletableFuture<IdRef<DomainTemplate>> completableFuture =
-        useCaseInteractor.execute(
-            createDomainTemplateFromDomainUseCase,
-            new CreateDomainTemplateFromDomainUseCase.InputData(
-                Key.uuidFrom(id),
-                parseVersion(createParameter.getVersion()),
-                client,
-                (domainTemplateId) -> buildProfiles(createParameter, id, domainTemplateId)),
-            out -> IdRef.from(out.getNewDomainTemplate(), referenceAssembler));
-    return completableFuture.thenApply(result -> ResponseEntity.status(201).body(result));
-  }
-
-  private Map<String, ProfileDefinition> buildProfiles(
-      CreateDomainTemplateFromDomainParameterDto createParameter,
-      String domainId,
-      Key<UUID> domainTemplateId) {
-    Map<String, ProfileDefinition> profiles = new HashMap<>();
-
-    createParameter
-        .getProfiles()
-        .forEach(
-            (name, unitId) -> {
-              try {
-                UnitDumpDto dump =
-                    useCaseInteractor
-                        .execute(
-                            getUnitDumpUseCase,
-                            (Supplier<GetUnitDumpUseCase.InputData>)
-                                () -> UnitDumpMapper.mapInput(unitId),
-                            out -> UnitDumpMapper.mapOutput(out, entityToDtoTransformer))
-                        .get();
-                Set<AbstractElementDto> elements = dump.getElements();
-                elements.forEach(e -> e.transferToDomain(domainId, domainTemplateId.uuidValue()));
-                Set<AbstractRiskDto> risks = dump.getRisks();
-                risks.forEach(e -> e.transferToDomain(domainId, domainTemplateId.uuidValue()));
-
-                log.info(
-                    "dump size, elements:{} risks:{}",
-                    dump.getElements().size(),
-                    dump.getRisks().size());
-                profiles.put(name, ProfileDefinition.of(elements, risks));
-              } catch (InterruptedException ex) {
-                throw new InternalProccesingException("Internal error", ex);
-              } catch (ExecutionException ex) {
-                if (ex.getCause() instanceof RuntimeException)
-                  throw (RuntimeException) ex.getCause();
-              }
-            });
-    return profiles;
   }
 
   @Override
@@ -351,6 +263,8 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   @ApiResponses({
     @ApiResponse(responseCode = "204", description = "Element type definition updated")
   })
+  // TODO VEO-2000: remove this endpoint
+
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateElementTypeDefinition(
       Authentication auth,
       @PathVariable String id,
@@ -374,6 +288,8 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
           "Updates a domain with an entity schema. Deprecated, use PUT /domains/{id}/element-type-definitions/{type}",
       deprecated = true)
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Schema updated")})
+  // TODO VEO-2000: remove this endpoint
+
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateDomainWithSchema(
       Authentication auth,
       @PathVariable String id,

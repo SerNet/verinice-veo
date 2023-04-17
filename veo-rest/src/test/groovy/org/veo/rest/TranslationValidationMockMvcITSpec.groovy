@@ -71,7 +71,7 @@ class TranslationValidationMockMvcITSpec extends ContentSpec {
         modifiedSchema.properties.translations.de.superfluous_key = "I'm not even supposed to be here today!" // add a superfluous (i.e. mistyped) key
 
         when: "a request is made to the server"
-        post("/domains/${testDomain.id.uuidValue()}/elementtypedefinitions/scope/updatefromobjectschema", schemaJson, 422)
+        post("/content-creation/domains/${testDomain.id.uuidValue()}/element-type-definitions/scope/object-schema", schemaJson, 422)
 
         then: "all missing and  mistyped/superfluous translations are listed"
         Exception ex = thrown()

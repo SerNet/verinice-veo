@@ -154,7 +154,7 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
         def etd = parseJson(get("/domains/$domainId")).elementTypeDefinitions.asset
         etd.customAspects.remove("aspectTwo")
         etd.customAspects.aspectOne.attributeDefinitions.remove("attrTwo")
-        put("/domains/$domainId/element-type-definitions/asset", etd, 204)
+        put("/content-creation/domains/$domainId/element-type-definitions/asset", etd, 204)
 
         and: "triggering message processing"
         messagingJob.sendMessages()
@@ -188,7 +188,6 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
 
         and: "the obsolete content has been removed from the catalog item"
         catalogItemElement.customAspects.aspectOne.attributes.attrTwo == null
-
     }
 
     def cleanup() {

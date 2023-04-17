@@ -60,6 +60,10 @@ public class WebSecurity {
     "/domaintemplates/**",
   };
 
+  private static final String[] CONTENT_CREATION_PATHS = {
+    "/content-creation/**",
+  };
+
   private static final String ZERO_OR_MORE_DIRECTORIES = "/**";
 
   // Paths to domain specifications and resources that are part of the domain aggregate:
@@ -99,7 +103,10 @@ public class WebSecurity {
 
   // Paths that require the role 'content-creator' for write access:
   private static final String[] CONTENT_CREATOR_EDITABLE_PATHS =
-      Stream.of(Stream.of(DOMAINTEMPLATE_PATHS), Stream.of(DOMAIN_RESOURCE_PATHS))
+      Stream.of(
+              Stream.of(DOMAINTEMPLATE_PATHS),
+              Stream.of(DOMAIN_RESOURCE_PATHS),
+              Stream.of(CONTENT_CREATION_PATHS))
           .flatMap(identity())
           .toArray(String[]::new);
 

@@ -105,6 +105,8 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         mvc.perform(MockMvcRequestBuilders
                 .post("/domaintemplates")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
+                .post("/content-creation/domains")).andReturn().response.status == 403
+        mvc.perform(MockMvcRequestBuilders
                 .post("/domaintemplates")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
                 .get("/domaintemplates/" + TEST_DOMAIN_TEMPLATE_ID + "/export"))
@@ -116,6 +118,8 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         expect: "domain template creation to be forbidden"
         mvc.perform(MockMvcRequestBuilders
                 .post("/domaintemplates")).andReturn().response.status == 403
+        mvc.perform(MockMvcRequestBuilders
+                .post("/content-creation/domains")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
                 .post("/domaintemplates")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
@@ -159,6 +163,10 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
                 MockMvcRequestBuilders
                 .get(entity.replace("/domians", "/domians/$domainId")))
                 .andReturn().response.status == 200
+                break
+            case "/content-creation":
+                assert mvc.perform(MockMvcRequestBuilders.post(entity))
+                .andReturn().response.status == 403
                 break
             default:
                 assert mvc.perform(MockMvcRequestBuilders.get(entity))
@@ -264,7 +272,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
                 break
             case ["/domains"]:
                 assert mvc.perform(MockMvcRequestBuilders.post(
-                "/domains/$DSGVO_TEST_DOMAIN_TEMPLATE_ID/createdomaintemplate"))
+                "/content-creation/domains/$DSGVO_TEST_DOMAIN_TEMPLATE_ID/template"))
                 .andReturn().response.status == 400
                 break
             case [
@@ -276,6 +284,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
                 .andReturn().response.status == 405
                 break
             case "/schemas":
+            case "/content-creation":
                 assert mvc.perform(MockMvcRequestBuilders.post(entity))
                 .andReturn().response.status == 404
                 break

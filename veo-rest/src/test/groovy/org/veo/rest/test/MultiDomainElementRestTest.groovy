@@ -31,11 +31,11 @@ class MultiDomainElementRestTest extends VeoRestTest {
         unitId = post("/units", [
             name: "multi domain element rest test unit"
         ]).body.resourceId
-        domainIdA = post("/domains", [
+        domainIdA = post("/content-creation/domains", [
             name: "multi domain element rest test domain A ${randomUUID()}",
             authority: "jj",
         ], 201, UserType.CONTENT_CREATOR).body.resourceId
-        domainIdB = post("/domains", [
+        domainIdB = post("/content-creation/domains", [
             name: "multi domain element rest test domain B ${randomUUID()}",
             authority: "jj",
         ], 201, UserType.CONTENT_CREATOR).body.resourceId
@@ -267,7 +267,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
     // TODO VEO-1294 once decisions are configurable, test evaluation endpoints for all element types
 
     private void putElementTypeDefinitions(EntityType type) {
-        put("/domains/$domainIdA/element-type-definitions/$type.singularTerm", [
+        put("/content-creation/domains/$domainIdA/element-type-definitions/$type.singularTerm", [
             subTypes: [
                 STA: [
                     statuses: ["NEW", "OLD"]
@@ -286,7 +286,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
                 ],
             ]
         ], "", 204)
-        put("/domains/$domainIdB/element-type-definitions/$type.singularTerm", [
+        put("/content-creation/domains/$domainIdB/element-type-definitions/$type.singularTerm", [
             subTypes: [
                 STB: [
                     statuses: ["ON", "OFF"]

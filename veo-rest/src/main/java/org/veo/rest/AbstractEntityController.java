@@ -22,14 +22,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -43,37 +41,23 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Versioned;
-import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.RepositoryProvider;
-import org.veo.core.usecase.UseCaseInteractor;
-import org.veo.rest.common.ClientNotActiveException;
 import org.veo.rest.common.SearchResponse;
-import org.veo.rest.common.marshalling.ReferenceAssemblerImpl;
-import org.veo.rest.security.ApplicationUser;
 import org.veo.service.EtagService;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 
-@SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
 @Slf4j
-public abstract class AbstractEntityController {
-
-  @Autowired protected ClientRepository clientRepository;
+public abstract class AbstractEntityController extends AbstractVeoController {
 
   @Autowired private RepositoryProvider repositoryProvider;
-
-  @Autowired ReferenceAssemblerImpl referenceAssembler;
 
   @Autowired EntityToDtoTransformer entityToDtoTransformer;
 
   @Autowired DtoToEntityTransformer dtoToEntityTransformer;
 
   @Autowired ReferenceAssembler urlAssembler;
-
-  @Autowired protected UseCaseInteractor useCaseInteractor;
 
   @Autowired protected EtagService etagService;
 
@@ -88,28 +72,6 @@ public abstract class AbstractEntityController {
     return ex.getBindingResult().getAllErrors().stream()
         .map(FieldError.class::cast)
         .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
-  }
-
-  protected Client getClient(String clientId) {
-    Key<UUID> id = Key.uuidFrom(clientId);
-    // TODO VEO-1815 Remove this special case
-    // It is used to determine that a client needs to be
-    // created by the frontends currently. Throws NoSuchElementException like in the good old
-    // days if no client is present at all:
-    clientRepository.findById(id).orElseThrow();
-
-    return clientRepository
-        .findActiveById(id)
-        .orElseThrow(() -> new ClientNotActiveException(clientId));
-  }
-
-  protected Client getAuthenticatedClient(Authentication auth) {
-    ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
-    return getClient(user);
-  }
-
-  protected Client getClient(ApplicationUser user) {
-    return getClient(user.getClientId());
   }
 
   protected IdRefResolver createIdRefResolver(Client client) {

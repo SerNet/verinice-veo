@@ -30,11 +30,11 @@ class LinkingRestTest extends VeoRestTest{
 
     def "asset can be linked with #targetType.pluralTerm"() {
         given: "a target element"
-        def domainId = post("/domains", [
+        def domainId = post("/content-creation/domains", [
             name: randomUUID(),
             authority: "me",
         ], 201, CONTENT_CREATOR).body.resourceId
-        put("/domains/$domainId/element-type-definitions/asset", [
+        put("/content-creation/domains/$domainId/element-type-definitions/asset", [
             subTypes: [
                 ST: [statuses: ["NEW"]]
             ],

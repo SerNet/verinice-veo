@@ -32,7 +32,7 @@ class DomainCreationRestTest extends VeoRestTest {
     def "create new domain"() {
         when: "creating a new domain"
         def domainName = "Domain creation test ${randomUUID()}"
-        def domainId = post("/domains", [
+        def domainId = post("/content-creation/domains", [
             name: domainName,
             abbreviation: "dct",
             description: "best one ever",
@@ -50,7 +50,7 @@ class DomainCreationRestTest extends VeoRestTest {
         }
 
         when: "defining an element type in the domain"
-        post("/domains/$domainId/elementtypedefinitions/asset/updatefromobjectschema", [
+        post("/content-creation/domains/$domainId/element-type-definitions/asset/object-schema", [
             properties: [
                 domains: [
                     properties: [
@@ -109,7 +109,7 @@ class DomainCreationRestTest extends VeoRestTest {
         ])
 
         when: "creating a template from the domain"
-        def templateUri = post("/domains/$domainId/createdomaintemplate", [
+        def templateUri = post("/content-creation/domains/$domainId/template", [
             version: "1.0.0"
         ]).body.targetUri
 
@@ -142,7 +142,7 @@ class DomainCreationRestTest extends VeoRestTest {
 
     def "cannot create domain with name of existing template"() {
         expect:
-        post("/domains", [
+        post("/content-creation/domains", [
             name: "DS-GVO",
             authority: "JJ",
         ], 409, CONTENT_CREATOR)
@@ -154,13 +154,13 @@ class DomainCreationRestTest extends VeoRestTest {
         def name = "conflict test domain ${randomUUID()}"
 
         expect: "initial creation to succeed"
-        post("/domains", [
+        post("/content-creation/domains", [
             name: name,
             authority: "JJ",
         ], 201, CONTENT_CREATOR)
 
         and: "second creation to fail"
-        post("/domains", [
+        post("/content-creation/domains", [
             name: name,
             authority: "JJ",
         ], 409, CONTENT_CREATOR)
