@@ -73,7 +73,7 @@ public class GetElementUseCase<T extends Element>
   @EqualsAndHashCode(callSuper = true)
   @Valid
   @Getter
-  public static class InputData extends IdAndClient {
+  public static class InputData extends UseCase.IdAndClient {
     public InputData(Key<UUID> id, Client authenticatedClient) {
       super(id, authenticatedClient);
       this.domainId = null;
