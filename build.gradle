@@ -144,7 +144,7 @@ subprojects {
             dependency 'org.springdoc:springdoc-openapi-common:1.7.0'
             dependency 'io.swagger.core.v3:swagger-core:2.2.9'
             dependency 'io.swagger.core.v3:swagger-annotations:2.2.9'
-            dependency 'net.ttddyy:datasource-proxy:1.8.1'
+            dependency 'net.ttddyy:datasource-proxy:1.9'
             dependency 'com.github.victools:jsonschema-generator:4.29.0'
             dependency 'com.github.victools:jsonschema-module-jackson:4.29.0'
             dependency 'com.github.victools:jsonschema-module-javax-validation:4.29.0'
