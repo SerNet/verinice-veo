@@ -896,7 +896,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-16. Group: com.github.victools  Name: jsonschema-generator  Version: 4.29.0
+16. Group: com.github.victools  Name: jsonschema-generator  Version: 4.30.0
 
 POM Project URL: https://github.com/victools/jsonschema-generator
 
@@ -904,7 +904,7 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-17. Group: com.github.victools  Name: jsonschema-module-jackson  Version: 4.29.0
+17. Group: com.github.victools  Name: jsonschema-module-jackson  Version: 4.30.0
 
 POM Project URL: https://github.com/victools/jsonschema-generator
 
@@ -912,13 +912,13 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-18. Group: com.github.victools  Name: jsonschema-module-javax-validation  Version: 4.29.0
+18. Group: com.github.victools  Name: jsonschema-module-javax-validation  Version: 4.30.0
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
 --------------------------------------------------------------------------------
 
-19. Group: com.github.victools  Name: jsonschema-module-swagger-2  Version: 4.29.0
+19. Group: com.github.victools  Name: jsonschema-module-swagger-2  Version: 4.30.0
 
 POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICENSE-2.0
 
@@ -20039,5 +20039,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Mon Apr 17 05:04:47 UTC 2023.
+This report was generated at Tue Apr 18 07:32:56 UTC 2023.
 
