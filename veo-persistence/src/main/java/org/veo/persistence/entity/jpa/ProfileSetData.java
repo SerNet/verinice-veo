@@ -26,6 +26,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.veo.core.entity.profile.ProfileDefinition;
@@ -46,6 +47,7 @@ public class ProfileSetData {
 
   @NotNull
   @Column(columnDefinition = "jsonb")
+  @Valid
   private Map<String, ProfileDefinition> profiles = new HashMap<>();
 
   public void setProfiles(Map<String, ProfileDefinition> profiles) {

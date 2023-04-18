@@ -5229,6 +5229,9 @@
   },
   "profiles": {
     "demoUnit": {
+      "name": "Demo",
+      "description": "Beispieldaten für den Datenschutz",
+      "language": "de_DE",
       "elements": [
         {
           "name": "Data GmbH",

@@ -72,7 +72,8 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
                 "id2":createRiskDefinition("id2")
             ]
             profiles = [
-                "demoUnit": ProfileDefinition.of(Collections.singleton(data), Collections.emptySet())
+                "demoUnit": new ProfileDefinition('Demo unit','Eine Demo-Unit', 'de_DE',
+                Collections.singleton(data), Collections.emptySet())
             ]
         }
 

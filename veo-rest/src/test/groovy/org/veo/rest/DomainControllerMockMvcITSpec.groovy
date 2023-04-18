@@ -419,4 +419,22 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             get('AST_Application') == [IN_PROGRESS:0, NEW:0, RELEASED:0, FOR_REVIEW:0, ARCHIVED:0]
         }
     }
+
+    @WithUserDetails("user@domain.example")
+    def "retrieve demo profile metadata"() {
+        given:
+        def client = testDomain.owner
+        def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+
+        when:
+        def result = parseJson(get("/domains/${domain.idAsString}"))
+
+        then:
+        result.profiles.size() == 1
+        with(result.profiles.demoUnit) {
+            name == 'Demo'
+            description == 'Beispieldaten für den Datenschutz'
+            language == 'de_DE'
+        }
+    }
 }

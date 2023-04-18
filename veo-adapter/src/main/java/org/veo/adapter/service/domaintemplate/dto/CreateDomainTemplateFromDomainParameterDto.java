@@ -24,6 +24,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import org.veo.adapter.presenter.api.Patterns;
+import org.veo.core.entity.Constraints;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -42,8 +45,37 @@ public class CreateDomainTemplateFromDomainParameterDto {
 
   @Schema(
       description =
-          "The units to include in the creation of this domain template. "
-              + "Key is the symbolic name of the profile, value the UUID of the unit. "
-              + "Each entry defines a profile.")
-  private Map<String, String> profiles = new HashMap<>();
+          "The units to include in the creation of this domain template. Each entry defines a profile. "
+              + "Key is the symbolic name of the profile.")
+  private Map<String, ProfileCreationParameters> profiles = new HashMap<>();
+
+  @Data
+  public static class ProfileCreationParameters {
+    @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
+    @NotNull
+    @Schema(
+        description = "ID must be a valid UUID string following RFC 4122.",
+        example = "adf037f1-0089-48ad-9177-92269918758b",
+        format = "uuid")
+    private String unitId;
+
+    @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH)
+    @NotNull
+    @Schema(description = "A name for the profile", example = "My profile")
+    private String name;
+
+    @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH)
+    @NotNull
+    @Schema(
+        description = "A description for the profile",
+        example = "This profile contains commonly used template objects")
+    private String description;
+
+    @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH)
+    @NotNull
+    @Schema(
+        description = "The profile's language, must be an IETF BCP 47 language tag (see RFC 5646)",
+        example = "en_US")
+    private String language;
+  }
 }

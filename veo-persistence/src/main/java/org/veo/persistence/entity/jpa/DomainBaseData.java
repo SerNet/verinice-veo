@@ -120,6 +120,7 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
 
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinColumn(name = "profile_set_id")
+  @Valid
   private ProfileSetData profileSet = new ProfileSetData();
 
   @Override

@@ -205,14 +205,14 @@ public class ContentCreationController extends AbstractVeoController {
     createParameter
         .getProfiles()
         .forEach(
-            (name, unitId) -> {
+            (name, creationParameters) -> {
               try {
                 UnitDumpDto dump =
                     useCaseInteractor
                         .execute(
                             getUnitDumpUseCase,
                             (Supplier<GetUnitDumpUseCase.InputData>)
-                                () -> UnitDumpMapper.mapInput(unitId),
+                                () -> UnitDumpMapper.mapInput(creationParameters.getUnitId()),
                             out -> UnitDumpMapper.mapOutput(out, entityToDtoTransformer))
                         .get();
                 Set<AbstractElementDto> elements = dump.getElements();
@@ -224,7 +224,14 @@ public class ContentCreationController extends AbstractVeoController {
                     "dump size, elements:{} risks:{}",
                     dump.getElements().size(),
                     dump.getRisks().size());
-                profiles.put(name, ProfileDefinition.of(elements, risks));
+                profiles.put(
+                    name,
+                    new ProfileDefinition(
+                        creationParameters.getName(),
+                        creationParameters.getDescription(),
+                        creationParameters.getLanguage(),
+                        elements,
+                        risks));
               } catch (InterruptedException ex) {
                 throw new InternalProccesingException("Internal error", ex);
               } catch (ExecutionException ex) {

@@ -338,8 +338,16 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         when: "a template is created"
-        def result = parseJson(post("/content-creation/domains/${domain.id.uuidValue()}/template", [version : "1.2.3",
-            profiles: ["demoUnit": (unitId)]
+        def result = parseJson(post("/content-creation/domains/${domain.id.uuidValue()}/template", [
+            version : "1.2.3",
+            profiles: [
+                demoUnit: [
+                    unitId: unitId,
+                    name: 'Demo unit',
+                    description: 'All the good stuff',
+                    language: 'de_DE'
+                ]
+            ]
         ]))
 
         then: "a result is returned"
@@ -359,20 +367,26 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         dt.templateVersion == "1.2.3"
 
         and: "the profile data for the demo unit exists"
-        dt.profiles.demoUnit.elements != null
-        dt.profiles.demoUnit.risks != null
+        with(dt.profiles.demoUnit) {
+            name == 'Demo unit'
+            description == 'All the good stuff'
+            language == 'de_DE'
 
-        dt.profiles.demoUnit.elements*.type.sort() == [
-            "asset",
-            "control",
-            "document",
-            "incident",
-            "person",
-            "process",
-            "scenario",
-            "scope"
-        ]
-        dt.profiles.demoUnit.risks*._self.size() == 2
+            elements != null
+            risks != null
+
+            elements*.type.sort() == [
+                "asset",
+                "control",
+                "document",
+                "incident",
+                "person",
+                "process",
+                "scenario",
+                "scope"
+            ]
+            risks*._self.size() == 2
+        }
 
         when: "creating and exporting the domain"
         Domain newDomain = createTestDomain(client, dt.id.uuidValue())

@@ -161,7 +161,14 @@ class DomainRestTestITSpec extends VeoRestTest {
         and: "create a new domain template with the a profile based on the unit"
         def newTemplateVersionId = post("/content-creation/domains/${oldDomain.id}/template", [
             version: "1.4.1",
-            profiles: ["exampleUnit": (profileSourceUnitId)]
+            profiles: [
+                exampleUnit: [
+                    unitId: profileSourceUnitId,
+                    name: 'Example profile',
+                    description: 'An example profile',
+                    language: 'en_US'
+                ]
+            ]
         ], 201, CONTENT_CREATOR).body.targetUri.split('/').last()
         delete("/units/$profileSourceUnitId")
 
@@ -193,11 +200,14 @@ class DomainRestTestITSpec extends VeoRestTest {
         def domainDto = exportDomain(newDomainId)
 
         then: "the profile is contained"
-        domainDto.profiles.exampleUnit.elements*.name ==~ [
-            "example process",
-            "example scenario"
-        ]
-        domainDto.profiles.exampleUnit.risks.size() == 1
+        with(domainDto.profiles.exampleUnit) {
+            name == 'Example profile'
+            elements*.name ==~ [
+                "example process",
+                "example scenario"
+            ]
+            risks.size() == 1
+        }
 
         when: "we export the new domain template"
         def domainTemplate = get("/domaintemplates/${newTemplateVersionId}/export").body
@@ -243,7 +253,14 @@ class DomainRestTestITSpec extends VeoRestTest {
         when: "creating a new domain template with a profile based on the demo unit"
         def newTemplateVersionId = post("/content-creation/domains/${oldDomain.id}/template", [
             version: "1.4.3",
-            profiles: ["orgDemoUnit": (demoUnit.id)]
+            profiles: [
+                "orgDemoUnit": [
+                    unitId:demoUnit.id,
+                    name: 'Org Demo Unit',
+                    description: 'A strangely named profile',
+                    language: 'en_US'
+                ]
+            ]
         ], 201, CONTENT_CREATOR).body.targetUri.split('/').last()
 
         and: "we create a domain from the new template version"
