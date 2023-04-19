@@ -903,6 +903,54 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         thrown(NotFoundException)
     }
 
+    @WithUserDetails("user@domain.example")
+    def "inspection for unknown entity returns 404"() {
+        given:
+        def processId = '1a611e47-d76e-4659-ba28-6e7e736c562a'
+
+        when:
+        get("/processes/${processId}/inspection?domain=${dsgvoDomain.idAsString}", 404)
+
+        then:
+        thrown(NotFoundException)
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "inspection for unknown domain returns 404"() {
+        given:
+        def process = txTemplate.execute {
+            processRepository.save(newProcess(unit))
+        }
+
+        def domainId = '565839cb-b562-4da6-b78f-f1d75ab8f84b'
+
+        when:
+        get("/processes/${process.idAsString}/inspection?domain=${domainId}", 404)
+
+        then:
+        thrown(NotFoundException)
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "inspection for invalid process id returns 404"() {
+        expect:
+        get("/processes/helloworld/inspection?domain=${dsgvoDomain.idAsString}", 404)
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "inspection for invalid domain id returns 400"() {
+        given:
+        def process = txTemplate.execute {
+            processRepository.save(newProcess(unit))
+        }
+
+        when:
+        get("/processes/${process.idAsString}/inspection?domain=foobar", 400)
+
+        then:
+        thrown(IllegalArgumentException)
+    }
+
     private List createRisk() {
         def process = txTemplate.execute {
             processRepository.save(newProcess(unit) {

@@ -45,7 +45,12 @@ public class InspectElementUseCase
   @Override
   public OutputData execute(InputData input) {
     var client = input.client;
-    var domain = domainRepository.findById(input.domainId).orElseThrow();
+    var domain =
+        domainRepository
+            .findById(input.domainId)
+            .orElseThrow(
+                () ->
+                    new NotFoundException("Domain with ID %s not found".formatted(input.domainId)));
     if (!client.equals(domain.getOwner())) {
       throw new ClientBoundaryViolationException(domain, client);
     }
@@ -57,7 +62,7 @@ public class InspectElementUseCase
         repositoryProvider
             .getRepositoryFor(input.elementType)
             .findById(input.elementId)
-            .orElseThrow();
+            .orElseThrow(() -> new NotFoundException(input.elementId, input.elementType));
     element.checkSameClient(client);
     return new OutputData(inspector.inspect(element, domain));
   }
