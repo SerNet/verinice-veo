@@ -19,7 +19,6 @@ package org.veo.core
 
 import static groovy.json.JsonOutput.toJson
 import static org.springframework.http.MediaType.APPLICATION_JSON
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 import java.nio.charset.StandardCharsets
@@ -116,36 +115,32 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
     }
 
     ResultActions doRequest(MockHttpServletRequestBuilder requestBuilder, int expectedStatusCode) throws Exception {
-        ResultActions asyncActions = mvc
-                .perform(MockMvcRequestBuilders.asyncDispatch(prepareAsyncRequest(requestBuilder)))
-        MvcResult asyncResult = asyncActions.andReturn()
-
         boolean expectSuccessfulRequest = HttpStatus.resolve(expectedStatusCode).is2xxSuccessful()
-
-        if (expectSuccessfulRequest) {
-            assert asyncResult.resolvedException == null
-            asyncActions.andExpect(status().is(expectedStatusCode))
-        } else {
-            asyncActions.andExpect(status().is(expectedStatusCode))
-            assert asyncResult.resolvedException != null
+        def asyncActions = mvc.perform(requestBuilder)
+        def asyncResult = asyncActions.andReturn()
+        if (asyncResult.resolvedException != null) {
             throw asyncResult.resolvedException
         }
-        return asyncActions
-    }
+        if (expectSuccessfulRequest) {
+            assert asyncResult.request.asyncStarted
+        } else if (!asyncResult.request.asyncStarted) {
+            // The async request may fail to start if the request is invalid (e.g. has invalid HTTP header or params).
+            asyncActions.andExpect(status().is(expectedStatusCode))
+            return asyncActions
+        }
+        ResultActions actions = mvc
+                .perform(MockMvcRequestBuilders.asyncDispatch(asyncResult))
+        MvcResult result = actions.andReturn()
 
-    private MvcResult prepareAsyncRequest(MockHttpServletRequestBuilder requestBuilder) throws Exception{
-        def actions = mvc.perform(requestBuilder)
-        try {
-            return actions
-                    .andExpect(request().asyncStarted())
-                    .andReturn()
+        if (expectSuccessfulRequest) {
+            assert result.resolvedException == null
+            actions.andExpect(status().is(expectedStatusCode))
+        } else {
+            actions.andExpect(status().is(expectedStatusCode))
+            assert result.resolvedException != null
+            throw result.resolvedException
         }
-        // The async request may fail to start if the request is invalid (e.g. has invalid HTTP header or params).
-        catch (AssertionError ignored) {
-            if(actions.andReturn().resolvedException != null) {
-                throw actions.andReturn().resolvedException
-            }
-        }
+        return actions
     }
 
     def parseJson(ResultActions resultActions) {
