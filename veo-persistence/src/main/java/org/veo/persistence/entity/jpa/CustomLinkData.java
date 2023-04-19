@@ -27,34 +27,22 @@ import org.veo.core.entity.Element;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity(name = "customlink")
+@ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-public class CustomLinkData extends CustomAspectData implements CustomLink {
+public class CustomLinkData extends CustomAttributeContainerData implements CustomLink {
   public CustomLinkData() {
     super();
   }
 
-  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = true) // due to
-  // the
-  // single-table
-  // inheritance
-  // mapping,
-  // this
-  // must be
-  // nullable
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = false)
   @JoinColumn(name = "target_id")
   private Element target;
 
-  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = true) // due to
-  // the
-  // single-table
-  // inheritance
-  // mapping,
-  // this
-  // must be
-  // nullable
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = false)
   @JoinColumn(name = "source_id")
   private Element source;
 

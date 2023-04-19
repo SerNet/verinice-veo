@@ -26,7 +26,7 @@ import javax.validation.constraints.NotNull;
  *
  * @see CustomAspect
  */
-public interface CustomLink extends CustomAspect {
+public interface CustomLink extends CustomAttributeContainer {
 
   @NotNull
   Element getTarget();

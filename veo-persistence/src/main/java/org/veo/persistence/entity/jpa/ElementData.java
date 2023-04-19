@@ -251,10 +251,6 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   public boolean removeCustomAspect(CustomAspect customAspect) {
-    // TODO VEO-931 check becomes obsolete once custom link no longer extends custom aspect
-    if (customAspect instanceof CustomLink) {
-      throw new IllegalArgumentException("Cannot remove custom aspect - got custom link");
-    }
     requireAssociationWithDomain(customAspect.getDomain());
     return getDomainsContainingSameCustomAspectDefinition(customAspect).stream()
         .map(d -> removeCustomAspectInIndividualDomain(customAspect.getType(), d))
@@ -284,10 +280,6 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
 
   @Override
   public boolean applyCustomAspect(CustomAspect customAspect) {
-    // TODO VEO-931 check becomes obsolete once custom link no longer extends custom aspect
-    if (customAspect instanceof CustomLink) {
-      throw new IllegalArgumentException("Cannot apply custom aspect - got custom link");
-    }
     requireAssociationWithDomain(customAspect.getDomain());
     return getDomainsContainingSameCustomAspectDefinition(customAspect).stream()
         .map(
@@ -301,7 +293,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   @Override
   public boolean applyLink(CustomLink newLink) {
     return findLink(newLink.getType(), newLink.getTarget(), newLink.getDomain())
-        // TODO VEO-931 implement and use CustomLink::apply(CustomLink)
+        // TODO VEO-2086 implement and use CustomLink::apply(CustomLink)
         .map(oldLink -> oldLink.setAttributes(newLink.getAttributes()))
         .orElseGet(() -> addToLinks(newLink));
   }
@@ -340,7 +332,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   private boolean applyCustomAspectInIndividualDomain(
       @NotNull String type, @NotNull Map<String, Object> attributes, @NotNull DomainBase domain) {
     return findCustomAspect(domain, type)
-        // TODO VEO-931 implement and use CustomAspect::apply(CustomAspect)
+        // TODO VEO-2086 implement and use CustomAspect::apply(CustomAspect)
         .map(ca -> ca.setAttributes(attributes))
         .orElseGet(() -> addToCustomAspects(new CustomAspectData(type, attributes, domain)));
   }
@@ -368,7 +360,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     return links.stream()
         .filter(
             l ->
-                // TODO VEO-931 implement and use CustomLink::matches(CustomLink)
+                // TODO VEO-2086 implement and use CustomLink::matches(CustomLink)
                 l.getDomain().equals(domain)
                     && l.getType().matches(type)
                     && l.getTarget().equals(target))
@@ -387,7 +379,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   private Optional<CustomAspect> findCustomAspect(DomainBase domain, String type) {
-    // TODO VEO-931 implement and use CustomLink::matches(CustomLink)
+    // TODO VEO-2086 implement and use CustomLink::matches(CustomLink)
     return getCustomAspects(domain).stream().filter(ca -> ca.getType().equals(type)).findFirst();
   }
 

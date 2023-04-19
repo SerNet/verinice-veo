@@ -58,6 +58,10 @@ public abstract class ModifyElementUseCase<T extends Element>
     entity.setDesignator(storedEntity.getDesignator());
     evaluateDecisions(entity, storedEntity);
     DomainSensitiveElementValidator.validate(entity);
+
+    // TODO: VEO-839: remove this workaround against saving duplicate links
+    entity.getLinks().forEach(storedEntity::applyLink);
+    entity.setLinks(storedEntity.getLinks());
     return new OutputData<>(repo.save(entity));
   }
 

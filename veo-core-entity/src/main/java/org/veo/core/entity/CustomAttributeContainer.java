@@ -15,36 +15,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.entity.jpa;
+package org.veo.core.entity;
 
 import java.util.Map;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import org.veo.core.entity.CustomAspect;
-import org.veo.core.entity.DomainBase;
-import org.veo.core.entity.Element;
+/**
+ * A custom aspect - it describes a subset of an {@link Element} object's attributes in a set of
+ * domains. Attributes must conform to the dynamic object schema. A custom aspect is for
+ * documentation purposes only - it may be edited by humans and presented to humans (e.g. in a web
+ * form or generated report), but must never be used for any other computations such as risk
+ * calculations.
+ */
+public interface CustomAttributeContainer {
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity(name = "custom_aspect")
-@ToString(onlyExplicitlyIncluded = true, callSuper = true)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-@Data
-public class CustomAspectData extends CustomAttributeContainerData implements CustomAspect {
-  public CustomAspectData(String type, Map<String, Object> attributes, DomainBase domain) {
-    super(type, attributes, domain);
-  }
+  int TYPE_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
 
   @NotNull
-  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = false)
-  private Element owner;
+  String getType();
+
+  void setType(String aType);
+
+  DomainBase getDomain();
+
+  void setDomain(DomainBase domain);
+
+  Map<String, Object> getAttributes();
+
+  /**
+   * @return {@code true} if any attributes have changed
+   */
+  boolean setAttributes(Map<String, Object> attributes);
 }

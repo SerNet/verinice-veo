@@ -88,6 +88,7 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomAspect;
+import org.veo.core.entity.CustomAttributeContainer;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
@@ -624,16 +625,16 @@ public final class EntityToDtoTransformer {
   private CustomAspectMapDto mapCustomAspects(Element source, Domain domain) {
     return new CustomAspectMapDto(
         source.getCustomAspects(domain).stream()
-            .collect(toMap(CustomAspect::getType, this::mapCustomAspect)));
+            .collect(toMap(CustomAspect::getType, this::mapCustomAttributeContainer)));
   }
 
-  private AttributesDto mapCustomAspect(CustomAspect source) {
+  private AttributesDto mapCustomAttributeContainer(CustomAttributeContainer source) {
     return new AttributesDto(source.getAttributes());
   }
 
   private LinkDto mapLink(CustomLink source, Domain domain) {
     return new LinkDto(
         ElementInDomainIdRef.from(source.getTarget(), domain, referenceAssembler),
-        mapCustomAspect(source));
+        mapCustomAttributeContainer(source));
   }
 }

@@ -17,10 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.util.Map;
-
-import javax.validation.constraints.NotNull;
-
 /**
  * A custom aspect - it describes a subset of an {@link Element} object's attributes in a set of
  * domains. Attributes must conform to the dynamic object schema. A custom aspect is for
@@ -28,23 +24,4 @@ import javax.validation.constraints.NotNull;
  * form or generated report), but must never be used for any other computations such as risk
  * calculations.
  */
-public interface CustomAspect {
-
-  int TYPE_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
-
-  @NotNull
-  String getType();
-
-  void setType(String aType);
-
-  DomainBase getDomain();
-
-  void setDomain(DomainBase domain);
-
-  Map<String, Object> getAttributes();
-
-  /**
-   * @return {@code true} if any attributes have changed
-   */
-  boolean setAttributes(Map<String, Object> attributes);
-}
+public interface CustomAspect extends CustomAttributeContainer {}

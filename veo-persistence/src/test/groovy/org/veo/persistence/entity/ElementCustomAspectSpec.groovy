@@ -24,7 +24,6 @@ import org.veo.core.entity.definitions.attribute.BooleanAttributeDefinition
 import org.veo.core.entity.definitions.attribute.IntegerAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.persistence.entity.jpa.CustomAspectData
-import org.veo.persistence.entity.jpa.CustomLinkData
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.persistence.entity.jpa.transformer.IdentifiableDataFactory
 
@@ -183,28 +182,6 @@ class ElementCustomAspectSpec extends Specification {
         with(element.getCustomAspects(domainB)) { cas ->
             cas.find { it.type == "identicalType" }.attributes.attr == false
         }
-
-        where:
-        entityType << EntityType.ELEMENT_TYPES
-    }
-
-    def "cannot use custom links as custom aspects on #entityType.pluralTerm"() {
-        given:
-        def element = identifiableFactory.create(entityType.type, null) as Element
-
-        when:
-        element.applyCustomAspect(new CustomLinkData())
-
-        then:
-        def applyEx = thrown(IllegalArgumentException)
-        applyEx.message == "Cannot apply custom aspect - got custom link"
-
-        when:
-        element.removeCustomAspect(new CustomLinkData())
-
-        then:
-        def removeEx = thrown(IllegalArgumentException)
-        removeEx.message == "Cannot remove custom aspect - got custom link"
 
         where:
         entityType << EntityType.ELEMENT_TYPES
