@@ -202,21 +202,16 @@ class ElementMigrationServiceSpec extends Specification{
                 }
             ]
         }
-        def targetPerson = Mock(Element) {
-            modelType >> "person"
-            findSubType(domain) >> Optional.of("PER_Person")
-        }
         def element = Spy(Element) {
             id >> Key.newUuid()
             modelType >> "asset"
             customAspects >> [
-                Spy(CustomLink) {
+                Spy(CustomAspect) {
                     type >> "typeA"
                     attributes >> [
                         firstName: "Johnny",
                         lastName: 5,
                     ]
-                    target >> targetPerson
                 }
             ]
             links >> []

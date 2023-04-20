@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
-import org.veo.core.entity.CustomAspect
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Person
@@ -104,7 +103,7 @@ class CustomLinkPersistenceSpec extends VeoSpringSpec {
 
         when:
         assetData = savedAsset.get()
-        CustomAspect savedCp = assetData.getLinks().first()
+        CustomLink savedCp = assetData.getLinks().first()
 
         then: "numbers also"
         savedCp.attributes["my.key.1"] == 10
