@@ -196,6 +196,7 @@ public class ControlController extends AbstractElementController<Control, FullCo
             childElementIds,
             hasChildElements,
             hasParentElements,
+            null,
             description,
             designator,
             name,

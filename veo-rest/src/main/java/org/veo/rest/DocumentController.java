@@ -194,6 +194,7 @@ public class DocumentController extends AbstractElementController<Document, Full
             childElementIds,
             hasChildElements,
             hasParentElements,
+            null,
             description,
             designator,
             name,

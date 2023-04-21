@@ -194,6 +194,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
             childElementIds,
             hasChildElements,
             hasParentElements,
+            null,
             description,
             designator,
             name,

@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import java.util.UUID;
+
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Key;
 
 /**
  * A dynamic database query for retrieving {@link Element} objects.
@@ -27,4 +30,6 @@ import org.veo.core.entity.Element;
 public interface CompositeElementQuery<T extends Element> extends ElementQuery<T> {
 
   CompositeElementQuery<T> fetchPartsAndCompositesAndCompositesParts();
+
+  CompositeElementQuery<T> whereCompositesContain(SingleValueQueryCondition<Key<UUID>> compositeId);
 }

@@ -28,6 +28,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.CompositeElementQuery;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.PagedResult;
@@ -131,6 +132,13 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
     if (input.getHasParentElements() != null) {
       query.whereParentElementPresent(input.getHasParentElements().getValue().booleanValue());
     }
+    if (input.getCompositeId() != null) {
+      if (query instanceof CompositeElementQuery<?> c) {
+        c.whereCompositesContain(input.getCompositeId());
+      } else {
+        throw new IllegalArgumentException("Composite filter not compatible with query type");
+      }
+    }
   }
 
   @Valid
@@ -146,6 +154,7 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
     QueryCondition<Key<UUID>> childElementIds;
     SingleValueQueryCondition<Boolean> hasChildElements;
     SingleValueQueryCondition<Boolean> hasParentElements;
+    SingleValueQueryCondition<Key<UUID>> compositeId;
     QueryCondition<String> description;
     QueryCondition<String> designator;
     QueryCondition<String> name;

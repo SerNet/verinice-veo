@@ -220,6 +220,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
             childElementIds,
             hasChildElements,
             hasParentElements,
+            null,
             description,
             designator,
             name,

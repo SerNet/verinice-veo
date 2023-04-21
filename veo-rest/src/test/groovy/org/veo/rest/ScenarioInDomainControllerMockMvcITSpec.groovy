@@ -303,4 +303,48 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def nfEx = thrown(NotFoundException)
         nfEx.message == "Scenario $scenarioId is not associated with domain $testDomainId"
     }
+
+    @WithUserDetails("user@domain.example")
+    def "retrieve a composite scenario's parts"() {
+        given: '15 scenarios that belong to the domain'
+        def partIds = (1..15).collect { n->
+            parseJson(post("/scenarios", [
+                name: "scenario $n",
+                owner: [targetUri: "/units/$unitId"],
+                domains: [
+                    (testDomainId): [
+                        subType: "Attack",
+                        status: "NEW",
+                    ]
+                ]
+            ])).resourceId
+        }
+
+        and: '1 scenario that does not belong to the domain'
+        partIds <<  parseJson(post("/scenarios", [
+            name: "unassociated scenario",
+            owner: [targetUri: "/units/$unitId"]
+        ])).resourceId
+
+        and: 'a composite scenario with all of the above as its parts'
+        def compositeScenarioId = parseJson(post("/scenarios", [
+            name: "master scenario",
+            owner: [targetUri: "/units/$unitId"],
+            domains: [
+                (testDomainId): [
+                    subType: "Attack",
+                    status: "NEW",
+                ]
+            ],
+            parts: partIds.collect { [ targetUri:"/scenarios/$it" ] },
+        ])).resourceId
+
+        expect: 'the parts that belong to the domain are being returned by the respective endpoint'
+        with(parseJson(get("/domians/$testDomainId/scenarios/${compositeScenarioId}/parts?size=10&sortBy=designator"))) {
+            totalItemCount == 15
+            page == 0
+            pageCount == 2
+            items*.name == (1..10).collect { "scenario $it" }
+        }
+    }
 }

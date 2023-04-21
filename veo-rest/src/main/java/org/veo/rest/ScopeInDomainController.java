@@ -198,6 +198,7 @@ public class ScopeInDomainController {
             childElementIds,
             hasChildElements,
             hasParentElements,
+            null,
             description,
             designator,
             name,

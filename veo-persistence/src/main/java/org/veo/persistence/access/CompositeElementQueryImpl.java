@@ -18,11 +18,16 @@
 package org.veo.persistence.access;
 
 import java.util.List;
+import java.util.UUID;
+
+import javax.persistence.criteria.JoinType;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Key;
 import org.veo.core.repository.CompositeElementQuery;
 import org.veo.core.repository.ElementQuery;
+import org.veo.core.repository.SingleValueQueryCondition;
 import org.veo.persistence.access.jpa.CompositeEntityDataRepository;
 import org.veo.persistence.entity.jpa.ElementData;
 
@@ -42,6 +47,18 @@ public class CompositeElementQueryImpl<TInterface extends Element, TDataClass ex
   public CompositeElementQueryImpl<TInterface, TDataClass>
       fetchPartsAndCompositesAndCompositesParts() {
     fetchPartsAndCompositesAndCompositeParts = true;
+    return this;
+  }
+
+  @Override
+  public CompositeElementQuery<TInterface> whereCompositesContain(
+      SingleValueQueryCondition<Key<UUID>> condition) {
+    mySpec =
+        mySpec.and(
+            (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(
+                    root.join("composites", JoinType.LEFT).get("dbId"),
+                    condition.getValue().uuidValue()));
     return this;
   }
 

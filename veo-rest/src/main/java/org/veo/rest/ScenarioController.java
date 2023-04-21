@@ -194,6 +194,7 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
             childElementIds,
             hasChildElements,
             hasParentElements,
+            null,
             description,
             designator,
             name,

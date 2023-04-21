@@ -41,7 +41,9 @@ import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UPDATED_BY_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
+import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
+import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -69,6 +71,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDocumentInDomainDto;
+import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
@@ -89,6 +92,7 @@ import org.veo.rest.security.ApplicationUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -198,10 +202,75 @@ public class DocumentInDomainController {
             childElementIds,
             hasChildElements,
             hasParentElements,
+            null,
             description,
             designator,
             name,
             updatedBy,
+            PagingMapper.toConfig(
+                pageSize, pageNumber,
+                sortColumn, sortOrder)),
+        entityToDtoTransformer::transformDocument2Dto);
+  }
+
+  @Operation(summary = "Loads the parts of a document in a domain")
+  @ApiResponse(
+      responseCode = "200",
+      description = "Parts loaded",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              array = @ArraySchema(schema = @Schema(implementation = FullDocumentDto.class))))
+  @ApiResponse(responseCode = "404", description = "Document not found")
+  @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
+  public @Valid Future<PageDto<FullDocumentInDomainDto>> getElementParts(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      @RequestParam(
+              value = PAGE_SIZE_PARAM,
+              required = false,
+              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          Integer pageSize,
+      @RequestParam(
+              value = PAGE_NUMBER_PARAM,
+              required = false,
+              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
+          Integer pageNumber,
+      @RequestParam(
+              value = SORT_COLUMN_PARAM,
+              required = false,
+              defaultValue = SORT_COLUMN_DEFAULT_VALUE)
+          String sortColumn,
+      @RequestParam(
+              value = SORT_ORDER_PARAM,
+              required = false,
+              defaultValue = SORT_ORDER_DEFAULT_VALUE)
+          @Pattern(regexp = SORT_ORDER_PATTERN)
+          String sortOrder,
+      WebRequest request) {
+    return elementService.getElements(
+        domainId,
+        getDocumentsUseCase,
+        GetElementsInputMapper.map(
+            clientLookup.getClient(auth),
+            null,
+            domainId,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            uuid,
+            null,
+            null,
+            null,
+            null,
             PagingMapper.toConfig(
                 pageSize, pageNumber,
                 sortColumn, sortOrder)),
