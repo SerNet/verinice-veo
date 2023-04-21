@@ -24,9 +24,7 @@ import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -136,12 +134,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   public @Valid Future<List<FullDomainDto>> getDomains(
       @Parameter(required = false, hidden = true) Authentication auth) {
 
-    Client client = null;
-    try {
-      client = getClientWithCatalogs(auth);
-    } catch (NoSuchElementException e) {
-      return CompletableFuture.supplyAsync(Collections::emptyList);
-    }
+    Client client = getAuthenticatedClient(auth);
 
     final GetDomainsUseCase.InputData inputData = new GetDomainsUseCase.InputData(client);
     return useCaseInteractor.execute(

@@ -53,7 +53,6 @@ import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -184,12 +183,7 @@ public class ControlController extends AbstractElementController<Control, FullCo
               defaultValue = SORT_ORDER_DEFAULT_VALUE)
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder) {
-    Client client = null;
-    try {
-      client = getAuthenticatedClient(auth);
-    } catch (NoSuchElementException e) {
-      return CompletableFuture.supplyAsync(PageDto::emptyPage);
-    }
+    Client client = getAuthenticatedClient(auth);
 
     return getControls(
         GetElementsInputMapper.map(

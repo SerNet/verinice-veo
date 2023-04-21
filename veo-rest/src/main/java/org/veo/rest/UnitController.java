@@ -26,9 +26,7 @@ import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -211,12 +209,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
       @Parameter(required = false, hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = PARENT_PARAM, required = false) String parentUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName) {
-    Client client = null;
-    try {
-      client = getAuthenticatedClient(auth);
-    } catch (NoSuchElementException e) {
-      return CompletableFuture.supplyAsync(Collections::emptyList);
-    }
+    Client client = getAuthenticatedClient(auth);
 
     // TODO VEO-425 apply display name filter.
     final GetUnitsUseCase.InputData inputData =

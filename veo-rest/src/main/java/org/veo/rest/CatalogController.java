@@ -141,12 +141,7 @@ public class CatalogController extends AbstractEntityController {
       @Parameter(required = false, hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = DOMAIN_PARAM, required = false) String domainUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName) {
-    Client client = null;
-    try {
-      client = getClientWithCatalogsAndItems(auth, false);
-    } catch (NoSuchElementException e) {
-      return CompletableFuture.supplyAsync(Collections::emptyList);
-    }
+    Client client = getClientWithCatalogsAndItems(auth, false);
 
     final GetCatalogsUseCase.InputData inputData =
         new GetCatalogsUseCase.InputData(

@@ -51,6 +51,7 @@ import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.rest.common.ClientNotActiveException
 
 import groovy.json.JsonSlurper
 
@@ -147,18 +148,16 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
-    // TODO VEO-1815 Remove this special case, returning 403 instead:
     @WithUserDetails("user@domain.example")
-    def "Requesting units for a non-existing client returns empty array"() {
+    def "Requesting units for a non-existing client leads to an error"() {
         given: "no client"
         deleteTestClient()
 
         when: "a request is made to the server"
-        def result = parseJson(get("/units"))
+        get("/units", 403)
 
-        then: "no units are returned"
-        result != null
-        result.empty
+        then: "an exception is thrown"
+        thrown(ClientNotActiveException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -526,8 +525,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         def pool = Executors.newFixedThreadPool(8)
         AtomicInteger failedAttempts = new AtomicInteger()
         AtomicInteger successfulAttempts = new AtomicInteger()
-        def tasks = (1..numRequests).collect { n->
-            {
+        def tasks = (1..numRequests).collect { n-> {
                 ->
                 try {
                     UserDetails principal = userDetailsService.loadUserByUsername('manyunitscreator@domain.example')

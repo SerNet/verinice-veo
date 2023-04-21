@@ -20,12 +20,13 @@ package org.veo.rest
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.rest.common.ClientNotActiveException
 
 /**
  * Integration test for the controllers.
  *
  * The test checks that the methods for loading all objects in the
- * controllers work and returns empty results if no client exists.
+ * controllers work and returns HTTP status forbidden (403) if no client exists.
  *
  * Uses mocked spring MVC environment.
  * Uses JPA repositories with in-memory database.
@@ -40,28 +41,28 @@ class GetAllWithNoClientSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve all assets"() {
         when: "if the client was not created and request is made to the server"
-        def result = parseJson(get("/assets"))
+        def result = parseJson(get("/assets", 403))
 
-        then: "an empty result is returned"
-        result.items.empty
+        then: "an exception is thrown"
+        thrown(ClientNotActiveException)
     }
 
     @WithUserDetails("user@domain.example")
     def "retrieve all controls"() {
         when: "if the client was not created and request is made to the server"
-        def result = parseJson(get("/controls"))
+        def result = parseJson(get("/controls", 403))
 
-        then: "an empty result is returned"
-        result.items.empty
+        then: "an exception is thrown"
+        thrown(ClientNotActiveException)
     }
 
     @WithUserDetails("user@domain.example")
     def "retrieve all scopes"() {
         when: "if the client was not created and request is made to the server"
-        def result = parseJson(get("/scopes"))
+        def result = parseJson(get("/scopes", 403))
 
-        then: "an empty result is returned"
-        result.items.empty
+        then: "an exception is thrown"
+        thrown(ClientNotActiveException)
     }
 
     @WithUserDetails("user@domain.example")
@@ -69,25 +70,25 @@ class GetAllWithNoClientSpec extends VeoMvcSpec {
         when: "if the client was not created and request is made to the server"
         def result = parseJson(get("/persons"))
 
-        then: "an empty result is returned"
-        result.items.empty
+        then: "an exception is thrown"
+        thrown(ClientNotActiveException)
     }
 
     @WithUserDetails("user@domain.example")
     def "retrieve all processes"() {
         when: "if the client was not created and request is made to the server"
-        def result = parseJson(get("/processes"))
+        def result = parseJson(get("/processes", 403))
 
-        then: "an empty result is returned"
-        result.items.empty
+        then: "an exception is thrown"
+        thrown(ClientNotActiveException)
     }
 
     @WithUserDetails("user@domain.example")
     def "retrieve all units"() {
         when: "if the client was not created and request is made to the server"
-        def result = parseJson(get("/units"))
+        def result = parseJson(get("/units", 403))
 
-        then: "an empty result is returned"
-        result.items.empty
+        then: "an exception is thrown"
+        thrown(ClientNotActiveException)
     }
 }

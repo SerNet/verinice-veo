@@ -55,7 +55,6 @@ import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -354,13 +353,8 @@ public class ProcessController extends AbstractElementController<Process, FullPr
       @RequestParam(name = EMBED_RISKS_PARAM, required = false, defaultValue = "false")
           @Parameter(name = EMBED_RISKS_PARAM, required = false, description = EMBED_RISKS_DESC)
           Boolean embedRisksParam) {
-    Client client;
+    Client client = getAuthenticatedClient(auth);
     boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
-    try {
-      client = getAuthenticatedClient(auth);
-    } catch (NoSuchElementException e) {
-      return CompletableFuture.supplyAsync(PageDto::emptyPage);
-    }
 
     return getProcesses(
         GetProcessesInputMapper.map(
