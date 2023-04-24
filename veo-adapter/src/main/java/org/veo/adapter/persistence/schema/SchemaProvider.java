@@ -24,7 +24,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.fasterxml.classmate.AnnotationInclusion;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -35,7 +34,6 @@ import com.github.victools.jsonschema.generator.SchemaGenerator;
 import com.github.victools.jsonschema.generator.SchemaGeneratorConfig;
 import com.github.victools.jsonschema.generator.SchemaGeneratorConfigBuilder;
 import com.github.victools.jsonschema.generator.SchemaVersion;
-import com.github.victools.jsonschema.generator.impl.TypeContextFactory;
 import com.github.victools.jsonschema.module.jackson.JacksonModule;
 import com.github.victools.jsonschema.module.javax.validation.JavaxValidationModule;
 import com.github.victools.jsonschema.module.javax.validation.JavaxValidationOption;
@@ -136,8 +134,6 @@ public class SchemaProvider {
                     && method.getAnnotation(Schema.class) == null);
 
     SchemaGeneratorConfig config = configBuilder.build();
-    return new SchemaGenerator(
-        config,
-        TypeContextFactory.createTypeContext(AnnotationInclusion.INCLUDE_AND_INHERIT, config));
+    return new SchemaGenerator(config);
   }
 }
