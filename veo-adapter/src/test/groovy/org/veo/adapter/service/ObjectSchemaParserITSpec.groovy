@@ -140,4 +140,18 @@ class ObjectSchemaParserITSpec extends Specification {
             }
         })
     }
+
+    def "parsing an invalid schema throws an IllegalArgumentException"() {
+        given:
+        def schemaNode = objectMapper.readTree(content)
+
+        when:
+        objectSchemaParser.parseTypeDefinitionFromObjectSchema(EntityType.PROCESS, schemaNode)
+
+        then:
+        thrown(IllegalArgumentException)
+
+        where:
+        content << ['' , '{}']
+    }
 }

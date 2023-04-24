@@ -66,7 +66,7 @@ public class ObjectSchemaParser {
 
   public ElementTypeDefinition parseTypeDefinitionFromObjectSchema(
       EntityType type, JsonNode schemaNode) throws JsonProcessingException {
-    JsonNode properties = schemaNode.get(PROPERTIES);
+    JsonNode properties = schemaNode.required(PROPERTIES);
     ElementTypeDefinition typeDefinition =
         entityFactory.createElementTypeDefinition(type.getSingularTerm(), null);
     typeDefinition.setSubTypes(extractSubTypeDefinitions(properties));
@@ -77,18 +77,27 @@ public class ObjectSchemaParser {
   }
 
   private Map<String, SubTypeDefinition> extractSubTypeDefinitions(JsonNode properties) {
-    JsonNode domains = properties.get("domains");
+    JsonNode domains = properties.required("domains");
 
-    JsonNode allOf = domains.get(PROPERTIES).elements().next().get("allOf");
+    JsonNode allOf = domains.required(PROPERTIES).elements().next().required("allOf");
 
     return StreamSupport.stream(allOf.spliterator(), false)
         .collect(
             Collectors.toMap(
                 subTypeInfo ->
-                    subTypeInfo.get("if").get(PROPERTIES).get("subType").get("const").asText(),
+                    subTypeInfo
+                        .required("if")
+                        .required(PROPERTIES)
+                        .required("subType")
+                        .required("const")
+                        .asText(),
                 subTypeInfo -> {
                   JsonNode statusValues =
-                      subTypeInfo.get("then").get(PROPERTIES).get("status").get("enum");
+                      subTypeInfo
+                          .required("then")
+                          .required(PROPERTIES)
+                          .required("status")
+                          .required("enum");
                   SubTypeDefinition subTypeDefinition = new SubTypeDefinition();
                   subTypeDefinition.setStatuses(
                       StreamSupport.stream(statusValues.spliterator(), false)
@@ -99,7 +108,7 @@ public class ObjectSchemaParser {
   }
 
   private Map<String, CustomAspectDefinition> extractCustomAspectDefinitions(JsonNode properties) {
-    JsonNode customAspectsProperties = properties.get("customAspects").get(PROPERTIES);
+    JsonNode customAspectsProperties = properties.required("customAspects").required(PROPERTIES);
     Iterator<Entry<String, JsonNode>> aspectIt = customAspectsProperties.fields();
     Map<String, CustomAspectDefinition> customAspects =
         new HashMap<>(customAspectsProperties.size());
@@ -107,7 +116,7 @@ public class ObjectSchemaParser {
       Entry<String, JsonNode> entry = aspectIt.next();
       String aspectName = entry.getKey();
       JsonNode aspectAttributes =
-          entry.getValue().get(PROPERTIES).get("attributes").get(PROPERTIES);
+          entry.getValue().required(PROPERTIES).required("attributes").required(PROPERTIES);
       CustomAspectDefinition aspectDefinition = new CustomAspectDefinition();
       Iterator<Entry<String, JsonNode>> attributeIt = aspectAttributes.fields();
       Map<String, AttributeDefinition> attributeDefinitions =
@@ -125,15 +134,18 @@ public class ObjectSchemaParser {
 
   private AttributeDefinition parseAttributeDefinition(JsonNode jsonSchema) {
     if (jsonSchema.has("items")) {
-      return new ListAttributeDefinition(parseAttributeDefinition(jsonSchema.get("items")));
+      return new ListAttributeDefinition(parseAttributeDefinition(jsonSchema.required("items")));
     }
     if (jsonSchema.has("enum")) {
       var allowedValues = new ArrayList<String>();
-      jsonSchema.get("enum").elements().forEachRemaining(n -> allowedValues.add(n.textValue()));
+      jsonSchema
+          .required("enum")
+          .elements()
+          .forEachRemaining(n -> allowedValues.add(n.textValue()));
       return new EnumAttributeDefinition(allowedValues);
     }
     if (jsonSchema.has("format")) {
-      return switch (jsonSchema.get("format").textValue()) {
+      return switch (jsonSchema.required("format").textValue()) {
         case "date" -> new DateAttributeDefinition();
         case "date-time" -> new DateTimeAttributeDefinition();
         case "uri" -> new ExternalDocumentAttributeDefinition();
@@ -141,7 +153,7 @@ public class ObjectSchemaParser {
       };
     }
     if (jsonSchema.has("type")) {
-      return switch (jsonSchema.get("type").textValue()) {
+      return switch (jsonSchema.required("type").textValue()) {
         case "integer" -> new IntegerAttributeDefinition();
         case "boolean" -> new BooleanAttributeDefinition();
         case "string" -> new TextAttributeDefinition();
@@ -152,15 +164,15 @@ public class ObjectSchemaParser {
   }
 
   private Map<String, LinkDefinition> extractLinkDefinitions(JsonNode properties) {
-    JsonNode linksProperties = properties.get("links").get(PROPERTIES);
+    JsonNode linksProperties = properties.required("links").required(PROPERTIES);
     Iterator<Entry<String, JsonNode>> linkIt = linksProperties.fields();
     Map<String, LinkDefinition> links = new HashMap<>(linksProperties.size());
     while (linkIt.hasNext()) {
       Entry<String, JsonNode> entry = linkIt.next();
       String linkName = entry.getKey();
-      JsonNode linkProperties = entry.getValue().get("items").get(PROPERTIES);
+      JsonNode linkProperties = entry.getValue().required("items").required(PROPERTIES);
       LinkDefinition linkDefinition = new LinkDefinition();
-      JsonNode attributeProperties = linkProperties.get("attributes").get(PROPERTIES);
+      JsonNode attributeProperties = linkProperties.required("attributes").required(PROPERTIES);
       Iterator<Entry<String, JsonNode>> attributeIt = attributeProperties.fields();
       Map<String, AttributeDefinition> attributeDefinitions =
           new HashMap<>(attributeProperties.size());
@@ -171,10 +183,12 @@ public class ObjectSchemaParser {
       }
       linkDefinition.setAttributeDefinitions(attributeDefinitions);
 
-      JsonNode targetProperties = linkProperties.get("target").get(PROPERTIES);
+      JsonNode targetProperties = linkProperties.required("target").required(PROPERTIES);
 
-      linkDefinition.setTargetType(targetProperties.get("type").get("enum").get(0).asText());
-      linkDefinition.setTargetSubType(targetProperties.get("subType").get("enum").get(0).asText());
+      linkDefinition.setTargetType(
+          targetProperties.required("type").required("enum").required(0).asText());
+      linkDefinition.setTargetSubType(
+          targetProperties.required("subType").required("enum").required(0).asText());
       links.put(linkName, linkDefinition);
     }
     return links;
@@ -183,7 +197,7 @@ public class ObjectSchemaParser {
   @SuppressWarnings("unchecked")
   private Map<Locale, Map<String, String>> extractTranslations(JsonNode properties)
       throws JsonProcessingException {
-    JsonNode translationsNode = properties.get("translations");
+    JsonNode translationsNode = properties.required("translations");
     return TranslationProvider.convertLocales(
         OBJECTMAPPER.treeToValue(translationsNode, Map.class));
   }

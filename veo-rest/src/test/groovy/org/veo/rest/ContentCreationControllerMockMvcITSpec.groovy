@@ -158,6 +158,18 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("content-creator")
+    def "trying to update the element type schema with incomplete data results in a HTTP 400"() {
+        given:
+        def schemaJson = [:]
+
+        when:
+        def result = post("/content-creation/domains/${testDomain.id.uuidValue()}/element-type-definitions/scope/object-schema", schemaJson, 400)
+
+        then:
+        thrown(IllegalArgumentException)
+    }
+
+    @WithUserDetails("content-creator")
     def "update an element type definition in a domain"() {
         given:
         def schemaJson = [
