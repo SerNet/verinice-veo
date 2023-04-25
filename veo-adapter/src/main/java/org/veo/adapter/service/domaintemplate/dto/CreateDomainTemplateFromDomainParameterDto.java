@@ -60,19 +60,16 @@ public class CreateDomainTemplateFromDomainParameterDto {
     private String unitId;
 
     @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH)
-    @NotNull
     @Schema(description = "A name for the profile", example = "My profile")
     private String name;
 
     @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH)
-    @NotNull
     @Schema(
         description = "A description for the profile",
         example = "This profile contains commonly used template objects")
     private String description;
 
     @Size(max = Constraints.DEFAULT_STRING_MAX_LENGTH)
-    @NotNull
     @Schema(
         description = "The profile's language, must be an IETF BCP 47 language tag (see RFC 5646)",
         example = "en_US")

@@ -19,7 +19,6 @@ package org.veo.core.entity.profile;
 
 import java.util.Set;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.veo.core.entity.Constraints;
@@ -38,15 +37,12 @@ public class ProfileDefinition {
   static final int DESCRIPTION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
   static final int LANGUAGE_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
 
-  @NotNull
   @Size(max = NAME_MAX_LENGTH)
   private String name;
 
-  @NotNull
   @Size(max = DESCRIPTION_MAX_LENGTH)
   private String description;
 
-  @NotNull
   @Size(max = LANGUAGE_MAX_LENGTH)
   private String language;
 

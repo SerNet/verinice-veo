@@ -444,6 +444,26 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         newDomain.profiles.demoUnit.risks.size() == 2
     }
 
+    @WithUserDetails("content-creator")
+    def "Profile metadata are optional"() {
+        given:
+        Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domain.idAsString)
+
+        when: "a template is created"
+        def result = parseJson(post("/content-creation/domains/${domain.id.uuidValue()}/template", [
+            version : "1.2.3",
+            profiles: [
+                demoUnit: [
+                    unitId: unitId
+                ]
+            ]
+        ]))
+
+        then: "a result is returned"
+        noExceptionThrown()
+    }
+
     @WithUserDetails("user@domain.example")
     def "create a DomainTemplate forbidden for user"() {
         given: "a saved domain"
