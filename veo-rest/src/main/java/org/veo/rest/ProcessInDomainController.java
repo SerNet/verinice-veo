@@ -71,7 +71,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateProcessInDomainDto;
-import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.GetProcessesInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
@@ -221,7 +220,8 @@ public class ProcessInDomainController {
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
-              array = @ArraySchema(schema = @Schema(implementation = FullProcessDto.class))))
+              array =
+                  @ArraySchema(schema = @Schema(implementation = FullProcessInDomainDto.class))))
   @ApiResponse(responseCode = "404", description = "Process not found")
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
   public @Valid Future<PageDto<FullProcessInDomainDto>> getElementParts(
