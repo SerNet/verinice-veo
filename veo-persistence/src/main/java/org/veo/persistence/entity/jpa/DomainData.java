@@ -28,11 +28,9 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity(name = "domain")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class DomainData extends DomainBaseData implements Domain {
@@ -52,5 +50,15 @@ public class DomainData extends DomainBaseData implements Domain {
   @Override
   public boolean isActive() {
     return active;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }

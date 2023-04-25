@@ -47,13 +47,11 @@ import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.entity.specification.ElementTypeDefinitionValidator;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @TypeDef(name = "json", typeClass = JsonType.class, defaultForType = Map.class)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true)
 @Data
 public abstract class DomainBaseData extends IdentifiableVersionedData
@@ -154,5 +152,15 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
   @Override
   public Optional<RiskDefinition> getRiskDefinition(String riskDefinitionId) {
     return Optional.ofNullable(getRiskDefinitions().get(riskDefinitionId));
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
   }
 }
