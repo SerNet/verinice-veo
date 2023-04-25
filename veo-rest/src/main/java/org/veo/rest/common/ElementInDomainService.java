@@ -42,6 +42,7 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
@@ -93,6 +94,16 @@ public class ElementInDomainService {
             new GetElementUseCase.InputData(Key.uuidFrom(uuid), client, Key.uuidFrom(domainId)),
             output -> toDtoMapper.apply(output.getElement(), output.getDomain()))
         .thenApply(dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
+  }
+
+  public @Valid <TElement extends Element> boolean ensureElementExists(
+      Client client, String domainId, String uuid, GetElementUseCase<TElement> getElementUseCase) {
+    return runner.run(
+            () ->
+                getElementUseCase.execute(
+                    new GetElementUseCase.InputData(
+                        Key.uuidFrom(uuid), client, Key.uuidFrom(domainId))))
+        != null;
   }
 
   public <

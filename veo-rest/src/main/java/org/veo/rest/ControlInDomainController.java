@@ -253,11 +253,13 @@ public class ControlInDomainController {
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder,
       WebRequest request) {
+    var client = clientLookup.getClient(auth);
+    elementService.ensureElementExists(client, domainId, uuid, getControlUseCase);
     return elementService.getElements(
         domainId,
         getControlsUseCase,
         GetElementsInputMapper.map(
-            clientLookup.getClient(auth),
+            client,
             null,
             domainId,
             null,

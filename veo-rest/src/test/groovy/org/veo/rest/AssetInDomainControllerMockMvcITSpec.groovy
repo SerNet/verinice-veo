@@ -257,4 +257,16 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def nfEx = thrown(NotFoundException)
         nfEx.message == "Asset $assetId is not associated with domain $testDomainId"
     }
+
+    def "retrieving parts for missing asset returns 404"() {
+        given: "a non-existing asset ID"
+        def randomAssetId = randomUUID()
+
+        when: "trying to fetch its parts in the domain"
+        get("/domians/$testDomainId/assets/$randomAssetId/parts", 404)
+
+        then:
+        def nfEx = thrown(NotFoundException)
+        nfEx.message == "Asset with ID $randomAssetId not found"
+    }
 }

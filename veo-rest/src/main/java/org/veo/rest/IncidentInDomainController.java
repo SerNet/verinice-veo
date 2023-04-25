@@ -253,11 +253,13 @@ public class IncidentInDomainController {
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder,
       WebRequest request) {
+    var client = clientLookup.getClient(auth);
+    elementService.ensureElementExists(client, domainId, uuid, getIncidentUseCase);
     return elementService.getElements(
         domainId,
         getIncidentsUseCase,
         GetElementsInputMapper.map(
-            clientLookup.getClient(auth),
+            client,
             null,
             domainId,
             null,

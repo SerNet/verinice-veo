@@ -254,11 +254,13 @@ public class ProcessInDomainController {
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder,
       WebRequest request) {
+    var client = clientLookup.getClient(auth);
+    elementService.ensureElementExists(client, domainId, uuid, getProcessUseCase);
     return elementService.getElements(
         domainId,
         getProcessesUseCase,
         GetProcessesInputMapper.map(
-            clientLookup.getClient(auth),
+            client,
             null,
             domainId,
             null,

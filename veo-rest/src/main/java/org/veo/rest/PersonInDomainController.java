@@ -252,11 +252,13 @@ public class PersonInDomainController {
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder,
       WebRequest request) {
+    var client = clientLookup.getClient(auth);
+    elementService.ensureElementExists(client, domainId, uuid, getPersonUseCase);
     return elementService.getElements(
         domainId,
         getPersonsUseCase,
         GetElementsInputMapper.map(
-            clientLookup.getClient(auth),
+            client,
             null,
             domainId,
             null,

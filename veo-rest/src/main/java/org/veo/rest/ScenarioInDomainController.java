@@ -252,11 +252,13 @@ public class ScenarioInDomainController {
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder,
       WebRequest request) {
+    var client = clientLookup.getClient(auth);
+    elementService.ensureElementExists(client, domainId, uuid, getScenarioUseCase);
     return elementService.getElements(
         domainId,
         getScenariosUseCase,
         GetElementsInputMapper.map(
-            clientLookup.getClient(auth),
+            client,
             null,
             domainId,
             null,
