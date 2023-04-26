@@ -59,6 +59,11 @@ public interface Element
    */
   Set<Domain> getDomains();
 
+  /**
+   * Moves all domain-specific information for given old (associated) domain to a new (unassociated)
+   * domain. After this operation, the element will be associated with the new domain instead of the
+   * old domain.
+   */
   void transferToDomain(Domain oldDomain, Domain newDomain);
 
   /**
@@ -94,6 +99,13 @@ public interface Element
                         .formatted(getModelType(), getIdAsString(), domain.getIdAsString())));
   }
 
+  /**
+   * Associate this element with an additional domain. This makes the element visible to users in
+   * the context of given domain and allows domain-specific information such as custom aspects or
+   * links to be added for that domain. When associating an element with a domain, existing custom
+   * aspects from other domains that are identically defined in the new domain are copied to the new
+   * domain.
+   */
   void associateWithDomain(DomainBase domain, String subType, String status);
 
   /**
