@@ -362,7 +362,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
             l ->
                 // TODO VEO-2086 implement and use CustomLink::matches(CustomLink)
                 l.getDomain().equals(domain)
-                    && l.getType().matches(type)
+                    && l.getType().equals(type)
                     && l.getTarget().equals(target))
         .findFirst();
   }
