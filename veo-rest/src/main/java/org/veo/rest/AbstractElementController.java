@@ -110,6 +110,7 @@ public abstract class AbstractElementController<
               if (e instanceof CompositeElement) {
                 // initialize subtypeAspects field for PartCountProvider
                 // TODO VEO-1569: remove this when the PartCountProvider uses a repository method
+                @SuppressWarnings({"unchecked", "rawtypes"})
                 CompositeElement<CompositeElement> ce = (CompositeElement<CompositeElement>) e;
                 ce.getParts().forEach(p -> Hibernate.initialize(p.getSubTypeAspects()));
               }
@@ -134,6 +135,7 @@ public abstract class AbstractElementController<
         output -> ResponseEntity.ok().body(output.getFindings()));
   }
 
+  @SuppressWarnings("unchecked")
   protected ResponseEntity<E> toResponseEntity(T entity) {
     return ResponseEntity.ok()
         .eTag(ETag.from(entity.getIdAsString(), entity.getVersion() + 1))

@@ -214,16 +214,14 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
 
   @Override
   @Operation(summary = "Loads a scenario")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Scenario loaded",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = FullScenarioDto.class))),
-    @ApiResponse(responseCode = "404", description = "Scenario not found")
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Scenario loaded",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = FullScenarioDto.class)))
+  @ApiResponse(responseCode = "404", description = "Scenario not found")
   @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullScenarioDto>> getElement(
       @Parameter(required = false, hidden = true) Authentication auth,
@@ -236,16 +234,14 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
 
   @Override
   @Operation(summary = "Loads the parts of a scenario")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Parts loaded",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                array = @ArraySchema(schema = @Schema(implementation = FullScenarioDto.class)))),
-    @ApiResponse(responseCode = "404", description = "Scenario not found")
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Parts loaded",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              array = @ArraySchema(schema = @Schema(implementation = FullScenarioDto.class))))
+  @ApiResponse(responseCode = "404", description = "Scenario not found")
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
   public @Valid CompletableFuture<ResponseEntity<List<FullScenarioDto>>> getElementParts(
       @Parameter(required = false, hidden = true) Authentication auth,
@@ -284,10 +280,8 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
 
   @PutMapping(value = "/{id}")
   @Operation(summary = "Updates a scenario")
-  @ApiResponses({
-    @ApiResponse(responseCode = "200", description = "Scenario updated"),
-    @ApiResponse(responseCode = "404", description = "Scenario not found")
-  })
+  @ApiResponse(responseCode = "200", description = "Scenario updated")
+  @ApiResponse(responseCode = "404", description = "Scenario not found")
   public CompletableFuture<ResponseEntity<FullScenarioDto>> updateScenario(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
@@ -313,10 +307,8 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
 
   @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
   @Operation(summary = "Deletes a scenario")
-  @ApiResponses({
-    @ApiResponse(responseCode = "204", description = "Scenario deleted"),
-    @ApiResponse(responseCode = "404", description = "Scenario not found")
-  })
+  @ApiResponse(responseCode = "204", description = "Scenario deleted")
+  @ApiResponse(responseCode = "404", description = "Scenario not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteScenario(
       @Parameter(required = false, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -381,15 +373,13 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
   @Operation(
       summary =
           "Evaluates decisions and inspections on a transient scenario without persisting anything")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Element evaluated",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Element evaluated",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
   @PostMapping(value = "/evaluation")
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
       @Parameter(required = true, hidden = true) Authentication auth,
@@ -399,16 +389,14 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
   }
 
   @Operation(summary = "Runs inspections on a persisted scenario")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Inspections have run",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                array = @ArraySchema(schema = @Schema(implementation = Finding.class)))),
-    @ApiResponse(responseCode = "404", description = "Scenario not found")
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Inspections have run",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              array = @ArraySchema(schema = @Schema(implementation = Finding.class))))
+  @ApiResponse(responseCode = "404", description = "Scenario not found")
   @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
   public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
       @Parameter(required = true, hidden = true) Authentication auth,

@@ -96,15 +96,12 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /** REST service which provides methods to manage assets from the viewpoint of a domain. */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(AssetInDomainController.URL_BASE_PATH)
-@Slf4j
 public class AssetInDomainController {
   // TODO VEO-2000 replace /domians with Domain.PLURAL_TERM
   public static final String URL_BASE_PATH = "/domians/{domainId}/" + Asset.PLURAL_TERM;
@@ -118,18 +115,16 @@ public class AssetInDomainController {
   private final EntityToDtoTransformer entityToDtoTransformer;
 
   @Operation(summary = "Loads an asset from the viewpoint of a domain")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Asset loaded",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = FullAssetInDomainDto.class))),
-    @ApiResponse(responseCode = "404", description = "Asset not found"),
-    @ApiResponse(responseCode = "404", description = "Domain not found"),
-    @ApiResponse(responseCode = "404", description = "Asset not associated with domain"),
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Asset loaded",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = FullAssetInDomainDto.class)))
+  @ApiResponse(responseCode = "404", description = "Asset not found")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "404", description = "Asset not associated with domain")
   @GetMapping(UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullAssetInDomainDto>> getElement(
       @Parameter(required = true, hidden = true) Authentication auth,
@@ -281,14 +276,11 @@ public class AssetInDomainController {
 
   @Operation(summary = "Creates an asset, assigning it to the domain")
   @PostMapping
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "201",
-            description = "Asset created",
-            headers = @Header(name = "Location")),
-        @ApiResponse(responseCode = "404", description = "Domain not found"),
-      })
+  @ApiResponse(
+      responseCode = "201",
+      description = "Asset created",
+      headers = @Header(name = "Location"))
+  @ApiResponse(responseCode = "404", description = "Domain not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createElement(
       @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -323,11 +315,9 @@ public class AssetInDomainController {
 
   @Operation(summary = "Updates an asset from the viewpoint of a domain")
   @PutMapping(UUID_PARAM_SPEC)
-  @ApiResponses({
-    @ApiResponse(responseCode = "200", description = "Asset updated"),
-    @ApiResponse(responseCode = "404", description = "Asset not found"),
-    @ApiResponse(responseCode = "404", description = "Asset not associated with domain"),
-  })
+  @ApiResponse(responseCode = "200", description = "Asset updated")
+  @ApiResponse(responseCode = "404", description = "Asset not found")
+  @ApiResponse(responseCode = "404", description = "Asset not associated with domain")
   public CompletableFuture<ResponseEntity<FullAssetInDomainDto>> updateElement(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -352,16 +342,14 @@ public class AssetInDomainController {
   @Operation(
       summary =
           "Evaluates decisions and inspections on a transient asset without persisting anything")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Element evaluated",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = EvaluateElementOutputSchema.class))),
-    @ApiResponse(responseCode = "404", description = "Domain not found")
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Element evaluated",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
+  @ApiResponse(responseCode = "404", description = "Domain not found")
   @PostMapping(value = "/evaluation")
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
       @Parameter(required = true, hidden = true) Authentication auth,

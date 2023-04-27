@@ -214,16 +214,14 @@ public class DocumentController extends AbstractElementController<Document, Full
 
   @Override
   @Operation(summary = "Loads a document")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Document loaded",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = FullDocumentDto.class))),
-    @ApiResponse(responseCode = "404", description = "Document not found")
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Document loaded",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = FullDocumentDto.class)))
+  @ApiResponse(responseCode = "404", description = "Document not found")
   @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullDocumentDto>> getElement(
       @Parameter(required = false, hidden = true) Authentication auth,
@@ -236,16 +234,14 @@ public class DocumentController extends AbstractElementController<Document, Full
 
   @Override
   @Operation(summary = "Loads the parts of a document")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Parts loaded",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                array = @ArraySchema(schema = @Schema(implementation = FullDocumentDto.class)))),
-    @ApiResponse(responseCode = "404", description = "Document not found")
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Parts loaded",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              array = @ArraySchema(schema = @Schema(implementation = FullDocumentDto.class))))
+  @ApiResponse(responseCode = "404", description = "Document not found")
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
   public @Valid CompletableFuture<ResponseEntity<List<FullDocumentDto>>> getElementParts(
       @Parameter(required = false, hidden = true) Authentication auth,
@@ -284,10 +280,8 @@ public class DocumentController extends AbstractElementController<Document, Full
 
   @PutMapping(value = "/{id}")
   @Operation(summary = "Updates a document")
-  @ApiResponses({
-    @ApiResponse(responseCode = "200", description = "Document updated"),
-    @ApiResponse(responseCode = "404", description = "Document not found")
-  })
+  @ApiResponse(responseCode = "200", description = "Document updated")
+  @ApiResponse(responseCode = "404", description = "Document not found")
   public CompletableFuture<ResponseEntity<FullDocumentDto>> updateDocument(
       @Parameter(hidden = true) ApplicationUser user,
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
@@ -311,10 +305,8 @@ public class DocumentController extends AbstractElementController<Document, Full
 
   @DeleteMapping(ControllerConstants.UUID_PARAM_SPEC)
   @Operation(summary = "Deletes a document")
-  @ApiResponses({
-    @ApiResponse(responseCode = "204", description = "Document deleted"),
-    @ApiResponse(responseCode = "404", description = "Document not found")
-  })
+  @ApiResponse(responseCode = "204", description = "Document deleted")
+  @ApiResponse(responseCode = "404", description = "Document not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteDocument(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -379,15 +371,13 @@ public class DocumentController extends AbstractElementController<Document, Full
   @Operation(
       summary =
           "Evaluates decisions and inspections on a transient document without persisting anything")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Element evaluated",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Element evaluated",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
   @PostMapping(value = "/evaluation")
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
       @Parameter(required = true, hidden = true) Authentication auth,
@@ -397,16 +387,14 @@ public class DocumentController extends AbstractElementController<Document, Full
   }
 
   @Operation(summary = "Runs inspections on a persisted document")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Inspections have run",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                array = @ArraySchema(schema = @Schema(implementation = Finding.class)))),
-    @ApiResponse(responseCode = "404", description = "Document not found")
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Inspections have run",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              array = @ArraySchema(schema = @Schema(implementation = Finding.class))))
+  @ApiResponse(responseCode = "404", description = "Document not found")
   @GetMapping(value = UUID_PARAM_SPEC + "/inspection")
   public @Valid CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
       @Parameter(required = true, hidden = true) Authentication auth,

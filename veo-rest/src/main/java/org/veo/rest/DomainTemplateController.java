@@ -51,7 +51,6 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.FindDomainTemplatesUseCase;
@@ -84,7 +83,6 @@ public class DomainTemplateController extends AbstractEntityController {
 
   public static final String URL_BASE_PATH = "/" + DomainTemplate.PLURAL_TERM;
 
-  private final UseCaseInteractor useCaseInteractor;
   private final CreateDomainFromTemplateUseCase createDomainFromTemplateUseCase;
   private final CreateDomainTemplateUseCase createDomainTemplatesUseCase;
   private final EntityFactory entityFactory;
@@ -95,15 +93,13 @@ public class DomainTemplateController extends AbstractEntityController {
 
   @GetMapping
   @Operation(summary = "Loads all domain templates (metadata only)")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "DomainTemplates loaded",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = DomainTemplateMetadataDto.class)))
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "DomainTemplates loaded",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = DomainTemplateMetadataDto.class)))
   public @Valid Future<ResponseEntity<List<DomainTemplateMetadataDto>>> getDomainTemplates() {
     return useCaseInteractor.execute(
         findDomainTemplatesUseCase,
@@ -131,10 +127,8 @@ public class DomainTemplateController extends AbstractEntityController {
 
   @PostMapping()
   @Operation(summary = "Creates domain template")
-  @ApiResponses({
-    @ApiResponse(responseCode = "201", description = "Domain template created"),
-    @ApiResponse(responseCode = "409", description = "Domain template with given ID already exists")
-  })
+  @ApiResponse(responseCode = "201", description = "Domain template created")
+  @ApiResponse(responseCode = "409", description = "Domain template with given ID already exists")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomainTemplate(
       @Valid @NotNull @RequestBody TransformDomainTemplateDto domainTemplateDto) {
     var input =
@@ -151,16 +145,14 @@ public class DomainTemplateController extends AbstractEntityController {
 
   @GetMapping(value = "/{id}")
   @Operation(summary = "Loads a domaintemplate")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "DomainTemplate loaded",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = FullDomainDto.class))),
-    @ApiResponse(responseCode = "404", description = "DomainTemplate not found")
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "DomainTemplate loaded",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = FullDomainDto.class)))
+  @ApiResponse(responseCode = "404", description = "DomainTemplate not found")
   public @Valid Future<ResponseEntity<TransformDomainTemplateDto>> getDomainTemplate(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String id,
@@ -172,23 +164,21 @@ public class DomainTemplateController extends AbstractEntityController {
 
   @GetMapping(value = "/{id}/export")
   @Operation(summary = "export a domaintemplate")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "DomainTemplate exported",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = TransformDomainTemplateDto.class))),
-    @ApiResponse(responseCode = "404", description = "DomainTemplate not found")
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "DomainTemplate exported",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = TransformDomainTemplateDto.class)))
+  @ApiResponse(responseCode = "404", description = "DomainTemplate not found")
   public @Valid Future<ResponseEntity<TransformDomainTemplateDto>> exportDomainTemplate(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String id,
       WebRequest request) {
     Client client = getAuthenticatedClient(auth);
     Function<GetDomainTemplateUseCase.OutputData, TransformDomainTemplateDto> toDtoFunction =
-        (output) -> entityToDtoTransformer.transformDomainTemplate2Dto(output.getDomainTemplate());
+        output -> entityToDtoTransformer.transformDomainTemplate2Dto(output.getDomainTemplate());
     return getDomainTemplate(id, client, toDtoFunction);
   }
 

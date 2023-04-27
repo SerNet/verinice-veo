@@ -96,7 +96,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -119,18 +118,16 @@ public class IncidentInDomainController {
 
   @GetMapping(UUID_PARAM_SPEC)
   @Operation(summary = "Loads an incident from the viewpoint of a domain")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Incident loaded",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = FullIncidentInDomainDto.class))),
-    @ApiResponse(responseCode = "404", description = "Incident not found"),
-    @ApiResponse(responseCode = "404", description = "Domain not found"),
-    @ApiResponse(responseCode = "404", description = "Incident not associated with domain"),
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Incident loaded",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = FullIncidentInDomainDto.class)))
+  @ApiResponse(responseCode = "404", description = "Incident not found")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "404", description = "Incident not associated with domain")
   public @Valid Future<ResponseEntity<FullIncidentInDomainDto>> getElement(
       @Parameter(required = true, hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -282,14 +279,11 @@ public class IncidentInDomainController {
 
   @Operation(summary = "Creates an incident, assigning it to the domain")
   @PostMapping
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "201",
-            description = "Incident created",
-            headers = @Header(name = "Location")),
-        @ApiResponse(responseCode = "404", description = "Domain not found"),
-      })
+  @ApiResponse(
+      responseCode = "201",
+      description = "Incident created",
+      headers = @Header(name = "Location"))
+  @ApiResponse(responseCode = "404", description = "Domain not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createElement(
       @Parameter(required = true, hidden = true) ApplicationUser user,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -329,11 +323,9 @@ public class IncidentInDomainController {
 
   @Operation(summary = "Updates a incident from the viewpoint of a domain")
   @PutMapping(UUID_PARAM_SPEC)
-  @ApiResponses({
-    @ApiResponse(responseCode = "200", description = "Incident updated"),
-    @ApiResponse(responseCode = "404", description = "Incident not found"),
-    @ApiResponse(responseCode = "404", description = "Incident not associated with domain"),
-  })
+  @ApiResponse(responseCode = "200", description = "Incident updated")
+  @ApiResponse(responseCode = "404", description = "Incident not found")
+  @ApiResponse(responseCode = "404", description = "Incident not associated with domain")
   public CompletableFuture<ResponseEntity<FullIncidentInDomainDto>> updateElement(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
@@ -358,16 +350,14 @@ public class IncidentInDomainController {
   @Operation(
       summary =
           "Evaluates decisions and inspections on a transient incident without persisting anything")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Element evaluated",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = EvaluateElementOutputSchema.class))),
-    @ApiResponse(responseCode = "404", description = "Domain not found")
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Element evaluated",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
+  @ApiResponse(responseCode = "404", description = "Domain not found")
   @PostMapping(value = "/evaluation")
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
       @Parameter(required = true, hidden = true) Authentication auth,

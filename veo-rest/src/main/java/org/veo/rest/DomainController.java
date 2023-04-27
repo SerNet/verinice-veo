@@ -74,7 +74,6 @@ import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
-import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.persistence.entity.jpa.ProfileReferenceFactoryImpl;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
@@ -115,22 +114,17 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   private final UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase;
   private final CreateDomainUseCase createDomainUseCase;
   private final GetElementStatusCountUseCase getElementStatusCountUseCase;
-
-  private final GetUnitDumpUseCase getUnitDumpUseCase;
-
   private final ApplyProfileUseCase applyProfileUseCase;
 
   @GetMapping
   @Operation(summary = "Loads all domains")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Domains loaded",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                array = @ArraySchema(schema = @Schema(implementation = FullDomainDto.class))))
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Domains loaded",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              array = @ArraySchema(schema = @Schema(implementation = FullDomainDto.class))))
   public @Valid Future<List<FullDomainDto>> getDomains(
       @Parameter(required = false, hidden = true) Authentication auth) {
 
@@ -148,16 +142,14 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
 
   @GetMapping(value = "/{id}")
   @Operation(summary = "Loads a domain")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Domain loaded",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = FullDomainDto.class))),
-    @ApiResponse(responseCode = "404", description = "Domain not found")
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Domain loaded",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = FullDomainDto.class)))
+  @ApiResponse(responseCode = "404", description = "Domain not found")
   public @Valid Future<ResponseEntity<FullDomainDto>> getDomain(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String id,
@@ -177,16 +169,14 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
 
   @GetMapping(value = "/{id}/export")
   @Operation(summary = "Export a domain")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Domain exported",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = FullDomainDto.class))),
-    @ApiResponse(responseCode = "404", description = "Domain not found")
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Domain exported",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = FullDomainDto.class)))
+  @ApiResponse(responseCode = "404", description = "Domain not found")
   public @Valid CompletableFuture<ResponseEntity<ExportDto>> exportDomain(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String id,
@@ -203,10 +193,8 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
 
   @PostMapping
   @Operation(summary = "Creates blank new domain")
-  @ApiResponses({
-    @ApiResponse(responseCode = "201", description = "Domain created"),
-    @ApiResponse(responseCode = "409", description = "Templates with name already exist")
-  })
+  @ApiResponse(responseCode = "201", description = "Domain created")
+  @ApiResponse(responseCode = "409", description = "Templates with name already exist")
   // TODO VEO-2000: remove this endpoint
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomain(
       Authentication auth,
@@ -253,11 +241,8 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
 
   @PutMapping(value = "/{id}/element-type-definitions/{type:[\\w]+}")
   @Operation(summary = "Updates an element type definition in a domain")
-  @ApiResponses({
-    @ApiResponse(responseCode = "204", description = "Element type definition updated")
-  })
+  @ApiResponse(responseCode = "204", description = "Element type definition updated")
   // TODO VEO-2000: remove this endpoint
-
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateElementTypeDefinition(
       Authentication auth,
       @PathVariable String id,
@@ -282,7 +267,6 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
       deprecated = true)
   @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Schema updated")})
   // TODO VEO-2000: remove this endpoint
-
   public CompletableFuture<ResponseEntity<ApiResponseBody>> updateDomainWithSchema(
       Authentication auth,
       @PathVariable String id,
@@ -305,16 +289,14 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
 
   @GetMapping(value = "/{id}/element-status-count")
   @Operation(summary = "Retrieve element counts grouped by subType and status")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Elements counted",
-        content =
-            @Content(
-                mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = ElementStatusCounts.class))),
-    @ApiResponse(responseCode = "404", description = "Domain not found")
-  })
+  @ApiResponse(
+      responseCode = "200",
+      description = "Elements counted",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = ElementStatusCounts.class)))
+  @ApiResponse(responseCode = "404", description = "Domain not found")
   public @Valid CompletableFuture<ResponseEntity<ElementStatusCounts>> getElementStatusCount(
       @Parameter(required = false, hidden = true) Authentication auth,
       @PathVariable String id,
@@ -333,11 +315,9 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
 
   @PostMapping("/{id}/profiles/{profileKey}/units/{unitId}")
   @Operation(summary = "Apply a profile to a unit. Adds all profile elements & risks to the unit.")
-  @ApiResponses({
-    @ApiResponse(responseCode = "204", description = "Profile applied"),
-    @ApiResponse(responseCode = "404", description = "Domain not found"),
-    @ApiResponse(responseCode = "404", description = "Unit not found"),
-  })
+  @ApiResponse(responseCode = "204", description = "Profile applied")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "404", description = "Unit not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> applyProfile(
       @Parameter(required = true, hidden = true) Authentication auth,
       @PathVariable @Pattern(regexp = UUID_REGEX) String id,
