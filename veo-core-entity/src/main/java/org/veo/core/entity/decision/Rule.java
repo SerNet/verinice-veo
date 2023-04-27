@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity.decision;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,12 +27,6 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.TranslatedText;
 import org.veo.core.entity.condition.Condition;
-import org.veo.core.entity.condition.CustomAspectAttributeSizeProvider;
-import org.veo.core.entity.condition.CustomAspectAttributeValueProvider;
-import org.veo.core.entity.condition.EqualsMatcher;
-import org.veo.core.entity.condition.GreaterThanMatcher;
-import org.veo.core.entity.condition.IsNullMatcher;
-import org.veo.core.entity.condition.MaxRiskProvider;
 import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.exception.NotFoundException;
 
@@ -66,51 +59,6 @@ public class Rule {
   /** Determines whether the element matches any rule conditions */
   public boolean matches(Element element, Domain domain) {
     return conditions.stream().anyMatch(c -> c.matches(element, domain));
-  }
-
-  /** Add a condition that a custom aspect attribute must equal given value */
-  public Rule ifAttributeEquals(
-      Object comparisonValue, String attributeType, String customAspectType) {
-    conditions.add(
-        new Condition(
-            new CustomAspectAttributeValueProvider(customAspectType, attributeType),
-            new EqualsMatcher(comparisonValue)));
-    return this;
-  }
-
-  /**
-   * Add a condition that a custom aspect collection attribute must have a size greater than given
-   * integer
-   */
-  public Rule ifAttributeSizeGreaterThan(int i, String attributeType, String customAspectType) {
-    conditions.add(
-        new Condition(
-            new CustomAspectAttributeSizeProvider(customAspectType, attributeType),
-            new GreaterThanMatcher(new BigDecimal(i))));
-    return this;
-  }
-
-  /** Add a condition that a custom aspect attribute must be null */
-  public Rule ifAttributeIsNull(String attributeType, String customAspectType) {
-    conditions.add(
-        new Condition(
-            new CustomAspectAttributeValueProvider(customAspectType, attributeType),
-            new IsNullMatcher()));
-    return this;
-  }
-
-  /**
-   * Add a condition that the maximum risk affecting the element must be greater than given value
-   */
-  public Rule ifMaxRiskGreaterThan(BigDecimal i) {
-    conditions.add(new Condition(new MaxRiskProvider(), new GreaterThanMatcher(i)));
-    return this;
-  }
-
-  /** Add a condition that no risk values must affect the element. */
-  public Rule ifNoRiskValuesPresent() {
-    conditions.add(new Condition(new MaxRiskProvider(), new IsNullMatcher()));
-    return this;
   }
 
   /** Compares the output of this rule to given value. */
