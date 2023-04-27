@@ -36,8 +36,6 @@ import javax.validation.Valid;
 
 import org.hibernate.annotations.TypeDef;
 
-import com.vladmihalcea.hibernate.type.json.JsonType;
-
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Nameable;
@@ -46,6 +44,7 @@ import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.entity.specification.ElementTypeDefinitionValidator;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Data;
 import lombok.ToString;
 

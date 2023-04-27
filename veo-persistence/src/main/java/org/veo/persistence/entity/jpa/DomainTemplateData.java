@@ -23,11 +23,10 @@ import javax.persistence.Entity;
 
 import org.hibernate.annotations.TypeDef;
 
-import com.vladmihalcea.hibernate.type.json.JsonType;
-
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Nameable;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

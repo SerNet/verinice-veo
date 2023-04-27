@@ -16,7 +16,7 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
-    implementation 'com.vladmihalcea:hibernate-types-52'
+    implementation 'io.hypersistence:hypersistence-utils-hibernate-52'
     implementation 'com.github.zafarkhaja:java-semver'
 
     testImplementation 'org.spockframework:spock-spring'

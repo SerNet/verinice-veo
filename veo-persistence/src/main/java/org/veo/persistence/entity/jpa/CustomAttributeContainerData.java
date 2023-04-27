@@ -33,11 +33,10 @@ import javax.persistence.ManyToOne;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import com.vladmihalcea.hibernate.type.json.JsonType;
-
 import org.veo.core.entity.CustomAttributeContainer;
 import org.veo.core.entity.DomainBase;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -26,13 +26,12 @@ import javax.persistence.Entity;
 
 import org.hibernate.annotations.TypeDef;
 
-import com.vladmihalcea.hibernate.type.json.JsonType;
-
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

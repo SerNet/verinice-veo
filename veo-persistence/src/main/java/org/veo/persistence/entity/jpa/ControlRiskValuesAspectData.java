@@ -26,13 +26,12 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import com.vladmihalcea.hibernate.type.json.JsonType;
-
 import org.veo.core.entity.Control;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

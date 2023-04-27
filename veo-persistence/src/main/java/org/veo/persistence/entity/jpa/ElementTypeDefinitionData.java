@@ -35,8 +35,6 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import com.vladmihalcea.hibernate.type.json.JsonType;
-
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.TranslationMap;
 import org.veo.core.entity.definitions.CustomAspectDefinition;
@@ -44,6 +42,7 @@ import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.SubTypeDefinition;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Data;
 import lombok.ToString;
 

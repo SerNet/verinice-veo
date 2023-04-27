@@ -28,8 +28,6 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
-import com.vladmihalcea.hibernate.type.json.JsonType;
-
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.risk.CategoryRef;
@@ -39,6 +37,7 @@ import org.veo.core.entity.riskdefinition.CategoryDefinition;
 import org.veo.core.entity.riskdefinition.DimensionDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
