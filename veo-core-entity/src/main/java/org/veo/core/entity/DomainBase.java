@@ -126,8 +126,13 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
    */
   void removeDecision(String decisionKey);
 
-  default Optional<Decision> getDecision(String decisionKey) {
-    return Optional.ofNullable(getDecisions().get(decisionKey));
+  default Decision getDecision(String decisionKey) {
+    return Optional.ofNullable(getDecisions().get(decisionKey))
+        .orElseThrow(
+            () ->
+                new NotFoundException(
+                    "Decision '%s' not found in domain %s"
+                        .formatted(decisionKey, getIdAsString())));
   }
 
   default Map<String, Inspection> getInspections() {
