@@ -110,9 +110,9 @@ export let options = {
     http_req_duration: ["p(80)<200"] // 80% of requests must complete below 200ms
   },
   stages: [
-    { duration: "1m", target: 50 }, // Scale up, 3m to reach 100 VUS
-    { duration: "10m", target: 50 }, // 4m with 100 VUS
-    { duration: "1m", target: 0 } // Scale down, 3m from 100 to 0 VUS
+    { duration: "2m", target: 100 }, // Scale up
+    { duration: "8m", target: 100 }, 
+    { duration: "2m", target: 0 } // Scale down
   ],
   ext: {
     loadimpact: {
