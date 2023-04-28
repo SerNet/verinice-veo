@@ -815,6 +815,9 @@ export function getToken() {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
+    tags: { 
+      name: 'POST /auth' 
+    },
     timeout: REQUEST_TIMEOUT
   };
   let body = { 
