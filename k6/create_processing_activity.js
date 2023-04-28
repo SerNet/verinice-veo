@@ -644,11 +644,13 @@ export function loadCatalogs() {
 }
 
 export function loadSchema(type) {
-
   var url = new URL(VEO_BASE_URL + "/schemas/" + type);
   var params = {
     headers: {
       Authorization: TOKEN,
+    },
+    tags: { 
+      name: 'GET /schemas/' + type 
     },
     timeout: REQUEST_TIMEOUT
   };
