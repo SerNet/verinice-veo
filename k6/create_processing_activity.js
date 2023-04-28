@@ -517,6 +517,9 @@ export function loadElementsPaged(typeUrl, unitId, size, page, subType, status) 
     headers: {
       Authorization: TOKEN,
     },
+    tags: { 
+      name: 'GET ' + typeUrl 
+    },
     timeout: REQUEST_TIMEOUT
   };
   if(!(status===undefined)) {
@@ -682,27 +685,30 @@ export function searchUnit(name) {
 
 export function loadElements(path) {
   // console.log("loadElements( " + path + ")");
-  return loadElementsWithBaseUrlAndSleep(VEO_BASE_URL, path, Math.random() * MAX_SLEEP_SECONDS);
+  return loadElementsWithBaseUrlAndSleep(VEO_BASE_URL, path, path, Math.random() * MAX_SLEEP_SECONDS);
 }
 
 export function loadFormElements(path) {
-  return loadElementsWithBaseUrlAndSleep(VEO_FORMS_BASE_URL, path, Math.random() * MAX_SLEEP_SECONDS);
+  return loadElementsWithBaseUrlAndSleep(VEO_FORMS_BASE_URL, path, "/forms", Math.random() * MAX_SLEEP_SECONDS);
 }
 
 export function loadElementsAndSleep(path, sleepSeconds) {
   // console.log("loadElementsAndSleep( " + path + ", " + sleepSeconds + ")");
-  return loadElementsWithBaseUrlAndSleep(VEO_BASE_URL, path, sleepSeconds);
+  return loadElementsWithBaseUrlAndSleep(VEO_BASE_URL, path, path, sleepSeconds);
 }
 
 export function loadFormElementsAndSleep(path, sleepSeconds) {
-  return loadElementsWithBaseUrlAndSleep(VEO_FORMS_BASE_URL, path, sleepSeconds);
+  return loadElementsWithBaseUrlAndSleep(VEO_FORMS_BASE_URL, path, "/forms", sleepSeconds);
 }
+export function loadElementsWithBaseUrlAndSleep(baseUrl, path, tag, sleepSeconds) {
 
-export function loadElementsWithBaseUrlAndSleep(baseUrl, path, sleepSeconds) {
   var url = baseUrl + path;
   var params = {
     headers: {
       Authorization: TOKEN,
+    },
+    tags: { 
+      name: 'GET ' + tag 
     },
     timeout: REQUEST_TIMEOUT
   };
@@ -753,6 +759,9 @@ export function loadElementWithBaseUrlAndSleep(baseUrl, path, uuid, sleepSeconds
   var params = {
     headers: {
       Authorization: TOKEN,
+    },
+    tags: { 
+      name: 'GET ' + path 
     },
     timeout: REQUEST_TIMEOUT 
   };
