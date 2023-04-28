@@ -579,9 +579,13 @@ export function loadReports() {
 
 export function loadHistory(unitId) {
   var url = new URL(VEO_HISTORY_BASE_URL + "/revisions/my-latest");
+  var tag = "/history";
   var params = {
     headers: {
       Authorization: TOKEN,
+    },
+    tags: { 
+      name: 'GET ' + tag 
     },
     timeout: REQUEST_TIMEOUT
   };
