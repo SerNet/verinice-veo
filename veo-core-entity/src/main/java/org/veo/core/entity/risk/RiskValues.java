@@ -22,7 +22,9 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.ProcessRisk;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,4 +45,14 @@ public class RiskValues implements RiskValuesProvider {
   @Valid private Key<String> riskDefinitionId;
 
   @Valid private Key<UUID> domainId;
+
+  public static RiskValues from(ProcessRisk risk, RiskDefinitionRef riskDef, Domain domain) {
+    return builder()
+        .probability(risk.getProbabilityProvider(riskDef, domain))
+        .impactCategories(risk.getImpactProvider(riskDef, domain).getCategorizedImpacts())
+        .categorizedRisks(risk.getRiskProvider(riskDef, domain).getCategorizedRisks())
+        .domainId(domain.getId())
+        .riskDefinitionId(new Key<>(riskDef.getIdRef()))
+        .build();
+  }
 }
