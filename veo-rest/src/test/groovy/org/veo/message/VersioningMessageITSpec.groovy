@@ -28,8 +28,7 @@ import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.ScopeRepository
-import org.veo.core.usecase.common.NameableInputData
-import org.veo.core.usecase.unit.CreateUnitUseCase
+import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.persistence.access.jpa.StoredEventDataRepository
 import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
@@ -41,7 +40,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
     }
 
     @Autowired
-    CreateUnitUseCase createUnitUseCase
+    CreateDemoUnitUseCase createDemoUnitUseCase
 
     @Autowired
     StoredEventDataRepository storedEventRepository
@@ -61,11 +60,11 @@ class VersioningMessageITSpec extends VeoSpringSpec {
     @WithUserDetails("user@domain.example")
     def "creation messages produced for client creation with demo unit"() {
         when: "creating a client with a demo unit"
+        def client = createTestClient()
         executeInTransaction {
-            createUnitUseCase.execute(new CreateUnitUseCase.InputData(
-                    new NameableInputData(Optional.empty(), "non-demo-unit", "ndu", "whatever"),
-                    clientId, Optional.empty(), 2, [] as Set
-                    ))
+            defaultDomainCreator.addDefaultDomains(client)
+            clientRepository.save(client)
+            createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(clientId))
         }
 
         and: "fetching all messages"

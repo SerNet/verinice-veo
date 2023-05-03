@@ -23,23 +23,15 @@ import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException
 import org.veo.core.repository.DomainRepository
-import org.veo.core.repository.RepositoryProvider
 import org.veo.core.usecase.common.NameableInputData
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.core.usecase.unit.CreateUnitUseCase
 import org.veo.core.usecase.unit.CreateUnitUseCase.InputData
-import org.veo.service.DefaultDomainCreator
 
 public class CreateUnitUseCaseSpec extends UseCaseSpec {
-    DefaultDomainCreator defaultDomainCreator = Mock()
-    RepositoryProvider repositoryProvider = Mock()
-    CreateDemoUnitUseCase createDemoUnitUseCase = Mock()
     DomainRepository domainRepository = Mock()
+    CreateUnitUseCase usecase = new CreateUnitUseCase(clientRepository, unitRepository, domainRepository, entityFactory)
 
-    CreateUnitUseCase usecase = new CreateUnitUseCase(clientRepository, unitRepository, domainRepository, entityFactory, defaultDomainCreator,
-    createDemoUnitUseCase)
-
-    def "Create new unit in a new client" () {
+    def "Create new unit in a client" () {
         Unit newUnit1 = Mock()
         newUnit1.id >> Key.newUuid()
         newUnit1.name >> "New unit"
@@ -48,32 +40,16 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         def namedInput = new NameableInputData()
         namedInput.setName("New unit")
 
-        and: "a clientId that does not yet exist"
-        def newClientId = Key.newUuid()
-        def input = new InputData(namedInput, newClientId, Optional.empty(), 1, [] as Set)
-
         when: "the use case to create a unit is executed"
+        def input = new InputData(namedInput, existingClient.id, Optional.empty(), 1, [] as Set)
         def newUnit = usecase.execute(input).getUnit()
 
-        then: "a client was first searched but not found"
-        1 * clientRepository.findById(_) >> Optional.empty()
-        1 * entityFactory.createClient(_,_) >> existingClient
-        1 * entityFactory.createUnit("New unit",_) >> newUnit1
-
-        and: "the domainTemplate service is called and the domain is added"
-        1 * defaultDomainCreator.addDefaultDomains(existingClient)
-
-        and: "a new client was then correctly created and stored"
-        1 * domainRepository.getByIds([] as Set, existingClient.id) >> []
-        1 * newUnit1.addToDomains([] as Set)
-        0 * newUnit1.addToDomains(_)
-        1 * unitRepository.save(newUnit1) >> newUnit1
-        1 * clientRepository.save(_) >> existingClient
-
-        and: 'a demo unit was created for the new client'
-        1 * createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(existingClient.id))
+        then: "a client was retrieved"
+        1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
 
         and: "a new unit was created and stored"
+        1 * entityFactory.createUnit("New unit",_) >> newUnit1
+        1 * unitRepository.save(newUnit1) >> newUnit1
         newUnit != null
         newUnit.getName() == "New unit"
         !newUnit.getId().isUndefined()
@@ -100,14 +76,9 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         then: "a client was retrieved"
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
 
-        and: "a new client was then correctly created and stored"
-        1 * domainRepository.getByIds([] as Set, existingClient.id) >> []
-        1 * newUnit1.addToDomains([] as Set)
-        0 * newUnit1.addToDomains(_)
+        and: "a new unit was created and stored"
         1 * unitRepository.save(_) >> newUnit1
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
-
-        and: "a new unit was created and stored"
         newUnit != null
         newUnit.getName() == "New unit"
         !newUnit.getId().isUndefined()

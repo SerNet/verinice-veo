@@ -274,6 +274,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createUnit(
       @Parameter(hidden = true) ApplicationUser user,
       @Valid @RequestBody CreateUnitDto createUnitDto) {
+    log.info("Create unit, maxUnits = {}", user.getMaxUnits());
     return useCaseInteractor.execute(
         createUnitUseCase,
         CreateUnitInputMapper.map(createUnitDto, user.getClientId(), user.getMaxUnits()),

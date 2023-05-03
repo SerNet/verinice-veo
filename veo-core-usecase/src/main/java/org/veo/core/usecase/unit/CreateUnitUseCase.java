@@ -29,7 +29,6 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.event.ClientEvent.ClientChangeType;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.entity.specification.MaxUnitsExceededException;
@@ -41,7 +40,6 @@ import org.veo.core.usecase.RetryableUseCase;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.NameableInputData;
-import org.veo.service.DefaultDomainCreator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -72,13 +70,13 @@ public class CreateUnitUseCase
   private final UnitRepository unitRepository;
   private final DomainRepository domainRepository;
   private final EntityFactory entityFactory;
-  private final DefaultDomainCreator defaultDomainCreator;
-  private final CreateDemoUnitUseCase createDemoUnitUseCase;
 
   @Override
   public OutputData execute(InputData input) {
     Client client =
-        clientRepository.findById(input.getClientId()).orElseGet(() -> createNewClient(input));
+        clientRepository
+            .findById(input.getClientId())
+            .orElseThrow(() -> new NotFoundException(input.getClientId(), Client.class));
 
     // Note: the new client will get the name of the new unit by default.
     // If we want to get a client name we would have to do a REST call to
@@ -126,24 +124,6 @@ public class CreateUnitUseCase
   private void throwTooManyUnits(int maxUnits) {
     throw new MaxUnitsExceededException(
         "This account may not create more than " + maxUnits + " units");
-  }
-
-  private Client createNewClient(InputData input) {
-    // TODO: VEO-1817 remove client creation code
-    // By default, the client is created with the unit's name, description,
-    // and abbreviation:
-    Client client =
-        entityFactory.createClient(input.getClientId(), input.getNameableInput().getName());
-    defaultDomainCreator.addDefaultDomains(client);
-    client.updateState(ClientChangeType.ACTIVATION);
-    Client savedClient = clientRepository.save(client);
-    createDemoUnitForClient(savedClient);
-    return savedClient;
-  }
-
-  private void createDemoUnitForClient(Client savedClient) {
-    // TODO: VEO-1817 remove demo unit creation code
-    createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(savedClient.getId()));
   }
 
   @Override

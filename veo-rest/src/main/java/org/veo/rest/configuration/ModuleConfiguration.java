@@ -473,18 +473,11 @@ public class ModuleConfiguration {
 
   @Bean
   public CreateUnitUseCase getCreateUnitUseCase(
-      ClientRepositoryImpl clientRepository,
+      ClientRepository clientRepository,
       UnitRepositoryImpl unitRepository,
-      DomainRepository domainRepository,
-      CreateDemoUnitUseCase createDemoUnitUseCase,
-      DefaultDomainCreator defaultDomainCreator) {
+      DomainRepository domainRepository) {
     return new CreateUnitUseCase(
-        clientRepository,
-        unitRepository,
-        domainRepository,
-        getEntityFactory(),
-        defaultDomainCreator,
-        createDemoUnitUseCase);
+        clientRepository, unitRepository, domainRepository, getEntityFactory());
   }
 
   @Bean

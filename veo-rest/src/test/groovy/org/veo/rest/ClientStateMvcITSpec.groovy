@@ -26,49 +26,39 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.Client
 import org.veo.core.entity.Key
 import org.veo.core.repository.ClientRepository
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.rest.common.ClientNotActiveException
 /**
- * Tests the client creation process. Note that this one tests the Unit controller but doesn't have the setup where the
- * client is created manually.
+ * Tests the unit controller's responses wrt. different client states
  */
-class ClientCreationMvcITSpec extends VeoMvcSpec {
+class ClientStateMvcITSpec extends VeoMvcSpec {
     @Autowired
     ClientRepository clientRepository
 
     @WithUserDetails("user@domain.example")
-    def "create a new client"() {
+    def "fetch data for a new client"() {
         given:
         createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
         createTestDomainTemplate(TEST_DOMAIN_TEMPLATE_ID)
-
-        when: "posting a unit as a new client"
-        post("/units", ["name": "nova"])
-
-        then: "the client has been created"
-        clientRepository.exists(Key.uuidFrom(TESTCLIENT_UUID))
+        def client = createTestClient()
+        executeInTransaction {
+            defaultDomainCreator.addDefaultDomains(client)
+            clientRepository.save(client)
+        }
 
         when: "we examine the client and the domain"
-        Client client = clientRepository.findById(Key.uuidFrom(TESTCLIENT_UUID)).get()
+        client = clientRepository.findById(Key.uuidFrom(TESTCLIENT_UUID)).get()
 
-        then: "the default domains are created"
-        client.domains.size() == 2
-        client.domains*.domainTemplate*.dbId.contains(DSGVO_DOMAINTEMPLATE_UUID)
-
-        and: "the state is active"
+        then: "the state is active"
         client.state == ACTIVATED
 
         when: "we get the units"
         def units = parseJson(get("/units"))
-        def unitId = units[0].id
 
-        then:"the demo unit is also created"
-        units.size() == 2
-        unitId != null
-        units*.name.contains(CreateDemoUnitUseCase.DEMO_UNIT_NAME)
+        then:
+        noExceptionThrown()
+        units.empty
     }
 
     @WithUserDetails("user@domain.example")
@@ -76,6 +66,11 @@ class ClientCreationMvcITSpec extends VeoMvcSpec {
         given:
         createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
         createTestDomainTemplate(TEST_DOMAIN_TEMPLATE_ID)
+        def client = createTestClient()
+        executeInTransaction {
+            defaultDomainCreator.addDefaultDomains(client)
+            clientRepository.save(client)
+        }
 
         when: "posting unit and asset as a new client"
         def unitId = parseJson(post("/units", ["name": "nova"])).resourceId
@@ -90,19 +85,8 @@ class ClientCreationMvcITSpec extends VeoMvcSpec {
         then:"the asset exists"
         parseJson(get("/assets")).totalItemCount == 1
 
-        and: "the client has been created"
-        clientRepository.exists(Key.uuidFrom(TESTCLIENT_UUID))
-
-        when: "we examine the client and the domain"
-        Client client = clientRepository.findById(Key.uuidFrom(TESTCLIENT_UUID)).get()
-
-        then: "the default domains are created"
-        client.domains*.domainTemplate*.dbId ==~ [
-            DSGVO_DOMAINTEMPLATE_UUID,
-            TEST_DOMAIN_TEMPLATE_ID
-        ]
-
         when: "we deactivate the client"
+        client = clientRepository.findById(Key.uuidFrom(TESTCLIENT_UUID)).get()
         client.updateState(DEACTIVATION)
         clientRepository.save(client)
         client = clientRepository.findById(Key.uuidFrom(TESTCLIENT_UUID)).get()
