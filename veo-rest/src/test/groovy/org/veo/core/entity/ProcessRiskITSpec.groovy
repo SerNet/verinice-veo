@@ -17,12 +17,18 @@
  ******************************************************************************/
 package org.veo.core.entity
 
+import static java.time.temporal.ChronoUnit.MILLIS
+
+import java.time.Instant
+
 import org.hibernate.Hibernate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.annotation.Transactional
 
 import org.veo.core.VeoSpringSpec
+import org.veo.core.entity.risk.RiskDefinitionRef
+import org.veo.core.entity.risk.RiskValues
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.repository.ControlRepository
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -32,6 +38,7 @@ import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScenarioRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.entity.jpa.ProcessRiskData
+import org.veo.service.risk.RiskService
 
 @WithUserDetails("user@domain.example")
 class ProcessRiskITSpec extends VeoSpringSpec {
@@ -60,6 +67,9 @@ class ProcessRiskITSpec extends VeoSpringSpec {
     @Autowired
     ControlRepository controlRepository
 
+    @Autowired
+    RiskService riskService
+
     Client client
 
     Unit unit
@@ -70,12 +80,13 @@ class ProcessRiskITSpec extends VeoSpringSpec {
 
     def "a risk can be modified persistently"() {
         given: "predefined entities"
+        def beforeCreate = Instant.now()
         def scenario1 = insertScenario(newScenario(unit))
-        def domain1 = insertDomain(newDomain(client))
+        def domain = insertDomain(newDomain(client))
         ProcessRisk risk
         def process1 = insertProcess(newProcess(unit) {
-            associateWithDomain(domain1, "PRO_DataProcessing", "NEW")
-            risk = obtainRisk(scenario1, domain1).tap {
+            associateWithDomain(domain, "PRO_DataProcessing", "NEW")
+            risk = obtainRisk(scenario1, domain).tap {
                 designator = "RSK-1"
             }
         })
@@ -83,26 +94,32 @@ class ProcessRiskITSpec extends VeoSpringSpec {
         def control1 = insertControl(newControl(unit))
 
         when: "the risk is retrieved"
-        ProcessRisk retrievedRisk1 = txTemplate.execute{
+        ProcessRisk retrievedRisk1 = txTemplate.execute {
             Set<Process> processes = processRepository.findByRisk(scenario1)
             def processRisk = processes.first().risks.first()
-            assert processRisk.domains.first() == domain1
+            assert processRisk.domains.first() == domain
             // initialize hibernate proxy
             Hibernate.initialize(processRisk.scenario)
             return processRisk
         }
+        def riskData = (ProcessRiskData) retrievedRisk1
+        def createdAt = riskData.createdAt
+        def updatedAt = riskData.updatedAt
+        def updatedBy = riskData.updatedBy
 
         then:
         retrievedRisk1 == risk
         retrievedRisk1.scenario == scenario1
-        retrievedRisk1.domains.first() == domain1
+        retrievedRisk1.domains.first() == domain
         retrievedRisk1.entity == process1
-        def riskData = (ProcessRiskData) retrievedRisk1
-        riskData.createdAt != null
-        riskData.updatedAt != null
+        createdAt != null
+        createdAt > beforeCreate
+        updatedAt != null
+        updatedAt > beforeCreate
+        updatedBy == "user@domain.example"
 
         when: "a control is added"
-        txTemplate.execute{
+        txTemplate.execute {
             def process = processRepository.findByRisk(scenario1).first()
             process.risks.first().mitigate(control1)
         }
@@ -139,7 +156,85 @@ class ProcessRiskITSpec extends VeoSpringSpec {
 
         then:
         retrievedRisk2 == risk
+    }
 
+    def "a risk is only updated when it has really been modified"() {
+        given: "a process with two risks"
+        def beforeCreate = Instant.now()
+        def domain = domainRepository.save(newDomain(client) {
+            it.riskDefinitions = [
+                "r2d2": createRiskDefinition("r2d2")
+            ] as Map
+        })
+        def scenario1 = insertScenario(newScenario(unit))
+        def scenario2 = insertScenario(newScenario(unit))
+        def riskDefRef = RiskDefinitionRef.from(domain.getRiskDefinitions().values().first())
+        ProcessRisk risk1
+        ProcessRisk risk2
+        insertProcess(newProcess(unit) {
+            associateWithDomain(domain, "PRO_DataProcessing", "NEW")
+            risk1 = obtainRisk(scenario1, domain).tap {
+                designator = "RSK-1"
+                defineRiskValues([
+                    newRiskValues(riskDefRef, domain)
+                ] as Set)
+            }
+            risk2 = obtainRisk(scenario2, domain).tap {
+                designator = "RSK-2"
+                defineRiskValues([
+                    newRiskValues(riskDefRef, domain)
+                ] as Set)
+            }
+        })
+
+        // account for DB accuracy being less than nanos
+        def risk1Created = risk1.createdAt.truncatedTo(MILLIS)
+        def risk1Updated = risk1.updatedAt.truncatedTo(MILLIS)
+        def risk2Created = risk2.createdAt.truncatedTo(MILLIS)
+        def risk2Updated = risk2.updatedAt.truncatedTo(MILLIS)
+
+        when: "risk1 is changed"
+        def beforeUpdate = Instant.now().truncatedTo(MILLIS)
+        txTemplate.execute {
+            def process = processRepository.findByRisk(scenario1).first()
+            def risk = process.risks.find({ it.scenario == scenario1 })
+            def riskValue = RiskValues.from(risk, riskDefRef, domain)
+
+            riskValue.setSpecificProbabilityExplanation('There... are... FOUR... lights!')
+            process.updateRisk(
+                    risk,
+                    [domain] as Set,
+                    null,
+                    null,
+                    [riskValue] as Set
+                    )
+            processRepository.save(process)
+
+            riskService.evaluateChangedRiskComponent(process)
+        }
+        // retrieve in new transaction:
+        def retrievedRisk1 = txTemplate.execute {
+            def process = processRepository.findByRisk(scenario1).first()
+            return process.risks.find({ it.scenario == scenario1 })
+        }
+        // retrieve in new transaction:
+        def retrievedRisk2 = txTemplate.execute {
+            def process = processRepository.findByRisk(scenario1).first()
+            return process.risks.find({ it.scenario == scenario2 })
+        }
+
+        then: "risk1's audit data is updated"
+        retrievedRisk1.updatedAt > risk1Updated
+        retrievedRisk1.updatedAt > beforeUpdate
+        retrievedRisk1.createdAt.truncatedTo(MILLIS) == risk1Created
+        retrievedRisk1.createdAt > beforeCreate
+        retrievedRisk1.createdAt < beforeUpdate
+
+        and: "risk2's audit data is left unchanged"
+        retrievedRisk2.updatedAt.truncatedTo(MILLIS) == risk2Updated
+        retrievedRisk2.createdAt.truncatedTo(MILLIS) == risk2Created
+        retrievedRisk2.createdAt > beforeCreate
+        retrievedRisk2.updatedAt == retrievedRisk2.createdAt
     }
 
     @Transactional

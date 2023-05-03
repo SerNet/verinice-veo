@@ -133,10 +133,6 @@ public class RiskService {
     var riskDefRef = RiskDefinitionRef.from(riskDefinition);
     riskEvent = riskEvent.withDomainId(domain.getId()).withRiskDefinition(riskDefRef);
 
-    // Setting values does not increase the risk's (aggregate root's) version,
-    // we have to do it manually:
-    risk.setUpdatedAt(Instant.now());
-
     ProbabilityRef riskValueEffectiveProbability =
         calculateProbability(risk, scenario, domain, riskDefRef, riskEvent);
 
@@ -153,6 +149,9 @@ public class RiskService {
     }
 
     if (!riskEvent.getChanges().isEmpty()) {
+      // Setting values does not increase the risk's (aggregate root's) version,
+      // we have to do it manually:
+      risk.setUpdatedAt(Instant.now());
       eventPublisher.publish(riskEvent);
       return Optional.of(riskEvent);
     }
