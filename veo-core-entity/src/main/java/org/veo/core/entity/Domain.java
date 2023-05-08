@@ -26,7 +26,7 @@ import javax.validation.constraints.NotNull;
  * best practice or a company-specific context. It can be bound to a domain template, which
  * represent a 'offical' standart. The domain references the avaliable customAspects, the forms and
  * other stuff needed to define a specific view on the data. For example the risk definition, which
- * describes what risk values exist and how they relates to each other.
+ * describes what risk values exist and how they relate to each other.
  */
 public interface Domain extends DomainBase, ClientOwned {
 
