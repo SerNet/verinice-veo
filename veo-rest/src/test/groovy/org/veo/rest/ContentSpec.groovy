@@ -30,7 +30,7 @@ class ContentSpec extends VeoMvcSpec {
         def unitId = parseJson(post("/units", [
             name   : "you knit",
             domains: [
-                [targetUri: "http://localhost/domains/(domainId)"]
+                [targetUri: "http://localhost/domains/$domainId"]
             ]
         ])).resourceId
         def owner = [targetUri: "http://localhost/units/$unitId"]
@@ -144,7 +144,7 @@ class ContentSpec extends VeoMvcSpec {
         def unitId = parseJson(post("/units", [
             name   : "you knit",
             domains: [
-                [targetUri: "http://localhost/domains/(domainId)"]
+                [targetUri: "http://localhost/domains/$domainId"]
             ]
         ])).resourceId
         def owner = [targetUri: "http://localhost/units/$unitId"]

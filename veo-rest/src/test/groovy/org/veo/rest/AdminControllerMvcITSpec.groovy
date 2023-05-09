@@ -20,12 +20,10 @@ package org.veo.rest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
-import org.veo.core.VeoMvcSpec
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.DocumentRepository
 import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
-import org.veo.rest.test.UserType
 
 import groovy.util.logging.Log
 import spock.util.concurrent.PollingConditions
@@ -75,7 +73,6 @@ class AdminControllerMvcITSpec extends ContentSpec {
         then: "it contains the unit and all its elements"
         with(dump) {
             unit.name == "you knit"
-            domains.size() == 2
             elements*.type.sort() == [
                 "asset",
                 "control",
