@@ -37,9 +37,7 @@ class AdminRestTest extends VeoRestTest{
 
     def "get a unit dump from created elements"() {
         given:
-        def unitId = post("/units", [
-            name: "my catalog unit"
-        ]).body.resourceId
+        def unitId = postNewUnit("my catalog unit").resourceId
 
         def dsgvoId = getDomains().find { it.name == "DS-GVO" }.id
         def catalogId = extractLastId(getDomains().find { it.name == "DS-GVO" }.catalogs.first().targetUri)

@@ -462,11 +462,13 @@ public class ModuleConfiguration {
   public CreateUnitUseCase getCreateUnitUseCase(
       ClientRepositoryImpl clientRepository,
       UnitRepositoryImpl unitRepository,
+      DomainRepository domainRepository,
       CreateDemoUnitUseCase createDemoUnitUseCase,
       DefaultDomainCreator defaultDomainCreator) {
     return new CreateUnitUseCase(
         clientRepository,
         unitRepository,
+        domainRepository,
         getEntityFactory(),
         defaultDomainCreator,
         createDemoUnitUseCase);

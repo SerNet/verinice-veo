@@ -19,6 +19,7 @@ package org.veo.adapter.presenter.api.unit;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.create.CreateUnitDto;
@@ -59,6 +60,11 @@ public final class CreateUnitInputMapper {
     namedInput.setAbbreviation(dto.getAbbreviation());
     namedInput.setDescription(dto.getDescription());
 
-    return new InputData(namedInput, Key.uuidFrom(clientId), parentId, maxUnits);
+    return new InputData(
+        namedInput,
+        Key.uuidFrom(clientId),
+        parentId,
+        maxUnits,
+        dto.getDomains().stream().map(IdRef::getId).map(Key::uuidFrom).collect(Collectors.toSet()));
   }
 }

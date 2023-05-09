@@ -19,19 +19,24 @@ package org.veo.core.usecase.unit;
 
 import static java.lang.String.format;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.validation.Valid;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.event.ClientEvent.ClientChangeType;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
+import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.MaxUnitsExceededException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.RetryableUseCase;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -66,6 +71,7 @@ public class CreateUnitUseCase
 
   private final ClientRepository clientRepository;
   private final UnitRepository unitRepository;
+  private final DomainRepository domainRepository;
   private final EntityFactory entityFactory;
   private final DefaultDomainCreator defaultDomainCreator;
   private final CreateDemoUnitUseCase createDemoUnitUseCase;
@@ -105,7 +111,21 @@ public class CreateUnitUseCase
     newUnit.setDescription(input.getNameableInput().getDescription());
     newUnit.setClient(client);
     client.incrementTotalUnits();
-    newUnit.addToDomains(client.getDomains());
+    if (input.domainIds != null) {
+      Set<Domain> domains = domainRepository.findByIds(input.domainIds);
+      if (domains.size() < input.domainIds.size()) {
+        HashSet<Key<UUID>> requestedDomainIDs = new HashSet<>(input.domainIds);
+        requestedDomainIDs.removeAll(domains.stream().map(Domain::getId).toList());
+        throw new ReferenceTargetNotFoundException(
+            format("Domain(s) %s not found", requestedDomainIDs));
+      }
+      for (Domain domain : domains) {
+        if (!client.equals(domain.getOwner())) {
+          throw new ClientBoundaryViolationException(domain, client);
+        }
+      }
+      newUnit.addToDomains(domains);
+    }
     Unit save = unitRepository.save(newUnit);
 
     return new OutputData(save);
@@ -156,6 +176,7 @@ public class CreateUnitUseCase
     Key<UUID> clientId;
     Optional<Key<UUID>> parentUnitId;
     Integer maxUnits;
+    Set<Key<UUID>> domainIds;
   }
 
   @Valid

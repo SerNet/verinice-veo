@@ -110,7 +110,16 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
                 state == ACTIVATED
                 name == clientName
             }
-            unitDataRepository.findByClientId(cId.uuidValue()).size() == 2
+            def units = executeInTransaction {
+                unitDataRepository.findByClientId(cId.uuidValue()).tap {
+                    // force lazy proxy initialization
+                    it*.domains.collect {it.name}
+                }
+            }
+            with(units) {
+                it.size() == 2
+                it.find { it.name == 'Unit 1' }.domains*.name ==~ ['test-domain', 'DS-GVO']
+            }
         }
     }
 

@@ -18,8 +18,10 @@
 package org.veo.jobs;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.usecase.common.NameableInputData;
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
@@ -43,7 +45,10 @@ public abstract class CreateClientUnitsJob {
                   new NameableInputData(Optional.empty(), "Unit 1", "", ""),
                   client.getId(),
                   Optional.empty(),
-                  client.getMaxUnits()));
+                  client.getMaxUnits(),
+                  client.getDomains().stream()
+                      .map(Identifiable::getId)
+                      .collect(Collectors.toSet())));
           createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(client.getId()));
         });
   }

@@ -17,8 +17,12 @@
  ******************************************************************************/
 package org.veo.core.usecase
 
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
+import org.veo.core.entity.exception.ReferenceTargetNotFoundException
+import org.veo.core.entity.specification.ClientBoundaryViolationException
+import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.RepositoryProvider
 import org.veo.core.usecase.common.NameableInputData
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
@@ -30,7 +34,9 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
     DefaultDomainCreator defaultDomainCreator = Mock()
     RepositoryProvider repositoryProvider = Mock()
     CreateDemoUnitUseCase createDemoUnitUseCase = Mock()
-    CreateUnitUseCase usecase = new CreateUnitUseCase(clientRepository, unitRepository, entityFactory, defaultDomainCreator,
+    DomainRepository domainRepository = Mock()
+
+    CreateUnitUseCase usecase = new CreateUnitUseCase(clientRepository, unitRepository, domainRepository, entityFactory, defaultDomainCreator,
     createDemoUnitUseCase)
 
     def "Create new unit in a new client" () {
@@ -44,7 +50,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
 
         and: "a clientId that does not yet exist"
         def newClientId = Key.newUuid()
-        def input = new InputData(namedInput, newClientId, Optional.empty(), 1)
+        def input = new InputData(namedInput, newClientId, Optional.empty(), 1, [] as Set)
 
         when: "the use case to create a unit is executed"
         def newUnit = usecase.execute(input).getUnit()
@@ -58,6 +64,9 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         1 * defaultDomainCreator.addDefaultDomains(existingClient)
 
         and: "a new client was then correctly created and stored"
+        1 * domainRepository.findByIds([] as Set) >> []
+        1 * newUnit1.addToDomains([] as Set)
+        0 * newUnit1.addToDomains(_)
         1 * unitRepository.save(newUnit1) >> newUnit1
         1 * clientRepository.save(_) >> existingClient
 
@@ -83,7 +92,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         entityFactory.createUnit(_,_) >> newUnit1
 
         and: "a parent unit in an existing client"
-        def input = new InputData(namedInput, this.existingClient.getId(), Optional.of(this.existingUnit.getId()), 2)
+        def input = new InputData(namedInput, this.existingClient.getId(), Optional.of(this.existingUnit.getId()), 2, [] as Set)
 
         when: "the use case to create a unit is executed"
         def newUnit = usecase.execute(input).getUnit()
@@ -92,6 +101,9 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
 
         and: "a new client was then correctly created and stored"
+        1 * domainRepository.findByIds([] as Set) >> []
+        1 * newUnit1.addToDomains([] as Set)
+        0 * newUnit1.addToDomains(_)
         1 * unitRepository.save(_) >> newUnit1
         1 * unitRepository.findById(_) >> Optional.of(existingUnit)
 
@@ -100,5 +112,88 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         newUnit.getName() == "New unit"
         !newUnit.getId().isUndefined()
         newUnit.getParent().getId() == existingUnit.getId()
+    }
+
+    def "Create a unit with a domain" () {
+        given: "starting values for a unit"
+        def namedInput = new NameableInputData()
+        namedInput.setName("New unit")
+
+        Unit newUnit1 = Mock()
+        newUnit1.id >> Key.newUuid()
+        newUnit1.name >> "New unit"
+
+        entityFactory.createUnit(_,_) >> newUnit1
+
+        and: "a parent unit in an existing client"
+        def input = new InputData(namedInput, this.existingClient.getId(), Optional.empty(), 1, [existingDomain.id] as Set)
+
+        when: "the use case to create a unit is executed"
+        def newUnit = usecase.execute(input).getUnit()
+
+        then: "a client was retrieved"
+        1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
+
+        and: "the unit is created with the expected domains"
+        1 * domainRepository.findByIds([existingDomain.id] as Set) >> [existingDomain]
+        1 * newUnit1.addToDomains([existingDomain] as Set)
+        0 * newUnit1.addToDomains(_)
+        1 * unitRepository.save(_) >> newUnit1
+    }
+
+    def "Create a unit with an invalid domain" () {
+        given: "starting values for a unit"
+        def namedInput = new NameableInputData()
+        namedInput.setName("New unit")
+
+        Unit newUnit1 = Mock()
+        newUnit1.id >> Key.newUuid()
+        newUnit1.name >> "New unit"
+
+        entityFactory.createUnit(_,_) >> newUnit1
+
+        def randomDomainId = Key.newUuid()
+
+        and: "a parent unit in an existing client"
+        def input = new InputData(namedInput, this.existingClient.getId(), Optional.empty(), 1, [randomDomainId.uuidValue()] as Set)
+
+        when: "the use case to create a unit is executed"
+        def newUnit = usecase.execute(input).getUnit()
+
+        then: "a client was retrieved"
+        1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
+
+        and: "the unit is created with the expected domains"
+        1 * domainRepository.findByIds([randomDomainId.uuidValue()] as Set) >> []
+        ReferenceTargetNotFoundException e = thrown()
+        e.message == "Domain(s) [${randomDomainId.uuidValue()}] not found"
+    }
+
+    def "Create a unit with another client's domain" () {
+        given: "starting values for a unit"
+        def namedInput = new NameableInputData()
+        namedInput.setName("New unit")
+
+        Unit newUnit1 = Mock()
+        newUnit1.id >> Key.newUuid()
+        newUnit1.name >> "New unit"
+
+        Domain anotherDomain = Mock()
+        anotherClient.getDomains() >> [anotherDomain]
+        anotherDomain.getOwner() >> anotherClient
+        entityFactory.createUnit(_,_) >> newUnit1
+
+        and: "a parent unit in an existing client"
+        def input = new InputData(namedInput, this.existingClient.getId(), Optional.empty(), 1, [anotherDomain.id] as Set)
+
+        when: "the use case to create a unit is executed"
+        def newUnit = usecase.execute(input).getUnit()
+
+        then: "a client was retrieved"
+        1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
+
+        and: "the unit is created with the expected domains"
+        1 * domainRepository.findByIds([existingDomain.id] as Set) >> [anotherDomain]
+        ClientBoundaryViolationException e = thrown()
     }
 }

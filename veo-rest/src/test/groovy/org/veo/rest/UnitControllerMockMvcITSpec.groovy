@@ -43,7 +43,9 @@ import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
+import org.veo.core.entity.exception.ReferenceTargetNotFoundException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.entity.specification.MaxUnitsExceededException
 import org.veo.core.usecase.common.ETag
@@ -188,6 +190,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         then: "the unit is updated"
         result.name == "New unit-2"
         result.abbreviation == "u-2"
+        result.domains.size() == 1
     }
 
     @WithUserDetails("user@domain.example")
@@ -595,6 +598,44 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         get("/units/${otherClientsUnit.id.uuidValue()}/export", 404)
 
         then: "an exception is thrown"
+        thrown(ClientBoundaryViolationException)
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "cannot create a unit with an invalid domain"() {
+        given:
+        def randomUuid = Key.newUuid().uuidValue()
+        Map request = [
+            name: 'New unit',
+            domains: [
+                [targetUri:"/domains/$randomUuid"]
+            ]
+        ]
+
+        when:
+        def results = post('/units', request, 422)
+
+        then:
+        thrown(ReferenceTargetNotFoundException)
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "cannot create a unit with another client's domain"() {
+        given:
+        def otherClient = repository.save(newClient())
+        def otherClientsDomain = domainRepository.save(newDomain(otherClient))
+
+        Map request = [
+            name: 'New unit',
+            domains: [
+                [targetUri:"/domains/${otherClientsDomain.id}"]
+            ]
+        ]
+
+        when:
+        def results = post('/units', request, 404)
+
+        then:
         thrown(ClientBoundaryViolationException)
     }
 }

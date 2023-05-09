@@ -54,6 +54,7 @@ abstract class UseCaseSpec extends Specification {
         Client client = Mock()
         client.getId() >> id1
         client.getDomains() >> [existingDomain]
+        existingDomain.getOwner() >> client
         client.getName()>> "Existing client"
         existingClient = client
 
