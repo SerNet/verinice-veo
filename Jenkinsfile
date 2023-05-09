@@ -24,6 +24,10 @@ pipeline {
         timeout(time: 2, unit: 'HOURS')
     }
 
+    parameters {
+        booleanParam(name: 'forceRerunTests', defaultValue: false, description: 'Re-run tests even if there is a cached result available')
+    }
+
     environment {
         // In case the build server exports a custom JAVA_HOME, we fix the JAVA_HOME
         // to the one used by the docker image.
@@ -184,9 +188,13 @@ pipeline {
                                         docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages} --network ${n} -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver") {
                                             unstash "classes"
                                             unstash "test-classes"
+                                            def taskArgument = 'test'
+                                            if (params.forceRerunTests){
+                                                taskArgument = 'cleanTest test --no-build-cache'
+                                            }
                                             sh '''export SPRING_RABBITMQ_USERNAME=$RABBITMQ_CREDS_USR && \
                                           export SPRING_RABBITMQ_PASSWORD=$RABBITMQ_CREDS_PSW && \
-                                          ./gradlew -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME test'''
+                                          ./gradlew -PciBuildNumber=$BUILD_NUMBER -PciJobName=$JOB_NAME ''' + taskArgument
                                             jacoco classPattern: '**/build/classes/java/main'
                                             junit allowEmptyResults: true,
                                             testResults: '**/build/test-results/test/*.xml',
