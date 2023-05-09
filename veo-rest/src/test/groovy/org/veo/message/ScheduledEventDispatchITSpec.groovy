@@ -181,14 +181,15 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
         eventDispatcher.addAckCallback { confirmationLatch.countDown() }
 
         when: "The profile is applied to a unit"
+        def dsgvoTestDomain
         executeInTransaction {
             client = newClient()
-            def dsgvoTestDomain = domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
-            client.addToDomains(dsgvoTestDomain)
+            dsgvoTestDomain = domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
             client = clientRepository.save(client)
-            unitRepository.save(newUnit(client)).tap {
-                applyProfileUseCase.execute(new ApplyProfileUseCase.InputData(client.id, dsgvoTestDomain.id, new ProfileRef("exampleOrganization"), it.id))
-            }
+        }
+        executeInTransaction {
+            def unit = unitRepository.save(newUnit(client))
+            applyProfileUseCase.execute(new ApplyProfileUseCase.InputData(client.id, dsgvoTestDomain.id, new ProfileRef("exampleOrganization"), unit.id))
         }
 
         and: "the event table has been completely cleared by the deletion job"

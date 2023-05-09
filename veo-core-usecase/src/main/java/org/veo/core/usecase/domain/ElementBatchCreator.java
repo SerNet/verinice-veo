@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.veo.core.entity.AbstractRisk;
@@ -38,6 +37,7 @@ import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
+import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.service.ElementMigrationService;
 
@@ -53,6 +53,7 @@ public class ElementBatchCreator {
   private final EventPublisher eventPublisher;
   private final Decider decider;
   private final ElementMigrationService elementMigrationService;
+  private final DesignatorService designatorService;
 
   /**
    * Persists a batch of transient elements (and contained risks) in a way that doesn't make JPA
@@ -82,12 +83,11 @@ public class ElementBatchCreator {
               e.getRisks().clear();
             });
 
-    AtomicInteger counter = new AtomicInteger(0);
     elementsGroupedByType.entrySet().stream()
         // sort entries by model type to get predictable designators
         .sorted(Comparator.comparing(entry -> entry.getKey().getSimpleName()))
         .flatMap(entry -> entry.getValue().stream())
-        .forEach(e -> prepareElement(e, unit, counter, migrate));
+        .forEach(e -> prepareElement(e, unit, migrate));
     elementsGroupedByType.forEach(this::saveElements);
 
     links.forEach(
@@ -99,7 +99,9 @@ public class ElementBatchCreator {
         (element, elementRisks) -> {
           elementRisks.forEach(
               r -> {
-                r.setDesignator(DESIGNATOR_PREFIX + counter.incrementAndGet());
+                if (r.getDesignator() == null) {
+                  designatorService.assignDesignator(r, unit.getClient());
+                }
                 element.addRisk(r);
               });
         });
@@ -129,9 +131,11 @@ public class ElementBatchCreator {
     log.debug("Done");
   }
 
-  private void prepareElement(Element element, Unit unit, AtomicInteger counter, boolean migrate) {
+  private void prepareElement(Element element, Unit unit, boolean migrate) {
     log.debug("Preparing element {}:{}", element.getId(), element);
-    element.setDesignator(DESIGNATOR_PREFIX + counter.incrementAndGet());
+    if (element.getDesignator() == null) {
+      designatorService.assignDesignator(element, unit.getClient());
+    }
     element.setOwner(unit);
     // TODO VEO-1547 element migration will become obsolete once the profiles they come from get
     // migrated in the domain.
@@ -140,10 +144,10 @@ public class ElementBatchCreator {
     }
 
     if (element instanceof CompositeElement<?> ce) {
-      ce.getParts().forEach(e -> prepareElement(e, unit, counter, migrate));
+      ce.getParts().forEach(e -> prepareElement(e, unit, migrate));
     } else if (element instanceof Scope scope) {
       Set<Element> members = scope.getMembers();
-      members.forEach(m -> prepareElement(m, unit, counter, migrate));
+      members.forEach(m -> prepareElement(m, unit, migrate));
     }
   }
 }

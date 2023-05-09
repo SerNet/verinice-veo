@@ -1057,9 +1057,10 @@ public class ModuleConfiguration {
       RepositoryProvider repositoryProvider,
       EventPublisher eventPublisher,
       Decider decider,
-      ElementMigrationService elementMigrationService) {
+      ElementMigrationService elementMigrationService,
+      DesignatorService designatorService) {
     return new ElementBatchCreator(
-        repositoryProvider, eventPublisher, decider, elementMigrationService);
+        repositoryProvider, eventPublisher, decider, elementMigrationService, designatorService);
   }
 
   @Bean

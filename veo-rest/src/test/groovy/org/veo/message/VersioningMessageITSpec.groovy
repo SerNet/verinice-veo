@@ -83,7 +83,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
             elementMessages.first().with{
                 assert type == "CREATION"
                 assert changeNumber == 0
-                assert content.designator.contains("DMO-")
+                assert content.designator.contains("PER-")
             }
         })
 
@@ -97,7 +97,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
                 type == "CREATION"
                 eventType == "entity_revision"
                 changeNumber == 0
-                content.designator.contains("DMO-")
+                content.designator.contains("PRO-")
                 time != null
             }
         })
@@ -112,7 +112,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
                 eventType == "entity_revision"
                 assert type == "CREATION"
                 assert changeNumber == 0
-                assert content.designator.contains("DMO-")
+                assert content.designator.contains("SCP-")
             }
         })
 

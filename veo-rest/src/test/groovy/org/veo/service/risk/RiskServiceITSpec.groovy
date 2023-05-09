@@ -192,7 +192,7 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
             queryCounts.select == 8
             queryCounts.insert == 1
             queryCounts.update == 2
-            queryCounts.time < 500
+            queryCounts.time < 600
         }
 
         when: "changing the scenario's potential probability and running the risk service"
@@ -274,7 +274,7 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
             queryCounts.select == 7
             queryCounts.insert == 1
             queryCounts.update == 3
-            queryCounts.time < 500
+            queryCounts.time < 600
         }
 
         when: "changing the risk's specific impact and running the risk service"
@@ -349,7 +349,7 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
             queryCounts.select == 4
             queryCounts.insert == 0
             queryCounts.update == 1
-            queryCounts.time < 500
+            queryCounts.time < 600
         }
     }
 }

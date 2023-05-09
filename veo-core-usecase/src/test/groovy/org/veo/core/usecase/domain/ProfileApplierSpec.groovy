@@ -31,6 +31,7 @@ import org.veo.core.repository.RepositoryProvider
 import org.veo.core.repository.UnitRepository
 import org.veo.core.service.DomainTemplateService
 import org.veo.core.service.EventPublisher
+import org.veo.core.usecase.DesignatorService
 import org.veo.core.usecase.decision.Decider
 import org.veo.service.ElementMigrationService
 
@@ -46,7 +47,8 @@ class ProfileApplierSpec extends Specification {
     RepositoryProvider repositoryProvider = Mock()
     Decider decider = Mock()
     ElementMigrationService elementMigrationService = Mock()
-    ElementBatchCreator elementBatchCreator = new ElementBatchCreator(repositoryProvider, eventPublisher, decider, elementMigrationService)
+    DesignatorService designatorService= Mock()
+    ElementBatchCreator elementBatchCreator = new ElementBatchCreator(repositoryProvider, eventPublisher, decider, elementMigrationService, designatorService)
 
     ProfileApplier profileApplier = new ProfileApplier(domainTemplateService, unitRepository, elementBatchCreator)
 
@@ -97,17 +99,14 @@ class ProfileApplierSpec extends Specification {
         1 * domainTemplateService.getProfileElements(domain, profile) >> [asset1, asset2, process]
 
         with(asset1) {
-            1 * setDesignator('DMO-1')
             1 * setOwner(unit)
             1 * elementMigrationService.migrate(it, domain)
         }
         with(asset2) {
-            1 * setDesignator('DMO-2')
             1 * setOwner(unit)
             1 * elementMigrationService.migrate(it, domain)
         }
         with(process) {
-            1 * setDesignator('DMO-3')
             1 * setOwner(unit)
             1 * elementMigrationService.migrate(it, domain)
         }
