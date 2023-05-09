@@ -158,10 +158,10 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
                 .get("/domaintemplates/$TEST_DOMAIN_TEMPLATE_ID"))
                 .andReturn().response.status == 200
                 break
-            case ~/\/domians\/.+/:
+            case ~/\/domains\/.+/:
                 assert mvc.perform(
                 MockMvcRequestBuilders
-                .get(entity.replace("/domians", "/domians/$domainId")))
+                .get(entity.replace("/domains", "/domains/$domainId")))
                 .andReturn().response.status == 200
                 break
             case "/content-creation":
@@ -234,7 +234,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         mvc.perform(MockMvcRequestBuilders.post("/processes/evaluation", [
             name: "can i haz evaluehshon?"
         ])).andReturn().response.status == 400
-        mvc.perform(MockMvcRequestBuilders.post("/domians/$domainId/processes/evaluation", [
+        mvc.perform(MockMvcRequestBuilders.post("/domains/$domainId/processes/evaluation", [
             name: "can i haz evaluehshon?"
         ])).andReturn().response.status == 400
     }

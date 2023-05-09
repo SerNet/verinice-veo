@@ -117,7 +117,7 @@ class ReadOnlyUserRestTest extends VeoRestTest {
                 ],
             ]
         ], 400, UserType.READ_ONLY)
-        post("/domians/$domainId/processes/evaluation", [
+        post("/domains/$domainId/processes/evaluation", [
             name: "you can evaluate this",
             domains: [
                 (domainId): [

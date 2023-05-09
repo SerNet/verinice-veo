@@ -156,7 +156,7 @@ class ReferenceAssemblerImplSpec extends Specification {
         }
 
         expect:
-        referenceAssembler.elementInDomainRefOf(element, domain) == "/domians/$domainId/${entityType.pluralTerm}/$elementId"
+        referenceAssembler.elementInDomainRefOf(element, domain) == "/domains/$domainId/${entityType.pluralTerm}/$elementId"
 
         where:
         entityType << EntityType.ELEMENT_TYPES

@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.rest
 
-import java.nio.charset.StandardCharsets
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
@@ -26,12 +24,9 @@ import org.springframework.transaction.support.TransactionTemplate
 import org.veo.core.entity.Catalog
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
-import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
-
-import groovy.json.JsonSlurper
 
 /**
  * Integration test for the domain controller. Uses mocked spring MVC environment.
@@ -176,170 +171,6 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         result*.name.sort().first() == 'Domain 1'
     }
 
-    @WithUserDetails("content-creator")
-    // TODO VEO-2000: remove this test
-    def "update the element type schema in a domain with an object schema"() {
-        given:
-        def schemaJson = DomainControllerMockMvcITSpec.getResourceAsStream('/os_scope.json').withCloseable {
-            new JsonSlurper().parse(it)
-        }
-
-        when: "a request is made to the server"
-        def result = post("/domains/${testDomain.id.uuidValue()}/elementtypedefinitions/scope/updatefromobjectschema", schemaJson, 204)
-
-        then: "the domains are returned"
-        result.andReturn().response.getContentAsString(StandardCharsets.UTF_8) == ''
-
-        when: 'reloading the updated domain from the database'
-        def updatedDomain = txTemplate.execute {
-            def client = clientRepository.findById(testDomain.owningClient.get().id).get()
-            def d = client.domains.find{it.id == testDomain.id}
-            //initialize lazy associations
-            d.elementTypeDefinitions.each {
-                it.subTypes.each {
-                    it.value.statuses
-                }
-            }
-            d
-        }
-
-        then: 'the entity schemas are updated'
-        with(updatedDomain.getElementTypeDefinition('scope')) {
-            with(it.subTypes) {
-                it.keySet() == [
-                    'SCP_Scope',
-                    'SCP_Processor',
-                    'SCP_Controller',
-                    'SCP_JointController',
-                    'SCP_ResponsibleBody'
-                ] as Set
-            }
-            with(it.translations) {
-                it.size() == 2
-                with(it.get(Locale.forLanguageTag("en"))) {
-                    it.scope_management == 'Head of the responsible body'
-                }
-            }
-        }
-    }
-
-    @WithUserDetails("content-creator")
-    // TODO VEO-2000: remove this test
-    def "update an element type definition in a domain"() {
-        given:
-        def schemaJson = [
-            subTypes:[
-                SCP_Container:[
-                    statuses:['Empty', 'Full']
-                ]
-            ],
-            customAspects:[
-                container_lid:[
-                    attributeDefinitions: [
-                        container_lid_present : [type: 'boolean']
-                    ]
-                ]
-            ],
-            links:[
-                container_owner:[
-                    targetType: 'person'
-                ]
-            ],
-            translations:[
-                en:[
-                    scope_SCP_Container_status_Empty: 'Empty',
-                    scope_SCP_Container_status_Full: 'Full',
-                    container_lid_present: 'Lid present?',
-                    container_owner: 'Owner'
-                ]
-            ],
-        ]
-
-        when: "updating the scope definition"
-        def result = put("/domains/${testDomain.id.uuidValue()}/element-type-definitions/scope", schemaJson, 204)
-
-        and: 'reloading the updated domain from the database'
-        def updatedDomain = txTemplate.execute {
-            def client = clientRepository.findById(testDomain.owningClient.get().id).get()
-            def d = client.domains.find{it.id == testDomain.id}
-            //initialize lazy associations
-            d.elementTypeDefinitions.each {
-                it.subTypes.each {
-                    it.value.statuses
-                }
-            }
-            d
-        }
-
-        then: 'the entity schemas are updated'
-        with(updatedDomain.getElementTypeDefinition('scope')) {
-            with(it.subTypes) {
-                it.keySet() ==~ [
-                    'SCP_Container'
-                ]
-            }
-            with(it.translations) {
-                it.size() == 1
-                with (it[Locale.ENGLISH]) {
-                    it.scope_SCP_Container_status_Empty == 'Empty'
-                }
-            }
-        }
-    }
-
-    @WithUserDetails("content-creator")
-    // TODO VEO-2000: remove this test
-    def "invalid attribute names are rejected"() {
-        when: "updating the scope definition with space in attribute name is rejected"
-        put("/domains/${testDomain.idAsString}/element-type-definitions/scope", [
-            subTypes: [
-                SCP_Container: [
-                    statuses: ['Empty']
-                ]
-            ],
-            customAspects: [
-                container_lid: [
-                    attributeDefinitions: [
-                        'container_lid present': [type: 'boolean']
-                    ]
-                ]
-            ],
-            translations: [
-                en: [
-                    scope_SCP_Container_status_Empty: 'Empty',
-                    'container_lid present': 'Lid present?',
-                ]
-            ],
-        ], 422)
-
-        then:
-        UnprocessableDataException ex = thrown()
-        ex.message ==~ /Invalid key 'container_lid present' - .*/
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "cannot update element type schema as regular user"() {
-        given:
-        def schemaJson = DomainControllerMockMvcITSpec.getResourceAsStream('/os_scope.json').withCloseable {
-            new JsonSlurper().parse(it)
-        }
-
-        when: "a request is made to the server"
-        def status = postUnauthorized("/domains/${testDomain.id.uuidValue()}/elementtypedefinitions/scope/updatefromobjectschema", schemaJson)
-
-        then: "it is forbidden"
-        status.andReturn().response.status == 403
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "cannot update element type definition as regular user"() {
-        when:
-        def response = putUnauthorized("/domains/${testDomain.id.uuidValue()}/element-type-definitions/scope", [:])
-
-        then:
-        response.andReturn().response.status == 403
-    }
-
     @WithUserDetails("user@domain.example")
     def "export a Domain"() {
         given: "a saved domain"
@@ -364,18 +195,6 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             catalogItems[0].element.domains.keySet() ==~ [result.id]
             domainTemplate !=null
         }
-    }
-
-    @WithUserDetails("user@domain.example")
-    // TODO VEO-2000: remove this test
-    def "create a DomainTemplate forbidden for user"() {
-        given: "a saved domain"
-
-        when: "a request is made to the server"
-        def status = postUnauthorized("/domains/${testDomain.id.uuidValue()}/createdomaintemplate", [version : "1.0.0"])
-
-        then: "it is forbidden"
-        status.andReturn().response.status == 403
     }
 
     @WithUserDetails("user@domain.example")

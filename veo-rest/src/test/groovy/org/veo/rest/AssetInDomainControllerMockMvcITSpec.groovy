@@ -51,13 +51,13 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             name: "Anne Admin",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
-        def partId = parseJson(post("/domians/$testDomainId/assets", [
+        def partId = parseJson(post("/domains/$testDomainId/assets", [
             name: "Git server",
             owner: [targetUri: "/units/$unitId"],
             subType: "Server",
             status: "DOWN"
         ])).resourceId
-        def assetId = parseJson(post("/domians/$testDomainId/assets", [
+        def assetId = parseJson(post("/domains/$testDomainId/assets", [
             name: "My little server farm",
             abbreviation: "SF",
             description: "Bunch of servers",
@@ -85,12 +85,12 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when: "fetching it in the domain context"
-        def response = parseJson(get("/domians/$testDomainId/assets/$assetId"))
+        def response = parseJson(get("/domains/$testDomainId/assets/$assetId"))
 
         then: "basic properties are contained"
         response.id == assetId
         response.type == "asset"
-        response._self == "http://localhost/domians/$testDomainId/assets/$assetId"
+        response._self == "http://localhost/domains/$testDomainId/assets/$assetId"
         response.name == "My little server farm"
         response.abbreviation == "SF"
         response.description == "Bunch of servers"
@@ -106,25 +106,25 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.status == "RUNNING"
         response.customAspects.storage.totalCapacityInTb == 32
         response.links.admin[0].target.targetUri == "http://localhost/persons/$personId"
-        response.links.admin[0].target.targetInDomainUri == "http://localhost/domians/$testDomainId/persons/$personId"
+        response.links.admin[0].target.targetInDomainUri == "http://localhost/domains/$testDomainId/persons/$personId"
         response.links.admin[0].target.associatedWithDomain == false
         response.links.admin[0].target.subType == null
         response.links.admin[0].attributes.accessProtocol == "ssh"
 
         and: "parts"
         response.parts[0].targetUri == "http://localhost/assets/$partId"
-        response.parts[0].targetInDomainUri == "http://localhost/domians/$testDomainId/assets/$partId"
+        response.parts[0].targetInDomainUri == "http://localhost/domains/$testDomainId/assets/$partId"
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "Server"
 
         when: "associating asset with a second domain"
-        post("/domians/$dsgvoTestDomainId/assets/$assetId", [
+        post("/domains/$dsgvoTestDomainId/assets/$assetId", [
             subType: "AST_IT-System",
             status: "RELEASED"
         ], 200)
 
         and: "fetching asset in second domain"
-        def assetInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/assets/$assetId")) as Map
+        def assetInDsgvo = parseJson(get("/domains/$dsgvoTestDomainId/assets/$assetId")) as Map
 
         then: "it contains basic values"
         assetInDsgvo.name == "My little server farm"
@@ -143,10 +143,10 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         assetInDsgvo.customAspects.asset_details = [
             asset_details_number: 3000
         ]
-        put("/domians/$dsgvoTestDomainId/assets/$assetId", assetInDsgvo, [
-            'If-Match': getETag(get("/domians/$dsgvoTestDomainId/assets/$assetId"))
+        put("/domains/$dsgvoTestDomainId/assets/$assetId", assetInDsgvo, [
+            'If-Match': getETag(get("/domains/$dsgvoTestDomainId/assets/$assetId"))
         ], 200)
-        assetInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/assets/$assetId"))
+        assetInDsgvo = parseJson(get("/domains/$dsgvoTestDomainId/assets/$assetId"))
 
         then: "updated values are present"
         assetInDsgvo.description == "New description"
@@ -157,7 +157,7 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         assetInDsgvo.customAspects.storage == null
 
         when: "fetching the asset from the viewpoint of the original domain again"
-        def assetInTestdomain = parseJson(get("/domians/$testDomainId/assets/$assetId"))
+        def assetInTestdomain = parseJson(get("/domains/$testDomainId/assets/$assetId"))
 
         then: "values for original domain are unchanged"
         assetInTestdomain.subType == "Server"
@@ -175,7 +175,7 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
     def "get all assets in a domain"() {
         given: "15 assets in the domain & one unassociated asset"
         (1..15).forEach {
-            post("/domians/$testDomainId/assets", [
+            post("/domains/$testDomainId/assets", [
                 name: "asset $it",
                 owner: [targetUri: "/units/$unitId"],
                 subType: "Server",
@@ -188,7 +188,7 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])
 
         expect: "page 1 to be available"
-        with(parseJson(get("/domians/$testDomainId/assets?size=10&sortBy=designator"))) {
+        with(parseJson(get("/domains/$testDomainId/assets?size=10&sortBy=designator"))) {
             totalItemCount == 15
             page == 0
             pageCount == 2
@@ -197,7 +197,7 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         and: "page 2 to be available"
-        with(parseJson(get("/domians/$testDomainId/assets?size=10&page=1&sortBy=designator"))) {
+        with(parseJson(get("/domains/$testDomainId/assets?size=10&page=1&sortBy=designator"))) {
             totalItemCount == 15
             page == 1
             pageCount == 2
@@ -211,7 +211,7 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def randomAssetId = randomUUID()
 
         when: "trying to fetch it in the domain"
-        get("/domians/$testDomainId/assets/$randomAssetId", 404)
+        get("/domains/$testDomainId/assets/$randomAssetId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)
@@ -220,7 +220,7 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "missing domain is handled"() {
         given: "an asset in a domain"
-        def assetId = parseJson(post("/domians/$testDomainId/assets", [
+        def assetId = parseJson(post("/domains/$testDomainId/assets", [
             name: "Some asset",
             owner: [targetUri: "/units/$unitId"],
             subType: "Server",
@@ -229,7 +229,7 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def randomDomainId = randomUUID()
 
         when: "trying to fetch the asset in a non-existing domain"
-        get("/domians/$randomDomainId/assets/$assetId", 404)
+        get("/domains/$randomDomainId/assets/$assetId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)
@@ -244,7 +244,7 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when:
-        get("/domians/$testDomainId/assets/$assetId", 404)
+        get("/domains/$testDomainId/assets/$assetId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)
@@ -256,7 +256,7 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def randomAssetId = randomUUID()
 
         when: "trying to fetch its parts in the domain"
-        get("/domians/$testDomainId/assets/$randomAssetId/parts", 404)
+        get("/domains/$testDomainId/assets/$randomAssetId/parts", 404)
 
         then:
         def nfEx = thrown(NotFoundException)

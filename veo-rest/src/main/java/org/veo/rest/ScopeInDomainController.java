@@ -75,6 +75,7 @@ import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scope;
 import org.veo.core.usecase.base.UpdateScopeInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
@@ -102,8 +103,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(ScopeInDomainController.URL_BASE_PATH)
 @Slf4j
 public class ScopeInDomainController {
-  // TODO VEO-2000 replace /domians with Domain.PLURAL_TERM
-  public static final String URL_BASE_PATH = "/domians/{domainId}/" + Scope.PLURAL_TERM;
+  public static final String URL_BASE_PATH =
+      "/" + Domain.PLURAL_TERM + "/{domainId}/" + Scope.PLURAL_TERM;
   private final ClientLookup clientLookup;
   private final GetScopeUseCase getScopeUseCase;
   private final GetScopesUseCase getScopesUseCase;

@@ -51,13 +51,13 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             name: "Encryption for dummies",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
-        def partId = parseJson(post("/domians/$testDomainId/controls", [
+        def partId = parseJson(post("/domains/$testDomainId/controls", [
             name: "Encrypt user messages",
             owner: [targetUri: "/units/$unitId"],
             subType: "TOM",
             status: "NEW"
         ])).resourceId
-        def controlId = parseJson(post("/domians/$testDomainId/controls", [
+        def controlId = parseJson(post("/domains/$testDomainId/controls", [
             name: "End-to-end encryption",
             abbreviation: "E2EE",
             description: "A security method that keeps messages secure",
@@ -90,12 +90,12 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when: "fetching it in the domain context"
-        def response = parseJson(get("/domians/$testDomainId/controls/$controlId"))
+        def response = parseJson(get("/domains/$testDomainId/controls/$controlId"))
 
         then: "basic properties are contained"
         response.id == controlId
         response.type == "control"
-        response._self == "http://localhost/domians/$testDomainId/controls/$controlId"
+        response._self == "http://localhost/domains/$testDomainId/controls/$controlId"
         response.name == "End-to-end encryption"
         response.abbreviation == "E2EE"
         response.description == "A security method that keeps messages secure"
@@ -111,7 +111,7 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.status == "NEW"
         response.customAspects.implementation.explanation == "Data is encrypted / decrypted by the clients, not by the server"
         response.links.literature[0].target.targetUri == "http://localhost/documents/$documentId"
-        response.links.literature[0].target.targetInDomainUri == "http://localhost/domians/$testDomainId/documents/$documentId"
+        response.links.literature[0].target.targetInDomainUri == "http://localhost/domains/$testDomainId/documents/$documentId"
         response.links.literature[0].target.associatedWithDomain == false
         response.links.literature[0].target.subType == null
         response.links.literature[0].attributes.chapters == [2, 7, 8]
@@ -119,18 +119,18 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         and: "parts"
         response.parts[0].targetUri == "http://localhost/controls/$partId"
-        response.parts[0].targetInDomainUri == "http://localhost/domians/$testDomainId/controls/$partId"
+        response.parts[0].targetInDomainUri == "http://localhost/domains/$testDomainId/controls/$partId"
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "TOM"
 
         when: "associating control with a second domain"
-        post("/domians/$dsgvoTestDomainId/controls/$controlId", [
+        post("/domains/$dsgvoTestDomainId/controls/$controlId", [
             subType: "CTL_TOM",
             status: "IN_PROGRESS"
         ], 200)
 
         and: "fetching control in second domain"
-        def controlInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/controls/$controlId")) as Map
+        def controlInDsgvo = parseJson(get("/domains/$dsgvoTestDomainId/controls/$controlId")) as Map
 
         then: "it contains basic values"
         controlInDsgvo.name == "End-to-end encryption"
@@ -151,10 +151,10 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
                 "control_dataProtection_objectives_integrity"
             ]
         ]
-        put("/domians/$dsgvoTestDomainId/controls/$controlId", controlInDsgvo, [
-            'If-Match': getETag(get("/domians/$dsgvoTestDomainId/controls/$controlId"))
+        put("/domains/$dsgvoTestDomainId/controls/$controlId", controlInDsgvo, [
+            'If-Match': getETag(get("/domains/$dsgvoTestDomainId/controls/$controlId"))
         ], 200)
-        controlInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/controls/$controlId"))
+        controlInDsgvo = parseJson(get("/domains/$dsgvoTestDomainId/controls/$controlId"))
 
         then: "updated values are present"
         controlInDsgvo.description == "New description"
@@ -167,7 +167,7 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         controlInDsgvo.customAspects.implementation == null
 
         when: "fetching the control from the viewpoint of the original domain again"
-        def controlInTestdomain = parseJson(get("/domians/$testDomainId/controls/$controlId"))
+        def controlInTestdomain = parseJson(get("/domains/$testDomainId/controls/$controlId"))
 
         then: "values for original domain are unchanged"
         controlInTestdomain.subType == "TOM"
@@ -202,7 +202,7 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])
 
         expect: "page 1 to be available"
-        with(parseJson(get("/domians/$testDomainId/controls?size=10&sortBy=designator"))) {
+        with(parseJson(get("/domains/$testDomainId/controls?size=10&sortBy=designator"))) {
             totalItemCount == 15
             page == 0
             pageCount == 2
@@ -211,7 +211,7 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         and: "page 2 to be available"
-        with(parseJson(get("/domians/$testDomainId/controls?size=10&page=1&sortBy=designator"))) {
+        with(parseJson(get("/domains/$testDomainId/controls?size=10&page=1&sortBy=designator"))) {
             totalItemCount == 15
             page == 1
             pageCount == 2
@@ -222,7 +222,7 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "risk values can be updated"() {
         given: "a control with risk values"
-        def controlId = parseJson(post("/domians/$testDomainId/controls", [
+        def controlId = parseJson(post("/domains/$testDomainId/controls", [
             name: "Risky control",
             owner: [targetUri: "/units/$unitId"],
             subType: "TOM",
@@ -235,14 +235,14 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when: "updating risk values"
-        get("/domians/$testDomainId/controls/$controlId").with{getResults ->
+        get("/domains/$testDomainId/controls/$controlId").with{getResults ->
             def control = parseJson(getResults)
             control.riskValues.riskyDef.implementationStatus = 1
             put(control._self, control, ["If-Match": getETag(getResults)], 200)
         }
 
         then: "risk values have been altered"
-        with(parseJson(get("/domians/$testDomainId/controls/$controlId"))) {
+        with(parseJson(get("/domains/$testDomainId/controls/$controlId"))) {
             riskValues.riskyDef.implementationStatus == 1
         }
     }
@@ -252,7 +252,7 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def randomControlId = randomUUID()
 
         when: "trying to fetch it in the domain"
-        get("/domians/$testDomainId/controls/$randomControlId", 404)
+        get("/domains/$testDomainId/controls/$randomControlId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)
@@ -274,7 +274,7 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def randomDomainId = randomUUID()
 
         when: "trying to fetch the control in a non-existing domain"
-        get("/domians/$randomDomainId/controls/$controlId", 404)
+        get("/domains/$randomDomainId/controls/$controlId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)
@@ -289,7 +289,7 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when:
-        get("/domians/$testDomainId/controls/$controlId", 404)
+        get("/domains/$testDomainId/controls/$controlId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)

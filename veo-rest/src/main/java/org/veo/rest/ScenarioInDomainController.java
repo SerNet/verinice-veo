@@ -76,6 +76,7 @@ import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scenario;
 import org.veo.core.usecase.base.UpdateScenarioInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
@@ -102,8 +103,8 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping(ScenarioInDomainController.URL_BASE_PATH)
 public class ScenarioInDomainController {
-  // TODO VEO-2000 replace /domians with Domain.PLURAL_TERM
-  public static final String URL_BASE_PATH = "/domians/{domainId}/" + Scenario.PLURAL_TERM;
+  public static final String URL_BASE_PATH =
+      "/" + Domain.PLURAL_TERM + "/{domainId}/" + Scenario.PLURAL_TERM;
   private final ClientLookup clientLookup;
   private final GetScenarioUseCase getScenarioUseCase;
   private final GetScenariosUseCase getScenariosUseCase;

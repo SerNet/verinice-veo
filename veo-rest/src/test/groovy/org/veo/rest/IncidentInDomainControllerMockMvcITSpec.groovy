@@ -51,13 +51,13 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             name: "Master of disaster",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
-        def partId = parseJson(post("/domians/$testDomainId/incidents", [
+        def partId = parseJson(post("/domains/$testDomainId/incidents", [
             name: "part of the disaster",
             owner: [targetUri: "/units/$unitId"],
             subType: "DISASTER",
             status: "INVESTIGATED",
         ])).resourceId
-        def incidentId = parseJson(post("/domians/$testDomainId/incidents", [
+        def incidentId = parseJson(post("/domains/$testDomainId/incidents", [
             name: "Big disaster",
             abbreviation: "BD",
             description: "Something really bad happened.",
@@ -85,12 +85,12 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when: "fetching it in the domain context"
-        def response = parseJson(get("/domians/$testDomainId/incidents/$incidentId"))
+        def response = parseJson(get("/domains/$testDomainId/incidents/$incidentId"))
 
         then: "basic properties are contained"
         response.id == incidentId
         response.type == "incident"
-        response._self == "http://localhost/domians/$testDomainId/incidents/$incidentId"
+        response._self == "http://localhost/domains/$testDomainId/incidents/$incidentId"
         response.name == "Big disaster"
         response.abbreviation == "BD"
         response.description == "Something really bad happened."
@@ -106,25 +106,25 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.status == "DETECTED"
         response.customAspects.general.timeOfOccurrence == "2023-02-10T12:00:00.000Z"
         response.links.responsiblePerson[0].target.targetUri == "http://localhost/persons/$personId"
-        response.links.responsiblePerson[0].target.targetInDomainUri == "http://localhost/domians/$testDomainId/persons/$personId"
+        response.links.responsiblePerson[0].target.targetInDomainUri == "http://localhost/domains/$testDomainId/persons/$personId"
         response.links.responsiblePerson[0].target.associatedWithDomain == false
         response.links.responsiblePerson[0].target.subType == null
         response.links.responsiblePerson[0].attributes.takesAllTheBlame
 
         and: "parts"
         response.parts[0].targetUri == "http://localhost/incidents/$partId"
-        response.parts[0].targetInDomainUri == "http://localhost/domians/$testDomainId/incidents/$partId"
+        response.parts[0].targetInDomainUri == "http://localhost/domains/$testDomainId/incidents/$partId"
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "DISASTER"
 
         when: "associating incident with a second domain"
-        post("/domians/$dsgvoTestDomainId/incidents/$incidentId", [
+        post("/domains/$dsgvoTestDomainId/incidents/$incidentId", [
             subType: "INC_Incident",
             status: "IN_PROGRESS"
         ], 200)
 
         and: "fetching incident in second domain"
-        def incidentInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/incidents/$incidentId")) as Map
+        def incidentInDsgvo = parseJson(get("/domains/$dsgvoTestDomainId/incidents/$incidentId")) as Map
 
         then: "it contains basic values"
         incidentInDsgvo.name == "Big disaster"
@@ -143,10 +143,10 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         incidentInDsgvo.customAspects.incident_cause = [
             incident_cause_details: "Somebody made a big mistake"
         ]
-        put("/domians/$dsgvoTestDomainId/incidents/$incidentId", incidentInDsgvo, [
-            'If-Match': getETag(get("/domians/$dsgvoTestDomainId/incidents/$incidentId"))
+        put("/domains/$dsgvoTestDomainId/incidents/$incidentId", incidentInDsgvo, [
+            'If-Match': getETag(get("/domains/$dsgvoTestDomainId/incidents/$incidentId"))
         ], 200)
-        incidentInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/incidents/$incidentId"))
+        incidentInDsgvo = parseJson(get("/domains/$dsgvoTestDomainId/incidents/$incidentId"))
 
         then: "updated values are present"
         incidentInDsgvo.description == "New description"
@@ -157,7 +157,7 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         incidentInDsgvo.customAspects.details == null
 
         when: "fetching the incident from the viewpoint of the original domain again"
-        def incidentInTestdomain = parseJson(get("/domians/$testDomainId/incidents/$incidentId"))
+        def incidentInTestdomain = parseJson(get("/domains/$testDomainId/incidents/$incidentId"))
 
         then: "values for original domain are unchanged"
         incidentInTestdomain.subType == "DISASTER"
@@ -192,7 +192,7 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])
 
         expect: "page 1 to be available"
-        with(parseJson(get("/domians/$testDomainId/incidents?size=10&sortBy=designator"))) {
+        with(parseJson(get("/domains/$testDomainId/incidents?size=10&sortBy=designator"))) {
             totalItemCount == 15
             page == 0
             pageCount == 2
@@ -201,7 +201,7 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         and: "page 2 to be available"
-        with(parseJson(get("/domians/$testDomainId/incidents?size=10&page=1&sortBy=designator"))) {
+        with(parseJson(get("/domains/$testDomainId/incidents?size=10&page=1&sortBy=designator"))) {
             totalItemCount == 15
             page == 1
             pageCount == 2
@@ -215,7 +215,7 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def randomIncidentId = randomUUID()
 
         when: "trying to fetch it in the domain"
-        get("/domians/$testDomainId/incidents/$randomIncidentId", 404)
+        get("/domains/$testDomainId/incidents/$randomIncidentId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)
@@ -237,7 +237,7 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def randomDomainId = randomUUID()
 
         when: "trying to fetch the incident in a non-existing domain"
-        get("/domians/$randomDomainId/incidents/$incidentId", 404)
+        get("/domains/$randomDomainId/incidents/$incidentId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)
@@ -252,7 +252,7 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when:
-        get("/domians/$testDomainId/incidents/$incidentId", 404)
+        get("/domains/$testDomainId/incidents/$incidentId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)

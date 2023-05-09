@@ -149,7 +149,7 @@ class BasicCrudRestTest extends VeoRestTest {
 
     def "CRUD person in domain context"() {
         when: "creating a new person within a domain"
-        def creationResponse = post("/domians/$domainId/persons", [
+        def creationResponse = post("/domains/$domainId/persons", [
             name: "test person",
             owner: [targetUri: "/units/$unitId`"],
             subType: "PER_Person",
@@ -162,7 +162,7 @@ class BasicCrudRestTest extends VeoRestTest {
         creationResponse.body.success
         creationResponse.body.message == "Person created successfully."
         personId.size() == 36
-        personInDomainUri == "/domians/$domainId/persons/$personId"
+        personInDomainUri == "/domains/$domainId/persons/$personId"
 
         when: "retrieving the person from the viewpoint of the domain"
         def getResponse = get(personInDomainUri)

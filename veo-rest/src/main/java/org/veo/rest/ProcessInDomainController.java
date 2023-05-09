@@ -77,6 +77,7 @@ import org.veo.adapter.presenter.api.io.mapper.GetProcessesInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Process;
 import org.veo.core.usecase.base.UpdateProcessInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
@@ -103,8 +104,8 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping(ProcessInDomainController.URL_BASE_PATH)
 public class ProcessInDomainController {
-  // TODO VEO-2000 replace /domians with Domain.PLURAL_TERM
-  public static final String URL_BASE_PATH = "/domians/{domainId}/" + Process.PLURAL_TERM;
+  public static final String URL_BASE_PATH =
+      "/" + Domain.PLURAL_TERM + "/{domainId}/" + Process.PLURAL_TERM;
   private final ClientLookup clientLookup;
   private final GetProcessUseCase getProcessUseCase;
   private final GetProcessesUseCase getProcessesUseCase;

@@ -78,6 +78,7 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Control;
+import org.veo.core.entity.Domain;
 import org.veo.core.usecase.base.UpdateControlInDomainUseCase;
 import org.veo.core.usecase.control.CreateControlUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
@@ -103,8 +104,8 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping(ControlInDomainController.URL_BASE_PATH)
 public class ControlInDomainController {
-  // TODO VEO-2000 replace /domians with Domain.PLURAL_TERM
-  public static final String URL_BASE_PATH = "/domians/{domainId}/" + Control.PLURAL_TERM;
+  public static final String URL_BASE_PATH =
+      "/" + Domain.PLURAL_TERM + "/{domainId}/" + Control.PLURAL_TERM;
   private final ClientLookup clientLookup;
   private final GetControlUseCase getControlUseCase;
   private final GetControlsUseCase getControlsUseCase;

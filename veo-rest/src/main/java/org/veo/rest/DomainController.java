@@ -41,42 +41,28 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-
-import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
-import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
-import org.veo.adapter.presenter.api.dto.create.CreateDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
-import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.core.ExportDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.statistics.ElementStatusCounts;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.domain.ApplyProfileUseCase;
-import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
-import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.persistence.entity.jpa.ProfileReferenceFactoryImpl;
 import org.veo.rest.annotations.UnitUuidParam;
-import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.security.ApplicationUser;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -86,7 +72,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -107,12 +92,9 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
 
   public static final String URL_BASE_PATH = "/" + Domain.PLURAL_TERM;
 
-  private final ObjectSchemaParser objectSchemaParser;
   private final GetDomainUseCase getDomainUseCase;
   private final GetDomainsUseCase getDomainsUseCase;
   private final ExportDomainUseCase exportDomainUseCase;
-  private final UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase;
-  private final CreateDomainUseCase createDomainUseCase;
   private final GetElementStatusCountUseCase getElementStatusCountUseCase;
   private final ApplyProfileUseCase applyProfileUseCase;
 
@@ -191,33 +173,6 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
         domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
   }
 
-  @PostMapping
-  @Operation(summary = "Creates blank new domain")
-  @ApiResponse(responseCode = "201", description = "Domain created")
-  @ApiResponse(responseCode = "409", description = "Templates with name already exist")
-  // TODO VEO-2000: remove this endpoint
-  public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomain(
-      Authentication auth,
-      @Pattern(
-              regexp = Patterns.UUID,
-              message = "ID must be a valid UUID string following RFC 4122.")
-          @Valid
-          @RequestBody
-          CreateDomainDto domainDto) {
-    return useCaseInteractor.execute(
-        createDomainUseCase,
-        new CreateDomainUseCase.InputData(
-            getAuthenticatedClient(auth),
-            domainDto.getName(),
-            domainDto.getAbbreviation(),
-            domainDto.getDescription(),
-            domainDto.getAuthority()),
-        output -> {
-          ApiResponseBody body = CreateOutputMapper.map(output.getDomain());
-          return RestApiResponse.created(URL_BASE_PATH, body);
-        });
-  }
-
   @Override
   @SuppressFBWarnings // ignore warning on call to method proxy factory
   protected String buildSearchUri(String id) {
@@ -236,54 +191,6 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     } catch (IOException e) {
       log.error("Could not decode search URL: {}", e.getLocalizedMessage());
       throw new IllegalArgumentException("Could not decode search URL.");
-    }
-  }
-
-  @PutMapping(value = "/{id}/element-type-definitions/{type:[\\w]+}")
-  @Operation(summary = "Updates an element type definition in a domain")
-  @ApiResponse(responseCode = "204", description = "Element type definition updated")
-  // TODO VEO-2000: remove this endpoint
-  public CompletableFuture<ResponseEntity<ApiResponseBody>> updateElementTypeDefinition(
-      Authentication auth,
-      @PathVariable String id,
-      @PathVariable EntityType type,
-      @RequestBody ElementTypeDefinitionDto elementTypeDefinitionDto) {
-    Client client = getAuthenticatedClient(auth);
-    return useCaseInteractor.execute(
-        updateElementTypeDefinitionUseCase,
-        new UpdateElementTypeDefinitionUseCase.InputData(
-            client,
-            Key.uuidFrom(id),
-            type,
-            dtoToEntityTransformer.mapElementTypeDefinition(
-                type.getSingularTerm(), elementTypeDefinitionDto, null)),
-        out -> ResponseEntity.noContent().build());
-  }
-
-  @PostMapping(value = "/{id}/elementtypedefinitions/{type:[\\w]+}/updatefromobjectschema")
-  @Operation(
-      summary =
-          "Updates a domain with an entity schema. Deprecated, use PUT /domains/{id}/element-type-definitions/{type}",
-      deprecated = true)
-  @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Schema updated")})
-  // TODO VEO-2000: remove this endpoint
-  public CompletableFuture<ResponseEntity<ApiResponseBody>> updateDomainWithSchema(
-      Authentication auth,
-      @PathVariable String id,
-      @PathVariable EntityType type,
-      @RequestBody JsonNode schemaNode) {
-    Client client = getAuthenticatedClient(auth);
-    try {
-      ElementTypeDefinition typeDefinition =
-          objectSchemaParser.parseTypeDefinitionFromObjectSchema(type, schemaNode);
-      return useCaseInteractor.execute(
-          updateElementTypeDefinitionUseCase,
-          new UpdateElementTypeDefinitionUseCase.InputData(
-              client, Key.uuidFrom(id), type, typeDefinition),
-          out -> ResponseEntity.noContent().build());
-    } catch (JsonProcessingException e) {
-      log.error("Cannot parse object schema: {}", e.getLocalizedMessage());
-      throw new IllegalArgumentException("Cannot parse object schema.");
     }
   }
 

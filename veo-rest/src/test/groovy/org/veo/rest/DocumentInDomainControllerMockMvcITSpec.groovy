@@ -51,13 +51,13 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             name: "Ricky Writer",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
-        def partId = parseJson(post("/domians/$testDomainId/documents", [
+        def partId = parseJson(post("/domains/$testDomainId/documents", [
             name: "ISMS manual changelog",
             owner: [targetUri: "/units/$unitId"],
             subType: "Manual",
             status: "CURRENT",
         ])).resourceId
-        def documentId = parseJson(post("/domians/$testDomainId/documents", [
+        def documentId = parseJson(post("/domains/$testDomainId/documents", [
             name: "ISMS manual",
             abbreviation: "KM",
             description: "How we do ISMS",
@@ -85,12 +85,12 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when: "fetching it in the domain context"
-        def response = parseJson(get("/domians/$testDomainId/documents/$documentId"))
+        def response = parseJson(get("/domains/$testDomainId/documents/$documentId"))
 
         then: "basic properties are contained"
         response.id == documentId
         response.type == "document"
-        response._self == "http://localhost/domians/$testDomainId/documents/$documentId"
+        response._self == "http://localhost/domains/$testDomainId/documents/$documentId"
         response.name == "ISMS manual"
         response.abbreviation == "KM"
         response.description == "How we do ISMS"
@@ -106,25 +106,25 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.status == "CURRENT"
         response.customAspects.details.numberOfPages == 84
         response.links.author[0].target.targetUri == "http://localhost/persons/$personId"
-        response.links.author[0].target.targetInDomainUri == "http://localhost/domians/$testDomainId/persons/$personId"
+        response.links.author[0].target.targetInDomainUri == "http://localhost/domains/$testDomainId/persons/$personId"
         response.links.author[0].target.associatedWithDomain == false
         response.links.author[0].target.subType == null
         response.links.author[0].attributes.writingFinished == "2022-08-09"
 
         and: "parts"
         response.parts[0].targetUri == "http://localhost/documents/$partId"
-        response.parts[0].targetInDomainUri == "http://localhost/domians/$testDomainId/documents/$partId"
+        response.parts[0].targetInDomainUri == "http://localhost/domains/$testDomainId/documents/$partId"
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "Manual"
 
         when: "associating document with a second domain"
-        post("/domians/$dsgvoTestDomainId/documents/$documentId", [
+        post("/domains/$dsgvoTestDomainId/documents/$documentId", [
             subType: "DOC_Document",
             status: "IN_PROGRESS"
         ], 200)
 
         and: "fetching document in second domain"
-        def documentInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/documents/$documentId")) as Map
+        def documentInDsgvo = parseJson(get("/domains/$dsgvoTestDomainId/documents/$documentId")) as Map
 
         then: "it contains basic values"
         documentInDsgvo.name == "ISMS manual"
@@ -143,10 +143,10 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         documentInDsgvo.customAspects.document_revision = [
             document_revision_comment: "Well worded"
         ]
-        put("/domians/$dsgvoTestDomainId/documents/$documentId", documentInDsgvo, [
-            'If-Match': getETag(get("/domians/$dsgvoTestDomainId/documents/$documentId"))
+        put("/domains/$dsgvoTestDomainId/documents/$documentId", documentInDsgvo, [
+            'If-Match': getETag(get("/domains/$dsgvoTestDomainId/documents/$documentId"))
         ], 200)
-        documentInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/documents/$documentId"))
+        documentInDsgvo = parseJson(get("/domains/$dsgvoTestDomainId/documents/$documentId"))
 
         then: "updated values are present"
         documentInDsgvo.description == "New description"
@@ -157,7 +157,7 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         documentInDsgvo.customAspects.details == null
 
         when: "fetching the document from the viewpoint of the original domain again"
-        def documentInTestdomain = parseJson(get("/domians/$testDomainId/documents/$documentId"))
+        def documentInTestdomain = parseJson(get("/domains/$testDomainId/documents/$documentId"))
 
         then: "values for original domain are unchanged"
         documentInTestdomain.subType == "Manual"
@@ -192,7 +192,7 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])
 
         expect: "page 1 to be available"
-        with(parseJson(get("/domians/$testDomainId/documents?size=10&sortBy=designator"))) {
+        with(parseJson(get("/domains/$testDomainId/documents?size=10&sortBy=designator"))) {
             totalItemCount == 15
             page == 0
             pageCount == 2
@@ -201,7 +201,7 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         and: "page 2 to be available"
-        with(parseJson(get("/domians/$testDomainId/documents?size=10&page=1&sortBy=designator"))) {
+        with(parseJson(get("/domains/$testDomainId/documents?size=10&page=1&sortBy=designator"))) {
             totalItemCount == 15
             page == 1
             pageCount == 2
@@ -215,7 +215,7 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def randomDocumentId = randomUUID()
 
         when: "trying to fetch it in the domain"
-        get("/domians/$testDomainId/documents/$randomDocumentId", 404)
+        get("/domains/$testDomainId/documents/$randomDocumentId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)
@@ -237,7 +237,7 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def randomDomainId = randomUUID()
 
         when: "trying to fetch the document in a non-existing domain"
-        get("/domians/$randomDomainId/documents/$documentId", 404)
+        get("/domains/$randomDomainId/documents/$documentId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)
@@ -252,7 +252,7 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when:
-        get("/domians/$testDomainId/documents/$documentId", 404)
+        get("/domains/$testDomainId/documents/$documentId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)

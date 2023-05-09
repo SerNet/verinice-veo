@@ -66,9 +66,12 @@ public class WebSecurity {
 
   private static final String ZERO_OR_MORE_DIRECTORIES = "/**";
 
+  private static final String[] DOMAIN_PATHS = {
+    DomainController.URL_BASE_PATH + ZERO_OR_MORE_DIRECTORIES
+  };
+
   // Paths to domain specifications and resources that are part of the domain aggregate:
   private static final String[] DOMAIN_RESOURCE_PATHS = {
-    DomainController.URL_BASE_PATH + ZERO_OR_MORE_DIRECTORIES,
     EntitySchemaResource.URL_BASE_PATH + ZERO_OR_MORE_DIRECTORIES,
     TranslationsResource.URL_BASE_PATH + ZERO_OR_MORE_DIRECTORIES,
     CatalogController.URL_BASE_PATH + ZERO_OR_MORE_DIRECTORIES,
@@ -77,11 +80,7 @@ public class WebSecurity {
 
   // Paths to domain elements:
   private static final Stream<String> ELEMENT_PATHS =
-      EntityType.ELEMENT_PLURAL_TERMS.stream()
-          .flatMap(
-              pluralTerm ->
-                  Stream.of(
-                      "/%s/**".formatted(pluralTerm), "/domians/**/%s/**".formatted(pluralTerm)));
+      EntityType.ELEMENT_PLURAL_TERMS.stream().map("/%s/**"::formatted);
 
   // Resources that are not domain elements (see above) but should be protected by the same
   // policies:
@@ -90,7 +89,9 @@ public class WebSecurity {
 
   // Paths that should be writable by regular users (users that do not have a special role):
   private static final String[] USER_EDITABLE_PATHS =
-      Stream.concat(ELEMENT_PATHS, NON_ELEMENT_PATHS).toArray(String[]::new);
+      Stream.of(ELEMENT_PATHS, NON_ELEMENT_PATHS, Stream.of(DOMAIN_PATHS))
+          .flatMap(identity())
+          .toArray(String[]::new);
 
   // Paths that should be visible to regular users:
   private static final String[] USER_VIEWABLE_PATHS =

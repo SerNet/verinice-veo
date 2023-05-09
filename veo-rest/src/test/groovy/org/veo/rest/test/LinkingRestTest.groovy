@@ -56,22 +56,22 @@ class LinkingRestTest extends VeoRestTest{
         ]).body.resourceId
 
         when: "creating an asset with a link to the target"
-        def sourceId = post("/domians/$domainId/assets", [
+        def sourceId = post("/domains/$domainId/assets", [
             name: "source asset",
             owner: [targetUri: "/units/$unitId"],
             subType: "ST",
             status: "NEW",
             links: [
                 someLink: [
-                    [target: [targetInDomainUri: "/domians/$domainId/$targetType.pluralTerm/$targetId"]]
+                    [target: [targetInDomainUri: "/domains/$domainId/$targetType.pluralTerm/$targetId"]]
                 ]
             ]
         ]).body.resourceId
 
         then: "the target has been set"
-        with(get("/domians/$domainId/assets/$sourceId").body) {
+        with(get("/domains/$domainId/assets/$sourceId").body) {
             links.someLink[0].target.targetUri ==~ /.*\/$targetType.pluralTerm\/$targetId/
-            links.someLink[0].target.targetInDomainUri ==~ /.*\/domians\/$domainId\/$targetType.pluralTerm\/$targetId/
+            links.someLink[0].target.targetInDomainUri ==~ /.*\/domains\/$domainId\/$targetType.pluralTerm\/$targetId/
             links.someLink[0].target.displayName ==~ /.* target element/
         }
 

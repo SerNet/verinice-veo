@@ -51,13 +51,13 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             name: "Market investigation results",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
-        def partId = parseJson(post("/domians/$testDomainId/processes", [
+        def partId = parseJson(post("/domains/$testDomainId/processes", [
             name: "Promotion",
             owner: [targetUri: "/units/$unitId"],
             subType: "BusinessProcess",
             status: "NEW"
         ])).resourceId
-        def processId = parseJson(post("/domians/$testDomainId/processes", [
+        def processId = parseJson(post("/domains/$testDomainId/processes", [
             name: "Marketing",
             abbreviation: "M",
             description: "Catering to the target market",
@@ -92,12 +92,12 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when: "fetching it in the domain context"
-        def response = parseJson(get("/domians/$testDomainId/processes/$processId"))
+        def response = parseJson(get("/domains/$testDomainId/processes/$processId"))
 
         then: "basic properties are contained"
         response.id == processId
         response.type == "process"
-        response._self == "http://localhost/domians/$testDomainId/processes/$processId"
+        response._self == "http://localhost/domains/$testDomainId/processes/$processId"
         response.name == "Marketing"
         response.abbreviation == "M"
         response.description == "Catering to the target market"
@@ -113,7 +113,7 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.status == "NEW"
         response.customAspects.general.complexity == "high"
         response.links.necessaryData[0].target.targetUri == "http://localhost/assets/$assetId"
-        response.links.necessaryData[0].target.targetInDomainUri == "http://localhost/domians/$testDomainId/assets/$assetId"
+        response.links.necessaryData[0].target.targetInDomainUri == "http://localhost/domains/$testDomainId/assets/$assetId"
         response.links.necessaryData[0].target.associatedWithDomain == false
         response.links.necessaryData[0].target.subType == null
         response.links.necessaryData[0].attributes.essential
@@ -121,18 +121,18 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         and: "parts"
         response.parts[0].targetUri == "http://localhost/processes/$partId"
-        response.parts[0].targetInDomainUri == "http://localhost/domians/$testDomainId/processes/$partId"
+        response.parts[0].targetInDomainUri == "http://localhost/domains/$testDomainId/processes/$partId"
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "BusinessProcess"
 
         when: "associating process with a second domain"
-        post("/domians/$dsgvoTestDomainId/processes/$processId", [
+        post("/domains/$dsgvoTestDomainId/processes/$processId", [
             subType: "PRO_DataProcessing",
             status: "IN_PROGRESS"
         ], 200)
 
         and: "fetching process in second domain"
-        def processInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/processes/$processId")) as Map
+        def processInDsgvo = parseJson(get("/domains/$dsgvoTestDomainId/processes/$processId")) as Map
 
         then: "it contains basic values"
         processInDsgvo.name == "Marketing"
@@ -151,10 +151,10 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         processInDsgvo.customAspects.process_accessAuthorization = [
             process_accessAuthorization_description: "Uhm..."
         ]
-        put("/domians/$dsgvoTestDomainId/processes/$processId", processInDsgvo, [
-            'If-Match': getETag(get("/domians/$dsgvoTestDomainId/processes/$processId"))
+        put("/domains/$dsgvoTestDomainId/processes/$processId", processInDsgvo, [
+            'If-Match': getETag(get("/domains/$dsgvoTestDomainId/processes/$processId"))
         ], 200)
-        processInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/processes/$processId"))
+        processInDsgvo = parseJson(get("/domains/$dsgvoTestDomainId/processes/$processId"))
 
         then: "updated values are present"
         processInDsgvo.description == "New description"
@@ -165,7 +165,7 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         processInDsgvo.customAspects.general == null
 
         when: "fetching the process from the viewpoint of the original domain again"
-        def processInTestdomain = parseJson(get("/domians/$testDomainId/processes/$processId"))
+        def processInTestdomain = parseJson(get("/domains/$testDomainId/processes/$processId"))
 
         then: "values for original domain are unchanged"
         processInTestdomain.subType == "BusinessProcess"
@@ -200,7 +200,7 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])
 
         expect: "page 1 to be available"
-        with(parseJson(get("/domians/$testDomainId/processes?size=10&sortBy=designator"))) {
+        with(parseJson(get("/domains/$testDomainId/processes?size=10&sortBy=designator"))) {
             totalItemCount == 15
             page == 0
             pageCount == 2
@@ -209,7 +209,7 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         and: "page 2 to be available"
-        with(parseJson(get("/domians/$testDomainId/processes?size=10&page=1&sortBy=designator"))) {
+        with(parseJson(get("/domains/$testDomainId/processes?size=10&page=1&sortBy=designator"))) {
             totalItemCount == 15
             page == 1
             pageCount == 2
@@ -223,7 +223,7 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def randomProcessId = randomUUID()
 
         when: "trying to fetch it in the domain"
-        get("/domians/$testDomainId/processes/$randomProcessId", 404)
+        get("/domains/$testDomainId/processes/$randomProcessId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)
@@ -232,7 +232,7 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "risk values can be updated"() {
         given: "a process with risk values"
-        def processId = parseJson(post("/domians/$testDomainId/processes", [
+        def processId = parseJson(post("/domains/$testDomainId/processes", [
             name: "Risky process",
             owner: [targetUri: "/units/$unitId"],
             subType: "BusinessProcess",
@@ -247,14 +247,14 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when: "updating risk values"
-        get("/domians/$testDomainId/processes/$processId").with{getResults ->
+        get("/domains/$testDomainId/processes/$processId").with{getResults ->
             def process = parseJson(getResults)
             process.riskValues.riskyDef.potentialImpacts.C = 1
             put(process._self, process, ["If-Match": getETag(getResults)], 200)
         }
 
         then: "risk values have been altered"
-        with(parseJson(get("/domians/$testDomainId/processes/$processId"))) {
+        with(parseJson(get("/domains/$testDomainId/processes/$processId"))) {
             riskValues.riskyDef.potentialImpacts.C == 1
         }
     }
@@ -274,7 +274,7 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def randomDomainId = randomUUID()
 
         when: "trying to fetch the process in a non-existing domain"
-        get("/domians/$randomDomainId/processes/$processId", 404)
+        get("/domains/$randomDomainId/processes/$processId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)
@@ -289,7 +289,7 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when:
-        get("/domians/$testDomainId/processes/$processId", 404)
+        get("/domains/$testDomainId/processes/$processId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)

@@ -49,12 +49,12 @@ class DomainAssociationRestTest extends VeoRestTest {
         }
 
         and:
-        with(get("/domians/$dsgvoDomainId/incidents/$incidentId").body) {
+        with(get("/domains/$dsgvoDomainId/incidents/$incidentId").body) {
             id == incidentId
             subType == "INC_Incident"
             status == "NEW"
             it.owner.targetUri == owner.unitUri // "owner" is both a DTO property and a groovy keyword
-            _self == "$owner.baseUrl/domians/$owner.dsgvoDomainId/incidents/$incidentId"
+            _self == "$owner.baseUrl/domains/$owner.dsgvoDomainId/incidents/$incidentId"
         }
     }
 

@@ -105,9 +105,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
       "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
 
   private static final Pattern UUID_PATTERN = Pattern.compile(UUID_REGEX);
-  // TODO VEO-2000 replace domians with Domain.PLURAL_TERM
   private static final Pattern ELEMENT_IN_DOMAIN_URI_PATTERN =
-      Pattern.compile("/domians/" + UUID_REGEX + "/(.+)/(" + UUID_REGEX + ")");
+      Pattern.compile("/" + Domain.PLURAL_TERM + "/" + UUID_REGEX + "/(.+)/(" + UUID_REGEX + ")");
 
   private final TypeExtractor typeExtractor;
 

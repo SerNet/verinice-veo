@@ -51,13 +51,13 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             name: "Lou Vice",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
-        def memberId = parseJson(post("/domians/$testDomainId/scopes", [
+        def memberId = parseJson(post("/domains/$testDomainId/scopes", [
             name: "Data Party Inc.",
             owner: [targetUri: "/units/$unitId"],
             subType: "Company",
             status: "NEW"
         ])).resourceId
-        def scopeId = parseJson(post("/domians/$testDomainId/scopes", [
+        def scopeId = parseJson(post("/domains/$testDomainId/scopes", [
             name: "Data Inc.",
             abbreviation: "DT",
             description: "Some company dealing with IT",
@@ -86,12 +86,12 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when: "fetching it in the domain context"
-        def response = parseJson(get("/domians/$testDomainId/scopes/$scopeId"))
+        def response = parseJson(get("/domains/$testDomainId/scopes/$scopeId"))
 
         then: "basic properties are contained"
         response.id == scopeId
         response.type == "scope"
-        response._self == "http://localhost/domians/$testDomainId/scopes/$scopeId"
+        response._self == "http://localhost/domains/$testDomainId/scopes/$scopeId"
         response.name == "Data Inc."
         response.abbreviation == "DT"
         response.description == "Some company dealing with IT"
@@ -107,7 +107,7 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.status == "NEW"
         response.customAspects.staff.numberOfEmployees == 638
         response.links.dataProtectionOfficer[0].target.targetUri == "http://localhost/persons/$personId"
-        response.links.dataProtectionOfficer[0].target.targetInDomainUri == "http://localhost/domians/$testDomainId/persons/$personId"
+        response.links.dataProtectionOfficer[0].target.targetInDomainUri == "http://localhost/domains/$testDomainId/persons/$personId"
         response.links.dataProtectionOfficer[0].target.associatedWithDomain == false
         response.links.dataProtectionOfficer[0].target.subType == null
         response.links.dataProtectionOfficer[0].attributes.experienceSince == "1988-08-08"
@@ -115,18 +115,18 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
         and: "members"
         response.members[0].targetUri == "http://localhost/scopes/$memberId"
-        response.members[0].targetInDomainUri == "http://localhost/domians/$testDomainId/scopes/$memberId"
+        response.members[0].targetInDomainUri == "http://localhost/domains/$testDomainId/scopes/$memberId"
         response.members[0].associatedWithDomain
         response.members[0].subType == "Company"
 
         when: "associating scope with a second domain"
-        post("/domians/$dsgvoTestDomainId/scopes/$scopeId", [
+        post("/domains/$dsgvoTestDomainId/scopes/$scopeId", [
             subType: "SCP_Processor",
             status: "IN_PROGRESS"
         ], 200)
 
         and: "fetching scope in second domain"
-        def scopeInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/scopes/$scopeId")) as Map
+        def scopeInDsgvo = parseJson(get("/domains/$dsgvoTestDomainId/scopes/$scopeId")) as Map
 
         then: "it contains basic values"
         scopeInDsgvo.name == "Data Inc."
@@ -145,10 +145,10 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         scopeInDsgvo.customAspects.scope_thirdCountry = [
             scope_thirdCountry_country: "Pizzaland"
         ]
-        put("/domians/$dsgvoTestDomainId/scopes/$scopeId", scopeInDsgvo, [
-            'If-Match': getETag(get("/domians/$dsgvoTestDomainId/scopes/$scopeId"))
+        put("/domains/$dsgvoTestDomainId/scopes/$scopeId", scopeInDsgvo, [
+            'If-Match': getETag(get("/domains/$dsgvoTestDomainId/scopes/$scopeId"))
         ], 200)
-        scopeInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/scopes/$scopeId"))
+        scopeInDsgvo = parseJson(get("/domains/$dsgvoTestDomainId/scopes/$scopeId"))
 
         then: "updated values are present"
         scopeInDsgvo.description == "New description"
@@ -159,7 +159,7 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         scopeInDsgvo.customAspects.staff == null
 
         when: "fetching the scope from the viewpoint of the original domain again"
-        def scopeInTestdomain = parseJson(get("/domians/$testDomainId/scopes/$scopeId"))
+        def scopeInTestdomain = parseJson(get("/domains/$testDomainId/scopes/$scopeId"))
 
         then: "values for original domain are unchanged"
         scopeInTestdomain.subType == "Company"
@@ -194,7 +194,7 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])
 
         expect: "page 1 to be available"
-        with(parseJson(get("/domians/$testDomainId/scopes?size=10&sortBy=designator"))) {
+        with(parseJson(get("/domains/$testDomainId/scopes?size=10&sortBy=designator"))) {
             totalItemCount == 15
             page == 0
             pageCount == 2
@@ -203,7 +203,7 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         }
 
         and: "page 2 to be available"
-        with(parseJson(get("/domians/$testDomainId/scopes?size=10&page=1&sortBy=designator"))) {
+        with(parseJson(get("/domains/$testDomainId/scopes?size=10&page=1&sortBy=designator"))) {
             totalItemCount == 15
             page == 1
             pageCount == 2
@@ -217,7 +217,7 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def randomScopeId = randomUUID()
 
         when: "trying to fetch it in the domain"
-        get("/domians/$testDomainId/scopes/$randomScopeId", 404)
+        get("/domains/$testDomainId/scopes/$randomScopeId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)
@@ -239,7 +239,7 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def randomDomainId = randomUUID()
 
         when: "trying to fetch the scope in a non-existing domain"
-        get("/domians/$randomDomainId/scopes/$scopeId", 404)
+        get("/domains/$randomDomainId/scopes/$scopeId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)
@@ -254,7 +254,7 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when:
-        get("/domians/$testDomainId/scopes/$scopeId", 404)
+        get("/domains/$testDomainId/scopes/$scopeId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)

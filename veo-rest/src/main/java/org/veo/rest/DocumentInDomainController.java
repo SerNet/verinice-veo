@@ -78,6 +78,7 @@ import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Document;
+import org.veo.core.entity.Domain;
 import org.veo.core.usecase.base.UpdateDocumentInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.document.CreateDocumentUseCase;
@@ -103,8 +104,8 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping(DocumentInDomainController.URL_BASE_PATH)
 public class DocumentInDomainController {
-  // TODO VEO-2000 replace /domians with Domain.PLURAL_TERM
-  public static final String URL_BASE_PATH = "/domians/{domainId}/" + Document.PLURAL_TERM;
+  public static final String URL_BASE_PATH =
+      "/" + Domain.PLURAL_TERM + "/{domainId}/" + Document.PLURAL_TERM;
   private final ClientLookup clientLookup;
   private final GetDocumentUseCase getDocumentUseCase;
   private final GetDocumentsUseCase getDocumentsUseCase;

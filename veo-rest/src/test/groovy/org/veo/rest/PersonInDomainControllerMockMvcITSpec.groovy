@@ -51,13 +51,13 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
             name: "Hack Inc.",
             owner: [targetUri: "/units/$unitId"],
         ])).resourceId
-        def partId = parseJson(post("/domians/$testDomainId/persons", [
+        def partId = parseJson(post("/domains/$testDomainId/persons", [
             name: "Harry's rubber duck",
             owner: [targetUri: "/units/$unitId"],
             subType: "Programmer",
             status: "REVIEWING",
         ])).resourceId
-        def personId = parseJson(post("/domians/$testDomainId/persons", [
+        def personId = parseJson(post("/domains/$testDomainId/persons", [
             name: "Harry Larry",
             abbreviation: "HL",
             description: "Typing swiftly, thinking slowly",
@@ -85,12 +85,12 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when: "fetching it in the domain context"
-        def response = parseJson(get("/domians/$testDomainId/persons/$personId"))
+        def response = parseJson(get("/domains/$testDomainId/persons/$personId"))
 
         then: "basic properties are contained"
         response.id == personId
         response.type == "person"
-        response._self == "http://localhost/domians/$testDomainId/persons/$personId"
+        response._self == "http://localhost/domains/$testDomainId/persons/$personId"
         response.name == "Harry Larry"
         response.abbreviation == "HL"
         response.description == "Typing swiftly, thinking slowly"
@@ -106,25 +106,25 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.status == "CODING"
         response.customAspects.general.dateOfBirth == "1999-12-31"
         response.links.employer[0].target.targetUri == "http://localhost/scopes/$scopeId"
-        response.links.employer[0].target.targetInDomainUri == "http://localhost/domians/$testDomainId/scopes/$scopeId"
+        response.links.employer[0].target.targetInDomainUri == "http://localhost/domains/$testDomainId/scopes/$scopeId"
         response.links.employer[0].target.associatedWithDomain == false
         response.links.employer[0].target.subType == null
         response.links.employer[0].attributes.employedSince == "2022-08-01"
 
         and: "parts"
         response.parts[0].targetUri == "http://localhost/persons/$partId"
-        response.parts[0].targetInDomainUri == "http://localhost/domians/$testDomainId/persons/$partId"
+        response.parts[0].targetInDomainUri == "http://localhost/domains/$testDomainId/persons/$partId"
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "Programmer"
 
         when: "associating person with a second domain"
-        post("/domians/$dsgvoTestDomainId/persons/$personId", [
+        post("/domains/$dsgvoTestDomainId/persons/$personId", [
             subType: "PER_Person",
             status: "IN_PROGRESS"
         ], 200)
 
         and: "fetching person in second domain"
-        def personInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/persons/$personId")) as Map
+        def personInDsgvo = parseJson(get("/domains/$dsgvoTestDomainId/persons/$personId")) as Map
 
         then: "it contains basic values"
         personInDsgvo.name == "Harry Larry"
@@ -143,10 +143,10 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         personInDsgvo.customAspects.person_generalInformation = [
             person_generalInformation_givenName: "Harry"
         ]
-        put("/domians/$dsgvoTestDomainId/persons/$personId", personInDsgvo, [
-            'If-Match': getETag(get("/domians/$dsgvoTestDomainId/persons/$personId"))
+        put("/domains/$dsgvoTestDomainId/persons/$personId", personInDsgvo, [
+            'If-Match': getETag(get("/domains/$dsgvoTestDomainId/persons/$personId"))
         ], 200)
-        personInDsgvo = parseJson(get("/domians/$dsgvoTestDomainId/persons/$personId"))
+        personInDsgvo = parseJson(get("/domains/$dsgvoTestDomainId/persons/$personId"))
 
         then: "updated values are present"
         personInDsgvo.description == "New description"
@@ -157,7 +157,7 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         personInDsgvo.customAspects.general == null
 
         when: "fetching the person from the viewpoint of the original domain again"
-        def personInTestdomain = parseJson(get("/domians/$testDomainId/persons/$personId"))
+        def personInTestdomain = parseJson(get("/domains/$testDomainId/persons/$personId"))
 
         then: "values for original domain are unchanged"
         personInTestdomain.subType == "Programmer"
@@ -177,7 +177,7 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def randomPersonId = randomUUID()
 
         when: "trying to fetch it in the domain"
-        get("/domians/$testDomainId/persons/$randomPersonId", 404)
+        get("/domains/$testDomainId/persons/$randomPersonId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)
@@ -199,7 +199,7 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def randomDomainId = randomUUID()
 
         when: "trying to fetch the person in a non-existing domain"
-        get("/domians/$randomDomainId/persons/$personId", 404)
+        get("/domains/$randomDomainId/persons/$personId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)
@@ -214,7 +214,7 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when:
-        get("/domians/$testDomainId/persons/$personId", 404)
+        get("/domains/$testDomainId/persons/$personId", 404)
 
         then:
         def nfEx = thrown(NotFoundException)

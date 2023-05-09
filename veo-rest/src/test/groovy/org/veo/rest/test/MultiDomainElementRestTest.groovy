@@ -67,7 +67,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
         ]).body.resourceId
 
         when: "using CA in domain A"
-        get("/domians/$domainIdA/$type.pluralTerm/$elementId").with {
+        get("/domains/$domainIdA/$type.pluralTerm/$elementId").with {
             def element = body
             element.customAspects.separateCa = [
                 someAttr: "fooA"
@@ -76,7 +76,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
         }
 
         then: "CA has been applied in domain A"
-        with(get("/domians/$domainIdA/$type.pluralTerm/$elementId").body) {
+        with(get("/domains/$domainIdA/$type.pluralTerm/$elementId").body) {
             customAspects == [
                 separateCa: [
                     someAttr: "fooA"
@@ -85,12 +85,12 @@ class MultiDomainElementRestTest extends VeoRestTest {
         }
 
         and: "CAs is absent in domain B"
-        with(get("/domians/$domainIdB/$type.pluralTerm/$elementId").body) {
+        with(get("/domains/$domainIdB/$type.pluralTerm/$elementId").body) {
             customAspects == [:]
         }
 
         when: "using CA in domain B"
-        get("/domians/$domainIdB/$type.pluralTerm/$elementId").with {
+        get("/domains/$domainIdB/$type.pluralTerm/$elementId").with {
             def element = body
             element.customAspects.separateCa = [
                 someAttr: 42
@@ -99,7 +99,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
         }
 
         then: "CA has been applied in domain B"
-        with(get("/domians/$domainIdB/$type.pluralTerm/$elementId").body) {
+        with(get("/domains/$domainIdB/$type.pluralTerm/$elementId").body) {
             customAspects == [
                 separateCa: [
                     someAttr: 42
@@ -108,7 +108,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
         }
 
         and: "CA in domain A is still the same"
-        with(get("/domians/$domainIdA/$type.pluralTerm/$elementId").body) {
+        with(get("/domains/$domainIdA/$type.pluralTerm/$elementId").body) {
             customAspects == [
                 separateCa: [
                     someAttr: "fooA"
@@ -139,7 +139,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
         ]).body.resourceId
 
         when: "adding CAs in domain A"
-        get("/domians/$domainIdA/$type.pluralTerm/$elementId").with {
+        get("/domains/$domainIdA/$type.pluralTerm/$elementId").with {
             def element = body
             element.customAspects = [
                 identicalCa: [
@@ -153,17 +153,17 @@ class MultiDomainElementRestTest extends VeoRestTest {
         }
 
         then: "identical CA has been applied in both domains"
-        with(get("/domians/$domainIdA/$type.pluralTerm/$elementId").body) {
+        with(get("/domains/$domainIdA/$type.pluralTerm/$elementId").body) {
             customAspects.identicalCa.someAttr == 7
             customAspects.separateCa.someAttr == "magic"
         }
-        with(get("/domians/$domainIdB/$type.pluralTerm/$elementId").body) {
+        with(get("/domains/$domainIdB/$type.pluralTerm/$elementId").body) {
             customAspects.identicalCa.someAttr == 7
             customAspects.separateCa == null
         }
 
         when: "updating CAs in domain B"
-        get("/domians/$domainIdB/$type.pluralTerm/$elementId").with {
+        get("/domains/$domainIdB/$type.pluralTerm/$elementId").with {
             def element = body
             element.customAspects.identicalCa.someAttr = 8
             element.customAspects.separateCa = [
@@ -173,28 +173,28 @@ class MultiDomainElementRestTest extends VeoRestTest {
         }
 
         then: "identical CA has been applied in both domains"
-        with(get("/domians/$domainIdA/$type.pluralTerm/$elementId").body) {
+        with(get("/domains/$domainIdA/$type.pluralTerm/$elementId").body) {
             customAspects.identicalCa.someAttr == 8
             customAspects.separateCa.someAttr == "magic"
         }
-        with(get("/domians/$domainIdB/$type.pluralTerm/$elementId").body) {
+        with(get("/domains/$domainIdB/$type.pluralTerm/$elementId").body) {
             customAspects.identicalCa.someAttr == 8
             customAspects.separateCa.someAttr == 9000
         }
 
         when: "removing CA in domain B"
-        get("/domians/$domainIdB/$type.pluralTerm/$elementId").with {
+        get("/domains/$domainIdB/$type.pluralTerm/$elementId").with {
             def element = body
             element.customAspects.remove("identicalCa")
             put(element._self, element, getETag())
         }
 
         then: "it's missing from both domains"
-        with(get("/domians/$domainIdB/$type.pluralTerm/$elementId").body) {
+        with(get("/domains/$domainIdB/$type.pluralTerm/$elementId").body) {
             customAspects.identicalCa == null
             customAspects.separateCa.someAttr == 9000
         }
-        with(get("/domians/$domainIdA/$type.pluralTerm/$elementId").body) {
+        with(get("/domains/$domainIdA/$type.pluralTerm/$elementId").body) {
             customAspects.identicalCa == null
             customAspects.separateCa.someAttr == "magic"
         }
@@ -206,7 +206,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
     def "identically defined custom aspects are synced when associating a #type.singularTerm with a domain"() {
         given: "an element associated with domain A"
         putElementTypeDefinitions(type)
-        def elementId = post("/domians/$domainIdA/$type.pluralTerm", [
+        def elementId = post("/domains/$domainIdA/$type.pluralTerm", [
             name: "my little element",
             owner: [targetUri: "/units/$unitId"],
             subType: "STA",
@@ -214,7 +214,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
         ]).body.resourceId
 
         when: "adding CAs in domain A"
-        get("/domians/$domainIdA/$type.pluralTerm/$elementId").with {
+        get("/domains/$domainIdA/$type.pluralTerm/$elementId").with {
             def element = body
             element.customAspects = [
                 identicalCa: [
@@ -228,20 +228,20 @@ class MultiDomainElementRestTest extends VeoRestTest {
         }
 
         then: "CAs have been applied in domain A"
-        with(get("/domians/$domainIdA/$type.pluralTerm/$elementId").body) {
+        with(get("/domains/$domainIdA/$type.pluralTerm/$elementId").body) {
             customAspects.identicalCa.someAttr == 7
             customAspects.separateCa.someAttr == "magic"
         }
 
         and: "not in domain B"
-        get("/domians/$domainIdB/$type.pluralTerm/$elementId", 404)
+        get("/domains/$domainIdB/$type.pluralTerm/$elementId", 404)
 
         when: "associating element with domain B"
-        post("/domians/$domainIdB/$type.pluralTerm/$elementId", [
+        post("/domains/$domainIdB/$type.pluralTerm/$elementId", [
             subType: "STB",
             status: "ON"
         ], 200)
-        def elementInDomainB = get("/domians/$domainIdB/$type.pluralTerm/$elementId").body
+        def elementInDomainB = get("/domains/$domainIdB/$type.pluralTerm/$elementId").body
 
         then: "identical CA has been applied in domain B"
         elementInDomainB.customAspects.identicalCa.someAttr == 7
@@ -269,11 +269,11 @@ class MultiDomainElementRestTest extends VeoRestTest {
         initialETag =~ /".+"/
 
         when: "assigning the element to both domains"
-        post("/domians/$domainIdA/$type.pluralTerm/$elementId", [
+        post("/domains/$domainIdA/$type.pluralTerm/$elementId", [
             subType: "STA",
             status: "NEW"
         ], 200)
-        post("/domians/$domainIdB/$type.pluralTerm/$elementId", [
+        post("/domains/$domainIdB/$type.pluralTerm/$elementId", [
             subType: "STB",
             status: "ON",
         ], 200)
@@ -285,11 +285,11 @@ class MultiDomainElementRestTest extends VeoRestTest {
         eTagAfterAssociating != initialETag
 
         and: "domain-specific ETags are identical"
-        get("/domians/$domainIdA/$type.pluralTerm/$elementId").getETag() == eTagAfterAssociating
-        get("/domians/$domainIdB/$type.pluralTerm/$elementId").getETag() == eTagAfterAssociating
+        get("/domains/$domainIdA/$type.pluralTerm/$elementId").getETag() == eTagAfterAssociating
+        get("/domains/$domainIdB/$type.pluralTerm/$elementId").getETag() == eTagAfterAssociating
 
         when: "updating element in one domain"
-        def putETag = get("/domians/$domainIdA/$type.pluralTerm/$elementId").body.with {
+        def putETag = get("/domains/$domainIdA/$type.pluralTerm/$elementId").body.with {
             it.status = "OLD"
             put(it._self, it, eTagAfterAssociating, 200).getETag()
         }
@@ -300,17 +300,17 @@ class MultiDomainElementRestTest extends VeoRestTest {
 
         and: "ETags have changed on all resources"
         putETag != eTagAfterAssociating
-        get("/domians/$domainIdA/$type.pluralTerm/$elementId").getETag() == putETag
-        get("/domians/$domainIdB/$type.pluralTerm/$elementId").getETag() == putETag
+        get("/domains/$domainIdA/$type.pluralTerm/$elementId").getETag() == putETag
+        get("/domains/$domainIdB/$type.pluralTerm/$elementId").getETag() == putETag
 
         expect: "updating the element with old ETag to fail"
-        get("/domians/$domainIdB/$type.pluralTerm/$elementId").body.with {
+        get("/domains/$domainIdB/$type.pluralTerm/$elementId").body.with {
             it.status = "OFF"
             put(it._self, it, eTagAfterAssociating, 412)
         }.body.message == "The eTag does not match for the element with the ID $elementId"
 
         and: "updating the element with new ETag to succeed"
-        get("/domians/$domainIdB/$type.pluralTerm/$elementId").body.with {
+        get("/domains/$domainIdB/$type.pluralTerm/$elementId").body.with {
             it.status = "OFF"
             put(it._self, it, putETag, 200)
         }
@@ -326,13 +326,13 @@ class MultiDomainElementRestTest extends VeoRestTest {
             name: "some element",
             owner: [targetUri: "/units/$unitId"]
         ]).body.resourceId
-        post("/domians/$domainIdA/$type.pluralTerm/$elementId", [
+        post("/domains/$domainIdA/$type.pluralTerm/$elementId", [
             subType: "STA",
             status: "NEW",
         ], 200)
 
         expect: "re-assigning the element with domain A to fail"
-        post("/domians/$domainIdA/$type.pluralTerm/$elementId", [
+        post("/domains/$domainIdA/$type.pluralTerm/$elementId", [
             subType: "STA",
             status: "OLD",
         ], 409).body.message == "$type.singularTerm $elementId is already associated with domain $domainIdA"
