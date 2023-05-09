@@ -176,9 +176,7 @@ import org.veo.core.usecase.scope.GetScopesUseCase;
 import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
 import org.veo.core.usecase.scope.UpdateScopeUseCase;
 import org.veo.core.usecase.service.EntityStateMapper;
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
-import org.veo.core.usecase.unit.DeleteDemoUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
@@ -499,24 +497,6 @@ public class ModuleConfiguration {
       DomainRepository domainRepository) {
     return new CreateUnitUseCase(
         clientRepository, unitRepository, domainRepository, getEntityFactory());
-  }
-
-  @Bean
-  public CreateDemoUnitUseCase getCreateDemoUnitUseCase(
-      ClientRepositoryImpl clientRepository,
-      ProfileApplier profileApplier,
-      EntityFactory entityFactory,
-      UnitRepository unitRepository) {
-    return new CreateDemoUnitUseCase(
-        clientRepository, entityFactory, profileApplier, unitRepository);
-  }
-
-  @Bean
-  public DeleteDemoUnitUseCase getDeleteDemoUnitUseCase(
-      DeleteUnitUseCase deleteUnitUseCase,
-      GetClientUseCase getClientUseCase,
-      GetUnitsUseCase getUnitsUseCase) {
-    return new DeleteDemoUnitUseCase(deleteUnitUseCase, getClientUseCase, getUnitsUseCase);
   }
 
   @Bean

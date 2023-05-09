@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.veo.core
 
-import static org.veo.core.entity.Client.ClientState.*
+import static org.veo.core.entity.Client.ClientState.ACTIVATED
+import static org.veo.core.entity.Client.ClientState.CREATED
+import static org.veo.core.entity.Client.ClientState.DEACTIVATED
+import static org.veo.core.entity.Client.ClientState.DELETED
 import static org.veo.core.events.MessageCreatorImpl.EVENT_TYPE_CLIENT_CHANGE
 import static org.veo.rest.VeoRestConfiguration.PROFILE_BACKGROUND_TASKS
 
@@ -101,7 +104,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "name": "${clientName}"
         }""", 1, Instant.now()))
 
-        then: "the client is created, activated, the demoUnit and domains exist"
+        then: "the client is created, activated, the initial unit and domains exist"
         defaultPolling.eventually {
             repository.exists(cId)
             with(repository.findById(cId).get()) {
@@ -116,8 +119,11 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
                 }
             }
             with(units) {
-                it.size() == 2
-                it.find { it.name == 'Unit 1' }.domains*.name ==~ ['test-domain', 'DS-GVO']
+                it.size() == 1
+                with(it.first()) {
+                    name == "Unit 1"
+                    domains*.name ==~ ['test-domain', 'DS-GVO']
+                }
             }
         }
     }
@@ -125,7 +131,6 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
     def "publish the deletion event"() {
         given: "a client and an unit"
         Client client = repository.save(newClient {
-            name = "Demo Client"
             state = DEACTIVATED
         })
 
@@ -152,7 +157,6 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
     def "sync the maxUnits attribute"() {
         given: "a client and two units"
         Client client = repository.save(newClient {
-            name = "Demo Client"
             state = ACTIVATED
         })
 
@@ -203,7 +207,6 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
     def"publish wrong event type for client state"(ClientState startState, String eventType) {
         given: "a client an a unit"
         Client client = repository.save(newClient {
-            name = "Demo Client"
             state = startState
         })
 
@@ -254,7 +257,6 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
     def"publish event type for next client state"(ClientState startState, String eventType, ClientState nextState) {
         given: "a client an a unit"
         Client client = repository.save(newClient {
-            name = "Demo Client"
             state = startState
         })
 
@@ -288,7 +290,6 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
     def "publish valid state transitions start with CREATED and end with DELETED"() {
         given: "a client an a unit"
         Client client = repository.save(newClient {
-            name = "Demo Client"
             state = CREATED
         })
         Domain domain = newDomain(client) {

@@ -255,7 +255,7 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "retrieve demo profile metadata"() {
+    def "retrieve example profile metadata"() {
         given:
         def client = testDomain.owner
         def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
@@ -265,8 +265,8 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
 
         then:
         result.profiles.size() == 1
-        with(result.profiles.demoUnit) {
-            name == 'Demo'
+        with(result.profiles.exampleOrganization) {
+            name == 'Beispieldaten'
             description == 'Beispieldaten für den Datenschutz'
             language == 'de_DE'
         }

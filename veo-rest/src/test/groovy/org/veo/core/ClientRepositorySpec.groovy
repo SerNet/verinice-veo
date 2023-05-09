@@ -41,7 +41,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
     def "create a simple client and a domain together"() {
         given: "a domain and a client"
         Client client = repository.save(newClient {
-            name = "Demo Client"
+            name = "Test Client"
         })
 
         Domain domain = newDomain(client) {
@@ -60,7 +60,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
 
         then : "client and domain are valid"
         isPresent
-        c.name == "Demo Client"
+        c.name == "Test Client"
         c.domains.size()==1
         c.domains.first().name == "27001"
         c.domains.first().owner == c
@@ -75,7 +75,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
 
         then : "the client and domain are valid"
         isPresent
-        c.name == "Demo Client"
+        c.name == "Test Client"
         c.domains.size()==1
         c.domains.first().name == "27001"
         c.domains.first().description == "ISO/IEC"
@@ -197,7 +197,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
         }
 
         Client client = newClient {
-            name = "Demo Client"
+            name = "Test Client"
             domains = [domain] as Set
         }
 
@@ -211,7 +211,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
 
         then : "client and domain are valid"
         isPresent
-        c.name == "Demo Client"
+        c.name == "Test Client"
         c.domains.size()==1
         c.domains.first().name == "27001"
         c.domains.first().owner == c
@@ -228,7 +228,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
 
         then : "the client and domain are valid"
         isPresent
-        c.name == "Demo Client"
+        c.name == "Test Client"
         c.domains.size()==1
         c.domains.first().name == "27001"
         c.domains.first().description == "ISO/IEC"

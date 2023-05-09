@@ -5423,15 +5423,15 @@
     }
   },
   "profiles": {
-    "demoUnit": {
-      "name": "Demo",
+    "exampleOrganization": {
+      "name": "Beispieldaten",
       "description": "Beispieldaten für den Datenschutz",
       "language": "de_DE",
       "elements": [
         {
           "name": "Data GmbH",
           "designator": "DMO-63",
-          "description": "Die Data GmbH ist ein IT-Dienstleister, spezialisiert auf Netzwerksicherheit und Informationssicherheit und in unserer Demo die Verantwortliche Stelle nach DS-GVO.",
+          "description": "Die Data GmbH ist ein IT-Dienstleister, spezialisiert auf Netzwerksicherheit und Informationssicherheit und in unseren Beispieldaten die Verantwortliche Stelle nach DS-GVO.",
           "owner": {
             "targetUri": "http://localhost/units/6e6dd1c2-111f-4ad2-9bc5-c2f6df8eaa5d"
           },

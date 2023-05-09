@@ -33,6 +33,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -180,8 +181,8 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
       PlaceholderResolver ref,
       Domain domain,
       String templateId,
-      Set<AbstractElementDto> demoUnitElements,
-      Set<AbstractRiskDto> demoUnitRisks) {
+      Set<AbstractElementDto> profileElements,
+      Set<AbstractRiskDto> profileRisks) {
     ref.cache.put(templateId, domain);
     var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
     resolvingFactory.setGlobalDomain(domain);
@@ -189,7 +190,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         new DtoToEntityTransformer(
             factory, resolvingFactory, new DomainAssociationTransformer(), entityStateMapper);
     var elements =
-        demoUnitElements.stream()
+        profileElements.stream()
             .map(e -> transformer.transformDto2Element(e, resolvingFactory))
             .toList();
     Unit dummyOwner = factory.createUnit(UUID.randomUUID().toString(), null);
@@ -200,7 +201,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
           e.setOwner(dummyOwner);
           DomainTemplateService.updateVersion(e);
         });
-    demoUnitRisks.forEach(
+    profileRisks.forEach(
         r -> {
           log.debug("Transforming risk {}", r);
           var risk = transformer.transformDto2Risk(r, resolvingFactory);
@@ -216,18 +217,14 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
       Domain domain,
       DomainTemplate template,
       ProfileDefinition profileDefinition) {
-    String templateId = template.getIdAsString();
-    Set<?> demoElements = profileDefinition.getElements();
-    Set<?> demoRisk = profileDefinition.getRisks();
     try {
-      String elementJson = objectMapper.writeValueAsString(demoElements);
-      String riskJson = objectMapper.writeValueAsString(demoRisk);
-      var demoUnitElements =
-          objectMapper.readValue(elementJson, new TypeReference<Set<AbstractElementDto>>() {});
-      var demoUnitRisks =
-          objectMapper.readValue(riskJson, new TypeReference<Set<AbstractRiskDto>>() {});
-
-      return createElements(client, ref, domain, templateId, demoUnitElements, demoUnitRisks);
+      return createElements(
+          client,
+          ref,
+          domain,
+          template.getIdAsString(),
+          parseJsonObjects(profileDefinition.getElements(), new TypeReference<>() {}),
+          parseJsonObjects(profileDefinition.getRisks(), new TypeReference<>() {}));
     } catch (IOException e) {
       log.error("Error reading profile from domain template", e);
       throw new InternalDataCorruptionException("Error reading profile from domain template.", e);
@@ -255,6 +252,11 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     CatalogItemPrepareStrategy.updateVersion(newDomainTemplate);
     log.info("Create and save domain template {} from domain {}", newDomainTemplate, domain);
     return domainTemplateRepository.save(newDomainTemplate);
+  }
+
+  private <T> Set<T> parseJsonObjects(Set<?> objects, TypeReference<Set<T>> typeRef)
+      throws JsonProcessingException {
+    return objectMapper.readValue(objectMapper.writeValueAsString(objects), typeRef);
   }
 
   private String createDomainTemplateId(Domain domain) {

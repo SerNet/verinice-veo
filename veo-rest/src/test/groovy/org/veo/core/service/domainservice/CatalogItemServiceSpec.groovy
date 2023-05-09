@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.core.service.domainservice
 
-import static org.veo.core.entity.profile.ProfileDefinition.DEMO_UNIT
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
@@ -62,9 +60,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
 
     public setup () {
         txTemplate.execute {
-            client = repository.save(newClient {
-                name = "Demo Client"
-            })
+            client = repository.save(newClient())
             testDomain = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID)
             dsgvoDomain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
             client = repository.save(client)
@@ -76,9 +72,9 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
         element = catalogItemService.createInstance(item, testDomain)
     }
 
-    def "retrieve demo unit elements for default client"() {
-        when: "retrieving the demo unit elements for a client"
-        def elements = domainTemplateService.getProfileElements(dsgvoDomain, new ProfileRef(DEMO_UNIT))
+    def "retrieve example elements for default client"() {
+        when: "retrieving the example elements for a client"
+        def elements = domainTemplateService.getProfileElements(dsgvoDomain, new ProfileRef("exampleOrganization"))
 
         then: "the elements for all the client's units are returned"
         elements.size() == 9

@@ -18,7 +18,6 @@
 package org.veo.core.entity.profile;
 
 import static lombok.AccessLevel.PACKAGE;
-import static org.veo.core.entity.profile.ProfileDefinition.DEMO_UNIT;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
@@ -54,7 +53,4 @@ public class ProfileRef {
           "Profile \"%s\" not found in domain %s", profileKey, domain.getIdAsString());
     }
   }
-
-  // TODO VEO-1554 remove magical demo unit ref
-  public static final ProfileRef DEMO_UNIT_REF = new ProfileRef(DEMO_UNIT);
 }

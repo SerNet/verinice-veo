@@ -30,7 +30,6 @@ import org.veo.core.usecase.base.ModifyElementUseCase.InputData
 import org.veo.core.usecase.common.ETag
 import org.veo.core.usecase.person.UpdatePersonUseCase
 import org.veo.core.usecase.service.TypedId
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.metrics.DataSourceProxyBeanPostProcessor
 
@@ -40,9 +39,6 @@ class ModifyElementUseCaseITSpec extends AbstractPerformanceITSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
-
-    @Autowired
-    private CreateDemoUnitUseCase createDemoUnitUseCase
 
     @Autowired
     private UpdatePersonUseCase updatePersonUseCase
@@ -70,8 +66,7 @@ class ModifyElementUseCaseITSpec extends AbstractPerformanceITSpec {
             description >> person.description
             it.owner >> TypedId.from(unit.idAsString, Unit)
             getDomains() >> [
-                (testDomain.idAsString):
-                Mock(DomainAssociationState) {
+                (testDomain.idAsString): Mock(DomainAssociationState) {
                     getSubType() >> 'PER_Person'
                     getStatus() >> 'NEW'
                 }

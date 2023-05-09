@@ -22,8 +22,6 @@ import static org.veo.rest.test.UserType.CONTENT_CREATOR
 import org.apache.http.HttpStatus
 
 import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl
-import org.veo.core.entity.EntityType
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 
 import groovy.util.logging.Slf4j
 
@@ -235,57 +233,6 @@ class DomainRestTestITSpec extends VeoRestTest {
                 "example scenario"
             ]
             profiles.exampleUnit.risks.size() == 1
-        }
-    }
-
-    def "create a new domain template version with a profile from the demo unit"() {
-        given: "a DS-GVO domain"
-        def oldDomain = getDomains().find { it.name == "DS-GVO" }
-
-        def units = get("/units").body
-        def demoUnit = units.find { it.name == CreateDemoUnitUseCase.DEMO_UNIT_NAME }
-
-        when: "creating a new domain template with a profile based on the demo unit"
-        def newTemplateVersionId = post("/content-creation/domains/${oldDomain.id}/template", [
-            version: "1.4.3",
-            profiles: [
-                "orgDemoUnit": [
-                    unitId:demoUnit.id,
-                    name: 'Org Demo Unit',
-                    description: 'A strangely named profile',
-                    language: 'en_US'
-                ]
-            ]
-        ], 201, CONTENT_CREATOR).body.targetUri.split('/').last()
-
-        and: "we create a domain from the new template version"
-        post("/domaintemplates/${newTemplateVersionId}/createdomains", [:], HttpStatus.SC_NO_CONTENT, UserType.ADMIN)
-        defaultPolling.eventually {
-            getDomains().count { it.name == oldDomain.name } == 3
-        }
-        def newDomainId = getDomains().findAll{ it.name == oldDomain.name && it.templateVersion == "1.4.3" }.toSorted{ it.createdAt }.last().id
-
-        and: "the profile is applied to a new unit"
-        def profileTargetUnitId = post("/units", [name: "apply profile here!"]).body.resourceId
-        post("/domains/$newDomainId/profiles/orgDemoUnit/units/$profileTargetUnitId", null, 204)
-
-        def elementTypes = EntityType.ELEMENT_TYPES*.pluralTerm
-
-        then: "all profile elements have been applied"
-        for (etype in elementTypes) {
-            def oldObject = get("/${etype}?unit=${demoUnit.id}").body
-            def newObject = get("/${etype}?unit=$profileTargetUnitId").body
-
-            with(newObject) {
-                items.size() == oldObject.items.size()
-                for (def i = 0; i < items.size(); i++) {
-                    with(items[i]) {
-                        name == oldObject.items.get(i).name
-                        description == oldObject.items[i].description
-                        domains[newDomainId].subType == oldObject.items[i].domains[oldDomain.id].subType
-                    }
-                }
-            }
         }
     }
 }

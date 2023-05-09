@@ -29,6 +29,7 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Key
 import org.veo.core.repository.ClientRepository
 import org.veo.rest.common.ClientNotActiveException
+
 /**
  * Tests the unit controller's responses wrt. different client states
  */

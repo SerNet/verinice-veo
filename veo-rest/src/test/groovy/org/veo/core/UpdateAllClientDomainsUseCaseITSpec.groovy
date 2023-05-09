@@ -28,6 +28,7 @@ import org.veo.core.entity.Process
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
+import org.veo.core.entity.profile.ProfileRef
 import org.veo.core.entity.risk.ControlRiskValues
 import org.veo.core.entity.risk.DomainRiskReferenceProvider
 import org.veo.core.entity.risk.ImplementationStatusRef
@@ -39,9 +40,9 @@ import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ScenarioRepository
+import org.veo.core.usecase.domain.ApplyProfileUseCase
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase.InputData
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
@@ -64,7 +65,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
     private UpdateAllClientDomainsUseCase useCase
 
     @Autowired
-    private CreateDemoUnitUseCase createDemoUnitUseCase
+    private ApplyProfileUseCase applyProfileUseCase
 
     @Autowired
     ScopeRepositoryImpl scopeRepository
@@ -291,26 +292,30 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         }
     }
 
-    def "Migrate a client with the demo unit"() {
-        given: 'a client with a demo unit'
-        def demoUnit = createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(client.id)).unit
+    def "Migrate a client with elements from a profile"() {
+        given: 'a profile applied in a unit'
+        def unit = executeInTransaction {
+            unitRepository.save(newUnit(client)).tap{
+                applyProfileUseCase.execute(new ApplyProfileUseCase.InputData(client.id, dsgvoDomain.id, new ProfileRef("exampleOrganization"), it.id))
+            }
+        }
 
         when: 'executing the UpdateAllClientDomainsUseCase'
         runUseCase(DSGVO_DOMAINTEMPLATE_V2_UUID)
-        demoUnit = executeInTransaction {
-            unitRepository.findById(demoUnit.id).get().tap {
+        unit = executeInTransaction {
+            unitRepository.findById(unit.id).get().tap {
                 //initialize lazy associations
                 it.domains*.name
             }
         }
 
-        then: 'the demo unit belongs to the new domain'
-        demoUnit.domains == [dsgvoDomainV2] as Set
+        then: 'the unit belongs to the new domain'
+        unit.domains == [dsgvoDomainV2] as Set
 
         and: 'the scope elements belong to the new domain'
         List<Scope> scopes = executeInTransaction {
             scopeRepository.query(client).with {
-                whereOwnerIs(demoUnit)
+                whereOwnerIs(unit)
                 execute(PagingConfiguration.UNPAGED)
             }.resultPage.each {
                 //initialize lazy associations
@@ -341,7 +346,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         and: 'the person elements belong to the new domain'
         def persons = executeInTransaction {
             personRepository.query(client).with {
-                whereOwnerIs(demoUnit)
+                whereOwnerIs(unit)
                 execute(PagingConfiguration.UNPAGED)
             }.resultPage.each {
                 //initialize lazy associations

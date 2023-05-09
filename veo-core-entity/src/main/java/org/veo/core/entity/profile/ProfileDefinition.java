@@ -31,8 +31,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProfileDefinition {
-  public static final String DEMO_UNIT = "demoUnit";
-
   static final int NAME_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;
   static final int DESCRIPTION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
   static final int LANGUAGE_MAX_LENGTH = Constraints.DEFAULT_STRING_MAX_LENGTH;

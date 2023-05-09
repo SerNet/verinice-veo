@@ -425,9 +425,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         def result = parseJson(post("/content-creation/domains/${domain.id.uuidValue()}/template", [
             version : "1.2.3",
             profiles: [
-                demoUnit: [
+                exampleOrganization: [
                     unitId: unitId,
-                    name: 'Demo unit',
+                    name: 'Example elements',
                     description: 'All the good stuff',
                     language: 'de_DE'
                 ]
@@ -450,9 +450,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         then: "the template is found, the version is set"
         dt.templateVersion == "1.2.3"
 
-        and: "the profile data for the demo unit exists"
-        with(dt.profiles.demoUnit) {
-            name == 'Demo unit'
+        and: "the example profile exists"
+        with(dt.profiles.exampleOrganization) {
+            name == 'Example elements'
             description == 'All the good stuff'
             language == 'de_DE'
 
@@ -479,7 +479,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:" the export file contains the profile data"
         exportedDomain.name == newDomain.name
-        exportedDomain.profiles.demoUnit.elements*.type ==~ [
+        exportedDomain.profiles.exampleOrganization.elements*.type ==~ [
             "asset",
             "control",
             "document",
@@ -489,7 +489,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             "scenario",
             "scope"
         ]
-        exportedDomain.profiles.demoUnit.risks.size() == 2
+        exportedDomain.profiles.exampleOrganization.risks.size() == 2
 
         when: "we create a new domain template from the export"
         exportedDomain.templateVersion = "1.2.4"
@@ -503,7 +503,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then: "the domain contains the profiles"
         newDomain.name == "DSGVO-test"
-        newDomain.profiles.demoUnit.elements*.type ==~ [
+        newDomain.profiles.exampleOrganization.elements*.type ==~ [
             "asset",
             "control",
             "document",
@@ -513,7 +513,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             "scenario",
             "scope"
         ]
-        newDomain.profiles.demoUnit.risks.size() == 2
+        newDomain.profiles.exampleOrganization.risks.size() == 2
     }
 
     @WithUserDetails("content-creator")
@@ -526,7 +526,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         def result = parseJson(post("/content-creation/domains/${domain.id.uuidValue()}/template", [
             version : "1.2.3",
             profiles: [
-                demoUnit: [
+                exampleOrganization: [
                     unitId: unitId
                 ]
             ]

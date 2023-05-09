@@ -36,7 +36,6 @@ import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.UnitRepository;
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.jobs.CreateClientUnitsJob;
@@ -55,7 +54,6 @@ public class ClientChangedEventListener {
   private final DomainRepository domainRepository;
   private final EntityFactory entityFactory;
   private final DefaultDomainCreator defaultDomainCreator;
-  private final CreateDemoUnitUseCase createDemoUnitUseCase;
   private final CreateUnitUseCase createUnitUseCase;
 
   @EventListener()
@@ -100,8 +98,7 @@ public class ClientChangedEventListener {
     }
     client.updateState(ClientChangeType.ACTIVATION);
     defaultDomainCreator.addDefaultDomains(client);
-    new CreateClientUnitsJob(createDemoUnitUseCase, createUnitUseCase) {}.createUnitsForClient(
-        repository.save(client));
+    new CreateClientUnitsJob(createUnitUseCase) {}.createUnitsForClient(repository.save(client));
   }
 
   private void modifyClient(Client client, ClientChangedEvent event) {

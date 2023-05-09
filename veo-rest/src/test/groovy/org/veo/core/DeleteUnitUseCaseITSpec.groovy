@@ -24,7 +24,9 @@ import org.springframework.test.context.DynamicPropertySource
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Unit
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase
+import org.veo.core.entity.profile.ProfileRef
+import org.veo.core.repository.UnitRepository
+import org.veo.core.usecase.domain.ApplyProfileUseCase
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.core.usecase.unit.DeleteUnitUseCase.InputData
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -39,7 +41,10 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
     private ClientRepositoryImpl clientRepository
 
     @Autowired
-    private CreateDemoUnitUseCase createDemoUnitUseCase
+    private ApplyProfileUseCase applyProfileUseCase
+
+    @Autowired
+    private UnitRepository unitRepository
 
     @Autowired
     private DeleteUnitUseCase deleteUnitUseCase
@@ -49,16 +54,19 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
         registry.add("veo.logging.datasource.row_count", { -> true })
     }
 
-    def "delete a demo unit"() {
-        given: 'a client with a demo unit'
+    def "delete a unit with example elements"() {
+        given: 'a unit with example elements'
         def client = createTestClient()
-        createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
-        def demoUnit = createDemoUnit(client)
+        var domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+        def unit = unitRepository.save(newUnit(client))
+        executeInTransaction {
+            applyProfileUseCase.execute(new ApplyProfileUseCase.InputData(client.id, domain.id, new ProfileRef("exampleOrganization"), unit.id))
+        }
         QueryCountHolder.clear()
         def rowCountBefore = DataSourceProxyBeanPostProcessor.totalResultSetRowsRead
 
         when: 'executing the DeleteUnitUseCase'
-        def unit = runUseCase(demoUnit)
+        runUseCase(unit)
         def queryCounts = QueryCountHolder.grandTotal
 
         then: 'query statistics show sensible data'
@@ -74,7 +82,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
     }
 
     def "delete a large unit"() {
-        given: 'a client with a demo unit'
+        given: 'a client with many elements'
         def client = createTestClient()
         def testDomain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
         def unit = executeInTransaction {
@@ -153,12 +161,5 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
             defaultDomainCreator.addDefaultDomains(client)
             return clientRepository.save(client)
         }
-    }
-
-    Unit createDemoUnit(Client client) {
-        def unit = txTemplate.execute {
-            createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(client.id)).unit
-        }
-        unit
     }
 }

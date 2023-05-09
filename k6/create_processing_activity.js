@@ -223,7 +223,7 @@ export function loadUnitSelection() {
   loadElementsAndSleep("/units", 0);
   loadElementsAndSleep("/types", 0);
 
-  var unitName = "Demo";
+  var unitName = "Unit 1";
 
 
   var unit = searchUnit(unitName);

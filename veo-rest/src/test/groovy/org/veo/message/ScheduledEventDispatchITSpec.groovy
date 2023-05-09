@@ -19,7 +19,6 @@ package org.veo.message
 
 import static java.util.concurrent.TimeUnit.SECONDS
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS
-import static org.veo.core.usecase.unit.CreateDemoUnitUseCase.InputData
 import static org.veo.rest.VeoRestConfiguration.PROFILE_BACKGROUND_TASKS
 
 import java.util.concurrent.CountDownLatch
@@ -36,7 +35,9 @@ import org.testcontainers.containers.GenericContainer
 
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase
+import org.veo.core.entity.profile.ProfileRef
+import org.veo.core.repository.UnitRepository
+import org.veo.core.usecase.domain.ApplyProfileUseCase
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.core.usecase.unit.GetUnitsUseCase
 import org.veo.jobs.MessageDeletionJob
@@ -68,13 +69,13 @@ classes = [TestEventSubscriber.class,
 class ScheduledEventDispatchITSpec extends VeoSpringSpec {
 
     public static final int NUM_EVENTS = 10000
-    public static final int DEMO_NUM_EVENTS = 81
+    public static final int PROFILE_NUM_EVENTS = 80
 
     @Autowired
     private ClientRepositoryImpl clientRepository
 
     @Autowired
-    private CreateDemoUnitUseCase createDemoUnitUseCase
+    private UnitRepository unitRepository
 
     @Shared
     @AutoCleanup("stop")
@@ -111,6 +112,9 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
 
     @Autowired
     GetUnitsUseCase getUnitsUseCase
+
+    @Autowired
+    ApplyProfileUseCase applyProfileUseCase
 
     @Autowired
     DeleteUnitUseCase deleteUnitUseCase
@@ -173,16 +177,18 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
     @WithUserDetails("user@domain.example")
     def "Scheduled task sends events when profile is applied"() {
         given: "An event receiver"
-        def confirmationLatch = new CountDownLatch(DEMO_NUM_EVENTS)
+        def confirmationLatch = new CountDownLatch(PROFILE_NUM_EVENTS)
         eventDispatcher.addAckCallback { confirmationLatch.countDown() }
 
-        when: "The client's demo unit is created"
+        when: "The profile is applied to a unit"
         executeInTransaction {
             client = newClient()
             def dsgvoTestDomain = domainTemplateService.createDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
             client.addToDomains(dsgvoTestDomain)
             client = clientRepository.save(client)
-            createDemoUnitUseCase.execute(new InputData(client.getId()))
+            unitRepository.save(newUnit(client)).tap {
+                applyProfileUseCase.execute(new ApplyProfileUseCase.InputData(client.id, dsgvoTestDomain.id, new ProfileRef("exampleOrganization"), it.id))
+            }
         }
 
         and: "the event table has been completely cleared by the deletion job"
@@ -194,7 +200,7 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
         confirmationLatch.await(10, SECONDS)
 
         and: "all messages were received with no duplicates"
-        eventSubscriber.receivedEvents.size() == DEMO_NUM_EVENTS
+        eventSubscriber.receivedEvents.size() == PROFILE_NUM_EVENTS
         !eventSubscriber.hasReceivedDuplicates
     }
 

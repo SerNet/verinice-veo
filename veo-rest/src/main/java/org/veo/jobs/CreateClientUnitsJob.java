@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.usecase.common.NameableInputData;
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 
 import lombok.RequiredArgsConstructor;
@@ -32,11 +31,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public abstract class CreateClientUnitsJob {
-  private final CreateDemoUnitUseCase createDemoUnitUseCase;
   private final CreateUnitUseCase createUnitUseCase;
 
   public void createUnitsForClient(Client client) {
-    log.info("create unit and demo unit for client: {}/{}", client, client.getMaxUnits());
+    log.info("create initial unit for client: {}/{}", client, client.getMaxUnits());
     AsSystemUser.runInClient(
         client,
         () -> {
@@ -49,7 +47,6 @@ public abstract class CreateClientUnitsJob {
                   client.getDomains().stream()
                       .map(Identifiable::getId)
                       .collect(Collectors.toSet())));
-          createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(client.getId()));
         });
   }
 }

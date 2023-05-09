@@ -23,7 +23,6 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.DocumentRepository
 import org.veo.core.repository.UnitRepository
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 
 import groovy.util.logging.Log
 
@@ -38,8 +37,6 @@ class AdminControllerMvcITSpec extends ContentSpec {
     private UnitRepository unitRepo
     @Autowired
     private DocumentRepository documentRepo
-    @Autowired
-    private CreateDemoUnitUseCase createDemoUnitUseCase
 
     def "deletes client"() {
         given: "a client with some units and a document"

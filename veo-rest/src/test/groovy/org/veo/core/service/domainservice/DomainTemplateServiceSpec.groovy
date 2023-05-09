@@ -44,9 +44,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         def domainFromTemplate = null
         def client = null
         txTemplate.execute {
-            client = repository.save(newClient {
-                name = "Demo Client"
-            })
+            client = repository.save(newClient { })
             domainFromTemplate = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
             client.addToDomains(domainFromTemplate)
             client = repository.save(client)
@@ -114,9 +112,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
     def "create a domainTemplate from domain"() {
         given: "a client"
-        Client client = repository.save(newClient {
-            name = "Demo Client"
-        })
+        Client client = repository.save(newClient { })
 
         def domainFromTemplate = null
         txTemplate.execute {
@@ -177,9 +173,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
     def "create a domainTemplate from domain twice"() {
         given: "a client"
-        Client client = repository.save(newClient {
-            name = "Demo Client"
-        })
+        Client client = repository.save(newClient {})
 
         def domainFromTemplate = null
         txTemplate.execute {
@@ -206,9 +200,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
     def "create a domain whose catalog contains a composite"() {
         given: "a client"
-        Client client = repository.save(newClient {
-            name = "Demo Client"
-        })
+        Client client = repository.save(newClient { })
 
         def domainFromTemplate = null
         txTemplate.execute {
@@ -245,9 +237,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
     def "create a domain whose catalog contains a scope"() {
         given: "a client"
-        Client client = repository.save(newClient {
-            name = "Demo Client"
-        })
+        Client client = repository.save(newClient { })
 
         def domainFromTemplate = null
         txTemplate.execute {

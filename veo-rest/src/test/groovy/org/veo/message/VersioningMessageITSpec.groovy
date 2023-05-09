@@ -22,25 +22,22 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper
 
 import org.veo.core.VeoSpringSpec
-import org.veo.core.entity.Key
+import org.veo.core.entity.profile.ProfileRef
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.ScopeRepository
-import org.veo.core.usecase.unit.CreateDemoUnitUseCase
+import org.veo.core.usecase.domain.ApplyProfileUseCase
 import org.veo.persistence.access.jpa.StoredEventDataRepository
-import org.veo.rest.configuration.WebMvcSecurityConfiguration
 
 class VersioningMessageITSpec extends VeoSpringSpec {
-    private clientId = Key.uuidFrom(WebMvcSecurityConfiguration.TESTCLIENT_UUID)
-
     def setup() {
         createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
     }
 
     @Autowired
-    CreateDemoUnitUseCase createDemoUnitUseCase
+    ApplyProfileUseCase applyProfileUseCase
 
     @Autowired
     StoredEventDataRepository storedEventRepository
@@ -58,13 +55,15 @@ class VersioningMessageITSpec extends VeoSpringSpec {
     ScopeRepository scopeRepository
 
     @WithUserDetails("user@domain.example")
-    def "creation messages produced for client creation with demo unit"() {
-        when: "creating a client with a demo unit"
+    def "creation messages produced when applying profile"() {
+        when: "creating a client and applying example profile"
         def client = createTestClient()
         executeInTransaction {
             defaultDomainCreator.addDefaultDomains(client)
-            clientRepository.save(client)
-            createDemoUnitUseCase.execute(new CreateDemoUnitUseCase.InputData(clientId))
+            client = clientRepository.save(client)
+            var dsgvo = client.domains.find { it.name == "DS-GVO" }
+            def unit = unitDataRepository.save(newUnit(client))
+            applyProfileUseCase.execute(new ApplyProfileUseCase.InputData(client.id, dsgvo.id, new ProfileRef("exampleOrganization"), unit.id))
         }
 
         and: "fetching all messages"
@@ -76,7 +75,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
         messages.every {it.uri != null}
 
         and: "there is one creation message for each person"
-        def persons = personRepository.query(clientRepository.findById(clientId).get()).execute(PagingConfiguration.UNPAGED).resultPage
+        def persons = personRepository.query(client).execute(PagingConfiguration.UNPAGED).resultPage
         persons.size() > 0
         persons.forEach({ person ->
             def elementMessages = messages.findAll { it.uri?.endsWith("/persons/${person.idAsString}") }
@@ -89,7 +88,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
         })
 
         and: "there is one creation message for each process"
-        def processes = processRepository.query(clientRepository.findById(clientId).get()).execute(PagingConfiguration.UNPAGED).resultPage
+        def processes = processRepository.query(client).execute(PagingConfiguration.UNPAGED).resultPage
         processes.size() > 0
         processes.forEach({ process ->
             def elementMessages = messages.findAll { it.uri?.endsWith("/processes/${process.idAsString}") }
@@ -104,7 +103,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
         })
 
         and: "there is one creation message for each scope"
-        def scopes = scopeRepository.query(clientRepository.findById(clientId).get()).execute(PagingConfiguration.UNPAGED).resultPage
+        def scopes = scopeRepository.query(client).execute(PagingConfiguration.UNPAGED).resultPage
         scopes.size() > 0
         scopes.forEach({ scope ->
             def elementMessages = messages.findAll { it.uri?.endsWith("/scopes/${scope.idAsString}") }
@@ -119,7 +118,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
 
         and: "there is one creation message for each catalog item"
         var catalogItems = txTemplate.execute {
-            domainDataRepository.findAllActiveByClient(clientId.uuidValue())
+            domainDataRepository.findAllActiveByClient(client.idAsString)
                     .collectMany { it.catalogs }
                     .collectMany { it.catalogItems }
         }

@@ -42,9 +42,6 @@ veo:
       lockExpirationMs: 20000
       delayMs: 500
       processingChunkSize: 5000
-  scheduler:
-    resetAllDemoUnits:
-      cron: '0 0 3 * * *'
 
 spring:
   task:
