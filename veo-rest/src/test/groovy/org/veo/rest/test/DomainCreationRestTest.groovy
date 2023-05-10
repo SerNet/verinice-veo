@@ -50,51 +50,7 @@ class DomainCreationRestTest extends VeoRestTest {
         }
 
         when: "defining an element type in the domain"
-        post("/content-creation/domains/$domainId/element-type-definitions/asset/object-schema", [
-            properties: [
-                domains: [
-                    properties: [
-                        (domainId): [
-                            properties: [
-                                subType: [
-                                    enum: ["server"],
-                                ]
-                            ],
-                            allOf: [
-                                [
-                                    if: [
-                                        properties: [
-                                            subType: [
-                                                const: "server"
-                                            ]
-                                        ]
-                                    ],
-                                    then: [
-                                        properties: [
-                                            status: [
-                                                enum: ["off", "on"]
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ],
-                customAspects: [
-                    properties: [:]
-                ],
-                links: [
-                    properties: [:]
-                ],
-                translations: [
-                    en: [
-                        asset_server_status_off: "off",
-                        asset_server_status_on: "on"
-                    ]
-                ]
-            ]
-        ], 204, CONTENT_CREATOR)
+        postAssetObjectSchema(domainId)
 
         then: "an element can be created in the domain"
         post("/assets", [
@@ -165,5 +121,133 @@ class DomainCreationRestTest extends VeoRestTest {
             authority: "JJ",
         ], 409, CONTENT_CREATOR)
         .body.message == "A domain with name '$name' already exists in this client"
+    }
+
+    def "create new domain and delete"() {
+        when: "creating a new domain"
+        def domainName = "Domain deletion test 1"
+        def domainId = post("/content-creation/domains", [
+            name: domainName,
+            abbreviation: "11",
+            description: "my",
+            authority: "qq",
+        ], 201, CONTENT_CREATOR).body.resourceId
+
+        then: "it can be retrieved"
+        with(get("/domains/$domainId").body) {
+            name == domainName
+            abbreviation == "11"
+            description == "my"
+            authority == "qq"
+            templateVersion == "0.1.0"
+            domainTemplate == null
+        }
+
+        when:
+        delete("/content-creation/domains/${domainId}", 204)
+
+        then:
+        get("/domains/$domainId", 404)
+    }
+
+    def "delete only domains not in use"() {
+        when: "we have a domain"
+        def domainId = post("/content-creation/domains", [
+            name: "Domain deletion test 2",
+            abbreviation: "111",
+            description: "my1",
+            authority: "qq1",
+        ], 201, CONTENT_CREATOR).body.resourceId
+
+        and: "it is linked to a unit"
+        def unitId = post("/units", [
+            name: 'my unit used by domain',
+            domains: [
+                [targetUri: "/domains/${domainId}"]
+            ]
+        ]).body.resourceId
+
+        then: "delete is not allowed"
+        with(delete("/content-creation/domains/${domainId}", 409).body) {
+            message ==~ /Domain in use.*/
+        }
+
+        when: "we remove the link"
+        delete("/units/${unitId}")
+
+        then: "delete is allowed and the domain is deleted"
+        delete("/content-creation/domains/${domainId}",204)
+        with(get("/domains/$domainId", 404).body) {
+            message ==~ /Domain with ID .* not found/
+        }
+    }
+
+    def "create new domain with schema and delete"() {
+        given:
+        def domainId = post("/content-creation/domains", [
+            name: "Domain deletion test 3",
+            abbreviation: "11",
+            description: "my",
+            authority: "qq",
+        ], 201, CONTENT_CREATOR).body.resourceId
+
+        when: "defining an element type in the domain"
+        postAssetObjectSchema(domainId)
+
+        and:
+        delete("/content-creation/domains/${domainId}", 204)
+
+        then:
+        get("/domains/${domainId}", 404)
+    }
+
+    def postAssetObjectSchema(String domainId) {
+        post("/content-creation/domains/$domainId/element-type-definitions/asset/object-schema",
+                [
+                    properties: [
+                        domains: [
+                            properties: [
+                                (domainId): [
+                                    properties: [
+                                        subType: [
+                                            enum: ["server"],
+                                        ]
+                                    ],
+                                    allOf: [
+                                        [
+                                            "if": [
+                                                properties: [
+                                                    subType: [
+                                                        const: "server"
+                                                    ]
+                                                ]
+                                            ],
+                                            then: [
+                                                properties: [
+                                                    status: [
+                                                        enum: ["off", "on"]
+                                                    ]
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ],
+                        customAspects: [
+                            properties: [:]
+                        ],
+                        links: [
+                            properties: [:]
+                        ],
+                        translations: [
+                            en: [
+                                asset_server_status_off: "off",
+                                asset_server_status_on: "on"
+                            ]
+                        ]
+                    ]
+                ],
+                204, CONTENT_CREATOR)
     }
 }

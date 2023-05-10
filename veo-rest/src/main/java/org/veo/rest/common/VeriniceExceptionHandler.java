@@ -37,6 +37,7 @@ import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.MaxUnitsExceededException;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.usecase.common.ETagMismatchException;
+import org.veo.core.usecase.domain.DomainInUseException;
 import org.veo.core.usecase.domaintemplate.EntityAlreadyExistsException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -122,6 +123,11 @@ public class VeriniceExceptionHandler {
   public ResponseEntity<ApiResponseBody> handleClientDecativatedExceptions(
       ClientNotActiveException ex) {
     return handle(ex, HttpStatus.FORBIDDEN);
+  }
+
+  @ExceptionHandler(DomainInUseException.class)
+  public ResponseEntity<ApiResponseBody> handleDomainInUseExceptions(DomainInUseException ex) {
+    return handle(ex, HttpStatus.CONFLICT);
   }
 
   private ResponseEntity<ApiResponseBody> handle(Throwable exception, HttpStatus status) {

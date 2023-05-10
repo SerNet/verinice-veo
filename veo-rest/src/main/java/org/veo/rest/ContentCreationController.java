@@ -69,8 +69,10 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.profile.ProfileDefinition;
+import org.veo.core.usecase.UseCase.IdAndClient;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domain.DeleteDecisionUseCase;
+import org.veo.core.usecase.domain.DeleteDomainUseCase;
 import org.veo.core.usecase.domain.SaveDecisionUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
@@ -100,7 +102,7 @@ public class ContentCreationController extends AbstractVeoController {
   private final SaveDecisionUseCase saveDecisionUseCase;
   private final DeleteDecisionUseCase deleteDecisionUseCase;
   private final CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase;
-
+  private final DeleteDomainUseCase deleteDomainUseCase;
   public static final String URL_BASE_PATH = "/content-creation";
 
   private final CreateDomainUseCase createDomainUseCase;
@@ -129,6 +131,22 @@ public class ContentCreationController extends AbstractVeoController {
           ApiResponseBody body = CreateOutputMapper.map(output.getDomain());
           return RestApiResponse.created(URL_BASE_PATH, body);
         });
+  }
+
+  @DeleteMapping("/domains/{id}")
+  @Operation(summary = "Deletes a domain")
+  @ApiResponse(responseCode = "204", description = "Domain deleted")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "409", description = "Domain still in use")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteDomain(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String id) {
+    return useCaseInteractor.execute(
+        deleteDomainUseCase,
+        new IdAndClient(Key.uuidFrom(id), getAuthenticatedClient(auth)),
+        output -> RestApiResponse.noContent());
   }
 
   @PutMapping(value = "/domains/{id}/element-type-definitions/{type}")

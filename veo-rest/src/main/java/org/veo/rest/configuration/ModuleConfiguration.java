@@ -132,6 +132,7 @@ import org.veo.core.usecase.domain.ApplyProfileUseCase;
 import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domain.DeleteDecisionUseCase;
+import org.veo.core.usecase.domain.DeleteDomainUseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
@@ -631,6 +632,12 @@ public class ModuleConfiguration {
       DomainRepository domainRepository,
       DomainTemplateRepository domainTemplateRepository) {
     return new CreateDomainUseCase(entityFactory, domainRepository, domainTemplateRepository);
+  }
+
+  @Bean
+  public DeleteDomainUseCase deleteDomainUseCase(
+      UnitRepository unitRepository, DomainRepository domainRepository) {
+    return new DeleteDomainUseCase(domainRepository, unitRepository);
   }
 
   @Bean
