@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import org.apache.http.HttpStatus
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
@@ -637,5 +638,22 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         thrown(ClientBoundaryViolationException)
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "cannot create a unit with an invalid domain id"() {
+        given:
+        Map request = [
+            name: 'New unit',
+            domains: [
+                [targetUri:"/domains/NO-UUID"]
+            ]
+        ]
+
+        when:
+        post('/units', request, 422)
+
+        then:
+        thrown(HttpMessageNotReadableException)
     }
 }

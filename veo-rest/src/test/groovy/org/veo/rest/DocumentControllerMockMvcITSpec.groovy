@@ -18,6 +18,7 @@
 package org.veo.rest
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -103,6 +104,23 @@ class DocumentControllerMockMvcITSpec extends VeoMvcSpec {
         resourceId != null
         resourceId != ''
         result.message == 'Document created successfully.'
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "invalid target URI returns HTTP 422"() {
+        given:
+        Map request = [
+            name: 'New Document',
+            owner: [
+                targetUri: 'http://localhost/units/foobar'
+            ]
+        ]
+
+        when:
+        post('/documents', request, 422)
+
+        then:
+        thrown(HttpMessageNotReadableException)
     }
 
     @WithUserDetails("user@domain.example")

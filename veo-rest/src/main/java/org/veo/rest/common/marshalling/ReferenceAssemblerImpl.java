@@ -603,11 +603,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   public String parseId(String uriString) {
     String pathComponent = UriComponentsBuilder.fromUriString(uriString).build().getPath();
     if (pathComponent == null) {
-      return null;
+      throw invalidReference(uriString);
     }
     Matcher matcher = UUID_PATTERN.matcher(pathComponent);
     if (!matcher.find()) {
-      return null;
+      throw invalidReference(uriString);
     }
     String result = matcher.group(0);
     if (matcher.find()) {
@@ -645,8 +645,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     if (matcher.find()) {
       return matcher.group(2);
     }
-    throw new UnprocessableDataException(
-        "Invalid element reference: %s".formatted(targetInDomainUri));
+    throw invalidReference(targetInDomainUri);
   }
 
   @Override
@@ -657,7 +656,10 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     if (matcher.find()) {
       return (Class<Element>) EntityType.getTypeForPluralTerm(matcher.group(1));
     }
-    throw new UnprocessableDataException(
-        "Invalid element reference: %s".formatted(targetInDomainUri));
+    throw invalidReference(targetInDomainUri);
+  }
+
+  private UnprocessableDataException invalidReference(String uri) {
+    return new UnprocessableDataException("Invalid entity reference: %s".formatted(uri));
   }
 }
