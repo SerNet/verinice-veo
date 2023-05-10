@@ -43,6 +43,9 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
   @Query("select d from #{#entityName} d " + "where d.dbId = ?1 and d.owner.dbId = ?2")
   Optional<Domain> findById(String domainId, String clientId);
 
+  @Query("select d from #{#entityName} d where d.dbId in ?1 and d.owner.dbId = ?2")
+  Set<Domain> findAllByDbIdInAndOwnerDbIdIs(Collection<String> domainIds, String clientId);
+
   @Query(
       """
         select d from #{#entityName} d

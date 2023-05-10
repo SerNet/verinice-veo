@@ -19,7 +19,6 @@ package org.veo.core.usecase.unit;
 
 import static java.lang.String.format;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -31,8 +30,8 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.event.ClientEvent.ClientChangeType;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
-import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.specification.MaxUnitsExceededException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.ClientRepository;
@@ -112,19 +111,12 @@ public class CreateUnitUseCase
     newUnit.setClient(client);
     client.incrementTotalUnits();
     if (input.domainIds != null) {
-      Set<Domain> domains = domainRepository.findByIds(input.domainIds);
-      if (domains.size() < input.domainIds.size()) {
-        HashSet<Key<UUID>> requestedDomainIDs = new HashSet<>(input.domainIds);
-        requestedDomainIDs.removeAll(domains.stream().map(Domain::getId).toList());
-        throw new ReferenceTargetNotFoundException(
-            format("Domain(s) %s not found", requestedDomainIDs));
+      try {
+        Set<Domain> domains = domainRepository.getByIds(input.domainIds, client.getId());
+        newUnit.addToDomains(domains);
+      } catch (NotFoundException e) {
+        throw new ReferenceTargetNotFoundException(e.getMessage());
       }
-      for (Domain domain : domains) {
-        if (!client.equals(domain.getOwner())) {
-          throw new ClientBoundaryViolationException(domain, client);
-        }
-      }
-      newUnit.addToDomains(domains);
     }
     Unit save = unitRepository.save(newUnit);
 

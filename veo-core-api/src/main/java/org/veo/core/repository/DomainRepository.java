@@ -51,6 +51,10 @@ public interface DomainRepository extends IdentifiableVersionedRepository<Domain
 
   Domain getById(@NonNull Key<UUID> domainId, @NonNull Key<UUID> clientId);
 
+  Set<Domain> findByIds(@NonNull Set<Key<UUID>> ids, @NonNull Key<UUID> clientId);
+
+  Set<Domain> getByIds(@NonNull Set<@NonNull Key<UUID>> domainIds, @NonNull Key<UUID> clientId);
+
   Optional<Domain> findByIdWithProfilesAndRiskDefinitions(Key<UUID> id, Key<UUID> clientId);
 
   default Domain getById(Key<UUID> id) {

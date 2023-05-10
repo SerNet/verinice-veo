@@ -20,8 +20,8 @@ package org.veo.core.usecase
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
+import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException
-import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.RepositoryProvider
 import org.veo.core.usecase.common.NameableInputData
@@ -64,7 +64,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         1 * defaultDomainCreator.addDefaultDomains(existingClient)
 
         and: "a new client was then correctly created and stored"
-        1 * domainRepository.findByIds([] as Set) >> []
+        1 * domainRepository.getByIds([] as Set, existingClient.id) >> []
         1 * newUnit1.addToDomains([] as Set)
         0 * newUnit1.addToDomains(_)
         1 * unitRepository.save(newUnit1) >> newUnit1
@@ -101,7 +101,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
 
         and: "a new client was then correctly created and stored"
-        1 * domainRepository.findByIds([] as Set) >> []
+        1 * domainRepository.getByIds([] as Set, existingClient.id) >> []
         1 * newUnit1.addToDomains([] as Set)
         0 * newUnit1.addToDomains(_)
         1 * unitRepository.save(_) >> newUnit1
@@ -135,7 +135,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
 
         and: "the unit is created with the expected domains"
-        1 * domainRepository.findByIds([existingDomain.id] as Set) >> [existingDomain]
+        1 * domainRepository.getByIds([existingDomain.id] as Set, existingClient.id) >> [existingDomain]
         1 * newUnit1.addToDomains([existingDomain] as Set)
         0 * newUnit1.addToDomains(_)
         1 * unitRepository.save(_) >> newUnit1
@@ -164,9 +164,8 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
 
         and: "the unit is created with the expected domains"
-        1 * domainRepository.findByIds([randomDomainId.uuidValue()] as Set) >> []
+        1 * domainRepository.getByIds([randomDomainId.uuidValue()] as Set, existingClient.id) >> { throw new NotFoundException(randomDomainId, Domain) }
         ReferenceTargetNotFoundException e = thrown()
-        e.message == "Domain(s) [${randomDomainId.uuidValue()}] not found"
     }
 
     def "Create a unit with another client's domain" () {
@@ -179,6 +178,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         newUnit1.name >> "New unit"
 
         Domain anotherDomain = Mock()
+        anotherDomain.id >> Key.newUuid()
         anotherClient.getDomains() >> [anotherDomain]
         anotherDomain.getOwner() >> anotherClient
         entityFactory.createUnit(_,_) >> newUnit1
@@ -193,7 +193,7 @@ public class CreateUnitUseCaseSpec extends UseCaseSpec {
         1 * clientRepository.findById(_) >> Optional.of(this.existingClient)
 
         and: "the unit is created with the expected domains"
-        1 * domainRepository.findByIds([existingDomain.id] as Set) >> [anotherDomain]
-        ClientBoundaryViolationException e = thrown()
+        1 * domainRepository.getByIds([anotherDomain.id] as Set, existingClient.id) >> { throw new NotFoundException(anotherDomain.id, Domain) }
+        ReferenceTargetNotFoundException e = thrown()
     }
 }

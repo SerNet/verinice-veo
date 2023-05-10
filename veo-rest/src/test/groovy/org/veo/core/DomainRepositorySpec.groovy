@@ -22,6 +22,8 @@ import javax.validation.ConstraintViolationException
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Domain
+import org.veo.core.entity.Key
+import org.veo.core.entity.exception.NotFoundException
 import org.veo.persistence.access.DomainRepositoryImpl
 import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.entity.jpa.DomainData
@@ -50,5 +52,51 @@ class DomainRepositorySpec extends VeoSpringSpec {
 
         and: "it was not saved"
         domainDataRepository.findAll().empty
+    }
+
+    def "getByIds returns domain for valid ID"() {
+        given:
+        def client = createTestClient()
+        def domain = domainRepository.save(newDomain(client))
+
+        when:
+        def result = domainRepository.getByIds([domain.id] as Set)
+
+        then:
+        result.size() == 1
+        result ==~ [domain]
+    }
+
+    def "getByIds throws for unknown ID"() {
+        given:
+        def client = createTestClient()
+        def domain = domainRepository.save(newDomain(client))
+        def randomId = Key.newUuid()
+
+        when:
+        domainRepository.getByIds([
+            domain.id,
+            randomId
+        ] as Set)
+
+        then:
+        NotFoundException e = thrown()
+        e.message == "Entity ${randomId.uuidValue()} not found"
+    }
+
+    def "getByIds throws for other client's domain"() {
+        given:
+        def client = createTestClient()
+        def otherClient = clientDataRepository.save(newClient())
+        def domain = domainRepository.save(newDomain(otherClient))
+
+        when:
+        domainRepository.getByIds([
+            domain.id,
+        ] as Set, client.id)
+
+        then:
+        NotFoundException e = thrown()
+        e.message == "Domain ${domain.idAsString} not found"
     }
 }

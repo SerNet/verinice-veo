@@ -634,10 +634,10 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         ]
 
         when:
-        def results = post('/units', request, 404)
+        def results = post('/units', request, 422)
 
         then:
-        thrown(ClientBoundaryViolationException)
+        thrown(ReferenceTargetNotFoundException)
     }
 
     @WithUserDetails("user@domain.example")

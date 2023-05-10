@@ -17,16 +17,22 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
+import static java.lang.String.format;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
@@ -98,6 +104,32 @@ public class DomainRepositoryImpl
     return dataRepository
         .findById(domainId.uuidValue(), clientId.uuidValue())
         .orElseThrow(() -> new NotFoundException(domainId, Domain.class));
+  }
+
+  @Override
+  public Set<Domain> findByIds(Set<Key<UUID>> ids, @NonNull Key<UUID> clientId) {
+    var idStrings = ids.stream().map(Key::uuidValue).toList();
+    return StreamSupport.stream(
+            dataRepository
+                .findAllByDbIdInAndOwnerDbIdIs(idStrings, clientId.uuidValue())
+                .spliterator(),
+            false)
+        .collect(Collectors.toSet());
+  }
+
+  @Override
+  public Set<Domain> getByIds(Set<Key<UUID>> ids, @NonNull Key<UUID> clientId) {
+    Set<Domain> result = findByIds(ids, clientId);
+    if (result.size() < ids.size()) {
+      List<Key<UUID>> foundIds = result.stream().map(Identifiable::getId).toList();
+      List<String> unfoundIds =
+          ids.stream().filter(Predicate.not(foundIds::contains)).map(Key::uuidValue).toList();
+      throw new NotFoundException(
+          format(
+              "%s %s not found",
+              unfoundIds.size() == 1 ? "Domain" : "Domains", String.join(", ", unfoundIds)));
+    }
+    return result;
   }
 
   @Override

@@ -42,6 +42,8 @@ public interface Repository<T, K> {
 
   Set<T> findByIds(Set<K> ids);
 
+  Set<T> getByIds(Set<K> ids);
+
   void delete(T entity);
 
   void deleteById(K id);
