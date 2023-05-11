@@ -182,6 +182,7 @@ import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitsUseCase;
+import org.veo.core.usecase.unit.UnitValidator;
 import org.veo.core.usecase.unit.UpdateUnitUseCase;
 import org.veo.persistence.CurrentUserProvider;
 import org.veo.persistence.access.AssetRepositoryImpl;
@@ -468,8 +469,14 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public UpdateUnitUseCase getPutUnitUseCase(UnitRepositoryImpl repository) {
-    return new UpdateUnitUseCase(repository);
+  public UnitValidator unitValidator(GenericElementRepository genericElementRepository) {
+    return new UnitValidator(genericElementRepository);
+  }
+
+  @Bean
+  public UpdateUnitUseCase getPutUnitUseCase(
+      UnitRepositoryImpl repository, UnitValidator unitValidator) {
+    return new UpdateUnitUseCase(repository, unitValidator);
   }
 
   @Bean

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Alexander Koderman.
+ * Copyright (C) 2023  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,20 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.unit;
+package org.veo.core.entity.specification;
 
-import org.veo.core.entity.Unit;
-import org.veo.core.repository.UnitRepository;
+import org.veo.core.entity.Element;
 
-public class UpdateUnitUseCase extends ChangeUnitUseCase {
-
-  public UpdateUnitUseCase(UnitRepository repository, UnitValidator unitValidator) {
-    super(repository, unitValidator);
-  }
+/** Checks that an element is only associated with domains that are assigned to its unit. */
+public class ElementDomainsAreSubsetOfUnitDomains implements EntitySpecification<Element> {
 
   @Override
-  protected Unit update(Unit storedUnit, ChangeUnitUseCase.InputData input) {
-    // replace stored unit with changed unit:
-    return input.getChangedUnit();
+  public boolean test(Element element) {
+    if (element.getContainingCatalogItem() != null) {
+      return true;
+    }
+    return element.getOwner().getDomains().containsAll(element.getDomains());
   }
 }

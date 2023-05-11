@@ -263,4 +263,17 @@ class EntityValidatorSpec extends VeoSpec {
         then: "the validation is unsuccessful"
         thrown(EntityValidationException)
     }
+
+    def "a person associated with a domain that's not in the unit does not pass validation"() {
+        given: "a person associated with a new domain"
+        Person person = newPerson(unit) {
+            associateWithDomain(newDomain(client), "NormalPerson", "NEW")
+        }
+
+        when:
+        validator.validate(person)
+
+        then:
+        thrown(EntityValidationException)
+    }
 }

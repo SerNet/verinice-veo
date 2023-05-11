@@ -45,6 +45,7 @@ public class EntityValidator {
             new TypedValidator<>(Domain.class, new CompleteEntityTypeDefinitionsSpecification()),
             new TypedValidator<>(Element.class, new ElementCustomAspectsHaveDomain()),
             new TypedValidator<>(Element.class, new ElementBelongsOnlyToClientDomains()),
+            new TypedValidator<>(Element.class, new ElementDomainsAreSubsetOfUnitDomains()),
             new TypedValidator<>(Aspect.class, new AspectsHaveOwnerDomain()),
             new TypedValidator<>(AbstractRisk.class, new RisksHaveDomain()))
         .forEach(v -> v.validateIfApplicable(entity));

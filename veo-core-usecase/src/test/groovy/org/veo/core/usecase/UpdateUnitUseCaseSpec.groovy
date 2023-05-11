@@ -23,11 +23,13 @@ import org.veo.core.entity.Unit
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.usecase.common.ETag
 import org.veo.core.usecase.unit.ChangeUnitUseCase
+import org.veo.core.usecase.unit.UnitValidator
 import org.veo.core.usecase.unit.UpdateUnitUseCase
 
 public class UpdateUnitUseCaseSpec extends UseCaseSpec {
     static final String USER_NAME = "john"
-    UpdateUnitUseCase updateUseCase = new UpdateUnitUseCase(unitRepository)
+    UnitValidator unitValidator = Mock()
+    UpdateUnitUseCase updateUseCase = new UpdateUnitUseCase(unitRepository, unitValidator)
 
     def "Update an existing unit" () {
         given: "starting values for a unit"
@@ -51,6 +53,9 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
         and: "the client was then saved with the new unit"
         1 * newUnit.version(USER_NAME, this.existingUnit)
         1 * unitRepository.save(_) >> newUnit
+
+        and: "validation has been run"
+        1 * unitValidator.validateUpdate(newUnit, existingUnit)
 
         and: "the changed unit was returned"
         output.unit == newUnit

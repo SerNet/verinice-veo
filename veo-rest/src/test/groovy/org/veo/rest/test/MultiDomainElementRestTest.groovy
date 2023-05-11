@@ -319,6 +319,59 @@ class MultiDomainElementRestTest extends VeoRestTest {
         type << EntityType.ELEMENT_TYPES
     }
 
+    def "#type.singularTerm domains must be a subset of unit's domains"() {
+        given: "a unit with domain A"
+        def unitUri = post("/units", [
+            name: "domain A unit",
+            domains: [
+                [targetUri: "/domains/$domainIdA"]
+            ]
+        ]).location
+        putElementTypeDefinitions(type)
+
+        expect: "creating an element in the unit in domain B to fail"
+        post("/domains/$domainIdB/$type.pluralTerm", [
+            name: "illegal element",
+            owner: [targetUri: unitUri],
+            subType: "STB",
+            status: "ON",
+        ], 422).body.message == "Element can only be associated with its unit's domains"
+
+        when: "adding domain B to the unit"
+        get(unitUri).with{
+            body.domains.add([targetUri: "/domains/$domainIdB"])
+            put(unitUri, body, getETag())
+        }
+
+        then: "an element can be created in the unit in domain B"
+        def elementId = post("/domains/$domainIdB/$type.pluralTerm", [
+            name: "ok element",
+            owner: [targetUri: unitUri],
+            subType: "STB",
+            status: "ON",
+        ]).body.resourceId
+
+        expect: "removing domain B from the unit to fail"
+        get(unitUri).with{
+            body.domains.removeIf { it.targetUri.contains(domainIdB) }
+            with(put(unitUri, body, getETag(), 422)) {
+                body.message == "Cannot remove domain $domainIdB from unit. 1 element(s) in the unit are associated with it, including: $type.singularTerm $elementId"
+            }
+        }
+
+        when: "deleting the element"
+        delete("/$type.pluralTerm/$elementId")
+
+        then: "the domain can be removed from the unit"
+        get(unitUri).with{
+            body.domains.removeIf { it.targetUri.contains(domainIdB) }
+            put(unitUri, body, getETag())
+        }
+
+        where:
+        type << EntityType.ELEMENT_TYPES
+    }
+
     def "cannot re-associate #type.singularTerm with domain"() {
         given: "an element associated with domain A"
         putElementTypeDefinitions(type)

@@ -27,6 +27,7 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.common.ETagMismatchException;
 
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,15 +35,12 @@ import lombok.extern.slf4j.Slf4j;
  * Abstract superclass for all operations that change an asset. The <code>update()</code> method
  * must be overwritten to make all necessary changes to the asset.
  */
+@RequiredArgsConstructor
 @Slf4j
 public abstract class ChangeUnitUseCase
     implements TransactionalUseCase<ChangeUnitUseCase.InputData, ChangeUnitUseCase.OutputData> {
-
   private final UnitRepository unitRepository;
-
-  public ChangeUnitUseCase(UnitRepository repository) {
-    this.unitRepository = repository;
-  }
+  private final UnitValidator unitValidator;
 
   /**
    * Find a persisted unit object and reinstantiate it. Throws a domain exception if the requested
@@ -55,6 +53,7 @@ public abstract class ChangeUnitUseCase
     var storedUnit = unitRepository.getById(input.getChangedUnit().getId());
     checkSameClient(storedUnit, input);
     checkETag(storedUnit, input);
+    unitValidator.validateUpdate(input.changedUnit, storedUnit);
     var updatedUnit = update(storedUnit, input);
     updatedUnit.version(input.username, storedUnit);
     return output(save(updatedUnit, input));
