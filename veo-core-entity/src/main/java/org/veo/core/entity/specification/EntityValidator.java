@@ -24,6 +24,7 @@ import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Unit;
 import org.veo.core.entity.aspects.Aspect;
 import org.veo.core.entity.code.EntityValidationException;
 
@@ -47,6 +48,7 @@ public class EntityValidator {
             new TypedValidator<>(Element.class, new ElementBelongsOnlyToClientDomains()),
             new TypedValidator<>(Element.class, new ElementDomainsAreSubsetOfUnitDomains()),
             new TypedValidator<>(Aspect.class, new AspectsHaveOwnerDomain()),
+            new TypedValidator<>(Unit.class, new UnitDomainsAreSubsetOfClientDomains()),
             new TypedValidator<>(AbstractRisk.class, new RisksHaveDomain()))
         .forEach(v -> v.validateIfApplicable(entity));
   }

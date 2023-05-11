@@ -110,4 +110,19 @@ class ClientSeparationRestTest extends VeoRestTest {
             illegalDeleteResponse.body.message == nonExistingControlDeleteResponse.body.message.replace(nonExistingId, secondaryClientControlId)
         }
     }
+
+    def "secondary client's domain cannot be accessed"() {
+        expect: "that the secondary client's domain cannot be retrieved"
+        get("/domains/$secondaryClientDomainId", 404)
+                .body
+                .message == "Domain with ID $secondaryClientDomainId not found"
+
+        and: "and that it cannot be referenced"
+        post("/units", [
+            name: "evil unit",
+            domains: [
+                [targetUri: "/domains/$secondaryClientDomainId"]
+            ]
+        ], 422).body.message == "Domain $secondaryClientDomainId not found"
+    }
 }

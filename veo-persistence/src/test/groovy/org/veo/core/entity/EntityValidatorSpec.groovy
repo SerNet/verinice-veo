@@ -276,4 +276,17 @@ class EntityValidatorSpec extends VeoSpec {
         then:
         thrown(EntityValidationException)
     }
+
+    def "a unit using another client's domain does not pass validation"() {
+        given: "a unit using another client's domain"
+        def unit = newUnit(client) {
+            domains = [newDomain(newClient())]
+        }
+
+        when:
+        validator.validate(unit)
+
+        then:
+        thrown(EntityValidationException)
+    }
 }
