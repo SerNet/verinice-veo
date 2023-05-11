@@ -68,7 +68,7 @@ class GetAllWithNoClientSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "retrieve all persons"() {
         when: "if the client was not created and request is made to the server"
-        def result = parseJson(get("/persons"))
+        def result = parseJson(get("/persons", 403))
 
         then: "an exception is thrown"
         thrown(ClientNotActiveException)

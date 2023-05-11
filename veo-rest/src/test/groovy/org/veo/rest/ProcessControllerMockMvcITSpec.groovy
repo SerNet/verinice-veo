@@ -188,7 +188,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
         Map headers = [
             'If-Match': ETag.from(process.id.uuidValue(), 1)
         ]
-        put("/processes/${process.id.uuidValue()}", request, headers, 403)
+        put("/processes/${process.id.uuidValue()}", request, headers, 400)
 
         then: "the process is not updated"
         MethodArgumentNotValidException ex = thrown()
@@ -657,7 +657,7 @@ class ProcessControllerMockMvcITSpec extends VeoMvcSpec {
             id: process1.id.uuidValue(),
             name: "new name 1",
             owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
-        ], headers, 403)
+        ], headers, 400)
 
         then: "an exception is thrown"
         thrown(DeviatingIdException)

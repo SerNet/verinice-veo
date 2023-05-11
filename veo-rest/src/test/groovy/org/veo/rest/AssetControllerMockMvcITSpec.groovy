@@ -628,7 +628,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
             id: asset1.id.uuidValue(),
             name: "new name 1",
             owner: [targetUri: 'http://localhost/units/' + unit.id.uuidValue()]
-        ], headers, 403)
+        ], headers, 400)
 
         then: "an exception is thrown"
         thrown(DeviatingIdException)

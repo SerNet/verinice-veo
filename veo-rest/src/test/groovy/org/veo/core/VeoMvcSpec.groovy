@@ -119,6 +119,7 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
         def asyncActions = mvc.perform(requestBuilder)
         def asyncResult = asyncActions.andReturn()
         if (asyncResult.resolvedException != null) {
+            asyncActions.andExpect(status().is(expectedStatusCode))
             throw asyncResult.resolvedException
         }
         if (expectSuccessfulRequest) {

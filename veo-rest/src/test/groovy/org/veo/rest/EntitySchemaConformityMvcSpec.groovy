@@ -179,7 +179,7 @@ class EntitySchemaConformityMvcSpec extends VeoMvcSpec {
                     status: null
                 ]
             ]
-        ])
+        ], 400)
 
         then: "an exception is thrown"
         def ex = thrown(MethodArgumentNotValidException)
