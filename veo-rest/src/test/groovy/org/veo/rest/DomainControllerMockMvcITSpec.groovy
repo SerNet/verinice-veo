@@ -26,7 +26,6 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.persistence.access.ClientRepositoryImpl
-import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 
 /**
  * Integration test for the domain controller. Uses mocked spring MVC environment.
@@ -38,8 +37,6 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
-    @Autowired
-    private DomainTemplateDataRepository domainTemplateRepository
 
     @Autowired
     TransactionTemplate txTemplate
