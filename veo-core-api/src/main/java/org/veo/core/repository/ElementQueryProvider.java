@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jochen Kemnade.
+ * Copyright (C) 2023  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,27 +17,9 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
-import org.veo.core.entity.Domain;
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
 
-public interface ElementRepository<T extends Element>
-    extends IdentifiableVersionedRepository<T>, ElementQueryProvider<T> {
-
-  Set<T> findByUnit(Unit owner);
-
-  Set<T> findByDomain(Domain domain);
-
-  Set<SubTypeStatusCount> getCountsBySubType(Unit u, Domain domain);
-
-  void deleteAll(Set<T> entities);
-
-  Optional<T> findById(Key<UUID> id, Key<UUID> clientId);
-
-  T getById(Key<UUID> id, Key<UUID> clientId);
+public interface ElementQueryProvider<T extends Element> {
+  ElementQuery<T> query(Client client);
 }

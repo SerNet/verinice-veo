@@ -30,7 +30,7 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.CompositeElementQuery;
 import org.veo.core.repository.ElementQuery;
-import org.veo.core.repository.ElementRepository;
+import org.veo.core.repository.ElementQueryProvider;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
@@ -46,13 +46,13 @@ import lombok.experimental.NonFinal;
 public abstract class GetElementsUseCase<T extends Element, I extends GetElementsUseCase.InputData>
     implements TransactionalUseCase<I, GetElementsUseCase.OutputData<T>> {
 
-  private final ElementRepository<T> repository;
+  private final ElementQueryProvider<T> repository;
   protected final ClientRepository clientRepository;
   private final UnitHierarchyProvider unitHierarchyProvider;
 
   public GetElementsUseCase(
       ClientRepository clientRepository,
-      ElementRepository<T> repository,
+      ElementQueryProvider<T> repository,
       UnitHierarchyProvider unitHierarchyProvider) {
     this.clientRepository = clientRepository;
     this.repository = repository;
