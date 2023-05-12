@@ -26,8 +26,10 @@ import org.veo.core.entity.Key
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PagingConfiguration.SortOrder
 import org.veo.core.repository.QueryCondition
+import org.veo.core.repository.SingleValueQueryCondition
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
+import org.veo.persistence.access.jpa.ElementDataRepository
 import org.veo.persistence.access.jpa.PersonDataRepository
 import org.veo.persistence.access.jpa.ProcessDataRepository
 import org.veo.persistence.access.jpa.ScopeDataRepository
@@ -40,6 +42,9 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     @Autowired
     ProcessDataRepository processDataRepository
+
+    @Autowired
+    ElementDataRepository elementDataRepository
 
     @Autowired
     PersonDataRepository personDataRepository
@@ -257,6 +262,61 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
             "first process in nothing",
             "second process in nothing",
             "process with two parts",
+        ]
+    }
+
+    def 'queries members by scope ID'() {
+        given:
+        def processInScopeA = processDataRepository.save(newProcess(unit) {
+            name = "process in scope A"
+        })
+        def assetInScopeA = assetDataRepository.save(newAsset(unit) {
+            name = "asset in scope A"
+        })
+        def processInScopeB = processDataRepository.save(newProcess(unit) {
+            name = "process in scope B"
+        })
+        def processInBothScopes = processDataRepository.save(newProcess(unit) {
+            name = "process in both scopes"
+        })
+        processDataRepository.save(newProcess(unit) {
+            name = "process in nothing"
+        })
+        def scopeA = scopeDataRepository.save(newScope(unit) {
+            members = [
+                processInScopeA,
+                assetInScopeA,
+                processInBothScopes
+            ]
+        })
+        def scopeB = scopeDataRepository.save(newScope(unit) {
+            members = [
+                processInScopeB,
+                processInBothScopes,
+            ]
+        })
+
+        when:
+        def processesInScopeA = new ElementQueryImpl(elementDataRepository, client)
+                .whereScopesContain(new SingleValueQueryCondition<Key<UUID>>(scopeA.id))
+                .execute(PagingConfiguration.UNPAGED)
+
+        then:
+        processesInScopeA.resultPage*.name =~ [
+            "process in scope A",
+            "asset in scope A",
+            "process in both scopes"
+        ]
+
+        when:
+        def processesInScopeB = new ElementQueryImpl(processDataRepository, client)
+                .whereScopesContain(new SingleValueQueryCondition<Key<UUID>>(scopeB.id))
+                .execute(PagingConfiguration.UNPAGED)
+
+        then:
+        processesInScopeB.resultPage*.name =~ [
+            "process in scope B",
+            "process in both scopes"
         ]
     }
 

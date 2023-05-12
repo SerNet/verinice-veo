@@ -139,6 +139,9 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
         throw new IllegalArgumentException("Composite filter not compatible with query type");
       }
     }
+    if (input.getScopeId() != null) {
+      query.whereScopesContain(input.getScopeId());
+    }
   }
 
   @Valid
@@ -155,6 +158,7 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
     SingleValueQueryCondition<Boolean> hasChildElements;
     SingleValueQueryCondition<Boolean> hasParentElements;
     SingleValueQueryCondition<Key<UUID>> compositeId;
+    SingleValueQueryCondition<Key<UUID>> scopeId;
     QueryCondition<String> description;
     QueryCondition<String> designator;
     QueryCondition<String> name;

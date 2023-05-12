@@ -212,6 +212,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
             hasChildElements,
             hasParentElements,
             null,
+            null,
             description,
             designator,
             name,

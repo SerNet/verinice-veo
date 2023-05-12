@@ -354,6 +354,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
             hasChildElements,
             hasParentElements,
             null,
+            null,
             description,
             designator,
             name,

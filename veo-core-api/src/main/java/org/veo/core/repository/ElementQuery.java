@@ -92,5 +92,7 @@ public interface ElementQuery<T extends Element> {
 
   ElementQuery<T> whereDomainsContain(Domain domain);
 
+  ElementQuery<T> whereScopesContain(SingleValueQueryCondition<Key<UUID>> scopeId);
+
   PagedResult<T> execute(PagingConfiguration pagingConfiguration);
 }

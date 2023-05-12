@@ -49,6 +49,7 @@ import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
+import org.veo.core.repository.SingleValueQueryCondition;
 import org.veo.persistence.access.jpa.CompositeEntityDataRepository;
 import org.veo.persistence.access.jpa.ElementDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
@@ -213,6 +214,18 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
     mySpec =
         mySpec.and(
             (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.join("domains"), domain));
+    return this;
+  }
+
+  @Override
+  public ElementQuery<TInterface> whereScopesContain(
+      SingleValueQueryCondition<Key<UUID>> condition) {
+    mySpec =
+        mySpec.and(
+            (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(
+                    root.join("scopes", JoinType.LEFT).get("dbId"),
+                    condition.getValue().uuidValue()));
     return this;
   }
 
