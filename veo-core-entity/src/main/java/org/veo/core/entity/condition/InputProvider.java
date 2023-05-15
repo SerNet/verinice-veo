@@ -29,7 +29,7 @@ import org.veo.core.entity.event.ElementEvent;
  * Provides input value for a {@link Condition}. Takes an element and extracts a value from the
  * element in the context of a given domain.
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
   @Type(value = CustomAspectAttributeSizeProvider.class, name = "customAspectAttributeSize"),
   @Type(value = CustomAspectAttributeValueProvider.class, name = "customAspectAttributeValue"),
