@@ -153,7 +153,7 @@ subprojects {
             dependency "org.testcontainers:spock:1.18.1"
             dependency "org.testcontainers:postgresql:1.18.1"
             dependency "org.keycloak:keycloak-authz-client:21.1.1"
-            dependency 'com.fasterxml.uuid:java-uuid-generator:4.1.1'
+            dependency 'com.fasterxml.uuid:java-uuid-generator:4.2.0'
             dependency 'com.github.zafarkhaja:java-semver:0.9.0'
         }
     }
