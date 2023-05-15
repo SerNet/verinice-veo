@@ -291,18 +291,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
     incidentDto.applyResourceId(id);
     return useCaseInteractor.execute(
         updateIncidentUseCase,
-        new Supplier<InputData<Incident>>() {
-          @Override
-          public InputData<Incident> get() {
-            Client client = getClient(user);
-            IdRefResolver idRefResolver = createIdRefResolver(client);
-            return new InputData<>(
-                dtoToEntityTransformer.transformDto2Incident(incidentDto, idRefResolver),
-                client,
-                eTag,
-                user.getUsername());
-          }
-        },
+        new InputData<>(id, incidentDto, getClient(user), eTag, user.getUsername()),
         output -> toResponseEntity(output.getEntity()));
   }
 

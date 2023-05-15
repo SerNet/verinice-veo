@@ -17,17 +17,24 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
+import java.time.Instant;
+
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.state.ElementState;
 import org.veo.core.repository.ElementRepository;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.common.ETagMismatchException;
 import org.veo.core.usecase.decision.Decider;
+import org.veo.core.usecase.service.DbIdRefResolver;
+import org.veo.core.usecase.service.EntityStateMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -37,61 +44,37 @@ public abstract class ModifyElementUseCase<T extends Element>
     implements TransactionalUseCase<
         ModifyElementUseCase.InputData<T>, ModifyElementUseCase.OutputData<T>> {
 
-  private final ElementRepository<T> repo;
+  private final Class<T> elementClass;
+  private final RepositoryProvider repositoryProvider;
   private final Decider decider;
+  private final EntityStateMapper entityStateMapper;
 
   @Override
   public OutputData<T> execute(InputData<T> input) {
-    T entity = input.getElement();
-    entity.checkSameClient(input.getAuthenticatedClient());
+    ElementState<T> entity = input.getElement();
+    ElementRepository<T> repo = repositoryProvider.getElementRepositoryFor(elementClass);
     var storedEntity =
-        repo.findById(input.element.getId())
-            .orElseThrow(
-                () ->
-                    new NotFoundException(
-                        input.element.getId(), input.element.getModelInterface()));
+        repo.findById(Key.uuidFrom(input.getId()))
+            .orElseThrow(() -> new NotFoundException(Key.uuidFrom(input.getId()), elementClass));
     checkETag(storedEntity, input);
-    entity.version(input.username, storedEntity);
     checkClientBoundaries(input, storedEntity);
-    checkSubTypeChange(entity, storedEntity);
-    // The designator is read-only so it must stay the same.
-    entity.setDesignator(storedEntity.getDesignator());
-    evaluateDecisions(entity, storedEntity);
-    DomainSensitiveElementValidator.validate(entity);
+    entityStateMapper.mapState(
+        entity,
+        storedEntity,
+        new DbIdRefResolver(repositoryProvider, input.getAuthenticatedClient()));
+    evaluateDecisions(storedEntity);
+    DomainSensitiveElementValidator.validate(storedEntity);
 
-    // TODO: VEO-839: remove this workaround against saving duplicate links
-    entity.getLinks().forEach(storedEntity::applyLink);
-    entity.setLinks(storedEntity.getLinks());
-    return new OutputData<>(repo.save(entity));
+    storedEntity.setUpdatedAt(Instant.now());
+    repo.save(storedEntity);
+    return new OutputData<>(
+        repo.getById(Key.uuidFrom(input.getId()), input.authenticatedClient.getId()));
   }
 
-  protected void evaluateDecisions(T entity, T storedEntity) {
+  private void evaluateDecisions(T entity) {
     entity
         .getDomains()
         .forEach(domain -> entity.setDecisionResults(decider.decide(entity, domain), domain));
-  }
-
-  private void checkSubTypeChange(T newElement, T oldElement) {
-    oldElement
-        .getDomains()
-        .forEach(
-            domain ->
-                oldElement
-                    .findSubType(domain)
-                    .ifPresent(
-                        oldSubType -> {
-                          var newSubType =
-                              newElement
-                                  .findSubType(domain)
-                                  .orElseThrow(
-                                      (() ->
-                                          new IllegalArgumentException(
-                                              "Cannot remove a sub type from an existing element")));
-                          if (!newSubType.equals(oldSubType)) {
-                            throw new IllegalArgumentException(
-                                "Cannot change a sub type on an existing element");
-                          }
-                        }));
   }
 
   private void checkETag(Element storedElement, InputData<? extends Element> input) {
@@ -105,9 +88,7 @@ public abstract class ModifyElementUseCase<T extends Element>
   }
 
   protected void checkClientBoundaries(InputData<? extends Element> input, Element storedEntity) {
-    Element entity = input.getElement();
-    entity.checkSameClient(storedEntity.getOwner().getClient());
-    entity.checkSameClient(input.getAuthenticatedClient());
+    storedEntity.checkSameClient(input.getAuthenticatedClient());
   }
 
   @Override
@@ -117,9 +98,11 @@ public abstract class ModifyElementUseCase<T extends Element>
 
   @Valid
   @Value
-  public static class InputData<T> implements UseCase.InputData {
+  public static class InputData<T extends Element> implements UseCase.InputData {
 
-    @Valid T element;
+    String id;
+
+    @Valid ElementState<T> element;
 
     @Valid Client authenticatedClient;
 

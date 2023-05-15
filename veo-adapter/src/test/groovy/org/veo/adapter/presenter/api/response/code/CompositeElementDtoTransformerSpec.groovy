@@ -21,18 +21,12 @@ import java.time.Instant
 
 import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
-import org.veo.adapter.presenter.api.dto.full.FullAssetDto
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer
-import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Document
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
-import org.veo.core.entity.ref.ITypedId
-import org.veo.core.entity.transform.EntityFactory
-import org.veo.core.entity.transform.IdentifiableFactory
-import org.veo.core.usecase.service.IdRefResolver
 
 import spock.lang.Specification
 
@@ -43,12 +37,8 @@ class CompositeElementDtoTransformerSpec extends Specification {
     def subUnitId = "fb329c3e-b87b-44d2-a680-e2d12539f3f7"
 
     def refAssembler = Mock(ReferenceAssembler)
-    def factory = Mock(EntityFactory)
-    def identifiableFactory = Mock(IdentifiableFactory)
-    def idRefResolver = Mock(IdRefResolver)
     def domainAssociationTransformer = Mock(DomainAssociationTransformer)
     def entityToDtoTransformer = new EntityToDtoTransformer(refAssembler, domainAssociationTransformer)
-    def dtoToEntityTransformer = new DtoToEntityTransformer(factory, identifiableFactory, domainAssociationTransformer)
 
     def createUnit() {
         Unit subUnit = Mock()
@@ -142,37 +132,6 @@ class CompositeElementDtoTransformerSpec extends Specification {
             asset1.displayName,
             asset2.displayName
         ]
-    }
-
-    def "Transform composite element DTO with parts to entity"() {
-        given: "an asset composite element DTO with two parts"
-        def asset1Ref = Mock(ITypedId)
-        def asset2Ref = Mock(ITypedId)
-        def asset1 = Mock(Asset)
-        def asset2 = Mock(Asset)
-        def newCompositeAssetEntity = Mock(Asset) {
-            it.modelType >> Asset.SINGULAR_TERM
-        }
-
-        def compositeAssetId = Key.newUuid()
-        def compositeAssetDto = new FullAssetDto().tap {
-            id = compositeAssetId.uuidValue()
-            name = "Composite Asset"
-            setParts([
-                asset1Ref,
-                asset2Ref
-            ] as Set)
-        }
-
-        when: "transforming the DTO to an entity"
-        def result = dtoToEntityTransformer.transformDto2Asset(compositeAssetDto, idRefResolver)
-
-        then: "the composite element is transformed with parts"
-        1 * identifiableFactory.create(Asset.class, compositeAssetId) >> newCompositeAssetEntity
-        1 * idRefResolver.resolve(Set.of(asset1Ref, asset2Ref)) >> [asset1, asset2]
-        result == newCompositeAssetEntity
-        1 * newCompositeAssetEntity.setParts([asset1, asset2].toSet())
-        1 * domainAssociationTransformer.mapDomainsToEntity(compositeAssetDto, newCompositeAssetEntity, idRefResolver)
     }
 
     def "Transform composite element that contains itself"() {

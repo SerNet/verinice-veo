@@ -317,16 +317,8 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
     assetDto.applyResourceId(id);
     return useCaseInteractor.execute(
         updateAssetUseCase,
-        (Supplier<ModifyElementUseCase.InputData<Asset>>)
-            () -> {
-              Client client = getClient(user);
-              IdRefResolver idRefResolver = createIdRefResolver(client);
-              return new ModifyElementUseCase.InputData<>(
-                  dtoToEntityTransformer.transformDto2Asset(assetDto, idRefResolver),
-                  client,
-                  eTag,
-                  user.getUsername());
-            },
+        new ModifyElementUseCase.InputData<>(
+            id, assetDto, getClient(user), eTag, user.getUsername()),
         output -> toResponseEntity(output.getEntity()));
   }
 

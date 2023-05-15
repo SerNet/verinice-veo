@@ -74,6 +74,7 @@ import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.service.DomainTemplateIdGenerator;
 import org.veo.core.service.DomainTemplateService;
+import org.veo.core.usecase.service.EntityStateMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -92,6 +93,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   private final IdentifiableFactory identifiableFactory;
   private final DomainAssociationTransformer domainAssociationTransformer;
   private final EntityFactory entityFactory;
+  private final EntityStateMapper entityStateMapper;
 
   public DomainTemplateServiceImpl(
       DomainTemplateRepository domainTemplateRepository,
@@ -101,7 +103,8 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
       CatalogItemPrepareStrategy preparations,
       DomainTemplateIdGenerator domainTemplateIdGenerator,
       ReferenceAssembler referenceAssembler,
-      ObjectMapper objectMapper) {
+      ObjectMapper objectMapper,
+      EntityStateMapper entityStateMapper) {
     this.domainTemplateRepository = domainTemplateRepository;
     this.factory = factory;
     this.preparations = preparations;
@@ -109,8 +112,10 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     this.identifiableFactory = identifiableFactory;
     this.domainAssociationTransformer = domainAssociationTransformer;
     this.entityFactory = factory;
+    this.entityStateMapper = entityStateMapper;
     entityTransformer =
-        new DtoToEntityTransformer(factory, identifiableFactory, domainAssociationTransformer);
+        new DtoToEntityTransformer(
+            factory, identifiableFactory, domainAssociationTransformer, entityStateMapper);
     assembler = referenceAssembler;
     dtoTransformer = new EntityToDtoTransformer(assembler, domainAssociationTransformer);
     this.objectMapper = objectMapper;
@@ -147,7 +152,8 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
     resolvingFactory.setGlobalDomain(identifiableFactory.create(Domain.class, Key.newUuid()));
     var domain =
-        new DtoToEntityTransformer(entityFactory, resolvingFactory, domainAssociationTransformer)
+        new DtoToEntityTransformer(
+                entityFactory, resolvingFactory, domainAssociationTransformer, entityStateMapper)
             .transformTransformDomainTemplateDto2Domain(domainTemplateDto, resolvingFactory);
     domain.getCatalogs().stream()
         .flatMap((Catalog catalog) -> catalog.getCatalogItems().stream())
@@ -180,7 +186,8 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
     resolvingFactory.setGlobalDomain(domain);
     var transformer =
-        new DtoToEntityTransformer(factory, resolvingFactory, new DomainAssociationTransformer());
+        new DtoToEntityTransformer(
+            factory, resolvingFactory, new DomainAssociationTransformer(), entityStateMapper);
     var elements =
         demoUnitElements.stream()
             .map(e -> transformer.transformDto2Element(e, resolvingFactory))

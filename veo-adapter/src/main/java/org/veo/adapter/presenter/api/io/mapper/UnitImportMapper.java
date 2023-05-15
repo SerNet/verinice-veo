@@ -31,6 +31,7 @@ import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.service.DbIdRefResolver;
+import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.unit.UnitImportUseCase;
 
 import lombok.RequiredArgsConstructor;
@@ -42,12 +43,14 @@ public class UnitImportMapper {
   private final RepositoryProvider repositoryProvider;
   private final DomainAssociationTransformer domainAssociationTransformer;
   private final EntityFactory entityFactory;
+  private final EntityStateMapper entityStateMapper;
 
   public UnitImportUseCase.InputData mapInput(UnitDumpDto dto, Client client) {
     // VEO-839 use new mapping style and handle resolving biz in use case
     var resolvingFactory = createResolvingFactory(dto, client);
     var transformer =
-        new DtoToEntityTransformer(entityFactory, resolvingFactory, domainAssociationTransformer);
+        new DtoToEntityTransformer(
+            entityFactory, resolvingFactory, domainAssociationTransformer, entityStateMapper);
     var unit = transformer.transformDto2Unit(dto.getUnit(), resolvingFactory);
     unit.setClient(client);
     var elements =

@@ -19,17 +19,20 @@ package org.veo.core.usecase
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
+import org.veo.core.entity.state.CompositeElementState
 import org.veo.core.repository.PersonRepository
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData
 import org.veo.core.usecase.common.ETag
 import org.veo.core.usecase.decision.Decider
 import org.veo.core.usecase.person.UpdatePersonUseCase
+import org.veo.core.usecase.service.EntityStateMapper
 
 public class UpdatePersonUseCaseSpec extends UseCaseSpec {
 
     PersonRepository personRepository = Mock()
     Decider decider = Mock()
-    UpdatePersonUseCase usecase = new UpdatePersonUseCase(personRepository, decider)
+    EntityStateMapper entityStateMapper = new EntityStateMapper()
+    UpdatePersonUseCase usecase = new UpdatePersonUseCase(repositoryProvider, decider, entityStateMapper)
 
     def "update a person"() {
         given:
@@ -44,14 +47,23 @@ public class UpdatePersonUseCaseSpec extends UseCaseSpec {
         person.customAspects >> []
         person.links >> []
 
+        CompositeElementState personState = Mock {
+            getId() >> id.uuidValue()
+            domains >> [:]
+            customAspectStates >> []
+            customLinkStates >> []
+            parts >> []
+        }
+
         when:
         def eTag = ETag.from(person.getId().uuidValue(), 0)
-        def output = usecase.execute(new InputData(person, existingClient, eTag, "max"))
+        def output = usecase.execute(new InputData(id.uuidValue(), personState, existingClient, eTag, "max"))
 
         then:
-        1 * person.version("max", person)
-        1 * personRepository.save(_) >> person
-        1 * personRepository.findById(_) >> Optional.of(person)
+        1 * repositoryProvider.getElementRepositoryFor(Person) >> personRepository
+        1 * personRepository.save(person) >> person
+        1 * personRepository.findById(person.id) >> Optional.of(person)
+        1 * personRepository.getById(person.id, existingClient.id) >> person
         output.entity != null
         output.entity.name == "Updated person"
     }

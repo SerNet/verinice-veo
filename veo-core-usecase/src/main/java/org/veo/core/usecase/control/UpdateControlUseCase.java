@@ -19,17 +19,21 @@ package org.veo.core.usecase.control;
 
 import org.veo.core.entity.Control;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
-import org.veo.core.repository.ControlRepository;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.decision.Decider;
+import org.veo.core.usecase.service.EntityStateMapper;
 
 public class UpdateControlUseCase extends ModifyElementUseCase<Control> {
   private final EventPublisher eventPublisher;
 
   public UpdateControlUseCase(
-      ControlRepository controlRepository, EventPublisher eventPublisher, Decider decider) {
-    super(controlRepository, decider);
+      RepositoryProvider repositoryProvider,
+      EventPublisher eventPublisher,
+      Decider decider,
+      EntityStateMapper entityStateMapper) {
+    super(Control.class, repositoryProvider, decider, entityStateMapper);
     this.eventPublisher = eventPublisher;
   }
 

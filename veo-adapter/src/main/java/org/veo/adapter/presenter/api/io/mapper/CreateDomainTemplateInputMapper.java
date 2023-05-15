@@ -25,6 +25,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
+import org.veo.core.usecase.service.EntityStateMapper;
 
 /**
  * Maps between {@link TransformDomainTemplateDto} and {@link
@@ -35,7 +36,8 @@ public class CreateDomainTemplateInputMapper {
       TransformDomainTemplateDto domainTemplateDto,
       IdentifiableFactory identifiableFactory,
       EntityFactory entityFactory,
-      DomainAssociationTransformer domainAssociationTransformer) {
+      DomainAssociationTransformer domainAssociationTransformer,
+      EntityStateMapper entityStateMapper) {
     var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
 
     // Define an arbitrary temporary domain template ID and redirect any domain
@@ -45,7 +47,8 @@ public class CreateDomainTemplateInputMapper {
     resolvingFactory.setGlobalDomainTemplateId(domainTemplateDto.getId());
 
     var transformer =
-        new DtoToEntityTransformer(entityFactory, resolvingFactory, domainAssociationTransformer);
+        new DtoToEntityTransformer(
+            entityFactory, resolvingFactory, domainAssociationTransformer, entityStateMapper);
 
     var newDomainTemplate =
         transformer.transformTransformDomainTemplateDto2DomainTemplate(

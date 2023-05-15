@@ -271,16 +271,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
     processDto.applyResourceId(id);
     return useCaseInteractor.execute(
         updateProcessUseCase,
-        (Supplier<InputData<Process>>)
-            () -> {
-              Client client = getClient(user);
-              IdRefResolver idRefResolver = createIdRefResolver(client);
-              return new InputData<>(
-                  dtoToEntityTransformer.transformDto2Process(processDto, idRefResolver),
-                  client,
-                  eTag,
-                  user.getUsername());
-            },
+        new InputData<>(id, processDto, getClient(user), eTag, user.getUsername()),
         output -> toResponseEntity(output.getEntity()));
   }
 

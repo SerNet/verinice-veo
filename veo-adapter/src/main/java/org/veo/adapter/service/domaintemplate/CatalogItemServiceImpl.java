@@ -32,6 +32,7 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.service.CatalogItemService;
+import org.veo.core.usecase.service.EntityStateMapper;
 
 public class CatalogItemServiceImpl implements CatalogItemService {
   private final DtoToEntityTransformer entityTransformer;
@@ -43,12 +44,14 @@ public class CatalogItemServiceImpl implements CatalogItemService {
       EntityFactory factory,
       IdentifiableFactory identifiableFactory,
       DomainAssociationTransformer domainAssociationTransformer,
+      EntityStateMapper entityStateMapper,
       CatalogItemPrepareStrategy preparations) {
     this.dtoTransformer = dtoTransformer;
     this.preparations = preparations;
 
     this.entityTransformer =
-        new DtoToEntityTransformer(factory, identifiableFactory, domainAssociationTransformer);
+        new DtoToEntityTransformer(
+            factory, identifiableFactory, domainAssociationTransformer, entityStateMapper);
   }
 
   @Override

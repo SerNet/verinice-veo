@@ -18,13 +18,15 @@
 package org.veo.core.usecase.incident;
 
 import org.veo.core.entity.Incident;
-import org.veo.core.repository.IncidentRepository;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.decision.Decider;
+import org.veo.core.usecase.service.EntityStateMapper;
 
 public class UpdateIncidentUseCase extends ModifyElementUseCase<Incident> {
 
-  public UpdateIncidentUseCase(IncidentRepository incidentRepository, Decider decider) {
-    super(incidentRepository, decider);
+  public UpdateIncidentUseCase(
+      RepositoryProvider repositoryProvider, Decider decider, EntityStateMapper entityStateMapper) {
+    super(Incident.class, repositoryProvider, decider, entityStateMapper);
   }
 }

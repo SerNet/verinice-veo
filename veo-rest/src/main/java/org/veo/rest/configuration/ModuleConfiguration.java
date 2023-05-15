@@ -269,8 +269,8 @@ public class ModuleConfiguration {
 
   @Bean
   public UpdateAssetUseCase updateAssetUseCase(
-      AssetRepositoryImpl assetRepository, Decider decider) {
-    return new UpdateAssetUseCase(assetRepository, decider);
+      RepositoryProvider repositoryProvider, Decider decider) {
+    return new UpdateAssetUseCase(repositoryProvider, decider, getEntityStateMapper());
   }
 
   @Bean
@@ -300,8 +300,9 @@ public class ModuleConfiguration {
 
   @Bean
   public UpdateControlUseCase updateControlUseCase(
-      ControlRepositoryImpl controlRepository, EventPublisher eventPublisher, Decider decider) {
-    return new UpdateControlUseCase(controlRepository, eventPublisher, decider);
+      RepositoryProvider repositoryProvider, EventPublisher eventPublisher, Decider decider) {
+    return new UpdateControlUseCase(
+        repositoryProvider, eventPublisher, decider, getEntityStateMapper());
   }
 
   @Bean
@@ -331,8 +332,8 @@ public class ModuleConfiguration {
 
   @Bean
   public UpdateDocumentUseCase updateDocumentUseCase(
-      DocumentRepositoryImpl documentRepository, Decider decider) {
-    return new UpdateDocumentUseCase(documentRepository, decider);
+      RepositoryProvider repositoryProvider, Decider decider) {
+    return new UpdateDocumentUseCase(repositoryProvider, decider, getEntityStateMapper());
   }
 
   @Bean
@@ -362,8 +363,9 @@ public class ModuleConfiguration {
 
   @Bean
   public UpdateScenarioUseCase updateScenarioUseCase(
-      ScenarioRepositoryImpl scenarioRepository, EventPublisher eventPublisher, Decider decider) {
-    return new UpdateScenarioUseCase(scenarioRepository, eventPublisher, decider);
+      RepositoryProvider repositoryProvider, EventPublisher eventPublisher, Decider decider) {
+    return new UpdateScenarioUseCase(
+        repositoryProvider, eventPublisher, decider, getEntityStateMapper());
   }
 
   @Bean
@@ -393,8 +395,8 @@ public class ModuleConfiguration {
 
   @Bean
   public UpdateIncidentUseCase updateIncidentUseCase(
-      IncidentRepositoryImpl incidentRepository, Decider decider) {
-    return new UpdateIncidentUseCase(incidentRepository, decider);
+      RepositoryProvider repositoryProvider, Decider decider) {
+    return new UpdateIncidentUseCase(repositoryProvider, decider, getEntityStateMapper());
   }
 
   @Bean
@@ -447,8 +449,9 @@ public class ModuleConfiguration {
 
   @Bean
   public UpdateProcessUseCase putProcessUseCase(
-      ProcessRepositoryImpl processRepository, EventPublisher eventPublisher, Decider decider) {
-    return new UpdateProcessUseCase(processRepository, eventPublisher, decider);
+      RepositoryProvider repositoryProvider, EventPublisher eventPublisher, Decider decider) {
+    return new UpdateProcessUseCase(
+        repositoryProvider, eventPublisher, decider, getEntityStateMapper());
   }
 
   @Bean
@@ -486,7 +489,7 @@ public class ModuleConfiguration {
 
   @Bean
   public EntityStateMapper getEntityStateMapper() {
-    return new EntityStateMapper();
+    return new EntityStateMapper(getEntityFactory());
   }
 
   @Bean
@@ -551,8 +554,8 @@ public class ModuleConfiguration {
 
   @Bean
   public UpdatePersonUseCase updatePersonUseCase(
-      PersonRepositoryImpl personRepository, Decider decider) {
-    return new UpdatePersonUseCase(personRepository, decider);
+      RepositoryProvider repositoryProvider, Decider decider) {
+    return new UpdatePersonUseCase(repositoryProvider, decider, getEntityStateMapper());
   }
 
   @Bean
@@ -580,8 +583,8 @@ public class ModuleConfiguration {
 
   @Bean
   public UpdateScopeUseCase updateScopeUseCase(
-      ScopeRepositoryImpl scopeRepository, Decider decider) {
-    return new UpdateScopeUseCase(scopeRepository, decider);
+      RepositoryProvider repositoryProvider, Decider decider) {
+    return new UpdateScopeUseCase(repositoryProvider, decider, getEntityStateMapper());
   }
 
   @Bean
@@ -725,7 +728,7 @@ public class ModuleConfiguration {
       EntitySchemaService entitySchemaService,
       DomainAssociationTransformer domainAssociationTransformer) {
     return new DtoToEntityTransformer(
-        entityFactory, identifiableFactory, domainAssociationTransformer);
+        entityFactory, identifiableFactory, domainAssociationTransformer, getEntityStateMapper());
   }
 
   @Primary
@@ -790,7 +793,8 @@ public class ModuleConfiguration {
         prepareStrategy,
         domainTemplateIdGenerator,
         referenceAssembler,
-        objectMapper);
+        objectMapper,
+        getEntityStateMapper());
   }
 
   @Bean
@@ -805,6 +809,7 @@ public class ModuleConfiguration {
         factory,
         identifiableFactory,
         domainAssociationTransformer,
+        getEntityStateMapper(),
         prepareStrategy);
   }
 

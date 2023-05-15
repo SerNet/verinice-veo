@@ -291,16 +291,7 @@ public class DocumentController extends AbstractElementController<Document, Full
     documentDto.applyResourceId(id);
     return useCaseInteractor.execute(
         updateDocumentUseCase,
-        (Supplier<InputData<Document>>)
-            () -> {
-              Client client = getClient(user);
-              IdRefResolver idRefResolver = createIdRefResolver(client);
-              return new InputData<>(
-                  dtoToEntityTransformer.transformDto2Document(documentDto, idRefResolver),
-                  client,
-                  eTag,
-                  user.getUsername());
-            },
+        new InputData<>(id, documentDto, getClient(user), eTag, user.getUsername()),
         output -> toResponseEntity(output.getEntity()));
   }
 

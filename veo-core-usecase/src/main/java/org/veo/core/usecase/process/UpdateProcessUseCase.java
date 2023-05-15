@@ -19,18 +19,22 @@ package org.veo.core.usecase.process;
 
 import org.veo.core.entity.Process;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
-import org.veo.core.repository.ProcessRepository;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.decision.Decider;
+import org.veo.core.usecase.service.EntityStateMapper;
 
 /** Update a persisted process object. */
 public class UpdateProcessUseCase extends ModifyElementUseCase<Process> {
   private final EventPublisher eventPublisher;
 
   public UpdateProcessUseCase(
-      ProcessRepository processRepository, EventPublisher eventPublisher, Decider decider) {
-    super(processRepository, decider);
+      RepositoryProvider repositoryProvider,
+      EventPublisher eventPublisher,
+      Decider decider,
+      EntityStateMapper entityStateMapper) {
+    super(Process.class, repositoryProvider, decider, entityStateMapper);
     this.eventPublisher = eventPublisher;
   }
 
@@ -39,14 +43,5 @@ public class UpdateProcessUseCase extends ModifyElementUseCase<Process> {
     OutputData<Process> result = super.execute(input);
     eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
     return result;
-  }
-
-  @Override
-  protected void evaluateDecisions(Process entity, Process storedEntity) {
-    // FIXME VEO-839
-    // Transfer risks from stored element because they may be relevant for risk
-    // evaluation
-    entity.setRisks(storedEntity.getRisks());
-    super.evaluateDecisions(entity, storedEntity);
   }
 }

@@ -313,6 +313,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
       @PathVariable String id,
       @Valid @RequestBody FullUnitDto unitDto) {
+    unitDto.applyResourceId(id);
     return useCaseInteractor.execute(
         putUnitUseCase,
         new UpdateUnitUseCase.InputData(id, unitDto, getClient(user), eTag, user.getUsername()),

@@ -98,7 +98,6 @@ import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
-import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
@@ -339,20 +338,12 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
     scopeDto.applyResourceId(uuid);
     return useCaseInteractor.execute(
         updateScopeUseCase,
-        (Supplier<ModifyElementUseCase.InputData<Scope>>)
-            () -> {
-              Client client = getClient(user);
-              IdRefResolver idRefResolver = createIdRefResolver(client);
-              return new UpdateScopeUseCase.InputData<>(
-                  dtoToEntityTransformer.transformDto2Scope(scopeDto, idRefResolver),
-                  client,
-                  eTag,
-                  user.getUsername());
-            },
+        new UpdateScopeUseCase.InputData<>(
+            uuid, scopeDto, getClient(user), eTag, user.getUsername()),
         output -> {
           var scope = output.getEntity();
           return ResponseEntity.ok()
-              .eTag(ETag.from(uuid, scope.getVersion() + 1))
+              .eTag(ETag.from(uuid, scope.getVersion()))
               .body(entityToDtoTransformer.transformScope2Dto(scope));
         });
   }

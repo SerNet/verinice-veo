@@ -22,9 +22,14 @@ import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 
 import org.veo.core.entity.Client
+import org.veo.core.entity.Unit
+import org.veo.core.entity.state.CompositeElementState
+import org.veo.core.entity.state.CustomAspectState
+import org.veo.core.entity.state.DomainAssociationState
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData
 import org.veo.core.usecase.common.ETag
 import org.veo.core.usecase.person.UpdatePersonUseCase
+import org.veo.core.usecase.service.TypedId
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.metrics.DataSourceProxyBeanPostProcessor
@@ -44,7 +49,9 @@ class ModifyElementUseCaseITSpec extends AbstractPerformanceITSpec {
 
     @DynamicPropertySource
     static void setRowCount(DynamicPropertyRegistry registry) {
-        registry.add("veo.logging.datasource.row_count", { -> true })
+        registry.add("veo.logging.datasource.row_count", {
+            -> true
+        })
     }
 
     def "update a person"() {
@@ -56,10 +63,27 @@ class ModifyElementUseCaseITSpec extends AbstractPerformanceITSpec {
         })
 
         def person = personDataRepository.save(newPerson(unit))
-        def updatedPerson = newPerson(unit) {
-            id = person.id
-            associateWithDomain(testDomain, "PER_Person", "NEW")
-            applyCustomAspect(newCustomAspect("person_address", testDomain))
+
+        def updatedPerson = Mock(CompositeElementState) {
+            name >> person.name
+            abbreviation >> person.abbreviation
+            description >> person.description
+            it.owner >> TypedId.from(unit.idAsString, Unit)
+            getDomains() >> [
+                (testDomain.idAsString):
+                Mock(DomainAssociationState) {
+                    getSubType() >> 'PER_Person'
+                    getStatus() >> 'NEW'
+                }
+            ]
+            getCustomAspectStates() >> [
+                Mock(CustomAspectState) {
+                    getType() >> 'person_address'
+                    getAttributes() >> [:]
+                }
+            ]
+            getCustomLinkStates() >> []
+            getParts() >> []
         }
 
         QueryCountHolder.clear()
@@ -67,19 +91,19 @@ class ModifyElementUseCaseITSpec extends AbstractPerformanceITSpec {
 
         when:
         executeInTransaction {
-            updatePersonUseCase.execute(new InputData(updatedPerson, unit.client,ETag.from(person.idAsString, 0), "user@domain.example"))
+            updatePersonUseCase.execute(new InputData(person.idAsString, updatedPerson, unit.client,ETag.from(person.idAsString, 0), "user@domain.example"))
         }
         def queryCounts = QueryCountHolder.grandTotal
 
         then:
         verifyAll {
-            queryCounts.select == 6
+            queryCounts.select == 10
             queryCounts.insert == 4
             queryCounts.update == 1
             queryCounts.delete == 0
             queryCounts.time < 1000
-            // 10 is the currently observed count of 4 rows plus an acceptable safety margin
-            DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 10
+            // 20 is the currently observed count of 16 rows plus an acceptable safety margin
+            DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 20
         }
     }
 

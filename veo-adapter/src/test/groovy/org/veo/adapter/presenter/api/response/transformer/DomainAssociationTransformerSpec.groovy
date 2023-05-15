@@ -39,32 +39,6 @@ class DomainAssociationTransformerSpec extends Specification {
     }
     DomainAssociationTransformer domainAssociationTransformer = new DomainAssociationTransformer()
 
-    def "maps domains from DTO to entity"() {
-        given: "a process with two domains and a DTO with different sub types for those domains"
-        AbstractProcessDto dto = Mock()
-        Process entity = Mock()
-        entity.modelInterface >> Process
-        dto.domains >> [
-            (domain0.id.uuidValue()): Mock(ProcessDomainAssociationDto) {
-                subType >> "foo"
-                status >> "NEW_FOO"
-                riskValues >> [:]
-            },
-            (domain1.id.uuidValue()): Mock(ProcessDomainAssociationDto) {
-                subType >> "bar"
-                status >> "NEW_BAR"
-                riskValues >> [:]
-            }
-        ]
-
-        when: "the sub types are mapped"
-        domainAssociationTransformer.mapDomainsToEntity(dto, entity, idRefResolver)
-
-        then: "it is set"
-        1 * entity.associateWithDomain(domain0, "foo", "NEW_FOO")
-        1 * entity.associateWithDomain(domain1, "bar", "NEW_BAR")
-    }
-
     def "maps sub types from entity to DTO"() {
         given: "a process with different sub types in two domains"
         AbstractProcessDto dto = Mock()

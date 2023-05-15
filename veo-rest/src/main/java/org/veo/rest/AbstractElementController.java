@@ -138,7 +138,7 @@ public abstract class AbstractElementController<
   @SuppressWarnings("unchecked")
   protected ResponseEntity<E> toResponseEntity(T entity) {
     return ResponseEntity.ok()
-        .eTag(ETag.from(entity.getIdAsString(), entity.getVersion() + 1))
+        .eTag(ETag.from(entity.getIdAsString(), entity.getVersion()))
         .body((E) entityToDtoTransformer.transform2Dto(entity));
   }
 

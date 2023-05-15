@@ -18,24 +18,17 @@
 package org.veo.core.usecase.asset;
 
 import org.veo.core.entity.Asset;
-import org.veo.core.repository.AssetRepository;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.decision.Decider;
+import org.veo.core.usecase.service.EntityStateMapper;
 
 /**
  * @author urszeidler
  */
 public class UpdateAssetUseCase extends ModifyElementUseCase<Asset> {
-  public UpdateAssetUseCase(AssetRepository assetRepository, Decider decider) {
-    super(assetRepository, decider);
-  }
-
-  @Override
-  protected void evaluateDecisions(Asset entity, Asset storedEntity) {
-    // FIXME VEO-839
-    // Transfer risks from stored element because they may be relevant for risk
-    // evaluation
-    entity.setRisks(storedEntity.getRisks());
-    super.evaluateDecisions(entity, storedEntity);
+  public UpdateAssetUseCase(
+      RepositoryProvider repositoryProvider, Decider decider, EntityStateMapper entityStateMapper) {
+    super(Asset.class, repositoryProvider, decider, entityStateMapper);
   }
 }

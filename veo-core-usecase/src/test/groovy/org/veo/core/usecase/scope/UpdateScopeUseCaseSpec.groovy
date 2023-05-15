@@ -19,46 +19,52 @@ package org.veo.core.usecase.scope
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Scope
+import org.veo.core.entity.state.ScopeState
 import org.veo.core.repository.ScopeRepository
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.ModifyElementUseCase
 import org.veo.core.usecase.common.ETag
 import org.veo.core.usecase.decision.Decider
+import org.veo.core.usecase.service.EntityStateMapper
 
 class UpdateScopeUseCaseSpec extends UseCaseSpec {
 
     public static final String USER_NAME = "john"
     ScopeRepository scopeRepository = Mock()
     Decider decider = Mock()
+    EntityStateMapper entityStateMapper = new EntityStateMapper()
 
-    UpdateScopeUseCase usecase = new UpdateScopeUseCase(scopeRepository, decider)
+    UpdateScopeUseCase usecase = new UpdateScopeUseCase(repositoryProvider, decider, entityStateMapper)
     def "update a scope"() {
         given:
         def scopeId = Key.newUuid()
-        def scope = Mock(Scope)
-        scope.getOwner() >> existingUnit
-        scope.getId() >> scopeId
+        def scope = Mock(ScopeState)
+        scope.getId() >> scopeId.uuidValue()
         scope.name >> "Updated scope"
-        scope.domains >> []
-        scope.domainTemplates >> []
-        scope.customAspects >> []
-        scope.links >> []
+        scope.domains >> [:]
+        scope.customAspectStates >> []
+        scope.customLinkStates >> []
+        scope.members >> []
 
         def existingScope = Mock(Scope) {
             it.id >> scopeId
             it.owner >> existingUnit
             it.domains >> []
+            it.customAspects >> []
+            it.links >> []
+            it.domainTemplates >> []
         }
 
         when:
-        def eTag = ETag.from(scope.getId().uuidValue(), 0)
-        def output = usecase.execute(new ModifyElementUseCase.InputData(scope, existingClient,  eTag, USER_NAME))
+        def eTag = ETag.from(scopeId.uuidValue(), 0)
+        def output = usecase.execute(new ModifyElementUseCase.InputData(scopeId.uuidValue(), scope, existingClient,  eTag, USER_NAME))
 
         then:
+        1 * repositoryProvider.getElementRepositoryFor(Scope) >> scopeRepository
         1 * scopeRepository.findById(scopeId) >> Optional.of(existingScope)
-        1 * scope.version(USER_NAME, existingScope)
-        1 * scopeRepository.save(_) >> scope
+        1 * scopeRepository.getById(scopeId, existingClient.id) >> existingScope
+        1 * scopeRepository.save(existingScope) >> existingScope
+        1 * existingScope.setName("Updated scope")
         output.entity != null
-        output.entity.name == "Updated scope"
     }
 }

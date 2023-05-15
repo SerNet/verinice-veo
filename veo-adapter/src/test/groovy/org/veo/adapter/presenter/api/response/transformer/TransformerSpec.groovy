@@ -50,7 +50,6 @@ class TransformerSpec extends Specification {
 
     def entityToDtoTransformer = new EntityToDtoTransformer(Mock(ReferenceAssembler), Mock(DomainAssociationTransformer))
     def idRefResolver = Mock(IdRefResolver)
-    def dtoToEntityTransformer = new DtoToEntityTransformer(factory, identifiableFactory, null)
 
     def createUnit() {
         Unit subUnit = Mock()

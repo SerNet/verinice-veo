@@ -20,55 +20,61 @@ package org.veo.core.usecase.process
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent
+import org.veo.core.entity.state.ProcessState
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.service.EventPublisher
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData
 import org.veo.core.usecase.common.ETag
 import org.veo.core.usecase.decision.Decider
+import org.veo.core.usecase.service.EntityStateMapper
 
 public class UpdateProcessUseCaseSpec extends UseCaseSpec {
 
     ProcessRepository processRepository = Mock()
     EventPublisher eventPublisher = Mock()
     Decider decider = Mock()
+    EntityStateMapper entityStateMapper = new EntityStateMapper()
 
-    UpdateProcessUseCase usecase = new UpdateProcessUseCase(processRepository, eventPublisher, decider)
+    UpdateProcessUseCase usecase = new UpdateProcessUseCase(repositoryProvider, eventPublisher, decider, entityStateMapper)
     def "update a process"() {
         given:
         def id = Key.newUuid()
-        Process process = Mock()
-        process.domains >> []
-        process.domainTemplates >> []
-        process.getId() >> id
+        ProcessState process = Mock()
+        process.domains >> [:]
+        process.getId() >> id.uuidValue()
         process.getName()>> "Updated process"
-        process.getOwner() >> existingUnit
-        process.version >> 0
-        process.modelInterface >> Process
-        process.customAspects >> []
-        process.links >> []
+        process.customAspectStates >> []
+        process.customLinkStates >> []
+        process.parts >> []
 
         def existingProcess = Mock(Process) {
-            it.id >> process.id
+            it.id >> id
             it.name >> "Old process"
             it.owner >> existingUnit
             it.domains >> []
+            it.customAspects >> []
+            it.links >> []
+            it.domainTemplates >> []
+            it.modelInterface >> Process
+            it.version >> 0
         }
 
         when:
-        def eTag = ETag.from(process.getId().uuidValue(), 0)
-        def output = usecase.execute(new InputData(process, existingClient, eTag, "max"))
+        def eTag = ETag.from(id.uuidValue(), 0)
+        def output = usecase.execute(new InputData(id.uuidValue(), process, existingClient, eTag, "max"))
 
         then:
-        1 * process.version("max", existingProcess)
-        1 * process.getOwningClient() >> Optional.of(existingClient)
-        1 * processRepository.save(process) >> process
-        1 * processRepository.findById(process.id) >> Optional.of(existingProcess)
+        1 * repositoryProvider.getElementRepositoryFor(Process) >> processRepository
+        1 * existingProcess.getOwningClient() >> Optional.of(existingClient)
+        1 * processRepository.save(existingProcess) >> existingProcess
+        1 * processRepository.findById(id) >> Optional.of(existingProcess)
+        1 * processRepository.getById(id, existingClient.id) >> existingProcess
         1 * eventPublisher.publish({ RiskAffectingElementChangeEvent event->
             event.entityType == Process
             event.entityId == id
         })
+        1 * existingProcess.setName("Updated process")
         output.entity != null
-        output.entity.name == "Updated process"
     }
 }

@@ -128,12 +128,22 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             ]
         ], ["If-Match": eTag])
 
-        then: "a MODIFICATION event is stored"
-        with(getLatestStoredEventContent()) {
+        then: "two MODIFICATION events are stored"
+        with(getNthStoredEventContent(-2)) {
             type == "MODIFICATION"
             uri == "/documents/$documentId"
             author == "user@domain.example"
             changeNumber == 1
+            with(content) {
+                id == documentId
+                name == "super doc"
+            }
+        }
+        with(getLatestStoredEventContent()) {
+            type == "MODIFICATION"
+            uri == "/documents/$documentId"
+            author == "user@domain.example"
+            changeNumber == 2
             with(content) {
                 id == documentId
                 name == "super doc"
@@ -378,6 +388,10 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
     }
 
     private Object getLatestStoredEventContent(String routingKey = "") {
+        getNthStoredEventContent(-1, routingKey)
+    }
+
+    private Object getNthStoredEventContent(int index = -1, String routingKey = "") {
         parseJson(storedEventRepository
                 .findAll()
                 .findAll {
@@ -386,7 +400,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
                 .sort {
                     it.id
                 }
-                .last()
+                .getAt(index)
                 .content)
     }
 }

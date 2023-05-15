@@ -41,7 +41,10 @@ import org.veo.core.entity.state.CustomLinkState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.Value;
+import lombok.experimental.NonFinal;
 
 /** Base transfer object for Elements. Contains common data for all Element DTOs. */
 @Data
@@ -111,35 +114,16 @@ public abstract class AbstractElementDto extends AbstractVersionedSelfReferencin
         .collect(Collectors.toSet());
   }
 
+  @Value
+  @NonFinal
   static class CustomAspectStateImpl implements CustomAspectState {
-
-    private String type;
-    private Map<String, Object> attributes;
-    private ITypedId<Domain> domain;
-
-    public CustomAspectStateImpl(
-        ITypedId<Domain> domainRef, String type, Map<String, Object> attributes) {
-      this.domain = domainRef;
-      this.type = type;
-      this.attributes = attributes;
-    }
-
-    @Override
-    public Map<String, Object> getAttributes() {
-      return attributes;
-    }
-
-    @Override
-    public String getType() {
-      return type;
-    }
-
-    @Override
-    public ITypedId<Domain> getDomain() {
-      return domain;
-    }
+    private final ITypedId<Domain> domain;
+    private final String type;
+    private final Map<String, Object> attributes;
   }
 
+  @Value
+  @EqualsAndHashCode(callSuper = true)
   static class CustomLinkStateImpl extends CustomAspectStateImpl implements CustomLinkState {
 
     private ITypedId<Element> target;
@@ -151,11 +135,6 @@ public abstract class AbstractElementDto extends AbstractVersionedSelfReferencin
         ITypedId<Element> target) {
       super(domainRef, type, attributes);
       this.target = target;
-    }
-
-    @Override
-    public ITypedId<Element> getTarget() {
-      return target;
     }
   }
 }

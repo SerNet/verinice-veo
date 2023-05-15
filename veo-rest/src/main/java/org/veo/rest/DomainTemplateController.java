@@ -55,6 +55,7 @@ import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.FindDomainTemplatesUseCase;
 import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase;
+import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.rest.common.RestApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -88,6 +89,7 @@ public class DomainTemplateController extends AbstractEntityController {
   private final EntityFactory entityFactory;
   private final IdentifiableFactory identifiableFactory;
   private final DomainAssociationTransformer domainAssociationTransformer;
+  private final EntityStateMapper entityStateMapper;
   private final FindDomainTemplatesUseCase findDomainTemplatesUseCase;
   private final GetDomainTemplateUseCase getDomainTemplateUseCase;
 
@@ -133,7 +135,11 @@ public class DomainTemplateController extends AbstractEntityController {
       @Valid @NotNull @RequestBody TransformDomainTemplateDto domainTemplateDto) {
     var input =
         CreateDomainTemplateInputMapper.map(
-            domainTemplateDto, identifiableFactory, entityFactory, domainAssociationTransformer);
+            domainTemplateDto,
+            identifiableFactory,
+            entityFactory,
+            domainAssociationTransformer,
+            entityStateMapper);
     return useCaseInteractor.execute(
         createDomainTemplatesUseCase,
         input,

@@ -96,7 +96,6 @@ import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase;
-import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.person.CreatePersonUseCase;
 import org.veo.core.usecase.person.GetPersonUseCase;
@@ -293,18 +292,8 @@ public class PersonController extends AbstractElementController<Person, FullPers
     personDto.applyResourceId(uuid);
     return useCaseInteractor.execute(
         updatePersonUseCase,
-        new Supplier<InputData<Person>>() {
-          @Override
-          public InputData<Person> get() {
-            Client client = getClient(user);
-            IdRefResolver idRefResolver = createIdRefResolver(client);
-            return new ModifyElementUseCase.InputData<>(
-                dtoToEntityTransformer.transformDto2Person(personDto, idRefResolver),
-                client,
-                eTag,
-                user.getUsername());
-          }
-        },
+        new ModifyElementUseCase.InputData<>(
+            uuid, personDto, getClient(user), eTag, user.getUsername()),
         output -> toResponseEntity(output.getEntity()));
   }
 

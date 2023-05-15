@@ -18,13 +18,15 @@
 package org.veo.core.usecase.person;
 
 import org.veo.core.entity.Person;
-import org.veo.core.repository.PersonRepository;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.decision.Decider;
+import org.veo.core.usecase.service.EntityStateMapper;
 
 public class UpdatePersonUseCase extends ModifyElementUseCase<Person> {
 
-  public UpdatePersonUseCase(PersonRepository personRepository, Decider decider) {
-    super(personRepository, decider);
+  public UpdatePersonUseCase(
+      RepositoryProvider repositoryProvider, Decider decider, EntityStateMapper entityStateMapper) {
+    super(Person.class, repositoryProvider, decider, entityStateMapper);
   }
 }

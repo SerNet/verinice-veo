@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
@@ -66,9 +65,10 @@ import org.veo.core.entity.risk.ImplementationStatusRef;
 import org.veo.core.entity.risk.PotentialProbabilityImpl;
 import org.veo.core.entity.risk.ProbabilityRef;
 import org.veo.core.entity.risk.ProcessImpactValues;
+import org.veo.core.entity.risk.ProcessRiskValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
-import org.veo.core.usecase.service.IdRefResolver;
-import org.veo.core.usecase.service.TypedId;
+import org.veo.core.entity.risk.ScenarioRiskValues;
+import org.veo.core.entity.state.ControlRiskValuesState;
 
 /**
  * Maps {@link Domain} associations of {@link Element}s between entities and DTOs. See {@link
@@ -76,23 +76,8 @@ import org.veo.core.usecase.service.TypedId;
  */
 public class DomainAssociationTransformer {
 
-  public void mapDomainsToEntity(
-      AbstractAssetDto source, Asset target, IdRefResolver idRefResolver) {
-    mapToEntity(source.getDomains(), target, idRefResolver);
-  }
-
-  public void mapDomainsToEntity(
-      AbstractControlDto source, Control target, IdRefResolver idRefResolver) {
-    mapToEntity(
-        source.getDomains(),
-        target,
-        idRefResolver,
-        (domain, associationDto) ->
-            target.setRiskValues(domain, mapRiskValues(associationDto.getRiskValues(), domain)));
-  }
-
   public Map<RiskDefinitionRef, ControlRiskValues> mapRiskValues(
-      Map<String, ControlRiskValuesDto> riskValues, DomainBase domain) {
+      Map<String, ? extends ControlRiskValuesState> riskValues, DomainBase domain) {
     var referenceProvider = referencesForDomain(domain);
     return riskValues.entrySet().stream()
         .collect(
@@ -104,44 +89,18 @@ public class DomainAssociationTransformer {
 
   private ControlRiskValues mapControlRiskValuesDto2Entity(
       String riskDefinitionId,
-      ControlRiskValuesDto riskValuesDto,
+      ControlRiskValuesState riskValuesState,
       DomainRiskReferenceProvider referenceProvider) {
     var riskValues = new ControlRiskValues();
     riskValues.setImplementationStatus(
-        Optional.ofNullable(riskValuesDto.getImplementationStatus())
+        Optional.ofNullable(riskValuesState.getImplementationStatus())
             .map(status -> referenceProvider.getImplementationStatus(riskDefinitionId, status))
             .orElse(null));
     return riskValues;
   }
 
-  public void mapDomainsToEntity(
-      AbstractDocumentDto source, Document target, IdRefResolver idRefResolver) {
-    mapToEntity(source.getDomains(), target, idRefResolver);
-  }
-
-  public void mapDomainsToEntity(
-      AbstractIncidentDto source, Incident target, IdRefResolver idRefResolver) {
-    mapToEntity(source.getDomains(), target, idRefResolver);
-  }
-
-  public void mapDomainsToEntity(
-      AbstractPersonDto source, Person target, IdRefResolver idRefResolver) {
-    mapToEntity(source.getDomains(), target, idRefResolver);
-  }
-
-  public void mapDomainsToEntity(
-      AbstractProcessDto source, Process target, IdRefResolver idRefResolver) {
-    mapToEntity(
-        source.getDomains(),
-        target,
-        idRefResolver,
-        (domain, associationDto) ->
-            target.setImpactValues(
-                domain, mapImpactValues(associationDto.getRiskValues(), domain)));
-  }
-
   public Map<RiskDefinitionRef, ProcessImpactValues> mapImpactValues(
-      Map<String, ProcessRiskValuesDto> riskValues, DomainBase domain) {
+      Map<String, ? extends ProcessRiskValues> riskValues, DomainBase domain) {
     var referenceProvider = referencesForDomain(domain);
     return riskValues.entrySet().stream()
         .collect(
@@ -152,7 +111,7 @@ public class DomainAssociationTransformer {
 
   private ProcessImpactValues mapProcessImpactValues(
       String riskDefinitionId,
-      ProcessRiskValuesDto value,
+      ProcessRiskValues value,
       DomainRiskReferenceProvider referenceProvider) {
     var riskValues = new ProcessImpactValues();
 
@@ -172,57 +131,34 @@ public class DomainAssociationTransformer {
     return referenceProvider.getCategoryRef(riskDefinitionId, e.getKey());
   }
 
-  public void mapDomainsToEntity(
-      AbstractScenarioDto source, Scenario target, IdRefResolver idRefResolver) {
-    mapToEntity(
-        source.getDomains(),
-        target,
-        idRefResolver,
-        (domain, associationDto) ->
-            target.setPotentialProbability(
-                domain, mapPotentialProbability(associationDto.getRiskValues(), domain)));
-  }
-
   public Map<RiskDefinitionRef, PotentialProbabilityImpl> mapPotentialProbability(
-      Map<String, ScenarioRiskValuesDto> riskValues, DomainBase domain) {
+      Map<String, ? extends ScenarioRiskValues> riskValues, DomainBase domain) {
     return riskValues.entrySet().stream().collect(groupScenarioRiskValuesByDomain(domain));
   }
 
   private Collector<
-          Map.Entry<String, ScenarioRiskValuesDto>,
+          Map.Entry<String, ? extends ScenarioRiskValues>,
           ?,
           Map<RiskDefinitionRef, PotentialProbabilityImpl>>
       groupScenarioRiskValuesByDomain(DomainBase domain) {
     var referenceProvider = referencesForDomain(domain);
     return Collectors.toMap(
         kv -> toRiskDefinitionRef(kv.getKey(), domain),
-        kv -> mapScenarioRiskValuesDto2Entity(kv.getKey(), kv.getValue(), referenceProvider));
+        kv -> mapScenarioRiskValues2Entity(kv.getKey(), kv.getValue(), referenceProvider));
   }
 
-  private PotentialProbabilityImpl mapScenarioRiskValuesDto2Entity(
+  private PotentialProbabilityImpl mapScenarioRiskValues2Entity(
       String riskDefinitionId,
-      ScenarioRiskValuesDto riskValuesDto,
+      ScenarioRiskValues riskValues,
       DomainRiskReferenceProvider referenceProvider) {
-    var riskValues = new PotentialProbabilityImpl();
+    var result = new PotentialProbabilityImpl();
 
-    riskValues.setPotentialProbability(
-        Optional.ofNullable(riskValuesDto.getPotentialProbability())
+    result.setPotentialProbability(
+        Optional.ofNullable(riskValues.getPotentialProbability())
             .map(pp -> referenceProvider.getProbabilityRef(riskDefinitionId, pp))
             .orElse(null));
-    riskValues.setPotentialProbabilityExplanation(
-        riskValuesDto.getPotentialProbabilityExplanation());
-    return riskValues;
-  }
-
-  public void mapDomainsToEntity(
-      AbstractScopeDto source, Scope target, IdRefResolver idRefResolver) {
-    mapToEntity(
-        source.getDomains(),
-        target,
-        idRefResolver,
-        (domain, associationDto) ->
-            target.setRiskDefinition(
-                domain, toRiskDefinitionRef(associationDto.getRiskDefinition(), domain)));
+    result.setPotentialProbabilityExplanation(riskValues.getPotentialProbabilityExplanation());
+    return result;
   }
 
   public void mapDomainsToDto(Asset source, AbstractAssetDto target) {
@@ -385,29 +321,6 @@ public class DomainAssociationTransformer {
                   association.setDecisionResults(source.getDecisionResults(domain));
                   return association;
                 }));
-  }
-
-  private <TAssociationDto extends DomainAssociationDto> void mapToEntity(
-      Map<String, TAssociationDto> domains, Element target, IdRefResolver idRefResolver) {
-    mapToEntity(domains, target, idRefResolver, (domain, associationDto) -> {});
-  }
-
-  private <TAssociationDto extends DomainAssociationDto> void mapToEntity(
-      Map<String, TAssociationDto> domains,
-      Element target,
-      IdRefResolver idRefResolver,
-      BiConsumer<DomainBase, TAssociationDto> customMapper) {
-    domains
-        .entrySet()
-        .forEach(
-            entry -> {
-              var associationDto = entry.getValue();
-              DomainBase domainTemplate =
-                  idRefResolver.resolve(TypedId.from(entry.getKey(), Domain.class));
-              target.associateWithDomain(
-                  domainTemplate, associationDto.getSubType(), associationDto.getStatus());
-              customMapper.accept(domainTemplate, associationDto);
-            });
   }
 
   RiskDefinitionRef toRiskDefinitionRef(String riskDefId, DomainBase domain) {

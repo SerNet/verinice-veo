@@ -42,6 +42,7 @@ import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
+import org.veo.core.usecase.service.EntityStateMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -60,6 +61,7 @@ public class SpringSpecDomainTemplateCreator {
   private final IdentifiableFactory identifiableFactory;
   private final EntityFactory entityFactory;
   private final DomainAssociationTransformer domainAssociationTransformer;
+  private final EntityStateMapper entityStateMapper;
   private final CreateDomainTemplateUseCase createDomainTemplateUseCase;
   private final CreateDomainFromTemplateUseCase createDomainFromTemplateUseCase;
   private final DomainRepository domainRepository;
@@ -96,7 +98,11 @@ public class SpringSpecDomainTemplateCreator {
         () -> {
           var input =
               CreateDomainTemplateInputMapper.map(
-                  dto, identifiableFactory, entityFactory, domainAssociationTransformer);
+                  dto,
+                  identifiableFactory,
+                  entityFactory,
+                  domainAssociationTransformer,
+                  entityStateMapper);
           createDomainTemplateUseCase.execute(input);
         });
   }

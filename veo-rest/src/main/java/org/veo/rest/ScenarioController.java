@@ -291,18 +291,7 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
     scenarioDto.applyResourceId(id);
     return useCaseInteractor.execute(
         updateScenarioUseCase,
-        new Supplier<InputData<Scenario>>() {
-          @Override
-          public InputData<Scenario> get() {
-            Client client = getClient(user);
-            IdRefResolver idRefResolver = createIdRefResolver(client);
-            return new InputData<>(
-                dtoToEntityTransformer.transformDto2Scenario(scenarioDto, idRefResolver),
-                client,
-                eTag,
-                user.getUsername());
-          }
-        },
+        new InputData<>(id, scenarioDto, getClient(user), eTag, user.getUsername()),
         output -> toResponseEntity(output.getEntity()));
   }
 
