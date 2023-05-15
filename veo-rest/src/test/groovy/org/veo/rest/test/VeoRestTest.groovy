@@ -20,6 +20,8 @@ package org.veo.rest.test
 import static groovy.json.JsonOutput.toJson
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 
+import java.time.Instant
+
 import org.apache.http.HttpHost
 import org.apache.http.impl.client.HttpClientBuilder
 import org.keycloak.authorization.client.AuthzClient
@@ -35,16 +37,21 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.test.context.ActiveProfiles
 
+import org.veo.core.entity.event.ClientEvent.ClientChangeType
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.jobs.RestTestDomainTemplateCreator
+import org.veo.message.EventDispatcher
+import org.veo.message.EventMessage
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import org.veo.rest.RestApplication
 import org.veo.rest.security.WebSecurity
 
+import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 import spock.lang.Shared
 import spock.lang.Specification
+import spock.util.concurrent.PollingConditions
 
 @SpringBootTest(classes = [RestApplication.class, WebSecurity.class],
 webEnvironment = RANDOM_PORT)
@@ -57,6 +64,9 @@ class VeoRestTest extends Specification {
 
     @Autowired
     RestTestDomainTemplateCreator domainTemplateCreator
+
+    @Autowired
+    EventDispatcher eventDispatcher
 
     @Shared
     JsonSlurper jsonSlurper
@@ -77,6 +87,12 @@ class VeoRestTest extends Specification {
 
     @Value('${veo.resttest.clientId}')
     def clientId = 'veo-development-client'
+
+    @Value('${veo.resttest.veo-clientid}')
+    def veoClientId = '21712604-ed85-4f08-aa46-1cf39607ee9e'
+
+    @Value('${veo.resttest.veo-secondary-clientid}')
+    def veoSecondaryClientId = '26ab39fb-d846-4f47-84a9-98b9aaa64419'
 
     @Value('${veo.resttest.users.default.name}')
     String defaultUserName
@@ -114,7 +130,15 @@ class VeoRestTest extends Specification {
     @Value('${veo.resttest.proxyPort}')
     private int proxyPort
 
+    @Value('${veo.message.routing-key-prefix}')
+    String routingKeyPrefix
+
+    @Value('${veo.message.exchanges.veo-subscriptions}')
+    String exchange
+
     private userTokenCache = [:]
+
+    static boolean clientsCreated = false
 
     class Response {
         HttpHeaders headers
@@ -139,6 +163,19 @@ class VeoRestTest extends Specification {
         }
         domainTemplateCreator.create('dsgvo', this)
         domainTemplateCreator.create('test-domain', this)
+        if (!clientsCreated) {
+            sendClientChangeEvent([clientId: veoClientId, name: 'veo REST test client', type: ClientChangeType.CREATION])
+            sendClientChangeEvent([clientId: veoSecondaryClientId, name: 'veo second REST test client', type: ClientChangeType.CREATION])
+            new PollingConditions().within(10) {
+                getDomains().size() == 2
+                get("/domains", 200, UserType.SECONDARY_CLIENT_USER).body.size() == 2
+            }
+            clientsCreated = true
+        }
+    }
+
+    def sendClientChangeEvent(Map data) {
+        eventDispatcher.send(exchange, new EventMessage("${routingKeyPrefix}client_change", JsonOutput.toJson(data+[eventType: 'client_change']), 1, Instant.now()))
     }
 
     Response get(String uri, Integer assertStatusCode = 200, UserType userType = UserType.DEFAULT) {

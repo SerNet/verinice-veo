@@ -261,11 +261,18 @@ pipeline {
                                 -e SPRING_DATASOURCE_DRIVERCLASSNAME=org.postgresql.Driver\
                                 -e SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=${env.VEO_AUTH_URL}\
                                 -e SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=${env.VEO_AUTH_URL}/protocol/openid-connect/certs\
+                                -e SPRING_RABBITMQ_USERNAME=\$RABBITMQ_CREDS_USR\
+                                -e SPRING_RABBITMQ_PASSWORD=\$RABBITMQ_CREDS_PSW\
+                                -e SPRING_RABBITMQ_HOST=\$SPRING_RABBITMQ_HOST\
                                 -e SPRING_JACKSON_DESERIALIZATION_FAIL_ON_UNKNOWN_PROPERTIES=true\
                                 -e 'VEO_CORS_ORIGINS=https://*.verinice.example, https://frontend.somewhereelse.example'\
                                 -e VEO_DEFAULT_DOMAINTEMPLATE_NAMES=DS-GVO,test-domain\
                                 -e VEO_ETAG_SALT=zuL4Q8JKdy\
-                                -e 'JDK_JAVA_OPTIONS=-Dhttp.proxyHost=cache.int.sernet.de -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.int.sernet.de -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Dhttp.proxySet=true'") { veo ->
+                                -e VEO_MESSAGE_ROUTINGKEYPREFIX=\$VEO_MESSAGE_ROUTINGKEYPREFIX\
+                                -e VEO_MESSAGE_QUEUES_VEO=\$VEO_MESSAGE_QUEUES_VEO\
+                                -e VEO_MESSAGE_QUEUES_VEOSUBSCRIPTIONS=\$VEO_MESSAGE_QUEUES_VEOSUBSCRIPTIONSVEO_MESSAGE_QUEUES_VEOSUBSCRIPTIONS\
+                                -e 'JDK_JAVA_OPTIONS=-Dhttp.proxyHost=cache.int.sernet.de -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.int.sernet.de -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Dhttp.proxySet=true'\
+                                -e SPRING_PROFILES_ACTIVE=background-tasks") { veo ->
                                                     docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages}\
                                     --network ${n}\
                                     -e SPRING_DATASOURCE_URL=jdbc:postgresql://database-${n}:5432/postgres\

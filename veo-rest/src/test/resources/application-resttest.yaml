@@ -11,6 +11,8 @@ veo:
     oidcUrl: 'https://keycloak.staging.verinice.com/auth'
     realm: 'realm'
     clientId: 'clientid'
+    veo-clientid: '21712604-ed85-4f08-aa46-1cf39607ee9e'
+    veo-secondary-clientid: '26ab39fb-d846-4f47-84a9-98b9aaa64419'
     users:
       default:
         name: ''
