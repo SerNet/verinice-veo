@@ -27,6 +27,7 @@ import org.veo.core.repository.ElementQuery;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
+import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.AssetData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
@@ -39,12 +40,19 @@ public class AssetRepositoryImpl
       AssetDataRepository dataRepository,
       ValidationService validation,
       CustomLinkDataRepository linkDataRepository,
-      ScopeDataRepository scopeDataRepository) {
-    super(dataRepository, validation, linkDataRepository, scopeDataRepository, Asset.class);
+      ScopeDataRepository scopeDataRepository,
+      ElementQueryFactory elementQueryFactory) {
+    super(
+        dataRepository,
+        validation,
+        linkDataRepository,
+        scopeDataRepository,
+        elementQueryFactory,
+        Asset.class);
   }
 
   @Override
   public ElementQuery<Asset> query(Client client) {
-    return new AssetQueryImpl((AssetDataRepository) dataRepository, client);
+    return elementQueryFactory.queryAssets(client);
   }
 }

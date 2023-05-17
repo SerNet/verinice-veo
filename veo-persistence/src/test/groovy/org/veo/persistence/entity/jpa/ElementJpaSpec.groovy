@@ -75,7 +75,7 @@ class ElementJpaSpec extends AbstractJpaSpec {
         })
 
         when: "querying assets from the first two owners"
-        def result = findByUnit(assetRepository, owner0) + findByUnit(assetRepository, owner1)
+        def result = findAssetsByUnit(owner0) + findAssetsByUnit(owner1)
 
         then: "only the first two owners' assets are returned"
         with(result.sort {
@@ -98,7 +98,7 @@ class ElementJpaSpec extends AbstractJpaSpec {
         })
 
         when: "querying the owner's assets"
-        def result = findByUnit(assetRepository, owner0)
+        def result = findAssetsByUnit(owner0)
 
         then: "the asset composite and its part are returned"
         result*.name.toSorted() == ["part", "whole"]
@@ -117,7 +117,7 @@ class ElementJpaSpec extends AbstractJpaSpec {
         })
 
         when: "querying composites from the first two owners"
-        def result = findByUnit(assetRepository, owner0) + findByUnit(assetRepository, owner1)
+        def result = findAssetsByUnit(owner0) + findAssetsByUnit(owner1)
 
         then: "only the first two owners' composites are returned"
         with(result.sort {

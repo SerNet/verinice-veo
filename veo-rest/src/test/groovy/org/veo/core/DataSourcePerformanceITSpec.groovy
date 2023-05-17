@@ -451,7 +451,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.delete <= 12
         queryCounts.insert == 4
         queryCounts.update == 2
-        queryCounts.select == 46
+        queryCounts.select == 43
         queryCounts.time < 500
     }
 

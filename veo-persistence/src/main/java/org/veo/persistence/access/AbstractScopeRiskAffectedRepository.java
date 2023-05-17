@@ -31,6 +31,7 @@ import org.veo.core.repository.RiskAffectedRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.access.jpa.ScopeRiskAffectedDataRepository;
+import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.ControlData;
 import org.veo.persistence.entity.jpa.PersonData;
 import org.veo.persistence.entity.jpa.ScenarioData;
@@ -47,8 +48,15 @@ abstract class AbstractScopeRiskAffectedRepository
       ScopeRiskAffectedDataRepository riskAffectedRepo,
       ValidationService validation,
       CustomLinkDataRepository linkDataRepository,
+      ElementQueryFactory elementQueryFactory,
       ScopeDataRepository scopeDataRepository) {
-    super(riskAffectedRepo, validation, linkDataRepository, scopeDataRepository, Scope.class);
+    super(
+        riskAffectedRepo,
+        validation,
+        linkDataRepository,
+        scopeDataRepository,
+        elementQueryFactory,
+        Scope.class);
     this.riskAffectedRepo = riskAffectedRepo;
   }
 

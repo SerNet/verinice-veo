@@ -25,6 +25,7 @@ import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
+import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
@@ -35,12 +36,13 @@ public class ScopeRepositoryImpl extends AbstractScopeRiskAffectedRepository
       ScopeDataRepository dataRepository,
       ValidationService validation,
       CustomLinkDataRepository linkDataRepository,
-      ScopeDataRepository scopeDataRepository) {
-    super(dataRepository, validation, linkDataRepository, scopeDataRepository);
+      ScopeDataRepository scopeDataRepository,
+      ElementQueryFactory elementQueryFactory) {
+    super(dataRepository, validation, linkDataRepository, elementQueryFactory, scopeDataRepository);
   }
 
   @Override
   public ElementQuery<Scope> query(Client client) {
-    return new ScopeQueryImpl(scopeDataRepository, client);
+    return elementQueryFactory.queryScopes(client);
   }
 }

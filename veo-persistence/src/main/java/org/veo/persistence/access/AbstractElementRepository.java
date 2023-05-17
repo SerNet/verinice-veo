@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import org.veo.core.entity.Client;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
@@ -35,13 +34,13 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.SubTypeStatusCount;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ElementDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
+import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.ElementData;
 import org.veo.persistence.entity.jpa.ScopeData;
 import org.veo.persistence.entity.jpa.ValidationService;
@@ -54,6 +53,7 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
   private final CustomLinkDataRepository linkDataRepository;
 
   final ScopeDataRepository scopeDataRepository;
+  protected final ElementQueryFactory elementQueryFactory;
   final Class<T> elementType;
 
   AbstractElementRepository(
@@ -61,17 +61,14 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
       ValidationService validation,
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository,
+      ElementQueryFactory elementQueryFactory,
       Class<T> elementType) {
     super(dataRepository, validation);
     this.dataRepository = dataRepository;
     this.linkDataRepository = linkDataRepository;
     this.scopeDataRepository = scopeDataRepository;
+    this.elementQueryFactory = elementQueryFactory;
     this.elementType = elementType;
-  }
-
-  @Override
-  public ElementQuery<T> query(Client client) {
-    return new ElementQueryImpl<>(dataRepository, client);
   }
 
   @Override

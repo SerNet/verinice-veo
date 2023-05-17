@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.access;
+package org.veo.persistence.access.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,35 +39,84 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.entity.AbstractRisk;
+import org.veo.core.entity.Asset;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.CompositeElement;
+import org.veo.core.entity.Control;
+import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Person;
+import org.veo.core.entity.Process;
+import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.Scenario;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
 import org.veo.core.repository.SingleValueQueryCondition;
+import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.CompositeEntityDataRepository;
+import org.veo.persistence.access.jpa.CompositeRiskAffectedDataRepository;
+import org.veo.persistence.access.jpa.ControlDataRepository;
+import org.veo.persistence.access.jpa.DocumentDataRepository;
 import org.veo.persistence.access.jpa.ElementDataRepository;
+import org.veo.persistence.access.jpa.IncidentDataRepository;
+import org.veo.persistence.access.jpa.PersonDataRepository;
+import org.veo.persistence.access.jpa.ProcessDataRepository;
+import org.veo.persistence.access.jpa.ScenarioDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.ElementData;
+import org.veo.persistence.entity.jpa.RiskAffectedData;
 import org.veo.persistence.entity.jpa.UnitData;
 
 /** Implements {@link ElementQuery} using {@link Specification} API. */
-public class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementData>
+class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementData>
     implements ElementQuery<TInterface> {
 
   private final ElementDataRepository<TDataClass> dataRepository;
+  private final AssetDataRepository assetDataRepository;
+  private final ControlDataRepository controlDataRepository;
+  private final DocumentDataRepository documentDataRepository;
+  private final IncidentDataRepository incidentDataRepository;
+  private final PersonDataRepository personDataRepository;
+  private final ProcessDataRepository processDataRepository;
+  private final ScenarioDataRepository scenarioDataRepository;
+  private final ScopeDataRepository scopeDataRepository;
   protected Specification<TDataClass> mySpec;
-  protected boolean fetchAppliedCatalogItems;
-  protected boolean fetchScopesAndScopeMembers;
-  protected boolean fetchRisks;
-  protected boolean fetchRiskValuesAspects;
+  private boolean fetchAppliedCatalogItems;
+  private boolean fetchScopesAndScopeMembers;
+  private boolean fetchRisks;
+  private boolean fetchRiskValuesAspects;
+  private boolean fetchPartsAndCompositesAndCompositeParts;
+  private boolean fetchMembers;
 
-  public ElementQueryImpl(ElementDataRepository<TDataClass> repo, Client client) {
+  public ElementQueryImpl(
+      ElementDataRepository<TDataClass> repo,
+      AssetDataRepository assetDataRepository,
+      ControlDataRepository controlDataRepository,
+      DocumentDataRepository documentDataRepository,
+      IncidentDataRepository incidentDataRepository,
+      PersonDataRepository personDataRepository,
+      ProcessDataRepository processDataRepository,
+      ScenarioDataRepository scenarioDataRepository,
+      ScopeDataRepository scopeDataRepository,
+      Client client) {
+    this.assetDataRepository = assetDataRepository;
+    this.controlDataRepository = controlDataRepository;
+    this.documentDataRepository = documentDataRepository;
+    this.incidentDataRepository = incidentDataRepository;
+    this.personDataRepository = personDataRepository;
+    this.processDataRepository = processDataRepository;
+    this.scenarioDataRepository = scenarioDataRepository;
+    this.scopeDataRepository = scopeDataRepository;
     this.dataRepository = repo;
     mySpec = createSpecification(client);
   }
@@ -210,6 +259,11 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
   }
 
   @Override
+  public void fetchPartsAndCompositesAndCompositesParts() {
+    fetchPartsAndCompositesAndCompositeParts = true;
+  }
+
+  @Override
   public void fetchAppliedCatalogItems() {
     fetchAppliedCatalogItems = true;
   }
@@ -217,11 +271,18 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
   @Override
   public void fetchParentsAndChildrenAndSiblings() {
     fetchScopesAndScopeMembers = true;
+    fetchPartsAndCompositesAndCompositeParts = true;
+    fetchMembers = true;
   }
 
   @Override
   public void fetchRisks() {
     fetchRisks = true;
+  }
+
+  @Override
+  public void fetchMembers() {
+    fetchMembers = true;
   }
 
   @Override
@@ -244,7 +305,7 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
         items.getTotalPages());
   }
 
-  protected List<TDataClass> fullyLoadItems(List<String> ids) {
+  private List<TDataClass> fullyLoadItems(List<String> ids) {
     var items = dataRepository.findAllWithDomainsLinksDecisionsByDbIdIn(ids);
     dataRepository.findAllWithCustomAspectsByDbIdIn(ids);
     dataRepository.findAllWithSubtypeAspectsByDbIdIn(ids);
@@ -255,7 +316,69 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
     if (fetchScopesAndScopeMembers) {
       dataRepository.findAllWithScopesAndScopeMembersByDbIdIn(ids);
     }
+    items.stream()
+        .collect(Collectors.groupingBy(Element::getModelInterface))
+        .forEach(this::fullyLoadItems);
+
     return new ArrayList<>(items);
+  }
+
+  private void fullyLoadItems(Class<? extends Identifiable> type, List<TDataClass> items) {
+    var ids = items.stream().map(Element::getIdAsString).toList();
+    if (type.equals(Asset.class)) {
+      fetchCompositeRiskAffected(ids, assetDataRepository);
+    } else if (type.equals(Control.class)) {
+      fetchComposites(ids, controlDataRepository);
+      if (fetchRiskValuesAspects) {
+        controlDataRepository.findAllWithRiskValuesAspectsByDbIdIn(ids);
+      }
+    } else if (type.equals(Document.class)) {
+      fetchComposites(ids, documentDataRepository);
+    } else if (type.equals(Incident.class)) {
+      fetchComposites(ids, incidentDataRepository);
+    } else if (type.equals(Process.class)) {
+      fetchCompositeRiskAffected(ids, processDataRepository);
+      if (fetchRiskValuesAspects) {
+        processDataRepository.findAllWithRiskValuesAspectsByDbIdIn(ids);
+      }
+    } else if (type.equals(Person.class)) {
+      fetchComposites(ids, personDataRepository);
+    } else if (type.equals(Scenario.class)) {
+      fetchComposites(ids, scenarioDataRepository);
+      if (fetchRiskValuesAspects) {
+        scenarioDataRepository.findAllWithRiskValuesAspectsByDbIdIn(ids);
+      }
+    } else if (type.equals(Scope.class)) {
+      if (fetchMembers) {
+        scopeDataRepository.findAllWithMembersByDbIdIn(ids);
+      }
+      if (fetchRiskValuesAspects) {
+        scopeDataRepository.findAllWithRiskValuesAspectsByDbIdIn(ids);
+      }
+      if (fetchRisks) {
+        scopeDataRepository.findAllWithRisksByDbIdIn(ids);
+      }
+    }
+  }
+
+  private <
+          T extends RiskAffected<T, TRisk> & CompositeElement<T>,
+          TData extends RiskAffectedData<T, TRisk> & CompositeElement<T>,
+          TRisk extends AbstractRisk<T, TRisk>>
+      void fetchCompositeRiskAffected(
+          List<String> ids, CompositeRiskAffectedDataRepository<TData> repo) {
+    fetchComposites(ids, repo);
+    if (fetchRisks) {
+      repo.findAllWithRisksByDbIdIn(ids);
+    }
+  }
+
+  private void fetchComposites(
+      List<String> ids, CompositeEntityDataRepository<? extends ElementData> repo) {
+    if (fetchPartsAndCompositesAndCompositeParts) {
+      repo.findAllWithPartsByDbIdIn(ids);
+      repo.findAllWithCompositesAndCompositesPartsByDbIdIn(ids);
+    }
   }
 
   private Specification<TDataClass> createSpecification(Client client) {
@@ -266,7 +389,7 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
     };
   }
 
-  protected static Predicate in(
+  private static Predicate in(
       Path<Object> column, Collection<?> values, CriteriaBuilder criteriaBuilder) {
     if (values.stream().anyMatch(Objects::isNull)) {
       return criteriaBuilder.or(column.in(values), column.isNull());
@@ -307,7 +430,7 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
     throw new UnsupportedOperationException("Cannot filter by child elements");
   }
 
-  protected static Pageable toPageable(PagingConfiguration pagingConfiguration) {
+  private static Pageable toPageable(PagingConfiguration pagingConfiguration) {
     String inputSortColumn = pagingConfiguration.getSortColumn();
     String[] sortColumns;
     if ("designator".equals(inputSortColumn)) {

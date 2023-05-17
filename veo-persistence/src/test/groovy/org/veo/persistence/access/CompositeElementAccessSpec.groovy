@@ -31,43 +31,13 @@ import org.veo.core.repository.IncidentRepository
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.ScenarioRepository
-import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
-import org.veo.persistence.access.jpa.ControlDataRepository
 import org.veo.persistence.access.jpa.CustomLinkDataRepository
-import org.veo.persistence.access.jpa.DocumentDataRepository
-import org.veo.persistence.access.jpa.IncidentDataRepository
-import org.veo.persistence.access.jpa.PersonDataRepository
-import org.veo.persistence.access.jpa.ProcessDataRepository
-import org.veo.persistence.access.jpa.ScenarioDataRepository
-import org.veo.persistence.access.jpa.ScopeDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 import org.veo.persistence.entity.jpa.AbstractJpaSpec
 import org.veo.persistence.entity.jpa.ValidationService
 
 class CompositeElementAccessSpec extends AbstractJpaSpec {
-
-    @Autowired
-    AssetDataRepository assetDataRepository
-
-    @Autowired
-    ControlDataRepository controlDataRepository
-
-    @Autowired
-    DocumentDataRepository documentDataRepository
-
-    @Autowired
-    IncidentDataRepository incidentDataRepository
-
-    @Autowired
-    PersonDataRepository personDataRepository
-
-    @Autowired
-    ProcessDataRepository processDataRepository
-
-    @Autowired
-    ScenarioDataRepository scenarioDataRepository
-
     AssetRepository assetRepository
     ControlRepository controlRepository
     DocumentRepository documentRepository
@@ -81,9 +51,6 @@ class CompositeElementAccessSpec extends AbstractJpaSpec {
 
     @Autowired
     ClientDataRepository clientRepository
-
-    @Autowired
-    ScopeDataRepository scopeDataRepository
 
     @Autowired
     CustomLinkDataRepository linkDataRepository
@@ -100,13 +67,13 @@ class CompositeElementAccessSpec extends AbstractJpaSpec {
         client = clientRepository.save(newClient())
         unit = unitRepository.save(newUnit(client))
 
-        assetRepository = new AssetRepositoryImpl(assetDataRepository, validationMock, linkDataRepository, scopeDataRepository)
-        controlRepository = new ControlRepositoryImpl(controlDataRepository, validationMock, linkDataRepository, scopeDataRepository, assetDataRepository, processDataRepository)
-        documentRepository = new DocumentRepositoryImpl(documentDataRepository, validationMock, linkDataRepository, scopeDataRepository)
-        incidentRepository = new IncidentRepositoryImpl(incidentDataRepository, validationMock, linkDataRepository, scopeDataRepository)
-        personRepository = new PersonRepositoryImpl(personDataRepository, validationMock, linkDataRepository, scopeDataRepository, assetDataRepository, processDataRepository)
-        processRepository = new ProcessRepositoryImpl(processDataRepository, validationMock, linkDataRepository, scopeDataRepository)
-        scenarioRepository = new ScenarioRepositoryImpl(scenarioDataRepository, validationMock, linkDataRepository, scopeDataRepository, assetDataRepository, processDataRepository)
+        assetRepository = new AssetRepositoryImpl(assetDataRepository, validationMock, linkDataRepository, scopeDataRepository, elementQueryFactory)
+        controlRepository = new ControlRepositoryImpl(controlDataRepository, validationMock, linkDataRepository, scopeDataRepository, assetDataRepository, processDataRepository, elementQueryFactory)
+        documentRepository = new DocumentRepositoryImpl(documentDataRepository, validationMock, linkDataRepository, scopeDataRepository, elementQueryFactory)
+        incidentRepository = new IncidentRepositoryImpl(incidentDataRepository, validationMock, linkDataRepository, scopeDataRepository, elementQueryFactory)
+        personRepository = new PersonRepositoryImpl(personDataRepository, validationMock, linkDataRepository, scopeDataRepository, assetDataRepository, processDataRepository, elementQueryFactory)
+        processRepository = new ProcessRepositoryImpl(processDataRepository, validationMock, linkDataRepository, scopeDataRepository, elementQueryFactory)
+        scenarioRepository = new ScenarioRepositoryImpl(scenarioDataRepository, validationMock, linkDataRepository, scopeDataRepository, assetDataRepository, processDataRepository, elementQueryFactory)
     }
 
     def "delete parts from a #type.simpleName composite"() {

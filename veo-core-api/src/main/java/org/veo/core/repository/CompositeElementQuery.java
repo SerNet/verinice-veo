@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jonas Jordan.
+ * Copyright (C) 2023  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,17 +19,9 @@ package org.veo.core.repository;
 
 import java.util.UUID;
 
-import org.veo.core.entity.Element;
+import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Key;
 
-/**
- * A dynamic database query for retrieving {@link Element} objects.
- *
- * @param <T> Entity type
- */
-public interface CompositeElementQuery<T extends Element> extends ElementQuery<T> {
-
-  void fetchPartsAndCompositesAndCompositesParts();
-
-  void whereCompositesContain(SingleValueQueryCondition<Key<UUID>> compositeId);
+public interface CompositeElementQuery<T extends CompositeElement<T>> extends ElementQuery<T> {
+  void whereCompositesContain(SingleValueQueryCondition<Key<UUID>> condition);
 }

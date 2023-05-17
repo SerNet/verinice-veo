@@ -19,11 +19,14 @@ package org.veo.persistence.access;
 
 import org.springframework.stereotype.Repository;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Incident;
+import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.IncidentRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.IncidentDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
+import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.IncidentData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
@@ -36,7 +39,19 @@ public class IncidentRepositoryImpl
       IncidentDataRepository dataRepository,
       ValidationService validation,
       CustomLinkDataRepository linkDataRepository,
-      ScopeDataRepository scopeDataRepository) {
-    super(dataRepository, validation, linkDataRepository, scopeDataRepository, Incident.class);
+      ScopeDataRepository scopeDataRepository,
+      ElementQueryFactory elementQueryFactory) {
+    super(
+        dataRepository,
+        validation,
+        linkDataRepository,
+        scopeDataRepository,
+        elementQueryFactory,
+        Incident.class);
+  }
+
+  @Override
+  public ElementQuery<Incident> query(Client client) {
+    return elementQueryFactory.queryIncidents(client);
   }
 }

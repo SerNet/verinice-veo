@@ -19,11 +19,14 @@ package org.veo.persistence.access;
 
 import org.springframework.stereotype.Repository;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Document;
 import org.veo.core.repository.DocumentRepository;
+import org.veo.core.repository.ElementQuery;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.DocumentDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
+import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.DocumentData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
@@ -36,7 +39,19 @@ public class DocumentRepositoryImpl
       DocumentDataRepository dataRepository,
       ValidationService validation,
       CustomLinkDataRepository linkDataRepository,
-      ScopeDataRepository scopeDataRepository) {
-    super(dataRepository, validation, linkDataRepository, scopeDataRepository, Document.class);
+      ScopeDataRepository scopeDataRepository,
+      ElementQueryFactory elementQueryFactory) {
+    super(
+        dataRepository,
+        validation,
+        linkDataRepository,
+        scopeDataRepository,
+        elementQueryFactory,
+        Document.class);
+  }
+
+  @Override
+  public ElementQuery<Document> query(Client client) {
+    return elementQueryFactory.queryDocuments(client);
   }
 }

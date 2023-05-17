@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Jochen Kemnade
+ * Copyright (C) 2023  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,29 +17,23 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
-import java.util.List;
+import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Control;
-import org.veo.persistence.access.jpa.ControlDataRepository;
-import org.veo.persistence.entity.jpa.ControlData;
+import org.veo.core.entity.Element;
+import org.veo.core.repository.ElementQuery;
+import org.veo.core.repository.GenericElementRepository;
+import org.veo.persistence.access.query.ElementQueryFactory;
 
-public class ControlQueryImpl extends CompositeElementQueryImpl<Control, ControlData> {
+import lombok.RequiredArgsConstructor;
 
-  private final ControlDataRepository controlRepository;
-
-  public ControlQueryImpl(ControlDataRepository repo, Client client) {
-    super(repo, client);
-    this.controlRepository = repo;
-  }
+@Repository
+@RequiredArgsConstructor
+public class GenericElementRepositoryImpl implements GenericElementRepository {
+  private final ElementQueryFactory elementQueryFactory;
 
   @Override
-  protected List<ControlData> fullyLoadItems(List<String> ids) {
-    List<ControlData> result = super.fullyLoadItems(ids);
-
-    if (fetchRiskValuesAspects) {
-      controlRepository.findAllWithRiskValuesAspectsByDbIdIn(ids);
-    }
-    return result;
+  public ElementQuery<Element> query(Client client) {
+    return elementQueryFactory.queryElements(client);
   }
 }

@@ -25,18 +25,10 @@ import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.CompositeElement
 import org.veo.core.entity.Unit
-import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
-import org.veo.persistence.access.jpa.ProcessDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 
 class CompositeElementJpaSpec extends AbstractJpaSpec {
-
-    @Autowired
-    AssetDataRepository assetDataRepository
-
-    @Autowired
-    ProcessDataRepository processDataRepository
 
     @Autowired
     UnitDataRepository unitRepository

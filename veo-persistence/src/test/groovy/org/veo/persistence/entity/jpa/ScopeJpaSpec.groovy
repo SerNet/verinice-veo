@@ -22,28 +22,16 @@ import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.entity.Asset
 import org.veo.core.entity.Person
-import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
-import org.veo.persistence.access.jpa.PersonDataRepository
-import org.veo.persistence.access.jpa.ScopeDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 
 class ScopeJpaSpec extends AbstractJpaSpec {
-
-    @Autowired
-    ScopeDataRepository scopeDataRepository
 
     @Autowired
     UnitDataRepository unitRepository
 
     @Autowired
     ClientDataRepository clientRepository
-
-    @Autowired
-    AssetDataRepository assetDataRepository
-
-    @Autowired
-    PersonDataRepository personDataRepository
 
     @Autowired
     TransactionTemplate txTemplate

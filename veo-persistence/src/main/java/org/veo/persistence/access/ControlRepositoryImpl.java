@@ -36,6 +36,7 @@ import org.veo.persistence.access.jpa.ControlDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
+import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.ControlData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
@@ -53,15 +54,22 @@ public class ControlRepositoryImpl
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository,
       AssetDataRepository assetDataRepository,
-      ProcessDataRepository processDataRepository) {
-    super(dataRepository, validation, linkDataRepository, scopeDataRepository, Control.class);
+      ProcessDataRepository processDataRepository,
+      ElementQueryFactory elementQueryFactory) {
+    super(
+        dataRepository,
+        validation,
+        linkDataRepository,
+        scopeDataRepository,
+        elementQueryFactory,
+        Control.class);
     this.assetDataRepository = assetDataRepository;
     this.processDataRepository = processDataRepository;
   }
 
   @Override
   public ElementQuery<Control> query(Client client) {
-    return new ControlQueryImpl((ControlDataRepository) dataRepository, client);
+    return elementQueryFactory.queryControls(client);
   }
 
   @Override

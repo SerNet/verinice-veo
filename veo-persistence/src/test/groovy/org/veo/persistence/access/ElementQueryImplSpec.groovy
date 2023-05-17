@@ -29,11 +29,8 @@ import org.veo.core.repository.QueryCondition
 import org.veo.core.repository.SingleValueQueryCondition
 import org.veo.persistence.access.jpa.AssetDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
-import org.veo.persistence.access.jpa.ElementDataRepository
-import org.veo.persistence.access.jpa.PersonDataRepository
-import org.veo.persistence.access.jpa.ProcessDataRepository
-import org.veo.persistence.access.jpa.ScopeDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
+import org.veo.persistence.access.query.ElementQueryImpl
 import org.veo.persistence.entity.jpa.AbstractJpaSpec
 import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.UnitData
@@ -41,25 +38,10 @@ import org.veo.persistence.entity.jpa.UnitData
 class ElementQueryImplSpec extends AbstractJpaSpec {
 
     @Autowired
-    ProcessDataRepository processDataRepository
-
-    @Autowired
-    ElementDataRepository elementDataRepository
-
-    @Autowired
-    PersonDataRepository personDataRepository
-
-    @Autowired
     ClientDataRepository clientDataRepository
 
     @Autowired
     UnitDataRepository unitDataRepository
-
-    @Autowired
-    ScopeDataRepository scopeDataRepository
-
-    @Autowired
-    AssetDataRepository assetDataRepository
 
     ClientData client
     Domain domain
@@ -76,7 +58,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by client'() {
         given:
-        def query = new ElementQueryImpl<>(processDataRepository, client)
+        def query = elementQueryFactory.queryProcesses(client)
         def otherClient = clientDataRepository.save(newClient {})
         def otherClientUnit = unitDataRepository.save(newUnit(otherClient))
         processDataRepository.saveAll([
@@ -96,7 +78,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries composites by parts'() {
         given:
-        def query = new ElementQueryImpl<>(processDataRepository, client)
+        def query = elementQueryFactory.queryProcesses(client)
         def part1 = processDataRepository.save(newProcess(unit))
         def part2 = processDataRepository.save(newProcess(unit))
         def part3 = processDataRepository.save(newProcess(unit))
@@ -149,7 +131,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         ])
 
         when:
-        def elementsWithChildren = new ElementQueryImpl<>(processDataRepository, client).with {
+        def elementsWithChildren = elementQueryFactory.queryProcesses(client).with {
             whereChildElementsPresent(true)
             execute(PagingConfiguration.UNPAGED)
         }
@@ -161,7 +143,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         ]
 
         when:
-        def elementsWithoutChildren = new ElementQueryImpl<>(processDataRepository, client).with {
+        def elementsWithoutChildren = elementQueryFactory.queryProcesses(client).with {
             whereChildElementsPresent(false)
             execute(PagingConfiguration.UNPAGED)
         }
@@ -175,7 +157,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries scopes by members'() {
         given:
-        def query = new ElementQueryImpl(scopeDataRepository, client)
+        def query = elementQueryFactory.queryScopes(client)
         def member1 = processDataRepository.save(newProcess(unit))
         def member2 = processDataRepository.save(newProcess(unit))
         def member3 = processDataRepository.save(newProcess(unit))
@@ -243,7 +225,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         ])
 
         when:
-        def processesWithParent = new ElementQueryImpl(processDataRepository, client).with{
+        def processesWithParent = elementQueryFactory.queryProcesses(client).with{
             whereParentElementPresent(true)
             execute(PagingConfiguration.UNPAGED)
         }
@@ -256,7 +238,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         ]
 
         when:
-        def processesWithoutParent = new ElementQueryImpl(processDataRepository, client).with{
+        def processesWithoutParent = elementQueryFactory.queryProcesses(client).with{
             whereParentElementPresent(false)
             execute(PagingConfiguration.UNPAGED)
         }
@@ -301,7 +283,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         })
 
         when:
-        def processesInScopeA = new ElementQueryImpl(elementDataRepository, client).with{
+        def processesInScopeA = elementQueryFactory.queryElements(client).with{
             whereScopesContain(new SingleValueQueryCondition<Key<UUID>>(scopeA.id))
             execute(PagingConfiguration.UNPAGED)
         }
@@ -314,7 +296,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         ]
 
         when:
-        def processesInScopeB = new ElementQueryImpl(processDataRepository, client).with{
+        def processesInScopeB = elementQueryFactory.queryProcesses(client).with{
             whereScopesContain(new SingleValueQueryCondition<Key<UUID>>(scopeB.id))
             execute(PagingConfiguration.UNPAGED)
         }
@@ -346,7 +328,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         })
 
         when:
-        def scopesWithParent = new ElementQueryImpl(scopeDataRepository, client).with{
+        def scopesWithParent = elementQueryFactory.queryScopes(client).with{
             whereParentElementPresent(true)
             execute(PagingConfiguration.UNPAGED)
         }
@@ -358,7 +340,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         ]
 
         when:
-        def scopesWithoutParent = new ElementQueryImpl(scopeDataRepository, client).with{
+        def scopesWithoutParent = elementQueryFactory.queryScopes(client).with{
             whereParentElementPresent(false)
             execute(PagingConfiguration.UNPAGED)
         }
@@ -390,7 +372,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         ])
 
         when:
-        def elementsWithChildren = new ElementQueryImpl<>(scopeDataRepository, client).with{
+        def elementsWithChildren = elementQueryFactory.queryScopes(client).with{
             whereChildElementsPresent(true)
             execute(PagingConfiguration.UNPAGED)
         }
@@ -402,7 +384,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         ]
 
         when:
-        def elementsWithoutChildren = new ElementQueryImpl<>(scopeDataRepository, client).with {
+        def elementsWithoutChildren = elementQueryFactory.queryScopes(client).with {
             whereChildElementsPresent(false)
             execute(PagingConfiguration.UNPAGED)
         }
@@ -416,7 +398,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries all processes'() {
         given:
-        def query = new ElementQueryImpl<>(processDataRepository, client)
+        def query = elementQueryFactory.queryProcesses(client)
         processDataRepository.saveAll([
             newProcess(unit),
             newProcess(unit),
@@ -432,7 +414,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by units'() {
         given:
-        def query = new ElementQueryImpl<>(processDataRepository, client)
+        def query = elementQueryFactory.queryProcesses(client)
         def unit2 = unitDataRepository.save(newUnit(client))
         def unit3 = unitDataRepository.save(newUnit(client))
         processDataRepository.saveAll([
@@ -456,7 +438,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by sub type'() {
         given:
-        def query = new ElementQueryImpl<>(processDataRepository, client)
+        def query = elementQueryFactory.queryProcesses(client)
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "a"
@@ -486,7 +468,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by status'() {
         given:
-        def query = new ElementQueryImpl<>(processDataRepository, client)
+        def query = elementQueryFactory.queryProcesses(client)
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "a"
@@ -520,7 +502,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by sub type & status combined'() {
         given:
-        def query = new ElementQueryImpl<>(processDataRepository, client)
+        def query = elementQueryFactory.queryProcesses(client)
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "a"
@@ -555,7 +537,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'finds processes with no sub type'() {
         given:
-        def query = new ElementQueryImpl<>(processDataRepository, client)
+        def query = elementQueryFactory.queryProcesses(client)
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "a"
@@ -584,7 +566,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by unit & client'() {
         given:
-        def query = new ElementQueryImpl<>(processDataRepository, client)
+        def query = elementQueryFactory.queryProcesses(client)
         def client2 = clientDataRepository.save(newClient {})
         def unit2 = unitDataRepository.save(newUnit(client))
         def unit3 = unitDataRepository.save(newUnit(client2))
@@ -611,7 +593,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by name'() {
         given:
-        def query = new ElementQueryImpl<>(processDataRepository, client)
+        def query = elementQueryFactory.queryProcesses(client)
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "Process One"
@@ -634,7 +616,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by description'() {
         given:
-        def query = new ElementQueryImpl<>(processDataRepository, client)
+        def query = elementQueryFactory.queryProcesses(client)
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "A"
@@ -660,7 +642,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by designator'() {
         given:
-        def query = new ElementQueryImpl<>(processDataRepository, client)
+        def query = elementQueryFactory.queryProcesses(client)
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "A"
@@ -686,7 +668,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'queries by updatedBy'() {
         given:
-        def query = new ElementQueryImpl<>(processDataRepository, client)
+        def query = elementQueryFactory.queryProcesses(client)
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "A"
@@ -712,7 +694,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
 
     def 'sort results by different properties'() {
         given: "three processes"
-        def query = new ElementQueryImpl<>(processDataRepository, client)
+        def query = elementQueryFactory.queryProcesses(client)
         processDataRepository.saveAll([
             newProcess(unit) {
                 name = "process 0"
@@ -765,7 +747,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
     def 'Paging configuration is correctly passed to data repository'() {
         given: 'a repository'
         AssetDataRepository dataRepository = Mock()
-        def query = new ElementQueryImpl<>(dataRepository, client)
+        def query = new ElementQueryImpl(dataRepository, dataRepository, null, null, null, null, null, null, null, client)
 
         when:
         query.execute(new PagingConfiguration(2, 0, 'foo', SortOrder.ASCENDING))
@@ -791,7 +773,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         })
 
         when: "querying processes sorted by designator ascending"
-        def query = new ElementQueryImpl<>(personDataRepository, client)
+        def query = elementQueryFactory.queryPersons(client)
 
         def result = query.execute(new PagingConfiguration(100, 0, 'designator', SortOrder.ASCENDING))
 
@@ -829,7 +811,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
             }
         ])
 
-        def query = new ElementQueryImpl<>(assetDataRepository, client)
+        def query = elementQueryFactory.queryAssets(client)
 
         when:
         query.whereDomainsContain(domain1)

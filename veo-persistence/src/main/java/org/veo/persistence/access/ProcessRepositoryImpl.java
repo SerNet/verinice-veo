@@ -39,6 +39,7 @@ import org.veo.core.repository.ProcessRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
+import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.ProcessData;
 import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ValidationService;
@@ -54,8 +55,15 @@ public class ProcessRepositoryImpl
       ProcessDataRepository dataRepository,
       ValidationService validation,
       CustomLinkDataRepository linkDataRepository,
-      ScopeDataRepository scopeDataRepository) {
-    super(dataRepository, validation, linkDataRepository, scopeDataRepository, Process.class);
+      ScopeDataRepository scopeDataRepository,
+      ElementQueryFactory elementQueryFactory) {
+    super(
+        dataRepository,
+        validation,
+        linkDataRepository,
+        scopeDataRepository,
+        elementQueryFactory,
+        Process.class);
     processDataRepository = dataRepository;
   }
 
@@ -84,7 +92,7 @@ public class ProcessRepositoryImpl
 
   @Override
   public ElementQuery<Process> query(Client client) {
-    return new ProcessQueryImpl((ProcessDataRepository) dataRepository, client);
+    return elementQueryFactory.queryProcesses(client);
   }
 
   @Override

@@ -36,6 +36,7 @@ import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.access.jpa.ScenarioDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
+import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
@@ -53,15 +54,22 @@ public class ScenarioRepositoryImpl
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository,
       AssetDataRepository assetDataRepository,
-      ProcessDataRepository processDataRepository) {
-    super(dataRepository, validation, linkDataRepository, scopeDataRepository, Scenario.class);
+      ProcessDataRepository processDataRepository,
+      ElementQueryFactory elementQueryFactory) {
+    super(
+        dataRepository,
+        validation,
+        linkDataRepository,
+        scopeDataRepository,
+        elementQueryFactory,
+        Scenario.class);
     this.assetDataRepository = assetDataRepository;
     this.processDataRepository = processDataRepository;
   }
 
   @Override
   public ElementQuery<Scenario> query(Client client) {
-    return new ScenarioQueryImpl((ScenarioDataRepository) dataRepository, client);
+    return elementQueryFactory.queryScenarios(client);
   }
 
   @Override

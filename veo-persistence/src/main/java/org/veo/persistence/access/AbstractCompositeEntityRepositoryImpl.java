@@ -23,15 +23,14 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.CompositeElementRepository;
-import org.veo.core.repository.ElementQuery;
 import org.veo.persistence.access.jpa.CompositeEntityDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
+import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.ElementData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
@@ -46,14 +45,16 @@ abstract class AbstractCompositeEntityRepositoryImpl<
       ValidationService validation,
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository,
+      ElementQueryFactory elementQueryFactory,
       Class<S> elementType) {
-    super(dataRepository, validation, linkDataRepository, scopeDataRepository, elementType);
+    super(
+        dataRepository,
+        validation,
+        linkDataRepository,
+        scopeDataRepository,
+        elementQueryFactory,
+        elementType);
     this.compositeRepo = dataRepository;
-  }
-
-  @Override
-  public ElementQuery<S> query(Client client) {
-    return new CompositeElementQueryImpl<>(compositeRepo, client);
   }
 
   @Override

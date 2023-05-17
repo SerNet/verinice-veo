@@ -26,14 +26,17 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
+import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.PersonRepository;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.PersonDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
+import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.PersonData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
@@ -50,8 +53,15 @@ public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository,
       AssetDataRepository assetDataRepository,
-      ProcessDataRepository processDataRepository) {
-    super(dataRepository, validation, linkDataRepository, scopeDataRepository, Person.class);
+      ProcessDataRepository processDataRepository,
+      ElementQueryFactory elementQueryFactory) {
+    super(
+        dataRepository,
+        validation,
+        linkDataRepository,
+        scopeDataRepository,
+        elementQueryFactory,
+        Person.class);
     this.assetDataRepository = assetDataRepository;
     this.processDataRepository = processDataRepository;
   }
@@ -85,5 +95,10 @@ public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<
   public void deleteAll(Set<Person> elements) {
     removeFromRisks(elements.stream().map(PersonData.class::cast).collect(Collectors.toSet()));
     super.deleteAll(elements);
+  }
+
+  @Override
+  public ElementQuery<Person> query(Client client) {
+    return elementQueryFactory.queryPersons(client);
   }
 }
