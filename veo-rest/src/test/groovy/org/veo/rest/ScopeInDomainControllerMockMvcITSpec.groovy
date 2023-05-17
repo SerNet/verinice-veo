@@ -212,6 +212,79 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
+    def "members can be paginated"() {
+        given: "three elements in test-domain"
+        def assetUri = post("/domains/$testDomainId/assets", [
+            name: "A for Asset",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "Server",
+            status: "DOWN"
+        ]).andReturn().response.getHeader("Location")
+        def documentUri = post("/domains/$testDomainId/documents", [
+            name: "D for Document",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "Manual",
+            status: "OUTDATED"
+        ]).andReturn().response.getHeader("Location")
+        def subScopeUri = post("/domains/$testDomainId/scopes", [
+            name: "S for Scope",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "Company",
+            status: "NEW"
+        ]).andReturn().response.getHeader("Location")
+
+        and: "one element in DS-GVO"
+        def dsgvoSubScopeUri = post("/domains/$dsgvoTestDomainId/scopes", [
+            name: "A for Absent",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "SCP_Processor",
+            status: "NEW"
+        ]).andReturn().response.getHeader("Location")
+
+        and: "a scope containing those elements"
+        def scopeUri = post("/domains/$testDomainId/scopes", [
+            name: "scope of hope",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "Company",
+            status: "NEW",
+            members: [
+                [targetInDomainUri: assetUri],
+                [targetInDomainUri: documentUri],
+                [targetInDomainUri: subScopeUri],
+                [targetInDomainUri: dsgvoSubScopeUri],
+            ]
+        ]).andReturn().response.getHeader("Location")
+
+        expect: "scope members in test-domain to be retrieved"
+        with(parseJson(get("$scopeUri/members?size=2&page=0"))) {
+            totalItemCount == 3
+            page == 0
+            pageCount == 2
+            items.size() == 2
+            with(items[0]) {
+                name == "A for Asset"
+                type == "asset"
+                subType == "Server"
+            }
+            with(items[1]) {
+                name == "D for Document"
+                type == "document"
+                subType == "Manual"
+            }
+        }
+        with(parseJson(get("$scopeUri/members?size=2&page=1"))) {
+            totalItemCount == 3
+            page == 1
+            pageCount == 2
+            items.size() == 1
+            with(items[0]) {
+                name == "S for Scope"
+                type == "scope"
+                subType == "Company"
+            }
+        }
+    }
+
     def "missing scope is handled"() {
         given: "a non-existing scope ID"
         def randomScopeId = randomUUID()

@@ -531,6 +531,32 @@ public final class EntityToDtoTransformer {
     return target;
   }
 
+  public <TElement extends Element> AbstractElementInDomainDto<TElement> transformElement2Dto(
+      TElement element, Domain domain) {
+    if (element instanceof Asset asset) {
+      return (AbstractElementInDomainDto<TElement>) transformAsset2Dto(asset, domain);
+    }
+    if (element instanceof Control control) {
+      return (AbstractElementInDomainDto<TElement>) transformControl2Dto(control, domain);
+    }
+    if (element instanceof Document document) {
+      return (AbstractElementInDomainDto<TElement>) transformDocument2Dto(document, domain);
+    }
+    if (element instanceof Person person) {
+      return (AbstractElementInDomainDto<TElement>) transformPerson2Dto(person, domain);
+    }
+    if (element instanceof Process process) {
+      return (AbstractElementInDomainDto<TElement>) transformProcess2Dto(process, domain);
+    }
+    if (element instanceof Scenario scenario) {
+      return (AbstractElementInDomainDto<TElement>) transformScenario2Dto(scenario, domain);
+    }
+    if (element instanceof Scope scope) {
+      return (AbstractElementInDomainDto<TElement>) transformScope2Dto(scope, domain);
+    }
+    throw new IllegalArgumentException();
+  }
+
   public FullAssetInDomainDto transformAsset2Dto(Asset source, Domain domain) {
     var target = new FullAssetInDomainDto(source.getIdAsString());
     mapCompositeElementProperties(source, target, domain);

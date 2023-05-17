@@ -73,6 +73,7 @@ import org.veo.core.repository.DesignatorSequenceRepository;
 import org.veo.core.repository.DocumentRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
+import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.IncidentRepository;
 import org.veo.core.repository.PersonRepository;
 import org.veo.core.repository.ProcessRepository;
@@ -99,6 +100,7 @@ import org.veo.core.usecase.asset.UpdateAssetRiskUseCase;
 import org.veo.core.usecase.asset.UpdateAssetUseCase;
 import org.veo.core.usecase.base.AssociateElementWithDomainUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
+import org.veo.core.usecase.base.GenericGetElementsUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 import org.veo.core.usecase.base.UpdateAssetInDomainUseCase;
 import org.veo.core.usecase.base.UpdateControlInDomainUseCase;
@@ -234,6 +236,15 @@ public class ModuleConfiguration {
   public UpdateAssetRiskUseCase updateAssetRiskUseCase(
       RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {
     return new UpdateAssetRiskUseCase(repositoryProvider, eventPublisher);
+  }
+
+  @Bean
+  public GenericGetElementsUseCase genericGetElementsUseCase(
+      ClientRepository clientRepository,
+      GenericElementRepository elementRepository,
+      UnitHierarchyProvider unitHierarchyProvider) {
+    return new GenericGetElementsUseCase(
+        clientRepository, elementRepository, unitHierarchyProvider);
   }
 
   @Bean

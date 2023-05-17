@@ -41,7 +41,9 @@ import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UPDATED_BY_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
+import static org.veo.rest.ControllerConstants.UUID_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_PARAM_SPEC;
+import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -67,16 +69,20 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.create.CreateScopeInDomainDto;
+import org.veo.adapter.presenter.api.dto.full.FullControlInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Scope;
+import org.veo.core.usecase.base.GenericGetElementsUseCase;
 import org.veo.core.usecase.base.UpdateScopeInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.scope.CreateScopeUseCase;
@@ -91,6 +97,7 @@ import org.veo.rest.security.ApplicationUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -108,6 +115,7 @@ public class ScopeInDomainController {
   private final ClientLookup clientLookup;
   private final GetScopeUseCase getScopeUseCase;
   private final GetScopesUseCase getScopesUseCase;
+  private final GenericGetElementsUseCase getElementsUseCase;
   private final CreateScopeUseCase createUseCase;
   private final UpdateScopeInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
@@ -293,5 +301,73 @@ public class ScopeInDomainController {
           String domainId,
       @Valid @RequestBody FullScopeInDomainDto dto) {
     return elementService.evaluate(auth, dto, domainId, dtoToEntityTransformer::transformDto2Scope);
+  }
+
+  @Operation(summary = "Loads the members of a scope in a domain")
+  @ApiResponse(
+      responseCode = "200",
+      description = "Members loaded",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              array =
+                  @ArraySchema(schema = @Schema(implementation = FullControlInDomainDto.class))))
+  @ApiResponse(responseCode = "404", description = "Scope not found")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/members")
+  public @Valid Future<PageDto<AbstractElementInDomainDto<Element>>> getElementParts(
+      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      @RequestParam(
+              value = PAGE_SIZE_PARAM,
+              required = false,
+              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          Integer pageSize,
+      @RequestParam(
+              value = PAGE_NUMBER_PARAM,
+              required = false,
+              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
+          Integer pageNumber,
+      @RequestParam(
+              value = SORT_COLUMN_PARAM,
+              required = false,
+              defaultValue = SORT_COLUMN_DEFAULT_VALUE)
+          String sortColumn,
+      @RequestParam(
+              value = SORT_ORDER_PARAM,
+              required = false,
+              defaultValue = SORT_ORDER_DEFAULT_VALUE)
+          @Pattern(regexp = SORT_ORDER_PATTERN)
+          String sortOrder) {
+    var client = clientLookup.getClient(auth);
+    elementService.ensureElementExists(client, domainId, uuid, getScopeUseCase);
+    return elementService.getElements(
+        domainId,
+        getElementsUseCase,
+        GetElementsInputMapper.map(
+            client,
+            null,
+            domainId,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            uuid,
+            null,
+            null,
+            null,
+            null,
+            PagingMapper.toConfig(
+                pageSize, pageNumber,
+                sortColumn, sortOrder)),
+        entityToDtoTransformer::transformElement2Dto);
   }
 }
