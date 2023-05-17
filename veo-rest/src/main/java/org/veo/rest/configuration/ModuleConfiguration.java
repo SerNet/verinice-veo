@@ -991,7 +991,7 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public EvaluateElementUseCase evaluateDecisionUseCase(
+  public EvaluateElementUseCase evaluateElementUseCase(
       DomainRepository domainRepository,
       RepositoryProvider repositoryProvider,
       Decider decider,
