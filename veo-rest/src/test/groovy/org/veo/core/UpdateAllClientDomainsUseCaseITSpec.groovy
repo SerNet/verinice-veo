@@ -309,13 +309,14 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
 
         and: 'the scope elements belong to the new domain'
         List<Scope> scopes = executeInTransaction {
-            scopeRepository.query(client).whereOwnerIs(demoUnit).execute(PagingConfiguration.UNPAGED).resultPage.tap {
+            scopeRepository.query(client).with {
+                whereOwnerIs(demoUnit)
+                execute(PagingConfiguration.UNPAGED)
+            }.resultPage.each {
                 //initialize lazy associations
-                it.each {
-                    it.customAspects*.domain.name
-                    it.links*.domain.name
-                    it.risks*.domains*.name
-                }
+                it.customAspects*.domain.name
+                it.links*.domain.name
+                it.risks*.domains*.name
             }
         }
         scopes.size() == 1
@@ -339,12 +340,13 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
 
         and: 'the person elements belong to the new domain'
         def persons = executeInTransaction {
-            personRepository.query(client).whereOwnerIs(demoUnit).execute(PagingConfiguration.UNPAGED).resultPage.tap {
+            personRepository.query(client).with {
+                whereOwnerIs(demoUnit)
+                execute(PagingConfiguration.UNPAGED)
+            }.resultPage.each {
                 //initialize lazy associations
-                it.each {
-                    it.customAspects*.domain.name
-                    it.links*.domains*.name
-                }
+                it.customAspects*.domain.name
+                it.links*.domains*.name
             }
         }
         persons.size() == 5

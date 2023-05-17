@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Scope;
-import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.ScopeQuery;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.entity.jpa.ScopeData;
@@ -37,15 +36,14 @@ public class ScopeQueryImpl extends ElementQueryImpl<Scope, ScopeData> implement
   }
 
   @Override
-  public ElementQuery<Scope> fetchParentsAndChildrenAndSiblings() {
+  public void fetchParentsAndChildrenAndSiblings() {
     super.fetchParentsAndChildrenAndSiblings();
-    return fetchMembers();
+    fetchMembers();
   }
 
   @Override
-  public ScopeQueryImpl fetchMembers() {
+  public void fetchMembers() {
     fetchMembers = true;
-    return this;
   }
 
   @Override

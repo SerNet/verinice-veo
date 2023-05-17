@@ -55,8 +55,12 @@ public class GetUnitDumpUseCase
   private Set<Element> getElements(Unit unit) {
     return EntityType.ELEMENT_TYPE_CLASSES.stream()
         .map(repositoryProvider::getElementRepositoryFor)
-        .map(repo -> repo.query(unit.getClient()))
-        .map(query -> query.whereUnitIn(Set.of(unit)))
+        .map(
+            repo -> {
+              var query = repo.query(unit.getClient());
+              query.whereUnitIn(Set.of(unit));
+              return query;
+            })
         .flatMap(query -> query.execute(PagingConfiguration.UNPAGED).getResultPage().stream())
         .collect(Collectors.toSet());
   }

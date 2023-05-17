@@ -19,6 +19,7 @@ package org.veo.persistence.access;
 
 import static java.util.Collections.singleton;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -75,26 +76,20 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
 
   @Override
   public Set<T> findByDomain(Domain domain) {
-    return query(domain.getOwningClient().get())
-        .whereDomainsContain(domain)
-        .execute(PagingConfiguration.UNPAGED)
-        .getResultPage()
-        .stream()
-        .collect(Collectors.toSet());
+    var query = query(domain.getOwningClient().get());
+    query.whereDomainsContain(domain);
+    return new HashSet<>(query.execute(PagingConfiguration.UNPAGED).getResultPage());
   }
 
   @Override
   public Set<T> findByUnit(Unit owner) {
-    return query(owner.getClient())
-        .whereOwnerIs(owner)
-        .fetchAppliedCatalogItems()
-        .fetchParentsAndChildrenAndSiblings()
-        .fetchRisks()
-        .fetchRiskValuesAspects()
-        .execute(PagingConfiguration.UNPAGED)
-        .getResultPage()
-        .stream()
-        .collect(Collectors.toSet());
+    var query = query(owner.getClient());
+    query.whereOwnerIs(owner);
+    query.fetchAppliedCatalogItems();
+    query.fetchParentsAndChildrenAndSiblings();
+    query.fetchRisks();
+    query.fetchRiskValuesAspects();
+    return new HashSet<>(query.execute(PagingConfiguration.UNPAGED).getResultPage());
   }
 
   @Transactional

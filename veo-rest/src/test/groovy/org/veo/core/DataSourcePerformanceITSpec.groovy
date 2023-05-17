@@ -423,21 +423,24 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
 
         then: "all elements are removed"
         executeInTransaction {
-            personRepository.query(client)
-                    .whereUnitIn([unit] as Set)
-                    .execute(PagingConfiguration.UNPAGED)
+            personRepository.query(client).with {
+                whereUnitIn([unit] as Set)
+                execute(PagingConfiguration.UNPAGED)
+            }
         }.totalResults == 0
 
         executeInTransaction {
-            assetRepository.query(client)
-                    .whereUnitIn([unit] as Set)
-                    .execute(PagingConfiguration.UNPAGED)
+            assetRepository.query(client).with {
+                whereUnitIn([unit] as Set)
+                execute(PagingConfiguration.UNPAGED)
+            }
         }.totalResults == 0
 
         executeInTransaction {
-            processRepository.query(client)
-                    .whereUnitIn([unit] as Set)
-                    .execute(PagingConfiguration.UNPAGED)
+            processRepository.query(client).with {
+                whereUnitIn([unit] as Set)
+                execute(PagingConfiguration.UNPAGED)
+            }
         }.totalResults == 0
 
         executeInTransaction {

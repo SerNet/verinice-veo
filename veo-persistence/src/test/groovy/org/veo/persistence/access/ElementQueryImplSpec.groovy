@@ -149,9 +149,10 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         ])
 
         when:
-        def elementsWithChildren = new ElementQueryImpl<>(processDataRepository, client)
-                .whereChildElementsPresent(true)
-                .execute(PagingConfiguration.UNPAGED)
+        def elementsWithChildren = new ElementQueryImpl<>(processDataRepository, client).with {
+            whereChildElementsPresent(true)
+            execute(PagingConfiguration.UNPAGED)
+        }
 
         then:
         elementsWithChildren.resultPage*.name =~ [
@@ -160,9 +161,10 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         ]
 
         when:
-        def elementsWithoutChildren = new ElementQueryImpl<>(processDataRepository, client)
-                .whereChildElementsPresent(false)
-                .execute(PagingConfiguration.UNPAGED)
+        def elementsWithoutChildren = new ElementQueryImpl<>(processDataRepository, client).with {
+            whereChildElementsPresent(false)
+            execute(PagingConfiguration.UNPAGED)
+        }
 
         then:
         elementsWithoutChildren.resultPage*.name =~ [
@@ -241,9 +243,10 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         ])
 
         when:
-        def processesWithParent = new ElementQueryImpl(processDataRepository, client)
-                .whereParentElementPresent(true)
-                .execute(PagingConfiguration.UNPAGED)
+        def processesWithParent = new ElementQueryImpl(processDataRepository, client).with{
+            whereParentElementPresent(true)
+            execute(PagingConfiguration.UNPAGED)
+        }
 
         then:
         processesWithParent.resultPage*.name =~ [
@@ -253,9 +256,10 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         ]
 
         when:
-        def processesWithoutParent = new ElementQueryImpl(processDataRepository, client)
-                .whereParentElementPresent(false)
-                .execute(PagingConfiguration.UNPAGED)
+        def processesWithoutParent = new ElementQueryImpl(processDataRepository, client).with{
+            whereParentElementPresent(false)
+            execute(PagingConfiguration.UNPAGED)
+        }
 
         then:
         processesWithoutParent.resultPage*.name =~ [
@@ -297,9 +301,10 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         })
 
         when:
-        def processesInScopeA = new ElementQueryImpl(elementDataRepository, client)
-                .whereScopesContain(new SingleValueQueryCondition<Key<UUID>>(scopeA.id))
-                .execute(PagingConfiguration.UNPAGED)
+        def processesInScopeA = new ElementQueryImpl(elementDataRepository, client).with{
+            whereScopesContain(new SingleValueQueryCondition<Key<UUID>>(scopeA.id))
+            execute(PagingConfiguration.UNPAGED)
+        }
 
         then:
         processesInScopeA.resultPage*.name =~ [
@@ -309,9 +314,10 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         ]
 
         when:
-        def processesInScopeB = new ElementQueryImpl(processDataRepository, client)
-                .whereScopesContain(new SingleValueQueryCondition<Key<UUID>>(scopeB.id))
-                .execute(PagingConfiguration.UNPAGED)
+        def processesInScopeB = new ElementQueryImpl(processDataRepository, client).with{
+            whereScopesContain(new SingleValueQueryCondition<Key<UUID>>(scopeB.id))
+            execute(PagingConfiguration.UNPAGED)
+        }
 
         then:
         processesInScopeB.resultPage*.name =~ [
@@ -340,9 +346,10 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         })
 
         when:
-        def scopesWithParent = new ElementQueryImpl(scopeDataRepository, client)
-                .whereParentElementPresent(true)
-                .execute(PagingConfiguration.UNPAGED)
+        def scopesWithParent = new ElementQueryImpl(scopeDataRepository, client).with{
+            whereParentElementPresent(true)
+            execute(PagingConfiguration.UNPAGED)
+        }
 
         then:
         scopesWithParent.resultPage*.name =~ [
@@ -351,9 +358,10 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         ]
 
         when:
-        def scopesWithoutParent = new ElementQueryImpl(scopeDataRepository, client)
-                .whereParentElementPresent(false)
-                .execute(PagingConfiguration.UNPAGED)
+        def scopesWithoutParent = new ElementQueryImpl(scopeDataRepository, client).with{
+            whereParentElementPresent(false)
+            execute(PagingConfiguration.UNPAGED)
+        }
 
         then:
         scopesWithoutParent.resultPage*.name =~ [
@@ -382,9 +390,10 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         ])
 
         when:
-        def elementsWithChildren = new ElementQueryImpl<>(scopeDataRepository, client)
-                .whereChildElementsPresent(true)
-                .execute(PagingConfiguration.UNPAGED)
+        def elementsWithChildren = new ElementQueryImpl<>(scopeDataRepository, client).with{
+            whereChildElementsPresent(true)
+            execute(PagingConfiguration.UNPAGED)
+        }
 
         then:
         elementsWithChildren.resultPage*.name =~ [
@@ -393,9 +402,10 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         ]
 
         when:
-        def elementsWithoutChildren = new ElementQueryImpl<>(scopeDataRepository, client)
-                .whereChildElementsPresent(false)
-                .execute(PagingConfiguration.UNPAGED)
+        def elementsWithoutChildren = new ElementQueryImpl<>(scopeDataRepository, client).with {
+            whereChildElementsPresent(false)
+            execute(PagingConfiguration.UNPAGED)
+        }
 
         then:
         elementsWithoutChildren.resultPage*.name =~ [

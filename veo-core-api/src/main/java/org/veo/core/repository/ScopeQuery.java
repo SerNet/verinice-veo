@@ -21,5 +21,5 @@ import org.veo.core.entity.Scope;
 
 public interface ScopeQuery extends ElementQuery<Scope> {
 
-  ScopeQuery fetchMembers();
+  void fetchMembers();
 }

@@ -73,31 +73,28 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
   }
 
   @Override
-  public ElementQuery<TInterface> whereAppliedItemsContain(Collection<CatalogItem> items) {
+  public void whereAppliedItemsContain(Collection<CatalogItem> items) {
     mySpec =
         mySpec.and(
             (root, query, criteriaBuilder) ->
                 root.join("appliedCatalogItems", JoinType.LEFT).in(items));
-    return this;
   }
 
   @Override
-  public ElementQuery<TInterface> whereOwnerIs(Unit unit) {
+  public void whereOwnerIs(Unit unit) {
     mySpec =
         mySpec.and(
             (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.join("owner"), unit));
-    return this;
   }
 
   @Override
-  public ElementQuery<TInterface> whereUnitIn(Set<Unit> units) {
+  public void whereUnitIn(Set<Unit> units) {
     mySpec =
         mySpec.and((root, query, criteriaBuilder) -> in(root.get("owner"), units, criteriaBuilder));
-    return this;
   }
 
   @Override
-  public ElementQuery<TInterface> whereSubTypeMatches(QueryCondition<String> condition) {
+  public void whereSubTypeMatches(QueryCondition<String> condition) {
     mySpec =
         mySpec.and(
             (root, query, criteriaBuilder) ->
@@ -105,11 +102,10 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
                     root.join("subTypeAspects", JoinType.LEFT).get("subType"),
                     condition.getValues(),
                     criteriaBuilder));
-    return this;
   }
 
   @Override
-  public ElementQuery<TInterface> whereChildElementIn(QueryCondition<Key<UUID>> condition) {
+  public void whereChildElementIn(QueryCondition<Key<UUID>> condition) {
     var childIdsAsString =
         condition.getValues().stream().map(Key::uuidValue).collect(Collectors.toSet());
     mySpec =
@@ -119,11 +115,10 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
                     root.join(getChildAttributeName(), JoinType.INNER).get("dbId"),
                     childIdsAsString,
                     criateriaBuilder));
-    return this;
   }
 
   @Override
-  public ElementQuery<TInterface> whereChildElementsPresent(boolean present) {
+  public void whereChildElementsPresent(boolean present) {
     mySpec =
         mySpec.and(
             (root, query, criteriaBuilder) ->
@@ -131,11 +126,10 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
                     root.join(getChildAttributeName(), JoinType.LEFT).get("dbId"),
                     !present,
                     criteriaBuilder));
-    return this;
   }
 
   @Override
-  public ElementQuery<TInterface> whereParentElementPresent(boolean present) {
+  public void whereParentElementPresent(boolean present) {
     var parentSpec =
         (Specification<TDataClass>)
             (root, query, criteriaBuilder) ->
@@ -160,11 +154,10 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
     }
 
     mySpec = mySpec.and(parentSpec);
-    return this;
   }
 
   @Override
-  public ElementQuery<TInterface> whereStatusMatches(QueryCondition<String> condition) {
+  public void whereStatusMatches(QueryCondition<String> condition) {
     mySpec =
         mySpec.and(
             (root, query, criteriaBuilder) ->
@@ -172,85 +165,68 @@ public class ElementQueryImpl<TInterface extends Element, TDataClass extends Ele
                     root.join("subTypeAspects", JoinType.LEFT).get("status"),
                     condition.getValues(),
                     criteriaBuilder));
-    return this;
   }
 
   @Override
-  public ElementQuery<TInterface> whereDisplayNameMatchesIgnoringCase(
-      QueryCondition<String> condition) {
+  public void whereDisplayNameMatchesIgnoringCase(QueryCondition<String> condition) {
     inIgnoringCase(condition, "displayName");
-    return this;
   }
 
   @Override
-  public ElementQuery<TInterface> whereDescriptionMatchesIgnoreCase(
-      QueryCondition<String> condition) {
+  public void whereDescriptionMatchesIgnoreCase(QueryCondition<String> condition) {
     inIgnoringCase(condition, "description");
-    return this;
   }
 
   @Override
-  public ElementQuery<TInterface> whereDesignatorMatchesIgnoreCase(
-      QueryCondition<String> condition) {
+  public void whereDesignatorMatchesIgnoreCase(QueryCondition<String> condition) {
     inIgnoringCase(condition, "designator");
-    return this;
   }
 
   @Override
-  public ElementQuery<TInterface> whereNameMatchesIgnoreCase(QueryCondition<String> condition) {
+  public void whereNameMatchesIgnoreCase(QueryCondition<String> condition) {
     inIgnoringCase(condition, "name");
-    return this;
   }
 
   @Override
-  public ElementQuery<TInterface> whereUpdatedByContainsIgnoreCase(
-      QueryCondition<String> condition) {
+  public void whereUpdatedByContainsIgnoreCase(QueryCondition<String> condition) {
     inIgnoringCase(condition, "updatedBy");
-    return this;
   }
 
   @Override
-  public ElementQuery<TInterface> whereDomainsContain(Domain domain) {
+  public void whereDomainsContain(Domain domain) {
     mySpec =
         mySpec.and(
             (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.join("domains"), domain));
-    return this;
   }
 
   @Override
-  public ElementQuery<TInterface> whereScopesContain(
-      SingleValueQueryCondition<Key<UUID>> condition) {
+  public void whereScopesContain(SingleValueQueryCondition<Key<UUID>> condition) {
     mySpec =
         mySpec.and(
             (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(
                     root.join("scopes", JoinType.LEFT).get("dbId"),
                     condition.getValue().uuidValue()));
-    return this;
   }
 
   @Override
-  public ElementQuery<TInterface> fetchAppliedCatalogItems() {
+  public void fetchAppliedCatalogItems() {
     fetchAppliedCatalogItems = true;
-    return this;
   }
 
   @Override
-  public ElementQuery<TInterface> fetchParentsAndChildrenAndSiblings() {
+  public void fetchParentsAndChildrenAndSiblings() {
     fetchScopesAndScopeMembers = true;
-    return this;
   }
 
   @Override
-  public ElementQuery<TInterface> fetchRisks() {
+  public void fetchRisks() {
     fetchRisks = true;
-    return this;
   }
 
   @Override
-  public ElementQuery<TInterface> fetchRiskValuesAspects() {
+  public void fetchRiskValuesAspects() {
     fetchRiskValuesAspects = true;
-    return this;
   }
 
   @Override

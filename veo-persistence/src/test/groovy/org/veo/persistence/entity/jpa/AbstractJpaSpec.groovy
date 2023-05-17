@@ -40,6 +40,9 @@ import org.veo.test.VeoSpec
 abstract class AbstractJpaSpec extends VeoSpec {
 
     List<Element> findByUnit(ElementDataRepository repository, Unit unit) {
-        new ElementQueryImpl(repository, unit.client).whereOwnerIs(unit).execute(PagingConfiguration.UNPAGED).resultPage
+        new ElementQueryImpl(repository,unit.client).with {
+            whereOwnerIs(unit)
+            execute(PagingConfiguration.UNPAGED).resultPage
+        }
     }
 }

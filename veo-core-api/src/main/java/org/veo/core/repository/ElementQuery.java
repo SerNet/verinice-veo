@@ -34,9 +34,9 @@ import org.veo.core.entity.Unit;
  */
 public interface ElementQuery<T extends Element> {
 
-  ElementQuery<T> whereUnitIn(Set<Unit> units);
+  void whereUnitIn(Set<Unit> units);
 
-  ElementQuery<T> whereSubTypeMatches(QueryCondition<String> values);
+  void whereSubTypeMatches(QueryCondition<String> values);
 
   /**
    * Only include elements where at least one of its child elements (members or parts) has one of
@@ -46,7 +46,7 @@ public interface ElementQuery<T extends Element> {
    *     to be unique across different types of elements.
    * @return this
    */
-  ElementQuery<T> whereChildElementIn(QueryCondition<Key<UUID>> elementIds);
+  void whereChildElementIn(QueryCondition<Key<UUID>> elementIds);
 
   /**
    * Only include elements with / without at least one child element (member or part).
@@ -55,7 +55,7 @@ public interface ElementQuery<T extends Element> {
    *     include elements without child elements
    * @return this
    */
-  ElementQuery<T> whereChildElementsPresent(boolean present);
+  void whereChildElementsPresent(boolean present);
 
   /**
    * Only include elements with / without at leat one parent element (scope or composite).
@@ -64,35 +64,35 @@ public interface ElementQuery<T extends Element> {
    *     elements without parent elements.
    * @return this
    */
-  ElementQuery<T> whereParentElementPresent(boolean present);
+  void whereParentElementPresent(boolean present);
 
-  ElementQuery<T> whereStatusMatches(QueryCondition<String> values);
+  void whereStatusMatches(QueryCondition<String> values);
 
-  ElementQuery<T> whereDisplayNameMatchesIgnoringCase(QueryCondition<String> values);
+  void whereDisplayNameMatchesIgnoringCase(QueryCondition<String> values);
 
-  ElementQuery<T> whereDescriptionMatchesIgnoreCase(QueryCondition<String> values);
+  void whereDescriptionMatchesIgnoreCase(QueryCondition<String> values);
 
-  ElementQuery<T> whereDesignatorMatchesIgnoreCase(QueryCondition<String> values);
+  void whereDesignatorMatchesIgnoreCase(QueryCondition<String> values);
 
-  ElementQuery<T> whereNameMatchesIgnoreCase(QueryCondition<String> values);
+  void whereNameMatchesIgnoreCase(QueryCondition<String> values);
 
-  ElementQuery<T> whereUpdatedByContainsIgnoreCase(QueryCondition<String> values);
+  void whereUpdatedByContainsIgnoreCase(QueryCondition<String> values);
 
-  ElementQuery<T> whereAppliedItemsContain(Collection<CatalogItem> items);
+  void whereAppliedItemsContain(Collection<CatalogItem> items);
 
-  ElementQuery<T> whereOwnerIs(Unit unit);
+  void whereOwnerIs(Unit unit);
 
-  ElementQuery<T> fetchAppliedCatalogItems();
+  void fetchAppliedCatalogItems();
 
-  ElementQuery<T> fetchParentsAndChildrenAndSiblings();
+  void fetchParentsAndChildrenAndSiblings();
 
-  ElementQuery<T> fetchRisks();
+  void fetchRisks();
 
-  ElementQuery<T> fetchRiskValuesAspects();
+  void fetchRiskValuesAspects();
 
-  ElementQuery<T> whereDomainsContain(Domain domain);
+  void whereDomainsContain(Domain domain);
 
-  ElementQuery<T> whereScopesContain(SingleValueQueryCondition<Key<UUID>> scopeId);
+  void whereScopesContain(SingleValueQueryCondition<Key<UUID>> scopeId);
 
   PagedResult<T> execute(PagingConfiguration pagingConfiguration);
 }

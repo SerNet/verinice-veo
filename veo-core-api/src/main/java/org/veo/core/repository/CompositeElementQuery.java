@@ -29,7 +29,7 @@ import org.veo.core.entity.Key;
  */
 public interface CompositeElementQuery<T extends Element> extends ElementQuery<T> {
 
-  CompositeElementQuery<T> fetchPartsAndCompositesAndCompositesParts();
+  void fetchPartsAndCompositesAndCompositesParts();
 
-  CompositeElementQuery<T> whereCompositesContain(SingleValueQueryCondition<Key<UUID>> compositeId);
+  void whereCompositesContain(SingleValueQueryCondition<Key<UUID>> compositeId);
 }
