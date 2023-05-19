@@ -22,9 +22,9 @@ import static java.util.function.Predicate.not;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -33,12 +33,16 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.ElementQuery;
+import org.veo.core.repository.GenericElementRepository;
+import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.RetryableUseCase;
@@ -46,25 +50,19 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
 
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 public class DeleteUnitUseCase
     implements TransactionalUseCase<DeleteUnitUseCase.InputData, EmptyOutput>, RetryableUseCase {
 
   private final ClientRepository clientRepository;
   private final RepositoryProvider repositoryProvider;
   private final UnitRepository unitRepository;
-
-  public DeleteUnitUseCase(
-      ClientRepository clientRepository,
-      UnitRepository unitRepository,
-      RepositoryProvider repositoryProvider) {
-    this.clientRepository = clientRepository;
-    this.repositoryProvider = repositoryProvider;
-    this.unitRepository = unitRepository;
-  }
+  private final GenericElementRepository genericElementRepository;
 
   @Override
   public EmptyOutput execute(InputData input) {
@@ -83,12 +81,16 @@ public class DeleteUnitUseCase
     // violations
     // FIXME VEO-1124 remove all relations first, then elements
 
-    Map<Class<? extends Element>, Set> entitiesInUnitByType =
-        EntityType.ELEMENT_TYPE_CLASSES.stream()
-            .collect(
-                Collectors.toMap(
-                    Function.identity(),
-                    type -> repositoryProvider.getElementRepositoryFor(type).findByUnit(unit)));
+    ElementQuery<Element> query = genericElementRepository.query(unit.getClient());
+    query.whereOwnerIs(unit);
+    query.fetchAppliedCatalogItems();
+    query.fetchParentsAndChildrenAndSiblings();
+    query.fetchRisks();
+    query.fetchRiskValuesAspects();
+
+    Map<Class<? extends Identifiable>, Set<Element>> entitiesInUnitByType =
+        query.execute(PagingConfiguration.UNPAGED).getResultPage().stream()
+            .collect(Collectors.groupingBy(Element::getModelInterface, Collectors.toSet()));
 
     var associationOwners = List.of(Scope.class, Process.class, Asset.class, Scenario.class);
     associationOwners.forEach(
@@ -97,9 +99,10 @@ public class DeleteUnitUseCase
               "Step 1: First remove the owning side of bi-directional associations "
                   + "members / risks on {}.",
               type.getSimpleName());
-          repositoryProvider
-              .getElementRepositoryFor(type)
-              .deleteAll(entitiesInUnitByType.get(type));
+          Optional.ofNullable(entitiesInUnitByType.get(type))
+              .ifPresent(
+                  entities ->
+                      repositoryProvider.getElementRepositoryFor(type).deleteAll((Set) entities));
         });
 
     EntityType.ELEMENT_TYPE_CLASSES.stream()
@@ -108,9 +111,12 @@ public class DeleteUnitUseCase
         .forEach(
             clazz -> {
               log.debug("Step 2:Deleting all unit members " + "of type {}.", clazz.getSimpleName());
-              repositoryProvider
-                  .getElementRepositoryFor(clazz)
-                  .deleteAll(entitiesInUnitByType.get(clazz));
+              Optional.ofNullable(entitiesInUnitByType.get(clazz))
+                  .ifPresent(
+                      entities ->
+                          repositoryProvider
+                              .getElementRepositoryFor(clazz)
+                              .deleteAll((Set) entities));
             });
   }
 
