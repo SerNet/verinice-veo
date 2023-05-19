@@ -49,8 +49,8 @@ spring:
   rabbitmq:
     host: localhost # can be a forwarded port
     port: 5672
-    username: username
-    password: password
+    username: guest
+    password: guest
   jpa:
     hibernate:
       ddl-auto: create-drop
