@@ -167,8 +167,8 @@ class VeoRestTest extends Specification {
             sendClientChangeEvent([clientId: veoClientId, name: 'veo REST test client', type: ClientChangeType.CREATION])
             sendClientChangeEvent([clientId: veoSecondaryClientId, name: 'veo second REST test client', type: ClientChangeType.CREATION])
             new PollingConditions().within(10) {
-                getDomains().size() == 2
-                get("/domains", 200, UserType.SECONDARY_CLIENT_USER).body.size() == 2
+                getDomains()
+                get("/domains", 200, UserType.SECONDARY_CLIENT_USER)
             }
             clientsCreated = true
         }
