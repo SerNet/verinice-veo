@@ -24,10 +24,6 @@ import org.veo.core.entity.EntityType
 
 class LinkingRestTest extends VeoRestTest{
 
-    def setup() {
-        postNewUnit("ini")
-    }
-
     def "asset can be linked with #targetType.pluralTerm"() {
         given: "a target element"
         def domainId = post("/content-creation/domains", [

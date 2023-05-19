@@ -24,7 +24,6 @@ class DecisionCreationRestTest extends VeoRestTest {
     String domainId
 
     def setup() {
-        postNewUnit("init")
         domainId = post("/content-creation/domains", [
             name: "decision creation rest test ${randomUUID()}",
             authority: "me",

@@ -19,10 +19,6 @@ package org.veo.rest.test
 
 class DomainTemplateImportRestTest extends VeoRestTest {
 
-    def setup() {
-        postNewUnit("some unit to init rest test client")
-    }
-
     def "import domain template"() {
         given: "a test template body"
         def template = getTemplateBody()

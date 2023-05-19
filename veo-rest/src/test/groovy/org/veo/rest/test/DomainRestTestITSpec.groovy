@@ -31,10 +31,6 @@ import spock.util.concurrent.PollingConditions
 @Slf4j
 class DomainRestTestITSpec extends VeoRestTest {
 
-    def setup() {
-        postNewUnit("some unit")
-    }
-
     def "export the test domain"() {
         when: "the catalog is retrieved"
         def dsgvoId = getDomains().find { it.name == "test-domain" }.id
