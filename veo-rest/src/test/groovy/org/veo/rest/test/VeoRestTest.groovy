@@ -55,7 +55,7 @@ import spock.util.concurrent.PollingConditions
 
 @SpringBootTest(classes = [RestApplication.class, WebSecurity.class],
 webEnvironment = RANDOM_PORT)
-@ActiveProfiles(["test", "resttest", "local"])
+@ActiveProfiles(resolver = RestTestProfileResolver.class)
 @Slf4j
 class VeoRestTest extends Specification {
 
