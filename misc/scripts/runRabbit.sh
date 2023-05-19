@@ -19,3 +19,24 @@
 #
 
 docker run -d -p 5672:5672 -p 15672:15672 --name veo-rabbit rabbitmq:3-management
+
+export http_proxy=""
+
+createTopicExchange(){(
+  exchange=$1
+  curl -i -u "guest:guest" -X PUT "http://localhost:15672/api/exchanges/%2F/$exchange" \
+    -H 'x-vhost: ' \
+    -H "Content-Type:application/json" \
+    --data-raw '{
+      "vhost":"/",
+      "name":"'"$exchange"'",
+      "type":"topic",
+      "durable":"true",
+      "auto_delete":"false",
+      "internal":"false",
+      "arguments":{}
+    }'
+)}
+
+createTopicExchange "veo.subscriptions"
+createTopicExchange "veo.entity_exchange"
