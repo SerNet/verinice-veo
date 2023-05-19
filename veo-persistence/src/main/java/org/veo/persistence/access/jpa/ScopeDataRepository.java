@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.persistence.entity.jpa.ElementData;
+import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ScopeData;
 
 public interface ScopeDataRepository extends ScopeRiskAffectedDataRepository {
@@ -54,4 +55,11 @@ public interface ScopeDataRepository extends ScopeRiskAffectedDataRepository {
   @Transactional(readOnly = true)
   @EntityGraph(attributePaths = "riskValuesAspects")
   List<ScopeData> findAllWithRiskValuesAspectsByDbIdIn(List<String> ids);
+
+  @Query(
+      "select distinct s from scope s "
+          + "inner join fetch s.risks risks "
+          + "left join fetch risks.riskAspects "
+          + "where risks.scenario in ?1")
+  List<ScopeData> findRisksWithValue(Set<ScenarioData> scenarios);
 }

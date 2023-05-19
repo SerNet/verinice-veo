@@ -17,6 +17,11 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import java.util.Collection;
+
 import org.veo.core.entity.Element;
 
-public interface GenericElementRepository extends ElementQueryProvider<Element> {}
+public interface GenericElementRepository extends ElementQueryProvider<Element> {
+
+  void deleteAll(Collection<Element> entities);
+}

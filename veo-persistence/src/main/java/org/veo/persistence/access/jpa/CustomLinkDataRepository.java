@@ -30,7 +30,7 @@ public interface CustomLinkDataRepository extends JpaRepository<CustomLinkData, 
       "SELECT l FROM customlink l "
           + "join fetch l.source as s "
           + "join fetch s.links "
-          + "where l.target.dbId  IN ?1")
+          + "where l.target.dbId IN ?1")
   @Transactional(readOnly = true)
   Set<CustomLinkData> findLinksByTargetIds(Set<String> targetIDs);
 }

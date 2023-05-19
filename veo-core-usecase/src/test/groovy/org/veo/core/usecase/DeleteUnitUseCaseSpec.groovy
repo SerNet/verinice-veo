@@ -27,17 +27,9 @@ import org.veo.core.entity.Process
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
-import org.veo.core.repository.AssetRepository
-import org.veo.core.repository.ControlRepository
-import org.veo.core.repository.DocumentRepository
 import org.veo.core.repository.ElementQuery
 import org.veo.core.repository.GenericElementRepository
-import org.veo.core.repository.IncidentRepository
 import org.veo.core.repository.PagedResult
-import org.veo.core.repository.PersonRepository
-import org.veo.core.repository.ProcessRepository
-import org.veo.core.repository.ScenarioRepository
-import org.veo.core.repository.ScopeRepository
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 
 public class DeleteUnitUseCaseSpec extends UseCaseSpec {
@@ -47,14 +39,6 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
         Unit existingUnit = Mock(Unit)
         existingUnit.id >> uid
         existingUnit.client >> existingClient
-        def assetRepository = Mock(AssetRepository)
-        def controlRepository = Mock(ControlRepository)
-        def documentRepository = Mock(DocumentRepository)
-        def incidentRepository = Mock(IncidentRepository)
-        def personRepository = Mock(PersonRepository)
-        def processRepository = Mock(ProcessRepository)
-        def scenarioRepository = Mock(ScenarioRepository)
-        def scopeRepository = Mock(ScopeRepository)
         def genericElementRepository = Mock(GenericElementRepository)
 
         Set scopes = Set.of(Mock(Scope) {
@@ -88,32 +72,17 @@ public class DeleteUnitUseCaseSpec extends UseCaseSpec {
 
         when: "the unit is deleted"
         def input = new DeleteUnitUseCase.InputData(existingUnit.getId(), existingClient)
-        def usecase = new DeleteUnitUseCase(clientRepository,  repositoryProvider, unitRepository, genericElementRepository)
+        def usecase = new DeleteUnitUseCase(clientRepository, unitRepository, genericElementRepository)
         usecase.execute(input)
 
         then: "the client for the unit is retrieved"
-        1 * repositoryProvider.getElementRepositoryFor(Asset) >> assetRepository
-        1 * repositoryProvider.getElementRepositoryFor(Control) >> controlRepository
-        1 * repositoryProvider.getElementRepositoryFor(Document) >> documentRepository
-        1 * repositoryProvider.getElementRepositoryFor(Incident) >> incidentRepository
-        1 * repositoryProvider.getElementRepositoryFor(Person) >> personRepository
-        1 * repositoryProvider.getElementRepositoryFor(Process) >> processRepository
-        1 * repositoryProvider.getElementRepositoryFor(Scenario) >> scenarioRepository
-        1 * repositoryProvider.getElementRepositoryFor(Scope) >> scopeRepository
         1 * clientRepository.getById(_) >> existingClient
         1 * unitRepository.getById(_) >> existingUnit
         1 * genericElementRepository.query(existingClient) >> query
         1 * query.whereOwnerIs(existingUnit)
         1 * query.execute(_) >> result
         1 * result.resultPage >> resultPage
-        1 * scopeRepository.deleteAll(scopes)
-        1 * assetRepository.deleteAll(assets)
-        1 * controlRepository.deleteAll(controls)
-        1 * documentRepository.deleteAll(documents)
-        1 * incidentRepository.deleteAll(incidents)
-        1 * personRepository.deleteAll(persons)
-        1 * processRepository.deleteAll(processes)
-        1 * scenarioRepository.deleteAll(scenarios)
+        1 * genericElementRepository.deleteAll(resultPage)
 
         and: "the unit is deleted"
         1 * unitRepository.delete(_)

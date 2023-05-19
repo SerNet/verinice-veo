@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -67,7 +68,11 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
   }
 
   public boolean removeMemberById(Key<UUID> id) {
-    return members.removeIf(compositeEntity -> compositeEntity.getId().equals(id));
+    return removeMembersById(Set.of(id));
+  }
+
+  public boolean removeMembersById(Collection<Key<UUID>> ids) {
+    return members.removeIf(compositeEntity -> ids.contains(compositeEntity.getId()));
   }
 
   @Override
