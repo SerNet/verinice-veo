@@ -24,9 +24,9 @@ import jakarta.validation.constraints.NotNull;
 /**
  * The domain should be referenced by the domain objects if applicable. It defines a standard, a
  * best practice or a company-specific context. It can be bound to a domain template, which
- * represent a 'offical' standart. The domain references the avaliable customAspects, the forms and
- * other stuff needed to define a specific view on the data. For example the risk definition, which
- * describes what risk values exist and how they relate to each other.
+ * represent an 'official' standard. The domain references the available customAspects, the forms
+ * and other stuff needed to define a specific view on the data. For example the risk definition,
+ * which describes what risk values exist and how they relate to each other.
  */
 public interface Domain extends DomainBase, ClientOwned {
 
