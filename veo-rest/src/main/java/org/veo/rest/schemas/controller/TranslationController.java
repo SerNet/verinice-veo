@@ -36,6 +36,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.rest.VeoMessage;
+import org.veo.rest.common.ClientNotActiveException;
 import org.veo.rest.schemas.resource.TranslationsResource;
 import org.veo.rest.security.ApplicationUser;
 
@@ -77,6 +78,8 @@ public class TranslationController implements TranslationsResource {
 
   protected Client getClient(String clientId) {
     Key<UUID> id = Key.uuidFrom(clientId);
-    return clientRepository.findByIdFetchTranslations(id).orElseThrow();
+    return clientRepository
+        .findByIdFetchTranslations(id)
+        .orElseThrow(() -> new ClientNotActiveException(clientId));
   }
 }

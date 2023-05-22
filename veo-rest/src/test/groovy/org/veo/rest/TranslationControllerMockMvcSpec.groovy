@@ -20,6 +20,7 @@ package org.veo.rest
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
+import org.veo.rest.common.ClientNotActiveException
 
 /**
  * Integration test for the translation controller.
@@ -126,5 +127,14 @@ class TranslationControllerMockMvcSpec extends VeoMvcSpec {
         then: "the matching language is returned"
         translations.lang.de != null
         translations.lang.en == null
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "get translations without an active client"() {
+        when: "a request for translations"
+        def translations = parseJson(get('/translations?languages=de', 403))
+
+        then: "no translations are returned"
+        ClientNotActiveException e = thrown()
     }
 }
