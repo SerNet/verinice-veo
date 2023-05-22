@@ -26,7 +26,7 @@ class DomainCreationRestTest extends VeoRestTest {
     String unitId
 
     def setup() {
-        unitId = postNewUnit("domain test unit").resourceId
+        unitId = postNewUnit().resourceId
     }
 
     def "create new domain"() {
@@ -52,6 +52,12 @@ class DomainCreationRestTest extends VeoRestTest {
         when: "defining an element type in the domain"
         postAssetObjectSchema(domainId)
 
+        and: "adding the domain to the unit"
+        get("/units/$unitId").with{
+            body.domains.add([targetUri: "/domains/$domainId"])
+            put("/units/$unitId", body, getETag())
+        }
+
         then: "an element can be created in the domain"
         post("/assets", [
             name: "main server",
@@ -70,9 +76,6 @@ class DomainCreationRestTest extends VeoRestTest {
         ]).body.targetUri
 
         and: "applying the template in another client"
-        def secondaryClientUnitId = post("/units", [
-            name: "secondary client unit"
-        ], 201, SECONDARY_CLIENT_USER).body.resourceId
         post("$templateUri/createdomains", null, 204, ADMIN)
 
         and: "looking up secondary client's domain"
@@ -84,6 +87,12 @@ class DomainCreationRestTest extends VeoRestTest {
         secondaryClientDomain.templateVersion == "1.0.0"
 
         and: "an element can be created in the domain"
+        def secondaryClientUnitId = post("/units", [
+            name: "secondary client unit",
+            domains: [
+                [targetUri: secondaryClientDomain._self]
+            ]
+        ], 201, SECONDARY_CLIENT_USER).body.resourceId
         post("/assets", [
             name: "gain server",
             owner: [targetUri: "http://localhost/units/$secondaryClientUnitId"],

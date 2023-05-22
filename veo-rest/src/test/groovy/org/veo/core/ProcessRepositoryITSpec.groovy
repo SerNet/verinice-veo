@@ -56,8 +56,9 @@ class ProcessRepositoryITSpec extends VeoSpringSpec {
     private Domain domain
 
     def setup() {
-        client = clientRepository.save(newClient())
-        domain = newDomain(client)
+        client = clientRepository.save(newClient {
+            domain = newDomain(it)
+        })
         unit = unitRepository.save(newUnit(this.client))
     }
 

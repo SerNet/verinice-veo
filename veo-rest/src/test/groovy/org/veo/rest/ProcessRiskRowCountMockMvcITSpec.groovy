@@ -104,9 +104,9 @@ class ProcessRiskRowCountMockMvcITSpec extends VeoMvcSpec {
             })
         }).idAsString
 
+        clientRepository.save(client)
         unit = newUnit(client)
         unitId = unitRepository.save(unit).idAsString
-        clientRepository.save(client)
     }
 
     def "Searching for 10 processes with embedded risks"() {

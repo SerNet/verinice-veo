@@ -45,6 +45,8 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         scope.domains >> []
         scope.domainTemplates >> []
 
+        unit.domains >> []
+
         unitRepository.findById(_) >> Optional.of(existingUnit)
         scopeRepository.findByIds([] as Set) >> []
     }

@@ -93,7 +93,7 @@ class UnitRestTestITSpec extends VeoRestTest {
         def user = defaultUserName
 
         given: "a unit"
-        def postResponseBody = postNewUnit(UNIT_NAME)
+        def postResponseBody = postNewUnit()
         def getResponse = get("/units/${postResponseBody.resourceId}")
 
         when: "the unit is updated (roundtrip test)"
@@ -126,7 +126,7 @@ class UnitRestTestITSpec extends VeoRestTest {
 
     def "Delete a unit"() {
         given: "a unit"
-        def postResponse = postNewUnit(UNIT_NAME)
+        def postResponse = postNewUnit()
         getUnit(postResponse.resourceId)
 
         when: "the unit is deleted"

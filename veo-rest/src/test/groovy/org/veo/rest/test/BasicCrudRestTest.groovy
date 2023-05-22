@@ -30,8 +30,8 @@ class BasicCrudRestTest extends VeoRestTest {
 
     def setup() {
         unitName = 'CRUD test unit'
-        unitId = post("/units", ["name": unitName], 201).body.resourceId
         domainId = get("/domains").body.find{it.name == "DS-GVO"}.id
+        unitId = postNewUnit(unitName).resourceId
 
         UUID.fromString(unitId)
     }

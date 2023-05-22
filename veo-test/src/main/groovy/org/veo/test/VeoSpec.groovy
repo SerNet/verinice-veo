@@ -268,6 +268,7 @@ abstract class VeoSpec extends Specification {
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Unit") Closure init = null) {
         return factory.createUnit(null, null).tap {
             it.client = client
+            it.domains = new HashSet<>(client?.domains ?: [])
             VeoSpec.execute(it, init)
             name(it)
             version(it)

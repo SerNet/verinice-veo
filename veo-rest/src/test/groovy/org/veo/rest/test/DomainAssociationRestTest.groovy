@@ -23,7 +23,7 @@ class DomainAssociationRestTest extends VeoRestTest {
     String testDomainId
 
     def setup() {
-        unitUri = "$baseUrl/units/" + postNewUnit("some unit").resourceId
+        unitUri = "$baseUrl/units/" + postNewUnit().resourceId
         dsgvoDomainId = domains.find { it.name == "DS-GVO" }.id
         testDomainId = domains.find { it.name == "test-domain" }.id
     }

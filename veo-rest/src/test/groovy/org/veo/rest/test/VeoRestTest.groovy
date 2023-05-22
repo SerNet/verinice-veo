@@ -234,14 +234,13 @@ class VeoRestTest extends Specification {
         get("/units/${id}").body
     }
 
-    def postNewUnit(String unitName, List domainIDs = domains.collect{
-                [targetUri: "/domains/${it.id}"]
-            }) {
-        def response = post("/units", [
+    def postNewUnit(String unitName = "${this.class.simpleName} unit", List<String> domainIDs = getDomains()*.id) {
+        post("/units", [
             name: unitName,
-            domains: domainIDs
-        ])
-        response.body
+            domains: domainIDs.collect {
+                [targetUri: "/domains/${it}"]
+            }
+        ]).body
     }
 
     def getDomains() {

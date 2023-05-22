@@ -99,9 +99,9 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             })
         }).idAsString
 
+        clientRepository.save(client)
         unit = newUnit(client)
         unitId = unitRepository.save(unit).idAsString
-        clientRepository.save(client)
 
         process = newProcess(unit) {
             associateWithDomain(domain, "NormalProcess", "NEW")

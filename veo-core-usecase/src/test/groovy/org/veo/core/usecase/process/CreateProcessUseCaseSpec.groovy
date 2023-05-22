@@ -55,6 +55,8 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
         process.links >> []
         process.owningClient >> Optional.of(existingClient)
 
+        unit.domains >> []
+
         unitRepository.findById(_) >> Optional.of(existingUnit)
         scopeRepository.findByIds([] as Set) >> []
     }

@@ -17,10 +17,6 @@
  ******************************************************************************/
 package org.veo.rest.test
 
-import org.springframework.core.env.Profiles
-import org.springframework.test.context.ActiveProfiles
-
-import groovy.json.JsonOutput
 import groovy.util.logging.Slf4j
 
 @Slf4j
@@ -33,9 +29,9 @@ class ReadOnlyUserRestTest extends VeoRestTest {
     String eTag
 
     def setup() {
-        unitId = post("/units", [name: "rest test unit"]).body.resourceId
-        unitUri = "$baseUrl/units/$unitId"
         domainId = get("/domains").body.find{it.name == "DS-GVO"}.id
+        unitId = postNewUnit().resourceId
+        unitUri = "$baseUrl/units/$unitId"
 
         processId = post("/processes", [
             name: "data processing",

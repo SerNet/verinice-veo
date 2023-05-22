@@ -27,10 +27,8 @@ class DomainUpdateRestTest extends VeoRestTest {
     String oldDomainTemplateId
     String newDomainTemplateId
     String templateName
-    String unitId
 
     def setup() {
-        unitId = postNewUnit("you knit").resourceId
         templateName = "domain update test template ${UUID.randomUUID()}"
 
         def template = getTemplate()
@@ -43,6 +41,7 @@ class DomainUpdateRestTest extends VeoRestTest {
     def "updates client to new domain template version and migrates elements"() {
         given: "a scope and a process linked to it in the old domain"
         post("/domaintemplates/$oldDomainTemplateId/createdomains", null, 204, ADMIN)
+        def unitId = postNewUnit().resourceId
         def oldDomainId = get("/domains").body.find { it.name == templateName }.id
         def scopeId = post("/scopes", [
             name: "target scope",

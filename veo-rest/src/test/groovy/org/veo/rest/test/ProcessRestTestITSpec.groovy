@@ -22,10 +22,8 @@ class ProcessRestTestITSpec extends VeoRestTest{
     String dsgvoDomainId
 
     def setup() {
-        unitId = post("/units", [
-            name: "process test unit"
-        ]).body.resourceId
         dsgvoDomainId = domains.find { it.name == "DS-GVO" }.id
+        unitId = postNewUnit().resourceId
     }
 
     def "Create, retrieve, update & delete process"() {

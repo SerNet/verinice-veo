@@ -29,8 +29,8 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
     String domainId
 
     def setup() {
-        unitId = post("/units", [name: "process risk rest test unit"]).body.resourceId
         domainId = get("/domains").body.find{it.name == "DS-GVO"}.id
+        unitId = postNewUnit().resourceId
     }
 
     def "create and update process risk values"() {

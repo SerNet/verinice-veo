@@ -22,10 +22,8 @@ class DeletionRestTest extends VeoRestTest {
     String domainId
 
     def setup() {
-        unitUri = "$baseUrl/units/" + post("/units", [
-            name: "deletion test unit"
-        ]).body.resourceId
         domainId = get("/domains").body.find{it.name == "DS-GVO"}.id
+        unitUri = "$baseUrl/units/" + postNewUnit().resourceId
     }
 
     def "link is removed when target element is deleted"() {
@@ -88,9 +86,7 @@ class DeletionRestTest extends VeoRestTest {
         ]).body.resourceId
 
         and: "a process in another unit that is linked to the scenario"
-        def otherUnitUri = "$baseUrl/units/" + post("/units", [
-            name: "other unit"
-        ]).body.resourceId
+        def otherUnitUri = "$baseUrl/units/" + postNewUnit().resourceId
         def processId = post("/processes", [
             name: "process in other unit",
             owner: [targetUri: otherUnitUri],

@@ -114,7 +114,7 @@ class DomainRestTestITSpec extends VeoRestTest {
         def oldDomain = getDomains().find { it.name == "DS-GVO" }
 
         when: "we create a unit with elements and a risk"
-        def profileSourceUnitId = postNewUnit("the unit formerly known as demo unit").resourceId
+        def profileSourceUnitId = postNewUnit().resourceId
         def processId = post("/processes", [
             name   : "example process",
             domains: [

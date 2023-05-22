@@ -40,19 +40,13 @@ import groovy.util.logging.Slf4j
  * one instance of C-3.
  */
 class IncarnateCatalogRestTestITSpec extends VeoRestTest {
-
-    public static final String UNIT_NAME = 'Testunit'
-
-    def postResponse
     String unitId
 
+    def setup() {
+        unitId = postNewUnit().resourceId
+    }
+
     def "Create linked elements from a catalog"() {
-        log.info("Create a unit and get ApplyCatalogItems info for Items")
-
-        given:
-        postResponse = postNewUnit(UNIT_NAME)
-        unitId = postResponse.resourceId
-
         when: "the catalog is retrieved"
         def catalogId = extractLastId(getDomains().find { it.name == "test-domain" }.catalogs.first().targetUri)
         def catalog = getCatalog(catalogId)
@@ -107,8 +101,6 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
 
     def "Create elements with reversed links from catalog"() {
         given:
-        def postResponse = postNewUnit(UNIT_NAME)
-        unitId = postResponse.resourceId
         def domainId = getDomains().find { it.name == "test-domain" }.id
 
         when: "the catalog is retrieved"
@@ -157,11 +149,6 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
     }
 
     def "Create elements with reversed links from catalog to wrong element"() {
-        given:
-        def postResponse = postNewUnit(UNIT_NAME)
-        unitId = postResponse.resourceId
-        def domainId = getDomains().find { it.name == "test-domain" }.id
-
         when: "the catalog is retrieved"
         def catalogId = extractLastId(getDomains().find { it.name == "test-domain" }.catalogs.first().targetUri)
         def catalog = getCatalog(catalogId)
@@ -187,12 +174,6 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
     }
 
     def "Create linked elements from the dsgvo catalog"() {
-        log.info("Create a unit and get ApplyCatalogItems info for Items")
-
-        given:
-        postResponse = postNewUnit(UNIT_NAME)
-        unitId = postResponse.resourceId
-
         when: "the catalog is retrieved"
         def catalogId = extractLastId(getDomains().find { it.name == "DS-GVO" }.catalogs.first().targetUri)
         def catalog = getCatalog(catalogId)
@@ -267,10 +248,6 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
     def "Create all linked elements from the dsgvo catalog in one step"() {
         log.info("Create all linked elements from the dsgvo catalog in one step")
 
-        given:
-        postResponse = postNewUnit(UNIT_NAME)
-        unitId = postResponse.resourceId
-
         when: "the catalog is retrieved"
         def dsgvoId = getDomains().find { it.name == "DS-GVO" }.id
         def catalogId = extractLastId(getDomains().find { it.name == "DS-GVO" }.catalogs.first().targetUri)
@@ -286,8 +263,8 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         def allItems = catalog.catalogItems.collect{extractLastId(it.targetUri)}.join(',')
         log.debug("==> allItems: {}", allItems)
 
-        def incarnationDescription = get("/units/${postResponse.resourceId}/incarnations?itemIds=${allItems}").body
-        def elementResults = postIncarnationDescriptions(postResponse.resourceId, incarnationDescription)
+        def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${allItems}").body
+        def elementResults = postIncarnationDescriptions(unitId, incarnationDescription)
 
         log.debug("==> elementResults: {}", elementResults)
 

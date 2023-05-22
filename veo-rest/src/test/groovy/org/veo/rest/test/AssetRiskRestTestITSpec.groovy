@@ -23,8 +23,8 @@ class AssetRiskRestTestITSpec extends VeoRestTest{
     String domainId
 
     def setup() {
-        unitId = post("/units", [name: "asset risk rest test unit"]).body.resourceId
         domainId = get("/domains").body.find{it.name == "DS-GVO"}.id
+        unitId = postNewUnit().resourceId
     }
 
     def "create and update an asset risk"() {

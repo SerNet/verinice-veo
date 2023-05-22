@@ -25,12 +25,11 @@ class EvaluationRestTest extends VeoRestTest {
     def decisions
 
     def setup() {
-        unitId = post("/units", [name: "decision rest test unit"]).body.resourceId
-        unitUri = "http://localhost/units/" + unitId
-
         def domain = get("/domains").body.find { it.name == "DS-GVO" }
         domainId = domain.id
         decisions = domain.decisions
+        unitId = postNewUnit().resourceId
+        unitUri = "http://localhost/units/" + unitId
     }
 
     def "piaMandatory decision result is persisted"() {

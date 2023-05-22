@@ -49,7 +49,12 @@ class BasicCrudITSpec extends VeoMvcSpec {
     @WithUserDetails("user@domain.example")
     def "Basic CRUD example"() {
         when:
-        def result = parseJson(post('/units', [name: 'My CRUD unit']))
+        def result = parseJson(post('/units', [
+            name: 'My CRUD unit',
+            domains: [
+                [targetUri: "/domains/$domainId"]
+            ]
+        ]))
 
         then:
         result != null

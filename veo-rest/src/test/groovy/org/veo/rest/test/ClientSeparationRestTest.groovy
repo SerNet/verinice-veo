@@ -27,11 +27,21 @@ class ClientSeparationRestTest extends VeoRestTest {
     private String secondaryClientDomainId
 
     def setup() {
-        defaultClientUnitUrl = "$baseUrl/units/" + post("/units", [name: "default client's unit"], 201, UserType.DEFAULT).body.resourceId
         defaultClientDomainId = get("/domains", 200, UserType.DEFAULT).body.find{it.name == "test-domain"}.id
+        defaultClientUnitUrl = post("/units", [
+            name: "default client's unit",
+            domains: [
+                [targetUri: "/domains/$defaultClientDomainId"],
+            ],
+        ], 201, UserType.DEFAULT).location
 
-        secondaryClientUnitUrl = "$baseUrl/units/" + post("/units", [name: "secondary client's unit"], 201, UserType.SECONDARY_CLIENT_USER).body.resourceId
         secondaryClientDomainId = get("/domains", 200, UserType.SECONDARY_CLIENT_USER).body.find{it.name == "test-domain"}.id
+        secondaryClientUnitUrl = post("/units", [
+            name: "secondary client's unit",
+            domains: [
+                [targetUri: "/domains/$secondaryClientDomainId"],
+            ],
+        ], 201, UserType.SECONDARY_CLIENT_USER).location
     }
 
     def "secondary client's element cannot be accessed"() {

@@ -42,6 +42,7 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def client = createTestClient()
         testDomainId = createTestDomain(client, TEST_DOMAIN_TEMPLATE_ID).idAsString
         dsgvoTestDomainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
+        client = clientDataRepository.findById(client.idAsString).get()
         unitId = unitRepository.save(newUnit(client)).idAsString
     }
 
