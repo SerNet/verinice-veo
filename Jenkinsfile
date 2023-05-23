@@ -271,7 +271,7 @@ pipeline {
                                 -e VEO_MESSAGE_ROUTINGKEYPREFIX=\$VEO_MESSAGE_ROUTINGKEYPREFIX\
                                 -e VEO_MESSAGE_QUEUES_VEO=\$VEO_MESSAGE_QUEUES_VEO\
                                 -e VEO_MESSAGE_QUEUES_VEOSUBSCRIPTIONS=\$VEO_MESSAGE_QUEUES_VEOSUBSCRIPTIONSVEO_MESSAGE_QUEUES_VEOSUBSCRIPTIONS\
-                                -e VEO_MESAGE_CONSUME_AUTODELETE=true\
+                                -e VEO_MESSAGE_CONSUME_AUTODELETE=true\
                                 -e 'JDK_JAVA_OPTIONS=-Dhttp.proxyHost=cache.int.sernet.de -Dhttp.proxyPort=3128 -Dhttps.proxyHost=cache.int.sernet.de -Dhttps.proxyPort=3128 -Dhttps.proxySet=true -Dhttp.proxySet=true'\
                                 -e SPRING_PROFILES_ACTIVE=background-tasks") { veo ->
                                                     docker.image(imageForGradleStages).inside("${dockerArgsForGradleStages}\
