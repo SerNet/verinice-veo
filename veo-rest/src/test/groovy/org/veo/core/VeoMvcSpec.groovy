@@ -123,7 +123,10 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
             throw asyncResult.resolvedException
         }
         if (expectSuccessfulRequest) {
-            assert asyncResult.request.asyncStarted
+            asyncResult.request.with {
+                asyncActions.andExpect(status().is2xxSuccessful())
+                assert asyncStarted
+            }
         } else if (!asyncResult.request.asyncStarted) {
             // The async request may fail to start if the request is invalid (e.g. has invalid HTTP header or params).
             asyncActions.andExpect(status().is(expectedStatusCode))
