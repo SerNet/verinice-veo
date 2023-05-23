@@ -64,6 +64,8 @@ public class SchemaExtender {
   public static final String RISK_VALUES = "riskValues";
   public static final String ADDITIONAL_PROPERTIES = "additionalProperties";
   public static final String TYPE = "type";
+  private static final String EXTERNAL_DOCUMENT_PATTERN =
+      ExternalDocumentAttributeDefinition.PROTOCOL_PATTERN + ".+";
   private final ObjectMapper mapper = new ObjectMapper();
 
   public void extendSchema(JsonNode schema, String elementType, Set<Domain> domains) {
@@ -303,7 +305,7 @@ public class SchemaExtender {
     } else if (attributeDefinition instanceof ExternalDocumentAttributeDefinition) {
       schema.put("type", "string");
       schema.put("format", "uri");
-      schema.put("pattern", ExternalDocumentAttributeDefinition.PROTOCOL_PATTERN);
+      schema.put("pattern", EXTERNAL_DOCUMENT_PATTERN);
     } else if (attributeDefinition instanceof IntegerAttributeDefinition) {
       schema.put("type", "integer");
     } else if (attributeDefinition instanceof ListAttributeDefinition listDefinition) {
