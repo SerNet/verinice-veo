@@ -1106,7 +1106,9 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 
 --------------------------------------------------------------------------------
 
-23. Group: com.networknt  Name: json-schema-validator  Version: 1.0.81
+23. Group: com.networknt  Name: json-schema-validator  Version: 1.0.82
+
+Manifest license URL: https://www.apache.org/licenses/LICENSE-2.0
 
 POM Project URL: https://github.com/networknt/json-schema-validator
 
@@ -23001,5 +23003,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Fri May 19 09:12:42 CEST 2023.
+This report was generated at Tue May 23 11:59:21 CEST 2023.
 
