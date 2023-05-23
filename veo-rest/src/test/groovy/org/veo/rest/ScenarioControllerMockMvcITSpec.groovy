@@ -26,6 +26,7 @@ import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Unit
+import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.usecase.common.ETag
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ScenarioRepositoryImpl
@@ -61,6 +62,11 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
             domain = newDomain(client) {
                 abbreviation = "D"
                 name = "Domain"
+                applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+                    subTypes = [
+                        SomeProcess: newSubTypeDefinition()
+                    ]
+                })
                 applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
                     subTypes = [
                         WorstCase: newSubTypeDefinition()
@@ -231,6 +237,42 @@ class ScenarioControllerMockMvcITSpec extends VeoMvcSpec {
 
         then: "the scenario is deleted"
         scenarioRepository.findById(scenario.id).empty
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "delete a scenario that is used by a risk"() {
+        given: "a scenario that is used by a risk"
+        def scenarioId = parseJson(post("/scenarios", [
+            name: "scenery-oh",
+            owner: [targetUri: "/units/$unit.idAsString"]
+        ])).resourceId
+        def processId = parseJson(post("/processes", [
+            name: "possessive process",
+            owner: [targetUri: "/units/$unit.idAsString"],
+            domains: [
+                (domain.idAsString): [
+                    subType: "SomeProcess",
+                    status: "NEW"
+                ]
+            ]
+        ])).resourceId
+        post("/processes/$processId/risks", [
+            scenario: [targetUri: "/scenarios/$scenarioId"],
+            domains: [
+                (domain.idAsString): [
+                    reference: [targetUri: "/domains/$domain.idAsString"]
+                ]
+            ]
+        ])
+
+        when: "the scenario is deleted"
+        delete("/scenarios/$scenarioId")
+
+        and: "trying to retrieve the risk"
+        get("/processes/$processId/risks/$scenarioId", 404)
+
+        then:
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")
