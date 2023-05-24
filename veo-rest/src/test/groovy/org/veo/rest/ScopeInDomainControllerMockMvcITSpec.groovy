@@ -213,6 +213,60 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
+    def "member list can be updated"() {
+        given: "a scope with an asset as a member"
+        def assetId = parseJson(post("/domains/$testDomainId/assets", [
+            name: "Member one",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "Server",
+            status: "RUNNING",
+        ])).resourceId
+        def scopeId = parseJson(post("/domains/$testDomainId/scopes", [
+            name: "Data Inc.",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "Company",
+            status: "NEW",
+            members: [
+                [targetUri: "/assets/$assetId"]
+            ]
+        ])).resourceId
+
+        when: "adding a person as a second member"
+        def personId = parseJson(post("/domains/$testDomainId/persons", [
+            name: "Member two",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "Programmer",
+            status: "CODING",
+        ])).resourceId
+        get("/domains/$testDomainId/scopes/$scopeId").with {
+            def scope = parseJson(it)
+            scope.members.add([targetUri: "/persons/$personId"])
+            put(scope._self, scope, ['If-Match': getETag(it)])
+        }
+
+        then: "both members are present"
+        with(parseJson(get("/domains/$testDomainId/scopes/$scopeId"))) {
+            members*.targetUri =~ [
+                "http://localhost/assets/$assetId",
+                "http://localhost/persons/$personId",
+            ]
+        }
+
+        when: "removing the asset from the scope"
+        get("/domains/$testDomainId/scopes/$scopeId").with {
+            def scope = parseJson(it)
+            scope.members.removeIf { it.targetUri.contains("asset") }
+            put(scope._self, scope, ['If-Match': getETag(it)])
+        }
+
+        then: "only the person remains"
+        with(parseJson(get("/domains/$testDomainId/scopes/$scopeId"))) {
+            members*.targetUri =~ [
+                "http://localhost/persons/$personId",
+            ]
+        }
+    }
+
     def "members can be paginated"() {
         given: "three elements in test-domain"
         def assetUri = post("/domains/$testDomainId/assets", [

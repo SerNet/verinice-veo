@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scope;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.ScopeRepository;
@@ -27,5 +28,11 @@ public class UpdateScopeInDomainUseCase extends UpdateElementInDomainUseCase<Sco
   public UpdateScopeInDomainUseCase(
       DomainRepository domainRepository, ScopeRepository repo, Decider decider) {
     super(domainRepository, repo, decider);
+  }
+
+  @Override
+  protected void applyChanges(Scope source, Scope target, Domain domain) {
+    super.applyChanges(source, target, domain);
+    target.setMembers(source.getMembers());
   }
 }
