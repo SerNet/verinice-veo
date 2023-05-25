@@ -88,7 +88,7 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
     }
 
     // remove elements from scope members:
-    Set<Scope> scopes = scopeDataRepository.findDistinctByMemberIds(elementUUIDs);
+    Set<Scope> scopes = scopeDataRepository.findDistinctOthersByMemberIds(elementUUIDs);
     scopes.stream()
         .map(ScopeData.class::cast)
         .forEach(scopeData -> scopeData.removeMembersById(elementKeys));
@@ -138,7 +138,7 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
 
   private void deleteLinksByTargets(Set<String> targetElementIds) {
     // using deleteAll() to utilize batching and optimistic locking:
-    var links = linkDataRepository.findLinksByTargetIds(targetElementIds);
+    var links = linkDataRepository.findLinksFromOtherElementsByTargetIds(targetElementIds);
     linkDataRepository.deleteAll(links);
     links.forEach(CustomLink::remove);
   }

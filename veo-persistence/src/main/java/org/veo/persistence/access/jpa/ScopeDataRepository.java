@@ -37,8 +37,8 @@ public interface ScopeDataRepository extends ScopeRiskAffectedDataRepository {
   @Query(
       "select distinct e from #{#entityName} as e "
           + "inner join e.members m "
-          + "where m.dbId IN ?1")
-  Set<Scope> findDistinctByMemberIds(Set<String> dbIds);
+          + "where m.dbId in ?1 and e.dbId not in ?1")
+  Set<Scope> findDistinctOthersByMemberIds(Set<String> dbIds);
 
   @Query(
       "select count(s) > 0 from #{#entityName} as s "
