@@ -28,7 +28,10 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ExternalDocumentAttributeDefinition extends AttributeDefinition {
-  public static final String PROTOCOL_PATTERN = "^(https?|ftp)://";
+  private static final String[] SUPPORTED_PROTOCOLS =
+      new String[] {"http", "https", "ftp", "ftps", "smb"};
+  public static final String PROTOCOL_PATTERN =
+      "^(" + String.join("|", SUPPORTED_PROTOCOLS) + ")://";
   public static final String TYPE = "externalDocument";
   private static final Pattern PROTOCOL_PATTERN_COMPILED = Pattern.compile(PROTOCOL_PATTERN);
 
@@ -41,7 +44,9 @@ public class ExternalDocumentAttributeDefinition extends AttributeDefinition {
         throw new InvalidAttributeException("must be a valid URI");
       }
       if (!PROTOCOL_PATTERN_COMPILED.matcher(str).find()) {
-        throw new InvalidAttributeException("must be http, https or ftp URL");
+        throw new InvalidAttributeException(
+            "URL protocol missing or not supported (must be one of %s)"
+                .formatted(String.join(", ", SUPPORTED_PROTOCOLS)));
       }
     } else throw new InvalidAttributeException("must be a string");
   }

@@ -148,6 +148,8 @@ class AttributeDefinitionSpec extends Specification{
         definition.validate("http://test.example/doc.html")
         definition.validate("https://test.example/doc.html")
         definition.validate("ftp://test.example/doc.html")
+        definition.validate("ftps://test.example/doc.html")
+        definition.validate("smb://test.example/doc.html")
 
         then:
         noExceptionThrown()
@@ -160,6 +162,12 @@ class AttributeDefinitionSpec extends Specification{
 
         when: "validating a URL with an invalid protocol"
         definition.validate("about://test.example/doc.html")
+
+        then:
+        thrown(InvalidAttributeException)
+
+        when: "validating a URL with an another invalid protocol"
+        definition.validate("file:///tmp/some-file")
 
         then:
         thrown(InvalidAttributeException)
