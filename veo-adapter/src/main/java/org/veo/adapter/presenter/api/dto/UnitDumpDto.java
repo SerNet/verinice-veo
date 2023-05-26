@@ -19,17 +19,62 @@ package org.veo.adapter.presenter.api.dto;
 
 import java.util.Set;
 
-import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
-import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
+import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
+import org.veo.adapter.presenter.api.dto.full.FullControlDto;
+import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
+import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
+import org.veo.adapter.presenter.api.dto.full.FullIncidentDto;
+import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
+import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
+import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
+import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
+import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
+import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
+import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
+import org.veo.core.entity.Asset;
+import org.veo.core.entity.Control;
+import org.veo.core.entity.Document;
+import org.veo.core.entity.Incident;
+import org.veo.core.entity.Person;
+import org.veo.core.entity.Process;
+import org.veo.core.entity.Scenario;
+import org.veo.core.entity.Scope;
+
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UnitDumpDto {
-  private final FullUnitDto unit;
-  private final Set<FullDomainDto> domains;
-  private final Set<AbstractElementDto> elements;
-  private final Set<AbstractRiskDto> risks;
+  private FullUnitDto unit;
+  private Set<FullDomainDto> domains;
+
+  @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+  @JsonSubTypes({
+    @Type(value = FullAssetDto.class, name = Asset.SINGULAR_TERM),
+    @Type(value = FullControlDto.class, name = Control.SINGULAR_TERM),
+    @Type(value = FullDocumentDto.class, name = Document.SINGULAR_TERM),
+    @Type(value = FullIncidentDto.class, name = Incident.SINGULAR_TERM),
+    @Type(value = FullPersonDto.class, name = Person.SINGULAR_TERM),
+    @Type(value = FullProcessDto.class, name = Process.SINGULAR_TERM),
+    @Type(value = FullScenarioDto.class, name = Scenario.SINGULAR_TERM),
+    @Type(value = FullScopeDto.class, name = Scope.SINGULAR_TERM),
+  })
+  private Set<AbstractElementDto> elements;
+
+  @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
+  @JsonSubTypes({
+    @Type(value = AssetRiskDto.class),
+    @Type(value = ProcessRiskDto.class),
+    @Type(value = ScopeRiskDto.class),
+  })
+  private Set<AbstractRiskDto> risks;
 }
