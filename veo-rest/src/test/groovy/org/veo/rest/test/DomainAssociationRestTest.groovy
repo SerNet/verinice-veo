@@ -19,13 +19,9 @@ package org.veo.rest.test
 
 class DomainAssociationRestTest extends VeoRestTest {
     String unitUri
-    String dsgvoDomainId
-    String testDomainId
 
     def setup() {
         unitUri = "$baseUrl/units/" + postNewUnit().resourceId
-        dsgvoDomainId = domains.find { it.name == "DS-GVO" }.id
-        testDomainId = domains.find { it.name == "test-domain" }.id
     }
 
     def "can associate element with domains"() {

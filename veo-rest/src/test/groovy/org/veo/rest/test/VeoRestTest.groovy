@@ -136,6 +136,9 @@ class VeoRestTest extends Specification {
     @Value('${veo.message.exchanges.veo-subscriptions}')
     String exchange
 
+    String dsgvoDomainId
+    String testDomainId
+
     private userTokenCache = [:]
 
     static boolean clientsCreated = false
@@ -172,6 +175,8 @@ class VeoRestTest extends Specification {
             }
             clientsCreated = true
         }
+        dsgvoDomainId = getDomains().find { it.name == "DS-GVO" }.id
+        testDomainId = getDomains().find { it.name == "test-domain" }.id
     }
 
     def sendClientChangeEvent(Map data) {

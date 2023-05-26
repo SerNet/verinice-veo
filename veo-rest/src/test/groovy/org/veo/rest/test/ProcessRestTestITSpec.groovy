@@ -19,10 +19,8 @@ package org.veo.rest.test
 
 class ProcessRestTestITSpec extends VeoRestTest{
     String unitId
-    String dsgvoDomainId
 
     def setup() {
-        dsgvoDomainId = domains.find { it.name == "DS-GVO" }.id
         unitId = postNewUnit().resourceId
     }
 
