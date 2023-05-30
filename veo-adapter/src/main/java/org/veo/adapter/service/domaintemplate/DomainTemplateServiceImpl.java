@@ -44,9 +44,6 @@ import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
-import org.veo.adapter.presenter.api.dto.RiskDomainAssociationDto;
-import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
-import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
@@ -60,25 +57,18 @@ import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
-import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Person;
-import org.veo.core.entity.Process;
-import org.veo.core.entity.ProcessRisk;
-import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.profile.ProfileRef;
-import org.veo.core.entity.risk.ProbabilityValueProvider;
-import org.veo.core.entity.risk.RiskValues;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.repository.DomainTemplateRepository;
@@ -196,7 +186,21 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
         demoUnitElements.stream()
             .map(e -> transformer.transformDto2Element(e, resolvingFactory))
             .toList();
-    transformRisks(client, resolvingFactory, domain, templateId, elements, demoUnitRisks);
+    Unit dummyOwner = factory.createUnit(UUID.randomUUID().toString(), null);
+    dummyOwner.setClient(client);
+    elements.forEach(
+        e -> {
+          log.debug("Process element {}", e);
+          e.setOwner(dummyOwner);
+          DomainTemplateService.updateVersion(e);
+        });
+    demoUnitRisks.forEach(
+        r -> {
+          log.debug("Transforming risk {}", r);
+          var risk = transformer.transformDto2Risk(r, resolvingFactory);
+          log.debug("Transformed risk: {}", risk);
+        });
+    dummyOwner.setClient(null);
     return elements;
   }
 
@@ -221,79 +225,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     } catch (IOException e) {
       log.error("Error reading profile from domain template", e);
       throw new InternalDataCorruptionException("Error reading profile from domain template.", e);
-    }
-  }
-
-  private void transformRisks(
-      Client client,
-      IdRefResolver resolver,
-      Domain domain,
-      String domainTemplateId,
-      Collection<Element> elements,
-      Set<AbstractRiskDto> demoUnitRisks) {
-    Unit dummyOwner = factory.createUnit(UUID.randomUUID().toString(), null);
-    dummyOwner.setClient(client);
-    elements.forEach(
-        e -> {
-          log.debug("Process element {}", e);
-          DomainTemplateService.updateVersion(e);
-        });
-    demoUnitRisks.forEach(r -> mapRisk(resolver, domain, domainTemplateId, dummyOwner, r));
-    dummyOwner.setClient(null);
-  }
-
-  private static void mapRisk(
-      IdRefResolver resolver,
-      Domain domain,
-      String domainTemplateId,
-      Unit dummyOwner,
-      AbstractRiskDto riskDto) {
-    log.debug("Transforming risk {}", riskDto);
-    Process p = resolver.resolve(((ProcessRiskDto) riskDto).getProcess().getId(), Process.class);
-    Scenario scenario = resolver.resolve(riskDto.getScenario().getId(), Scenario.class);
-    RiskDomainAssociationDto riskDomainData = riskDto.getDomains().get(domainTemplateId);
-    if (riskDomainData != null) {
-      p.setOwner(dummyOwner);
-      scenario.setOwner(dummyOwner);
-      ProcessRisk risk = p.obtainRisk(scenario, domain);
-      DomainTemplateService.updateVersion(risk);
-      Set<RiskValues> riskValues = CategorizedRiskValueMapper.map(riskDto.getDomains());
-      log.debug("transformed risk values: {}", riskValues);
-
-      riskValues.forEach(
-          it -> {
-            if (it.getDomainId().uuidValue().equals(domainTemplateId)) {
-              it.setDomainId(domain.getId());
-            }
-          });
-
-      risk.defineRiskValues(riskValues);
-      Optional.ofNullable(riskDto.getMitigation())
-          .ifPresent(
-              it -> {
-                Control mitigation = resolver.resolve(it.getId(), Control.class);
-                risk.mitigate(mitigation);
-              });
-      Optional.ofNullable(riskDto.getRiskOwner())
-          .ifPresent(
-              it -> {
-                Person riskOwner = resolver.resolve(it.getId(), Person.class);
-                risk.appoint(riskOwner);
-              });
-      p.setOwner(null);
-      scenario.setOwner(null);
-      log.debug("Transformed risk: {}", risk);
-      if (log.isDebugEnabled()) {
-        risk.getRiskDefinitions(domain)
-            .forEach(
-                rd -> {
-                  log.debug("Risk definition: {}", rd);
-                  ProbabilityValueProvider pp = risk.getProbabilityProvider(rd, domain);
-                  log.debug("Potential probability: {}", pp.getPotentialProbability());
-
-                  log.debug("Specific probability: {}", pp.getSpecificProbability());
-                });
-      }
     }
   }
 

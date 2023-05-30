@@ -46,7 +46,7 @@ public final class CategorizedRiskValueMapper {
         .collect(Collectors.toSet());
   }
 
-  private static Stream<RiskValues> toRiskValues(
+  public static Stream<RiskValues> toRiskValues(
       String domainId, Map<String, RiskValuesDto> riskDefinitions) {
     return riskDefinitions.entrySet().stream()
         .map(e -> toRiskValues(domainId, e.getKey(), e.getValue()));

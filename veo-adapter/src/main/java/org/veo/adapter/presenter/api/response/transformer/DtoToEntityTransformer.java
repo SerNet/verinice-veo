@@ -27,6 +27,8 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.NotImplementedException;
+
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.AbstractAssetDto;
 import org.veo.adapter.presenter.api.dto.AbstractAssetInDomainDto;
@@ -45,6 +47,7 @@ import org.veo.adapter.presenter.api.dto.AbstractPersonDto;
 import org.veo.adapter.presenter.api.dto.AbstractPersonInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto;
 import org.veo.adapter.presenter.api.dto.AbstractProcessInDomainDto;
+import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.AbstractScenarioDto;
 import org.veo.adapter.presenter.api.dto.AbstractScenarioInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
@@ -57,12 +60,18 @@ import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogDto;
 import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogItemDto;
+import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
+import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
+import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogDto;
 import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogItemDto;
+import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformLinkTailoringReference;
+import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
+import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CompositeElement;
@@ -81,8 +90,11 @@ import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.ProcessRisk;
+import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.aspects.SubTypeAspect;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
@@ -165,6 +177,63 @@ public final class DtoToEntityTransformer {
 
     target.setMembers(members);
     return target;
+  }
+
+  public AbstractRisk<?, ?> transformDto2Risk(AbstractRiskDto source, IdRefResolver idRefResolver) {
+    if (source instanceof AssetRiskDto ar) {
+      return transformDto2AssetRisk(ar, idRefResolver);
+    }
+    if (source instanceof ProcessRiskDto pr) {
+      return transformDto2ProcessRisk(pr, idRefResolver);
+    }
+    if (source instanceof ScopeRiskDto sr) {
+      return transformDto2ScopeRisk(sr, idRefResolver);
+    }
+    throw new NotImplementedException(
+        "Unsupported risk DTO type %s".formatted(source.getClass().getSimpleName()));
+  }
+
+  public AssetRisk transformDto2AssetRisk(AssetRiskDto source, IdRefResolver idRefResolver) {
+    var asset = idRefResolver.resolve(source.getAsset());
+    var risk = mapRisk(source, idRefResolver, asset);
+    // TODO-2150 map risk values
+    return risk;
+  }
+
+  public ProcessRisk transformDto2ProcessRisk(ProcessRiskDto source, IdRefResolver idRefResolver) {
+    var process = idRefResolver.resolve(source.getProcess());
+    var risk = mapRisk(source, idRefResolver, process);
+    risk.defineRiskValues(
+        source.getDomainsWithRiskValues().values().stream()
+            .flatMap(
+                domainAssociation ->
+                    CategorizedRiskValueMapper.toRiskValues(
+                        // domain ID used by DTO may differ from resolved domain's ID
+                        idRefResolver.resolve(domainAssociation.getReference()).getIdAsString(),
+                        domainAssociation.getRiskDefinitions()))
+            .collect(toSet()));
+    return risk;
+  }
+
+  public ScopeRisk transformDto2ScopeRisk(ScopeRiskDto source, IdRefResolver idRefResolver) {
+    var scope = idRefResolver.resolve(source.getScope());
+    var risk = mapRisk(source, idRefResolver, scope);
+    // TODO-2150 map risk values
+    return risk;
+  }
+
+  private static <
+          TElement extends RiskAffected<TElement, TRisk>,
+          TRisk extends AbstractRisk<TElement, TRisk>>
+      TRisk mapRisk(AbstractRiskDto source, IdRefResolver idRefResolver, TElement process) {
+    var domains =
+        source.getDomainReferences().stream().map(idRefResolver::resolve).collect(toSet());
+    var risk = process.obtainRisk(idRefResolver.resolve(source.getScenario()), domains);
+    risk.mitigate(
+        source.getMitigation() != null ? idRefResolver.resolve(source.getMitigation()) : null);
+    risk.appoint(
+        source.getRiskOwner() != null ? idRefResolver.resolve(source.getRiskOwner()) : null);
+    return risk;
   }
 
   public DomainTemplate transformTransformDomainTemplateDto2DomainTemplate(
