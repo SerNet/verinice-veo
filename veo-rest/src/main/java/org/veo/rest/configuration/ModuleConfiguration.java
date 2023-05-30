@@ -132,6 +132,7 @@ import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domain.DeleteDecisionUseCase;
 import org.veo.core.usecase.domain.DeleteDomainUseCase;
+import org.veo.core.usecase.domain.ElementBatchCreator;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
@@ -1055,17 +1056,18 @@ public class ModuleConfiguration {
   ProfileApplier profileApplier(
       DomainTemplateService domainTemplateService,
       UnitRepository unitRepository,
+      ElementBatchCreator elementBatchCreator) {
+    return new ProfileApplier(domainTemplateService, unitRepository, elementBatchCreator);
+  }
+
+  @Bean
+  ElementBatchCreator elementBatchCreator(
       RepositoryProvider repositoryProvider,
       EventPublisher eventPublisher,
       Decider decider,
       ElementMigrationService elementMigrationService) {
-    return new ProfileApplier(
-        domainTemplateService,
-        unitRepository,
-        repositoryProvider,
-        eventPublisher,
-        decider,
-        elementMigrationService);
+    return new ElementBatchCreator(
+        repositoryProvider, eventPublisher, decider, elementMigrationService);
   }
 
   @Bean

@@ -46,8 +46,9 @@ class ProfileApplierSpec extends Specification {
     RepositoryProvider repositoryProvider = Mock()
     Decider decider = Mock()
     ElementMigrationService elementMigrationService = Mock()
+    ElementBatchCreator elementBatchCreator = new ElementBatchCreator(repositoryProvider, eventPublisher, decider, elementMigrationService)
 
-    ProfileApplier profileApplier = new ProfileApplier(domainTemplateService, unitRepository, repositoryProvider, eventPublisher, decider, elementMigrationService)
+    ProfileApplier profileApplier = new ProfileApplier(domainTemplateService, unitRepository, elementBatchCreator)
 
     def "apply a profile to a unit"() {
         given: "starting values for a unit"
