@@ -58,6 +58,8 @@ public class UpdateAllClientDomainsUseCase
   @Override
   public EmptyOutput execute(InputData input) {
     Set<Domain> newDomains = domainRepository.findAllByTemplateId(input.domainTemplateId);
+    int count = newDomains.size();
+    int migrationsDone = 0;
     for (Domain newDomain : newDomains) {
       Client client = newDomain.getOwner();
 
@@ -80,6 +82,10 @@ public class UpdateAllClientDomainsUseCase
               .orElseThrow();
       performMigration(client, domainToUpdate, newDomain);
       domainToUpdate.setActive(false);
+      migrationsDone++;
+      if (migrationsDone % 50 == 0) {
+        log.info("{} of {} migrations performed", migrationsDone, count);
+      }
     }
 
     return EmptyOutput.INSTANCE;
