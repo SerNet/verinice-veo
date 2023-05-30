@@ -74,7 +74,6 @@ import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.service.DomainTemplateIdGenerator;
 import org.veo.core.service.DomainTemplateService;
-import org.veo.core.usecase.service.IdRefResolver;
 
 import lombok.extern.slf4j.Slf4j;
 

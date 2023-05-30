@@ -124,4 +124,9 @@ public class IdRefResolvingFactory implements IdRefResolver, IdentifiableFactory
     }
     globalDomain = domain;
   }
+
+  /** Registers an existing entity, so it can be resolved using its ID. */
+  public void register(Identifiable entity) {
+    registry.put(TypedId.from(entity.getIdAsString(), entity.getModelInterface()), entity);
+  }
 }

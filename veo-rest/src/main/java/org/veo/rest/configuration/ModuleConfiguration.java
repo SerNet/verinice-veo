@@ -183,6 +183,7 @@ import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.core.usecase.unit.GetUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitsUseCase;
+import org.veo.core.usecase.unit.UnitImportUseCase;
 import org.veo.core.usecase.unit.UnitValidator;
 import org.veo.core.usecase.unit.UpdateUnitUseCase;
 import org.veo.persistence.CurrentUserProvider;
@@ -847,6 +848,12 @@ public class ModuleConfiguration {
       RepositoryProvider repositoryProvider,
       UnitRepository unitRepository) {
     return new GetUnitDumpUseCase(accountProvider, repositoryProvider, unitRepository);
+  }
+
+  @Bean
+  public UnitImportUseCase unitImportUseCase(
+      UnitRepository unitRepository, ElementBatchCreator elementBatchCreator) {
+    return new UnitImportUseCase(unitRepository, elementBatchCreator);
   }
 
   @Bean

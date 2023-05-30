@@ -58,7 +58,7 @@ public class ElementBatchCreator {
    * Persists a batch of transient elements (and contained risks) in a way that doesn't make JPA
    * throw up. Assigns designators.
    */
-  public void create(Collection<Element> elements, Unit unit) {
+  public void create(Collection<Element> elements, Unit unit, boolean migrate) {
     Map<Class<Element>, List<Element>> elementsGroupedByType = groupByType(elements);
     Map<Element, Set<CustomLink>> links = new HashMap<>();
 
@@ -87,7 +87,7 @@ public class ElementBatchCreator {
         // sort entries by model type to get predictable designators
         .sorted(Comparator.comparing(entry -> entry.getKey().getSimpleName()))
         .flatMap(entry -> entry.getValue().stream())
-        .forEach(e -> prepareElement(e, unit, counter));
+        .forEach(e -> prepareElement(e, unit, counter, migrate));
     elementsGroupedByType.forEach(this::saveElements);
 
     links.forEach(
@@ -113,7 +113,7 @@ public class ElementBatchCreator {
     elements.stream()
         .filter(pr -> pr instanceof Process)
         .forEach(it -> eventPublisher.publish(new RiskAffectingElementChangeEvent(it, this)));
-    log.info("{} profile elements added to unit {}", elements.size(), unit.getIdAsString());
+    log.info("{} elements added to unit {}", elements.size(), unit.getIdAsString());
   }
 
   @SuppressWarnings("unchecked")
@@ -129,19 +129,21 @@ public class ElementBatchCreator {
     log.debug("Done");
   }
 
-  private void prepareElement(Element element, Unit unit, AtomicInteger counter) {
+  private void prepareElement(Element element, Unit unit, AtomicInteger counter, boolean migrate) {
     log.debug("Preparing element {}:{}", element.getId(), element);
     element.setDesignator(DESIGNATOR_PREFIX + counter.incrementAndGet());
     element.setOwner(unit);
     // TODO VEO-1547 element migration will become obsolete once the profiles they come from get
     // migrated in the domain.
-    element.getDomains().forEach(d -> elementMigrationService.migrate(element, d));
+    if (migrate) {
+      element.getDomains().forEach(d -> elementMigrationService.migrate(element, d));
+    }
 
     if (element instanceof CompositeElement<?> ce) {
-      ce.getParts().forEach(e -> prepareElement(e, unit, counter));
+      ce.getParts().forEach(e -> prepareElement(e, unit, counter, migrate));
     } else if (element instanceof Scope scope) {
       Set<Element> members = scope.getMembers();
-      members.forEach(m -> prepareElement(m, unit, counter));
+      members.forEach(m -> prepareElement(m, unit, counter, migrate));
     }
   }
 }

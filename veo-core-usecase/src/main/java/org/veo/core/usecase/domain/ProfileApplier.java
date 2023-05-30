@@ -39,7 +39,7 @@ public class ProfileApplier {
     var profileElements = domainTemplateService.getProfileElements(domain, profile);
     unit.addToDomains(domain);
     unitRepository.save(unit);
-    elementBatchCreator.create(profileElements, unit);
+    elementBatchCreator.create(profileElements, unit, true);
     log.info("{} profile elements added to unit {}", profileElements.size(), unit.getIdAsString());
   }
 }

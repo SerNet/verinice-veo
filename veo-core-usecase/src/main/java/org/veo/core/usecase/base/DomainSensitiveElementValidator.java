@@ -28,7 +28,7 @@ import org.veo.core.entity.specification.ElementCustomAspectsHaveDomain;
 import org.veo.core.entity.specification.ElementDomainsAreSubsetOfUnitDomains;
 
 /** Validates elements considering domain-specific rules (e.g. element type definitions). */
-class DomainSensitiveElementValidator {
+public class DomainSensitiveElementValidator {
 
   public static void validate(Element element) {
     if (!new ElementDomainsAreSubsetOfUnitDomains().test(element)) {
