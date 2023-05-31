@@ -174,6 +174,7 @@ import org.veo.core.usecase.scope.GetScopeUseCase;
 import org.veo.core.usecase.scope.GetScopesUseCase;
 import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
 import org.veo.core.usecase.scope.UpdateScopeUseCase;
+import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteDemoUnitUseCase;
@@ -474,8 +475,16 @@ public class ModuleConfiguration {
 
   @Bean
   public UpdateUnitUseCase getPutUnitUseCase(
-      UnitRepositoryImpl repository, UnitValidator unitValidator) {
-    return new UpdateUnitUseCase(repository, unitValidator);
+      UnitRepositoryImpl repository,
+      UnitValidator unitValidator,
+      EntityStateMapper entityStateMapper,
+      RepositoryProvider repositoryProvider) {
+    return new UpdateUnitUseCase(repository, unitValidator, entityStateMapper, repositoryProvider);
+  }
+
+  @Bean
+  public EntityStateMapper getEntityStateMapper() {
+    return new EntityStateMapper();
   }
 
   @Bean

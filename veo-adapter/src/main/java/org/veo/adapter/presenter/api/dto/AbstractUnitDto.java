@@ -28,6 +28,7 @@ import org.veo.adapter.presenter.api.openapi.IdRefUnitParent;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.state.UnitState;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,7 +37,7 @@ import lombok.Data;
 /** Base transfer object for Units. Contains common data for all Unit DTOs. */
 @Data
 public abstract class AbstractUnitDto extends AbstractVersionedSelfReferencingDto
-    implements NameableDto {
+    implements NameableDto, UnitState {
 
   @Schema(description = "The name for the Unit.", example = "My unit", requiredMode = REQUIRED)
   private String name;

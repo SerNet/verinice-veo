@@ -20,7 +20,9 @@ package org.veo.core.usecase.unit;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.state.UnitState;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -48,15 +50,15 @@ public abstract class ChangeUnitUseCase
    */
   @Override
   public OutputData execute(InputData input) {
-    log.info("Updating unit with id {}", input.getChangedUnit().getId().uuidValue());
+    log.info("Updating unit with id {}", input.getChangedUnit().getId());
 
-    var storedUnit = unitRepository.getById(input.getChangedUnit().getId());
+    var storedUnit = unitRepository.getById(Key.uuidFrom(input.getChangedUnit().getId()));
     checkSameClient(storedUnit, input);
     checkETag(storedUnit, input);
     unitValidator.validateUpdate(input.changedUnit, storedUnit);
     var updatedUnit = update(storedUnit, input);
-    updatedUnit.version(input.username, storedUnit);
-    return output(save(updatedUnit, input));
+    save(updatedUnit, input);
+    return output(unitRepository.getById(Key.uuidFrom(input.getChangedUnit().getId())));
   }
 
   protected abstract Unit update(Unit storedUnit, InputData input);
@@ -88,9 +90,6 @@ public abstract class ChangeUnitUseCase
         input.getAuthenticatedClient().getId().uuidValue(),
         storedUnit.getClient().getId().uuidValue());
     storedUnit.checkSameClient(input.getAuthenticatedClient());
-    if (input.getChangedUnit().getClient() != null) {
-      input.getChangedUnit().checkSameClient(input.getAuthenticatedClient());
-    }
   }
 
   private void checkETag(Unit storedUnit, InputData input) {
@@ -110,7 +109,7 @@ public abstract class ChangeUnitUseCase
   @Valid
   @Value
   public static class InputData implements UseCase.InputData {
-    Unit changedUnit;
+    UnitState changedUnit;
     Client authenticatedClient;
     String eTag;
     String username;

@@ -22,6 +22,7 @@ import java.util.Set;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.state.UnitState;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagingConfiguration;
 
@@ -32,9 +33,12 @@ public class UnitValidator {
   private final GenericElementRepository genericElementRepository;
 
   /** Validates whether given stored unit may be replaced with given changed unit. */
-  public void validateUpdate(Unit changedunit, Unit storedUnit) {
+  public void validateUpdate(UnitState changedunit, Unit storedUnit) {
     storedUnit.getDomains().stream()
-        .filter(d -> !changedunit.getDomains().contains(d))
+        .filter(
+            d ->
+                changedunit.getDomains().stream()
+                    .noneMatch(idAndType -> idAndType.getId().equals(d.getIdAsString())))
         .toList()
         .forEach(removedDomain -> validateDomainRemoval(storedUnit, removedDomain));
   }

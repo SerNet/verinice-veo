@@ -19,9 +19,10 @@ package org.veo.core.usecase
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Key
-import org.veo.core.entity.Unit
 import org.veo.core.entity.specification.ClientBoundaryViolationException
+import org.veo.core.entity.state.UnitState
 import org.veo.core.usecase.common.ETag
+import org.veo.core.usecase.service.EntityStateMapper
 import org.veo.core.usecase.unit.ChangeUnitUseCase
 import org.veo.core.usecase.unit.UnitValidator
 import org.veo.core.usecase.unit.UpdateUnitUseCase
@@ -29,14 +30,15 @@ import org.veo.core.usecase.unit.UpdateUnitUseCase
 public class UpdateUnitUseCaseSpec extends UseCaseSpec {
     static final String USER_NAME = "john"
     UnitValidator unitValidator = Mock()
-    UpdateUnitUseCase updateUseCase = new UpdateUnitUseCase(unitRepository, unitValidator)
+    EntityStateMapper entityStateMapper = new EntityStateMapper()
+    UpdateUnitUseCase updateUseCase = new UpdateUnitUseCase(unitRepository, unitValidator, entityStateMapper, repositoryProvider)
 
     def "Update an existing unit" () {
         given: "starting values for a unit"
-        def newUnit = Mock(Unit) {
-            it.id >> this.existingUnit.id
+        def newUnit = Mock(UnitState) {
+            it.id >> this.existingUnit.id.uuidValue()
             it.name >> "Name changed"
-            it.client >> this.existingClient
+            domains >> []
         }
 
         when: "the use case to create a unit is executed"
@@ -44,21 +46,23 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
         def output = updateUseCase.execute(new ChangeUnitUseCase.InputData(newUnit, this.existingClient, eTagNewUnit, USER_NAME))
 
         then: "the existing unit was retrieved"
-        1 * unitRepository.getById(_) >> this.existingUnit
+        1 * unitRepository.getById(existingUnit.id) >> this.existingUnit
 
         and: "client boundaries were validated"
         1 * this.existingUnit.checkSameClient(existingClient)
-        1 * newUnit.checkSameClient(existingClient)
+
+        and: "the unit was updated with the changed values"
+        1 * existingUnit.setName("Name changed")
 
         and: "the client was then saved with the new unit"
-        1 * newUnit.version(USER_NAME, this.existingUnit)
-        1 * unitRepository.save(_) >> newUnit
+        1 * unitRepository.save(existingUnit) >> existingUnit
+        1 * unitRepository.getById(existingUnit.id) >> existingUnit
 
         and: "validation has been run"
         1 * unitValidator.validateUpdate(newUnit, existingUnit)
 
         and: "the changed unit was returned"
-        output.unit == newUnit
+        output.unit == existingUnit
     }
 
     def "Prevent updating a unit from another client" () {
@@ -69,14 +73,14 @@ public class UpdateUnitUseCaseSpec extends UseCaseSpec {
         maliciousClient.getName() >> "Existing client"
 
         when: "the use case to create a unit is executed"
-        def newUnit = Mock(Unit) {
-            it.id >> this.existingClient.id
+        def newUnit = Mock(UnitState) {
+            it.id >> this.existingUnit.idAsString
             it.client >> existingClient
         }
 
         and: "the unit is changed and updated by another client"
         newUnit.setName("Name changed")
-        def eTag = ETag.from(newUnit.getId().uuidValue(), newUnit.getVersion())
+        def eTag = ETag.from(newUnit.getId(), existingUnit.getVersion())
         updateUseCase.execute(new ChangeUnitUseCase.InputData(newUnit, maliciousClient, eTag, USER_NAME))
 
         then: "a unit was retrieved"

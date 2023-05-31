@@ -70,7 +70,6 @@ import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase;
 import org.veo.core.usecase.service.IdRefResolver;
-import org.veo.core.usecase.unit.ChangeUnitUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
@@ -296,16 +295,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
     unitDto.applyResourceId(id);
     return useCaseInteractor.execute(
         putUnitUseCase,
-        (Supplier<ChangeUnitUseCase.InputData>)
-            () -> {
-              Client client = getClient(user);
-              IdRefResolver idRefResolver = createIdRefResolver(client);
-              return new UpdateUnitUseCase.InputData(
-                  dtoToEntityTransformer.transformDto2Unit(unitDto, idRefResolver),
-                  client,
-                  eTag,
-                  user.getUsername());
-            },
+        new UpdateUnitUseCase.InputData(unitDto, getClient(user), eTag, user.getUsername()),
         output -> entityToDtoTransformer.transformUnit2Dto(output.getUnit()));
   }
 

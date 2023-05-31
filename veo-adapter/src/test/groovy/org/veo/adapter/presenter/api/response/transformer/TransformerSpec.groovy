@@ -19,12 +19,12 @@ package org.veo.adapter.presenter.api.response.transformer
 
 import java.time.Instant
 
-import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
+import org.veo.core.entity.ref.ITypedId
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.entity.transform.IdentifiableFactory
 import org.veo.core.usecase.service.IdRefResolver
@@ -78,7 +78,7 @@ class TransformerSpec extends Specification {
     }
 
     AbstractUnitDto createUnitDto() {
-        def subUnitDto = Mock(IdRef) {
+        def subUnitDto = Mock(ITypedId) {
             it.id >> subUnitId
         }
 
@@ -100,22 +100,5 @@ class TransformerSpec extends Specification {
         then: "The DTO contains all required data"
         unitDto.name == unitName
         unitDto.id == unitId
-    }
-
-    def "Transform UnitDto to Unit"() {
-        given: " A unit DTO with a subunit DTO"
-        def unitDto = createUnitDto()
-
-        Unit u=  Mock(Unit)
-        u.id >> Key.uuidFrom(unitId)
-
-        identifiableFactory.create(Unit.class, u.id) >> u
-
-        when: "The parent unit DTO is transformed into a unit"
-        def unit = dtoToEntityTransformer.transformDto2Unit( unitDto, idRefResolver)
-
-        then: "The unit contains all data"
-        unit == u
-        1 * u.setName(unitName)
     }
 }
