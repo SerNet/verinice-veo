@@ -118,6 +118,7 @@ public class DataSourceProxyBeanPostProcessor implements BeanPostProcessor {
                 executionContext -> {
                   var method = executionContext.getMethod();
                   if (ResultSet.class.isAssignableFrom(executionContext.getTarget().getClass())
+                      && Boolean.TRUE.equals(executionContext.getResult())
                       && method.getName().equals("next")) {
                     DataSourceProxyBeanPostProcessor.totalResultSetRowsRead++;
                     log.debug(
