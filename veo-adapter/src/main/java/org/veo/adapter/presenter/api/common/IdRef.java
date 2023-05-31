@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.veo.core.entity.Displayable;
 import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.ref.ITypedId;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -37,7 +38,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true)
 @SuppressWarnings("PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class IdRef<T extends Identifiable> implements IIdRef {
+public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
 
   @JsonIgnore @ToString.Include @EqualsAndHashCode.Include private final String id;
 

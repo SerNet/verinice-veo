@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.code
 
-import org.veo.adapter.IdRefResolver
 import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.CustomLinkDto
@@ -30,6 +29,7 @@ import org.veo.core.entity.DomainBase
 import org.veo.core.entity.Key
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.entity.transform.IdentifiableFactory
+import org.veo.core.usecase.service.IdRefResolver
 
 import spock.lang.Specification
 

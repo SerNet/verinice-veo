@@ -51,7 +51,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
-import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
@@ -70,6 +69,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase;
+import org.veo.core.usecase.service.IdRefResolver;
 import org.veo.core.usecase.unit.ChangeUnitUseCase;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;

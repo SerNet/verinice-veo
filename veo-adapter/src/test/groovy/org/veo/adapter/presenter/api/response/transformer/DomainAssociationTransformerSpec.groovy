@@ -17,15 +17,15 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer
 
-import org.veo.adapter.IdRefResolver
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto
 import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto
-import org.veo.adapter.service.domaintemplate.SyntheticIdRef
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.aspects.SubTypeAspect
 import org.veo.core.entity.decision.DecisionResult
+import org.veo.core.usecase.service.IdRefResolver
+import org.veo.core.usecase.service.TypedId
 
 import spock.lang.Specification
 
@@ -34,8 +34,8 @@ class DomainAssociationTransformerSpec extends Specification {
     Domain domain0 = Mock(Domain) { it.id >> Key.newUuid() }
     Domain domain1 = Mock(Domain) { it.id >> Key.newUuid() }
     IdRefResolver idRefResolver = Mock() {
-        resolve(SyntheticIdRef.from(domain0.id.uuidValue(), Domain)) >> domain0
-        resolve(SyntheticIdRef.from(domain1.id.uuidValue(), Domain)) >> domain1
+        resolve(TypedId.from(domain0.id.uuidValue(), Domain)) >> domain0
+        resolve(TypedId.from(domain1.id.uuidValue(), Domain)) >> domain1
     }
     DomainAssociationTransformer domainAssociationTransformer = new DomainAssociationTransformer()
 

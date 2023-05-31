@@ -21,13 +21,13 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 import java.util.List;
 
-import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.openapi.IdRefCatalogItemDescriptionItem;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.usecase.parameter.IncarnateCatalogItemDescription;
 import org.veo.core.usecase.parameter.TailoringReferenceParameter;
+import org.veo.core.usecase.service.IdRefResolver;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;

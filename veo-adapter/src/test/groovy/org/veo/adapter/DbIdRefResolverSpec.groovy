@@ -25,6 +25,8 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.repository.Repository
 import org.veo.core.repository.RepositoryProvider
+import org.veo.core.usecase.service.DbIdRefResolver
+import org.veo.core.usecase.service.IdRefResolver
 
 import spock.lang.Specification
 

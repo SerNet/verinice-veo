@@ -15,17 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter;
+package org.veo.core.usecase.service;
 
 import java.util.Set;
 
-import org.veo.adapter.presenter.api.common.IdRef;
-import org.veo.adapter.service.domaintemplate.SyntheticIdRef;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.ref.ITypedId;
 
 /**
- * Resolves references to {@link Identifiable} entities ({@link IdRef}s) by returning the target
+ * Resolves references to {@link Identifiable} entities ({@link ITypedId}s) by returning the target
  * entity.
  */
 public interface IdRefResolver {
@@ -39,15 +38,15 @@ public interface IdRefResolver {
    * @throws org.veo.core.entity.specification.ClientBoundaryViolationException when entity does not
    *     belong to this resolver's client.
    */
-  <TEntity extends Identifiable> TEntity resolve(IdRef<TEntity> objectReference)
+  <TEntity extends Identifiable> TEntity resolve(ITypedId<TEntity> objectReference)
       throws NotFoundException;
 
   /**
-   * @see IdRefResolver#resolve(IdRef)
+   * @see IdRefResolver#resolve(ITypedId)
    */
   default <TEntity extends Identifiable> TEntity resolve(String id, Class<TEntity> type)
       throws NotFoundException {
-    return resolve(SyntheticIdRef.from(id, type));
+    return resolve(TypedId.from(id, type));
   }
 
   /**
@@ -59,5 +58,6 @@ public interface IdRefResolver {
    * @throws org.veo.core.entity.specification.ClientBoundaryViolationException when one or more
    *     entities do not belong to this resolver's client.
    */
-  <TEntity extends Identifiable> Set<TEntity> resolve(Set<IdRef<TEntity>> objectReferences);
+  <TEntity extends Identifiable> Set<TEntity> resolve(
+      Set<? extends ITypedId<TEntity>> objectReferences);
 }

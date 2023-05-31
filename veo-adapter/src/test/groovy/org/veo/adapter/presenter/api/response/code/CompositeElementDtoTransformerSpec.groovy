@@ -19,7 +19,6 @@ package org.veo.adapter.presenter.api.response.code
 
 import java.time.Instant
 
-import org.veo.adapter.IdRefResolver
 import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
@@ -30,8 +29,10 @@ import org.veo.core.entity.Asset
 import org.veo.core.entity.Document
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
+import org.veo.core.entity.ref.ITypedId
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.entity.transform.IdentifiableFactory
+import org.veo.core.usecase.service.IdRefResolver
 
 import spock.lang.Specification
 
@@ -101,7 +102,6 @@ class CompositeElementDtoTransformerSpec extends Specification {
         then: "The DTO contains all required data"
         dto.name == compositeAsset.name
         dto.owner.displayName == unitName
-
     }
 
     def "Transform composite element with parts to DTO"() {
@@ -146,8 +146,8 @@ class CompositeElementDtoTransformerSpec extends Specification {
 
     def "Transform composite element DTO with parts to entity"() {
         given: "an asset composite element DTO with two parts"
-        def asset1Ref = Mock(IdRef)
-        def asset2Ref = Mock(IdRef)
+        def asset1Ref = Mock(ITypedId)
+        def asset2Ref = Mock(ITypedId)
         def asset1 = Mock(Asset)
         def asset2 = Mock(Asset)
         def newCompositeAssetEntity = Mock(Asset) {

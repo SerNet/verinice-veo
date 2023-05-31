@@ -23,15 +23,16 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.veo.adapter.presenter.api.common.IdRef;
-import org.veo.adapter.service.domaintemplate.SyntheticIdRef;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.transform.IdentifiableFactory;
+import org.veo.core.usecase.service.IdRefResolver;
+import org.veo.core.usecase.service.TypedId;
 
 import lombok.RequiredArgsConstructor;
 
@@ -56,18 +57,19 @@ import lombok.RequiredArgsConstructor;
 public class IdRefResolvingFactory implements IdRefResolver, IdentifiableFactory {
 
   private final IdentifiableFactory factory;
-  private final Map<IdRef<?>, Identifiable> registry = new HashMap<>();
+  private final Map<ITypedId<?>, Identifiable> registry = new HashMap<>();
   private Key<UUID> globalDomainTemplateId;
   private Domain globalDomain;
 
   @Override
-  public <TEntity extends Identifiable> TEntity resolve(IdRef<TEntity> objectReference)
+  public <TEntity extends Identifiable> TEntity resolve(ITypedId<TEntity> objectReference)
       throws NotFoundException {
     return create(objectReference.getType(), Key.uuidFrom(objectReference.getId()));
   }
 
   @Override
-  public <TEntity extends Identifiable> Set<TEntity> resolve(Set<IdRef<TEntity>> objectReferences) {
+  public <TEntity extends Identifiable> Set<TEntity> resolve(
+      Set<? extends ITypedId<TEntity>> objectReferences) {
     return objectReferences.stream().map(this::resolve).collect(Collectors.toSet());
   }
 
@@ -91,7 +93,7 @@ public class IdRefResolvingFactory implements IdRefResolver, IdentifiableFactory
 
     return (T)
         registry.computeIfAbsent(
-            SyntheticIdRef.from(id.uuidValue(), type),
+            TypedId.from(id.uuidValue(), type),
             idRef ->
                 // Do not set the ID on the actual entity itself, so it is treated as a new
                 // entity. This avoids conflicts with existing entities with the same ID in the

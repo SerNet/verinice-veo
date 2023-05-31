@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.IdRefResolvingFactory;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
@@ -85,6 +84,7 @@ import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.service.DomainTemplateIdGenerator;
 import org.veo.core.service.DomainTemplateService;
+import org.veo.core.usecase.service.IdRefResolver;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -351,8 +351,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
               createCatalog.setDescription(c.getDescription());
               CatalogItemPrepareStrategy.updateVersion(createCatalog);
               ref.cache.put(((IdentifiableDto) c).getId(), createCatalog);
-              c.setDomainTemplate(
-                  new SyntheticIdRef<>(domainTemplateDto.getId(), DomainBase.class));
+              c.setDomainTemplate(IdRef.from(newDomain, assembler));
             });
 
     Map<String, Element> elementCache =

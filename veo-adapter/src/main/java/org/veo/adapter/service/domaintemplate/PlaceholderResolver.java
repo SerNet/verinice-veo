@@ -23,8 +23,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.veo.adapter.DbIdRefResolver;
-import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
@@ -32,6 +30,8 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.usecase.service.DbIdRefResolver;
 
 class PlaceholderResolver extends DbIdRefResolver {
   Map<String, Identifiable> cache = new HashMap<>();
@@ -45,7 +45,7 @@ class PlaceholderResolver extends DbIdRefResolver {
   }
 
   @Override
-  public <TEntity extends Identifiable> TEntity resolve(IdRef<TEntity> objectReference)
+  public <TEntity extends Identifiable> TEntity resolve(ITypedId<TEntity> objectReference)
       throws NotFoundException {
     if (objectReference == null) {
       return null;
@@ -57,7 +57,8 @@ class PlaceholderResolver extends DbIdRefResolver {
   }
 
   @Override
-  public <TEntity extends Identifiable> Set<TEntity> resolve(Set<IdRef<TEntity>> objectReferences) {
+  public <TEntity extends Identifiable> Set<TEntity> resolve(
+      Set<? extends ITypedId<TEntity>> objectReferences) {
 
     return objectReferences.stream().map(this::resolve).collect(Collectors.toSet());
   }

@@ -27,7 +27,6 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.AbstractAssetDto;
 import org.veo.adapter.presenter.api.dto.AbstractAssetInDomainDto;
@@ -92,6 +91,7 @@ import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
+import org.veo.core.usecase.service.IdRefResolver;
 
 import lombok.RequiredArgsConstructor;
 

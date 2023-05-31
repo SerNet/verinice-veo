@@ -19,7 +19,6 @@ package org.veo.adapter.presenter.api.response.transformer
 
 import java.time.Instant
 
-import org.veo.adapter.IdRefResolver
 import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto
@@ -28,6 +27,7 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.entity.transform.IdentifiableFactory
+import org.veo.core.usecase.service.IdRefResolver
 
 import spock.lang.Specification
 
@@ -100,7 +100,6 @@ class TransformerSpec extends Specification {
         then: "The DTO contains all required data"
         unitDto.name == unitName
         unitDto.id == unitId
-
     }
 
     def "Transform UnitDto to Unit"() {

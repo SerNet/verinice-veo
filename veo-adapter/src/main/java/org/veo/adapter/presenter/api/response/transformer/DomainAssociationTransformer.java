@@ -30,7 +30,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.dto.AbstractAssetDto;
 import org.veo.adapter.presenter.api.dto.AbstractControlDto;
 import org.veo.adapter.presenter.api.dto.AbstractDocumentDto;
@@ -47,7 +46,6 @@ import org.veo.adapter.presenter.api.dto.ProcessRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.ScenarioDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ScenarioRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.ScopeDomainAssociationDto;
-import org.veo.adapter.service.domaintemplate.SyntheticIdRef;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
@@ -69,6 +67,8 @@ import org.veo.core.entity.risk.PotentialProbabilityImpl;
 import org.veo.core.entity.risk.ProbabilityRef;
 import org.veo.core.entity.risk.ProcessImpactValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
+import org.veo.core.usecase.service.IdRefResolver;
+import org.veo.core.usecase.service.TypedId;
 
 /**
  * Maps {@link Domain} associations of {@link Element}s between entities and DTOs. See {@link
@@ -403,7 +403,7 @@ public class DomainAssociationTransformer {
             entry -> {
               var associationDto = entry.getValue();
               DomainBase domainTemplate =
-                  idRefResolver.resolve(SyntheticIdRef.from(entry.getKey(), Domain.class));
+                  idRefResolver.resolve(TypedId.from(entry.getKey(), Domain.class));
               target.associateWithDomain(
                   domainTemplate, associationDto.getSubType(), associationDto.getStatus());
               customMapper.accept(domainTemplate, associationDto);

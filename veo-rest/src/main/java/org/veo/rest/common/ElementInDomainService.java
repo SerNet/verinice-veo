@@ -33,8 +33,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.WebRequest;
 
-import org.veo.adapter.DbIdRefResolver;
-import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
@@ -57,6 +55,8 @@ import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.UpdateElementInDomainUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
+import org.veo.core.usecase.service.DbIdRefResolver;
+import org.veo.core.usecase.service.IdRefResolver;
 import org.veo.rest.TransactionalRunner;
 import org.veo.rest.security.ApplicationUser;
 import org.veo.service.EtagService;

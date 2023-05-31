@@ -55,7 +55,6 @@ import org.veo.adapter.service.domaintemplate.CatalogItemPrepareStrategy;
 import org.veo.adapter.service.domaintemplate.CatalogItemServiceImpl;
 import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl;
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl;
-import org.veo.adapter.service.domaintemplate.LocalReferenceAssembler;
 import org.veo.adapter.service.domaintemplate.ReferenceDeserializer;
 import org.veo.adapter.service.domaintemplate.dto.TransformElementDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformRiskDto;
@@ -760,9 +759,8 @@ public class ModuleConfiguration {
       IdentifiableFactory identifiableFactory,
       DomainAssociationTransformer domainAssociationTransformer,
       CatalogItemPrepareStrategy prepareStrategy,
-      DomainTemplateIdGenerator domainTemplateIdGenerator) {
-
-    ReferenceAssembler referenceAssembler = new LocalReferenceAssembler();
+      DomainTemplateIdGenerator domainTemplateIdGenerator,
+      ReferenceAssembler referenceAssembler) {
 
     ObjectMapper objectMapper =
         new ObjectMapper()

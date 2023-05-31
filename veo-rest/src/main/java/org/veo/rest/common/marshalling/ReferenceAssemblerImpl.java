@@ -39,7 +39,6 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.ModelDto;
 import org.veo.core.entity.AbstractRisk;
@@ -66,6 +65,7 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.ref.ITypedId;
 import org.veo.rest.AssetController;
 import org.veo.rest.AssetInDomainController;
 import org.veo.rest.AssetRiskResource;
@@ -618,13 +618,13 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
   }
 
   @Override
-  public Key<UUID> toKey(IdRef<? extends Identifiable> reference) {
+  public Key<UUID> toKey(ITypedId<? extends Identifiable> reference) {
     if (reference == null) return null;
     return Key.uuidFrom(reference.getId());
   }
 
   @Override
-  public Set<Key<UUID>> toKeys(Set<? extends IdRef<?>> references) {
+  public Set<Key<UUID>> toKeys(Set<? extends ITypedId<?>> references) {
     return references.stream().map(this::toKey).collect(Collectors.toSet());
   }
 

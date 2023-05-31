@@ -28,18 +28,20 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.node.TextNode;
 
+import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.core.entity.EntityType;
-import org.veo.core.entity.Identifiable;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class ReferenceDeserializer extends JsonDeserializer<SyntheticIdRef<?>> {
+public class ReferenceDeserializer extends JsonDeserializer<IdRef<?>> {
   private static final String UUID_REGEX =
       "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
+
+  private static final Pattern URL_PATTERN =
+      Pattern.compile(".*\\/([a-z]*)\\/(" + UUID_REGEX + ")");
 
   public static final String TARGET_URI = "targetUri";
   private final ReferenceAssembler urlAssembler;
@@ -49,20 +51,15 @@ public class ReferenceDeserializer extends JsonDeserializer<SyntheticIdRef<?>> {
   }
 
   @Override
-  public SyntheticIdRef<?> deserialize(JsonParser p, DeserializationContext ctxt)
+  public IdRef<?> deserialize(JsonParser p, DeserializationContext ctxt)
       throws IOException, JsonProcessingException {
     TreeNode treeNode = p.getCodec().readTree(p);
     TextNode targetUri = (TextNode) treeNode.get(TARGET_URI);
     String asText = targetUri.asText();
 
-    Pattern compile = Pattern.compile(".*\\/([a-z]*)\\/(" + UUID_REGEX + ")");
-
-    Matcher matcher = compile.matcher(asText);
+    Matcher matcher = URL_PATTERN.matcher(asText);
     if (matcher.matches()) {
-      String term = matcher.group(1);
-      Class<Identifiable> type = (Class<Identifiable>) EntityType.getTypeForPluralTerm(term);
-      String id = matcher.group(2);
-      return new SyntheticIdRef<>(id, type);
+      return IdRef.fromUri(asText, urlAssembler);
     }
 
     return null;

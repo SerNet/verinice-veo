@@ -33,8 +33,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import org.veo.adapter.DbIdRefResolver;
-import org.veo.adapter.IdRefResolver;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
@@ -43,6 +41,8 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Versioned;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.usecase.service.DbIdRefResolver;
+import org.veo.core.usecase.service.IdRefResolver;
 import org.veo.rest.common.SearchResponse;
 import org.veo.service.EtagService;
 

@@ -25,6 +25,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.ref.ITypedId;
 
 /**
  * Construct and deconstruct references to {@link Identifiable} & {@link AbstractRisk} objects.
@@ -93,10 +94,10 @@ public interface ReferenceAssembler {
   String parseId(String uri);
 
   /** Transforms the given adapter layer reference to an entity key. */
-  Key<UUID> toKey(IdRef<? extends Identifiable> reference);
+  Key<UUID> toKey(ITypedId<? extends Identifiable> reference);
 
   /** Transforms the given adapter layer references to entity keys. */
-  Set<Key<UUID>> toKeys(Set<? extends IdRef<?>> references);
+  Set<Key<UUID>> toKeys(Set<? extends ITypedId<?>> references);
 
   String schemaReferenceOf(String typeSingularTerm);
 
