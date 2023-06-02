@@ -105,9 +105,7 @@ public class CatalogController extends AbstractEntityController {
               schema = @Schema(implementation = FullCatalogDto.class)))
   @ApiResponse(responseCode = "404", description = "Catalog not found")
   public @Valid Future<ResponseEntity<FullCatalogDto>> getCatalog(
-      @Parameter(required = false, hidden = true) Authentication auth,
-      @PathVariable String id,
-      WebRequest request) {
+      @Parameter(hidden = true) Authentication auth, @PathVariable String id, WebRequest request) {
     Client client = getClientWithCatalogsAndItems(auth, false);
     if (getEtag(Catalog.class, id).map(request::checkNotModified).orElse(false)) {
       return null;
@@ -131,7 +129,7 @@ public class CatalogController extends AbstractEntityController {
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               array = @ArraySchema(schema = @Schema(implementation = FullCatalogDto.class))))
   public @Valid CompletableFuture<List<FullCatalogDto>> getCatalogs(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = DOMAIN_PARAM, required = false) String domainUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName) {
     Client client = getClientWithCatalogsAndItems(auth, false);
@@ -159,7 +157,7 @@ public class CatalogController extends AbstractEntityController {
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               array = @ArraySchema(schema = @Schema(implementation = FullCatalogItemDto.class))))
   public @Valid CompletableFuture<ResponseEntity<List<FullCatalogItemDto>>> getCatalogItems(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @PathVariable String id,
       @UnitUuidParam @RequestParam(value = DOMAIN_PARAM, required = false) String domainUuid,
       WebRequest request) {
@@ -203,7 +201,7 @@ public class CatalogController extends AbstractEntityController {
               schema = @Schema(implementation = FullCatalogItemDto.class)))
   @ApiResponse(responseCode = "404", description = "CatalogItem not found")
   public @Valid Future<ResponseEntity<FullCatalogItemDto>> getCatalogItem(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @PathVariable String id,
       @PathVariable String itemId,
       @UnitUuidParam @RequestParam(value = DOMAIN_PARAM, required = false) String domainUuid,
@@ -246,8 +244,7 @@ public class CatalogController extends AbstractEntityController {
   }
 
   public @Valid CompletableFuture<List<FullCatalogDto>> runSearch(
-      @Parameter(required = false, hidden = true) Authentication auth,
-      @PathVariable String searchId) {
+      @Parameter(hidden = true) Authentication auth, @PathVariable String searchId) {
     return null;
   }
 }

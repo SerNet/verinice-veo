@@ -148,7 +148,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
   @GetMapping
   @Operation(summary = "Loads all incidents")
   public @Valid Future<PageDto<FullIncidentDto>> getIncidents(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
@@ -225,7 +225,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
   @ApiResponse(responseCode = "404", description = "Incident not found")
   @GetMapping(UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullIncidentDto>> getElement(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid,
@@ -245,7 +245,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
   @ApiResponse(responseCode = "404", description = "Incident not found")
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
   public @Valid CompletableFuture<ResponseEntity<List<FullIncidentDto>>> getElementParts(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid,
@@ -311,7 +311,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
   @ApiResponse(responseCode = "204", description = "Incident deleted")
   @ApiResponse(responseCode = "404", description = "Incident not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteIncident(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid) {
@@ -336,7 +336,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
   @GetMapping(value = "/searches/{searchId}")
   @Operation(summary = "Finds incidents for the search.")
   public @Valid Future<PageDto<FullIncidentDto>> runSearch(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @PathVariable String searchId,
       @RequestParam(
               value = PAGE_SIZE_PARAM,

@@ -165,7 +165,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
               array = @ArraySchema(schema = @Schema(implementation = FullScopeDto.class))))
   @ApiResponse(responseCode = "404", description = "Scope not found")
   public @Valid Future<PageDto<FullScopeDto>> getScopes(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
@@ -241,7 +241,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
               schema = @Schema(implementation = FullScopeDto.class)))
   @ApiResponse(responseCode = "404", description = "Scope not found")
   public @Valid Future<ResponseEntity<FullScopeDto>> getScope(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid,
@@ -270,7 +270,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
               array = @ArraySchema(schema = @Schema(implementation = FullScopeDto.class))))
   @ApiResponse(responseCode = "404", description = "Scope not found")
   public @Valid CompletableFuture<ResponseEntity<List<AbstractElementDto>>> getMembers(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid,
@@ -362,7 +362,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
   @ApiResponse(responseCode = "204", description = "Scope deleted")
   @ApiResponse(responseCode = "404", description = "Scope not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteScope(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid) {
@@ -387,7 +387,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
   @GetMapping(value = "/searches/{searchId}")
   @Operation(summary = "Finds scopes for the search.")
   public @Valid Future<PageDto<FullScopeDto>> runSearch(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @PathVariable String searchId,
       @RequestParam(
               value = PAGE_SIZE_PARAM,

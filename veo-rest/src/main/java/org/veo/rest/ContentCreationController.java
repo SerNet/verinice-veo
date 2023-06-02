@@ -139,7 +139,7 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "404", description = "Domain not found")
   @ApiResponse(responseCode = "409", description = "Domain still in use")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteDomain(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String id) {

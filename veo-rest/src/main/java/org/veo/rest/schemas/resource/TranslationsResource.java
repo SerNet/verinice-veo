@@ -67,16 +67,14 @@ public interface TranslationsResource {
     @ApiResponse(responseCode = "404", description = "Translation not found")
   })
   CompletableFuture<ResponseEntity<TranslationsDto>> getSchema(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(
               required = true,
-              allowEmptyValue = false,
               description =
                   "The language(s) for which the translation key-value pairs are returned.",
               example = "de,en,pr",
-              allowReserved = false,
               schema =
                   @Schema(type = "string", description = "IETF BCP 47 language tag (see RFC 5646)"))
-          @RequestParam(value = "languages", required = true)
+          @RequestParam(value = "languages")
           Set<String> languages);
 }

@@ -189,12 +189,12 @@ public class ProcessController extends AbstractElementController<Process, FullPr
   @ApiResponse(responseCode = "404", description = "Process not found")
   @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullProcessDto>> getProcess(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid,
       @RequestParam(name = EMBED_RISKS_PARAM, required = false, defaultValue = "false")
-          @Parameter(name = EMBED_RISKS_PARAM, required = false, description = EMBED_RISKS_DESC)
+          @Parameter(name = EMBED_RISKS_PARAM, description = EMBED_RISKS_DESC)
           Boolean embedRisksParam,
       WebRequest request) {
     boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
@@ -224,7 +224,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
   @ApiResponse(responseCode = "404", description = "Process not found")
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
   public @Valid CompletableFuture<ResponseEntity<List<FullProcessDto>>> getElementParts(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid,
@@ -289,7 +289,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
   @ApiResponse(responseCode = "204", description = "Process deleted")
   @ApiResponse(responseCode = "404", description = "Process not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteProcess(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid) {
@@ -303,7 +303,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
   @GetMapping
   @Operation(summary = "Loads all processes")
   public @Valid Future<PageDto<FullProcessDto>> getProcesses(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String parentUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
@@ -337,7 +337,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder,
       @RequestParam(name = EMBED_RISKS_PARAM, required = false, defaultValue = "false")
-          @Parameter(name = EMBED_RISKS_PARAM, required = false, description = EMBED_RISKS_DESC)
+          @Parameter(name = EMBED_RISKS_PARAM, description = EMBED_RISKS_DESC)
           Boolean embedRisksParam) {
     Client client = getAuthenticatedClient(auth);
     boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
@@ -387,7 +387,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
   @GetMapping(value = "/searches/{searchId}")
   @Operation(summary = "Finds processes for the search.")
   public @Valid Future<PageDto<FullProcessDto>> runSearch(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @PathVariable String searchId,
       @RequestParam(
               value = PAGE_SIZE_PARAM,
@@ -411,7 +411,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
           @Pattern(regexp = SORT_ORDER_PATTERN)
           String sortOrder,
       @RequestParam(name = EMBED_RISKS_PARAM, required = false, defaultValue = "false")
-          @Parameter(name = EMBED_RISKS_PARAM, required = false, description = EMBED_RISKS_DESC)
+          @Parameter(name = EMBED_RISKS_PARAM, description = EMBED_RISKS_DESC)
           Boolean embedRisksParam) {
     boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
     try {

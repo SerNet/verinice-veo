@@ -150,7 +150,7 @@ public class ControlController extends AbstractElementController<Control, FullCo
   @GetMapping
   @Operation(summary = "Loads all controls")
   public @Valid Future<PageDto<FullControlDto>> getControls(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
@@ -227,7 +227,7 @@ public class ControlController extends AbstractElementController<Control, FullCo
   @ApiResponse(responseCode = "404", description = "Control not found")
   @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullControlDto>> getElement(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid,
@@ -247,7 +247,7 @@ public class ControlController extends AbstractElementController<Control, FullCo
   @ApiResponse(responseCode = "404", description = "Control not found")
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
   public @Valid CompletableFuture<ResponseEntity<List<FullControlDto>>> getElementParts(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid,
@@ -315,7 +315,7 @@ public class ControlController extends AbstractElementController<Control, FullCo
   @ApiResponse(responseCode = "204", description = "Control deleted")
   @ApiResponse(responseCode = "404", description = "Control not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteControl(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid) {
@@ -339,7 +339,7 @@ public class ControlController extends AbstractElementController<Control, FullCo
   @GetMapping(value = "/searches/{searchId}")
   @Operation(summary = "Finds controls for the search.")
   public @Valid Future<PageDto<FullControlDto>> runSearch(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @PathVariable String searchId,
       @RequestParam(
               value = PAGE_SIZE_PARAM,

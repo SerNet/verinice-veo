@@ -154,9 +154,7 @@ public class DomainTemplateController extends AbstractEntityController {
               schema = @Schema(implementation = FullDomainDto.class)))
   @ApiResponse(responseCode = "404", description = "DomainTemplate not found")
   public @Valid Future<ResponseEntity<TransformDomainTemplateDto>> getDomainTemplate(
-      @Parameter(required = false, hidden = true) Authentication auth,
-      @PathVariable String id,
-      WebRequest request) {
+      @Parameter(hidden = true) Authentication auth, @PathVariable String id, WebRequest request) {
     // TODO: VEO-1549 implement getDomainTemplate, hint: use getDomainTemplate(id, client,
     // toDtoFunction);
     return CompletableFuture.failedFuture(new UnsupportedOperationException("not implemented"));
@@ -173,9 +171,7 @@ public class DomainTemplateController extends AbstractEntityController {
               schema = @Schema(implementation = TransformDomainTemplateDto.class)))
   @ApiResponse(responseCode = "404", description = "DomainTemplate not found")
   public @Valid Future<ResponseEntity<TransformDomainTemplateDto>> exportDomainTemplate(
-      @Parameter(required = false, hidden = true) Authentication auth,
-      @PathVariable String id,
-      WebRequest request) {
+      @Parameter(hidden = true) Authentication auth, @PathVariable String id, WebRequest request) {
     Client client = getAuthenticatedClient(auth);
     Function<GetDomainTemplateUseCase.OutputData, TransformDomainTemplateDto> toDtoFunction =
         output -> entityToDtoTransformer.transformDomainTemplate2Dto(output.getDomainTemplate());

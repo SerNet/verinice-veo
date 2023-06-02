@@ -222,7 +222,7 @@ public class ControlInDomainController {
   @ApiResponse(responseCode = "404", description = "Control not found")
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
   public @Valid Future<PageDto<FullControlInDomainDto>> getElementParts(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String domainId,

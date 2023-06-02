@@ -108,7 +108,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               array = @ArraySchema(schema = @Schema(implementation = FullDomainDto.class))))
   public @Valid Future<List<FullDomainDto>> getDomains(
-      @Parameter(required = false, hidden = true) Authentication auth) {
+      @Parameter(hidden = true) Authentication auth) {
 
     Client client = getAuthenticatedClient(auth);
 
@@ -133,9 +133,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
               schema = @Schema(implementation = FullDomainDto.class)))
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public @Valid Future<ResponseEntity<FullDomainDto>> getDomain(
-      @Parameter(required = false, hidden = true) Authentication auth,
-      @PathVariable String id,
-      WebRequest request) {
+      @Parameter(hidden = true) Authentication auth, @PathVariable String id, WebRequest request) {
     Client client = getAuthenticatedClient(auth);
     if (getEtag(Domain.class, id).map(request::checkNotModified).orElse(false)) {
       return null;
@@ -160,9 +158,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
               schema = @Schema(implementation = FullDomainDto.class)))
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public @Valid CompletableFuture<ResponseEntity<ExportDto>> exportDomain(
-      @Parameter(required = false, hidden = true) Authentication auth,
-      @PathVariable String id,
-      WebRequest request) {
+      @Parameter(hidden = true) Authentication auth, @PathVariable String id, WebRequest request) {
     Client client = getAuthenticatedClient(auth);
     CompletableFuture<ExportDto> domainFuture =
         useCaseInteractor.execute(
@@ -182,8 +178,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   @GetMapping(value = "/searches/{searchId}")
   @Operation(summary = "Finds domains for the search.")
   public @Valid Future<List<FullDomainDto>> runSearch(
-      @Parameter(required = false, hidden = true) Authentication auth,
-      @PathVariable String searchId) {
+      @Parameter(hidden = true) Authentication auth, @PathVariable String searchId) {
     // TODO: VEO-498 Implement Domain Search
     try {
       SearchQueryDto.decodeFromSearchId(searchId);
@@ -205,9 +200,9 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
               schema = @Schema(implementation = ElementStatusCounts.class)))
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public @Valid CompletableFuture<ResponseEntity<ElementStatusCounts>> getElementStatusCount(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @PathVariable String id,
-      @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = true) String unitId,
+      @UnitUuidParam @RequestParam(value = UNIT_PARAM) String unitId,
       WebRequest request) {
     Client client = getAuthenticatedClient(auth);
 

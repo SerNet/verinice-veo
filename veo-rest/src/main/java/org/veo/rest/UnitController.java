@@ -128,11 +128,10 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
               schema = @Schema(implementation = IncarnateDescriptionsDto.class)))
   @ApiResponse(responseCode = "404", description = "incarnation description not found")
   public @Valid CompletableFuture<ResponseEntity<IncarnateDescriptionsDto>> getIncarnations(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(description = "The target unit for the catalog items.") @PathVariable
           String unitId,
-      @Parameter(description = "The list of catalog items to create in the unit.")
-          @RequestParam(required = true)
+      @Parameter(description = "The list of catalog items to create in the unit.") @RequestParam()
           List<String> itemIds) {
     Client client = getAuthenticatedClient(auth);
     Key<UUID> containerId = Key.uuidFrom(unitId);
@@ -167,7 +166,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
                                   IdRefTailoringReferenceParameterReferencedElement.class,
                               description = "A reference list of the created elements"))))
   public CompletableFuture<ResponseEntity<List<IdRef<Element>>>> applyIncarnations(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(description = "The target unit for the catalog items.") @PathVariable
           String unitId,
       @Valid @RequestBody IncarnateDescriptionsDto applyInformation) {
@@ -198,7 +197,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               array = @ArraySchema(schema = @Schema(implementation = FullUnitDto.class))))
   public @Valid Future<List<FullUnitDto>> getUnits(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = PARENT_PARAM, required = false) String parentUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName) {
     Client client = getAuthenticatedClient(auth);
@@ -227,9 +226,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
               schema = @Schema(implementation = FullUnitDto.class)))
   @ApiResponse(responseCode = "404", description = "Unit not found")
   public @Valid Future<ResponseEntity<FullUnitDto>> getUnit(
-      @Parameter(required = false, hidden = true) Authentication auth,
-      @PathVariable String id,
-      WebRequest request) {
+      @Parameter(hidden = true) Authentication auth, @PathVariable String id, WebRequest request) {
     if (getEtag(Unit.class, id).map(request::checkNotModified).orElse(false)) {
       return null;
     }
@@ -253,7 +250,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
               schema = @Schema(implementation = UnitDumpDto.class)))
   @ApiResponse(responseCode = "404", description = "Unit not found")
   public CompletableFuture<UnitDumpDto> exportUnit(
-      @Parameter(required = false, hidden = true) Authentication auth, @PathVariable String id) {
+      @Parameter(hidden = true) Authentication auth, @PathVariable String id) {
     return useCaseInteractor.execute(
         getUnitDumpUseCase,
         (Supplier<GetUnitDumpUseCase.InputData>) () -> UnitDumpMapper.mapInput(id),
@@ -304,7 +301,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
   @ApiResponse(responseCode = "204", description = "Unit deleted")
   @ApiResponse(responseCode = "404", description = "Unit not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteUnit(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid) {
@@ -323,8 +320,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
   @GetMapping(value = "/searches/{searchId}")
   @Operation(summary = "Finds units for the search.")
   public @Valid Future<List<FullUnitDto>> runSearch(
-      @Parameter(required = false, hidden = true) Authentication auth,
-      @PathVariable String searchId) {
+      @Parameter(hidden = true) Authentication auth, @PathVariable String searchId) {
     // TODO VEO-425 Use custom search query DTO & criteria API, apply
     // display name
     // filter and allow recursive parent unit filter.

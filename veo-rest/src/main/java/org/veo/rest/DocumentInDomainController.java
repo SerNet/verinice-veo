@@ -222,7 +222,7 @@ public class DocumentInDomainController {
   @ApiResponse(responseCode = "404", description = "Document not found")
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
   public @Valid Future<PageDto<FullDocumentInDomainDto>> getElementParts(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String domainId,

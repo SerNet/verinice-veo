@@ -221,7 +221,7 @@ public class PersonInDomainController {
   @ApiResponse(responseCode = "404", description = "Person not found")
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
   public @Valid Future<PageDto<FullPersonInDomainDto>> getElementParts(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String domainId,

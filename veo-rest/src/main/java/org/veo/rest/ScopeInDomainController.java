@@ -316,7 +316,7 @@ public class ScopeInDomainController {
   @ApiResponse(responseCode = "404", description = "Domain not found")
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/members")
   public @Valid Future<PageDto<AbstractElementInDomainDto<Element>>> getElementParts(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String domainId,

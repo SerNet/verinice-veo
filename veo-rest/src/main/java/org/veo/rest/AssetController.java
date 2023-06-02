@@ -174,7 +174,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
   @GetMapping
   @Operation(summary = "Loads all assets")
   public @Valid Future<PageDto<FullAssetDto>> getAssets(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @UnitUuidParam @RequestParam(value = UNIT_PARAM, required = false) String unitUuid,
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName,
       @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
@@ -252,7 +252,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
   @ApiResponse(responseCode = "404", description = "Asset not found")
   @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
   public @Valid Future<ResponseEntity<FullAssetDto>> getElement(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid,
@@ -272,7 +272,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
   @ApiResponse(responseCode = "404", description = "Asset not found")
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
   public @Valid CompletableFuture<ResponseEntity<List<FullAssetDto>>> getElementParts(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid,
@@ -335,7 +335,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
   @ApiResponse(responseCode = "204", description = "Asset deleted")
   @ApiResponse(responseCode = "404", description = "Asset not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteAsset(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid) {
@@ -360,7 +360,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
   @GetMapping(value = "/searches/{searchId}")
   @Operation(summary = "Finds assets for the search.")
   public @Valid Future<PageDto<FullAssetDto>> runSearch(
-      @Parameter(required = false, hidden = true) Authentication auth,
+      @Parameter(hidden = true) Authentication auth,
       @PathVariable String searchId,
       @RequestParam(
               value = PAGE_SIZE_PARAM,
