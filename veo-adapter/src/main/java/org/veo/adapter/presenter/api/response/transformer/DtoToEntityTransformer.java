@@ -53,6 +53,7 @@ import org.veo.adapter.presenter.api.dto.AbstractScenarioInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
 import org.veo.adapter.presenter.api.dto.AbstractScopeInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
+import org.veo.adapter.presenter.api.dto.AbstractUnitDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
@@ -96,6 +97,7 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.Unit;
 import org.veo.core.entity.aspects.SubTypeAspect;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.exception.UnprocessableDataException;
@@ -249,6 +251,18 @@ public final class DtoToEntityTransformer {
     var target = identifiableFactory.create(Domain.class, Key.newUuid());
     mapTransformDomainTemplate(source, idRefResolver, target);
     target.setActive(true);
+    return target;
+  }
+
+  // TODO VEO-839 remove when unit import no longer relies on it.
+  public Unit transformDto2Unit(AbstractUnitDto source, IdRefResolver idRefResolver) {
+    var target = createIdentifiable(Unit.class, source);
+    mapNameableProperties(source, target);
+
+    target.setDomains(idRefResolver.resolve(source.getDomains()));
+    if (source.getParent() != null) {
+      target.setParent(idRefResolver.resolve(source.getParent()));
+    }
     return target;
   }
 
