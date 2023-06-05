@@ -26,12 +26,13 @@ import jakarta.validation.constraints.NotNull;
 import org.veo.core.entity.aspects.SubTypeAspect;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
+import org.veo.core.entity.state.DomainAssociationState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-public class DomainAssociationDto {
+public class DomainAssociationDto implements DomainAssociationState {
   @NotNull
   @Schema(minLength = 1, maxLength = SubTypeAspect.SUB_TYPE_MAX_LENGTH, requiredMode = REQUIRED)
   String subType;

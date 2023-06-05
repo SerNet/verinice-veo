@@ -27,6 +27,7 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.state.ProcessState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -42,7 +43,8 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "process", description = "Schema for process")
-public abstract class AbstractProcessDto extends CompositeEntityDto<Process> {
+public abstract class AbstractProcessDto extends CompositeEntityDto<Process>
+    implements ProcessState {
 
   @Override
   @Schema(description = "The name for the process.", example = "Two-factor authentication")

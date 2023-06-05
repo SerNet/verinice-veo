@@ -22,13 +22,22 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefOwner;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementOwner;
+import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.state.CustomAspectState;
+import org.veo.core.entity.state.CustomLinkState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -81,4 +90,72 @@ public abstract class AbstractElementDto extends AbstractVersionedSelfReferencin
   public abstract void clearDomains();
 
   public abstract void transferToDomain(String sourceDomainId, String targetDomainId);
+
+  @JsonIgnore
+  public Set<? extends CustomAspectState> getCustomAspectStates() {
+    return customAspects.entrySet().stream()
+        .map(e -> new CustomAspectStateImpl(null, e.getKey(), e.getValue().getAttributes()))
+        .collect(Collectors.toSet());
+  }
+
+  @JsonIgnore
+  public Set<? extends CustomLinkState> getCustomLinkStates() {
+    return links.entrySet().stream()
+        .flatMap(
+            e ->
+                e.getValue().stream()
+                    .map(
+                        l ->
+                            new CustomLinkStateImpl(
+                                null, e.getKey(), l.getAttributes(), l.getTarget())))
+        .collect(Collectors.toSet());
+  }
+
+  static class CustomAspectStateImpl implements CustomAspectState {
+
+    private String type;
+    private Map<String, Object> attributes;
+    private ITypedId<Domain> domain;
+
+    public CustomAspectStateImpl(
+        ITypedId<Domain> domainRef, String type, Map<String, Object> attributes) {
+      this.domain = domainRef;
+      this.type = type;
+      this.attributes = attributes;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+      return attributes;
+    }
+
+    @Override
+    public String getType() {
+      return type;
+    }
+
+    @Override
+    public ITypedId<Domain> getDomain() {
+      return domain;
+    }
+  }
+
+  static class CustomLinkStateImpl extends CustomAspectStateImpl implements CustomLinkState {
+
+    private ITypedId<Element> target;
+
+    public CustomLinkStateImpl(
+        ITypedId<Domain> domainRef,
+        String type,
+        Map<String, Object> attributes,
+        ITypedId<Element> target) {
+      super(domainRef, type, attributes);
+      this.target = target;
+    }
+
+    @Override
+    public ITypedId<Element> getTarget() {
+      return target;
+    }
+  }
 }

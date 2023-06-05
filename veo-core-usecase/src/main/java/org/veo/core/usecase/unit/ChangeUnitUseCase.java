@@ -50,15 +50,15 @@ public abstract class ChangeUnitUseCase
    */
   @Override
   public OutputData execute(InputData input) {
-    log.info("Updating unit with id {}", input.getChangedUnit().getId());
+    log.info("Updating unit with id {}", input.getId());
 
-    var storedUnit = unitRepository.getById(Key.uuidFrom(input.getChangedUnit().getId()));
+    var storedUnit = unitRepository.getById(Key.uuidFrom(input.getId()));
     checkSameClient(storedUnit, input);
     checkETag(storedUnit, input);
     unitValidator.validateUpdate(input.changedUnit, storedUnit);
     var updatedUnit = update(storedUnit, input);
     save(updatedUnit, input);
-    return output(unitRepository.getById(Key.uuidFrom(input.getChangedUnit().getId())));
+    return output(unitRepository.getById(Key.uuidFrom(input.getId())));
   }
 
   protected abstract Unit update(Unit storedUnit, InputData input);
@@ -109,6 +109,7 @@ public abstract class ChangeUnitUseCase
   @Valid
   @Value
   public static class InputData implements UseCase.InputData {
+    String id;
     UnitState changedUnit;
     Client authenticatedClient;
     String eTag;

@@ -27,6 +27,7 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.state.CompositeElementState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -38,7 +39,8 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "document", description = "Schema for document")
-public abstract class AbstractDocumentDto extends CompositeEntityDto<Document> {
+public abstract class AbstractDocumentDto extends CompositeEntityDto<Document>
+    implements CompositeElementState<Document> {
 
   @Override
   @Schema(description = "The name for the document.", example = "Bitcoin Price Predictions")

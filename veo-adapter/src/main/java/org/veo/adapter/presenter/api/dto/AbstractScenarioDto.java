@@ -27,6 +27,7 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.state.ScenarioState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -38,7 +39,8 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "scenario", description = "Schema for scenario")
-public abstract class AbstractScenarioDto extends CompositeEntityDto<Scenario> {
+public abstract class AbstractScenarioDto extends CompositeEntityDto<Scenario>
+    implements ScenarioState {
 
   @Override
   @Schema(description = "The name for the scenario.", example = "Flood")

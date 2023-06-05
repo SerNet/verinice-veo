@@ -20,13 +20,10 @@ package org.veo.core.entity.state;
 import java.util.Set;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.ref.ITypedId;
 
-public interface UnitState extends Nameable {
-
-  String getId();
+public interface UnitState extends EntityState {
 
   ITypedId<Unit> getParent();
 

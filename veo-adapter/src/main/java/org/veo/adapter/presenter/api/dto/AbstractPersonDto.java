@@ -27,6 +27,7 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Person;
+import org.veo.core.entity.state.CompositeElementState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -38,7 +39,8 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "person", description = "Schema for person")
-public abstract class AbstractPersonDto extends CompositeEntityDto<Person> {
+public abstract class AbstractPersonDto extends CompositeEntityDto<Person>
+    implements CompositeElementState<Person> {
 
   @Override
   @Schema(description = "The name for the person.", example = "Mia Musterfrau")

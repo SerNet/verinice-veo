@@ -27,6 +27,7 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
+import org.veo.core.entity.state.CompositeElementState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -38,7 +39,8 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "incident", description = "Schema for incident")
-public abstract class AbstractIncidentDto extends CompositeEntityDto<Incident> {
+public abstract class AbstractIncidentDto extends CompositeEntityDto<Incident>
+    implements CompositeElementState<Incident> {
 
   @Override
   @Schema(description = "The name for the incident.", example = "Mail Server")

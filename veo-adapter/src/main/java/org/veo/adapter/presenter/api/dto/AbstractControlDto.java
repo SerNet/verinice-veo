@@ -27,6 +27,7 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.state.ControlState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -38,7 +39,8 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "control", description = "Schema for control")
-public abstract class AbstractControlDto extends CompositeEntityDto<Control> {
+public abstract class AbstractControlDto extends CompositeEntityDto<Control>
+    implements ControlState {
 
   @Override
   @Schema(description = "The name for the control.", example = "Install sensors")

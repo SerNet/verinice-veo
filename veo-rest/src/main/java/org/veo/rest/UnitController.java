@@ -313,10 +313,9 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
       @RequestHeader(ControllerConstants.IF_MATCH_HEADER) @NotBlank String eTag,
       @PathVariable String id,
       @Valid @RequestBody FullUnitDto unitDto) {
-    unitDto.applyResourceId(id);
     return useCaseInteractor.execute(
         putUnitUseCase,
-        new UpdateUnitUseCase.InputData(unitDto, getClient(user), eTag, user.getUsername()),
+        new UpdateUnitUseCase.InputData(id, unitDto, getClient(user), eTag, user.getUsername()),
         output -> entityToDtoTransformer.transformUnit2Dto(output.getUnit()));
   }
 

@@ -20,13 +20,16 @@ package org.veo.adapter.presenter.api.dto;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.veo.core.entity.state.ScenarioDomainAssociationState;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ScenarioDomainAssociationDto extends DomainAssociationDto {
+public class ScenarioDomainAssociationDto extends DomainAssociationDto
+    implements ScenarioDomainAssociationState {
   @Schema(
       description =
           "Key is risk definition ID, value are the values in the context of that risk definition.")

@@ -23,12 +23,13 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.risk.ExplainedPotentialProbability;
+import org.veo.core.entity.risk.ScenarioRiskValues;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-public class ScenarioRiskValuesDto {
+public class ScenarioRiskValuesDto implements ScenarioRiskValues {
   @PositiveOrZero
   @Schema(
       description =

@@ -27,6 +27,7 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.state.AssetState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -38,7 +39,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "asset", description = "Schema for asset")
-public abstract class AbstractAssetDto extends CompositeEntityDto<Asset> {
+public abstract class AbstractAssetDto extends CompositeEntityDto<Asset> implements AssetState {
 
   @Override
   @Schema(description = "The name for the asset.", example = "Mail Server")

@@ -20,12 +20,13 @@ package org.veo.adapter.presenter.api.dto;
 import java.util.Map;
 
 import org.veo.core.entity.risk.ImpactRef;
+import org.veo.core.entity.risk.ProcessRiskValues;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-public class ProcessRiskValuesDto {
+public class ProcessRiskValuesDto implements ProcessRiskValues {
   @Schema(
       description = "Potential impacts for a set of risk categories",
       example = "{\"C\":2,\n\"I\":3}")
