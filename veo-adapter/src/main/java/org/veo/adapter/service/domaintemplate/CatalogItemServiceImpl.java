@@ -20,7 +20,6 @@ package org.veo.adapter.service.domaintemplate;
 import java.util.Collections;
 
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
-import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.CatalogItem;
@@ -43,15 +42,13 @@ public class CatalogItemServiceImpl implements CatalogItemService {
       EntityToDtoTransformer dtoTransformer,
       EntityFactory factory,
       IdentifiableFactory identifiableFactory,
-      DomainAssociationTransformer domainAssociationTransformer,
       EntityStateMapper entityStateMapper,
       CatalogItemPrepareStrategy preparations) {
     this.dtoTransformer = dtoTransformer;
     this.preparations = preparations;
 
     this.entityTransformer =
-        new DtoToEntityTransformer(
-            factory, identifiableFactory, domainAssociationTransformer, entityStateMapper);
+        new DtoToEntityTransformer(factory, identifiableFactory, entityStateMapper);
   }
 
   @Override

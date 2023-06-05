@@ -17,10 +17,28 @@
  ******************************************************************************/
 package org.veo.core.entity.state;
 
+import java.util.Map;
+
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ref.ITypedId;
+
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
 public interface CustomLinkState extends CustomAspectState {
 
   ITypedId<Element> getTarget();
+
+  @Value
+  @EqualsAndHashCode(callSuper = true)
+  static class CustomLinkStateImpl extends CustomAspectStateImpl implements CustomLinkState {
+
+    private ITypedId<Element> target;
+
+    public CustomLinkStateImpl(
+        String type, Map<String, Object> attributes, ITypedId<Element> target) {
+      super(type, attributes);
+      this.target = target;
+    }
+  }
 }

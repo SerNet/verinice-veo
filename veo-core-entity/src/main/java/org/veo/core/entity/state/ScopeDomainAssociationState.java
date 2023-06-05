@@ -17,7 +17,34 @@
  ******************************************************************************/
 package org.veo.core.entity.state;
 
+import java.util.Set;
+
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.ref.ITypedId;
+
+import lombok.EqualsAndHashCode;
+import lombok.Value;
+
 public interface ScopeDomainAssociationState extends DomainAssociationState {
 
   String getRiskDefinition();
+
+  @Value
+  @EqualsAndHashCode(callSuper = true)
+  class ScopeDomainAssociationStateImpl extends DomainAssociationStateImpl
+      implements ScopeDomainAssociationState {
+
+    String riskDefinition;
+
+    public ScopeDomainAssociationStateImpl(
+        ITypedId<Domain> domain,
+        String subType,
+        String status,
+        Set<CustomAspectState> customAspects,
+        Set<CustomLinkState> customLinks,
+        String riskDefinition) {
+      super(domain, subType, status, customAspects, customLinks);
+      this.riskDefinition = riskDefinition;
+    }
+  }
 }

@@ -18,14 +18,18 @@
 package org.veo.core.usecase.base;
 
 import org.veo.core.entity.Incident;
-import org.veo.core.repository.DomainRepository;
-import org.veo.core.repository.IncidentRepository;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.decision.Decider;
+import org.veo.core.usecase.service.EntityStateMapper;
 
 public class UpdateIncidentInDomainUseCase extends UpdateElementInDomainUseCase<Incident> {
 
   public UpdateIncidentInDomainUseCase(
-      DomainRepository domainRepository, IncidentRepository repo, Decider decider) {
-    super(domainRepository, repo, decider);
+      RepositoryProvider repositoryProvider, Decider decider, EntityStateMapper entityStateMapper) {
+    super(
+        repositoryProvider.getElementRepositoryFor(Incident.class),
+        repositoryProvider,
+        decider,
+        entityStateMapper);
   }
 }

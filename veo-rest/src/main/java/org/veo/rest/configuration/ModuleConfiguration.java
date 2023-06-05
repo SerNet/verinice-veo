@@ -63,21 +63,15 @@ import org.veo.core.entity.specification.EntityValidator;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.events.MessageCreatorImpl;
-import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.CatalogRepository;
 import org.veo.core.repository.ClientRepository;
-import org.veo.core.repository.ControlRepository;
 import org.veo.core.repository.DesignatorSequenceRepository;
-import org.veo.core.repository.DocumentRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.repository.GenericElementRepository;
-import org.veo.core.repository.IncidentRepository;
-import org.veo.core.repository.PersonRepository;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.RepositoryProvider;
-import org.veo.core.repository.ScenarioRepository;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.service.CatalogItemService;
@@ -705,10 +699,8 @@ public class ModuleConfiguration {
   public DtoToEntityTransformer dtoToEntityTransformer(
       EntityFactory entityFactory,
       IdentifiableFactory identifiableFactory,
-      EntitySchemaService entitySchemaService,
-      DomainAssociationTransformer domainAssociationTransformer) {
-    return new DtoToEntityTransformer(
-        entityFactory, identifiableFactory, domainAssociationTransformer, getEntityStateMapper());
+      EntitySchemaService entitySchemaService) {
+    return new DtoToEntityTransformer(entityFactory, identifiableFactory, getEntityStateMapper());
   }
 
   @Primary
@@ -781,16 +773,10 @@ public class ModuleConfiguration {
   public CatalogItemService catalogItemService(
       EntityToDtoTransformer dtoTransformer,
       EntityFactory factory,
-      DomainAssociationTransformer domainAssociationTransformer,
       CatalogItemPrepareStrategy prepareStrategy,
       IdentifiableFactory identifiableFactory) {
     return new CatalogItemServiceImpl(
-        dtoTransformer,
-        factory,
-        identifiableFactory,
-        domainAssociationTransformer,
-        getEntityStateMapper(),
-        prepareStrategy);
+        dtoTransformer, factory, identifiableFactory, getEntityStateMapper(), prepareStrategy);
   }
 
   @Bean
@@ -1065,50 +1051,50 @@ public class ModuleConfiguration {
 
   @Bean
   UpdateAssetInDomainUseCase updateAssetDomainAssociationUseCase(
-      DomainRepository domainRepository, AssetRepository assetRepository, Decider decider) {
-    return new UpdateAssetInDomainUseCase(domainRepository, assetRepository, decider);
+      RepositoryProvider repositoryProvider, Decider decider) {
+    return new UpdateAssetInDomainUseCase(repositoryProvider, decider, getEntityStateMapper());
   }
 
   @Bean
   UpdateControlInDomainUseCase updateControlInDomainUseCase(
-      DomainRepository domainRepository, ControlRepository controlRepository, Decider decider) {
-    return new UpdateControlInDomainUseCase(domainRepository, controlRepository, decider);
+      RepositoryProvider repositoryProvider, Decider decider) {
+    return new UpdateControlInDomainUseCase(repositoryProvider, decider, getEntityStateMapper());
   }
 
   @Bean
   UpdateDocumentInDomainUseCase updateDocumentInDomainUseCase(
-      DomainRepository domainRepository, DocumentRepository controlRepository, Decider decider) {
-    return new UpdateDocumentInDomainUseCase(domainRepository, controlRepository, decider);
+      RepositoryProvider repositoryProvider, Decider decider) {
+    return new UpdateDocumentInDomainUseCase(repositoryProvider, decider, getEntityStateMapper());
   }
 
   @Bean
   UpdateIncidentInDomainUseCase updateIncidentInDomainUseCase(
-      DomainRepository domainRepository, IncidentRepository incidentRepository, Decider decider) {
-    return new UpdateIncidentInDomainUseCase(domainRepository, incidentRepository, decider);
+      RepositoryProvider repositoryProvider, Decider decider) {
+    return new UpdateIncidentInDomainUseCase(repositoryProvider, decider, getEntityStateMapper());
   }
 
   @Bean
   UpdatePersonInDomainUseCase updatePersonInDomainUseCase(
-      DomainRepository domainRepository, PersonRepository personRepository, Decider decider) {
-    return new UpdatePersonInDomainUseCase(domainRepository, personRepository, decider);
+      RepositoryProvider repositoryProvider, Decider decider) {
+    return new UpdatePersonInDomainUseCase(repositoryProvider, decider, getEntityStateMapper());
   }
 
   @Bean
   UpdateProcessInDomainUseCase updateProcessInDomainUseCase(
-      DomainRepository domainRepository, ProcessRepository processRepository, Decider decider) {
-    return new UpdateProcessInDomainUseCase(domainRepository, processRepository, decider);
+      RepositoryProvider repositoryProvider, Decider decider) {
+    return new UpdateProcessInDomainUseCase(repositoryProvider, decider, getEntityStateMapper());
   }
 
   @Bean
   UpdateScenarioInDomainUseCase updateScenarioInDomainUseCase(
-      DomainRepository domainRepository, ScenarioRepository scenarioRepository, Decider decider) {
-    return new UpdateScenarioInDomainUseCase(domainRepository, scenarioRepository, decider);
+      RepositoryProvider repositoryProvider, Decider decider) {
+    return new UpdateScenarioInDomainUseCase(repositoryProvider, decider, getEntityStateMapper());
   }
 
   @Bean
   UpdateScopeInDomainUseCase updateScopeInDomainUseCase(
-      DomainRepository domainRepository, ScopeRepository scopeRepository, Decider decider) {
-    return new UpdateScopeInDomainUseCase(domainRepository, scopeRepository, decider);
+      RepositoryProvider repositoryProvider, Decider decider) {
+    return new UpdateScopeInDomainUseCase(repositoryProvider, decider, getEntityStateMapper());
   }
 
   @Bean

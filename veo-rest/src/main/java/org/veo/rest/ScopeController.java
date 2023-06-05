@@ -308,7 +308,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
               Client client = getClient(user);
               IdRefResolver idRefResolver = createIdRefResolver(client);
               return CreateElementInputMapper.map(
-                  dtoToEntityTransformer.transformDto2Scope(createScopeDto, idRefResolver),
+                  dtoToEntityTransformer.transformDto2Element(createScopeDto, idRefResolver),
                   client,
                   scopeIds);
             },

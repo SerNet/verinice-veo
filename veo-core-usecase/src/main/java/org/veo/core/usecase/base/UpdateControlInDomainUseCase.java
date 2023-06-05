@@ -17,24 +17,19 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
-import java.util.HashMap;
-
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Domain;
-import org.veo.core.repository.ControlRepository;
-import org.veo.core.repository.DomainRepository;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.decision.Decider;
+import org.veo.core.usecase.service.EntityStateMapper;
 
 public class UpdateControlInDomainUseCase extends UpdateElementInDomainUseCase<Control> {
 
   public UpdateControlInDomainUseCase(
-      DomainRepository domainRepository, ControlRepository repo, Decider decider) {
-    super(domainRepository, repo, decider);
-  }
-
-  @Override
-  protected void applyChanges(Control source, Control target, Domain domain) {
-    super.applyChanges(source, target, domain);
-    target.setRiskValues(domain, source.getRiskValues(domain).orElse(new HashMap<>()));
+      RepositoryProvider repositoryProvider, Decider decider, EntityStateMapper entityStateMapper) {
+    super(
+        repositoryProvider.getElementRepositoryFor(Control.class),
+        repositoryProvider,
+        decider,
+        entityStateMapper);
   }
 }

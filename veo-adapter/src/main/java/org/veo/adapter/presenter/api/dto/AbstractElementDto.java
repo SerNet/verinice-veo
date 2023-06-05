@@ -35,23 +35,23 @@ import org.veo.adapter.presenter.api.openapi.IdRefOwner;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementOwner;
-import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.state.CustomAspectState;
 import org.veo.core.entity.state.CustomLinkState;
+import org.veo.core.entity.state.DomainAssociationState;
+import org.veo.core.entity.state.ElementState;
+import org.veo.core.usecase.service.TypedId;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import lombok.Value;
-import lombok.experimental.NonFinal;
 
 /** Base transfer object for Elements. Contains common data for all Element DTOs. */
 @Data
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class AbstractElementDto extends AbstractVersionedSelfReferencingDto
-    implements NameableDto {
+public abstract class AbstractElementDto<T extends Element>
+    extends AbstractVersionedSelfReferencingDto implements NameableDto, ElementState<T> {
 
   @Schema(
       description = "The name for the Element.",
@@ -94,47 +94,51 @@ public abstract class AbstractElementDto extends AbstractVersionedSelfReferencin
 
   public abstract void transferToDomain(String sourceDomainId, String targetDomainId);
 
-  @JsonIgnore
-  public Set<? extends CustomAspectState> getCustomAspectStates() {
+  private Set<CustomAspectState> getCustomAspectStates() {
     return customAspects.entrySet().stream()
-        .map(e -> new CustomAspectStateImpl(null, e.getKey(), e.getValue().getAttributes()))
+        .map(
+            e ->
+                new CustomAspectState.CustomAspectStateImpl(
+                    e.getKey(), e.getValue().getAttributes()))
         .collect(Collectors.toSet());
   }
 
-  @JsonIgnore
-  public Set<? extends CustomLinkState> getCustomLinkStates() {
+  private Set<CustomLinkState> getCustomLinkStates() {
     return links.entrySet().stream()
         .flatMap(
             e ->
                 e.getValue().stream()
                     .map(
                         l ->
-                            new CustomLinkStateImpl(
-                                null, e.getKey(), l.getAttributes(), l.getTarget())))
+                            new CustomLinkState.CustomLinkStateImpl(
+                                e.getKey(), l.getAttributes(), l.getTarget())))
         .collect(Collectors.toSet());
   }
 
-  @Value
-  @NonFinal
-  static class CustomAspectStateImpl implements CustomAspectState {
-    private final ITypedId<Domain> domain;
-    private final String type;
-    private final Map<String, Object> attributes;
-  }
+  public abstract Map<String, ? extends DomainAssociationDto> getDomains();
 
-  @Value
-  @EqualsAndHashCode(callSuper = true)
-  static class CustomLinkStateImpl extends CustomAspectStateImpl implements CustomLinkState {
-
-    private ITypedId<Element> target;
-
-    public CustomLinkStateImpl(
-        ITypedId<Domain> domainRef,
-        String type,
-        Map<String, Object> attributes,
-        ITypedId<Element> target) {
-      super(domainRef, type, attributes);
-      this.target = target;
+  @JsonIgnore
+  @Override
+  public Set<DomainAssociationState> getDomainAssociationStates() {
+    if (!customAspects.isEmpty() || !links.isEmpty()) {
+      var domainIds = getDomains().keySet();
+      if (domainIds.isEmpty()) {
+        throw new IllegalArgumentException(
+            "Element cannot contain custom aspects or links without being associated with a domain");
+      } else if (domainIds.size() > 1) {
+        throw new UnprocessableDataException(
+            "Using custom aspects or links in a multi-domain element is not supported by this API");
+      }
     }
+    return getDomains().entrySet().stream()
+        .map(
+            entry ->
+                entry
+                    .getValue()
+                    .getDomainAssociationState(
+                        TypedId.from(entry.getKey(), Domain.class),
+                        getCustomAspectStates(),
+                        getCustomLinkStates()))
+        .collect(Collectors.toSet());
   }
 }

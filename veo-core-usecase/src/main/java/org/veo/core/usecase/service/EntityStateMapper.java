@@ -38,7 +38,6 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
-import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ControlRiskValues;
@@ -82,9 +81,9 @@ public class EntityStateMapper {
     target.setDescription(source.getDescription());
   }
 
-  public <T extends Element> void mapState(
-      ElementState<T> source, T target, IdRefResolver idRefResolver) {
-    mapToEntity(source.getDomains(), target, idRefResolver);
+  public <T extends Element, S extends ElementState<T>> void mapState(
+      S source, T target, boolean removeFromOtherDomains, IdRefResolver idRefResolver) {
+    mapToEntity(source.getDomainAssociationStates(), target, idRefResolver, removeFromOtherDomains);
     mapElement(source, target, idRefResolver);
     if (target instanceof Scope scope) {
       ScopeState scopeState = (ScopeState) source;
@@ -110,19 +109,16 @@ public class EntityStateMapper {
       ElementState<T> source, T target, IdRefResolver idRefResolver) {
     mapNameableProperties(source, target);
 
-    applyLinks(source, target, idRefResolver);
-    applyCustomAspects(source, target, idRefResolver);
-
     if (source.getOwner() != null) {
       target.setOwnerOrContainingCatalogItem(idRefResolver.resolve(source.getOwner()));
     }
   }
 
   private <T extends Element> void applyLinks(
-      ElementState<T> source, T target, IdRefResolver idRefResolver) {
+      DomainAssociationState source, T target, IdRefResolver idRefResolver, DomainBase domain) {
     var newLinks = source.getCustomLinkStates();
     // Remove old links that are absent in new links
-    target.getLinks().stream()
+    Set.copyOf(target.getLinks(domain)).stream()
         .filter(
             oldLink ->
                 newLinks.stream()
@@ -139,20 +135,18 @@ public class EntityStateMapper {
         link -> {
           CustomLink newLink =
               entityFactory.createCustomLink(
-                  idRefResolver.resolve(link.getTarget()),
-                  target,
-                  link.getType(),
-                  idRefResolver.resolve(getCustomAspectOrLinkDomain(source)));
+                  idRefResolver.resolve(link.getTarget()), target, link.getType(), domain);
           newLink.setAttributes(link.getAttributes());
           target.applyLink(newLink);
         });
   }
 
   private <T extends Element> void applyCustomAspects(
-      ElementState<T> source, T target, IdRefResolver idRefResolver) {
+      DomainAssociationState source, T target, DomainBase domain) {
+
     var customAspectStates = source.getCustomAspectStates();
     // Remove old CAs that are absent in new CAs
-    target.getCustomAspects().stream()
+    Set.copyOf(target.getCustomAspects(domain)).stream()
         .filter(
             oldCa ->
                 customAspectStates.stream()
@@ -161,31 +155,17 @@ public class EntityStateMapper {
     // Apply new CAs
     customAspectStates.forEach(
         caState -> {
-          var newCa =
-              entityFactory.createCustomAspect(
-                  caState.getType(), idRefResolver.resolve(getCustomAspectOrLinkDomain(source)));
+          var newCa = entityFactory.createCustomAspect(caState.getType(), domain);
           newCa.setAttributes(caState.getAttributes());
           target.applyCustomAspect(newCa);
         });
   }
 
-  private static ITypedId<Domain> getCustomAspectOrLinkDomain(ElementState<?> source) {
-    Set<String> domains = source.getDomains().keySet();
-    if (domains.size() == 1) {
-      return TypedId.from(domains.iterator().next(), Domain.class);
-    }
-    if (domains.isEmpty()) {
-      throw new IllegalArgumentException(
-          "Element cannot contain custom aspects or links without being associated with a domain");
-    }
-    throw new UnprocessableDataException(
-        "Using custom aspects or links in a multi-domain element is not supported by this API");
-  }
-
   private void mapToEntity(
-      Map<String, ? extends DomainAssociationState> domains,
+      Set<? extends DomainAssociationState> domains,
       Element target,
-      IdRefResolver idRefResolver) {
+      IdRefResolver idRefResolver,
+      boolean removeFromOtherDomains) {
     BiConsumer<DomainBase, DomainAssociationState> customMapper = (domain, association) -> {};
 
     if (target instanceof Process process) {
@@ -218,7 +198,7 @@ public class EntityStateMapper {
                       ((ScenarioDomainAssociationState) association).getRiskValues(), domain));
     }
 
-    mapToEntity(domains, target, idRefResolver, customMapper);
+    mapToEntity(domains, target, idRefResolver, customMapper, removeFromOtherDomains);
   }
 
   private Map<RiskDefinitionRef, PotentialProbabilityImpl> mapPotentialProbability(
@@ -276,13 +256,20 @@ public class EntityStateMapper {
   }
 
   private void mapToEntity(
-      Map<String, ? extends DomainAssociationState> domains,
+      Set<? extends DomainAssociationState> domains,
       Element target,
       IdRefResolver idRefResolver,
-      BiConsumer<DomainBase, DomainAssociationState> customMapper) {
+      BiConsumer<DomainBase, DomainAssociationState> customMapper,
+      boolean removeFromOtherDomains) {
+    if (removeFromOtherDomains) {
+      target.getDomains().stream()
+          .filter(
+              d -> domains.stream().noneMatch(a -> a.getDomain().getId().equals(d.getIdAsString())))
+          .forEach(target::removeFromDomains);
+    }
     domains.forEach(
-        (domainId, association) -> {
-          DomainBase domain = idRefResolver.resolve(domainId, Domain.class);
+        association -> {
+          DomainBase domain = idRefResolver.resolve(association.getDomain());
           String newSubType = association.getSubType();
           String newStatus = association.getStatus();
           target
@@ -296,7 +283,8 @@ public class EntityStateMapper {
                     target.setStatus(newStatus, (Domain) domain);
                   },
                   () -> target.associateWithDomain(domain, newSubType, association.getStatus()));
-
+          applyLinks(association, target, idRefResolver, domain);
+          applyCustomAspects(association, target, domain);
           customMapper.accept(domain, association);
         });
   }

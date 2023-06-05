@@ -31,7 +31,6 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.veo.adapter.presenter.api.io.mapper.CreateDomainTemplateInputMapper;
-import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -60,7 +59,6 @@ public class SpringSpecDomainTemplateCreator {
   private Map<String, TransformDomainTemplateDto> domainTemplateDtos;
   private final IdentifiableFactory identifiableFactory;
   private final EntityFactory entityFactory;
-  private final DomainAssociationTransformer domainAssociationTransformer;
   private final EntityStateMapper entityStateMapper;
   private final CreateDomainTemplateUseCase createDomainTemplateUseCase;
   private final CreateDomainFromTemplateUseCase createDomainFromTemplateUseCase;
@@ -98,11 +96,7 @@ public class SpringSpecDomainTemplateCreator {
         () -> {
           var input =
               CreateDomainTemplateInputMapper.map(
-                  dto,
-                  identifiableFactory,
-                  entityFactory,
-                  domainAssociationTransformer,
-                  entityStateMapper);
+                  dto, identifiableFactory, entityFactory, entityStateMapper);
           createDomainTemplateUseCase.execute(input);
         });
   }

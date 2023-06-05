@@ -17,11 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity.state;
 
-import java.util.Map;
-
 import org.veo.core.entity.Process;
 
-public interface ProcessState extends CompositeElementState<Process> {
-
-  Map<String, ? extends ProcessDomainAssociationState> getDomains();
-}
+public interface ProcessState extends CompositeElementState<Process> {}

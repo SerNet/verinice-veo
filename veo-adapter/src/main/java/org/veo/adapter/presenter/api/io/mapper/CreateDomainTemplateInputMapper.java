@@ -18,7 +18,6 @@
 package org.veo.adapter.presenter.api.io.mapper;
 
 import org.veo.adapter.IdRefResolvingFactory;
-import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.core.entity.Key;
@@ -36,7 +35,6 @@ public class CreateDomainTemplateInputMapper {
       TransformDomainTemplateDto domainTemplateDto,
       IdentifiableFactory identifiableFactory,
       EntityFactory entityFactory,
-      DomainAssociationTransformer domainAssociationTransformer,
       EntityStateMapper entityStateMapper) {
     var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
 
@@ -47,8 +45,7 @@ public class CreateDomainTemplateInputMapper {
     resolvingFactory.setGlobalDomainTemplateId(domainTemplateDto.getId());
 
     var transformer =
-        new DtoToEntityTransformer(
-            entityFactory, resolvingFactory, domainAssociationTransformer, entityStateMapper);
+        new DtoToEntityTransformer(entityFactory, resolvingFactory, entityStateMapper);
 
     var newDomainTemplate =
         transformer.transformTransformDomainTemplateDto2DomainTemplate(

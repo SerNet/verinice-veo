@@ -234,7 +234,7 @@ public class ScopeInDomainController {
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<String> scopeIds) {
     return elementService.createElement(
-        user, domainId, dto, scopeIds, createUseCase, dtoToEntityTransformer::transformDto2Scope);
+        user, domainId, dto, scopeIds, createUseCase, dtoToEntityTransformer::transformDto2Element);
   }
 
   @Operation(summary = "Associates an existing scope with a domain")
@@ -272,14 +272,7 @@ public class ScopeInDomainController {
           String uuid,
       @Valid @NotNull @RequestBody FullScopeInDomainDto dto) {
     return elementService.update(
-        auth,
-        domainId,
-        eTag,
-        uuid,
-        dto,
-        updateUseCase,
-        dtoToEntityTransformer::transformDto2Scope,
-        entityToDtoTransformer::transformScope2Dto);
+        auth, domainId, eTag, uuid, dto, updateUseCase, entityToDtoTransformer::transformScope2Dto);
   }
 
   @Operation(
@@ -300,7 +293,8 @@ public class ScopeInDomainController {
           @PathVariable
           String domainId,
       @Valid @RequestBody FullScopeInDomainDto dto) {
-    return elementService.evaluate(auth, dto, domainId, dtoToEntityTransformer::transformDto2Scope);
+    return elementService.evaluate(
+        auth, dto, domainId, dtoToEntityTransformer::transformDto2Element);
   }
 
   @Operation(summary = "Loads the members of a scope in a domain")

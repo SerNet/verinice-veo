@@ -18,8 +18,34 @@
 package org.veo.core.entity.state;
 
 import java.util.Map;
+import java.util.Set;
+
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.ref.ITypedId;
+
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
 public interface ControlDomainAssociationState extends DomainAssociationState {
 
   Map<String, ? extends ControlRiskValuesState> getRiskValues();
+
+  @Value
+  @EqualsAndHashCode(callSuper = true)
+  class ControlDomainAssociationStateImpl extends DomainAssociationStateImpl
+      implements ControlDomainAssociationState {
+
+    Map<String, ? extends ControlRiskValuesState> riskValues;
+
+    public ControlDomainAssociationStateImpl(
+        ITypedId<Domain> domain,
+        String subType,
+        String status,
+        Map<String, ? extends ControlRiskValuesState> riskValues,
+        Set<CustomAspectState> customAspects,
+        Set<CustomLinkState> customLinks) {
+      super(domain, subType, status, customAspects, customLinks);
+      this.riskValues = riskValues;
+    }
+  }
 }

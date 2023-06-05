@@ -270,7 +270,9 @@ public class PersonController extends AbstractElementController<Person, FullPers
               Client client = getClient(user);
               IdRefResolver idRefResolver = createIdRefResolver(client);
               return CreateElementInputMapper.map(
-                  dtoToEntityTransformer.transformDto2Person(dto, idRefResolver), client, scopeIds);
+                  dtoToEntityTransformer.transformDto2Element(dto, idRefResolver),
+                  client,
+                  scopeIds);
             },
         output -> {
           ApiResponseBody body = CreateOutputMapper.map(output.getEntity());

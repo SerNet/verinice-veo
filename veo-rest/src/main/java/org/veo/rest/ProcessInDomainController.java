@@ -297,7 +297,7 @@ public class ProcessInDomainController {
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<String> scopeIds) {
     return elementService.createElement(
-        user, domainId, dto, scopeIds, createUseCase, dtoToEntityTransformer::transformDto2Process);
+        user, domainId, dto, scopeIds, createUseCase, dtoToEntityTransformer::transformDto2Element);
   }
 
   @Operation(summary = "Associates an existing process with a domain")
@@ -341,7 +341,6 @@ public class ProcessInDomainController {
         uuid,
         dto,
         updateUseCase,
-        dtoToEntityTransformer::transformDto2Process,
         entityToDtoTransformer::transformProcess2Dto);
   }
 
@@ -364,6 +363,6 @@ public class ProcessInDomainController {
           String domainId,
       @Valid @RequestBody FullProcessInDomainDto dto) {
     return elementService.evaluate(
-        auth, dto, domainId, dtoToEntityTransformer::transformDto2Process);
+        auth, dto, domainId, dtoToEntityTransformer::transformDto2Element);
   }
 }

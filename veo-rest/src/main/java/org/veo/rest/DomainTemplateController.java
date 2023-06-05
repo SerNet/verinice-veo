@@ -43,7 +43,6 @@ import org.veo.adapter.presenter.api.dto.DomainTemplateMetadataDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateDomainTemplateInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
@@ -88,7 +87,6 @@ public class DomainTemplateController extends AbstractEntityController {
   private final CreateDomainTemplateUseCase createDomainTemplatesUseCase;
   private final EntityFactory entityFactory;
   private final IdentifiableFactory identifiableFactory;
-  private final DomainAssociationTransformer domainAssociationTransformer;
   private final EntityStateMapper entityStateMapper;
   private final FindDomainTemplatesUseCase findDomainTemplatesUseCase;
   private final GetDomainTemplateUseCase getDomainTemplateUseCase;
@@ -135,11 +133,7 @@ public class DomainTemplateController extends AbstractEntityController {
       @Valid @NotNull @RequestBody TransformDomainTemplateDto domainTemplateDto) {
     var input =
         CreateDomainTemplateInputMapper.map(
-            domainTemplateDto,
-            identifiableFactory,
-            entityFactory,
-            domainAssociationTransformer,
-            entityStateMapper);
+            domainTemplateDto, identifiableFactory, entityFactory, entityStateMapper);
     return useCaseInteractor.execute(
         createDomainTemplatesUseCase,
         input,

@@ -18,14 +18,18 @@
 package org.veo.core.usecase.base;
 
 import org.veo.core.entity.Asset;
-import org.veo.core.repository.AssetRepository;
-import org.veo.core.repository.DomainRepository;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.decision.Decider;
+import org.veo.core.usecase.service.EntityStateMapper;
 
 public class UpdateAssetInDomainUseCase extends UpdateElementInDomainUseCase<Asset> {
 
   public UpdateAssetInDomainUseCase(
-      DomainRepository domainRepository, AssetRepository repo, Decider decider) {
-    super(domainRepository, repo, decider);
+      RepositoryProvider repositoryProvider, Decider decider, EntityStateMapper entityStateMapper) {
+    super(
+        repositoryProvider.getElementRepositoryFor(Asset.class),
+        repositoryProvider,
+        decider,
+        entityStateMapper);
   }
 }

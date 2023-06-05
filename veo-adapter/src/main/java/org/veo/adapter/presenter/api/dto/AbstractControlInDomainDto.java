@@ -22,6 +22,8 @@ import java.util.Map;
 
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.state.ControlDomainAssociationState;
+import org.veo.core.entity.state.ControlState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -36,7 +38,8 @@ import lombok.ToString;
     description =
         "An administrative or technical measure that can influence risks, such as a guideline or mode of procedure - this DTO represents a control from the viewpoint of a domain and contains both basic and domain-specific properties.")
 public abstract class AbstractControlInDomainDto
-    extends AbstractCompositeElementInDomainDto<Control> {
+    extends AbstractCompositeElementInDomainDto<Control>
+    implements ControlState, ControlDomainAssociationState {
 
   @Override
   @Schema(example = "Encryption")

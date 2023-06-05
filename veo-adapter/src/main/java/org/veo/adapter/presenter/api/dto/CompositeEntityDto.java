@@ -36,7 +36,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public abstract class CompositeEntityDto<T extends Element> extends AbstractElementDto {
+public abstract class CompositeEntityDto<T extends Element> extends AbstractElementDto<T> {
 
   private Set<IdRef<T>> parts = Collections.emptySet();
 

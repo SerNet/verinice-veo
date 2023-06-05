@@ -18,10 +18,35 @@
 package org.veo.core.entity.state;
 
 import java.util.Map;
+import java.util.Set;
 
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.risk.ScenarioRiskValues;
+
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
 public interface ScenarioDomainAssociationState extends DomainAssociationState {
 
   Map<String, ? extends ScenarioRiskValues> getRiskValues();
+
+  @Value
+  @EqualsAndHashCode(callSuper = true)
+  class ScenarioDomainAssociationStateImpl extends DomainAssociationStateImpl
+      implements ScenarioDomainAssociationState {
+
+    Map<String, ? extends ScenarioRiskValues> riskValues;
+
+    public ScenarioDomainAssociationStateImpl(
+        ITypedId<Domain> domain,
+        String subType,
+        String status,
+        Map<String, ? extends ScenarioRiskValues> riskValues,
+        Set<CustomAspectState> customAspects,
+        Set<CustomLinkState> customLinks) {
+      super(domain, subType, status, customAspects, customLinks);
+      this.riskValues = riskValues;
+    }
+  }
 }

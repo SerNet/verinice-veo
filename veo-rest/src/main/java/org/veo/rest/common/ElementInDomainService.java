@@ -25,7 +25,6 @@ import java.util.function.Supplier;
 
 import jakarta.validation.Valid;
 
-import org.apache.commons.lang3.function.TriFunction;
 import org.hibernate.Hibernate;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +56,7 @@ import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.service.DbIdRefResolver;
 import org.veo.core.usecase.service.IdRefResolver;
+import org.veo.core.usecase.service.TypedId;
 import org.veo.rest.TransactionalRunner;
 import org.veo.rest.security.ApplicationUser;
 import org.veo.service.EtagService;
@@ -140,15 +140,15 @@ public class ElementInDomainService {
           TBaseDto dto,
           List<String> scopeIds,
           CreateElementUseCase<TElement> createUseCase,
-          TriFunction<TBaseDto, String, IdRefResolver, TElement> toEntityMapper) {
+          BiFunction<TBaseDto, IdRefResolver, TElement> toEntityMapper) {
+    dto.setDomain(TypedId.from(domainId, Domain.class));
     return useCaseInteractor.execute(
         createUseCase,
         (Supplier<CreateElementUseCase.InputData<TElement>>)
             () -> {
               var client = clientLookup.getClient(user);
               return CreateElementInputMapper.map(
-                  toEntityMapper.apply(
-                      dto, domainId, new DbIdRefResolver(repositoryProvider, client)),
+                  toEntityMapper.apply(dto, new DbIdRefResolver(repositoryProvider, client)),
                   client,
                   scopeIds);
             },
@@ -185,22 +185,17 @@ public class ElementInDomainService {
           String id,
           TFullDto dto,
           UpdateElementInDomainUseCase<TElement> updateUseCase,
-          TriFunction<TFullDto, String, IdRefResolver, TElement> toEntityMapper,
           BiFunction<TElement, Domain, TFullDto> toDtoMapper) {
     dto.applyResourceId(id);
+    dto.setDomain(TypedId.from(domainId, Domain.class));
     return useCaseInteractor.execute(
         updateUseCase,
         (Supplier<UpdateElementInDomainUseCase.InputData<TElement>>)
             () -> {
               var user = ApplicationUser.authenticatedUser(auth.getPrincipal());
               var client = clientLookup.getClient(user);
-              var idRefResolver = new DbIdRefResolver(repositoryProvider, client);
-              return new UpdateElementInDomainUseCase.InputData<>(
-                  toEntityMapper.apply(dto, domainId, idRefResolver),
-                  Key.uuidFrom(domainId),
-                  client,
-                  eTag,
-                  user.getUsername());
+              return new UpdateElementInDomainUseCase.InputData<TElement>(
+                  Key.uuidFrom(id), dto, Key.uuidFrom(domainId), client, eTag, user.getUsername());
             },
         output ->
             toResponseEntity(
@@ -217,14 +212,13 @@ public class ElementInDomainService {
           Authentication auth,
           @Valid TDto dto,
           String domainId,
-          TriFunction<TDto, String, IdRefResolver, TElement> toEntityMapper) {
+          BiFunction<TDto, IdRefResolver, TElement> toEntityMapper) {
     var client = clientLookup.getClient(auth);
+    dto.setDomain(TypedId.from(domainId, Domain.class));
     var element =
         runner.run(
             () -> {
-              var e =
-                  toEntityMapper.apply(
-                      dto, domainId, new DbIdRefResolver(repositoryProvider, client));
+              var e = toEntityMapper.apply(dto, new DbIdRefResolver(repositoryProvider, client));
               if (e instanceof CompositeElement) {
                 // initialize subtypeAspects field for PartCountProvider
                 // TODO VEO-1569: remove this when the PartCountProvider uses a repository method

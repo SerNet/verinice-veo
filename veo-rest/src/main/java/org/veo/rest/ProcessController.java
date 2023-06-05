@@ -249,7 +249,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
               Client client = getClient(user);
               IdRefResolver idRefResolver = createIdRefResolver(client);
               return CreateElementInputMapper.map(
-                  dtoToEntityTransformer.transformDto2Process(dto, idRefResolver),
+                  dtoToEntityTransformer.transformDto2Element(dto, idRefResolver),
                   client,
                   scopeIds);
             },

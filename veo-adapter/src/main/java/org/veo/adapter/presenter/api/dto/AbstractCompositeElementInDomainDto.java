@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.core.entity.CompositeElement;
+import org.veo.core.entity.state.CompositeElementState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -32,7 +33,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public abstract class AbstractCompositeElementInDomainDto<T extends CompositeElement<T>>
-    extends AbstractElementInDomainDto<T> {
+    extends AbstractElementInDomainDto<T> implements CompositeElementState<T> {
 
   private Set<ElementInDomainIdRef<T>> parts = Collections.emptySet();
 

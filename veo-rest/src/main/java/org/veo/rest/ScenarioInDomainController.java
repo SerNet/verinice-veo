@@ -294,12 +294,7 @@ public class ScenarioInDomainController {
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<String> scopeIds) {
     return elementService.createElement(
-        user,
-        domainId,
-        dto,
-        scopeIds,
-        createUseCase,
-        dtoToEntityTransformer::transformDto2Scenario);
+        user, domainId, dto, scopeIds, createUseCase, dtoToEntityTransformer::transformDto2Element);
   }
 
   @Operation(summary = "Associates an existing scenario with a domain")
@@ -343,7 +338,6 @@ public class ScenarioInDomainController {
         uuid,
         dto,
         updateUseCase,
-        dtoToEntityTransformer::transformDto2Scenario,
         entityToDtoTransformer::transformScenario2Dto);
   }
 
@@ -366,6 +360,6 @@ public class ScenarioInDomainController {
           String domainId,
       @Valid @RequestBody FullScenarioInDomainDto dto) {
     return elementService.evaluate(
-        auth, dto, domainId, dtoToEntityTransformer::transformDto2Scenario);
+        auth, dto, domainId, dtoToEntityTransformer::transformDto2Element);
   }
 }

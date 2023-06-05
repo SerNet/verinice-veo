@@ -27,6 +27,8 @@ import static org.veo.core.entity.aspects.SubTypeAspect.SUB_TYPE_NOT_NULL_MESSAG
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -38,11 +40,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefOwner;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
+import org.veo.core.entity.state.CustomAspectState;
+import org.veo.core.entity.state.CustomLinkState;
+import org.veo.core.entity.state.DomainAssociationState;
+import org.veo.core.entity.state.ElementState;
+import org.veo.core.usecase.service.TypedId;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -59,7 +67,8 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AbstractElementInDomainDto<TElement extends Element>
-    extends AbstractVersionedDto implements NameableDto {
+    extends AbstractVersionedDto
+    implements NameableDto, ElementState<TElement>, DomainAssociationState {
   @JsonIgnore
   @Getter(AccessLevel.NONE)
   private ElementInDomainIdRef<TElement> selfRef;
@@ -71,6 +80,8 @@ public abstract class AbstractElementInDomainDto<TElement extends Element>
         .map(ElementInDomainIdRef::getTargetInDomainUri)
         .orElse(null);
   }
+
+  @JsonIgnore private TypedId<Domain> domain;
 
   @Size(min = 1, max = NAME_MAX_LENGTH)
   private String name;
@@ -123,5 +134,33 @@ public abstract class AbstractElementInDomainDto<TElement extends Element>
   @JsonProperty(access = READ_ONLY)
   public String getType() {
     return EntityType.getSingularTermByType(getModelInterface());
+  }
+
+  @JsonIgnore
+  @Override
+  public Set<CustomAspectState> getCustomAspectStates() {
+    return customAspects.getValue().entrySet().stream()
+        .map(e -> new CustomAspectState.CustomAspectStateImpl(e.getKey(), e.getValue().getValue()))
+        .collect(Collectors.toSet());
+  }
+
+  @JsonIgnore
+  @Override
+  public Set<CustomLinkState> getCustomLinkStates() {
+    return links.getValue().entrySet().stream()
+        .flatMap(
+            e ->
+                e.getValue().stream()
+                    .map(
+                        l ->
+                            new CustomLinkState.CustomLinkStateImpl(
+                                e.getKey(), l.getAttributes().getValue(), l.getTarget())))
+        .collect(Collectors.toSet());
+  }
+
+  @JsonIgnore
+  @Override
+  public Set<DomainAssociationState> getDomainAssociationStates() {
+    return Set.of(this);
   }
 }

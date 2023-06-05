@@ -269,7 +269,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
               Client client = getClient(user);
               IdRefResolver idRefResolver = createIdRefResolver(client);
               return CreateElementInputMapper.map(
-                  dtoToEntityTransformer.transformDto2Incident(dto, idRefResolver),
+                  dtoToEntityTransformer.transformDto2Element(dto, idRefResolver),
                   client,
                   scopeIds);
             },

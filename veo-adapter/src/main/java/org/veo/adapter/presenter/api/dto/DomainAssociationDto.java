@@ -20,19 +20,25 @@ package org.veo.adapter.presenter.api.dto;
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 import java.util.Map;
+import java.util.Set;
 
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.aspects.SubTypeAspect;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
+import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.state.CustomAspectState;
+import org.veo.core.entity.state.CustomLinkState;
 import org.veo.core.entity.state.DomainAssociationState;
+import org.veo.core.entity.state.DomainAssociationState.DomainAssociationStateImpl;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-public class DomainAssociationDto implements DomainAssociationState {
+public class DomainAssociationDto {
   @NotNull
   @Schema(minLength = 1, maxLength = SubTypeAspect.SUB_TYPE_MAX_LENGTH, requiredMode = REQUIRED)
   String subType;
@@ -46,4 +52,12 @@ public class DomainAssociationDto implements DomainAssociationState {
           "Results of all decisions concerning this element within this domain. Key is decision key, value is results.",
       accessMode = Schema.AccessMode.READ_ONLY)
   private Map<DecisionRef, DecisionResult> decisionResults;
+
+  public DomainAssociationState getDomainAssociationState(
+      ITypedId<Domain> domain,
+      Set<CustomAspectState> customAspectStates,
+      Set<CustomLinkState> customLinkStates) {
+    return new DomainAssociationStateImpl(
+        domain, subType, status, customAspectStates, customLinkStates);
+  }
 }

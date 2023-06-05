@@ -294,7 +294,7 @@ public class PersonInDomainController {
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<String> scopeIds) {
     return elementService.createElement(
-        user, domainId, dto, scopeIds, createUseCase, dtoToEntityTransformer::transformDto2Person);
+        user, domainId, dto, scopeIds, createUseCase, dtoToEntityTransformer::transformDto2Element);
   }
 
   @Operation(summary = "Associates an existing person with a domain")
@@ -338,7 +338,6 @@ public class PersonInDomainController {
         uuid,
         dto,
         updateUseCase,
-        dtoToEntityTransformer::transformDto2Person,
         entityToDtoTransformer::transformPerson2Dto);
   }
 
@@ -361,6 +360,6 @@ public class PersonInDomainController {
           String domainId,
       @Valid @RequestBody FullPersonInDomainDto dto) {
     return elementService.evaluate(
-        auth, dto, domainId, dtoToEntityTransformer::transformDto2Person);
+        auth, dto, domainId, dtoToEntityTransformer::transformDto2Element);
   }
 }

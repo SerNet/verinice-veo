@@ -19,8 +19,14 @@ package org.veo.adapter.presenter.api.dto;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
-import org.veo.core.entity.state.ScenarioDomainAssociationState;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.state.CustomAspectState;
+import org.veo.core.entity.state.CustomLinkState;
+import org.veo.core.entity.state.DomainAssociationState;
+import org.veo.core.entity.state.ScenarioDomainAssociationState.ScenarioDomainAssociationStateImpl;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -28,10 +34,18 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ScenarioDomainAssociationDto extends DomainAssociationDto
-    implements ScenarioDomainAssociationState {
+public class ScenarioDomainAssociationDto extends DomainAssociationDto {
   @Schema(
       description =
           "Key is risk definition ID, value are the values in the context of that risk definition.")
   Map<String, ScenarioRiskValuesDto> riskValues = new HashMap<>();
+
+  @Override
+  public DomainAssociationState getDomainAssociationState(
+      ITypedId<Domain> domain,
+      Set<CustomAspectState> customAspectStates,
+      Set<CustomLinkState> customLinkStates) {
+    return new ScenarioDomainAssociationStateImpl(
+        domain, subType, status, riskValues, customAspectStates, customLinkStates);
+  }
 }

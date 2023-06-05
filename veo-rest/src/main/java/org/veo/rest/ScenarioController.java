@@ -269,7 +269,7 @@ public class ScenarioController extends AbstractElementController<Scenario, Full
               Client client = getClient(user);
               IdRefResolver idRefResolver = createIdRefResolver(client);
               return CreateElementInputMapper.map(
-                  dtoToEntityTransformer.transformDto2Scenario(dto, idRefResolver),
+                  dtoToEntityTransformer.transformDto2Element(dto, idRefResolver),
                   client,
                   scopeIds);
             },

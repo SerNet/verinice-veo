@@ -61,6 +61,7 @@ public abstract class ModifyElementUseCase<T extends Element>
     entityStateMapper.mapState(
         entity,
         storedEntity,
+        true,
         new DbIdRefResolver(repositoryProvider, input.getAuthenticatedClient()));
     evaluateDecisions(storedEntity);
     DomainSensitiveElementValidator.validate(storedEntity);

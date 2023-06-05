@@ -41,9 +41,7 @@ class UpdateScopeUseCaseSpec extends UseCaseSpec {
         def scope = Mock(ScopeState)
         scope.getId() >> scopeId.uuidValue()
         scope.name >> "Updated scope"
-        scope.domains >> [:]
-        scope.customAspectStates >> []
-        scope.customLinkStates >> []
+        scope.domainAssociationStates >> []
         scope.members >> []
 
         def existingScope = Mock(Scope) {

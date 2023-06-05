@@ -17,11 +17,18 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import java.util.Set;
+
 import jakarta.validation.constraints.Size;
 
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
-import org.veo.core.entity.state.ScopeDomainAssociationState;
+import org.veo.core.entity.state.CustomAspectState;
+import org.veo.core.entity.state.CustomLinkState;
+import org.veo.core.entity.state.DomainAssociationState;
+import org.veo.core.entity.state.ScopeDomainAssociationState.ScopeDomainAssociationStateImpl;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -30,9 +37,17 @@ import lombok.EqualsAndHashCode;
 /** Contains a {@link Scope}'s domain-specific information. */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ScopeDomainAssociationDto extends DomainAssociationDto
-    implements ScopeDomainAssociationState {
+public class ScopeDomainAssociationDto extends DomainAssociationDto {
   @Schema(description = "The ID of a risk definition in the domain")
   @Size(max = RiskDefinition.MAX_ID_SIZE)
   String riskDefinition;
+
+  @Override
+  public DomainAssociationState getDomainAssociationState(
+      ITypedId<Domain> domain,
+      Set<CustomAspectState> customAspectStates,
+      Set<CustomLinkState> customLinkStates) {
+    return new ScopeDomainAssociationStateImpl(
+        domain, subType, status, customAspectStates, customLinkStates, riskDefinition);
+  }
 }

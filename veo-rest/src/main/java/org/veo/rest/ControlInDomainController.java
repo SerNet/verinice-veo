@@ -295,7 +295,7 @@ public class ControlInDomainController {
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<String> scopeIds) {
     return elementService.createElement(
-        user, domainId, dto, scopeIds, createUseCase, dtoToEntityTransformer::transformDto2Control);
+        user, domainId, dto, scopeIds, createUseCase, dtoToEntityTransformer::transformDto2Element);
   }
 
   @Operation(summary = "Associates an existing control with a domain")
@@ -339,7 +339,6 @@ public class ControlInDomainController {
         uuid,
         controlDto,
         updateUseCase,
-        dtoToEntityTransformer::transformDto2Control,
         entityToDtoTransformer::transformControl2Dto);
   }
 
@@ -362,6 +361,6 @@ public class ControlInDomainController {
           String domainId,
       @Valid @RequestBody FullControlInDomainDto dto) {
     return elementService.evaluate(
-        auth, dto, domainId, dtoToEntityTransformer::transformDto2Control);
+        auth, dto, domainId, dtoToEntityTransformer::transformDto2Element);
   }
 }

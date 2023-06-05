@@ -22,6 +22,8 @@ import java.util.Map;
 
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.state.ProcessDomainAssociationState;
+import org.veo.core.entity.state.ProcessState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -36,7 +38,8 @@ import lombok.ToString;
     description =
         "A series of activities that uses organization resources to transform input into results - this DTO represents a process from the viewpoint of a domain and contains both basic and domain-specific properties.")
 public abstract class AbstractProcessInDomainDto
-    extends AbstractCompositeElementInDomainDto<Process> {
+    extends AbstractCompositeElementInDomainDto<Process>
+    implements ProcessState, ProcessDomainAssociationState {
 
   @Override
   @Schema(example = "External wage accounting")

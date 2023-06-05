@@ -27,13 +27,16 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.repository.DomainRepository;
+import org.veo.core.entity.state.ElementState;
 import org.veo.core.repository.ElementRepository;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.common.ETagMismatchException;
 import org.veo.core.usecase.decision.Decider;
+import org.veo.core.usecase.service.DbIdRefResolver;
+import org.veo.core.usecase.service.EntityStateMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -43,15 +46,18 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
     implements TransactionalUseCase<
         UpdateElementInDomainUseCase.InputData<T>, UpdateElementInDomainUseCase.OutputData<T>> {
 
-  private final DomainRepository domainRepository;
   private final ElementRepository<T> repo;
+  private final RepositoryProvider repositoryProvider;
   private final Decider decider;
+  private final EntityStateMapper entityStateMapper;
 
   @Override
   public OutputData<T> execute(InputData<T> input) {
-    var domain = domainRepository.getById(input.getDomainId());
+    var idRefResolver = new DbIdRefResolver(repositoryProvider, input.authenticatedClient);
+
+    var domain = idRefResolver.resolve(input.getDomainId().uuidValue(), Domain.class);
     var inputElement = input.getElement();
-    var storedElement = repo.getById(input.element.getId(), input.authenticatedClient.getId());
+    var storedElement = repo.getById(input.getId(), input.authenticatedClient.getId());
     storedElement.checkSameClient(input.authenticatedClient); // Client boundary safety net
     if (!storedElement.isAssociatedWithDomain(domain)) {
       throw new NotFoundException(
@@ -61,54 +67,15 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
           domain.getIdAsString());
     }
     checkETag(storedElement, input);
-    applyChanges(inputElement, storedElement, domain);
+    entityStateMapper.mapState(inputElement, storedElement, false, idRefResolver);
+    // TODO VEO-1874: Only mark root element as updated when basic properties change, version domain
+    // associations independently.
+    storedElement.setUpdatedAt(Instant.now());
     storedElement.setDecisionResults(decider.decide(storedElement, domain), domain);
-    DomainSensitiveElementValidator.validate(inputElement);
+    DomainSensitiveElementValidator.validate(storedElement);
     repo.save(storedElement);
     // re-fetch element to make sure it is returned with updated versioning information
     return new OutputData<>(repo.getById(storedElement.getId(), input.authenticatedClient.getId()));
-  }
-
-  protected void applyChanges(T source, T target, Domain domain) {
-    target.setName(source.getName());
-    target.setDescription(source.getDescription());
-    target.setAbbreviation(source.getAbbreviation());
-    target.setOwner(source.getOwner());
-
-    target.setStatus(source.getStatus(domain), domain);
-    applyCustomAspects(source, target, domain);
-    applyLinks(source, target, domain);
-
-    // TODO VEO-1874: Only mark root element as updated when basic properties change, version domain
-    // associations independently.
-    target.setUpdatedAt(Instant.now());
-  }
-
-  private void applyLinks(T source, T target, Domain domain) {
-    var newLinks = source.getLinks(domain);
-    // Remove old links that are absent in new links
-    target.getLinks(domain).stream()
-        .filter(
-            oldLink ->
-                newLinks.stream()
-                    .noneMatch(
-                        newLink ->
-                            newLink.getType().equals(oldLink.getType())
-                                && newLink.getTarget().equals(oldLink.getTarget())))
-        .forEach(target::removeLink);
-    // Apply new links
-    newLinks.forEach(target::applyLink);
-  }
-
-  private void applyCustomAspects(T source, T target, Domain domain) {
-    var newCas = source.getCustomAspects(domain);
-    // Remove old CAs that are absent in new CAs
-    target.getCustomAspects(domain).stream()
-        .filter(
-            oldCa -> newCas.stream().noneMatch(newCa -> newCa.getType().equals(oldCa.getType())))
-        .forEach(target::removeCustomAspect);
-    // Apply new CAs
-    newCas.forEach(target::applyCustomAspect);
   }
 
   private void checkETag(Element storedElement, InputData<? extends Element> input) {
@@ -128,8 +95,9 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
 
   @Valid
   @Value
-  public static class InputData<T> implements UseCase.InputData {
-    @Valid T element;
+  public static class InputData<T extends Element> implements UseCase.InputData {
+    Key<UUID> id;
+    @Valid ElementState<T> element;
     Key<UUID> domainId;
     Client authenticatedClient;
     String eTag;

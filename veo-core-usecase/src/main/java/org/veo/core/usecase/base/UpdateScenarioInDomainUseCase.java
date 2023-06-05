@@ -17,25 +17,19 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
-import java.util.HashMap;
-
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scenario;
-import org.veo.core.repository.DomainRepository;
-import org.veo.core.repository.ScenarioRepository;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.decision.Decider;
+import org.veo.core.usecase.service.EntityStateMapper;
 
 public class UpdateScenarioInDomainUseCase extends UpdateElementInDomainUseCase<Scenario> {
 
   public UpdateScenarioInDomainUseCase(
-      DomainRepository domainRepository, ScenarioRepository repo, Decider decider) {
-    super(domainRepository, repo, decider);
-  }
-
-  @Override
-  protected void applyChanges(Scenario source, Scenario target, Domain domain) {
-    super.applyChanges(source, target, domain);
-    target.setPotentialProbability(
-        domain, source.getPotentialProbability(domain).orElse(new HashMap<>()));
+      RepositoryProvider repositoryProvider, Decider decider, EntityStateMapper entityStateMapper) {
+    super(
+        repositoryProvider.getElementRepositoryFor(Scenario.class),
+        repositoryProvider,
+        decider,
+        entityStateMapper);
   }
 }

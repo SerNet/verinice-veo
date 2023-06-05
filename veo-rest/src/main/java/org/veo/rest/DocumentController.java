@@ -269,7 +269,7 @@ public class DocumentController extends AbstractElementController<Document, Full
               Client client = getClient(user);
               IdRefResolver idRefResolver = createIdRefResolver(client);
               return CreateElementInputMapper.map(
-                  dtoToEntityTransformer.transformDto2Document(dto, idRefResolver),
+                  dtoToEntityTransformer.transformDto2Element(dto, idRefResolver),
                   client,
                   scopeIds);
             },

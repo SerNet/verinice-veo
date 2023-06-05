@@ -297,7 +297,9 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
               Client client = getClient(user);
               IdRefResolver idRefResolver = createIdRefResolver(client);
               return CreateElementInputMapper.map(
-                  dtoToEntityTransformer.transformDto2Asset(dto, idRefResolver), client, scopeIds);
+                  dtoToEntityTransformer.transformDto2Element(dto, idRefResolver),
+                  client,
+                  scopeIds);
             },
         output -> {
           ApiResponseBody body = CreateOutputMapper.map(output.getEntity());

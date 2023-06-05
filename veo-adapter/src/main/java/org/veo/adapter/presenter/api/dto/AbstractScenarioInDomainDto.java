@@ -22,6 +22,8 @@ import java.util.Map;
 
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.state.ScenarioDomainAssociationState;
+import org.veo.core.entity.state.ScenarioState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -36,7 +38,8 @@ import lombok.ToString;
     description =
         "A possible situation that threatens data security - this DTO represents a scenario from the viewpoint of a domain and contains both basic and domain-specific properties.")
 public abstract class AbstractScenarioInDomainDto
-    extends AbstractCompositeElementInDomainDto<Scenario> {
+    extends AbstractCompositeElementInDomainDto<Scenario>
+    implements ScenarioState, ScenarioDomainAssociationState {
 
   @Override
   @Schema(example = "Phishing")

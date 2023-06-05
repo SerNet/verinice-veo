@@ -22,6 +22,7 @@ import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 
 import org.veo.core.entity.Client
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.core.entity.state.CompositeElementState
 import org.veo.core.entity.state.CustomAspectState
@@ -65,19 +66,20 @@ class ModifyElementUseCaseITSpec extends AbstractPerformanceITSpec {
             abbreviation >> person.abbreviation
             description >> person.description
             it.owner >> TypedId.from(unit.idAsString, Unit)
-            getDomains() >> [
-                (testDomain.idAsString): Mock(DomainAssociationState) {
+            getDomainAssociationStates() >> [
+                Mock(DomainAssociationState) {
                     getSubType() >> 'PER_Person'
                     getStatus() >> 'NEW'
+                    getDomain() >> TypedId.from(testDomain.idAsString, Domain)
+                    getCustomLinkStates() >> []
+                    getCustomAspectStates() >> [
+                        Mock(CustomAspectState) {
+                            getType() >> 'person_address'
+                            getAttributes() >> [:]
+                        }
+                    ]
                 }
             ]
-            getCustomAspectStates() >> [
-                Mock(CustomAspectState) {
-                    getType() >> 'person_address'
-                    getAttributes() >> [:]
-                }
-            ]
-            getCustomLinkStates() >> []
             getParts() >> []
         }
 
@@ -86,7 +88,7 @@ class ModifyElementUseCaseITSpec extends AbstractPerformanceITSpec {
 
         when:
         executeInTransaction {
-            updatePersonUseCase.execute(new InputData(person.idAsString, updatedPerson, unit.client,ETag.from(person.idAsString, 0), "user@domain.example"))
+            updatePersonUseCase.execute(new InputData(person.idAsString, updatedPerson, unit.client, ETag.from(person.idAsString, 0), "user@domain.example"))
         }
         def queryCounts = QueryCountHolder.grandTotal
 

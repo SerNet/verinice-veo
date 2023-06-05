@@ -17,11 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity.state;
 
-import java.util.Map;
-
 import org.veo.core.entity.Control;
 
-public interface ControlState extends CompositeElementState<Control> {
-
-  Map<String, ? extends ControlDomainAssociationState> getDomains();
-}
+public interface ControlState extends CompositeElementState<Control> {}

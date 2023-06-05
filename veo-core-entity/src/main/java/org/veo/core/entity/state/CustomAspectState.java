@@ -19,14 +19,19 @@ package org.veo.core.entity.state;
 
 import java.util.Map;
 
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.ref.ITypedId;
+import lombok.Value;
+import lombok.experimental.NonFinal;
 
 public interface CustomAspectState {
-
-  ITypedId<Domain> getDomain();
 
   String getType();
 
   Map<String, Object> getAttributes();
+
+  @Value
+  @NonFinal
+  static class CustomAspectStateImpl implements CustomAspectState {
+    private final String type;
+    private final Map<String, Object> attributes;
+  }
 }

@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity.state;
 
-import java.util.Map;
 import java.util.Set;
 
 import org.veo.core.entity.Element;
@@ -26,11 +25,7 @@ import org.veo.core.entity.ref.ITypedId;
 
 public interface ElementState<T extends Element> extends EntityState {
 
-  Map<String, ? extends DomainAssociationState> getDomains();
+  Set<DomainAssociationState> getDomainAssociationStates();
 
   ITypedId<ElementOwner> getOwner();
-
-  Set<? extends CustomAspectState> getCustomAspectStates();
-
-  Set<? extends CustomLinkState> getCustomLinkStates();
 }

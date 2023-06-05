@@ -17,9 +17,32 @@
  ******************************************************************************/
 package org.veo.core.entity.state;
 
+import java.util.Set;
+
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.ref.ITypedId;
+
+import lombok.Value;
+import lombok.experimental.NonFinal;
+
 public interface DomainAssociationState {
+  ITypedId<Domain> getDomain();
 
   String getSubType();
 
   String getStatus();
+
+  Set<CustomAspectState> getCustomAspectStates();
+
+  Set<CustomLinkState> getCustomLinkStates();
+
+  @Value
+  @NonFinal
+  class DomainAssociationStateImpl implements DomainAssociationState {
+    ITypedId<Domain> domain;
+    String subType;
+    String status;
+    Set<CustomAspectState> customAspectStates;
+    Set<CustomLinkState> customLinkStates;
+  }
 }

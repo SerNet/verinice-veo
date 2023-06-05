@@ -28,6 +28,8 @@ import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.state.ScopeDomainAssociationState;
+import org.veo.core.entity.state.ScopeState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -41,7 +43,8 @@ import lombok.ToString;
     title = "Scope",
     description =
         "A group that can contain different types of elements. Scopes represent organizational structures such as organizations, departments or projects.  This DTO represents a scope from the viewpoint of a domain and contains both basic and domain-specific properties.")
-public abstract class AbstractScopeInDomainDto extends AbstractElementInDomainDto<Scope> {
+public abstract class AbstractScopeInDomainDto extends AbstractElementInDomainDto<Scope>
+    implements ScopeState, ScopeDomainAssociationState {
 
   @Override
   @Schema(example = "Data Inc.")

@@ -18,10 +18,35 @@
 package org.veo.core.entity.state;
 
 import java.util.Map;
+import java.util.Set;
 
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.risk.ProcessRiskValues;
+
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
 public interface ProcessDomainAssociationState extends DomainAssociationState {
 
   Map<String, ? extends ProcessRiskValues> getRiskValues();
+
+  @Value
+  @EqualsAndHashCode(callSuper = true)
+  class ProcessDomainAssociationStateImpl extends DomainAssociationStateImpl
+      implements ProcessDomainAssociationState {
+
+    Map<String, ? extends ProcessRiskValues> riskValues;
+
+    public ProcessDomainAssociationStateImpl(
+        ITypedId<Domain> domain,
+        String subType,
+        String status,
+        Map<String, ? extends ProcessRiskValues> riskValues,
+        Set<CustomAspectState> customAspects,
+        Set<CustomLinkState> customLinks) {
+      super(domain, subType, status, customAspects, customLinks);
+      this.riskValues = riskValues;
+    }
+  }
 }

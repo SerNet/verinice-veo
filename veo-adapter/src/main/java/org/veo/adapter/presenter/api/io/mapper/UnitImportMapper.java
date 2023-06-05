@@ -23,7 +23,6 @@ import org.springframework.stereotype.Component;
 
 import org.veo.adapter.IdRefResolvingFactory;
 import org.veo.adapter.presenter.api.dto.UnitDumpDto;
-import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -41,7 +40,6 @@ import lombok.RequiredArgsConstructor;
 public class UnitImportMapper {
   private final IdentifiableFactory identifiableFactory;
   private final RepositoryProvider repositoryProvider;
-  private final DomainAssociationTransformer domainAssociationTransformer;
   private final EntityFactory entityFactory;
   private final EntityStateMapper entityStateMapper;
 
@@ -49,8 +47,7 @@ public class UnitImportMapper {
     // VEO-839 use new mapping style and handle resolving biz in use case
     var resolvingFactory = createResolvingFactory(dto, client);
     var transformer =
-        new DtoToEntityTransformer(
-            entityFactory, resolvingFactory, domainAssociationTransformer, entityStateMapper);
+        new DtoToEntityTransformer(entityFactory, resolvingFactory, entityStateMapper);
     var unit = transformer.transformDto2Unit(dto.getUnit(), resolvingFactory);
     unit.setClient(client);
     var elements =

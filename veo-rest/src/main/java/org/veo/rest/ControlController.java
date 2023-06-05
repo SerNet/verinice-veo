@@ -270,7 +270,7 @@ public class ControlController extends AbstractElementController<Control, FullCo
               Client client = getClient(user);
               IdRefResolver idRefResolver = createIdRefResolver(client);
               return CreateElementInputMapper.map(
-                  dtoToEntityTransformer.transformDto2Control(dto, idRefResolver),
+                  dtoToEntityTransformer.transformDto2Element(dto, idRefResolver),
                   client,
                   scopeIds);
             },

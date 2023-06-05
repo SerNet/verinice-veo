@@ -17,23 +17,18 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
-import java.util.HashMap;
-
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Process;
-import org.veo.core.repository.DomainRepository;
-import org.veo.core.repository.ProcessRepository;
+import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.decision.Decider;
+import org.veo.core.usecase.service.EntityStateMapper;
 
 public class UpdateProcessInDomainUseCase extends UpdateElementInDomainUseCase<Process> {
   public UpdateProcessInDomainUseCase(
-      DomainRepository domainRepository, ProcessRepository repo, Decider decider) {
-    super(domainRepository, repo, decider);
-  }
-
-  @Override
-  protected void applyChanges(Process source, Process target, Domain domain) {
-    super.applyChanges(source, target, domain);
-    target.setImpactValues(domain, source.getImpactValues(domain).orElse(new HashMap<>()));
+      RepositoryProvider repositoryProvider, Decider decider, EntityStateMapper entityStateMapper) {
+    super(
+        repositoryProvider.getElementRepositoryFor(Process.class),
+        repositoryProvider,
+        decider,
+        entityStateMapper);
   }
 }

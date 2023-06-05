@@ -92,7 +92,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   private final ReferenceAssembler assembler;
   private final ObjectMapper objectMapper;
   private final IdentifiableFactory identifiableFactory;
-  private final DomainAssociationTransformer domainAssociationTransformer;
   private final EntityFactory entityFactory;
   private final EntityStateMapper entityStateMapper;
 
@@ -111,12 +110,9 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     this.preparations = preparations;
     this.domainTemplateIdGenerator = domainTemplateIdGenerator;
     this.identifiableFactory = identifiableFactory;
-    this.domainAssociationTransformer = domainAssociationTransformer;
     this.entityFactory = factory;
     this.entityStateMapper = entityStateMapper;
-    entityTransformer =
-        new DtoToEntityTransformer(
-            factory, identifiableFactory, domainAssociationTransformer, entityStateMapper);
+    entityTransformer = new DtoToEntityTransformer(factory, identifiableFactory, entityStateMapper);
     assembler = referenceAssembler;
     dtoTransformer = new EntityToDtoTransformer(assembler, domainAssociationTransformer);
     this.objectMapper = objectMapper;
@@ -153,8 +149,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
     resolvingFactory.setGlobalDomain(identifiableFactory.create(Domain.class, Key.newUuid()));
     var domain =
-        new DtoToEntityTransformer(
-                entityFactory, resolvingFactory, domainAssociationTransformer, entityStateMapper)
+        new DtoToEntityTransformer(entityFactory, resolvingFactory, entityStateMapper)
             .transformTransformDomainTemplateDto2Domain(domainTemplateDto, resolvingFactory);
     domain.getCatalogs().stream()
         .flatMap((Catalog catalog) -> catalog.getCatalogItems().stream())
@@ -186,9 +181,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     ref.cache.put(templateId, domain);
     var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
     resolvingFactory.setGlobalDomain(domain);
-    var transformer =
-        new DtoToEntityTransformer(
-            factory, resolvingFactory, new DomainAssociationTransformer(), entityStateMapper);
+    var transformer = new DtoToEntityTransformer(factory, resolvingFactory, entityStateMapper);
     var elements =
         profileElements.stream()
             .map(e -> transformer.transformDto2Element(e, resolvingFactory))
@@ -408,7 +401,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
               e.getMembers().clear();
               return e;
             })
-        .map(e -> entityTransformer.transformDto2Scope(e, ref))
+        .map(e -> entityTransformer.transformDto2Element(e, ref))
         .forEach(c -> ref.cache.put(c.getIdAsString(), c));
 
     linkCache.entrySet().forEach(e -> e.getKey().setLinks(e.getValue()));

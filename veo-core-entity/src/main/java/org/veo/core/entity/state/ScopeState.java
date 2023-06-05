@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity.state;
 
-import java.util.Map;
 import java.util.Set;
 
 import org.veo.core.entity.Element;
@@ -25,8 +24,6 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.ref.ITypedId;
 
 public interface ScopeState extends ElementState<Scope> {
-
-  Map<String, ? extends ScopeDomainAssociationState> getDomains();
 
   Set<? extends ITypedId<Element>> getMembers();
 }

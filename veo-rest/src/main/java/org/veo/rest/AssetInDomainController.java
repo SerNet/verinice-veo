@@ -294,7 +294,7 @@ public class AssetInDomainController {
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<String> scopeIds) {
     return elementService.createElement(
-        user, domainId, dto, scopeIds, createUseCase, dtoToEntityTransformer::transformDto2Asset);
+        user, domainId, dto, scopeIds, createUseCase, dtoToEntityTransformer::transformDto2Element);
   }
 
   @Operation(summary = "Associates an existing asset with a domain")
@@ -332,14 +332,7 @@ public class AssetInDomainController {
           String uuid,
       @Valid @NotNull @RequestBody FullAssetInDomainDto dto) {
     return elementService.update(
-        auth,
-        domainId,
-        eTag,
-        uuid,
-        dto,
-        updateUseCase,
-        dtoToEntityTransformer::transformDto2Asset,
-        entityToDtoTransformer::transformAsset2Dto);
+        auth, domainId, eTag, uuid, dto, updateUseCase, entityToDtoTransformer::transformAsset2Dto);
   }
 
   @Operation(
@@ -360,6 +353,7 @@ public class AssetInDomainController {
           @PathVariable
           String domainId,
       @Valid @RequestBody FullAssetInDomainDto dto) {
-    return elementService.evaluate(auth, dto, domainId, dtoToEntityTransformer::transformDto2Asset);
+    return elementService.evaluate(
+        auth, dto, domainId, dtoToEntityTransformer::transformDto2Element);
   }
 }

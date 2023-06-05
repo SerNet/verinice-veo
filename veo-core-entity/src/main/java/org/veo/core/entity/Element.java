@@ -211,7 +211,7 @@ public interface Element
     return getCustomAspects().stream().filter(ca -> ca.getDomain().equals(domain)).collect(toSet());
   }
 
-  default Set<CustomLink> getLinks(Domain domain) {
+  default Set<CustomLink> getLinks(DomainBase domain) {
     return getLinks().stream().filter(l -> l.getDomain().equals(domain)).collect(toSet());
   }
 

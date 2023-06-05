@@ -297,12 +297,7 @@ public class IncidentInDomainController {
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<String> scopeIds) {
     return elementService.createElement(
-        user,
-        domainId,
-        dto,
-        scopeIds,
-        createUseCase,
-        dtoToEntityTransformer::transformDto2Incident);
+        user, domainId, dto, scopeIds, createUseCase, dtoToEntityTransformer::transformDto2Element);
   }
 
   @Operation(summary = "Associates an existing incident with a domain")
@@ -346,7 +341,6 @@ public class IncidentInDomainController {
         uuid,
         dto,
         updateUseCase,
-        dtoToEntityTransformer::transformDto2Incident,
         entityToDtoTransformer::transformIncident2Dto);
   }
 
@@ -369,6 +363,6 @@ public class IncidentInDomainController {
           String domainId,
       @Valid @RequestBody FullIncidentInDomainDto dto) {
     return elementService.evaluate(
-        auth, dto, domainId, dtoToEntityTransformer::transformDto2Incident);
+        auth, dto, domainId, dtoToEntityTransformer::transformDto2Element);
   }
 }
