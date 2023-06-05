@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Jonas Jordan
+ * Copyright (C) 2021  Jonas Jordan.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,23 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase;
+package org.veo.core.entity.event;
+
+import java.time.Instant;
+
+import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.ClientOwned;
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Versioned;
-import org.veo.core.entity.event.ClientOwnedEntityVersioningEvent;
+
+import lombok.NonNull;
+import lombok.Value;
 
 /**
- * Creates outgoing messages and persists them so they can be sent to the message queue by a
- * background task.
+ * This event should be triggered by the persistence layer when a {@link Versioned} and {@link
+ * ClientOwned} element is being persisted, updated or removed.
  */
-public interface MessageCreator {
-  <T extends Versioned & ClientOwned> void createEntityRevisionMessage(
-      ClientOwnedEntityVersioningEvent<T> event);
-
-  void createDomainCreationMessage(Domain domain);
-
-  void createElementTypeDefinitionUpdateMessage(Domain domain, EntityType entityType);
+@Value
+public class ClientOwnedEntityVersioningEvent<T extends Versioned & ClientOwned>
+    implements VersioningEvent<T> {
+  @NonNull @NotNull T entity;
+  ModificationType type;
+  String author;
+  Instant time;
 }

@@ -34,7 +34,6 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.UpdateReference;
 
@@ -46,7 +45,7 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-public class CatalogItemData extends ElementOwnerData implements CatalogItem, ElementOwner {
+public class CatalogItemData extends ElementOwnerData implements CatalogItem {
 
   @ManyToOne(targetEntity = CatalogData.class, optional = false)
   private Catalog catalog;

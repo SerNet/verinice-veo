@@ -28,11 +28,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.AbstractRisk;
-import org.veo.core.entity.Client;
+import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Versioned;
+import org.veo.core.entity.event.ClientOwnedEntityVersioningEvent;
 import org.veo.core.entity.event.VersioningEvent;
 import org.veo.core.usecase.MessageCreator;
 import org.veo.persistence.access.StoredEventRepository;
@@ -63,14 +64,14 @@ public class MessageCreatorImpl implements MessageCreator {
   private String routingKeyPrefix;
 
   @Override
-  public void createEntityRevisionMessage(VersioningEvent versioningEvent, Client client) {
+  public <T extends Versioned & ClientOwned> void createEntityRevisionMessage(
+      ClientOwnedEntityVersioningEvent<T> versioningEvent) {
     var json =
         createEntityRevisionJson(
             versioningEvent.getEntity(),
             versioningEvent.getType(),
             versioningEvent.getAuthor(),
-            versioningEvent.getTime(),
-            client);
+            versioningEvent.getTime());
     storeMessage(EVENT_TYPE_ENTITY_REVISION, json);
   }
 
@@ -99,21 +100,21 @@ public class MessageCreatorImpl implements MessageCreator {
         StoredEventData.newInstance(content.toString(), routingKeyPrefix + eventType));
   }
 
-  private ObjectNode createEntityRevisionJson(
-      Versioned entity, VersioningEvent.Type type, String author, Instant time, Client client) {
+  private <T extends Versioned & ClientOwned> ObjectNode createEntityRevisionJson(
+      T entity, VersioningEvent.ModificationType type, String author, Instant time) {
     var tree = objectMapper.createObjectNode();
     tree.put("uri", getUri(entity));
     tree.put("type", convertType(type));
     tree.put("changeNumber", getChangeNumber(entity, type));
     tree.put("time", time.toString());
     tree.put("author", author);
-    tree.put("clientId", client.getId().uuidValue());
+    tree.put("clientId", entity.getOwningClient().get().getId().uuidValue());
     tree.set("content", objectMapper.valueToTree(entityToDtoTransformer.transform2Dto(entity)));
     return tree;
   }
 
-  private long getChangeNumber(Versioned entity, VersioningEvent.Type type) {
-    if (type == VersioningEvent.Type.PERSIST) {
+  private long getChangeNumber(Versioned entity, VersioningEvent.ModificationType type) {
+    if (type == VersioningEvent.ModificationType.PERSIST) {
       return 0;
     }
     // We use the JPA version number as a base for our continuous change number.
@@ -128,20 +129,18 @@ public class MessageCreatorImpl implements MessageCreator {
       return referenceAssembler.targetReferenceOf(identifiable);
     }
     if (entity instanceof AbstractRisk<?, ?> risk) {
+      // FIXME VEO-585 instead of checking for risks, we should rather have a compound-id-interface
+      //  and check for that
       return referenceAssembler.targetReferenceOf(risk);
     }
     throw new NotImplementedException("Can't build URI for object of type " + entity.getClass());
   }
 
-  private String convertType(VersioningEvent.Type type) {
-    switch (type) {
-      case PERSIST:
-        return "CREATION";
-      case UPDATE:
-        return "MODIFICATION";
-      case REMOVE:
-        return "HARD_DELETION";
-    }
-    throw new NotImplementedException("Event type " + type + " not supported.");
+  private String convertType(VersioningEvent.ModificationType type) {
+    return switch (type) {
+      case PERSIST -> "CREATION";
+      case UPDATE -> "MODIFICATION";
+      case REMOVE -> "HARD_DELETION";
+    };
   }
 }

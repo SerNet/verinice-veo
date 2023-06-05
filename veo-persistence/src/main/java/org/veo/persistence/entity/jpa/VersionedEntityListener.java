@@ -17,7 +17,13 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import static java.lang.String.join;
+import static org.veo.core.entity.event.VersioningEvent.ModificationType.PERSIST;
+import static org.veo.core.entity.event.VersioningEvent.ModificationType.REMOVE;
+import static org.veo.core.entity.event.VersioningEvent.ModificationType.UPDATE;
+
 import java.time.Instant;
+import java.util.Arrays;
 
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreRemove;
@@ -27,10 +33,13 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import org.veo.core.entity.Client;
+import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Versioned;
-import org.veo.core.entity.event.VersioningEvent;
-import org.veo.core.entity.event.VersioningEvent.Type;
+import org.veo.core.entity.event.ClientOwnedEntityVersioningEvent;
+import org.veo.core.entity.event.ClientVersioningEvent;
+import org.veo.core.entity.event.VersioningEvent.ModificationType;
 import org.veo.persistence.CurrentUserProvider;
 
 import lombok.AllArgsConstructor;
@@ -38,11 +47,11 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Listens to JPA events on {@link VersionedData} objects and delegates them to the {@link
- * ApplicationEventPublisher} as {@link VersioningEvent}s.
+ * ApplicationEventPublisher} as {@link org.veo.core.entity.event.VersioningEvent}s.
  */
 @Slf4j
 @AllArgsConstructor
-public class VersionedEntityListener {
+public class VersionedEntityListener<T extends Versioned & ClientOwned> {
   private final ApplicationEventPublisher publisher;
   private final CurrentUserProvider currentUserProvider;
 
@@ -50,7 +59,8 @@ public class VersionedEntityListener {
   public void prePersist(Versioned entity) {
     log.debug("Publishing PrePersist event for {}", entity);
     var event =
-        new VersioningEvent(entity, Type.PERSIST, currentUserProvider.getUsername(), Instant.now());
+        new ClientOwnedEntityVersioningEvent<>(
+            (T) entity, PERSIST, currentUserProvider.getUsername(), Instant.now());
     if (entity instanceof Identifiable) {
       // We need to fire this one a little later (after the entity's ID has been
       // generated).
@@ -58,23 +68,39 @@ public class VersionedEntityListener {
           new TransactionSynchronization() {
             @Override
             public void beforeCommit(boolean readOnly) {
-              publisher.publishEvent(event);
+              publish(entity, PERSIST);
             }
           });
     } else {
-      publisher.publishEvent(event);
+      publish(entity, PERSIST);
     }
   }
 
   @PreUpdate
   public void preUpdate(Versioned entity) {
-    publisher.publishEvent(
-        new VersioningEvent(entity, Type.UPDATE, currentUserProvider.getUsername(), Instant.now()));
+    publish(entity, UPDATE);
   }
 
   @PreRemove
   public void preRemove(Versioned entity) {
-    publisher.publishEvent(
-        new VersioningEvent(entity, Type.REMOVE, currentUserProvider.getUsername(), Instant.now()));
+    publish(entity, REMOVE);
+  }
+
+  private void publish(Versioned entity, ModificationType type) {
+    // Since JPA does not honor generics we can receive any type of "Versioned" here.
+    // This includes instances that do not implement <T>.
+    if (entity instanceof Client client) {
+      var event = new ClientVersioningEvent(client, type);
+      publisher.publishEvent(event);
+    } else if (entity instanceof ClientOwned co) {
+      var event =
+          new ClientOwnedEntityVersioningEvent<>(
+              (T) co, type, currentUserProvider.getUsername(), Instant.now());
+      publisher.publishEvent(event);
+    } else {
+      log.warn(
+          "Cannot create versioning event for unsupported type: {}. ",
+          join(", ", Arrays.toString(entity.getClass().getGenericInterfaces())));
+    }
   }
 }

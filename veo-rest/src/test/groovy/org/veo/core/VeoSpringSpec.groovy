@@ -147,8 +147,8 @@ abstract class VeoSpringSpec extends VeoSpec {
 
     def setup() {
         txTemplate.execute {
-            clientDataRepository.findAll().each{ client->
-                unitDataRepository.findByClientId(client.idAsString).findAll { it.parent == null }.each{
+            clientDataRepository.findAll().each { client ->
+                unitDataRepository.findByClientId(client.idAsString).findAll { it.parent == null }.each {
                     deleteUnitRecursively(it)
                 }
                 clientDataRepository.delete(client)

@@ -18,6 +18,7 @@
 package org.veo.listeners;
 
 import static org.veo.core.entity.Client.ClientState.DELETED;
+import static org.veo.core.entity.event.VersioningEvent.ModificationType.PERSIST;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -26,17 +27,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Versioned;
+import org.veo.core.entity.event.ClientOwnedEntityVersioningEvent;
 import org.veo.core.entity.event.StoredEvent;
-import org.veo.core.entity.event.VersioningEvent;
-import org.veo.core.entity.event.VersioningEvent.Type;
 import org.veo.core.usecase.MessageCreator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Listens to {@link VersioningEvent}s from the persistence layer and saves them as {@link
- * StoredEvent}s.
+ * Listens to {@link ClientOwnedEntityVersioningEvent}s from the persistence layer and saves them as
+ * {@link StoredEvent}s.
  */
 @Component
 @Slf4j
@@ -46,33 +47,30 @@ public class VersioningEventListener {
 
   @EventListener
   @Transactional(propagation = Propagation.MANDATORY)
-  void handle(VersioningEvent event) {
+  public <T extends Versioned & ClientOwned> void handle(
+      ClientOwnedEntityVersioningEvent<T> event) {
     var entity = event.getEntity();
 
-    if (entity instanceof Domain domain && event.getType() == Type.PERSIST) {
+    if (entity instanceof Domain domain && event.getType() == PERSIST) {
       log.debug("Creating domain creation message for domain {}}", domain.getIdAsString());
       messageCreator.createDomainCreationMessage(domain);
     }
 
-    if (entity instanceof ClientOwned clientOwned) {
-      clientOwned
-          .getOwningClient()
-          .ifPresent(
-              client -> {
-                if (client.getState().equals(DELETED)) {
-                  log.debug(
-                      "Ignoring entity revision event for deleted client {}",
-                      client.getIdAsString());
-                  return;
-                }
+    entity
+        .getOwningClient()
+        .ifPresent(
+            client -> {
+              if (client.getState() == DELETED) {
                 log.debug(
-                    "Creating entity revision message for {} event for entity {} modified by user {}",
-                    event.getType(),
-                    entity,
-                    event.getAuthor());
-                messageCreator.createEntityRevisionMessage(
-                    event, ((ClientOwned) entity).getOwningClient().get());
-              });
-    }
+                    "Ignoring entity revision event for deleted client {}", client.getIdAsString());
+                return;
+              }
+              log.debug(
+                  "Creating entity revision message for {} event for entity {} modified by user {}",
+                  event.getType(),
+                  entity,
+                  event.getAuthor());
+              messageCreator.createEntityRevisionMessage(event);
+            });
   }
 }

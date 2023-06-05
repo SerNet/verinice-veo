@@ -17,11 +17,15 @@
  ******************************************************************************/
 package org.veo.persistence;
 
+import static org.veo.core.entity.event.VersioningEvent.ModificationType.PERSIST;
+import static org.veo.core.entity.event.VersioningEvent.ModificationType.REMOVE;
+
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import org.veo.core.entity.Client;
-import org.veo.core.entity.event.VersioningEvent;
+import org.veo.core.entity.event.ClientVersioningEvent;
 import org.veo.persistence.access.DesignatorSequenceRepositoryImpl;
 
 import lombok.AllArgsConstructor;
@@ -36,13 +40,12 @@ public class ClientDesignatorInitializer {
   private final DesignatorSequenceRepositoryImpl designatorSequenceRepository;
 
   @EventListener
-  public void handle(VersioningEvent versioningEvent) {
-    if (versioningEvent.getEntity() instanceof Client client) {
-      if (versioningEvent.getType() == VersioningEvent.Type.PERSIST) {
-        designatorSequenceRepository.createSequences(client.getId());
-      } else if (versioningEvent.getType() == VersioningEvent.Type.REMOVE) {
-        designatorSequenceRepository.deleteSequences(client.getId());
-      }
+  @Transactional(propagation = Propagation.MANDATORY)
+  public void handle(ClientVersioningEvent event) {
+    if (event.getType() == PERSIST) {
+      designatorSequenceRepository.createSequences(event.getClientId());
+    } else if (event.getType() == REMOVE) {
+      designatorSequenceRepository.deleteSequences(event.getClientId());
     }
   }
 }

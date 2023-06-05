@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jonas Jordan.
+ * Copyright (C) 2023  Alexander Koderman
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,24 +17,14 @@
  ******************************************************************************/
 package org.veo.core.entity.event;
 
-import java.time.Instant;
-
 import org.veo.core.entity.Versioned;
 
-import lombok.Value;
+public interface VersioningEvent<T extends Versioned> {
+  ModificationType getType();
 
-/**
- * This event should be triggered by the persistence layer when a {@link Versioned} is being
- * persisted, updated or removed.
- */
-@Value
-public class VersioningEvent {
-  Versioned entity;
-  Type type;
-  String author;
-  Instant time;
+  T getEntity();
 
-  public enum Type {
+  public enum ModificationType {
     PERSIST,
     UPDATE,
     REMOVE
