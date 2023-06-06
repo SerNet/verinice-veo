@@ -115,6 +115,7 @@ public class ElementBatchCreator {
     elements.stream()
         .filter(pr -> pr instanceof Process)
         .forEach(it -> eventPublisher.publish(new RiskAffectingElementChangeEvent(it, this)));
+    // FIXME VEO-??? handle Assets and Scopes in the same way
     log.info("{} elements added to unit {}", elements.size(), unit.getIdAsString());
   }
 

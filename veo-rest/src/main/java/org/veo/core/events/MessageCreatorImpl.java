@@ -21,6 +21,8 @@ import java.time.Instant;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -64,8 +66,12 @@ public class MessageCreatorImpl implements MessageCreator {
   private String routingKeyPrefix;
 
   @Override
+  @Transactional(propagation = Propagation.MANDATORY)
   public <T extends Versioned & ClientOwned> void createEntityRevisionMessage(
       ClientOwnedEntityVersioningEvent<T> versioningEvent) {
+    // NOTE: if you encounter a LazyInitializationException being thrown here, you can add the
+    // required collection to the method
+    // org.veo.persistence.access.jpa.MostRecentChangeTracker.hydrate
     var json =
         createEntityRevisionJson(
             versioningEvent.getEntity(),
@@ -81,6 +87,7 @@ public class MessageCreatorImpl implements MessageCreator {
   }
 
   @Override
+  @Transactional(propagation = Propagation.MANDATORY)
   public void createDomainCreationMessage(Domain domain) {
     var json = objectMapper.createObjectNode();
     json.put("domainId", domain.getId().uuidValue());
@@ -96,6 +103,7 @@ public class MessageCreatorImpl implements MessageCreator {
   }
 
   @Override
+  @Transactional(propagation = Propagation.MANDATORY)
   public void createElementTypeDefinitionUpdateMessage(Domain domain, EntityType entityType) {
     var json = objectMapper.createObjectNode();
     json.put("domainId", domain.getId().uuidValue());
@@ -109,6 +117,7 @@ public class MessageCreatorImpl implements MessageCreator {
   }
 
   private void storeMessage(String eventType, ObjectNode content, String uri, Long changeNumber) {
+    log.debug("Storing message {}", content);
     content.put(EVENT_TYPE, eventType);
     storedEventRepository.save(
         StoredEventData.newInstance(

@@ -30,18 +30,16 @@ import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
 
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.ClientOwned;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.event.ClientOwnedEntityVersioningEvent;
 import org.veo.core.entity.event.ClientVersioningEvent;
 import org.veo.core.entity.event.VersioningEvent;
 import org.veo.core.entity.event.VersioningEvent.ModificationType;
 import org.veo.persistence.CurrentUserProvider;
+import org.veo.persistence.access.jpa.MostRecentChangeTracker;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,46 +62,34 @@ public class VersionedEntityListener<T extends Versioned & ClientOwned> {
     var insertChangeNumber = entity.initialChangeNumberForInsert();
     log.debug(
         "Publishing PrePersist event for {} with changeNumber {}", entity, insertChangeNumber);
-
-    if (entity instanceof Identifiable) {
-      // We need to fire this one a little later (after the entity's ID has been
-      // generated) - this means that this will be called *after* any PreUpdate:
-      TransactionSynchronizationManager.registerSynchronization(
-          new TransactionSynchronization() {
-            @Override
-            public void beforeCommit(boolean readOnly) {
-              publish(entity, PERSIST, insertChangeNumber);
-            }
-          });
-    } else {
-      publish(entity, PERSIST, insertChangeNumber);
-    }
+    collectForPublishing(entity, PERSIST, insertChangeNumber);
   }
 
   @PreUpdate
   public void preUpdate(Versioned entity) {
     var changeNumber = entity.nextChangeNumberForUpdate();
     log.debug("Publishing PreUpdate event for {} with changeNumber {}", entity, changeNumber);
-    publish(entity, UPDATE, changeNumber);
+    collectForPublishing(entity, UPDATE, changeNumber);
   }
 
   @PreRemove
   public void preRemove(Versioned entity) {
     var changeNumber = entity.nextChangeNumberForUpdate();
     log.debug("Publishing PreRemove event for {} with change number {}", entity, changeNumber);
-    publish(entity, REMOVE, changeNumber);
+    collectForPublishing(entity, REMOVE, changeNumber);
   }
 
-  private void publish(Versioned entity, ModificationType type, long changeNumber) {
-
+  private void collectForPublishing(Versioned entity, ModificationType type, long changeNumber) {
     if (entity instanceof Client client) {
       var event = new ClientVersioningEvent(client, type, changeNumber);
+      // publish this right away: the client is a prerequisite for most other operations
       publisher.publishEvent(event);
     } else if (entity instanceof ClientOwned co) {
       var event =
           new ClientOwnedEntityVersioningEvent<>(
               (T) co, type, currentUserProvider.getUsername(), Instant.now(), changeNumber);
-      publisher.publishEvent(event);
+      // collect these events and publish them later:
+      MostRecentChangeTracker.getForCurrentTransaction(publisher).put(event);
     } else {
       log.warn(
           "Cannot create versioning event for unsupported type: {}. ",

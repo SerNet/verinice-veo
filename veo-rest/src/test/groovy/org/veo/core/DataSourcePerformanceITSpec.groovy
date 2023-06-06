@@ -78,7 +78,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.delete == 0
         queryCounts.insert == 9
         queryCounts.update == 0
-        queryCounts.select in 3l..4l
+        queryCounts.select in 2l..4l
         queryCounts.time < 500
     }
 
@@ -340,9 +340,9 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
 
         then:
         queryCounts.delete == 0
-        queryCounts.insert == 35
+        queryCounts.insert == 31
         queryCounts.update == 5
-        queryCounts.select == 19
+        queryCounts.select == 17
         queryCounts.time < 500
     }
 
@@ -411,6 +411,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
     }
 
     @Issue('VEO-689')
+    @Issue('VEO-2266')
     def "SQL performance for deleting a unit with 1 asset, 1 process and 1 composite person linked to each other"() {
         given:
         createClient()
@@ -449,7 +450,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
 
         and:
         queryCounts.delete <= 12
-        queryCounts.insert == 4
+        queryCounts.insert == 1 // This count is off - at least 18 events are being inserted. See issue #2266.
         queryCounts.update in [2l, 3l]
         queryCounts.select == 43
         queryCounts.time < 500
@@ -477,9 +478,9 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
 
         then:
         queryCounts.delete == 0
-        queryCounts.insert == 2
+        queryCounts.insert == 1
         queryCounts.update == 1
-        queryCounts.select == 6
+        queryCounts.select == 5
         queryCounts.time < 500
     }
 

@@ -26,6 +26,7 @@ import org.veo.core.entity.Versioned;
 
 import lombok.NonNull;
 import lombok.Value;
+import lombok.With;
 
 /**
  * This event should be triggered by the persistence layer when a {@link Versioned} and {@link
@@ -38,5 +39,5 @@ public class ClientOwnedEntityVersioningEvent<T extends Versioned & ClientOwned>
   ModificationType type;
   String author;
   Instant time;
-  long changeNumber;
+  @With long changeNumber;
 }

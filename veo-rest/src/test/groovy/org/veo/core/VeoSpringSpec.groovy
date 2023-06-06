@@ -23,6 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.transaction.support.TransactionTemplate
 
 import com.networknt.schema.JsonSchema
@@ -147,14 +148,15 @@ abstract class VeoSpringSpec extends VeoSpec {
 
     def setup() {
         txTemplate.execute {
+            TransactionSynchronizationManager.setCurrentTransactionName("TEST_TXTEMPLATE")
             clientDataRepository.findAll().each { client ->
                 unitDataRepository.findByClientId(client.idAsString).findAll { it.parent == null }.each {
                     deleteUnitRecursively(it)
                 }
                 clientDataRepository.delete(client)
             }
-            eventStoreDataRepository.deleteAll()
             domainTemplateDataRepository.deleteAll()
+            eventStoreDataRepository.deleteAll()
         }
     }
 

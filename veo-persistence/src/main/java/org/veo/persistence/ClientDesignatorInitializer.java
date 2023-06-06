@@ -22,8 +22,6 @@ import static org.veo.core.entity.event.VersioningEvent.ModificationType.REMOVE;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.event.ClientVersioningEvent;
 import org.veo.persistence.access.DesignatorSequenceRepositoryImpl;
@@ -40,7 +38,6 @@ public class ClientDesignatorInitializer {
   private final DesignatorSequenceRepositoryImpl designatorSequenceRepository;
 
   @EventListener
-  @Transactional(propagation = Propagation.MANDATORY)
   public void handle(ClientVersioningEvent event) {
     if (event.getType() == PERSIST) {
       designatorSequenceRepository.createSequences(event.getClientId());

@@ -15,22 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.event;
+package org.veo.persistence.access.jpa;
 
-import org.veo.core.entity.Versioned;
+import org.springframework.transaction.support.ResourceHolderSupport;
 
-public interface VersioningEvent<T extends Versioned> {
-  ModificationType getType();
+import lombok.Data;
 
-  T getEntity();
+@Data
+public class ChangeTrackerResourceHolder extends ResourceHolderSupport {
 
-  long getChangeNumber();
-
-  VersioningEvent<T> withChangeNumber(long changeNumber);
-
-  public enum ModificationType {
-    PERSIST,
-    UPDATE,
-    REMOVE
-  }
+  private final MostRecentChangeTracker tracker;
 }

@@ -288,7 +288,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
     }
 
     def "publish valid state transitions start with CREATED and end with DELETED"() {
-        given: "a client an a unit"
+        given: "a client and a unit"
         Client client = repository.save(newClient {
             state = CREATED
         })
@@ -325,7 +325,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "clientId": "$cId",
             "type": "MODIFICATION"
         }"""
-        msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE,eContent,1,Instant.now())
+        msg = new EventMessage(routingKeyPrefix + EVENT_TYPE_CLIENT_CHANGE, eContent, 2, Instant.now())
         log.info("publish event: {}", msg)
         eventDispatcher.send(exchange, msg)
 
@@ -341,7 +341,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "type": "DEACTIVATION"
         }"""
 
-        msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE,eContent,1,Instant.now())
+        msg = new EventMessage(routingKeyPrefix + EVENT_TYPE_CLIENT_CHANGE, eContent, 3, Instant.now())
         log.info("publish event: {}", msg)
         eventDispatcher.send(exchange, msg)
 
@@ -357,7 +357,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
             "clientId": "$cId",
             "type": "DELETION"
         }"""
-        msg = new EventMessage(routingKeyPrefix+ EVENT_TYPE_CLIENT_CHANGE,eContent,1,Instant.now())
+        msg = new EventMessage(routingKeyPrefix + EVENT_TYPE_CLIENT_CHANGE, eContent, 4, Instant.now())
         log.info("publish event: {}", msg)
         eventDispatcher.send(exchange, msg)
 

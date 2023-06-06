@@ -57,6 +57,6 @@ public interface Domain extends DomainBase, ClientOwned {
   Client getOwner();
 
   default Optional<Client> getOwningClient() {
-    return Optional.of(getOwner());
+    return Optional.ofNullable(getOwner());
   }
 }

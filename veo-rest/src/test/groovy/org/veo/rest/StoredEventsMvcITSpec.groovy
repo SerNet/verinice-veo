@@ -56,6 +56,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
 
     def setup() {
         txTemplate.execute {
+            storedEventRepository.deleteAll()
             client = createTestClient()
             def template = domainTemplateRepository.save(newDomainTemplate())
             domain = newDomain(client) {
@@ -129,22 +130,22 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             ]
         ], ["If-Match": eTag])
 
-        then: "two MODIFICATION events are stored"
+        then: "exactly one additional MODIFICATION event is stored"
         with(getNthStoredEventContent(-2)) {
-            type == "MODIFICATION"
+            type == "CREATION"
             uri == "/documents/$documentId"
             author == "user@domain.example"
-            changeNumber == 1
+            changeNumber == 0
             with(content) {
                 id == documentId
-                name == "super doc"
+                name == "doc"
             }
         }
         with(getLatestStoredEventContent()) {
             type == "MODIFICATION"
             uri == "/documents/$documentId"
             author == "user@domain.example"
-            changeNumber == 2
+            changeNumber == 1
             with(content) {
                 id == documentId
                 name == "super doc"

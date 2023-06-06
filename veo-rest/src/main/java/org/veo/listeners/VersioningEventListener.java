@@ -17,12 +17,12 @@
  ******************************************************************************/
 package org.veo.listeners;
 
+import static org.springframework.transaction.annotation.Propagation.MANDATORY;
 import static org.veo.core.entity.Client.ClientState.DELETED;
 import static org.veo.core.entity.event.VersioningEvent.ModificationType.PERSIST;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.ClientOwned;
@@ -46,9 +46,15 @@ public class VersioningEventListener {
   private final MessageCreator messageCreator;
 
   @EventListener
-  @Transactional(propagation = Propagation.MANDATORY)
+  @Transactional(propagation = MANDATORY)
   public <T extends Versioned & ClientOwned> void handle(
       ClientOwnedEntityVersioningEvent<T> event) {
+
+    log.debug(
+        "Handling VersioningEvent of type {} with changeNo {} for {}",
+        event.getType(),
+        event.getChangeNumber(),
+        event.getEntity().getClass());
     var entity = event.getEntity();
 
     if (entity instanceof Domain domain && event.getType() == PERSIST) {
