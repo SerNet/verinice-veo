@@ -39,6 +39,7 @@ import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.event.ClientOwnedEntityVersioningEvent;
 import org.veo.core.entity.event.ClientVersioningEvent;
+import org.veo.core.entity.event.VersioningEvent;
 import org.veo.core.entity.event.VersioningEvent.ModificationType;
 import org.veo.persistence.CurrentUserProvider;
 
@@ -47,7 +48,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Listens to JPA events on {@link VersionedData} objects and delegates them to the {@link
- * ApplicationEventPublisher} as {@link org.veo.core.entity.event.VersioningEvent}s.
+ * ApplicationEventPublisher} as {@link VersioningEvent}s.
  */
 @Slf4j
 @AllArgsConstructor
@@ -57,45 +58,51 @@ public class VersionedEntityListener<T extends Versioned & ClientOwned> {
 
   @PrePersist
   public void prePersist(Versioned entity) {
-    log.debug("Publishing PrePersist event for {}", entity);
-    var event =
-        new ClientOwnedEntityVersioningEvent<>(
-            (T) entity, PERSIST, currentUserProvider.getUsername(), Instant.now());
+    // we need to capture the change number for this event NOW since - because
+    // of the delayed publishing before-commit other change numbers may have
+    // already been produced for updates before we get to store it:
+    var insertChangeNumber = entity.initialChangeNumberForInsert();
+    log.debug(
+        "Publishing PrePersist event for {} with changeNumber {}", entity, insertChangeNumber);
+
     if (entity instanceof Identifiable) {
       // We need to fire this one a little later (after the entity's ID has been
-      // generated).
+      // generated) - this means that this will be called *after* any PreUpdate:
       TransactionSynchronizationManager.registerSynchronization(
           new TransactionSynchronization() {
             @Override
             public void beforeCommit(boolean readOnly) {
-              publish(entity, PERSIST);
+              publish(entity, PERSIST, insertChangeNumber);
             }
           });
     } else {
-      publish(entity, PERSIST);
+      publish(entity, PERSIST, insertChangeNumber);
     }
   }
 
   @PreUpdate
   public void preUpdate(Versioned entity) {
-    publish(entity, UPDATE);
+    var changeNumber = entity.nextChangeNumberForUpdate();
+    log.debug("Publishing PreUpdate event for {} with changeNumber {}", entity, changeNumber);
+    publish(entity, UPDATE, changeNumber);
   }
 
   @PreRemove
   public void preRemove(Versioned entity) {
-    publish(entity, REMOVE);
+    var changeNumber = entity.nextChangeNumberForUpdate();
+    log.debug("Publishing PreRemove event for {} with change number {}", entity, changeNumber);
+    publish(entity, REMOVE, changeNumber);
   }
 
-  private void publish(Versioned entity, ModificationType type) {
-    // Since JPA does not honor generics we can receive any type of "Versioned" here.
-    // This includes instances that do not implement <T>.
+  private void publish(Versioned entity, ModificationType type, long changeNumber) {
+
     if (entity instanceof Client client) {
-      var event = new ClientVersioningEvent(client, type);
+      var event = new ClientVersioningEvent(client, type, changeNumber);
       publisher.publishEvent(event);
     } else if (entity instanceof ClientOwned co) {
       var event =
           new ClientOwnedEntityVersioningEvent<>(
-              (T) co, type, currentUserProvider.getUsername(), Instant.now());
+              (T) co, type, currentUserProvider.getUsername(), Instant.now(), changeNumber);
       publisher.publishEvent(event);
     } else {
       log.warn(

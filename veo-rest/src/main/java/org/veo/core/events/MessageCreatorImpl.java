@@ -71,12 +71,13 @@ public class MessageCreatorImpl implements MessageCreator {
             versioningEvent.getEntity(),
             versioningEvent.getType(),
             versioningEvent.getAuthor(),
-            versioningEvent.getTime());
+            versioningEvent.getTime(),
+            versioningEvent.getChangeNumber());
     storeMessage(
         EVENT_TYPE_ENTITY_REVISION,
         json,
         getUri(versioningEvent.getEntity()),
-        getChangeNumber(versioningEvent.getEntity(), versioningEvent.getType()));
+        versioningEvent.getChangeNumber());
   }
 
   @Override
@@ -115,27 +116,20 @@ public class MessageCreatorImpl implements MessageCreator {
   }
 
   private <T extends Versioned & ClientOwned> ObjectNode createEntityRevisionJson(
-      T entity, VersioningEvent.ModificationType type, String author, Instant time) {
+      T entity,
+      VersioningEvent.ModificationType type,
+      String author,
+      Instant time,
+      long changeNumber) {
     var tree = objectMapper.createObjectNode();
     tree.put("uri", getUri(entity));
     tree.put("type", convertType(type));
-    tree.put("changeNumber", getChangeNumber(entity, type));
+    tree.put("changeNumber", changeNumber);
     tree.put("time", time.toString());
     tree.put("author", author);
     tree.put("clientId", entity.getOwningClient().get().getId().uuidValue());
     tree.set("content", objectMapper.valueToTree(entityToDtoTransformer.transform2Dto(entity)));
     return tree;
-  }
-
-  private long getChangeNumber(Versioned entity, VersioningEvent.ModificationType type) {
-    if (type == VersioningEvent.ModificationType.PERSIST) {
-      return 0;
-    }
-    // We use the JPA version number as a base for our continuous change number.
-    // When updating an entity, JPA increments the version number after this message
-    // creation, so we must add 1 to the version number. We must also add 1 in case
-    // of a deletion, because JPA won't assign a new number for a deleted entity.
-    return entity.getVersion() + 1;
   }
 
   private String getUri(Versioned entity) {

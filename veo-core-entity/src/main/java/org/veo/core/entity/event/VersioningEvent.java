@@ -24,6 +24,8 @@ public interface VersioningEvent<T extends Versioned> {
 
   T getEntity();
 
+  long getChangeNumber();
+
   public enum ModificationType {
     PERSIST,
     UPDATE,

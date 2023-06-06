@@ -38,4 +38,5 @@ public class ClientOwnedEntityVersioningEvent<T extends Versioned & ClientOwned>
   ModificationType type;
   String author;
   Instant time;
+  long changeNumber;
 }

@@ -33,7 +33,8 @@ import org.veo.test.VeoSpec
 
 import spock.lang.Issue
 /**
- * Integration test to verify entity event generation. Performs operations on the REST API and performs assertions on the {@link StoredEventRepository}.
+ * Integration test to verify entity event generation. Performs operations on the REST API and
+ * performs assertions on the {@link org.veo.persistence.access.StoredEventRepository}.
  */
 class StoredEventsMvcITSpec extends VeoMvcSpec {
 
@@ -158,7 +159,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             type == "HARD_DELETION"
             uri == "/documents/$documentId"
             author == "user@domain.example"
-            changeNumber == 2
+            changeNumber == 3
             with(content) {
                 id == documentId
                 name == "super doc"
