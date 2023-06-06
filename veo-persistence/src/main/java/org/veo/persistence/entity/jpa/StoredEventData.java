@@ -25,6 +25,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+
+import javax.annotation.Nullable;
 
 import org.veo.core.entity.event.StoredEvent;
 
@@ -35,7 +39,17 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * An event that is stored together with the change that created it in the same transaction. This
+ * ensures that either both change and accompanying event are persisted or none of both. The events
+ * are later sent out as messages by another thread.
+ */
 @Entity
+@Table(
+    uniqueConstraints =
+        @UniqueConstraint(
+            columnNames = {"uri", "changeNumber"},
+            name = "UK_URI_CHANGENO"))
 @Getter
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
@@ -65,6 +79,10 @@ public class StoredEventData implements StoredEvent {
   private Instant lockTime;
 
   private Instant timestamp;
+
+  @Nullable private String uri;
+
+  @Nullable private Long changeNumber;
 
   @Override
   public void lock() {
@@ -97,7 +115,22 @@ public class StoredEventData implements StoredEvent {
     return getClass().hashCode();
   }
 
-  public static StoredEventData newInstance(String content, String routingKey) {
-    return new StoredEventData(null, content, routingKey, null, Instant.now());
+  /**
+   * Create a new stored event. Stored events are numbered sequentially. The change number must be
+   * incremented and unique for every resource URI. It should not be confused with the sequential
+   * message number {@code id} which is created for every event (of any type). Every event has a
+   * sequential {@code id } while the {@code uri} and {@code changeNumber} may be null for events
+   * that do not reference an individual resource.
+   *
+   * @param content the content of the message in JSON format
+   * @param routingKey the AMQP routing key
+   * @param uri the resource URI. May be null for event types that do not reference a resource.
+   * @param changeNumber an incremental number for each individual change of a resource. May be
+   *     null.
+   * @return the created event
+   */
+  public static StoredEventData newInstance(
+      String content, String routingKey, String uri, Long changeNumber) {
+    return new StoredEventData(null, content, routingKey, null, Instant.now(), uri, changeNumber);
   }
 }

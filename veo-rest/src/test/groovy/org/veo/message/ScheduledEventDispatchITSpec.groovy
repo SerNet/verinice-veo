@@ -122,6 +122,7 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
     def setup() {
         userSwitcher = new UserSwitcher()
         createTestDomainTemplate(DSGVO_DOMAINTEMPLATE_UUID)
+        storedEventRepository.deleteAll()
         eventSubscriber.receivedEvents.clear()
     }
 

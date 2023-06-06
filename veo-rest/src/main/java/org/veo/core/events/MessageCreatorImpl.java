@@ -72,7 +72,11 @@ public class MessageCreatorImpl implements MessageCreator {
             versioningEvent.getType(),
             versioningEvent.getAuthor(),
             versioningEvent.getTime());
-    storeMessage(EVENT_TYPE_ENTITY_REVISION, json);
+    storeMessage(
+        EVENT_TYPE_ENTITY_REVISION,
+        json,
+        getUri(versioningEvent.getEntity()),
+        getChangeNumber(versioningEvent.getEntity(), versioningEvent.getType()));
   }
 
   @Override
@@ -83,7 +87,11 @@ public class MessageCreatorImpl implements MessageCreator {
     if (domain.getDomainTemplate() != null) {
       json.put("domainTemplateId", domain.getDomainTemplate().getId().uuidValue());
     }
-    storeMessage(EVENT_TYPE_DOMAIN_CREATION, json);
+
+    // Domain creation messages do not get a changeNumber. These would be duplicates because
+    // every domain creation also publishes an EntityRevisionMessage for the domain: "Domain" is
+    // also a "Versioned".
+    storeMessage(EVENT_TYPE_DOMAIN_CREATION, json, null, null);
   }
 
   @Override
@@ -91,13 +99,19 @@ public class MessageCreatorImpl implements MessageCreator {
     var json = objectMapper.createObjectNode();
     json.put("domainId", domain.getId().uuidValue());
     json.put("elementType", entityType.getSingularTerm());
-    storeMessage(EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE, json);
+    storeMessage(
+        EVENT_TYPE_ELEMENT_TYPE_DEFINITION_UPDATE,
+        json,
+        null, // no resource -> no uri
+        null); // no version -> no change number
+    // no circus -> no monkeys
   }
 
-  private void storeMessage(String eventType, ObjectNode content) {
+  private void storeMessage(String eventType, ObjectNode content, String uri, Long changeNumber) {
     content.put(EVENT_TYPE, eventType);
     storedEventRepository.save(
-        StoredEventData.newInstance(content.toString(), routingKeyPrefix + eventType));
+        StoredEventData.newInstance(
+            content.toString(), routingKeyPrefix + eventType, uri, changeNumber));
   }
 
   private <T extends Versioned & ClientOwned> ObjectNode createEntityRevisionJson(
