@@ -22,10 +22,8 @@ import org.apache.http.HttpStatus
 class ProcessRiskRestTestITSpec extends VeoRestTest{
 
     String unitId
-    String domainId
 
     def setup() {
-        domainId = get("/domains").body.find{it.name == "DS-GVO"}.id
         unitId = postNewUnit().resourceId
     }
 
@@ -33,7 +31,7 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
         given: "a process and a scenario"
         def processId = post("/processes", [
             domains: [
-                (domainId): [
+                (dsgvoDomainId): [
                     subType: "PRO_DataTransfer",
                     status: "NEW",
                 ]
@@ -49,8 +47,8 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
         when: "creating the risk"
         post("/processes/$processId/risks", [
             domains: [
-                (domainId) : [
-                    reference: [targetUri: "$baseUrl/domains/$domainId"]
+                (dsgvoDomainId) : [
+                    reference: [targetUri: "$baseUrl/domains/$dsgvoDomainId"]
                 ]
             ],
             scenario: [targetUri: "$baseUrl/scenarios/$scenarioId"]
@@ -97,7 +95,7 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
         given: "a process and a scenario"
         def processId = post("/processes", [
             domains: [
-                (domainId): [
+                (dsgvoDomainId): [
                     subType: "PRO_DataTransfer",
                     status: "NEW",
                 ]
@@ -129,7 +127,7 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
         given: "a process and a scenario"
         def processId = post("/processes", [
             domains: [
-                (domainId): [
+                (dsgvoDomainId): [
                     subType: "PRO_DataTransfer",
                     status: "NEW",
                 ]
@@ -145,7 +143,7 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
         when: "creating the risk"
         def error = post("/processes/$processId/risks", [
             domains: [
-                (domainId) : [:]
+                (dsgvoDomainId) : [:]
             ],
             scenario: [targetUri: "$baseUrl/scenarios/$scenarioId"]
         ], 400)
