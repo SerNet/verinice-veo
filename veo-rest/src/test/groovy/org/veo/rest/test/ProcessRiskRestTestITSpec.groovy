@@ -30,21 +30,13 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
     }
 
     def "create and update a process risk"() {
-        given: "a composite process and a scenario"
-        def subProcessId = post("/processes", [
-            name: "sub process",
-            owner: [targetUri: "$baseUrl/units/$unitId"]
-        ]).body.resourceId
+        given: "a process and a scenario"
         def processId = post("/processes", [
             domains: [
                 (domainId): [
                     subType: "PRO_DataTransfer",
                     status: "NEW",
                 ]
-            ],
-            parts: [
-                // The part is not relevant for the risk, it just spices things up.
-                [targetUri: "$baseUrl/processes/$subProcessId"]
             ],
             name: "risk test process",
             owner: [targetUri: "$baseUrl/units/$unitId"]
@@ -82,16 +74,8 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
     }
 
     def "create and update a process risk without domain"() {
-        given: "a composite process and a scenario"
-        def subProcessId = post("/processes", [
-            name: "sub process",
-            owner: [targetUri: "$baseUrl/units/$unitId"]
-        ]).body.resourceId
+        given: "a process and a scenario"
         def processId = post("/processes", [
-            parts: [
-                // The part is not relevant for the risk, it just spices things up.
-                [targetUri: "$baseUrl/processes/$subProcessId"]
-            ],
             name: "risk test process",
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
