@@ -26,7 +26,6 @@ import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 
 import groovy.util.logging.Log
-import spock.util.concurrent.PollingConditions
 
 @WithUserDetails("admin")
 @Log
@@ -111,7 +110,7 @@ class AdminControllerMvcITSpec extends ContentSpec {
         post("/admin/domaintemplates/${DSGVO_DOMAINTEMPLATE_V2_UUID}/allclientsupdate", [:], 204)
 
         then: 'the elements and risks are transferred to the new domain'
-        new PollingConditions().within(5) {
+        defaultPolling.eventually {
             with(parseJson(get("/admin/unit-dump/$unitId"))) {
                 domains.size() == 1
                 domains.first().templateVersion == '2.0.0'

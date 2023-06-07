@@ -94,6 +94,7 @@ import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
 import groovy.transform.stc.ClosureParams
 import groovy.transform.stc.SimpleType
 import spock.lang.Specification
+import spock.util.concurrent.PollingConditions
 
 /**
  * Base class for veo specifications
@@ -105,6 +106,8 @@ abstract class VeoSpec extends Specification {
 
     protected static final Locale DE = Locale.GERMAN
     protected static final Locale EN = Locale.ENGLISH
+
+    PollingConditions defaultPolling = new PollingConditions(delay: 0.5, timeout: 5)
 
     static AssetData newAsset(ElementOwner owner, @DelegatesTo(value = Asset.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Asset") Closure init = null) {

@@ -26,7 +26,6 @@ import org.veo.core.entity.EntityType
 import org.veo.core.usecase.unit.CreateDemoUnitUseCase
 
 import groovy.util.logging.Slf4j
-import spock.util.concurrent.PollingConditions
 
 @Slf4j
 class DomainRestTestITSpec extends VeoRestTest {
@@ -170,7 +169,7 @@ class DomainRestTestITSpec extends VeoRestTest {
 
         and: "we create a domain from the new template version"
         post("/domaintemplates/${newTemplateVersionId}/createdomains", [:], HttpStatus.SC_NO_CONTENT, UserType.ADMIN)
-        new PollingConditions().within(5) {
+        defaultPolling.eventually {
             getDomains().count { it.name == oldDomain.name } == 2
         }
         def newDomainId = getDomains().find { it.name == oldDomain.name && it.createdAt > oldDomain.createdAt }.id
@@ -261,7 +260,7 @@ class DomainRestTestITSpec extends VeoRestTest {
 
         and: "we create a domain from the new template version"
         post("/domaintemplates/${newTemplateVersionId}/createdomains", [:], HttpStatus.SC_NO_CONTENT, UserType.ADMIN)
-        new PollingConditions().within(5) {
+        defaultPolling.eventually {
             getDomains().count { it.name == oldDomain.name } == 3
         }
         def newDomainId = getDomains().findAll{ it.name == oldDomain.name && it.templateVersion == "1.4.3" }.toSorted{ it.createdAt }.last().id

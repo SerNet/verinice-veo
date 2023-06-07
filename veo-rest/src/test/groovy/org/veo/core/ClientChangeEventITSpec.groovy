@@ -46,7 +46,6 @@ import org.veo.persistence.access.UnitRepositoryImpl
 import groovy.util.logging.Slf4j
 import spock.lang.AutoCleanup
 import spock.lang.Shared
-import spock.util.concurrent.PollingConditions
 
 @SpringBootTest(
 classes = [TestEventSubscriber.class,
@@ -103,7 +102,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         }""", 1, Instant.now()))
 
         then: "the client is created, activated, the demoUnit and domains exist"
-        new PollingConditions().within(5) {
+        defaultPolling.eventually {
             repository.exists(cId)
             with(repository.findById(cId).get()) {
                 domains.size() == 2
@@ -144,7 +143,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         eventDispatcher.send(exchange, msg)
 
         then: "the event is sent"
-        new PollingConditions().within(5) {
+        defaultPolling.eventually {
             !unitRepository.exists(unit.id)
             !repository.exists(client.id)
         }
@@ -170,7 +169,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         }""", 1, Instant.now()))
 
         then: "the event is sent"
-        new PollingConditions().within(5) {
+        defaultPolling.eventually {
             repository.findById(Key.uuidFrom(cId)).get().maxUnits == 5
         }
 
@@ -183,7 +182,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         }""", 1, Instant.now()))
 
         then: "the event is sent and the maxUnits is updated"
-        new PollingConditions().within(5) {
+        defaultPolling.eventually {
             repository.findById(Key.uuidFrom(cId)).get().maxUnits == 15
         }
 
@@ -196,7 +195,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         }""",1,Instant.now()))
 
         then: "the event is sent and the maxUnits is updated"
-        new PollingConditions().within(5) {
+        defaultPolling.eventually {
             repository.findById(Key.uuidFrom(cId)).get().maxUnits == 1
         }
     }
@@ -222,7 +221,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         eventDispatcher.send(exchange, msg)
 
         then: "the event is sent"
-        new PollingConditions().within(5) {
+        defaultPolling.eventually {
             unitRepository.exists(unit.id)
             repository.getById(client.id).state == startState
         }
@@ -273,7 +272,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         eventDispatcher.send(exchange, msg)
 
         then: "the event is sent"
-        new PollingConditions().within(5) {
+        defaultPolling.eventually {
             repository.getById(client.id).state == nextState
         }
 
@@ -315,7 +314,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         eventDispatcher.send(exchange, msg)
 
         then: "the event is sent"
-        new PollingConditions().within(5) {
+        defaultPolling.eventually {
             repository.getById(client.id).state == ACTIVATED
         }
 
@@ -330,7 +329,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         eventDispatcher.send(exchange, msg)
 
         then: "the event is sent"
-        new PollingConditions().within(5) {
+        defaultPolling.eventually {
             repository.getById(client.id).state == ACTIVATED
         }
 
@@ -346,7 +345,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         eventDispatcher.send(exchange, msg)
 
         then: "the event is sent"
-        new PollingConditions().within(5) {
+        defaultPolling.eventually {
             repository.getById(client.id).state == DEACTIVATED
         }
 
@@ -362,7 +361,7 @@ class ClientChangeEventITSpec  extends VeoSpringSpec {
         eventDispatcher.send(exchange, msg)
 
         then: "the event is sent and all data is deleted"
-        new PollingConditions().within(5) {
+        defaultPolling.eventually {
             !unitRepository.exists(unit.id)
             !domainRepository.exists(domain.id)
             !repository.exists(client.id)

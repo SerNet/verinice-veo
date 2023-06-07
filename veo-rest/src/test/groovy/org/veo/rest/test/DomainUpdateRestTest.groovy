@@ -20,8 +20,6 @@ package org.veo.rest.test
 import static org.veo.rest.test.UserType.ADMIN
 import static org.veo.rest.test.UserType.CONTENT_CREATOR
 
-import spock.util.concurrent.PollingConditions
-
 class DomainUpdateRestTest extends VeoRestTest {
 
     String oldDomainTemplateId
@@ -88,9 +86,9 @@ class DomainUpdateRestTest extends VeoRestTest {
         post("/admin/domaintemplates/$newDomainTemplateId/allclientsupdate", null, 204, ADMIN)
 
         then: "only the new domain is active"
-        new PollingConditions().within(5, {
+        defaultPolling.eventually {
             get("/domains").body.findAll{it.name == templateName}*.templateVersion == ["1.1.0"]
-        })
+        }
 
         when: "fetching the migrated scope"
         def migratedScope = get("/scopes/$scopeId").body

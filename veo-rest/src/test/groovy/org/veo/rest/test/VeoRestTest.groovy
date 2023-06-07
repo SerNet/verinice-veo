@@ -143,6 +143,8 @@ class VeoRestTest extends Specification {
 
     static boolean clientsCreated = false
 
+    PollingConditions defaultPolling = new PollingConditions(delay: 0.8, timeout: 5)
+
     class Response {
         HttpHeaders headers
         Object body

@@ -49,7 +49,6 @@ import org.veo.persistence.entity.jpa.StoredEventData
 import groovy.util.logging.Slf4j
 import spock.lang.AutoCleanup
 import spock.lang.Shared
-import spock.util.concurrent.PollingConditions
 
 /**
  * Tests messaging using a RabbitMQ container.
@@ -158,7 +157,7 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
         }
 
         then: "the table should have been cleared by the deletion job"
-        new PollingConditions().within(60) {
+        defaultPolling.within(60) {
             storedEventRepository.findAll().size() == 0
         }
 
@@ -186,7 +185,7 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
         }
 
         and: "the event table has been completely cleared by the deletion job"
-        new PollingConditions().within(10) {
+        defaultPolling.within(10) {
             storedEventRepository.findAll().size() == 0
         }
 
