@@ -143,7 +143,7 @@ public class EntityStateMapper {
                   target,
                   link.getType(),
                   idRefResolver.resolve(getCustomAspectOrLinkDomain(source)));
-
+          newLink.setAttributes(link.getAttributes());
           target.applyLink(newLink);
         });
   }

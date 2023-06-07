@@ -17,16 +17,23 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer
 
+import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto
+import org.veo.adapter.presenter.api.dto.CustomLinkDto
+import org.veo.adapter.presenter.api.dto.DomainAssociationDto
 import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
+import org.veo.adapter.presenter.api.dto.full.FullDocumentDto
 import org.veo.core.entity.Asset
+import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.ref.ITypedId
+import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.usecase.service.EntityStateMapper
 import org.veo.core.usecase.service.IdRefResolver
+import org.veo.core.usecase.service.TypedId
 
 import spock.lang.Specification
 
@@ -36,9 +43,11 @@ class EntityStateMapperSpec extends Specification {
     Domain domain1 = Mock(Domain) { it.id >> Key.newUuid() }
     IdRefResolver idRefResolver = Mock() {
         resolve(domain0.id.uuidValue(), Domain) >> domain0
+        resolve(TypedId.from(domain0.id.uuidValue(), Domain)) >> domain0
         resolve(domain1.id.uuidValue(), Domain) >> domain1
     }
-    EntityStateMapper entityStateMapper = new EntityStateMapper()
+    EntityFactory entityFactory = Mock()
+    EntityStateMapper entityStateMapper = new EntityStateMapper(entityFactory)
 
     def "maps domains from DTO to entity"() {
         given: "a process with two domains and a DTO with different sub types for those domains"
@@ -101,5 +110,44 @@ class EntityStateMapperSpec extends Specification {
         1 * newCompositeAssetEntity.setParts([asset1, asset2].toSet())
         1 * newCompositeAssetEntity.getLinks() >> []
         1 * newCompositeAssetEntity.getCustomAspects() >> []
+    }
+
+    def "Transform element DTO with links to entity"() {
+        given: "an asset composite element DTO with two parts"
+        def asset1Ref = Mock(IdRef)
+
+        def asset1 = Mock(Asset)
+        def entity = Mock(Asset) {
+            it.modelType >> Asset.SINGULAR_TERM
+        }
+        def link = Mock(CustomLink)
+
+        def compositeAssetId = Key.newUuid()
+        def dto = new FullDocumentDto().tap {
+            id = compositeAssetId.uuidValue()
+            domains = [(domain0.id.uuidValue()): Mock(DomainAssociationDto) {
+                    subType >> "contract"
+                    status >> "CONCLUDED"
+                } ]
+            setLinks('hosting_server':[
+                new CustomLinkDto().tap {
+                    target = asset1Ref
+                    attributes = ['path': '/srv/contract.txt']
+                    domains = [domain0]
+                }
+            ])
+        }
+
+        when: "transforming the DTO to an entity"
+        entityStateMapper.mapState(dto, entity, idRefResolver)
+
+        then: "the composite element is transformed with parts"
+        1 * entity.findSubType(domain0) >> Optional.empty()
+        1 * idRefResolver.resolve(asset1Ref) >> asset1
+        1 * entity.getLinks() >> []
+        1 * entity.getCustomAspects() >> []
+        1 * entityFactory.createCustomLink(asset1, entity, 'hosting_server', domain0) >> link
+        1 * link.setAttributes(['path': '/srv/contract.txt'])
+        1 * entity.applyLink(link)
     }
 }
