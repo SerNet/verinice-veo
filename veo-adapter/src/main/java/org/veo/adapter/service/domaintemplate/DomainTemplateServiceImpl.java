@@ -163,8 +163,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   @Override
   public Collection<Element> getProfileElements(Domain domain, ProfileRef profileKey) {
     var client = domain.getOwner();
-    var template = domain.getDomainTemplate();
-    return template
+    return domain
         .findProfile(profileKey)
         .map(profile -> createElementsFromProfile(client, domain, profile))
         .orElseGet(Collections::emptySet);
