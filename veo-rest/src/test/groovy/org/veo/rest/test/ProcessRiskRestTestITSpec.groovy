@@ -69,6 +69,18 @@ class ProcessRiskRestTestITSpec extends VeoRestTest{
 
         then: "the risk has an owner"
         get("/processes/$processId/risks/$scenarioId").body.riskOwner.targetUri ==~ /.*\/persons\/$ownerPersonId/
+
+        when: "assigning the process to another domain"
+        post("/domains/$testDomainId/processes/$processId", [
+            subType: "BusinessProcess",
+            status: "NEW",
+        ], 200)
+
+        then: "the risk is also assigned to both domains"
+        with(get("/processes/$processId/risks/$scenarioId").body) {
+            domains[owner.dsgvoDomainId] != null
+            domains[owner.testDomainId] != null
+        }
     }
 
     def "create and update a process risk without domain"() {
