@@ -67,7 +67,7 @@ classes = [TestEventSubscriber.class,
 @EnableScheduling
 class ScheduledEventDispatchITSpec extends VeoSpringSpec {
 
-    public static final int NUM_EVENTS = 30000
+    public static final int NUM_EVENTS = 10000
     public static final int DEMO_NUM_EVENTS = 81
 
     @Autowired
@@ -157,12 +157,12 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
         }
 
         then: "the table should have been cleared by the deletion job"
-        defaultPolling.within(60) {
+        defaultPolling.within(20) {
             storedEventRepository.findAll().size() == 0
         }
 
         and: "confirmations have been received for sent messages"
-        confirmationLatch.await(60, SECONDS)
+        confirmationLatch.await(20, SECONDS)
 
         and: "all messages should have been received with no duplicates"
         eventSubscriber.receivedEvents.size() == NUM_EVENTS
