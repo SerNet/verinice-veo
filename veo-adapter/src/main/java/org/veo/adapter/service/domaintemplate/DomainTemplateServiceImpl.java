@@ -163,22 +163,18 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   @Override
   public Collection<Element> getProfileElements(Domain domain, ProfileRef profileKey) {
     var client = domain.getOwner();
-    var ref = new PlaceholderResolver(entityTransformer);
     var template = domain.getDomainTemplate();
     return template
         .findProfile(profileKey)
-        .map(profile -> createElementsFromProfile(client, ref, domain, template, profile))
+        .map(profile -> createElementsFromProfile(client, domain, profile))
         .orElseGet(Collections::emptySet);
   }
 
   private Collection<Element> createElements(
       Client client,
-      PlaceholderResolver ref,
       Domain domain,
-      String templateId,
       Set<AbstractElementDto> profileElements,
       Set<AbstractRiskDto> profileRisks) {
-    ref.cache.put(templateId, domain);
     var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
     resolvingFactory.setGlobalDomain(domain);
     var transformer = new DtoToEntityTransformer(factory, resolvingFactory, entityStateMapper);
@@ -205,17 +201,11 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   }
 
   private Collection<Element> createElementsFromProfile(
-      Client client,
-      PlaceholderResolver ref,
-      Domain domain,
-      DomainTemplate template,
-      ProfileDefinition profileDefinition) {
+      Client client, Domain domain, ProfileDefinition profileDefinition) {
     try {
       return createElements(
           client,
-          ref,
           domain,
-          template.getIdAsString(),
           parseJsonObjects(profileDefinition.getElements(), new TypeReference<>() {}),
           parseJsonObjects(profileDefinition.getRisks(), new TypeReference<>() {}));
     } catch (IOException e) {
