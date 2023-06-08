@@ -78,9 +78,9 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scenario;
+import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.UpdateScenarioInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
-import org.veo.core.usecase.scenario.CreateScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenariosUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
@@ -108,7 +108,7 @@ public class ScenarioInDomainController {
   private final ClientLookup clientLookup;
   private final GetScenarioUseCase getScenarioUseCase;
   private final GetScenariosUseCase getScenariosUseCase;
-  private final CreateScenarioUseCase createUseCase;
+  private final CreateElementUseCase<Scenario> createUseCase;
   private final UpdateScenarioInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
   private final DtoToEntityTransformer dtoToEntityTransformer;
@@ -293,8 +293,7 @@ public class ScenarioInDomainController {
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<String> scopeIds) {
-    return elementService.createElement(
-        user, domainId, dto, scopeIds, createUseCase, dtoToEntityTransformer::transformDto2Element);
+    return elementService.createElement(user, domainId, dto, scopeIds, createUseCase);
   }
 
   @Operation(summary = "Associates an existing scenario with a domain")

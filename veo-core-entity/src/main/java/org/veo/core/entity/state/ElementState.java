@@ -28,4 +28,6 @@ public interface ElementState<T extends Element> extends EntityState {
   Set<DomainAssociationState> getDomainAssociationStates();
 
   ITypedId<ElementOwner> getOwner();
+
+  Class<T> getModelInterface();
 }

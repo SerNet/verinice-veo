@@ -57,7 +57,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-import java.util.function.Supplier;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -96,7 +95,6 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.asset.CreateAssetRiskUseCase;
-import org.veo.core.usecase.asset.CreateAssetUseCase;
 import org.veo.core.usecase.asset.GetAssetRiskUseCase;
 import org.veo.core.usecase.asset.GetAssetRisksUseCase;
 import org.veo.core.usecase.asset.GetAssetUseCase;
@@ -110,7 +108,6 @@ import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
-import org.veo.core.usecase.service.IdRefResolver;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;
@@ -140,7 +137,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
   public AssetController(
       GetAssetUseCase getAssetUseCase,
       GetAssetsUseCase getAssetsUseCase,
-      CreateAssetUseCase createAssetUseCase,
+      CreateElementUseCase<Asset> createAssetUseCase,
       UpdateAssetUseCase updateAssetUseCase,
       DeleteElementUseCase deleteElementUseCase,
       CreateAssetRiskUseCase createAssetRiskUseCase,
@@ -164,7 +161,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
 
   public static final String URL_BASE_PATH = "/" + Asset.PLURAL_TERM;
 
-  private final CreateAssetUseCase createAssetUseCase;
+  private final CreateElementUseCase<Asset> createAssetUseCase;
   private final UpdateAssetUseCase updateAssetUseCase;
   private final GetAssetsUseCase getAssetsUseCase;
   private final DeleteElementUseCase deleteElementUseCase;
@@ -292,15 +289,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
 
     return useCaseInteractor.execute(
         createAssetUseCase,
-        (Supplier<CreateElementUseCase.InputData<Asset>>)
-            () -> {
-              Client client = getClient(user);
-              IdRefResolver idRefResolver = createIdRefResolver(client);
-              return CreateElementInputMapper.map(
-                  dtoToEntityTransformer.transformDto2Element(dto, idRefResolver),
-                  client,
-                  scopeIds);
-            },
+        CreateElementInputMapper.map(dto, getClient(user), scopeIds),
         output -> {
           ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
           return RestApiResponse.created(URL_BASE_PATH, body);

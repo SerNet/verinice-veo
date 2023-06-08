@@ -79,9 +79,9 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Process;
+import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.UpdateProcessInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
-import org.veo.core.usecase.process.CreateProcessUseCase;
 import org.veo.core.usecase.process.GetProcessUseCase;
 import org.veo.core.usecase.process.GetProcessesUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
@@ -109,7 +109,7 @@ public class ProcessInDomainController {
   private final ClientLookup clientLookup;
   private final GetProcessUseCase getProcessUseCase;
   private final GetProcessesUseCase getProcessesUseCase;
-  private final CreateProcessUseCase createUseCase;
+  private final CreateElementUseCase<Process> createUseCase;
   private final UpdateProcessInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
   private final DtoToEntityTransformer dtoToEntityTransformer;
@@ -296,8 +296,7 @@ public class ProcessInDomainController {
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<String> scopeIds) {
-    return elementService.createElement(
-        user, domainId, dto, scopeIds, createUseCase, dtoToEntityTransformer::transformDto2Element);
+    return elementService.createElement(user, domainId, dto, scopeIds, createUseCase);
   }
 
   @Operation(summary = "Associates an existing process with a domain")

@@ -25,7 +25,6 @@ import java.util.Map;
 
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.state.ProcessState;
 
@@ -79,7 +78,7 @@ public abstract class AbstractProcessDto extends CompositeEntityDto<Process>
   }
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<Process> getModelInterface() {
     return Process.class;
   }
 

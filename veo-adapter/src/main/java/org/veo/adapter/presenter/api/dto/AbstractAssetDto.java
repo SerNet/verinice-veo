@@ -26,7 +26,6 @@ import java.util.Map;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.state.AssetState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -72,7 +71,7 @@ public abstract class AbstractAssetDto extends CompositeEntityDto<Asset> impleme
   }
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<Asset> getModelInterface() {
     return Asset.class;
   }
 

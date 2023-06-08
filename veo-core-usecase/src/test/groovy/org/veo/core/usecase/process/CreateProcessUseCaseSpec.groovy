@@ -23,6 +23,8 @@ import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent
 import org.veo.core.entity.specification.ClientBoundaryViolationException
+import org.veo.core.entity.state.ProcessState
+import org.veo.core.entity.transform.IdentifiableFactory
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.ScopeRepository
 import org.veo.core.service.EventPublisher
@@ -30,50 +32,57 @@ import org.veo.core.usecase.DesignatorService
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.CreateElementUseCase
 import org.veo.core.usecase.decision.Decider
+import org.veo.core.usecase.service.EntityStateMapper
+import org.veo.core.usecase.service.TypedId
 
 class CreateProcessUseCaseSpec extends UseCaseSpec {
 
+    DesignatorService designatorService = Mock()
+    IdentifiableFactory identifiableFactory = Mock()
+    EntityStateMapper entityStateMapper = Mock()
+    EventPublisher eventPublisher = Mock()
+
+    Decider decider = Mock()
     ScopeRepository scopeRepository = Mock()
     ProcessRepository processRepository = Mock()
-    Process process = Mock()
-    Unit unit = Mock()
-    DesignatorService designatorService = Mock()
-    EventPublisher eventPublisher = Mock()
-    Decider decider = Mock()
 
-    CreateProcessUseCase usecase = new CreateProcessUseCase(unitRepository,scopeRepository, processRepository, designatorService, eventPublisher, decider)
+    ProcessState processState = Mock()
+    Process process = Mock()
+
+    CreateElementUseCase usecase = new CreateElementUseCase(repositoryProvider, designatorService, eventPublisher, identifiableFactory, entityStateMapper, decider)
 
     def setup() {
         def id = Key.newUuid()
-        process.domains >> []
-        process.domainTemplates >> []
-        process.owner >> unit
-        process.name >> "John's process"
-        process.modelInterface >> Process
-        process.id >> id
-        process.customAspects >> []
-        process.links >> []
-        process.owningClient >> Optional.of(existingClient)
+        processState.name >> "John's process"
+        processState.modelInterface >> Process
+        processState.owner >> TypedId.from(existingUnit.idAsString, Unit)
 
-        unit.domains >> []
-
-        unitRepository.findById(_) >> Optional.of(existingUnit)
+        repositoryProvider.getElementRepositoryFor(Scope) >> scopeRepository
+        repositoryProvider.getElementRepositoryFor(Process) >> processRepository
         scopeRepository.findByIds([] as Set) >> []
     }
 
     def "create a process"() {
         when:
-        def output = usecase.execute(new CreateElementUseCase.InputData(process, existingClient, [] as Set))
+        def output = usecase.execute(new CreateElementUseCase.InputData(processState, existingClient, [] as Set))
 
         then:
+        1 * identifiableFactory.create(Process, _) >> process
+        1 * entityStateMapper.mapState(processState, process, false, _)
+        1 * process.getOwner() >> existingUnit
+        3 * process.getDomains() >> []
+        2 * process.getCustomAspects() >> []
+        2 * process.getLinks() >> []
+        1 * process.getDomainTemplates() >> []
+        1 * process.owningClient >> Optional.of(existingClient)
+        1 * process.modelInterface >> Process
         1 * processRepository.save(process) >> process
         1 * designatorService.assignDesignator(process, existingClient)
         1 * eventPublisher.publish({ RiskAffectingElementChangeEvent event->
             event.entityType == Process
             event.entityId == process.id
         })
-        output.entity != null
-        output.entity.name == "John's process"
+        output.entity == process
     }
 
     def "validates scope client"() {
@@ -84,9 +93,16 @@ class CreateProcessUseCaseSpec extends UseCaseSpec {
         scopeRepository.findByIds([scope.id] as Set) >> [scope]
 
         when: "creating the new process inside the scope"
-        usecase.execute(new CreateElementUseCase.InputData(process, existingClient, [scope.id] as Set))
+        usecase.execute(new CreateElementUseCase.InputData(processState, existingClient, [scope.id] as Set))
 
         then: "an exception is thrown"
+        1 * identifiableFactory.create(Process, _) >> process
+        1 * process.getOwner() >> existingUnit
+        2 * process.getDomains() >> []
+        2 * process.getCustomAspects() >> []
+        2 * process.getLinks() >> []
+        1 * process.getDomainTemplates() >> []
+
         thrown(ClientBoundaryViolationException)
     }
 }

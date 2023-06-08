@@ -79,9 +79,9 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Domain;
-import org.veo.core.usecase.asset.CreateAssetUseCase;
 import org.veo.core.usecase.asset.GetAssetUseCase;
 import org.veo.core.usecase.asset.GetAssetsUseCase;
+import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.UpdateAssetInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
@@ -109,7 +109,7 @@ public class AssetInDomainController {
   private final ClientLookup clientLookup;
   private final GetAssetUseCase getAssetUseCase;
   private final GetAssetsUseCase getAssetsUseCase;
-  private final CreateAssetUseCase createUseCase;
+  private final CreateElementUseCase<Asset> createUseCase;
   private final UpdateAssetInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
   private final DtoToEntityTransformer dtoToEntityTransformer;
@@ -293,8 +293,7 @@ public class AssetInDomainController {
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<String> scopeIds) {
-    return elementService.createElement(
-        user, domainId, dto, scopeIds, createUseCase, dtoToEntityTransformer::transformDto2Element);
+    return elementService.createElement(user, domainId, dto, scopeIds, createUseCase);
   }
 
   @Operation(summary = "Associates an existing asset with a domain")

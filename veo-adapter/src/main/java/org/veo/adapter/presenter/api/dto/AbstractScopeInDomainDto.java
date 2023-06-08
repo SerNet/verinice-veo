@@ -26,7 +26,6 @@ import jakarta.validation.constraints.Size;
 
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.state.ScopeDomainAssociationState;
 import org.veo.core.entity.state.ScopeState;
@@ -71,7 +70,7 @@ public abstract class AbstractScopeInDomainDto extends AbstractElementInDomainDt
   }
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<Scope> getModelInterface() {
     return Scope.class;
   }
 

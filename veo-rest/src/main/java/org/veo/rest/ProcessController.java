@@ -59,7 +59,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-import java.util.function.Supplier;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -103,7 +102,6 @@ import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.process.CreateProcessRiskUseCase;
-import org.veo.core.usecase.process.CreateProcessUseCase;
 import org.veo.core.usecase.process.GetProcessRiskUseCase;
 import org.veo.core.usecase.process.GetProcessRisksUseCase;
 import org.veo.core.usecase.process.GetProcessUseCase;
@@ -111,7 +109,6 @@ import org.veo.core.usecase.process.GetProcessesUseCase;
 import org.veo.core.usecase.process.UpdateProcessRiskUseCase;
 import org.veo.core.usecase.process.UpdateProcessUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
-import org.veo.core.usecase.service.IdRefResolver;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;
@@ -141,7 +138,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
   public static final String URL_BASE_PATH = "/" + Process.PLURAL_TERM;
   public static final String EMBED_RISKS_PARAM = "embedRisks";
 
-  private final CreateProcessUseCase createProcessUseCase;
+  private final CreateElementUseCase<Process> createProcessUseCase;
   private final UpdateProcessUseCase updateProcessUseCase;
   private final DeleteElementUseCase deleteElementUseCase;
   private final GetProcessesUseCase getProcessesUseCase;
@@ -153,7 +150,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
   private final GetProcessUseCase getProcessUseCase;
 
   public ProcessController(
-      CreateProcessUseCase createProcessUseCase,
+      CreateElementUseCase<Process> createProcessUseCase,
       GetProcessUseCase getProcessUseCase,
       UpdateProcessUseCase putProcessUseCase,
       DeleteElementUseCase deleteElementUseCase,
@@ -244,15 +241,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
 
     return useCaseInteractor.execute(
         createProcessUseCase,
-        (Supplier<CreateElementUseCase.InputData<Process>>)
-            () -> {
-              Client client = getClient(user);
-              IdRefResolver idRefResolver = createIdRefResolver(client);
-              return CreateElementInputMapper.map(
-                  dtoToEntityTransformer.transformDto2Element(dto, idRefResolver),
-                  client,
-                  scopeIds);
-            },
+        CreateElementInputMapper.map(dto, getClient(user), scopeIds),
         output -> {
           ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
           return RestApiResponse.created(URL_BASE_PATH, body);

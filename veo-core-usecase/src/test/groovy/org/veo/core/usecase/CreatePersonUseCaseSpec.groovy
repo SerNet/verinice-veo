@@ -20,46 +20,59 @@ package org.veo.core.usecase
 import org.veo.core.entity.Key
 import org.veo.core.entity.Person
 import org.veo.core.entity.Scope
+import org.veo.core.entity.Unit
 import org.veo.core.entity.specification.ClientBoundaryViolationException
+import org.veo.core.entity.state.ElementState
+import org.veo.core.entity.transform.IdentifiableFactory
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ScopeRepository
+import org.veo.core.service.EventPublisher
 import org.veo.core.usecase.base.CreateElementUseCase
 import org.veo.core.usecase.decision.Decider
-import org.veo.core.usecase.person.CreatePersonUseCase
+import org.veo.core.usecase.service.EntityStateMapper
+import org.veo.core.usecase.service.TypedId
 
 class CreatePersonUseCaseSpec extends UseCaseSpec {
+    DesignatorService designatorService = Mock()
+    EventPublisher eventPublisher = Mock()
 
+    IdentifiableFactory identifiableFactory = Mock()
+    EntityStateMapper entityStateMapper = Mock()
+    Decider decider = Mock()
     ScopeRepository scopeRepository = Mock()
     PersonRepository personRepository = Mock()
-    DesignatorService designatorService = Mock()
-    Decider decider = Mock()
-    Person person
+    ElementState personState
+    Person person = Mock()
 
-    CreatePersonUseCase usecase = new CreatePersonUseCase(unitRepository,scopeRepository, personRepository, designatorService, decider)
+    CreateElementUseCase usecase = new CreateElementUseCase(repositoryProvider, designatorService, eventPublisher, identifiableFactory, entityStateMapper, decider)
 
     def setup() {
-        person = Mock() {
+        personState = Mock() {
+            modelInterface >> Person
             name >> "John"
-            owner >> existingUnit
-            customAspects >> []
-            links >> []
-            domains >> []
-            domainTemplates >> []
+            owner >> TypedId.from(existingUnit.idAsString, Unit)
         }
 
-        unitRepository.findById(_) >> Optional.of(existingUnit)
+        repositoryProvider.getElementRepositoryFor(Scope) >> scopeRepository
+        repositoryProvider.getElementRepositoryFor(Person) >> personRepository
         scopeRepository.findByIds([] as Set) >> []
     }
 
     def "create a person"() {
         when:
-        def output = usecase.execute(new CreateElementUseCase.InputData(person, existingClient, [] as Set))
+        def output = usecase.execute(new CreateElementUseCase.InputData(personState, existingClient, [] as Set))
 
         then:
+        1 * identifiableFactory.create(Person, _) >> person
+        1 * entityStateMapper.mapState(personState, person, false, _)
         1 * personRepository.save(person) >> person
         1 * designatorService.assignDesignator(person, existingClient)
-        output.entity != null
-        output.entity.name == "John"
+        1 * person.getOwner() >> existingUnit
+        3 * person.getDomains() >> []
+        2 * person.getCustomAspects() >> []
+        2 * person.getLinks() >> []
+        1 * person.getDomainTemplates() >> []
+        output.entity == person
     }
 
     def "validates scope client"() {
@@ -70,9 +83,16 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
         scopeRepository.findByIds([scope.id] as Set) >> [scope]
 
         when: "creating the new process inside the scope"
-        usecase.execute(new CreateElementUseCase.InputData(person, existingClient, [scope.id] as Set))
+        usecase.execute(new CreateElementUseCase.InputData(personState, existingClient, [scope.id] as Set))
 
         then: "an exception is thrown"
+        1 * identifiableFactory.create(Person, _) >> person
+        1 * person.getOwner() >> existingUnit
+        2 * person.getDomains() >> []
+        2 * person.getCustomAspects() >> []
+        2 * person.getLinks() >> []
+        1 * person.getDomainTemplates() >> []
+
         thrown(ClientBoundaryViolationException)
     }
 }

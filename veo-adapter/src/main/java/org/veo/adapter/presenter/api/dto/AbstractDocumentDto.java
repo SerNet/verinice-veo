@@ -26,7 +26,6 @@ import java.util.Map;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Document;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.state.CompositeElementState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -75,7 +74,7 @@ public abstract class AbstractDocumentDto extends CompositeEntityDto<Document>
   }
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<Document> getModelInterface() {
     return Document.class;
   }
 

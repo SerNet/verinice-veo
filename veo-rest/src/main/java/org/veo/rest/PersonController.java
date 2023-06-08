@@ -56,7 +56,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-import java.util.function.Supplier;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -97,11 +96,9 @@ import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
-import org.veo.core.usecase.person.CreatePersonUseCase;
 import org.veo.core.usecase.person.GetPersonUseCase;
 import org.veo.core.usecase.person.GetPersonsUseCase;
 import org.veo.core.usecase.person.UpdatePersonUseCase;
-import org.veo.core.usecase.service.IdRefResolver;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;
@@ -125,13 +122,13 @@ public class PersonController extends AbstractElementController<Person, FullPers
 
   public static final String URL_BASE_PATH = "/" + Person.PLURAL_TERM;
 
-  private final CreatePersonUseCase createPersonUseCase;
+  private final CreateElementUseCase<Person> createPersonUseCase;
   private final GetPersonsUseCase getPersonsUseCase;
   private final UpdatePersonUseCase updatePersonUseCase;
   private final DeleteElementUseCase deleteElementUseCase;
 
   public PersonController(
-      CreatePersonUseCase createPersonUseCase,
+      CreateElementUseCase<Person> createPersonUseCase,
       GetPersonUseCase getPersonUseCase,
       GetPersonsUseCase getPersonsUseCase,
       UpdatePersonUseCase updatePersonUseCase,
@@ -265,15 +262,7 @@ public class PersonController extends AbstractElementController<Person, FullPers
           List<String> scopeIds) {
     return useCaseInteractor.execute(
         createPersonUseCase,
-        (Supplier<CreateElementUseCase.InputData<Person>>)
-            () -> {
-              Client client = getClient(user);
-              IdRefResolver idRefResolver = createIdRefResolver(client);
-              return CreateElementInputMapper.map(
-                  dtoToEntityTransformer.transformDto2Element(dto, idRefResolver),
-                  client,
-                  scopeIds);
-            },
+        CreateElementInputMapper.map(dto, getClient(user), scopeIds),
         output -> {
           ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
           return RestApiResponse.created(URL_BASE_PATH, body);

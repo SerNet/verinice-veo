@@ -139,19 +139,11 @@ public class ElementInDomainService {
           String domainId,
           TBaseDto dto,
           List<String> scopeIds,
-          CreateElementUseCase<TElement> createUseCase,
-          BiFunction<TBaseDto, IdRefResolver, TElement> toEntityMapper) {
+          CreateElementUseCase<TElement> createUseCase) {
     dto.setDomain(TypedId.from(domainId, Domain.class));
     return useCaseInteractor.execute(
         createUseCase,
-        (Supplier<CreateElementUseCase.InputData<TElement>>)
-            () -> {
-              var client = clientLookup.getClient(user);
-              return CreateElementInputMapper.map(
-                  toEntityMapper.apply(dto, new DbIdRefResolver(repositoryProvider, client)),
-                  client,
-                  scopeIds);
-            },
+        CreateElementInputMapper.map(dto, clientLookup.getClient(user), scopeIds),
         output -> RestApiResponse.created(output.getEntity(), domainId, referenceAssembler));
   }
 

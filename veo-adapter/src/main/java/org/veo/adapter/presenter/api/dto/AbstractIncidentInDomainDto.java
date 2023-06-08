@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -60,7 +59,7 @@ public abstract class AbstractIncidentInDomainDto
   }
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<Incident> getModelInterface() {
     return Incident.class;
   }
 }

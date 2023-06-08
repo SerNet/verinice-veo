@@ -57,7 +57,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-import java.util.function.Supplier;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -102,14 +101,12 @@ import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.core.usecase.scope.CreateScopeRiskUseCase;
-import org.veo.core.usecase.scope.CreateScopeUseCase;
 import org.veo.core.usecase.scope.GetScopeRiskUseCase;
 import org.veo.core.usecase.scope.GetScopeRisksUseCase;
 import org.veo.core.usecase.scope.GetScopeUseCase;
 import org.veo.core.usecase.scope.GetScopesUseCase;
 import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
 import org.veo.core.usecase.scope.UpdateScopeUseCase;
-import org.veo.core.usecase.service.IdRefResolver;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;
@@ -140,7 +137,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
 
   private TransactionalRunner runner;
 
-  private final CreateScopeUseCase createScopeUseCase;
+  private final CreateElementUseCase<Scope> createScopeUseCase;
   private final GetScopeUseCase getScopeUseCase;
   private final GetScopesUseCase getScopesUseCase;
   private final UpdateScopeUseCase updateScopeUseCase;
@@ -303,15 +300,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
           List<String> scopeIds) {
     return useCaseInteractor.execute(
         createScopeUseCase,
-        (Supplier<CreateElementUseCase.InputData<Scope>>)
-            () -> {
-              Client client = getClient(user);
-              IdRefResolver idRefResolver = createIdRefResolver(client);
-              return CreateElementInputMapper.map(
-                  dtoToEntityTransformer.transformDto2Element(createScopeDto, idRefResolver),
-                  client,
-                  scopeIds);
-            },
+        CreateElementInputMapper.map(createScopeDto, getClient(user), scopeIds),
         output -> {
           Scope scope = output.getEntity();
           Optional<String> scopeId =

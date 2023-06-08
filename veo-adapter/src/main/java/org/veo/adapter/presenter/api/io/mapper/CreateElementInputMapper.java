@@ -23,14 +23,16 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.state.ElementState;
 import org.veo.core.usecase.base.CreateElementUseCase;
 
 public class CreateElementInputMapper {
   /** Creates input data for element creation. */
-  public static <T> CreateElementUseCase.InputData<T> map(
-      T element, Client client, List<String> scopeIds) {
-    return new CreateElementUseCase.InputData<>(element, client, mapIds(scopeIds));
+  public static <T extends Element> CreateElementUseCase.InputData<T> map(
+      ElementState<T> state, Client client, List<String> scopeIds) {
+    return new CreateElementUseCase.InputData<>(state, client, mapIds(scopeIds));
   }
 
   private static Set<Key<UUID>> mapIds(List<String> ids) {

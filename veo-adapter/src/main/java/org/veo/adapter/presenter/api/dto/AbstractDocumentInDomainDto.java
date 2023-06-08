@@ -18,7 +18,6 @@
 package org.veo.adapter.presenter.api.dto;
 
 import org.veo.core.entity.Document;
-import org.veo.core.entity.Identifiable;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -60,7 +59,7 @@ public abstract class AbstractDocumentInDomainDto
   }
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<Document> getModelInterface() {
     return Document.class;
   }
 }

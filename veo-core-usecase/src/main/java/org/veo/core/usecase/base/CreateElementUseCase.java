@@ -26,49 +26,57 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
-import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
-import org.veo.core.repository.Repository;
-import org.veo.core.repository.ScopeRepository;
-import org.veo.core.repository.UnitRepository;
+import org.veo.core.entity.Process;
+import org.veo.core.entity.Scope;
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
+import org.veo.core.entity.state.ElementState;
+import org.veo.core.entity.transform.IdentifiableFactory;
+import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.decision.Decider;
+import org.veo.core.usecase.service.DbIdRefResolver;
+import org.veo.core.usecase.service.EntityStateMapper;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
 @AllArgsConstructor
-public abstract class CreateElementUseCase<TEntity extends Element>
+public class CreateElementUseCase<TEntity extends Element>
     implements TransactionalUseCase<
         CreateElementUseCase.InputData<TEntity>, CreateElementUseCase.OutputData<TEntity>> {
-  private final UnitRepository unitRepository;
-  private final ScopeRepository scopeRepository;
-  private final Repository<TEntity, Key<UUID>> entityRepo;
+  private final RepositoryProvider repositoryProvider;
   private final DesignatorService designatorService;
+  private final EventPublisher eventPublisher;
+  private final IdentifiableFactory identifiableFactory;
+  private final EntityStateMapper entityStateMapper;
   private final Decider decider;
 
   @Override
   @Transactional(Transactional.TxType.REQUIRED)
   public CreateElementUseCase.OutputData<TEntity> execute(
       CreateElementUseCase.InputData<TEntity> input) {
-    var entity = input.getNewEntity();
-    Unit unit =
-        unitRepository
-            .findById(entity.getOwner().getId())
-            .orElseThrow(
-                () -> new ReferenceTargetNotFoundException(entity.getOwner().getId(), Unit.class));
-    unit.checkSameClient(input.authenticatedClient);
+    var state = input.getNewEntity();
+    Class<TEntity> entityType = state.getModelInterface();
+    var entity = identifiableFactory.create(entityType, null);
+    entityStateMapper.mapState(
+        state, entity, false, new DbIdRefResolver(repositoryProvider, input.authenticatedClient));
     DomainSensitiveElementValidator.validate(entity);
     designatorService.assignDesignator(entity, input.authenticatedClient);
     addToScopes(entity, input.scopeIds, input.authenticatedClient);
     evaluateDecisions(entity);
-    return new CreateElementUseCase.OutputData<>(entityRepo.save(entity));
+    entity = repositoryProvider.getElementRepositoryFor(state.getModelInterface()).save(entity);
+    if (Process.class.equals(entityType)) {
+      eventPublisher.publish(new RiskAffectingElementChangeEvent(entity, this));
+    }
+    return new CreateElementUseCase.OutputData<>(entity);
   }
 
   private void addToScopes(TEntity element, Set<Key<UUID>> scopeIds, Client client) {
-    scopeRepository
+    repositoryProvider
+        .getElementRepositoryFor(Scope.class)
         .findByIds(scopeIds)
         .forEach(
             scope -> {
@@ -90,8 +98,8 @@ public abstract class CreateElementUseCase<TEntity extends Element>
 
   @Valid
   @Value
-  public static class InputData<TEntity> implements UseCase.InputData {
-    TEntity newEntity;
+  public static class InputData<TEntity extends Element> implements UseCase.InputData {
+    ElementState<TEntity> newEntity;
     Client authenticatedClient;
     Set<Key<UUID>> scopeIds;
   }

@@ -79,9 +79,9 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Incident;
+import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.UpdateIncidentInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
-import org.veo.core.usecase.incident.CreateIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentsUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
@@ -111,7 +111,7 @@ public class IncidentInDomainController {
   private final ClientLookup clientLookup;
   private final GetIncidentUseCase getIncidentUseCase;
   private final GetIncidentsUseCase getIncidentsUseCase;
-  private final CreateIncidentUseCase createUseCase;
+  private final CreateElementUseCase<Incident> createUseCase;
   private final UpdateIncidentInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
   private final DtoToEntityTransformer dtoToEntityTransformer;
@@ -296,8 +296,7 @@ public class IncidentInDomainController {
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<String> scopeIds) {
-    return elementService.createElement(
-        user, domainId, dto, scopeIds, createUseCase, dtoToEntityTransformer::transformDto2Element);
+    return elementService.createElement(user, domainId, dto, scopeIds, createUseCase);
   }
 
   @Operation(summary = "Associates an existing incident with a domain")

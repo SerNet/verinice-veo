@@ -25,7 +25,6 @@ import java.util.Map;
 
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.state.ScenarioState;
 
@@ -75,7 +74,7 @@ public abstract class AbstractScenarioDto extends CompositeEntityDto<Scenario>
   }
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<Scenario> getModelInterface() {
     return Scenario.class;
   }
 

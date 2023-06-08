@@ -20,7 +20,6 @@ package org.veo.adapter.presenter.api.dto;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.state.ProcessDomainAssociationState;
 import org.veo.core.entity.state.ProcessState;
@@ -66,7 +65,7 @@ public abstract class AbstractProcessInDomainDto
   }
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<Process> getModelInterface() {
     return Process.class;
   }
 

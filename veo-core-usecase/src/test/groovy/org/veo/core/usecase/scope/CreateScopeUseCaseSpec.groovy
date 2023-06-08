@@ -21,50 +21,61 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.Scope
 import org.veo.core.entity.Unit
 import org.veo.core.entity.specification.ClientBoundaryViolationException
+import org.veo.core.entity.state.ElementState
+import org.veo.core.entity.transform.IdentifiableFactory
 import org.veo.core.repository.ScopeRepository
+import org.veo.core.service.EventPublisher
 import org.veo.core.usecase.DesignatorService
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.CreateElementUseCase
 import org.veo.core.usecase.decision.Decider
+import org.veo.core.usecase.service.EntityStateMapper
+import org.veo.core.usecase.service.TypedId
 
 class CreateScopeUseCaseSpec extends UseCaseSpec {
 
-    ScopeRepository scopeRepository = Mock()
     DesignatorService designatorService = Mock()
-    Scope scope = Mock()
-    Decider decider = Mock()
+    EventPublisher eventPublisher = Mock()
+    IdentifiableFactory identifiableFactory = Mock()
+    EntityStateMapper entityStateMapper = Mock()
+    ScopeRepository scopeRepository = Mock()
 
-    CreateScopeUseCase usecase = new CreateScopeUseCase(unitRepository, scopeRepository, designatorService, decider)
-    Unit unit = Mock()
+    Decider decider = Mock()
+    ElementState scopeState = Mock()
+    Scope scope = Mock()
+
+    CreateElementUseCase usecase = new CreateElementUseCase(repositoryProvider, designatorService, eventPublisher, identifiableFactory, entityStateMapper, decider)
 
     def setup() {
-        scope.name >> "My scope"
-        scope.owner >> unit
-        scope.customAspects >> []
-        scope.links >> []
-        scope.domains >> []
-        scope.domainTemplates >> []
+        scopeState.name >> "My scope"
+        scopeState.modelInterface >> Scope
+        scopeState.owner >> TypedId.from(existingUnit.idAsString, Unit)
 
-        unit.domains >> []
+        repositoryProvider.getElementRepositoryFor(Scope) >> scopeRepository
 
-        unitRepository.findById(_) >> Optional.of(existingUnit)
         scopeRepository.findByIds([] as Set) >> []
     }
 
     def "create a scope"() {
         when:
-        def output = usecase.execute(new CreateElementUseCase.InputData( scope, existingClient, [] as Set))
+        def output = usecase.execute(new CreateElementUseCase.InputData( scopeState, existingClient, [] as Set))
 
         then:
-        1 * scopeRepository.save(_) >> { it[0] }
+        1 * identifiableFactory.create(Scope, _) >> scope
+        1 * entityStateMapper.mapState(scopeState, scope, false, _)
         1 * designatorService.assignDesignator(scope, existingClient)
+        1 * scopeRepository.save(_) >> { it[0] }
+        1 * scope.getOwner() >> existingUnit
+        3 * scope.getDomains() >> []
+        2 * scope.getCustomAspects() >> []
+        2 * scope.getLinks() >> []
+        1 * scope.getDomainTemplates() >> []
 
         when:
         def scope1 = output.entity
 
         then:
-        scope1 != null
-        scope1.name == "My scope"
+        scope1 == scope
     }
 
     def "validates super scope client"() {
@@ -77,9 +88,15 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         scopeRepository.findByIds([superScope.id] as Set) >> [superScope]
 
         when: "creating the new process inside the scope"
-        usecase.execute(new CreateElementUseCase.InputData(scope, existingClient, [superScope.id] as Set))
+        usecase.execute(new CreateElementUseCase.InputData(scopeState, existingClient, [superScope.id] as Set))
 
         then: "an exception is thrown"
+        1 * identifiableFactory.create(Scope, _) >> scope
+        1 * scope.getOwner() >> existingUnit
+        2 * scope.getDomains() >> []
+        2 * scope.getCustomAspects() >> []
+        2 * scope.getLinks() >> []
+        1 * scope.getDomainTemplates() >> []
         thrown(ClientBoundaryViolationException)
     }
 }

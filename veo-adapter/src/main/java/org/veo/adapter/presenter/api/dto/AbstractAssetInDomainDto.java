@@ -18,7 +18,6 @@
 package org.veo.adapter.presenter.api.dto;
 
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.Identifiable;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -59,7 +58,7 @@ public abstract class AbstractAssetInDomainDto extends AbstractCompositeElementI
   }
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<Asset> getModelInterface() {
     return Asset.class;
   }
 }

@@ -20,7 +20,6 @@ package org.veo.adapter.presenter.api.dto;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.state.ScenarioDomainAssociationState;
 import org.veo.core.entity.state.ScenarioState;
@@ -66,7 +65,7 @@ public abstract class AbstractScenarioInDomainDto
   }
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<Scenario> getModelInterface() {
     return Scenario.class;
   }
 

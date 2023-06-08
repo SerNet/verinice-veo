@@ -25,7 +25,6 @@ import java.util.Map;
 
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.state.CompositeElementState;
 
@@ -76,7 +75,7 @@ public abstract class AbstractPersonDto extends CompositeEntityDto<Person>
   }
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<Person> getModelInterface() {
     return Person.class;
   }
 

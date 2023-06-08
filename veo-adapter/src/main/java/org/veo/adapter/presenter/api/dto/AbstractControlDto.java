@@ -26,7 +26,6 @@ import java.util.Map;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.state.ControlState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -75,7 +74,7 @@ public abstract class AbstractControlDto extends CompositeEntityDto<Control>
   }
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<Control> getModelInterface() {
     return Control.class;
   }
 

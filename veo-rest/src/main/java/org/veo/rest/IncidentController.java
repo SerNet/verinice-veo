@@ -56,7 +56,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-import java.util.function.Supplier;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -97,11 +96,9 @@ import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
-import org.veo.core.usecase.incident.CreateIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentUseCase;
 import org.veo.core.usecase.incident.GetIncidentsUseCase;
 import org.veo.core.usecase.incident.UpdateIncidentUseCase;
-import org.veo.core.usecase.service.IdRefResolver;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;
@@ -126,7 +123,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
   public IncidentController(
       GetIncidentUseCase getIncidentUseCase,
       GetIncidentsUseCase getIncidentsUseCase,
-      CreateIncidentUseCase createIncidentUseCase,
+      CreateElementUseCase<Incident> createIncidentUseCase,
       UpdateIncidentUseCase updateIncidentUseCase,
       DeleteElementUseCase deleteElementUseCase,
       EvaluateElementUseCase evaluateElementUseCase,
@@ -140,7 +137,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
 
   public static final String URL_BASE_PATH = "/" + Incident.PLURAL_TERM;
 
-  private final CreateIncidentUseCase createIncidentUseCase;
+  private final CreateElementUseCase<Incident> createIncidentUseCase;
   private final UpdateIncidentUseCase updateIncidentUseCase;
   private final GetIncidentsUseCase getIncidentsUseCase;
   private final DeleteElementUseCase deleteElementUseCase;
@@ -264,15 +261,7 @@ public class IncidentController extends AbstractElementController<Incident, Full
           List<String> scopeIds) {
     return useCaseInteractor.execute(
         createIncidentUseCase,
-        (Supplier<CreateElementUseCase.InputData<Incident>>)
-            () -> {
-              Client client = getClient(user);
-              IdRefResolver idRefResolver = createIdRefResolver(client);
-              return CreateElementInputMapper.map(
-                  dtoToEntityTransformer.transformDto2Element(dto, idRefResolver),
-                  client,
-                  scopeIds);
-            },
+        CreateElementInputMapper.map(dto, getClient(user), scopeIds),
         output -> {
           ApiResponseBody body = CreateOutputMapper.map(output.getEntity());
           return RestApiResponse.created(URL_BASE_PATH, body);

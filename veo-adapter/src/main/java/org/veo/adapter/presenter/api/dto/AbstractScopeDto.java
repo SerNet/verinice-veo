@@ -28,7 +28,6 @@ import jakarta.validation.Valid;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.state.ScopeState;
 
@@ -47,7 +46,7 @@ public abstract class AbstractScopeDto extends AbstractElementDto<Scope> impleme
   private Set<IdRef<Element>> members = Collections.emptySet();
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<Scope> getModelInterface() {
     return Scope.class;
   }
 

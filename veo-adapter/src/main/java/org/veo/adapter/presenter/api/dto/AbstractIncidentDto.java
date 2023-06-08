@@ -25,7 +25,6 @@ import java.util.Map;
 
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.state.CompositeElementState;
 
@@ -73,7 +72,7 @@ public abstract class AbstractIncidentDto extends CompositeEntityDto<Incident>
   }
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<Incident> getModelInterface() {
     return Incident.class;
   }
 

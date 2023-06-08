@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.veo.core.entity.Control;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.state.ControlDomainAssociationState;
 import org.veo.core.entity.state.ControlState;
 
@@ -66,7 +65,7 @@ public abstract class AbstractControlInDomainDto
   }
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
+  public Class<Control> getModelInterface() {
     return Control.class;
   }
 

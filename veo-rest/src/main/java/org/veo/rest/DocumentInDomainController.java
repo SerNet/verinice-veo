@@ -79,9 +79,9 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
+import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.UpdateDocumentInDomainUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
-import org.veo.core.usecase.document.CreateDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentsUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
@@ -109,7 +109,7 @@ public class DocumentInDomainController {
   private final ClientLookup clientLookup;
   private final GetDocumentUseCase getDocumentUseCase;
   private final GetDocumentsUseCase getDocumentsUseCase;
-  private final CreateDocumentUseCase createUseCase;
+  private final CreateElementUseCase<Document> createUseCase;
   private final UpdateDocumentInDomainUseCase updateUseCase;
   private final ElementInDomainService elementService;
   private final DtoToEntityTransformer dtoToEntityTransformer;
@@ -294,8 +294,7 @@ public class DocumentInDomainController {
       @Parameter(description = SCOPE_IDS_DESCRIPTION)
           @RequestParam(name = SCOPE_IDS_PARAM, required = false)
           List<String> scopeIds) {
-    return elementService.createElement(
-        user, domainId, dto, scopeIds, createUseCase, dtoToEntityTransformer::transformDto2Element);
+    return elementService.createElement(user, domainId, dto, scopeIds, createUseCase);
   }
 
   @Operation(summary = "Associates an existing document with a domain")
