@@ -18,6 +18,7 @@
 package org.veo.rest;
 
 import static org.veo.adapter.presenter.api.io.mapper.VersionMapper.parseVersion;
+import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 
@@ -43,6 +44,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletWebRequest;
 
@@ -72,6 +74,7 @@ import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.usecase.UseCase.IdAndClient;
+import org.veo.core.usecase.domain.CreateCatalogFromUnitUseCase;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domain.DeleteDecisionUseCase;
 import org.veo.core.usecase.domain.DeleteDomainUseCase;
@@ -108,6 +111,7 @@ public class ContentCreationController extends AbstractVeoController {
   private final DeleteDecisionUseCase deleteDecisionUseCase;
   private final DeleteRiskDefinitionUseCase deleteRiskDefinitionUseCase;
   private final CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase;
+  private final CreateCatalogFromUnitUseCase createCatalogForDomainUseCase;
   private final DeleteDomainUseCase deleteDomainUseCase;
   public static final String URL_BASE_PATH = "/content-creation";
 
@@ -305,6 +309,29 @@ public class ContentCreationController extends AbstractVeoController {
         deleteRiskDefinitionUseCase,
         new DeleteRiskDefinitionUseCase.InputData(
             Key.uuidFrom(user.getClientId()), Key.uuidFrom(domainId), riskDefinitionKey),
+        out -> RestApiResponse.noContent());
+  }
+
+  @PutMapping("/domains/{domainId}/catalog-items")
+  @Operation(summary = "Creates a new catalog from a unit for a domain")
+  @ApiResponse(responseCode = "204", description = "Catalog items created")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "404", description = "Unit not found")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> createCatalogForDomain(
+      Authentication auth,
+      @Pattern(
+              regexp = Patterns.UUID,
+              message = "ID must be a valid UUID string following RFC 4122.")
+          @PathVariable
+          String domainId,
+      @Parameter(description = "The id of the unit containing the catalog elements.")
+          @RequestParam(name = UNIT_PARAM)
+          String unitId) {
+    Client client = getAuthenticatedClient(auth);
+    return useCaseInteractor.execute(
+        createCatalogForDomainUseCase,
+        new CreateCatalogFromUnitUseCase.InputData(
+            Key.uuidFrom(domainId), client, Key.uuidFrom(unitId)),
         out -> RestApiResponse.noContent());
   }
 

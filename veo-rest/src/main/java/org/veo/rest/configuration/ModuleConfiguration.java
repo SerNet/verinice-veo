@@ -116,6 +116,7 @@ import org.veo.core.usecase.document.GetDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentsUseCase;
 import org.veo.core.usecase.document.UpdateDocumentUseCase;
 import org.veo.core.usecase.domain.ApplyProfileUseCase;
+import org.veo.core.usecase.domain.CreateCatalogFromUnitUseCase;
 import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domain.DeleteDecisionUseCase;
@@ -496,6 +497,16 @@ public class ModuleConfiguration {
   public DeleteRiskUseCase deleteRiskUseCase(
       RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {
     return new DeleteRiskUseCase(repositoryProvider, eventPublisher);
+  }
+
+  @Bean
+  public CreateCatalogFromUnitUseCase createCatalogForDomainUseCase(
+      GenericElementRepository genericElementRepository,
+      UnitRepository unitRepository,
+      DomainRepository domainRepository,
+      EntityFactory factory) {
+    return new CreateCatalogFromUnitUseCase(
+        genericElementRepository, unitRepository, domainRepository, factory);
   }
 
   @Bean

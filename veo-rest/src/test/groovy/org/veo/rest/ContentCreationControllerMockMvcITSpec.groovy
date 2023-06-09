@@ -26,6 +26,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.exception.EntityAlreadyExistsException
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.exception.UnprocessableDataException
@@ -400,6 +401,76 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:
         notThrown(Exception)
+    }
+
+    @WithUserDetails("content-creator")
+    def "create catalog items in a domain from a unit"() {
+        given: "a domain and a unit with elements"
+        Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
+        def domainId = domain.idAsString
+        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId)
+
+        post("/domains/${domainId}/processes/${processId}/links", [
+            process_requiredApplications: [
+                [
+                    target: [targetInDomainUri: "/domains/$domainId/assets/${assetId}"]
+                ]
+            ]
+        ], 204)
+
+        when: "we create new catalog items from the unit"
+        put("/content-creation/domains/${domainId}/catalog-items?unit=${unitId}",
+                [:], 204)
+
+        def catalogItems = txTemplate.execute {
+            domainDataRepository.findById(domainId).get().catalogItems.each {
+                it.tailoringReferences.size()
+            }
+        }
+
+        then:
+        catalogItems.size() == 8
+        with(catalogItems.sort{it.name}[0]) {
+            name == "asset"
+            elementType == "asset"
+            status == "NEW"
+            subType == "AST_Application"
+            abbreviation == null
+            namespace == subType+ "."+abbreviation
+            tailoringReferences.size() == 1
+            tailoringReferences[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
+            tailoringReferences[0].linkType == "process_requiredApplications"
+        }
+
+        when: "we incarnate all catatlog items"
+        def catalogItemsIds = catalogItems.collect{it.getIdAsString()}.join(',')
+        unitId = parseJson(post("/units", [
+            name   : "you knit 2",
+            domains: [
+                [targetUri: "http://localhost/domains/$domainId"]
+            ]
+        ])).resourceId
+        def incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${catalogItemsIds}"))
+        def elementList = parseJson(post("/units/${unitId}/incarnations", incarnationDescription))
+
+        assetId = elementList.find {it.targetUri.contains('assets')}.targetUri.split('/' ).last()
+        def asset = txTemplate.execute {
+            assetDataRepository.findById(assetId).get()
+        }
+
+        then: "the item is applied"
+        asset.appliedCatalogItems.size() == 1
+
+        when: "we create new catalog items from the unit"
+        put("/content-creation/domains/${domainId}/catalog-items?unit=${unitId}",
+                [:], 204)
+
+        asset = txTemplate.execute {
+            assetDataRepository.findById(assetId).get()
+        }
+
+        then: "the applied item is gone"
+        asset.appliedCatalogItems.size() == 0
     }
 
     @WithUserDetails("content-creator")

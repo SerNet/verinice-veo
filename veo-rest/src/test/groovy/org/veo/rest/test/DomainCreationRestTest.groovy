@@ -22,7 +22,7 @@ import static org.veo.rest.test.UserType.ADMIN
 import static org.veo.rest.test.UserType.CONTENT_CREATOR
 import static org.veo.rest.test.UserType.SECONDARY_CLIENT_USER
 
-class DomainCreationRestTest extends VeoRestTest {
+class DomainCreationRestTest extends DomainRestTest {
     String unitId
 
     def setup() {
@@ -429,55 +429,5 @@ class DomainCreationRestTest extends VeoRestTest {
 
         then:
         get("/domains/${domainId}", 404)
-    }
-
-    def postAssetObjectSchema(String domainId) {
-        post("/content-creation/domains/$domainId/element-type-definitions/asset/object-schema",
-                [
-                    properties: [
-                        domains: [
-                            properties: [
-                                (domainId): [
-                                    properties: [
-                                        subType: [
-                                            enum: ["server"],
-                                        ]
-                                    ],
-                                    allOf: [
-                                        [
-                                            "if": [
-                                                properties: [
-                                                    subType: [
-                                                        const: "server"
-                                                    ]
-                                                ]
-                                            ],
-                                            then: [
-                                                properties: [
-                                                    status: [
-                                                        enum: ["off", "on"]
-                                                    ]
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        customAspects: [
-                            properties: [:]
-                        ],
-                        links: [
-                            properties: [:]
-                        ],
-                        translations: [
-                            en: [
-                                asset_server_status_off: "off",
-                                asset_server_status_on: "on"
-                            ]
-                        ]
-                    ]
-                ],
-                204, CONTENT_CREATOR)
     }
 }

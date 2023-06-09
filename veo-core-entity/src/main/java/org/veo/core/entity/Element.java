@@ -145,6 +145,7 @@ public interface Element
 
   void setAppliedCatalogItems(Set<CatalogItem> aCatalogitems);
 
+  /** Applies the properties of the catalogItem to the element. */
   void apply(CatalogItem catalogItem);
 
   Unit getOwner();
@@ -213,4 +214,7 @@ public interface Element
   void addLink(CustomLink customLink);
 
   void setStatus(String status, Domain domain);
+
+  /** Applies the properties of the element to the catalogItem. */
+  CatalogItem toCalalogItem(Domain domain);
 }

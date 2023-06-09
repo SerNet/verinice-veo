@@ -17,17 +17,19 @@
  ******************************************************************************/
 package org.veo.rest.test
 
+import static java.util.UUID.randomUUID
 import static org.veo.rest.test.UserType.CONTENT_CREATOR
 
 import org.apache.http.HttpStatus
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl
+import org.veo.core.entity.Process
 
 import groovy.util.logging.Slf4j
 
 @Slf4j
-class DomainRestTestITSpec extends VeoRestTest {
+class DomainRestTestITSpec extends DomainRestTest {
 
     def "export the test domain"() {
         when: "the domain is retrieved"
@@ -240,6 +242,83 @@ class DomainRestTestITSpec extends VeoRestTest {
         }
         with(result.control) {
             CTL_TOM == 8
+        }
+    }
+
+    def "create a new catalog from a unit for a new domain"() {
+        given: "a new domain"
+        def domainName = "catalogitem creation test ${randomUUID()}"
+        def domainId = post("/content-creation/domains", [
+            name: domainName,
+            abbreviation: "dct",
+            description: "best one ever",
+            authority: "ME",
+        ], 201, CONTENT_CREATOR).body.resourceId
+
+        postPersonObjectSchema(domainId)
+        postProcessObjectSchema(domainId)
+        postAssetObjectSchema(domainId)
+
+        when: "we create a unit with elements"
+        def catalogSourceUnitId = postNewUnit().resourceId
+        post("/domains/$domainId/persons", [
+            name   : "example person 1",
+            subType: "PER_Person",
+            status: "NEW",
+            owner: [targetUri: "$baseUrl/units/$catalogSourceUnitId"],
+        ])
+
+        post("/domains/$domainId/persons", [
+            name: "example person 2",
+            subType: "PER_Person",
+            status: "NEW",
+            owner: [targetUri: "$baseUrl/units/$catalogSourceUnitId"],
+        ])
+
+        post("/domains/$domainId/assets", [
+            name: "example asset",
+            subType: "server",
+            status: "off",
+            owner: [targetUri: "$baseUrl/units/$catalogSourceUnitId"],
+        ])
+
+        post("/domains/$domainId/processes", [
+            name: "example process",
+            subType: "PRO_Process",
+            status: "NEW",
+            owner: [targetUri: "$baseUrl/units/$catalogSourceUnitId"]
+        ])
+
+        and: "create new catatlog items from the unit"
+        put("/content-creation/domains/${domainId}/catalog-items?unit=$catalogSourceUnitId",
+                [:], null, 204, CONTENT_CREATOR)
+        def catalogItems = get("/catalogs/${domainId}/items").body
+
+        then:
+        catalogItems.size() == 4
+
+        when: "we incarnet all items"
+        def unitId = postNewUnit().resourceId
+
+        def catalogItemsIds = catalogItems.collect{it.id}.join(',')
+        def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${catalogItemsIds}").body
+
+        post("/units/${unitId}/incarnations", incarnationDescription)
+
+        and: "create new catatlog items from the unit"
+        put("/content-creation/domains/${domainId}/catalog-items?unit=$unitId",
+                [:], null, 204, CONTENT_CREATOR)
+
+        and:
+        catalogItems = get("/catalogs/${domainId}/items").body
+
+        then:
+        catalogItems != null
+        with(catalogItems.sort{ it.name }) {
+            size() == 4
+            with(it.first()) {
+                name == 'example asset'
+            }
         }
     }
 }

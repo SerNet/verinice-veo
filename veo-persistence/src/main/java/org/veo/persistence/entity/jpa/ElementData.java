@@ -57,6 +57,7 @@ import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.exception.EntityAlreadyExistsException;
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -311,6 +312,23 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
         // TODO VEO-2086 implement and use CustomLink::apply(CustomLink)
         .map(oldLink -> oldLink.setAttributes(newLink.getAttributes()))
         .orElseGet(() -> addToLinks(newLink));
+  }
+
+  @Override
+  public CatalogItem toCalalogItem(Domain domain) {
+    CatalogItem item = new EntityDataFactory().createCatalogItem(domain);
+    item.setName(getName());
+    item.setAbbreviation(getAbbreviation());
+    item.setDescription(getDescription());
+    item.setElementType(getModelType());
+    item.setStatus(getStatus(domain));
+    item.setSubType(getSubType(domain));
+    item.setNamespace(getSubType(domain) + "." + getAbbreviation());
+    item.setCustomAspects(
+        getCustomAspects(domain).stream()
+            .collect(Collectors.toMap(ca -> ca.getType(), ca -> ca.getAttributes())));
+
+    return item;
   }
 
   /**
