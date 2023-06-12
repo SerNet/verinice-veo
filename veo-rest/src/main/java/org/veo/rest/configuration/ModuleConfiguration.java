@@ -1081,14 +1081,16 @@ public class ModuleConfiguration {
 
   @Bean
   UpdateProcessInDomainUseCase updateProcessInDomainUseCase(
-      RepositoryProvider repositoryProvider, Decider decider) {
-    return new UpdateProcessInDomainUseCase(repositoryProvider, decider, getEntityStateMapper());
+      RepositoryProvider repositoryProvider, Decider decider, EventPublisher eventPublisher) {
+    return new UpdateProcessInDomainUseCase(
+        repositoryProvider, decider, getEntityStateMapper(), eventPublisher);
   }
 
   @Bean
   UpdateScenarioInDomainUseCase updateScenarioInDomainUseCase(
-      RepositoryProvider repositoryProvider, Decider decider) {
-    return new UpdateScenarioInDomainUseCase(repositoryProvider, decider, getEntityStateMapper());
+      RepositoryProvider repositoryProvider, Decider decider, EventPublisher eventPublisher) {
+    return new UpdateScenarioInDomainUseCase(
+        repositoryProvider, decider, getEntityStateMapper(), eventPublisher);
   }
 
   @Bean

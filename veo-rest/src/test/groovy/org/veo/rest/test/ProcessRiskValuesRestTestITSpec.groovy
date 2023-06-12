@@ -205,6 +205,28 @@ class ProcessRiskValuesRestTestITSpec extends VeoRestTest{
         updatedRiskA.residualRiskExplanation == PROBLEM
         updatedRiskA.riskTreatments ==~ ["RISK_TREATMENT_REDUCTION"]
         updatedRiskA.residualRisk == 1
+
+        when: "updating scenario risk values"
+        get("/domains/$domainId/scenarios/$scenarioId").with{
+            body.riskValues.DSRA.potentialProbability = 3
+            put(body._self, body, getETag())
+        }
+
+        then: "the risk has been updated"
+        with(get("/processes/$processId/risks/$scenarioId").body.domains[domainId].riskDefinitions.DSRA) {
+            it.probability.potentialProbability == 3
+        }
+
+        when: "updating process risk values"
+        get("/domains/$domainId/processes/$processId").with{
+            body.riskValues.DSRA.potentialImpacts.C = 2
+            put(body._self, body, getETag())
+        }
+
+        then: "the risk has been updated"
+        with(get("/processes/$processId/risks/$scenarioId").body.domains[domainId].riskDefinitions.DSRA) {
+            it.impactValues.find {it.category == "C"}.potentialImpact == 2
+        }
     }
 
     def "create and update process risk values with mitigations"() {

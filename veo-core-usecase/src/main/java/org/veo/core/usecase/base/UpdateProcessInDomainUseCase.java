@@ -18,17 +18,32 @@
 package org.veo.core.usecase.base;
 
 import org.veo.core.entity.Process;
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.service.EntityStateMapper;
 
 public class UpdateProcessInDomainUseCase extends UpdateElementInDomainUseCase<Process> {
+  private final EventPublisher eventPublisher;
+
   public UpdateProcessInDomainUseCase(
-      RepositoryProvider repositoryProvider, Decider decider, EntityStateMapper entityStateMapper) {
+      RepositoryProvider repositoryProvider,
+      Decider decider,
+      EntityStateMapper entityStateMapper,
+      EventPublisher eventPublisher) {
     super(
         repositoryProvider.getElementRepositoryFor(Process.class),
         repositoryProvider,
         decider,
         entityStateMapper);
+    this.eventPublisher = eventPublisher;
+  }
+
+  @Override
+  public OutputData<Process> execute(InputData<Process> input) {
+    var result = super.execute(input);
+    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
+    return result;
   }
 }
