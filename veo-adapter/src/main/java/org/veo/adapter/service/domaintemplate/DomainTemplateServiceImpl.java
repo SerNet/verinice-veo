@@ -17,54 +17,34 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate;
 
-import static java.util.function.Function.identity;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.veo.adapter.IdRefResolvingFactory;
-import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
-import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
-import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
-import org.veo.adapter.presenter.api.dto.CustomLinkDto;
-import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTransformer;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.service.InternalDataCorruptionException;
-import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
-import org.veo.adapter.service.domaintemplate.dto.TransformCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.core.ExportDto;
 import org.veo.core.entity.Catalog;
-import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.entity.exception.NotFoundException;
@@ -83,7 +63,6 @@ import lombok.extern.slf4j.Slf4j;
 public class DomainTemplateServiceImpl implements DomainTemplateService {
 
   private final DomainTemplateRepository domainTemplateRepository;
-  private final DtoToEntityTransformer entityTransformer;
   private final EntityToDtoTransformer dtoTransformer;
   private final EntityFactory factory;
   private final CatalogItemPrepareStrategy preparations;
@@ -112,7 +91,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     this.identifiableFactory = identifiableFactory;
     this.entityFactory = factory;
     this.entityStateMapper = entityStateMapper;
-    entityTransformer = new DtoToEntityTransformer(factory, identifiableFactory, entityStateMapper);
     assembler = referenceAssembler;
     dtoTransformer = new EntityToDtoTransformer(assembler, domainAssociationTransformer);
     this.objectMapper = objectMapper;
@@ -215,23 +193,23 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
   @Override
   public DomainTemplate createDomainTemplateFromDomain(Domain domain) {
-    TransformDomainTemplateDto domainTemplateDto =
-        dtoTransformer.transformDomainTemplate2Dto(domain);
+    TransformDomainTemplateDto domainDto = dtoTransformer.transformDomainTemplate2Dto(domain);
 
     String domainTemplateId = createDomainTemplateId(domain);
     Key<UUID> domainTemplateKey = Key.uuidFrom(domainTemplateId);
     if (domainTemplateRepository.exists(domainTemplateKey)) {
       throw new ModelConsistencyException("The UUID %s is already used.", domainTemplateId);
     }
-    DomainTemplate newDomainTemplate =
-        factory.createDomainTemplate(
-            domainTemplateDto.getName(),
-            domainTemplateDto.getAuthority(),
-            domainTemplateDto.getTemplateVersion(),
-            domainTemplateKey);
-
-    processDomainTemplate(domainTemplateDto, newDomainTemplate);
-    CatalogItemPrepareStrategy.updateVersion(newDomainTemplate);
+    var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
+    resolvingFactory.setGlobalDomainTemplateId(domainTemplateId);
+    var transformer =
+        new DtoToEntityTransformer(entityFactory, resolvingFactory, entityStateMapper);
+    var newDomainTemplate =
+        transformer.transformTransformDomainTemplateDto2DomainTemplate(domainDto, resolvingFactory);
+    newDomainTemplate.setId(domainTemplateKey);
+    newDomainTemplate.getCatalogs().stream()
+        .flatMap((Catalog catalog) -> catalog.getCatalogItems().stream())
+        .forEach(preparations::prepareCatalogItem);
     log.info("Create and save domain template {} from domain {}", newDomainTemplate, domain);
     return domainTemplateRepository.save(newDomainTemplate);
   }
@@ -244,250 +222,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   private String createDomainTemplateId(Domain domain) {
     return domainTemplateIdGenerator.createDomainTemplateId(
         domain.getName(), domain.getTemplateVersion());
-  }
-
-  /** Transform the given domainTemplateDto to a new domain. */
-  private DomainBase processDomainTemplate(
-      TransformDomainTemplateDto domainTemplateDto, DomainTemplate newDomain) {
-    newDomain.setDescription(domainTemplateDto.getDescription());
-    newDomain.setAbbreviation(domainTemplateDto.getAbbreviation());
-    domainTemplateDto.getElementTypeDefinitions().entrySet().stream()
-        .map(
-            entry ->
-                entityTransformer.mapElementTypeDefinition(
-                    entry.getKey(), entry.getValue(), newDomain))
-        .forEach(newDomain::applyElementTypeDefinition);
-    newDomain.setRiskDefinitions(Map.copyOf(domainTemplateDto.getRiskDefinitions()));
-
-    PlaceholderResolver ref = new PlaceholderResolver(entityTransformer);
-
-    ref.cache.put(domainTemplateDto.getId(), newDomain);
-
-    domainTemplateDto.getCatalogs().stream()
-        .forEach(
-            c -> {
-              Catalog createCatalog = factory.createCatalog(newDomain);
-              createCatalog.setName(c.getName());
-              createCatalog.setAbbreviation(c.getAbbreviation());
-              createCatalog.setDescription(c.getDescription());
-              CatalogItemPrepareStrategy.updateVersion(createCatalog);
-              ref.cache.put(((IdentifiableDto) c).getId(), createCatalog);
-              c.setDomainTemplate(IdRef.from(newDomain, assembler));
-            });
-
-    Map<String, Element> elementCache =
-        createElementCacheFromDomainTemplateDto(domainTemplateDto, ref);
-    Map<String, CatalogItem> itemCache =
-        createCatalogItemCache(domainTemplateDto, ref, elementCache);
-
-    domainTemplateDto.getCatalogs().stream()
-        .map(TransformCatalogDto.class::cast)
-        .forEach(
-            c ->
-                c.getCatalogItems()
-                    .forEach(
-                        i ->
-                            entityTransformer.transformDto2CatalogItem(
-                                i, ref, (Catalog) ref.cache.get(c.getId()))));
-
-    initCatalog(newDomain, itemCache);
-    return newDomain;
-  }
-
-  private void initCatalog(DomainBase newDomain, Map<String, CatalogItem> itemCache) {
-    newDomain
-        .getCatalogs()
-        .forEach(
-            catalog -> {
-              catalog.setId(null);
-              catalog.setDomainTemplate(newDomain);
-              Set<CatalogItem> catalogItems =
-                  catalog.getCatalogItems().stream()
-                      .map(ci -> itemCache.get(ci.getIdAsString()))
-                      .collect(Collectors.toSet());
-              catalog.getCatalogItems().clear();
-              catalog.getCatalogItems().addAll(catalogItems);
-              catalog
-                  .getCatalogItems()
-                  .forEach(item -> preparations.prepareCatalogItem(newDomain, catalog, item));
-            });
-  }
-
-  private Map<String, CatalogItem> createCatalogItemCache(
-      TransformDomainTemplateDto domainTemplateDto,
-      PlaceholderResolver ref,
-      Map<String, Element> elementCache) {
-    domainTemplateDto.getCatalogs().stream()
-        .map(TransformCatalogDto.class::cast)
-        .flatMap(c -> c.getCatalogItems().stream())
-        .map(TransformCatalogItemDto.class::cast)
-        .map(ci -> transformCatalogItem(ci, elementCache, ref))
-        .forEach(c -> ref.cache.put(c.getIdAsString(), c));
-
-    Map<String, CatalogItem> itemCache =
-        ref.cache.entrySet().stream()
-            .filter(e -> (e.getValue() instanceof CatalogItem))
-            .collect(Collectors.toMap(Entry::getKey, e -> (CatalogItem) e.getValue()));
-
-    domainTemplateDto.getCatalogs().stream()
-        .map(TransformCatalogDto.class::cast)
-        .flatMap(c -> c.getCatalogItems().stream())
-        .map(TransformCatalogItemDto.class::cast)
-        .forEach(ci -> transformTailorRef(ci, itemCache, ref));
-    return itemCache;
-  }
-
-  private Map<String, Element> createElementCacheFromDomainTemplateDto(
-      TransformDomainTemplateDto domainTemplateDto, PlaceholderResolver ref) {
-    return createElementCache(
-        ref,
-        domainTemplateDto.getCatalogs().stream()
-            .map(TransformCatalogDto.class::cast)
-            .flatMap(c -> c.getCatalogItems().stream())
-            .map(TransformCatalogItemDto.class::cast)
-            .map(TransformCatalogItemDto::getElement)
-            .map(this::removeOwner)
-            .map(IdentifiableDto.class::cast)
-            .collect(Collectors.toMap(IdentifiableDto::getId, identity())));
-  }
-
-  /** Fills the ref.cache and dtoCache with the elements and fix links. */
-  private Map<String, Element> createElementCache(
-      PlaceholderResolver ref, Map<String, IdentifiableDto> elementDtos) {
-    ref.dtoCache = elementDtos;
-
-    Map<AbstractElementDto, Map<String, List<CustomLinkDto>>> linkCache = new HashMap<>();
-    Map<AbstractScopeDto, Set<IdRef<Element>>> memberCache = new HashMap<>();
-
-    Predicate<IdentifiableDto> isScope = AbstractScopeDto.class::isInstance;
-
-    // all not scopes
-    elementDtos.values().stream()
-        .filter(Predicate.not(isScope))
-        .map(AbstractElementDto.class::cast)
-        .map(
-            e -> {
-              linkCache.put(e, Map.copyOf(e.getLinks()));
-              e.getLinks().clear();
-              return e;
-            })
-        .map(e -> entityTransformer.transformDto2Element(e, ref))
-        .forEach(c -> ref.cache.put(c.getIdAsString(), c));
-
-    // all scopes
-    elementDtos.values().stream()
-        .filter(isScope)
-        .map(AbstractScopeDto.class::cast)
-        .map(
-            e -> {
-              linkCache.put(e, Map.copyOf(e.getLinks()));
-              e.getLinks().clear();
-              return e;
-            })
-        .map(
-            e -> {
-              memberCache.put(e, Set.copyOf(e.getMembers()));
-              e.getMembers().clear();
-              return e;
-            })
-        .map(e -> entityTransformer.transformDto2Element(e, ref))
-        .forEach(c -> ref.cache.put(c.getIdAsString(), c));
-
-    linkCache.entrySet().forEach(e -> e.getKey().setLinks(e.getValue()));
-    memberCache.entrySet().forEach(e -> (e.getKey()).setMembers(e.getValue()));
-
-    elementDtos.values().stream()
-        .map(AbstractElementDto.class::cast)
-        .map(e -> entityTransformer.transformDto2Element(e, ref))
-        .forEach(c -> ref.cache.put(c.getIdAsString(), c));
-
-    Map<String, Element> elementCache =
-        ref.cache.entrySet().stream()
-            .filter(e -> e.getValue() instanceof Element && elementDtos.containsKey(e.getKey()))
-            .collect(Collectors.toMap(Entry::getKey, e -> (Element) e.getValue()));
-
-    ref.cache.entrySet().stream()
-        .filter(e -> (e.getValue() instanceof Element && elementDtos.containsKey(e.getKey())))
-        .map(e -> (Element) e.getValue())
-        .forEach(
-            es -> {
-              es.getLinks()
-                  .forEach(
-                      link -> {
-                        if (link.getTarget().getId() != null) {
-                          Element element = elementCache.get(link.getTarget().getIdAsString());
-                          link.setTarget(element);
-                        }
-                      });
-              if (es instanceof CompositeElement) {
-                CompositeElement<CompositeElement> ce = (CompositeElement<CompositeElement>) es;
-                Set<String> partIds =
-                    ce.getParts().stream()
-                        .map(Identifiable::getIdAsString)
-                        .collect(Collectors.toSet());
-                Set<CompositeElement> resolvedParts =
-                    elementCache.entrySet().stream()
-                        .filter(e -> partIds.contains(e.getKey()))
-                        .map(Entry::getValue)
-                        .map(CompositeElement.class::cast)
-                        .collect(Collectors.toSet());
-                ce.setParts(resolvedParts);
-              }
-              if (es instanceof Scope se) {
-                Set<String> memberIds =
-                    se.getMembers().stream()
-                        .map(Identifiable::getIdAsString)
-                        .collect(Collectors.toSet());
-                Set<Element> resolvedMembers =
-                    elementCache.entrySet().stream()
-                        .filter(e -> memberIds.contains(e.getKey()))
-                        .map(Entry::getValue)
-                        .collect(Collectors.toSet());
-                se.setMembers(resolvedMembers);
-              }
-            });
-
-    return elementCache;
-  }
-
-  private Object transformTailorRef(
-      TransformCatalogItemDto source,
-      Map<String, CatalogItem> itemCache,
-      PlaceholderResolver idRefResolver) {
-
-    CatalogItem target = itemCache.get(source.getId());
-    target.getTailoringReferences().clear();
-    target.setTailoringReferences(
-        source.getTailoringReferences().stream()
-            .map(tr -> entityTransformer.transformDto2TailoringReference(tr, target, idRefResolver))
-            .collect(Collectors.toSet()));
-
-    return target;
-  }
-
-  private CatalogItem transformCatalogItem(
-      TransformCatalogItemDto source,
-      Map<String, Element> elementCache,
-      PlaceholderResolver idRefResolver) {
-    Set<AbstractTailoringReferenceDto> tailoringReferences =
-        new HashSet<>(source.getTailoringReferences());
-    source.getTailoringReferences().clear();
-    var target =
-        entityTransformer.transformDto2CatalogItem(
-            source, idRefResolver, idRefResolver.resolve(source.getCatalog()));
-    source.getTailoringReferences().addAll(tailoringReferences);
-    String id = ((IdentifiableDto) source.getElement()).getId();
-    Element aElement = elementCache.get(id);
-    target.setElement(aElement);
-    if (target.getElement() != null) {
-      target.getElement().setContainingCatalogItem(target);
-    }
-    return target;
-  }
-
-  private <T extends AbstractElementDto> T removeOwner(T element) {
-    element.setOwner(null);
-    return element;
   }
 
   @Override

@@ -49,8 +49,14 @@ class DomainCreationRestTest extends VeoRestTest {
             domainTemplate == null
         }
 
-        when: "defining an element type in the domain"
+        when: "defining an element type and decision in the domain"
         postAssetObjectSchema(domainId)
+        put("/content-creation/domains/${domainId}/decisions/truthy", [
+            name: [en: "Decision that always outputs true"],
+            elementType: "asset",
+            elementSubType: "server",
+            defaultResultValue: true,
+        ], null, 201, CONTENT_CREATOR)
 
         and: "adding the domain to the unit"
         get("/units/$unitId").with{
@@ -85,6 +91,9 @@ class DomainCreationRestTest extends VeoRestTest {
         then: "its metadata is correct"
         secondaryClientDomain.authority == "JJ"
         secondaryClientDomain.templateVersion == "1.0.0"
+
+        and: "it contains the decision"
+        secondaryClientDomain.decisions.truthy.elementSubType == "server"
 
         and: "an element can be created in the domain"
         def secondaryClientUnitId = post("/units", [

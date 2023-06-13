@@ -17,14 +17,10 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate;
 
-import java.time.Instant;
-
-import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Versioned;
 
 /**
  * Defines the behavior to prepare {@link CatalogItem} or {@link Element} for reuse as
@@ -32,36 +28,10 @@ import org.veo.core.entity.Versioned;
  */
 public class CatalogItemPrepareStrategy {
   private static final String NO_DESIGNATOR = "NO_DESIGNATOR";
-  public static final String SYSTEM_USER = "system";
 
   /** Assigns designator to catalog item. */
   public void prepareCatalogItem(CatalogItem item) {
     item.getElement().setDesignator(NO_DESIGNATOR);
-  }
-
-  public void prepareCatalogItem(DomainBase domain, Catalog catalog, CatalogItem item) {
-    item.setId(null);
-    item.setCatalog(catalog);
-    updateVersion(item);
-    Element element = item.getElement();
-    if (element != null) {
-      prepareElement(domain, element, true);
-    }
-  }
-
-  /**
-   * Clean up and relink a {@link Element}. Add the domain to each sub element. Prepare the {@link
-   * Element} for usage in a catalog or as an incarnation.
-   */
-  public void prepareElement(DomainBase domain, Element element, boolean isCatalogElement) {
-    element.setId(null);
-    element.setDesignator(isCatalogElement ? NO_DESIGNATOR : null);
-    element.getDomains().clear();
-    processSubTypes(domain, element);
-    processLinks(domain, element);
-    processCustomAspects(domain, element);
-    updateVersion(element);
-    // TODO: VEO-612 add parts from CompositeEntity
   }
 
   /**
@@ -77,12 +47,6 @@ public class CatalogItemPrepareStrategy {
     processLinks(domain, element);
     processCustomAspects(domain, element);
     // TODO: VEO-612 add parts from CompositeEntity
-  }
-
-  public static void updateVersion(Versioned v) {
-    v.setCreatedBy(SYSTEM_USER);
-    v.setUpdatedBy(SYSTEM_USER);
-    v.setCreatedAt(Instant.now());
   }
 
   private void processCustomAspects(DomainBase domain, Element est) {
