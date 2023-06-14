@@ -35,6 +35,12 @@
     },
     {
       "matchPackagePatterns": [
+        "^com.diffplug.spotless:spotless-lib-extra"
+      ],
+      "allowedVersions": "!/(2\\.3[789]\\.0)/"
+    },
+    {
+      "matchPackagePatterns": [
         "^org.spockframework:"
       ],
       "groupName": "Spock"
