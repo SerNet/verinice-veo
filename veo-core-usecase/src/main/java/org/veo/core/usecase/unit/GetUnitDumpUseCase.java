@@ -17,17 +17,16 @@
  ******************************************************************************/
 package org.veo.core.usecase.unit;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.veo.core.entity.AccountProvider;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
+import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagingConfiguration;
-import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -40,7 +39,7 @@ import lombok.RequiredArgsConstructor;
 public class GetUnitDumpUseCase
     implements TransactionalUseCase<GetUnitDumpUseCase.InputData, GetUnitDumpUseCase.OutputData> {
   private final AccountProvider accountProvider;
-  private final RepositoryProvider repositoryProvider;
+  private final GenericElementRepository genericElementRepository;
   private final UnitRepository unitRepository;
 
   @Override
@@ -53,16 +52,9 @@ public class GetUnitDumpUseCase
   }
 
   private Set<Element> getElements(Unit unit) {
-    return EntityType.ELEMENT_TYPE_CLASSES.stream()
-        .map(repositoryProvider::getElementRepositoryFor)
-        .map(
-            repo -> {
-              var query = repo.query(unit.getClient());
-              query.whereUnitIn(Set.of(unit));
-              return query;
-            })
-        .flatMap(query -> query.execute(PagingConfiguration.UNPAGED).getResultPage().stream())
-        .collect(Collectors.toSet());
+    var query = genericElementRepository.query(unit.getClient());
+    query.whereUnitIn(Set.of(unit));
+    return new HashSet<>(query.execute(PagingConfiguration.UNPAGED).getResultPage());
   }
 
   @Data

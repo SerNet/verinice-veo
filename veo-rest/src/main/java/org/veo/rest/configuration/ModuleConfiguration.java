@@ -733,9 +733,9 @@ public class ModuleConfiguration {
   @Bean
   public GetUnitDumpUseCase getUnitDumpUseCase(
       AccountProvider accountProvider,
-      RepositoryProvider repositoryProvider,
+      GenericElementRepository genericElementRepository,
       UnitRepository unitRepository) {
-    return new GetUnitDumpUseCase(accountProvider, repositoryProvider, unitRepository);
+    return new GetUnitDumpUseCase(accountProvider, genericElementRepository, unitRepository);
   }
 
   @Bean
