@@ -18,13 +18,23 @@
 package org.veo.core.usecase.unit;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.AccountProvider;
+import org.veo.core.entity.Asset;
+import org.veo.core.entity.CompositeElement;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Process;
+import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.UnitRepository;
@@ -41,26 +51,92 @@ public class GetUnitDumpUseCase
   private final AccountProvider accountProvider;
   private final GenericElementRepository genericElementRepository;
   private final UnitRepository unitRepository;
+  private final DomainRepository domainRepository;
 
   @Override
   public OutputData execute(InputData input) {
     var unit = unitRepository.getById(input.unitId);
+    var client = accountProvider.getCurrentUserAccount().getClient();
     if (!accountProvider.getCurrentUserAccount().isAdmin()) {
-      unit.checkSameClient(accountProvider.getCurrentUserAccount().getClient());
+      unit.checkSameClient(client);
     }
-    return new OutputData(unit, getElements(unit));
+    return new OutputData(
+        unit,
+        getElements(
+            unit,
+            Optional.ofNullable(input.domainId)
+                .map(id -> domainRepository.getById(id, client.getId()))
+                .orElse(null)));
   }
 
-  private Set<Element> getElements(Unit unit) {
+  private Set<Element> getElements(Unit unit, Domain domain) {
     var query = genericElementRepository.query(unit.getClient());
     query.whereUnitIn(Set.of(unit));
-    return new HashSet<>(query.execute(PagingConfiguration.UNPAGED).getResultPage());
+    if (domain != null) {
+      query.whereDomainsContain(domain);
+    }
+    var elements = new HashSet<>(query.execute(PagingConfiguration.UNPAGED).getResultPage());
+    elements.forEach(
+        e -> {
+          // remove irrelevant domains
+          if (domain != null) {
+            new HashSet<>(e.getDomains())
+                .stream().filter(d -> !domain.equals(d)).forEach(e::removeFromDomains);
+          }
+          // remove risks for scenarios that are not contained in the dump
+          if (e instanceof Process process) {
+            filterRisks(process, elements);
+          } else if (e instanceof Asset asset) {
+            filterRisks(asset, elements);
+          } else if (e instanceof Scope scope) {
+            filterRisks(scope, elements);
+          }
+          // remove parts that are not contained in the dump
+          if (e instanceof CompositeElement composite) {
+            filterParts(composite, elements);
+          }
+          // remove members that are not contained in the dump
+          if (e instanceof Scope scope) {
+            scope.setMembers(intersection(scope.getMembers(), elements));
+          }
+        });
+    return elements;
+  }
+
+  private static <TElement extends CompositeElement<TElement>> void filterParts(
+      TElement composite, HashSet<Element> elements) {
+    composite.setParts(intersection(composite.getParts(), elements));
+  }
+
+  private <
+          TElement extends RiskAffected<TElement, TRisk>,
+          TRisk extends AbstractRisk<TElement, TRisk>>
+      void filterRisks(TElement e, Set<Element> elements) {
+    e.setRisks(
+        e.getRisks().stream()
+            .filter(r -> elements.contains(r.getScenario()))
+            .collect(Collectors.toSet()));
+    e.getRisks()
+        .forEach(
+            r -> {
+              if (r.getMitigation() != null && !elements.contains(r.getMitigation())) {
+                r.mitigate(null);
+              }
+              if (r.getRiskOwner() != null && !elements.contains(r.getRiskOwner())) {
+                r.appoint(null);
+              }
+            });
+  }
+
+  private static <T, U extends T> Set<U> intersection(Set<U> a, Set<T> b) {
+    return a.stream().filter(b::contains).collect(Collectors.toSet());
   }
 
   @Data
   @AllArgsConstructor
   public static class InputData implements UseCase.InputData {
     private Key<UUID> unitId;
+    private Key<UUID> domainId;
   }
 
   @Data

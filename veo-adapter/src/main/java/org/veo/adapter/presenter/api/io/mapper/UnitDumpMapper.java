@@ -32,7 +32,11 @@ import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 public class UnitDumpMapper {
 
   public static GetUnitDumpUseCase.InputData mapInput(String unitId) {
-    return new GetUnitDumpUseCase.InputData(Key.uuidFrom(unitId));
+    return mapInput(unitId, null);
+  }
+
+  public static GetUnitDumpUseCase.InputData mapInput(String unitId, String domainId) {
+    return new GetUnitDumpUseCase.InputData(Key.uuidFrom(unitId), Key.uuidFrom(domainId));
   }
 
   public static UnitDumpDto mapOutput(
