@@ -114,6 +114,198 @@ class DomainCreationRestTest extends VeoRestTest {
         ], 201, SECONDARY_CLIENT_USER)
     }
 
+    def "create risk definition"() {
+        given: "a new domain"
+        def domainName = "Risk definition test ${randomUUID()}"
+        def newDomainId = post("/content-creation/domains", [
+            name: domainName,
+            abbreviation: "rdt",
+            description: "it's kind of risky",
+            authority: "JJ",
+        ], 201, CONTENT_CREATOR).body.resourceId
+        put("/content-creation/domains/$newDomainId/element-type-definitions/scenario", [
+            subTypes: [
+                HypotheticalScenario: [
+                    statuses: ["OLD", "NEW"]
+                ]
+            ]
+        ], null, 204, CONTENT_CREATOR)
+        get("/units/$unitId").with {
+            body.domains.add([targetUri: "/domains/$newDomainId"])
+            put(body._self, body, getETag())
+        }
+
+        when: "adding a modified version of the test-domain risk def"
+        def definition = get("/domains/$testDomainId").body.riskDefinitions.riskyDef
+        definition.categories.removeIf{it.id == "I"}
+        put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 201, CONTENT_CREATOR)
+
+        then: "it can be retrieved"
+        with(get("/domains/$newDomainId").body.riskDefinitions.simpleDef) {
+            categories.find { it.id == "C" }.potentialImpacts.size() == 2
+            categories.find { it.id == "I" } == null
+        }
+
+        when: "using the risk definition on a scenario"
+        def scenarioInDomainUri = post("/domains/$newDomainId/scenarios", [
+            name: "risk test scenario",
+            subType: "HypotheticalScenario",
+            status: "OLD",
+            owner: [targetUri: "/units/$unitId"],
+            riskValues: [
+                simpleDef: [
+                    potentialProbability: 1
+                ]
+            ]
+        ]).location
+
+        then: "it has been applied"
+        get(scenarioInDomainUri).body.riskValues.simpleDef.potentialProbability == 1
+
+        expect: "risk definition update to fail (for now)"
+        put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 409, CONTENT_CREATOR)
+                .body.message == "Updating an existing risk definition is not supported yet"
+    }
+
+    def "ordinals are ignored when saving risk definition"() {
+        given: "a new domain"
+        def domainName = "Risk definition test ${randomUUID()}"
+        def newDomainId = post("/content-creation/domains", [
+            name: domainName,
+            abbreviation: "rdt",
+            description: "it's kind of risky",
+            authority: "JJ",
+        ], 201, CONTENT_CREATOR).body.resourceId
+
+        when: "saving a risk definition with wacky ordinals"
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+            definition.probability.levels[0].ordinalValue = 5
+            definition.probability.levels[1].ordinalValue = -35000
+            definition.probability.levels[2].ordinalValue = 0
+            put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 201, CONTENT_CREATOR)
+        }
+
+        then: "correct ordinals have been applied"
+        with(get("/domains/$newDomainId").body.riskDefinitions.simpleDef) {
+            probability.levels[0].ordinalValue == 0
+            probability.levels[1].ordinalValue == 1
+            probability.levels[2].ordinalValue == 2
+        }
+    }
+
+    def "risk definition is validated"() {
+        given: "a new domain"
+        def domainName = "Risk definition validation test ${randomUUID()}"
+        def newDomainId = post("/content-creation/domains", [
+            name: domainName,
+            abbreviation: "rdvt",
+            description: "let's test risk definition validation",
+            authority: "JJ",
+        ], 201, CONTENT_CREATOR).body.resourceId
+
+        expect: "no risk method to be illegal"
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+            definition.riskMethod = null
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
+                body["riskMethod"] == "must not be null"
+            }
+        }
+
+        and: "no implementation state to be illegal"
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+            definition.implementationStateDefinition = null
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
+                body["implementationStateDefinition"] == "must not be null"
+            }
+        }
+
+        and: "no probability definition to be illegal"
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+            definition.probability = null
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
+                body["probability"] == "must not be null"
+            }
+        }
+
+        and: "no probability levels to be illegal"
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+            definition.probability.levels = []
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
+                body["probability.levels"] == "must not be empty"
+            }
+        }
+
+        and: "no categories to be illegal"
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+            definition.categories = []
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
+                body["categories"] == "must not be empty"
+            }
+        }
+
+        and: "redundant category IDs to be illegal"
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+            definition.categories.find { it.id == "I" }.id = "C"
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
+                body.message == "Categories not unique."
+            }
+        }
+
+        and: "redundant risk value IDs to be illegal"
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+            definition.riskValues.find { it.symbolicRisk == "symbolic_risk_3" }.symbolicRisk = "symbolic_risk_2"
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
+                body.message == "SymbolicRisk not unique."
+            }
+        }
+
+        and: "empty matrix to be illegal"
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+            definition.categories[0].valueMatrix = []
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
+                body.message == "Risk matrix is empty."
+            }
+        }
+
+        and: "undefined symbolic risk in matrix to be illegal"
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+            definition.categories.find { it.id == "C" }.valueMatrix[0][0] = [
+                ordinalValue: 0,
+                symbolicRisk: "symbolic_risk_99",
+            ]
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
+                body.message == "Invalid risk values: [RiskValue(symbolicRisk=symbolic_risk_99)]"
+            }
+        }
+
+        and: "non-matching ordinal value and symbolic risk in matrix to be illegal"
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+            definition.categories.find { it.id == "C" }.valueMatrix[0][0] = [
+                ordinalValue: 2,
+                symbolicRisk: "symbolic_risk_1",
+            ]
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
+                body.message == "Invalid risk values: [RiskValue(symbolicRisk=symbolic_risk_1)]"
+            }
+        }
+
+        and: "missing impact in matrix to be illegal"
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+            definition.categories.find { it.id == "C" }.valueMatrix.removeLast()
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
+                body.message == "Value matrix does not conform to impacts."
+            }
+        }
+
+        and: "missing probability in matrix to be illegal"
+        get("/domains/$testDomainId").body.riskDefinitions.riskyDef.with { definition ->
+            definition.categories.find { it.id == "C" }.valueMatrix[1].removeLast()
+            with(put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 400, CONTENT_CREATOR)) {
+                body.message == "Value matrix does not conform to probability."
+            }
+        }
+    }
+
     def "cannot create domain with name of existing template"() {
         expect:
         post("/content-creation/domains", [

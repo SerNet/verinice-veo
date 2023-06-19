@@ -104,7 +104,7 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
   @Valid
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinColumn(name = "risk_definition_set_id")
-  private RiskDefinitionSetData riskDefinitionSet = new RiskDefinitionSetData();
+  RiskDefinitionSetData riskDefinitionSet = new RiskDefinitionSetData();
 
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinColumn(name = "decision_set_id")

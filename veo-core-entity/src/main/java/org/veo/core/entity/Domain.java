@@ -21,6 +21,8 @@ import java.util.Optional;
 
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.entity.riskdefinition.RiskDefinition;
+
 /**
  * The domain should be referenced by the domain objects if applicable. It defines a standard, a
  * best practice or a company-specific context. It can be bound to a domain template, which
@@ -59,4 +61,10 @@ public interface Domain extends DomainBase, ClientOwned {
   default Optional<Client> getOwningClient() {
     return Optional.ofNullable(getOwner());
   }
+
+  /**
+   * @return {@code true} if a new risk definition has been created or {@code false} if an existing
+   *     risk definition has been updated.
+   */
+  boolean applyRiskDefinition(String riskDefinitionRef, RiskDefinition riskDefinition);
 }

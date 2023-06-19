@@ -130,6 +130,7 @@ import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
 import org.veo.core.usecase.domain.ProfileApplier;
 import org.veo.core.usecase.domain.SaveDecisionUseCase;
+import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
@@ -1027,6 +1028,11 @@ public class ModuleConfiguration {
   @Bean
   SaveDecisionUseCase saveDecisionUseCase(DomainRepository domainRepository) {
     return new SaveDecisionUseCase(domainRepository);
+  }
+
+  @Bean
+  SaveRiskDefinitionUseCase saveRiskDefinitionUseCase(DomainRepository domainRepository) {
+    return new SaveRiskDefinitionUseCase(domainRepository);
   }
 
   @Bean

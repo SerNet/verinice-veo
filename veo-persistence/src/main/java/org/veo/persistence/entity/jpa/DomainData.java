@@ -26,6 +26,7 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import lombok.Data;
 import lombok.ToString;
@@ -50,6 +51,11 @@ public class DomainData extends DomainBaseData implements Domain {
   @Override
   public boolean isActive() {
     return active;
+  }
+
+  @Override
+  public boolean applyRiskDefinition(String riskDefinitionRef, RiskDefinition riskDefinition) {
+    return riskDefinitionSet.apply(riskDefinitionRef, riskDefinition);
   }
 
   @Override

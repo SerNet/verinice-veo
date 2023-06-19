@@ -27,11 +27,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 
 import org.veo.core.entity.riskdefinition.RiskDefinition;
+import org.veo.core.usecase.domaintemplate.EntityAlreadyExistsException;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Getter;
@@ -51,11 +53,12 @@ public class RiskDefinitionSetData {
   @NotNull
   @Column(columnDefinition = "jsonb")
   @Type(JsonType.class)
+  @Valid
   Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
 
   public void setRiskDefinitions(Map<String, RiskDefinition> riskDefinitions) {
     this.riskDefinitions.clear();
-    this.riskDefinitions.putAll(riskDefinitions);
+    riskDefinitions.forEach(this::apply);
   }
 
   @Override
@@ -74,5 +77,19 @@ public class RiskDefinitionSetData {
   @Override
   public int hashCode() {
     return getClass().hashCode();
+  }
+
+  /**
+   * @return {@code true} if a new risk definition has been updated or {@code false} if an existing
+   *     risk definition has been updated
+   */
+  public boolean apply(String riskDefinitionRef, RiskDefinition riskDefinition) {
+    if (riskDefinitions.containsKey(riskDefinitionRef)) {
+      throw new EntityAlreadyExistsException(
+          "Updating an existing risk definition is not supported yet");
+    }
+    riskDefinition.validateRiskDefinition();
+    riskDefinitions.put(riskDefinitionRef, riskDefinition);
+    return true;
   }
 }

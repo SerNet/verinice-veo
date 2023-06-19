@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 import org.springframework.http.ResponseEntity;
@@ -69,11 +70,13 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.profile.ProfileDefinition;
+import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.usecase.UseCase.IdAndClient;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domain.DeleteDecisionUseCase;
 import org.veo.core.usecase.domain.DeleteDomainUseCase;
 import org.veo.core.usecase.domain.SaveDecisionUseCase;
+import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
@@ -100,6 +103,7 @@ public class ContentCreationController extends AbstractVeoController {
   private final EntityToDtoTransformer entityToDtoTransformer;
   private final UpdateElementTypeDefinitionUseCase updateElementTypeDefinitionUseCase;
   private final SaveDecisionUseCase saveDecisionUseCase;
+  private final SaveRiskDefinitionUseCase saveRiskDefinitionUseCase;
   private final DeleteDecisionUseCase deleteDecisionUseCase;
   private final CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase;
   private final DeleteDomainUseCase deleteDomainUseCase;
@@ -243,6 +247,40 @@ public class ContentCreationController extends AbstractVeoController {
         new DeleteDecisionUseCase.InputData(
             Key.uuidFrom(user.getClientId()), Key.uuidFrom(domainId), decisionKey),
         out -> RestApiResponse.noContent());
+  }
+
+  @PutMapping("/domains/{domainId}/risk-definitions/{riskDefinitionId}")
+  @Operation(summary = "Create a risk definition with given ID")
+  @ApiResponse(responseCode = "201", description = "Risk definition created")
+  @ApiResponse(
+      responseCode = "409",
+      description = "Risk definition already exists and update is not implemented yet")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> saveRiskDefinition(
+      @Parameter(hidden = true) ApplicationUser user,
+      @Parameter(hidden = true) ServletWebRequest request,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(
+              required = true,
+              example = "DSRA",
+              description = "Risk definition identifier - unique within this domain")
+          @PathVariable
+          String riskDefinitionId,
+      @RequestBody @Valid @NotNull RiskDefinition riskDefinition) {
+    riskDefinition.setId(riskDefinitionId);
+    return useCaseInteractor.execute(
+        saveRiskDefinitionUseCase,
+        new SaveRiskDefinitionUseCase.InputData(
+            Key.uuidFrom(user.getClientId()),
+            Key.uuidFrom(domainId),
+            riskDefinitionId,
+            riskDefinition),
+        out ->
+            out.isNewRiskDefinition()
+                ? RestApiResponse.created(
+                    request.getRequest().getRequestURI(), "Risk definition created")
+                : RestApiResponse.ok("Risk definition updated"));
   }
 
   @PostMapping(value = "/domains/{id}/template")
