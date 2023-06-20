@@ -17,8 +17,11 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer
 
+import org.veo.adapter.presenter.api.dto.AbstractAssetDto
 import org.veo.adapter.presenter.api.dto.AbstractProcessDto
+import org.veo.adapter.presenter.api.dto.AssetDomainAssociationDto
 import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto
+import org.veo.core.entity.Asset
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
@@ -83,6 +86,47 @@ class DomainAssociationTransformerSpec extends Specification {
             subType == "bar"
             status == "NEW_BAR"
             decisionResults == decisionResults1
+        }
+    }
+
+    def "maps sub types from entity to DTO asset"() {
+        given: "an asset with different sub types in two domains"
+        AbstractAssetDto dto = Mock()
+        Asset entity = Mock()
+        entity.getImpactValues(_) >> Optional.empty()
+        Map<String, AssetDomainAssociationDto> capturedDomainMap
+        entity.domains >> [domain0, domain1]
+        entity.subTypeAspects >> [
+            Mock(SubTypeAspect) {
+                domain >> domain0
+                subType >> "foo"
+                status >> "NEW_FOO"
+            },
+            Mock(SubTypeAspect) {
+                domain >> domain1
+                subType >> "bar"
+                status >> "NEW_BAR"
+            }
+        ]
+
+        entity.findSubType(domain0) >> Optional.of("foo")
+        entity.findStatus(domain0) >> Optional.of("NEW_FOO")
+        entity.findSubType(domain1) >> Optional.of("bar")
+        entity.findStatus(domain1) >> Optional.of("NEW_BAR")
+
+        when: "the sub types are mapped"
+        domainAssociationTransformer.mapDomainsToDto(entity, dto)
+
+        then: "a map of domain associations is set on the DTO"
+        1 * dto.setDomains(_) >> { params -> capturedDomainMap = params[0]}
+        capturedDomainMap.size() == 2
+        with(capturedDomainMap[domain0.id.uuidValue()]) {
+            subType == "foo"
+            status == "NEW_FOO"
+        }
+        with(capturedDomainMap[domain1.id.uuidValue()]) {
+            subType == "bar"
+            status == "NEW_BAR"
         }
     }
 }

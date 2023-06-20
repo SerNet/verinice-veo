@@ -27,7 +27,6 @@ import java.util.Objects;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.event.ElementEvent;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
@@ -45,7 +44,7 @@ public class MaxRiskProvider implements InputProvider {
   @Override
   public Object getValue(Element element, Domain domain) {
     if (element instanceof RiskAffected) {
-      return getMaxRisk((RiskAffected) element, domain);
+      return getMaxRisk((RiskAffected<?, ?>) element, domain);
     }
     return null;
   }
@@ -80,10 +79,6 @@ public class MaxRiskProvider implements InputProvider {
 
   private BigDecimal getMaxRisk(RiskAffected<?, ?> element, Domain domain) {
     return element.getRisks().stream()
-        // TODO VEO-209 remove filter and cast once all types of risk can provide risk
-        // values
-        .filter(ProcessRisk.class::isInstance)
-        .map(ProcessRisk.class::cast)
         .flatMap(
             risk ->
                 risk.getRiskDefinitions(domain).stream()

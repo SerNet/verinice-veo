@@ -31,8 +31,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ProcessDomainAssociationDto extends ImpactDomainAssociationDto {
-
+public class AssetDomainAssociationDto extends ImpactDomainAssociationDto {
   @Override
   public DomainAssociationState getDomainAssociationState(
       ITypedId<Domain> domain,

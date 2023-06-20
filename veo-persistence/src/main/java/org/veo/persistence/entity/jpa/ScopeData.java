@@ -80,13 +80,6 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
     return new ScopeRiskData(this, scenario);
   }
 
-  @Override
-  public boolean removeRiskDefinition(RiskDefinitionRef riskDefinition, Domain domain) {
-    return super.removeRiskDefinition(riskDefinition, domain)
-        | riskValuesAspects.removeIf(
-            a -> a.getDomain().equals(domain) && a.getRiskDefinitionRef().equals(riskDefinition));
-  }
-
   @OneToMany(
       cascade = CascadeType.ALL,
       orphanRemoval = true,
@@ -94,29 +87,29 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
       mappedBy = "owner",
       fetch = FetchType.LAZY)
   @Valid
-  private final Set<ScopeRiskValuesAspectData> riskValuesAspects = new HashSet<>();
+  private final Set<ScopeRiskValuesAspectData> scopeRiskValuesAspects = new HashSet<>();
 
   @Override
   public void setRiskDefinition(DomainBase domain, RiskDefinitionRef riskDefinition) {
     var aspect =
-        findAspectByDomain(riskValuesAspects, domain)
+        findAspectByDomain(scopeRiskValuesAspects, domain)
             .orElseGet(
                 () -> {
                   var newAspect = new ScopeRiskValuesAspectData(domain, this);
-                  riskValuesAspects.add(newAspect);
+                  scopeRiskValuesAspects.add(newAspect);
                   return newAspect;
                 });
     aspect.setRiskDefinitionRef(riskDefinition);
   }
 
   public Optional<RiskDefinitionRef> getRiskDefinition(DomainBase domain) {
-    return findAspectByDomain(riskValuesAspects, domain)
+    return findAspectByDomain(scopeRiskValuesAspects, domain)
         .map(ScopeRiskValuesAspectData::getRiskDefinitionRef);
   }
 
   @Override
   public void transferToDomain(Domain oldDomain, Domain newDomain) {
-    findAspectByDomain(riskValuesAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
+    findAspectByDomain(scopeRiskValuesAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
     super.transferToDomain(oldDomain, newDomain);
   }
 }

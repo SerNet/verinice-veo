@@ -18,18 +18,34 @@
 package org.veo.core.usecase.base;
 
 import org.veo.core.entity.Asset;
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.service.EventPublisher;
+import org.veo.core.usecase.base.UpdateElementInDomainUseCase.InputData;
+import org.veo.core.usecase.base.UpdateElementInDomainUseCase.OutputData;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.service.EntityStateMapper;
 
 public class UpdateAssetInDomainUseCase extends UpdateElementInDomainUseCase<Asset> {
+  private final EventPublisher eventPublisher;
 
   public UpdateAssetInDomainUseCase(
-      RepositoryProvider repositoryProvider, Decider decider, EntityStateMapper entityStateMapper) {
+      RepositoryProvider repositoryProvider,
+      Decider decider,
+      EntityStateMapper entityStateMapper,
+      EventPublisher eventPublisher) {
     super(
         repositoryProvider.getElementRepositoryFor(Asset.class),
         repositoryProvider,
         decider,
         entityStateMapper);
+    this.eventPublisher = eventPublisher;
+  }
+
+  @Override
+  public OutputData<Asset> execute(InputData<Asset> input) {
+    var result = super.execute(input); // TODO:VEO-2219 move to update element
+    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
+    return result;
   }
 }

@@ -34,10 +34,10 @@ import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.ControlRiskValues
 import org.veo.core.entity.risk.ImpactRef
+import org.veo.core.entity.risk.ImpactValues
 import org.veo.core.entity.risk.ImplementationStatusRef
 import org.veo.core.entity.risk.PotentialProbabilityImpl
 import org.veo.core.entity.risk.ProbabilityRef
-import org.veo.core.entity.risk.ProcessImpactValues
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.persistence.access.CatalogRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -253,7 +253,7 @@ class CatalogSpec extends VeoMvcSpec {
                     description = "a process example entry"
                     associateWithDomain(domain, "PRO_DataProcessing", "NEW")
                     setImpactValues(domain, [
-                        (riskDefinitionRef) : new ProcessImpactValues().tap{
+                        (riskDefinitionRef) : new ImpactValues().tap{
                             potentialImpacts = [
                                 (new CategoryRef("C")): new ImpactRef(2)
                             ]

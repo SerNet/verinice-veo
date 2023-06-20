@@ -35,9 +35,9 @@ import org.veo.core.entity.event.RiskChangedEvent
 import org.veo.core.entity.event.RiskEvent
 import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.ImpactRef
+import org.veo.core.entity.risk.ImpactValues
 import org.veo.core.entity.risk.PotentialProbabilityImpl
 import org.veo.core.entity.risk.ProbabilityRef
-import org.veo.core.entity.risk.ProcessImpactValues
 import org.veo.core.entity.risk.RiskDefinitionRef
 
 import net.ttddyy.dsproxy.QueryCountHolder
@@ -88,7 +88,7 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
         def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
 
         def unit = unitDataRepository.save(newUnit(client))
-        ProcessImpactValues processImpactValues = new ProcessImpactValues()
+        ImpactValues processImpactValues = new ImpactValues()
         def lowConfidentialityImpact = confidentiality.getLevel(0).orElseThrow()
         def limitedAvailabilityImpact = availability.getLevel(2).orElseThrow()
         def highAvailabilityImpact = availability.getLevel(3).orElseThrow()

@@ -20,6 +20,8 @@ package org.veo.adapter.presenter.api.dto;
 import static org.veo.core.entity.riskdefinition.RiskDefinition.MAX_ID_SIZE;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import jakarta.validation.constraints.Size;
@@ -79,4 +81,9 @@ public abstract class AbstractScopeInDomainDto extends AbstractElementInDomainDt
   @Schema(description = "The ID of a risk definition")
   @Size(max = MAX_ID_SIZE)
   String riskDefinition;
+
+  @Schema(
+      description =
+          "Key is risk definition ID, value contains risk values in the context of that risk definition.")
+  Map<String, ImpactRiskValuesDto> riskValues = new HashMap<>();
 }

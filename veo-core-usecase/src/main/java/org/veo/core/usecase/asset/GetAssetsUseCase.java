@@ -18,18 +18,33 @@
 package org.veo.core.usecase.asset;
 
 import org.veo.core.entity.Asset;
+import org.veo.core.entity.Client;
 import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.ClientRepository;
-import org.veo.core.usecase.base.DefaultGetElementsUseCase;
+import org.veo.core.usecase.UseCaseTools;
+import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 
 /** Reinstantiate persisted asset objects. */
-public class GetAssetsUseCase extends DefaultGetElementsUseCase<Asset> {
+public class GetAssetsUseCase
+    extends GetElementsUseCase<Asset, GetElementsUseCase.RiskAffectedInputData> {
 
   public GetAssetsUseCase(
       ClientRepository clientRepository,
       AssetRepository assetRepository,
       UnitHierarchyProvider unitHierarchyProvider) {
     super(clientRepository, assetRepository, unitHierarchyProvider);
+  }
+
+  @Override
+  public OutputData<Asset> execute(GetElementsUseCase.RiskAffectedInputData input) {
+    Client client =
+        UseCaseTools.checkClientExists(input.getAuthenticatedClient().getId(), clientRepository);
+    var query = createQuery(client);
+    if (input.isEmbedRisks()) {
+      query.fetchRisks();
+    }
+    applyDefaultQueryParameters(input, query);
+    return new OutputData<>(query.execute(input.getPagingConfiguration()));
   }
 }

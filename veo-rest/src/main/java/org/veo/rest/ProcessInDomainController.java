@@ -74,7 +74,7 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.create.CreateProcessInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessInDomainDto;
-import org.veo.adapter.presenter.api.io.mapper.GetProcessesInputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -189,7 +189,7 @@ public class ProcessInDomainController {
     return elementService.getElements(
         domainId,
         getProcessesUseCase,
-        GetProcessesInputMapper.map(
+        GetRiskAffectedInputMapper.map(
             clientLookup.getClient(auth),
             unitUuid,
             domainId,
@@ -258,7 +258,7 @@ public class ProcessInDomainController {
     return elementService.getElements(
         domainId,
         getProcessesUseCase,
-        GetProcessesInputMapper.map(
+        GetRiskAffectedInputMapper.map(
             client,
             null,
             domainId,

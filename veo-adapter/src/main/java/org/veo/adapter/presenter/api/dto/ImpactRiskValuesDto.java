@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Jonas Jordan
+ * Copyright (C) 2022  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,21 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.risk;
+package org.veo.adapter.presenter.api.dto;
 
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.veo.core.entity.risk.ImpactRef;
+import org.veo.core.entity.risk.RiskImpactValues;
 
-/**
- * Holds risk related info for a process. A {@link ProcessImpactValues} object is only valid for a
- * certain risk definition.
- */
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class ProcessImpactValues {
-  private Map<CategoryRef, ImpactRef> potentialImpacts;
+public class ImpactRiskValuesDto implements RiskImpactValues {
+  @Schema(
+      description = "Potential impacts for a set of risk categories",
+      example = "{\"C\":2,\n\"I\":3}")
+  private Map<String, ImpactRef> potentialImpacts;
 }

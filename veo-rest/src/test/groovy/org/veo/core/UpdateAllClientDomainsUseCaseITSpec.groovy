@@ -20,6 +20,7 @@ package org.veo.core
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
+import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
@@ -31,10 +32,10 @@ import org.veo.core.entity.Unit
 import org.veo.core.entity.profile.ProfileRef
 import org.veo.core.entity.risk.ControlRiskValues
 import org.veo.core.entity.risk.DomainRiskReferenceProvider
+import org.veo.core.entity.risk.ImpactValues
 import org.veo.core.entity.risk.ImplementationStatusRef
 import org.veo.core.entity.risk.PotentialProbabilityImpl
 import org.veo.core.entity.risk.ProbabilityRef
-import org.veo.core.entity.risk.ProcessImpactValues
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.PagingConfiguration
@@ -43,10 +44,12 @@ import org.veo.core.repository.ScenarioRepository
 import org.veo.core.usecase.domain.ApplyProfileUseCase
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase.InputData
+import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScopeRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.persistence.entity.jpa.AssetData
 import org.veo.persistence.entity.jpa.ControlData
 import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.ScenarioData
@@ -69,6 +72,9 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
 
     @Autowired
     ScopeRepositoryImpl scopeRepository
+
+    @Autowired
+    AssetRepositoryImpl assetRepository
 
     @Autowired
     ProcessRepositoryImpl processRepository
@@ -176,12 +182,24 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
 
     def "Migrate a scope referencing a risk definition"() {
         given: 'a unit with a scope that references a risk definition'
+        RiskDefinitionRef riskDefinitionRef = new RiskDefinitionRef("xyz")
+        DomainRiskReferenceProvider riskreferenceProvider = DomainRiskReferenceProvider.referencesForDomain(dsgvoDomain)
+
+        ImpactValues scopeImpactValues = new ImpactValues()
+        def categoryref = riskreferenceProvider.getCategoryRef(riskDefinitionRef.getIdRef(), "C")
+        def impactValue = riskreferenceProvider.getImpactRef(riskDefinitionRef.getIdRef(), categoryref.getIdRef(), new BigDecimal("2"))
+        scopeImpactValues.potentialImpacts = [(categoryref) : impactValue]
+        Map impactValues = [
+            (riskDefinitionRef) : scopeImpactValues
+        ]
+
         def unit = unitRepository.save(newUnit(client) {
             addToDomains(dsgvoDomain)
         })
         def scope = scopeRepository.save(newScope(unit) {
             associateWithDomain(dsgvoDomain, "SCP_Scope", "NEW")
-            setRiskDefinition(dsgvoDomain, new RiskDefinitionRef("xyz"))
+            setRiskDefinition(dsgvoDomain, riskDefinitionRef)
+            setImpactValues(dsgvoDomain, impactValues)
         })
 
         when: 'executing the UpdateAllClientDomainsUseCase'
@@ -190,14 +208,25 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
             scopeRepository.findById(scope.id).get().tap{
                 // init lazy associations
                 ((ScopeData)it).getRiskDefinition(dsgvoDomainV2)
+                ((ScopeData)it).getImpactValues(dsgvoDomainV2)
             }
         }
 
         then: "the scope's risk definition ref is moved to the new domain"
-        with(((ScopeData)scope).riskValuesAspects) {
+        with(((ScopeData)scope).scopeRiskValuesAspects) {
             size() == 1
             first().domain == dsgvoDomainV2
             first().riskDefinitionRef.idRef == "xyz"
+        }
+
+        and: "the scope risk values are moved to the new domain"
+        scope.riskValuesAspects.size() == 1
+        with(((ScopeData)scope).riskValuesAspects.first()) {
+            it.domain == dsgvoDomainV2
+            with(it.values) {
+                size() == 1
+                get(riskDefinitionRef) == scopeImpactValues
+            }
         }
     }
 
@@ -246,12 +275,58 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         }
     }
 
+    def "Migrate an asset with risk values"() {
+        given: 'a client with an empty unit'
+        RiskDefinitionRef riskDefinitionRef = new RiskDefinitionRef("xyz")
+        DomainRiskReferenceProvider riskreferenceProvider = DomainRiskReferenceProvider.referencesForDomain(dsgvoDomain)
+
+        ImpactValues assetImpactValues = new ImpactValues()
+        def categoryref = riskreferenceProvider.getCategoryRef(riskDefinitionRef.getIdRef(), "C")
+        def impactValue = riskreferenceProvider.getImpactRef(riskDefinitionRef.getIdRef(), categoryref.getIdRef(), new BigDecimal("2"))
+        assetImpactValues.potentialImpacts = [(categoryref) : impactValue]
+        Map impactValues = [
+            (riskDefinitionRef) : assetImpactValues
+        ]
+        Unit unit = unitRepository.save(newUnit(client) {
+            addToDomains(dsgvoDomain)
+        })
+        Asset asset = assetRepository.save(newAsset(unit) {
+            associateWithDomain(dsgvoDomain, "AST_DataType", "NEW")
+            setImpactValues(dsgvoDomain, impactValues)
+        })
+
+        when: 'executing the UpdateAllClientDomainsUseCase'
+        runUseCase(DSGVO_DOMAINTEMPLATE_V2_UUID)
+        unit = executeInTransaction {
+            unitRepository.findById(unit.id).get().tap {
+                //initialize lazy associations
+                it.domains*.name
+            }
+        }
+        asset = executeInTransaction {
+            assetRepository.findById(asset.id).get().tap {
+                //initialize lazy associations
+                it.getImpactValues(dsgvoDomainV2)
+            }
+        }
+
+        then: "the control's risk values are moved to the new domain"
+        asset.riskValuesAspects.size() == 1
+        with(((AssetData)asset).riskValuesAspects.first()) {
+            it.domain == dsgvoDomainV2
+            with(it.values) {
+                size() == 1
+                get(riskDefinitionRef) == assetImpactValues
+            }
+        }
+    }
+
     def "Migrate a process with risk values"() {
         given: 'a client with an empty unit'
         RiskDefinitionRef riskDefinitionRef = new RiskDefinitionRef("xyz")
         DomainRiskReferenceProvider riskreferenceProvider = DomainRiskReferenceProvider.referencesForDomain(dsgvoDomain)
 
-        ProcessImpactValues processImpactValues = new ProcessImpactValues()
+        ImpactValues processImpactValues = new ImpactValues()
         def categoryref = riskreferenceProvider.getCategoryRef(riskDefinitionRef.getIdRef(), "C")
         def impactValue = riskreferenceProvider.getImpactRef(riskDefinitionRef.getIdRef(), categoryref.getIdRef(), new BigDecimal("2"))
         processImpactValues.potentialImpacts = [(categoryref) : impactValue]

@@ -30,7 +30,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.ref.ITypedId
-import org.veo.core.entity.state.ProcessDomainAssociationState
+import org.veo.core.entity.state.RiskImpactDomainAssociationState
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.usecase.service.EntityStateMapper
 import org.veo.core.usecase.service.IdRefResolver
@@ -60,7 +60,7 @@ class EntityStateMapperSpec extends Specification {
         entity.modelInterface >> Process
 
         dto.getDomainAssociationStates() >> [
-            Mock(ProcessDomainAssociationState) {
+            Mock(RiskImpactDomainAssociationState) {
                 subType >> "foo"
                 status >> "NEW_FOO"
                 riskValues >> [:]
@@ -68,7 +68,7 @@ class EntityStateMapperSpec extends Specification {
                 customLinkStates >> []
                 customAspectStates >> []
             },
-            Mock(ProcessDomainAssociationState) {
+            Mock(RiskImpactDomainAssociationState) {
                 subType >> "bar"
                 status >> "NEW_BAR"
                 riskValues >> [:]

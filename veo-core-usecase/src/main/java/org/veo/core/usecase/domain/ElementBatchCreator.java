@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.veo.core.entity.AbstractRisk;
+import org.veo.core.entity.Asset;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Element;
@@ -113,9 +114,8 @@ public class ElementBatchCreator {
                 .forEach(d -> element.setDecisionResults(decider.decide(element, d), d)));
 
     elements.stream()
-        .filter(pr -> pr instanceof Process)
+        .filter(pr -> pr instanceof Process || pr instanceof Asset || pr instanceof Scope)
         .forEach(it -> eventPublisher.publish(new RiskAffectingElementChangeEvent(it, this)));
-    // FIXME VEO-??? handle Assets and Scopes in the same way
     log.info("{} elements added to unit {}", elements.size(), unit.getIdAsString());
   }
 

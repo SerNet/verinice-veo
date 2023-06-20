@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Urs Zeidler
+ * Copyright (C) 2023  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,20 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.persistence.migrations
 
-import java.util.Map;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-import org.veo.core.entity.risk.ImpactRef;
-import org.veo.core.entity.risk.ProcessRiskValues;
+import groovy.sql.Sql
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+class V60__change_risk_values extends BaseJavaMigration {
+    @Override
+    void migrate(Context context) throws Exception {
+        new Sql(context.connection).with {
+            execute("""
 
-@Data
-public class ProcessRiskValuesDto implements ProcessRiskValues {
-  @Schema(
-      description = "Potential impacts for a set of risk categories",
-      example = "{\"C\":2,\n\"I\":3}")
-  private Map<String, ImpactRef> potentialImpacts;
+                alter table process_impact_values_aspect rename to impact_values_aspect;
+
+                alter table impact_values_aspect
+                    rename column process_impact_values to impact_values;
+
+            """)
+        }
+    }
 }

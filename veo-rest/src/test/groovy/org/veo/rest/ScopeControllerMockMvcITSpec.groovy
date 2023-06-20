@@ -344,7 +344,8 @@ class ScopeControllerMockMvcITSpec extends VeoMvcSpec {
         result.domains[dsgvoDomain.id.uuidValue()] == [
             subType: "SCP_Scope",
             status: "NEW",
-            decisionResults: [:]
+            decisionResults: [:],
+            riskValues:[:]
         ]
         result.owner.targetUri == "http://localhost/units/${unit.id.uuidValue()}"
 

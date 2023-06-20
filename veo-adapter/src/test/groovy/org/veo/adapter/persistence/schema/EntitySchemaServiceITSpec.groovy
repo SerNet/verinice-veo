@@ -387,7 +387,9 @@ class EntitySchemaServiceITSpec extends Specification {
                 subTypes >> [:]
             }
             getRiskDefinitions() >> [
-                "extraRiskDef": Mock(RiskDefinition)
+                "extraRiskDef": Mock(RiskDefinition) {
+                    categories >> []
+                }
             ]
         }
     }

@@ -17,28 +17,17 @@
  ******************************************************************************/
 package org.veo.core.usecase.process;
 
-import java.util.UUID;
-
-import jakarta.validation.Valid;
-
 import org.veo.core.entity.Client;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.repository.ClientRepository;
-import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.ProcessRepository;
-import org.veo.core.repository.QueryCondition;
-import org.veo.core.repository.SingleValueQueryCondition;
 import org.veo.core.usecase.UseCaseTools;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 
-import lombok.EqualsAndHashCode;
-import lombok.Value;
-
 /** Reinstantiate persisted process objects. */
 public class GetProcessesUseCase
-    extends GetElementsUseCase<Process, GetProcessesUseCase.InputData> {
+    extends GetElementsUseCase<Process, GetElementsUseCase.RiskAffectedInputData> {
 
   public GetProcessesUseCase(
       ClientRepository clientRepository,
@@ -48,7 +37,7 @@ public class GetProcessesUseCase
   }
 
   @Override
-  public OutputData<Process> execute(GetProcessesUseCase.InputData input) {
+  public OutputData<Process> execute(GetElementsUseCase.RiskAffectedInputData input) {
     Client client =
         UseCaseTools.checkClientExists(input.getAuthenticatedClient().getId(), clientRepository);
     var query = createQuery(client);
@@ -57,50 +46,5 @@ public class GetProcessesUseCase
     }
     applyDefaultQueryParameters(input, query);
     return new OutputData<>(query.execute(input.getPagingConfiguration()));
-  }
-
-  @Valid
-  @Value
-  @EqualsAndHashCode(callSuper = true)
-  public static class InputData extends GetElementsUseCase.InputData {
-    boolean embedRisks;
-
-    public InputData(
-        Client authenticatedClient,
-        QueryCondition<Key<UUID>> unitUuid,
-        SingleValueQueryCondition<Key<UUID>> domainId,
-        QueryCondition<String> displayName,
-        QueryCondition<String> subType,
-        QueryCondition<String> status,
-        QueryCondition<Key<UUID>> childElementIds,
-        SingleValueQueryCondition<Boolean> hasChildElements,
-        SingleValueQueryCondition<Boolean> hasParentElements,
-        SingleValueQueryCondition<Key<UUID>> compositeId,
-        SingleValueQueryCondition<Key<UUID>> scopeId,
-        QueryCondition<String> description,
-        QueryCondition<String> designator,
-        QueryCondition<String> name,
-        QueryCondition<String> updatedBy,
-        PagingConfiguration pagingConfiguration,
-        boolean embedRisks) {
-      super(
-          authenticatedClient,
-          unitUuid,
-          domainId,
-          displayName,
-          subType,
-          status,
-          childElementIds,
-          hasChildElements,
-          hasParentElements,
-          compositeId,
-          scopeId,
-          description,
-          designator,
-          name,
-          updatedBy,
-          pagingConfiguration);
-      this.embedRisks = embedRisks;
-    }
   }
 }

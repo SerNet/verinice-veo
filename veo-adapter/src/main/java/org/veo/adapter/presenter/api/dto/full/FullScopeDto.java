@@ -17,7 +17,13 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.full;
 
+import static com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY;
+
+import java.util.Set;
+
 import jakarta.validation.constraints.Pattern;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
@@ -39,4 +45,8 @@ public class FullScopeDto extends AbstractScopeDto implements IdentifiableDto {
       format = "uuid")
   @ToString.Include
   private String id;
+
+  @JsonProperty(access = READ_ONLY)
+  @Schema(description = "An optional map of all risks and risk-values for this scope.")
+  private Set<ScopeRiskDto> risks;
 }

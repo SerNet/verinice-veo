@@ -19,8 +19,10 @@ package org.veo.core.usecase.scope
 
 import org.veo.core.entity.Key
 import org.veo.core.entity.Scope
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent
 import org.veo.core.entity.state.ScopeState
 import org.veo.core.repository.ScopeRepository
+import org.veo.core.service.EventPublisher
 import org.veo.core.usecase.UseCaseSpec
 import org.veo.core.usecase.base.ModifyElementUseCase
 import org.veo.core.usecase.common.ETag
@@ -33,8 +35,9 @@ class UpdateScopeUseCaseSpec extends UseCaseSpec {
     ScopeRepository scopeRepository = Mock()
     Decider decider = Mock()
     EntityStateMapper entityStateMapper = new EntityStateMapper()
+    EventPublisher eventPublisher = Mock()
 
-    UpdateScopeUseCase usecase = new UpdateScopeUseCase(repositoryProvider, decider, entityStateMapper)
+    UpdateScopeUseCase usecase = new UpdateScopeUseCase(repositoryProvider, decider, entityStateMapper, eventPublisher)
     def "update a scope"() {
         given:
         def scopeId = Key.newUuid()
@@ -51,6 +54,7 @@ class UpdateScopeUseCaseSpec extends UseCaseSpec {
             it.customAspects >> []
             it.links >> []
             it.domainTemplates >> []
+            it.modelInterface >> Scope
         }
 
         when:
@@ -59,9 +63,14 @@ class UpdateScopeUseCaseSpec extends UseCaseSpec {
 
         then:
         1 * repositoryProvider.getElementRepositoryFor(Scope) >> scopeRepository
+        1 * existingScope.getOwningClient() >> Optional.of(existingClient)
         1 * scopeRepository.findById(scopeId) >> Optional.of(existingScope)
         1 * scopeRepository.getById(scopeId, existingClient.id) >> existingScope
         1 * scopeRepository.save(existingScope) >> existingScope
+        1 * eventPublisher.publish({ RiskAffectingElementChangeEvent event->
+            event.entityType == Scope
+            event.entityId == scopeId
+        })
         1 * existingScope.setName("Updated scope")
         output.entity != null
     }

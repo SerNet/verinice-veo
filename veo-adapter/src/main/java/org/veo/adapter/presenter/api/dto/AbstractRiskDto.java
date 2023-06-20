@@ -18,9 +18,11 @@
 package org.veo.adapter.presenter.api.dto;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
+import static java.util.stream.Collectors.toMap;
 import static org.veo.adapter.presenter.api.dto.MapFunctions.renameKey;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,13 +35,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.adapter.presenter.api.dto.full.RiskValuesDto;
 import org.veo.adapter.presenter.api.openapi.IdRefDomains;
 import org.veo.adapter.presenter.api.openapi.IdRefEntity;
 import org.veo.adapter.presenter.api.openapi.IdRefOwner;
+import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -74,8 +80,12 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
   private Set<IdRef<Domain>> domains = Collections.emptySet();
 
   @JsonGetter(value = "domains")
+  @Schema(
+      description =
+          "Key is a domain-ID, values are the reference to the "
+              + "domain and its available risk definitions")
   public Map<String, RiskDomainAssociationDto> getDomains() {
-    return domains.stream().collect(Collectors.toMap(IdRef::getId, RiskDomainAssociationDto::new));
+    return domainsWithRiskValues;
   }
 
   @JsonSetter(value = "domains")
@@ -84,6 +94,7 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
         domainMap.values().stream()
             .map(RiskDomainAssociationDto::getReference)
             .collect(Collectors.toSet());
+    this.domainsWithRiskValues = domainMap;
   }
 
   @JsonIgnore
@@ -108,9 +119,39 @@ public abstract class AbstractRiskDto extends AbstractVersionedSelfReferencingDt
       description = "The accountable point-of-contact for this risk.")
   private IdRef<Person> riskOwner;
 
+  @Valid @JsonIgnore
+  protected Map<String, RiskDomainAssociationDto> domainsWithRiskValues = Collections.emptyMap();
+
   public void transferToDomain(String sourceDomainId, String targetDomainId) {
     var domainAssociations = getDomains();
     renameKey(domainAssociations, sourceDomainId, targetDomainId);
     setDomains(domainAssociations);
+  }
+
+  protected static Set<IdRef<Domain>> toDomainReferences(
+      AbstractRisk<?, ?> risk, ReferenceAssembler referenceAssembler) {
+    return risk.getDomains().stream()
+        .map(o -> IdRef.from(o, referenceAssembler))
+        .collect(Collectors.toSet());
+  }
+
+  protected static Map<String, RiskDomainAssociationDto> toDomainRiskDefinitions(
+      AbstractRisk<?, ?> risk, ReferenceAssembler referenceAssembler) {
+    HashMap<String, RiskDomainAssociationDto> result = new HashMap<>();
+    risk.getDomains()
+        .forEach(
+            d ->
+                result.put(
+                    d.getIdAsString(),
+                    new RiskDomainAssociationDto(
+                        IdRef.from(d, referenceAssembler),
+                        valuesGroupedByRiskDefinition(risk, d))));
+    return result;
+  }
+
+  private static Map<String, RiskValuesDto> valuesGroupedByRiskDefinition(
+      AbstractRisk<?, ?> risk, Domain domain) {
+    return risk.getRiskDefinitions(domain).stream()
+        .collect(toMap(RiskDefinitionRef::getIdRef, rd -> RiskValuesDto.from(risk, rd, domain)));
   }
 }

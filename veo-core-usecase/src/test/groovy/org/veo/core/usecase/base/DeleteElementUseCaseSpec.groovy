@@ -98,6 +98,8 @@ public class DeleteElementUseCaseSpec extends UseCaseSpec {
         Scope scope = Mock() {
             getOwner() >> existingUnit
             getId() >> scopeId
+            getOwningClient() >> Optional.of(existingClient)
+            getModelInterface() >> Scope
         }
 
         when:
@@ -106,5 +108,9 @@ public class DeleteElementUseCaseSpec extends UseCaseSpec {
         then:
         1 * scopeRepository.findById(scopeId) >> Optional.of(scope)
         1 * scopeRepository.deleteById(scopeId)
+        1 * eventPublisher.publish({ RiskAffectingElementChangeEvent event->
+            event.entityType == Scope
+            event.entityId == scopeId
+        })
     }
 }

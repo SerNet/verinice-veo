@@ -326,6 +326,9 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
     var ids = items.stream().map(Element::getIdAsString).toList();
     if (type.equals(Asset.class)) {
       fetchCompositeRiskAffected(ids, assetDataRepository);
+      if (fetchRiskValuesAspects) {
+        assetDataRepository.findAllWithRiskValuesAspectsByDbIdIn(ids);
+      }
     } else if (type.equals(Control.class)) {
       fetchComposites(ids, controlDataRepository);
       if (fetchRiskValuesAspects) {

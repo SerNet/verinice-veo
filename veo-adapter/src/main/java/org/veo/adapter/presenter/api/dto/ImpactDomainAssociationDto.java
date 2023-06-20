@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Alexander Koderman
+ * Copyright (C) 2023  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,18 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.entity.risk;
+package org.veo.adapter.presenter.api.dto;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-import org.veo.core.entity.DomainBase;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-public interface ImpactValueProvider {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class ImpactDomainAssociationDto extends DomainAssociationDto {
 
-  Optional<Map<RiskDefinitionRef, ImpactValues>> getImpactValues(DomainBase domain);
+  @Schema(
+      description =
+          "Key is risk definition ID, value contains risk values in the context of that risk definition.")
+  protected Map<String, ImpactRiskValuesDto> riskValues = new HashMap<>();
 
-  Optional<ImpactValues> getImpactValues(DomainBase domain, RiskDefinitionRef riskDefinition);
-
-  void setImpactValues(DomainBase domain, Map<RiskDefinitionRef, ImpactValues> riskValues);
+  public ImpactDomainAssociationDto() {
+    super();
+  }
 }

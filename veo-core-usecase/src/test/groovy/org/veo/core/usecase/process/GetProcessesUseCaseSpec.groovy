@@ -24,6 +24,7 @@ import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.QueryCondition
 import org.veo.core.usecase.UseCaseSpec
+import org.veo.core.usecase.base.GetElementsUseCase
 
 class GetProcessesUseCaseSpec extends UseCaseSpec {
 
@@ -45,7 +46,7 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
         process.getId() >> id
 
         when:
-        def output = usecase.execute(new GetProcessesUseCase.InputData(existingClient,
+        def output = usecase.execute(new GetElementsUseCase.RiskAffectedInputData(existingClient,
                 null, null, null, null, null, null,
                 null, null, null, null, null, null,
                 null, null, pagingConfiguration, false))
@@ -64,7 +65,7 @@ class GetProcessesUseCaseSpec extends UseCaseSpec {
             getOwner() >> existingUnit
             getId() >> id
         }
-        def input = new GetProcessesUseCase.InputData(existingClient, Mock(QueryCondition) {
+        def input = new GetElementsUseCase.RiskAffectedInputData(existingClient, Mock(QueryCondition) {
             getValues() >> [existingUnit.id]
         }, null, null, Mock(QueryCondition), null, null, null, null, null, null, null, null, null, Mock(QueryCondition), pagingConfiguration, false)
 

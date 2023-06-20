@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +25,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.persistence.entity.jpa.ElementData;
@@ -31,6 +33,44 @@ import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ScopeData;
 
 public interface ScopeDataRepository extends ScopeRiskAffectedDataRepository {
+
+  @Query(
+      "select distinct s from scope s "
+          + "left join fetch s.risks risks "
+          + "left join fetch risks.riskAspects "
+          + "where risks.scenario in ?1")
+  Set<ScopeData> findRisksWithValue(Collection<ScenarioData> causes);
+
+  @Query(
+      "select distinct s from scope s "
+          + "left join fetch s.risks risks "
+          + "left join fetch risks.riskAspects ra "
+          + "left join fetch ra.domain "
+          + "where s.dbId IN ?1")
+  Set<ScopeData> findByIdsWithRiskValues(Set<String> dbIds);
+
+  @Query(
+      """
+                   select distinct e from #{#entityName} e
+                   inner join fetch e.riskValuesAspects
+                   inner join fetch e.risks r
+                   inner join fetch r.domains
+                   left join fetch r.riskAspects
+                   inner join fetch r.scenario s
+                   left join fetch s.riskValuesAspects
+                   where e.dbId in ?1""")
+  Set<ScopeData> findWithRisksAndScenariosByDbIdIn(Iterable<String> ids);
+
+  @Query(
+      """
+                     select distinct e from #{#entityName} e
+                     inner join fetch e.owner o
+                     left join fetch e.riskValuesAspects as rva
+                     left join fetch rva.domain as d
+                     left join fetch d.riskDefinitionSet
+                     inner join fetch e.risks r
+                     where o.client = ?1""")
+  Set<ScopeData> findAllHavingRisks(Client client);
 
   <T extends ElementData> Set<Scope> findDistinctByMembersIn(Set<T> elements);
 
@@ -42,7 +82,8 @@ public interface ScopeDataRepository extends ScopeRiskAffectedDataRepository {
 
   @Query(
       "select count(s) > 0 from #{#entityName} as s "
-          + "inner join s.riskValuesAspects r "
+          + "inner join s.scopeRiskValuesAspects r "
+          + "inner join s.riskValuesAspects rva "
           + "inner join s.members m "
           + "where m.dbId in ?1 and r.riskDefinitionRef = ?2 and r.domain.dbId = ?3")
   boolean canUseRiskDefinition(
@@ -53,7 +94,7 @@ public interface ScopeDataRepository extends ScopeRiskAffectedDataRepository {
   List<ScopeData> findAllWithMembersByDbIdIn(List<String> ids);
 
   @Transactional(readOnly = true)
-  @EntityGraph(attributePaths = "riskValuesAspects")
+  @EntityGraph(attributePaths = {"riskValuesAspects", "scopeRiskValuesAspects"})
   List<ScopeData> findAllWithRiskValuesAspectsByDbIdIn(List<String> ids);
 
   @Query(

@@ -23,6 +23,7 @@ import java.util.UUID;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
+import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
@@ -68,7 +69,9 @@ public class CreateElementUseCase<TEntity extends Element>
     addToScopes(entity, input.scopeIds, input.authenticatedClient);
     evaluateDecisions(entity);
     entity = repositoryProvider.getElementRepositoryFor(state.getModelInterface()).save(entity);
-    if (Process.class.equals(entityType)) {
+    if (Process.class.equals(entityType)
+        || Asset.class.equals(entityType)
+        || Scope.class.equals(entityType)) {
       eventPublisher.publish(new RiskAffectingElementChangeEvent(entity, this));
     }
     return new CreateElementUseCase.OutputData<>(entity);

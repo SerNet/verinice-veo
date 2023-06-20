@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -37,10 +36,6 @@ public interface ProcessRepository
 
   /** Returns risks with initialized risk value aspects. */
   Set<Process> findRisksWithValue(Scenario scenario);
-
-  Optional<Process> findByIdWithRiskValues(Key<UUID> processId);
-
-  Optional<Process> findById(Key<UUID> id, boolean shouldEmbedRisks);
 
   Set<Process> findWithRisksAndScenarios(Set<Key<UUID>> ids);
 }

@@ -162,7 +162,7 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
         }
 
         then: "the table should have been cleared by the deletion job"
-        defaultPolling.within(20) {
+        defaultPolling.within(40) {
             storedEventRepository.findAll().size() == 0
         }
 

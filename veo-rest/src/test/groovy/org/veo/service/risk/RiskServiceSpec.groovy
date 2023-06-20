@@ -31,7 +31,9 @@ import org.veo.core.entity.risk.PotentialProbabilityImpl
 import org.veo.core.entity.risk.ProbabilityRef
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.risk.RiskRef
+import org.veo.core.repository.AssetRepository
 import org.veo.core.repository.ProcessRepository
+import org.veo.core.repository.ScopeRepository
 import org.veo.core.service.EventPublisher
 import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.DomainData
@@ -47,6 +49,8 @@ class RiskServiceSpec extends VeoSpec {
     static final String RISK_DEF = "r2d2"
     RiskService sut
     ProcessRepository repo = Mock()
+    AssetRepository arepo = Mock()
+    ScopeRepository srepo = Mock()
     EventPublisher publisher = Mock()
     ProcessData process
     ProcessRisk risk
@@ -57,7 +61,7 @@ class RiskServiceSpec extends VeoSpec {
     ClientData client
 
     def setup() {
-        sut = new RiskService(repo, publisher)
+        sut = new RiskService(repo,arepo, srepo, publisher)
         this.client = newClient()
         this.unit = newUnit(client) {
             it.setClient(client)

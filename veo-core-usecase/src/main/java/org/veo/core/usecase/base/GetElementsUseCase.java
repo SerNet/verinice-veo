@@ -39,6 +39,7 @@ import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseTools;
 
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.experimental.NonFinal;
 
@@ -164,6 +165,51 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
     QueryCondition<String> name;
     QueryCondition<String> updatedBy;
     PagingConfiguration pagingConfiguration;
+  }
+
+  @Valid
+  @Value
+  @EqualsAndHashCode(callSuper = true)
+  public static class RiskAffectedInputData extends GetElementsUseCase.InputData {
+    boolean embedRisks;
+
+    public RiskAffectedInputData(
+        Client authenticatedClient,
+        QueryCondition<Key<UUID>> unitUuid,
+        SingleValueQueryCondition<Key<UUID>> domainId,
+        QueryCondition<String> displayName,
+        QueryCondition<String> subType,
+        QueryCondition<String> status,
+        QueryCondition<Key<UUID>> childElementIds,
+        SingleValueQueryCondition<Boolean> hasChildElements,
+        SingleValueQueryCondition<Boolean> hasParentElements,
+        SingleValueQueryCondition<Key<UUID>> compositeId,
+        SingleValueQueryCondition<Key<UUID>> scopeId,
+        QueryCondition<String> description,
+        QueryCondition<String> designator,
+        QueryCondition<String> name,
+        QueryCondition<String> updatedBy,
+        PagingConfiguration pagingConfiguration,
+        boolean embedRisks) {
+      super(
+          authenticatedClient,
+          unitUuid,
+          domainId,
+          displayName,
+          subType,
+          status,
+          childElementIds,
+          hasChildElements,
+          hasParentElements,
+          compositeId,
+          scopeId,
+          description,
+          designator,
+          name,
+          updatedBy,
+          pagingConfiguration);
+      this.embedRisks = embedRisks;
+    }
   }
 
   @Valid

@@ -42,7 +42,7 @@ public class UpdateProcessInDomainUseCase extends UpdateElementInDomainUseCase<P
 
   @Override
   public OutputData<Process> execute(InputData<Process> input) {
-    var result = super.execute(input);
+    var result = super.execute(input); // TODO:VEO-2219 move to update element
     eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
     return result;
   }

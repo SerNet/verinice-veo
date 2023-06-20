@@ -17,8 +17,8 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.full;
 
+import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -29,6 +29,7 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.common.RiskRef;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
+import org.veo.adapter.presenter.api.dto.RiskDomainAssociationDto;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.Control;
@@ -63,8 +64,9 @@ public class AssetRiskDto extends AbstractRiskDto {
       @Valid IdRef<Asset> asset,
       RiskRef selfRef,
       long version,
-      String designator) {
-    super(designator, domains, scenario, mitigatedBy, riskOwner);
+      String designator,
+      @Valid Map<String, RiskDomainAssociationDto> domainsWithRiskValues) {
+    super(designator, domains, scenario, mitigatedBy, riskOwner, domainsWithRiskValues);
     this.asset = asset;
     setSelfRef(selfRef);
     setCreatedAt(createdAt);
@@ -72,6 +74,7 @@ public class AssetRiskDto extends AbstractRiskDto {
     setUpdatedAt(updatedAt);
     setUpdatedBy(updatedBy);
     setVersion(version);
+    setDomainsWithRiskValues(domainsWithRiskValues);
   }
 
   public static AssetRiskDto from(@Valid AssetRisk risk, ReferenceAssembler referenceAssembler) {
@@ -86,11 +89,9 @@ public class AssetRiskDto extends AbstractRiskDto {
         .updatedAt(risk.getUpdatedAt().toString())
         .updatedBy(risk.getUpdatedBy())
         .version(risk.getVersion())
-        .domains(
-            risk.getDomains().stream()
-                .map(o -> IdRef.from(o, referenceAssembler))
-                .collect(Collectors.toSet()))
+        .domains(toDomainReferences(risk, referenceAssembler))
         .selfRef(new RiskRef(referenceAssembler, risk))
+        .domainsWithRiskValues(toDomainRiskDefinitions(risk, referenceAssembler))
         .build();
   }
 }

@@ -63,6 +63,7 @@ import org.veo.core.entity.specification.EntityValidator;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.events.MessageCreatorImpl;
+import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.CatalogRepository;
 import org.veo.core.repository.ClientRepository;
@@ -72,6 +73,7 @@ import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.service.CatalogItemService;
 import org.veo.core.service.DomainTemplateIdGenerator;
@@ -262,8 +264,9 @@ public class ModuleConfiguration {
 
   @Bean
   public UpdateAssetUseCase updateAssetUseCase(
-      RepositoryProvider repositoryProvider, Decider decider) {
-    return new UpdateAssetUseCase(repositoryProvider, decider, getEntityStateMapper());
+      RepositoryProvider repositoryProvider, Decider decider, EventPublisher eventPublisher) {
+    return new UpdateAssetUseCase(
+        repositoryProvider, decider, getEntityStateMapper(), eventPublisher);
   }
 
   @Bean
@@ -477,8 +480,9 @@ public class ModuleConfiguration {
 
   @Bean
   public UpdateScopeUseCase updateScopeUseCase(
-      RepositoryProvider repositoryProvider, Decider decider) {
-    return new UpdateScopeUseCase(repositoryProvider, decider, getEntityStateMapper());
+      RepositoryProvider repositoryProvider, Decider decider, EventPublisher eventPublisher) {
+    return new UpdateScopeUseCase(
+        repositoryProvider, decider, getEntityStateMapper(), eventPublisher);
   }
 
   @Bean
@@ -893,8 +897,12 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public RiskService riskService(ProcessRepository processRepository, EventPublisher publisher) {
-    return new RiskService(processRepository, publisher);
+  public RiskService riskService(
+      ProcessRepository processRepository,
+      AssetRepository assetRepository,
+      ScopeRepository scopeRepository,
+      EventPublisher publisher) {
+    return new RiskService(processRepository, assetRepository, scopeRepository, publisher);
   }
 
   @Bean
@@ -973,8 +981,9 @@ public class ModuleConfiguration {
 
   @Bean
   UpdateAssetInDomainUseCase updateAssetDomainAssociationUseCase(
-      RepositoryProvider repositoryProvider, Decider decider) {
-    return new UpdateAssetInDomainUseCase(repositoryProvider, decider, getEntityStateMapper());
+      RepositoryProvider repositoryProvider, Decider decider, EventPublisher eventPublisher) {
+    return new UpdateAssetInDomainUseCase(
+        repositoryProvider, decider, getEntityStateMapper(), eventPublisher);
   }
 
   @Bean
@@ -1017,8 +1026,9 @@ public class ModuleConfiguration {
 
   @Bean
   UpdateScopeInDomainUseCase updateScopeInDomainUseCase(
-      RepositoryProvider repositoryProvider, Decider decider) {
-    return new UpdateScopeInDomainUseCase(repositoryProvider, decider, getEntityStateMapper());
+      RepositoryProvider repositoryProvider, Decider decider, EventPublisher eventPublisher) {
+    return new UpdateScopeInDomainUseCase(
+        repositoryProvider, decider, getEntityStateMapper(), eventPublisher);
   }
 
   @Bean

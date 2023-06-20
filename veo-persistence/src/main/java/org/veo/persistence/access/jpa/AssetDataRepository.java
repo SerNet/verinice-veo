@@ -17,6 +17,58 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
-import org.veo.persistence.entity.jpa.AssetData;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
-public interface AssetDataRepository extends CompositeRiskAffectedDataRepository<AssetData> {}
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
+
+import org.veo.core.entity.Client;
+import org.veo.persistence.entity.jpa.AssetData;
+import org.veo.persistence.entity.jpa.ScenarioData;
+
+public interface AssetDataRepository extends CompositeRiskAffectedDataRepository<AssetData> {
+  @Query(
+      "select distinct a from asset a "
+          + "left join fetch a.risks risks "
+          + "left join fetch risks.riskAspects "
+          + "where risks.scenario in ?1")
+  Set<AssetData> findRisksWithValue(Collection<ScenarioData> causes);
+
+  @Query(
+      "select distinct a from asset a "
+          + "left join fetch a.risks risks "
+          + "left join fetch risks.riskAspects ra "
+          + "left join fetch ra.domain "
+          + "where a.dbId IN ?1")
+  Set<AssetData> findByIdsWithRiskValues(Set<String> dbIds);
+
+  @Query(
+      """
+               select distinct e from #{#entityName} e
+               inner join fetch e.owner o
+               left join fetch e.riskValuesAspects as rva
+               left join fetch rva.domain as d
+               left join fetch d.riskDefinitionSet
+               inner join fetch e.risks r
+               where o.client = ?1""")
+  Set<AssetData> findAllHavingRisks(Client client);
+
+  @Query(
+      """
+               select distinct e from #{#entityName} e
+               inner join fetch e.riskValuesAspects
+               inner join fetch e.risks r
+               inner join fetch r.domains
+               left join fetch r.riskAspects
+               inner join fetch r.scenario s
+               left join fetch s.riskValuesAspects
+               where e.dbId in ?1""")
+  Set<AssetData> findWithRisksAndScenariosByDbIdIn(Iterable<String> ids);
+
+  @Transactional(readOnly = true)
+  @EntityGraph(attributePaths = "riskValuesAspects")
+  Set<AssetData> findAllWithRiskValuesAspectsByDbIdIn(List<String> ids);
+}

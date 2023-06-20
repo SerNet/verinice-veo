@@ -24,6 +24,12 @@ import jakarta.validation.constraints.NotEmpty;
 
 import javax.annotation.Nullable;
 
+import org.veo.core.entity.risk.CategorizedImpactValueProvider;
+import org.veo.core.entity.risk.CategorizedRiskValueProvider;
+import org.veo.core.entity.risk.ProbabilityValueProvider;
+import org.veo.core.entity.risk.RiskDefinitionRef;
+import org.veo.core.entity.risk.RiskValues;
+
 import lombok.NonNull;
 
 /**
@@ -83,6 +89,16 @@ public interface AbstractRisk<T extends RiskAffected<T, R>, R extends AbstractRi
    *     appoint no one.
    */
   R appoint(@Nullable Person riskOwner);
+
+  ProbabilityValueProvider getProbabilityProvider(RiskDefinitionRef riskDefinition, Domain domain);
+
+  CategorizedImpactValueProvider getImpactProvider(RiskDefinitionRef riskDefinition, Domain domain);
+
+  CategorizedRiskValueProvider getRiskProvider(RiskDefinitionRef riskDefinition, Domain domain);
+
+  Set<RiskDefinitionRef> getRiskDefinitions(Domain domain);
+
+  void defineRiskValues(Set<RiskValues> riskAspects);
 
   /**
    * Remove this risk from its associated entity.

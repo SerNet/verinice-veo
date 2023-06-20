@@ -120,6 +120,14 @@ class BasicCrudRestTest extends VeoRestTest {
                 (domainId): [
                     subType: "AST_Application",
                     status: "NEW",
+                    riskValues: [
+                        DSRA : [
+                            potentialImpacts: [
+                                "C": 0,
+                                "I": 1
+                            ]
+                        ]
+                    ]
                 ]
             ],
             customAspects: [
@@ -145,6 +153,7 @@ class BasicCrudRestTest extends VeoRestTest {
         getPropertiesAssetResponse.body.owner.displayName == unitName
         getPropertiesAssetResponse.body.owner.targetUri == targetUri
         getPropertiesAssetResponse.body.customAspects.containsKey('asset_details')
+        //        getPropertiesAssetResponse.body.domains.containsKey('asset_details')
     }
 
     def "CRUD person in domain context"() {

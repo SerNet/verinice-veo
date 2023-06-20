@@ -388,4 +388,33 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def nfEx = thrown(NotFoundException)
         nfEx.message == "Scope $scopeId is not associated with domain $testDomainId"
     }
+
+    def "risk values can be updated"() {
+        given: "a scope with risk values"
+        def assetId = parseJson(post("/domains/$testDomainId/scopes", [
+            name: "Risky asset",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "Company",
+            status: "NEW",
+            riskValues: [
+                riskyDef: [
+                    potentialImpacts: [
+                        C: 0
+                    ]
+                ]
+            ]
+        ])).resourceId
+
+        when: "updating risk values"
+        get("/domains/$testDomainId/scopes/$assetId").with{getResults ->
+            def asset = parseJson(getResults)
+            asset.riskValues.riskyDef.potentialImpacts.C = 1
+            put(asset._self, asset, ["If-Match": getETag(getResults)], 200)
+        }
+
+        then: "risk values have been altered"
+        with(parseJson(get("/domains/$testDomainId/scopes/$assetId"))) {
+            riskValues.riskyDef.potentialImpacts.C == 1
+        }
+    }
 }

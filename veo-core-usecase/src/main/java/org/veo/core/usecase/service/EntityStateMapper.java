@@ -27,6 +27,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.veo.core.entity.Asset;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomLink;
@@ -43,10 +44,10 @@ import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.entity.risk.ImpactRef;
+import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.PotentialProbabilityImpl;
-import org.veo.core.entity.risk.ProcessImpactValues;
-import org.veo.core.entity.risk.ProcessRiskValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
+import org.veo.core.entity.risk.RiskImpactValues;
 import org.veo.core.entity.risk.ScenarioRiskValues;
 import org.veo.core.entity.state.CompositeElementState;
 import org.veo.core.entity.state.ControlDomainAssociationState;
@@ -54,7 +55,7 @@ import org.veo.core.entity.state.ControlRiskValuesState;
 import org.veo.core.entity.state.CustomLinkState;
 import org.veo.core.entity.state.DomainAssociationState;
 import org.veo.core.entity.state.ElementState;
-import org.veo.core.entity.state.ProcessDomainAssociationState;
+import org.veo.core.entity.state.RiskImpactDomainAssociationState;
 import org.veo.core.entity.state.ScenarioDomainAssociationState;
 import org.veo.core.entity.state.ScopeDomainAssociationState;
 import org.veo.core.entity.state.ScopeState;
@@ -182,14 +183,26 @@ public class EntityStateMapper {
               process.setImpactValues(
                   domain,
                   mapImpactValues(
-                      ((ProcessDomainAssociationState) association).getRiskValues(), domain));
-    } else if (target instanceof Scope scope) {
+                      ((RiskImpactDomainAssociationState) association).getRiskValues(), domain));
+    } else if (target instanceof Asset asset) {
       customMapper =
           (domain, association) ->
-              scope.setRiskDefinition(
+              asset.setImpactValues(
                   domain,
-                  toRiskDefinitionRef(
-                      ((ScopeDomainAssociationState) association).getRiskDefinition(), domain));
+                  mapImpactValues(
+                      ((RiskImpactDomainAssociationState) association).getRiskValues(), domain));
+    } else if (target instanceof Scope scope) {
+      customMapper =
+          (domain, association) -> {
+            scope.setRiskDefinition(
+                domain,
+                toRiskDefinitionRef(
+                    ((ScopeDomainAssociationState) association).getRiskDefinition(), domain));
+            scope.setImpactValues(
+                domain,
+                mapImpactValues(
+                    ((ScopeDomainAssociationState) association).getRiskValues(), domain));
+          };
     } else if (target instanceof Control control) {
       customMapper =
           (domain, association) ->
@@ -297,21 +310,21 @@ public class EntityStateMapper {
         });
   }
 
-  private Map<RiskDefinitionRef, ProcessImpactValues> mapImpactValues(
-      Map<String, ? extends ProcessRiskValues> riskValues, DomainBase domain) {
+  private Map<RiskDefinitionRef, ImpactValues> mapImpactValues(
+      Map<String, ? extends RiskImpactValues> riskValues, DomainBase domain) {
     var referenceProvider = referencesForDomain(domain);
     return riskValues.entrySet().stream()
         .collect(
             Collectors.toMap(
                 e -> referenceProvider.getRiskDefinitionRef(e.getKey()),
-                e -> mapProcessImpactValues(e.getKey(), e.getValue(), referenceProvider)));
+                e -> mapImpactValues(e.getKey(), e.getValue(), referenceProvider)));
   }
 
-  private ProcessImpactValues mapProcessImpactValues(
+  private ImpactValues mapImpactValues(
       String riskDefinitionId,
-      ProcessRiskValues value,
+      RiskImpactValues value,
       DomainRiskReferenceProvider referenceProvider) {
-    var riskValues = new ProcessImpactValues();
+    var riskValues = new ImpactValues();
 
     Map<CategoryRef, ImpactRef> potentialImpacts =
         value.getPotentialImpacts().entrySet().stream()

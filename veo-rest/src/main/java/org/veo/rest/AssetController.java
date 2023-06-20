@@ -20,6 +20,7 @@ package org.veo.rest;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
+import static org.veo.rest.ControllerConstants.ANY_BOOLEAN;
 import static org.veo.rest.ControllerConstants.ANY_INT;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
 import static org.veo.rest.ControllerConstants.CHILD_ELEMENT_IDS_PARAM;
@@ -27,6 +28,7 @@ import static org.veo.rest.ControllerConstants.DESCRIPTION_PARAM;
 import static org.veo.rest.ControllerConstants.DESIGNATOR_PARAM;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
 import static org.veo.rest.ControllerConstants.DOMAIN_PARAM;
+import static org.veo.rest.ControllerConstants.EMBED_RISKS_DESC;
 import static org.veo.rest.ControllerConstants.HAS_CHILD_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_PARENT_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.NAME_PARAM;
@@ -85,9 +87,10 @@ import org.veo.adapter.presenter.api.dto.create.CreateAssetDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
+import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
@@ -129,7 +132,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AssetController extends AbstractElementController<Asset, FullAssetDto>
     implements AssetRiskResource {
-
+  public static final String EMBED_RISKS_PARAM = "embedRisks";
   private final DeleteRiskUseCase deleteRiskUseCase;
   private final UpdateAssetRiskUseCase updateAssetRiskUseCase;
   private final GetAssetRisksUseCase getAssetRisksUseCase;
@@ -157,6 +160,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
     this.deleteRiskUseCase = deleteRiskUseCase;
     this.updateAssetRiskUseCase = updateAssetRiskUseCase;
     this.getAssetRisksUseCase = getAssetRisksUseCase;
+    this.getAssetUseCase = getAssetUseCase;
   }
 
   public static final String URL_BASE_PATH = "/" + Asset.PLURAL_TERM;
@@ -164,6 +168,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
   private final CreateElementUseCase<Asset> createAssetUseCase;
   private final UpdateAssetUseCase updateAssetUseCase;
   private final GetAssetsUseCase getAssetsUseCase;
+  private final GetAssetUseCase getAssetUseCase;
   private final DeleteElementUseCase deleteElementUseCase;
   private final CreateAssetRiskUseCase createAssetRiskUseCase;
   private final GetAssetRiskUseCase getAssetRiskUseCase;
@@ -203,11 +208,15 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
               required = false,
               defaultValue = SORT_ORDER_DEFAULT_VALUE)
           @Pattern(regexp = SORT_ORDER_PATTERN)
-          String sortOrder) {
+          String sortOrder,
+      @RequestParam(name = EMBED_RISKS_PARAM, required = false, defaultValue = "false")
+          @Parameter(name = EMBED_RISKS_PARAM, description = EMBED_RISKS_DESC)
+          Boolean embedRisksParam) {
     Client client = getAuthenticatedClient(auth);
+    boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
 
     return getAssets(
-        GetElementsInputMapper.map(
+        GetRiskAffectedInputMapper.map(
             client,
             unitUuid,
             null,
@@ -225,19 +234,20 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
             updatedBy,
             PagingMapper.toConfig(
                 pageSize, pageNumber,
-                sortColumn, sortOrder)));
+                sortColumn, sortOrder),
+            embedRisks));
   }
 
   private CompletableFuture<PageDto<FullAssetDto>> getAssets(
-      GetElementsUseCase.InputData inputData) {
+      GetElementsUseCase.RiskAffectedInputData inputData) {
     return useCaseInteractor.execute(
         getAssetsUseCase,
         inputData,
         output ->
-            PagingMapper.toPage(output.getElements(), entityToDtoTransformer::transformAsset2Dto));
+            PagingMapper.toPage(
+                output.getElements(), asset -> entity2Dto(asset, inputData.isEmbedRisks())));
   }
 
-  @Override
   @Operation(summary = "Loads an asset")
   @ApiResponse(
       responseCode = "200",
@@ -248,13 +258,28 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
               schema = @Schema(implementation = FullAssetDto.class)))
   @ApiResponse(responseCode = "404", description = "Asset not found")
   @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
-  public @Valid Future<ResponseEntity<FullAssetDto>> getElement(
+  public @Valid Future<ResponseEntity<FullAssetDto>> getAsset(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid,
+      @RequestParam(name = EMBED_RISKS_PARAM, required = false, defaultValue = "false")
+          @Parameter(name = EMBED_RISKS_PARAM, description = EMBED_RISKS_DESC)
+          Boolean embedRisksParam,
       WebRequest request) {
-    return super.getElement(auth, uuid, request);
+    boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
+    ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
+    Client client = getClient(user.getClientId());
+    if (getEtag(Asset.class, uuid).map(request::checkNotModified).orElse(false)) {
+      return null;
+    }
+    CompletableFuture<FullAssetDto> entityFuture =
+        useCaseInteractor.execute(
+            getAssetUseCase,
+            new GetAssetUseCase.InputData(Key.uuidFrom(uuid), client, embedRisks),
+            output -> entity2Dto(output.getElement(), embedRisks));
+    return entityFuture.thenApply(
+        dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
   }
 
   @Override
@@ -335,7 +360,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
   protected String buildSearchUri(String id) {
     return linkTo(
             methodOn(AssetController.class)
-                .runSearch(ANY_AUTH, id, ANY_INT, ANY_INT, ANY_STRING, ANY_STRING))
+                .runSearch(ANY_AUTH, id, ANY_INT, ANY_INT, ANY_STRING, ANY_STRING, ANY_BOOLEAN))
         .withSelfRel()
         .getHref();
   }
@@ -365,13 +390,19 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
               required = false,
               defaultValue = SORT_ORDER_DEFAULT_VALUE)
           @Pattern(regexp = SORT_ORDER_PATTERN)
-          String sortOrder) {
+          String sortOrder,
+      @RequestParam(name = EMBED_RISKS_PARAM, required = false, defaultValue = "false")
+          @Parameter(name = EMBED_RISKS_PARAM, description = EMBED_RISKS_DESC)
+          Boolean embedRisksParam) {
+    boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
+
     try {
       return getAssets(
-          GetElementsInputMapper.map(
+          GetRiskAffectedInputMapper.map(
               getAuthenticatedClient(auth),
               SearchQueryDto.decodeFromSearchId(searchId),
-              PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
+              PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder),
+              embedRisks));
     } catch (IOException e) {
       log.error("Could not decode search URL: {}", e.getLocalizedMessage());
       return null;
@@ -454,7 +485,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
             urlAssembler.toKeys(dto.getDomainReferences()),
             urlAssembler.toKey(dto.getMitigation()),
             urlAssembler.toKey(dto.getRiskOwner()),
-            null);
+            CategorizedRiskValueMapper.map(dto.getDomainsWithRiskValues()));
 
     return useCaseInteractor.execute(
         createAssetRiskUseCase,
@@ -507,7 +538,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
             urlAssembler.toKey(dto.getMitigation()),
             urlAssembler.toKey(dto.getRiskOwner()),
             eTag,
-            null);
+            CategorizedRiskValueMapper.map(dto.getDomainsWithRiskValues()));
 
     // update risk and return saved risk with updated ETag, timestamps etc.:
     return useCaseInteractor
@@ -537,5 +568,9 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
   @Override
   protected FullAssetDto entity2Dto(Asset entity) {
     return entityToDtoTransformer.transformAsset2Dto(entity);
+  }
+
+  private FullAssetDto entity2Dto(Asset entity, boolean embedRisks) {
+    return entityToDtoTransformer.transformAsset2Dto(entity, embedRisks);
   }
 }

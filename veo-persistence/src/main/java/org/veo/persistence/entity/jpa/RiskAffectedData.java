@@ -18,12 +18,15 @@
 package org.veo.persistence.entity.jpa;
 
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.Valid;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Domain;
@@ -31,6 +34,7 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.RiskRelated;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
 import lombok.Data;
@@ -48,7 +52,41 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
   @Override
   public void transferToDomain(Domain oldDomain, Domain newDomain) {
     super.transferToDomain(oldDomain, newDomain);
+    findAspectByDomain(riskValuesAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
     risks.forEach(r -> r.transferToDomain(oldDomain, newDomain));
+  }
+
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      targetEntity = ImpactValuesAspectData.class,
+      mappedBy = "owner",
+      fetch = FetchType.LAZY)
+  @Valid
+  protected final Set<ImpactValuesAspectData> riskValuesAspects = new HashSet<>();
+
+  @Override
+  public void setImpactValues(DomainBase domain, Map<RiskDefinitionRef, ImpactValues> riskValues) {
+    var aspect =
+        findAspectByDomain(riskValuesAspects, domain)
+            .orElseGet(
+                () -> {
+                  var newAspect = new ImpactValuesAspectData(domain, this);
+                  riskValuesAspects.add(newAspect);
+                  return newAspect;
+                });
+    aspect.setValues(riskValues);
+  }
+
+  public Optional<Map<RiskDefinitionRef, ImpactValues>> getImpactValues(DomainBase domain) {
+    return findAspectByDomain(riskValuesAspects, domain).map(ImpactValuesAspectData::getValues);
+  }
+
+  @Override
+  public Optional<ImpactValues> getImpactValues(
+      DomainBase domain, RiskDefinitionRef riskDefinition) {
+    return getImpactValues(domain)
+        .map(impactValuesByRiskDefinition -> impactValuesByRiskDefinition.get(riskDefinition));
   }
 
   @OneToMany(

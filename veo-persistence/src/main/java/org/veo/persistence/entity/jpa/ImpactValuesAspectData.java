@@ -28,9 +28,9 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 
 import org.veo.core.entity.DomainBase;
-import org.veo.core.entity.Process;
+import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.risk.CategoryRef;
-import org.veo.core.entity.risk.ProcessImpactValues;
+import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.riskdefinition.CategoryDefinition;
 import org.veo.core.entity.riskdefinition.DimensionDefinition;
@@ -43,24 +43,24 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-/** Holds risk related info for a process in a specific domain. */
-@Entity(name = "process_impact_values_aspect")
+/** Holds risk related info for an element in a specific domain. */
+@Entity(name = "impact_values_aspect")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-class ProcessImpactValuesAspectData extends AspectData {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+class ImpactValuesAspectData extends AspectData {
 
-  public ProcessImpactValuesAspectData(DomainBase domain, Process owner) {
+  public ImpactValuesAspectData(DomainBase domain, RiskAffected<?, ?> owner) {
     super(domain, owner);
   }
 
   @Getter
   @NotNull
-  @Column(columnDefinition = "jsonb", name = "process_impact_values")
+  @Column(columnDefinition = "jsonb", name = "impact_values")
   @Type(JsonType.class)
-  Map<RiskDefinitionRef, ProcessImpactValues> values;
+  Map<RiskDefinitionRef, ImpactValues> values;
 
-  public void setValues(Map<RiskDefinitionRef, ProcessImpactValues> values) {
+  public void setValues(Map<RiskDefinitionRef, ImpactValues> values) {
     if (values == null) {
       throw new IllegalArgumentException("The impact values need to be set.");
     }
@@ -70,14 +70,14 @@ class ProcessImpactValuesAspectData extends AspectData {
     this.values = values;
   }
 
-  private void validateAllImpactsExist(Map<RiskDefinitionRef, ProcessImpactValues> values) {
+  private void validateAllImpactsExist(Map<RiskDefinitionRef, ImpactValues> values) {
     values
         .entrySet()
         .forEach(
             e -> {
               RiskDefinition riskDefinition =
                   this.getDomain().getRiskDefinitions().get(e.getKey().getIdRef());
-              ProcessImpactValues impactValues = e.getValue();
+              ImpactValues impactValues = e.getValue();
               impactValues.getPotentialImpacts().entrySet().stream()
                   .forEach(
                       impacts -> {
@@ -96,7 +96,7 @@ class ProcessImpactValuesAspectData extends AspectData {
   }
 
   /** Validates that all defined Impact Categories exist in the referenced risk definition. */
-  private void validateAllCategoriesExist(Map<RiskDefinitionRef, ProcessImpactValues> values) {
+  private void validateAllCategoriesExist(Map<RiskDefinitionRef, ImpactValues> values) {
     values
         .entrySet()
         .forEach(
@@ -122,7 +122,7 @@ class ProcessImpactValuesAspectData extends AspectData {
   }
 
   /** Validates that the risk definition is part of associated domain. */
-  private void validateRiskDefinitionExist(Map<RiskDefinitionRef, ProcessImpactValues> values) {
+  private void validateRiskDefinitionExist(Map<RiskDefinitionRef, ImpactValues> values) {
     Set<String> idSet =
         this.getDomain().getRiskDefinitions().entrySet().stream()
             .map(e -> e.getValue().getId())

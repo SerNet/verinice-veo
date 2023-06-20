@@ -77,6 +77,7 @@ import org.veo.adapter.presenter.api.dto.create.CreateScopeInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeInDomainDto;
 import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -196,7 +197,7 @@ public class ScopeInDomainController {
     return elementService.getElements(
         domainId,
         getScopesUseCase,
-        GetElementsInputMapper.map(
+        GetRiskAffectedInputMapper.map(
             clientLookup.getClient(auth),
             unitUuid,
             domainId,
@@ -214,7 +215,8 @@ public class ScopeInDomainController {
             updatedBy,
             PagingMapper.toConfig(
                 pageSize, pageNumber,
-                sortColumn, sortOrder)),
+                sortColumn, sortOrder),
+            false),
         entityToDtoTransformer::transformScope2Dto);
   }
 

@@ -20,12 +20,14 @@ package org.veo.core.usecase.base;
 import java.util.Set;
 import java.util.UUID;
 
+import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ElementRepository;
@@ -44,7 +46,7 @@ public class DeleteElementUseCase
   private final EventPublisher eventPublisher;
 
   private static final Set<Class<?>> RELEVANT_CLASSES_FOR_RISK =
-      Set.of(Process.class, Scenario.class, Control.class);
+      Set.of(Process.class, Asset.class, Scope.class, Scenario.class, Control.class);
 
   public DeleteElementUseCase(
       RepositoryProvider repositoryProvider, EventPublisher eventPublisher) {

@@ -74,7 +74,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
             queryCounts.select == 30
             queryCounts.insert == 2
             queryCounts.update == 1
-            queryCounts.delete == 42
+            queryCounts.delete == 43
             queryCounts.time < 1000
             // 115 is the currently observed count of 105 rows plus an acceptable safety margin
             DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 115
@@ -139,13 +139,13 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
 
         then: 'query statistics show sensible data'
         verifyAll {
-            queryCounts.select == 55
+            queryCounts.select == 56
             queryCounts.insert == 31
             queryCounts.update == 1
             queryCounts.delete == 246
             queryCounts.time < 6000
-            // 12000 is the currently observed count of 11921 rows plus an acceptable safety margin
-            DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 12000
+            // 14000 is the currently observed count of 13201 rows plus an acceptable safety margin
+            DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 14000
         }
     }
 

@@ -17,12 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
-import java.util.Map;
-import java.util.Optional;
-
-import org.veo.core.entity.risk.ProcessImpactValues;
-import org.veo.core.entity.risk.RiskDefinitionRef;
-
 /** A process is a series of business activities that use specific assets. */
 public interface Process
     extends Element, CompositeElement<Process>, RiskAffected<Process, ProcessRisk> {
@@ -45,11 +39,4 @@ public interface Process
   default String getTypeDesignator() {
     return TYPE_DESIGNATOR;
   }
-
-  Optional<Map<RiskDefinitionRef, ProcessImpactValues>> getImpactValues(DomainBase domain);
-
-  Optional<ProcessImpactValues> getImpactValues(
-      DomainBase domain, RiskDefinitionRef riskDefinition);
-
-  void setImpactValues(DomainBase domain, Map<RiskDefinitionRef, ProcessImpactValues> riskValues);
 }

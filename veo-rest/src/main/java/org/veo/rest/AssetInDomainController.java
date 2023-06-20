@@ -74,7 +74,7 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateAssetInDomainDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetInDomainDto;
-import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
@@ -189,7 +189,7 @@ public class AssetInDomainController {
     return elementService.getElements(
         domainId,
         getAssetsUseCase,
-        GetElementsInputMapper.map(
+        GetRiskAffectedInputMapper.map(
             clientLookup.getClient(auth),
             unitUuid,
             domainId,
@@ -207,7 +207,8 @@ public class AssetInDomainController {
             updatedBy,
             PagingMapper.toConfig(
                 pageSize, pageNumber,
-                sortColumn, sortOrder)),
+                sortColumn, sortOrder),
+            false),
         entityToDtoTransformer::transformAsset2Dto);
   }
 
@@ -256,7 +257,7 @@ public class AssetInDomainController {
     return elementService.getElements(
         domainId,
         getAssetsUseCase,
-        GetElementsInputMapper.map(
+        GetRiskAffectedInputMapper.map(
             client,
             null,
             domainId,
@@ -274,7 +275,8 @@ public class AssetInDomainController {
             null,
             PagingMapper.toConfig(
                 pageSize, pageNumber,
-                sortColumn, sortOrder)),
+                sortColumn, sortOrder),
+            false),
         entityToDtoTransformer::transformAsset2Dto);
   }
 

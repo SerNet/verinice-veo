@@ -94,11 +94,9 @@ import org.veo.rest.schemas.controller.EntitySchemaController;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Component
 @AllArgsConstructor
-@Slf4j
 public class ReferenceAssemblerImpl implements ReferenceAssembler {
 
   private static final String UUID_REGEX =
@@ -116,14 +114,16 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     Class<? extends Identifiable> type = identifiable.getModelInterface();
     String id = identifiable.getId().uuidValue();
     if (Scope.class.isAssignableFrom(type)) {
-      return linkTo(methodOn(ScopeController.class).getScope(ANY_AUTH, id, ANY_REQUEST))
-          .withRel(ScopeController.URL_BASE_PATH)
-          .getHref();
+      return trimVariables(
+          linkTo(methodOn(ScopeController.class).getScope(ANY_AUTH, id, ANY_BOOLEAN, ANY_REQUEST))
+              .withRel(ScopeController.URL_BASE_PATH)
+              .getHref());
     }
     if (Asset.class.isAssignableFrom(type)) {
-      return linkTo(methodOn(AssetController.class).getElement(ANY_AUTH, id, ANY_REQUEST))
-          .withRel(AssetController.URL_BASE_PATH)
-          .getHref();
+      return trimVariables(
+          linkTo(methodOn(AssetController.class).getAsset(ANY_AUTH, id, ANY_BOOLEAN, ANY_REQUEST))
+              .withRel(AssetController.URL_BASE_PATH)
+              .getHref());
     }
     if (Document.class.isAssignableFrom(type)) {
       return linkTo(methodOn(DocumentController.class).getElement(ANY_AUTH, id, ANY_REQUEST))
@@ -394,7 +394,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                       ANY_INT,
                       ANY_INT,
                       ANY_STRING,
-                      ANY_STRING))
+                      ANY_STRING,
+                      ANY_BOOLEAN))
           .withSelfRel()
           .getHref();
     }
@@ -417,7 +418,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
                       ANY_INT,
                       ANY_INT,
                       ANY_STRING,
-                      ANY_STRING))
+                      ANY_STRING,
+                      ANY_BOOLEAN))
           .withSelfRel()
           .getHref();
     }

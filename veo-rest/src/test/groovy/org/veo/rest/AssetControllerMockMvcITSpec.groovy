@@ -448,6 +448,7 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
                 (dsgvoDomain.id.uuidValue()): [
                     subType: "AST_Datatype",
                     status: "NEW",
+                    riskValues: [:]
                 ]
             ]
         ]
@@ -465,7 +466,8 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         result.domains[dsgvoDomain.id.uuidValue()] == [
             subType: "AST_Datatype",
             status: "NEW",
-            decisionResults: [:]
+            decisionResults: [:],
+            riskValues: [:]
         ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
         getETag(resultActions) == ETag.from(asset.idAsString, 1)
@@ -522,7 +524,8 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         result.domains[dsgvoDomain.id.uuidValue()] == [
             subType: "AST_Application",
             status: "NEW",
-            decisionResults: [:]
+            decisionResults: [:],
+            riskValues: [:]
         ]
         result.owner.targetUri == "http://localhost/units/"+unit.id.uuidValue()
 

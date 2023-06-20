@@ -26,8 +26,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.veo.adapter.presenter.api.openapi.DeterminedRiskSchema;
 import org.veo.adapter.presenter.api.openapi.ImpactSchema;
 import org.veo.adapter.presenter.api.openapi.ProbabilitySchema;
+import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.risk.DeterminedRisk;
 import org.veo.core.entity.risk.DeterminedRiskImpl;
 import org.veo.core.entity.risk.Impact;
@@ -78,7 +78,7 @@ public class RiskValuesDto {
               implementation = DeterminedRiskSchema.class))
   private List<DeterminedRisk> riskValues;
 
-  public static RiskValuesDto from(ProcessRisk risk, RiskDefinitionRef rd, Domain domain) {
+  public static RiskValuesDto from(AbstractRisk<?, ?> risk, RiskDefinitionRef rd, Domain domain) {
     return RiskValuesDto.builder()
         .probability(risk.getProbabilityProvider(rd, domain).getProbability())
         .impactValues(risk.getImpactProvider(rd, domain).getCategorizedImpacts())

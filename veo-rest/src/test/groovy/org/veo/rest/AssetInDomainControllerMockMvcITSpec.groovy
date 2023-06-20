@@ -263,4 +263,33 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         def nfEx = thrown(NotFoundException)
         nfEx.message == "Asset with ID $randomAssetId not found"
     }
+
+    def "risk values can be updated"() {
+        given: "an asset with risk values"
+        def assetId = parseJson(post("/domains/$testDomainId/assets", [
+            name: "Risky asset",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "Server",
+            status: "RUNNING",
+            riskValues: [
+                riskyDef: [
+                    potentialImpacts: [
+                        C: 0
+                    ]
+                ]
+            ]
+        ])).resourceId
+
+        when: "updating risk values"
+        get("/domains/$testDomainId/assets/$assetId").with{getResults ->
+            def asset = parseJson(getResults)
+            asset.riskValues.riskyDef.potentialImpacts.C = 1
+            put(asset._self, asset, ["If-Match": getETag(getResults)], 200)
+        }
+
+        then: "risk values have been altered"
+        with(parseJson(get("/domains/$testDomainId/assets/$assetId"))) {
+            riskValues.riskyDef.potentialImpacts.C == 1
+        }
+    }
 }

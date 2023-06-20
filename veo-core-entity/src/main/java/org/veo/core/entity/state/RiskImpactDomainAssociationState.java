@@ -22,27 +22,27 @@ import java.util.Set;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ref.ITypedId;
-import org.veo.core.entity.risk.ProcessRiskValues;
+import org.veo.core.entity.risk.RiskImpactValues;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
-public interface ProcessDomainAssociationState extends DomainAssociationState {
+public interface RiskImpactDomainAssociationState extends DomainAssociationState {
 
-  Map<String, ? extends ProcessRiskValues> getRiskValues();
+  Map<String, ? extends RiskImpactValues> getRiskValues();
 
   @Value
   @EqualsAndHashCode(callSuper = true)
-  class ProcessDomainAssociationStateImpl extends DomainAssociationStateImpl
-      implements ProcessDomainAssociationState {
+  class RiskImpactDomainAssociationStateImpl extends DomainAssociationStateImpl
+      implements RiskImpactDomainAssociationState {
 
-    Map<String, ? extends ProcessRiskValues> riskValues;
+    Map<String, ? extends RiskImpactValues> riskValues;
 
-    public ProcessDomainAssociationStateImpl(
+    public RiskImpactDomainAssociationStateImpl(
         ITypedId<Domain> domain,
         String subType,
         String status,
-        Map<String, ? extends ProcessRiskValues> riskValues,
+        Map<String, ? extends RiskImpactValues> riskValues,
         Set<CustomAspectState> customAspects,
         Set<CustomLinkState> customLinks) {
       super(domain, subType, status, customAspects, customLinks);

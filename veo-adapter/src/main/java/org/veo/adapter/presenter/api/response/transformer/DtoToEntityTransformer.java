@@ -100,7 +100,15 @@ public final class DtoToEntityTransformer {
   public AssetRisk transformDto2AssetRisk(AssetRiskDto source, IdRefResolver idRefResolver) {
     var asset = idRefResolver.resolve(source.getAsset());
     var risk = mapRisk(source, idRefResolver, asset);
-    // TODO-2150 map risk values
+    risk.defineRiskValues(
+        source.getDomainsWithRiskValues().values().stream()
+            .flatMap(
+                domainAssociation ->
+                    CategorizedRiskValueMapper.toRiskValues(
+                        // domain ID used by DTO may differ from resolved domain's ID
+                        idRefResolver.resolve(domainAssociation.getReference()).getIdAsString(),
+                        domainAssociation.getRiskDefinitions()))
+            .collect(toSet()));
     return risk;
   }
 
@@ -122,7 +130,24 @@ public final class DtoToEntityTransformer {
   public ScopeRisk transformDto2ScopeRisk(ScopeRiskDto source, IdRefResolver idRefResolver) {
     var scope = idRefResolver.resolve(source.getScope());
     var risk = mapRisk(source, idRefResolver, scope);
-    // TODO-2150 map risk values
+    risk.defineRiskValues(
+        source.getDomainsWithRiskValues().values().stream()
+            .flatMap(
+                domainAssociation ->
+                    CategorizedRiskValueMapper.toRiskValues(
+                        // domain ID used by DTO may differ from resolved domain's ID
+                        idRefResolver.resolve(domainAssociation.getReference()).getIdAsString(),
+                        domainAssociation.getRiskDefinitions()))
+            .collect(toSet()));
+    risk.defineRiskValues(
+        source.getDomainsWithRiskValues().values().stream()
+            .flatMap(
+                domainAssociation ->
+                    CategorizedRiskValueMapper.toRiskValues(
+                        // domain ID used by DTO may differ from resolved domain's ID
+                        idRefResolver.resolve(domainAssociation.getReference()).getIdAsString(),
+                        domainAssociation.getRiskDefinitions()))
+            .collect(toSet()));
     return risk;
   }
 

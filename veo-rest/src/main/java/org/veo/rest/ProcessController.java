@@ -89,7 +89,7 @@ import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.presenter.api.io.mapper.GetProcessesInputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
@@ -98,6 +98,7 @@ import org.veo.core.entity.inspection.Finding;
 import org.veo.core.usecase.InspectElementUseCase;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
+import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
@@ -323,7 +324,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
     boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
 
     return getProcesses(
-        GetProcessesInputMapper.map(
+        GetRiskAffectedInputMapper.map(
             client,
             parentUuid,
             null,
@@ -344,7 +345,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
   }
 
   private CompletableFuture<PageDto<FullProcessDto>> getProcesses(
-      GetProcessesUseCase.InputData inputData) {
+      GetElementsUseCase.RiskAffectedInputData inputData) {
 
     return useCaseInteractor.execute(
         getProcessesUseCase,
@@ -396,7 +397,7 @@ public class ProcessController extends AbstractElementController<Process, FullPr
     boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
     try {
       return getProcesses(
-          GetProcessesInputMapper.map(
+          GetRiskAffectedInputMapper.map(
               getAuthenticatedClient(auth),
               SearchQueryDto.decodeFromSearchId(searchId),
               PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder),

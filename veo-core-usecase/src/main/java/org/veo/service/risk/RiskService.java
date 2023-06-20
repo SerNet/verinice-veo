@@ -28,28 +28,33 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.veo.core.entity.AbstractRisk;
+import org.veo.core.entity.Asset;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Process;
-import org.veo.core.entity.ProcessRisk;
+import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.entity.event.RiskChangedEvent;
 import org.veo.core.entity.risk.CategorizedImpactValueProvider;
 import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.DeterminedRiskImpl;
 import org.veo.core.entity.risk.ImpactRef;
+import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.PotentialProbabilityImpl;
 import org.veo.core.entity.risk.ProbabilityRef;
 import org.veo.core.entity.risk.ProbabilityValueProvider;
-import org.veo.core.entity.risk.ProcessImpactValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.risk.RiskRef;
 import org.veo.core.entity.risk.RiskValuesProvider;
 import org.veo.core.entity.riskdefinition.CategoryDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
+import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.ProcessRepository;
+import org.veo.core.repository.ScopeRepository;
 import org.veo.core.service.EventPublisher;
 
 import lombok.AllArgsConstructor;
@@ -60,29 +65,50 @@ import lombok.extern.slf4j.Slf4j;
 public class RiskService {
 
   private final ProcessRepository processRepository;
+  private final AssetRepository assetRepository;
+  private final ScopeRepository scopeRepository;
 
   private final EventPublisher eventPublisher;
 
   public void evaluateChangedRiskComponent(Element element) {
     Class<? extends Identifiable> type = element.getModelInterface();
 
-    if (Process.class.isAssignableFrom(type)) {
+    if (Asset.class.isAssignableFrom(type)) {
+      assetRepository.findWithRisksAndScenarios(Set.of(element.getId()));
+      calculateValuesForObject((Asset) element);
+    } else if (Scope.class.isAssignableFrom(type)) {
+      scopeRepository.findWithRisksAndScenarios(Set.of(element.getId()));
+      calculateValuesForObject((Scope) element);
+    } else if (Process.class.isAssignableFrom(type)) {
       processRepository.findWithRisksAndScenarios(Set.of(element.getId()));
-      calculateValuesForProcess((Process) element);
+      calculateValuesForObject((Process) element);
     } else if (Scenario.class.isAssignableFrom(type)) {
       Set<Process> processes = processRepository.findByRisk((Scenario) element);
       processRepository.findWithRisksAndScenarios(
           processes.stream().map(Process::getId).collect(Collectors.toSet()));
 
-      for (Process process : processes) {
-        calculateValuesForProcess(process);
+      Set<Asset> assets = assetRepository.findByRisk((Scenario) element);
+      assetRepository.findWithRisksAndScenarios(
+          assets.stream().map(Asset::getId).collect(Collectors.toSet()));
+
+      Set<Scope> scopes = scopeRepository.findByRisk((Scenario) element);
+      scopeRepository.findWithRisksAndScenarios(
+          scopes.stream().map(Scope::getId).collect(Collectors.toSet()));
+
+      Set<RiskAffected<?, ?>> elements = new HashSet<>();
+      elements.addAll(scopes);
+      elements.addAll(processes);
+      elements.addAll(assets);
+
+      for (RiskAffected<?, ?> e : elements) {
+        calculateValuesForObject(e);
       }
     }
   }
 
-  private void calculateValuesForProcess(Process process) {
+  private void calculateValuesForObject(RiskAffected<?, ?> process) {
     var entityEvent = new RiskAffectingElementChangeEvent(process, this);
-    for (ProcessRisk risk : process.getRisks()) {
+    for (AbstractRisk<?, ?> risk : process.getRisks()) {
       var events = calculateValuesForRisk(process, risk);
       events.forEach(entityEvent::addChangedRisk);
     }
@@ -91,7 +117,8 @@ public class RiskService {
     }
   }
 
-  private Set<RiskChangedEvent> calculateValuesForRisk(Process process, ProcessRisk risk) {
+  private Set<RiskChangedEvent> calculateValuesForRisk(
+      RiskAffected<?, ?> process, AbstractRisk<?, ?> risk) {
     Set<RiskChangedEvent> riskEvents = new HashSet<>();
     Scenario scenario = risk.getScenario();
     for (Domain domain : risk.getDomains()) {
@@ -101,7 +128,7 @@ public class RiskService {
   }
 
   private Set<RiskChangedEvent> calculateValuesForDomain(
-      Process process, ProcessRisk risk, Scenario scenario, Domain domain) {
+      RiskAffected<?, ?> process, AbstractRisk<?, ?> risk, Scenario scenario, Domain domain) {
     log.debug("Determine values for {} of {} in {}", risk, process, domain);
     Set<RiskChangedEvent> riskEvents = new HashSet<>();
 
@@ -114,7 +141,7 @@ public class RiskService {
       } else {
         log.debug(
             "Skipping the domain's risk definition {} because it is "
-                + "unused in the risk for process {} / scenario {}.",
+                + "unused in the risk for object {} / scenario {}.",
             rdr.getIdRef(),
             risk.getEntity().getIdAsString(),
             risk.getScenario().getIdAsString());
@@ -124,8 +151,8 @@ public class RiskService {
   }
 
   private Optional<RiskChangedEvent> calculateValuesForRiskDefinition(
-      Process process,
-      ProcessRisk risk,
+      RiskAffected<?, ?> process,
+      AbstractRisk<?, ?> risk,
       Scenario scenario,
       Domain domain,
       RiskDefinition riskDefinition) {
@@ -160,7 +187,7 @@ public class RiskService {
 
   /** Transfers potentialProbability from scenario to riskValues if present */
   private ProbabilityRef calculateProbability(
-      ProcessRisk risk,
+      AbstractRisk<?, ?> risk,
       Scenario scenario,
       Domain domain,
       RiskDefinitionRef rdr,
@@ -183,8 +210,8 @@ public class RiskService {
   }
 
   private void calculateValuesForCategory(
-      Process process,
-      ProcessRisk risk,
+      RiskAffected<?, ?> process,
+      AbstractRisk<?, ?> risk,
       Domain domain,
       RiskDefinitionRef riskDefinitionRef,
       RiskChangedEvent riskEvent,
@@ -209,7 +236,7 @@ public class RiskService {
 
   /* Calculates riskValue using the riskDefinition and sets it as the inherentRisk. */
   private void calculateRisk(
-      ProcessRisk risk,
+      AbstractRisk<?, ?> risk,
       RiskDefinitionRef riskDefinitionRef,
       RiskChangedEvent riskEvent,
       Domain domain,
@@ -246,7 +273,7 @@ public class RiskService {
 
   /* Transfers potentialImpact from process to riskValues if present. */
   private ImpactRef calculateImpact(
-      Process process,
+      RiskAffected<?, ?> process,
       Domain domain,
       RiskDefinitionRef riskDefinitionRef,
       RiskChangedEvent riskEvent,
@@ -255,7 +282,7 @@ public class RiskService {
     ImpactRef newImpact =
         process
             .getImpactValues(domain, riskDefinitionRef)
-            .map(ProcessImpactValues::getPotentialImpacts)
+            .map(ImpactValues::getPotentialImpacts)
             .map(it -> it.get(categoryRef))
             .orElse(null);
     if (!Objects.equals(newImpact, riskValueImpact.getPotentialImpact(categoryRef))) {

@@ -89,5 +89,5 @@ public abstract class AbstractAssetDto extends CompositeEntityDto<Asset> impleme
   @Schema(
       description =
           "Details about this element's association with domains. Domain ID is key, association object is value.")
-  private Map<String, DomainAssociationDto> domains = new HashMap<>();
+  private Map<String, AssetDomainAssociationDto> domains = new HashMap<>();
 }

@@ -31,10 +31,10 @@ import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.PagingConfiguration;
-import org.veo.core.usecase.process.GetProcessesUseCase;
+import org.veo.core.usecase.base.GetElementsUseCase;
 
-public class GetProcessesInputMapper {
-  public static GetProcessesUseCase.InputData map(
+public class GetRiskAffectedInputMapper {
+  public static GetElementsUseCase.RiskAffectedInputData map(
       Client client,
       String unitUuid,
       String domainId,
@@ -52,7 +52,7 @@ public class GetProcessesInputMapper {
       String updatedBy,
       PagingConfiguration pagingConfiguration,
       boolean embedRisks) {
-    return new GetProcessesUseCase.InputData(
+    return new GetElementsUseCase.RiskAffectedInputData(
         client,
         createUuidCondition(unitUuid),
         createSingleValueCondition(Key.uuidFrom(domainId)),
@@ -72,12 +72,12 @@ public class GetProcessesInputMapper {
         embedRisks);
   }
 
-  public static GetProcessesUseCase.InputData map(
+  public static GetElementsUseCase.RiskAffectedInputData map(
       Client client,
       SearchQueryDto searchQuery,
       PagingConfiguration pagingConfiguration,
       boolean embedRisks) {
-    return new GetProcessesUseCase.InputData(
+    return new GetElementsUseCase.RiskAffectedInputData(
         client,
         transformCondition(searchQuery.getUnitId()),
         null,

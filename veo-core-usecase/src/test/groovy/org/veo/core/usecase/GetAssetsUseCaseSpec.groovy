@@ -25,6 +25,7 @@ import org.veo.core.repository.ElementQuery
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.QueryCondition
 import org.veo.core.usecase.asset.GetAssetsUseCase
+import org.veo.core.usecase.base.GetElementsUseCase
 import org.veo.core.usecase.base.GetElementsUseCase.InputData
 
 class GetAssetsUseCaseSpec extends UseCaseSpec {
@@ -48,7 +49,7 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
         }
 
         when:
-        def output = usecase.execute(new InputData(existingClient, null, null, null, null, null, null, null, null, null, null, null, null, null, null, pagingConfiguration))
+        def output = usecase.execute(new GetElementsUseCase.RiskAffectedInputData(existingClient, null, null, null, null, null, null, null, null, null, null, null, null, null, null, pagingConfiguration, false))
 
         then:
         1 * clientRepository.findById(existingClient.id) >> Optional.of(existingClient)
@@ -63,9 +64,9 @@ class GetAssetsUseCaseSpec extends UseCaseSpec {
             getOwner() >> existingUnit
             getId() >> id
         }
-        def input = new InputData(existingClient, Mock(QueryCondition) {
+        def input = new GetElementsUseCase.RiskAffectedInputData(existingClient, Mock(QueryCondition) {
             getValues() >> [existingUnit.id]
-        }, null, null, Mock(QueryCondition), null, null, null, null, null, null, null, null, null, null, pagingConfiguration)
+        }, null, null, Mock(QueryCondition), null, null, null, null, null, null, null, null, null, null, pagingConfiguration, false)
 
         when:
         def output = usecase.execute(input)

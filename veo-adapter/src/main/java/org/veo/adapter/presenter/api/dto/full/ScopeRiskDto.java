@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.full;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,7 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.common.RiskRef;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
+import org.veo.adapter.presenter.api.dto.RiskDomainAssociationDto;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Person;
@@ -63,8 +65,9 @@ public class ScopeRiskDto extends AbstractRiskDto {
       @Valid IdRef<Scope> scope,
       RiskRef selfRef,
       long version,
-      String designator) {
-    super(designator, domains, scenario, mitigatedBy, riskOwner);
+      String designator,
+      @Valid Map<String, RiskDomainAssociationDto> domainsWithRiskValues) {
+    super(designator, domains, scenario, mitigatedBy, riskOwner, domainsWithRiskValues);
     this.scope = scope;
     setSelfRef(selfRef);
     setCreatedAt(createdAt);
@@ -72,6 +75,7 @@ public class ScopeRiskDto extends AbstractRiskDto {
     setUpdatedAt(updatedAt);
     setUpdatedBy(updatedBy);
     setVersion(version);
+    setDomainsWithRiskValues(domainsWithRiskValues);
   }
 
   public static ScopeRiskDto from(@Valid ScopeRisk risk, ReferenceAssembler referenceAssembler) {
@@ -91,6 +95,7 @@ public class ScopeRiskDto extends AbstractRiskDto {
                 .map(o -> IdRef.from(o, referenceAssembler))
                 .collect(Collectors.toSet()))
         .selfRef(new RiskRef(referenceAssembler, risk))
+        .domainsWithRiskValues(toDomainRiskDefinitions(risk, referenceAssembler))
         .build();
   }
 }

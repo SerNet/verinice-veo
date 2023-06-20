@@ -201,9 +201,22 @@ public final class EntityToDtoTransformer {
   }
 
   public FullAssetDto transformAsset2Dto(@Valid Asset source) {
+    return transformAsset2Dto(source, false);
+  }
+
+  public FullAssetDto transformAsset2Dto(@Valid Asset source, boolean embedRisks) {
     FullAssetDto target = new FullAssetDto();
     mapCompositeEntity(source, target);
     domainAssociationTransformer.mapDomainsToDto(source, target);
+
+    if (embedRisks) {
+      target.setRisks(
+          source.getRisks().stream()
+              .map(this::transform2Dto)
+              .map(AssetRiskDto.class::cast)
+              .collect(toSet()));
+    }
+
     return target;
   }
 
@@ -256,10 +269,22 @@ public final class EntityToDtoTransformer {
   }
 
   public FullScopeDto transformScope2Dto(@Valid Scope source) {
+    return transformScope2Dto(source, false);
+  }
+
+  public FullScopeDto transformScope2Dto(@Valid Scope source, boolean embedRisks) {
     FullScopeDto target = new FullScopeDto();
     mapElement(source, target);
     domainAssociationTransformer.mapDomainsToDto(source, target);
     target.setMembers(convertReferenceSet(source.getMembers()));
+    if (embedRisks) {
+      target.setRisks(
+          source.getRisks().stream()
+              .map(this::transform2Dto)
+              .map(ScopeRiskDto.class::cast)
+              .collect(toSet()));
+    }
+
     return target;
   }
 
@@ -561,6 +586,7 @@ public final class EntityToDtoTransformer {
   public FullAssetInDomainDto transformAsset2Dto(Asset source, Domain domain) {
     var target = new FullAssetInDomainDto(source.getIdAsString());
     mapCompositeElementProperties(source, target, domain);
+    target.setRiskValues(domainAssociationTransformer.mapRiskValues(source, domain));
     return target;
   }
 
@@ -611,6 +637,7 @@ public final class EntityToDtoTransformer {
             .map(m -> ElementInDomainIdRef.from(m, domain, referenceAssembler))
             .collect(toSet()));
     target.setRiskDefinition(domainAssociationTransformer.mapRiskDefinition(source, domain));
+    target.setRiskValues(domainAssociationTransformer.mapRiskValues(source, domain));
     return target;
   }
 

@@ -122,6 +122,6 @@ class ProfileApplierSpec extends Specification {
         1 * repositoryProvider.getElementRepositoryFor(Process) >> processRepository
         1 * assetRepository.saveAll([asset1, asset2] as Set)
         1 * processRepository.saveAll([process] as Set)
-        1 * eventPublisher.publish(_ as RiskAffectingElementChangeEvent)
+        3 * eventPublisher.publish(_ as RiskAffectingElementChangeEvent)
     }
 }

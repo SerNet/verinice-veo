@@ -23,7 +23,6 @@ import jakarta.transaction.Transactional;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
@@ -79,9 +78,7 @@ public abstract class CreateRiskUseCase<T extends RiskAffected<T, R>, R extends 
 
     risk = applyOptionalInput(input, risk);
 
-    if (risk instanceof ProcessRisk processRisk) {
-      processRisk.defineRiskValues(input.getRiskValues());
-    }
+    risk.defineRiskValues(input.getRiskValues());
     publishEvents(riskAffected, risk);
     return new OutputData<>(risk, newRiskCreated);
   }

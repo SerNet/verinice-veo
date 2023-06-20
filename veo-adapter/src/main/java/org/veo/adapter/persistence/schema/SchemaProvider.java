@@ -39,13 +39,14 @@ import com.github.victools.jsonschema.module.jakarta.validation.JakartaValidatio
 import com.github.victools.jsonschema.module.jakarta.validation.JakartaValidationOption;
 import com.github.victools.jsonschema.module.swagger2.Swagger2Module;
 
+import org.veo.adapter.presenter.api.dto.AssetDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ControlDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ControlRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
+import org.veo.adapter.presenter.api.dto.ImpactRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto;
-import org.veo.adapter.presenter.api.dto.ProcessRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.ScenarioDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ScenarioRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.ScopeDomainAssociationDto;
@@ -73,10 +74,11 @@ public class SchemaProvider {
                     DomainAssociationDto.class,
                     ControlDomainAssociationDto.class,
                     ProcessDomainAssociationDto.class,
+                    AssetDomainAssociationDto.class,
                     ScenarioDomainAssociationDto.class,
                     ScopeDomainAssociationDto.class,
                     ControlRiskValuesDto.class,
-                    ProcessRiskValuesDto.class,
+                    ImpactRiskValuesDto.class,
                     ScenarioRiskValuesDto.class,
                     CustomAspectDto.class,
                     CustomLinkDto.class))

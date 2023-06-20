@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2023  Jochen Kemnade
+ * Copyright (C) 2022  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,7 +19,17 @@ package org.veo.core.entity.risk;
 
 import java.util.Map;
 
-public interface ProcessRiskValues {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-  Map<String, ImpactRef> getPotentialImpacts();
+/**
+ * Holds risk related info for an element. A {@link ImpactValues} object is only valid for a certain
+ * risk definition.
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ImpactValues {
+  private Map<CategoryRef, ImpactRef> potentialImpacts;
 }

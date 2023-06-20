@@ -61,10 +61,10 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @Setter
-public class ProcessRiskValuesAspectData implements RiskValuesAspect {
+public class RiskValuesAspectData implements RiskValuesAspect {
 
-  ProcessRiskValuesAspectData(
-      Domain domain, ProcessRiskData owner, RiskDefinitionRef riskDefinition) {
+  RiskValuesAspectData(
+      Domain domain, AbstractRiskData<?, ?> owner, RiskDefinitionRef riskDefinition) {
     this.domain = domain;
     this.owner = owner;
     this.riskDefinition = riskDefinition;
@@ -103,9 +103,9 @@ public class ProcessRiskValuesAspectData implements RiskValuesAspect {
   @Column(length = RiskDefinition.MAX_ID_SIZE)
   private RiskDefinitionRef riskDefinition;
 
-  @ManyToOne(fetch = FetchType.LAZY, targetEntity = ProcessRiskData.class, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = AbstractRiskData.class, optional = false)
   @Setter(AccessLevel.NONE)
-  private ProcessRiskData owner;
+  private AbstractRiskData<?, ?> owner;
 
   @Override
   public boolean equals(Object o) {
@@ -113,9 +113,9 @@ public class ProcessRiskValuesAspectData implements RiskValuesAspect {
 
     if (this == o) return true;
 
-    if (!(o instanceof ProcessRiskValuesAspectData)) return false;
+    if (!(o instanceof RiskValuesAspectData)) return false;
 
-    ProcessRiskValuesAspectData other = (ProcessRiskValuesAspectData) o;
+    RiskValuesAspectData other = (RiskValuesAspectData) o;
     // Transient (unmanaged) entities have an ID of 'null'. Only managed
     // (persisted and detached) entities have an identity. JPA requires that
     // an entity's identity remains the same over all state changes.

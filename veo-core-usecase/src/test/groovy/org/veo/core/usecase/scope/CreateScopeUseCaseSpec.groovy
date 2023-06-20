@@ -47,6 +47,7 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
     CreateElementUseCase usecase = new CreateElementUseCase(repositoryProvider, designatorService, eventPublisher, identifiableFactory, entityStateMapper, decider)
 
     def setup() {
+        scope.getOwningClient() >> Optional.of(existingClient)
         scopeState.name >> "My scope"
         scopeState.modelInterface >> Scope
         scopeState.owner >> TypedId.from(existingUnit.idAsString, Unit)

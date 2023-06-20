@@ -17,15 +17,17 @@
  ******************************************************************************/
 package org.veo.core.entity.state;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.risk.RiskImpactValues;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
-public interface ScopeDomainAssociationState extends DomainAssociationState {
+public interface ScopeDomainAssociationState extends RiskImpactDomainAssociationState {
 
   String getRiskDefinition();
 
@@ -35,6 +37,7 @@ public interface ScopeDomainAssociationState extends DomainAssociationState {
       implements ScopeDomainAssociationState {
 
     String riskDefinition;
+    Map<String, ? extends RiskImpactValues> riskValues;
 
     public ScopeDomainAssociationStateImpl(
         ITypedId<Domain> domain,
@@ -42,9 +45,11 @@ public interface ScopeDomainAssociationState extends DomainAssociationState {
         String status,
         Set<CustomAspectState> customAspects,
         Set<CustomLinkState> customLinks,
-        String riskDefinition) {
+        String riskDefinition,
+        Map<String, ? extends RiskImpactValues> riskValues) {
       super(domain, subType, status, customAspects, customLinks);
       this.riskDefinition = riskDefinition;
+      this.riskValues = riskValues;
     }
   }
 }

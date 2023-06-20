@@ -154,6 +154,14 @@ class ContentSpec extends VeoMvcSpec {
                 (domainId): [
                     subType: "AST_Application",
                     status: "NEW",
+                    riskValues: [
+                        DSRA: [
+                            potentialImpacts: [
+                                "C": 0,
+                                "I": 0
+                            ]
+                        ]
+                    ]
                 ]
             ],
             name   : "asset",

@@ -20,6 +20,7 @@ package org.veo.rest;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
+import static org.veo.rest.ControllerConstants.ANY_BOOLEAN;
 import static org.veo.rest.ControllerConstants.ANY_INT;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
 import static org.veo.rest.ControllerConstants.CHILD_ELEMENT_IDS_PARAM;
@@ -27,6 +28,7 @@ import static org.veo.rest.ControllerConstants.DESCRIPTION_PARAM;
 import static org.veo.rest.ControllerConstants.DESIGNATOR_PARAM;
 import static org.veo.rest.ControllerConstants.DISPLAY_NAME_PARAM;
 import static org.veo.rest.ControllerConstants.DOMAIN_PARAM;
+import static org.veo.rest.ControllerConstants.EMBED_RISKS_DESC;
 import static org.veo.rest.ControllerConstants.HAS_CHILD_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.HAS_PARENT_ELEMENTS_PARAM;
 import static org.veo.rest.ControllerConstants.NAME_PARAM;
@@ -85,8 +87,9 @@ import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateScopeDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
+import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
-import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
+import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
@@ -130,7 +133,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ScopeController extends AbstractEntityControllerWithDefaultSearch
     implements ScopeRiskResource {
-
+  public static final String EMBED_RISKS_PARAM = "embedRisks";
   public static final String URL_BASE_PATH = "/" + Scope.PLURAL_TERM;
 
   protected static final String TYPE_PARAM = "type";
@@ -193,11 +196,15 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
               required = false,
               defaultValue = SORT_ORDER_DEFAULT_VALUE)
           @Pattern(regexp = SORT_ORDER_PATTERN)
-          String sortOrder) {
+          String sortOrder,
+      @RequestParam(name = EMBED_RISKS_PARAM, required = false, defaultValue = "false")
+          @Parameter(name = EMBED_RISKS_PARAM, description = EMBED_RISKS_DESC)
+          Boolean embedRisksParam) {
     Client client = getAuthenticatedClient(auth);
+    boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
 
-    final GetElementsUseCase.InputData inputData =
-        GetElementsInputMapper.map(
+    final GetElementsUseCase.RiskAffectedInputData inputData =
+        GetRiskAffectedInputMapper.map(
             client,
             unitUuid,
             null,
@@ -213,17 +220,19 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
             designator,
             name,
             updatedBy,
-            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder));
+            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder),
+            embedRisks);
     return getScopes(inputData);
   }
 
   private CompletableFuture<PageDto<FullScopeDto>> getScopes(
-      GetElementsUseCase.InputData inputData) {
+      GetElementsUseCase.RiskAffectedInputData inputData) {
     return useCaseInteractor.execute(
         getScopesUseCase,
         inputData,
         output ->
-            PagingMapper.toPage(output.getElements(), entityToDtoTransformer::transformScope2Dto));
+            PagingMapper.toPage(
+                output.getElements(), asset -> entity2Dto(asset, inputData.isEmbedRisks())));
   }
 
   @GetMapping(UUID_PARAM_SPEC)
@@ -241,8 +250,12 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String uuid,
+      @RequestParam(name = EMBED_RISKS_PARAM, required = false, defaultValue = "false")
+          @Parameter(name = EMBED_RISKS_PARAM, description = EMBED_RISKS_DESC)
+          Boolean embedRisksParam,
       WebRequest request) {
     Client client = getAuthenticatedClient(auth);
+    boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
     if (getEtag(Scope.class, uuid).map(request::checkNotModified).orElse(false)) {
       return null;
     }
@@ -250,7 +263,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
         useCaseInteractor.execute(
             getScopeUseCase,
             new GetElementUseCase.InputData(Key.uuidFrom(uuid), client),
-            output -> entityToDtoTransformer.transformScope2Dto(output.getElement()));
+            output -> entityToDtoTransformer.transformScope2Dto(output.getElement(), embedRisks));
     return scopeFuture.thenApply(
         scopeDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(scopeDto));
   }
@@ -359,7 +372,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
   protected String buildSearchUri(String id) {
     return linkTo(
             methodOn(ScopeController.class)
-                .runSearch(ANY_AUTH, id, ANY_INT, ANY_INT, ANY_STRING, ANY_STRING))
+                .runSearch(ANY_AUTH, id, ANY_INT, ANY_INT, ANY_STRING, ANY_STRING, ANY_BOOLEAN))
         .withSelfRel()
         .getHref();
   }
@@ -389,13 +402,18 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
               required = false,
               defaultValue = SORT_ORDER_DEFAULT_VALUE)
           @Pattern(regexp = SORT_ORDER_PATTERN)
-          String sortOrder) {
+          String sortOrder,
+      @RequestParam(name = EMBED_RISKS_PARAM, required = false, defaultValue = "false")
+          @Parameter(name = EMBED_RISKS_PARAM, description = EMBED_RISKS_DESC)
+          Boolean embedRisksParam) {
+    boolean embedRisks = (embedRisksParam != null) && embedRisksParam;
     try {
       return getScopes(
-          GetElementsInputMapper.map(
+          GetRiskAffectedInputMapper.map(
               getAuthenticatedClient(auth),
               SearchQueryDto.decodeFromSearchId(searchId),
-              PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
+              PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder),
+              embedRisks));
     } catch (IOException e) {
       log.error("Could not decode search URL: {}", e.getLocalizedMessage());
       return null;
@@ -460,7 +478,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
             urlAssembler.toKeys(dto.getDomainReferences()),
             urlAssembler.toKey(dto.getMitigation()),
             urlAssembler.toKey(dto.getRiskOwner()),
-            null);
+            CategorizedRiskValueMapper.map(dto.getDomainsWithRiskValues()));
 
     return useCaseInteractor.execute(
         createScopeRiskUseCase,
@@ -563,11 +581,19 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
             urlAssembler.toKey(dto.getMitigation()),
             urlAssembler.toKey(dto.getRiskOwner()),
             eTag,
-            null);
+            CategorizedRiskValueMapper.map(dto.getDomainsWithRiskValues()));
 
     // update risk and return saved risk with updated ETag, timestamps etc.:
     return useCaseInteractor
         .execute(updateScopeRiskUseCase, input, output -> null)
         .thenCompose(o -> this.getRisk(client, scopeId, scenarioId));
+  }
+
+  protected FullScopeDto entity2Dto(Scope entity) {
+    return entityToDtoTransformer.transformScope2Dto(entity);
+  }
+
+  private FullScopeDto entity2Dto(Scope entity, boolean embedRisks) {
+    return entityToDtoTransformer.transformScope2Dto(entity, embedRisks);
   }
 }

@@ -37,7 +37,7 @@ import lombok.EqualsAndHashCode;
 /** Contains a {@link Scope}'s domain-specific information. */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ScopeDomainAssociationDto extends DomainAssociationDto {
+public class ScopeDomainAssociationDto extends ImpactDomainAssociationDto {
   @Schema(description = "The ID of a risk definition in the domain")
   @Size(max = RiskDefinition.MAX_ID_SIZE)
   String riskDefinition;
@@ -48,6 +48,6 @@ public class ScopeDomainAssociationDto extends DomainAssociationDto {
       Set<CustomAspectState> customAspectStates,
       Set<CustomLinkState> customLinkStates) {
     return new ScopeDomainAssociationStateImpl(
-        domain, subType, status, customAspectStates, customLinkStates, riskDefinition);
+        domain, subType, status, customAspectStates, customLinkStates, riskDefinition, riskValues);
   }
 }

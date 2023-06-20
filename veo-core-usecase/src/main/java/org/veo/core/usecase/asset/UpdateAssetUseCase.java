@@ -18,17 +18,29 @@
 package org.veo.core.usecase.asset;
 
 import org.veo.core.entity.Asset;
+import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.service.EntityStateMapper;
 
-/**
- * @author urszeidler
- */
 public class UpdateAssetUseCase extends ModifyElementUseCase<Asset> {
+  private final EventPublisher eventPublisher;
+
   public UpdateAssetUseCase(
-      RepositoryProvider repositoryProvider, Decider decider, EntityStateMapper entityStateMapper) {
+      RepositoryProvider repositoryProvider,
+      Decider decider,
+      EntityStateMapper entityStateMapper,
+      EventPublisher eventPublisher) {
     super(Asset.class, repositoryProvider, decider, entityStateMapper);
+    this.eventPublisher = eventPublisher;
+  }
+
+  @Override
+  public OutputData<Asset> execute(InputData<Asset> input) {
+    OutputData<Asset> result = super.execute(input);
+    eventPublisher.publish(new RiskAffectingElementChangeEvent(result.getEntity(), this));
+    return result;
   }
 }

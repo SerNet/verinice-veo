@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2022  Alexander Koderman
+ * Copyright (C) 2023  Jochen Kemnade
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,15 +18,12 @@
 package org.veo.core.entity.risk;
 
 import java.util.Map;
-import java.util.Optional;
 
-import org.veo.core.entity.DomainBase;
-
-public interface ImpactValueProvider {
-
-  Optional<Map<RiskDefinitionRef, ImpactValues>> getImpactValues(DomainBase domain);
-
-  Optional<ImpactValues> getImpactValues(DomainBase domain, RiskDefinitionRef riskDefinition);
-
-  void setImpactValues(DomainBase domain, Map<RiskDefinitionRef, ImpactValues> riskValues);
+/**
+ * This represent an associated array of impact values, it describes one impact value. The impact
+ * value is a vector with each {@link CategoryRef} as dimension index.
+ */
+public interface RiskImpactValues {
+  /** Map of categorized {@link CategoryRef} impact values * */
+  Map<String, ImpactRef> getPotentialImpacts();
 }

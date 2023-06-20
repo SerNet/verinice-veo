@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.veo.core.entity.Process;
-import org.veo.core.entity.state.ProcessDomainAssociationState;
 import org.veo.core.entity.state.ProcessState;
+import org.veo.core.entity.state.RiskImpactDomainAssociationState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -38,7 +38,7 @@ import lombok.ToString;
         "A series of activities that uses organization resources to transform input into results - this DTO represents a process from the viewpoint of a domain and contains both basic and domain-specific properties.")
 public abstract class AbstractProcessInDomainDto
     extends AbstractCompositeElementInDomainDto<Process>
-    implements ProcessState, ProcessDomainAssociationState {
+    implements ProcessState, RiskImpactDomainAssociationState {
 
   @Override
   @Schema(example = "External wage accounting")
@@ -72,5 +72,5 @@ public abstract class AbstractProcessInDomainDto
   @Schema(
       description =
           "Key is risk definition ID, value contains risk values in the context of that risk definition.")
-  Map<String, ProcessRiskValuesDto> riskValues = new HashMap<>();
+  Map<String, ImpactRiskValuesDto> riskValues = new HashMap<>();
 }

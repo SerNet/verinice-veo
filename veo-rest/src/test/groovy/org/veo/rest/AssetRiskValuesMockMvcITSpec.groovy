@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Jochen Kemnade.
+ * Copyright (C) 2023  Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,10 +29,16 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException
 import org.veo.core.entity.exception.UnprocessableDataException
+import org.veo.core.entity.risk.CategoryRef
+import org.veo.core.entity.risk.DomainRiskReferenceProvider
+import org.veo.core.entity.risk.ImpactValues
+import org.veo.core.entity.risk.RiskDefinitionRef
+import org.veo.persistence.access.AssetRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ProcessRepositoryImpl
 import org.veo.persistence.access.ScenarioRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
+import org.veo.persistence.entity.jpa.AssetData
 import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.ScenarioData
 
@@ -40,7 +46,7 @@ import org.veo.persistence.entity.jpa.ScenarioData
  * Test risk related functionality on controls.
  */
 @WithUserDetails("user@domain.example")
-class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
+class AssetRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
@@ -52,6 +58,9 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
     private ProcessRepositoryImpl processRepository
 
     @Autowired
+    private AssetRepositoryImpl assetRepository
+
+    @Autowired
     private ScenarioRepositoryImpl scenarioRepository
 
     private Client client
@@ -60,7 +69,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
     private String unitId
     private String domainId
     private String r1d1DomainId
-    private ProcessData process
+    private AssetData asset
     private ScenarioData scenario
 
     def setup() {
@@ -70,9 +79,9 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
                 "r1d1": createRiskDefinition("r1d1"),
                 "r2d2": createRiskDefinition("r2d2")
             ]
-            applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+            applyElementTypeDefinition(newElementTypeDefinition("asset", it) {
                 subTypes = [
-                    DifficultProcess: newSubTypeDefinition()
+                    DifficultAsset: newSubTypeDefinition()
                 ]
             })
             applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
@@ -87,9 +96,9 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
             riskDefinitions = [
                 "r1d1": createRiskDefinition("r1d1"),
             ]
-            applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+            applyElementTypeDefinition(newElementTypeDefinition("asset", it) {
                 subTypes = [
-                    RiskyProcess: newSubTypeDefinition()
+                    RiskyAsset: newSubTypeDefinition()
                 ]
             })
             applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
@@ -103,10 +112,13 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         unit = newUnit(client)
         unitId = unitRepository.save(unit).idAsString
 
-        process = newProcess(unit) {
-            associateWithDomain(domain, "NormalProcess", "NEW")
+        RiskDefinitionRef riskDefinitionRef = new RiskDefinitionRef("r1d1")
+        DomainRiskReferenceProvider riskreferenceProvider = DomainRiskReferenceProvider.referencesForDomain(domain)
+
+        asset = newAsset(unit) {
+            associateWithDomain(domain, "DifficultAsset", "NEW")
         }
-        processRepository.save(process)
+        assetRepository.save(asset)
 
         scenario = newScenario(unit) {
             associateWithDomain(domain, "NormalScenario", "NEW")
@@ -116,9 +128,9 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
     def "values can be set on a second risk definition"() {
         when: "creating a process with risk values for two risk definitions"
-        def processId = process.getIdAsString()
+        def assetId = asset.getIdAsString()
         def scenarioId = scenario.getIdAsString()
-        post("/processes/$processId/risks", [
+        post("/assets/$assetId/risks", [
             domains: [
                 (domainId): [
                     reference: [targetUri: "http://localhost/domains/$domainId"],
@@ -138,12 +150,12 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         ])
 
         and: "retrieving it"
-        def getProcessRiskResponse = get("/processes/$processId/risks/$scenarioId")
-        def riskETag = getETag(getProcessRiskResponse)
-        def retrievedProcessRisk = parseJson(getProcessRiskResponse)
+        def getAssetRiskResponse = get("/assets/$assetId/risks/$scenarioId")
+        def riskETag = getETag(getAssetRiskResponse)
+        def retrievedAssetRisk = parseJson(getAssetRiskResponse)
 
         then: "all specified values were saved"
-        def domain = retrievedProcessRisk.domains.get(domainId)
+        def domain = retrievedAssetRisk.domains.get(domainId)
         def riskDef1Impact = domain.riskDefinitions.r1d1.impactValues
         riskDef1Impact.find {it.category=="A"}.specificImpact == 1
         riskDef1Impact.find {it.category=="A"}.effectiveImpact == 1
@@ -178,10 +190,10 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
                 ],
             ]
         ]
-        put("/processes/$processId/risks/$scenarioId", retrievedProcessRisk, ['If-Match': riskETag])
+        put("/assets/$assetId/risks/$scenarioId", retrievedAssetRisk, ['If-Match': riskETag])
 
         and: "retrieving it again"
-        def updatedRisk = parseJson(get("/processes/$processId/risks/$scenarioId"))
+        def updatedRisk = parseJson(get("/assets/$assetId/risks/$scenarioId"))
         domain = updatedRisk.domains.get(domainId)
 
         then: "all changes are present"
@@ -198,11 +210,11 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
     def "non-existing risk definition causes error"() {
         given:
-        def processId = process.getIdAsString()
+        def assetId = asset.getIdAsString()
         def scenarioId = scenario.getIdAsString()
 
         when: "creating a risk with risk values for a non-existing risk definition"
-        post("/processes/$processId/risks", [
+        post("/assets/$assetId/risks", [
             domains: [
                 (domainId): [
                     reference: [targetUri: "http://localhost/domains/$domainId"],
@@ -227,30 +239,30 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
     def "embedded risks can be requested"() {
         given: "a process with risks and risk values"
-        def processId = process.getIdAsString()
+        def assetId = asset.getIdAsString()
         def scenarioId = scenario.getIdAsString()
 
         def scenario2Id = scenarioRepository.save(newScenario(unit) {
             associateWithDomain(domain, "NormalScenario", "NEW")
         }).idAsString
 
-        postRisk1(processId, scenarioId)
-        postRisk2(processId, scenario2Id)
+        postRisk1(assetId, scenarioId)
+        postRisk2(assetId, scenario2Id)
 
         when: "the process is requested with embedded risks"
         def response = parseJson(
-                get("/processes/${process.id.uuidValue()}?embedRisks=true"))
+                get("/assets/${asset.id.uuidValue()}?embedRisks=true"))
 
         then: "the risk values are embedded in the response"
-        response.name == "process null"
+        response.name == "asset null"
         response.risks != null
         response.risks.size() == 2
-        response.risks*.domains*.(domainId).reference.targetUri =~ [
+        response.risks*.domains*.get(domainId).reference.targetUri =~ [
             "http://localhost/domains/$domainId"
         ]
 
         and: "First risk, first risk definition: all values are correct"
-        with(response.risks.find { it.designator == "RSK-1" }.domains.(domainId).riskDefinitions.r1d1) {
+        with(response.risks.find { it.designator == "RSK-1" }.domains.get(domainId).riskDefinitions.r1d1) {
             // probability is not set:
             probability.size() == 0
 
@@ -273,7 +285,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         }
 
         and: "First risk, second risk definition: all values are correct"
-        with (response.risks.find { it.designator == "RSK-1" }.domains.(domainId).riskDefinitions.r2d2) {
+        with (response.risks.find { it.designator == "RSK-1" }.domains.get(domainId).riskDefinitions.r2d2) {
             // impact is present in second risk definition:
             with(impactValues.find { it.category == "A" }) {
                 specificImpact == 2
@@ -285,7 +297,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         }
 
         and: "Second risk, first risk definition: all values are correct"
-        with (response.risks.find { it.designator == "RSK-2" }.domains.(domainId).riskDefinitions.r1d1) {
+        with (response.risks.find { it.designator == "RSK-2" }.domains.get(domainId).riskDefinitions.r1d1) {
             // probability is set:
             probability.specificProbability == 2
             probability.effectiveProbability == 2
@@ -315,7 +327,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         }
 
         and: "Second risk, second risk definition: all values are correct"
-        with (response.risks.find { it.designator == "RSK-2" }.domains.(domainId).riskDefinitions.r2d2) {
+        with (response.risks.find { it.designator == "RSK-2" }.domains.get(domainId).riskDefinitions.r2d2) {
             // impact is present in second risk definition:
             with(impactValues.find { it.category == "A" }) {
                 specificImpact == 3
@@ -331,8 +343,8 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         }
     }
 
-    private postRisk2(String processId, String scenario2Id) {
-        post("/processes/$processId/risks", [
+    private postRisk2(String assetId, String scenario2Id) {
+        post("/assets/$assetId/risks", [
             domains : [
                 (domainId): [
                     reference      : [targetUri: "http://localhost/domains/$domainId"],
@@ -369,8 +381,8 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         ])
     }
 
-    private postRisk1(String processId, String scenarioId) {
-        post("/processes/$processId/risks", [
+    private postRisk1(String assetId, String scenarioId) {
+        post("/assets/$assetId/risks", [
             domains : [
                 (domainId): [
                     reference      : [targetUri: "http://localhost/domains/$domainId"],
@@ -406,33 +418,33 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
     def "Request a list of processes with embedded risks"() {
         given: "a list of processes with risks"
-        def processId = process.getIdAsString()
+        def assetId = asset.getIdAsString()
         def scenarioId = scenario.getIdAsString()
         def scenario2 = newScenario(unit) {
             associateWithDomain(domain, "NormalScenario", "NEW")
         }
         scenarioRepository.save(scenario2)
         def scenario2Id = scenario2.getIdAsString()
-        postRisk1(processId, scenarioId)
-        postRisk2(processId, scenario2Id)
+        postRisk1(assetId, scenarioId)
+        postRisk2(assetId, scenario2Id)
 
-        def process2 = newProcess(unit) {
-            associateWithDomain(domain, "NormalProcess", "NEW")
+        def asset2 = newAsset(unit) {
+            associateWithDomain(domain, "DifficultAsset", "NEW")
         }
-        processRepository.save(process2)
-        postRisk1(process2.idAsString, scenarioId)
-        postRisk2(process2.idAsString, scenario2Id)
+        assetRepository.save(asset2)
+        postRisk1(asset2.idAsString, scenarioId)
+        postRisk2(asset2.idAsString, scenario2Id)
 
-        when: "all processes are requested"
-        def result = parseJson(get("/processes"))
+        when: "all assets are requested"
+        def result = parseJson(get("/assets"))
 
         then: "the risks are not embedded"
         result.items != null
         result.items.size() == 2
         result.items.each {assert it.risks == null}
 
-        when: "all processes are requested with risks"
-        result = parseJson(get("/processes?embedRisks=true"))
+        when: "all assets are requested with risks"
+        result = parseJson(get("/assets?embedRisks=true"))
 
         then: "the risks are embedded"
         result.items != null
@@ -442,12 +454,12 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         result.items*.risks*.domains.(domainId).riskDefinitions.r1d1.riskValues.size() == 2
         result.items*.risks*.domains.(domainId).riskDefinitions.r2d2.riskValues.size() == 2
 
-        def process1Risks = result.items.find { it.id == process.idAsString }.risks
-        process1Risks.find { it.designator == "RSK-2" }.domains.(domainId).riskDefinitions.r1d1.probability.specificProbability != null
-        process1Risks.find { it.designator == "RSK-1" }.domains.(domainId).riskDefinitions.r1d1.impactValues.find { it.category == "A" }.effectiveImpact != null
+        def asset1Risks = result.items.find { it.id == asset.idAsString }.risks
+        asset1Risks.find { it.designator == "RSK-2" }.domains.get(domainId).riskDefinitions.r1d1.probability.specificProbability != null
+        asset1Risks.find { it.designator == "RSK-1" }.domains.get(domainId).riskDefinitions.r1d1.impactValues.find { it.category == "A" }.effectiveImpact != null
 
-        def process2Risks = result.items.find { it.id == process2.idAsString }.risks
-        with(process2Risks.find { it.designator == "RSK-4" }.domains.(domainId).riskDefinitions.r1d1.riskValues.find { it.category == "A" }) {
+        def asset2Risks = result.items.find { it.id == asset2.idAsString }.risks
+        with(asset2Risks.find { it.designator == "RSK-4" }.domains.get(domainId).riskDefinitions.r1d1.riskValues.find { it.category == "A" }) {
             inherentRisk != null
             residualRisk != null
         }
@@ -455,25 +467,25 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
     def "Searching for processes with embedded risks"() {
         given: "a list of processes with risks"
-        def processId = process.getIdAsString()
+        def assetId = asset.getIdAsString()
         def scenarioId = scenario.getIdAsString()
         def scenario2 = newScenario(unit) {
             associateWithDomain(domain, "NormalScenario", "NEW")
         }
         scenarioRepository.save(scenario2)
         def scenario2Id = scenario2.getIdAsString()
-        postRisk1(processId, scenarioId)
-        postRisk2(processId, scenario2Id)
+        postRisk1(assetId, scenarioId)
+        postRisk2(assetId, scenario2Id)
 
-        def process2 = newProcess(unit) {
+        def process2 = newAsset(unit) {
             associateWithDomain(domain, "NormalProcess", "NEW")
         }
-        processRepository.save(process2)
+        assetRepository.save(process2)
         postRisk1(process2.idAsString, scenarioId)
         postRisk2(process2.idAsString, scenario2Id)
 
         when: "all processes are searched for"
-        def searchUrl = parseJson(post("/processes/searches", [
+        def searchUrl = parseJson(post("/assets/searches", [
             unitId: [
                 values: [
                     unit.id.uuidValue()
@@ -498,12 +510,12 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         result.items*.risks*.domains.(domainId).riskDefinitions.r1d1.riskValues.size() == 2
         result.items*.risks*.domains.(domainId).riskDefinitions.r2d2.riskValues.size() == 2
 
-        def process1Risks = result.items.find { it.id == process.idAsString }.risks
-        process1Risks.find{it.designator=="RSK-2"}.domains.(domainId).riskDefinitions.r1d1.probability.specificProbability != null
-        process1Risks.find{it.designator=="RSK-1"}.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=="A"}.effectiveImpact != null
+        def asset1Risks = result.items.find { it.id == asset.idAsString }.risks
+        asset1Risks.find{it.designator=="RSK-2"}.domains.(domainId).riskDefinitions.r1d1.probability.specificProbability != null
+        asset1Risks.find{it.designator=="RSK-1"}.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=="A"}.effectiveImpact != null
 
-        def process2Risks = result.items.find { it.id == process2.idAsString }.risks
-        with(process2Risks.find{it.designator=="RSK-4"}.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=="A"}) {
+        def asset2Risks = result.items.find { it.id == process2.idAsString }.risks
+        with(asset2Risks.find{it.designator=="RSK-4"}.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=="A"}) {
             inherentRisk != null
             residualRisk != null
         }
@@ -511,43 +523,43 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
     def "Creating the same risk twice does not fail"() {
         when: "a POST request is issued to the risk ressource"
-        def processId = process.getIdAsString()
+        def assetId = asset.getIdAsString()
         def scenarioId = scenario.getIdAsString()
 
         def beforeCreation = Instant.now()
-        postProcessRisk(processId, scenarioId)
+        postAssetRisk(assetId, scenarioId)
         def afterCreation = Instant.now()
 
         then: "a risk resource was created"
-        def results = get("/processes/$processId/risks/$scenarioId")
-        def retrievedProcessRisk1 = parseJson(results)
+        def results = get("/assets/$assetId/risks/$scenarioId")
+        def retrievedAssetRisk1 = parseJson(results)
         String eTag1 = getETag(results)
 
-        Instant.parse(retrievedProcessRisk1.createdAt) > beforeCreation
-        Instant.parse(retrievedProcessRisk1.createdAt) < afterCreation
+        Instant.parse(retrievedAssetRisk1.createdAt) > beforeCreation
+        Instant.parse(retrievedAssetRisk1.createdAt) < afterCreation
 
         when: "a safe retry is made"
-        postProcessRisk(processId, scenarioId, 204)
+        postAssetRisk(assetId, scenarioId, 204)
 
         and: "the resource is requested"
-        results = get("/processes/$processId/risks/$scenarioId")
-        def retrievedProcessRisk2 = parseJson(results)
+        results = get("/assets/$assetId/risks/$scenarioId")
+        def retrievedAssetRisk2 = parseJson(results)
         String eTag2 = getETag(results)
 
         then: "the existing risk resource is unchanged: the POST request was idempotent"
         eTag2 != null
         eTag1 == eTag2
-        retrievedProcessRisk2.designator == retrievedProcessRisk1.designator
-        retrievedProcessRisk2.createdAt == retrievedProcessRisk1.createdAt
+        retrievedAssetRisk2.designator == retrievedAssetRisk1.designator
+        retrievedAssetRisk2.createdAt == retrievedAssetRisk1.createdAt
     }
 
     def "Creating an asset risk with only specific probability and impact values calculates risk value"() {
         given: "a process and a scenario"
-        def processId = process.getIdAsString()
+        def assetId = asset.getIdAsString()
         def scenarioId = scenario.getIdAsString()
 
         when: "a risk is created with probability and impact"
-        post("/processes/$processId/risks", [
+        post("/assets/$assetId/risks", [
             domains : [
                 (domainId): [
                     reference      : [targetUri: "http://localhost/domains/$domainId"],
@@ -570,11 +582,11 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         ], 201)
 
         and: "the resource is requested"
-        def results = get("/processes/$processId/risks/$scenarioId")
-        def retrievedProcessRisk2 = parseJson(results)
+        def results = get("/assets/$assetId/risks/$scenarioId")
+        def retrievedAssetRisk2 = parseJson(results)
 
         then: "the risk resource was created with the values"
-        def domain = retrievedProcessRisk2.domains.get(domainId)
+        def domain = retrievedAssetRisk2.domains.get(domainId)
         domain.riskDefinitions.size() == 1
         domain.riskDefinitions.r1d1.impactValues.find{it.category=='A'}.specificImpact == 1
         domain.riskDefinitions.r1d1.impactValues.find{it.category=='A'}.effectiveImpact == 1
@@ -592,11 +604,11 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
     def "Creating a risk with only specific probability and impact values calculates risk value"() {
         given: "a process and a scenario"
-        def processId = process.getIdAsString()
+        def assetId = asset.getIdAsString()
         def scenarioId = scenario.getIdAsString()
 
         when: "a risk is created with probability and impact"
-        post("/processes/$processId/risks", [
+        post("/assets/$assetId/risks", [
             domains : [
                 (domainId): [
                     reference      : [targetUri: "http://localhost/domains/$domainId"],
@@ -619,11 +631,11 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         ], 201)
 
         and: "the resource is requested"
-        def results = get("/processes/$processId/risks/$scenarioId")
-        def retrievedProcessRisk2 = parseJson(results)
+        def results = get("/assets/$assetId/risks/$scenarioId")
+        def retrievedAssetRisk2 = parseJson(results)
 
         then: "the risk resource was created with the values"
-        def domain = retrievedProcessRisk2.domains.get(domainId)
+        def domain = retrievedAssetRisk2.domains.get(domainId)
         domain.riskDefinitions.size() == 1
         domain.riskDefinitions.r1d1.impactValues.find{it.category=='A'}.specificImpact == 1
         domain.riskDefinitions.r1d1.impactValues.find{it.category=='A'}.effectiveImpact == 1
@@ -641,25 +653,25 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
     def "Creating a risk with potential values calculates risk value"() {
         given: "a process"
-        def processId = parseJson(post("/processes", [
+        def assetId = parseJson(post("/assets", [
             domains: [
                 (domainId): [
-                    subType: "DifficultProcess",
+                    subType: "DifficultAsset",
                     status: "NEW",
                 ]
             ],
             name: "risk test process",
             owner: [targetUri: "http://localhost/units/$unitId"]
         ])).resourceId
-        def processETag = getETag(get("/processes/$processId"))
+        def processETag = getETag(get("/assets/$assetId"))
 
         Map headers = [
             'If-Match': processETag
         ]
-        put("/processes/$processId", [
+        put("/assets/$assetId", [
             domains: [
                 (domainId): [
-                    subType: "DifficultProcess",
+                    subType: "DifficultAsset",
                     status: "NEW",
                     riskValues: [
                         r1d1 : [
@@ -691,7 +703,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when: "a risk is created with specific probability and impact"
-        post("/processes/$processId/risks", [
+        post("/assets/$assetId/risks", [
             domains : [
                 (domainId): [
                     reference      : [targetUri: "http://localhost/domains/$domainId"],
@@ -714,29 +726,32 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         ], 201)
 
         then: "process contains impact"
-        def retrievedProcess = parseJson(get("/processes/$processId"))
-        retrievedProcess.domains.(domainId).riskValues.r1d1.potentialImpacts.A == 2
+        def retrievedAsset = parseJson(get("/assets/$assetId"))
+        retrievedAsset.domains.get(domainId).riskValues.r1d1.potentialImpacts.A == 2
 
         and: "scenario contains probability"
         def retrievedScenario = parseJson(get("/scenarios/$scenarioId"))
-        retrievedScenario.domains.(domainId).riskValues.r1d1.potentialProbability == 2
+        retrievedScenario.domains.get(domainId).riskValues.r1d1.potentialProbability == 2
 
         and: "the risk resource was created with the values"
-        def retrievedProcessRisk2 = parseJson(get("/processes/$processId/risks/$scenarioId"))
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.size() == 1
+        def retrievedAssetRisk2 = parseJson(get("/assets/$assetId/risks/$scenarioId"))
 
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.potentialImpact == 2
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.specificImpact == 1
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.effectiveImpact == 1
+        with(retrievedAssetRisk2.domains.get(domainId).riskDefinitions) {
+            size() == 1
 
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.potentialProbability == 2
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.specificProbability == 1
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.effectiveProbability == 1
+            r1d1.impactValues.find{it.category=='A'}.potentialImpact == 2
+            r1d1.impactValues.find{it.category=='A'}.specificImpact == 1
+            r1d1.impactValues.find{it.category=='A'}.effectiveImpact == 1
+
+            r1d1.probability.potentialProbability == 2
+            r1d1.probability.specificProbability == 1
+            r1d1.probability.effectiveProbability == 1
+        }
 
         and: "the risk was calculated"
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.size() == 4
+        retrievedAssetRisk2.domains.get(domainId).riskDefinitions.r1d1.riskValues.size() == 4
         with(
-                retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}) {
+                retrievedAssetRisk2.domains.get(domainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}) {
                     inherentRisk == 0
                     residualRisk == 0
                 }
@@ -744,10 +759,10 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
     def "Creating a risk with potential values calculates risk value (with only one risk definition in the domain)"() {
         given: "a process in a domain with only a single risk definition"
-        def processId = parseJson(post("/processes", [
+        def assetId = parseJson(post("/assets", [
             domains: [
                 (r1d1DomainId): [
-                    subType: "RiskyProcess",
+                    subType: "RiskyAsset",
                     status: "NEW",
                     riskValues: [
                         r1d1 : [
@@ -779,7 +794,7 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         ])).resourceId
 
         when: "a risk is created with specific probability and impact"
-        post("/processes/$processId/risks", [
+        post("/assets/$assetId/risks", [
             domains : [
                 (r1d1DomainId): [
                     reference      : [targetUri: "http://localhost/domains/$r1d1DomainId"],
@@ -802,28 +817,28 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         ], 201)
 
         then: "process contains impact"
-        def retrievedProcess = parseJson(get("/processes/$processId"))
-        retrievedProcess.domains.(r1d1DomainId).riskValues.r1d1.potentialImpacts.A == 2
+        def retrievedAsset = parseJson(get("/assets/$assetId"))
+        retrievedAsset.domains.get(r1d1DomainId).riskValues.r1d1.potentialImpacts.A == 2
 
         and: "scenario contains probability"
         def retrievedScenario = parseJson(get("/scenarios/$scenarioId"))
-        retrievedScenario.domains.(r1d1DomainId).riskValues.r1d1.potentialProbability == 2
+        retrievedScenario.domains.get(r1d1DomainId).riskValues.r1d1.potentialProbability == 2
 
         and: "the risk resource was created with the values"
-        def retrievedProcessRisk2 = parseJson(get("/processes/$processId/risks/$scenarioId"))
-        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.size() == 1
+        def retrievedAssetRisk2 = parseJson(get("/assets/$assetId/risks/$scenarioId"))
+        retrievedAssetRisk2.domains.get(r1d1DomainId).riskDefinitions.size() == 1
 
-        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.potentialImpact == 2
-        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.specificImpact == 1
-        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.effectiveImpact == 1
+        retrievedAssetRisk2.domains.get(r1d1DomainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.potentialImpact == 2
+        retrievedAssetRisk2.domains.get(r1d1DomainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.specificImpact == 1
+        retrievedAssetRisk2.domains.get(r1d1DomainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.effectiveImpact == 1
 
-        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.probability.potentialProbability == 2
-        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.probability.specificProbability == 1
-        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.probability.effectiveProbability == 1
+        retrievedAssetRisk2.domains.get(r1d1DomainId).riskDefinitions.r1d1.probability.potentialProbability == 2
+        retrievedAssetRisk2.domains.get(r1d1DomainId).riskDefinitions.r1d1.probability.specificProbability == 1
+        retrievedAssetRisk2.domains.get(r1d1DomainId).riskDefinitions.r1d1.probability.effectiveProbability == 1
 
         and: "the risk was calculated"
-        retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.riskValues.size() == 4
-        with(retrievedProcessRisk2.domains.(r1d1DomainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}) {
+        retrievedAssetRisk2.domains.get(r1d1DomainId).riskDefinitions.r1d1.riskValues.size() == 4
+        with(retrievedAssetRisk2.domains.get(r1d1DomainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}) {
             inherentRisk == 0
             residualRisk == 0
         }
@@ -831,25 +846,25 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
     def "Trying to create an existing risk updates its values"() {
         given: "a process and a scenario"
-        def processId = process.getIdAsString()
+        def assetId = asset.getIdAsString()
         def scenarioId = scenario.getIdAsString()
 
         when: "a POST request is issued to the risk resource"
         def beforeCreation = Instant.now()
-        postProcessRisk(processId, scenarioId)
+        postAssetRisk(assetId, scenarioId)
         def afterCreation = Instant.now()
 
         then: "a risk resource was created"
-        def results = get("/processes/$processId/risks/$scenarioId")
-        def retrievedProcessRisk1 = parseJson(results)
+        def results = get("/assets/$assetId/risks/$scenarioId")
+        def retrievedAssetRisk1 = parseJson(results)
         String eTag1 = getETag(results)
 
-        Instant.parse(retrievedProcessRisk1.createdAt) > beforeCreation
-        Instant.parse(retrievedProcessRisk1.createdAt) < afterCreation
-        retrievedProcessRisk1.domains.(domainId).riskDefinitions.size() == 0
+        Instant.parse(retrievedAssetRisk1.createdAt) > beforeCreation
+        Instant.parse(retrievedAssetRisk1.createdAt) < afterCreation
+        retrievedAssetRisk1.domains.get(domainId).riskDefinitions.size() == 0
 
         when: "a safe retry is made with new values"
-        post("/processes/$processId/risks", [
+        post("/assets/$assetId/risks", [
             domains : [
                 (domainId): [
                     reference      : [targetUri: "http://localhost/domains/$domainId"],
@@ -872,32 +887,34 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         ], 204)
 
         and: "the resource is requested"
-        results = get("/processes/$processId/risks/$scenarioId")
-        def retrievedProcessRisk2 = parseJson(results)
+        results = get("/assets/$assetId/risks/$scenarioId")
+        def retrievedAssetRisk2 = parseJson(results)
         String eTag2 = getETag(results)
 
         then: "the existing risk resource was updated with new values"
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.size() == 1
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.specificImpact == 1
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.effectiveImpact == 1
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.specificProbability == 1
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.probability.effectiveProbability == 1
-        retrievedProcessRisk2.domains.(domainId).riskDefinitions.r1d1.riskValues.size() == 4
+        with(retrievedAssetRisk2.domains.get(domainId)) {
+            riskDefinitions.size() == 1
+            riskDefinitions.r1d1.impactValues.find{it.category=='A'}.specificImpact == 1
+            riskDefinitions.r1d1.impactValues.find{it.category=='A'}.effectiveImpact == 1
+            riskDefinitions.r1d1.probability.specificProbability == 1
+            riskDefinitions.r1d1.probability.effectiveProbability == 1
+            riskDefinitions.r1d1.riskValues.size() == 4
+        }
 
         and: "it is still the same risk object"
-        retrievedProcessRisk2.designator == retrievedProcessRisk1.designator
-        retrievedProcessRisk2.createdAt == retrievedProcessRisk1.createdAt
+        retrievedAssetRisk2.designator == retrievedAssetRisk1.designator
+        retrievedAssetRisk2.createdAt == retrievedAssetRisk1.createdAt
         eTag2 != null
         eTag1 != eTag2
     }
 
     def "Invalid domain reference in risk leads to a sensible error code"() {
         given:
-        def processId = process.getIdAsString()
+        def assetId = asset.getIdAsString()
         def scenarioId = scenario.getIdAsString()
 
         when:
-        post("/processes/$processId/risks", [
+        post("/assets/$assetId/risks", [
             domains: [
                 (UUID.randomUUID().toString()): [
                     reference: [targetUri: "http://localhost/domains/$domainId"],
@@ -922,11 +939,11 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
     def "nonexistent resource in request body leads to a sensible error code"() {
         given:
-        def processId = process.getIdAsString()
+        def assetId = asset.getIdAsString()
         def scenarioId = scenario.getIdAsString()
 
         when:
-        post("/processes/$processId/risks", [
+        post("/assets/$assetId/risks", [
             domains: [
                 (domainId): [
                     reference: [targetUri: "http://localhost/domains/"+UUID.randomUUID().toString()],
@@ -949,8 +966,8 @@ class ProcessRiskValuesMockMvcITSpec extends VeoMvcSpec {
         thrown(UnprocessableDataException)
     }
 
-    private postProcessRisk(String processId, String scenarioId, int expectedStatusCode = 201) {
-        post("/processes/$processId/risks", [
+    private postAssetRisk(String assetId, String scenarioId, int expectedStatusCode = 201) {
+        post("/assets/$assetId/risks", [
             domains : [
                 (domainId): [
                     reference      : [targetUri: "http://localhost/domains/$domainId"]

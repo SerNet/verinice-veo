@@ -17,19 +17,34 @@
  ******************************************************************************/
 package org.veo.core.usecase.scope;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Scope;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.ScopeRepository;
-import org.veo.core.usecase.base.DefaultGetElementsUseCase;
+import org.veo.core.usecase.UseCaseTools;
+import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.UnitHierarchyProvider;
 
 /** Reinstantiate persisted scope objects. */
-public class GetScopesUseCase extends DefaultGetElementsUseCase<Scope> {
+public class GetScopesUseCase
+    extends GetElementsUseCase<Scope, GetElementsUseCase.RiskAffectedInputData> {
 
   public GetScopesUseCase(
       ClientRepository clientRepository,
       ScopeRepository scopeRepository,
       UnitHierarchyProvider unitHierarchyProvider) {
     super(clientRepository, scopeRepository, unitHierarchyProvider);
+  }
+
+  @Override
+  public OutputData<Scope> execute(GetElementsUseCase.RiskAffectedInputData input) {
+    Client client =
+        UseCaseTools.checkClientExists(input.getAuthenticatedClient().getId(), clientRepository);
+    var query = createQuery(client);
+    if (input.isEmbedRisks()) {
+      query.fetchRisks();
+    }
+    applyDefaultQueryParameters(input, query);
+    return new OutputData<>(query.execute(input.getPagingConfiguration()));
   }
 }

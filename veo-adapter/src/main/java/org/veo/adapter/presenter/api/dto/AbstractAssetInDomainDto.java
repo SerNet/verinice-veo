@@ -17,7 +17,11 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.veo.core.entity.Asset;
+import org.veo.core.entity.state.RiskImpactDomainAssociationState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -31,7 +35,8 @@ import lombok.ToString;
     title = "Asset",
     description =
         "A material or immaterial object deemed valuable, such as a server, an application or a piece of information - this DTO represents an asset from the viewpoint of a domain and contains both basic and domain-specific properties.")
-public abstract class AbstractAssetInDomainDto extends AbstractCompositeElementInDomainDto<Asset> {
+public abstract class AbstractAssetInDomainDto extends AbstractCompositeElementInDomainDto<Asset>
+    implements RiskImpactDomainAssociationState {
 
   @Override
   @Schema(example = "Email server")
@@ -61,4 +66,9 @@ public abstract class AbstractAssetInDomainDto extends AbstractCompositeElementI
   public Class<Asset> getModelInterface() {
     return Asset.class;
   }
+
+  @Schema(
+      description =
+          "Key is risk definition ID, value contains risk values in the context of that risk definition.")
+  Map<String, ImpactRiskValuesDto> riskValues = new HashMap<>();
 }

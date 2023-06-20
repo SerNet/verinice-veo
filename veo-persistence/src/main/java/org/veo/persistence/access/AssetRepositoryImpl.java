@@ -17,11 +17,23 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
+import static java.util.Collections.singleton;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Key;
+import org.veo.core.entity.Scenario;
 import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.ElementQuery;
 import org.veo.persistence.access.jpa.AssetDataRepository;
@@ -29,12 +41,15 @@ import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.AssetData;
+import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
 public class AssetRepositoryImpl
     extends AbstractCompositeRiskAffectedRepository<Asset, AssetRisk, AssetData>
     implements AssetRepository {
+
+  private final AssetDataRepository assetDataRepository;
 
   public AssetRepositoryImpl(
       AssetDataRepository dataRepository,
@@ -49,10 +64,43 @@ public class AssetRepositoryImpl
         scopeDataRepository,
         elementQueryFactory,
         Asset.class);
+    this.assetDataRepository = dataRepository;
   }
 
   @Override
   public ElementQuery<Asset> query(Client client) {
     return elementQueryFactory.queryAssets(client);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public Set<Asset> findWithRisksAndScenarios(Set<Key<UUID>> ids) {
+    List<String> dbIDs = ids.stream().map(Key::uuidValue).toList();
+    var elements = assetDataRepository.findWithRisksAndScenariosByDbIdIn(dbIDs);
+    return Collections.unmodifiableSet(elements);
+  }
+
+  @Override
+  public Optional<Asset> findByIdWithRiskValues(Key<UUID> processId) {
+    var processes =
+        ((AssetDataRepository) dataRepository)
+            .findByIdsWithRiskValues(singleton(processId.uuidValue()));
+    return processes.stream().findFirst().map(Asset.class::cast);
+  }
+
+  @Override
+  public Set<Asset> findRisksWithValue(Scenario scenario) {
+    return new HashSet<>(
+        ((AssetDataRepository) dataRepository)
+            .findRisksWithValue(singleton(((ScenarioData) scenario))));
+  }
+
+  @Override
+  public Optional<Asset> findById(Key<UUID> id, boolean shouldEmbedRisks) {
+    if (shouldEmbedRisks) {
+      return this.findByIdWithRiskValues(id);
+    } else {
+      return this.findById(id);
+    }
   }
 }

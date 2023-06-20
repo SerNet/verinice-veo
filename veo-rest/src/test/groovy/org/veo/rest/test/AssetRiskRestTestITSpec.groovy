@@ -38,6 +38,14 @@ class AssetRiskRestTestITSpec extends VeoRestTest{
                 (domainId): [
                     subType: "AST_Datatype",
                     status: "IN_PROGRESS",
+                    riskValues: [
+                        DSRA : [
+                            potentialImpacts: [
+                                "C": 0,
+                                "I": 1
+                            ]
+                        ]
+                    ]
                 ]
             ],
             parts: [

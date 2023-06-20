@@ -176,11 +176,31 @@ class SwaggerSpec extends VeoSpringSpec {
 
         def processDomainAssociationSchema = schemas.ProcessDomainAssociationDto
         processDomainAssociationSchema.description == '''Details about this element's association with domains. Domain ID is key, association object is value.'''
-        processDomainAssociationSchema.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ProcessRiskValuesDto"
+        processDomainAssociationSchema.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ImpactRiskValuesDto"
 
-        def processRiskValuesSchema = schemas.ProcessRiskValuesDto
+        def processRiskValuesSchema = schemas.ImpactRiskValuesDto
         processRiskValuesSchema.description == '''Key is risk definition ID, value contains risk values in the context of that risk definition.'''
         def potentialImpactsSchema = processRiskValuesSchema.properties.potentialImpacts
+        potentialImpactsSchema.type == "object"
+        potentialImpactsSchema.description == "Potential impacts for a set of risk categories"
+        potentialImpactsSchema.example == [C:2, I:3]
+    }
+
+    def "asset risk values are mapped correctly"() {
+        given:
+        def schemas = parsedApiDocs.components.schemas
+
+        expect:
+        def assetSchema = schemas.FullAssetDto
+        assetSchema.properties.domains.additionalProperties.'$ref' == "#/components/schemas/AssetDomainAssociationDto"
+
+        def assetDomainAssociationSchema = schemas.AssetDomainAssociationDto
+        assetDomainAssociationSchema.description == '''Details about this element's association with domains. Domain ID is key, association object is value.'''
+        assetDomainAssociationSchema.properties.riskValues.additionalProperties.'$ref' == "#/components/schemas/ImpactRiskValuesDto"
+
+        def assetRiskValuesSchema = schemas.ImpactRiskValuesDto
+        assetRiskValuesSchema.description == '''Key is risk definition ID, value contains risk values in the context of that risk definition.'''
+        def potentialImpactsSchema = assetRiskValuesSchema.properties.potentialImpacts
         potentialImpactsSchema.type == "object"
         potentialImpactsSchema.description == "Potential impacts for a set of risk categories"
         potentialImpactsSchema.example == [C:2, I:3]
