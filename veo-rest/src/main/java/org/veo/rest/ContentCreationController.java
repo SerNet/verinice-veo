@@ -275,6 +275,7 @@ public class ContentCreationController extends AbstractVeoController {
     return completableFuture.thenApply(result -> ResponseEntity.status(201).body(result));
   }
 
+  // TODO VEO-2010 this is all so hideous
   private Map<String, ProfileDefinition> buildProfiles(
       CreateDomainTemplateFromDomainParameterDto createParameter,
       String domainId,
@@ -291,7 +292,9 @@ public class ContentCreationController extends AbstractVeoController {
                         .execute(
                             getUnitDumpUseCase,
                             (Supplier<GetUnitDumpUseCase.InputData>)
-                                () -> UnitDumpMapper.mapInput(creationParameters.getUnitId()),
+                                () ->
+                                    UnitDumpMapper.mapInput(
+                                        creationParameters.getUnitId(), domainId),
                             out -> UnitDumpMapper.mapOutput(out, entityToDtoTransformer))
                         .get();
                 Set<AbstractElementDto> elements = dump.getElements();
