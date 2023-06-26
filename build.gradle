@@ -118,9 +118,6 @@ task copy3rdPartyLicenseFile {
     }
 }
 
-// pull in fix for https://hibernate.atlassian.net/jira/software/c/projects/HHH/issues/HHH-16555
-ext['hibernate.version'] = '6.2.3.Final'
-
 subprojects {
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
