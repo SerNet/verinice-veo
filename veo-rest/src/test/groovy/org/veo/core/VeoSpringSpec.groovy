@@ -195,8 +195,8 @@ abstract class VeoSpringSpec extends VeoSpec {
         JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909).getSchema(
                 entitySchemaService.findSchema(type, client.domains),
                 new SchemaValidatorsConfig().tap {
-                    // tolerate read-only properties
-                    writeMode = false
+                    // schema is used to to validate outgoing data from an API
+                    writeOnly = true
                 })
     }
 }
