@@ -43,6 +43,7 @@ import org.veo.core.usecase.UseCase;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -135,7 +136,11 @@ public class GetUnitDumpUseCase
   @Data
   @AllArgsConstructor
   public static class InputData implements UseCase.InputData {
-    private Key<UUID> unitId;
+    @NonNull private Key<UUID> unitId;
+    /**
+     * If a domain ID is set, only elements associated with that domain are exported and aspects
+     * belonging to other domains are not included in the elements' representations.
+     */
     private Key<UUID> domainId;
   }
 
