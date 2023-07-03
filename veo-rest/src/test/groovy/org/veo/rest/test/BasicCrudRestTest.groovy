@@ -523,4 +523,13 @@ class BasicCrudRestTest extends VeoRestTest {
         and: 'Deleting the unit'
         delete("$baseUrl/units/$unitId", 204, UserType.DEFAULT)
     }
+
+    def "error messages are returned"() {
+        when:
+        def responseBody = post("/assets", [:], 400).body
+
+        then:
+        responseBody.name == "A name must be present."
+        responseBody.owner == "An owner must be present."
+    }
 }

@@ -20,18 +20,11 @@ package org.veo.rest;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
@@ -64,15 +57,6 @@ public abstract class AbstractEntityController extends AbstractVeoController {
   protected AbstractEntityController() {}
 
   protected CacheControl defaultCacheControl = CacheControl.noCache();
-
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  @ExceptionHandler(MethodArgumentNotValidException.class)
-  public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
-    log.error("Error validating request", ex);
-    return ex.getBindingResult().getAllErrors().stream()
-        .map(FieldError.class::cast)
-        .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
-  }
 
   protected IdRefResolver createIdRefResolver(Client client) {
     return new DbIdRefResolver(repositoryProvider, client);

@@ -17,11 +17,15 @@
  ******************************************************************************/
 package org.veo.rest.common;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -128,6 +132,17 @@ public class VeriniceExceptionHandler {
   @ExceptionHandler(DomainInUseException.class)
   public ResponseEntity<ApiResponseBody> handleDomainInUseExceptions(DomainInUseException ex) {
     return handle(ex, HttpStatus.CONFLICT);
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<Map<String, String>> handleValidationExceptions(
+      MethodArgumentNotValidException ex) {
+    log.error("Error validating request", ex);
+    return new ResponseEntity<>(
+        ex.getBindingResult().getAllErrors().stream()
+            .map(FieldError.class::cast)
+            .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)),
+        HttpStatus.BAD_REQUEST);
   }
 
   private ResponseEntity<ApiResponseBody> handle(Throwable exception, HttpStatus status) {
