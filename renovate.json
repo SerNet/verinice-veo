@@ -83,7 +83,8 @@
         "org.testcontainers:",
         "^io.freefair.lombok",
         "^gradle$",
-        "^org.keycloak:keycloak-authz-client$"
+        "^org.keycloak:keycloak-authz-client$",
+        "^com.networknt:json-schema-validator"
       ],
       "postUpgradeTasks": {}
     }

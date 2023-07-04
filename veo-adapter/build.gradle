@@ -7,7 +7,6 @@ dependencies {
     api 'com.fasterxml.uuid:java-uuid-generator'
 
     implementation 'jakarta.validation:jakarta.validation-api'
-    implementation 'com.networknt:json-schema-validator'
     implementation 'com.github.victools:jsonschema-generator'
     implementation 'com.github.victools:jsonschema-module-jackson'
     implementation 'com.github.victools:jsonschema-module-jakarta-validation'
@@ -19,6 +18,7 @@ dependencies {
     compileOnly('org.projectlombok:lombok')
     compileOnly 'io.swagger.core.v3:swagger-core-jakarta'
 
+    testImplementation 'com.networknt:json-schema-validator'
     testImplementation 'io.swagger.core.v3:swagger-core-jakarta'
     testImplementation 'org.spockframework:spock-spring'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
