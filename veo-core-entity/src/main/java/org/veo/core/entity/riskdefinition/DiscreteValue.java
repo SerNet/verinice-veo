@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -65,7 +66,7 @@ public class DiscreteValue implements TranslationProvider {
   @ToString.Include
   private String htmlColor;
 
-  @ToString.Exclude @NotNull private TranslationMap translations = new TranslationMap();
+  @ToString.Exclude @NotNull @Valid private TranslationMap translations = new TranslationMap();
 
   /**
    * Provide compatibility with old clients and data structure. This will read the old data and

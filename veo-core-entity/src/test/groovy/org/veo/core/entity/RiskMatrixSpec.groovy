@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.core.entity
 
+import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator
+
 import org.veo.core.entity.riskdefinition.CategoryDefinition
 import org.veo.core.entity.riskdefinition.CategoryLevel
 import org.veo.core.entity.riskdefinition.ImplementationStateDefinition
@@ -27,6 +29,8 @@ import org.veo.core.entity.riskdefinition.RiskMethod
 import org.veo.core.entity.riskdefinition.RiskValue
 import org.veo.core.entity.specification.TranslationValidator
 
+import jakarta.validation.ConstraintViolation
+import jakarta.validation.Validation
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -390,29 +394,42 @@ class RiskMatrixSpec extends Specification {
             new RiskValue(3,"#234643","symbolic_risk_2"),
         ]
 
-        then: "the ordial value is set"
+        then: "the ordinal value is set"
         rd.riskValues[0].ordinalValue == 0
         rd.riskValues[1].ordinalValue == 1
 
-        when: "we validate"
-        rd.validateRiskDefinition()
+        and: "missing definitions are detected"
+        with(getJakartaViolations(rd)) { violations ->
+            violations.size() == 2
+            violations*.propertyPath*.toString() ==~ [
+                "probability",
+                "implementationStateDefinition"
+            ]
+            violations*.message ==~ [
+                "must not be null",
+                "must not be null"
+            ]
+        }
 
-        then: "illegal Argument exception is thrown"
-        IllegalArgumentException iae = thrown()
-        iae.message == "Probability unset."
-
-        when: "we add the probability levels"
+        when: "we add the missing definitions"
         rd.probability = new ProbabilityDefinition()
         rd.probability.id = ProbabilityDefinition.DIMENSION_PROBABILITY
         rd.probability.levels = [
             new ProbabilityLevel("color-1"),
             new ProbabilityLevel("color-2")
         ]
+        rd.implementationStateDefinition = new ImplementationStateDefinition([
+            new CategoryLevel("color-1")
+        ])
 
+        then: "no more violations are present"
+        getJakartaViolations(rd).empty
+
+        when: "calling validation"
         rd.validateRiskDefinition()
 
         then: "illegal Argument exception is thrown"
-        iae = thrown()
+        IllegalArgumentException iae = thrown()
         iae.message == "Risk matrix is empty."
 
         when: "we add a risk matrix for cd"
@@ -429,19 +446,10 @@ class RiskMatrixSpec extends Specification {
 
         rd.validateRiskDefinition()
 
-        then: "illegal Argument exception is thrown"
-        iae = thrown()
-        iae.message == "ImplementationState is empty."
+        then: "it's fine"
+        noExceptionThrown()
 
-        when: "We add the imp state"
-        rd.implementationStateDefinition = new ImplementationStateDefinition([
-            new CategoryLevel("color-1")
-        ])
-
-        then: "it validates nicely"
-        rd.validateRiskDefinition()
-
-        when: "we use an unkonwn risk value and validate"
+        when: "we use an unknown risk value and validate"
         cd.valueMatrix = [
             [
                 rd.riskValues[0],
@@ -534,6 +542,14 @@ class RiskMatrixSpec extends Specification {
         cd.getRiskValue(rd.probability.levels[0], cl) == rd.riskValues[1]
     }
 
+    private <T> Set<ConstraintViolation<T>> getJakartaViolations(T object) {
+        Validation.byDefaultProvider()
+                .configure()
+                .messageInterpolator(new ParameterMessageInterpolator())
+                .buildValidatorFactory()
+                .validator.validate(object)
+    }
+
     def "test RiskDefinition validation categories"() {
         when: "we create a simple RiskDefinition"
         RiskDefinition rd = new RiskDefinition()
@@ -557,6 +573,25 @@ class RiskMatrixSpec extends Specification {
             new CategoryLevel("l2")
         ]
 
+        rd.implementationStateDefinition = new ImplementationStateDefinition([
+            new CategoryLevel("color-1")
+        ])
+
+        then: "it validates nicely"
+        rd.validateRiskDefinition()
+
+        when: "using redundant category definitions"
+        rd.categories = [
+            new CategoryDefinition("2", riskMatrix, potentialImpacts),
+            new CategoryDefinition("2", riskMatrix, potentialImpacts),
+            new CategoryDefinition("3", riskMatrix, potentialImpacts),
+        ]
+
+        then: "illegal Argument exception is thrown"
+        IllegalArgumentException ex = thrown()
+        ex.message == "Categories not unique."
+
+        when: "using valid categories"
         rd.categories = [
             new CategoryDefinition("1", riskMatrix, potentialImpacts),
             new CategoryDefinition("2", riskMatrix, potentialImpacts),
@@ -565,40 +600,28 @@ class RiskMatrixSpec extends Specification {
             new CategoryDefinition("5", riskMatrix, potentialImpacts)
         ]
 
-        rd.implementationStateDefinition = new ImplementationStateDefinition([
-            new CategoryLevel("color-1")
-        ])
+        then:
+        noExceptionThrown()
+    }
 
-        then: "it validates nicely"
-        rd.validateRiskDefinition()
-
-        when: "we change make the ids not unique"
-        rd.categories[0].id = "2"
-        rd.validateRiskDefinition()
-
-        then: "illegal Argument exception is thrown"
-        IllegalArgumentException ex = thrown()
-        ex.message == "Categories not unique."
-
-        when: "we fix the risk definition"
-        rd.categories[0].id = "1"
-
-        then: "it validates nicely"
-        rd.validateRiskDefinition()
+    def "risk method must not be null"() {
+        given:
+        def rd = createRiskDefinition()
 
         when: "we remove the risk method"
         rd.riskMethod = null
-        rd.validateRiskDefinition()
 
-        then: "illegal Argument exception is thrown"
-        ex = thrown()
-        ex.message == "Risk method is empty."
+        then: "there is a violation"
+        with(getJakartaViolations(rd)) {violations ->
+            violations*.propertyPath*.toString() == ["riskMethod"]
+            violations*.message == ["must not be null"]
+        }
 
         when: "we fix the risk definition"
         rd.riskMethod = new RiskMethod()
 
         then: "it validates nicely"
-        rd.validateRiskDefinition()
+        getJakartaViolations(rd).empty
     }
 
     def "test RiskDefinition validation of symbolic risk"() {
@@ -608,19 +631,15 @@ class RiskMatrixSpec extends Specification {
         then: "it validates nicely"
         rd.validateRiskDefinition()
 
-        when: "we change make the sybolic risk not unique"
-        rd.riskValues[0].symbolicRisk = "symbolic_risk_3"
-        rd.validateRiskDefinition()
+        when: "we change make the symbolic risk not unique"
+        rd.riskValues = [
+            new RiskValue(3,"#234643","symbolic_risk_3"),
+            new RiskValue(3,"#234643","symbolic_risk_3")
+        ]
 
         then: "illegal Argument exception is thrown"
         IllegalArgumentException ex = thrown()
         ex.message == "SymbolicRisk not unique."
-
-        when: "make unique again"
-        rd.riskValues[1].symbolicRisk = "new"
-
-        then: "it validates nicely"
-        rd.validateRiskDefinition()
     }
 
     def "test RiskDefinition validation of translations"() {

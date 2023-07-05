@@ -101,6 +101,7 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
       mappedBy = "owner")
   private Set<ElementTypeDefinition> elementTypeDefinitions = new HashSet<>();
 
+  @Valid
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinColumn(name = "risk_definition_set_id")
   private RiskDefinitionSetData riskDefinitionSet = new RiskDefinitionSetData();

@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.validation.constraints.NotEmpty;
+
 import org.veo.core.entity.TranslationMap;
 
 import lombok.Data;
@@ -49,7 +51,12 @@ public class ProbabilityDefinition extends DimensionDefinition {
     super(DIMENSION_PROBABILITY);
   }
 
-  @EqualsAndHashCode.Include private List<ProbabilityLevel> levels = new ArrayList<>();
+  public void setLevels(List<ProbabilityLevel> levels) {
+    this.levels = levels;
+    initLevel(levels);
+  }
+
+  @NotEmpty @EqualsAndHashCode.Include private List<ProbabilityLevel> levels = new ArrayList<>();
 
   public Optional<ProbabilityLevel> getLevel(int ordinalValue) {
     return levels.stream().filter(l -> l.getOrdinalValue() == ordinalValue).findFirst();

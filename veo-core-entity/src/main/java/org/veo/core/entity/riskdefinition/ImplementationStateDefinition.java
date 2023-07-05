@@ -46,6 +46,11 @@ public class ImplementationStateDefinition extends DimensionDefinition {
     initLevel(levels);
   }
 
+  public void setLevels(List<CategoryLevel> levels) {
+    this.levels = levels;
+    initLevel(levels);
+  }
+
   @EqualsAndHashCode.Include private List<CategoryLevel> levels = new ArrayList<>();
 
   public Optional<CategoryLevel> getLevel(int ordinalValue) {

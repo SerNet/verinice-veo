@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -52,17 +54,31 @@ public class RiskDefinition {
   @ToString.Include
   private String id;
 
-  private ProbabilityDefinition probability;
-  @NotNull private ImplementationStateDefinition implementationStateDefinition;
-  @NotNull private List<CategoryDefinition> categories = new ArrayList<>();
-  @NotNull private List<RiskValue> riskValues = new ArrayList<>();
-  @NotNull private RiskMethod riskMethod;
+  @Valid @NotNull private ProbabilityDefinition probability;
+  @Valid @NotNull private ImplementationStateDefinition implementationStateDefinition;
+
+  @Valid @NotNull @NotEmpty private List<CategoryDefinition> categories = new ArrayList<>();
+
+  @Valid @NotNull private List<RiskValue> riskValues = new ArrayList<>();
+  @Valid @NotNull private RiskMethod riskMethod;
 
   public Optional<CategoryDefinition> getCategory(String categoryId) {
     return categories.stream().filter(c -> c.getId().equals(categoryId)).findAny();
   }
 
+  public void setCategories(List<CategoryDefinition> categories) {
+    var ids = categories.stream().map(CategoryDefinition::getId).toList();
+    if (ids.size() > ids.stream().distinct().count()) {
+      throw new IllegalArgumentException("Categories not unique.");
+    }
+    this.categories = categories;
+  }
+
   public void setRiskValues(List<RiskValue> values) {
+    var ids = values.stream().map(RiskValue::getSymbolicRisk).toList();
+    if (ids.size() > ids.stream().distinct().count()) {
+      throw new IllegalArgumentException("SymbolicRisk not unique.");
+    }
     this.riskValues = values;
     initLevel(values);
   }
@@ -75,39 +91,7 @@ public class RiskDefinition {
    * valid.
    */
   public void validateRiskDefinition() {
-    if (riskMethod == null) {
-      throw new IllegalArgumentException("Risk method is empty.");
-    }
-    if (probability == null) {
-      throw new IllegalArgumentException("Probability unset.");
-    }
-
-    if (probability.getLevels().isEmpty()) {
-      throw new IllegalArgumentException("Probability level is empty.");
-    }
-    if (categories.isEmpty()) {
-      throw new IllegalArgumentException("Categories are empty.");
-    }
-    validateCategoryUniqueness();
-    validateSymbolicRiskUniqueness();
     categories.stream().forEach(cd -> cd.validateRiskCategory(riskValues, probability));
-    if (implementationStateDefinition == null) {
-      throw new IllegalArgumentException("ImplementationState is empty.");
-    }
-  }
-
-  private void validateSymbolicRiskUniqueness() {
-    List<String> ids = riskValues.stream().map(RiskValue::getSymbolicRisk).toList();
-    if (ids.size() > ids.stream().distinct().count()) {
-      throw new IllegalArgumentException("SymbolicRisk not unique.");
-    }
-  }
-
-  private void validateCategoryUniqueness() {
-    List<String> ids = categories.stream().map(CategoryDefinition::getId).toList();
-    if (ids.size() > ids.stream().distinct().count()) {
-      throw new IllegalArgumentException("Categories not unique.");
-    }
   }
 
   public Optional<RiskValue> getRiskValue(String symbolicRiskId) {
