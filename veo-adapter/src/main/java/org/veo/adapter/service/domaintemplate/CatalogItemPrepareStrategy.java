@@ -27,12 +27,9 @@ import org.veo.core.entity.Element;
  * catalogElement or incarnation. All subparts are associated with the given domain.
  */
 public class CatalogItemPrepareStrategy {
-  private static final String NO_DESIGNATOR = "NO_DESIGNATOR";
 
   /** Assigns designator to catalog item. */
-  public void prepareCatalogItem(CatalogItem item) {
-    item.getElement().setDesignator(NO_DESIGNATOR);
-  }
+  public void prepareCatalogItem(CatalogItem item) {}
 
   /**
    * Clean up and relink a {@link Element}. Add the domain to each sub element. Prepare the {@link
@@ -40,7 +37,6 @@ public class CatalogItemPrepareStrategy {
    */
   public void prepareElement(Domain domain, Element element, boolean isCatalogElement) {
     element.setId(null);
-    element.setDesignator(isCatalogElement ? NO_DESIGNATOR : null);
     element.getDomains().clear();
     element.getDomains().add(domain);
     processSubTypes(domain, element);

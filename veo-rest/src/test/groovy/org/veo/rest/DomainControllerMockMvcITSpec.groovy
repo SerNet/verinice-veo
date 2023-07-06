@@ -86,22 +86,22 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
                 newCatalog(d) {c->
                     name = 'a'
                     newCatalogItem(c,{
-                        newControl(it) {
-                            name = 'c1'
-                            it.associateWithDomain(d, "CTL_Control", 'NEW')
-                        }
+                        elementType = "control"
+                        subType = "CTL_TOM"
+                        status = "NEW"
+                        name = 'c1'
                     })
                     newCatalogItem(c,{
-                        newControl(it) {
-                            name = 'c2'
-                            it.associateWithDomain(d, "CTL_Control", 'NEW')
-                        }
+                        elementType = "control"
+                        subType = "CTL_TOM"
+                        status = "NEW"
+                        name = 'c2'
                     })
                     newCatalogItem(c,{
-                        newControl(it) {
-                            name = 'c3'
-                            it.associateWithDomain(d, "CTL_Control", 'NEW')
-                        }
+                        elementType = "control"
+                        subType = "CTL_TOM"
+                        status = "NEW"
+                        name = 'c3'
                     })
                 }
                 riskDefinitions = ["id":rd] as Map
@@ -207,7 +207,6 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         with(firstCatalog) {
             name == 'a'
             catalogItems.size() == 3
-            catalogItems[0].element.domains.keySet() ==~ [result.id]
             domainTemplate !=null
         }
     }

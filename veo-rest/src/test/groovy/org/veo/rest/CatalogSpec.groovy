@@ -127,22 +127,22 @@ class CatalogSpec extends VeoMvcSpec {
             }
 
             item1 = newCatalogItem(catalog, {
-                newControl(it) {
-                    name = 'c1'
-                    associateWithDomain(domain, "CTL_TOM", "NEW")
-                }
+                name = 'c1'
+                elementType = "control"
+                subType = "CTL_TOM"
+                status = "NEW"
             })
             item2 = newCatalogItem(catalog, {
-                newControl(it) {
-                    name = 'c2'
-                    associateWithDomain(domain, "CTL_TOM", "NEW")
-                }
+                elementType = "control"
+                subType = "CTL_TOM"
+                status = "NEW"
+                name = 'c2'
             })
             item3 = newCatalogItem(catalog, {
-                newControl(it) {
-                    name = 'c3'
-                    associateWithDomain(domain, "CTL_TOM", "NEW")
-                }
+                elementType = "control"
+                subType = "CTL_TOM"
+                status = "NEW"
+                name = 'c3'
             })
             newTailoringReference(item3, TailoringReferenceType.COPY) {
                 catalogItem = item2
@@ -152,11 +152,10 @@ class CatalogSpec extends VeoMvcSpec {
             }
 
             item4 = newCatalogItem(catalog, {
-                newProcess(it) {
-                    name = 'p1'
-                    description = "a process example entry"
-                    associateWithDomain(domain, "normalProcess", "NEW")
-                }
+                elementType = "process"
+                subType = "normalProcess"
+                status = "NEW"
+                name = 'p1'
             })
 
             newLinkTailoringReference(item4, TailoringReferenceType.LINK) {
@@ -169,31 +168,29 @@ class CatalogSpec extends VeoMvcSpec {
             }
 
             item5 = newCatalogItem(catalog, {
-                newProcess(it) {
-                    name = 'p2'
-                    description = "a process with subtype"
-                    associateWithDomain(domain, "MY_SUBTYPE", "NEW")
-                }
+                elementType = "process"
+                subType = "MY_SUBTYPE"
+                status = "NEW"
+                name = 'p2'
             })
 
             item6 = newCatalogItem(catalog, {
-                newProcess(it) {
-                    abbreviation = "caf"
-                    name = 'p3-all-features'
-                    description = "a process with subtype"
-                    associateWithDomain(domain, "MY_SUBTYPE", "START")
-                    applyCustomAspect(newCustomAspect("process_resilience", domain) {
-                        attributes = [
-                            "process_resilience_impact": "process_resilience_impact_low"
-                        ]
-                    })
-                    applyCustomAspect(newCustomAspect("process_processingDetails", domain) {
-                        attributes = [
-                            "process_processingDetails_comment": "my comment",
-                            "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation"
-                        ]
-                    })
-                }
+                elementType = "process"
+                subType = "MY_SUBTYPE"
+                status = "START"
+                abbreviation = "caf"
+                name = 'p3-all-features'
+                description = "a process with subtype"
+                customAspects = [
+                    "process_resilience":  [
+                        "process_resilience_impact": "process_resilience_impact_low"
+                    ],
+                    "process_processingDetails":
+                    [
+                        "process_processingDetails_comment": "my comment",
+                        "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation"
+                    ]
+                ]
             })
 
             newLinkTailoringReference(item6, TailoringReferenceType.LINK) {
@@ -202,30 +199,30 @@ class CatalogSpec extends VeoMvcSpec {
             }
 
             item7 = newCatalogItem(catalog, {
-                newControl(it) {
-                    name = 'tom1'
-                    description = "a control with external tailorref"
-                    associateWithDomain(domain, "CTL_TOM", "NEW1")
-                }
+                elementType = "control"
+                subType = "CTL_TOM"
+                status = "NEW1"
+                name = 'tom1'
+                description = "a control with external tailorref"
             })
+
             newLinkTailoringReference(item7, TailoringReferenceType.LINK_EXTERNAL) {
                 catalogItem = item4
                 linkType = 'externallinktest'
             }
 
             zz1 = newCatalogItem(catalog, {
-                newControl(it) {
-                    name = 'zz1'
-                    description = "a control linked in a circle"
-                    associateWithDomain(domain, "CTL_TOM", "NEW")
-                }
+                elementType = "control"
+                subType = "CTL_TOM"
+                status = "NEW"
+                name = 'zz1'
+                description = "a control linked in a circle"
             })
             zz2 = newCatalogItem(catalog, {
-                newControl(it) {
-                    name = 'zz2'
-                    description = "a control linked in a circle"
-                    associateWithDomain(domain, "CTL_TOM", "NEW")
-                }
+                elementType = "control"
+                subType = "CTL_TOM"
+                status = "NEW"
+                name = 'zz2'
             })
 
             newLinkTailoringReference(zz1, TailoringReferenceType.LINK) {
@@ -248,44 +245,49 @@ class CatalogSpec extends VeoMvcSpec {
             def riskDefinitionRef = new RiskDefinitionRef(RISK_DEF_ID)
 
             processImpactExample = newCatalogItem(catalog, {
-                newProcess(it) {
-                    name = 'zzzp-impact'
-                    description = "a process example entry"
-                    associateWithDomain(domain, "PRO_DataProcessing", "NEW")
-                    setImpactValues(domain, [
-                        (riskDefinitionRef) : new ImpactValues().tap{
-                            potentialImpacts = [
-                                (new CategoryRef("C")): new ImpactRef(2)
-                            ]
-                        }
-                    ] as Map )
-                }
+                elementType = "process"
+                subType = "PRO_DataProcessing"
+                status = "NEW"
+                name = 'zzzp-impact'
+                description = "a process example entry"
+
+                //TODO:veo-2285
+                //                aspects = [
+                //                    (org.veo.core.entity.CatalogItem.PROCESS_RISK_VALUES): [
+                //                        (RISK_DEF_ID):  [
+                //                            "C" : 2
+                //                        ]
+                //                    ]
+                //                ]
             })
 
             controlImpactExample = newCatalogItem(catalog, {
-                newControl(it) {
-                    name = 'zzzzc-impact'
-                    description = "a control example entry"
-                    associateWithDomain(domain, "CTL_TOM", "NEW")
-                    setRiskValues(domain, [
-                        (riskDefinitionRef): new ControlRiskValues().tap {
-                            implementationStatus = new ImplementationStatusRef(1)
-                        }
-                    ] as Map)
-                }
+                elementType = "control"
+                subType = "CTL_TOM"
+                status = "NEW"
+                name = 'zzzzc-impact'
+                description = "a control example entry"
+                //                aspects = [
+                //                    (org.veo.core.entity.CatalogItem.CONTROL_RISK_VALUES):  [
+                //                        (RISK_DEF_ID): [
+                //                            "implementationStatus": 1
+                //                        ]
+                //                    ]
+                //                ]
             })
 
             scenarioProbabilityExample = newCatalogItem(catalog, {
-                newScenario(it) {
-                    name = 'zzzzszsimpact'
-                    description = "a scenario example entry"
-                    associateWithDomain(domain, "SCN_Scenario", "NEW")
-                    setPotentialProbability(domain, [
-                        (riskDefinitionRef): new PotentialProbabilityImpl().tap {
-                            potentialProbability = new ProbabilityRef(3)
-                        }
-                    ] as Map)
-                }
+                elementType = "scenario"
+                subType = "SCN_Scenario"
+                status = "NEW"
+                name = 'zzzzszsimpact'
+                description = "a scenario example entry"
+                //                aspects = [
+                //                    (org.veo.core.entity.CatalogItem.SCENARIO_RISK_VALUES): [
+                //                        (RISK_DEF_ID): [
+                //                            "potentialProbability": 3
+                //                        ]]
+                //                ]
             })
 
             domain1 = newDomain (client) {
@@ -307,7 +309,7 @@ class CatalogSpec extends VeoMvcSpec {
             domain1 = client.domains.toList().get(1)
             catalog = domain.catalogs.first()
 
-            (item1, item2, item3, item4, item5, item6, item7, zz1, zz2, processImpactExample, controlImpactExample, scenarioProbabilityExample) = catalog.catalogItems.sort{it.element.name}
+            (item1, item2, item3, item4, item5, item6, item7, zz1, zz2, processImpactExample, controlImpactExample, scenarioProbabilityExample) = catalog.catalogItems.sort{it.name}
 
             secondClient = newClient() {
                 it.name = "the other"
@@ -322,10 +324,10 @@ class CatalogSpec extends VeoMvcSpec {
             catalog1 = newCatalog(domain3) {
                 name = 'b'
                 newCatalogItem(it, {
-                    newControl(it) {
-                        name = 'c15'
-                        associateWithDomain(domain3, "CTL_TOM", "NEW")
-                    }
+                    elementType = "control"
+                    subType = "CTL_TOM"
+                    status = "NEW"
+                    name = 'c15'
                 })
             }
             secondClient = clientRepository.save(secondClient)

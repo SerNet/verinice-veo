@@ -292,23 +292,31 @@ public final class DtoToEntityTransformer {
     var target = createIdentifiable(CatalogItem.class, source);
     target.setCatalog(catalog);
     if (source instanceof CompositeCatalogItemDto catalogitem) {
-      AbstractElementDto elementDto = catalogitem.getElement();
-      target.setElement(transformDto2Element(elementDto, idRefResolver));
+      target.setAbbreviation(catalogitem.getAbbreviation());
+      target.setName(catalogitem.getName());
+      target.setDescription(catalogitem.getDescription());
+      target.setElementType(catalogitem.getElementType());
+      target.setStatus(catalogitem.getStatus());
+      target.setSubType(catalogitem.getSubType());
+
+      target.setCustomAspects(
+          catalogitem.getCustomAspects().getValue().entrySet().stream()
+              .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().getValue())));
+
+      target.setTailoringReferences(
+          convertSet(
+              source.getTailoringReferences(),
+              tr -> transformDto2TailoringReference(tr, target, idRefResolver)));
+
     } else if (source instanceof ReferenceCatalogItemDto catalogitem) {
-      target.setElement(idRefResolver.resolve(catalogitem.getElement()));
+      target.setAbbreviation(catalogitem.getNamespace());
+      target.setName(catalogitem.getName());
+      target.setDescription(catalogitem.getDescription());
     } else {
       throw new IllegalArgumentException(
           "Cannot handle entity type " + source.getClass().getName());
     }
     target.setNamespace(source.getNamespace());
-
-    target.getTailoringReferences().clear();
-    target
-        .getTailoringReferences()
-        .addAll(
-            convertSet(
-                source.getTailoringReferences(),
-                tr -> transformDto2TailoringReference(tr, target, idRefResolver)));
     return target;
   }
 

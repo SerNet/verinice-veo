@@ -211,11 +211,11 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static CatalogItemData newCatalogItem(Catalog catalog,@DelegatesTo(value = Element.class, strategy = Closure.DELEGATE_FIRST)
-            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CatalogItem") Closure elementSupplier, @DelegatesTo(value = CatalogItem.class, strategy = Closure.DELEGATE_FIRST)
+    static CatalogItemData newCatalogItem(Catalog catalog,@DelegatesTo(value = CatalogItem.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CatalogItem") Closure init = null) {
-        return factory.createCatalogItem(catalog, elementSupplier).tap {
+        return factory.createCatalogItem(catalog).tap {
             VeoSpec.execute(it, init)
+            VeoSpec.name(it)
             VeoSpec.version(it)
         }
     }

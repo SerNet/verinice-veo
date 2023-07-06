@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa
 
+import static org.veo.core.entity.TailoringReferenceType.LINK
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.support.TransactionTemplate
 
@@ -118,9 +120,15 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         domain0 = newDomainTemplate() {
             newCatalog(it) {
                 name = "a"
-                newCatalogItem(it, VeoSpec.&newControl)
-                newCatalogItem(it, VeoSpec.&newControl)
-                newCatalogItem(it, VeoSpec.&newControl)
+                newCatalogItem(it, {
+                    elementType = "control"
+                })
+                newCatalogItem(it, {
+                    elementType = "control"
+                })
+                newCatalogItem(it, {
+                    elementType = "control"
+                })
             }
         }
 
@@ -145,15 +153,21 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         domain0 = newDomainTemplate()
         Catalog catalog = newCatalog(domain0) {
             name = "a"
-            newCatalogItem(it, VeoSpec.&newControl)
-            newCatalogItem(it, VeoSpec.&newControl)
-            newCatalogItem(it, VeoSpec.&newControl)
+            newCatalogItem(it, {
+                elementType = "control"
+            })
+            newCatalogItem(it, {
+                elementType = "control"
+            })
+            newCatalogItem(it, {
+                elementType = "control"
+            })
         }
         newCatalogItem(catalog, {
-            newProcess(it) {
-                name = 'p1'
-                associateWithDomain(domain0, "Test", "NEW")
-            }
+            elementType = "process"
+            name = "p1"
+            subType = "Test"
+            status = "NEW"
         })
 
         when: "saving"
@@ -171,7 +185,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.catalogs.first().id != null
         d.catalogs.first().name == 'a'
         d.catalogs.first().catalogItems.size() == 4
-        d.catalogs.first().catalogItems.find { it.element.name == 'p1' }.element.findSubType(d).get() == 'Test'
+        d.catalogs.first().catalogItems.find { it.name == 'p1' }.subType == 'Test'
         d.elementTypeDefinitions.size() == 8
     }
 
@@ -180,24 +194,34 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         domain0 = newDomainTemplate()
         Catalog catalog = newCatalog(domain0) {
             name = "a"
-            newCatalogItem(it, VeoSpec.&newControl)
-            newCatalogItem(it, VeoSpec.&newControl)
-            newCatalogItem(it, VeoSpec.&newControl)
+            newCatalogItem(it, {
+                elementType = "control"
+            })
+            newCatalogItem(it,{
+                elementType = "control"
+            })
+            newCatalogItem(it,{
+                elementType = "control"
+            })
         }
         def itemP1 = newCatalogItem(catalog, {
-            newProcess(it) {
-                name = 'p1'
-                associateWithDomain(domain0, "Test", "NEW")
-            }
+            name = 'p1'
+            status = "NEW"
+            subType = "Test"
+            elementType = "control"
         })
 
-        newCatalogItem(catalog, { c->
-            newProcess(c) {
-                name = 'p2'
-                associateWithDomain(domain0, "Test1", "NOT-NEW")
-                applyLink(newCustomLink(itemP1.element, "p2->p1", domain0))
-            }
+        def ci = newCatalogItem(catalog, {
+            name = 'p2'
+            status = "NOT-NEW"
+            subType = "Test1"
+            elementType = "control"
         })
+
+        newLinkTailoringReference(ci, LINK) {
+            catalogItem = itemP1
+            linkType = "p2->p1"
+        }
 
         when: "saving"
         domain0 = txTemplate.execute {
@@ -214,16 +238,19 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.catalogs.first().id != null
         d.catalogs.first().name == 'a'
         d.catalogs.first().catalogItems.size() == 5
-        with (d.catalogs.first().catalogItems.find { it.element.name == 'p1' }) {
-            element.getSubType(d) == 'Test'
-            element.getStatus(d) == 'NEW'
+        with (d.catalogs.first().catalogItems.find { it.name == 'p1' }) {
+            subType == 'Test'
+            status == 'NEW'
+            elementType == "control"
         }
-        with (d.catalogs.first().catalogItems.find { it.element.name == 'p2' }) {
-            element.getSubType(d) == 'Test1'
-            element.getStatus(d) == 'NOT-NEW'
-            element.links.size() == 1
-            element.links[0].type == 'p2->p1'
-            element.links[0].target.name == 'p1'
+        with (d.catalogs.first().catalogItems.find { it.name == 'p2' }) {
+            subType == 'Test1'
+            status == 'NOT-NEW'
+            elementType == "control"
+
+            tailoringReferences.size() == 1
+            tailoringReferences[0].linkType == 'p2->p1'
+            tailoringReferences[0].catalogItem.name == 'p1'
         }
         d.elementTypeDefinitions.size() == 8
     }

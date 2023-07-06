@@ -28,10 +28,9 @@ public final class TailoringReferenceComparators {
   public static final Comparator<? super TailoringReference> BY_CATALOGITEM_ELEMENT =
       (c1, c2) ->
           c1.getCatalogItem()
-              .getElement()
               .getId()
               .uuidValue()
-              .compareTo(c2.getCatalogItem().getElement().getId().uuidValue());
+              .compareTo(c2.getCatalogItem().getId().uuidValue());
   /**
    * Orders {@link TailoringReference}s for application. They are sorted first alphabetically by
    * their reference type and then by their catalog-item's element UUID string value.

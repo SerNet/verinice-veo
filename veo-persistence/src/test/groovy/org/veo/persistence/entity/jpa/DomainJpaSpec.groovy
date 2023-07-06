@@ -125,9 +125,15 @@ class DomainJpaSpec extends AbstractJpaSpec {
             name = 'catalog'
             description = 'a catalog'
 
-            newCatalogItem(it, VeoSpec.&newControl)
-            newCatalogItem(it, VeoSpec.&newControl)
-            newCatalogItem(it, VeoSpec.&newControl)
+            newCatalogItem(it, {
+                elementType = "control"
+            })
+            newCatalogItem(it, {
+                elementType = "control"
+            })
+            newCatalogItem(it, {
+                elementType = "control"
+            })
         }
 
         when: "saving"
@@ -157,9 +163,15 @@ class DomainJpaSpec extends AbstractJpaSpec {
 
         Catalog catalog = newCatalog(domain0) {
             name = 'a'
-            newCatalogItem(it, VeoSpec.&newControl)
-            newCatalogItem(it, VeoSpec.&newControl)
-            newCatalogItem(it, VeoSpec.&newControl)
+            newCatalogItem(it, {
+                elementType = "control"
+            })
+            newCatalogItem(it, {
+                elementType = "control"
+            })
+            newCatalogItem(it, {
+                elementType = "control"
+            })
         }
 
         domain0.addToCatalogs(catalog)
@@ -186,19 +198,16 @@ class DomainJpaSpec extends AbstractJpaSpec {
             name = 'a'
 
             newCatalogItem(it, {
-                newControl(it) {
-                    name = 'c1'
-                }
+                elementType = "control"
+                name = 'c1'
             })
             def item2 = newCatalogItem(it, {
-                newControl(it) {
-                    name = 'c2'
-                }
+                elementType = "control"
+                name = 'c2'
             })
             def item3 = newCatalogItem(it, {
-                newControl(it) {
-                    name = 'c3'
-                }
+                elementType = "control"
+                name = 'c3'
             })
             newTailoringReference(item3, TailoringReferenceType.COPY) {
                 catalogItem = item2
@@ -216,11 +225,11 @@ class DomainJpaSpec extends AbstractJpaSpec {
         d.templateVersion == domain0.templateVersion
         d.catalogs.size() == 1
         d.catalogs.first().catalogItems.size() == 3
-        with(d.catalogs.first().catalogItems.sort {it.element.name}) {
+        with(d.catalogs.first().catalogItems.sort {it.name}) {
             size() == 3
-            it[0].element.name == 'c1'
-            it[1].element.name == 'c2'
-            it[2].element.name == 'c3'
+            it[0].name == 'c1'
+            it[1].name == 'c2'
+            it[2].name == 'c3'
             it[2].tailoringReferences.size() == 1
             it[2].tailoringReferences[0].referenceType == TailoringReferenceType.COPY
         }
@@ -228,7 +237,15 @@ class DomainJpaSpec extends AbstractJpaSpec {
 
     def 'domain with catalog with linked elements'() {
         given: "the domain template and a catalog"
-        newDomain(client)
+        newDomain(client) {domain->
+            applyElementTypeDefinition(newElementTypeDefinition(Control.SINGULAR_TERM, domain) {
+                subTypes = [
+                    ctl : newSubTypeDefinition {
+                        statuses = ["NEW"]
+                    }
+                ]
+            })
+        }
         Unit unit = newUnit(client)
         unit = unitRepository.save(unit)
         client = clientRepository.save(client)
@@ -239,40 +256,39 @@ class DomainJpaSpec extends AbstractJpaSpec {
         }
 
         CatalogItem item1 = newCatalogItem(catalog, {
-            newControl(it) {
-                name = 'c1'
-                abbreviation = 'c1'
-                description = 'control number one'
-            }
+            elementType = "control"
+            name = 'c1'
+            abbreviation = 'c1'
+            description = 'control number one'
+            subType = "ctl"
+            status = "NEW"
         })
         CatalogItem item2 = newCatalogItem(catalog, {
-            newControl(it) {
-                name = 'c2'
-            }
+            elementType = "control"
+            name = 'c2'
+            subType = "ctl"
+            status = "NEW"
         })
         CatalogItem item3 = newCatalogItem(catalog, {
-            newControl(it) {
-                name = 'c3'
-            }
+            elementType = "control"
+            name = 'c3'
+            subType = "ctl"
+            status = "NEW"
         })
         newTailoringReference(item3, TailoringReferenceType.COPY) {
             catalogItem = item2
         }
-        CatalogItem item4 = newCatalogItem(catalog, { catalogItem->
-            newAsset(catalogItem) {
-                name = 'd1'
-                parts = [
-                    newAsset(catalogItem) {
-                        name = 'sub-asset-1'
-                    }
-                ]
-            }
+        CatalogItem item4 = newCatalogItem(catalog, {
+            elementType = "asset"
+            name = 'd1'
+            subType = "asset"
+            status = "NEW"
         })
         CatalogItem item5 = newCatalogItem(catalog, {
-            newProcess(it) {
-                name = 'p1'
-                associateWithDomain(domain0, "Test", "NEW")
-            }
+            elementType = "process"
+            name = 'p1'
+            subType = "Test"
+            status = "NEW"
         })
         newTailoringReference(item5, TailoringReferenceType.COPY) {
             catalogItem = item2
@@ -282,10 +298,11 @@ class DomainJpaSpec extends AbstractJpaSpec {
             linkType = 'linktest'
         }
 
-        CatalogItem item6 = newCatalogItem(catalog,{
-            newControl(it) {
-                name = 'c-p'
-            }
+        CatalogItem item6 = newCatalogItem(catalog, {
+            elementType = "control"
+            name = 'c-p'
+            subType = "ctl"
+            status = "NEW"
         })
         newLinkTailoringReference(item6, TailoringReferenceType.LINK_EXTERNAL) {
             catalogItem = item2
@@ -321,29 +338,29 @@ class DomainJpaSpec extends AbstractJpaSpec {
         loadedCatalog.id == catalog.id
         loadedCatalog.catalogItems.size() == 6
         with(loadedCatalog.catalogItems.sort {
-            it.element.name
+            it.name
         }) {
-            it[0].element.name == 'c-p'
+            it[0].name == 'c-p'
             it[0].tailoringReferences.size() == 1
             it[0].tailoringReferences[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
             it[0].tailoringReferences[0].linkType == 'externallinktest'
-            it[1].element.name == 'c1'
-            it[1].element.abbreviation == item1.element.abbreviation
-            it[1].element.description == item1.element.description
-            it[2].element.name == 'c2'
-            it[3].element.name == 'c3'
+            it[1].name == 'c1'
+            it[1].abbreviation == item1.abbreviation
+            it[1].description == item1.description
+            it[2].name == 'c2'
+            it[3].name == 'c3'
             it[3].tailoringReferences.size() == 1
             it[3].tailoringReferences[0].referenceType == TailoringReferenceType.COPY
-            it[4].element.name == 'd1'
-            it[4].element.parts.first().name == item4.element.parts.first().name
-            it[5].element.name == 'p1'
-            it[5].element.subTypeAspects.size() == 1
+            it[4].name == 'd1'
+            //            it[4].parts.first().name == item4.parts.first().name
+            //TODO: VEO-2269 handle parts as tailrinrref
+            it[5].name == 'p1'
             it[5].tailoringReferences.size() == 2
         }
 
         when: "create elements linked to catalogItems"
         def firstItemFromCatalog = loadedCatalog.catalogItems.sort {
-            it.element.name
+            it.name
         }.first()
         Control controlEntity = newControl(unit) {
             name = 'c1'

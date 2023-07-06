@@ -18,7 +18,6 @@
 package org.veo.core.entity.transform;
 
 import java.util.UUID;
-import java.util.function.Function;
 
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Catalog;
@@ -87,8 +86,7 @@ public interface EntityFactory {
   DomainTemplate createDomainTemplate(
       String name, String authority, String templateVersion, Key<UUID> id);
 
-  /** Creates a catalogItem and add it to the catalog. Careful this changes the catalog entity. */
-  CatalogItem createCatalogItem(Catalog catalog, Function<CatalogItem, Element> elementFactory);
+  CatalogItem createCatalogItem(Catalog catalog);
 
   TailoringReference createTailoringReference(
       CatalogItem catalogItem, TailoringReferenceType referenceType);

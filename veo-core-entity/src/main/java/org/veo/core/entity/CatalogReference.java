@@ -32,6 +32,6 @@ public interface CatalogReference extends Identifiable, ClientOwned {
   void setOwner(CatalogItem owner);
 
   default Optional<Client> getOwningClient() {
-    return Optional.ofNullable(getOwner()).map(CatalogItem::getClient);
+    return getOwner().getOwningClient();
   }
 }

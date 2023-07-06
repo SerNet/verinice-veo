@@ -175,8 +175,10 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
 
     def "Create linked elements from the dsgvo catalog"() {
         when: "the catalog is retrieved"
-        def catalogId = extractLastId(getDomains().find { it.name == "DS-GVO" }.catalogs.first().targetUri)
+        def domainDto = getDomains().find { it.name == "DS-GVO" }
+        def catalogId = extractLastId(domainDto.catalogs[0].targetUri)
         def catalog = getCatalog(catalogId)
+        def dsgvoId = extractLastId(catalog.domainTemplate.targetUri)
 
         then: "the expected catalog was instantiated"
         with(catalog) {
@@ -185,7 +187,6 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         }
 
         when:"we create the controls"
-        def dsgvoId = getDomains().find { it.name == "DS-GVO" }.id
         def sourceProcessId = post("/processes", [
             name: "process",
             domains: [
@@ -249,9 +250,9 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         log.info("Create all linked elements from the dsgvo catalog in one step")
 
         when: "the catalog is retrieved"
-        def dsgvoId = getDomains().find { it.name == "DS-GVO" }.id
         def catalogId = extractLastId(getDomains().find { it.name == "DS-GVO" }.catalogs.first().targetUri)
         def catalog = getCatalog(catalogId)
+        def dsgvoId = extractLastId(catalog.domainTemplate.targetUri)
 
         then: "the expected catalog was instantiated"
         with(catalog) {

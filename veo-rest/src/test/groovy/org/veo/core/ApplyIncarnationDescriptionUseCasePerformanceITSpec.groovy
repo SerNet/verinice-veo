@@ -23,9 +23,12 @@ import java.util.function.Function
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
+import org.veo.core.entity.Asset
 import org.veo.core.entity.Catalog
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
+import org.veo.core.entity.Control
+import org.veo.core.entity.Process
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.UseCaseInteractor
@@ -95,8 +98,8 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
         queryCounts = QueryCountHolder.grandTotal
 
         then:
-        queryCounts.select == 30
-        queryCounts.insert == 23
+        queryCounts.select == 11
+        queryCounts.insert == 22
         queryCounts.time < 500
     }
 
@@ -123,53 +126,67 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
             }
 
             CatalogItem item1 = newCatalogItem(catalog, {
-                newControl(it) {
-                    name = 'c1'
-                    abbreviation = 'c1'
-                    description = 'control number one'
-                }
+                elementType = Control.SINGULAR_TERM
+                subType = "Test"
+                status = "NEW"
+                name = 'c1'
+                abbreviation = 'c1'
+                description = 'control number one'
             })
+
             CatalogItem item2 = newCatalogItem(catalog, {
-                newControl(it) {
-                    name = 'c2'
-                }
+                elementType = Control.SINGULAR_TERM
+                name = 'c2'
+                subType = "Test"
+                status = "NEW"
             })
+
             CatalogItem item3 = newCatalogItem(catalog, {
-                newControl(it) {
-                    name = 'c3'
-                }
+                elementType = Control.SINGULAR_TERM
+                name = 'c3'
+                subType = "Test"
+                status = "NEW"
             })
+
             newTailoringReference(item3, TailoringReferenceType.COPY) {
                 catalogItem = item2
             }
-            CatalogItem item4 = newCatalogItem(catalog, { catalogItem->
-                newAsset(catalogItem) {
-                    name = 'd1'
-                }
+
+            CatalogItem item4 = newCatalogItem(catalog, {
+                elementType = Asset.SINGULAR_TERM
+                name = 'd1'
+                subType = "Test"
+                status = "NEW"
             })
+
             CatalogItem item5 = newCatalogItem(catalog, {
-                newProcess(it) {
-                    name = 'p1'
-                    associateWithDomain(domain, "Test", "NEW")
-                }
+                elementType = Process.SINGULAR_TERM
+                name = 'p1'
+                subType = "Test"
+                status = "NEW"
             })
+
             newTailoringReference(item5, TailoringReferenceType.COPY) {
                 catalogItem = item2
             }
+
             newLinkTailoringReference(item5, TailoringReferenceType.LINK) {
                 catalogItem = item3
                 linkType = "aLink"
             }
 
             CatalogItem item6 = newCatalogItem(catalog,{
-                newControl(it) {
-                    name = 'c-p'
-                }
+                elementType = Control.SINGULAR_TERM
+                name = 'c-p'
+                subType = "Test"
+                status = "NEW"
             })
+
             newLinkTailoringReference(item6, TailoringReferenceType.LINK_EXTERNAL) {
                 catalogItem = item2
                 linkType = 'externallinktest'
             }
+
             catalog.catalogItems = [
                 item1,
                 item2,

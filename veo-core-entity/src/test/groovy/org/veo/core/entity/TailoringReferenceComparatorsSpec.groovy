@@ -48,9 +48,9 @@ class TailoringReferenceComparatorsSpec extends Specification{
         item.element >> element
         item1.element >> element1
 
-        element.id >> Key.uuidFrom("00000000-0000-0000-0000-000000000001")
-        element1.id >> Key.uuidFrom("00000000-0000-0000-0000-000000000002")
-        element2.id >> Key.uuidFrom("00000000-0000-0000-0000-000000000003")
+        item.id >> Key.uuidFrom("00000000-0000-0000-0000-000000000001")
+        item1.id >> Key.uuidFrom("00000000-0000-0000-0000-000000000002")
+        item2.id >> Key.uuidFrom("00000000-0000-0000-0000-000000000003")
 
         r1.referenceType >> TailoringReferenceType.COPY
         r1.catalogItem >> item

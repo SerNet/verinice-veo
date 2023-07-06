@@ -21,7 +21,10 @@ import static org.veo.core.entity.EntityType.DOCUMENT
 
 import org.springframework.beans.factory.annotation.Autowired
 
+import org.veo.core.entity.Asset
+import org.veo.core.entity.Document
 import org.veo.core.entity.Domain
+import org.veo.core.entity.Person
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.LinkDefinition
@@ -70,6 +73,20 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
                     }
                 ]
             })
+            applyElementTypeDefinition(newElementTypeDefinition(Person.SINGULAR_TERM, domain) {
+                subTypes = [
+                    author : newSubTypeDefinition {
+                        statuses = ["NEW"]
+                    }
+                ]
+            })
+            applyElementTypeDefinition(newElementTypeDefinition(Asset.SINGULAR_TERM, domain) {
+                subTypes = [
+                    asset : newSubTypeDefinition {
+                        statuses = ["NEW"]
+                    }
+                ]
+            })
         })
     }
 
@@ -78,18 +95,18 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
         def catalogId = catalogRepository.save(newCatalog(domain) {
             catalogItems = [
                 newCatalogItem(it, {
-                    newDocument(it) {
-                        associateWithDomain(domain, "Manual", "NEW")
-                        applyCustomAspect(newCustomAspect("file", domain) {
-                            attributes = [
-                                extension: "pdf",
-                                size: 5000,
-                            ]
-                        })
-                    }
-                }) {
-                    it.namespace = "routerManual"
+                    elementType = Document.SINGULAR_TERM
+                    subType = "Manual"
+                    status = "NEW"
+                    namespace = "routerManual"
+                    customAspects = [
+                        "file":  [
+                            "extension": "pdf",
+                            "size": 5000
+                        ]
+                    ]
                 }
+                )
             ]
         }).id
 
@@ -101,13 +118,13 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
         and:
         def catalog = executeInTransaction {
             catalogRepository.findById(catalogId).get().tap{
-                it.catalogItems*.element*.customAspects*.attributes
+                it.catalogItems*.customAspects*.aspectDescription
             }
         }
 
         then:
         with(catalog.catalogItems.find{it.namespace == "routerManual"}) {
-            def attributes = element.customAspects.find{it.type == "file"}.attributes
+            def attributes = customAspects.file
             attributes.extension == "pdf"
             attributes.size == null
         }
@@ -115,32 +132,42 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
 
     def "link reference with invalid target is removed"() {
         given:
-        def catalogId = catalogRepository.save(newCatalog(domain) {
-            def manualAuthor = newCatalogItem(it, {newPerson(it)}) {
-                it.namespace = "manualAuthor"
-            }
-            def randomAsset = newCatalogItem(it, {newAsset(it)}) {
-                it.namespace = "randomAsset"
-            }
-            def routerManual = newCatalogItem(it, {newDocument(it)}) {
-                it.namespace = "routerManual"
-                it.tailoringReferences = [
-                    newLinkTailoringReference(it, TailoringReferenceType.LINK) {
-                        it.linkType = "author"
-                        it.catalogItem = manualAuthor
-                    },
-                    newLinkTailoringReference(it, TailoringReferenceType.LINK) {
-                        it.linkType = "author"
-                        it.catalogItem = randomAsset
-                    },
-                ]
-            }
-            catalogItems = [
-                manualAuthor,
-                randomAsset,
-                routerManual
-            ]
-        }).id
+        def catalogId = catalogRepository.save(
+                newCatalog(domain) {
+                    def manualAuthor = newCatalogItem(it, {
+                        elementType = Person.SINGULAR_TERM
+                        namespace = "manualAuthor"
+                        subType = "author"
+                        status = "NEW"
+                    })
+                    def randomAsset = newCatalogItem(it, {
+                        elementType = Asset.SINGULAR_TERM
+                        namespace = "randomAsset"
+                        subType = "asset"
+                        status = "NEW"
+                    })
+                    def routerManual = newCatalogItem(it, {
+                        elementType = Document.SINGULAR_TERM
+                        namespace = "routerManual"
+                        subType = "Manual"
+                        status = "NEW"
+                        tailoringReferences = [
+                            newLinkTailoringReference(it, TailoringReferenceType.LINK) {
+                                it.linkType = "author"
+                                it.catalogItem = manualAuthor
+                            },
+                            newLinkTailoringReference(it, TailoringReferenceType.LINK) {
+                                it.linkType = "author"
+                                it.catalogItem = randomAsset
+                            },
+                        ]
+                    })
+                    catalogItems = [
+                        manualAuthor,
+                        randomAsset,
+                        routerManual
+                    ]
+                }).id
 
         when:
         executeInTransaction {
@@ -150,7 +177,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
         and:
         def catalog = executeInTransaction {
             catalogRepository.findById(catalogId).get().tap{
-                it.catalogItems*.tailoringReferences*.catalogItem*.element
+                it.catalogItems*.tailoringReferences*.catalogItem
             }
         }
 
@@ -163,12 +190,18 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
     def "invalid attribute on internal and external link references is removed"() {
         given: "a catalog with two links that have some invalid attributes"
         def catalogId = catalogRepository.save(newCatalog(domain) {
-            def routerManual = newCatalogItem(it, {newDocument(it)}) {
-                it.namespace = "routerManual"
-            }
-            def manualAuthor = newCatalogItem(it, {newPerson(it)}) {
-                it.namespace = "manualAuthor"
-                it.tailoringReferences = [
+            def routerManual = newCatalogItem(it, {
+                namespace = "routerManual"
+                elementType = Document.SINGULAR_TERM
+                subType = "Manual"
+                status = "NEW"
+            })
+            def manualAuthor = newCatalogItem(it, {
+                namespace = "manualAuthor"
+                elementType = Person.SINGULAR_TERM
+                subType = "author"
+                status = "NEW"
+                tailoringReferences = [
                     newLinkTailoringReference(it, TailoringReferenceType.LINK_EXTERNAL) {
                         it.linkType = "author"
                         it.catalogItem = routerManual
@@ -176,10 +209,13 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
                         it.attributes.placeOfAuthoring = 22
                     }
                 ]
-            }
-            def thermometerManual = newCatalogItem(it, {newDocument(it)}) {
-                it.namespace = "thermometerManual"
-                it.tailoringReferences = [
+            })
+            def thermometerManual = newCatalogItem(it,{
+                namespace = "thermometerManual"
+                elementType = Document.SINGULAR_TERM
+                subType = "Manual"
+                status = "NEW"
+                tailoringReferences = [
                     newLinkTailoringReference(it, TailoringReferenceType.LINK) {
                         it.linkType = "author"
                         it.catalogItem = manualAuthor
@@ -187,7 +223,8 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
                         it.attributes.placeOfAuthoring = "She wrote it in her armchair"
                     },
                 ]
-            }
+            })
+
             catalogItems = [
                 routerManual,
                 thermometerManual,
@@ -203,7 +240,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
         and: "fetching the catalog"
         def catalog = executeInTransaction {
             catalogRepository.findById(catalogId).get().tap{
-                it.catalogItems*.tailoringReferences*.catalogItem*.element
+                it.catalogItems*.tailoringReferences*.catalogItem
             }
         }
 

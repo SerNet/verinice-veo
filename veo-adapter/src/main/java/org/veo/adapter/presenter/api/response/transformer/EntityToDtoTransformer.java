@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
@@ -368,10 +369,16 @@ public final class EntityToDtoTransformer {
     var target = new TransformCatalogItemDto();
     target.setId(source.getId().uuidValue());
     mapCatalogItem(source, target);
-    Element element = source.getElement();
-    if (element != null) {
-      target.setElement(transform2Dto(element));
-    }
+
+    target.setElementType(source.getElementType());
+    target.setSubType(source.getSubType());
+    target.setStatus(source.getStatus());
+
+    target.setCustomAspects(
+        new CustomAspectMapDto(
+            source.getCustomAspects().entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey(), e -> new AttributesDto(e.getValue())))));
+
     target.setTailoringReferences(
         source.getTailoringReferences().stream()
             .map(this::transformTailoringReference2Dto)
@@ -385,12 +392,8 @@ public final class EntityToDtoTransformer {
     FullCatalogItemDto target = new FullCatalogItemDto();
     target.setId(source.getId().uuidValue());
     mapCatalogItem(source, target);
-    Element element = source.getElement();
-    if (element != null) {
-      target.setElement(IdRef.from(element, referenceAssembler));
-      if (includeDescriptionFromElement) {
-        target.setDescription(element.getDescription());
-      }
+    if (includeDescriptionFromElement) {
+      target.setDescription(source.getDescription());
     }
     target.setTailoringReferences(
         source.getTailoringReferences().stream()
@@ -401,6 +404,7 @@ public final class EntityToDtoTransformer {
 
   private void mapCatalogItem(CatalogItem source, AbstractCatalogItemDto target) {
     mapVersionedSelfReferencingProperties(source, target);
+    mapNameableProperties(source, target);
     target.setNamespace(source.getNamespace());
     if (source.getCatalog() != null) {
       target.setCatalog(IdRef.from(source.getCatalog(), referenceAssembler));

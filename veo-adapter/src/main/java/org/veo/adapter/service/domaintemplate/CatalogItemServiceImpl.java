@@ -19,15 +19,11 @@ package org.veo.adapter.service.domaintemplate;
 
 import java.util.Collections;
 
-import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Process;
-import org.veo.core.entity.Scenario;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.service.CatalogItemService;
@@ -53,36 +49,10 @@ public class CatalogItemServiceImpl implements CatalogItemService {
 
   @Override
   public Element createInstance(CatalogItem item, Domain domain) {
-    Element catalogElement = item.getElement();
-    String idAsString = item.getCatalog().getDomainTemplate().getIdAsString();
-    AbstractElementDto dto = dtoTransformer.transform2Dto(catalogElement);
-    prepareDto(dto);
-    PlaceholderResolver placeholderResolver = new PlaceholderResolver(entityTransformer);
-    placeholderResolver.cache.put(idAsString, domain);
-    Element newElement = entityTransformer.transformDto2Element(dto, placeholderResolver);
+    Element newElement = item.incarnate();
     preparations.prepareElement(domain, newElement, false);
-    if (newElement instanceof Process pn) {
-      Process po = (Process) catalogElement;
-      po.getImpactValues(item.getCatalog().getDomainTemplate())
-          .ifPresent(impactValues -> pn.setImpactValues(domain, impactValues));
-    } else if (newElement instanceof Scenario sn) {
-      Scenario so = (Scenario) catalogElement;
-      so.getPotentialProbability(item.getCatalog().getDomainTemplate())
-          .ifPresent(
-              potentialProbability -> sn.setPotentialProbability(domain, potentialProbability));
-    } else if (newElement instanceof Control cn) {
-      Control co = (Control) catalogElement;
-      co.getRiskValues(item.getCatalog().getDomainTemplate())
-          .ifPresent(riskValues -> cn.setRiskValues(domain, riskValues));
-    }
     // TODO: VEO-612 handle parts
     newElement.setAppliedCatalogItems(Collections.singleton(item));
     return newElement;
-  }
-
-  /** Prepare the dto for transformation by removing references, like links. */
-  private void prepareDto(AbstractElementDto dto) {
-    dto.setOwner(null);
-    dto.getLinks().clear();
   }
 }

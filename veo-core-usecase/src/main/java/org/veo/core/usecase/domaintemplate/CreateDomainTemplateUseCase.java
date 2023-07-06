@@ -60,7 +60,6 @@ public class CreateDomainTemplateUseCase
         .flatMap(c -> c.getCatalogItems().stream())
         .forEach(
             item -> {
-              item.getElement().setDesignator("NO_DESIGNATOR");
               CatalogItemValidator.validate(item);
             });
 

@@ -159,22 +159,14 @@ public interface Element
   void setOwner(Unit unit);
 
   default ElementOwner getOwnerOrContainingCatalogItem() {
-    return Optional.<ElementOwner>ofNullable(getOwner()).orElse(getContainingCatalogItem());
+    return getOwner();
   }
 
   default void setOwnerOrContainingCatalogItem(ElementOwner owner) {
     if (owner instanceof Unit unit) {
       this.setOwner(unit);
-      this.setContainingCatalogItem(null);
-    } else {
-      this.setOwner(null);
-      this.setContainingCatalogItem((CatalogItem) owner);
     }
   }
-
-  CatalogItem getContainingCatalogItem();
-
-  void setContainingCatalogItem(CatalogItem containigCatalogItem);
 
   Set<Scope> getScopes();
 

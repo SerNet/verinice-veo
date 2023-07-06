@@ -99,8 +99,7 @@ public class GetIncarnationDescriptionUseCase
 
     Map<Key<UUID>, Element> referencedItemsByCatalogItemId = new HashMap<>();
     Map<Class<? extends Identifiable>, List<CatalogItem>> linkedItemsByElementType =
-        linkedCatalogItems.collect(
-            Collectors.groupingBy(item -> item.getElement().getModelInterface()));
+        linkedCatalogItems.collect(Collectors.groupingBy(item -> item.getElementInterface()));
     linkedItemsByElementType.forEach(
         (elementType, items) ->
             findReferencedAppliedItems(unit, items)
@@ -173,10 +172,15 @@ public class GetIncarnationDescriptionUseCase
   /** Searches for {@link Element}s in the unit which have the given catalogItems applied. */
   private List<Element> findReferencedAppliedItems(
       Unit unit, Collection<CatalogItem> catalogItems) {
-    Class<Element> entityType =
-        (Class<Element>) catalogItems.iterator().next().getElement().getModelInterface();
+    Set<Class<? extends Element>> types =
+        catalogItems.stream().map(ci -> ci.getElementInterface()).collect(Collectors.toSet());
+    if (types.size() != 1) {
+      log.warn("more than one type as referenced element");
+      // TODO: veo-2218 throw
+    }
 
-    ElementRepository<Element> repository = repositoryProvider.getElementRepositoryFor(entityType);
+    ElementRepository<Element> repository =
+        repositoryProvider.getElementRepositoryFor((Class<Element>) types.iterator().next());
     ElementQuery<Element> query = repository.query(unit.getClient());
     query.whereOwnerIs(unit);
     query.whereAppliedItemsContain(catalogItems);

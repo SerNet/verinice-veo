@@ -24,15 +24,17 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.validation.Valid;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.UpdateReference;
@@ -45,11 +47,18 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-public class CatalogItemData extends ElementOwnerData implements CatalogItem {
+public class CatalogItemData extends TemplateItemData implements CatalogItem {
+
+  @Id
+  @ToString.Include
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  private String dbId;
 
   @ManyToOne(targetEntity = CatalogData.class, optional = false)
   private Catalog catalog;
 
+  @Override
   public void setCatalog(Catalog catalog) {
     this.catalog = catalog;
     catalog.getCatalogItems().add(this);
@@ -65,31 +74,6 @@ public class CatalogItemData extends ElementOwnerData implements CatalogItem {
   @Valid
   private Set<TailoringReference> tailoringReferences = new HashSet<>();
 
-  @OneToOne(
-      targetEntity = ElementData.class,
-      cascade = CascadeType.ALL,
-      orphanRemoval = true,
-      mappedBy = "containingCatalogItem",
-      fetch = FetchType.LAZY)
-  // Note: 'optional = false' would not be validated because the relation is
-  // mapped from the targetEntity. We have to rely on javax.validation here:
-  @Valid
-  private Element element;
-
-  /**
-   * Sets this item's element. This item is removed from its previous element (if there is one) and
-   * this is set as the catalog item on the new element.
-   */
-  public void setElement(Element element) {
-    if (this.element != null) {
-      this.element.setContainingCatalogItem(null);
-    }
-    this.element = element;
-    if (element != null) {
-      element.setContainingCatalogItem(this);
-    }
-  }
-
   @Column(name = "updatereferences")
   @OneToMany(
       cascade = CascadeType.ALL,
@@ -100,14 +84,31 @@ public class CatalogItemData extends ElementOwnerData implements CatalogItem {
   @Valid
   private Set<UpdateReference> updateReferences = new HashSet<>();
 
-  @ToString.Include
-  @Column(name = "namespace")
-  private String namespace;
-
+  /** create an instance of the described element* */
   @Override
-  public Client getClient() {
-    if (Domain.class.isAssignableFrom(getCatalog().getDomainTemplate().getModelInterface()))
-      return ((Domain) getCatalog().getDomainTemplate()).getOwner();
-    else return null;
+  public Element incarnate() {
+    if (getDomain().getModelInterface().equals(DomainTemplate.class)) {
+      throw new IllegalArgumentException(
+          "Can not incarnate a catalog item from a domain template.");
+    }
+
+    Element element = createElement();
+    element.setName(name);
+    element.setDescription(description);
+    element.setAbbreviation(abbreviation);
+
+    merge(element);
+    return element;
+  }
+
+  public void merge(Element element) {
+    if (getDomain().getModelInterface().equals(DomainTemplate.class)) {
+      throw new IllegalArgumentException("Can not merge a catalog item from a domain template.");
+    }
+    element.associateWithDomain(getDomain(), getSubType(), getStatus());
+
+    getCustomAspects().entrySet().stream()
+        .map(e -> new CustomAspectData(e.getKey(), e.getValue(), getDomain()))
+        .forEach(ca -> element.applyCustomAspect(ca));
   }
 }

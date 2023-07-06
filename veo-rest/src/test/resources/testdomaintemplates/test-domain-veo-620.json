@@ -13,89 +13,49 @@
       },
       "catalogItems": [
         {
+          "name": "Asset 2",
+          "abbreviation": "a2",
+          "description": "This is the second asset.",
           "catalog": {
             "targetUri": "/catalogs/aed7c0a6-ac6e-4fe4-84d2-fd6532aa7558"
           },
-          "element": {
-            "abbreviation": "S1",
-            "customAspects": {},
-            "description": "This is a scope that contains some assets",
-            "domains": {
-              "99af3dc3-eb17-5267-afc5-14e9f2ebd701": {
-                "subType": "default",
-                "status": "NEW"
-              }
-            },
-            "id": "8fd99c68-a4f1-4e1d-8105-30fe2f2f230e",
-            "links": {},
-            "name": "Scope 1",
-            "owner": {
-              "targetUri": "/catalogitems/782a0b43-deb2-4e4c-a42f-d1314658697f"
-            },
-            "members": [
-              {
-                "targetUri": "/assets/e58987b7-9f94-455f-a81b-18e7d3eacb65"
-              },
-              {
-                "targetUri": "/assets/e5de2918-aacb-40cd-9150-4795f0d736e5"
-              }
-            ],
-            "type": "scope"
-          },
-          "id": "782a0b43-deb2-4e4c-a42f-d1314658697f",
-          "namespace": "S"
+          "tailoringReferences": [],
+          "namespace": "S",
+          "subType": "default",
+          "status": "NEW",
+          "customAspects": {},
+          "elementType": "asset",
+          "id": "2091c610-6e59-48cb-a848-456bd9645763"
         },
         {
+          "name": "Scope 1",
+          "abbreviation": "S1",
+          "description": "This is a scope that contains some assets",
           "catalog": {
             "targetUri": "/catalogs/aed7c0a6-ac6e-4fe4-84d2-fd6532aa7558"
           },
-          "element": {
-            "abbreviation": "a1",
-            "customAspects": {},
-            "description": "This is the first asset.",
-            "domains": {
-              "99af3dc3-eb17-5267-afc5-14e9f2ebd701": {
-                "subType": "default",
-                "status": "NEW"
-              }
-            },
-            "id": "e58987b7-9f94-455f-a81b-18e7d3eacb65",
-            "links": {},
-            "name": "Asset 1",
-            "owner": {
-              "targetUri": "/catalogitems/19ebf336-32ca-453b-b832-4d69408e1446"
-            },
-            "parts": [],
-            "type": "asset"
-          },
-          "id": "19ebf336-32ca-453b-b832-4d69408e1446",
-          "namespace": "S"
+          "tailoringReferences": [],
+          "namespace": "S",
+          "subType": "default",
+          "status": "NEW",
+          "customAspects": {},
+          "elementType": "scope",
+          "id": "782a0b43-deb2-4e4c-a42f-d1314658697f"
         },
         {
+          "name": "Asset 1",
+          "abbreviation": "a1",
+          "description": "This is the first asset.",
           "catalog": {
             "targetUri": "/catalogs/aed7c0a6-ac6e-4fe4-84d2-fd6532aa7558"
           },
-          "element": {
-            "abbreviation": "a2",
-            "customAspects": {},
-            "description": "This is the second asset.",
-            "domains": {
-              "99af3dc3-eb17-5267-afc5-14e9f2ebd701": {
-                "subType": "default",
-                "status": "NEW"
-              }
-            },
-            "id": "e5de2918-aacb-40cd-9150-4795f0d736e5",
-            "links": {},
-            "name": "Asset 2",
-            "owner": {
-              "targetUri": "/catalogitems/2091c610-6e59-48cb-a848-456bd9645763"
-            },
-            "parts": [],
-            "type": "asset"
-          },
-          "id": "2091c610-6e59-48cb-a848-456bd9645763",
-          "namespace": "S"
+          "tailoringReferences": [],
+          "namespace": "S",
+          "subType": "default",
+          "status": "NEW",
+          "customAspects": {},
+          "elementType": "asset",
+          "id": "19ebf336-32ca-453b-b832-4d69408e1446"
         }
       ]
     }

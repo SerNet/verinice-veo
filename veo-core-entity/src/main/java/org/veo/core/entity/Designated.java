@@ -25,7 +25,7 @@ public interface Designated {
    * @return A compact human-readable identifier that is unique within the client.
    */
   @NotNull
-  @Pattern(regexp = "([A-Z]{3}-\\d+)|NO_DESIGNATOR")
+  @Pattern(regexp = "([A-Z]{3}-\\d+)")
   String getDesignator();
 
   /**

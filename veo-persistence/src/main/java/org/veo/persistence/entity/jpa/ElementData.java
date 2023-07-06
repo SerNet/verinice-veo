@@ -36,7 +36,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Transient;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -149,10 +148,6 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   @JoinColumn(name = "owner_id")
   private Unit owner;
 
-  @OneToOne(fetch = FetchType.LAZY, targetEntity = CatalogItemData.class)
-  @JoinColumn(name = "containing_catalog_item_id")
-  private CatalogItem containingCatalogItem;
-
   @Formula(
       "case when abbreviation is null then concat(designator,' ',name) else concat(designator,' ',abbreviation,' ',name) end")
   @Setter(AccessLevel.NONE)
@@ -215,15 +210,8 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
           "%s %s is already associated with domain %s"
               .formatted(getModelType(), getIdAsString(), domain.getIdAsString()));
     }
-    if (this.getContainingCatalogItem() == null) {
-      if (domain instanceof Domain) {
-        domains.add((Domain) domain);
-      }
-    } else if (!domain.equals(getContainingCatalogItem().getCatalog().getDomainTemplate())) {
-      throw new IllegalArgumentException(
-          String.format(
-              "Catalog item element %s can only be associated with its catalog's domain template",
-              getIdAsString()));
+    if (domain instanceof Domain) {
+      domains.add((Domain) domain);
     }
 
     removeAspect(subTypeAspects, domain);
@@ -303,9 +291,6 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   @Transient
   @Override
   public Set<DomainBase> getDomainTemplates() {
-    if (containingCatalogItem != null) {
-      return Set.of(containingCatalogItem.getCatalog().getDomainTemplate());
-    }
     return domains.stream().map(DomainBase.class::cast).collect(Collectors.toSet());
   }
 

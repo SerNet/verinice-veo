@@ -35,9 +35,6 @@ public class ElementIsAssociatedWithCustomAspectAndLinkDomains
   }
 
   private static Set<DomainBase> getDomains(Element element) {
-    if (element.getContainingCatalogItem() != null) {
-      return Set.of(element.getContainingCatalogItem().getCatalog().getDomainTemplate());
-    }
     return element.getDomains().stream().map(DomainBase.class::cast).collect(Collectors.toSet());
   }
 }

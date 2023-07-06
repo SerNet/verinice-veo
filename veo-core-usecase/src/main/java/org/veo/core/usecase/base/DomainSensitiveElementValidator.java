@@ -55,6 +55,14 @@ public class DomainSensitiveElementValidator {
     element.getDomainTemplates().forEach(d -> SubTypeValidator.validate(element, d));
   }
 
+  static void validateLinkTargetType(
+      String linkType, LinkDefinition linkDefinition, String targetType) {
+    if (!linkDefinition.getTargetType().equals(targetType)) {
+      throw new IllegalArgumentException(
+          String.format("Invalid target type '%s' for link type '%s'", targetType, linkType));
+    }
+  }
+
   private static void validateCustomAspect(Element element, CustomAspect ca) {
     var caDefinition =
         ca.getDomain()
@@ -71,20 +79,14 @@ public class DomainSensitiveElementValidator {
     }
   }
 
-  static void validateLink(
+  private static void validateLink(
       String linkType,
       Element source,
       Element target,
       Map<String, Object> attributes,
       DomainBase domain) {
-    var linkDefinition =
-        domain.getElementTypeDefinition(source.getModelType()).getLinks().get(linkType);
-    if (linkDefinition == null) {
-      throw new IllegalArgumentException(
-          String.format(
-              "Link type '%s' is not defined for element type '%s'",
-              linkType, source.getModelType()));
-    }
+    String modelType = source.getModelType();
+    var linkDefinition = getLinkDefinition(linkType, domain, modelType);
     validateLinkTargetType(linkType, target, linkDefinition);
     validateLinkTargetSubType(linkType, target, domain, linkDefinition);
     try {
@@ -96,13 +98,21 @@ public class DomainSensitiveElementValidator {
     }
   }
 
+  private static LinkDefinition getLinkDefinition(
+      String linkType, DomainBase domain, String modelType) {
+    var linkDefinition = domain.getElementTypeDefinition(modelType).getLinks().get(linkType);
+    if (linkDefinition == null) {
+      throw new IllegalArgumentException(
+          String.format(
+              "Link type '%s' is not defined for element type '%s'", linkType, modelType));
+    }
+    return linkDefinition;
+  }
+
   private static void validateLinkTargetType(
       String linkType, Element target, LinkDefinition linkDefinition) {
     var targetType = target.getModelType();
-    if (!linkDefinition.getTargetType().equals(targetType)) {
-      throw new IllegalArgumentException(
-          String.format("Invalid target type '%s' for link type '%s'", targetType, linkType));
-    }
+    validateLinkTargetType(linkType, linkDefinition, targetType);
   }
 
   private static void validateLinkTargetSubType(

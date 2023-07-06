@@ -49,8 +49,6 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         item1.id >> id
         item1.catalog >> catalog
         item1.tailoringReferences >> []
-        item1.element >> control
-        control.getModelInterface() >> Control.class
         newControl.links >> []
 
         catalogItemRepository.getById(id) >> item1
@@ -80,6 +78,7 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         def id = Key.newUuid()
         item1.id >> id
         item1.catalog >> catalog
+        item1.elementInterface >> Control.class
 
         Control control2 = Mock()
         control2.getModelInterface() >> Control.class
@@ -87,7 +86,7 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         def id2 = Key.newUuid()
         item2.id >> id2
         item2.catalog >> catalog
-        item2.element>>control2
+        item2.elementInterface >> Control.class
 
         LinkTailoringReference tr = Mock()
         tr.referenceType >> TailoringReferenceType.LINK
@@ -96,7 +95,6 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         tr.catalogItem >> item2
 
         item1.tailoringReferences >> [tr]
-        item1.element >> control
 
         CustomLink newLink = Mock()
 

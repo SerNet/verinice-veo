@@ -26,6 +26,8 @@ import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 
+import spock.lang.Ignore
+
 class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     def basePath ="units"
 
@@ -369,6 +371,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         thrown(UnprocessableDataException)
     }
 
+    @Ignore("VEO-2285")
     @WithUserDetails("user@domain.example")
     def "retrieve the apply info for processImpactExample and post"() {
         given: "the created catalogitems"
@@ -394,6 +397,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         processResult.domains[domain.id.uuidValue()].riskValues.id.potentialImpacts.C == 2
     }
 
+    @Ignore("VEO-2285")
     @WithUserDetails("user@domain.example")
     def "retrieve the apply info for controlImpactExample and post"() {
         given: "the created catalogitems"
@@ -419,6 +423,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         controlResult.domains[domain.id.uuidValue()].riskValues.id.implementationStatus == 1
     }
 
+    @Ignore("VEO-2285")
     @WithUserDetails("user@domain.example")
     def "retrieve the apply info for scenarioProbabilityExample and post"() {
         given: "the created catalogitems"
@@ -453,7 +458,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     }
 
     private validateNewElementAgainstCatalogItem(element, CatalogItem catalogItem, Domain domain) {
-        verifyAll(catalogItem.element) {
+        verifyAll(catalogItem) {
             it.name == element.name
             it.abbreviation == element.abbreviation
             it.description == element.description

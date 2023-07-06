@@ -34,13 +34,13 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
     def "Create a unit and incarnate c-1 and cc-1"() {
         when:
-        def itemC1Id = itemIdByDisplayName("NO_DESIGNATOR c-1 Control-1")
+        def itemC1Id = itemIdByDisplayName("c-1 Control-1")
 
         def incarnationDescriptions = getIncarnationDescriptions(itemC1Id)
         def newElements = incarnate(incarnationDescriptions)
         def createdElementC1 = newElements.first().targetUri
 
-        def itemCC1Id = itemIdByDisplayName("NO_DESIGNATOR cc-1 Control-cc-1")
+        def itemCC1Id = itemIdByDisplayName("cc-1 Control-cc-1")
 
         incarnationDescriptions = getIncarnationDescriptions(itemCC1Id)
         incarnationDescriptions.parameters.first().references[0].put("referencedElement", ["targetUri":createdElementC1])
@@ -70,8 +70,8 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
     def "Create a unit and incarnate c-1 and c-2 in one request"() {
         when: "we get c1 and c2 id"
-        def itemC1Id = itemIdByDisplayName("NO_DESIGNATOR c-1 Control-1")
-        def itemC2Id = itemIdByDisplayName("NO_DESIGNATOR c-2 Control-2")
+        def itemC1Id = itemIdByDisplayName("c-1 Control-1")
+        def itemC2Id = itemIdByDisplayName("c-2 Control-2")
         def incarnationDescription = getIncarnationDescriptions(itemC1Id, itemC2Id)
 
         and: "we post the given description"
@@ -91,18 +91,18 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
     def "Create a unit and incarnate c-1 and cc-1->c-1, and cc-2 linked default to cc-1"() {
         when:
-        def itemC1Id = itemIdByDisplayName("NO_DESIGNATOR c-1 Control-1")
+        def itemC1Id = itemIdByDisplayName("c-1 Control-1")
         def incarnationDescription = getIncarnationDescriptions(itemC1Id)
         def newElements = incarnate(incarnationDescription)
         def createdElementC1 = newElements.first().targetUri
 
-        def itemCC1Id = itemIdByDisplayName("NO_DESIGNATOR cc-1 Control-cc-1")
+        def itemCC1Id = itemIdByDisplayName("cc-1 Control-cc-1")
         incarnationDescription = getIncarnationDescriptions(itemCC1Id)
         incarnationDescription.parameters.first().references[0].put("referencedElement", ["targetUri":createdElementC1])
         newElements = incarnate(incarnationDescription)
         def controlCC1TargetUri = newElements.first().targetUri
 
-        def itemCC2Id = itemIdByDisplayName("NO_DESIGNATOR cc-2 Control-cc-2")
+        def itemCC2Id = itemIdByDisplayName("cc-2 Control-cc-2")
         incarnationDescription = getIncarnationDescriptions(itemCC2Id)
 
         then: "the link reference is filled with the suggested cc-1"
@@ -133,11 +133,11 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
     def "Create a unit incarnate c-1 and build a list by linking the last cc-1 10 times"() {
         when:
-        def itemC1Id = itemIdByDisplayName("NO_DESIGNATOR c-1 Control-1")
+        def itemC1Id = itemIdByDisplayName("c-1 Control-1")
         def incarnationDescriptions = getIncarnationDescriptions(itemC1Id)
         def createdElement = incarnate(incarnationDescriptions).first().targetUri
 
-        def itemCC1Id = itemIdByDisplayName("NO_DESIGNATOR cc-1 Control-cc-1")
+        def itemCC1Id = itemIdByDisplayName("cc-1 Control-cc-1")
         incarnationDescriptions = getIncarnationDescriptions(itemCC1Id)
         10.times {
             incarnationDescriptions.parameters.first().references[0].put("referencedElement", ["targetUri":createdElement])
@@ -165,7 +165,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
     def "Create a unit and incarnate c-2 10 times"() {
         when: "c-2 is incarnated 10 times"
-        def itemC2Id = itemIdByDisplayName("NO_DESIGNATOR c-2 Control-2")
+        def itemC2Id = itemIdByDisplayName("c-2 Control-2")
         def incarnationDescription = getIncarnationDescriptions(itemC2Id)
         10.times {
             incarnate(incarnationDescription)
@@ -191,8 +191,8 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
     def "Create a unit and incarnate cc-1->cc-2 in one step"() {
         when:
-        def itemCC1Id = itemIdByDisplayName("NO_DESIGNATOR cc-1 Control-cc-1")
-        def itemCC2Id = itemIdByDisplayName("NO_DESIGNATOR cc-2 Control-cc-2")
+        def itemCC1Id = itemIdByDisplayName("cc-1 Control-cc-1")
+        def itemCC2Id = itemIdByDisplayName("cc-2 Control-cc-2")
         def incarnationDescription = getIncarnationDescriptions(itemCC1Id, itemCC2Id)
         def newElements = incarnate(incarnationDescription)
 

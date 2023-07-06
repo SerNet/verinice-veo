@@ -29,20 +29,9 @@ import org.veo.persistence.entity.jpa.DomainData;
 public interface CatalogItemDataRepository
     extends IdentifiableVersionedDataRepository<CatalogItemData> {
 
-  @EntityGraph(
-      attributePaths = {
-        "element",
-        "element.links",
-        "element.customAspects",
-        "element.subTypeAspects",
-        "catalog",
-        "tailoringReferences"
-      })
+  @EntityGraph(attributePaths = {"catalog", "tailoringReferences"})
   Iterable<CatalogItemData> findAllWithElementDataByDbIdIn(Iterable<String> ids);
 
-  @Query(
-      "select ci from #{#entityName} ci "
-          + "join fetch ci.element e "
-          + "where ci.catalog.domainTemplate = ?1")
+  @Query("select ci from #{#entityName} ci where ci.catalog.domainTemplate = ?1")
   Set<CatalogItem> findAllByDomain(DomainData domain);
 }

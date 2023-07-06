@@ -19,6 +19,7 @@ package org.veo.core.usecase.catalogitem
 
 import org.veo.core.entity.Control
 import org.veo.core.entity.Element
+import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Key
 import org.veo.core.entity.LinkTailoringReference
 import org.veo.core.entity.TailoringReference
@@ -58,13 +59,10 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
     def "get the apply information for a catalog-item with one copy ref"() {
         given:
-        Control control2 = Mock()
-        control2.modelInterface >> Control
-
         def id2 = Key.newUuid()
         item2.id >> id2
         item2.catalog >> catalog
-        item2.element>>control2
+        item2.elementType >> "control"
         item2.tailoringReferences >> []
 
         TailoringReference tr = Mock()
@@ -85,13 +83,11 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
     def "get the apply information for a catalog-item with link"() {
         given:
-        Control control2 = Mock()
-        control2.getModelInterface() >> Control.class
-
         def id2 = Key.newUuid()
         item2.id >> id2
         item2.catalog >> catalog
-        item2.element>>control2
+        item2.elementType >> "control"
+        item2.elementInterface >> Control.class
 
         LinkTailoringReference tr = Mock()
         tr.referenceType >> TailoringReferenceType.LINK
@@ -100,7 +96,8 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         tr.catalogItem >> item2
 
         item1.tailoringReferences >> [tr]
-        item1.element >> control
+        item1.elementType >> "control"
+        item1.elementInterface >> Control.class
 
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
@@ -117,13 +114,11 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
     def "get the apply information for a catalog-item with external link"() {
         given:
-        Control control2 = Mock()
-        control2.getModelInterface() >> Control.class
-
         def id2 = Key.newUuid()
         item2.id >> id2
         item2.catalog >> catalog
-        item2.element>>control2
+        item2.elementType >> "control"
+        item2.elementInterface >> Control.class
 
         LinkTailoringReference tr = Mock()
         tr.referenceType >> TailoringReferenceType.LINK_EXTERNAL
@@ -132,7 +127,8 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         tr.catalogItem >> item2
 
         item1.tailoringReferences >> [tr]
-        item1.element >> control
+        item1.elementType >> "control"
+        item1.elementInterface >> Control.class
 
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
@@ -149,14 +145,16 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
 
     def "get the apply information for a catalog-item with link to an unknown feature "() {
         given:
-        Element someThing = Mock()
-        item1.element >> someThing
+        item2.elementType >> "no valid element type"
+        item2.getElementType() >> "not known"
 
         LinkTailoringReference tr = Mock()
         tr.referenceType >> TailoringReferenceType.LINK
         tr.owner >> item1
         tr.catalogItem >> item1
         item1.tailoringReferences >> [tr]
+        item1.getAppliedCatalogItems() >> []
+        item1.getElementType() >> "control"
 
         when:
         usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))

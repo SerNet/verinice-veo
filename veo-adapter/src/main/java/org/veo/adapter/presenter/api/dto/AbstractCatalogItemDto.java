@@ -37,7 +37,17 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public abstract class AbstractCatalogItemDto extends AbstractVersionedSelfReferencingDto
-    implements ModelDto {
+    implements NameableDto {
+  @NotNull
+  @Schema(description = "The name for the CatalogItem.")
+  private String name;
+
+  @Schema(description = "The abbreviation for the CatalogItem.")
+  private String abbreviation;
+
+  @Schema(description = "The description for the CatalogItem.")
+  private String description;
+
   @NotNull(message = "A catalog must be present.")
   @Schema(implementation = IdRefCatalogItemCatalog.class)
   private IdRef<Catalog> catalog;

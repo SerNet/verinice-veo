@@ -24,9 +24,6 @@ public class ElementDomainsAreSubsetOfUnitDomains implements EntitySpecification
 
   @Override
   public boolean test(Element element) {
-    if (element.getContainingCatalogItem() != null) {
-      return true;
-    }
     return element.getOwner().getDomains().containsAll(element.getDomains());
   }
 }

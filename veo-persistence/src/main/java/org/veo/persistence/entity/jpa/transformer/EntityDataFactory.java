@@ -22,7 +22,6 @@ import static java.util.stream.Collectors.toSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
-import java.util.function.Function;
 
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Catalog;
@@ -207,12 +206,9 @@ public class EntityDataFactory implements EntityFactory {
   }
 
   @Override
-  public CatalogItem createCatalogItem(
-      Catalog catalog, Function<CatalogItem, Element> elementFactory) {
+  public CatalogItem createCatalogItem(Catalog catalog) {
     CatalogItem catalogItem = new CatalogItemData();
     catalogItem.setCatalog(catalog);
-    Element element = elementFactory.apply(catalogItem);
-    catalogItem.setElement(element);
     return catalogItem;
   }
 

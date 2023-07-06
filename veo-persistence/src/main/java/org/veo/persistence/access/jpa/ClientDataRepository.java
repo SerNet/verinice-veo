@@ -33,13 +33,12 @@ public interface ClientDataRepository extends IdentifiableVersionedDataRepositor
   @EntityGraph(attributePaths = {"domains.catalogs"})
   Optional<Client> findWithCatalogsByDbId(String uuidValue);
 
-  @EntityGraph(
-      attributePaths = {"domains.catalogs.catalogItems", "domains.catalogs.catalogItems.element"})
+  @EntityGraph(attributePaths = {"domains.catalogs.catalogItems"})
   Optional<ClientData> findWithCatalogsAndItemsByDbId(String id);
 
   @EntityGraph(
       attributePaths = {
-        "domains.catalogs.catalogItems.element",
+        "domains.catalogs.catalogItems",
         "domains.catalogs.catalogItems.tailoringReferences"
       })
   Optional<ClientData> findWithCatalogsAndItemsAndTailoringReferencesByDbId(String id);

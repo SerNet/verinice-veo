@@ -27,26 +27,27 @@ class SubTypeValidator {
         .findSubType(domain)
         .ifPresentOrElse(
             subType -> {
-              var definition =
-                  domain
-                      .getElementTypeDefinition(element.getModelType())
-                      .getSubTypes()
-                      .get(subType);
-              if (definition == null) {
-                throw new IllegalArgumentException(
-                    String.format(
-                        "Sub type '%s' is not defined for element type %s",
-                        subType, element.getModelType()));
-              }
-              var status = element.getStatus(domain);
-              if (!definition.getStatuses().contains(status)) {
-                throw new IllegalArgumentException(
-                    String.format("Status '%s' is not allowed for sub type '%s'", status, subType));
-              }
+              validate(domain, subType, element.getStatus(domain), element.getModelType());
             },
             () -> {
               throw new IllegalArgumentException(
                   "Cannot assign element to domain without specifying a sub type");
             });
+  }
+
+  static void validate(DomainBase domain, String subType, String status, String modelType) {
+    if (subType == null)
+      throw new IllegalArgumentException(
+          "Cannot assign element to domain without specifying a sub type");
+
+    var definition = domain.getElementTypeDefinition(modelType).getSubTypes().get(subType);
+    if (definition == null) {
+      throw new IllegalArgumentException(
+          String.format("Sub type '%s' is not defined for element type %s", subType, modelType));
+    }
+    if (!definition.getStatuses().contains(status)) {
+      throw new IllegalArgumentException(
+          String.format("Status '%s' is not allowed for sub type '%s'", status, subType));
+    }
   }
 }

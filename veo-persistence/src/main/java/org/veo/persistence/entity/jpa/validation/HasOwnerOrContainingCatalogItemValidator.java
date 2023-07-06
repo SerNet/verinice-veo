@@ -27,7 +27,6 @@ public class HasOwnerOrContainingCatalogItemValidator
 
   @Override
   public boolean isValid(ElementData element, ConstraintValidatorContext context) {
-    // that's an XOR
-    return element.getOwner() != null ^ element.getContainingCatalogItem() != null;
+    return element.getOwner() != null;
   }
 }

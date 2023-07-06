@@ -343,8 +343,16 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             authority = 'me'
 
             newCatalog(it) {
-                def item1 = newCatalogItem(it, VeoSpec.&newAsset)
-                def item2 = newCatalogItem(it, VeoSpec.&newControl)
+                def item1 = newCatalogItem(it, {
+                    elementType = "asset"
+                    subType = "AST"
+                    status = "NEW"
+                })
+                def item2 = newCatalogItem(it, {
+                    elementType = "control"
+                    subType = "CTL_TOM"
+                    status = "NEW"
+                })
                 newTailoringReference(item2, TailoringReferenceType.COPY) {
                     catalogItem = item1
                 }
@@ -357,7 +365,10 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         when: "adding a catalog to the domain template"
         domainTemplate.addToCatalogs( newCatalog(domainTemplate) {
             newCatalogItem(it, {
-                newAsset(it)
+                elementType = "asset"
+                name = "a2"
+                subType = "CTL_TOM"
+                status = "NEW"
             })
         })
         domainTemplate = domainTemplateRepository.save(domainTemplate)
@@ -372,9 +383,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
                 description = 'This is very important!'
                 catalogItems.first().tap {
                     namespace = 'my namespace'
-                    element.tap {
-                        description = 'Ignore this!'
-                    }
+                    description = 'Ignore this!'
                 }
                 catalogItems[1].tap {
                     tailoringReferences.first().tap {

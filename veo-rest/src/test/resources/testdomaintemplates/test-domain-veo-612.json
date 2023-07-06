@@ -13,89 +13,49 @@
       },
       "catalogItems": [
         {
+          "name": "All controls",
+          "abbreviation": "CTLS",
+          "description": "This is a composite control that contains all other controls.",
           "catalog": {
             "targetUri": "/catalogs/5062033b-f70d-4a7a-b8cc-8856499ec0af"
           },
-          "element": {
-            "abbreviation": "CTLS",
-            "customAspects": {},
-            "description": "This is a composite control that contains all other controls.",
-            "domains": {
-              "40df37d5-cd23-528e-bfc2-7b73c0aa2c67": {
-                "subType": "CTL_Control",
-                "status": "NEW"
-              }
-            },
-            "id": "b7920357-f810-4827-b6ce-d4eb753fb07c",
-            "links": {},
-            "name": "All controls",
-            "owner": {
-              "targetUri": "/catalogitems/782a0b43-deb2-4e4c-a42f-d1314658697f"
-            },
-            "parts": [
-              {
-                "targetUri": "/controls/c3eea4f0-d20e-40a7-ac7c-c1e38c2dc0b1"
-              },
-              {
-                "targetUri": "/controls/380a72c5-12a9-48f5-a2cd-b5cc9bc6c2fa"
-              }
-            ],
-            "type": "control"
-          },
-          "id": "782a0b43-deb2-4e4c-a42f-d1314658697f",
-          "namespace": "CTLS"
+          "tailoringReferences": [],
+          "namespace": "CTLS",
+          "subType": "CTL_Control",
+          "status": "NEW",
+          "customAspects": {},
+          "elementType": "control",
+          "id": "782a0b43-deb2-4e4c-a42f-d1314658697f"
         },
         {
+          "name": "Control-1",
+          "abbreviation": "c-1",
+          "description": "This is the first control.",
           "catalog": {
             "targetUri": "/catalogs/5062033b-f70d-4a7a-b8cc-8856499ec0af"
           },
-          "element": {
-            "abbreviation": "c-1",
-            "customAspects": {},
-            "description": "This is the first control.",
-            "domains": {
-              "40df37d5-cd23-528e-bfc2-7b73c0aa2c67": {
-                "subType": "CTL_Control",
-                "status": "NEW"
-              }
-            },
-            "id": "c3eea4f0-d20e-40a7-ac7c-c1e38c2dc0b1",
-            "links": {},
-            "name": "Control-1",
-            "owner": {
-              "targetUri": "/catalogitems/35060217-5435-4047-96b1-8d9109e820b7"
-            },
-            "parts": [],
-            "type": "control"
-          },
-          "id": "35060217-5435-4047-96b1-8d9109e820b7",
-          "namespace": "CTLS"
+          "tailoringReferences": [],
+          "namespace": "CTLS",
+          "subType": "CTL_Control",
+          "status": "NEW",
+          "customAspects": {},
+          "elementType": "control",
+          "id": "35060217-5435-4047-96b1-8d9109e820b7"
         },
         {
+          "name": "Control-2",
+          "abbreviation": "c-2",
+          "description": "This is the second control.",
           "catalog": {
             "targetUri": "/catalogs/5062033b-f70d-4a7a-b8cc-8856499ec0af"
           },
-          "element": {
-            "abbreviation": "c-2",
-            "customAspects": {},
-            "description": "This is the second control.",
-            "domains": {
-              "40df37d5-cd23-528e-bfc2-7b73c0aa2c67": {
-                "subType": "CTL_Control",
-                "status": "NEW"
-              }
-            },
-            "id": "380a72c5-12a9-48f5-a2cd-b5cc9bc6c2fa",
-            "links": {},
-            "name": "Control-2",
-            "owner": {
-              "targetUri": "/catalogitems/31d87c23-3112-4547-94ad-592cc25fc250"
-            },
-            "parts": [],
-            "type": "control"
-          },
-          "id": "31d87c23-3112-4547-94ad-592cc25fc250",
-          "namespace": "CTLS"
+          "tailoringReferences": [],
+          "namespace": "CTLS",
+          "subType": "CTL_Control",
+          "status": "NEW",
+          "customAspects": {},
+          "elementType": "control",
+          "id": "31d87c23-3112-4547-94ad-592cc25fc250"
         }
       ]
     }

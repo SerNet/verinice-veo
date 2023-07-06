@@ -85,8 +85,8 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
 
         expect: "the element is created and initialized"
         element.name == "Control-1"
-        element.abbreviation == item.element.abbreviation
-        element.description == item.element.description
+        element.abbreviation == item.abbreviation
+        element.description == item.description
         element.appliedCatalogItems.size() == 1
         element.appliedCatalogItems.contains(item)
         element.domains.size() == 1
@@ -98,8 +98,8 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
 
         then: "the element is created and initialized"
         element.name == "Control-3"
-        element.abbreviation == item.element.abbreviation
-        element.description == item.element.description
+        element.abbreviation == item.abbreviation
+        element.description == item.description
         element.appliedCatalogItems.size() == 1
         element.appliedCatalogItems.contains(item)
         element.domains.size() == 1
@@ -116,8 +116,8 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
 
         expect: "the element is created and initalized"
         element.name == "Control-1"
-        element.abbreviation == item.element.abbreviation
-        element.description == item.element.description
+        element.abbreviation == item.abbreviation
+        element.description == item.description
         element.appliedCatalogItems.size() == 1
         element.appliedCatalogItems.contains(item)
         element.domains.size() == 1

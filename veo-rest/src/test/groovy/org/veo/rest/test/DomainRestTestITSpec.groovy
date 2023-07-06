@@ -47,9 +47,9 @@ class DomainRestTestITSpec extends VeoRestTest {
         def domainDto = exportDomain(dsgvoId)
 
         def catalog = domainDto.catalogs[0]
-        def vvt = catalog.catalogItems.find { it.element.abbreviation == "VVT" }
-        def tomi = catalog.catalogItems.find { it.element.abbreviation == "TOM-I" }
-        def dsg23 = catalog.catalogItems.find { it.element.abbreviation == "DS-G.23" }
+        def vvt = catalog.catalogItems.find { it.abbreviation == "VVT" }
+        def tomi = catalog.catalogItems.find { it.abbreviation == "TOM-I" }
+        def dsg23 = catalog.catalogItems.find { it.abbreviation == "DS-G.23" }
 
         then: "the domain is exported"
         with(catalog) {
@@ -59,27 +59,23 @@ class DomainRestTestITSpec extends VeoRestTest {
         with (vvt) {
             namespace == "TOM.VVT"
             tailoringReferences.size() == 8
-            with (element) {
-                description == "VVT-Prozess"
-                domains[dsgvoId].subType == "PRO_DataProcessing"
-                domains[dsgvoId].status == "NEW"
-            }
+            description == "VVT-Prozess"
+            subType == "PRO_DataProcessing"
+            status == "NEW"
         }
-        with (tomi.element) {
+        with (tomi) {
             customAspects.size() == 1
-            customAspects.control_dataProtection.attributes.size() == 1
-            customAspects.control_dataProtection.attributes.control_dataProtection_objectives == [
+            customAspects.control_dataProtection.size() == 1
+            customAspects.control_dataProtection.control_dataProtection_objectives == [
                 "control_dataProtection_objectives_integrity"
             ]
-            domains[dsgvoId].subType == "CTL_TOM"
-            domains[dsgvoId].status == "NEW"
+            subType == "CTL_TOM"
+            status == "NEW"
         }
         with(dsg23) {
-            with(element) {
-                name == "Keine Widerspruchsmöglichkeit für Betroffene gegen die Datenverarbeitung"
-                domains[dsgvoId].subType == "SCN_Scenario"
-                domains[dsgvoId].status == "NEW"
-            }
+            name == "Keine Widerspruchsmöglichkeit für Betroffene gegen die Datenverarbeitung"
+            subType == "SCN_Scenario"
+            status == "NEW"
         }
     }
 

@@ -20,6 +20,7 @@ package org.veo.core
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.Client
+import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
 import org.veo.core.entity.Unit
@@ -178,21 +179,35 @@ class ClientRepositorySpec extends VeoSpringSpec {
 
     def "create a simple client and a domain together with catalog"() {
         given: "a domain and a client"
-        Domain domain = newDomain(newClient()) {
+        Domain domain = newDomain(newClient()) {domain ->
             name = "27001"
             description = "ISO/IEC"
             abbreviation = "ISO"
+            applyElementTypeDefinition(newElementTypeDefinition(Control.SINGULAR_TERM, domain) {
+                subTypes = [
+                    ctl : newSubTypeDefinition {
+                        statuses = ["NEW"]
+                    }
+                ]
+            })
         }
 
         newCatalog(domain) {
             newCatalogItem(it, {
-                newControl(it)
+                elementType = "control"
+                subType = "ctl"
+                status = "NEW"
+            }
+            )
+            newCatalogItem(it, {
+                elementType = "control"
+                subType = "ctl"
+                status = "NEW"
             })
             newCatalogItem(it, {
-                newControl(it)
-            })
-            newCatalogItem(it, {
-                newControl(it)
+                elementType = "control"
+                subType = "ctl"
+                status = "NEW"
             })
         }
 
@@ -244,16 +259,17 @@ class ClientRepositorySpec extends VeoSpringSpec {
         def domain = newDomain(client)
         def catalog = newCatalog(domain)
         def catalogItem = newCatalogItem(catalog) {
-            newControl(it)
+            name = 'c3'
+            subType = "ctl"
+            status = "NEW"
         }
-        catalogItem.element = null
 
         when: "the client is saved"
         repository.save(client)
 
         then: "the validation cascades down to the invalid item"
         ConstraintViolationException ex = thrown(ConstraintViolationException)
-        ex.getConstraintViolations().first().propertyPath ==~ /domains\[].catalogs\[].catalogItems\[].element/
+        ex.getConstraintViolations().first().propertyPath ==~ /domains\[].catalogs\[].catalogItems\[].elementType/
         ex.getConstraintViolations().first().getMessageTemplate() ==~ /.*NotNull.message.*/
     }
 }

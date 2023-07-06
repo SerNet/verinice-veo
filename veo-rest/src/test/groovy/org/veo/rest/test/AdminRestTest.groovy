@@ -39,11 +39,11 @@ class AdminRestTest extends VeoRestTest{
         given:
         def unitId = postNewUnit("my catalog unit").resourceId
 
-        def dsgvoId = getDomains().find { it.name == "DS-GVO" }.id
         def catalogId = extractLastId(getDomains().find { it.name == "DS-GVO" }.catalogs.first().targetUri)
         log.info("==> catalogId: {}", catalogId)
         def catalog = getCatalog(catalogId)
         log.info("==> catalog: {}", JsonOutput.toJson(catalog))
+        def dsgvoId = extractLastId(catalog.domainTemplate.targetUri)
 
         def allItems = catalog.catalogItems.collect{extractLastId(it.targetUri)}.join(',')
         log.info("==> allItems: {}", allItems)

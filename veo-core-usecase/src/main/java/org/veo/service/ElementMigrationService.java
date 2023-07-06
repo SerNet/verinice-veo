@@ -85,20 +85,11 @@ public class ElementMigrationService {
             subType -> {
               var subTypeDefinition = definition.getSubTypes().get(subType);
               if (subTypeDefinition == null) {
-                var catalogItem = element.getContainingCatalogItem();
-                if (catalogItem != null) {
-                  log.debug(
-                      "Sub type {} of catalog item element {} is obsolete, removing catalog item",
-                      subType,
-                      element.getIdAsString());
-                  catalogItem.getCatalog().getCatalogItems().remove(catalogItem);
-                } else {
-                  log.debug(
-                      "Sub type {} of element {} is obsolete, removing element from domain",
-                      subType,
-                      element.getIdAsString());
-                  element.removeFromDomains(domain);
-                }
+                log.debug(
+                    "Sub type {} of element {} is obsolete, removing element from domain",
+                    subType,
+                    element.getIdAsString());
+                element.removeFromDomains(domain);
                 return;
               }
               var status = element.getStatus(domain);

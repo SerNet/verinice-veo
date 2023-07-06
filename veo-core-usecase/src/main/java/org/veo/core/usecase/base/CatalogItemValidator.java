@@ -17,36 +17,86 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
+import java.util.Map;
+
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.definitions.LinkDefinition;
 
 /** Validates catalog items according to the domain's element type definitions. */
 public class CatalogItemValidator {
+
   public static void validate(CatalogItem item) {
-    try {
-      DomainSensitiveElementValidator.validate(item.getElement());
-      var domain = item.getCatalog().getDomainTemplate();
-      item.getTailoringReferences()
-          .forEach(tailoringReference -> validate(tailoringReference, domain));
-    } catch (IllegalArgumentException illEx) {
-      throw new IllegalArgumentException(
-          String.format(
-              "Illegal catalog item '%s' in catalog '%s': %s",
-              item.getElement().getName(), item.getCatalog().getDisplayName(), illEx.getMessage()),
-          illEx);
-    }
+    DomainBase domain = item.getCatalog().getDomainTemplate();
+    SubTypeValidator.validate(domain, item.getSubType(), item.getStatus(), item.getElementType());
+    item.getCustomAspects().entrySet().stream()
+        .forEach(
+            e -> {
+              var caDefinition =
+                  domain
+                      .getElementTypeDefinition(item.getElementType())
+                      .getCustomAspectDefinition(e.getKey());
+              AttributeValidator.validate(e.getValue(), caDefinition.getAttributeDefinitions());
+            });
+
+    item.getTailoringReferences().stream().forEach(tr -> validate(tr, domain));
   }
 
   public static void validate(TailoringReference tailoringReference, DomainBase domain) {
     if (tailoringReference instanceof LinkTailoringReference linkRef) {
-      DomainSensitiveElementValidator.validateLink(
+      validateLink(
           linkRef.getLinkType(),
-          linkRef.getLinkSourceItem().getElement(),
-          linkRef.getLinkTargetItem().getElement(),
+          linkRef.getLinkSourceItem(),
+          linkRef.getLinkTargetItem(),
           linkRef.getAttributes(),
           domain);
+    }
+  }
+
+  private static void validateLink(
+      String linkType,
+      CatalogItem linkSourceItem,
+      CatalogItem linkTargetItem,
+      Map<String, Object> attributes,
+      DomainBase domain) {
+    var linkDefinition =
+        domain.getElementTypeDefinition(linkSourceItem.getElementType()).getLinks().get(linkType);
+    if (linkDefinition == null) {
+      throw new IllegalArgumentException(
+          String.format(
+              "Link type '%s' is not defined for element type '%s'",
+              linkType, linkSourceItem.getElementType()));
+    }
+    validateLinkTargetType(linkType, linkTargetItem, linkDefinition);
+    validateLinkTargetSubType(linkType, linkTargetItem, domain, linkDefinition);
+    try {
+      AttributeValidator.validate(attributes, linkDefinition.getAttributeDefinitions());
+    } catch (IllegalArgumentException ex) {
+      throw new IllegalArgumentException(
+          String.format("Invalid attributes for link type '%s': %s", linkType, ex.getMessage()),
+          ex);
+    }
+  }
+
+  private static void validateLinkTargetType(
+      String linkType, CatalogItem target, LinkDefinition linkDefinition) {
+    var targetType = target.getElementType();
+    DomainSensitiveElementValidator.validateLinkTargetType(linkType, linkDefinition, targetType);
+  }
+
+  private static void validateLinkTargetSubType(
+      String linkType, CatalogItem target, DomainBase domain, LinkDefinition linkDefinition) {
+    if (linkDefinition.getTargetSubType() == null) {
+      return;
+    }
+    var targetSubType = target.getSubType();
+    if (!linkDefinition.getTargetSubType().equals(targetSubType)) {
+      throw new IllegalArgumentException(
+          String.format(
+              "Expected target of link '%s' ('%s') to have sub type '%s' but found '%s'",
+              linkType, target.getName(), linkDefinition.getTargetSubType(), targetSubType));
     }
   }
 }

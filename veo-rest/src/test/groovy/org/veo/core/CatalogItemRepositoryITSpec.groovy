@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
+import org.veo.core.entity.Control
 import org.veo.persistence.access.CatalogItemRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -43,12 +44,21 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
     def "load a catalog item"() {
         given: "a client with a catalog containing an item"
         Client client = newClient()
-        def domain = newDomain(client)
+        def domain = newDomain(client) {domain->
+            applyElementTypeDefinition(newElementTypeDefinition(Control.SINGULAR_TERM, domain) {
+                subTypes = [
+                    ctl : newSubTypeDefinition {
+                        statuses = ["NEW"]
+                    }
+                ]
+            })
+        }
         def catalog = newCatalog(domain)
         newCatalogItem(catalog) {
-            newControl(it) {
-                name = 'Control 1'
-            }
+            elementType = Control.SINGULAR_TERM
+            name = 'Control 1'
+            subType = "ctl"
+            status = "NEW"
         }
         client = clientRepository.save(client)
         def itemId = client.domains.first().catalogs.first().catalogItems.first().id
@@ -58,10 +68,13 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
 
         then:
         item.present
-        item.get().element.name == 'Control 1'
+        with( item.get() ) {
+            name == 'Control 1'
+            elementType == 'control'
+        }
     }
 
-    def "a catalog item cannot be saved without an associated element"() {
+    def "a catalog item cannot be saved without an associated element type"() {
         given: "a client with a catalog containing an item"
         def client = clientRepository.save(newClient())
         newDomain(client)
@@ -70,12 +83,15 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
 
         when:
         CatalogItem catalogItem = new CatalogItemData()
+        catalogItem.setName("my name")
+        catalogItem.setSubType("ctl")
+        catalogItem.setStatus("NEW")
         catalogItem.setCatalog(catalog)
         catalogItemRepository.save(catalogItem)
 
         then:
         ConstraintViolationException ex = thrown(ConstraintViolationException)
-        ex.getConstraintViolations().first().propertyPath ==~ /element/
+        ex.getConstraintViolations().first().propertyPath ==~ /elementType/
         ex.getConstraintViolations().first().getMessageTemplate() ==~ /.*NotNull.message.*/
     }
 
@@ -88,10 +104,6 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
 
         when:
         catalogItemRepository.save(newCatalogItem(catalog, {
-            newControl(it) {
-                designator = "very bad designator"
-            }
-        },{
             newUpdateReference(it, null)
             newTailoringReference(it, null)
         }))
@@ -99,7 +111,9 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
         then:
         def ex = thrown(ConstraintViolationException)
         ex.constraintViolations*.propertyPath*.toString().sort() == [
-            "element.designator",
+            "elementType",
+            "status",
+            "subType",
             "tailoringReferences[].referenceType",
             "updateReferences[].updateType",
         ]

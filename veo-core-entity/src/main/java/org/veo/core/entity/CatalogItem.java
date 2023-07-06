@@ -24,8 +24,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import jakarta.validation.constraints.NotNull;
-
 /**
  * CatalogItem The catalog item contains an element and/other related catalog item. It describes
  * currently two different abstract use cases: 1. Apply the contained element: defined by KEa.1 and
@@ -33,7 +31,9 @@ import jakarta.validation.constraints.NotNull;
  * Usecase 1 is defined by the element and a set of TailoringReferences. Usecase 2 is defined by a
  * set of UpdateReferences.
  */
-public interface CatalogItem extends ElementOwner {
+public interface CatalogItem
+    extends Identifiable, Displayable, ClientOwned, Versioned, TemplateItem {
+
   String SINGULAR_TERM = "catalogitem";
   String PLURAL_TERM = "catalogitems";
 
@@ -86,12 +86,6 @@ public interface CatalogItem extends ElementOwner {
     getTailoringReferences().addAll(tailoringReferences);
   }
 
-  /** The template element which will be applied. A copy of the object will be inserted. */
-  @NotNull
-  Element getElement();
-
-  void setElement(Element element);
-
   /** All the update refreneces for this catalog item. */
   Set<UpdateReference> getUpdateReferences();
 
@@ -100,10 +94,6 @@ public interface CatalogItem extends ElementOwner {
     updateReferences.forEach(updateReference -> updateReference.setOwner(this));
     getUpdateReferences().addAll(updateReferences);
   }
-
-  String getNamespace();
-
-  void setNamespace(String aNamespace);
 
   @Override
   default Class<? extends Identifiable> getModelInterface() {
@@ -116,10 +106,20 @@ public interface CatalogItem extends ElementOwner {
   }
 
   default String getDisplayName() {
-    return getElement().getDisplayName();
+    return getAbbreviation() == null ? getName() : getAbbreviation() + " " + getName();
   }
 
   default Optional<Client> getOwningClient() {
-    return Optional.ofNullable(getCatalog()).flatMap(Catalog::getOwningClient);
+    // TODO: VEO-2014 remove catalog
+    return Optional.ofNullable(getCatalog().getDomainTemplate())
+        .filter(ClientOwned.class::isInstance)
+        .map(ClientOwned.class::cast)
+        .flatMap(ClientOwned::getOwningClient);
   }
+
+  default DomainBase getDomain() {
+    return getCatalog().getDomainTemplate();
+  }
+
+  Element incarnate();
 }

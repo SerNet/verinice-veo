@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.service;
 
+import java.util.HashMap;
 import java.util.Set;
 
 import org.veo.core.entity.CatalogItem;
@@ -44,18 +45,15 @@ public class CatalogMigrationService {
 
     // Migrate elements
     items.stream()
-        .map(CatalogItem::getElement)
-        .filter(e -> e.getModelType().equals(type.getSingularTerm()))
-        .forEach(e -> elementMigrationService.migrate(e, domain));
+        .filter(e -> e.getElementType().equals(type.getSingularTerm()))
+        .forEach(e -> migrate(e, domain));
 
     // Migrate link tailoring references
     items.stream()
         .flatMap(ci -> Set.copyOf(ci.getTailoringReferences()).stream())
         .filter(LinkTailoringReference.class::isInstance)
         .map(LinkTailoringReference.class::cast)
-        .filter(
-            ltr ->
-                ltr.getLinkSourceItem().getElement().getModelType().equals(type.getSingularTerm()))
+        .filter(ltr -> ltr.getLinkSourceItem().getElementType().equals(type.getSingularTerm()))
         .forEach(
             linkTailoringReference ->
                 domain
@@ -83,5 +81,25 @@ public class CatalogMigrationService {
                               linkTailoringReference.getIdAsString());
                           linkTailoringReference.remove();
                         }));
+  }
+
+  private void migrate(CatalogItem item, Domain domain) {
+    var definition = domain.getElementTypeDefinition(item.getElementType());
+    new HashMap<>(item.getCustomAspects())
+        .entrySet()
+        .forEach(
+            entry -> {
+              var caDefinition = definition.getCustomAspects().get(entry.getKey());
+              if (caDefinition == null) {
+                log.debug(
+                    "Removing obsolete custom aspect {} from element {}.",
+                    entry.getKey(),
+                    item.getIdAsString());
+                item.getCustomAspects().remove(entry.getKey());
+                return;
+              }
+              elementMigrationService.migrateAttributes(
+                  entry.getValue(), caDefinition.getAttributeDefinitions());
+            });
   }
 }

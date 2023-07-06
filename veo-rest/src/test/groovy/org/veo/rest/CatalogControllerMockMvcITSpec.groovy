@@ -118,7 +118,7 @@ class CatalogControllerMockMvcITSpec extends CatalogSpec {
         def item4FromResult = result.find { it.id == item4.id.uuidValue() }
 
         then: "the catalog item contains the element's description"
-        item4FromResult.description == item4.element.description
+        item4FromResult.description == item4.description
         item4FromResult._self == "http://localhost/catalogs/${catalog.dbId}/items/${item4.id.uuidValue()}"
     }
 

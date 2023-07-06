@@ -43,9 +43,6 @@ public interface ElementDataRepository<T extends ElementData>
   @Query(
       "select e from #{#entityName} as e "
           + "left join fetch e.customAspects "
-          + "left join fetch e.containingCatalogItem as ci "
-          + "left join fetch ci.catalog as c "
-          + "left join fetch c.domainTemplate "
           + "left join fetch e.domains "
           + "left join fetch e.decisionResultsAspects "
           + "left join fetch e.subTypeAspects "
@@ -59,9 +56,6 @@ public interface ElementDataRepository<T extends ElementData>
   @Query(
       "select e from #{#entityName} as e "
           + "left join fetch e.customAspects "
-          + "left join fetch e.containingCatalogItem as ci "
-          + "left join fetch ci.catalog as c "
-          + "left join fetch c.domainTemplate "
           + "left join fetch e.domains "
           + "left join fetch e.decisionResultsAspects "
           + "left join fetch e.subTypeAspects "

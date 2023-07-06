@@ -30,7 +30,9 @@ import org.testcontainers.containers.GenericContainer
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
+import org.veo.core.entity.Key
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
+import org.veo.core.repository.CatalogItemRepository
 import org.veo.core.repository.CatalogRepository
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.UnitRepository
@@ -62,6 +64,9 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     CatalogRepository catalogRepository
+
+    @Autowired
+    CatalogItemRepository catalogItemRepository
 
     @Autowired
     MessagingJob messagingJob
@@ -136,16 +141,17 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
         catalogRepository.save(newCatalog(domain) {
             catalogItems = [
                 newCatalogItem(it) {
-                    it.element = newAsset(null) {
-                        name = "my little catalog asset"
-                        associateWithDomain(domain, "NormalAsset", "NEW")
-                        applyCustomAspect(newCustomAspect("aspectOne", domain) {
-                            attributes = [
-                                'attrOne': "catalogValueOne",
-                                'attrTwo': "catalogValueTwo",
-                            ]
-                        })
-                    }
+                    namespace = "tte1"
+                    name = "my little catalog asset"
+                    status = "NEW"
+                    elementType = "asset"
+                    subType = "NormalAsset"
+                    customAspects = [
+                        "aspectOne": [
+                            'attrOne': "catalogValueOne",
+                            'attrTwo': "catalogValueTwo",
+                        ]
+                    ]
                 }
             ]
         })
@@ -179,15 +185,15 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
 
         when: "retrieving the catalog item"
         def catalogId = parseJson(get("/catalogs")).first().id
-        def catalogItem = parseJson(get("/catalogs/$catalogId/items")).first()
-        def catalogItemElement = parseJson(get(catalogItem.element.targetUri))
+
+        def catalogItem = catalogItemRepository.findAllByDomain(domain).first()
 
         then:"the content of the catalog item that still conforms to the current element type definition is still there"
-        catalogItemElement.customAspects.aspectOne != null
-        catalogItemElement.customAspects.aspectOne.attributes.attrOne != null
+        catalogItem.customAspects.aspectOne != null
+        catalogItem.customAspects.aspectOne.attrOne != null
 
         and: "the obsolete content has been removed from the catalog item"
-        catalogItemElement.customAspects.aspectOne.attributes.attrTwo == null
+        catalogItem.customAspects.aspectOne.attrTwo == null
     }
 
     def cleanup() {
