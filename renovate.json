@@ -84,7 +84,8 @@
         "^io.freefair.lombok",
         "^gradle$",
         "^org.keycloak:keycloak-authz-client$",
-        "^com.networknt:json-schema-validator"
+        "^com.networknt:json-schema-validator",
+        "^postgres$"
       ],
       "postUpgradeTasks": {}
     }

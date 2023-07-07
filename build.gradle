@@ -35,8 +35,6 @@ allprojects  {
 
     spotless {
         groovyGradle {
-            // https://github.com/diffplug/spotless/issues/304#issuecomment-426067801
-            target 'Jenkinsfile', '*.gradle'
             greclipse()
             replaceRegex('Excessive line breaks', /\n{3,}/, '\n\n')
             indentWithSpaces(4)
@@ -94,11 +92,10 @@ allprojects  {
                     .indentWithSpaces(2)
             endWithNewline()
         }
-        format 'Jenkinsfile', {
-            target 'Jenkinsfile'
-            indentWithSpaces(4)
-            endWithNewline()
+        yaml {
+            target '.gitlab-ci.yml'
             trimTrailingWhitespace()
+            endWithNewline()
         }
     }
 }
@@ -204,35 +201,11 @@ subprojects {
 
     // specific "continuous integration" settings needed by Jenkins
     if (continuousIntegrationBuild) {
-
-        // The recordIssues Jenkins plugin reads from the console output, so we need to write the warnings
-        // on every build. Otherwise Jenkins will assume the warnings have been fixed.
-        tasks.withType(JavaCompile) {
-            outputs.upToDateWhen { false }
-        }
-
         tasks.withType(Test) {
-            // Don't let failing tests fail the build, let the junit step in the Jenkins pipeline decide what to do
-            ignoreFailures = true
             testLogging {
                 showStandardStreams = true
                 exceptionFormat = 'full'
             }
-        }
-
-        // Update the test result file timestamps so Jenkins picks them up even when doing incremental builds
-        task jenkinsTestFix {
-            inputs.files test.outputs.files
-            doLast {
-                if (!sourceSets.test.allSource.empty) {
-                    def timestamp = System.currentTimeMillis()
-                    test.reports.junitXml.outputLocation.get().asFile.eachFile { it.lastModified = timestamp }
-                }
-            }
-        }
-
-        test {
-            finalizedBy jenkinsTestFix
         }
     }
 

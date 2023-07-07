@@ -1,0 +1,198 @@
+image: eclipse-temurin:17-jdk
+
+variables:
+  ORG_GRADLE_PROJECT_ci: 'true'
+  CI_DEBUG_SERVICES: "true"
+  PROXY: $HTTPS_PROXY_HOST
+  AUTH_URL: $OIDC_URL_DEV/realms/$OIDC_REALM_DEV
+
+stages:
+  - build
+  - check
+  - docker_image
+  - integration_test
+  - deployment
+
+before_script:
+  - GRADLE_USER_HOME="$(pwd)/.gradle"
+  - export GRADLE_USER_HOME
+
+build:
+  stage: build
+  script:
+    - env
+    - ./gradlew -i -PciBuildNumer=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME build -x check
+    - echo "PROJECT_VERSION=$(./gradlew -PciBuildNumer=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -q properties --property version| awk '/^version:/ {print $2}')" >> variables.env
+  artifacts:
+    expire_in: 1 week
+    reports:
+      dotenv: variables.env
+    paths:
+      - veo-rest/build/libs
+  cache:
+    - key: gradle
+      paths:
+        - .gradle
+    - key: $CI_PROJECT_PATH
+      paths:
+        - build
+      policy: push
+
+test:
+  stage: check
+  script: ./gradlew -PciBuildNumer=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -i test
+  services:
+  - name: postgres:11.7-alpine
+    alias: db
+    variables:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+  variables:
+    SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
+    SPRING_DATASOURCE_DRIVERCLASSNAME: org.postgresql.Driver
+    SPRING_RABBITMQ_HOST: $RABBITMQ_HOST
+    SPRING_RABBITMQ_USERNAME: $RABBITMQ_USERNAME
+    SPRING_RABBITMQ_PASSWORD: $RABBITMQ_PASSWORD
+    VEO_MESSAGE_ROUTINGKEYPREFIX: "VEO_TEST_PIPELINE_${CI_PIPELINE_ID}."
+    VEO_MESSAGE_QUEUES_VEO: "VEO_TEST_${CI_PIPELINE_ID}"
+    VEO_MESSAGE_QUEUES_VEOSUBSCRIPTIONS: "VEO_TEST_VEOSUBSCRIPTIONS_${CI_PIPELINE_ID}"
+
+  artifacts:
+    when: always
+    reports:
+      junit: '*/build/test-results/test/**/TEST-*.xml'
+  cache:
+    - key: gradle
+      paths:
+        - .gradle
+    - key: $CI_PROJECT_PATH
+      paths:
+        - build
+      policy: pull
+
+check:
+  stage: check
+  script:
+    - ./gradlew -PciBuildNumer=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -i check -x test
+  cache:
+    - key: gradle
+      paths:
+        - .gradle
+    - key: $CI_PROJECT_PATH
+      paths:
+        - build
+      policy: pull
+
+
+check_license:
+  stage: check
+  script:
+    - cp LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
+    - ./gradlew -PciBuildNumer=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -i generateLicenseReport
+    - diff --ignore-matching-lines='This report was generated at' LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
+    - if [ $? -ne 0 ]; then echo "LICENSE-3RD-PARTY.txt is not up to date, please re-run ./gradlew generateLicenseReport"; exit 1; fi
+  cache:
+    - key: gradle
+      paths:
+        - .gradle
+    - key: $CI_PROJECT_PATH
+      paths:
+        - build
+      policy: pull
+
+
+docker_image:
+  stage: docker_image
+  needs:
+   - build
+  image:
+    name: gcr.io/kaniko-project/executor:v1.12.1-debug
+    entrypoint: [""]
+
+  variables:
+    IMAGE_NAME: eu.gcr.io/veo-projekt/veo
+    # this does not work in Gitlab < 15.7, so we need the before_script workaround
+    # GOOGLE_APPLICATION_CREDENTIALS: $GCR_ACCESS_TOKEN
+
+  before_script:
+    - export GOOGLE_APPLICATION_CREDENTIALS=${GCR_ACCESS_TOKEN}
+
+  script:
+    - |-
+      DESTINATION_ARG="--destination $IMAGE_NAME:git-${CI_COMMIT_SHA} --destination $IMAGE_NAME:pipeline-id-${CI_PIPELINE_ID}"
+      if [ -n "$CI_COMMIT_TAG" ]; then export DESTINATION_ARG="$DESTINATION_ARG --destination $IMAGE_NAME:$CI_COMMIT_TAG";
+        if [ "$CI_COMMIT_REF_NAME" = "main" ]; then export DESTINATION_ARG="$DESTINATION_ARG --destination $IMAGE_NAME:latest"; fi;
+      fi;
+      if [ "$CI_COMMIT_REF_NAME" = "develop" ]; then export DESTINATION_ARG="$DESTINATION_ARG --destination $IMAGE_NAME:develop"; fi;
+    - /kaniko/executor
+      --cache=true
+      --cache-copy-layers
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      $DESTINATION_ARG
+      --build-arg VEO_VERSION="${PROJECT_VERSION}"
+      --label org.opencontainers.image.version="${PROJECT_VERSION}"
+      --label org.opencontainers.image.revision=${CI_COMMIT_SHA}
+
+http_rest_tests:
+  needs:
+  - docker_image
+  stage: integration_test
+  services:
+  - name: postgres:13.9-alpine
+    alias: db
+    variables:
+      POSTGRES_PASSWORD: test
+      POSTGRES_USER: test
+  - name: eu.gcr.io/veo-projekt/veo:pipeline-id-${CI_PIPELINE_ID}
+    alias: veo
+    variables:
+      JDK_JAVA_OPTIONS: -Dhttp.proxyHost=$PROXY -Dhttp.proxyPort=3128 -Dhttps.proxyHost=$PROXY -Dhttps.proxyPort=3128 -Dhttps.proxySet=true
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
+      SPRING_DATASOURCE_USERNAME: test
+      SPRING_DATASOURCE_PASSWORD: test
+      SPRING_JACKSON_DESERIALIZATION_FAIL_ON_UNKNOWN_PROPERTIES: 'true'
+      SPRING_PROFILES_ACTIVE: background-tasks
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: $AUTH_URL
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: $AUTH_URL/protocol/openid-connect/certs
+      VEO_CORS_ORIGINS: https://*.verinice.example, https://frontend.somewhereelse.example
+      VEO_DEFAULT_DOMAINTEMPLATE_NAMES: DS-GVO,test-domain
+      VEO_ETAG_SALT: zuL4Q8JKdy
+  variables:
+    FF_NETWORK_PER_BUILD: 1
+    SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
+    SPRING_RABBITMQ_HOST: $RABBITMQ_HOST
+    SPRING_RABBITMQ_PASSWORD: $RABBITMQ_PASSWORD
+    SPRING_RABBITMQ_USERNAME: $RABBITMQ_USERNAME
+    VEO_MESSAGE_CONSUME_AUTODELETE: 'true'
+    VEO_MESSAGE_QUEUES_VEO: VEO_REST_TEST_VEO_PIPELINE_${CI_PIPELINE_ID}
+    VEO_MESSAGE_QUEUES_VEOSUBSCRIPTIONS: VEO_REST_TEST_VEOSUBSCRIPTIONS_PIPELINE_${CI_PIPELINE_ID}
+    VEO_MESSAGE_ROUTINGKEYPREFIX: VEO_TEST_PIPELINE_${CI_PIPELINE_ID}.
+    VEO_RESTTEST_BASEURL: http://veo:8070
+    VEO_RESTTEST_CLIENTID: $OIDC_CLIENT_DEV
+    VEO_RESTTEST_OIDCURL: $OIDC_URL_DEV
+    VEO_RESTTEST_PROXYHOST: $PROXY
+    VEO_RESTTEST_REALM: $OIDC_REALM_DEV
+  script:
+    - ./gradlew -i -Dhttp.nonProxyHosts="localhost|veo" -PciBuildNumer=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME restTest
+  artifacts:
+    when: always
+    reports:
+      junit: veo-rest/build/test-results/restTest/*.xml
+  cache:
+    - key: gradle
+      paths:
+        - .gradle
+    - key: $CI_PROJECT_PATH
+      paths:
+        - build
+      policy: pull
+
+trigger_deployment:
+  stage: deployment
+  only:
+    - develop
+    - main
+  image: 'curlimages/curl:latest'
+  script:
+    - curl -i -k -X POST --user gitlab:$JENKINS_API_TOKEN https://bob.int.sernet.de:8443/job/verinice-veo-deployment/job/master/build
