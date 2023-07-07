@@ -32,7 +32,7 @@ import org.veo.core.entity.risk.RiskValues;
 
 /** An entity that is affected by risks resulting from association with scenarios. */
 public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-    extends Element {
+    extends Element, RiskRelated {
 
   default void setRisks(Set<R> newRisks) {
     getRisks().clear();

@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence;
 
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.RiskRelated;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
@@ -165,5 +167,11 @@ public class RepositoryProviderImpl implements RepositoryProvider {
     }
 
     throw new IllegalArgumentException("Unsupported entity type " + entityType);
+  }
+
+  @Override
+  public Set<ElementRepository<? extends RiskRelated>> getRiskRelatedElementRepos() {
+    return Set.of(
+        assetRepository, controlRepository, processRepository, scenarioRepository, scopeRepository);
   }
 }

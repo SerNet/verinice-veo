@@ -123,6 +123,7 @@ import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domain.DeleteDecisionUseCase;
 import org.veo.core.usecase.domain.DeleteDomainUseCase;
+import org.veo.core.usecase.domain.DeleteRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.ElementBatchCreator;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
@@ -1038,5 +1039,11 @@ public class ModuleConfiguration {
   @Bean
   DeleteDecisionUseCase deleteDecisionUseCase(DomainRepository domainRepository) {
     return new DeleteDecisionUseCase(domainRepository);
+  }
+
+  @Bean
+  DeleteRiskDefinitionUseCase deleteRiskDefinitionUseCase(
+      DomainRepository domainRepository, RepositoryProvider repositoryProvider) {
+    return new DeleteRiskDefinitionUseCase(domainRepository, repositoryProvider);
   }
 }

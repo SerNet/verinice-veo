@@ -24,7 +24,7 @@ import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
 /** A control represents something with can be applied to an entity. */
-public interface Control extends Element, CompositeElement<Control> {
+public interface Control extends Element, CompositeElement<Control>, RiskRelated {
 
   String SINGULAR_TERM = "control";
   String PLURAL_TERM = "controls";

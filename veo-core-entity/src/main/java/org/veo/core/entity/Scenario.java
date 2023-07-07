@@ -27,7 +27,7 @@ import org.veo.core.entity.risk.RiskDefinitionRef;
  * NIST: Threat Scenario: A set of discrete threat events, associated with a specific threat source
  * or multiple threat sources, partially ordered in time.
  */
-public interface Scenario extends Element, CompositeElement<Scenario> {
+public interface Scenario extends Element, CompositeElement<Scenario>, RiskRelated {
 
   String SINGULAR_TERM = "scenario";
   String PLURAL_TERM = "scenarios";

@@ -70,6 +70,14 @@ public class ProcessData extends RiskAffectedData<Process, ProcessRisk> implemen
     return new ProcessRiskData(this, scenario);
   }
 
+  @Override
+  public boolean removeRiskDefinition(RiskDefinitionRef riskDefinition, Domain domain) {
+    return super.removeRiskDefinition(riskDefinition, domain)
+        | findAspectByDomain(riskValuesAspects, domain)
+            .map(a -> a.values.remove(riskDefinition) != null)
+            .orElse(false);
+  }
+
   @OneToMany(
       cascade = CascadeType.ALL,
       orphanRemoval = true,

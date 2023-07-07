@@ -32,6 +32,7 @@ import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 import org.veo.core.usecase.domaintemplate.EntityAlreadyExistsException;
 
@@ -84,6 +85,7 @@ public class RiskDefinitionSetData {
    *     risk definition has been updated
    */
   public boolean apply(String riskDefinitionRef, RiskDefinition riskDefinition) {
+    // TODO VEO-2258 Allow modifying existing risk definition
     if (riskDefinitions.containsKey(riskDefinitionRef)) {
       throw new EntityAlreadyExistsException(
           "Updating an existing risk definition is not supported yet");
@@ -91,5 +93,12 @@ public class RiskDefinitionSetData {
     riskDefinition.validateRiskDefinition();
     riskDefinitions.put(riskDefinitionRef, riskDefinition);
     return true;
+  }
+
+  public void remove(String riskDefinitionKey) {
+    if (!riskDefinitions.containsKey(riskDefinitionKey)) {
+      throw new NotFoundException("Risk definition '%s' not found", riskDefinitionKey);
+    }
+    riskDefinitions.remove(riskDefinitionKey);
   }
 }

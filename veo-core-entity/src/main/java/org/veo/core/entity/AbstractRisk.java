@@ -46,7 +46,7 @@ import lombok.NonNull;
  * own).
  */
 public interface AbstractRisk<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-    extends ClientOwned, CompoundKeyEntity, Designated, Versioned {
+    extends ClientOwned, CompoundKeyEntity, Designated, Versioned, RiskRelated {
 
   String TYPE_DESIGNATOR = "RSK";
 

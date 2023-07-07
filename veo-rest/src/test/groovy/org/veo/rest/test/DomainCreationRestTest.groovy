@@ -165,6 +165,18 @@ class DomainCreationRestTest extends VeoRestTest {
         expect: "risk definition update to fail (for now)"
         put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 409, CONTENT_CREATOR)
                 .body.message == "Updating an existing risk definition is not supported yet"
+
+        when: "deleting the risk definition"
+        delete("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", 204, CONTENT_CREATOR)
+
+        then: "it is missing from the domain"
+        get("/domains/$newDomainId").body.riskDefinitions == [:]
+
+        and: "it has been removed from the scenario"
+        with(get(scenarioInDomainUri).body) {
+            riskValues == [:]
+            updatedBy == owner.contentCreatorUserName
+        }
     }
 
     def "ordinals are ignored when saving risk definition"() {
@@ -191,6 +203,11 @@ class DomainCreationRestTest extends VeoRestTest {
             probability.levels[1].ordinalValue == 1
             probability.levels[2].ordinalValue == 2
         }
+    }
+    def "cannot delete risk definition from a template"() {
+        expect: "trying to delete the DS-GVO risk definition to be illegal"
+        delete("/content-creation/domains/$dsgvoDomainId/risk-definitions/DSRA", 409, CONTENT_CREATOR)
+                .body.message == "Deleting a risk definition that is part of a domain template is currently not supported."
     }
 
     def "risk definition is validated"() {

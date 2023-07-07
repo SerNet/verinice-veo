@@ -29,7 +29,9 @@ import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.RiskRelated;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -41,7 +43,7 @@ import lombok.ToString;
 @Data
 @Entity
 public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-    extends ElementData implements RiskAffected<T, R> {
+    extends ElementData implements RiskAffected<T, R>, RiskRelated {
 
   @Override
   public void transferToDomain(Domain oldDomain, Domain newDomain) {
@@ -97,5 +99,13 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
       getRisks().forEach(r -> r.removeFromDomains(domain));
     }
     return removed;
+  }
+
+  @Override
+  public boolean removeRiskDefinition(RiskDefinitionRef riskDefinition, Domain domain) {
+    return getRisks().stream()
+        .map(r -> r.removeRiskDefinition(riskDefinition, domain))
+        .toList()
+        .contains(true);
   }
 }

@@ -75,6 +75,7 @@ import org.veo.core.usecase.UseCase.IdAndClient;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
 import org.veo.core.usecase.domain.DeleteDecisionUseCase;
 import org.veo.core.usecase.domain.DeleteDomainUseCase;
+import org.veo.core.usecase.domain.DeleteRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.SaveDecisionUseCase;
 import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
@@ -105,6 +106,7 @@ public class ContentCreationController extends AbstractVeoController {
   private final SaveDecisionUseCase saveDecisionUseCase;
   private final SaveRiskDefinitionUseCase saveRiskDefinitionUseCase;
   private final DeleteDecisionUseCase deleteDecisionUseCase;
+  private final DeleteRiskDefinitionUseCase deleteRiskDefinitionUseCase;
   private final CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase;
   private final DeleteDomainUseCase deleteDomainUseCase;
   public static final String URL_BASE_PATH = "/content-creation";
@@ -281,6 +283,29 @@ public class ContentCreationController extends AbstractVeoController {
                 ? RestApiResponse.created(
                     request.getRequest().getRequestURI(), "Risk definition created")
                 : RestApiResponse.ok("Risk definition updated"));
+  }
+
+  @DeleteMapping("/domains/{domainId}/risk-definitions/{riskDefinitionKey}")
+  @Operation(summary = "Delete risk definition with given key")
+  @ApiResponse(responseCode = "204", description = "Risk definition deleted")
+  @ApiResponse(responseCode = "404", description = "Risk definition not found")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> deleteRiskDefinition(
+      @Parameter(hidden = true) ApplicationUser user,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(
+              required = true,
+              example = "DSRA",
+              description = "Risk definition identifier - unique within this domain")
+          @PathVariable
+          String riskDefinitionKey) {
+    return useCaseInteractor.execute(
+        deleteRiskDefinitionUseCase,
+        new DeleteRiskDefinitionUseCase.InputData(
+            Key.uuidFrom(user.getClientId()), Key.uuidFrom(domainId), riskDefinitionKey),
+        out -> RestApiResponse.noContent());
   }
 
   @PostMapping(value = "/domains/{id}/template")

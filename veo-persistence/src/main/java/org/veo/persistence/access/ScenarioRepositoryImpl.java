@@ -27,6 +27,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scenario;
 import org.veo.core.repository.ElementQuery;
@@ -47,6 +48,7 @@ public class ScenarioRepositoryImpl
 
   private final AssetDataRepository assetDataRepository;
   private final ProcessDataRepository processDataRepository;
+  private final ScenarioDataRepository scenarioDataRepository;
 
   public ScenarioRepositoryImpl(
       ScenarioDataRepository dataRepository,
@@ -63,6 +65,7 @@ public class ScenarioRepositoryImpl
         scopeDataRepository,
         elementQueryFactory,
         Scenario.class);
+    this.scenarioDataRepository = dataRepository;
     this.assetDataRepository = assetDataRepository;
     this.processDataRepository = processDataRepository;
   }
@@ -101,5 +104,12 @@ public class ScenarioRepositoryImpl
   public void deleteAll(Set<Scenario> elements) {
     removeRisks(elements.stream().map(ScenarioData.class::cast).collect(Collectors.toSet()));
     super.deleteAll(elements);
+  }
+
+  @Override
+  public Set<Scenario> findByDomainWhereRiskValuesExist(Domain domain) {
+    return scenarioDataRepository.findByDomainWhereRiskValuesExist(domain).stream()
+        .map(Scenario.class::cast)
+        .collect(Collectors.toSet());
   }
 }

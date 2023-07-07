@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import java.util.Set;
+
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scenario;
 
 /**
@@ -25,4 +28,6 @@ import org.veo.core.entity.Scenario;
  * <p>Implements basic CRUD operations from the superinterface and extends them with more specific
  * methods - i.e. queries based on particular fields.
  */
-public interface ScenarioRepository extends ElementRepository<Scenario> {}
+public interface ScenarioRepository extends ElementRepository<Scenario> {
+  Set<Scenario> findByDomainWhereRiskValuesExist(Domain domain);
+}

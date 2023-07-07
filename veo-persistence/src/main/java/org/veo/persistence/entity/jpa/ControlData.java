@@ -100,4 +100,11 @@ public class ControlData extends ElementData implements Control {
     findAspectByDomain(riskValuesAspects, oldDomain).ifPresent(a -> a.setDomain(newDomain));
     super.transferToDomain(oldDomain, newDomain);
   }
+
+  @Override
+  public boolean removeRiskDefinition(RiskDefinitionRef riskDefinition, Domain domain) {
+    return findAspectByDomain(riskValuesAspects, domain)
+        .map(a -> a.values.remove(riskDefinition) != null)
+        .orElse(false);
+  }
 }

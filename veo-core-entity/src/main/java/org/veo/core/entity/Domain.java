@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import jakarta.validation.constraints.NotNull;
 
+import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 /**
@@ -67,4 +68,6 @@ public interface Domain extends DomainBase, ClientOwned {
    *     risk definition has been updated.
    */
   boolean applyRiskDefinition(String riskDefinitionRef, RiskDefinition riskDefinition);
+
+  void removeRiskDefinition(RiskDefinitionRef riskDefinition);
 }

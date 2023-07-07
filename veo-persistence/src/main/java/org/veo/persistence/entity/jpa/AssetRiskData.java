@@ -22,7 +22,9 @@ import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AccessLevel;
@@ -43,5 +45,11 @@ public class AssetRiskData extends AbstractRiskData<Asset, AssetRisk> implements
   @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
   AssetRiskData(@NotNull @NonNull Asset asset, @NotNull Scenario scenario) {
     super(scenario, asset);
+  }
+
+  @Override
+  public boolean removeRiskDefinition(RiskDefinitionRef riskDefinition, Domain domain) {
+    // TODO VEO-2150
+    return false;
   }
 }

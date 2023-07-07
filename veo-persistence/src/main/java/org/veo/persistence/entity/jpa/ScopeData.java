@@ -80,6 +80,13 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
     return new ScopeRiskData(this, scenario);
   }
 
+  @Override
+  public boolean removeRiskDefinition(RiskDefinitionRef riskDefinition, Domain domain) {
+    return super.removeRiskDefinition(riskDefinition, domain)
+        | riskValuesAspects.removeIf(
+            a -> a.getDomain().equals(domain) && a.getRiskDefinitionRef().equals(riskDefinition));
+  }
+
   @OneToMany(
       cascade = CascadeType.ALL,
       orphanRemoval = true,

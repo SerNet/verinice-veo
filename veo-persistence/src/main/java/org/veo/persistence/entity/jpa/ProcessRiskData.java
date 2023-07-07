@@ -289,4 +289,11 @@ public class ProcessRiskData extends AbstractRiskData<Process, ProcessRisk> impl
         .filter(ra -> ra.getDomain().equals(oldDomain))
         .forEach(ra -> ra.setDomain(newDomain));
   }
+
+  @Override
+  public boolean removeRiskDefinition(RiskDefinitionRef riskDefinition, Domain domain) {
+    return findRiskAspectForDefinition(riskDefinition, domain)
+        .map(riskAspects::remove)
+        .orElse(false);
+  }
 }

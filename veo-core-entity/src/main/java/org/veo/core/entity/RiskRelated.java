@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2020  Alexander Ben Nasrallah.
+ * Copyright (C) 2023  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,24 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.access.jpa;
+package org.veo.core.entity;
 
-import java.util.List;
-import java.util.Set;
+import org.veo.core.entity.risk.RiskDefinitionRef;
 
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
-
-import org.veo.core.entity.Domain;
-import org.veo.persistence.entity.jpa.ScenarioData;
-
-public interface ScenarioDataRepository extends CompositeEntityDataRepository<ScenarioData> {
-
-  @Transactional(readOnly = true)
-  @EntityGraph(attributePaths = "riskValuesAspects")
-  List<ScenarioData> findAllWithRiskValuesAspectsByDbIdIn(List<String> ids);
-
-  @Query("SELECT e FROM #{#entityName} as e RIGHT JOIN FETCH e.riskValuesAspects")
-  Set<ScenarioData> findByDomainWhereRiskValuesExist(Domain domain);
+/** Something that holds data related to risk definitions. */
+public interface RiskRelated {
+  /**
+   * Removes any data related to given risk definition from this entity
+   *
+   * @return {@code true} if anything was removed, otherwise {@code false}
+   */
+  boolean removeRiskDefinition(RiskDefinitionRef riskDefinition, Domain domain);
 }
