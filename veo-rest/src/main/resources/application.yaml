@@ -86,10 +86,9 @@ spring:
           provider_disables_autocommit: true
       jakarta:
         persistence:
-          # This makes JPA stop updating the actual database and write DDL to a file instead.
           schema-generation:
             scripts:
-              action: update
+              action: none
               create-target: schema.local.sql
   datasource:
     driver-class-name: org.postgresql.Driver
