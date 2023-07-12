@@ -167,6 +167,12 @@ class ProfileRestTest extends VeoRestTest {
         get("/assets/$multiDomainAssetId").body.domains.keySet() ==~ [newDomainId, testDomainId]
     }
 
+    def "applying absent profile yields error"() {
+        expect:
+        post("/domains/$testDomainId/profiles/absent/units/$unitId", null, 404)
+                .body.message == "Profile 'absent' not found"
+    }
+
     def putElementTypeDefinitions(String domainId) {
         put("/content-creation/domains/$domainId/element-type-definitions/asset",
                 [

@@ -144,7 +144,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     return domain
         .findProfile(profileKey)
         .map(profile -> createElementsFromProfile(client, domain, profile))
-        .orElseGet(Collections::emptySet);
+        .orElseThrow(() -> new NotFoundException("Profile '%s' not found", profileKey.getKeyRef()));
   }
 
   private Collection<Element> createElements(
