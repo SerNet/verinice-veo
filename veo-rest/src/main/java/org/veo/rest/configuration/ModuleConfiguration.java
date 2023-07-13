@@ -89,6 +89,7 @@ import org.veo.core.usecase.asset.GetAssetUseCase;
 import org.veo.core.usecase.asset.GetAssetsUseCase;
 import org.veo.core.usecase.asset.UpdateAssetRiskUseCase;
 import org.veo.core.usecase.asset.UpdateAssetUseCase;
+import org.veo.core.usecase.base.AddLinksUseCase;
 import org.veo.core.usecase.base.AssociateElementWithDomainUseCase;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.DeleteElementUseCase;
@@ -1024,6 +1025,14 @@ public class ModuleConfiguration {
   AssociateElementWithDomainUseCase associateElementWithDomainUseCase(
       RepositoryProvider repositoryProvider, DomainRepository domainRepository) {
     return new AssociateElementWithDomainUseCase(repositoryProvider, domainRepository);
+  }
+
+  @Bean
+  AddLinksUseCase addLinksUseCase(
+      DomainRepository domainRepository,
+      RepositoryProvider repositoryProvider,
+      EntityStateMapper entityStateMapper) {
+    return new AddLinksUseCase(domainRepository, repositoryProvider, entityStateMapper);
   }
 
   @Bean

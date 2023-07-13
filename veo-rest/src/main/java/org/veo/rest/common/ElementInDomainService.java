@@ -35,6 +35,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
+import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
@@ -47,6 +48,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.UseCaseInteractor;
+import org.veo.core.usecase.base.AddLinksUseCase;
 import org.veo.core.usecase.base.AssociateElementWithDomainUseCase;
 import org.veo.core.usecase.base.CreateElementUseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
@@ -73,6 +75,7 @@ public class ElementInDomainService {
   private final AssociateElementWithDomainUseCase associateUseCase;
   private final ReferenceAssembler referenceAssembler;
   private final EvaluateElementUseCase evaluateElementUseCase;
+  private final AddLinksUseCase addLinksUseCase;
   private final TransactionalRunner runner;
   private final CacheControl defaultCacheControl = CacheControl.noCache();
 
@@ -223,6 +226,26 @@ public class ElementInDomainService {
         evaluateElementUseCase,
         new EvaluateElementUseCase.InputData(client, Key.uuidFrom(domainId), element),
         output -> ResponseEntity.ok().body(output));
+  }
+
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> addLinks(
+      Authentication auth,
+      String domainId,
+      String elementId,
+      LinkMapDto links,
+      Class<? extends Element> assetClass) {
+    return useCaseInteractor.execute(
+        addLinksUseCase,
+        new AddLinksUseCase.InputData(
+            Key.uuidFrom(elementId),
+            assetClass,
+            Key.uuidFrom(domainId),
+            links.getCustomLinkStates(),
+            clientLookup.getClient(auth)),
+        out ->
+            ResponseEntity.noContent()
+                .eTag(ETag.from(elementId, out.getEntity().getVersion()))
+                .build());
   }
 
   private <TElement extends Element, TFullDto extends AbstractElementInDomainDto<TElement>>

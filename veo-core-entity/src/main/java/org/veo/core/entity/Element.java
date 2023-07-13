@@ -242,5 +242,11 @@ public interface Element
    */
   boolean applyLink(CustomLink customLink);
 
+  /**
+   * @throws org.veo.core.entity.exception.EntityAlreadyExistsException if an equivalent link (a
+   *     link with the same domain, type & target) already exists on this element.
+   */
+  void addLink(CustomLink customLink);
+
   void setStatus(String status, Domain domain);
 }

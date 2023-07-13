@@ -182,6 +182,17 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   @Override
+  public void addLink(CustomLink customLink) {
+    if (findLink(customLink.getType(), customLink.getTarget(), customLink.getDomain())
+        .isPresent()) {
+      throw new EntityAlreadyExistsException(
+          "Link with type '%s' and target ID %s already exists"
+              .formatted(customLink.getType(), customLink.getTarget().getIdAsString()));
+    }
+    addToLinks(customLink);
+  }
+
+  @Override
   public void transferToDomain(Domain oldDomain, Domain newDomain) {
     requireAssociationWithDomain(oldDomain);
     if (domains.contains(newDomain)) {

@@ -70,6 +70,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
+import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.create.CreateScopeInDomainDto;
@@ -272,6 +273,26 @@ public class ScopeInDomainController {
       @Valid @NotNull @RequestBody FullScopeInDomainDto dto) {
     return elementService.update(
         auth, domainId, eTag, uuid, dto, updateUseCase, entityToDtoTransformer::transformScope2Dto);
+  }
+
+  @Operation(summary = "Adds links to an existing scope")
+  @PostMapping(UUID_PARAM_SPEC + "/links")
+  @ApiResponse(responseCode = "204", description = "Links added")
+  @ApiResponse(responseCode = "400", description = "Invalid link")
+  @ApiResponse(responseCode = "404", description = "Scope not found")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "404", description = "Scope not associated with domain")
+  @ApiResponse(responseCode = "409", description = "Link already exists")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> addLinks(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String uuid,
+      @Valid @NotNull @RequestBody LinkMapDto links) {
+    return elementService.addLinks(auth, domainId, uuid, links, Scope.class);
   }
 
   @Operation(

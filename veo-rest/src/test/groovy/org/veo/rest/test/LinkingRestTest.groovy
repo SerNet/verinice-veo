@@ -79,4 +79,118 @@ class LinkingRestTest extends VeoRestTest {
         where:
         targetType << EntityType.ELEMENT_TYPES
     }
+
+    def "links for #type.pluralTerm can be added using sub resource"() {
+        given:
+        put("/content-creation/domains/$domainId/element-type-definitions/$type.singularTerm", [
+            subTypes: [
+                STA: [
+                    statuses: ["NEW"]
+                ]
+            ],
+            links: [
+                linkTypeA: [
+                    targetType: type.singularTerm,
+                    targetSubType: "STA",
+                ],
+                linkTypeB: [
+                    targetType: type.singularTerm,
+                    targetSubType: "STA",
+                    attributeDefinitions: [
+                        propOfTruth: [type: "boolean"]
+                    ]
+                ],
+            ]
+        ], null, 204)
+        def targetAUri = post("/domains/$domainId/$type.pluralTerm", [
+            name: "linking target A",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "STA",
+            status: "NEW",
+        ]).location
+        def targetBUri = post("/domains/$domainId/$type.pluralTerm", [
+            name: "linking target A",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "STA",
+            status: "NEW",
+        ]).location
+        def elementUri = post("/domains/$domainId/$type.pluralTerm", [
+            name: "linking source",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "STA",
+            status: "NEW",
+        ]).location
+        def originalElementEtag = get(elementUri).getETag()
+
+        when: "adding links"
+        post(elementUri + "/links", [
+            linkTypeA: [
+                [
+                    target: [targetInDomainUri: targetAUri]
+                ]
+            ],
+            linkTypeB: [
+                [
+                    target: [targetInDomainUri: targetBUri],
+                    attributes: [
+                        propOfTruth: true
+                    ]
+                ]
+            ]
+        ], 204)
+        def returnedEtag = post(elementUri + "/links", [
+            linkTypeA: [
+                [
+                    target: [targetInDomainUri: targetBUri]
+                ]
+            ]
+        ], 204).getETag()
+
+        then: "etag and links have been updated"
+        returnedEtag != originalElementEtag
+        with(get(elementUri)) {
+            getETag() == returnedEtag
+            with(body.links) {
+                linkTypeA.size() == 2
+                linkTypeA.find { it.target.targetInDomainUri.endsWith(targetAUri) } != null
+                linkTypeA.find { it.target.targetInDomainUri.endsWith(targetBUri) } != null
+                linkTypeB.size() == 1
+                linkTypeB.find { it.target.targetInDomainUri.endsWith(targetBUri) }.attributes.propOfTruth
+            }
+        }
+
+        expect: "adding an invalid link type to fail"
+        post(elementUri + "/links", [
+            sillyLink: [
+                [
+                    target: [targetInDomainUri: targetAUri]
+                ]
+            ],
+        ], 400).body.message == "Link type 'sillyLink' is not defined for element type '$type.singularTerm'"
+
+        and: "adding an existing link to fail"
+        post(elementUri + "/links", [
+            linkTypeA: [
+                [
+                    target: [targetInDomainUri: targetAUri]
+                ]
+            ],
+        ], 409).body.message ==~ /Link with type 'linkTypeA' and target ID .+ already exists/
+
+        and: "adding links to an unassociated element to fail"
+        def unassociatedElementId = post("/$type.pluralTerm", [
+            name: "unassociated element",
+            owner: [targetUri: "/units/$unitId"],
+        ]).body.resourceId
+        post("/domains/$domainId/$type.pluralTerm/$unassociatedElementId/links", [
+            linkTypeA: [
+                [
+                    target: [targetInDomainUri: targetAUri]
+                ]
+            ]
+        ], 404).body.message == "Element cannot contain custom aspects or links for domains it is not associated with"
+
+        where:
+        type << EntityType.ELEMENT_TYPES
+    }
 }
