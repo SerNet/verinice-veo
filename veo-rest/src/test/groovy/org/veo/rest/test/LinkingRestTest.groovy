@@ -22,14 +22,25 @@ import static org.veo.rest.test.UserType.CONTENT_CREATOR
 
 import org.veo.core.entity.EntityType
 
-class LinkingRestTest extends VeoRestTest{
+class LinkingRestTest extends VeoRestTest {
+    String domainId
+    String unitId
 
-    def "asset can be linked with #targetType.pluralTerm"() {
-        given: "a target element"
-        def domainId = post("/content-creation/domains", [
+    def setup() {
+        domainId = post("/content-creation/domains", [
             name: randomUUID(),
             authority: "me",
         ], 201, CONTENT_CREATOR).body.resourceId
+        unitId = post("/units", [
+            name: "some unit",
+            domains: [
+                [targetUri: "/domains/$domainId"]
+            ]
+        ]).body.resourceId
+    }
+
+    def "asset can be linked with #targetType.pluralTerm"() {
+        given: "a target element"
         put("/content-creation/domains/$domainId/element-type-definitions/asset", [
             subTypes: [
                 ST: [statuses: ["NEW"]]
@@ -40,12 +51,6 @@ class LinkingRestTest extends VeoRestTest{
                 ]
             ]
         ], "", 204, CONTENT_CREATOR)
-        def unitId = post("/units", [
-            name: "some unit",
-            domains: [
-                [targetUri: "/domains/$domainId"]
-            ]
-        ]).body.resourceId
         def targetId = post("/$targetType.pluralTerm", [
             name: "target element",
             owner: [targetUri: "/units/$unitId"]
@@ -67,7 +72,7 @@ class LinkingRestTest extends VeoRestTest{
         then: "the target has been set"
         with(get("/domains/$domainId/assets/$sourceId").body) {
             links.someLink[0].target.targetUri ==~ /.*\/$targetType.pluralTerm\/$targetId/
-            links.someLink[0].target.targetInDomainUri ==~ /.*\/domains\/$domainId\/$targetType.pluralTerm\/$targetId/
+            links.someLink[0].target.targetInDomainUri ==~ /.*\/domains\/$owner.domainId\/$targetType.pluralTerm\/$targetId/
             links.someLink[0].target.displayName ==~ /.* target element/
         }
 
