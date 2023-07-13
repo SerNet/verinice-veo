@@ -24,7 +24,8 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 
 /** Checks that an element's custom aspects's domain is contained in the element's domains. */
-public class ElementCustomAspectsHaveDomain implements EntitySpecification<Element> {
+public class ElementIsAssociatedWithCustomAspectAndLinkDomains
+    implements EntitySpecification<Element> {
 
   @Override
   public boolean test(Element element) {
