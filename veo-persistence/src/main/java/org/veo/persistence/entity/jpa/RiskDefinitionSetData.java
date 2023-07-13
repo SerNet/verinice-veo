@@ -32,9 +32,9 @@ import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 
+import org.veo.core.entity.exception.EntityAlreadyExistsException;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
-import org.veo.core.usecase.domaintemplate.EntityAlreadyExistsException;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Getter;

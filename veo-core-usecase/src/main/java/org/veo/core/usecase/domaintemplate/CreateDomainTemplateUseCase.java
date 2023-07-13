@@ -23,6 +23,7 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.exception.EntityAlreadyExistsException;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.service.DomainTemplateIdGenerator;
 import org.veo.core.usecase.TransactionalUseCase;

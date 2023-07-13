@@ -27,10 +27,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.veo.core.entity.Catalog
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.exception.EntityAlreadyExistsException
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.core.usecase.domain.DomainInUseException
-import org.veo.core.usecase.domaintemplate.EntityAlreadyExistsException
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 

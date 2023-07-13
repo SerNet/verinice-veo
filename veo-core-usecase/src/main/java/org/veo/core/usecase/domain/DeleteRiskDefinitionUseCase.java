@@ -23,13 +23,13 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Key;
+import org.veo.core.entity.exception.EntityAlreadyExistsException;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.domaintemplate.EntityAlreadyExistsException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;

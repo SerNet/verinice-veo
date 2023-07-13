@@ -21,8 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.entity.Client
+import org.veo.core.entity.exception.EntityAlreadyExistsException
 import org.veo.core.usecase.domain.CreateDomainUseCase
-import org.veo.core.usecase.domaintemplate.EntityAlreadyExistsException
 import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 

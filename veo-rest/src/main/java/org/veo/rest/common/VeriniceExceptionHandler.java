@@ -33,6 +33,7 @@ import org.veo.adapter.presenter.api.DeviatingIdException;
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.core.entity.DomainException;
 import org.veo.core.entity.TranslationException;
+import org.veo.core.entity.exception.EntityAlreadyExistsException;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.entity.exception.RiskConsistencyException;
@@ -42,7 +43,6 @@ import org.veo.core.entity.specification.MaxUnitsExceededException;
 import org.veo.core.entity.specification.MissingAdminPrivilegesException;
 import org.veo.core.usecase.common.ETagMismatchException;
 import org.veo.core.usecase.domain.DomainInUseException;
-import org.veo.core.usecase.domaintemplate.EntityAlreadyExistsException;
 
 import lombok.extern.slf4j.Slf4j;
 
