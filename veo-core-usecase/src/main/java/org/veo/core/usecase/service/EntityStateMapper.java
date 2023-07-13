@@ -51,6 +51,7 @@ import org.veo.core.entity.risk.ScenarioRiskValues;
 import org.veo.core.entity.state.CompositeElementState;
 import org.veo.core.entity.state.ControlDomainAssociationState;
 import org.veo.core.entity.state.ControlRiskValuesState;
+import org.veo.core.entity.state.CustomLinkState;
 import org.veo.core.entity.state.DomainAssociationState;
 import org.veo.core.entity.state.ElementState;
 import org.veo.core.entity.state.ProcessDomainAssociationState;
@@ -105,6 +106,16 @@ public class EntityStateMapper {
     }
   }
 
+  /** Maps link state to link entity (without adding the link to the source element). */
+  public CustomLink mapLink(
+      CustomLinkState link, Element source, DomainBase domain, IdRefResolver idRefResolver) {
+    CustomLink newLink =
+        entityFactory.createCustomLink(
+            idRefResolver.resolve(link.getTarget()), source, link.getType(), domain);
+    newLink.setAttributes(link.getAttributes());
+    return newLink;
+  }
+
   private <T extends Element> void mapElement(
       ElementState<T> source, T target, IdRefResolver idRefResolver) {
     mapNameableProperties(source, target);
@@ -133,10 +144,7 @@ public class EntityStateMapper {
     // Apply new links
     newLinks.forEach(
         link -> {
-          CustomLink newLink =
-              entityFactory.createCustomLink(
-                  idRefResolver.resolve(link.getTarget()), target, link.getType(), domain);
-          newLink.setAttributes(link.getAttributes());
+          CustomLink newLink = mapLink(link, target, domain, idRefResolver);
           target.applyLink(newLink);
         });
   }

@@ -20,9 +20,14 @@ package org.veo.adapter.presenter.api.dto;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import org.veo.core.entity.state.CustomLinkState;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,4 +41,17 @@ public class LinkMapDto {
   }
 
   @JsonValue private Map<String, List<LinkDto>> value = Collections.emptyMap();
+
+  @JsonIgnore
+  public Set<CustomLinkState> getCustomLinkStates() {
+    return value.entrySet().stream()
+        .flatMap(
+            e ->
+                e.getValue().stream()
+                    .map(
+                        l ->
+                            new CustomLinkState.CustomLinkStateImpl(
+                                e.getKey(), l.getAttributes().getValue(), l.getTarget())))
+        .collect(Collectors.toSet());
+  }
 }

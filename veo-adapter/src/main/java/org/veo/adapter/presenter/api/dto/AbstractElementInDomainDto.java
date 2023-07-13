@@ -147,15 +147,7 @@ public abstract class AbstractElementInDomainDto<TElement extends Element>
   @JsonIgnore
   @Override
   public Set<CustomLinkState> getCustomLinkStates() {
-    return links.getValue().entrySet().stream()
-        .flatMap(
-            e ->
-                e.getValue().stream()
-                    .map(
-                        l ->
-                            new CustomLinkState.CustomLinkStateImpl(
-                                e.getKey(), l.getAttributes().getValue(), l.getTarget())))
-        .collect(Collectors.toSet());
+    return links.getCustomLinkStates();
   }
 
   @JsonIgnore
