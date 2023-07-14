@@ -89,4 +89,9 @@ public abstract class VersionedData implements Versioned {
     }
     return 0;
   }
+
+  @Override
+  public synchronized void consolidateChangeNumber(long lowestSeenChangeNo) {
+    changeNumber = lowestSeenChangeNo;
+  }
 }

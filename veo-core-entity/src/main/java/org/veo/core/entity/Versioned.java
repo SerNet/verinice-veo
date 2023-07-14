@@ -74,4 +74,6 @@ public interface Versioned {
    * @throws UnexpectedChangeNumberException when the change number is not at its starting value
    */
   long initialChangeNumberForInsert();
+
+  void consolidateChangeNumber(long lowestSeenChangeNo);
 }

@@ -215,6 +215,7 @@ public class MostRecentChangeTracker<
               if (!updates.isEmpty()) {
                 lowestNo = lowestSeenChangeNo(updates);
                 var newestUpdate = newestEvent(updates);
+                newestUpdate.getEntity().consolidateChangeNumber(lowestNo);
                 consolidatedChanges
                     .computeIfAbsent(id, k -> new ArrayList<>())
                     .add((E) newestUpdate.withChangeNumber(lowestNo));
@@ -231,12 +232,15 @@ public class MostRecentChangeTracker<
                 } else {
                   lowestNo += 1;
                 }
+                newestRemove.getEntity().consolidateChangeNumber(lowestNo);
                 consolidatedChanges
                     .computeIfAbsent(id, k -> new ArrayList<>())
                     .add((E) newestRemove.withChangeNumber(lowestNo));
               }
             });
   }
+
+  // Reset the entity's change number to the lowest seen changeNumber.
 
   private long lowestSeenChangeNo(Collection<E> events) {
     return events.stream().map(VersioningEvent::getChangeNumber).min(Long::compare).orElseThrow();

@@ -23,8 +23,11 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
+import org.veo.core.entity.Key
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
+import org.veo.core.entity.exception.NotFoundException
+import org.veo.core.repository.DocumentRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
@@ -49,6 +52,9 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     private StoredEventDataRepository storedEventRepository
+
+    @Autowired
+    private DocumentRepository documentRepository
 
     private Client client
     private Domain domain
@@ -152,6 +158,12 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             }
         }
 
+        when: "the entity is retrieved"
+        def updatedDocument = documentRepository.getById(Key.uuidFrom(documentId), client.id)
+
+        then: "the correct changeNumber was written to the entity"
+        updatedDocument.changeNumber == 1
+
         when: "deleting the document"
         delete("/documents/$documentId")
 
@@ -160,12 +172,18 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             type == "HARD_DELETION"
             uri == "/documents/$documentId"
             author == "user@domain.example"
-            changeNumber == 3
+            changeNumber == 2
             with(content) {
                 id == documentId
                 name == "super doc"
             }
         }
+
+        when: "the document is retrieved"
+        documentRepository.getById(Key.uuidFrom(documentId), client.id)
+
+        then: "the document is gone"
+        thrown(NotFoundException)
     }
 
     @Issue('VEO-473')
