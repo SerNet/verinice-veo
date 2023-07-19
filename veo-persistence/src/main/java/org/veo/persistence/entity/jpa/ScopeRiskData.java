@@ -20,11 +20,9 @@ package org.veo.persistence.entity.jpa;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
 
-import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
-import org.veo.core.entity.risk.RiskDefinitionRef;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AccessLevel;
@@ -45,11 +43,5 @@ public class ScopeRiskData extends AbstractRiskData<Scope, ScopeRisk> implements
   @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
   ScopeRiskData(@NotNull @NonNull Scope scope, @NotNull Scenario scenario) {
     super(scenario, scope);
-  }
-
-  @Override
-  public boolean removeRiskDefinition(RiskDefinitionRef riskDefinition, Domain domain) {
-    // TODO VEO-2150
-    return false;
   }
 }
