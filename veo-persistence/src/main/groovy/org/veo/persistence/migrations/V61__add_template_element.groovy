@@ -41,23 +41,61 @@ class V61__add_template_element extends BaseJavaMigration {
        add column aspects jsonb;
 
     alter table if exists catalogitem
-       add column custom_aspects jsonb;
+       add column custom_aspects jsonb not null default '{}'::jsonb;
 
     alter table if exists catalogitem
        add column description varchar(65535);
 
      alter table if exists catalogitem
-       add column elementtype varchar(255) not null;
+       add column elementtype varchar(255);
 
     alter table if exists catalogitem
-       add column name varchar(255) not null;
+       add column name varchar(255);
 
     alter table if exists catalogitem
-       add column status varchar(255) not null;
+       add column status varchar(255);
 
     alter table if exists catalogitem
-       add column subtype varchar(255) not null;
+       add column subtype varchar(255);
 
+    with s as (select e.containing_catalog_item_id as catalog_item_id,
+                      e.dtype                      as element_type,
+                      e.name                       as name,
+                      e.abbreviation               as abbreviation,
+                      e.description                as description,
+                      min(sa.sub_type)             as sub_type,
+                      min(sa.status)               as status
+               from element as e
+                        inner join subtype_aspect as sa on sa.owner_db_id = e.db_id
+               where e.containing_catalog_item_id is not null
+               group by e.db_id)
+    update catalogitem
+    set name = s.name,
+        abbreviation = s.abbreviation,
+        description = s.description,
+        elementtype = s.element_type,
+        subtype = s.sub_type,
+        status = s.status
+    from s
+    where s.catalog_item_id = db_id;
+
+    with s as (select e.containing_catalog_item_id            as catalog_item_id,
+                      json_object_agg(ca.type, ca.attributes) as custom_aspects
+               from element as e
+                        left join custom_aspect as ca on ca.owner_db_id = e.db_id
+               where e.containing_catalog_item_id is not null
+                 and ca.type is not null
+               group by e.db_id)
+    update catalogitem
+    set custom_aspects = s.custom_aspects
+    from s
+    where s.catalog_item_id = db_id;
+
+    alter table catalogitem
+        alter column name SET NOT NULL,
+        alter column elementtype SET NOT NULL,
+        alter column subtype SET NOT NULL,
+        alter column status SET NOT NULL;
             """)
         }
     }
