@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import static java.time.Instant.now;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -56,12 +58,15 @@ public class DomainData extends DomainBaseData implements Domain {
 
   @Override
   public boolean applyRiskDefinition(String riskDefinitionRef, RiskDefinition riskDefinition) {
-    return riskDefinitionSet.apply(riskDefinitionRef, riskDefinition);
+    var isNewRiskDef = riskDefinitionSet.apply(riskDefinitionRef, riskDefinition);
+    setUpdatedAt(now());
+    return isNewRiskDef;
   }
 
   @Override
   public void removeRiskDefinition(RiskDefinitionRef riskDefinition) {
     riskDefinitionSet.remove(riskDefinition.getIdRef());
+    setUpdatedAt(now());
   }
 
   @Override

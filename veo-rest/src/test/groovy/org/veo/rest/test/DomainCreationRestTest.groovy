@@ -134,6 +134,7 @@ class DomainCreationRestTest extends VeoRestTest {
             body.domains.add([targetUri: "/domains/$newDomainId"])
             put(body._self, body, getETag())
         }
+        def domainCreationTime = get("/domains/$newDomainId").body.createdAt
 
         when: "adding a modified version of the test-domain risk def"
         def definition = get("/domains/$testDomainId").body.riskDefinitions.riskyDef
@@ -141,9 +142,11 @@ class DomainCreationRestTest extends VeoRestTest {
         put("/content-creation/domains/$newDomainId/risk-definitions/simpleDef", definition, null, 201, CONTENT_CREATOR)
 
         then: "it can be retrieved"
-        with(get("/domains/$newDomainId").body.riskDefinitions.simpleDef) {
-            categories.find { it.id == "C" }.potentialImpacts.size() == 2
-            categories.find { it.id == "I" } == null
+        with(get("/domains/$newDomainId").body) {
+            riskDefinitions.simpleDef.categories.find { it.id == "C" }.potentialImpacts.size() == 2
+            riskDefinitions.simpleDef.categories.find { it.id == "I" } == null
+            createdAt == domainCreationTime
+            updatedAt > domainCreationTime
         }
 
         when: "using the risk definition on a scenario"
