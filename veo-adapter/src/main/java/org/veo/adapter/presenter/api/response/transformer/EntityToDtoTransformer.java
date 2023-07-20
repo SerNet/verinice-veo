@@ -374,6 +374,8 @@ public final class EntityToDtoTransformer {
     target.setSubType(source.getSubType());
     target.setStatus(source.getStatus());
 
+    target.setElement(transform2ElementDto(source));
+
     target.setCustomAspects(
         new CustomAspectMapDto(
             source.getCustomAspects().entrySet().stream()
@@ -385,6 +387,25 @@ public final class EntityToDtoTransformer {
             .collect(toSet()));
 
     return target;
+  }
+
+  @Deprecated
+  private AbstractElementDto<?> transform2ElementDto(@Valid CatalogItem source) {
+    AbstractElementDto<?> ae =
+        switch (source.getElementType()) {
+          case Control.SINGULAR_TERM -> new FullControlDto();
+          case Scenario.SINGULAR_TERM -> new FullScenarioDto();
+          case Document.SINGULAR_TERM -> new FullDocumentDto();
+          case Person.SINGULAR_TERM -> new FullPersonDto();
+          case Process.SINGULAR_TERM -> new FullProcessDto();
+          case Asset.SINGULAR_TERM -> new FullAssetDto();
+          default -> throw new IllegalArgumentException(
+              "Unexpected value: " + source.getElementType());
+        };
+
+    mapNameableProperties(source, ae);
+    ae.setType(source.getElementType());
+    return ae;
   }
 
   public FullCatalogItemDto transformCatalogItem2Dto(
