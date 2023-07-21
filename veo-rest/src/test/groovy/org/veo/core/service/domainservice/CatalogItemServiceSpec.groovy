@@ -27,7 +27,6 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.core.entity.profile.ProfileRef
 import org.veo.core.repository.PagingConfiguration
-import org.veo.core.service.CatalogItemService
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -42,9 +41,6 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
 
     @Autowired
     DomainTemplateServiceImpl domainTemplateService
-
-    @Autowired
-    CatalogItemService catalogItemService
 
     @Autowired
     private ControlRepositoryImpl repo
@@ -69,7 +65,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
             })
         }
         item = testDomain.catalogs.first().catalogItems.sort({it.namespace}).first()
-        element = catalogItemService.createInstance(item, testDomain)
+        element = item.incarnate()
     }
 
     def "retrieve example elements for default client"() {
@@ -94,7 +90,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
 
         when: "we take another item"
         item = testDomain.catalogs.first().catalogItems.sort({it.namespace})[2]
-        element = catalogItemService.createInstance(item, testDomain)
+        element = item.incarnate()
 
         then: "the element is created and initialized"
         element.name == "Control-3"

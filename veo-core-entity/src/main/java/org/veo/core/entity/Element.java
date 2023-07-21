@@ -145,6 +145,8 @@ public interface Element
 
   void setAppliedCatalogItems(Set<CatalogItem> aCatalogitems);
 
+  void apply(CatalogItem catalogItem);
+
   Unit getOwner();
 
   void setOwner(Unit unit);

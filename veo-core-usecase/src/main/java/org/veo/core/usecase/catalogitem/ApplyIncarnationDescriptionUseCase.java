@@ -55,7 +55,6 @@ import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.UnitRepository;
-import org.veo.core.service.CatalogItemService;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
@@ -83,7 +82,6 @@ public class ApplyIncarnationDescriptionUseCase
   private final DomainRepository domainRepository;
   private final org.veo.core.repository.RepositoryProvider repositoryProvider;
   private final DesignatorService designatorService;
-  private final CatalogItemService catalogItemservice;
   private final EntityFactory factory;
 
   @Override
@@ -155,10 +153,10 @@ public class ApplyIncarnationDescriptionUseCase
   }
 
   /**
-   * Incarnate a catalogItem, uses the {@link CatalogItemService#createInstance(CatalogItem,
-   * Domain)} to create a copy of the element. Set the customLinkTargets of this element to the
-   * given referencesToApply. Assign the designator, save the element and create the links in the
-   * opposite objects which are defined by the {@link ExternalTailoringReference}.
+   * Incarnate a catalogItem, uses the {@link CatalogItem#incarnate()} to create the element. Set
+   * the customLinkTargets of this element to the given referencesToApply. Assign the designator,
+   * save the element and create the links in the opposite objects which are defined by the {@link
+   * TailoringReference}.
    */
   private ElementResult createElementFromCatalogItem(
       Unit unit,
@@ -167,7 +165,7 @@ public class ApplyIncarnationDescriptionUseCase
       Domain domain,
       List<TailoringReferenceParameter> referencesToApply) {
     validateItem(catalogItem, referencesToApply);
-    Element entity = catalogItemservice.createInstance(catalogItem, domain);
+    Element entity = catalogItem.incarnate();
     List<InternalResolveInfo> internalLinks =
         applyLinkTailoringReferences(
             entity,

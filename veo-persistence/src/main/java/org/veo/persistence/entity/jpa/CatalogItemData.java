@@ -96,19 +96,7 @@ public class CatalogItemData extends TemplateItemData implements CatalogItem {
     element.setName(name);
     element.setDescription(description);
     element.setAbbreviation(abbreviation);
-
-    merge(element);
+    element.apply(this);
     return element;
-  }
-
-  public void merge(Element element) {
-    if (getDomain().getModelInterface().equals(DomainTemplate.class)) {
-      throw new IllegalArgumentException("Can not merge a catalog item from a domain template.");
-    }
-    element.associateWithDomain(getDomain(), getSubType(), getStatus());
-
-    getCustomAspects().entrySet().stream()
-        .map(e -> new CustomAspectData(e.getKey(), e.getValue(), getDomain()))
-        .forEach(ca -> element.applyCustomAspect(ca));
   }
 }

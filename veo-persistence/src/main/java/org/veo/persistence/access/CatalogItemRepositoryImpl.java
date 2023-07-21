@@ -50,7 +50,9 @@ public class CatalogItemRepositoryImpl
   public Set<CatalogItem> getByIdsFetchElementData(Set<Key<UUID>> ids) {
     var idStrings = ids.stream().map(Key::uuidValue).toList();
     return StreamSupport.stream(
-            catalogItemDataRepository.findAllWithElementDataByDbIdIn(idStrings).spliterator(),
+            catalogItemDataRepository
+                .findAllByIdsFetchDomainAndTailoringReferences(idStrings)
+                .spliterator(),
             false)
         .map(CatalogItem.class::cast)
         .collect(Collectors.toSet());

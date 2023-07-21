@@ -51,8 +51,6 @@ import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTrans
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.service.ObjectSchemaParser;
-import org.veo.adapter.service.domaintemplate.CatalogItemPrepareStrategy;
-import org.veo.adapter.service.domaintemplate.CatalogItemServiceImpl;
 import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl;
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl;
 import org.veo.adapter.service.domaintemplate.ReferenceDeserializer;
@@ -75,7 +73,6 @@ import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
-import org.veo.core.service.CatalogItemService;
 import org.veo.core.service.DomainTemplateIdGenerator;
 import org.veo.core.service.DomainTemplateService;
 import org.veo.core.service.EntitySchemaService;
@@ -668,7 +665,6 @@ public class ModuleConfiguration {
       EntityFactory factory,
       IdentifiableFactory identifiableFactory,
       DomainAssociationTransformer domainAssociationTransformer,
-      CatalogItemPrepareStrategy prepareStrategy,
       DomainTemplateIdGenerator domainTemplateIdGenerator,
       ReferenceAssembler referenceAssembler) {
 
@@ -686,26 +682,10 @@ public class ModuleConfiguration {
         factory,
         domainAssociationTransformer,
         identifiableFactory,
-        prepareStrategy,
         domainTemplateIdGenerator,
         referenceAssembler,
         objectMapper,
         getEntityStateMapper());
-  }
-
-  @Bean
-  public CatalogItemService catalogItemService(
-      EntityToDtoTransformer dtoTransformer,
-      EntityFactory factory,
-      CatalogItemPrepareStrategy prepareStrategy,
-      IdentifiableFactory identifiableFactory) {
-    return new CatalogItemServiceImpl(
-        dtoTransformer, factory, identifiableFactory, getEntityStateMapper(), prepareStrategy);
-  }
-
-  @Bean
-  public CatalogItemPrepareStrategy catalogItemPrepareStrategy() {
-    return new CatalogItemPrepareStrategy();
   }
 
   @Bean
@@ -765,7 +745,6 @@ public class ModuleConfiguration {
       DomainRepository domainRepository,
       RepositoryProvider repositoryProvider,
       DesignatorService designatorService,
-      CatalogItemService catalogItemService,
       EntityFactory factory) {
     return new ApplyIncarnationDescriptionUseCase(
         unitRepository,
@@ -773,7 +752,6 @@ public class ModuleConfiguration {
         domainRepository,
         repositoryProvider,
         designatorService,
-        catalogItemService,
         factory);
   }
 

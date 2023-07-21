@@ -39,7 +39,6 @@ import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.adapter.service.InternalDataCorruptionException;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.core.ExportDto;
-import org.veo.core.entity.Catalog;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
@@ -65,7 +64,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   private final DomainTemplateRepository domainTemplateRepository;
   private final EntityToDtoTransformer dtoTransformer;
   private final EntityFactory factory;
-  private final CatalogItemPrepareStrategy preparations;
   private final DomainTemplateIdGenerator domainTemplateIdGenerator;
 
   private final ReferenceAssembler assembler;
@@ -79,14 +77,12 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
       EntityFactory factory,
       DomainAssociationTransformer domainAssociationTransformer,
       IdentifiableFactory identifiableFactory,
-      CatalogItemPrepareStrategy preparations,
       DomainTemplateIdGenerator domainTemplateIdGenerator,
       ReferenceAssembler referenceAssembler,
       ObjectMapper objectMapper,
       EntityStateMapper entityStateMapper) {
     this.domainTemplateRepository = domainTemplateRepository;
     this.factory = factory;
-    this.preparations = preparations;
     this.domainTemplateIdGenerator = domainTemplateIdGenerator;
     this.identifiableFactory = identifiableFactory;
     this.entityFactory = factory;
@@ -129,9 +125,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     var domain =
         new DtoToEntityTransformer(entityFactory, resolvingFactory, entityStateMapper)
             .transformTransformDomainTemplateDto2Domain(domainTemplateDto, resolvingFactory);
-    domain.getCatalogs().stream()
-        .flatMap((Catalog catalog) -> catalog.getCatalogItems().stream())
-        .forEach(preparations::prepareCatalogItem);
     domain.setDomainTemplate(domainTemplate);
     client.addToDomains(domain);
     log.info("Domain {} created for client {}", domain.getName(), client);
@@ -207,9 +200,6 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
     var newDomainTemplate =
         transformer.transformTransformDomainTemplateDto2DomainTemplate(domainDto, resolvingFactory);
     newDomainTemplate.setId(domainTemplateKey);
-    newDomainTemplate.getCatalogs().stream()
-        .flatMap((Catalog catalog) -> catalog.getCatalogItems().stream())
-        .forEach(preparations::prepareCatalogItem);
     log.info("Create and save domain template {} from domain {}", newDomainTemplate, domain);
     return domainTemplateRepository.save(newDomainTemplate);
   }

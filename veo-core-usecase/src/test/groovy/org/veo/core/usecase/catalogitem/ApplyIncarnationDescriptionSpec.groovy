@@ -30,13 +30,11 @@ import org.veo.core.repository.ElementRepository
 import org.veo.core.repository.PagedResult
 import org.veo.core.repository.RepositoryProvider
 import org.veo.core.repository.UnitRepository
-import org.veo.core.service.CatalogItemService
 import org.veo.core.usecase.DesignatorService
 import org.veo.core.usecase.UseCaseSpec
 
 abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
     DesignatorService designatorService = Mock()
-    CatalogItemService catalogItemservice = Mock()
     CatalogItemRepository catalogItemRepository = Mock()
     DomainRepository domainRepository = Mock()
     RepositoryProvider entityRepo = Mock()

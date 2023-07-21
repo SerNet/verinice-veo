@@ -30,10 +30,10 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
     GetIncarnationDescriptionUseCase usecaseGet = new GetIncarnationDescriptionUseCase(unitRepo, catalogItemRepository, entityRepo)
 
     ApplyIncarnationDescriptionUseCase usecasePut = new ApplyIncarnationDescriptionUseCase(
-    unitRepo, catalogItemRepository, domainRepository, entityRepo, designatorService, catalogItemservice, factory)
+    unitRepo, catalogItemRepository, domainRepository, entityRepo, designatorService, factory)
 
     def setup() {
-        catalogItemservice.createInstance(item1, existingDomain) >> newControl
+        item1.incarnate() >> newControl
         entityRepo.getElementRepositoryFor(_) >> repo
         repo.query(existingClient) >> emptyQuery
 

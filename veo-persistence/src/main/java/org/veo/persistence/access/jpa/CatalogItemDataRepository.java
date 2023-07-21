@@ -19,7 +19,6 @@ package org.veo.persistence.access.jpa;
 
 import java.util.Set;
 
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 
 import org.veo.core.entity.CatalogItem;
@@ -29,8 +28,15 @@ import org.veo.persistence.entity.jpa.DomainData;
 public interface CatalogItemDataRepository
     extends IdentifiableVersionedDataRepository<CatalogItemData> {
 
-  @EntityGraph(attributePaths = {"catalog", "tailoringReferences"})
-  Iterable<CatalogItemData> findAllWithElementDataByDbIdIn(Iterable<String> ids);
+  @Query(
+      """
+            select ci from #{#entityName} ci
+              left join fetch ci.catalog ca
+              left join fetch ca.domainTemplate
+              left join fetch ci.tailoringReferences
+              where ci.dbId in ?1
+          """)
+  Iterable<CatalogItemData> findAllByIdsFetchDomainAndTailoringReferences(Iterable<String> ids);
 
   @Query("select ci from #{#entityName} ci where ci.catalog.domainTemplate = ?1")
   Set<CatalogItem> findAllByDomain(DomainData domain);

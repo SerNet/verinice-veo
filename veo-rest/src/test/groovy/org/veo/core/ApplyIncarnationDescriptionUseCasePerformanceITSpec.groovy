@@ -87,7 +87,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
 
         then:
         description.references.size() == 8
-        queryCounts.select == 8
+        queryCounts.select == 7
 
         when:
         def inputData = new  ApplyIncarnationDescriptionUseCase.InputData(client, unit.id, description.references)
@@ -98,7 +98,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
         queryCounts = QueryCountHolder.grandTotal
 
         then:
-        queryCounts.select == 11
+        queryCounts.select == 10
         queryCounts.insert == 22
         queryCounts.time < 500
     }

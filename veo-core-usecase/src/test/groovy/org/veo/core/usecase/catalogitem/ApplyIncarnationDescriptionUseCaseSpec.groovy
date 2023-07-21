@@ -36,11 +36,11 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
     EntityFactory factory = Mock()
 
     ApplyIncarnationDescriptionUseCase usecase = new ApplyIncarnationDescriptionUseCase(
-    unitRepo, catalogItemRepository, domainRepository, entityRepo, designatorService, catalogItemservice, factory)
+    unitRepo, catalogItemRepository, domainRepository, entityRepo, designatorService, factory)
 
     def setup() {
 
-        catalogItemservice.createInstance(item1, existingDomain) >> newControl
+        item1.incarnate() >> newControl
         entityRepo.getElementRepositoryFor(_) >> repo
 
         catalogItemRepository.getByIdsFetchElementData([item1.id] as Set) >> [item1]
