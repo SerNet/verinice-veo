@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.response.transformer;
 
-import static org.veo.core.entity.risk.DomainRiskReferenceProvider.referencesForDomain;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -26,7 +24,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.veo.adapter.presenter.api.dto.AbstractAssetDto;
@@ -58,109 +55,18 @@ import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.aspects.Aspect;
-import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ControlRiskValues;
-import org.veo.core.entity.risk.DomainRiskReferenceProvider;
-import org.veo.core.entity.risk.ImpactRef;
 import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.ImplementationStatusRef;
 import org.veo.core.entity.risk.PotentialProbabilityImpl;
 import org.veo.core.entity.risk.ProbabilityRef;
 import org.veo.core.entity.risk.RiskDefinitionRef;
-import org.veo.core.entity.risk.RiskImpactValues;
-import org.veo.core.entity.risk.ScenarioRiskValues;
-import org.veo.core.entity.state.ControlRiskValuesState;
 
 /**
  * Maps {@link Domain} associations of {@link Element}s between entities and DTOs. See {@link
  * DomainAssociationDto}.
  */
 public class DomainAssociationTransformer {
-
-  public Map<RiskDefinitionRef, ControlRiskValues> mapRiskValues(
-      Map<String, ? extends ControlRiskValuesState> riskValues, DomainBase domain) {
-    var referenceProvider = referencesForDomain(domain);
-    return riskValues.entrySet().stream()
-        .collect(
-            Collectors.toMap(
-                kv -> referenceProvider.getRiskDefinitionRef(kv.getKey()),
-                kv ->
-                    mapControlRiskValuesDto2Entity(kv.getKey(), kv.getValue(), referenceProvider)));
-  }
-
-  private ControlRiskValues mapControlRiskValuesDto2Entity(
-      String riskDefinitionId,
-      ControlRiskValuesState riskValuesState,
-      DomainRiskReferenceProvider referenceProvider) {
-    var riskValues = new ControlRiskValues();
-    riskValues.setImplementationStatus(
-        Optional.ofNullable(riskValuesState.getImplementationStatus())
-            .map(status -> referenceProvider.getImplementationStatus(riskDefinitionId, status))
-            .orElse(null));
-    return riskValues;
-  }
-
-  public Map<RiskDefinitionRef, ImpactValues> mapImpactValues(
-      Map<String, ? extends RiskImpactValues> riskValues, DomainBase domain) {
-    var referenceProvider = referencesForDomain(domain);
-    return riskValues.entrySet().stream()
-        .collect(
-            Collectors.toMap(
-                e -> referenceProvider.getRiskDefinitionRef(e.getKey()),
-                e -> mapImpactValues(e.getKey(), e.getValue(), referenceProvider)));
-  }
-
-  private ImpactValues mapImpactValues(
-      String riskDefinitionId,
-      RiskImpactValues value,
-      DomainRiskReferenceProvider referenceProvider) {
-    var riskValues = new ImpactValues();
-
-    Map<CategoryRef, ImpactRef> potentialImpacts =
-        value.getPotentialImpacts().entrySet().stream()
-            .collect(
-                Collectors.toMap(
-                    e -> toCategoryRef(riskDefinitionId, referenceProvider, e), Entry::getValue));
-    riskValues.setPotentialImpacts(potentialImpacts);
-    return riskValues;
-  }
-
-  private CategoryRef toCategoryRef(
-      String riskDefinitionId,
-      DomainRiskReferenceProvider referenceProvider,
-      Entry<String, ImpactRef> e) {
-    return referenceProvider.getCategoryRef(riskDefinitionId, e.getKey());
-  }
-
-  public Map<RiskDefinitionRef, PotentialProbabilityImpl> mapPotentialProbability(
-      Map<String, ? extends ScenarioRiskValues> riskValues, DomainBase domain) {
-    return riskValues.entrySet().stream().collect(groupScenarioRiskValuesByDomain(domain));
-  }
-
-  private Collector<
-          Map.Entry<String, ? extends ScenarioRiskValues>,
-          ?,
-          Map<RiskDefinitionRef, PotentialProbabilityImpl>>
-      groupScenarioRiskValuesByDomain(DomainBase domain) {
-    var referenceProvider = referencesForDomain(domain);
-    return Collectors.toMap(
-        kv -> toRiskDefinitionRef(kv.getKey(), domain),
-        kv -> mapScenarioRiskValues2Entity(kv.getKey(), kv.getValue(), referenceProvider));
-  }
-
-  private PotentialProbabilityImpl mapScenarioRiskValues2Entity(
-      String riskDefinitionId,
-      ScenarioRiskValues riskValues,
-      DomainRiskReferenceProvider referenceProvider) {
-    var result = new PotentialProbabilityImpl();
-
-    result.setPotentialProbability(
-        Optional.ofNullable(riskValues.getPotentialProbability())
-            .map(pp -> referenceProvider.getProbabilityRef(riskDefinitionId, pp))
-            .orElse(null));
-    result.setPotentialProbabilityExplanation(riskValues.getPotentialProbabilityExplanation());
-    return result;
-  }
 
   public void mapDomainsToDto(Asset source, AbstractAssetDto target) {
     target.setDomains(
@@ -366,12 +272,5 @@ public class DomainAssociationTransformer {
                   association.setDecisionResults(source.getDecisionResults(domain));
                   return association;
                 }));
-  }
-
-  RiskDefinitionRef toRiskDefinitionRef(String riskDefId, DomainBase domain) {
-    if (riskDefId == null) {
-      return null;
-    }
-    return referencesForDomain(domain).getRiskDefinitionRef(riskDefId);
   }
 }
