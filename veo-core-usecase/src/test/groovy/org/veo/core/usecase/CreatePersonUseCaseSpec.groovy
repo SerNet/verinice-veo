@@ -68,10 +68,9 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
         1 * personRepository.save(person) >> person
         1 * designatorService.assignDesignator(person, existingClient)
         1 * person.getOwner() >> existingUnit
-        3 * person.getDomains() >> []
+        4 * person.getDomains() >> []
         2 * person.getCustomAspects() >> []
         2 * person.getLinks() >> []
-        1 * person.getDomainTemplates() >> []
         output.entity == person
     }
 
@@ -88,10 +87,9 @@ class CreatePersonUseCaseSpec extends UseCaseSpec {
         then: "an exception is thrown"
         1 * identifiableFactory.create(Person, _) >> person
         1 * person.getOwner() >> existingUnit
-        2 * person.getDomains() >> []
+        3 * person.getDomains() >> []
         2 * person.getCustomAspects() >> []
         2 * person.getLinks() >> []
-        1 * person.getDomainTemplates() >> []
 
         thrown(ClientBoundaryViolationException)
     }

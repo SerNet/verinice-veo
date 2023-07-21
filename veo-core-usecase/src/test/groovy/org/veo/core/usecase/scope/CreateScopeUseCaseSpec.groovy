@@ -67,10 +67,9 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         1 * designatorService.assignDesignator(scope, existingClient)
         1 * scopeRepository.save(_) >> { it[0] }
         1 * scope.getOwner() >> existingUnit
-        3 * scope.getDomains() >> []
+        4 * scope.getDomains() >> []
         2 * scope.getCustomAspects() >> []
         2 * scope.getLinks() >> []
-        1 * scope.getDomainTemplates() >> []
 
         when:
         def scope1 = output.entity
@@ -94,10 +93,9 @@ class CreateScopeUseCaseSpec extends UseCaseSpec {
         then: "an exception is thrown"
         1 * identifiableFactory.create(Scope, _) >> scope
         1 * scope.getOwner() >> existingUnit
-        2 * scope.getDomains() >> []
+        3 * scope.getDomains() >> []
         2 * scope.getCustomAspects() >> []
         2 * scope.getLinks() >> []
-        1 * scope.getDomainTemplates() >> []
         thrown(ClientBoundaryViolationException)
     }
 }

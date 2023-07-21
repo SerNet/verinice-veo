@@ -52,7 +52,7 @@ public class DomainSensitiveElementValidator {
                   link.getAttributes(),
                   link.getDomain());
             });
-    element.getDomainTemplates().forEach(d -> SubTypeValidator.validate(element, d));
+    element.getDomains().forEach(d -> SubTypeValidator.validate(element, d));
   }
 
   static void validateLinkTargetType(

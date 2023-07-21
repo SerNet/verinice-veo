@@ -296,17 +296,6 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     return displayName;
   }
 
-  @Transient
-  @Override
-  public Set<Domain> getDomainTemplates() {
-    return new HashSet<>(domains);
-  }
-
-  @Override
-  public Set<Domain> getAssociatedDomains() {
-    return subTypeAspects.stream().map(SubTypeAspect::getDomain).collect(Collectors.toSet());
-  }
-
   @Override
   public boolean applyCustomAspect(CustomAspect customAspect) {
     requireAssociationWithDomain(customAspect.getDomain());
@@ -336,7 +325,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
         .findCustomAspectDefinition(getModelType(), ca.getType())
         .map(
             definition ->
-                getAssociatedDomains().stream()
+                domains.stream()
                     .filter(
                         d ->
                             d.containsCustomAspectDefinition(

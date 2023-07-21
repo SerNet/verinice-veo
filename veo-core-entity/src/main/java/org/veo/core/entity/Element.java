@@ -176,12 +176,6 @@ public interface Element
     return setDecisionResults(domainResults, domain);
   }
 
-  /**
-   * Retrieve all domains or domain templates this element is associated with. If this is a catalog
-   * item, the catalog's domain (template) is returned.
-   */
-  Set<Domain> getDomainTemplates();
-
   default Set<CustomAspect> getCustomAspects(Domain domain) {
     return getCustomAspects().stream().filter(ca -> ca.getDomain().equals(domain)).collect(toSet());
   }
@@ -191,13 +185,8 @@ public interface Element
   }
 
   default boolean isAssociatedWithDomain(Domain domain) {
-    return getAssociatedDomains().contains(domain);
+    return getDomains().contains(domain);
   }
-
-  /**
-   * @return all domains that this element is associated with
-   */
-  Set<Domain> getAssociatedDomains();
 
   /**
    * Applies given custom aspect, by either applying its attributes to a corresponding existing
