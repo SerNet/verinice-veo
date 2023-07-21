@@ -20,14 +20,14 @@ package org.veo.core.entity.state;
 import java.util.Set;
 
 import org.veo.core.entity.Element;
-import org.veo.core.entity.ElementOwner;
+import org.veo.core.entity.Unit;
 import org.veo.core.entity.ref.ITypedId;
 
 public interface ElementState<T extends Element> extends EntityState {
 
   Set<DomainAssociationState> getDomainAssociationStates();
 
-  ITypedId<ElementOwner> getOwner();
+  ITypedId<Unit> getOwner();
 
   Class<T> getModelInterface();
 }

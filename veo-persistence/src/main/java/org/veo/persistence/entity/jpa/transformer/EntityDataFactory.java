@@ -35,7 +35,6 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.ItemUpdateType;
@@ -80,14 +79,14 @@ public class EntityDataFactory implements EntityFactory {
   }
 
   @Override
-  public Person createPerson(String name, ElementOwner unit) {
+  public Person createPerson(String name, Unit unit) {
     Person person = new PersonData();
     setElementData(person, name, unit);
     return person;
   }
 
   @Override
-  public Process createProcess(String name, ElementOwner unit) {
+  public Process createProcess(String name, Unit unit) {
     Process process = new ProcessData();
     setElementData(process, name, unit);
     return process;
@@ -103,28 +102,28 @@ public class EntityDataFactory implements EntityFactory {
   }
 
   @Override
-  public Asset createAsset(String name, ElementOwner unit) {
+  public Asset createAsset(String name, Unit unit) {
     Asset asset = new AssetData();
     setElementData(asset, name, unit);
     return asset;
   }
 
   @Override
-  public Control createControl(String name, ElementOwner unit) {
+  public Control createControl(String name, Unit unit) {
     Control control = new ControlData();
     setElementData(control, name, unit);
     return control;
   }
 
   @Override
-  public Incident createIncident(String name, ElementOwner unit) {
+  public Incident createIncident(String name, Unit unit) {
     Incident incident = new IncidentData();
     setElementData(incident, name, unit);
     return incident;
   }
 
   @Override
-  public Scenario createScenario(String name, ElementOwner unit) {
+  public Scenario createScenario(String name, Unit unit) {
     Scenario scenario = new ScenarioData();
     setElementData(scenario, name, unit);
     return scenario;
@@ -143,7 +142,7 @@ public class EntityDataFactory implements EntityFactory {
   }
 
   @Override
-  public Document createDocument(String name, ElementOwner parent) {
+  public Document createDocument(String name, Unit parent) {
     Document document = new DocumentData();
     setElementData(document, name, parent);
     return document;
@@ -172,16 +171,16 @@ public class EntityDataFactory implements EntityFactory {
   }
 
   @Override
-  public Scope createScope(String name, ElementOwner owner) {
+  public Scope createScope(String name, Unit owner) {
     var group = new ScopeData();
     group.setName(name);
-    group.setOwnerOrContainingCatalogItem(owner);
+    group.setOwner(owner);
     return group;
   }
 
-  private void setElementData(Element element, String name, ElementOwner unit) {
+  private void setElementData(Element element, String name, Unit unit) {
     element.setName(name);
-    element.setOwnerOrContainingCatalogItem(unit);
+    element.setOwner(unit);
   }
 
   @Override

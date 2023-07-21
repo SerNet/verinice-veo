@@ -58,7 +58,6 @@ import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.exception.EntityAlreadyExistsException;
 import org.veo.core.entity.exception.UnprocessableDataException;
-import org.veo.persistence.entity.jpa.validation.HasOwnerOrContainingCatalogItem;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -71,7 +70,6 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-@HasOwnerOrContainingCatalogItem
 public abstract class ElementData extends IdentifiableVersionedData implements Element {
 
   @Id
@@ -144,6 +142,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   @ManyToMany(targetEntity = CatalogItemData.class, fetch = FetchType.LAZY)
   private Set<CatalogItem> appliedCatalogItems = new HashSet<>();
 
+  @NotNull
   @ManyToOne(fetch = FetchType.LAZY, targetEntity = UnitData.class)
   @JoinColumn(name = "owner_id")
   private Unit owner;

@@ -122,7 +122,7 @@ public class EntityStateMapper {
     mapNameableProperties(source, target);
 
     if (source.getOwner() != null) {
-      target.setOwnerOrContainingCatalogItem(idRefResolver.resolve(source.getOwner()));
+      target.setOwner(idRefResolver.resolve(source.getOwner()));
     }
   }
 

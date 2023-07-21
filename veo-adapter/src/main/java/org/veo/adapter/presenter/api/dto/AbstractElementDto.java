@@ -34,7 +34,7 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefOwner;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.ElementOwner;
+import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.state.CustomAspectState;
 import org.veo.core.entity.state.CustomLinkState;
@@ -75,7 +75,7 @@ public abstract class AbstractElementDto<T extends Element>
 
   @NotNull(message = "An owner must be present.")
   @Schema(requiredMode = REQUIRED, implementation = IdRefOwner.class)
-  private IdRef<ElementOwner> owner;
+  private IdRef<Unit> owner;
 
   @Valid
   @Schema(description = "Custom relations which do not affect the behavior.", title = "CustomLink")

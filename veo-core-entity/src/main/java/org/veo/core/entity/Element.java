@@ -43,7 +43,7 @@ public interface Element
 
   /** Can be null when the owner is a catalogitem owned by a domain template. */
   default Optional<Client> getOwningClient() {
-    return Optional.ofNullable(getOwner()).map(ElementOwner::getClient);
+    return Optional.ofNullable(getOwner()).map(Unit::getClient);
   }
 
   /**
@@ -122,7 +122,7 @@ public interface Element
    *     unit to which the entity belongs
    */
   default void checkSameClient(Element element) {
-    checkSameClient(element.getOwnerOrContainingCatalogItem().getClient());
+    checkSameClient(element.getOwner().getClient());
   }
 
   /**
@@ -131,16 +131,7 @@ public interface Element
    */
   default void checkSameClient(Client client) {
     Objects.requireNonNull(client, "client must not be null");
-    Client thisEntitysClient;
-    ElementOwner thisEntitysOwner =
-        Objects.requireNonNull(
-            getOwnerOrContainingCatalogItem(),
-            "No owner or containing catalog item set for " + this);
-    thisEntitysClient =
-        Objects.requireNonNull(
-            thisEntitysOwner.getClient(),
-            "No client set for " + thisEntitysOwner + " might be part of a domain template");
-    if (!(EntitySpecifications.hasSameClient(client).isSatisfiedBy(thisEntitysClient))) {
+    if (!(EntitySpecifications.hasSameClient(client).isSatisfiedBy(getOwner().getClient()))) {
       throw new ClientBoundaryViolationException(this, client);
     }
   }
@@ -157,16 +148,6 @@ public interface Element
   Unit getOwner();
 
   void setOwner(Unit unit);
-
-  default ElementOwner getOwnerOrContainingCatalogItem() {
-    return getOwner();
-  }
-
-  default void setOwnerOrContainingCatalogItem(ElementOwner owner) {
-    if (owner instanceof Unit unit) {
-      this.setOwner(unit);
-    }
-  }
 
   Set<Scope> getScopes();
 

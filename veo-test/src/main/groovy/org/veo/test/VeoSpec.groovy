@@ -33,7 +33,6 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainBase
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Element
-import org.veo.core.entity.ElementOwner
 import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Incident
 import org.veo.core.entity.ItemUpdateType
@@ -109,7 +108,7 @@ abstract class VeoSpec extends Specification {
 
     PollingConditions defaultPolling = new PollingConditions(delay: 0.5, timeout: 5)
 
-    static AssetData newAsset(ElementOwner owner, @DelegatesTo(value = Asset.class, strategy = Closure.DELEGATE_FIRST)
+    static AssetData newAsset(Unit owner, @DelegatesTo(value = Asset.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Asset") Closure init = null) {
         return factory.createAsset(null, owner).tap {
             VeoSpec.execute(it, init)
@@ -129,7 +128,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static ControlData newControl(ElementOwner owner, @DelegatesTo(value = Control.class, strategy = Closure.DELEGATE_FIRST)
+    static ControlData newControl(Unit owner, @DelegatesTo(value = Control.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Control") Closure init = null) {
         return factory.createControl(null, owner).tap {
             VeoSpec.execute(it, init)
@@ -137,7 +136,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static DocumentData newDocument(ElementOwner owner, @DelegatesTo(value = Document.class, strategy = Closure.DELEGATE_FIRST)
+    static DocumentData newDocument(Unit owner, @DelegatesTo(value = Document.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Document") Closure init = null) {
         return factory.createDocument(null, owner).tap {
             VeoSpec.execute(it, init)
@@ -145,7 +144,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static IncidentData newIncident(ElementOwner owner, @DelegatesTo(value = Incident.class, strategy = Closure.DELEGATE_FIRST)
+    static IncidentData newIncident(Unit owner, @DelegatesTo(value = Incident.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Incident") Closure init = null) {
         return factory.createIncident(null, owner).tap {
             VeoSpec.execute(it, init)
@@ -153,7 +152,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static ScenarioData newScenario(ElementOwner owner, @DelegatesTo(value = Scenario.class, strategy = Closure.DELEGATE_FIRST)
+    static ScenarioData newScenario(Unit owner, @DelegatesTo(value = Scenario.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Scenario") Closure init = null) {
         return factory.createScenario(null, owner).tap {
             VeoSpec.execute(it, init)
@@ -243,7 +242,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static PersonData newPerson(ElementOwner owner, @DelegatesTo(value = Person.class, strategy = Closure.DELEGATE_FIRST)
+    static PersonData newPerson(Unit owner, @DelegatesTo(value = Person.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Person") Closure init = null) {
         return factory.createPerson(null, owner).tap {
             VeoSpec.execute(it, init)
@@ -251,7 +250,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static ProcessData newProcess(ElementOwner owner, @DelegatesTo(value = Process.class, strategy = Closure.DELEGATE_FIRST)
+    static ProcessData newProcess(Unit owner, @DelegatesTo(value = Process.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Process") Closure init = null) {
         return factory.createProcess(null, owner).tap {
             VeoSpec.execute(it, init)
@@ -259,7 +258,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static ScopeData newScope(ElementOwner owner, @DelegatesTo(value = Scope.class, strategy = Closure.DELEGATE_FIRST)
+    static ScopeData newScope(Unit owner, @DelegatesTo(value = Scope.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Scope") Closure init = null) {
         return factory.createScope(null, owner).tap {
             VeoSpec.execute(it, init)

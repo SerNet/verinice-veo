@@ -42,12 +42,12 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.Unit;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -81,7 +81,7 @@ public class TransformElementDto implements IdentifiableDto {
   @ToString.Include
   private String id;
 
-  private IdRef<ElementOwner> owner;
+  private IdRef<Unit> owner;
 
   private Set<IdRef<Domain>> domains = new HashSet<>();
 }

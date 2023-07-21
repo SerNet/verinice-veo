@@ -42,8 +42,8 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefOwner;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.EntityType;
+import org.veo.core.entity.Unit;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
 import org.veo.core.entity.state.CustomAspectState;
@@ -97,7 +97,7 @@ public abstract class AbstractElementInDomainDto<TElement extends Element>
 
   @Schema(description = "Unit that this element belongs to", implementation = IdRefOwner.class)
   @NotNull(message = "An owner must be present.")
-  private IdRef<ElementOwner> owner;
+  private IdRef<Unit> owner;
 
   @Schema(description = SUB_TYPE_DESCRIPTION)
   @NotNull(message = SUB_TYPE_NOT_NULL_MESSAGE)

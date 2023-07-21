@@ -39,7 +39,7 @@ import org.veo.core.entity.specification.EntitySpecifications;
  * business modeling purposes. Units should exclusively be used to model ownership and high-level
  * access restrictions.
  */
-public interface Unit extends Nameable, ElementOwner {
+public interface Unit extends Versioned, Displayable, ClientOwned, Identifiable, Nameable {
 
   String SINGULAR_TERM = "unit";
   String PLURAL_TERM = "units";

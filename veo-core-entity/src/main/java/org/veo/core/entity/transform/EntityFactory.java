@@ -31,7 +31,6 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.ElementOwner;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.ItemUpdateType;
 import org.veo.core.entity.Key;
@@ -52,23 +51,23 @@ import org.veo.core.entity.definitions.ElementTypeDefinition;
 public interface EntityFactory {
   CustomAspect createCustomAspect(String type, DomainBase domain);
 
-  Person createPerson(String name, ElementOwner unit);
+  Person createPerson(String name, Unit unit);
 
-  Process createProcess(String name, ElementOwner unit);
+  Process createProcess(String name, Unit unit);
 
   Client createClient(Key<UUID> id, String name);
 
-  Asset createAsset(String name, ElementOwner unit);
+  Asset createAsset(String name, Unit unit);
 
-  Control createControl(String name, ElementOwner unit);
+  Control createControl(String name, Unit unit);
 
-  Incident createIncident(String name, ElementOwner unit);
+  Incident createIncident(String name, Unit unit);
 
-  Scenario createScenario(String name, ElementOwner unit);
+  Scenario createScenario(String name, Unit unit);
 
   Unit createUnit(String name, Unit unit);
 
-  Document createDocument(String name, ElementOwner parent);
+  Document createDocument(String name, Unit parent);
 
   /**
    * Reconstitutes a domain without the reference to its owning client. Adding it to a client is the
@@ -79,7 +78,7 @@ public interface EntityFactory {
   CustomLink createCustomLink(
       Element linkTarget, Element linkSource, String type, DomainBase domain);
 
-  Scope createScope(String name, ElementOwner owner);
+  Scope createScope(String name, Unit owner);
 
   Catalog createCatalog(DomainBase owner);
 
