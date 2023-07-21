@@ -33,7 +33,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
@@ -90,7 +89,7 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
   private final Set<ScopeRiskValuesAspectData> scopeRiskValuesAspects = new HashSet<>();
 
   @Override
-  public void setRiskDefinition(DomainBase domain, RiskDefinitionRef riskDefinition) {
+  public void setRiskDefinition(Domain domain, RiskDefinitionRef riskDefinition) {
     var aspect =
         findAspectByDomain(scopeRiskValuesAspects, domain)
             .orElseGet(
@@ -102,7 +101,7 @@ public class ScopeData extends RiskAffectedData<Scope, ScopeRisk> implements Sco
     aspect.setRiskDefinitionRef(riskDefinition);
   }
 
-  public Optional<RiskDefinitionRef> getRiskDefinition(DomainBase domain) {
+  public Optional<RiskDefinitionRef> getRiskDefinition(Domain domain) {
     return findAspectByDomain(scopeRiskValuesAspects, domain)
         .map(ScopeRiskValuesAspectData::getRiskDefinitionRef);
   }

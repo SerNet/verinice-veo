@@ -27,7 +27,7 @@ import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 
-import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ImpactValues;
@@ -50,7 +50,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 class ImpactValuesAspectData extends AspectData {
 
-  public ImpactValuesAspectData(DomainBase domain, RiskAffected<?, ?> owner) {
+  public ImpactValuesAspectData(Domain domain, RiskAffected<?, ?> owner) {
     super(domain, owner);
   }
 

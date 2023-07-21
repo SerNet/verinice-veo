@@ -20,7 +20,7 @@ package org.veo.persistence.entity.jpa;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotNull;
 
-import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.aspects.SubTypeAspect;
 
@@ -36,7 +36,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SubTypeAspectData extends AspectData implements SubTypeAspect {
-  public SubTypeAspectData(DomainBase domain, Element owner, String subType, String status) {
+  public SubTypeAspectData(Domain domain, Element owner, String subType, String status) {
     super(domain, owner);
     this.subType = subType;
     this.status = status;

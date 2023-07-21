@@ -30,7 +30,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.RiskRelated;
 import org.veo.core.entity.Scenario;
@@ -66,7 +65,7 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
   protected final Set<ImpactValuesAspectData> riskValuesAspects = new HashSet<>();
 
   @Override
-  public void setImpactValues(DomainBase domain, Map<RiskDefinitionRef, ImpactValues> riskValues) {
+  public void setImpactValues(Domain domain, Map<RiskDefinitionRef, ImpactValues> riskValues) {
     var aspect =
         findAspectByDomain(riskValuesAspects, domain)
             .orElseGet(
@@ -78,13 +77,12 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
     aspect.setValues(riskValues);
   }
 
-  public Optional<Map<RiskDefinitionRef, ImpactValues>> getImpactValues(DomainBase domain) {
+  public Optional<Map<RiskDefinitionRef, ImpactValues>> getImpactValues(Domain domain) {
     return findAspectByDomain(riskValuesAspects, domain).map(ImpactValuesAspectData::getValues);
   }
 
   @Override
-  public Optional<ImpactValues> getImpactValues(
-      DomainBase domain, RiskDefinitionRef riskDefinition) {
+  public Optional<ImpactValues> getImpactValues(Domain domain, RiskDefinitionRef riskDefinition) {
     return getImpactValues(domain)
         .map(impactValuesByRiskDefinition -> impactValuesByRiskDefinition.get(riskDefinition));
   }
@@ -123,11 +121,9 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
   abstract R createRisk(Scenario scenario);
 
   @Override
-  public void associateWithDomain(@NonNull DomainBase domain, String subType, String status) {
+  public void associateWithDomain(@NonNull Domain domain, String subType, String status) {
     super.associateWithDomain(domain, subType, status);
-    if (domain instanceof Domain d) {
-      risks.forEach(r -> r.addToDomains(d));
-    }
+    risks.forEach(r -> r.addToDomains(domain));
   }
 
   @Override

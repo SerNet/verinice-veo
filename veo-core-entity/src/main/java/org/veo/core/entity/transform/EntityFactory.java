@@ -49,7 +49,7 @@ import org.veo.core.entity.definitions.ElementTypeDefinition;
  * @author urszeidler
  */
 public interface EntityFactory {
-  CustomAspect createCustomAspect(String type, DomainBase domain);
+  CustomAspect createCustomAspect(String type, Domain domain);
 
   Person createPerson(String name, Unit unit);
 
@@ -75,8 +75,7 @@ public interface EntityFactory {
    */
   Domain createDomain(String name, String authority, String templateVersion);
 
-  CustomLink createCustomLink(
-      Element linkTarget, Element linkSource, String type, DomainBase domain);
+  CustomLink createCustomLink(Element linkTarget, Element linkSource, String type, Domain domain);
 
   Scope createScope(String name, Unit owner);
 

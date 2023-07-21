@@ -26,7 +26,7 @@ import jakarta.persistence.Entity;
 
 import org.hibernate.annotations.Type;
 
-import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionResult;
@@ -44,7 +44,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DecisionResultsAspectData extends AspectData {
   public DecisionResultsAspectData(
-      DomainBase domain, Element owner, Map<DecisionRef, DecisionResult> results) {
+      Domain domain, Element owner, Map<DecisionRef, DecisionResult> results) {
     super(domain, owner);
     this.results = Map.copyOf(results);
   }

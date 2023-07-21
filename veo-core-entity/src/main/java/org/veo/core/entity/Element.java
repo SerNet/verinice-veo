@@ -77,11 +77,11 @@ public interface Element
 
   void setLinks(Set<CustomLink> aLinks);
 
-  Optional<String> findSubType(DomainBase domain);
+  Optional<String> findSubType(Domain domain);
 
-  Optional<String> findStatus(DomainBase domain);
+  Optional<String> findStatus(Domain domain);
 
-  default String getSubType(DomainBase domain) {
+  default String getSubType(Domain domain) {
     return findSubType(domain)
         .orElseThrow(
             () ->
@@ -90,7 +90,7 @@ public interface Element
                         .formatted(getModelType(), getIdAsString(), domain.getIdAsString())));
   }
 
-  default String getStatus(DomainBase domain) {
+  default String getStatus(Domain domain) {
     return findStatus(domain)
         .orElseThrow(
             () ->
@@ -106,7 +106,7 @@ public interface Element
    * aspects from other domains that are identically defined in the new domain are copied to the new
    * domain.
    */
-  void associateWithDomain(DomainBase domain, String subType, String status);
+  void associateWithDomain(Domain domain, String subType, String status);
 
   /**
    * Removes given {@link CustomAspect} from this element.
@@ -156,7 +156,7 @@ public interface Element
   /** Detach this element from related elements to prepare for deletion. */
   void remove();
 
-  Map<DecisionRef, DecisionResult> getDecisionResults(DomainBase domain);
+  Map<DecisionRef, DecisionResult> getDecisionResults(Domain domain);
 
   /**
    * Update all decision results in given domain.
@@ -180,24 +180,24 @@ public interface Element
    * Retrieve all domains or domain templates this element is associated with. If this is a catalog
    * item, the catalog's domain (template) is returned.
    */
-  Set<DomainBase> getDomainTemplates();
+  Set<Domain> getDomainTemplates();
 
-  default Set<CustomAspect> getCustomAspects(DomainBase domain) {
+  default Set<CustomAspect> getCustomAspects(Domain domain) {
     return getCustomAspects().stream().filter(ca -> ca.getDomain().equals(domain)).collect(toSet());
   }
 
-  default Set<CustomLink> getLinks(DomainBase domain) {
+  default Set<CustomLink> getLinks(Domain domain) {
     return getLinks().stream().filter(l -> l.getDomain().equals(domain)).collect(toSet());
   }
 
-  default boolean isAssociatedWithDomain(DomainBase domain) {
+  default boolean isAssociatedWithDomain(Domain domain) {
     return getAssociatedDomains().contains(domain);
   }
 
   /**
    * @return all domains that this element is associated with
    */
-  Set<DomainBase> getAssociatedDomains();
+  Set<Domain> getAssociatedDomains();
 
   /**
    * Applies given custom aspect, by either applying its attributes to a corresponding existing

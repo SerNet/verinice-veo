@@ -17,24 +17,16 @@
  ******************************************************************************/
 package org.veo.core.entity.specification;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 
-/** Checks that an element's custom aspects's domain is contained in the element's domains. */
+/** Checks that an element's custom aspects' domains are contained in the element's domains. */
 public class ElementIsAssociatedWithCustomAspectAndLinkDomains
     implements EntitySpecification<Element> {
 
   @Override
   public boolean test(Element element) {
-    var domains = getDomains(element);
+    var domains = element.getDomains();
     return element.getCustomAspects().stream().allMatch(ca -> domains.contains(ca.getDomain()))
         && element.getLinks().stream().allMatch(l -> domains.contains(l.getDomain()));
-  }
-
-  private static Set<DomainBase> getDomains(Element element) {
-    return element.getDomains().stream().map(DomainBase.class::cast).collect(Collectors.toSet());
   }
 }

@@ -23,22 +23,22 @@ import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTrans
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer
 import org.veo.core.entity.Asset
 import org.veo.core.entity.CustomLink
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Key
-import org.veo.core.entity.transform.EntityFactory
-import org.veo.core.usecase.service.IdRefResolver
 
 import spock.lang.Specification
 
 class CustomLinkTransformerSpec extends Specification {
 
     def referenceAssembler = Mock(ReferenceAssembler)
-    def factory = Mock(EntityFactory)
     def domainAssociationTransformer = Mock(DomainAssociationTransformer)
-    def idRefResolver = Mock(IdRefResolver)
     def entityToDtoTransformer = new EntityToDtoTransformer(referenceAssembler, domainAssociationTransformer)
 
     def "transform custom link entity to DTO"() {
         given: "a custom link"
+        def domain = Mock(Domain) {
+            it.id >> Key.newUuid()
+        }
         def targetAsset = Mock(Asset) {
             it.id >> Key.newUuid()
             it.modelInterface >> Asset
@@ -47,7 +47,7 @@ class CustomLinkTransformerSpec extends Specification {
             it.name >> "good name"
             it.target >> targetAsset
             it.attributes >> [:]
-            it.domains >> []
+            it.domain >> domain
         }
 
         when: "transforming it to a DTO"
@@ -57,6 +57,7 @@ class CustomLinkTransformerSpec extends Specification {
         with(dto) {
             target == IdRef.from(targetAsset, referenceAssembler)
             attributes == link.attributes
+            domains*.id ==~ [domain.id.uuidValue()]
         }
     }
 }

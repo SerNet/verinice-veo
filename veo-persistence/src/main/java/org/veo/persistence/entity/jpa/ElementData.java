@@ -47,7 +47,6 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Scope;
@@ -156,17 +155,17 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   @Setter(AccessLevel.NONE)
   private String designatorLength;
 
-  protected <T extends Aspect> Optional<T> findAspectByDomain(Set<T> source, DomainBase domain) {
+  protected <T extends Aspect> Optional<T> findAspectByDomain(Set<T> source, Domain domain) {
     return source.stream().filter(aspect -> aspect.getDomain().equals(domain)).findFirst();
   }
 
   @Override
-  public Optional<String> findSubType(DomainBase domain) {
+  public Optional<String> findSubType(Domain domain) {
     return findAspectByDomain(subTypeAspects, domain).map(SubTypeAspect::getSubType);
   }
 
   @Override
-  public Optional<String> findStatus(DomainBase domain) {
+  public Optional<String> findStatus(Domain domain) {
     return findAspectByDomain(subTypeAspects, domain).map(SubTypeAspect::getStatus);
   }
 
@@ -203,16 +202,13 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   @Override
-  public void associateWithDomain(@NonNull DomainBase domain, String subType, String status) {
+  public void associateWithDomain(@NonNull Domain domain, String subType, String status) {
     if (isAssociatedWithDomain(domain)) {
       throw new EntityAlreadyExistsException(
           "%s %s is already associated with domain %s"
               .formatted(getModelType(), getIdAsString(), domain.getIdAsString()));
     }
-    if (domain instanceof Domain) {
-      domains.add((Domain) domain);
-    }
-
+    domains.add(domain);
     removeAspect(subTypeAspects, domain);
     subTypeAspects.add(new SubTypeAspectData(domain, this, subType, status));
 
@@ -250,7 +246,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   @Override
-  public Map<DecisionRef, DecisionResult> getDecisionResults(DomainBase domain) {
+  public Map<DecisionRef, DecisionResult> getDecisionResults(Domain domain) {
     return findAspectByDomain(decisionResultsAspects, domain)
         .map(DecisionResultsAspectData::getResults)
         .orElse(Map.of());
@@ -302,12 +298,12 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
 
   @Transient
   @Override
-  public Set<DomainBase> getDomainTemplates() {
-    return domains.stream().map(DomainBase.class::cast).collect(Collectors.toSet());
+  public Set<Domain> getDomainTemplates() {
+    return new HashSet<>(domains);
   }
 
   @Override
-  public Set<DomainBase> getAssociatedDomains() {
+  public Set<Domain> getAssociatedDomains() {
     return subTypeAspects.stream().map(SubTypeAspect::getDomain).collect(Collectors.toSet());
   }
 
@@ -335,7 +331,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
    * @return all associated domains that have a custom aspect definition that is identical to how
    *     given custom aspect in its domain
    */
-  private Set<DomainBase> getDomainsContainingSameCustomAspectDefinition(CustomAspect ca) {
+  private Set<Domain> getDomainsContainingSameCustomAspectDefinition(CustomAspect ca) {
     return ca.getDomain()
         .findCustomAspectDefinition(getModelType(), ca.getType())
         .map(
@@ -363,7 +359,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
    * @return {@code true} if any values were changed, otherwise {@code false}
    */
   private boolean applyCustomAspectInIndividualDomain(
-      @NotNull String type, @NotNull Map<String, Object> attributes, @NotNull DomainBase domain) {
+      @NotNull String type, @NotNull Map<String, Object> attributes, @NotNull Domain domain) {
     return findCustomAspect(domain, type)
         // TODO VEO-2086 implement and use CustomAspect::apply(CustomAspect)
         .map(ca -> ca.setAttributes(attributes))
@@ -376,7 +372,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
    * @return {@code true} if a custom aspect was found and removed, otherwise {@code false}
    */
   private boolean removeCustomAspectInIndividualDomain(
-      @NotNull String type, @NotNull DomainBase domain) {
+      @NotNull String type, @NotNull Domain domain) {
     return findCustomAspect(domain, type)
         .map(
             customAspect -> {
@@ -389,7 +385,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
         .orElse(false);
   }
 
-  private Optional<CustomLink> findLink(String type, Element target, DomainBase domain) {
+  private Optional<CustomLink> findLink(String type, Element target, Domain domain) {
     return links.stream()
         .filter(
             l ->
@@ -411,7 +407,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     return this.links.add(aCustomLink);
   }
 
-  private Optional<CustomAspect> findCustomAspect(DomainBase domain, String type) {
+  private Optional<CustomAspect> findCustomAspect(Domain domain, String type) {
     // TODO VEO-2086 implement and use CustomLink::matches(CustomLink)
     return getCustomAspects(domain).stream().filter(ca -> ca.getType().equals(type)).findFirst();
   }
@@ -428,11 +424,11 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     return this.customAspects.add(aCustomAspect);
   }
 
-  private void removeAspect(Set<? extends Aspect> aspects, DomainBase domain) {
+  private void removeAspect(Set<? extends Aspect> aspects, Domain domain) {
     aspects.removeIf(a -> a.getDomain().equals(domain));
   }
 
-  private void requireAssociationWithDomain(DomainBase domain) {
+  private void requireAssociationWithDomain(Domain domain) {
     if (!isAssociatedWithDomain(domain)) {
       throw new UnprocessableDataException(
           "%s %s is not associated with domain %s"

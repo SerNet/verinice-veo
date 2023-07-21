@@ -20,13 +20,13 @@ package org.veo.core.entity.risk;
 import java.util.Map;
 import java.util.Optional;
 
-import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.Domain;
 
 public interface ImpactValueProvider {
 
-  Optional<Map<RiskDefinitionRef, ImpactValues>> getImpactValues(DomainBase domain);
+  Optional<Map<RiskDefinitionRef, ImpactValues>> getImpactValues(Domain domain);
 
-  Optional<ImpactValues> getImpactValues(DomainBase domain, RiskDefinitionRef riskDefinition);
+  Optional<ImpactValues> getImpactValues(Domain domain, RiskDefinitionRef riskDefinition);
 
-  void setImpactValues(DomainBase domain, Map<RiskDefinitionRef, ImpactValues> riskValues);
+  void setImpactValues(Domain domain, Map<RiskDefinitionRef, ImpactValues> riskValues);
 }

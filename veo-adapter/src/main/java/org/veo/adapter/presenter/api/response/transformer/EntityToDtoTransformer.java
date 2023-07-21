@@ -466,9 +466,7 @@ public final class EntityToDtoTransformer {
     var target = new CustomLinkDto();
     target.setAttributes(source.getAttributes());
 
-    if (source.getDomain() instanceof Domain domain) {
-      target.setDomains(convertReferenceSet(Set.of(domain)));
-    }
+    target.setDomains(convertReferenceSet(Set.of(source.getDomain())));
     if (source.getTarget() != null) {
       target.setTarget(IdRef.from(source.getTarget(), referenceAssembler));
     }
@@ -510,9 +508,7 @@ public final class EntityToDtoTransformer {
   public CustomAspectDto transformCustomAspect2Dto(@Valid CustomAspect source) {
     var target = new CustomAspectDto();
     target.setAttributes(source.getAttributes());
-    if (source.getDomain() instanceof Domain domain) {
-      target.setDomains(convertReferenceSet(Set.of(domain)));
-    }
+    target.setDomains(convertReferenceSet(Set.of(source.getDomain())));
     return target;
   }
 

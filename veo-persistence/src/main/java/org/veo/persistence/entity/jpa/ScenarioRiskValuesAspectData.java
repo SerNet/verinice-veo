@@ -25,7 +25,7 @@ import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 
-import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.risk.PotentialProbabilityImpl;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -45,7 +45,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class ScenarioRiskValuesAspectData extends AspectData {
 
-  public ScenarioRiskValuesAspectData(DomainBase domain, Scenario owner) {
+  public ScenarioRiskValuesAspectData(Domain domain, Scenario owner) {
     super(domain, owner);
   }
 

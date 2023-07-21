@@ -36,7 +36,6 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.aspects.RiskValuesAspect;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
@@ -95,9 +94,9 @@ public class RiskValuesAspectData implements RiskValuesAspect {
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
   private String dbId;
 
-  @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainBaseData.class, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainData.class, optional = false)
   @JoinColumn(name = "domain_id")
-  private DomainBase domain;
+  private Domain domain;
 
   @Setter(AccessLevel.NONE)
   @Column(length = RiskDefinition.MAX_ID_SIZE)

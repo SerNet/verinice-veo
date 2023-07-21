@@ -25,7 +25,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.CustomAspect;
-import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 
 import lombok.AccessLevel;
@@ -41,7 +41,7 @@ import lombok.ToString;
 @Data
 public class CustomAspectData extends CustomAttributeContainerData implements CustomAspect {
 
-  public CustomAspectData(String type, Map<String, Object> attributes, DomainBase domain) {
+  public CustomAspectData(String type, Map<String, Object> attributes, Domain domain) {
     super(type, attributes, domain);
   }
 

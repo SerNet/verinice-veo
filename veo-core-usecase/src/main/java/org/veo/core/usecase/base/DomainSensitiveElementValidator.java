@@ -20,7 +20,7 @@ package org.veo.core.usecase.base;
 import java.util.Map;
 
 import org.veo.core.entity.CustomAspect;
-import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.exception.NotFoundException;
@@ -84,7 +84,7 @@ public class DomainSensitiveElementValidator {
       Element source,
       Element target,
       Map<String, Object> attributes,
-      DomainBase domain) {
+      Domain domain) {
     String modelType = source.getModelType();
     var linkDefinition = getLinkDefinition(linkType, domain, modelType);
     validateLinkTargetType(linkType, target, linkDefinition);
@@ -99,7 +99,7 @@ public class DomainSensitiveElementValidator {
   }
 
   private static LinkDefinition getLinkDefinition(
-      String linkType, DomainBase domain, String modelType) {
+      String linkType, Domain domain, String modelType) {
     var linkDefinition = domain.getElementTypeDefinition(modelType).getLinks().get(linkType);
     if (linkDefinition == null) {
       throw new IllegalArgumentException(
@@ -116,7 +116,7 @@ public class DomainSensitiveElementValidator {
   }
 
   private static void validateLinkTargetSubType(
-      String linkType, Element target, DomainBase domain, LinkDefinition linkDefinition) {
+      String linkType, Element target, Domain domain, LinkDefinition linkDefinition) {
     if (linkDefinition.getTargetSubType() == null) {
       return;
     }

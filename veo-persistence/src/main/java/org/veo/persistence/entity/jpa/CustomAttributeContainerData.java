@@ -33,7 +33,7 @@ import jakarta.persistence.ManyToOne;
 import org.hibernate.annotations.Type;
 
 import org.veo.core.entity.CustomAttributeContainer;
-import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.Domain;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.AccessLevel;
@@ -50,7 +50,7 @@ import lombok.ToString;
 public abstract class CustomAttributeContainerData implements CustomAttributeContainer {
 
   protected CustomAttributeContainerData(
-      String type, Map<String, Object> attributes, DomainBase domain) {
+      String type, Map<String, Object> attributes, Domain domain) {
     this.type = type;
     this.attributes = attributes;
     this.domain = domain;
@@ -60,9 +60,9 @@ public abstract class CustomAttributeContainerData implements CustomAttributeCon
 
   @ToString.Include private String type;
 
-  @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainBaseData.class, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainData.class, optional = false)
   @JoinColumn(name = "domain_id")
-  private DomainBase domain;
+  private Domain domain;
 
   @Type(JsonType.class)
   @Column(columnDefinition = "jsonb")

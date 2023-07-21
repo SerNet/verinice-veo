@@ -26,7 +26,7 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 
 import org.veo.core.entity.Control;
-import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
@@ -45,7 +45,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class ControlRiskValuesAspectData extends AspectData {
 
-  public ControlRiskValuesAspectData(DomainBase domain, Control owner) {
+  public ControlRiskValuesAspectData(Domain domain, Control owner) {
     super(domain, owner);
   }
 

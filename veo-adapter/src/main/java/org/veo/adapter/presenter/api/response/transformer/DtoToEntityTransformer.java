@@ -35,7 +35,6 @@ import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto;
-import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogDto;
@@ -53,7 +52,6 @@ import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
@@ -256,13 +254,6 @@ public final class DtoToEntityTransformer {
       tailoringReference.setLinkType(tailoringReferenceDto.getLinkType());
     }
 
-    return target;
-  }
-
-  public CustomAspect transformDto2CustomAspect(
-      EntityFactory factory, CustomAspectDto source, String type, DomainBase domain) {
-    var target = factory.createCustomAspect(type, domain);
-    target.setAttributes(source.getAttributes());
     return target;
   }
 

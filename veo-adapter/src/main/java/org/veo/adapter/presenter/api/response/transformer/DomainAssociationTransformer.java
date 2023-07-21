@@ -18,7 +18,6 @@
 package org.veo.adapter.presenter.api.response.transformer;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -47,14 +46,12 @@ import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
-import org.veo.core.entity.aspects.Aspect;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.ImplementationStatusRef;
@@ -91,7 +88,7 @@ public class DomainAssociationTransformer {
     target.setDomains(extractDomainAssociations);
   }
 
-  public Map<String, ControlRiskValuesDto> mapRiskValues(Control source, DomainBase domain) {
+  public Map<String, ControlRiskValuesDto> mapRiskValues(Control source, Domain domain) {
     return source
         .getRiskValues(domain)
         .map(
@@ -145,7 +142,7 @@ public class DomainAssociationTransformer {
             }));
   }
 
-  public Map<String, ImpactRiskValuesDto> mapRiskValues(Process source, DomainBase domain) {
+  public Map<String, ImpactRiskValuesDto> mapRiskValues(Process source, Domain domain) {
     return source
         .getImpactValues(domain)
         .map(
@@ -157,19 +154,7 @@ public class DomainAssociationTransformer {
         .orElse(new HashMap<>());
   }
 
-  public Map<String, ImpactRiskValuesDto> mapRiskValues(Asset source, DomainBase domain) {
-    return source
-        .getImpactValues(domain)
-        .map(
-            riskValues ->
-                riskValues.entrySet().stream()
-                    .collect(
-                        Collectors.toMap(
-                            kv -> kv.getKey().getIdRef(), this::mapImpactRiskValuesToDto)))
-        .orElse(new HashMap<>());
-  }
-
-  public Map<String, ImpactRiskValuesDto> mapRiskValues(Scope source, DomainBase domain) {
+  public Map<String, ImpactRiskValuesDto> mapRiskValues(Scope source, Domain domain) {
     return source
         .getImpactValues(domain)
         .map(
@@ -204,7 +189,7 @@ public class DomainAssociationTransformer {
             }));
   }
 
-  public Map<String, ScenarioRiskValuesDto> mapRiskValues(Scenario source, DomainBase domain) {
+  public Map<String, ScenarioRiskValuesDto> mapRiskValues(Scenario source, Domain domain) {
     return source
         .getPotentialProbability(domain)
         .map(
@@ -240,7 +225,7 @@ public class DomainAssociationTransformer {
             }));
   }
 
-  public String mapRiskDefinition(Scope source, DomainBase domain) {
+  public String mapRiskDefinition(Scope source, Domain domain) {
     return source.getRiskDefinition(domain).map(RiskDefinitionRef::getIdRef).orElse(null);
   }
 
@@ -250,25 +235,15 @@ public class DomainAssociationTransformer {
   }
 
   private <T extends DomainAssociationDto> Map<String, T> extractDomainAssociations(
-      Element source, Function<DomainBase, T> supplier) {
-    // Catalog item elements in a domain template may have aspects for
-    // domains that
-    // the element is not assigned to. Seems invalid, but that's the
-    // situation we
-    // have to deal with here.
-    var domains = new HashSet<DomainBase>();
-    domains.addAll(source.getDomains());
-    domains.addAll(
-        source.getSubTypeAspects().stream().map(Aspect::getDomain).collect(Collectors.toSet()));
-
-    return domains.stream()
+      Element source, Function<Domain, T> supplier) {
+    return source.getDomains().stream()
         .collect(
             Collectors.toMap(
                 domain -> domain.getId().uuidValue(),
                 domain -> {
                   var association = supplier.apply(domain);
-                  association.setSubType(source.findSubType(domain).orElse(null));
-                  association.setStatus(source.findStatus(domain).orElse(null));
+                  association.setSubType(source.getSubType(domain));
+                  association.setStatus(source.getStatus(domain));
                   association.setDecisionResults(source.getDecisionResults(domain));
                   return association;
                 }));

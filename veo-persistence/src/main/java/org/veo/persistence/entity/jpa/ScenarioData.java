@@ -32,7 +32,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.risk.PotentialProbabilityImpl;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -72,7 +71,7 @@ public class ScenarioData extends ElementData implements Scenario {
   private final Set<Scenario> composites = new HashSet<>();
 
   public void setPotentialProbability(
-      DomainBase domain, Map<RiskDefinitionRef, PotentialProbabilityImpl> potentialProbability) {
+      Domain domain, Map<RiskDefinitionRef, PotentialProbabilityImpl> potentialProbability) {
     var aspect =
         findAspectByDomain(this.riskValuesAspects, domain)
             .orElseGet(
@@ -92,7 +91,7 @@ public class ScenarioData extends ElementData implements Scenario {
   }
 
   public Optional<Map<RiskDefinitionRef, PotentialProbabilityImpl>> getPotentialProbability(
-      DomainBase domain) {
+      Domain domain) {
     return findAspectByDomain(riskValuesAspects, domain)
         .map(ScenarioRiskValuesAspectData::getPotentialProbability);
   }

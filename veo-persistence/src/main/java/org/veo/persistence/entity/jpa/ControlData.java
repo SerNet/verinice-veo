@@ -33,7 +33,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -77,8 +76,7 @@ public class ControlData extends ElementData implements Control {
   private final Set<Control> composites = new HashSet<>();
 
   @Override
-  public void setRiskValues(
-      DomainBase domain, Map<RiskDefinitionRef, ControlRiskValues> riskValues) {
+  public void setRiskValues(Domain domain, Map<RiskDefinitionRef, ControlRiskValues> riskValues) {
     var aspect =
         findAspectByDomain(riskValuesAspects, domain)
             .orElseGet(
@@ -90,7 +88,7 @@ public class ControlData extends ElementData implements Control {
     aspect.setValues(riskValues);
   }
 
-  public Optional<Map<RiskDefinitionRef, ControlRiskValues>> getRiskValues(DomainBase domain) {
+  public Optional<Map<RiskDefinitionRef, ControlRiskValues>> getRiskValues(Domain domain) {
     return findAspectByDomain(riskValuesAspects, domain)
         .map(ControlRiskValuesAspectData::getValues);
   }

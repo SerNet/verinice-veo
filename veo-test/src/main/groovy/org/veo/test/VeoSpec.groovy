@@ -277,7 +277,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static CustomAspectData newCustomAspect(String type, DomainBase domain, @DelegatesTo(value = CustomAspect.class, strategy = Closure.DELEGATE_FIRST)
+    static CustomAspectData newCustomAspect(String type, Domain domain, @DelegatesTo(value = CustomAspect.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CustomAspect") Closure init = null) {
         return factory.createCustomAspect(type, domain).tap{
             VeoSpec.execute(it, init)

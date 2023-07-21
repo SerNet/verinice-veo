@@ -37,9 +37,9 @@ public interface CustomAttributeContainer {
 
   void setType(String aType);
 
-  DomainBase getDomain();
+  Domain getDomain();
 
-  void setDomain(DomainBase domain);
+  void setDomain(Domain domain);
 
   Map<String, Object> getAttributes();
 

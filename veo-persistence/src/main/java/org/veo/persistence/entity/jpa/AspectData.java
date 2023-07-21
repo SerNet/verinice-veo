@@ -26,7 +26,7 @@ import jakarta.persistence.MappedSuperclass;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.aspects.Aspect;
 
@@ -39,7 +39,7 @@ import lombok.ToString;
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class AspectData implements Aspect {
 
-  public AspectData(DomainBase domain, Element owner) {
+  public AspectData(Domain domain, Element owner) {
     this.domain = domain;
     this.owner = owner;
   }
@@ -52,9 +52,9 @@ public abstract class AspectData implements Aspect {
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
   private String dbId;
 
-  @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainBaseData.class, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY, targetEntity = DomainData.class, optional = false)
   @JoinColumn(name = "domain_id")
-  private DomainBase domain;
+  private Domain domain;
 
   @ManyToOne(fetch = FetchType.LAZY, targetEntity = ElementData.class, optional = false)
   private Element owner;

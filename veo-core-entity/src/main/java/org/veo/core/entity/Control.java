@@ -40,7 +40,7 @@ public interface Control extends Element, CompositeElement<Control>, RiskRelated
     return TYPE_DESIGNATOR;
   }
 
-  Optional<Map<RiskDefinitionRef, ControlRiskValues>> getRiskValues(DomainBase domain);
+  Optional<Map<RiskDefinitionRef, ControlRiskValues>> getRiskValues(Domain domain);
 
-  void setRiskValues(DomainBase domain, Map<RiskDefinitionRef, ControlRiskValues> riskValues);
+  void setRiskValues(Domain domain, Map<RiskDefinitionRef, ControlRiskValues> riskValues);
 }

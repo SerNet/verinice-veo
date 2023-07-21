@@ -32,7 +32,6 @@ import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Process;
@@ -109,7 +108,7 @@ public class EntityStateMapper {
 
   /** Maps link state to link entity (without adding the link to the source element). */
   public CustomLink mapLink(
-      CustomLinkState link, Element source, DomainBase domain, IdRefResolver idRefResolver) {
+      CustomLinkState link, Element source, Domain domain, IdRefResolver idRefResolver) {
     CustomLink newLink =
         entityFactory.createCustomLink(
             idRefResolver.resolve(link.getTarget()), source, link.getType(), domain);
@@ -127,7 +126,7 @@ public class EntityStateMapper {
   }
 
   private <T extends Element> void applyLinks(
-      DomainAssociationState source, T target, IdRefResolver idRefResolver, DomainBase domain) {
+      DomainAssociationState source, T target, IdRefResolver idRefResolver, Domain domain) {
     var newLinks = source.getCustomLinkStates();
     // Remove old links that are absent in new links
     Set.copyOf(target.getLinks(domain)).stream()
@@ -151,7 +150,7 @@ public class EntityStateMapper {
   }
 
   private <T extends Element> void applyCustomAspects(
-      DomainAssociationState source, T target, DomainBase domain) {
+      DomainAssociationState source, T target, Domain domain) {
 
     var customAspectStates = source.getCustomAspectStates();
     // Remove old CAs that are absent in new CAs
@@ -175,7 +174,7 @@ public class EntityStateMapper {
       Element target,
       IdRefResolver idRefResolver,
       boolean removeFromOtherDomains) {
-    BiConsumer<DomainBase, DomainAssociationState> customMapper = (domain, association) -> {};
+    BiConsumer<Domain, DomainAssociationState> customMapper = (domain, association) -> {};
 
     if (target instanceof Process process) {
       customMapper =
@@ -223,7 +222,7 @@ public class EntityStateMapper {
   }
 
   private Map<RiskDefinitionRef, PotentialProbabilityImpl> mapPotentialProbability(
-      Map<String, ? extends ScenarioRiskValues> riskValues, DomainBase domain) {
+      Map<String, ? extends ScenarioRiskValues> riskValues, Domain domain) {
     return riskValues.entrySet().stream().collect(groupScenarioRiskValuesByDomain(domain));
   }
 
@@ -231,7 +230,7 @@ public class EntityStateMapper {
           Map.Entry<String, ? extends ScenarioRiskValues>,
           ?,
           Map<RiskDefinitionRef, PotentialProbabilityImpl>>
-      groupScenarioRiskValuesByDomain(DomainBase domain) {
+      groupScenarioRiskValuesByDomain(Domain domain) {
     var referenceProvider = referencesForDomain(domain);
     return Collectors.toMap(
         kv -> toRiskDefinitionRef(kv.getKey(), domain),
@@ -254,7 +253,7 @@ public class EntityStateMapper {
   }
 
   private Map<RiskDefinitionRef, ControlRiskValues> mapRiskValues(
-      Map<String, ? extends ControlRiskValuesState> riskValues, DomainBase domain) {
+      Map<String, ? extends ControlRiskValuesState> riskValues, Domain domain) {
 
     var referenceProvider = referencesForDomain(domain);
     return riskValues.entrySet().stream()
@@ -280,7 +279,7 @@ public class EntityStateMapper {
       Set<? extends DomainAssociationState> domains,
       Element target,
       IdRefResolver idRefResolver,
-      BiConsumer<DomainBase, DomainAssociationState> customMapper,
+      BiConsumer<Domain, DomainAssociationState> customMapper,
       boolean removeFromOtherDomains) {
     if (removeFromOtherDomains) {
       target.getDomains().stream()
@@ -290,7 +289,7 @@ public class EntityStateMapper {
     }
     domains.forEach(
         association -> {
-          DomainBase domain = idRefResolver.resolve(association.getDomain());
+          Domain domain = idRefResolver.resolve(association.getDomain());
           String newSubType = association.getSubType();
           String newStatus = association.getStatus();
           target
@@ -301,7 +300,7 @@ public class EntityStateMapper {
                       throw new IllegalArgumentException(
                           "Cannot change a sub type on an existing element");
                     }
-                    target.setStatus(newStatus, (Domain) domain);
+                    target.setStatus(newStatus, domain);
                   },
                   () -> target.associateWithDomain(domain, newSubType, association.getStatus()));
           applyLinks(association, target, idRefResolver, domain);
@@ -311,7 +310,7 @@ public class EntityStateMapper {
   }
 
   private Map<RiskDefinitionRef, ImpactValues> mapImpactValues(
-      Map<String, ? extends RiskImpactValues> riskValues, DomainBase domain) {
+      Map<String, ? extends RiskImpactValues> riskValues, Domain domain) {
     var referenceProvider = referencesForDomain(domain);
     return riskValues.entrySet().stream()
         .collect(
@@ -342,7 +341,7 @@ public class EntityStateMapper {
     return referenceProvider.getCategoryRef(riskDefinitionId, e.getKey());
   }
 
-  RiskDefinitionRef toRiskDefinitionRef(String riskDefId, DomainBase domain) {
+  RiskDefinitionRef toRiskDefinitionRef(String riskDefId, Domain domain) {
     if (riskDefId == null) {
       return null;
     }

@@ -17,12 +17,13 @@
  ******************************************************************************/
 package org.veo.core.usecase.base;
 
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 
 /** Validates an element's subtype / status according to the domains' element type definitions. */
 class SubTypeValidator {
-  static void validate(Element element, DomainBase domain) {
+  static void validate(Element element, Domain domain) {
     element
         .findSubType(domain)
         .ifPresentOrElse(
