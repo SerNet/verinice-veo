@@ -25,12 +25,10 @@ import org.springframework.http.HttpMethod
 class BasicCrudRestTest extends VeoRestTest {
 
     String unitId
-    String domainId
     String unitName
 
     def setup() {
         unitName = 'CRUD test unit'
-        domainId = get("/domains").body.find{it.name == "DS-GVO"}.id
         unitId = postNewUnit(unitName).resourceId
 
         UUID.fromString(unitId)
@@ -117,7 +115,7 @@ class BasicCrudRestTest extends VeoRestTest {
             name: propertiesAssetName,
             owner: [displayName: unitName, targetUri: targetUri],
             domains: [
-                (domainId): [
+                (dsgvoDomainId): [
                     subType: "AST_Application",
                     status: "NEW",
                     riskValues: [
@@ -158,7 +156,7 @@ class BasicCrudRestTest extends VeoRestTest {
 
     def "CRUD person in domain context"() {
         when: "creating a new person within a domain"
-        def creationResponse = post("/domains/$domainId/persons", [
+        def creationResponse = post("/domains/$dsgvoDomainId/persons", [
             name: "test person",
             owner: [targetUri: "/units/$unitId`"],
             subType: "PER_Person",
@@ -171,7 +169,7 @@ class BasicCrudRestTest extends VeoRestTest {
         creationResponse.body.success
         creationResponse.body.message == "Person created successfully."
         personId.size() == 36
-        personInDomainUri == "/domains/$domainId/persons/$personId"
+        personInDomainUri == "/domains/$dsgvoDomainId/persons/$personId"
 
         when: "retrieving the person from the viewpoint of the domain"
         def getResponse = get(personInDomainUri)
@@ -252,7 +250,7 @@ class BasicCrudRestTest extends VeoRestTest {
                 displayName: unitName,
                 targetUri: targetUri],
             domains: [
-                (domainId): [
+                (dsgvoDomainId): [
                     subType: "PER_Person",
                     status: "NEW",
                 ]
@@ -328,7 +326,7 @@ class BasicCrudRestTest extends VeoRestTest {
                 targetUri: targetUri
             ],
             domains: [
-                (domainId): [
+                (dsgvoDomainId): [
                     subType: "CTL_TOM",
                     status: "NEW",
                 ]

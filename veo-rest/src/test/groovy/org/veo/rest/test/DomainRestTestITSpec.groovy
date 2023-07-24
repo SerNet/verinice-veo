@@ -30,8 +30,7 @@ class DomainRestTestITSpec extends VeoRestTest {
 
     def "export the test domain"() {
         when: "the catalog is retrieved"
-        def dsgvoId = getDomains().find { it.name == "test-domain" }.id
-        def domainDto = exportDomain(dsgvoId)
+        def domainDto = exportDomain(testDomainId)
 
         then: "the domain is exported"
         with(domainDto.catalogs[0]) {
@@ -43,8 +42,7 @@ class DomainRestTestITSpec extends VeoRestTest {
 
     def "export the dsgvo domain"() {
         when: "the catalog is retrieved"
-        def dsgvoId = getDomains().find { it.name == "DS-GVO" }.id
-        def domainDto = exportDomain(dsgvoId)
+        def domainDto = exportDomain(dsgvoDomainId)
 
         def catalog = domainDto.catalogs[0]
         def vvt = catalog.catalogItems.find { it.abbreviation == "VVT" }
@@ -81,8 +79,7 @@ class DomainRestTestITSpec extends VeoRestTest {
 
     def "post a domaintemplate with translation errors"() {
         given: "a DS-GVO domaintemplate with translation errors"
-        def dsgvoId = getDomains().find { it.name == "DS-GVO" }.id
-        def domainDto = exportDomain(dsgvoId)
+        def domainDto = exportDomain(dsgvoDomainId)
         def modifiedDomain = [:] << domainDto
 
         modifiedDomain.name = "Broken DSGVO_${UUID.randomUUID()}"
@@ -104,7 +101,7 @@ class DomainRestTestITSpec extends VeoRestTest {
 
     def "create a new domain template version with a profile"() {
         given: "a DS-GVO domain"
-        def oldDomain = getDomains().find { it.name == "DS-GVO" }
+        def oldDomain = get("/domains/$dsgvoDomainId").body
 
         when: "we create a unit with elements and a risk"
         def profileSourceUnitId = postNewUnit().resourceId

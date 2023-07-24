@@ -53,7 +53,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             name == "Control-cc-1"
             abbreviation == "cc-1"
             description.startsWith("Lorem ipsum")
-            domains[owner.testDomain.id] == [
+            domains[owner.testDomainId] == [
                 subType: "TOM",
                 status: "NEW",
                 decisionResults: [:],
@@ -118,7 +118,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             abbreviation == "cc-2"
             description.startsWith("Lorem ipsum")
             it.owner.displayName == owner.UNIT_NAME
-            domains[owner.testDomain.id] == [
+            domains[owner.testDomainId] == [
                 subType: "TOM",
                 status: "NEW",
                 decisionResults: [:],
@@ -180,7 +180,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             items[0].abbreviation == "c-2"
             items[0].description.startsWith("Lorem ipsum")
             items[0].owner.displayName == owner.UNIT_NAME
-            items[0].domains[owner.testDomain.id] == [
+            items[0].domains[owner.testDomainId] == [
                 subType: "TOM",
                 status: "NEW",
                 decisionResults: [:],
@@ -204,7 +204,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             name == "Control-cc-1"
             abbreviation == "cc-1"
             description.startsWith("Lorem ipsum")
-            domains[owner.testDomain.id] == [
+            domains[owner.testDomainId] == [
                 subType: "TOM",
                 status: "NEW",
                 decisionResults: [:],
@@ -221,7 +221,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
             name == "Control-cc-2"
             abbreviation == "cc-2"
             description.startsWith("Lorem ipsum")
-            domains[owner.testDomain.id] == [
+            domains[owner.testDomainId] == [
                 subType: "TOM",
                 status: "NEW",
                 decisionResults: [:],
@@ -277,7 +277,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
     def "Create a unit and the whole dsgvo catalog in one step add controls after"() {
         when: "We create all elements"
-        def domainDto = getDomains().find { it.name == "DS-GVO" }
+        def domainDto = get("/domains/$dsgvoDomainId").body
         def catalogId = uriToId(domainDto.catalogs[0].targetUri)
         def catalogDsgvo = getCatalog(catalogId)
 

@@ -19,10 +19,8 @@ package org.veo.rest.test
 
 class DeletionRestTest extends VeoRestTest {
     String unitUri
-    String domainId
 
     def setup() {
-        domainId = get("/domains").body.find{it.name == "DS-GVO"}.id
         unitUri = "$baseUrl/units/" + postNewUnit().resourceId
     }
 
@@ -31,7 +29,7 @@ class DeletionRestTest extends VeoRestTest {
         def assetId = post("/assets", [
             name: "data type",
             domains: [
-                (domainId): [
+                (dsgvoDomainId): [
                     subType: "AST_Datatype",
                     status: "NEW",
                 ]
@@ -41,7 +39,7 @@ class DeletionRestTest extends VeoRestTest {
         def processId = post("/processes", [
             name: "source process",
             domains: [
-                (domainId): [
+                (dsgvoDomainId): [
                     subType: "PRO_DataProcessing",
                     status: "NEW",
                 ]
@@ -77,7 +75,7 @@ class DeletionRestTest extends VeoRestTest {
         def scenarioId = post("/scenarios", [
             name: "scenario that must be deleted",
             domains: [
-                (domainId): [
+                (dsgvoDomainId): [
                     subType: "SCN_Scenario",
                     status: "NEW"
                 ]
@@ -91,7 +89,7 @@ class DeletionRestTest extends VeoRestTest {
             name: "process in other unit",
             owner: [targetUri: otherUnitUri],
             domains: [
-                (domainId): [
+                (dsgvoDomainId): [
                     subType: "PRO_DataProcessing",
                     status: "NEW",
                 ]

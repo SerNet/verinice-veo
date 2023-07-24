@@ -20,10 +20,8 @@ package org.veo.rest.test
 class AssetRiskRestTestITSpec extends VeoRestTest{
 
     String unitId
-    String domainId
 
     def setup() {
-        domainId = get("/domains").body.find{it.name == "DS-GVO"}.id
         unitId = postNewUnit().resourceId
     }
 
@@ -35,7 +33,7 @@ class AssetRiskRestTestITSpec extends VeoRestTest{
         ]).body.resourceId
         def assetId = post("/assets", [
             domains: [
-                (domainId): [
+                (dsgvoDomainId): [
                     subType: "AST_Datatype",
                     status: "IN_PROGRESS",
                     riskValues: [
@@ -63,8 +61,8 @@ class AssetRiskRestTestITSpec extends VeoRestTest{
         when: "creating the risk"
         post("/assets/$assetId/risks", [
             domains: [
-                (domainId): [
-                    reference: [targetUri: "$baseUrl/domains/$domainId"]
+                (dsgvoDomainId): [
+                    reference: [targetUri: "$baseUrl/domains/$dsgvoDomainId"]
                 ]
             ],
             scenario: [targetUri: "$baseUrl/scenarios/$scenarioId"]

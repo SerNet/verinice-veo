@@ -119,7 +119,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
             name : "Link Target Control",
             owner: [targetUri: "$baseUrl/units/$unitId"],
             domains: [
-                (domainId): [
+                (testDomainId): [
                     subType: "TOM",
                     status: "NEW",
                 ]
@@ -190,7 +190,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         def sourceProcessId = post("/processes", [
             name: "process",
             domains: [
-                (dsgvoId): [
+                (dsgvoDomainId): [
                     subType: "PRO_DataProcessing",
                     status: "NEW"
                 ]
@@ -278,8 +278,8 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
             def elementResult = get(targetUri).body
             log.debug("==> elementResult: {}", elementResult)
 
-            assert elementResult.domains[dsgvoId].subType != null
-            assert elementResult.domains[dsgvoId].status != null
+            assert elementResult.domains[dsgvoDomainId].subType != null
+            assert elementResult.domains[dsgvoDomainId].status != null
         }
     }
 

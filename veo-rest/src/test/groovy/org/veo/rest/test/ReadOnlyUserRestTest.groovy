@@ -24,19 +24,17 @@ class ReadOnlyUserRestTest extends VeoRestTest {
 
     String unitId
     String unitUri
-    String domainId
     String processId
     String eTag
 
     def setup() {
-        domainId = get("/domains").body.find{it.name == "DS-GVO"}.id
         unitId = postNewUnit().resourceId
         unitUri = "$baseUrl/units/$unitId"
 
         processId = post("/processes", [
             name: "data processing",
             domains: [
-                (domainId): [
+                (dsgvoDomainId): [
                     subType: "PRO_DataProcessing",
                     status: "NEW"
                 ],
@@ -56,7 +54,7 @@ class ReadOnlyUserRestTest extends VeoRestTest {
         post("/processes", [
             name   : "can't create this",
             domains: [
-                (domainId): [
+                (dsgvoDomainId): [
                     subType: "PRO_DataProcessing",
                     status : "NEW"
                 ],
@@ -70,7 +68,7 @@ class ReadOnlyUserRestTest extends VeoRestTest {
         put("/processes/$processId", [
             name   : "can't touch this",
             domains: [
-                (domainId): [
+                (dsgvoDomainId): [
                     subType: "PRO_DataProcessing",
                     status : "NEW"
                 ],
@@ -81,7 +79,7 @@ class ReadOnlyUserRestTest extends VeoRestTest {
 
     def "user without write access may not POST element type definitions"() {
         expect:
-        post("/domains/$domainId/elementtypedefinitions/scope/updatefromobjectschema", [
+        post("/domains/$dsgvoDomainId/elementtypedefinitions/scope/updatefromobjectschema", [
             name: "cantupdatefromobjectschemathiselementtypedefinition"
         ], 403, UserType.READ_ONLY)
     }
@@ -104,19 +102,19 @@ class ReadOnlyUserRestTest extends VeoRestTest {
     def "user without write access may POST evaluations"() {
         expect:
         // TODO VEO-1987 remove legacy endpoint call
-        post("/processes/evaluation?domain=$domainId", [
+        post("/processes/evaluation?domain=$dsgvoDomainId", [
             name: "you can evaluate this",
             domains: [
-                (domainId): [
+                (dsgvoDomainId): [
                     subType: "PRO_DataProcessing",
                     status: "NEW"
                 ],
             ]
         ], 400, UserType.READ_ONLY)
-        post("/domains/$domainId/processes/evaluation", [
+        post("/domains/$dsgvoDomainId/processes/evaluation", [
             name: "you can evaluate this",
             domains: [
-                (domainId): [
+                (dsgvoDomainId): [
                     subType: "PRO_DataProcessing",
                     status: "NEW"
                 ],

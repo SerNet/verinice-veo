@@ -21,12 +21,10 @@ class EvaluationRestTest extends VeoRestTest {
     def PIA = "process_privacyImpactAssessment"
     String unitUri
     String unitId
-    String domainId
     def decisions
 
     def setup() {
-        def domain = get("/domains").body.find { it.name == "DS-GVO" }
-        domainId = domain.id
+        def domain = get("/domains/$dsgvoDomainId").body
         decisions = domain.decisions
         unitId = postNewUnit().resourceId
         unitUri = "http://localhost/units/" + unitId
@@ -37,7 +35,7 @@ class EvaluationRestTest extends VeoRestTest {
         def decision = decisions.piaMandatory
 
         when: "creating a data processing with two criteria"
-        def processId = post("/domains/$domainId/processes", [
+        def processId = post("/domains/$dsgvoDomainId/processes", [
             name: "data processing",
             customAspects: [
                 (PIA): [
@@ -53,7 +51,7 @@ class EvaluationRestTest extends VeoRestTest {
         ]).body.resourceId
 
         then: "result is undetermined due to missing risks"
-        with(get("/domains/$domainId/processes/$processId").body.decisionResults.piaMandatory) {
+        with(get("/domains/$dsgvoDomainId/processes/$processId").body.decisionResults.piaMandatory) {
             value == null
             decision.rules[decisiveRule].description.en == "Missing risk analysis"
             matchingRules.collect { decision.rules[it].description.en } ==~ [
@@ -68,11 +66,11 @@ class EvaluationRestTest extends VeoRestTest {
         }
 
         when: "adding a risk"
-        def processETagBeforeRiskAddition = get("/domains/$domainId/processes/$processId").getETag()
+        def processETagBeforeRiskAddition = get("/domains/$dsgvoDomainId/processes/$processId").getETag()
         addRiskValue(processId, 1)
 
         then: "the result has changed"
-        with(get("/domains/$domainId/processes/$processId")) {
+        with(get("/domains/$dsgvoDomainId/processes/$processId")) {
             getETag() != processETagBeforeRiskAddition
             with(body.decisionResults.piaMandatory) {
                 value == true
@@ -88,7 +86,7 @@ class EvaluationRestTest extends VeoRestTest {
         }
 
         when: "adding PIA related attributes"
-        put("/domains/$domainId/processes/$processId", [
+        put("/domains/$dsgvoDomainId/processes/$processId", [
             name: "data processing",
             customAspects: [
                 (PIA): [
@@ -102,10 +100,10 @@ class EvaluationRestTest extends VeoRestTest {
             subType: "PRO_DataProcessing",
             status: "NEW",
             owner: [targetUri: unitUri]
-        ], get("/domains/$domainId/processes/$processId").getETag())
+        ], get("/domains/$dsgvoDomainId/processes/$processId").getETag())
 
         then: "added attribute is taken into consideration"
-        with(get("/domains/$domainId/processes/$processId").body.decisionResults.piaMandatory) {
+        with(get("/domains/$dsgvoDomainId/processes/$processId").body.decisionResults.piaMandatory) {
             value == true
             decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment"
             matchingRules.collect { decision.rules[it].description.en } ==~ [
@@ -120,7 +118,7 @@ class EvaluationRestTest extends VeoRestTest {
         }
 
         and: "inspection suggests creating a DPIA part"
-        with(get("/processes/$processId/inspection?domain=$domainId").body) {
+        with(get("/processes/$processId/inspection?domain=$dsgvoDomainId").body) {
             size() == 1
             with(it[0]) {
                 description.en == "Data Protection Impact Assessment was not carried out, but it is mandatory."
@@ -150,7 +148,7 @@ class EvaluationRestTest extends VeoRestTest {
         ]
 
         expect: "non-persistent evaluation to consider custom aspect attribute and missing risk values"
-        with(post("/domains/$domainId/processes/evaluation", process, 200).body) {
+        with(post("/domains/$dsgvoDomainId/processes/evaluation", process, 200).body) {
             with(decisionResults.piaMandatory) {
                 value == null
                 decision.rules[decisiveRule].description.en == "Missing risk analysis"
@@ -168,15 +166,15 @@ class EvaluationRestTest extends VeoRestTest {
         }
 
         and: "no process has been persisted"
-        get("/domains/$domainId/processes?unit=$unitId").body.totalItemCount == 0
+        get("/domains/$dsgvoDomainId/processes?unit=$unitId").body.totalItemCount == 0
 
         when: "persisting the process and adding a risk"
-        def processId = post("/domains/$domainId/processes", process).body.resourceId
-        process = get("/domains/$domainId/processes/$processId").body
+        def processId = post("/domains/$dsgvoDomainId/processes", process).body.resourceId
+        process = get("/domains/$dsgvoDomainId/processes/$processId").body
         addRiskValue(processId, 1)
 
         then: "non-persistent evaluation returns different results due to added risk"
-        with(post("/domains/$domainId/processes/evaluation", process, 200).body) {
+        with(post("/domains/$dsgvoDomainId/processes/evaluation", process, 200).body) {
             with(decisionResults.piaMandatory) {
                 value == true
                 decision.rules[decisiveRule].description.en == "Processing on list of the kinds of processing operations subject to a Data Protection Impact Assessment"
@@ -201,11 +199,11 @@ class EvaluationRestTest extends VeoRestTest {
         }
 
         when: "adding an attribute to the transient process"
-        def processUpdateTimeBeforeEvaluation = get("/domains/$domainId/processes/$processId").body.updatedAt
+        def processUpdateTimeBeforeEvaluation = get("/domains/$dsgvoDomainId/processes/$processId").body.updatedAt
         process.customAspects[PIA]["${PIA}_otherExclusions"] = true
 
         then: "non-persistent evaluation returns different results due to added attribute"
-        with(post("/domains/$domainId/processes/evaluation", process, 200).body) {
+        with(post("/domains/$dsgvoDomainId/processes/evaluation", process, 200).body) {
             with(decisionResults.piaMandatory) {
                 value == false
                 decision.rules[decisiveRule].description.en == "Other exclusions"
@@ -222,7 +220,7 @@ class EvaluationRestTest extends VeoRestTest {
         }
 
         and: "changes to the process have not been persisted"
-        with(get("/domains/$domainId/processes/$processId").body) {
+        with(get("/domains/$dsgvoDomainId/processes/$processId").body) {
             customAspects[owner.PIA].size() == 1
             updatedAt == processUpdateTimeBeforeEvaluation
         }
@@ -240,7 +238,7 @@ class EvaluationRestTest extends VeoRestTest {
             status: "NEW",
             owner: [targetUri: unitUri]
         ]
-        def dpiaId = post("/domains/$domainId/processes", dpia).body.resourceId
+        def dpiaId = post("/domains/$dsgvoDomainId/processes", dpia).body.resourceId
 
         def process = [
             name: "process with a DPIA",
@@ -256,12 +254,12 @@ class EvaluationRestTest extends VeoRestTest {
                 [targetUri: "http://localhost/processes/$dpiaId"]
             ]
         ]
-        def processId = post("/domains/$domainId/processes", process).body.resourceId
-        process = get("/domains/$domainId/processes/$processId").body
+        def processId = post("/domains/$dsgvoDomainId/processes", process).body.resourceId
+        process = get("/domains/$dsgvoDomainId/processes/$processId").body
         addRiskValue(processId, 1)
 
         expect: "a DPIA is required and the existing one is accepted"
-        with(post("/domains/$domainId/processes/evaluation", process, 200).body) {
+        with(post("/domains/$dsgvoDomainId/processes/evaluation", process, 200).body) {
             with(decisionResults.piaMandatory) {
                 value == true
             }
@@ -270,7 +268,7 @@ class EvaluationRestTest extends VeoRestTest {
     }
 
     private void addRiskValue(String processId, Integer userDefinedResidualRisk) {
-        post("/domains/$domainId/scopes", [
+        post("/domains/$dsgvoDomainId/scopes", [
             name: "risky scope",
             subType: "SCP_Scope",
             status: "NEW",
@@ -286,8 +284,8 @@ class EvaluationRestTest extends VeoRestTest {
         ]).body.resourceId
         post("/processes/$processId/risks", [
             domains: [
-                (domainId): [
-                    reference: [targetUri: "http://localhost/domains/$domainId"],
+                (dsgvoDomainId): [
+                    reference: [targetUri: "http://localhost/domains/$dsgvoDomainId"],
                     riskDefinitions: [
                         DSRA: [
                             impactValues: [

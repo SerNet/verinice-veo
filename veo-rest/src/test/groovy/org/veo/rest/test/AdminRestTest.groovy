@@ -39,11 +39,10 @@ class AdminRestTest extends VeoRestTest{
         given:
         def unitId = postNewUnit("my catalog unit").resourceId
 
-        def catalogId = extractLastId(getDomains().find { it.name == "DS-GVO" }.catalogs.first().targetUri)
+        def catalogId = extractLastId(get("/domains/$dsgvoDomainId").body.catalogs.first().targetUri)
         log.info("==> catalogId: {}", catalogId)
         def catalog = getCatalog(catalogId)
         log.info("==> catalog: {}", JsonOutput.toJson(catalog))
-        def dsgvoId = extractLastId(catalog.domainTemplate.targetUri)
 
         def allItems = catalog.catalogItems.collect{extractLastId(it.targetUri)}.join(',')
         log.info("==> allItems: {}", allItems)
@@ -65,8 +64,8 @@ class AdminRestTest extends VeoRestTest{
             description == "VVT-Prozess"
             links.size() == 1
             links.process_tom.size() == 8
-            domains[dsgvoId].subType == "PRO_DataProcessing"
-            domains[dsgvoId].status == "NEW"
+            domains[owner.dsgvoDomainId].subType == "PRO_DataProcessing"
+            domains[owner.dsgvoDomainId].status == "NEW"
         }
         with (dump.elements.find { it.abbreviation == "TOM-I" }) {
             customAspects.size() == 1
@@ -75,8 +74,8 @@ class AdminRestTest extends VeoRestTest{
             customAspects.control_dataProtection.attributes.control_dataProtection_objectives == [
                 "control_dataProtection_objectives_integrity"
             ]
-            domains[dsgvoId].subType == "CTL_TOM"
-            domains[dsgvoId].status == "NEW"
+            domains[owner.dsgvoDomainId].subType == "CTL_TOM"
+            domains[owner.dsgvoDomainId].status == "NEW"
         }
     }
 
