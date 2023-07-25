@@ -17,6 +17,9 @@
     ],
     "executionMode": "update"
   },
+  "ignoreDeps": [
+    "postgres"
+  ],
   "packageRules": [
     {
       "matchPackagePatterns": [
@@ -84,8 +87,7 @@
         "^io.freefair.lombok",
         "^gradle$",
         "^org.keycloak:keycloak-authz-client$",
-        "^com.networknt:json-schema-validator",
-        "^postgres$"
+        "^com.networknt:json-schema-validator"
       ],
       "postUpgradeTasks": {}
     }
