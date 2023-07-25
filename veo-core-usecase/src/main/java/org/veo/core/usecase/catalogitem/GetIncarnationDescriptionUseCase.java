@@ -73,7 +73,9 @@ public class GetIncarnationDescriptionUseCase
     validateInput(input);
     List<Key<UUID>> catalogItemIds = input.getCatalogItemIds();
     Map<Key<UUID>, CatalogItem> catalogItemsbyId =
-        catalogItemRepository.getByIdsFetchElementData(Set.copyOf(catalogItemIds)).stream()
+        catalogItemRepository
+            .findAllByIdsFetchDomainAndTailoringReferences(Set.copyOf(catalogItemIds))
+            .stream()
             .collect(Collectors.toMap(CatalogItem::getId, Function.identity()));
     List<CatalogItem> itemsToCreate =
         input.getCatalogItemIds().stream()

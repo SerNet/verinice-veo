@@ -43,8 +43,8 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         item1.incarnate() >> newControl
         entityRepo.getElementRepositoryFor(_) >> repo
 
-        catalogItemRepository.getByIdsFetchElementData([item1.id] as Set) >> [item1]
-        catalogItemRepository.getByIdsFetchElementData([item2.id] as Set) >> [item2]
+        catalogItemRepository.findAllByIdsFetchDomainAndTailoringReferences([item1.id] as Set) >> [item1]
+        catalogItemRepository.findAllByIdsFetchDomainAndTailoringReferences([item2.id] as Set) >> [item2]
 
         domainRepository
                 .findByCatalogItem(item1) >> Optional.of(existingDomain)

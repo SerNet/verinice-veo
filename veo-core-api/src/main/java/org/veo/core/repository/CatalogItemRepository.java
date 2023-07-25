@@ -32,7 +32,7 @@ import org.veo.core.entity.Key;
  */
 public interface CatalogItemRepository extends IdentifiableVersionedRepository<CatalogItem> {
 
-  Set<CatalogItem> getByIdsFetchElementData(Set<Key<UUID>> ids);
+  Set<CatalogItem> findAllByIdsFetchDomainAndTailoringReferences(Set<Key<UUID>> ids);
 
   Set<CatalogItem> findAllByDomain(Domain domain);
 }

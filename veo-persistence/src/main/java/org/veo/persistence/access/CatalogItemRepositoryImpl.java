@@ -47,7 +47,7 @@ public class CatalogItemRepositoryImpl
   }
 
   @Override
-  public Set<CatalogItem> getByIdsFetchElementData(Set<Key<UUID>> ids) {
+  public Set<CatalogItem> findAllByIdsFetchDomainAndTailoringReferences(Set<Key<UUID>> ids) {
     var idStrings = ids.stream().map(Key::uuidValue).toList();
     return StreamSupport.stream(
             catalogItemDataRepository

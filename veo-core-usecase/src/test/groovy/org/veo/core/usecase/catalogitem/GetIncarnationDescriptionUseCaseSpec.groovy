@@ -37,8 +37,8 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         entityRepo.getElementRepositoryFor(_) >> repo
         repo.query(existingClient) >> emptyQuery
 
-        catalogItemRepository.getByIdsFetchElementData([item1.id] as Set) >> [item1]
-        catalogItemRepository.getByIdsFetchElementData(_) >> []
+        catalogItemRepository.findAllByIdsFetchDomainAndTailoringReferences([item1.id] as Set) >> [item1]
+        catalogItemRepository.findAllByIdsFetchDomainAndTailoringReferences(_) >> []
 
         domainRepository
                 .findByCatalogItem(item1) >> Optional.of(existingDomain)

@@ -97,7 +97,7 @@ public class ApplyIncarnationDescriptionUseCase
             .map(CatalogItem::getId)
             .collect(Collectors.toSet());
     Map<Key<UUID>, CatalogItem> catalogItemsbyId =
-        catalogItemRepository.getByIdsFetchElementData(catalogItemIds).stream()
+        catalogItemRepository.findAllByIdsFetchDomainAndTailoringReferences(catalogItemIds).stream()
             .collect(Collectors.toMap(CatalogItem::getId, Function.identity()));
 
     Supplier<IncarnationResult> supplier = IncarnationResult::new;
