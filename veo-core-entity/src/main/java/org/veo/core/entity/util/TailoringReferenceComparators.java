@@ -31,6 +31,7 @@ public final class TailoringReferenceComparators {
               .getId()
               .uuidValue()
               .compareTo(c2.getCatalogItem().getId().uuidValue());
+
   /**
    * Orders {@link TailoringReference}s for application. They are sorted first alphabetically by
    * their reference type and then by their catalog-item's element UUID string value.

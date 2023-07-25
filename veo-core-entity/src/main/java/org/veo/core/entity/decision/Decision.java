@@ -57,8 +57,10 @@ public class Decision {
   @NotNull
   @Size(max = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
   private String elementSubType;
+
   /** Rules ordered by priority (descending). */
   @NotNull private List<Rule> rules = new LinkedList<>();
+
   /** The decision result value in the case that none of the rules apply (can be null) */
   private Boolean defaultResultValue;
 

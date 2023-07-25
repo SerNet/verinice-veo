@@ -38,6 +38,7 @@ public interface TailoringReferenceTyped {
               || r.getReferenceType() == TailoringReferenceType.LINK_EXTERNAL;
   Predicate<? super TailoringReferenceTyped> IS_EXTERNALLINK_PREDICATE =
       r -> r.getReferenceType() == TailoringReferenceType.LINK_EXTERNAL;
+
   /** Predicate to filter {@link TailoringReferenceType#LINK} */
   Predicate<? super TailoringReferenceTyped> IS_LINK_PREDICATE =
       r -> r.getReferenceType() == TailoringReferenceType.LINK;

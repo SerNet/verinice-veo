@@ -135,7 +135,6 @@ class ScopeRiskITSpec extends VeoSpringSpec {
 
         then:
         retrievedRisk2 == risk
-
     }
 
     @Transactional
@@ -174,5 +173,4 @@ class ScopeRiskITSpec extends VeoSpringSpec {
         control.setOwner(unit)
         controlRepository.save(control)
     }
-
 }

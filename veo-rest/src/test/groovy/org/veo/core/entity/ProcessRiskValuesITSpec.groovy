@@ -176,7 +176,6 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
             it.getPotentialImpact(confidentiality) == new ImpactRef(1)
             it.getSpecificImpact(confidentiality) == new ImpactRef(3)
             it.getSpecificImpactExplanation(confidentiality) == MURPHYS_LAW
-
         }
 
         with(retrievedRisk2.getRiskProvider(riskDefRef, domain)) {
@@ -199,5 +198,4 @@ class ProcessRiskValuesITSpec extends VeoSpringSpec {
             addToDomains(domain)
         })
     }
-
 }

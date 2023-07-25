@@ -35,6 +35,7 @@ import lombok.EqualsAndHashCode;
 public class TailoringReferenceParameter extends CatalogReferenceParameter
     implements TailoringReferenceTyped {
   @EqualsAndHashCode.Include private TailoringReferenceType referenceType;
+
   /**
    * The translatable Key of the described reference. Currently only CustomLinks are supported and
    * in this case the referenceKey is the type of the customLink.

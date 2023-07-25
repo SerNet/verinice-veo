@@ -47,6 +47,7 @@ public interface ReferenceAssembler {
    * Returns an absolute reference to the target element from the viewpoint of the target domain.
    */
   String elementInDomainRefOf(Element element, Domain domain);
+
   /**
    * Returns an absolute reference to the target object, where the target object is identified using
    * a compound key.

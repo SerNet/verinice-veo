@@ -273,5 +273,4 @@ class ProcessRiskITSpec extends VeoSpringSpec {
         control.setOwner(unit)
         controlRepository.save(control)
     }
-
 }

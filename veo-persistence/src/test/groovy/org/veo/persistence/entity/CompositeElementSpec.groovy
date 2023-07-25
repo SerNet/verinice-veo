@@ -153,7 +153,6 @@ class CompositeElementSpec extends VeoSpec {
         subComposite.parts.size() == 1
         topComposite.parts.iterator().next() == subComposite
         subComposite.parts.iterator().next() == topComposite
-
     }
 
     def "A composite could contain itself"() {
@@ -298,5 +297,4 @@ class CompositeElementSpec extends VeoSpec {
         p1.customAspects.first().attributes.val == "val1"
         p3.customAspects.first().attributes.val == "val3"
     }
-
 }

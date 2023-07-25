@@ -137,6 +137,7 @@ public class GetUnitDumpUseCase
   @AllArgsConstructor
   public static class InputData implements UseCase.InputData {
     @NonNull private Key<UUID> unitId;
+
     /**
      * If a domain ID is set, only elements associated with that domain are exported and aspects
      * belonging to other domains are not included in the elements' representations.

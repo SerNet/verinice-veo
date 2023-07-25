@@ -827,5 +827,4 @@ class RiskValuesRestTestITSpec extends VeoRestTest{
             it.impactValues.find {it.category == "C"}.potentialImpact == 2
         }
     }
-
 }
