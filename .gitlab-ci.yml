@@ -21,8 +21,8 @@ build:
   stage: build
   script:
     - env
-    - ./gradlew -i -PciBuildNumer=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME build -x check
-    - echo "PROJECT_VERSION=$(./gradlew -PciBuildNumer=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -q properties --property version| awk '/^version:/ {print $2}')" >> variables.env
+    - ./gradlew -i -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME build -x check
+    - echo "PROJECT_VERSION=$(./gradlew -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -q properties --property version| awk '/^version:/ {print $2}')" >> variables.env
   artifacts:
     expire_in: 1 week
     reports:
@@ -40,7 +40,7 @@ build:
 
 test:
   stage: check
-  script: ./gradlew -PciBuildNumer=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -i test
+  script: ./gradlew -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -i test
   services:
   - name: postgres:11.7-alpine
     alias: db
@@ -73,7 +73,7 @@ test:
 check:
   stage: check
   script:
-    - ./gradlew -PciBuildNumer=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -i check -x test
+    - ./gradlew -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -i check -x test
   cache:
     - key: gradle
       paths:
@@ -88,7 +88,7 @@ check_license:
   stage: check
   script:
     - cp LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
-    - ./gradlew -PciBuildNumer=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -i generateLicenseReport
+    - ./gradlew -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME -i generateLicenseReport
     - diff --ignore-matching-lines='This report was generated at' LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
     - if [ $? -ne 0 ]; then echo "LICENSE-3RD-PARTY.txt is not up to date, please re-run ./gradlew generateLicenseReport"; exit 1; fi
   cache:
@@ -174,7 +174,7 @@ http_rest_tests:
     VEO_RESTTEST_PROXYHOST: $PROXY
     VEO_RESTTEST_REALM: $OIDC_REALM_DEV
   script:
-    - ./gradlew -i -Dhttp.nonProxyHosts="localhost|veo" -PciBuildNumer=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME restTest
+    - ./gradlew -i -Dhttp.nonProxyHosts="localhost|veo" -PciBuildNumber=$CI_PIPELINE_ID -PciJobName=$CI_PROJECT_NAME/$CI_COMMIT_REF_NAME restTest
   artifacts:
     when: always
     reports:
