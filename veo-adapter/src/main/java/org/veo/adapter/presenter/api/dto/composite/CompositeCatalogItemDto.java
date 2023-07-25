@@ -19,9 +19,11 @@ package org.veo.adapter.presenter.api.dto.composite;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import org.veo.adapter.presenter.api.dto.AbstractCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
+import org.veo.core.entity.aspects.SubTypeAspect;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -32,10 +34,12 @@ import lombok.EqualsAndHashCode;
 public class CompositeCatalogItemDto extends AbstractCatalogItemDto {
   @NotNull
   @Schema(description = "The subtype for the Element.", example = "PER")
+  @Size(min = 1, max = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
   private String subType;
 
   @NotNull
   @Schema(description = "The status for the Element.", example = "NEW")
+  @Size(min = 1, max = SubTypeAspect.STATUS_MAX_LENGTH)
   private String status;
 
   @Valid
@@ -46,5 +50,6 @@ public class CompositeCatalogItemDto extends AbstractCatalogItemDto {
 
   @NotNull
   @Schema(description = "Entity type identifier", example = "person")
+  @Size(min = 1, max = 32)
   private String elementType;
 }
