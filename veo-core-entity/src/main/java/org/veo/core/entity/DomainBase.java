@@ -53,18 +53,9 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
 
   void setTemplateVersion(@NotNull String aTemplateVersion);
 
-  /** The catalog describing the template element of this domaintemplate. */
-  Set<Catalog> getCatalogs();
+  Set<CatalogItem> getCatalogItems();
 
-  default void setCatalogs(Set<Catalog> catalogs) {
-    getCatalogs().clear();
-    catalogs.forEach(catalog -> catalog.setDomainTemplate(this));
-    getCatalogs().addAll(catalogs);
-  }
-
-  boolean addToCatalogs(Catalog aCatalog);
-
-  void removeFromCatalog(Catalog aCatalog);
+  void setCatalogItems(Set<CatalogItem> catalogItems);
 
   Set<ElementTypeDefinition> getElementTypeDefinitions();
 

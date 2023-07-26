@@ -27,7 +27,6 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Unit
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
-import org.veo.persistence.access.jpa.CatalogDataRepository
 import org.veo.persistence.entity.jpa.AssetData
 import org.veo.persistence.entity.jpa.AssetRiskData
 import org.veo.persistence.entity.jpa.ClientData
@@ -55,9 +54,6 @@ class IdentityConsistencyITSpec extends VeoSpringSpec {
 
     @Autowired
     UnitRepositoryImpl unitRepository
-
-    @Autowired
-    CatalogDataRepository catalogRepository
 
     private Client client
     private Unit unit

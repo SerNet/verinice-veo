@@ -56,12 +56,7 @@ public class CreateDomainTemplateUseCase
       throw new EntityAlreadyExistsException(domainTemplate);
     }
 
-    domainTemplate.getCatalogs().stream()
-        .flatMap(c -> c.getCatalogItems().stream())
-        .forEach(
-            item -> {
-              CatalogItemValidator.validate(item);
-            });
+    domainTemplate.getCatalogItems().forEach(CatalogItemValidator::validate);
 
     domainTemplate = domainTemplateRepository.save(domainTemplate);
 

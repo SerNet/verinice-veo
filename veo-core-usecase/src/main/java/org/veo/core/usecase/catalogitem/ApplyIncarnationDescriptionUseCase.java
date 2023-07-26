@@ -120,7 +120,7 @@ public class ApplyIncarnationDescriptionUseCase
 
     Set<Key<UUID>> usedDomains1 =
         catalogItemsbyId.values().stream()
-            .map(ci -> ci.getCatalog().getDomainTemplate().getId())
+            .map(ci -> ci.getOwner().getId())
             .collect(Collectors.toSet());
 
     Map<Key<UUID>, Domain> usedDomains =
@@ -142,8 +142,7 @@ public class ApplyIncarnationDescriptionUseCase
                   if (catalogItem == null) {
                     throw new ReferenceTargetNotFoundException(catalogItemId, CatalogItem.class);
                   }
-                  Domain domain =
-                      usedDomains.get(catalogItem.getCatalog().getDomainTemplate().getId());
+                  Domain domain = usedDomains.get(catalogItem.getOwner().getId());
                   return createElementFromCatalogItem(
                       unit, authenticatedClient, catalogItem, domain, ra.getReferences());
                 })

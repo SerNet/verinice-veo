@@ -45,13 +45,10 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
 
     def "get the apply information for a catalog-item without tailor reference and apply it"() {
         given:
-        def id = Key.newUuid()
-        item1.id >> id
-        item1.catalog >> catalog
         item1.tailoringReferences >> []
         newControl.links >> []
 
-        catalogItemRepository.getById(id) >> item1
+        catalogItemRepository.getById(item1.id) >> item1
 
         when: "get the apply data for item"
         def output = usecaseGet.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
@@ -75,17 +72,9 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
 
     def "get the apply information for a catalog-item"() {
         given:
-        def id = Key.newUuid()
-        item1.id >> id
-        item1.catalog >> catalog
-        item1.elementInterface >> Control.class
-
         Control control2 = Mock()
-        control2.getModelInterface() >> Control.class
-
-        def id2 = Key.newUuid()
-        item2.id >> id2
-        item2.catalog >> catalog
+        item2.id >> Key.newUuid()
+        item2.owner >> existingDomain
         item2.elementInterface >> Control.class
 
         LinkTailoringReference tr = Mock()

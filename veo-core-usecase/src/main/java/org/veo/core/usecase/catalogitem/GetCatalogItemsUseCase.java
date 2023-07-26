@@ -23,9 +23,9 @@ import java.util.UUID;
 
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.EntitySpecifications;
@@ -40,35 +40,27 @@ public class GetCatalogItemsUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    Catalog catalog =
+    return new OutputData(
         input.authenticatedClient.getDomains().stream()
             .filter(EntitySpecifications.isActive())
-            .filter(
-                input
-                    .domainId
-                    .map(EntitySpecifications::hasId)
-                    .orElse(EntitySpecifications.matchAll()))
-            .flatMap(d -> d.getCatalogs().stream())
-            .filter(EntitySpecifications.hasId(input.catalogId))
-            .findFirst()
-            .orElseThrow(() -> new NotFoundException(input.catalogId, Catalog.class));
-    List<CatalogItem> list =
-        catalog.getCatalogItems().stream()
+            .filter(EntitySpecifications.hasId(input.domainId))
+            .findAny()
+            .orElseThrow(() -> new NotFoundException(input.domainId, Domain.class))
+            .getCatalogItems()
+            .stream()
             .filter(
                 input
                     .namespace
                     .map(EntitySpecifications::hasNamespace)
                     .orElse(EntitySpecifications.matchAll()))
-            .toList();
-    return new OutputData(list);
+            .toList());
   }
 
   @Valid
   @Value
   public static class InputData implements UseCase.InputData {
     Optional<String> namespace;
-    Key<UUID> catalogId;
-    Optional<Key<UUID>> domainId;
+    Key<UUID> domainId;
     Client authenticatedClient;
   }
 

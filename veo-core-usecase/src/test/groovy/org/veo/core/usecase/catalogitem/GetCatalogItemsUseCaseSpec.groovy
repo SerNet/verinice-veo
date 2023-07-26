@@ -17,10 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalogitem
 
-import org.veo.core.entity.Catalog
 import org.veo.core.entity.CatalogItem
-import org.veo.core.entity.Domain
-import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.usecase.UseCaseSpec
@@ -28,13 +25,7 @@ import org.veo.core.usecase.catalogitem.GetCatalogItemsUseCase.InputData
 
 class GetCatalogItemsUseCaseSpec extends UseCaseSpec {
 
-    Catalog catalog = Mock()
-    DomainTemplate domaintemplate = Mock()
     Key existingDomainId = Key.newUuid()
-    Key catalogId = Key.newUuid()
-    Key catalog1Id = Key.newUuid()
-    Key catalog2Id = Key.newUuid()
-
     GetCatalogItemsUseCase usecase = new GetCatalogItemsUseCase()
 
     def setup() {
@@ -42,77 +33,49 @@ class GetCatalogItemsUseCaseSpec extends UseCaseSpec {
         existingDomain.owner >> existingClient
         existingDomain.active >> true
 
-        catalog.getId() >> catalogId
-        catalog.getDomainTemplate() >> existingDomain
-        Catalog catalog2 = Mock()
-        catalog2.getId() >> catalog2Id
-        catalog2.getDomainTemplate() >> existingDomain
-        catalog2.catalogItems >> [
-            Mock(CatalogItem),
-            Mock(CatalogItem)
-        ]
-
-        existingDomain.catalogs >> [catalog, catalog2]
-
         CatalogItem ci1 = Mock()
         ci1.namespace >> 'A.B.C'
         CatalogItem ci2 = Mock()
         ci2.namespace >> 'A.B.C.D'
         CatalogItem ci3 = Mock()
         ci3.namespace >> 'A.B.C.D'
-        catalog.catalogItems >> [ci1, ci2, ci3]
 
-        Domain domain = Mock()
-        domain.active >> true
+        existingDomain.catalogItems >> [ci1, ci2, ci3]
 
-        Catalog catalog1 = Mock()
-        catalog1.getId() >> catalog1Id
-        catalog1.getDomainTemplate() >> domain
-        catalog1.catalogItems >> [Mock(CatalogItem)]
-        domain.catalogs >> [catalog1]
-
-        anotherClient.getDomains() >> [existingDomain, domain]
+        anotherClient.domains >> [existingDomain]
     }
 
-    def "retrieve all catalogitems for an unkown catalog"() {
+    def "retrieve all catalog items for an unknown domain"() {
         when:
-        usecase.execute(new InputData(Optional.empty(),Key.newUuid(),Optional.empty(),  anotherClient))
+        usecase.execute(new InputData(Optional.empty(), Key.newUuid(), anotherClient))
 
         then:
         thrown(NotFoundException)
     }
 
-    def "retrieve all catalogitems for an other catalog"() {
+    def "retrieve all catalog items for a domain"() {
         when:
-        usecase.execute(new InputData(Optional.empty(),catalog1Id,Optional.empty(),  existingClient))
-
-        then:
-        thrown(NotFoundException)
-    }
-
-    def "retrieve all catalogitems for a catalog"() {
-        when:
-        def output = usecase.execute(new InputData(Optional.empty(),catalogId,Optional.empty(),  anotherClient))
+        def output = usecase.execute(new InputData(Optional.empty(), existingDomainId, anotherClient))
 
         then:
         output.catalogItems.size() == 3
     }
 
-    def "retrieve all catalogitems for a namspace"() {
+    def "retrieve all catalog items for a namespace"() {
         when:
-        def output = usecase.execute(new InputData(Optional.of('A.B.C.D'),catalogId,Optional.empty(),  anotherClient))
+        def output = usecase.execute(new InputData(Optional.of('A.B.C.D'), existingDomainId, anotherClient))
 
         then:
         output.catalogItems.size() == 2
 
         when:
-        output = usecase.execute(new InputData(Optional.of('A.B.C'),catalogId,Optional.empty(),  anotherClient))
+        output = usecase.execute(new InputData(Optional.of('A.B.C'), existingDomainId, anotherClient))
 
         then:
         output.catalogItems.size() == 1
 
         when:
-        output = usecase.execute(new InputData(Optional.of('A.B.C.LL'),catalogId,Optional.empty(),  anotherClient))
+        output = usecase.execute(new InputData(Optional.of('A.B.C.LL'), existingDomainId, anotherClient))
 
         then:
         output.catalogItems.size() == 0

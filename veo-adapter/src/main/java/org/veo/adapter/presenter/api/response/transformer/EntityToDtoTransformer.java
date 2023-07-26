@@ -76,7 +76,6 @@ import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
-import org.veo.adapter.service.domaintemplate.dto.TransformCatalogDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
@@ -84,7 +83,6 @@ import org.veo.adapter.service.domaintemplate.dto.TransformLinkTailoringReferenc
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
-import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Control;
@@ -136,9 +134,6 @@ public final class EntityToDtoTransformer {
     }
     if (source instanceof AbstractRisk abstractRisk) {
       return transform2Dto(abstractRisk);
-    }
-    if (source instanceof Catalog catalog) {
-      return transformCatalog2Dto(catalog);
     }
     if (source instanceof CatalogItem catalogItem) {
       return transformCatalogItem2Dto(catalogItem, false);
@@ -303,7 +298,6 @@ public final class EntityToDtoTransformer {
 
     mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);
-    target.setCatalogs(convertReferenceSet(source.getCatalogs()));
     target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
     return target;
   }
@@ -330,7 +324,7 @@ public final class EntityToDtoTransformer {
 
     mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);
-    target.setCatalogs(convertSet(source.getCatalogs(), this::transformCatalog2CompositeDto));
+    target.setCatalogItems(convertSet(source.getCatalogItems(), this::transformCatalogItem2Dto));
 
     Map<String, ElementTypeDefinitionDto> elementTypeDefinitionsByType =
         source.getElementTypeDefinitions().stream()
@@ -349,20 +343,6 @@ public final class EntityToDtoTransformer {
     elementTypeDefinitionDto.setLinks(elementTypeDefinition.getLinks());
     elementTypeDefinitionDto.setTranslations(elementTypeDefinition.getTranslations());
     return elementTypeDefinitionDto;
-  }
-
-  public TransformCatalogDto transformCatalog2CompositeDto(@Valid Catalog source) {
-    var target = new TransformCatalogDto();
-    target.setId(source.getId().uuidValue());
-    mapNameableProperties(source, target);
-    mapVersionedSelfReferencingProperties(source, target);
-
-    if (source.getDomainTemplate() != null) {
-      target.setDomainTemplate(IdRef.from(source.getDomainTemplate(), referenceAssembler));
-    }
-    target.setCatalogItems(convertSet(source.getCatalogItems(), this::transformCatalogItem2Dto));
-
-    return target;
   }
 
   public TransformCatalogItemDto transformCatalogItem2Dto(@Valid CatalogItem source) {
@@ -406,15 +386,14 @@ public final class EntityToDtoTransformer {
     mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);
     target.setNamespace(source.getNamespace());
-    if (source.getCatalog() != null) {
-      target.setCatalog(IdRef.from(source.getCatalog(), referenceAssembler));
-    }
   }
 
-  public FullCatalogDto transformCatalog2Dto(@Valid Catalog source) {
+  @Deprecated() // TODO #2301 remove
+  public FullCatalogDto transformCatalog2Dto(@Valid Domain source) {
     FullCatalogDto target = new FullCatalogDto();
 
     target.setId(source.getId().uuidValue());
+    target.setDomainTemplate(IdRef.from(source, referenceAssembler));
     mapNameableProperties(source, target);
     mapVersionedSelfReferencingProperties(source, target);
 

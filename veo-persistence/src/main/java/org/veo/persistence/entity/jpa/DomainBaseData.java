@@ -34,7 +34,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.Catalog;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.decision.Decision;
@@ -73,26 +72,6 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
   @Column(name = "templateversion")
   @ToString.Include
   private String templateVersion;
-
-  @OneToMany(
-      cascade = CascadeType.ALL,
-      orphanRemoval = true,
-      targetEntity = CatalogData.class,
-      mappedBy = "domainTemplate")
-  @Valid
-  private Set<Catalog> catalogs = new HashSet<>();
-
-  @Override
-  public boolean addToCatalogs(Catalog aCatalog) {
-    aCatalog.setDomainTemplate(this);
-    return catalogs.add(aCatalog);
-  }
-
-  @Override
-  public void removeFromCatalog(Catalog aCatalog) {
-    catalogs.remove(aCatalog);
-    aCatalog.setDomainTemplate(null);
-  }
 
   @OneToMany(
       cascade = CascadeType.ALL,

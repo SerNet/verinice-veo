@@ -4,60 +4,42 @@
   "abbreviation": "td-620",
   "authority": "SERNET",
   "templateVersion": "1.0.0",
-  "catalogs": [
+  "catalogItems": [
     {
-      "id": "aed7c0a6-ac6e-4fe4-84d2-fd6532aa7558",
-      "name": "TEST-Elements",
-      "domainTemplate": {
-        "targetUri": "/domaintemplates/99af3dc3-eb17-5267-afc5-14e9f2ebd701"
-      },
-      "catalogItems": [
-        {
-          "name": "Asset 2",
-          "abbreviation": "a2",
-          "description": "This is the second asset.",
-          "catalog": {
-            "targetUri": "/catalogs/aed7c0a6-ac6e-4fe4-84d2-fd6532aa7558"
-          },
-          "tailoringReferences": [],
-          "namespace": "S",
-          "subType": "default",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "asset",
-          "id": "2091c610-6e59-48cb-a848-456bd9645763"
-        },
-        {
-          "name": "Scope 1",
-          "abbreviation": "S1",
-          "description": "This is a scope that contains some assets",
-          "catalog": {
-            "targetUri": "/catalogs/aed7c0a6-ac6e-4fe4-84d2-fd6532aa7558"
-          },
-          "tailoringReferences": [],
-          "namespace": "S",
-          "subType": "default",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scope",
-          "id": "782a0b43-deb2-4e4c-a42f-d1314658697f"
-        },
-        {
-          "name": "Asset 1",
-          "abbreviation": "a1",
-          "description": "This is the first asset.",
-          "catalog": {
-            "targetUri": "/catalogs/aed7c0a6-ac6e-4fe4-84d2-fd6532aa7558"
-          },
-          "tailoringReferences": [],
-          "namespace": "S",
-          "subType": "default",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "asset",
-          "id": "19ebf336-32ca-453b-b832-4d69408e1446"
-        }
-      ]
+      "name": "Asset 2",
+      "abbreviation": "a2",
+      "description": "This is the second asset.",
+      "tailoringReferences": [],
+      "namespace": "S",
+      "subType": "default",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "asset",
+      "id": "2091c610-6e59-48cb-a848-456bd9645763"
+    },
+    {
+      "name": "Scope 1",
+      "abbreviation": "S1",
+      "description": "This is a scope that contains some assets",
+      "tailoringReferences": [],
+      "namespace": "S",
+      "subType": "default",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scope",
+      "id": "782a0b43-deb2-4e4c-a42f-d1314658697f"
+    },
+    {
+      "name": "Asset 1",
+      "abbreviation": "a1",
+      "description": "This is the first asset.",
+      "tailoringReferences": [],
+      "namespace": "S",
+      "subType": "default",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "asset",
+      "id": "19ebf336-32ca-453b-b832-4d69408e1446"
     }
   ],
   "elementTypeDefinitions": {

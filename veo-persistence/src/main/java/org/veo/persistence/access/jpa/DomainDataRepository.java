@@ -29,8 +29,7 @@ import org.veo.persistence.entity.jpa.DomainData;
 
 public interface DomainDataRepository extends IdentifiableVersionedDataRepository<DomainData> {
 
-  @Query(
-      "select e from #{#entityName} as e join e.catalogs as c join c.catalogItems as i where i.dbId = ?1")
+  @Query("select e from #{#entityName} as e join e.catalogItems as i where i.dbId = ?1")
   Optional<DomainData> findByCatalogsCatalogItemsId(String catalogItemId);
 
   @Query("select e from #{#entityName} as e join e.domainTemplate as t where t.dbId = ?1")

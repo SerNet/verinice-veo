@@ -18,16 +18,15 @@
 package org.veo.adapter.service.domaintemplate.dto;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import jakarta.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import org.veo.adapter.presenter.api.Patterns;
-import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
 import org.veo.adapter.presenter.api.dto.AbstractDomainTemplateDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
@@ -55,11 +54,7 @@ public class TransformDomainTemplateDto extends AbstractDomainTemplateDto
   @ToString.Include
   private String id;
 
-  @JsonDeserialize(contentAs = TransformCatalogDto.class)
-  @Override
-  public void setCatalogs(Set<AbstractCatalogDto> catalogs) {
-    super.setCatalogs(catalogs);
-  }
+  private Set<TransformCatalogItemDto> catalogItems = new HashSet<>();
 
   private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions = new HashMap<>();
 }

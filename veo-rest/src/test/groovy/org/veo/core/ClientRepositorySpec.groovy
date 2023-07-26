@@ -177,7 +177,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
         //        newClient.units.first().abbreviation == client.units.first().abbreviation
     }
 
-    def "create a simple client and a domain together with catalog"() {
+    def "create a simple client and a domain together with catalog items"() {
         given: "a domain and a client"
         Domain domain = newDomain(newClient()) {domain ->
             name = "27001"
@@ -192,24 +192,22 @@ class ClientRepositorySpec extends VeoSpringSpec {
             })
         }
 
-        newCatalog(domain) {
-            newCatalogItem(it, {
-                elementType = "control"
-                subType = "ctl"
-                status = "NEW"
-            }
-            )
-            newCatalogItem(it, {
-                elementType = "control"
-                subType = "ctl"
-                status = "NEW"
-            })
-            newCatalogItem(it, {
-                elementType = "control"
-                subType = "ctl"
-                status = "NEW"
-            })
+        newCatalogItem(domain, {
+            elementType = "control"
+            subType = "ctl"
+            status = "NEW"
         }
+        )
+        newCatalogItem(domain, {
+            elementType = "control"
+            subType = "ctl"
+            status = "NEW"
+        })
+        newCatalogItem(domain, {
+            elementType = "control"
+            subType = "ctl"
+            status = "NEW"
+        })
 
         Client client = newClient {
             name = "Test Client"
@@ -230,8 +228,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
         c.domains.size()==1
         c.domains.first().name == "27001"
         c.domains.first().owner == c
-        c.domains.first().catalogs.size() == 1
-        c.domains.first().catalogs.first().catalogItems.size() == 3
+        c.domains.first().catalogItems.size() == 3
 
         when: "The client is persisted"
         repository.save(c)
@@ -249,16 +246,14 @@ class ClientRepositorySpec extends VeoSpringSpec {
         c.domains.first().description == "ISO/IEC"
         c.domains.first().abbreviation == "ISO"
         c.domains.first().owner == c
-        c.domains.first().catalogs.size() == 1
-        c.domains.first().catalogs.first().catalogItems.size() == 3
+        c.domains.first().catalogItems.size() == 3
     }
 
     def "a client cannot be saved with an invalid catalog item"() {
         given: "a client with a catalog containing an item"
         Client client = newClient()
         def domain = newDomain(client)
-        def catalog = newCatalog(domain)
-        def catalogItem = newCatalogItem(catalog) {
+        newCatalogItem(domain) {
             name = 'c3'
             subType = "ctl"
             status = "NEW"
@@ -269,7 +264,7 @@ class ClientRepositorySpec extends VeoSpringSpec {
 
         then: "the validation cascades down to the invalid item"
         ConstraintViolationException ex = thrown(ConstraintViolationException)
-        ex.getConstraintViolations().first().propertyPath ==~ /domains\[].catalogs\[].catalogItems\[].elementType/
+        ex.getConstraintViolations().first().propertyPath ==~ /domains\[].catalogItems\[].elementType/
         ex.getConstraintViolations().first().getMessageTemplate() ==~ /.*NotNull.message.*/
     }
 }

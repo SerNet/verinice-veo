@@ -44,7 +44,6 @@ import org.veo.adapter.presenter.api.dto.ModelDto;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
-import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.CatalogReference;
 import org.veo.core.entity.Client;
@@ -174,21 +173,12 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
           .withRel(DomainTemplateController.URL_BASE_PATH)
           .getHref();
     }
-    if (Catalog.class.isAssignableFrom(type)) {
-      return linkTo(methodOn(CatalogController.class).getCatalog(ANY_AUTH, id, ANY_REQUEST))
-          .withRel(CatalogController.URL_BASE_PATH)
-          .getHref();
-    }
     if (CatalogItem.class.isAssignableFrom(type)) {
       CatalogItem catalogItem = (CatalogItem) identifiable;
       return linkTo(
               methodOn(CatalogController.class)
                   .getCatalogItem(
-                      ANY_AUTH,
-                      catalogItem.getCatalog().getId().uuidValue(),
-                      id,
-                      null,
-                      ANY_REQUEST))
+                      ANY_AUTH, catalogItem.getOwner().getId().uuidValue(), id, null, ANY_REQUEST))
           .withRel(CatalogController.URL_BASE_PATH)
           .expand()
           .getHref();
@@ -364,7 +354,6 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     }
     // Some types have no endpoint.
     if (Client.class.isAssignableFrom(type)
-        || Catalog.class.isAssignableFrom(type)
         || CatalogItem.class.isAssignableFrom(type)
         || DomainTemplate.class.isAssignableFrom(type)) {
       return null;
@@ -568,9 +557,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
           .getHref();
     }
     // Some types have no endpoint.
-    if (Client.class.isAssignableFrom(type)
-        || Catalog.class.isAssignableFrom(type)
-        || CatalogItem.class.isAssignableFrom(type)) {
+    if (Client.class.isAssignableFrom(type) || CatalogItem.class.isAssignableFrom(type)) {
       return null;
     }
     throw new NotImplementedException("Unsupported collection reference type " + type);

@@ -4,1119 +4,915 @@
   "description": "The DS-GVO DomainTemplate.",
   "authority": "SERNET",
   "templateVersion": "2.0.0",
-  "catalogs": [
+  "catalogItems": [
     {
-      "name": "DS-GVO",
-      "domainTemplate": {
-        "targetUri": "/domaintemplates/b492c7da-0033-59c3-a225-c749595d2b8d"
-      },
-      "catalogItems": [
-        {
-          "name": "TOM zur Verschlüsselung",
-          "abbreviation": "TOM-E",
-          "description": "Verschlüsselung: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Verschlüsselung personenbezogener Daten.",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
-              },
-              "referenceType": "LINK_EXTERNAL",
-              "linkType": "process_tom",
-              "attributes": {}
-            }
-          ],
-          "namespace": "TOM.TOM-E",
-          "subType": "CTL_TOM",
-          "status": "NEW",
-          "customAspects": {
-            "control_dataProtection": {
-              "control_dataProtection_objectives": [
-                "control_dataProtection_objectives_encryption"
-              ]
-            }
-          },
-          "elementType": "control",
-          "id": "7a60f2cc-fb20-4669-9eda-d76863a29602"
-        },
-        {
-          "name": "Erstellung und Nutzung umfassender Profile zur Unterstützung Entscheidungsfindung",
-          "abbreviation": "DS-G.3",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.3",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "2747d87a-b61b-4b34-8566-fff8f6adbc10"
-        },
-        {
-          "name": "Unberechtigte Kenntnisnahme",
-          "abbreviation": "DS-G.42",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.42",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "22c3f334-9875-450c-81e0-b27366b2a144"
-        },
-        {
-          "name": "Verletzung auf Verpflichtung auf Vertraulichkeit ",
-          "abbreviation": "DS-G.52",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.52",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "2acd6766-8ed1-4517-923b-3a3232a7ddba"
-        },
-        {
-          "name": "Fehlende oder unzureichende Information oder mangelnde Transparenz",
-          "abbreviation": "DS-G.10",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.10",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "7d32e351-6e4a-4368-8d6f-08acc4bf7254"
-        },
-        {
-          "name": "TOM zur Gewährleistung der Integrität",
-          "abbreviation": "TOM-I",
-          "description": "Gewährleistung der Vertraulichkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Vertraulichkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
-              },
-              "referenceType": "LINK_EXTERNAL",
-              "linkType": "process_tom",
-              "attributes": {}
-            }
-          ],
-          "namespace": "TOM.TOM-I",
-          "subType": "CTL_TOM",
-          "status": "NEW",
-          "customAspects": {
-            "control_dataProtection": {
-              "control_dataProtection_objectives": [
-                "control_dataProtection_objectives_integrity"
-              ]
-            }
-          },
-          "elementType": "control",
-          "id": "f78f6d65-2e36-4598-9628-76f0433742e0"
-        },
-        {
-          "name": "Fehlendes oder unzureichendes Privacy by Default",
-          "abbreviation": "DS-G.17",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.17",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "427b6849-2ba7-47c4-887c-5aeb226fc0ac"
-        },
-        {
-          "name": "Diskriminierung",
-          "abbreviation": "DS-G.57",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.57",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "ba7435fd-6b48-43e7-9c88-236c7918f3cb"
-        },
-        {
-          "name": "Fehlende oder unzureichende Datenschutz-Folgenabschätzung",
-          "abbreviation": "DS-G.7",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.7",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "7c306d92-fb0c-4e4f-9bbc-f7d72932479e"
-        },
-        {
-          "name": "Fehlendes oder unzureichendes Privacy by Design",
-          "abbreviation": "DS-G.18",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.18",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "c0f71954-447c-4f4a-b286-000e1e9490ca"
-        },
-        {
-          "name": "Fehlende oder unzureichende Identifikation, Analyse und Bewertung von Datenschutzrisiken",
-          "abbreviation": "DS-G.9",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.9",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "51df49d6-4f20-4d30-a5d6-64012ac4bce6"
-        },
-        {
-          "name": "Vernichtung oder Verlust personenbezogener Daten  ",
-          "abbreviation": "DS-G.54",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.54",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "d5fb4ac2-ac69-438c-bea6-d6a3b5a367b9"
-        },
-        {
-          "name": "Auftragsverarbeitung in Drittstaaten ohne adäquates Datenschutzniveau",
-          "abbreviation": "DS-G.1",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.1",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "d4f16bde-812d-41e5-9217-50a95b27518b"
-        },
-        {
-          "name": "Andere wirtschaftliche oder gesellschaftliche Nachteile",
-          "abbreviation": "DS-G.56",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.56",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "cf505bc7-bc09-4e4a-8d7b-e022da12fe46"
-        },
-        {
-          "name": "Verfahren regelmäßiger Überprüfung, Bewertung und Evaluierung der Wirksamkeit der TOM",
-          "abbreviation": "TOM-EFF",
-          "description": "Verfahren regelmäßiger Überprüfung, Bewertung und Evaluierung der Wirksamkeit der TOM: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich Verfahren zur regelmäßigen Überprüfung, Bewertung und Evaluierung der Wirksamkeit der technischen und organisatorischen Maßnahmen zur Gewährleistung der Sicherheit der Verarbeitung.",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
-              },
-              "referenceType": "LINK_EXTERNAL",
-              "linkType": "process_tom",
-              "attributes": {}
-            }
-          ],
-          "namespace": "TOM.TOM-EFF",
-          "subType": "CTL_TOM",
-          "status": "NEW",
-          "customAspects": {
-            "control_dataProtection": {
-              "control_dataProtection_objectives": [
-                "control_dataProtection_objectives_effectiveness"
-              ]
-            }
-          },
-          "elementType": "control",
-          "id": "971b5250-3673-4c80-8343-7aec2f5980ae"
-        },
-        {
-          "name": "Unzulässige Auskunftserteilung an Dritte",
-          "abbreviation": "DS-G.45",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.45",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "780d9beb-cd8e-48cd-9890-923f03f3e62a"
-        },
-        {
-          "name": "Fehlende oder unzureichende Datenschutzkontrollen",
-          "abbreviation": "DS-G.8",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.8",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "90fe5407-592a-47fc-80f5-3376c92866fe"
-        },
-        {
-          "name": "Kundentracking",
-          "abbreviation": "DS-G.25",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.25",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "56b98dc5-4c3f-4466-b6c2-48f9910d2adc"
-        },
-        {
-          "name": "Hohe Anzahl betroffener Personen durch Datenschutzverletzung",
-          "abbreviation": "DS-G.21",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.21",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "9b777242-bf70-481c-807a-c5e0a0926c15"
-        },
-        {
-          "name": "Fehlender oder unzureichender DSB",
-          "abbreviation": "DS-G.13",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.13",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "42ed00c8-7194-4a6a-b394-378c149c695c"
-        },
-        {
-          "name": "Fehlende oder unzureichende regelmäßige Überprüfung, Korrektur und Anpassung",
-          "abbreviation": "DS-G.12",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.12",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "8adafe5f-649f-4623-8d1f-5067139561f1"
-        },
-        {
-          "name": "TOM zur Gewährleistung der Vertraulichkeit",
-          "abbreviation": "TOM-C",
-          "description": "Gewährleistung der Vertraulichkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Vertraulichkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
-              },
-              "referenceType": "LINK_EXTERNAL",
-              "linkType": "process_tom",
-              "attributes": {}
-            }
-          ],
-          "namespace": "TOM.TOM-C",
-          "subType": "CTL_TOM",
-          "status": "NEW",
-          "customAspects": {
-            "control_dataProtection": {
-              "control_dataProtection_objectives": [
-                "control_dataProtection_objectives_confidentiality"
-              ]
-            }
-          },
-          "elementType": "control",
-          "id": "e40d750a-24f3-40ac-84a7-746ac13f64d4"
-        },
-        {
-          "name": "Unvollständige Verträge",
-          "abbreviation": "DS-G.44",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.44",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "7875eff2-cad9-495d-a9d6-42df1f57746a"
-        },
-        {
-          "name": "Manipulation oder unberechtigte Veränderung personenbezogener Daten",
-          "abbreviation": "DS-G.31",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.31",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "beb6f452-e4fa-4f30-80da-0affbcc1d265"
-        },
-        {
-          "name": "Verletzung von Berufs-, Sozial oder Amtsgeheimnissen",
-          "abbreviation": "DS-G.53",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.53",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "4b11925b-d5ad-4bf0-b296-86d239188a37"
-        },
-        {
-          "name": "Keine Widerspruchsmöglichkeit für Betroffene gegen die Datenverarbeitung",
-          "abbreviation": "DS-G.23",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.23",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "1b73e686-f922-4eb3-aae9-356a49d4df6d"
-        },
-        {
-          "name": "Fehlende oder unzureichende Beachtung des Stands der Technik",
-          "abbreviation": "DS-G.5",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.5",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "37c95dff-cd20-43e5-a95a-19d743eebdb9"
-        },
-        {
-          "name": "Hinderung der Kontrolle über eigene Daten",
-          "abbreviation": "DS-G.20",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.20",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "97dd4533-8b55-44a3-a39c-6a3a442a1e22"
-        },
-        {
-          "name": "TOM zur Gewährleistung der Belastbarkeit",
-          "abbreviation": "TOM-R",
-          "description": "Gewährleistung der Belastbarkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Belastbarkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
-              },
-              "referenceType": "LINK_EXTERNAL",
-              "linkType": "process_tom",
-              "attributes": {}
-            }
-          ],
-          "namespace": "TOM.TOM-R",
-          "subType": "CTL_TOM",
-          "status": "NEW",
-          "customAspects": {
-            "control_dataProtection": {
-              "control_dataProtection_objectives": [
-                "control_dataProtection_objectives_resilience"
-              ]
-            }
-          },
-          "elementType": "control",
-          "id": "c4f39b57-acc3-4edf-9a0b-7d8595607424"
-        },
-        {
-          "name": "Mangelhafter Umgang mit Datenschutzvorfällen",
-          "abbreviation": "DS-G.27",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.27",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "87d14fe1-0cca-4fa3-8bd6-70c506f2a541"
-        },
-        {
-          "name": "Mangelndes Datenschutzbewusstsein",
-          "abbreviation": "DS-G.30",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.30",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "0412a2be-8545-49e9-8660-992ea1988127"
-        },
-        {
-          "name": "Mangelhafte Protokollierung",
-          "abbreviation": "DS-G.26",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.26",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "c17efe02-534a-40aa-9838-53d86ccad5f7"
-        },
-        {
-          "name": "Rufschädigung",
-          "abbreviation": "DS-G.36",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.36",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "ad9895dd-0764-4dbb-a51a-d2dffbc0bc1e"
-        },
-        {
-          "name": "VVT",
-          "abbreviation": "VVT",
-          "description": "VVT-Prozess",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/1a3f8704-4eee-45ed-b818-410fad32e412"
-              },
-              "referenceType": "LINK",
-              "linkType": "process_tom",
-              "attributes": {}
-            },
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/c4f39b57-acc3-4edf-9a0b-7d8595607424"
-              },
-              "referenceType": "LINK",
-              "linkType": "process_tom",
-              "attributes": {}
-            },
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/01f07484-ef75-445e-aeeb-8013bb34c8a9"
-              },
-              "referenceType": "LINK",
-              "linkType": "process_tom",
-              "attributes": {}
-            },
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/971b5250-3673-4c80-8343-7aec2f5980ae"
-              },
-              "referenceType": "LINK",
-              "linkType": "process_tom",
-              "attributes": {}
-            },
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/7a60f2cc-fb20-4669-9eda-d76863a29602"
-              },
-              "referenceType": "LINK",
-              "linkType": "process_tom",
-              "attributes": {}
-            },
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/e40d750a-24f3-40ac-84a7-746ac13f64d4"
-              },
-              "referenceType": "LINK",
-              "linkType": "process_tom",
-              "attributes": {}
-            },
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/545aa1a7-984d-42ab-a7d0-55682153b3b0"
-              },
-              "referenceType": "LINK",
-              "linkType": "process_tom",
-              "attributes": {}
-            },
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/f78f6d65-2e36-4598-9628-76f0433742e0"
-              },
-              "referenceType": "LINK",
-              "linkType": "process_tom",
-              "attributes": {}
-            }
-          ],
-          "namespace": "TOM.VVT",
-          "subType": "PRO_DataProcessing",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "process",
-          "id": "44501434-1c5f-4ea2-92a1-56f8bb21d034"
-        },
-        {
-          "name": "Rechtswidrige bzw. unrechtmäßige Verabeitung personenbezogener Daten",
-          "abbreviation": "DS-G.35",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.35",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "3b7fa647-ae0e-40c2-8f83-ad2910eed369"
-        },
-        {
-          "name": "Phishing ",
-          "abbreviation": "DS-G.33",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.33",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "615f9e1e-fc23-45e2-a21b-6564ee479781"
-        },
-        {
-          "name": "Fehlendes oder unvollständiges Verzeichnis der Verarbeitungstätigkeiten",
-          "abbreviation": "DS-G.16",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.16",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "34f29b65-a544-4d54-a998-90376469d56a"
-        },
-        {
-          "name": "Identitätsdiebstahl oder Identitätsbetrug",
-          "abbreviation": "DS-G.22",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.22",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "0706a55c-e38d-42e4-afcb-b99dad446ef8"
-        },
-        {
-          "name": "Unbefugte Offenlegung personenbezogener Daten ",
-          "abbreviation": "DS-G.40",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.40",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "ca872478-b4f4-4767-88a6-f52fa22553dc"
-        },
-        {
-          "name": "Fehlender oder unzureichender Prozess meldepflichtiger Vorfälle",
-          "abbreviation": "DS-G.14",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.14",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "ec67bd2b-fbc5-45e3-b74a-7dd9a7d6b26c"
-        },
-        {
-          "name": "Unzureichende  Pseudonymisierung oder Anonymisierung",
-          "abbreviation": "DS-G.47",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.47",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "0614ebef-3a99-4a0b-a6dc-766f960cf079"
-        },
-        {
-          "name": "TOM zur Gewährleistung der Verfügbarkeit",
-          "abbreviation": "TOM-A",
-          "description": "Gewährleistung der Verfügbarkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Verfügbarkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
-              },
-              "referenceType": "LINK_EXTERNAL",
-              "linkType": "process_tom",
-              "attributes": {}
-            }
-          ],
-          "namespace": "TOM.TOM-A",
-          "subType": "CTL_TOM",
-          "status": "NEW",
-          "customAspects": {
-            "control_dataProtection": {
-              "control_dataProtection_objectives": [
-                "control_dataProtection_objectives_availability"
-              ]
-            }
-          },
-          "elementType": "control",
-          "id": "01f07484-ef75-445e-aeeb-8013bb34c8a9"
-        },
-        {
-          "name": "Missachtung der Zweckbindung",
-          "abbreviation": "DS-G.32",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.32",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "0fcf3b61-014c-4ba6-9d38-6e869775198b"
-        },
-        {
-          "name": "Verarbeitung von Daten Minderjähriger",
-          "abbreviation": "DS-G.50",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.50",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "a920e1fe-db44-4cf3-ad2c-ce4c60fdf3ff"
-        },
-        {
-          "name": "Verwendung der Daten zu inkompatiblen Zwecken",
-          "abbreviation": "DS-G.55",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.55",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "d8000d73-16b7-43a9-af5e-8aa1dc6858bf"
-        },
-        {
-          "name": "Recht auf Datenübertragbarkeit wird nicht oder unvollständig gewährt",
-          "abbreviation": "DS-G.34",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.34",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "30155753-99a3-4d2a-b6a7-d7f33c30653f"
-        },
-        {
-          "name": "Fehlende oder unzureichende Löschvorgaben bzw. Löschmechanismen",
-          "abbreviation": "DS-G.11",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.11",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "c98a17c6-c896-43d2-ac40-bbc307050fec"
-        },
-        {
-          "name": "Überschreitung des Erforderlichkeitsgrundsatzes",
-          "abbreviation": "DS-G.39",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.39",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "7329aaa6-1902-480f-a955-e424476ecb49"
-        },
-        {
-          "name": "Verarbeitung wider Treu und Glauben",
-          "abbreviation": "DS-G.51",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.51",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "b9932a54-d023-4b57-9121-d852a614c59c"
-        },
-        {
-          "name": "Unbefugter Zugang zu personenbezogenen Daten",
-          "abbreviation": "DS-G.41",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.41",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "5339b295-34f1-496a-b663-9ce103a56ee5"
-        },
-        {
-          "name": "Verarbeitung über die Speicherfrist hinaus",
-          "abbreviation": "DS-G.49",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.49",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "d3040e5b-9908-4d89-b901-204ad4c03eba"
-        },
-        {
-          "name": "Betroffenenrechte werden nicht oder nur unvollständig gewährt",
-          "abbreviation": "DS-G.2",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.2",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "506776b1-133c-42cf-bf17-e51f921aec09"
-        },
-        {
-          "name": "Fehlender oder unzureichender Vertrag zur Auftragsverarbeitung",
-          "abbreviation": "DS-G.15",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.15",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "e19ae22b-d171-48ce-ae3a-f1e4b2d7fd9c"
-        },
-        {
-          "name": "Kein Prozess zur Berichtigung unrichtiger Daten",
-          "abbreviation": "DS-G.24",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.24",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "cd6b3524-b0d7-49a8-b76c-4180722abfea"
-        },
-        {
-          "name": "Social Engineering",
-          "abbreviation": "DS-G.38",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.38",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "00e615a4-58cf-4953-a61a-43755000a73c"
-        },
-        {
-          "name": "Unberechtigter Zugriff auf personenbezogene Daten",
-          "abbreviation": "DS-G.43",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.43",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "f0514b31-5868-480d-a5fb-24cd7a926e3b"
-        },
-        {
-          "name": "Fehlende oder unzureichende Absicherung der Datenverarbeitung im Auftrag",
-          "abbreviation": "DS-G.4",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.4",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "75d43e2f-a376-498a-ab5c-c09837605109"
-        },
-        {
-          "name": "Schlecht- oder Nichterfüllung eines Auskunftsanspruchs",
-          "abbreviation": "DS-G.37",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.37",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "a4f330e1-86fb-4f27-a7f3-cc9b24499d93"
-        },
-        {
-          "name": "Fehlende oder unzureichende Datenminimierung, Datensparsamkeit ",
-          "abbreviation": "DS-G.6",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.6",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "4c093853-49e0-4d93-8fbf-ebf390386b68"
-        },
-        {
-          "name": "Mangelnde Freiwilligkeit der Einwilligungserklärung",
-          "abbreviation": "DS-G.29",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.29",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "6734be97-537e-4626-a144-fb1a6ab1c136"
-        },
-        {
-          "name": "Unzureichende Erfüllung von Nachweis- und Dokumentationspflichten ",
-          "abbreviation": "DS-G.46",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.46",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "e2b43a73-0038-4f0f-8c3f-7d23a20fdf41"
-        },
-        {
-          "name": "Verarbeitung großer Datenmengen",
-          "abbreviation": "DS-G.48",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.48",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "ed604045-d939-4ad1-91a6-eec17e4f9b28"
-        },
-        {
-          "name": "Fehlerhafter Einsatz neuartiger Technologien",
-          "abbreviation": "DS-G.19",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.DS-G.19",
-          "subType": "SCN_Scenario",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "scenario",
-          "id": "6c513ced-0356-415c-ba00-dd1e833369d5"
-        },
-        {
-          "name": "TOM zur Wiederherstellbarkeit",
-          "abbreviation": "TOM-REC",
-          "description": "Wiederherstellbarkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Verfügbarkeit der personenbezogenen Daten und den Zugang zu ihnen bei einem physischen oder technischen Zwischenfall rasch wiederherzustellen.",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
-              },
-              "referenceType": "LINK_EXTERNAL",
-              "linkType": "process_tom",
-              "attributes": {}
-            }
-          ],
-          "namespace": "TOM.TOM-REC",
-          "subType": "CTL_TOM",
-          "status": "NEW",
-          "customAspects": {
-            "control_dataProtection": {
-              "control_dataProtection_objectives": [
-                "control_dataProtection_objectives_recoverability"
-              ]
-            }
-          },
-          "elementType": "control",
-          "id": "1a3f8704-4eee-45ed-b818-410fad32e412"
-        },
-        {
-          "name": "TOM zur Pseudonymisierung",
-          "abbreviation": "TOM-P",
-          "description": "Pseudonymisierung: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Pseudonymisierung personenbezogener Daten.",
-          "catalog": {
-            "targetUri": "/catalogs/16bda087-5e16-4631-9890-8b863c445e63"
-          },
-          "tailoringReferences": [
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
-              },
-              "referenceType": "LINK_EXTERNAL",
-              "linkType": "process_tom",
-              "attributes": {}
-            }
-          ],
-          "namespace": "TOM.TOM-P",
-          "subType": "CTL_TOM",
-          "status": "NEW",
-          "customAspects": {
-            "control_dataProtection": {
-              "control_dataProtection_objectives": [
-                "control_dataProtection_objectives_pseudonymization"
-              ]
-            }
-          },
-          "elementType": "control",
-          "id": "545aa1a7-984d-42ab-a7d0-55682153b3b0"
+      "name": "TOM zur Verschlüsselung",
+      "abbreviation": "TOM-E",
+      "description": "Verschlüsselung: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Verschlüsselung personenbezogener Daten.",
+      "tailoringReferences": [
+        {
+          "catalogItem": {
+            "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
+          },
+          "referenceType": "LINK_EXTERNAL",
+          "linkType": "process_tom",
+          "attributes": {}
         }
       ],
-      "id": "16bda087-5e16-4631-9890-8b863c445e63"
+      "namespace": "TOM.TOM-E",
+      "subType": "CTL_TOM",
+      "status": "NEW",
+      "customAspects": {
+        "control_dataProtection": {
+          "control_dataProtection_objectives": [
+            "control_dataProtection_objectives_encryption"
+          ]
+        }
+      },
+      "elementType": "control",
+      "id": "7a60f2cc-fb20-4669-9eda-d76863a29602"
+    },
+    {
+      "name": "Erstellung und Nutzung umfassender Profile zur Unterstützung Entscheidungsfindung",
+      "abbreviation": "DS-G.3",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.3",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "2747d87a-b61b-4b34-8566-fff8f6adbc10"
+    },
+    {
+      "name": "Unberechtigte Kenntnisnahme",
+      "abbreviation": "DS-G.42",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.42",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "22c3f334-9875-450c-81e0-b27366b2a144"
+    },
+    {
+      "name": "Verletzung auf Verpflichtung auf Vertraulichkeit ",
+      "abbreviation": "DS-G.52",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.52",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "2acd6766-8ed1-4517-923b-3a3232a7ddba"
+    },
+    {
+      "name": "Fehlende oder unzureichende Information oder mangelnde Transparenz",
+      "abbreviation": "DS-G.10",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.10",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "7d32e351-6e4a-4368-8d6f-08acc4bf7254"
+    },
+    {
+      "name": "TOM zur Gewährleistung der Integrität",
+      "abbreviation": "TOM-I",
+      "description": "Gewährleistung der Vertraulichkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Vertraulichkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
+      "tailoringReferences": [
+        {
+          "catalogItem": {
+            "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
+          },
+          "referenceType": "LINK_EXTERNAL",
+          "linkType": "process_tom",
+          "attributes": {}
+        }
+      ],
+      "namespace": "TOM.TOM-I",
+      "subType": "CTL_TOM",
+      "status": "NEW",
+      "customAspects": {
+        "control_dataProtection": {
+          "control_dataProtection_objectives": [
+            "control_dataProtection_objectives_integrity"
+          ]
+        }
+      },
+      "elementType": "control",
+      "id": "f78f6d65-2e36-4598-9628-76f0433742e0"
+    },
+    {
+      "name": "Fehlendes oder unzureichendes Privacy by Default",
+      "abbreviation": "DS-G.17",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.17",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "427b6849-2ba7-47c4-887c-5aeb226fc0ac"
+    },
+    {
+      "name": "Diskriminierung",
+      "abbreviation": "DS-G.57",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.57",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "ba7435fd-6b48-43e7-9c88-236c7918f3cb"
+    },
+    {
+      "name": "Fehlende oder unzureichende Datenschutz-Folgenabschätzung",
+      "abbreviation": "DS-G.7",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.7",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "7c306d92-fb0c-4e4f-9bbc-f7d72932479e"
+    },
+    {
+      "name": "Fehlendes oder unzureichendes Privacy by Design",
+      "abbreviation": "DS-G.18",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.18",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "c0f71954-447c-4f4a-b286-000e1e9490ca"
+    },
+    {
+      "name": "Fehlende oder unzureichende Identifikation, Analyse und Bewertung von Datenschutzrisiken",
+      "abbreviation": "DS-G.9",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.9",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "51df49d6-4f20-4d30-a5d6-64012ac4bce6"
+    },
+    {
+      "name": "Vernichtung oder Verlust personenbezogener Daten  ",
+      "abbreviation": "DS-G.54",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.54",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "d5fb4ac2-ac69-438c-bea6-d6a3b5a367b9"
+    },
+    {
+      "name": "Auftragsverarbeitung in Drittstaaten ohne adäquates Datenschutzniveau",
+      "abbreviation": "DS-G.1",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.1",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "d4f16bde-812d-41e5-9217-50a95b27518b"
+    },
+    {
+      "name": "Andere wirtschaftliche oder gesellschaftliche Nachteile",
+      "abbreviation": "DS-G.56",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.56",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "cf505bc7-bc09-4e4a-8d7b-e022da12fe46"
+    },
+    {
+      "name": "Verfahren regelmäßiger Überprüfung, Bewertung und Evaluierung der Wirksamkeit der TOM",
+      "abbreviation": "TOM-EFF",
+      "description": "Verfahren regelmäßiger Überprüfung, Bewertung und Evaluierung der Wirksamkeit der TOM: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich Verfahren zur regelmäßigen Überprüfung, Bewertung und Evaluierung der Wirksamkeit der technischen und organisatorischen Maßnahmen zur Gewährleistung der Sicherheit der Verarbeitung.",
+      "tailoringReferences": [
+        {
+          "catalogItem": {
+            "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
+          },
+          "referenceType": "LINK_EXTERNAL",
+          "linkType": "process_tom",
+          "attributes": {}
+        }
+      ],
+      "namespace": "TOM.TOM-EFF",
+      "subType": "CTL_TOM",
+      "status": "NEW",
+      "customAspects": {
+        "control_dataProtection": {
+          "control_dataProtection_objectives": [
+            "control_dataProtection_objectives_effectiveness"
+          ]
+        }
+      },
+      "elementType": "control",
+      "id": "971b5250-3673-4c80-8343-7aec2f5980ae"
+    },
+    {
+      "name": "Unzulässige Auskunftserteilung an Dritte",
+      "abbreviation": "DS-G.45",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.45",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "780d9beb-cd8e-48cd-9890-923f03f3e62a"
+    },
+    {
+      "name": "Fehlende oder unzureichende Datenschutzkontrollen",
+      "abbreviation": "DS-G.8",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.8",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "90fe5407-592a-47fc-80f5-3376c92866fe"
+    },
+    {
+      "name": "Kundentracking",
+      "abbreviation": "DS-G.25",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.25",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "56b98dc5-4c3f-4466-b6c2-48f9910d2adc"
+    },
+    {
+      "name": "Hohe Anzahl betroffener Personen durch Datenschutzverletzung",
+      "abbreviation": "DS-G.21",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.21",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "9b777242-bf70-481c-807a-c5e0a0926c15"
+    },
+    {
+      "name": "Fehlender oder unzureichender DSB",
+      "abbreviation": "DS-G.13",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.13",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "42ed00c8-7194-4a6a-b394-378c149c695c"
+    },
+    {
+      "name": "Fehlende oder unzureichende regelmäßige Überprüfung, Korrektur und Anpassung",
+      "abbreviation": "DS-G.12",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.12",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "8adafe5f-649f-4623-8d1f-5067139561f1"
+    },
+    {
+      "name": "TOM zur Gewährleistung der Vertraulichkeit",
+      "abbreviation": "TOM-C",
+      "description": "Gewährleistung der Vertraulichkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Vertraulichkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
+      "tailoringReferences": [
+        {
+          "catalogItem": {
+            "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
+          },
+          "referenceType": "LINK_EXTERNAL",
+          "linkType": "process_tom",
+          "attributes": {}
+        }
+      ],
+      "namespace": "TOM.TOM-C",
+      "subType": "CTL_TOM",
+      "status": "NEW",
+      "customAspects": {
+        "control_dataProtection": {
+          "control_dataProtection_objectives": [
+            "control_dataProtection_objectives_confidentiality"
+          ]
+        }
+      },
+      "elementType": "control",
+      "id": "e40d750a-24f3-40ac-84a7-746ac13f64d4"
+    },
+    {
+      "name": "Unvollständige Verträge",
+      "abbreviation": "DS-G.44",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.44",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "7875eff2-cad9-495d-a9d6-42df1f57746a"
+    },
+    {
+      "name": "Manipulation oder unberechtigte Veränderung personenbezogener Daten",
+      "abbreviation": "DS-G.31",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.31",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "beb6f452-e4fa-4f30-80da-0affbcc1d265"
+    },
+    {
+      "name": "Verletzung von Berufs-, Sozial oder Amtsgeheimnissen",
+      "abbreviation": "DS-G.53",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.53",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "4b11925b-d5ad-4bf0-b296-86d239188a37"
+    },
+    {
+      "name": "Keine Widerspruchsmöglichkeit für Betroffene gegen die Datenverarbeitung",
+      "abbreviation": "DS-G.23",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.23",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "1b73e686-f922-4eb3-aae9-356a49d4df6d"
+    },
+    {
+      "name": "Fehlende oder unzureichende Beachtung des Stands der Technik",
+      "abbreviation": "DS-G.5",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.5",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "37c95dff-cd20-43e5-a95a-19d743eebdb9"
+    },
+    {
+      "name": "Hinderung der Kontrolle über eigene Daten",
+      "abbreviation": "DS-G.20",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.20",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "97dd4533-8b55-44a3-a39c-6a3a442a1e22"
+    },
+    {
+      "name": "TOM zur Gewährleistung der Belastbarkeit",
+      "abbreviation": "TOM-R",
+      "description": "Gewährleistung der Belastbarkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Belastbarkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
+      "tailoringReferences": [
+        {
+          "catalogItem": {
+            "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
+          },
+          "referenceType": "LINK_EXTERNAL",
+          "linkType": "process_tom",
+          "attributes": {}
+        }
+      ],
+      "namespace": "TOM.TOM-R",
+      "subType": "CTL_TOM",
+      "status": "NEW",
+      "customAspects": {
+        "control_dataProtection": {
+          "control_dataProtection_objectives": [
+            "control_dataProtection_objectives_resilience"
+          ]
+        }
+      },
+      "elementType": "control",
+      "id": "c4f39b57-acc3-4edf-9a0b-7d8595607424"
+    },
+    {
+      "name": "Mangelhafter Umgang mit Datenschutzvorfällen",
+      "abbreviation": "DS-G.27",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.27",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "87d14fe1-0cca-4fa3-8bd6-70c506f2a541"
+    },
+    {
+      "name": "Mangelndes Datenschutzbewusstsein",
+      "abbreviation": "DS-G.30",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.30",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "0412a2be-8545-49e9-8660-992ea1988127"
+    },
+    {
+      "name": "Mangelhafte Protokollierung",
+      "abbreviation": "DS-G.26",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.26",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "c17efe02-534a-40aa-9838-53d86ccad5f7"
+    },
+    {
+      "name": "Rufschädigung",
+      "abbreviation": "DS-G.36",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.36",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "ad9895dd-0764-4dbb-a51a-d2dffbc0bc1e"
+    },
+    {
+      "name": "VVT",
+      "abbreviation": "VVT",
+      "description": "VVT-Prozess",
+      "tailoringReferences": [
+        {
+          "catalogItem": {
+            "targetUri": "/catalogitems/1a3f8704-4eee-45ed-b818-410fad32e412"
+          },
+          "referenceType": "LINK",
+          "linkType": "process_tom",
+          "attributes": {}
+        },
+        {
+          "catalogItem": {
+            "targetUri": "/catalogitems/c4f39b57-acc3-4edf-9a0b-7d8595607424"
+          },
+          "referenceType": "LINK",
+          "linkType": "process_tom",
+          "attributes": {}
+        },
+        {
+          "catalogItem": {
+            "targetUri": "/catalogitems/01f07484-ef75-445e-aeeb-8013bb34c8a9"
+          },
+          "referenceType": "LINK",
+          "linkType": "process_tom",
+          "attributes": {}
+        },
+        {
+          "catalogItem": {
+            "targetUri": "/catalogitems/971b5250-3673-4c80-8343-7aec2f5980ae"
+          },
+          "referenceType": "LINK",
+          "linkType": "process_tom",
+          "attributes": {}
+        },
+        {
+          "catalogItem": {
+            "targetUri": "/catalogitems/7a60f2cc-fb20-4669-9eda-d76863a29602"
+          },
+          "referenceType": "LINK",
+          "linkType": "process_tom",
+          "attributes": {}
+        },
+        {
+          "catalogItem": {
+            "targetUri": "/catalogitems/e40d750a-24f3-40ac-84a7-746ac13f64d4"
+          },
+          "referenceType": "LINK",
+          "linkType": "process_tom",
+          "attributes": {}
+        },
+        {
+          "catalogItem": {
+            "targetUri": "/catalogitems/545aa1a7-984d-42ab-a7d0-55682153b3b0"
+          },
+          "referenceType": "LINK",
+          "linkType": "process_tom",
+          "attributes": {}
+        },
+        {
+          "catalogItem": {
+            "targetUri": "/catalogitems/f78f6d65-2e36-4598-9628-76f0433742e0"
+          },
+          "referenceType": "LINK",
+          "linkType": "process_tom",
+          "attributes": {}
+        }
+      ],
+      "namespace": "TOM.VVT",
+      "subType": "PRO_DataProcessing",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "process",
+      "id": "44501434-1c5f-4ea2-92a1-56f8bb21d034"
+    },
+    {
+      "name": "Rechtswidrige bzw. unrechtmäßige Verabeitung personenbezogener Daten",
+      "abbreviation": "DS-G.35",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.35",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "3b7fa647-ae0e-40c2-8f83-ad2910eed369"
+    },
+    {
+      "name": "Phishing ",
+      "abbreviation": "DS-G.33",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.33",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "615f9e1e-fc23-45e2-a21b-6564ee479781"
+    },
+    {
+      "name": "Fehlendes oder unvollständiges Verzeichnis der Verarbeitungstätigkeiten",
+      "abbreviation": "DS-G.16",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.16",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "34f29b65-a544-4d54-a998-90376469d56a"
+    },
+    {
+      "name": "Identitätsdiebstahl oder Identitätsbetrug",
+      "abbreviation": "DS-G.22",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.22",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "0706a55c-e38d-42e4-afcb-b99dad446ef8"
+    },
+    {
+      "name": "Unbefugte Offenlegung personenbezogener Daten ",
+      "abbreviation": "DS-G.40",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.40",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "ca872478-b4f4-4767-88a6-f52fa22553dc"
+    },
+    {
+      "name": "Fehlender oder unzureichender Prozess meldepflichtiger Vorfälle",
+      "abbreviation": "DS-G.14",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.14",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "ec67bd2b-fbc5-45e3-b74a-7dd9a7d6b26c"
+    },
+    {
+      "name": "Unzureichende  Pseudonymisierung oder Anonymisierung",
+      "abbreviation": "DS-G.47",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.47",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "0614ebef-3a99-4a0b-a6dc-766f960cf079"
+    },
+    {
+      "name": "TOM zur Gewährleistung der Verfügbarkeit",
+      "abbreviation": "TOM-A",
+      "description": "Gewährleistung der Verfügbarkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Verfügbarkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
+      "tailoringReferences": [
+        {
+          "catalogItem": {
+            "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
+          },
+          "referenceType": "LINK_EXTERNAL",
+          "linkType": "process_tom",
+          "attributes": {}
+        }
+      ],
+      "namespace": "TOM.TOM-A",
+      "subType": "CTL_TOM",
+      "status": "NEW",
+      "customAspects": {
+        "control_dataProtection": {
+          "control_dataProtection_objectives": [
+            "control_dataProtection_objectives_availability"
+          ]
+        }
+      },
+      "elementType": "control",
+      "id": "01f07484-ef75-445e-aeeb-8013bb34c8a9"
+    },
+    {
+      "name": "Missachtung der Zweckbindung",
+      "abbreviation": "DS-G.32",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.32",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "0fcf3b61-014c-4ba6-9d38-6e869775198b"
+    },
+    {
+      "name": "Verarbeitung von Daten Minderjähriger",
+      "abbreviation": "DS-G.50",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.50",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "a920e1fe-db44-4cf3-ad2c-ce4c60fdf3ff"
+    },
+    {
+      "name": "Verwendung der Daten zu inkompatiblen Zwecken",
+      "abbreviation": "DS-G.55",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.55",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "d8000d73-16b7-43a9-af5e-8aa1dc6858bf"
+    },
+    {
+      "name": "Recht auf Datenübertragbarkeit wird nicht oder unvollständig gewährt",
+      "abbreviation": "DS-G.34",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.34",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "30155753-99a3-4d2a-b6a7-d7f33c30653f"
+    },
+    {
+      "name": "Fehlende oder unzureichende Löschvorgaben bzw. Löschmechanismen",
+      "abbreviation": "DS-G.11",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.11",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "c98a17c6-c896-43d2-ac40-bbc307050fec"
+    },
+    {
+      "name": "Überschreitung des Erforderlichkeitsgrundsatzes",
+      "abbreviation": "DS-G.39",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.39",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "7329aaa6-1902-480f-a955-e424476ecb49"
+    },
+    {
+      "name": "Verarbeitung wider Treu und Glauben",
+      "abbreviation": "DS-G.51",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.51",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "b9932a54-d023-4b57-9121-d852a614c59c"
+    },
+    {
+      "name": "Unbefugter Zugang zu personenbezogenen Daten",
+      "abbreviation": "DS-G.41",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.41",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "5339b295-34f1-496a-b663-9ce103a56ee5"
+    },
+    {
+      "name": "Verarbeitung über die Speicherfrist hinaus",
+      "abbreviation": "DS-G.49",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.49",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "d3040e5b-9908-4d89-b901-204ad4c03eba"
+    },
+    {
+      "name": "Betroffenenrechte werden nicht oder nur unvollständig gewährt",
+      "abbreviation": "DS-G.2",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.2",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "506776b1-133c-42cf-bf17-e51f921aec09"
+    },
+    {
+      "name": "Fehlender oder unzureichender Vertrag zur Auftragsverarbeitung",
+      "abbreviation": "DS-G.15",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.15",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "e19ae22b-d171-48ce-ae3a-f1e4b2d7fd9c"
+    },
+    {
+      "name": "Kein Prozess zur Berichtigung unrichtiger Daten",
+      "abbreviation": "DS-G.24",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.24",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "cd6b3524-b0d7-49a8-b76c-4180722abfea"
+    },
+    {
+      "name": "Social Engineering",
+      "abbreviation": "DS-G.38",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.38",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "00e615a4-58cf-4953-a61a-43755000a73c"
+    },
+    {
+      "name": "Unberechtigter Zugriff auf personenbezogene Daten",
+      "abbreviation": "DS-G.43",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.43",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "f0514b31-5868-480d-a5fb-24cd7a926e3b"
+    },
+    {
+      "name": "Fehlende oder unzureichende Absicherung der Datenverarbeitung im Auftrag",
+      "abbreviation": "DS-G.4",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.4",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "75d43e2f-a376-498a-ab5c-c09837605109"
+    },
+    {
+      "name": "Schlecht- oder Nichterfüllung eines Auskunftsanspruchs",
+      "abbreviation": "DS-G.37",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.37",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "a4f330e1-86fb-4f27-a7f3-cc9b24499d93"
+    },
+    {
+      "name": "Fehlende oder unzureichende Datenminimierung, Datensparsamkeit ",
+      "abbreviation": "DS-G.6",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.6",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "4c093853-49e0-4d93-8fbf-ebf390386b68"
+    },
+    {
+      "name": "Mangelnde Freiwilligkeit der Einwilligungserklärung",
+      "abbreviation": "DS-G.29",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.29",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "6734be97-537e-4626-a144-fb1a6ab1c136"
+    },
+    {
+      "name": "Unzureichende Erfüllung von Nachweis- und Dokumentationspflichten ",
+      "abbreviation": "DS-G.46",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.46",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "e2b43a73-0038-4f0f-8c3f-7d23a20fdf41"
+    },
+    {
+      "name": "Verarbeitung großer Datenmengen",
+      "abbreviation": "DS-G.48",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.48",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "ed604045-d939-4ad1-91a6-eec17e4f9b28"
+    },
+    {
+      "name": "Fehlerhafter Einsatz neuartiger Technologien",
+      "abbreviation": "DS-G.19",
+      "tailoringReferences": [],
+      "namespace": "TOM.DS-G.19",
+      "subType": "SCN_Scenario",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "scenario",
+      "id": "6c513ced-0356-415c-ba00-dd1e833369d5"
+    },
+    {
+      "name": "TOM zur Wiederherstellbarkeit",
+      "abbreviation": "TOM-REC",
+      "description": "Wiederherstellbarkeit: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Verfügbarkeit der personenbezogenen Daten und den Zugang zu ihnen bei einem physischen oder technischen Zwischenfall rasch wiederherzustellen.",
+      "tailoringReferences": [
+        {
+          "catalogItem": {
+            "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
+          },
+          "referenceType": "LINK_EXTERNAL",
+          "linkType": "process_tom",
+          "attributes": {}
+        }
+      ],
+      "namespace": "TOM.TOM-REC",
+      "subType": "CTL_TOM",
+      "status": "NEW",
+      "customAspects": {
+        "control_dataProtection": {
+          "control_dataProtection_objectives": [
+            "control_dataProtection_objectives_recoverability"
+          ]
+        }
+      },
+      "elementType": "control",
+      "id": "1a3f8704-4eee-45ed-b818-410fad32e412"
+    },
+    {
+      "name": "TOM zur Pseudonymisierung",
+      "abbreviation": "TOM-P",
+      "description": "Pseudonymisierung: Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Pseudonymisierung personenbezogener Daten.",
+      "tailoringReferences": [
+        {
+          "catalogItem": {
+            "targetUri": "/catalogitems/44501434-1c5f-4ea2-92a1-56f8bb21d034"
+          },
+          "referenceType": "LINK_EXTERNAL",
+          "linkType": "process_tom",
+          "attributes": {}
+        }
+      ],
+      "namespace": "TOM.TOM-P",
+      "subType": "CTL_TOM",
+      "status": "NEW",
+      "customAspects": {
+        "control_dataProtection": {
+          "control_dataProtection_objectives": [
+            "control_dataProtection_objectives_pseudonymization"
+          ]
+        }
+      },
+      "elementType": "control",
+      "id": "545aa1a7-984d-42ab-a7d0-55682153b3b0"
     }
   ],
   "riskDefinitions": {

@@ -35,8 +35,6 @@ import org.veo.core.entity.exception.NotFoundException;
 public interface ClientRepository extends IdentifiableVersionedRepository<Client> {
   static Predicate<Client> IS_CLIENT_ACTIVE = c -> c.getState() == Client.ClientState.ACTIVATED;
 
-  Optional<Client> findByIdFetchCatalogs(Key<UUID> id);
-
   Optional<Client> findByIdFetchCatalogsAndItems(Key<UUID> id);
 
   Optional<Client> findByIdFetchCatalogsAndItemsAndTailoringReferences(Key<UUID> id);

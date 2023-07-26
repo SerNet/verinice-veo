@@ -44,14 +44,6 @@ public class ClientRepositoryImpl
   }
 
   @Override
-  public Optional<Client> findByIdFetchCatalogs(Key<UUID> id) {
-    return clientDataRepository
-        .findWithCatalogsByDbId(id.uuidValue())
-        .filter(IS_CLIENT_ACTIVE)
-        .map(Client.class::cast);
-  }
-
-  @Override
   public Optional<Client> findByIdFetchCatalogsAndItems(Key<UUID> id) {
     return clientDataRepository
         .findWithCatalogsAndItemsByDbId(id.uuidValue())

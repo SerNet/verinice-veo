@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalogitem
 
-import org.veo.core.entity.Catalog
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
@@ -42,7 +41,6 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
     UnitRepository unitRepo = Mock()
     CatalogItem item1 = Spy()
     CatalogItem item2 = Mock()
-    Catalog catalog = Mock()
     Control control = Mock()
     Control newControl = Mock()
     ElementQuery emptyQuery = Mock()
@@ -54,7 +52,6 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
         unitRepo.getByIdFetchClient(_) >> { throw new NotFoundException("") }
         unitRepo.getById(_) >> { throw new NotFoundException("") }
 
-        control.getModelInterface() >> Control.class
         newControl.getModelInterface() >> Control.class
 
         //and some basic behavior
@@ -67,11 +64,7 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
         existingDomain.modelInterface >> Domain.class
         domainRepository.getById(existingDomainId) >> existingDomain
 
-        def id = Key.newUuid()
-        item1.id >> id
-        item1.catalog >> catalog
-        item1.element >> control
-
-        catalog.domainTemplate >> existingDomain
+        item1.id >> Key.newUuid()
+        item1.owner >> existingDomain
     }
 }

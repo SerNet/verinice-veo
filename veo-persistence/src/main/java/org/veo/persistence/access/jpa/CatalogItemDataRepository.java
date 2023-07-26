@@ -31,13 +31,14 @@ public interface CatalogItemDataRepository
   @Query(
       """
             select ci from #{#entityName} ci
-              left join fetch ci.catalog ca
-              left join fetch ca.domainTemplate
-              left join fetch ci.tailoringReferences
+              left join fetch ci.domain
+              left join fetch ci.domainTemplate
+              left join fetch ci.tailoringReferences tr
+              left join fetch tr.catalogItem
               where ci.dbId in ?1
           """)
   Iterable<CatalogItemData> findAllByIdsFetchDomainAndTailoringReferences(Iterable<String> ids);
 
-  @Query("select ci from #{#entityName} ci where ci.catalog.domainTemplate = ?1")
+  @Query("select ci from #{#entityName} ci where ci.domain = ?1")
   Set<CatalogItem> findAllByDomain(DomainData domain);
 }

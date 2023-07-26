@@ -258,8 +258,8 @@ class VeoRestTest extends Specification {
         get("/domains/${id}/export").body
     }
 
-    def getCatalog(id) {
-        get("/catalogs/${id}").body
+    Collection<Object> getCatalogItems(String domainId) {
+        get("/catalogs/$domainId/items").body
     }
 
     def getControl(id) {

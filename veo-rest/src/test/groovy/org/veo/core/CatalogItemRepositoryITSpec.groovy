@@ -42,7 +42,7 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
     private CatalogItemRepositoryImpl catalogItemRepository
 
     def "load a catalog item"() {
-        given: "a client with a catalog containing an item"
+        given: "a client with a domain containing an item"
         Client client = newClient()
         def domain = newDomain(client) {domain->
             applyElementTypeDefinition(newElementTypeDefinition(Control.SINGULAR_TERM, domain) {
@@ -53,15 +53,14 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
                 ]
             })
         }
-        def catalog = newCatalog(domain)
-        newCatalogItem(catalog) {
+        newCatalogItem(domain) {
             elementType = Control.SINGULAR_TERM
             name = 'Control 1'
             subType = "ctl"
             status = "NEW"
         }
         client = clientRepository.save(client)
-        def itemId = client.domains.first().catalogs.first().catalogItems.first().id
+        def itemId = client.domains.first().catalogItems.first().id
 
         when:
         def item = catalogItemRepository.findById(itemId)
@@ -79,14 +78,14 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
         def client = clientRepository.save(newClient())
         newDomain(client)
         client = clientRepository.save(client)
-        def catalog = catalogDataRepository.save(newCatalog(client.domains.first()))
+        def domain = client.domains.first()
 
         when:
         CatalogItem catalogItem = new CatalogItemData()
         catalogItem.setName("my name")
         catalogItem.setSubType("ctl")
         catalogItem.setStatus("NEW")
-        catalogItem.setCatalog(catalog)
+        catalogItem.setOwner(domain)
         catalogItemRepository.save(catalogItem)
 
         then:
@@ -100,10 +99,10 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
         def client = clientRepository.save(newClient{
             newDomain(it)
         })
-        def catalog = catalogDataRepository.save(newCatalog(client.domains.first()))
+        def domain = client.domains.first()
 
         when:
-        catalogItemRepository.save(newCatalogItem(catalog, {
+        catalogItemRepository.save(newCatalogItem(domain, {
             newUpdateReference(it, null)
             newTailoringReference(it, null)
         }))

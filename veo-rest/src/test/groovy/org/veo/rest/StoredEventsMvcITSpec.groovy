@@ -29,9 +29,9 @@ import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 import org.veo.persistence.access.jpa.StoredEventDataRepository
-import org.veo.test.VeoSpec
 
 import spock.lang.Issue
+
 /**
  * Integration test to verify entity event generation. Performs operations on the REST API and
  * performs assertions on the {@link org.veo.persistence.access.StoredEventRepository}.
@@ -342,20 +342,18 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
             templateVersion = '1'
             authority = 'me'
 
-            newCatalog(it) {
-                def item1 = newCatalogItem(it, {
-                    elementType = "asset"
-                    subType = "AST"
-                    status = "NEW"
-                })
-                def item2 = newCatalogItem(it, {
-                    elementType = "control"
-                    subType = "CTL_TOM"
-                    status = "NEW"
-                })
-                newTailoringReference(item2, TailoringReferenceType.COPY) {
-                    catalogItem = item1
-                }
+            def item1 = newCatalogItem(it, {
+                elementType = "asset"
+                subType = "AST"
+                status = "NEW"
+            })
+            def item2 = newCatalogItem(it, {
+                elementType = "control"
+                subType = "CTL_TOM"
+                status = "NEW"
+            })
+            newTailoringReference(item2, TailoringReferenceType.COPY) {
+                catalogItem = item1
             }
         })
 
@@ -363,14 +361,12 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         storedEventRepository.findAll().size() == numberOfStoredEventsBefore
 
         when: "adding a catalog to the domain template"
-        domainTemplate.addToCatalogs( newCatalog(domainTemplate) {
-            newCatalogItem(it, {
-                elementType = "asset"
-                name = "a2"
-                subType = "CTL_TOM"
-                status = "NEW"
-            })
-        })
+        newCatalogItem(domainTemplate) {
+            elementType = "asset"
+            name = "a2"
+            subType = "CTL_TOM"
+            status = "NEW"
+        }
         domainTemplate = domainTemplateRepository.save(domainTemplate)
 
         then: "no event is stored"
@@ -379,16 +375,13 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
         when: "updating some entities in the template"
         domainTemplate.tap {
             templateVersion = '1'
-            catalogs.first().tap {
-                description = 'This is very important!'
-                catalogItems.first().tap {
-                    namespace = 'my namespace'
-                    description = 'Ignore this!'
-                }
-                catalogItems[1].tap {
-                    tailoringReferences.first().tap {
-                        referenceType = TailoringReferenceType.COPY_ALWAYS
-                    }
+            catalogItems.first().tap {
+                namespace = 'my namespace'
+                description = 'Ignore this!'
+            }
+            catalogItems[1].tap {
+                tailoringReferences.first().tap {
+                    referenceType = TailoringReferenceType.COPY_ALWAYS
                 }
             }
         }

@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.UUID;
 
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
@@ -51,7 +50,6 @@ import org.veo.core.entity.UpdateReference;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.persistence.entity.jpa.AssetData;
-import org.veo.persistence.entity.jpa.CatalogData;
 import org.veo.persistence.entity.jpa.CatalogItemData;
 import org.veo.persistence.entity.jpa.ClientData;
 import org.veo.persistence.entity.jpa.ControlData;
@@ -184,14 +182,6 @@ public class EntityDataFactory implements EntityFactory {
   }
 
   @Override
-  public Catalog createCatalog(DomainBase owner) {
-    Catalog catalog = new CatalogData();
-    catalog.setDomainTemplate(owner);
-    owner.addToCatalogs(catalog);
-    return catalog;
-  }
-
-  @Override
   public DomainTemplate createDomainTemplate(
       String name, String authority, String templateVersion, Key<UUID> id) {
     DomainTemplate domainTemplate = new DomainTemplateData();
@@ -205,9 +195,10 @@ public class EntityDataFactory implements EntityFactory {
   }
 
   @Override
-  public CatalogItem createCatalogItem(Catalog catalog) {
+  public CatalogItem createCatalogItem(DomainBase domain) {
     CatalogItem catalogItem = new CatalogItemData();
-    catalogItem.setCatalog(catalog);
+    catalogItem.setOwner(domain);
+    domain.getCatalogItems().add(catalogItem);
     return catalogItem;
   }
 

@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalogitem
 
-import org.veo.core.entity.Catalog
 import org.veo.core.entity.Control
 import org.veo.core.entity.CustomLink
 import org.veo.core.entity.Domain
@@ -71,13 +70,10 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
 
     def "apply an element from item with tailor refs"() {
         given:
-        Control control2 = Mock()
         Control control3 = Mock()
 
-        def id2 = Key.newUuid()
-        item2.id >> id2
-        item2.catalog >> catalog
-        item2.element>>control2
+        item2.id >> Key.newUuid()
+        item2.owner >> existingDomain
 
         LinkTailoringReference tr = Mock()
         tr.referenceType >> TailoringReferenceType.LINK
@@ -87,7 +83,6 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         tr.referencedElement >> item2
 
         item1.tailoringReferences >> [tr]
-        item1.element >> control
 
         CustomLink newLink = Mock()
         newLink.target >> control
@@ -124,8 +119,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
 
         def id2 = Key.newUuid()
         item2.id >> id2
-        item2.catalog >> catalog
-        item2.element>>control2
+        item2.owner >> existingDomain
 
         CustomLink link = Mock()
         link.type >> "external.link.type"
@@ -139,7 +133,6 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         etr.externalLink >> link
 
         item1.tailoringReferences >> [etr]
-        item1.element >> control
 
         newControl.links >> []
 
@@ -163,12 +156,9 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
 
     def "apply an element from item with  less tailor refs"() {
         given:
-        Control control2 = Mock()
-
         def id2 = Key.newUuid()
         item2.id >> id2
-        item2.catalog >> catalog
-        item2.element>>control2
+        item2.owner >> existingDomain
 
         LinkTailoringReference tr = Mock()
         tr.referenceType >> TailoringReferenceType.LINK
@@ -176,7 +166,6 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         tr.catalogItem >> item2
 
         item1.tailoringReferences >> [tr]
-        item1.element >> control
 
         when:
         usecase.execute(new InputData(existingClient, existingUnit.id, [
@@ -216,9 +205,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
                 .findByCatalogItem(item2) >> Optional.of(otherDomain)
         domainRepository.getById(otherDomainId) >> otherDomain
 
-        Catalog other = Mock()
-        item2.catalog >> other
-        other.domainTemplate >> otherDomain
+        item2.owner >> otherDomain
 
         when:
         usecase.execute(new InputData(existingClient, existingUnit.id, [

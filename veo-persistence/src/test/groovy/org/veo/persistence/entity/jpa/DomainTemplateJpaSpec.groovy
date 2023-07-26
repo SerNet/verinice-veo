@@ -22,7 +22,6 @@ import static org.veo.core.entity.TailoringReferenceType.LINK
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.support.TransactionTemplate
 
-import org.veo.core.entity.Catalog
 import org.veo.core.entity.Domain
 import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.profile.ProfileDefinition
@@ -30,7 +29,6 @@ import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
-import org.veo.test.VeoSpec
 
 class DomainTemplateJpaSpec extends AbstractJpaSpec {
     @Autowired
@@ -95,41 +93,18 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.profiles == domain0.profiles
     }
 
-    def 'domainTemplate with catalog is inserted'() {
-        when: "saving a domain template with a catalog"
-        domain0 = txTemplate.execute {
-            repository.save(newDomainTemplate {
-                newCatalog(it)
-            })
-        }
-
-        and: "retrieving it"
-        def d = txTemplate.execute {
-            return repository.findById(domain0.dbId).get()
-        }
-
-        then: "saved and loaded"
-        d.name == domain0.name
-        d.authority == domain0.authority
-        d.templateVersion == domain0.templateVersion
-        d.catalogs.size() == 1
-    }
-
-    def 'domainTemplate with catalog and catalog items'() {
+    def 'domainTemplate with items'() {
         given: "the domain template and a catalog"
         domain0 = newDomainTemplate() {
-            newCatalog(it) {
-                name = "a"
-                newCatalogItem(it, {
-                    elementType = "control"
-                })
-                newCatalogItem(it, {
-                    elementType = "control"
-                })
-                newCatalogItem(it, {
-                    elementType = "control"
-                })
-            }
+            newCatalogItem(it, {
+                elementType = "control"
+            })
+            newCatalogItem(it, {
+                elementType = "control"
+            })
+            newCatalogItem(it, {
+                elementType = "control"
+            })
         }
 
         when: "saving"
@@ -144,26 +119,22 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
-        d.catalogs.first().id != null
-        d.catalogs.first().catalogItems.size() == 3
+        d.catalogItems.size() == 3
     }
 
     def 'domainTemplate with catalog and catalog items with subtype'() {
         given: "the domain template and a catalog"
         domain0 = newDomainTemplate()
-        Catalog catalog = newCatalog(domain0) {
-            name = "a"
-            newCatalogItem(it, {
-                elementType = "control"
-            })
-            newCatalogItem(it, {
-                elementType = "control"
-            })
-            newCatalogItem(it, {
-                elementType = "control"
-            })
-        }
-        newCatalogItem(catalog, {
+        newCatalogItem(domain0, {
+            elementType = "control"
+        })
+        newCatalogItem(domain0, {
+            elementType = "control"
+        })
+        newCatalogItem(domain0, {
+            elementType = "control"
+        })
+        newCatalogItem(domain0, {
             elementType = "process"
             name = "p1"
             subType = "Test"
@@ -182,36 +153,31 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
-        d.catalogs.first().id != null
-        d.catalogs.first().name == 'a'
-        d.catalogs.first().catalogItems.size() == 4
-        d.catalogs.first().catalogItems.find { it.name == 'p1' }.subType == 'Test'
+        d.catalogItems.size() == 4
+        d.catalogItems.find { it.name == 'p1' }.subType == 'Test'
         d.elementTypeDefinitions.size() == 8
     }
 
-    def 'domainTemplate with catalog and catalog items with subtype and link'() {
+    def 'domainTemplate with catalog items with subtype and link'() {
         given: "the domain template and a catalog"
         domain0 = newDomainTemplate()
-        Catalog catalog = newCatalog(domain0) {
-            name = "a"
-            newCatalogItem(it, {
-                elementType = "control"
-            })
-            newCatalogItem(it,{
-                elementType = "control"
-            })
-            newCatalogItem(it,{
-                elementType = "control"
-            })
-        }
-        def itemP1 = newCatalogItem(catalog, {
+        newCatalogItem(domain0, {
+            elementType = "control"
+        })
+        newCatalogItem(domain0,{
+            elementType = "control"
+        })
+        newCatalogItem(domain0,{
+            elementType = "control"
+        })
+        def itemP1 = newCatalogItem(domain0, {
             name = 'p1'
             status = "NEW"
             subType = "Test"
             elementType = "control"
         })
 
-        def ci = newCatalogItem(catalog, {
+        def ci = newCatalogItem(domain0, {
             name = 'p2'
             status = "NOT-NEW"
             subType = "Test1"
@@ -235,15 +201,12 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
-        d.catalogs.first().id != null
-        d.catalogs.first().name == 'a'
-        d.catalogs.first().catalogItems.size() == 5
-        with (d.catalogs.first().catalogItems.find { it.name == 'p1' }) {
+        with (d.catalogItems.find { it.name == 'p1' }) {
             subType == 'Test'
             status == 'NEW'
             elementType == "control"
         }
-        with (d.catalogs.first().catalogItems.find { it.name == 'p2' }) {
+        with (d.catalogItems.find { it.name == 'p2' }) {
             subType == 'Test1'
             status == 'NOT-NEW'
             elementType == "control"

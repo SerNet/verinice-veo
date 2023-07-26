@@ -24,7 +24,6 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.web.bind.MethodArgumentNotValidException
 
-import org.veo.core.entity.Catalog
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.exception.EntityAlreadyExistsException
@@ -55,7 +54,6 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     private Domain testDomain
     private Domain completeDomain
     private Domain secondDomain
-    private Catalog catalog
     private Domain domainSecondClient
     private Client client
 
@@ -66,36 +64,30 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             this.client = createTestClient()
             newDomain(client) {
                 name = "Domain 1"
-                newCatalog(it) {
-                    name = 'a'
-                }
             }
             newDomain(client) {
                 name = "Domain 2"
             }
             newDomain(client) { d->
                 name = "Domain-complete"
-                newCatalog(d) {c->
-                    name = 'a'
-                    newCatalogItem(c,{
-                        elementType = "control"
-                        subType = "CTL_TOM"
-                        status = "NEW"
-                        name = 'c1'
-                    })
-                    newCatalogItem(c,{
-                        elementType = "control"
-                        subType = "CTL_TOM"
-                        status = "NEW"
-                        name = 'c2'
-                    })
-                    newCatalogItem(c,{
-                        elementType = "control"
-                        subType = "CTL_TOM"
-                        status = "NEW"
-                        name = 'c3'
-                    })
-                }
+                newCatalogItem(d,{
+                    elementType = "control"
+                    subType = "CTL_TOM"
+                    status = "NEW"
+                    name = 'c1'
+                })
+                newCatalogItem(d,{
+                    elementType = "control"
+                    subType = "CTL_TOM"
+                    status = "NEW"
+                    name = 'c2'
+                })
+                newCatalogItem(d,{
+                    elementType = "control"
+                    subType = "CTL_TOM"
+                    status = "NEW"
+                    name = 'c3'
+                })
                 riskDefinitions = ["id":rd] as Map
             }
 
@@ -104,7 +96,6 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             testDomain = client.domains.find{it.name == "Domain 1"}
             completeDomain = client.domains.find{it.name == "Domain-complete"}
             secondDomain = client.domains.find{it.name == "Domain 2"}
-            catalog = testDomain.catalogs.first()
 
             def secondClient = clientRepository.save(newClient() {
                 newDomain(it)

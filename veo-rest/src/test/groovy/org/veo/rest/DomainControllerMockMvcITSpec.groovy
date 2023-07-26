@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
 
-import org.veo.core.entity.Catalog
 import org.veo.core.entity.Client
 import org.veo.core.entity.Domain
 import org.veo.core.entity.condition.Condition
@@ -47,7 +46,6 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
     private Domain testDomain
     private Domain completeDomain
     private Domain secondDomain
-    private Catalog catalog
     private Domain domainSecondClient
     private Client client
 
@@ -58,9 +56,6 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             this.client = createTestClient()
             newDomain(client) {
                 name = "Domain 1"
-                newCatalog(it) {
-                    name = 'a'
-                }
                 applyElementTypeDefinition(newElementTypeDefinition("person", it) {
                     subTypes = [
                         Team: newSubTypeDefinition {},
@@ -83,27 +78,24 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             }
             newDomain(client) { d->
                 name = "Domain-complete"
-                newCatalog(d) {c->
-                    name = 'a'
-                    newCatalogItem(c,{
-                        elementType = "control"
-                        subType = "CTL_TOM"
-                        status = "NEW"
-                        name = 'c1'
-                    })
-                    newCatalogItem(c,{
-                        elementType = "control"
-                        subType = "CTL_TOM"
-                        status = "NEW"
-                        name = 'c2'
-                    })
-                    newCatalogItem(c,{
-                        elementType = "control"
-                        subType = "CTL_TOM"
-                        status = "NEW"
-                        name = 'c3'
-                    })
-                }
+                newCatalogItem(d,{
+                    elementType = "control"
+                    subType = "CTL_TOM"
+                    status = "NEW"
+                    name = 'c1'
+                })
+                newCatalogItem(d,{
+                    elementType = "control"
+                    subType = "CTL_TOM"
+                    status = "NEW"
+                    name = 'c2'
+                })
+                newCatalogItem(d,{
+                    elementType = "control"
+                    subType = "CTL_TOM"
+                    status = "NEW"
+                    name = 'c3'
+                })
                 riskDefinitions = ["id":rd] as Map
             }
 
@@ -112,7 +104,6 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             testDomain = client.domains.find{it.name == "Domain 1"}
             completeDomain = client.domains.find{it.name == "Domain-complete"}
             secondDomain = client.domains.find{it.name == "Domain 2"}
-            catalog = testDomain.catalogs.first()
 
             def secondClient = clientRepository.save(newClient() {
                 newDomain(it)
@@ -135,7 +126,6 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         def result = parseJson(results)
         result._self == "http://localhost/domains/${testDomain.id.uuidValue()}"
         result.name == testDomain.name
-        result.catalogs.size() == 1
         result.elementTypeDefinitions.size() == 8
         result.elementTypeDefinitions.keySet() =~ [
             'asset',
@@ -156,13 +146,6 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             rules[0].conditions[0].inputMatcher.type == "greaterThan"
             rules[0].conditions[0].inputMatcher.comparisonValue == 10
         }
-
-        when:
-        def firstCatalog = result.catalogs.first()
-
-        then:
-        firstCatalog.displayName == 'a'
-        firstCatalog.targetUri == "http://localhost/catalogs/${catalog.dbId}"
     }
 
     @WithUserDetails("user@domain.example")
@@ -196,19 +179,9 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
 
         then: "the domain is exported"
         result.name == completeDomain.name
-        result.catalogs.size() == 1
         result.elementTypeDefinitions != null
         result.riskDefinitions !=null
-
-        when:
-        def firstCatalog = result.catalogs.first()
-
-        then:
-        with(firstCatalog) {
-            name == 'a'
-            catalogItems.size() == 3
-            domainTemplate !=null
-        }
+        result.catalogItems*.name ==~ ["c1", "c2", "c3"]
     }
 
     @WithUserDetails("user@domain.example")

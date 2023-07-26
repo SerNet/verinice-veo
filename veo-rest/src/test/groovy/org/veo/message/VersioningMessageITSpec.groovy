@@ -119,7 +119,6 @@ class VersioningMessageITSpec extends VeoSpringSpec {
         and: "there is one creation message for each catalog item"
         var catalogItems = txTemplate.execute {
             domainDataRepository.findAllActiveByClient(client.idAsString)
-                    .collectMany { it.catalogs }
                     .collectMany { it.catalogItems }
         }
         catalogItems.size() > 0

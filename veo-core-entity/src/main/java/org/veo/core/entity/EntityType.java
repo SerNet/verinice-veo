@@ -34,7 +34,6 @@ public enum EntityType {
   ASSET(Asset.class, Asset.SINGULAR_TERM, Asset.PLURAL_TERM),
   CLIENT(Client.class, Client.SINGULAR_TERM, Client.PLURAL_TERM),
   CONTROL(Control.class, Control.SINGULAR_TERM, Control.PLURAL_TERM),
-  CATALOG(Catalog.class, Catalog.SINGULAR_TERM, Catalog.PLURAL_TERM),
   CATALOGITEM(CatalogItem.class, CatalogItem.SINGULAR_TERM, CatalogItem.PLURAL_TERM),
   DOCUMENT(Document.class, Document.SINGULAR_TERM, Document.PLURAL_TERM),
   DOMAIN(Domain.class, Domain.SINGULAR_TERM, Domain.PLURAL_TERM),

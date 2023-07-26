@@ -54,17 +54,8 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         then: "it contains a type definition from our template"
         processSchema.properties.customAspects.properties.process_processing.properties.attributes.properties.process_processing_asProcessor.type == "boolean"
 
-        when: "fetching the catalog"
-        String catalogUri = domain.catalogs.first().targetUri
-        def catalog = get(catalogUri).body
-
-        then: "it has the correct name"
-        catalog.name == "ITT Controls"
-
         when: "fetching the catalog items"
-        def catalogItems = catalog.catalogItems.collect {
-            get(it.targetUri).body
-        }
+        def catalogItems = getCatalogItems(domain.id)
 
         then: "they are connected by a tailoring reference"
         catalogItems*.namespace.sort() == ["TOM.c-1", "VT.p-1"]
@@ -142,7 +133,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
     def "cannot import template with invalid catalog item attribute"() {
         given: "a template with an invalid catalog item attribute"
         var template = getTemplateBody()
-        def vtElement = template.catalogs[0].catalogItems.find { it.namespace == "VT.p-1" }
+        def vtElement = template.catalogItems.find { it.namespace == "VT.p-1" }
         vtElement.customAspects.process_accessAuthorization = [
             process_accessAuthorization_description: 1
         ]
@@ -157,7 +148,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
     def "cannot import template with invalid catalog link"() {
         given: "a template with an invalid catalog item attribute"
         var template = getTemplateBody()
-        def vtItem = template.catalogs[0].catalogItems.find { it.namespace == "VT.p-1" }
+        def vtItem = template.catalogItems.find { it.namespace == "VT.p-1" }
         vtItem.tailoringReferences.add(
                 [
                     catalogItem: [targetUri: '/catalogitems/f55a860f-3bf0-4f63-9c8c-1c2a82762e40'],
@@ -176,7 +167,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
     def "cannot import template with invalid catalog item sub type"() {
         given: "a template with an invalid sub type"
         var template = getTemplateBody()
-        def vtElement = template.catalogs[0].catalogItems.find { it.namespace == "VT.p-1" }
+        def vtElement = template.catalogItems.find { it.namespace == "VT.p-1" }
         vtElement.subType = "PRO_fit"
 
         when: "trying to create the template"
@@ -189,7 +180,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
     def "cannot import template with sub-type-less catalog item"() {
         given: "a template with a catalog item that has no sup type"
         var template = getTemplateBody()
-        def vtItem = template.catalogs[0].catalogItems.find { it.namespace == "VT.p-1" }
+        def vtItem = template.catalogItems.find { it.namespace == "VT.p-1" }
         vtItem.subType = null
 
         when: "trying to create the template"
@@ -203,7 +194,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
     def "cannot import template with invalid catalog item risk definition"() {
         given: "a template with a catalog item using a non-existing risk definition"
         var template = getTemplateBody()
-        def vtItem = template.catalogs[0].catalogItems.find{it.namespace == "VT.p-1"}
+        def vtItem = template.catalogItems.find{it.namespace == "VT.p-1"}
         vtItem.domains = [
             (UUID.randomUUID()): [
                 riskValues: [
@@ -244,44 +235,33 @@ class DomainTemplateImportRestTest extends VeoRestTest {
             'templateVersion': '1.0.0',
             'abbreviation': 'ITT',
             'authority': 'JJ',
-            'catalogs': [
+            'catalogItems': [
                 [
-                    'catalogItems': [
+                    'customAspects': [:],
+                    'subType': 'PRO_DataTransfer',
+                    'status': 'NEW',
+                    'name': 'Test process-1',
+                    'elementType': 'process',
+                    'id': 'f55a860f-3bf0-4f63-9c8c-1c2a82762e40',
+                    'namespace': 'VT.p-1',
+                    'tailoringReferences': []],
+                [
+                    'abbreviation': 'c-1',
+                    'customAspects': [:],
+                    'description': 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.',
+                    'name': 'Control-1',
+                    'elementType': 'control',
+                    'subType': 'CTL_TOM',
+                    'status': 'IN_PROGRESS',
+                    'id': 'dc46afdd-c957-4957-99da-f0a5f32dc457',
+                    'namespace': 'TOM.c-1',
+                    'tailoringReferences': [
                         [
-                            'catalog': [
-                                'targetUri': '/catalogs/fb70bd43-7da7-4df1-b378-020ace491443'],
-                            'customAspects': [:],
-                            'subType': 'PRO_DataTransfer',
-                            'status': 'NEW',
-                            'name': 'Test process-1',
-                            'elementType': 'process',
-                            'id': 'f55a860f-3bf0-4f63-9c8c-1c2a82762e40',
-                            'namespace': 'VT.p-1',
-                            'tailoringReferences': []],
-                        [
-                            'catalog': [
-                                'targetUri': '/catalogs/fb70bd43-7da7-4df1-b378-020ace491443'],
-                            'abbreviation': 'c-1',
-                            'customAspects': [:],
-                            'description': 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.',
-                            'name': 'Control-1',
-                            'elementType': 'control',
-                            'subType': 'CTL_TOM',
-                            'status': 'IN_PROGRESS',
-                            'id': 'dc46afdd-c957-4957-99da-f0a5f32dc457',
-                            'namespace': 'TOM.c-1',
-                            'tailoringReferences': [
-                                [
-                                    'catalogItem': [
-                                        'targetUri': '/catalogitems/f55a860f-3bf0-4f63-9c8c-1c2a82762e40   '],
-                                    'linkType': 'process_tom',
-                                    'referenceType': 'LINK_EXTERNAL']
-                            ]]
-                    ],
-                    'domainTemplate': [
-                        'targetUri': "/domaintemplates/$randomUuid"],
-                    'id': 'fb70bd43-7da7-4df1-b378-020ace491443',
-                    'name': 'ITT Controls']
+                            'catalogItem': [
+                                'targetUri': '/catalogitems/f55a860f-3bf0-4f63-9c8c-1c2a82762e40   '],
+                            'linkType': 'process_tom',
+                            'referenceType': 'LINK_EXTERNAL']
+                    ]]
             ],
             'elementTypeDefinitions': [
                 'asset': [

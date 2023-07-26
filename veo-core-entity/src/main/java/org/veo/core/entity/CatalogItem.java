@@ -24,6 +24,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.veo.core.entity.exception.UnprocessableDataException;
+
 /**
  * CatalogItem The catalog item contains an element and/other related catalog item. It describes
  * currently two different abstract use cases: 1. Apply the contained element: defined by KEa.1 and
@@ -41,6 +43,18 @@ public interface CatalogItem
 
   Comparator<? super CatalogItem> BY_CATALOGITEMS =
       (ci1, ci2) -> ci1.getId().uuidValue().compareTo(ci2.getId().uuidValue());
+
+  /**
+   * @return this item's domain if the item belongs to a domain and can be applied
+   * @throws UnprocessableDataException if this belongs to a domain template and cannot be applied
+   */
+  default Domain requireDomainMembership() {
+    if (getOwner() instanceof Domain domain) {
+      return domain;
+    }
+    throw new UnprocessableDataException(
+        "Catalog item is part of a domain template and cannot be applied");
+  }
 
   /**
    * Includes itself together with {@link this.getElementsToCreate()}. This list is ordered. The
@@ -71,11 +85,6 @@ public interface CatalogItem
         .filter(TailoringReferenceTyped.IS_COPY_PREDICATE)
         .forEach(rr -> addElementsToCopy(rr, itemList));
   }
-
-  /** The owner of this is a catalog. */
-  Catalog getCatalog();
-
-  void setCatalog(Catalog aCatalog);
 
   /** All the tailoring references for this catalog item. */
   Set<TailoringReference> getTailoringReferences();
@@ -110,16 +119,15 @@ public interface CatalogItem
   }
 
   default Optional<Client> getOwningClient() {
-    // TODO: VEO-2014 remove catalog
-    return Optional.ofNullable(getCatalog().getDomainTemplate())
+    return Optional.ofNullable(getOwner())
         .filter(ClientOwned.class::isInstance)
         .map(ClientOwned.class::cast)
         .flatMap(ClientOwned::getOwningClient);
   }
 
-  default DomainBase getDomain() {
-    return getCatalog().getDomainTemplate();
-  }
+  DomainBase getOwner();
+
+  void setOwner(DomainBase owner);
 
   Element incarnate();
 }

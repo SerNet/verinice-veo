@@ -24,17 +24,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.entity.Asset
-import org.veo.core.entity.Catalog
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
+import org.veo.core.entity.Domain
 import org.veo.core.entity.Process
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.UseCaseInteractor
 import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase
-import org.veo.persistence.access.CatalogRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.StoredEventDataRepository
@@ -52,9 +51,6 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
 
     @Autowired
     private StoredEventDataRepository storedEventRepository
-
-    @Autowired
-    private CatalogRepositoryImpl catalogRepository
 
     private UseCaseInteractor synchronousUseCaseInteractor = [
         execute: {useCase, input, outputMapper->
@@ -75,11 +71,11 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
     def "SQL performance for getting and applying an incarnation description"() {
         given:
         createClient()
-        Catalog catalog = createCatalog()
+        Domain domain = createCatalogItems()
         QueryCountHolder.clear()
 
         when:
-        def inputDataGetIncarnationDescription = new GetIncarnationDescriptionUseCase.InputData(client, unit.id, catalog.catalogItems.collect{it.id})
+        def inputDataGetIncarnationDescription = new GetIncarnationDescriptionUseCase.InputData(client, unit.id, domain.catalogItems.collect{it.id})
         GetIncarnationDescriptionUseCase.OutputData description = executeInTransaction {
             synchronousUseCaseInteractor.execute(getIncarnationDescriptionUseCase, inputDataGetIncarnationDescription, Function.identity()).get()
         }
@@ -118,14 +114,10 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
         }
     }
 
-    Catalog createCatalog() {
+    Domain createCatalogItems() {
         executeInTransaction {
             def domain = client.domains.first()
-            Catalog catalog = newCatalog(domain) {
-                name = 'a'
-            }
-
-            CatalogItem item1 = newCatalogItem(catalog, {
+            CatalogItem item1 = newCatalogItem(domain, {
                 elementType = Control.SINGULAR_TERM
                 subType = "Test"
                 status = "NEW"
@@ -134,14 +126,14 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
                 description = 'control number one'
             })
 
-            CatalogItem item2 = newCatalogItem(catalog, {
+            CatalogItem item2 = newCatalogItem(domain, {
                 elementType = Control.SINGULAR_TERM
                 name = 'c2'
                 subType = "Test"
                 status = "NEW"
             })
 
-            CatalogItem item3 = newCatalogItem(catalog, {
+            CatalogItem item3 = newCatalogItem(domain, {
                 elementType = Control.SINGULAR_TERM
                 name = 'c3'
                 subType = "Test"
@@ -152,14 +144,14 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
                 catalogItem = item2
             }
 
-            CatalogItem item4 = newCatalogItem(catalog, {
+            CatalogItem item4 = newCatalogItem(domain, {
                 elementType = Asset.SINGULAR_TERM
                 name = 'd1'
                 subType = "Test"
                 status = "NEW"
             })
 
-            CatalogItem item5 = newCatalogItem(catalog, {
+            CatalogItem item5 = newCatalogItem(domain, {
                 elementType = Process.SINGULAR_TERM
                 name = 'p1'
                 subType = "Test"
@@ -175,7 +167,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
                 linkType = "aLink"
             }
 
-            CatalogItem item6 = newCatalogItem(catalog,{
+            CatalogItem item6 = newCatalogItem(domain,{
                 elementType = Control.SINGULAR_TERM
                 name = 'c-p'
                 subType = "Test"
@@ -187,16 +179,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
                 linkType = 'externallinktest'
             }
 
-            catalog.catalogItems = [
-                item1,
-                item2,
-                item3,
-                item4,
-                item5,
-                item6
-            ] as Set
-
-            catalogRepository.save(catalog)
+            domainDataRepository.save(domain)
         }
     }
 }

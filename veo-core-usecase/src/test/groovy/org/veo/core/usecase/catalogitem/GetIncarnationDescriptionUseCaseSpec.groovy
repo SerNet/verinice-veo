@@ -18,8 +18,6 @@
 package org.veo.core.usecase.catalogitem
 
 import org.veo.core.entity.Control
-import org.veo.core.entity.Element
-import org.veo.core.entity.Identifiable
 import org.veo.core.entity.Key
 import org.veo.core.entity.LinkTailoringReference
 import org.veo.core.entity.TailoringReference
@@ -61,7 +59,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         given:
         def id2 = Key.newUuid()
         item2.id >> id2
-        item2.catalog >> catalog
+        item2.owner >> existingDomain
         item2.elementType >> "control"
         item2.tailoringReferences >> []
 
@@ -85,7 +83,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         given:
         def id2 = Key.newUuid()
         item2.id >> id2
-        item2.catalog >> catalog
+        item2.owner >> existingDomain
         item2.elementType >> "control"
         item2.elementInterface >> Control.class
 
@@ -116,7 +114,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         given:
         def id2 = Key.newUuid()
         item2.id >> id2
-        item2.catalog >> catalog
+        item2.owner >> existingDomain
         item2.elementType >> "control"
         item2.elementInterface >> Control.class
 

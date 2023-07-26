@@ -20,7 +20,6 @@ package org.veo.core.entity.transform;
 import java.util.UUID;
 
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
@@ -79,12 +78,10 @@ public interface EntityFactory {
 
   Scope createScope(String name, Unit owner);
 
-  Catalog createCatalog(DomainBase owner);
-
   DomainTemplate createDomainTemplate(
       String name, String authority, String templateVersion, Key<UUID> id);
 
-  CatalogItem createCatalogItem(Catalog catalog);
+  CatalogItem createCatalogItem(DomainBase domain);
 
   TailoringReference createTailoringReference(
       CatalogItem catalogItem, TailoringReferenceType referenceType);

@@ -32,15 +32,19 @@ import jakarta.validation.Valid;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.UpdateReference;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity(name = "catalogitem")
@@ -55,14 +59,15 @@ public class CatalogItemData extends TemplateItemData implements CatalogItem {
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
   private String dbId;
 
-  @ManyToOne(targetEntity = CatalogData.class, optional = false)
-  private Catalog catalog;
+  @ManyToOne(targetEntity = DomainData.class)
+  @Getter(value = AccessLevel.NONE)
+  @Setter(value = AccessLevel.NONE)
+  private Domain domain;
 
-  @Override
-  public void setCatalog(Catalog catalog) {
-    this.catalog = catalog;
-    catalog.getCatalogItems().add(this);
-  }
+  @ManyToOne(targetEntity = DomainTemplateData.class)
+  @Getter(value = AccessLevel.NONE)
+  @Setter(value = AccessLevel.NONE)
+  private DomainTemplate domainTemplate;
 
   @Column(name = "tailoringreferences")
   @OneToMany(
@@ -84,13 +89,28 @@ public class CatalogItemData extends TemplateItemData implements CatalogItem {
   @Valid
   private Set<UpdateReference> updateReferences = new HashSet<>();
 
+  public DomainBase getOwner() {
+    return domain != null ? domain : domainTemplate;
+  }
+
+  public void setOwner(DomainBase owner) {
+    if (getOwner() != null && !getOwner().equals(owner)) {
+      throw new IllegalArgumentException("Cannot move catalog item between domains");
+    }
+
+    if (owner instanceof Domain d) {
+      this.domain = d;
+    } else if (owner instanceof DomainTemplate dt) {
+      this.domainTemplate = dt;
+    } else {
+      throw new IllegalArgumentException("Unexpected domain type");
+    }
+  }
+
   /** create an instance of the described element* */
   @Override
   public Element incarnate() {
-    if (getDomain().getModelInterface().equals(DomainTemplate.class)) {
-      throw new IllegalArgumentException(
-          "Can not incarnate a catalog item from a domain template.");
-    }
+    requireDomainMembership();
 
     Element element = createElement();
     element.setName(name);

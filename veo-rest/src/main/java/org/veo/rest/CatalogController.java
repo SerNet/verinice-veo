@@ -42,16 +42,13 @@ import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.dto.full.FullCatalogDto;
 import org.veo.adapter.presenter.api.dto.full.FullCatalogItemDto;
-import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
-import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCaseInteractor;
-import org.veo.core.usecase.catalog.GetCatalogUseCase;
-import org.veo.core.usecase.catalog.GetCatalogsUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemsUseCase;
+import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.security.ApplicationUser;
 
@@ -71,56 +68,28 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
  * @see <a href=
  *     "https://spring.io/guides/gs/async-method">https://spring.io/guides/gs/async-method/</a>
  */
+@Deprecated() // TODO #2301 remove
 @RestController
 @RequestMapping(CatalogController.URL_BASE_PATH)
 public class CatalogController extends AbstractEntityController {
 
-  public static final String URL_BASE_PATH = "/" + Catalog.PLURAL_TERM;
+  public static final String URL_BASE_PATH = "/catalogs";
 
-  private final GetCatalogUseCase getCatalogUseCase;
-  private final GetCatalogsUseCase getCatalogsUseCase;
+  private final GetDomainsUseCase getCatalogsUseCase;
   private final GetCatalogItemUseCase getCatalogItemUseCase;
   private final GetCatalogItemsUseCase getCatalogItemsUseCase;
 
   public CatalogController(
-      UseCaseInteractor useCaseInteractor,
-      GetCatalogUseCase getCatalogUseCase,
-      GetCatalogsUseCase getCatalogsUseCase,
+      GetDomainsUseCase getDomainsUseCase,
       GetCatalogItemUseCase getCatalogItemUseCase,
       GetCatalogItemsUseCase getCatalogItemsUseCase) {
-    this.getCatalogUseCase = getCatalogUseCase;
-    this.getCatalogsUseCase = getCatalogsUseCase;
+    this.getCatalogsUseCase = getDomainsUseCase;
     this.getCatalogItemUseCase = getCatalogItemUseCase;
     this.getCatalogItemsUseCase = getCatalogItemsUseCase;
   }
 
-  @GetMapping(value = "/{id}")
-  @Operation(summary = "Loads a catalog")
-  @ApiResponse(
-      responseCode = "200",
-      description = "Catalog loaded",
-      content =
-          @Content(
-              mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(implementation = FullCatalogDto.class)))
-  @ApiResponse(responseCode = "404", description = "Catalog not found")
-  public @Valid Future<ResponseEntity<FullCatalogDto>> getCatalog(
-      @Parameter(hidden = true) Authentication auth, @PathVariable String id, WebRequest request) {
-    Client client = getClientWithCatalogsAndItems(auth, false);
-    if (getEtag(Catalog.class, id).map(request::checkNotModified).orElse(false)) {
-      return null;
-    }
-    CompletableFuture<FullCatalogDto> catalogFuture =
-        useCaseInteractor.execute(
-            getCatalogUseCase,
-            new UseCase.IdAndClient(Key.uuidFrom(id), client),
-            output -> entityToDtoTransformer.transformCatalog2Dto(output.getCatalog()));
-    return catalogFuture.thenApply(
-        catalogDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(catalogDto));
-  }
-
   @GetMapping
-  @Operation(summary = "Loads all catalogs")
+  @Operation(summary = "Loads all catalogs", deprecated = true)
   @ApiResponse(
       responseCode = "200",
       description = "Catalogs loaded",
@@ -134,21 +103,19 @@ public class CatalogController extends AbstractEntityController {
       @RequestParam(value = DISPLAY_NAME_PARAM, required = false) String displayName) {
     Client client = getClientWithCatalogsAndItems(auth, false);
 
-    final GetCatalogsUseCase.InputData inputData =
-        new GetCatalogsUseCase.InputData(
-            Optional.ofNullable(domainUuid).map(Key::uuidFrom), client);
+    final GetDomainsUseCase.InputData inputData = new GetDomainsUseCase.InputData(client);
 
     return useCaseInteractor.execute(
         getCatalogsUseCase,
         inputData,
         output ->
-            output.getCatalogs().stream()
+            output.getObjects().stream()
                 .map(u -> entityToDtoTransformer.transformCatalog2Dto(u))
                 .toList());
   }
 
   @GetMapping(value = "/{id}/items")
-  @Operation(summary = "Loads all items of a catalog")
+  @Operation(summary = "Loads all items of a catalog", deprecated = true)
   @ApiResponse(
       responseCode = "200",
       description = "CatalogItems loaded",
@@ -167,16 +134,12 @@ public class CatalogController extends AbstractEntityController {
     } catch (NoSuchElementException e) {
       return CompletableFuture.supplyAsync(() -> ResponseEntity.ok(Collections.emptyList()));
     }
-    if (getEtag(Catalog.class, id).map(request::checkNotModified).orElse(false)) {
+    if (getEtag(Domain.class, id).map(request::checkNotModified).orElse(false)) {
       return null;
     }
 
     final GetCatalogItemsUseCase.InputData inputData =
-        new GetCatalogItemsUseCase.InputData(
-            Optional.empty(),
-            Key.uuidFrom(id),
-            Optional.ofNullable(domainUuid).map(Key::uuidFrom),
-            client);
+        new GetCatalogItemsUseCase.InputData(Optional.empty(), Key.uuidFrom(id), client);
 
     return useCaseInteractor.execute(
         getCatalogItemsUseCase,
@@ -191,7 +154,7 @@ public class CatalogController extends AbstractEntityController {
   }
 
   @GetMapping(value = "/{id}/items/{itemId}")
-  @Operation(summary = "Loads a catalogitem")
+  @Operation(summary = "Loads a catalogitem", deprecated = true)
   @ApiResponse(
       responseCode = "200",
       description = "CatalogItem loaded",
@@ -215,10 +178,7 @@ public class CatalogController extends AbstractEntityController {
         useCaseInteractor.execute(
             getCatalogItemUseCase,
             new GetCatalogItemUseCase.InputData(
-                Key.uuidFrom(itemId),
-                Key.uuidFrom(id),
-                Optional.ofNullable(domainUuid).map(Key::uuidFrom),
-                client),
+                Key.uuidFrom(itemId), Optional.of(Key.uuidFrom(id)), client),
             output ->
                 entityToDtoTransformer.transformCatalogItem2Dto(output.getCatalogItem(), false));
     return catalogitemFuture.thenApply(

@@ -29,61 +29,13 @@ import org.veo.core.entity.specification.ClientBoundaryViolationException
  * Uses a test Web-MVC configuration with example accounts and clients.
  */
 class CatalogControllerMockMvcITSpec extends CatalogSpec {
-    @WithUserDetails("user@domain.example")
-    def "retrieve a catalog"() {
-        given: "a catalog"
-
-        when: "a request is made to the server"
-        def result = parseJson(get("/catalogs/${catalog.id.uuidValue()}"))
-
-        then: "the catalog is found"
-        result._self == "http://localhost/catalogs/${catalog.id.uuidValue()}"
-        result.id == catalog.id.uuidValue()
-        result.domainTemplate.targetUri == "http://localhost/domains/"+domain.id.uuidValue()
-
-        and: "it contains a reference to its items"
-        result.catalogItems.size() == catalog.catalogItems.size()
-        result.catalogItems*.targetUri.find {
-            it.contains(item1.dbId)
-        } != null
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "retrieve a catalog for wrong client"() {
-        given: "a catalog"
-
-        when: "trying to retrieve the other client's domain"
-        get("/catalogs/${catalog1.id.uuidValue()}", 404)
-
-        then: "a client boundary violation is detected"
-        thrown(ClientBoundaryViolationException)
-    }
-
-    @WithUserDetails("user@domain.example")
-    def "retrieve all catalogs"() {
-        given: "two catalogs"
-        newCatalog(domain1) {
-            name = 'c'
-        }
-
-        txTemplate.execute {
-            domain1 = domainRepository.save(domain1)
-        }
-        catalog1 = domain1.catalogs.first()
-
-        when: "a request is made to the server"
-        def result = parseJson(get("/catalogs?"))
-
-        then: "the catalogs are found"
-        result.size() == 2
-    }
 
     @WithUserDetails("user@domain.example")
     def "retrieve a catalog item"() {
         given: "a saved catalogitem with a catalog"
 
         when: "a request is made to the server"
-        def results = get("/catalogs/${catalog.id.uuidValue()}/items/${item1.id.uuidValue()}")
+        def results = get("/catalogs/${domain.id.uuidValue()}/items/${item1.id.uuidValue()}")
 
         then: "the eTag is set"
         getETag(results) != null
@@ -98,7 +50,7 @@ class CatalogControllerMockMvcITSpec extends CatalogSpec {
         given: "a saved catalogitem with a catalog"
 
         when: "a request is made to the server"
-        get("/catalogs/${catalog1.id.uuidValue()}/items/${otherItem.id.uuidValue()}", 404)
+        get("/catalogs/${domain3.id.uuidValue()}/items/${otherItem.id.uuidValue()}", 404)
 
         then: "the data is rejected"
         thrown(NotFoundException)
@@ -109,17 +61,17 @@ class CatalogControllerMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server"
-        def result = parseJson(get("/catalogs/${catalog.dbId}/items"))
+        def result = parseJson(get("/catalogs/${domain.idAsString}/items"))
 
         then: "the domains are returned"
-        result.size() == catalog.catalogItems.size()
+        result.size() == domain.catalogItems.size()
 
         when: "the catalog item 'item4' is retrieved from the list of items"
         def item4FromResult = result.find { it.id == item4.id.uuidValue() }
 
         then: "the catalog item contains the element's description"
         item4FromResult.description == item4.description
-        item4FromResult._self == "http://localhost/catalogs/${catalog.dbId}/items/${item4.id.uuidValue()}"
+        item4FromResult._self == "http://localhost/catalogs/${domain.idAsString}/items/${item4.id.uuidValue()}"
     }
 
     @WithUserDetails("user@domain.example")
@@ -127,7 +79,7 @@ class CatalogControllerMockMvcITSpec extends CatalogSpec {
         given: "the created catalogitems"
 
         when: "a request is made to the server"
-        get("/catalogs/${catalog1.dbId}/items", 404)
+        get("/catalogs/${domain3.idAsString}/items", 404)
 
         then: "the data is rejected"
         thrown(NotFoundException)

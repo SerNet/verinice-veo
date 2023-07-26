@@ -47,9 +47,7 @@ public class GetCatalogItemUseCase
                     .domainId
                     .map(EntitySpecifications::hasId)
                     .orElse(EntitySpecifications.matchAll()))
-            .flatMap(d -> d.getCatalogs().stream())
-            .filter(EntitySpecifications.hasId(input.catalogId))
-            .flatMap(c -> c.getCatalogItems().stream())
+            .flatMap(d -> d.getCatalogItems().stream())
             .filter(item -> item.getId().equals(input.itemId))
             .findFirst()
             .orElseThrow(() -> new NotFoundException(input.itemId, CatalogItem.class));
@@ -61,7 +59,6 @@ public class GetCatalogItemUseCase
   @Value
   public static class InputData implements UseCase.InputData {
     Key<UUID> itemId;
-    Key<UUID> catalogId;
     Optional<Key<UUID>> domainId;
     Client authenticatedClient;
   }

@@ -38,16 +38,10 @@ class AdminRestTest extends VeoRestTest{
     def "get a unit dump from created elements"() {
         given:
         def unitId = postNewUnit("my catalog unit").resourceId
+        def catalogItemIds = getCatalogItems(dsgvoDomainId)*.id
+        log.info("==> catalogItemIds: {}", catalogItemIds)
 
-        def catalogId = extractLastId(get("/domains/$dsgvoDomainId").body.catalogs.first().targetUri)
-        log.info("==> catalogId: {}", catalogId)
-        def catalog = getCatalog(catalogId)
-        log.info("==> catalog: {}", JsonOutput.toJson(catalog))
-
-        def allItems = catalog.catalogItems.collect{extractLastId(it.targetUri)}.join(',')
-        log.info("==> allItems: {}", allItems)
-
-        def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${allItems}").body
+        def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${catalogItemIds.join(',')}").body
         log.info("==> incarnationDescription: {}", JsonOutput.toJson(incarnationDescription))
         post("/units/${unitId}/incarnations", incarnationDescription)
 
@@ -59,7 +53,7 @@ class AdminRestTest extends VeoRestTest{
         dump.unit.name == "my catalog unit"
 
         dump.domains.size() >= 2
-        dump.elements.size() == catalog.catalogItems.size()
+        dump.elements.size() == catalogItemIds.size()
         with (dump.elements.find { it.abbreviation == "VVT" }) {
             description == "VVT-Prozess"
             links.size() == 1
@@ -77,9 +71,5 @@ class AdminRestTest extends VeoRestTest{
             domains[owner.dsgvoDomainId].subType == "CTL_TOM"
             domains[owner.dsgvoDomainId].status == "NEW"
         }
-    }
-
-    private extractLastId(String targetUri) {
-        targetUri.split('/').last()
     }
 }

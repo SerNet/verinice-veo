@@ -20,29 +20,23 @@ package org.veo.rest.test
 class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
     final def UNIT_NAME = 'incarnate catalog item test unit'
 
-    def postResponse
-    def testDomain
-    def catalog
     String unitId
 
     def setup() {
         unitId = postNewUnit(UNIT_NAME).resourceId
-        testDomain = getDomains().find { it.name == "test-domain" }
-        def catalogId = uriToId(testDomain.catalogs.first().targetUri)
-        catalog = getCatalog(catalogId)
     }
 
     def "Create a unit and incarnate c-1 and cc-1"() {
         when:
-        def itemC1Id = itemIdByDisplayName("c-1 Control-1")
+        def itemC1Id = itemIdByAbbreviation("c-1")
 
-        def incarnationDescriptions = getIncarnationDescriptions(itemC1Id)
+        def incarnationDescriptions = getIncarnationDescriptions([itemC1Id])
         def newElements = incarnate(incarnationDescriptions)
         def createdElementC1 = newElements.first().targetUri
 
-        def itemCC1Id = itemIdByDisplayName("cc-1 Control-cc-1")
+        def itemCC1Id = itemIdByAbbreviation("cc-1")
 
-        incarnationDescriptions = getIncarnationDescriptions(itemCC1Id)
+        incarnationDescriptions = getIncarnationDescriptions([itemCC1Id])
         incarnationDescriptions.parameters.first().references[0].put("referencedElement", ["targetUri":createdElementC1])
 
         newElements = incarnate(incarnationDescriptions)
@@ -70,9 +64,9 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
     def "Create a unit and incarnate c-1 and c-2 in one request"() {
         when: "we get c1 and c2 id"
-        def itemC1Id = itemIdByDisplayName("c-1 Control-1")
-        def itemC2Id = itemIdByDisplayName("c-2 Control-2")
-        def incarnationDescription = getIncarnationDescriptions(itemC1Id, itemC2Id)
+        def itemC1Id = itemIdByAbbreviation("c-1")
+        def itemC2Id = itemIdByAbbreviation("c-2")
+        def incarnationDescription = getIncarnationDescriptions([itemC1Id, itemC2Id])
 
         and: "we post the given description"
         def newElements = incarnate(incarnationDescription)
@@ -91,19 +85,19 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
     def "Create a unit and incarnate c-1 and cc-1->c-1, and cc-2 linked default to cc-1"() {
         when:
-        def itemC1Id = itemIdByDisplayName("c-1 Control-1")
-        def incarnationDescription = getIncarnationDescriptions(itemC1Id)
+        def itemC1Id = itemIdByAbbreviation("c-1")
+        def incarnationDescription = getIncarnationDescriptions([itemC1Id])
         def newElements = incarnate(incarnationDescription)
         def createdElementC1 = newElements.first().targetUri
 
-        def itemCC1Id = itemIdByDisplayName("cc-1 Control-cc-1")
-        incarnationDescription = getIncarnationDescriptions(itemCC1Id)
+        def itemCC1Id = itemIdByAbbreviation("cc-1")
+        incarnationDescription = getIncarnationDescriptions([itemCC1Id])
         incarnationDescription.parameters.first().references[0].put("referencedElement", ["targetUri":createdElementC1])
         newElements = incarnate(incarnationDescription)
         def controlCC1TargetUri = newElements.first().targetUri
 
-        def itemCC2Id = itemIdByDisplayName("cc-2 Control-cc-2")
-        incarnationDescription = getIncarnationDescriptions(itemCC2Id)
+        def itemCC2Id = itemIdByAbbreviation("cc-2")
+        incarnationDescription = getIncarnationDescriptions([itemCC2Id])
 
         then: "the link reference is filled with the suggested cc-1"
         incarnationDescription.parameters[0].references[0].referencedElement.targetUri == controlCC1TargetUri
@@ -133,12 +127,12 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
     def "Create a unit incarnate c-1 and build a list by linking the last cc-1 10 times"() {
         when:
-        def itemC1Id = itemIdByDisplayName("c-1 Control-1")
-        def incarnationDescriptions = getIncarnationDescriptions(itemC1Id)
+        def itemC1Id = itemIdByAbbreviation("c-1")
+        def incarnationDescriptions = getIncarnationDescriptions([itemC1Id])
         def createdElement = incarnate(incarnationDescriptions).first().targetUri
 
-        def itemCC1Id = itemIdByDisplayName("cc-1 Control-cc-1")
-        incarnationDescriptions = getIncarnationDescriptions(itemCC1Id)
+        def itemCC1Id = itemIdByAbbreviation("cc-1")
+        incarnationDescriptions = getIncarnationDescriptions([itemCC1Id])
         10.times {
             incarnationDescriptions.parameters.first().references[0].put("referencedElement", ["targetUri":createdElement])
             createdElement = incarnate(incarnationDescriptions).first().targetUri
@@ -165,8 +159,8 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
     def "Create a unit and incarnate c-2 10 times"() {
         when: "c-2 is incarnated 10 times"
-        def itemC2Id = itemIdByDisplayName("c-2 Control-2")
-        def incarnationDescription = getIncarnationDescriptions(itemC2Id)
+        def itemC2Id = itemIdByAbbreviation("c-2")
+        def incarnationDescription = getIncarnationDescriptions([itemC2Id])
         10.times {
             incarnate(incarnationDescription)
         }
@@ -191,9 +185,9 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
     def "Create a unit and incarnate cc-1->cc-2 in one step"() {
         when:
-        def itemCC1Id = itemIdByDisplayName("cc-1 Control-cc-1")
-        def itemCC2Id = itemIdByDisplayName("cc-2 Control-cc-2")
-        def incarnationDescription = getIncarnationDescriptions(itemCC1Id, itemCC2Id)
+        def itemCC1Id = itemIdByAbbreviation("cc-1")
+        def itemCC2Id = itemIdByAbbreviation("cc-2")
+        def incarnationDescription = getIncarnationDescriptions([itemCC1Id, itemCC2Id])
         def newElements = incarnate(incarnationDescription)
 
         def controlCC1tResult = get(newElements[0].targetUri).body
@@ -237,22 +231,18 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
     def "Create a unit and the whole catalog in one step"() {
         when: "We create all elements"
-        def catalogItemsIds = catalog.catalogItems.collect{uriToId(it.targetUri)}.join(',')
+        def catalogItemsIds = getCatalogItems(testDomainId)*.id
 
-        def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${catalogItemsIds}").body
+        def incarnationDescription = getIncarnationDescriptions(catalogItemsIds)
         def newElements = incarnate(incarnationDescription)
 
         then: "all items of the catalog are created"
-        newElements.size() == catalog.catalogItems.size()
+        newElements.size() == catalogItemsIds.size()
     }
 
     def "Create a unit and one tom, then add the tom again and again"() {
         when: "We create one element"
-        def domainDto = getDomains().find { it.name == "DS-GVO" }
-        def catalogId = uriToId(domainDto.catalogs[0].targetUri)
-        def catalogDsgvo = getCatalog(catalogId)
-
-        def tomi = uriToId(catalogDsgvo.catalogItems.find { it.displayName.contains("TOM-I") }.targetUri)
+        def tomi = itemIdByAbbreviation("TOM-I", dsgvoDomainId)
         def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${tomi}").body
         incarnate(incarnationDescription)
 
@@ -277,20 +267,16 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
     def "Create a unit and the whole dsgvo catalog in one step add controls after"() {
         when: "We create all elements"
-        def domainDto = get("/domains/$dsgvoDomainId").body
-        def catalogId = uriToId(domainDto.catalogs[0].targetUri)
-        def catalogDsgvo = getCatalog(catalogId)
-
-        def catalogItemsIds = catalogDsgvo.catalogItems.collect{uriToId(it.targetUri)}.join(',')
-        def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${catalogItemsIds}").body
+        def catalogItemsIds = getCatalogItems(dsgvoDomainId)*.id
+        def incarnationDescription = getIncarnationDescriptions(catalogItemsIds)
         def newElements = incarnate(incarnationDescription)
 
         then: "all items of the catalog are created"
-        newElements.size() == catalogDsgvo.catalogItems.size()
+        newElements.size() == catalogItemsIds.size()
 
         when: "We add other controls from the catalog"
-        def tomi = uriToId(catalogDsgvo.catalogItems.find { it.displayName.contains("TOM-I") }.targetUri)
-        def tome = uriToId(catalogDsgvo.catalogItems.find { it.displayName.contains("TOM-P") }.targetUri)
+        def tomi = itemIdByAbbreviation("TOM-I", dsgvoDomainId)
+        def tome = itemIdByAbbreviation("TOM-P", dsgvoDomainId)
 
         def idTom = get("/units/${unitId}/incarnations?itemIds=${tomi},${tome}").body
         def toms = incarnate(idTom)
@@ -304,16 +290,15 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         tom2.abbreviation  == "TOM-P"
     }
 
-    private itemIdByDisplayName(displayName) {
-        def itemRef = catalog.catalogItems.find{it.displayName == displayName}
-        uriToId(itemRef.targetUri)
+    private String itemIdByAbbreviation(String abbreviation, String domainId = testDomainId) {
+        getCatalogItems(domainId).find { it.abbreviation == abbreviation }.id
     }
 
     private uriToId(String targetUri) {
         targetUri.split('/').last()
     }
 
-    private getIncarnationDescriptions(String... itemIds) {
+    private Object getIncarnationDescriptions(Collection<String> itemIds) {
         get("/units/${unitId}/incarnations?itemIds=${itemIds.join(',')}").body
     }
 

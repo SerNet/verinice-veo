@@ -28,8 +28,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.NotImplementedException;
 
-import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
-import org.veo.adapter.presenter.api.dto.AbstractCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
@@ -37,20 +35,16 @@ import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
-import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogDto;
-import org.veo.adapter.presenter.api.dto.composite.CompositeCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
-import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogDto;
-import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogItemDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.adapter.service.domaintemplate.dto.TransformCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformLinkTailoringReference;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.AssetRisk;
-import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
@@ -197,12 +191,10 @@ public final class DtoToEntityTransformer {
             .collect(Collectors.toSet()));
     target.setDecisions(source.getDecisions());
     target.setRiskDefinitions(copyOf(source.getRiskDefinitions()));
-    if (source.getCatalogs() != null) {
-      target.setCatalogs(
-          source.getCatalogs().stream()
-              .map(c -> transformDto2Catalog(c, idRefResolver))
-              .collect(Collectors.toSet()));
-    }
+    target.setCatalogItems(
+        source.getCatalogItems().stream()
+            .map(c -> transformDto2CatalogItem(c, idRefResolver))
+            .collect(Collectors.toSet()));
     target.setProfiles(copyOf(source.getProfiles()));
   }
 
@@ -213,22 +205,6 @@ public final class DtoToEntityTransformer {
     target.setCustomAspects(source.getCustomAspects());
     target.setLinks(source.getLinks());
     target.setTranslations(source.getTranslations());
-    return target;
-  }
-
-  public Catalog transformDto2Catalog(AbstractCatalogDto source, IdRefResolver idRefResolver) {
-    var target = createIdentifiable(Catalog.class, source);
-    idRefResolver.resolve(source.getDomainTemplate()).addToCatalogs(target);
-    mapNameableProperties(source, target);
-    if (source instanceof ReferenceCatalogDto catalogDto) {
-      target.setCatalogItems(idRefResolver.resolve(catalogDto.getCatalogItems()));
-    } else if (source instanceof CompositeCatalogDto catalogDto) {
-      target.setCatalogItems(
-          convertSet(
-              catalogDto.getCatalogItems(),
-              ci -> transformDto2CatalogItem(ci, idRefResolver, target)));
-    }
-
     return target;
   }
 
@@ -279,34 +255,24 @@ public final class DtoToEntityTransformer {
   }
 
   public CatalogItem transformDto2CatalogItem(
-      AbstractCatalogItemDto source, IdRefResolver idRefResolver, Catalog catalog) {
+      TransformCatalogItemDto source, IdRefResolver idRefResolver) {
     var target = createIdentifiable(CatalogItem.class, source);
-    target.setCatalog(catalog);
-    if (source instanceof CompositeCatalogItemDto catalogitem) {
-      target.setAbbreviation(catalogitem.getAbbreviation());
-      target.setName(catalogitem.getName());
-      target.setDescription(catalogitem.getDescription());
-      target.setElementType(catalogitem.getElementType());
-      target.setStatus(catalogitem.getStatus());
-      target.setSubType(catalogitem.getSubType());
+    target.setAbbreviation(source.getAbbreviation());
+    target.setName(source.getName());
+    target.setDescription(source.getDescription());
+    target.setElementType(source.getElementType());
+    target.setStatus(source.getStatus());
+    target.setSubType(source.getSubType());
 
-      target.setCustomAspects(
-          catalogitem.getCustomAspects().getValue().entrySet().stream()
-              .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().getValue())));
+    target.setCustomAspects(
+        source.getCustomAspects().getValue().entrySet().stream()
+            .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().getValue())));
 
-      target.setTailoringReferences(
-          convertSet(
-              source.getTailoringReferences(),
-              tr -> transformDto2TailoringReference(tr, target, idRefResolver)));
+    target.setTailoringReferences(
+        convertSet(
+            source.getTailoringReferences(),
+            tr -> transformDto2TailoringReference(tr, target, idRefResolver)));
 
-    } else if (source instanceof ReferenceCatalogItemDto catalogitem) {
-      target.setAbbreviation(catalogitem.getNamespace());
-      target.setName(catalogitem.getName());
-      target.setDescription(catalogitem.getDescription());
-    } else {
-      throw new IllegalArgumentException(
-          "Cannot handle entity type " + source.getClass().getName());
-    }
     target.setNamespace(source.getNamespace());
     return target;
   }

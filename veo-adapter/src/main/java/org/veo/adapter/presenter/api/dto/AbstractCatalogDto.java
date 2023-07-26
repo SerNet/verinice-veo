@@ -21,7 +21,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.openapi.IdRefCatalogDomainTemplate;
-import org.veo.core.entity.Catalog;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Identifiable;
 
@@ -29,6 +29,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+@Deprecated() // TODO #2301 remove
 @Data
 @EqualsAndHashCode(callSuper = true)
 public abstract class AbstractCatalogDto extends AbstractVersionedSelfReferencingDto
@@ -47,6 +48,6 @@ public abstract class AbstractCatalogDto extends AbstractVersionedSelfReferencin
 
   @Override
   public Class<? extends Identifiable> getModelInterface() {
-    return Catalog.class;
+    return Domain.class;
   }
 }

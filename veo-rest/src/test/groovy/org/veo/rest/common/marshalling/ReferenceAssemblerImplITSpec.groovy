@@ -20,8 +20,8 @@ package org.veo.rest.common.marshalling
 import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.core.VeoSpringSpec
-import org.veo.core.entity.Catalog
 import org.veo.core.entity.CatalogItem
+import org.veo.core.entity.Domain
 import org.veo.core.entity.EntityType
 import org.veo.core.entity.Key
 import org.veo.rest.configuration.TypeExtractor
@@ -61,10 +61,10 @@ class ReferenceAssemblerImplITSpec extends VeoSpringSpec {
             getModelInterface() >> type
         }
         if (type == CatalogItem) {
-            def catalog = Stub(Catalog) {
+            def domain = Stub(Domain) {
                 getId() >> Key.newUuid()
             }
-            entity.getCatalog() >> catalog
+            entity.owner >> domain
         }
         entity
     }

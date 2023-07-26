@@ -19,7 +19,6 @@ package org.veo.persistence.entity.jpa
 
 import org.springframework.beans.factory.annotation.Autowired
 
-import org.veo.core.entity.Catalog
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
@@ -28,22 +27,18 @@ import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.transform.EntityFactory
-import org.veo.persistence.access.jpa.CatalogDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.ControlDataRepository
 import org.veo.persistence.access.jpa.DomainDataRepository
 import org.veo.persistence.access.jpa.DomainTemplateDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
-import org.veo.test.VeoSpec
 
 class DomainJpaSpec extends AbstractJpaSpec {
     @Autowired
     DomainTemplateDataRepository domainTemplateRepository
     @Autowired
     DomainDataRepository repository
-    @Autowired
-    CatalogDataRepository catalogRepository
     @Autowired
     ClientDataRepository clientRepository
     @Autowired
@@ -88,53 +83,18 @@ class DomainJpaSpec extends AbstractJpaSpec {
         d.riskDefinitions == domain0.riskDefinitions
     }
 
-    def 'domain with catalog is inserted'() {
-        given: "the domain template"
-        domain0 = newDomain(client) {
-            name = 'domain'
-            authority = 'ISO'
-            templateVersion = '1.0'
-        }
-
-        when: "saving"
-        domain0 = repository.save(domain0)
-        Catalog c = newCatalog(domain0) {
-            abbreviation = 'c-1'
-            name = 'a catalog'
-            description = 'catalog 1desc'
-        }
-
-        domain0 = repository.save(domain0)
-        Domain d = repository.findById(domain0.dbId).get()
-
-        then: "saved and loaded"
-        d.name == domain0.name
-        d.authority == domain0.authority
-        d.templateVersion == domain0.templateVersion
-        d.catalogs.size() == 1
-        d.catalogs.first().name == c.name
-        d.catalogs.first().abbreviation == c.abbreviation
-        d.catalogs.first().description == c.description
-    }
-
     def 'domain with catalog and catalog items'() {
         given: "the domain template and a catalog"
         domain0 = newDomain(client) {}
-        Catalog catalog = newCatalog(domain0) {
-            abbreviation = 'c-1'
-            name = 'catalog'
-            description = 'a catalog'
-
-            newCatalogItem(it, {
-                elementType = "control"
-            })
-            newCatalogItem(it, {
-                elementType = "control"
-            })
-            newCatalogItem(it, {
-                elementType = "control"
-            })
-        }
+        newCatalogItem(domain0, {
+            elementType = "control"
+        })
+        newCatalogItem(domain0, {
+            elementType = "control"
+        })
+        newCatalogItem(domain0, {
+            elementType = "control"
+        })
 
         when: "saving"
         domain0 = repository.save(domain0)
@@ -144,13 +104,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
-        d.catalogs.size() == 1
-        d.catalogs.first().id != null
-        d.catalogs.first().domainTemplate == domain0
-        d.catalogs.first().name == catalog.name
-        d.catalogs.first().abbreviation == catalog.abbreviation
-        d.catalogs.first().description == catalog.description
-        d.catalogs.first().catalogItems.size() == 3
+        d.catalogItems.size() == 3
     }
 
     def 'domain with catalog and catalog items and a domain template'() {
@@ -161,20 +115,15 @@ class DomainJpaSpec extends AbstractJpaSpec {
         domain0 = newDomain(client)
         domain0.domainTemplate = domainTemplate
 
-        Catalog catalog = newCatalog(domain0) {
-            name = 'a'
-            newCatalogItem(it, {
-                elementType = "control"
-            })
-            newCatalogItem(it, {
-                elementType = "control"
-            })
-            newCatalogItem(it, {
-                elementType = "control"
-            })
-        }
-
-        domain0.addToCatalogs(catalog)
+        newCatalogItem(domain0, {
+            elementType = "control"
+        })
+        newCatalogItem(domain0, {
+            elementType = "control"
+        })
+        newCatalogItem(domain0, {
+            elementType = "control"
+        })
 
         when: "saving"
         domain0 = repository.save(domain0)
@@ -185,33 +134,27 @@ class DomainJpaSpec extends AbstractJpaSpec {
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
-        d.catalogs.size() == 1
-        d.catalogs.first().id != null
-        d.catalogs.first().catalogItems.size() == 3
+        d.catalogItems.size() == 3
         d.domainTemplate == domainTemplate
     }
 
     def 'domain with catalog and catalog items and controls'() {
         given: "the domain template and a catalog"
         domain0 = newDomain(client)
-        newCatalog(domain0) {
-            name = 'a'
-
-            newCatalogItem(it, {
-                elementType = "control"
-                name = 'c1'
-            })
-            def item2 = newCatalogItem(it, {
-                elementType = "control"
-                name = 'c2'
-            })
-            def item3 = newCatalogItem(it, {
-                elementType = "control"
-                name = 'c3'
-            })
-            newTailoringReference(item3, TailoringReferenceType.COPY) {
-                catalogItem = item2
-            }
+        newCatalogItem(domain0, {
+            elementType = "control"
+            name = 'c1'
+        })
+        def item2 = newCatalogItem(domain0, {
+            elementType = "control"
+            name = 'c2'
+        })
+        def item3 = newCatalogItem(domain0, {
+            elementType = "control"
+            name = 'c3'
+        })
+        newTailoringReference(item3, TailoringReferenceType.COPY) {
+            catalogItem = item2
         }
 
         when: "saving"
@@ -223,9 +166,8 @@ class DomainJpaSpec extends AbstractJpaSpec {
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
-        d.catalogs.size() == 1
-        d.catalogs.first().catalogItems.size() == 3
-        with(d.catalogs.first().catalogItems.sort {it.name}) {
+        d.catalogItems.size() == 3
+        with(d.catalogItems.sort {it.name}) {
             size() == 3
             it[0].name == 'c1'
             it[1].name == 'c2'
@@ -251,11 +193,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         client = clientRepository.save(client)
         domain0 = client.domains.first()
 
-        Catalog catalog = newCatalog(domain0) {
-            name = 'a'
-        }
-
-        CatalogItem item1 = newCatalogItem(catalog, {
+        CatalogItem item1 = newCatalogItem(domain0, {
             elementType = "control"
             name = 'c1'
             abbreviation = 'c1'
@@ -263,13 +201,13 @@ class DomainJpaSpec extends AbstractJpaSpec {
             subType = "ctl"
             status = "NEW"
         })
-        CatalogItem item2 = newCatalogItem(catalog, {
+        CatalogItem item2 = newCatalogItem(domain0, {
             elementType = "control"
             name = 'c2'
             subType = "ctl"
             status = "NEW"
         })
-        CatalogItem item3 = newCatalogItem(catalog, {
+        CatalogItem item3 = newCatalogItem(domain0, {
             elementType = "control"
             name = 'c3'
             subType = "ctl"
@@ -278,13 +216,13 @@ class DomainJpaSpec extends AbstractJpaSpec {
         newTailoringReference(item3, TailoringReferenceType.COPY) {
             catalogItem = item2
         }
-        CatalogItem item4 = newCatalogItem(catalog, {
+        CatalogItem item4 = newCatalogItem(domain0, {
             elementType = "asset"
             name = 'd1'
             subType = "asset"
             status = "NEW"
         })
-        CatalogItem item5 = newCatalogItem(catalog, {
+        CatalogItem item5 = newCatalogItem(domain0, {
             elementType = "process"
             name = 'p1'
             subType = "Test"
@@ -298,7 +236,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
             linkType = 'linktest'
         }
 
-        CatalogItem item6 = newCatalogItem(catalog, {
+        CatalogItem item6 = newCatalogItem(domain0, {
             elementType = "control"
             name = 'c-p'
             subType = "ctl"
@@ -309,17 +247,6 @@ class DomainJpaSpec extends AbstractJpaSpec {
             linkType = 'externallinktest'
         }
 
-        catalog.catalogItems = [
-            item1,
-            item2,
-            item3,
-            item4,
-            item5,
-            item6
-        ] as Set
-
-        catalog = catalogRepository.save(catalog)
-
         when: "saving"
         domain0 = repository.save(domain0)
 
@@ -329,15 +256,10 @@ class DomainJpaSpec extends AbstractJpaSpec {
         d.name == domain0.name
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
-        d.catalogs.size() == 1
 
-        when:
-        def loadedCatalog = d.catalogs.first()
-
-        then:
-        loadedCatalog.id == catalog.id
-        loadedCatalog.catalogItems.size() == 6
-        with(loadedCatalog.catalogItems.sort {
+        and:
+        d.catalogItems.size() == 6
+        with(d.catalogItems.sort {
             it.name
         }) {
             it[0].name == 'c-p'
@@ -359,7 +281,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
         }
 
         when: "create elements linked to catalogItems"
-        def firstItemFromCatalog = loadedCatalog.catalogItems.sort {
+        def firstItemFromCatalog = d.catalogItems.sort {
             it.name
         }.first()
         Control controlEntity = newControl(unit) {

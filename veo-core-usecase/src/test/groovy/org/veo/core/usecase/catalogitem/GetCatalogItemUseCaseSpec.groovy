@@ -17,19 +17,15 @@
  ******************************************************************************/
 package org.veo.core.usecase.catalogitem
 
-import org.veo.core.entity.Catalog
 import org.veo.core.entity.CatalogItem
-import org.veo.core.entity.DomainTemplate
 import org.veo.core.entity.Key
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.usecase.UseCaseSpec
 
 class GetCatalogItemUseCaseSpec extends UseCaseSpec {
 
-    Catalog catalog = Mock()
     CatalogItem catalogItem = Mock()
 
-    DomainTemplate domaintemplate = Mock()
     Key existingDomainId = Key.newUuid()
     Key catalogId = Key.newUuid()
     Key catalogItemId = Key.newUuid()
@@ -40,20 +36,16 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
         existingDomain.getId() >> existingDomainId
         existingDomain.owner >> existingClient
 
-        catalog.getId() >> catalogId
-        catalog.getDomainTemplate() >> existingDomain
-
         catalogItem.getId() >> catalogItemId
-        catalogItem.getCatalog() >> catalog
-        catalog.getCatalogItems() >> [catalogItem]
-        existingDomain.getCatalogs() >> [catalog]
+        catalogItem.getOwner() >> existingDomain
+        existingDomain.getCatalogItems() >> [catalogItem]
         anotherClient.getDomains() >> []
     }
 
     def "retrieve a catalogitem"() {
         when:
         existingDomain.isActive() >> true
-        def output = usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, catalogId, Optional.of(existingDomainId),existingClient))
+        def output = usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, Optional.of(existingDomainId), existingClient))
 
         then:
         output.catalogItem != null
@@ -63,7 +55,7 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
     def "retrieve a catalogitem for a deleted domain"() {
         when:
         existingDomain.isActive() >> false
-        usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId,catalogId, Optional.of(existingDomainId), existingClient))
+        usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, Optional.of(existingDomainId), existingClient))
 
         then:
         thrown(NotFoundException)
@@ -72,7 +64,7 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
     def "retrieve a catalogitem for another client"() {
         when:
         existingDomain.isActive() >> true
-        usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, catalogId, Optional.empty(),anotherClient))
+        usecase.execute(new GetCatalogItemUseCase.InputData(catalogItemId, Optional.empty(), anotherClient))
 
         then:
         thrown(NotFoundException)
@@ -81,7 +73,7 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
     def "retrieve an unknown catalogitem"() {
         when:
         existingDomain.isActive() >> true
-        usecase.execute(new GetCatalogItemUseCase.InputData(Key.newUuid(), catalogId,  Optional.of(existingDomainId),existingClient))
+        usecase.execute(new GetCatalogItemUseCase.InputData(Key.newUuid(), Optional.of(existingDomainId), existingClient))
 
         then:
         thrown(NotFoundException)

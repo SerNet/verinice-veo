@@ -30,7 +30,6 @@ import org.veo.adapter.presenter.api.dto.full.FullScenarioDto
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto
 import org.veo.core.entity.Asset
 import org.veo.core.entity.AssetRisk
-import org.veo.core.entity.Catalog
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Control
 import org.veo.core.entity.Domain
@@ -39,7 +38,6 @@ import org.veo.core.entity.Element
 import org.veo.core.entity.EntityType
 import org.veo.core.entity.Incident
 import org.veo.core.entity.Key
-import org.veo.core.entity.Person
 import org.veo.core.entity.Process
 import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.Scenario
@@ -166,12 +164,12 @@ class ReferenceAssemblerImplSpec extends Specification {
         given:
         def catalogId = '371c5f43-cd7c-4e4f-b45b-59a7337bf489'
         def itemId = 'ccf66944-e782-4221-8e2a-65209d2826f1'
-        Catalog catalog = Stub {
+        Domain domain = Stub {
             getId () >> Key.uuidFrom(catalogId)
         }
         CatalogItem catalogItem = Stub {
             getId () >> Key.uuidFrom(itemId)
-            getCatalog()  >> catalog
+            getOwner()  >> domain
             getModelInterface() >> CatalogItem
         }
 

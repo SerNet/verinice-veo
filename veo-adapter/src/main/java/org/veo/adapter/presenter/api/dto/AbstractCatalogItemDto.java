@@ -23,9 +23,6 @@ import java.util.Set;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import org.veo.adapter.presenter.api.common.IdRef;
-import org.veo.adapter.presenter.api.openapi.IdRefCatalogItemCatalog;
-import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Identifiable;
 
@@ -47,10 +44,6 @@ public abstract class AbstractCatalogItemDto extends AbstractVersionedSelfRefere
 
   @Schema(description = "The description for the CatalogItem.")
   private String description;
-
-  @NotNull(message = "A catalog must be present.")
-  @Schema(implementation = IdRefCatalogItemCatalog.class)
-  private IdRef<Catalog> catalog;
 
   @Schema(description = "The tailoring references of this catalog item.")
   private Set<AbstractTailoringReferenceDto> tailoringReferences = new HashSet<>();

@@ -46,9 +46,6 @@ class TranslationValidationMockMvcITSpec extends ContentSpec {
             this.client = createTestClient()
             newDomain(client) {
                 name = "Domain"
-                newCatalog(it) {
-                    name = 'a'
-                }
             }
             client = clientRepository.save(client)
             testDomain = client.domains.find{it.name == "Domain"}

@@ -69,7 +69,7 @@ classes = [TestEventSubscriber.class,
 class ScheduledEventDispatchITSpec extends VeoSpringSpec {
 
     public static final int NUM_EVENTS = 10000
-    public static final int PROFILE_NUM_EVENTS = 80
+    public static final int PROFILE_NUM_EVENTS = 79
 
     @Autowired
     private ClientRepositoryImpl clientRepository

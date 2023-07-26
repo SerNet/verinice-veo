@@ -24,8 +24,6 @@ import org.springframework.security.test.context.support.WithUserDetails
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
-import org.veo.core.entity.Control
-import org.veo.core.entity.Process
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.exception.ModelConsistencyException
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -63,12 +61,8 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             authority == domainTemplate.authority
             templateVersion == domainTemplate.templateVersion
         }
-        with (domainFromTemplate.catalogs) {
-            size() == 1
-            first().name == 'DSGVO-Controls'
-            first().catalogItems.size() == 6
-        }
-        with (domainFromTemplate.catalogs.first().catalogItems.sort { it.name }) {
+        domainFromTemplate.catalogItems.size() == 6
+        with (domainFromTemplate.catalogItems.sort { it.name }) {
             it[0].tailoringReferences.size()==1
             it[0].tailoringReferences.first().referenceType == TailoringReferenceType.LINK_EXTERNAL
             it[0].tailoringReferences.first().catalogItem == it[5]
@@ -143,12 +137,8 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         expect: 'the domain matches'
         domainFromTemplate.domainTemplate.id == domainTemplateFromDomain.id
         domainFromTemplate.templateVersion == "1.1.0"
-        with (domainFromTemplate.catalogs) {
-            size() == 1
-            first().name == 'DSGVO-Controls'
-            first().catalogItems.size() == 6
-        }
-        with (domainFromTemplate.catalogs.first().catalogItems.sort { it.name }) {
+        domainFromTemplate.catalogItems.size() == 6
+        with (domainFromTemplate.catalogItems.sort { it.name }) {
             it[0].name == 'Control-1'
             it[0].abbreviation == 'c-1'
             it[0].description.startsWith('Lore')
@@ -229,7 +219,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         }
         with (domainFromTemplate.catalogs) {
             size() == 1
-            first().name == 'TEST-Controls'
+            first().name == 'test-domain'
             first().catalogItems.size() == 3
         }
         with (domainFromTemplate.catalogs.first().catalogItems.sort { it.name }) {

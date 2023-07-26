@@ -17,8 +17,15 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
-import jakarta.persistence.Entity;
+import java.util.HashSet;
+import java.util.Set;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.validation.Valid;
+
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Nameable;
 
@@ -30,4 +37,18 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true)
 @Data
-public class DomainTemplateData extends DomainBaseData implements DomainTemplate, Nameable {}
+public class DomainTemplateData extends DomainBaseData implements DomainTemplate, Nameable {
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      targetEntity = CatalogItemData.class,
+      mappedBy = "domainTemplate")
+  @Valid
+  private Set<CatalogItem> catalogItems = new HashSet<>();
+
+  public void setCatalogItems(Set<CatalogItem> catalogItems) {
+    catalogItems.forEach(ci -> ci.setOwner(this));
+    this.catalogItems.clear();
+    this.catalogItems.addAll(catalogItems);
+  }
+}

@@ -46,22 +46,17 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         unitId = postNewUnit().resourceId
     }
 
+    def "expected catalog items are present"() {
+        expect:
+        getCatalogItems(testDomainId).size() == 6
+        getCatalogItems(dsgvoDomainId).size() == 65
+    }
+
     def "Create linked elements from a catalog"() {
-        when: "the catalog is retrieved"
-        def catalogId = extractLastId(getDomains().find { it.name == "test-domain" }.catalogs.first().targetUri)
-        def catalog = getCatalog(catalogId)
-
-        then: "the expected catalog was instantiated"
-        with(catalog) {
-            catalogItems.size() == 6
-            name == "TEST-Controls"
-            domainTemplate.displayName == "td test-domain"
-        }
-
         when: "a selection of catalog items is applied"
         def elementResults
         log.info("===============> first pass")
-        elementResults = applyCatalogItems(catalog, ["Control-1", "Control-2"], null)
+        elementResults = applyCatalogItems(testDomainId, ["Control-1", "Control-2"])
 
         then: "only elements without references to other catalog items were created"
         elementResults.size() == 2
@@ -74,7 +69,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
 
         when: "the same catalog items are applied again"
         log.info("===============> second pass")
-        elementResults = applyCatalogItems(catalog)
+        elementResults = applyCatalogItems(testDomainId)
 
         then: "all elements were created"
         // This time, C-3 was created as well. C-3 was created with a link to
@@ -100,20 +95,6 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
     }
 
     def "Create elements with reversed links from catalog"() {
-        given:
-        def domainId = getDomains().find { it.name == "test-domain" }.id
-
-        when: "the catalog is retrieved"
-        def catalogId = extractLastId(getDomains().find { it.name == "test-domain" }.catalogs.first().targetUri)
-        def catalog = getCatalog(catalogId)
-
-        then: "the expected catalog was instantiated"
-        with(catalog) {
-            catalogItems.size() == 6
-            name == "TEST-Controls"
-            domainTemplate.displayName == "td test-domain"
-        }
-
         when: "a control is created"
         def sourceControlId = post("/controls", [
             name : "Link Target Control",
@@ -127,7 +108,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         ]).body.resourceId
 
         and: "C-4 is instantiated"
-        def elementResults = applyCatalogItems(catalog, ["Control-4"], "/controls/$sourceControlId")
+        def elementResults = applyCatalogItems(testDomainId, ["Control-4"], "/controls/$sourceControlId")
         String c4Id = elementResults.first().id
 
         then: "C-4 was created"
@@ -149,17 +130,6 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
     }
 
     def "Create elements with reversed links from catalog to wrong element"() {
-        when: "the catalog is retrieved"
-        def catalogId = extractLastId(getDomains().find { it.name == "test-domain" }.catalogs.first().targetUri)
-        def catalog = getCatalog(catalogId)
-
-        then: "the expected catalog was instantiated"
-        with(catalog) {
-            catalogItems.size() == 6
-            name == "TEST-Controls"
-            domainTemplate.displayName == "td test-domain"
-        }
-
         when: "a control is created"
         def sourceControlId = post("/controls", [
             name : "Link Target Control",
@@ -167,25 +137,13 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         ]).body.resourceId
 
         and: "C-4 is instantiated"
-        def elementResults = applyCatalogItems(catalog, ["Control-4"], "/controls/$sourceControlId", false)
+        def elementResults = applyCatalogItems(testDomainId, ["Control-4"], "/controls/$sourceControlId", false)
 
         then: "an error messages is returned"
         elementResults.message ==~/The element to link is not part of the domain: CTL.*/
     }
 
     def "Create linked elements from the dsgvo catalog"() {
-        when: "the catalog is retrieved"
-        def domainDto = getDomains().find { it.name == "DS-GVO" }
-        def catalogId = extractLastId(domainDto.catalogs[0].targetUri)
-        def catalog = getCatalog(catalogId)
-        def dsgvoId = extractLastId(catalog.domainTemplate.targetUri)
-
-        then: "the expected catalog was instantiated"
-        with(catalog) {
-            catalogItems.size() == 65
-            name == "DS-GVO"
-        }
-
         when:"we create the controls"
         def sourceProcessId = post("/processes", [
             name: "process",
@@ -198,47 +156,47 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
             owner: [targetUri: "$baseUrl/units/$unitId"]
         ]).body.resourceId
 
-        def elementResults = applyCatalogItems(catalog, [
+        def elementResults = applyCatalogItems(dsgvoDomainId, [
             "TOM zur Gewährleistung der Vertraulichkeit"
         ], "/processes/$sourceProcessId")
         get("/processes/${sourceProcessId}").body.links.size()==1
 
-        elementResults = applyCatalogItems(catalog, [
+        elementResults = applyCatalogItems(dsgvoDomainId, [
             "TOM zur Gewährleistung der Verfügbarkeit"
         ], "/processes/$sourceProcessId")
         get("/processes/${sourceProcessId}").body.links.size()==2
 
-        elementResults = applyCatalogItems(catalog, [
+        elementResults = applyCatalogItems(dsgvoDomainId, [
             "TOM zur Wiederherstellbarkeit"
         ], "/processes/$sourceProcessId")
         get("/processes/${sourceProcessId}").body.links.size()==3
 
-        elementResults = applyCatalogItems(catalog, [
+        elementResults = applyCatalogItems(dsgvoDomainId, [
             "TOM zur Verschlüsselung"
         ], "/processes/$sourceProcessId")
         get("/processes/${sourceProcessId}").body.links.size()==4
 
-        elementResults = applyCatalogItems(catalog, [
+        elementResults = applyCatalogItems(dsgvoDomainId, [
             "Verfahren regelmäßiger Überprüfung, Bewertung und Evaluierung der Wirksamkeit der TOM"
         ], "/processes/$sourceProcessId")
         get("/processes/${sourceProcessId}").body.links.size()==5
 
-        elementResults = applyCatalogItems(catalog, [
+        elementResults = applyCatalogItems(dsgvoDomainId, [
             "TOM zur Gewährleistung der Integrität"
         ], "/processes/$sourceProcessId")
         get("/processes/${sourceProcessId}").body.links.size()==6
 
-        elementResults = applyCatalogItems(catalog, [
+        elementResults = applyCatalogItems(dsgvoDomainId, [
             "TOM zur Pseudonymisierung"
         ], "/processes/$sourceProcessId")
         get("/processes/${sourceProcessId}").body.links.size()==7
 
-        elementResults = applyCatalogItems(catalog, [
+        elementResults = applyCatalogItems(dsgvoDomainId, [
             "TOM zur Gewährleistung der Belastbarkeit"
         ], "/processes/$sourceProcessId")
         get("/processes/${sourceProcessId}").body.links.size()==8
 
-        elementResults = applyCatalogItems(catalog, ["VVT"], null)
+        elementResults = applyCatalogItems(dsgvoDomainId, ["VVT"], null)
         def processVVT = elementResults.first()
 
         then:"The process is linked with the controlls"
@@ -247,21 +205,8 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
     }
 
     def "Create all linked elements from the dsgvo catalog in one step"() {
-        log.info("Create all linked elements from the dsgvo catalog in one step")
-
-        when: "the catalog is retrieved"
-        def catalogId = extractLastId(getDomains().find { it.name == "DS-GVO" }.catalogs.first().targetUri)
-        def catalog = getCatalog(catalogId)
-        def dsgvoId = extractLastId(catalog.domainTemplate.targetUri)
-
-        then: "the expected catalog was instantiated"
-        with(catalog) {
-            catalogItems.size() == 65
-            name == "DS-GVO"
-        }
-
         when:"we create all controls"
-        def allItems = catalog.catalogItems.collect{extractLastId(it.targetUri)}.join(',')
+        def allItems = getCatalogItems(dsgvoDomainId)*.id.join(',')
         log.debug("==> allItems: {}", allItems)
 
         def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${allItems}").body
@@ -283,28 +228,21 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         }
     }
 
-    private applyCatalogItems(catalog) {
-        return applyCatalogItems(catalog, null, null)
-    }
-    private applyCatalogItems(catalog, selectedItems, sourceElementUri) {
-        applyCatalogItems(catalog, selectedItems, sourceElementUri, true)
-    }
-
-    private applyCatalogItems(catalog, selectedItems, sourceElementUri, boolean succesful) {
+    private applyCatalogItems(String domainId, selectedItemNames = null, sourceElementUri = null, boolean succesful = true) {
         def elementResults = []
-        catalog.catalogItems
-                .sort { it.displayName }
+        getCatalogItems(domainId)
+                .sort { it.abbreviation }
                 .reverse()
-                .findAll { selectedItems == null || isSelectedItem(it.displayName, selectedItems) }
+                .findAll { selectedItemNames == null || selectedItemNames.contains(it.name) }
                 .each {
-                    log.info("Read catalog item: {}", it.displayName)
+                    log.info("Read catalog item: {}", it.name)
 
                     when: "list an item"
-                    def itemId = extractLastId(it.targetUri)
+                    def itemId = it.id
 
                     and: "get the apply information"
                     def applyInfo = getIncarnationDescriptions(unitId, itemId)
-                    log.info("Catalogitem {} has {} references", it.displayName, applyInfo.parameters.first().references.size())
+                    log.info("Catalogitem {} has {} references", it.abbreviation, applyInfo.parameters.first().references.size())
 
                     // change apply info:
                     if (sourceElementUri != null) {
@@ -320,7 +258,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
                     if (applyInfo.parameters.first().references.size() == 0 // no reference present
                             || applyInfo.parameters.first().references[0].referencedElement != null // reference to an element previously created from catalog
                             ) {
-                        log.info("Will be applied: {}", it.displayName)
+                        log.info("Will be applied: {}", it.name)
 
                         def postApply = postIncarnationDescriptions(unitId, applyInfo, succesful ? 201 : 400)
                         if(succesful) {
@@ -330,7 +268,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
                             log.info("Incarnated element {}", elementResult)
                             elementResults.add(elementResult)
 
-                            assert it.displayName ==~ /.*$elementResult.name.*/
+                            assert it.name == elementResult.name
                             assert Instant.parse(elementResult.createdAt) > beforeCreation
                             assert Instant.parse(elementResult.updatedAt) > beforeCreation
                             assert !elementResult.description.isBlank()
@@ -357,9 +295,5 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         def response = post("/units/${unitId}/incarnations", applyInfo, expectedStatus)
         log.info("postIncarnationDescriptions after: {}", response.body)
         response.body
-    }
-
-    private boolean isSelectedItem(String name, List<String> items) {
-        items.find {name.contains(it) } != null
     }
 }

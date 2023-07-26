@@ -19,12 +19,18 @@ package org.veo.persistence.entity.jpa;
 
 import static java.time.Instant.now;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.Valid;
 
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
@@ -42,6 +48,14 @@ public class DomainData extends DomainBaseData implements Domain {
   @ToString.Include
   private boolean active = true;
 
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      targetEntity = CatalogItemData.class,
+      mappedBy = "domain")
+  @Valid
+  private Set<CatalogItem> catalogItems = new HashSet<>();
+
   @ManyToOne(targetEntity = DomainTemplateData.class, fetch = FetchType.LAZY)
   @Valid
   private DomainTemplate domainTemplate;
@@ -54,6 +68,12 @@ public class DomainData extends DomainBaseData implements Domain {
   @Override
   public boolean isActive() {
     return active;
+  }
+
+  public void setCatalogItems(Set<CatalogItem> catalogItems) {
+    catalogItems.forEach(ci -> ci.setOwner(this));
+    this.catalogItems.clear();
+    this.catalogItems.addAll(catalogItems);
   }
 
   @Override

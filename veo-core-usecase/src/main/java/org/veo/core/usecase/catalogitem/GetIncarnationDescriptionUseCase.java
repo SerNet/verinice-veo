@@ -114,9 +114,7 @@ public class GetIncarnationDescriptionUseCase
                                     referencedItemsByCatalogItemId.put(
                                         appliedItem.getId(), element))));
     Set<DomainBase> usedDomains =
-        itemsToCreate.stream()
-            .map(ci -> ci.getCatalog().getDomainTemplate())
-            .collect(Collectors.toSet());
+        itemsToCreate.stream().map(CatalogItem::getOwner).collect(Collectors.toSet());
 
     usedDomains.forEach(
         domain -> UseCaseTools.checkDomainBelongsToClient(input.getAuthenticatedClient(), domain));

@@ -144,7 +144,7 @@ class DomainUpdateRestTest extends VeoRestTest {
             name: templateName,
             templateVersion: "1.0.0",
             authority: "jj",
-            catalogs: [],
+            catalogItems: [],
             elementTypeDefinitions: [
                 'asset': [
                     'customAspects': [:],

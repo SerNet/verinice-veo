@@ -20,7 +20,6 @@ package org.veo.persistence.entity.jpa.transformer;
 import java.util.UUID;
 
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
@@ -40,7 +39,6 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.UpdateReference;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.persistence.entity.jpa.AssetData;
-import org.veo.persistence.entity.jpa.CatalogData;
 import org.veo.persistence.entity.jpa.CatalogItemData;
 import org.veo.persistence.entity.jpa.ClientData;
 import org.veo.persistence.entity.jpa.ControlData;
@@ -98,9 +96,6 @@ public class IdentifiableDataFactory implements IdentifiableFactory {
     }
     if (type == Scope.class) {
       return (T) new ScopeData();
-    }
-    if (type == Catalog.class) {
-      return (T) new CatalogData();
     }
     if (type == DomainTemplate.class) {
       return (T) new DomainTemplateData();

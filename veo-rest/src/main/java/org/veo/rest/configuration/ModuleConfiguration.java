@@ -63,7 +63,6 @@ import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.events.MessageCreatorImpl;
 import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.CatalogItemRepository;
-import org.veo.core.repository.CatalogRepository;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.DesignatorSequenceRepository;
 import org.veo.core.repository.DomainRepository;
@@ -102,8 +101,6 @@ import org.veo.core.usecase.base.UpdatePersonInDomainUseCase;
 import org.veo.core.usecase.base.UpdateProcessInDomainUseCase;
 import org.veo.core.usecase.base.UpdateScenarioInDomainUseCase;
 import org.veo.core.usecase.base.UpdateScopeInDomainUseCase;
-import org.veo.core.usecase.catalog.GetCatalogUseCase;
-import org.veo.core.usecase.catalog.GetCatalogsUseCase;
 import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemsUseCase;
@@ -576,16 +573,6 @@ public class ModuleConfiguration {
   public ExportDomainUseCase exportDomainUseCase(
       DomainRepository domainRepository, DomainTemplateService domainTemplateService) {
     return new ExportDomainUseCase(domainRepository, domainTemplateService);
-  }
-
-  @Bean
-  public GetCatalogUseCase getCatalogUseCase(CatalogRepository catalogRepository) {
-    return new GetCatalogUseCase(catalogRepository);
-  }
-
-  @Bean
-  public GetCatalogsUseCase getCatalogsUseCase() {
-    return new GetCatalogsUseCase();
   }
 
   @Bean

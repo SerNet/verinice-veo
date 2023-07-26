@@ -21,7 +21,6 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 import org.veo.core.entity.Asset
-import org.veo.core.entity.Catalog
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
@@ -70,7 +69,6 @@ import org.veo.core.entity.riskdefinition.RiskMethod
 import org.veo.core.entity.riskdefinition.RiskValue
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.entity.jpa.AssetData
-import org.veo.persistence.entity.jpa.CatalogData
 import org.veo.persistence.entity.jpa.CatalogItemData
 import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.ControlData
@@ -201,18 +199,9 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static CatalogData newCatalog(DomainBase domainTemplate, @DelegatesTo(value = Catalog.class, strategy = Closure.DELEGATE_FIRST)
-            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Catalog") Closure init = null) {
-        return factory.createCatalog(domainTemplate).tap {
-            VeoSpec.execute(it, init)
-            VeoSpec.name(it)
-            VeoSpec.version(it)
-        }
-    }
-
-    static CatalogItemData newCatalogItem(Catalog catalog,@DelegatesTo(value = CatalogItem.class, strategy = Closure.DELEGATE_FIRST)
+    static CatalogItemData newCatalogItem(DomainBase domain,@DelegatesTo(value = CatalogItem.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.CatalogItem") Closure init = null) {
-        return factory.createCatalogItem(catalog).tap {
+        return factory.createCatalogItem(domain).tap {
             VeoSpec.execute(it, init)
             VeoSpec.name(it)
             VeoSpec.version(it)

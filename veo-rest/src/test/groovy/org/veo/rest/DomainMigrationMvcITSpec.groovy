@@ -30,10 +30,8 @@ import org.testcontainers.containers.GenericContainer
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.Domain
-import org.veo.core.entity.Key
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.repository.CatalogItemRepository
-import org.veo.core.repository.CatalogRepository
 import org.veo.core.repository.ClientRepository
 import org.veo.core.repository.UnitRepository
 import org.veo.jobs.MessagingJob
@@ -61,9 +59,6 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
 
     @Autowired
     UnitRepository unitRepo
-
-    @Autowired
-    CatalogRepository catalogRepository
 
     @Autowired
     CatalogItemRepository catalogItemRepository
@@ -138,23 +133,21 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
         // TODO VEO-399 create catalog item via API endpoint
 
         and: "a catalog item that conforms to the element type definition"
-        catalogRepository.save(newCatalog(domain) {
-            catalogItems = [
-                newCatalogItem(it) {
-                    namespace = "tte1"
-                    name = "my little catalog asset"
-                    status = "NEW"
-                    elementType = "asset"
-                    subType = "NormalAsset"
-                    customAspects = [
-                        "aspectOne": [
-                            'attrOne': "catalogValueOne",
-                            'attrTwo': "catalogValueTwo",
-                        ]
+        executeInTransaction {
+            catalogItemRepository.save(newCatalogItem(domain) {
+                namespace = "tte1"
+                name = "my little catalog asset"
+                status = "NEW"
+                elementType = "asset"
+                subType = "NormalAsset"
+                customAspects = [
+                    "aspectOne": [
+                        'attrOne': "catalogValueOne",
+                        'attrTwo': "catalogValueTwo",
                     ]
-                }
-            ]
-        })
+                ]
+            })
+        }
 
         when: "removing one custom aspect type and one custom aspect attribute from the element type definition"
         def etd = parseJson(get("/domains/$domainId")).elementTypeDefinitions.asset
@@ -184,8 +177,6 @@ class DomainMigrationMvcITSpec extends VeoMvcSpec {
         retrievedAsset.customAspects.aspectTwo == null
 
         when: "retrieving the catalog item"
-        def catalogId = parseJson(get("/catalogs")).first().id
-
         def catalogItem = catalogItemRepository.findAllByDomain(domain).first()
 
         then:"the content of the catalog item that still conforms to the current element type definition is still there"

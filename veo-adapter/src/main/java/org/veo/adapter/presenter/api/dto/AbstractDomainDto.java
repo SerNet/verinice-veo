@@ -20,15 +20,11 @@ package org.veo.adapter.presenter.api.dto;
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.adapter.presenter.api.common.IdRef;
-import org.veo.adapter.presenter.api.openapi.IdRefDomainCatalogs;
-import org.veo.core.entity.Catalog;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
@@ -36,7 +32,6 @@ import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -78,9 +73,6 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
       example = "1.0.0",
       accessMode = Schema.AccessMode.READ_ONLY)
   private String templateVersion;
-
-  @ArraySchema(schema = @Schema(implementation = IdRefDomainCatalogs.class))
-  private Set<IdRef<Catalog>> catalogs = new HashSet<>();
 
   @Schema(description = "A list of risk definitions belonging to the domain.")
   private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();

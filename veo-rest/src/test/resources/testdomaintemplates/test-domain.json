@@ -4,141 +4,114 @@
   "abbreviation": "td",
   "authority": "SERNET",
   "templateVersion": "1.0.0",
-  "catalogs": [
+  "catalogItems": [
     {
-      "id": "31abf42d-9527-4570-a532-5e9935f4dffa",
-      "name": "TEST-Controls",
-      "domainTemplate": {
-        "targetUri": "/domaintemplates/2b00d864-77ee-5378-aba6-e41f618c7bad"
-      },
-      "catalogItems": [
+      "name": "Control-2",
+      "abbreviation": "c-2",
+      "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
+      "tailoringReferences": [],
+      "namespace": "TOM.c-2",
+      "subType": "TOM",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "control",
+      "id": "6796b233-03de-4acd-812e-de4d27c6e0cb"
+    },
+    {
+      "name": "Control-1",
+      "abbreviation": "c-1",
+      "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
+      "tailoringReferences": [],
+      "namespace": "TOM.c-1",
+      "subType": "TOM",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "control",
+      "id": "a82b9bce-2732-48a1-abda-e5a157abfcb5"
+    },
+    {
+      "name": "Control-4",
+      "abbreviation": "c-4",
+      "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
+      "tailoringReferences": [
         {
-          "name": "Control-2",
-          "abbreviation": "c-2",
-          "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
-          "catalog": {
-            "targetUri": "/catalogs/31abf42d-9527-4570-a532-5e9935f4dffa"
+          "catalogItem": {
+            "targetUri": "/catalogitems/6796b233-03de-4acd-812e-de4d27c6e0cb"
           },
-          "tailoringReferences": [],
-          "namespace": "TOM.c-2",
-          "subType": "TOM",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "control",
-          "id": "6796b233-03de-4acd-812e-de4d27c6e0cb"
-        },
-        {
-          "name": "Control-1",
-          "abbreviation": "c-1",
-          "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
-          "catalog": {
-            "targetUri": "/catalogs/31abf42d-9527-4570-a532-5e9935f4dffa"
-          },
-          "tailoringReferences": [],
-          "namespace": "TOM.c-1",
-          "subType": "TOM",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "control",
-          "id": "a82b9bce-2732-48a1-abda-e5a157abfcb5"
-        },
-        {
-          "name": "Control-4",
-          "abbreviation": "c-4",
-          "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.",
-          "catalog": {
-            "targetUri": "/catalogs/31abf42d-9527-4570-a532-5e9935f4dffa"
-          },
-          "tailoringReferences": [
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/6796b233-03de-4acd-812e-de4d27c6e0cb"
-              },
-              "referenceType": "LINK_EXTERNAL",
-              "linkType": "Control_details_Control",
-              "attributes": {}
-            }
-          ],
-          "namespace": "TOM.c-4",
-          "subType": "TOM",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "control",
-          "id": "e25fef68-43a4-4589-a8f6-d90605b5f198"
-        },
-        {
-          "name": "Control-cc-1",
-          "abbreviation": "cc-1",
-          "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
-          "catalog": {
-            "targetUri": "/catalogs/31abf42d-9527-4570-a532-5e9935f4dffa"
-          },
-          "tailoringReferences": [
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/02b6bc1c-ef85-44e1-b701-2539893a5fb3"
-              },
-              "referenceType": "LINK",
-              "linkType": "Control_details_Control",
-              "attributes": {}
-            }
-          ],
-          "namespace": "TOM.cc-1",
-          "subType": "TOM",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "control",
-          "id": "0f6f5e59-4eef-4f3a-9331-1cd6de4dc6b6"
-        },
-        {
-          "name": "Control-3",
-          "abbreviation": "c-3",
-          "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
-          "catalog": {
-            "targetUri": "/catalogs/31abf42d-9527-4570-a532-5e9935f4dffa"
-          },
-          "tailoringReferences": [
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/a82b9bce-2732-48a1-abda-e5a157abfcb5"
-              },
-              "referenceType": "LINK",
-              "linkType": "Control_details_Control",
-              "attributes": {}
-            }
-          ],
-          "namespace": "TOM.c-3",
-          "subType": "TOM",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "control",
-          "id": "f6ed0e04-9cb3-4730-a8ad-5e7413b3f155"
-        },
-        {
-          "name": "Control-cc-2",
-          "abbreviation": "cc-2",
-          "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
-          "catalog": {
-            "targetUri": "/catalogs/31abf42d-9527-4570-a532-5e9935f4dffa"
-          },
-          "tailoringReferences": [
-            {
-              "catalogItem": {
-                "targetUri": "/catalogitems/0f6f5e59-4eef-4f3a-9331-1cd6de4dc6b6"
-              },
-              "referenceType": "LINK",
-              "linkType": "Control_details_Control",
-              "attributes": {}
-            }
-          ],
-          "namespace": "TOM.cc-2",
-          "subType": "TOM",
-          "status": "NEW",
-          "customAspects": {},
-          "elementType": "control",
-          "id": "02b6bc1c-ef85-44e1-b701-2539893a5fb3"
+          "referenceType": "LINK_EXTERNAL",
+          "linkType": "Control_details_Control",
+          "attributes": {}
         }
-      ]
+      ],
+      "namespace": "TOM.c-4",
+      "subType": "TOM",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "control",
+      "id": "e25fef68-43a4-4589-a8f6-d90605b5f198"
+    },
+    {
+      "name": "Control-cc-1",
+      "abbreviation": "cc-1",
+      "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
+      "tailoringReferences": [
+        {
+          "catalogItem": {
+            "targetUri": "/catalogitems/02b6bc1c-ef85-44e1-b701-2539893a5fb3"
+          },
+          "referenceType": "LINK",
+          "linkType": "Control_details_Control",
+          "attributes": {}
+        }
+      ],
+      "namespace": "TOM.cc-1",
+      "subType": "TOM",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "control",
+      "id": "0f6f5e59-4eef-4f3a-9331-1cd6de4dc6b6"
+    },
+    {
+      "name": "Control-3",
+      "abbreviation": "c-3",
+      "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
+      "tailoringReferences": [
+        {
+          "catalogItem": {
+            "targetUri": "/catalogitems/a82b9bce-2732-48a1-abda-e5a157abfcb5"
+          },
+          "referenceType": "LINK",
+          "linkType": "Control_details_Control",
+          "attributes": {}
+        }
+      ],
+      "namespace": "TOM.c-3",
+      "subType": "TOM",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "control",
+      "id": "f6ed0e04-9cb3-4730-a8ad-5e7413b3f155"
+    },
+    {
+      "name": "Control-cc-2",
+      "abbreviation": "cc-2",
+      "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt.",
+      "tailoringReferences": [
+        {
+          "catalogItem": {
+            "targetUri": "/catalogitems/0f6f5e59-4eef-4f3a-9331-1cd6de4dc6b6"
+          },
+          "referenceType": "LINK",
+          "linkType": "Control_details_Control",
+          "attributes": {}
+        }
+      ],
+      "namespace": "TOM.cc-2",
+      "subType": "TOM",
+      "status": "NEW",
+      "customAspects": {},
+      "elementType": "control",
+      "id": "02b6bc1c-ef85-44e1-b701-2539893a5fb3"
     }
   ],
   "elementTypeDefinitions": {

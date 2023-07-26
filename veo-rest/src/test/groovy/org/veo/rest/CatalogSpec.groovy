@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.transaction.support.TransactionTemplate
 
 import org.veo.core.VeoMvcSpec
-import org.veo.core.entity.Catalog
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
 import org.veo.core.entity.Control
@@ -31,15 +30,7 @@ import org.veo.core.entity.Unit
 import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
-import org.veo.core.entity.risk.CategoryRef
-import org.veo.core.entity.risk.ControlRiskValues
-import org.veo.core.entity.risk.ImpactRef
-import org.veo.core.entity.risk.ImpactValues
-import org.veo.core.entity.risk.ImplementationStatusRef
-import org.veo.core.entity.risk.PotentialProbabilityImpl
-import org.veo.core.entity.risk.ProbabilityRef
 import org.veo.core.entity.risk.RiskDefinitionRef
-import org.veo.persistence.access.CatalogRepositoryImpl
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.ControlRepositoryImpl
 import org.veo.persistence.access.DomainRepositoryImpl
@@ -61,15 +52,12 @@ class CatalogSpec extends VeoMvcSpec {
     @Autowired
     DomainRepositoryImpl domainRepository
     @Autowired
-    CatalogRepositoryImpl catalogRepository
-    @Autowired
     TransactionTemplate txTemplate
     @Autowired
     EntityDataFactory entityFactory
 
     Domain domain
     Domain domain1
-    Catalog catalog
     CatalogItem item1
     CatalogItem item2
     CatalogItem item3
@@ -86,7 +74,6 @@ class CatalogSpec extends VeoMvcSpec {
     Client client
     Client secondClient
     Domain domain3
-    Catalog catalog1
     Unit unit
     Unit unitSecondClient
     Control controlSecondClient
@@ -122,23 +109,20 @@ class CatalogSpec extends VeoMvcSpec {
                     ]
                 })
             }
-            catalog = newCatalog(domain) {
-                name= 'a'
-            }
 
-            item1 = newCatalogItem(catalog, {
+            item1 = newCatalogItem(domain, {
                 name = 'c1'
                 elementType = "control"
                 subType = "CTL_TOM"
                 status = "NEW"
             })
-            item2 = newCatalogItem(catalog, {
+            item2 = newCatalogItem(domain, {
                 elementType = "control"
                 subType = "CTL_TOM"
                 status = "NEW"
                 name = 'c2'
             })
-            item3 = newCatalogItem(catalog, {
+            item3 = newCatalogItem(domain, {
                 elementType = "control"
                 subType = "CTL_TOM"
                 status = "NEW"
@@ -151,7 +135,7 @@ class CatalogSpec extends VeoMvcSpec {
                 catalogItem = item1
             }
 
-            item4 = newCatalogItem(catalog, {
+            item4 = newCatalogItem(domain, {
                 elementType = "process"
                 subType = "normalProcess"
                 status = "NEW"
@@ -167,14 +151,14 @@ class CatalogSpec extends VeoMvcSpec {
                 linkType = "link_to_item_2"
             }
 
-            item5 = newCatalogItem(catalog, {
+            item5 = newCatalogItem(domain, {
                 elementType = "process"
                 subType = "MY_SUBTYPE"
                 status = "NEW"
                 name = 'p2'
             })
 
-            item6 = newCatalogItem(catalog, {
+            item6 = newCatalogItem(domain, {
                 elementType = "process"
                 subType = "MY_SUBTYPE"
                 status = "START"
@@ -198,7 +182,7 @@ class CatalogSpec extends VeoMvcSpec {
                 linkType = 'link_to_item_1'
             }
 
-            item7 = newCatalogItem(catalog, {
+            item7 = newCatalogItem(domain, {
                 elementType = "control"
                 subType = "CTL_TOM"
                 status = "NEW1"
@@ -211,14 +195,14 @@ class CatalogSpec extends VeoMvcSpec {
                 linkType = 'externallinktest'
             }
 
-            zz1 = newCatalogItem(catalog, {
+            zz1 = newCatalogItem(domain, {
                 elementType = "control"
                 subType = "CTL_TOM"
                 status = "NEW"
                 name = 'zz1'
                 description = "a control linked in a circle"
             })
-            zz2 = newCatalogItem(catalog, {
+            zz2 = newCatalogItem(domain, {
                 elementType = "control"
                 subType = "CTL_TOM"
                 status = "NEW"
@@ -244,7 +228,7 @@ class CatalogSpec extends VeoMvcSpec {
 
             def riskDefinitionRef = new RiskDefinitionRef(RISK_DEF_ID)
 
-            processImpactExample = newCatalogItem(catalog, {
+            processImpactExample = newCatalogItem(domain, {
                 elementType = "process"
                 subType = "PRO_DataProcessing"
                 status = "NEW"
@@ -261,7 +245,7 @@ class CatalogSpec extends VeoMvcSpec {
                 //                ]
             })
 
-            controlImpactExample = newCatalogItem(catalog, {
+            controlImpactExample = newCatalogItem(domain, {
                 elementType = "control"
                 subType = "CTL_TOM"
                 status = "NEW"
@@ -276,7 +260,7 @@ class CatalogSpec extends VeoMvcSpec {
                 //                ]
             })
 
-            scenarioProbabilityExample = newCatalogItem(catalog, {
+            scenarioProbabilityExample = newCatalogItem(domain, {
                 elementType = "scenario"
                 subType = "SCN_Scenario"
                 status = "NEW"
@@ -307,9 +291,8 @@ class CatalogSpec extends VeoMvcSpec {
 
             domain = client.domains.toList().get(0)
             domain1 = client.domains.toList().get(1)
-            catalog = domain.catalogs.first()
 
-            (item1, item2, item3, item4, item5, item6, item7, zz1, zz2, processImpactExample, controlImpactExample, scenarioProbabilityExample) = catalog.catalogItems.sort{it.name}
+            (item1, item2, item3, item4, item5, item6, item7, zz1, zz2, processImpactExample, controlImpactExample, scenarioProbabilityExample) = domain.catalogItems.sort{it.name}
 
             secondClient = newClient() {
                 it.name = "the other"
@@ -321,15 +304,12 @@ class CatalogSpec extends VeoMvcSpec {
                 templateVersion = '1.0'
             }
 
-            catalog1 = newCatalog(domain3) {
-                name = 'b'
-                newCatalogItem(it, {
-                    elementType = "control"
-                    subType = "CTL_TOM"
-                    status = "NEW"
-                    name = 'c15'
-                })
-            }
+            newCatalogItem(domain3, {
+                elementType = "control"
+                subType = "CTL_TOM"
+                status = "NEW"
+                name = 'c15'
+            })
             secondClient = clientRepository.save(secondClient)
             domain3 = secondClient.domains[0]
 
@@ -340,8 +320,7 @@ class CatalogSpec extends VeoMvcSpec {
             unitSecondClient = unitDataRepository.save(unitSecondClient)
             controlSecondClient = controlRepository.save(newControl(unitSecondClient))
 
-            catalog1 = domain3.catalogs.first()
-            otherItem = catalog1.catalogItems.first()
+            otherItem = domain3.catalogItems.first()
         }
     }
 }

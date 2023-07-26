@@ -279,15 +279,12 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
 
   @Override
   public void apply(CatalogItem catalogItem) {
-    if (catalogItem.getDomain() instanceof Domain domain) {
-      associateWithDomain(domain, catalogItem.getSubType(), catalogItem.getStatus());
-      catalogItem.getCustomAspects().entrySet().stream()
-          .map(e -> new CustomAspectData(e.getKey(), e.getValue(), domain))
-          .forEach(this::applyCustomAspect);
-      appliedCatalogItems.add(catalogItem);
-    } else {
-      throw new IllegalArgumentException("Cannot apply a catalog item from a domain template.");
-    }
+    var domain = catalogItem.requireDomainMembership();
+    associateWithDomain(domain, catalogItem.getSubType(), catalogItem.getStatus());
+    catalogItem.getCustomAspects().entrySet().stream()
+        .map(e -> new CustomAspectData(e.getKey(), e.getValue(), domain))
+        .forEach(this::applyCustomAspect);
+    appliedCatalogItems.add(catalogItem);
   }
 
   @Transient

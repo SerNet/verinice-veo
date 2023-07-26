@@ -40,7 +40,6 @@ import org.veo.core.service.EntitySchemaService
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.jobs.SpringSpecDomainTemplateCreator
 import org.veo.persistence.access.jpa.AssetDataRepository
-import org.veo.persistence.access.jpa.CatalogDataRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
 import org.veo.persistence.access.jpa.ControlDataRepository
 import org.veo.persistence.access.jpa.DocumentDataRepository
@@ -81,9 +80,6 @@ abstract class VeoSpringSpec extends VeoSpec {
 
     @Autowired
     ClientDataRepository clientDataRepository
-
-    @Autowired
-    CatalogDataRepository catalogDataRepository
 
     @Autowired
     DomainTemplateDataRepository domainTemplateDataRepository

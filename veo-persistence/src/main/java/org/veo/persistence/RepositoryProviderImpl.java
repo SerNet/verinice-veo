@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import org.veo.core.entity.Asset;
-import org.veo.core.entity.Catalog;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
@@ -43,7 +42,6 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.Versioned;
 import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.CatalogItemRepository;
-import org.veo.core.repository.CatalogRepository;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.repository.ControlRepository;
 import org.veo.core.repository.DocumentRepository;
@@ -79,7 +77,6 @@ public class RepositoryProviderImpl implements RepositoryProvider {
   @Autowired private ClientRepository clientRepository;
 
   @Autowired private DomainRepository domainRepository;
-  @Autowired private CatalogRepository catalogRepository;
 
   @Autowired private UnitRepository unitRepository;
 
@@ -101,9 +98,6 @@ public class RepositoryProviderImpl implements RepositoryProvider {
     }
     if (Unit.class.isAssignableFrom(entityType)) {
       return (Repository<T, Key<UUID>>) unitRepository;
-    }
-    if (Catalog.class.isAssignableFrom(entityType)) {
-      return (Repository<T, Key<UUID>>) catalogRepository;
     }
     if (CatalogItem.class.isAssignableFrom(entityType)) {
       return (Repository<T, Key<UUID>>) catalogItemRepository;
@@ -128,9 +122,6 @@ public class RepositoryProviderImpl implements RepositoryProvider {
     }
     if (Unit.class.isAssignableFrom(entityType)) {
       return (IdentifiableVersionedRepository<T>) unitRepository;
-    }
-    if (Catalog.class.isAssignableFrom(entityType)) {
-      return (IdentifiableVersionedRepository<T>) catalogRepository;
     }
     if (CatalogItem.class.isAssignableFrom(entityType)) {
       return (IdentifiableVersionedRepository<T>) catalogItemRepository;

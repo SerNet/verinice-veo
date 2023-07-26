@@ -29,31 +29,23 @@ import groovy.util.logging.Slf4j
 class DomainRestTestITSpec extends VeoRestTest {
 
     def "export the test domain"() {
-        when: "the catalog is retrieved"
+        when: "the domain is retrieved"
         def domainDto = exportDomain(testDomainId)
 
-        then: "the domain is exported"
-        with(domainDto.catalogs[0]) {
-            catalogItems.size() == 6
-            name == "TEST-Controls"
-            domainTemplate.displayName == "td test-domain"
-        }
+        then: "catalog items are present"
+        domainDto.catalogItems.size() == 6
     }
 
     def "export the dsgvo domain"() {
-        when: "the catalog is retrieved"
+        when: "the domain is exported"
         def domainDto = exportDomain(dsgvoDomainId)
 
-        def catalog = domainDto.catalogs[0]
-        def vvt = catalog.catalogItems.find { it.abbreviation == "VVT" }
-        def tomi = catalog.catalogItems.find { it.abbreviation == "TOM-I" }
-        def dsg23 = catalog.catalogItems.find { it.abbreviation == "DS-G.23" }
+        def vvt = domainDto.catalogItems.find { it.abbreviation == "VVT" }
+        def tomi = domainDto.catalogItems.find { it.abbreviation == "TOM-I" }
+        def dsg23 = domainDto.catalogItems.find { it.abbreviation == "DS-G.23" }
 
         then: "the domain is exported"
-        with(catalog) {
-            catalogItems.size() == 65
-            name == "DS-GVO"
-        }
+        domainDto.catalogItems.size() == 65
         with (vvt) {
             namespace == "TOM.VVT"
             tailoringReferences.size() == 8

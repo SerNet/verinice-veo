@@ -21,7 +21,6 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -76,9 +75,6 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfRef
       requiredMode = REQUIRED)
   @Size(min = 1, max = DomainTemplate.TEMPLATE_VERSION_MAX_LENGTH)
   private String templateVersion;
-
-  @Schema(description = "A list of catalogs belonging to the DomainTemplate.")
-  private Set<AbstractCatalogDto> catalogs;
 
   @Schema(description = "A list of risk definitions belonging to the DomainTemplate.")
   private Map<String, RiskDefinition> riskDefinitions = new HashMap<>();
