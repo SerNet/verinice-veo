@@ -30,9 +30,6 @@ import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.rest.common.ClientNotActiveException;
 import org.veo.rest.security.ApplicationUser;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-
-@SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
 public abstract class AbstractVeoController {
 
   @Autowired protected UseCaseInteractor useCaseInteractor;

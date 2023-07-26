@@ -43,6 +43,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.security.OAuthFlow;
 import io.swagger.v3.oas.annotations.security.OAuthFlows;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 
 /**
@@ -91,7 +92,8 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
                 @License(
                     name = "GNU Affero General Public License",
                     url = "https://www.gnu.org/licenses/agpl-3.0.html.en"),
-            contact = @Contact(url = "http://verinice.com", email = "verinice@sernet.de")))
+            contact = @Contact(url = "http://verinice.com", email = "verinice@sernet.de")),
+    security = @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH))
 public class RestApplication {
 
   public static final String SECURITY_SCHEME_OAUTH = "OAuth2";

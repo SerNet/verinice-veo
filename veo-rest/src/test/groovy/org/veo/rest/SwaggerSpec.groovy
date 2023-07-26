@@ -460,10 +460,6 @@ class SwaggerSpec extends VeoSpringSpec {
         with(endPointInfo.post.requestBody) {
             required == true
         }
-        with(endPointInfo.post.security) {
-            size() == 1
-            it[0].OAuth2.size() == 0
-        }
     }
 
     def "endpoint documentation is correct for GetElementStatusCountUseCase"() {
@@ -491,7 +487,11 @@ class SwaggerSpec extends VeoSpringSpec {
             required == true
             description ==~ /UUID of the containing unit.*/
         }
-        with(endPointInfo.get.security) {
+    }
+
+    def "security is configured globally"() {
+        expect:
+        with(parsedApiDocs.security) {
             size() == 1
             it[0].OAuth2.size() == 0
         }
