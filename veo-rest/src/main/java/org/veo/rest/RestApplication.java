@@ -43,7 +43,6 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.security.OAuthFlow;
 import io.swagger.v3.oas.annotations.security.OAuthFlows;
-import io.swagger.v3.oas.annotations.security.OAuthScope;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 
 /**
@@ -82,11 +81,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
             implicit =
                 @OAuthFlow(
                     authorizationUrl =
-                        "${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/auth",
-                    scopes =
-                        @OAuthScope(
-                            name = "veo-datenschutz",
-                            description = "Optional scope for access to specific content."))))
+                        "${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/auth")))
 @OpenAPIDefinition(
     info =
         @Info(
