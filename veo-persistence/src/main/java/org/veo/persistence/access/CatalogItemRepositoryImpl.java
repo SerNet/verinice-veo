@@ -28,6 +28,7 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.CatalogItemRepository;
+import org.veo.core.repository.SubTypeCount;
 import org.veo.persistence.access.jpa.CatalogItemDataRepository;
 import org.veo.persistence.entity.jpa.CatalogItemData;
 import org.veo.persistence.entity.jpa.DomainData;
@@ -61,5 +62,10 @@ public class CatalogItemRepositoryImpl
   @Override
   public Set<CatalogItem> findAllByDomain(Domain domain) {
     return catalogItemDataRepository.findAllByDomain((DomainData) domain);
+  }
+
+  @Override
+  public Set<SubTypeCount> getCountsBySubType(Domain domain) {
+    return catalogItemDataRepository.getCountsBySubType(domain.getIdAsString());
   }
 }

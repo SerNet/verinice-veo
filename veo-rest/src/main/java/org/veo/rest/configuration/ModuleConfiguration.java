@@ -123,6 +123,7 @@ import org.veo.core.usecase.domain.DeleteDomainUseCase;
 import org.veo.core.usecase.domain.DeleteRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.ElementBatchCreator;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
+import org.veo.core.usecase.domain.GetCatalogItemsTypeCountUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
@@ -201,6 +202,12 @@ import org.veo.service.risk.RiskService;
  */
 @Configuration
 public class ModuleConfiguration {
+
+  @Bean
+  public GetCatalogItemsTypeCountUseCase getCatalogItemsTypeCountUseCase(
+      DomainRepository domainRepository, CatalogItemRepository catalogItemRepository) {
+    return new GetCatalogItemsTypeCountUseCase(domainRepository, catalogItemRepository);
+  }
 
   @Bean
   public CreateElementUseCase createElementUseCase(

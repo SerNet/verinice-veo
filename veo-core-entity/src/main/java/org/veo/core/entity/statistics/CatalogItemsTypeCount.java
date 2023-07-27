@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler
+ * Copyright (C) 2023  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,26 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.repository;
+package org.veo.core.entity.statistics;
 
-import java.util.Set;
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 
-/**
- * A repository for <code>CatalogItem</code> entities.
- *
- * <p>Implements basic CRUD operations from the superinterface and extends them with more specific
- * methods - i.e. queries based on particular fields.
- */
-public interface CatalogItemRepository extends IdentifiableVersionedRepository<CatalogItem> {
+import org.veo.core.entity.EntityType;
 
-  Set<CatalogItem> findAllByIdsFetchDomainAndTailoringReferences(Set<Key<UUID>> ids);
+public class CatalogItemsTypeCount {
 
-  Set<CatalogItem> findAllByDomain(Domain domain);
+  private final Map<String, Map<String, Long>> values = new HashMap<>();
 
-  Set<SubTypeCount> getCountsBySubType(Domain domain);
+  public void setCount(EntityType type, String subType, Long count) {
+    values
+        .computeIfAbsent(type.getSingularTerm(), k -> new HashMap<String, Long>())
+        .put(subType, count);
+  }
+
+  @JsonAnyGetter
+  public Map<String, Map<String, Long>> getValues() {
+    return values;
+  }
 }

@@ -243,4 +243,26 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             language == 'de_DE'
         }
     }
+
+    @WithUserDetails("user@domain.example")
+    def "retrieve sub type statistic for the stored DS-GVO catalog items"() {
+        given:
+        def client = testDomain.owner
+        def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+
+        when:
+        def result = parseJson(get("/domains/${domain.idAsString}/catalog-items/type-count"))
+
+        then:
+        result.size() == 3
+        with(result.process) {
+            PRO_DataProcessing == 1
+        }
+        with(result.scenario) {
+            SCN_Scenario == 56
+        }
+        with(result.control) {
+            CTL_TOM == 8
+        }
+    }
 }

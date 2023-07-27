@@ -22,6 +22,7 @@ import java.util.Set;
 import org.springframework.data.jpa.repository.Query;
 
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.repository.SubTypeCount;
 import org.veo.persistence.entity.jpa.CatalogItemData;
 import org.veo.persistence.entity.jpa.DomainData;
 
@@ -41,4 +42,13 @@ public interface CatalogItemDataRepository
 
   @Query("select ci from #{#entityName} ci where ci.domain = ?1")
   Set<CatalogItem> findAllByDomain(DomainData domain);
+
+  @Query(
+      """
+            select new org.veo.core.repository.SubTypeCount(ci.elementType ,ci.subType, count(ci.subType))
+            from #{#entityName} as ci
+            where ci.domain.dbId = ?1
+            group by ci.elementType, ci.subType
+""")
+  Set<SubTypeCount> getCountsBySubType(String domainId);
 }

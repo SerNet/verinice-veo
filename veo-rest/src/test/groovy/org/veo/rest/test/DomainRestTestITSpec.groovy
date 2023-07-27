@@ -20,6 +20,7 @@ package org.veo.rest.test
 import static org.veo.rest.test.UserType.CONTENT_CREATOR
 
 import org.apache.http.HttpStatus
+import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl
 
@@ -218,6 +219,27 @@ class DomainRestTestITSpec extends VeoRestTest {
                 "example scenario"
             ]
             profiles.exampleUnit.risks.size() == 1
+        }
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "retrieve sub type statistic for the stored DS-GVO catalog items"() {
+        given:
+        def dsgvoId = getDomains().find { it.name == "DS-GVO" }.id
+
+        when:
+        def result = get("/domains/${dsgvoId}/catalog-items/type-count").body
+
+        then:
+        result.size() == 3
+        with(result.process) {
+            PRO_DataProcessing == 1
+        }
+        with(result.scenario) {
+            SCN_Scenario == 56
+        }
+        with(result.control) {
+            CTL_TOM == 8
         }
     }
 }

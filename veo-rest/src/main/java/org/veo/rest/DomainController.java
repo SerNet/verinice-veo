@@ -52,10 +52,12 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.statistics.CatalogItemsTypeCount;
 import org.veo.core.entity.statistics.ElementStatusCounts;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.domain.ApplyProfileUseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
+import org.veo.core.usecase.domain.GetCatalogItemsTypeCountUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
@@ -93,6 +95,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   private final GetDomainsUseCase getDomainsUseCase;
   private final ExportDomainUseCase exportDomainUseCase;
   private final GetElementStatusCountUseCase getElementStatusCountUseCase;
+  private final GetCatalogItemsTypeCountUseCase getCatalogItemsTypeCountUseCase;
   private final ApplyProfileUseCase applyProfileUseCase;
 
   @GetMapping
@@ -209,6 +212,27 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             new GetElementStatusCountUseCase.InputData(
                 Key.uuidFrom(unitId), Key.uuidFrom(id), client),
             GetElementStatusCountUseCase.OutputData::getResult)
+        .thenApply(counts -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(counts));
+  }
+
+  @GetMapping(value = "/{id}/catalog-items/type-count")
+  @Operation(summary = "Retrieve catalog item counts grouped by sub type.")
+  @ApiResponse(
+      responseCode = "200",
+      description = "catalog items counted",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = CatalogItemsTypeCount.class)))
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  public @Valid CompletableFuture<ResponseEntity<CatalogItemsTypeCount>> getCatalogItemsTypeCount(
+      @Parameter(hidden = true) Authentication auth, @PathVariable String id, WebRequest request) {
+    Client client = getAuthenticatedClient(auth);
+    return useCaseInteractor
+        .execute(
+            getCatalogItemsTypeCountUseCase,
+            new GetCatalogItemsTypeCountUseCase.InputData(Key.uuidFrom(id), client),
+            GetCatalogItemsTypeCountUseCase.OutputData::getResult)
         .thenApply(counts -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(counts));
   }
 
