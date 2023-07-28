@@ -32,7 +32,7 @@ import org.veo.core.entity.Unit;
  *
  * @param <T> Entity type
  */
-public interface ElementQuery<T extends Element> {
+public interface ElementQuery<T extends Element> extends Query<T> {
 
   void whereUnitIn(Set<Unit> units);
 
@@ -97,6 +97,4 @@ public interface ElementQuery<T extends Element> {
   void whereDomainsContain(Domain domain);
 
   void whereScopesContain(SingleValueQueryCondition<Key<UUID>> scopeId);
-
-  PagedResult<T> execute(PagingConfiguration pagingConfiguration);
 }
