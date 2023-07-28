@@ -112,6 +112,18 @@
       "customAspects": {},
       "elementType": "control",
       "id": "02b6bc1c-ef85-44e1-b701-2539893a5fb3"
+    },
+    {
+      "name": "General server",
+      "abbreviation": "aa-1",
+      "description": "Generally speaking, a server's purpose is to serve man.",
+      "tailoringReferences": [],
+      "namespace": "Server.aa-1",
+      "subType": "Server",
+      "status": "RUNNING",
+      "customAspects": {},
+      "elementType": "asset",
+      "id": "7b10f28f-8d92-4a49-b5a8-30428e4b3f0c"
     }
   ],
   "elementTypeDefinitions": {

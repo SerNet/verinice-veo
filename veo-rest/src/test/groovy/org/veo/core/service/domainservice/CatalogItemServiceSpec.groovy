@@ -64,7 +64,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
                 name = "Test unit"
             })
         }
-        item = testDomain.catalogItems.sort({it.namespace}).first()
+        item = testDomain.catalogItems.find {it.abbreviation == "c-1"}
         element = item.incarnate()
     }
 
@@ -89,7 +89,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
         element.domains.contains(testDomain)
 
         when: "we take another item"
-        item = testDomain.catalogItems.sort({it.namespace})[2]
+        item = testDomain.catalogItems.find {it.abbreviation == "c-3"}
         element = item.incarnate()
 
         then: "the element is created and initialized"

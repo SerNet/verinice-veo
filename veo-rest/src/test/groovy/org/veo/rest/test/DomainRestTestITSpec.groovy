@@ -36,7 +36,7 @@ class DomainRestTestITSpec extends DomainRestTest {
         def domainDto = exportDomain(testDomainId)
 
         then: "catalog items are present"
-        domainDto.catalogItems.size() == 6
+        domainDto.catalogItems.size() == 7
     }
 
     def "export the dsgvo domain"() {

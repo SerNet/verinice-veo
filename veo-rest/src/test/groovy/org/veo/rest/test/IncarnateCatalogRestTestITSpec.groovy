@@ -48,7 +48,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
 
     def "expected catalog items are present"() {
         expect:
-        getCatalogItems(testDomainId).size() == 6
+        getCatalogItems(testDomainId).size() == 7
         getCatalogItems(dsgvoDomainId).size() == 65
     }
 
@@ -74,12 +74,13 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         then: "all elements were created"
         // This time, C-3 was created as well. C-3 was created with a link to
         // the instance of C-1 created in the first pass.
-        elementResults.size() == 4
+        elementResults.size() == 5
         elementResults.collect { it.name }.sort() == [
             'Control-1',
             'Control-2',
             'Control-3',
-            'Control-4'
+            'Control-4',
+            'General server'
         ]
         // check if item1 was created again with a new ID:
         pass1Element1Id != elementResults.find { it.abbreviation == 'c-1' }?.id
