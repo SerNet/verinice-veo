@@ -17,12 +17,13 @@
  ******************************************************************************/
 package org.veo.persistence.access.query;
 
+import static org.veo.persistence.access.query.QueryFunctions.andInIgnoringCase;
+import static org.veo.persistence.access.query.QueryFunctions.in;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -390,32 +391,8 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
     };
   }
 
-  private static Predicate in(
-      Path<Object> column, Collection<?> values, CriteriaBuilder criteriaBuilder) {
-    if (values.stream().anyMatch(Objects::isNull)) {
-      if (values.size() == 1) {
-        return column.isNull();
-      } else {
-        return criteriaBuilder.or(
-            column.in(values.stream().filter(Objects::nonNull).toList()), column.isNull());
-      }
-    } else {
-      return criteriaBuilder.isTrue(column.in(values));
-    }
-  }
-
   private void inIgnoringCase(QueryCondition<String> condition, String propertyName) {
-    mySpec =
-        mySpec.and(
-            (root, query, criteriaBuilder) ->
-                criteriaBuilder.or(
-                    condition.getValues().stream()
-                        .map(
-                            str ->
-                                criteriaBuilder.like(
-                                    criteriaBuilder.lower(root.get(propertyName)),
-                                    "%" + str.toLowerCase(Locale.GERMAN) + "%"))
-                        .toArray(Predicate[]::new)));
+    mySpec = andInIgnoringCase(propertyName, condition, mySpec);
   }
 
   private Predicate checkNull(
