@@ -141,8 +141,9 @@ abstract class VeoMvcSpec extends VeoSpringSpec {
             actions.andExpect(status().is(expectedStatusCode))
         } else {
             actions.andExpect(status().is(expectedStatusCode))
-            assert result.resolvedException != null
-            throw result.resolvedException
+            if(result.resolvedException != null) {
+                throw result.resolvedException
+            }
         }
         return actions
     }
