@@ -27,11 +27,11 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import org.veo.adapter.presenter.api.dto.TranslationsDto;
 import org.veo.core.Translations;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.ClientRepository;
 import org.veo.core.service.EntitySchemaService;
@@ -55,14 +55,24 @@ public class TranslationController implements TranslationsResource {
 
   @Override
   public CompletableFuture<ResponseEntity<TranslationsDto>> getSchema(
-      Authentication auth, @RequestParam(value = "languages") Set<String> languages) {
+      Authentication auth, Set<String> languages, String domainId) {
     ApplicationUser user = ApplicationUser.authenticatedUser(auth.getPrincipal());
     Client client = getClient(user.getClientId());
     var locales = languages.stream().map(Locale::forLanguageTag).collect(Collectors.toSet());
 
     return CompletableFuture.supplyAsync(
         () -> {
-          Translations t10n = schemaService.findTranslations(client.getDomains(), locales);
+          Set<Domain> domains = client.getDomains();
+          if (domainId != null) {
+            domains =
+                domains.stream()
+                    .filter(it -> it.getIdAsString().equals(domainId))
+                    .collect(Collectors.toSet());
+            if (domains.isEmpty()) {
+              return ResponseEntity.notFound().build();
+            }
+          }
+          Translations t10n = schemaService.findTranslations(domains, locales);
           locales.forEach(
               loc -> {
                 for (VeoMessage veoMessage : VeoMessage.values()) {

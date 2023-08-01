@@ -77,6 +77,50 @@ class TranslationControllerMockMvcSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
+    def "correctly handles conflicting translations for domains"() {
+        given:
+        def client = createTestClient()
+        def domain1 =
+                createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+
+        def domain2 =
+                createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID).with {
+                    elementTypeDefinitions.find { it.elementType=='person' }.translations.get(Locale.ENGLISH).'person_contactInformation_office' = 'Office phone'
+                    domainDataRepository.save(it)
+                }
+
+        when:
+        def translationsDomain1 = parseJson(get("/translations?domain=${domain1.idAsString}&languages=de,en"))
+
+        then:
+        translationsDomain1.lang.en.person_contactInformation_office == 'Phone'
+
+        when:
+        def translationsDomain2 = parseJson(get("/translations?domain=${domain2.idAsString}&languages=de,en"))
+
+        then:
+        translationsDomain2.lang.en.person_contactInformation_office == 'Office phone'
+
+        when:
+        def translationsBothDomains = parseJson(get("/translations?languages=de,en"))
+
+        then:
+        translationsBothDomains.lang.en.person_contactInformation_office in ['Phone', 'Office phone']
+
+        and:
+        noExceptionThrown()
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "get the translation for a non-existing domain"() {
+        given:
+        createTestClient()
+
+        expect:
+        get("/translations?domain=123&languages=de,en", 404)
+    }
+
+    @WithUserDetails("user@domain.example")
     def "get the translation for an unsupported language"() {
         given:
         createTestClient().tap {

@@ -19,8 +19,6 @@ package org.veo.adapter.persistence.schema;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
@@ -67,23 +65,26 @@ public class EntitySchemaServiceImpl implements EntitySchemaService {
       log.debug("Adding translations for {}", domain);
       for (ElementTypeDefinition def : domain.getElementTypeDefinitions()) {
         log.debug("Handling type {}", def.getElementType());
-        for (Entry<Locale, Map<String, String>> langEntry : def.getTranslations().entrySet()) {
-          Locale language = langEntry.getKey();
-          if (isRequested(requestedLanguages, language)) {
-            log.debug("Adding translations for {}", language);
-            Map<String, String> entriesForLanguage = langEntry.getValue();
-            entriesForLanguage
-                .entrySet()
-                .forEach(
-                    e -> {
-                      Optional<String> previousMapping = translations.get(language, e.getKey());
-                      if (previousMapping.isPresent()) {
-                        log.warn("Found conflicting translations for {}", e.getKey());
-                      }
-                    });
-            translations.add(language, entriesForLanguage);
-          }
-        }
+        def.getTranslations()
+            .forEach(
+                (language, entriesForLanguage) -> {
+                  if (isRequested(requestedLanguages, language)) {
+                    log.debug("Adding translations for {}", language);
+                    entriesForLanguage
+                        .entrySet()
+                        .forEach(
+                            e -> {
+                              Optional<String> previousMapping =
+                                  translations.get(language, e.getKey());
+                              if (previousMapping
+                                  .map(it -> !it.equals(e.getValue()))
+                                  .orElse(false)) {
+                                log.warn("Found conflicting translations for {}", e.getKey());
+                              }
+                            });
+                    translations.add(language, entriesForLanguage);
+                  }
+                });
       }
     }
     return translations;

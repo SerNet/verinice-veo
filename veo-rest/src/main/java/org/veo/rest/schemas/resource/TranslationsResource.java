@@ -76,5 +76,15 @@ public interface TranslationsResource {
               schema =
                   @Schema(type = "string", description = "IETF BCP 47 language tag (see RFC 5646)"))
           @RequestParam(value = "languages")
-          Set<String> languages);
+          Set<String> languages,
+      @Parameter(
+              required = false,
+              description = "The domain id whose translations are to be included.",
+              example = "15f58e45-48b7-409e-a32f-48d208aac5d5",
+              schema =
+                  @Schema(
+                      type = "string",
+                      description = "must be a valid UUID string following RFC 4122"))
+          @RequestParam(value = "domain", required = false)
+          String domainId);
 }
