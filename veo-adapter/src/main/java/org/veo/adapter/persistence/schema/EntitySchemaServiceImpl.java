@@ -19,12 +19,15 @@ package org.veo.adapter.persistence.schema;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.veo.adapter.presenter.api.dto.TranslationsDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
+import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.service.EntitySchemaService;
 
 import lombok.RequiredArgsConstructor;
@@ -60,11 +63,20 @@ public class EntitySchemaServiceImpl implements EntitySchemaService {
   public TranslationsDto findTranslations(Client client, Set<Locale> requestedLanguages) {
     log.debug("Getting translation content for requested languages: {}", requestedLanguages);
     TranslationsDto translations = new TranslationsDto();
-    client.getDomains().stream()
-        .flatMap(domain -> domain.getElementTypeDefinitions().stream())
-        .flatMap(def -> def.getTranslations().entrySet().stream())
-        .filter(langEntry -> isRequested(requestedLanguages, langEntry.getKey()))
-        .forEach(langEntry -> translations.add(langEntry.getKey(), langEntry.getValue()));
+    for (Domain domain : client.getDomains()) {
+      log.debug("Adding translations for {}", domain);
+      for (ElementTypeDefinition def : domain.getElementTypeDefinitions()) {
+        log.debug("Adding translations for {}", def);
+        for (Entry<Locale, Map<String, String>> langEntry : def.getTranslations().entrySet()) {
+          Locale language = langEntry.getKey();
+          if (isRequested(requestedLanguages, language)) {
+            log.debug("Adding translations for {}", language);
+            Map<String, String> entriesForLanguage = langEntry.getValue();
+            translations.add(language, entriesForLanguage);
+          }
+        }
+      }
+    }
     return translations;
   }
 
