@@ -62,7 +62,7 @@ public class TranslationController implements TranslationsResource {
 
     return CompletableFuture.supplyAsync(
         () -> {
-          Translations t10n = schemaService.findTranslations(client, locales);
+          Translations t10n = schemaService.findTranslations(client.getDomains(), locales);
           locales.forEach(
               loc -> {
                 for (VeoMessage veoMessage : VeoMessage.values()) {

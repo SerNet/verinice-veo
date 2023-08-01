@@ -25,7 +25,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.veo.adapter.presenter.api.dto.TranslationsDto;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
@@ -61,10 +60,10 @@ public class EntitySchemaServiceImpl implements EntitySchemaService {
   }
 
   @Override
-  public TranslationsDto findTranslations(Client client, Set<Locale> requestedLanguages) {
+  public TranslationsDto findTranslations(Set<Domain> domains, Set<Locale> requestedLanguages) {
     log.debug("Getting translation content for requested languages: {}", requestedLanguages);
     TranslationsDto translations = new TranslationsDto();
-    for (Domain domain : client.getDomains()) {
+    for (Domain domain : domains) {
       log.debug("Adding translations for {}", domain);
       for (ElementTypeDefinition def : domain.getElementTypeDefinitions()) {
         log.debug("Handling type {}", def.getElementType());
