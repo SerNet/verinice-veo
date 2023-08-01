@@ -18,6 +18,7 @@
 package org.veo.core;
 
 import java.util.Locale;
+import java.util.Optional;
 
 public interface Translations {
 
@@ -26,4 +27,6 @@ public interface Translations {
    * overwritten.
    */
   void add(Locale language, String key, String message);
+
+  Optional<String> get(Locale language, String key);
 }

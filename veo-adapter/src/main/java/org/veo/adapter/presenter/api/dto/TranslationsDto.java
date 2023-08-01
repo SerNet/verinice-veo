@@ -20,6 +20,7 @@ package org.veo.adapter.presenter.api.dto;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -49,5 +50,11 @@ public class TranslationsDto implements Translations {
   @Override
   public void add(Locale language, String key, String message) {
     add(language, Map.of(key, message));
+  }
+
+  @Override
+  public Optional<String> get(Locale language, String key) {
+    return Optional.ofNullable(translationsByLanguage.get(language))
+        .map(v -> v.getTranslations().get(key));
   }
 }
