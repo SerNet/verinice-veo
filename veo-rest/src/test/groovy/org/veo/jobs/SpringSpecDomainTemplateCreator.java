@@ -19,6 +19,7 @@ package org.veo.jobs;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,6 +35,7 @@ import org.veo.adapter.presenter.api.io.mapper.CreateDomainTemplateInputMapper;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
@@ -80,8 +82,13 @@ public class SpringSpecDomainTemplateCreator {
                   templateId, Optional.of(List.of(client.getIdAsString()))));
         });
     return domainRepository.findAllActiveByClient(client.getId()).stream()
-        .filter(d -> d.getDomainTemplate() != null)
-        .filter(d -> d.getDomainTemplate().getId().uuidValue().equals(templateId))
+        .filter(
+            d ->
+                Optional.ofNullable(d.getDomainTemplate())
+                    .map(DomainTemplate::getIdAsString)
+                    .map(templateId::equals)
+                    .orElse(false))
+        .sorted(Comparator.comparing(Domain::getCreatedAt).reversed())
         .findFirst()
         .orElseThrow();
   }
