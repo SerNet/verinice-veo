@@ -43,6 +43,7 @@ import lombok.ToString;
 @MappedSuperclass
 public abstract class TemplateItemData extends IdentifiableVersionedData implements TemplateItem {
 
+  @Deprecated // TODO #2301 remove
   @ToString.Include
   @Column(name = "namespace")
   protected String namespace;

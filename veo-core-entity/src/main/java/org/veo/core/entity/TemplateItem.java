@@ -26,8 +26,10 @@ import org.veo.core.entity.exception.UnprocessableDataException;
 
 public interface TemplateItem extends Nameable, Identifiable {
 
+  @Deprecated // TODO #2301 remove
   String getNamespace();
 
+  @Deprecated // TODO #2301 remove
   void setNamespace(String aNamespace);
 
   @NotNull
