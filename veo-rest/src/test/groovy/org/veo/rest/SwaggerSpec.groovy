@@ -358,6 +358,21 @@ class SwaggerSpec extends VeoSpringSpec {
         }
     }
 
+    def "endpoint documentation is correct for GET /domains/{id}/catalog-items/type-count"() {
+        given: "the endpoint docs"
+        def endPointInfo = parsedApiDocs.paths["/domains/{id}/catalog-items/type-count"].get
+
+        expect: "that the correct schema is used"
+        endPointInfo.responses['200'].content['application/json'].schema['$ref'] == '#/components/schemas/CatalogItemsTypeCountSchema'
+
+        when:
+        def schema = parsedApiDocs.components.schemas.CatalogItemsTypeCountSchema
+
+        then:
+        schema.readOnly
+        schema.example instanceof Map
+    }
+
     def "endpoint documentation is correct for GET /domaintemplates"() {
         given: "the endpoint docs"
         def endPointInfo = parsedApiDocs.paths["/domaintemplates"].get

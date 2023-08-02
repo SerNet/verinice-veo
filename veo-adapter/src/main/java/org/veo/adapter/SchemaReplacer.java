@@ -21,6 +21,7 @@ import static org.springdoc.core.converters.AdditionalModelsConverter.replaceWit
 
 import org.veo.adapter.presenter.api.openapi.AddPartSuggestionSchema;
 import org.veo.adapter.presenter.api.openapi.AttributeDefinitionSchema;
+import org.veo.adapter.presenter.api.openapi.CatalogItemsTypeCountSchema;
 import org.veo.adapter.presenter.api.openapi.DecisionResultsSchema;
 import org.veo.adapter.presenter.api.openapi.DecisionRuleRefSchema;
 import org.veo.adapter.presenter.api.openapi.FindingSchema;
@@ -31,6 +32,7 @@ import org.veo.core.entity.definitions.attribute.AttributeDefinition;
 import org.veo.core.entity.inspection.AddPartSuggestion;
 import org.veo.core.entity.inspection.Finding;
 import org.veo.core.entity.inspection.Suggestion;
+import org.veo.core.entity.statistics.CatalogItemsTypeCount;
 
 /** Configures OpenAPI schema types globally. */
 public class SchemaReplacer {
@@ -41,5 +43,6 @@ public class SchemaReplacer {
     replaceWithClass(Finding.class, FindingSchema.class);
     replaceWithClass(Suggestion.class, SuggestionSchema.class);
     replaceWithClass(AddPartSuggestion.class, AddPartSuggestionSchema.class);
+    replaceWithClass(CatalogItemsTypeCount.class, CatalogItemsTypeCountSchema.class);
   }
 }
