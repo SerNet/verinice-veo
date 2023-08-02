@@ -19,7 +19,13 @@ package org.veo.persistence.access.jpa;
 
 import java.util.Set;
 
+import jakarta.annotation.Nonnull;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.repository.SubTypeCount;
@@ -51,4 +57,8 @@ public interface CatalogItemDataRepository
             group by ci.elementType, ci.subType
 """)
   Set<SubTypeCount> getCountsBySubType(String domainId);
+
+  @Nonnull
+  @Transactional(readOnly = true)
+  Page<CatalogItemData> findAll(Specification<CatalogItemData> specification, Pageable pageable);
 }

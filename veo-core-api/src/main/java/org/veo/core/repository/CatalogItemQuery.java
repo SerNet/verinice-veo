@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler
+ * Copyright (C) 2023  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,26 +17,10 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
-import java.util.Set;
-import java.util.UUID;
-
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.Key;
 
-/**
- * A repository for <code>CatalogItem</code> entities.
- *
- * <p>Implements basic CRUD operations from the superinterface and extends them with more specific
- * methods - i.e. queries based on particular fields.
- */
-public interface CatalogItemRepository extends IdentifiableVersionedRepository<CatalogItem> {
+public interface CatalogItemQuery extends Query<CatalogItem> {
+  void whereElementTypeMatches(QueryCondition<String> elementTypes);
 
-  Set<CatalogItem> findAllByIdsFetchDomainAndTailoringReferences(Set<Key<UUID>> ids);
-
-  Set<CatalogItem> findAllByDomain(Domain domain);
-
-  Set<SubTypeCount> getCountsBySubType(Domain domain);
-
-  CatalogItemQuery query(Domain domain);
+  void whereSubTypeMatches(QueryCondition<String> subTypes);
 }

@@ -27,9 +27,11 @@ import org.springframework.stereotype.Repository;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
+import org.veo.core.repository.CatalogItemQuery;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.SubTypeCount;
 import org.veo.persistence.access.jpa.CatalogItemDataRepository;
+import org.veo.persistence.access.query.CatalogItemQueryImpl;
 import org.veo.persistence.entity.jpa.CatalogItemData;
 import org.veo.persistence.entity.jpa.DomainData;
 import org.veo.persistence.entity.jpa.ValidationService;
@@ -67,5 +69,10 @@ public class CatalogItemRepositoryImpl
   @Override
   public Set<SubTypeCount> getCountsBySubType(Domain domain) {
     return catalogItemDataRepository.getCountsBySubType(domain.getIdAsString());
+  }
+
+  @Override
+  public CatalogItemQuery query(Domain domain) {
+    return new CatalogItemQueryImpl(catalogItemDataRepository, domain);
   }
 }
