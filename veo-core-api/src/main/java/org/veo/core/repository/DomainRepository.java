@@ -49,6 +49,8 @@ public interface DomainRepository extends IdentifiableVersionedRepository<Domain
 
   Optional<Domain> findById(Key<UUID> domainId, Key<UUID> clientId);
 
+  Domain getActiveById(Key<UUID> domainId, Key<UUID> clientId);
+
   Domain getById(@NonNull Key<UUID> domainId, @NonNull Key<UUID> clientId);
 
   Set<Domain> findByIds(@NonNull Set<Key<UUID>> ids, @NonNull Key<UUID> clientId);

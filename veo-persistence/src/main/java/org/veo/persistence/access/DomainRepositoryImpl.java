@@ -100,6 +100,15 @@ public class DomainRepositoryImpl
   }
 
   @Override
+  public Domain getActiveById(Key<UUID> domainId, Key<UUID> clientId) {
+    var domain = getById(domainId, clientId);
+    if (!domain.isActive()) {
+      throw new NotFoundException("Domain is inactive.");
+    }
+    return domain;
+  }
+
+  @Override
   public Domain getById(@NonNull Key<UUID> domainId, @NonNull Key<UUID> clientId) {
     return dataRepository
         .findById(domainId.uuidValue(), clientId.uuidValue())
