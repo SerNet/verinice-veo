@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.dto.full.FullCatalogDto;
-import org.veo.adapter.presenter.api.dto.full.FullCatalogItemDto;
+import org.veo.adapter.presenter.api.dto.full.LegacyCatalogItemDto;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -122,8 +122,8 @@ public class CatalogController extends AbstractEntityController {
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
-              array = @ArraySchema(schema = @Schema(implementation = FullCatalogItemDto.class))))
-  public @Valid CompletableFuture<ResponseEntity<List<FullCatalogItemDto>>> getCatalogItems(
+              array = @ArraySchema(schema = @Schema(implementation = LegacyCatalogItemDto.class))))
+  public @Valid CompletableFuture<ResponseEntity<List<LegacyCatalogItemDto>>> getCatalogItems(
       @Parameter(hidden = true) Authentication auth,
       @PathVariable String id,
       @UnitUuidParam @RequestParam(value = DOMAIN_PARAM, required = false) String domainUuid,
@@ -161,9 +161,9 @@ public class CatalogController extends AbstractEntityController {
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(implementation = FullCatalogItemDto.class)))
+              schema = @Schema(implementation = LegacyCatalogItemDto.class)))
   @ApiResponse(responseCode = "404", description = "CatalogItem not found")
-  public @Valid Future<ResponseEntity<FullCatalogItemDto>> getCatalogItem(
+  public @Valid Future<ResponseEntity<LegacyCatalogItemDto>> getCatalogItem(
       @Parameter(hidden = true) Authentication auth,
       @PathVariable String id,
       @PathVariable String itemId,
@@ -174,7 +174,7 @@ public class CatalogController extends AbstractEntityController {
       return null;
     }
 
-    CompletableFuture<FullCatalogItemDto> catalogitemFuture =
+    CompletableFuture<LegacyCatalogItemDto> catalogitemFuture =
         useCaseInteractor.execute(
             getCatalogItemUseCase,
             new GetCatalogItemUseCase.InputData(

@@ -22,12 +22,12 @@ import static java.util.UUID.randomUUID
 import org.veo.adapter.presenter.api.common.IdRef
 import org.veo.adapter.presenter.api.common.ReferenceAssembler
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
-import org.veo.adapter.presenter.api.dto.full.FullCatalogItemDto
 import org.veo.adapter.presenter.api.dto.full.FullControlDto
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto
 import org.veo.adapter.presenter.api.dto.full.FullIncidentDto
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto
+import org.veo.adapter.presenter.api.dto.full.LegacyCatalogItemDto
 import org.veo.core.entity.Asset
 import org.veo.core.entity.AssetRisk
 import org.veo.core.entity.CatalogItem
@@ -117,7 +117,7 @@ class ReferenceAssemblerImplSpec extends Specification {
         url                                                                                                              | type        | dtoType
         // TODO: VEO-585: probably expect an exception instead
         'http://localhost:9000/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'   | Asset       | FullAssetDto
-        'http://localhost:9000/catalogs/37dccbdc-7d58-4929-9d96-df8c533ea5a5/items/47799d6d-7887-48d5-9cd2-1af23e0b467a' | CatalogItem | FullCatalogItemDto
+        'http://localhost:9000/catalogs/37dccbdc-7d58-4929-9d96-df8c533ea5a5/items/47799d6d-7887-48d5-9cd2-1af23e0b467a' | CatalogItem | LegacyCatalogItemDto
     }
 
     def "target reference for #type and #id is #reference"() {

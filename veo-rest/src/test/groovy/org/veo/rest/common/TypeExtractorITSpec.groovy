@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired
 
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto
-import org.veo.adapter.presenter.api.dto.full.FullCatalogItemDto
 import org.veo.adapter.presenter.api.dto.full.FullControlDto
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto
@@ -31,6 +30,7 @@ import org.veo.adapter.presenter.api.dto.full.FullProcessDto
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto
+import org.veo.adapter.presenter.api.dto.full.LegacyCatalogItemDto
 import org.veo.core.VeoSpringSpec
 import org.veo.rest.configuration.TypeExtractor
 
@@ -59,7 +59,7 @@ class TypeExtractorITSpec extends VeoSpringSpec {
         '/persons/28df429d-da5e-431a-a2d8-488c0741fb9f'                                             | FullPersonDto
         '/units/28df429d-da5e-431a-a2d8-488c0741fb9f'                                               | FullUnitDto
         '/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                             | FullDomainDto
-        '/catalogs/28df429d-da5e-431a-a2d8-488c0741fb9f/items/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6' | FullCatalogItemDto
+        '/catalogs/28df429d-da5e-431a-a2d8-488c0741fb9f/items/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6' | LegacyCatalogItemDto
     }
 
     def "The invalid URI #uri is rejected"() {

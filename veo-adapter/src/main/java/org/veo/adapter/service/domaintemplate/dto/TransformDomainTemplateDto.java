@@ -54,7 +54,7 @@ public class TransformDomainTemplateDto extends AbstractDomainTemplateDto
   @ToString.Include
   private String id;
 
-  private Set<TransformCatalogItemDto> catalogItems = new HashSet<>();
+  private Set<FullCatalogItemDto> catalogItems = new HashSet<>();
 
   private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions = new HashMap<>();
 }

@@ -260,7 +260,7 @@ class SwaggerSpec extends VeoSpringSpec {
 
     def "catalog item element is a reference"() {
         when:
-        def catalogItemDtoSchema = parsedApiDocs.components.schemas.FullCatalogItemDto
+        def catalogItemDtoSchema = parsedApiDocs.components.schemas.LegacyCatalogItemDto
 
         then:
         catalogItemDtoSchema.properties.element.'$ref' == '#/components/schemas/CatalogItemElement'

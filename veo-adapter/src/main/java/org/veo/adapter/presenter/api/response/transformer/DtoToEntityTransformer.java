@@ -40,7 +40,7 @@ import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
-import org.veo.adapter.service.domaintemplate.dto.TransformCatalogItemDto;
+import org.veo.adapter.service.domaintemplate.dto.FullCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformLinkTailoringReference;
 import org.veo.core.entity.AbstractRisk;
@@ -255,7 +255,7 @@ public final class DtoToEntityTransformer {
   }
 
   public CatalogItem transformDto2CatalogItem(
-      TransformCatalogItemDto source, IdRefResolver idRefResolver) {
+      FullCatalogItemDto source, IdRefResolver idRefResolver) {
     var target = createIdentifiable(CatalogItem.class, source);
     target.setAbbreviation(source.getAbbreviation());
     target.setName(source.getName());

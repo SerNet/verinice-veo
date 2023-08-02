@@ -17,41 +17,36 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.aspects.SubTypeAspect;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 public abstract class AbstractCatalogItemDto extends AbstractVersionedSelfReferencingDto
     implements NameableDto {
-  @NotNull
-  @Schema(description = "The name for the CatalogItem.")
-  private String name;
+  @NotNull private String name;
 
-  @Schema(description = "The abbreviation for the CatalogItem.")
   private String abbreviation;
 
-  @Schema(description = "The description for the CatalogItem.")
   private String description;
 
-  @Schema(description = "The tailoring references of this catalog item.")
-  private Set<AbstractTailoringReferenceDto> tailoringReferences = new HashSet<>();
+  @NotNull
+  @Schema(description = "Entity type identifier", example = "person")
+  @Size(min = 1, max = 32)
+  private String elementType;
 
-  @ToString.Include
-  @Schema(description = "The namespace for the catalogitem.", example = "A1.B2")
-  @Size(max = CatalogItem.NAMESPACE_MAX_LENGTH)
-  private String namespace;
+  @NotNull
+  @Schema(description = "The subtype for the Element.", example = "PER")
+  @Size(min = 1, max = SubTypeAspect.SUB_TYPE_MAX_LENGTH)
+  private String subType;
 
   @Override
   public Class<? extends Identifiable> getModelInterface() {

@@ -15,24 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto.full;
+package org.veo.adapter.presenter.api.dto;
 
 import jakarta.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
-import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogItemDto;
-import org.veo.adapter.presenter.api.response.IdentifiableDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.Schema.AccessMode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@EqualsAndHashCode(callSuper = true)
+/** Partial catalog item */
 @Data
-public class FullCatalogItemDto extends ReferenceCatalogItemDto implements IdentifiableDto {
-
+@EqualsAndHashCode(callSuper = true)
+public class ShortCatalogItemDto extends AbstractCatalogItemDto implements NameableDto {
   @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
   @Schema(
       description = "ID must be a valid UUID string following RFC 4122.",
@@ -40,7 +37,4 @@ public class FullCatalogItemDto extends ReferenceCatalogItemDto implements Ident
       format = "uuid")
   @ToString.Include
   private String id;
-
-  @Schema(description = "The actual element's desciption", accessMode = AccessMode.READ_ONLY)
-  private String description;
 }

@@ -51,11 +51,11 @@ import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.LinkDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
+import org.veo.adapter.presenter.api.dto.ShortCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullCatalogDto;
-import org.veo.adapter.presenter.api.dto.full.FullCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlDto;
 import org.veo.adapter.presenter.api.dto.full.FullControlInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullDocumentDto;
@@ -73,10 +73,11 @@ import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
+import org.veo.adapter.presenter.api.dto.full.LegacyCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
-import org.veo.adapter.service.domaintemplate.dto.TransformCatalogItemDto;
+import org.veo.adapter.service.domaintemplate.dto.FullCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformLinkTailoringReference;
@@ -345,13 +346,10 @@ public final class EntityToDtoTransformer {
     return elementTypeDefinitionDto;
   }
 
-  public TransformCatalogItemDto transformCatalogItem2Dto(@Valid CatalogItem source) {
-    var target = new TransformCatalogItemDto();
+  public FullCatalogItemDto transformCatalogItem2Dto(@Valid CatalogItem source) {
+    var target = new FullCatalogItemDto();
     target.setId(source.getId().uuidValue());
     mapCatalogItem(source, target);
-
-    target.setElementType(source.getElementType());
-    target.setSubType(source.getSubType());
     target.setStatus(source.getStatus());
 
     target.setCustomAspects(
@@ -363,15 +361,33 @@ public final class EntityToDtoTransformer {
         source.getTailoringReferences().stream()
             .map(this::transformTailoringReference2Dto)
             .collect(toSet()));
-
+    // TODO #2301 remove
+    target.setNamespace(source.getNamespace());
     return target;
   }
 
-  public FullCatalogItemDto transformCatalogItem2Dto(
-      @Valid CatalogItem source, boolean includeDescriptionFromElement) {
-    FullCatalogItemDto target = new FullCatalogItemDto();
+  public ShortCatalogItemDto transformShortCatalogItem2Dto(@Valid CatalogItem source) {
+    var target = new ShortCatalogItemDto();
     target.setId(source.getId().uuidValue());
     mapCatalogItem(source, target);
+    return target;
+  }
+
+  private void mapCatalogItem(CatalogItem source, AbstractCatalogItemDto target) {
+    mapVersionedSelfReferencingProperties(source, target);
+    mapNameableProperties(source, target);
+    target.setElementType(source.getElementType());
+    target.setSubType(source.getSubType());
+  }
+
+  @Deprecated // TODO #2301 remove
+  public LegacyCatalogItemDto transformCatalogItem2Dto(
+      @Valid CatalogItem source, boolean includeDescriptionFromElement) {
+    LegacyCatalogItemDto target = new LegacyCatalogItemDto();
+    target.setId(source.getId().uuidValue());
+    mapVersionedSelfReferencingProperties(source, target);
+    mapNameableProperties(source, target);
+    target.setNamespace(source.getNamespace());
     if (includeDescriptionFromElement) {
       target.setDescription(source.getDescription());
     }
@@ -380,12 +396,6 @@ public final class EntityToDtoTransformer {
             .map(this::transformTailoringReference2Dto)
             .collect(toSet()));
     return target;
-  }
-
-  private void mapCatalogItem(CatalogItem source, AbstractCatalogItemDto target) {
-    mapVersionedSelfReferencingProperties(source, target);
-    mapNameableProperties(source, target);
-    target.setNamespace(source.getNamespace());
   }
 
   @Deprecated() // TODO #2301 remove

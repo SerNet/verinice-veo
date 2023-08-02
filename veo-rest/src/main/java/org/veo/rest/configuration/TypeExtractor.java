@@ -32,7 +32,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import org.springframework.web.util.UriComponentsBuilder;
 
 import org.veo.adapter.presenter.api.dto.ModelDto;
-import org.veo.adapter.presenter.api.dto.full.FullCatalogItemDto;
+import org.veo.adapter.presenter.api.dto.full.LegacyCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 
 import lombok.AllArgsConstructor;
@@ -64,7 +64,7 @@ public class TypeExtractor {
     if (pathComponent == null) return Optional.empty();
 
     if (uriString.startsWith("/catalogitems")) {
-      return Optional.of(FullCatalogItemDto.class);
+      return Optional.of(LegacyCatalogItemDto.class);
     }
     if (uriString.startsWith("/domaintemplates")) {
       return Optional.of(TransformDomainTemplateDto.class);
