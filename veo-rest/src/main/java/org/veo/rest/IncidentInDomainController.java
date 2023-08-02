@@ -74,8 +74,8 @@ import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.create.CreateIncidentInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullIncidentInDomainDto;
-import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
+import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.core.entity.Domain;
@@ -191,7 +191,7 @@ public class IncidentInDomainController {
     return elementService.getElements(
         domainId,
         getIncidentsUseCase,
-        GetElementsInputMapper.map(
+        QueryInputMapper.map(
             clientLookup.getClient(auth),
             unitUuid,
             domainId,
@@ -259,7 +259,7 @@ public class IncidentInDomainController {
     return elementService.getElements(
         domainId,
         getIncidentsUseCase,
-        GetElementsInputMapper.map(
+        QueryInputMapper.map(
             client,
             null,
             domainId,

@@ -34,7 +34,7 @@ import org.veo.core.repository.QueryCondition;
 import org.veo.core.repository.SingleValueQueryCondition;
 import org.veo.core.usecase.base.GetElementsUseCase;
 
-public class GetElementsInputMapper {
+public class QueryInputMapper {
 
   public static GetElementsUseCase.InputData map(
       Client client,

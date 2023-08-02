@@ -20,14 +20,13 @@ package org.veo.adapter.presenter.api.io.mapper;
 import java.util.function.Function;
 
 import org.veo.adapter.presenter.api.dto.PageDto;
-import org.veo.core.entity.Element;
 import org.veo.core.repository.PagedResult;
 import org.veo.core.repository.PagingConfiguration;
 
 public class PagingMapper {
 
-  public static <TDto, TElement extends Element> PageDto<TDto> toPage(
-      PagedResult<TElement> input, Function<TElement, TDto> mapper) {
+  public static <TDto, TItem> PageDto<TDto> toPage(
+      PagedResult<TItem> input, Function<TItem, TDto> mapper) {
     return new PageDto<>(
         input.getResultPage().stream().map(mapper).toList(),
         input.getTotalResults(),

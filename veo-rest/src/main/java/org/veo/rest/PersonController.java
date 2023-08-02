@@ -84,8 +84,8 @@ import org.veo.adapter.presenter.api.dto.create.CreatePersonDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
+import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
@@ -181,7 +181,7 @@ public class PersonController extends AbstractElementController<Person, FullPers
     Client client = getAuthenticatedClient(auth);
 
     return getPersons(
-        GetElementsInputMapper.map(
+        QueryInputMapper.map(
             client,
             unitUuid,
             null,
@@ -342,7 +342,7 @@ public class PersonController extends AbstractElementController<Person, FullPers
           String sortOrder) {
     try {
       return getPersons(
-          GetElementsInputMapper.map(
+          QueryInputMapper.map(
               getAuthenticatedClient(auth),
               SearchQueryDto.decodeFromSearchId(searchId),
               PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));

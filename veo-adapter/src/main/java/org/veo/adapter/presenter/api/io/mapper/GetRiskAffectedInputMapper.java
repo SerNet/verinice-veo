@@ -17,13 +17,13 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.io.mapper;
 
-import static org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper.createNonEmptyCondition;
-import static org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper.createSingleValueCondition;
-import static org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper.createStringFilter;
-import static org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper.createUuidCondition;
-import static org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper.createUuidListCondition;
-import static org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper.transformCondition;
-import static org.veo.adapter.presenter.api.io.mapper.GetElementsInputMapper.transformUuidCondition;
+import static org.veo.adapter.presenter.api.io.mapper.QueryInputMapper.createNonEmptyCondition;
+import static org.veo.adapter.presenter.api.io.mapper.QueryInputMapper.createSingleValueCondition;
+import static org.veo.adapter.presenter.api.io.mapper.QueryInputMapper.createStringFilter;
+import static org.veo.adapter.presenter.api.io.mapper.QueryInputMapper.createUuidCondition;
+import static org.veo.adapter.presenter.api.io.mapper.QueryInputMapper.createUuidListCondition;
+import static org.veo.adapter.presenter.api.io.mapper.QueryInputMapper.transformCondition;
+import static org.veo.adapter.presenter.api.io.mapper.QueryInputMapper.transformUuidCondition;
 
 import java.util.List;
 
