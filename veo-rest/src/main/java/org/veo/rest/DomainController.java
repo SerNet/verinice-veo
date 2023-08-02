@@ -20,7 +20,20 @@ package org.veo.rest;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.veo.rest.ControllerConstants.ANY_AUTH;
+import static org.veo.rest.ControllerConstants.ELEMENT_TYPE_PARAM;
+import static org.veo.rest.ControllerConstants.PAGE_NUMBER_DEFAULT_VALUE;
+import static org.veo.rest.ControllerConstants.PAGE_NUMBER_PARAM;
+import static org.veo.rest.ControllerConstants.PAGE_SIZE_DEFAULT_VALUE;
+import static org.veo.rest.ControllerConstants.PAGE_SIZE_PARAM;
+import static org.veo.rest.ControllerConstants.SORT_COLUMN_DEFAULT_VALUE;
+import static org.veo.rest.ControllerConstants.SORT_COLUMN_PARAM;
+import static org.veo.rest.ControllerConstants.SORT_ORDER_DEFAULT_VALUE;
+import static org.veo.rest.ControllerConstants.SORT_ORDER_PARAM;
+import static org.veo.rest.ControllerConstants.SORT_ORDER_PATTERN;
+import static org.veo.rest.ControllerConstants.SUB_TYPE_PARAM;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
+import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
+import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
 import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.io.IOException;
@@ -45,8 +58,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
+import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
+import org.veo.adapter.presenter.api.dto.ShortCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
+import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
+import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.core.ExportDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -55,6 +72,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.statistics.CatalogItemsTypeCount;
 import org.veo.core.entity.statistics.ElementStatusCounts;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.catalogitem.QueryCatalogItemsUseCase;
 import org.veo.core.usecase.domain.ApplyProfileUseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetCatalogItemsTypeCountUseCase;
@@ -97,6 +115,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   private final GetElementStatusCountUseCase getElementStatusCountUseCase;
   private final GetCatalogItemsTypeCountUseCase getCatalogItemsTypeCountUseCase;
   private final ApplyProfileUseCase applyProfileUseCase;
+  private final QueryCatalogItemsUseCase queryCatalogItemsUseCase;
 
   @GetMapping
   @Operation(summary = "Loads all domains")
@@ -167,6 +186,49 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             ExportDomainUseCase.OutputData::getExportDomain);
     return domainFuture.thenApply(
         domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
+  }
+
+  @GetMapping("/{domainId}/catalog-items")
+  @Operation(summary = "Loads catalog items in a domain")
+  public @Valid Future<PageDto<ShortCatalogItemDto>> getCatalogItems(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @RequestParam(value = ELEMENT_TYPE_PARAM, required = false) String elementType,
+      @RequestParam(value = SUB_TYPE_PARAM, required = false) String subType,
+      @RequestParam(
+              value = PAGE_SIZE_PARAM,
+              required = false,
+              defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          Integer pageSize,
+      @RequestParam(
+              value = PAGE_NUMBER_PARAM,
+              required = false,
+              defaultValue = PAGE_NUMBER_DEFAULT_VALUE)
+          Integer pageNumber,
+      @RequestParam(
+              value = SORT_COLUMN_PARAM,
+              required = false,
+              defaultValue = SORT_COLUMN_DEFAULT_VALUE)
+          String sortColumn,
+      @RequestParam(
+              value = SORT_ORDER_PARAM,
+              required = false,
+              defaultValue = SORT_ORDER_DEFAULT_VALUE)
+          @Pattern(regexp = SORT_ORDER_PATTERN)
+          String sortOrder) {
+    return useCaseInteractor.execute(
+        queryCatalogItemsUseCase,
+        QueryInputMapper.map(
+            getAuthenticatedClient(auth),
+            domainId,
+            elementType,
+            subType,
+            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
+        out ->
+            PagingMapper.toPage(
+                out.getPage(), entityToDtoTransformer::transformShortCatalogItem2Dto));
   }
 
   @Override

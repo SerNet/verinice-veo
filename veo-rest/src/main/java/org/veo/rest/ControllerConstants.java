@@ -51,6 +51,7 @@ public final class ControllerConstants {
   static final String DESIGNATOR_PARAM = "designator";
   static final String DOMAIN_PARAM = "domain";
   static final String NAME_PARAM = "name";
+  static final String ELEMENT_TYPE_PARAM = "elementType";
   static final String SUB_TYPE_PARAM = "subType";
   static final String STATUS_PARAM = "status";
   static final String CHILD_ELEMENT_IDS_PARAM = "childElementIds";

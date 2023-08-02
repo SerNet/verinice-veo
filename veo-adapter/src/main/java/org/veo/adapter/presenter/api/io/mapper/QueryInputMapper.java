@@ -33,6 +33,7 @@ import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.QueryCondition;
 import org.veo.core.repository.SingleValueQueryCondition;
 import org.veo.core.usecase.base.GetElementsUseCase;
+import org.veo.core.usecase.catalogitem.QueryCatalogItemsUseCase;
 
 public class QueryInputMapper {
 
@@ -91,6 +92,20 @@ public class QueryInputMapper {
         transformCondition(searchQuery.getName()),
         transformCondition(searchQuery.getUpdatedBy()),
         pagingConfiguration);
+  }
+
+  public static QueryCatalogItemsUseCase.InputData map(
+      Client client,
+      String domainId,
+      String elementType,
+      String subType,
+      PagingConfiguration config) {
+    return new QueryCatalogItemsUseCase.InputData(
+        client.getId(),
+        Key.uuidFrom(domainId),
+        config,
+        createNonEmptyCondition(elementType),
+        createNonEmptyCondition(subType));
   }
 
   static <T> SingleValueQueryCondition<T> transformCondition(SingleValueQueryConditionDto<T> dto) {

@@ -105,6 +105,7 @@ import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemsUseCase;
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase;
+import org.veo.core.usecase.catalogitem.QueryCatalogItemsUseCase;
 import org.veo.core.usecase.client.DeleteClientUseCase;
 import org.veo.core.usecase.client.GetClientUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
@@ -248,6 +249,12 @@ public class ModuleConfiguration {
       UnitHierarchyProvider unitHierarchyProvider) {
     return new GenericGetElementsUseCase(
         clientRepository, elementRepository, unitHierarchyProvider);
+  }
+
+  @Bean
+  public QueryCatalogItemsUseCase queryCatalogItemsUseCase(
+      DomainRepository domainRepository, CatalogItemRepository catalogItemRepository) {
+    return new QueryCatalogItemsUseCase(domainRepository, catalogItemRepository);
   }
 
   @Bean
