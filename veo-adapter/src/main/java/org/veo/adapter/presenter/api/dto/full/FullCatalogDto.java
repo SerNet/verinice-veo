@@ -17,11 +17,16 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.full;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.validation.constraints.Pattern;
 
 import org.veo.adapter.presenter.api.Patterns;
-import org.veo.adapter.presenter.api.dto.reference.ReferenceCatalogDto;
+import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.dto.AbstractCatalogDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.core.entity.CatalogItem;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -30,7 +35,8 @@ import lombok.ToString;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class FullCatalogDto extends ReferenceCatalogDto implements IdentifiableDto {
+@ToString(onlyExplicitlyIncluded = true, callSuper = true)
+public class FullCatalogDto extends AbstractCatalogDto implements IdentifiableDto {
 
   @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
   @Schema(
@@ -39,4 +45,7 @@ public class FullCatalogDto extends ReferenceCatalogDto implements IdentifiableD
       format = "uuid")
   @ToString.Include
   private String id;
+
+  @Schema(description = "The catalog-items for the catalog.")
+  private Set<IdRef<CatalogItem>> catalogItems = new HashSet<>();
 }
