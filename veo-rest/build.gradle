@@ -80,7 +80,7 @@ def continuousIntegrationBuild = rootProject.hasProperty('ci')
 // we only need that data for builds that we are going to deploy, so
 // we exclude them for the other builds to make them faster
 def includeRealInfo = continuousIntegrationBuild && rootProject.getProperty('ciJobName').with {
-    it.endsWith('develop') || it.endsWith('master')
+    it.endsWith('develop') || it=~ /\/\d+\.\d+\.\d+$/
 }
 
 // create build-info.properties with build information
