@@ -19,7 +19,9 @@ package org.veo.rest.configuration;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import jakarta.servlet.ServletContext;
 
@@ -29,6 +31,7 @@ import org.springframework.http.server.PathContainer;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import org.veo.adapter.presenter.api.dto.ModelDto;
@@ -54,16 +57,23 @@ public class TypeExtractor {
 
   @Autowired private ServletContext servletContext;
 
+  private static final Pattern CONTEXT_PATH = Pattern.compile("[a-zA-Z0-9-]+");
+
   private RequestMappingHandlerMapping getRequestHandlerMapping() {
     return applicationContext.getBean(
         "requestMappingHandlerMapping", RequestMappingHandlerMapping.class);
   }
 
   public Optional<Class<? extends ModelDto>> parseDtoType(String uriString) {
-    String pathComponent = UriComponentsBuilder.fromUriString(uriString).build().getPath();
+    UriComponents uriComponents = UriComponentsBuilder.fromUriString(uriString).build();
+    String pathComponent = uriComponents.getPath();
     if (pathComponent == null) return Optional.empty();
+    List<String> segments = uriComponents.getPathSegments();
 
-    if (uriString.startsWith("/catalogitems")) {
+    if (segments.size() == 2 && segments.get(0).equals("catalogitems")
+        || segments.size() == 3
+            && CONTEXT_PATH.matcher(segments.get(0)).matches()
+            && segments.get(1).equals("catalogitems")) {
       return Optional.of(LegacyCatalogItemDto.class);
     }
     if (uriString.startsWith("/domaintemplates")) {

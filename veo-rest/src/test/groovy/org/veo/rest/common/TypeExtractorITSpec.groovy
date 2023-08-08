@@ -60,6 +60,8 @@ class TypeExtractorITSpec extends VeoSpringSpec {
         '/units/28df429d-da5e-431a-a2d8-488c0741fb9f'                                               | FullUnitDto
         '/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                             | FullDomainDto
         '/catalogs/28df429d-da5e-431a-a2d8-488c0741fb9f/items/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6' | LegacyCatalogItemDto
+        '/catalogitems/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                        | LegacyCatalogItemDto
+        '/veo/catalogitems/c37ec67f-5d59-45ed-a4e1-88b0cc5fd1a6'                                    | LegacyCatalogItemDto
     }
 
     def "The invalid URI #uri is rejected"() {
