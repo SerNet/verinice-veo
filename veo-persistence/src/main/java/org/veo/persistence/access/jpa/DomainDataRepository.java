@@ -32,8 +32,8 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
   @Query("select e from #{#entityName} as e join e.catalogItems as i where i.dbId = ?1")
   Optional<DomainData> findByCatalogsCatalogItemsId(String catalogItemId);
 
-  @Query("select e from #{#entityName} as e join e.domainTemplate as t where t.dbId = ?1")
-  Collection<Domain> findAllByDomainTemplateId(String domainTemplateId);
+  @Query("select e.dbId from #{#entityName} as e join e.domainTemplate as t where t.dbId = ?1")
+  Collection<String> findIdsByDomainTemplateId(String domainTemplateId);
 
   @Query(
       "select d from #{#entityName} d left join fetch d.elementTypeDefinitions where d.owner.id = ?1 and d.active = true")

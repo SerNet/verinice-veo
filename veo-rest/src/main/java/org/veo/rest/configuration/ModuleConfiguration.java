@@ -76,6 +76,7 @@ import org.veo.core.service.DomainTemplateIdGenerator;
 import org.veo.core.service.DomainTemplateService;
 import org.veo.core.service.EntitySchemaService;
 import org.veo.core.service.EventPublisher;
+import org.veo.core.service.MigrateDomainUseCase;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.IncomingMessageHandler;
 import org.veo.core.usecase.InspectElementUseCase;
@@ -842,13 +843,19 @@ public class ModuleConfiguration {
 
   @Bean
   public UpdateAllClientDomainsUseCase getUpdateAllClientDomainsUseCase(
+      DomainRepository domainRepository, MigrateDomainUseCase migrateDomainUseCase) {
+    return new UpdateAllClientDomainsUseCase(domainRepository, migrateDomainUseCase);
+  }
+
+  @Bean
+  public MigrateDomainUseCase migrateDomainUseCase(
       DomainRepository domainRepository,
       RepositoryProvider repositoryProvider,
       UnitRepository unitRepository,
       ElementMigrationService elementMigrationService,
       Decider decider) {
-    return new UpdateAllClientDomainsUseCase(
-        domainRepository, repositoryProvider, unitRepository, elementMigrationService, decider);
+    return new MigrateDomainUseCase(
+        domainRepository, repositoryProvider, elementMigrationService, decider, unitRepository);
   }
 
   @Bean

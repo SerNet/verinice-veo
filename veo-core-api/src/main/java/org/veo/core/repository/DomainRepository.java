@@ -43,7 +43,7 @@ public interface DomainRepository extends IdentifiableVersionedRepository<Domain
 
   Set<Domain> findAllByClientWithEntityTypeDefinitionsAndRiskDefinitions(Key<UUID> clientId);
 
-  Set<Domain> findAllByTemplateId(Key<UUID> domainTemplateId);
+  Set<Key<UUID>> findIdsByTemplateId(Key<UUID> domainTemplateId);
 
   Optional<Domain> findByCatalogItem(CatalogItem catalogItem);
 

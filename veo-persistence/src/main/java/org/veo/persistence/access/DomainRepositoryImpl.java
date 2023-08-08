@@ -81,9 +81,9 @@ public class DomainRepositoryImpl
   }
 
   @Override
-  public Set<Domain> findAllByTemplateId(Key<UUID> domainTemplateId) {
-    return dataRepository.findAllByDomainTemplateId(domainTemplateId.uuidValue()).stream()
-        .map(Domain.class::cast)
+  public Set<Key<UUID>> findIdsByTemplateId(Key<UUID> domainTemplateId) {
+    return dataRepository.findIdsByDomainTemplateId(domainTemplateId.uuidValue()).stream()
+        .map(Key::uuidFrom)
         .collect(Collectors.toSet());
   }
 

@@ -17,28 +17,16 @@
  ******************************************************************************/
 package org.veo.core.usecase.domain;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.Client;
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.Element;
-import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
 import org.veo.core.repository.DomainRepository;
-import org.veo.core.repository.RepositoryProvider;
-import org.veo.core.repository.UnitRepository;
-import org.veo.core.usecase.TransactionalUseCase;
+import org.veo.core.service.MigrateDomainUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCase.EmptyOutput;
-import org.veo.core.usecase.decision.Decider;
-import org.veo.service.ElementMigrationService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -47,41 +35,18 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class UpdateAllClientDomainsUseCase
-    implements TransactionalUseCase<UpdateAllClientDomainsUseCase.InputData, EmptyOutput> {
+    implements UseCase<UpdateAllClientDomainsUseCase.InputData, EmptyOutput> {
 
   private final DomainRepository domainRepository;
-  private final RepositoryProvider repositoryProvider;
-  private final UnitRepository unitRepository;
-  private final ElementMigrationService elementMigrationService;
-  private final Decider decider;
+  private final MigrateDomainUseCase migrateDomainUseCase;
 
   @Override
   public EmptyOutput execute(InputData input) {
-    Set<Domain> newDomains = domainRepository.findAllByTemplateId(input.domainTemplateId);
-    int count = newDomains.size();
+    Set<Key<UUID>> newDomainIds = domainRepository.findIdsByTemplateId(input.domainTemplateId);
+    int count = newDomainIds.size();
     int migrationsDone = 0;
-    for (Domain newDomain : newDomains) {
-      Client client = newDomain.getOwner();
-
-      Set<Domain> clientActiveDomains =
-          client.getDomains().stream()
-              .filter(Domain::isActive)
-              .filter(d -> d.getName().equals(newDomain.getName()))
-              .collect(Collectors.toSet());
-      if (clientActiveDomains.size() != 2) {
-        log.warn(
-            "Skipping client {}, found {} active domains instead of 2",
-            client,
-            clientActiveDomains.size());
-        continue;
-      }
-      Domain domainToUpdate =
-          clientActiveDomains.stream()
-              .filter(Predicate.not(newDomain::equals))
-              .findAny()
-              .orElseThrow();
-      performMigration(client, domainToUpdate, newDomain);
-      domainToUpdate.setActive(false);
+    for (Key<UUID> newDomainId : newDomainIds) {
+      migrateDomainUseCase.execute(new MigrateDomainUseCase.InputData(newDomainId));
       migrationsDone++;
       if (migrationsDone % 50 == 0) {
         log.info("{} of {} migrations performed", migrationsDone, count);
@@ -89,39 +54,6 @@ public class UpdateAllClientDomainsUseCase
     }
 
     return EmptyOutput.INSTANCE;
-  }
-
-  private void performMigration(Client client, Domain domainToUpdate, Domain newDomain) {
-    log.info("Performing migration for domain {}->{}", domainToUpdate, newDomain);
-    List<Unit> unitsToUpdate = unitRepository.findByClient(client);
-    for (Unit unit : unitsToUpdate) {
-      if (unit.removeFromDomains(domainToUpdate)) {
-        unit.addToDomains(newDomain);
-      }
-    }
-
-    var elements =
-        EntityType.ELEMENT_TYPES.stream()
-            .map(t -> (Class<Element>) t.getType())
-            .map(repositoryProvider::getElementRepositoryFor)
-            .flatMap(repo -> repo.findByDomain(domainToUpdate).stream())
-            .toList();
-
-    // Transfer domain-specific information from old domain to new domain.
-    elements.forEach(element -> element.transferToDomain(domainToUpdate, newDomain));
-
-    // Mercilessly remove all information from the elements that is no longer valid under the new
-    // domain. This must happen after all elements have been transferred, because link targets are
-    // also validated and must have been transferred beforehand.
-    elements.forEach(element -> elementMigrationService.migrate(element, newDomain));
-
-    elements.forEach(
-        element -> element.setDecisionResults(decider.decide(element, newDomain), newDomain));
-  }
-
-  @Override
-  public boolean isReadOnly() {
-    return false;
   }
 
   @Valid
