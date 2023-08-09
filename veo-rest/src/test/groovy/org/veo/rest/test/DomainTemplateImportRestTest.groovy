@@ -258,7 +258,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                     'tailoringReferences': [
                         [
                             'catalogItem': [
-                                'targetUri': '/catalogitems/f55a860f-3bf0-4f63-9c8c-1c2a82762e40   '],
+                                'targetUri': '/catalogitems/f55a860f-3bf0-4f63-9c8c-1c2a82762e40'],
                             'linkType': 'process_tom',
                             'referenceType': 'LINK_EXTERNAL']
                     ]]
