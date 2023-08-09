@@ -88,13 +88,8 @@ public class SchemaExtender {
     var domainsRoot = (ObjectNode) schema.get(PROPS).get("domains");
     var domainProps = domainsRoot.putObject(PROPS);
 
-    var linksRoot = (ObjectNode) schema.findValue("links");
-    linksRoot.put(ADDITIONAL_PROPERTIES, false);
-    var linkProps = linksRoot.putObject(PROPS);
-
-    var customAspectsSchema = (ObjectNode) schema.findValue("customAspects");
-    customAspectsSchema.put(ADDITIONAL_PROPERTIES, false);
-    var customObjectProperties = customAspectsSchema.putObject(PROPS);
+    var linkProps = putProps(schema, "links");
+    var customObjectProperties = putProps(schema, "customAspects");
 
     domains.forEach(
         domain -> {
@@ -102,8 +97,14 @@ public class SchemaExtender {
           var typeDef = domain.getElementTypeDefinition(elementType);
           addSubTypes(domainAssociationSchema, typeDef.getSubTypes());
           addCustomAspects(customObjectProperties, typeDef.getCustomAspects());
-          addLinks(linkProps, typeDef.getLinks());
+          addLinks(linkProps, typeDef.getLinks(), customLinkDto);
         });
+  }
+
+  private static ObjectNode putProps(JsonNode schema, String node) {
+    var root = (ObjectNode) schema.required(PROPS).required(node);
+    root.put(ADDITIONAL_PROPERTIES, false);
+    return root.putObject(PROPS);
   }
 
   private ObjectNode addDomainAssociation(
@@ -225,24 +226,27 @@ public class SchemaExtender {
         (type, definition) -> customAspectProps.set(type, createCustomAspectSchema(definition)));
   }
 
-  private void addLinks(ObjectNode linkProps, Map<String, LinkDefinition> links) {
+  private void addLinks(
+      ObjectNode linkProps, Map<String, LinkDefinition> links, Supplier<ObjectNode> linkDto) {
     links.forEach(
         (type, definition) -> {
           var linkPropNode = linkProps.putObject(type);
           linkPropNode.put(TYPE, "array");
-          linkPropNode.set("items", createLinkSchema(definition));
+          linkPropNode.set("items", createLinkSchema(definition, linkDto));
         });
   }
 
   private ObjectNode createCustomAspectSchema(CustomAspectDefinition definition) {
     var caSchema = customAspectDto.get();
-    addAttributes(caSchema, definition.getAttributeDefinitions());
+    addAttributes(
+        (ObjectNode) caSchema.get(PROPS).get("attributes"), definition.getAttributeDefinitions());
     return caSchema;
   }
 
-  private ObjectNode createLinkSchema(LinkDefinition definition) {
-    var linkSchema = customLinkDto.get();
-    addAttributes(linkSchema, definition.getAttributeDefinitions());
+  private ObjectNode createLinkSchema(LinkDefinition definition, Supplier<ObjectNode> linkDto) {
+    var linkSchema = linkDto.get();
+    addAttributes(
+        (ObjectNode) linkSchema.get(PROPS).get("attributes"), definition.getAttributeDefinitions());
 
     // Add target type & sub type constraints. These constraints can't be enforced
     // by JSON schema validation and are only addded to the schema as meta
@@ -256,9 +260,7 @@ public class SchemaExtender {
   }
 
   private void buildImpactSchema(Domain domain, ObjectNode domainAssociationSchema) {
-    var riskValuesSchema = (ObjectNode) domainAssociationSchema.get(PROPS).get(RISK_VALUES);
-    riskValuesSchema.put(ADDITIONAL_PROPERTIES, false);
-    var riskValuesProps = riskValuesSchema.putObject(PROPS);
+    var riskValuesProps = putProps(domainAssociationSchema, RISK_VALUES);
     domain
         .getRiskDefinitions()
         .forEach(
@@ -288,8 +290,7 @@ public class SchemaExtender {
   }
 
   private void addAttributes(
-      ObjectNode parentSchema, Map<String, AttributeDefinition> attributeDefinitions) {
-    var attributesNode = (ObjectNode) parentSchema.get(PROPS).get("attributes");
+      ObjectNode attributesNode, Map<String, AttributeDefinition> attributeDefinitions) {
     attributesNode.put(ADDITIONAL_PROPERTIES, false);
 
     var attributePropsNode = attributesNode.putObject(PROPS);
