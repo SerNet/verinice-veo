@@ -30,7 +30,6 @@ import org.veo.core.entity.risk.ProbabilityRef
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.risk.RiskRef
 import org.veo.core.entity.riskdefinition.CategoryLevel
-import org.veo.core.entity.riskdefinition.ProbabilityDefinition
 import org.veo.core.entity.riskdefinition.ProbabilityLevel
 import org.veo.core.entity.riskdefinition.RiskValue
 import org.veo.test.VeoSpec
@@ -281,10 +280,10 @@ class ProcessRiskSpec extends VeoSpec {
                             ]
                         }
                     ]
-                    probability = new ProbabilityDefinition([
+                    probability.levels = [
                         new ProbabilityLevel("unlikely"),
                         new ProbabilityLevel("likely"),
-                    ])
+                    ]
                 }
             ]
         }
@@ -305,11 +304,11 @@ class ProcessRiskSpec extends VeoSpec {
                             ]
                         }
                     ]
-                    probability = new ProbabilityDefinition( [
+                    probability.levels = [
                         new ProbabilityLevel("unlikely"),
                         new ProbabilityLevel("kind of likely"),
                         new ProbabilityLevel("likely"),
-                    ])
+                    ]
                 }
             ]
         }

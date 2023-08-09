@@ -22,7 +22,6 @@ import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.core.VeoMvcSpec
 import org.veo.core.entity.exception.RiskConsistencyException
-import org.veo.core.entity.riskdefinition.ImplementationStateDefinition
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 
@@ -53,10 +52,10 @@ class ControlRiskMockMvcITSpec extends VeoMvcSpec {
                     "mySecondRiskDefinition": createRiskDefinition("mySecondRiskDefinition"),
                     "myThirdRiskDefinition": createRiskDefinition("myThirdRiskDefinition"),
                     "theOneWithOnlyTwoImplementationStatuses": createRiskDefinition("theOneWithOnlyTwoImplementationStatuses") {
-                        implementationStateDefinition = new ImplementationStateDefinition([
+                        implementationStateDefinition.levels = [
                             newCategoryLevel("not done"),
                             newCategoryLevel("done"),
-                        ])
+                        ]
                     },
                 ]
             }

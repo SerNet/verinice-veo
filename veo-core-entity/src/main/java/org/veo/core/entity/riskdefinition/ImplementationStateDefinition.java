@@ -25,11 +25,9 @@ import org.veo.core.entity.TranslationMap;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /** A special dimension defining the implementation levels. */
-@NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(callSuper = true, onlyExplicitlyIncluded = true)
@@ -44,6 +42,10 @@ public class ImplementationStateDefinition extends DimensionDefinition {
     super(DIMENSION_IMPLEMENTATION_STATE, translations);
     this.levels = levels;
     initLevel(levels);
+  }
+
+  public ImplementationStateDefinition() {
+    super(DIMENSION_IMPLEMENTATION_STATE);
   }
 
   public void setLevels(List<CategoryLevel> levels) {

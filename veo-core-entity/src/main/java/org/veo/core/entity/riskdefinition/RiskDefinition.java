@@ -54,8 +54,11 @@ public class RiskDefinition {
   @ToString.Include
   private String id;
 
-  @Valid @NotNull private ProbabilityDefinition probability;
-  @Valid @NotNull private ImplementationStateDefinition implementationStateDefinition;
+  @Valid @NotNull private ProbabilityDefinition probability = new ProbabilityDefinition();
+
+  @Valid @NotNull
+  private ImplementationStateDefinition implementationStateDefinition =
+      new ImplementationStateDefinition();
 
   @Valid @NotNull @NotEmpty private List<CategoryDefinition> categories = new ArrayList<>();
 

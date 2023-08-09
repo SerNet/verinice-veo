@@ -300,9 +300,9 @@ class RiskMatrixSpec extends Specification {
         rd1 == rd2
 
         when: "content differs"
-        rd1.probability = new ProbabilityDefinition([
+        rd1.probability.levels = [
             new ProbabilityLevel("color-1")
-        ])
+        ]
 
         then: "not equals"
         rd1 != rd2
@@ -316,17 +316,17 @@ class RiskMatrixSpec extends Specification {
         rd1 == rd2
 
         when: "content differs"
-        rd1.implementationStateDefinition = new ImplementationStateDefinition([
+        rd1.implementationStateDefinition.levels = [
             new CategoryLevel("color-1")
-        ])
+        ]
 
         then: "not equals"
         rd1 != rd2
 
         when: "content is the same"
-        rd2.implementationStateDefinition = new ImplementationStateDefinition([
+        rd2.implementationStateDefinition.levels = [
             new CategoryLevel("color-1")
-        ])
+        ]
 
         then: "both are equals"
         rd1 == rd2
@@ -398,7 +398,11 @@ class RiskMatrixSpec extends Specification {
         rd.riskValues[0].ordinalValue == 0
         rd.riskValues[1].ordinalValue == 1
 
-        and: "missing definitions are detected"
+        when: "removing definitions"
+        rd.probability = null
+        rd.implementationStateDefinition = null
+
+        then: "there are constraint violations"
         with(getJakartaViolations(rd)) { violations ->
             violations.size() == 2
             violations*.propertyPath*.toString() ==~ [
@@ -554,7 +558,6 @@ class RiskMatrixSpec extends Specification {
         when: "we create a simple RiskDefinition"
         RiskDefinition rd = new RiskDefinition()
         rd.riskMethod = new RiskMethod()
-        rd.probability = new ProbabilityDefinition()
         rd.probability.levels = [
             new ProbabilityLevel("a")
         ]
@@ -573,9 +576,9 @@ class RiskMatrixSpec extends Specification {
             new CategoryLevel("l2")
         ]
 
-        rd.implementationStateDefinition = new ImplementationStateDefinition([
+        rd.implementationStateDefinition.levels = [
             new CategoryLevel("color-1")
-        ])
+        ]
 
         then: "it validates nicely"
         rd.validateRiskDefinition()
@@ -770,7 +773,6 @@ class RiskMatrixSpec extends Specification {
         RiskDefinition rd = new RiskDefinition()
         rd.id= "simple-id"
         rd.riskMethod = new RiskMethod()
-        rd.probability = new ProbabilityDefinition()
         rd.probability.levels = [
             new ProbabilityLevel("a")
         ]
@@ -796,9 +798,9 @@ class RiskMatrixSpec extends Specification {
             new CategoryDefinition("5", riskMatrix, potentialImpacts)
         ]
 
-        rd.implementationStateDefinition = new ImplementationStateDefinition([
+        rd.implementationStateDefinition.levels = [
             new CategoryLevel("color-1")
-        ])
+        ]
 
         rd
     }
