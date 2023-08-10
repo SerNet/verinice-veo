@@ -93,7 +93,11 @@ public class MigrateDomainUseCase
   }
 
   private void performMigration(Client client, Domain domainToUpdate, Domain newDomain) {
-    log.info("Performing migration for domain {}->{}", domainToUpdate, newDomain);
+    log.info(
+        "Performing migration for domain {}->{} (client {})",
+        domainToUpdate,
+        newDomain,
+        client.getIdAsString());
     List<Unit> unitsToUpdate = unitRepository.findByClient(client);
     for (Unit unit : unitsToUpdate) {
       if (unit.removeFromDomains(domainToUpdate)) {
@@ -108,7 +112,9 @@ public class MigrateDomainUseCase
             .flatMap(repo -> repo.findByDomain(domainToUpdate).stream())
             .toList();
 
-    // Transfer domain-specific information from old domain to new domain.
+    log.info(
+        "Transferring domain-specific information on {} elements from old domain to new domain",
+        elements.size());
     elements.forEach(element -> element.transferToDomain(domainToUpdate, newDomain));
 
     // Mercilessly remove all information from the elements that is no longer valid under the new

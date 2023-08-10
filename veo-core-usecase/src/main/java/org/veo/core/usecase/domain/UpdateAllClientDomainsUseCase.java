@@ -44,13 +44,12 @@ public class UpdateAllClientDomainsUseCase
   public EmptyOutput execute(InputData input) {
     Set<Key<UUID>> newDomainIds = domainRepository.findIdsByTemplateId(input.domainTemplateId);
     int count = newDomainIds.size();
+    log.info("Migrating {} clients to new domain template {}", count, input.domainTemplateId);
     int migrationsDone = 0;
     for (Key<UUID> newDomainId : newDomainIds) {
       migrateDomainUseCase.execute(new MigrateDomainUseCase.InputData(newDomainId));
       migrationsDone++;
-      if (migrationsDone % 50 == 0) {
-        log.info("{} of {} migrations performed", migrationsDone, count);
-      }
+      log.info("{} of {} migrations performed", migrationsDone, count);
     }
 
     return EmptyOutput.INSTANCE;
