@@ -36,6 +36,7 @@ public interface EntitySchemaService {
    * @param domains the domains to use, i.e. 'GDPR', 'ISO_27001'
    * @return a JSON schema document dynamically generated for the above parameters
    */
+  @Deprecated
   String getSchema(String type, Set<Domain> domains);
 
   /** Build domain-specific element DTO schema */

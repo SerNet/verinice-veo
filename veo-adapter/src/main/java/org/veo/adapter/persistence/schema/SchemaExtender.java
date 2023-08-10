@@ -90,6 +90,7 @@ public class SchemaExtender {
    * Extend {@link org.veo.adapter.presenter.api.dto.AbstractElementDto} schema with domain-specific
    * definitions
    */
+  @Deprecated
   public void extendSchema(JsonNode schema, String elementType, Set<Domain> domains) {
     var domainsRoot = (ObjectNode) schema.get(PROPS).get("domains");
     var domainProps = domainsRoot.putObject(PROPS);
@@ -127,6 +128,7 @@ public class SchemaExtender {
     return root.putObject(PROPS);
   }
 
+  @Deprecated
   private ObjectNode addDomainAssociation(
       ObjectNode domainProps, Domain domain, String elementType) {
     var domainAssociationNode = domainAssociationDtoByElementType.get(elementType).get();
@@ -253,6 +255,7 @@ public class SchemaExtender {
   /**
    * Fill {@link org.veo.adapter.presenter.api.dto.CustomAspectDto} map schema (old fat structure).
    */
+  @Deprecated
   private void addCustomAspects(
       ObjectNode customAspectProps, Map<String, CustomAspectDefinition> customAspects) {
     customAspects.forEach(
@@ -269,6 +272,7 @@ public class SchemaExtender {
         });
   }
 
+  @Deprecated
   private ObjectNode createCustomAspectSchema(CustomAspectDefinition definition) {
     var caSchema = customAspectDto.get();
     addAttributes(

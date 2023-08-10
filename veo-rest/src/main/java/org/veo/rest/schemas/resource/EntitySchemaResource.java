@@ -63,9 +63,11 @@ public interface EntitySchemaResource {
   String URL_BASE_PATH = "/schemas";
 
   @GetMapping(value = "/{type:[\\w]+}")
-  @Operation(summary = "Retrieves an entity schema.")
+  @Operation(
+      summary =
+          "Retrieves an element schema. Deprecated, use element type definitions (GET /domains/{id}) or domain-specific element JSON schema (GET /domains/{id}/{elementType}/json-schema) instead.",
+      deprecated = true)
   @ApiResponses({
-    // TODO reference new metaschema here (not yet available):
     @ApiResponse(
         responseCode = "200",
         description = "Schema loaded",
