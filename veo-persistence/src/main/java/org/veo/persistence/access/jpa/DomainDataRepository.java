@@ -18,6 +18,7 @@
 package org.veo.persistence.access.jpa;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -76,9 +77,10 @@ public interface DomainDataRepository extends IdentifiableVersionedDataRepositor
         select d from #{#entityName} d
           left join fetch d.elementTypeDefinitions
           left join fetch d.riskDefinitionSet
-          where d.owner.id = ?1
+          where d.id in ?1 and d.owner.id = ?2 and d.active = true
       """)
-  Set<Domain> findAllByClientWithEntityTypeDefinitionsAndRiskDefinitions(String clientId);
+  Set<Domain> findActiveByIdsAndClientWithEntityTypeDefinitionsAndRiskDefinitions(
+      List<String> ids, String clientId);
 
   @Query("select count(d.id) > 0 from domain d where d.name = ?1 and d.owner = ?2")
   boolean nameExistsInClient(String name, Client client);

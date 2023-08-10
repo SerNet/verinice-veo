@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import org.veo.core.entity.Domain;
+import org.veo.core.entity.Key;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.service.EntitySchemaService;
@@ -71,8 +72,8 @@ public class EntitySchemaController implements EntitySchemaResource {
 
           var clientDomainsById =
               domainRepository
-                  .findAllByClientWithEntityTypeDefinitionsAndRiskDefinitions(
-                      uuidFrom(user.getClientId()))
+                  .findActiveByIdsAndClientWithEntityTypeDefinitionsAndRiskDefinitions(
+                      domainIDs.stream().map(Key::uuidFrom).toList(), uuidFrom(user.getClientId()))
                   .stream()
                   .collect(Collectors.toMap(Domain::getIdAsString, Function.identity()));
           Set<Domain> domains = new HashSet<>(domainIDs.size());

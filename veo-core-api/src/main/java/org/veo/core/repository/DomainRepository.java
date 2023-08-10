@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.repository;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -41,7 +42,8 @@ public interface DomainRepository extends IdentifiableVersionedRepository<Domain
 
   Set<Domain> findActiveDomainsWithProfilesAndRiskDefinitions(Key<UUID> clientId);
 
-  Set<Domain> findAllByClientWithEntityTypeDefinitionsAndRiskDefinitions(Key<UUID> clientId);
+  Set<Domain> findActiveByIdsAndClientWithEntityTypeDefinitionsAndRiskDefinitions(
+      Collection<Key<UUID>> domainIds, Key<UUID> clientId);
 
   Set<Key<UUID>> findIdsByTemplateId(Key<UUID> domainTemplateId);
 

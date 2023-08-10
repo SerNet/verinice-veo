@@ -19,6 +19,7 @@ package org.veo.persistence.access;
 
 import static java.lang.String.format;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -71,10 +72,11 @@ public class DomainRepositoryImpl
   }
 
   @Override
-  public Set<Domain> findAllByClientWithEntityTypeDefinitionsAndRiskDefinitions(
-      Key<UUID> clientId) {
+  public Set<Domain> findActiveByIdsAndClientWithEntityTypeDefinitionsAndRiskDefinitions(
+      Collection<Key<UUID>> domainIds, Key<UUID> clientId) {
     return dataRepository
-        .findAllByClientWithEntityTypeDefinitionsAndRiskDefinitions(clientId.uuidValue())
+        .findActiveByIdsAndClientWithEntityTypeDefinitionsAndRiskDefinitions(
+            domainIds.stream().map(Key::uuidValue).toList(), clientId.uuidValue())
         .stream()
         .map(Domain.class::cast)
         .collect(Collectors.toSet());
