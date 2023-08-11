@@ -21,11 +21,11 @@ import spock.lang.Specification
 
 class SchemaProviderSpec extends Specification {
 
-    SchemaProvider schemaProvier = SchemaProvider.getInstance()
+    SchemaProvider schemaProvider = SchemaProvider.getInstance()
 
     def "Schema contains constraints on description property"() {
         when:
-        def schema = schemaProvier.getSchema("document")
+        def schema = schemaProvider.getSchema("document")
 
         then:
         schema != null
