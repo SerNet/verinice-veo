@@ -17,9 +17,12 @@
  ******************************************************************************/
 package org.veo.adapter.persistence.schema;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.NotImplementedException;
 
@@ -29,17 +32,12 @@ import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
-import org.veo.adapter.presenter.api.dto.AssetDomainAssociationDto;
-import org.veo.adapter.presenter.api.dto.ControlDomainAssociationDto;
+import org.veo.adapter.presenter.api.ElementTypeDtoInfo;
 import org.veo.adapter.presenter.api.dto.ControlRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
-import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ImpactRiskValuesDto;
-import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto;
-import org.veo.adapter.presenter.api.dto.ScenarioDomainAssociationDto;
 import org.veo.adapter.presenter.api.dto.ScenarioRiskValuesDto;
-import org.veo.adapter.presenter.api.dto.ScopeDomainAssociationDto;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
@@ -62,6 +60,22 @@ import org.veo.core.entity.riskdefinition.DiscreteValue;
 
 /** Add domain-specific sub schemas to an element schema. */
 public class SchemaExtender {
+  private final SchemaProvider provider = SchemaProvider.getInstance();
+  private final Supplier<ObjectNode> controlRiskValuesDto =
+      provider.schema(ControlRiskValuesDto.class);
+  private final Supplier<ObjectNode> scenarioRiskValuesDto =
+      provider.schema(ScenarioRiskValuesDto.class);
+  private final Supplier<ObjectNode> customAspectDto = provider.schema(CustomAspectDto.class);
+  private final Supplier<ObjectNode> customLinkDto = provider.schema(CustomLinkDto.class);
+  private final Supplier<ObjectNode> impactRiskValuesDto =
+      provider.schema(ImpactRiskValuesDto.class);
+  private final Map<String, Supplier<ObjectNode>> domainAssociationDtoByElementType =
+      Arrays.stream(ElementTypeDtoInfo.values())
+          .collect(
+              Collectors.toMap(
+                  ElementTypeDtoInfo::getSingularTerm,
+                  et -> provider.schema(et.getDomainAssociationDtoClass())));
+
   public static final String PROPS = "properties";
   public static final String RISK_VALUES = "riskValues";
   public static final String ADDITIONAL_PROPERTIES = "additionalProperties";
@@ -94,56 +108,46 @@ public class SchemaExtender {
 
   private ObjectNode addDomainAssociation(
       ObjectNode domainProps, Domain domain, String elementType) {
-    var domainAssociationNode = buildDomainAssociationSchema(elementType, domain);
+    var domainAssociationNode = domainAssociationDtoByElementType.get(elementType).get();
+    extendDomainAssociationSchema(domainAssociationNode, elementType, domain);
     domainAssociationNode.put(ADDITIONAL_PROPERTIES, false);
     domainProps.set(domain.getIdAsString(), domainAssociationNode);
     return domainAssociationNode;
   }
 
-  private ObjectNode buildDomainAssociationSchema(String elementType, Domain domain) {
+  private void extendDomainAssociationSchema(ObjectNode target, String elementType, Domain domain) {
     if (elementType.equals(Control.SINGULAR_TERM)) {
-      return buildDomainAssociationSchemaForControl(domain);
+      extendSchemaForControl(target, domain);
     }
     if (elementType.equals(Scenario.SINGULAR_TERM)) {
-      return buildDomainAssociationSchemaForScenario(domain);
+      extendSchemaForScenario(target, domain);
     }
     if (elementType.equals(Process.SINGULAR_TERM)) {
-      return buildDomainAssociationSchemaForProcess(domain);
+      extendSchemaForProcess(target, domain);
     }
     if (elementType.equals(Asset.SINGULAR_TERM)) {
-      return buildDomainAssociationSchemaForAsset(domain);
+      extendSchemaForAsset(target, domain);
     }
     if (elementType.equals(Scope.SINGULAR_TERM)) {
-      return buildDomainAssociationSchemaForScope(domain);
+      extendSchemaForScope(target, domain);
     }
-    return SchemaProvider.getInstance().getSchema(DomainAssociationDto.class);
   }
 
-  private ObjectNode buildDomainAssociationSchemaForProcess(Domain domain) {
-    var domainAssociationSchema =
-        SchemaProvider.getInstance().getSchema(ProcessDomainAssociationDto.class);
-    buildImpactSchema(domain, domainAssociationSchema);
-    return domainAssociationSchema;
+  private void extendSchemaForProcess(ObjectNode target, Domain domain) {
+    buildImpactSchema(domain, target);
   }
 
-  private ObjectNode buildDomainAssociationSchemaForAsset(Domain domain) {
-    var domainAssociationSchema =
-        SchemaProvider.getInstance().getSchema(AssetDomainAssociationDto.class);
-    buildImpactSchema(domain, domainAssociationSchema);
-    return domainAssociationSchema;
+  private void extendSchemaForAsset(ObjectNode target, Domain domain) {
+    buildImpactSchema(domain, target);
   }
 
-  private ObjectNode buildDomainAssociationSchemaForControl(Domain domain) {
-    var domainAssociationSchema =
-        SchemaProvider.getInstance().getSchema(ControlDomainAssociationDto.class);
-    var riskValuesProps =
-        ((ObjectNode) domainAssociationSchema.get(PROPS).get(RISK_VALUES)).putObject(PROPS);
+  private void extendSchemaForControl(ObjectNode target, Domain domain) {
+    var riskValuesProps = ((ObjectNode) target.get(PROPS).get(RISK_VALUES)).putObject(PROPS);
     domain
         .getRiskDefinitions()
         .forEach(
             (riskDefId, riskDef) -> {
-              var riskValuesSchema =
-                  SchemaProvider.getInstance().getSchema(ControlRiskValuesDto.class);
+              var riskValuesSchema = controlRiskValuesDto.get();
               var implStatusSchema =
                   (ObjectNode) riskValuesSchema.get(PROPS).get("implementationStatus");
               implStatusSchema
@@ -156,20 +160,15 @@ public class SchemaExtender {
               riskValuesSchema.put(ADDITIONAL_PROPERTIES, false);
               riskValuesProps.set(riskDefId, riskValuesSchema);
             });
-    return domainAssociationSchema;
   }
 
-  private ObjectNode buildDomainAssociationSchemaForScenario(Domain domain) {
-    var domainAssociationSchema =
-        SchemaProvider.getInstance().getSchema(ScenarioDomainAssociationDto.class);
-    var riskValuesProps =
-        ((ObjectNode) domainAssociationSchema.get(PROPS).get(RISK_VALUES)).putObject(PROPS);
+  private void extendSchemaForScenario(ObjectNode target, Domain domain) {
+    var riskValuesProps = ((ObjectNode) target.get(PROPS).get(RISK_VALUES)).putObject(PROPS);
     domain
         .getRiskDefinitions()
         .forEach(
             (riskDefId, riskDef) -> {
-              var riskValuesSchema =
-                  SchemaProvider.getInstance().getSchema(ScenarioRiskValuesDto.class);
+              var riskValuesSchema = scenarioRiskValuesDto.get();
               var potentialProbabilitySchema =
                   (ObjectNode) riskValuesSchema.get(PROPS).get("potentialProbability");
               potentialProbabilitySchema
@@ -182,18 +181,14 @@ public class SchemaExtender {
               riskValuesSchema.put(ADDITIONAL_PROPERTIES, false);
               riskValuesProps.set(riskDefId, riskValuesSchema);
             });
-    return domainAssociationSchema;
   }
 
-  private ObjectNode buildDomainAssociationSchemaForScope(Domain domain) {
-    var domainAssociationSchema =
-        SchemaProvider.getInstance().getSchema(ScopeDomainAssociationDto.class);
-    var riskDefinitionNode = (ObjectNode) domainAssociationSchema.get(PROPS).get("riskDefinition");
+  private void extendSchemaForScope(ObjectNode target, Domain domain) {
+    var riskDefinitionNode = (ObjectNode) target.get(PROPS).get("riskDefinition");
     riskDefinitionNode
         .putArray("enum")
         .addAll(domain.getRiskDefinitions().keySet().stream().map(TextNode::new).toList());
-    buildImpactSchema(domain, domainAssociationSchema);
-    return domainAssociationSchema;
+    buildImpactSchema(domain, target);
   }
 
   private void addSubTypes(
@@ -240,13 +235,13 @@ public class SchemaExtender {
   }
 
   private ObjectNode createCustomAspectSchema(CustomAspectDefinition definition) {
-    var caSchema = SchemaProvider.getInstance().getSchema(CustomAspectDto.class);
+    var caSchema = customAspectDto.get();
     addAttributes(caSchema, definition.getAttributeDefinitions());
     return caSchema;
   }
 
   private ObjectNode createLinkSchema(LinkDefinition definition) {
-    var linkSchema = SchemaProvider.getInstance().getSchema(CustomLinkDto.class);
+    var linkSchema = customLinkDto.get();
     addAttributes(linkSchema, definition.getAttributeDefinitions());
 
     // Add target type & sub type constraints. These constraints can't be enforced
@@ -268,8 +263,7 @@ public class SchemaExtender {
         .getRiskDefinitions()
         .forEach(
             (riskDefId, riskDef) -> {
-              var riskDefinitionSchema =
-                  SchemaProvider.getInstance().getSchema(ImpactRiskValuesDto.class);
+              var riskDefinitionSchema = impactRiskValuesDto.get();
               riskDefinitionSchema.put(ADDITIONAL_PROPERTIES, false);
               var potentialImpactsSchema =
                   (ObjectNode) riskDefinitionSchema.get(PROPS).get("potentialImpacts");

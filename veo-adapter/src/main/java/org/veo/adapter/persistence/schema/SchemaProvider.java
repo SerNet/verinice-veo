@@ -17,15 +17,9 @@
  ******************************************************************************/
 package org.veo.adapter.persistence.schema;
 
-import static org.apache.commons.lang3.StringUtils.capitalize;
-
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.function.Supplier;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.victools.jsonschema.generator.Module;
 import com.github.victools.jsonschema.generator.Option;
@@ -39,78 +33,25 @@ import com.github.victools.jsonschema.module.jakarta.validation.JakartaValidatio
 import com.github.victools.jsonschema.module.jakarta.validation.JakartaValidationOption;
 import com.github.victools.jsonschema.module.swagger2.Swagger2Module;
 
-import org.veo.adapter.presenter.api.dto.AssetDomainAssociationDto;
-import org.veo.adapter.presenter.api.dto.ControlDomainAssociationDto;
-import org.veo.adapter.presenter.api.dto.ControlRiskValuesDto;
-import org.veo.adapter.presenter.api.dto.CustomAspectDto;
-import org.veo.adapter.presenter.api.dto.CustomLinkDto;
-import org.veo.adapter.presenter.api.dto.DomainAssociationDto;
-import org.veo.adapter.presenter.api.dto.ImpactRiskValuesDto;
-import org.veo.adapter.presenter.api.dto.ProcessDomainAssociationDto;
-import org.veo.adapter.presenter.api.dto.ScenarioDomainAssociationDto;
-import org.veo.adapter.presenter.api.dto.ScenarioRiskValuesDto;
-import org.veo.adapter.presenter.api.dto.ScopeDomainAssociationDto;
-import org.veo.core.entity.EntitySchemaException;
-import org.veo.core.entity.EntityType;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 
+/**
+ * Generates JSON schemas for java classes. Returned Schemas are encapsulated in {@link Supplier}
+ * objects that may be loaded eagerly when the application starts. Each time the actual schema is
+ * accessed on a supplier, a deep copy is created, so the original encapsulated schema is immutable.
+ */
 public class SchemaProvider {
-
-  private static final String PACKAGE_NAME = "org.veo.adapter.presenter.api.dto.full";
-
   private static final SchemaProvider INSTANCE = new SchemaProvider();
-
-  private final Map<Class<?>, ObjectNode> schemas;
-
-  public SchemaProvider() {
-    SchemaGenerator schemaGenerator = createSchemaGenerator();
-    schemas =
-        Stream.concat(
-                EntityType.ELEMENT_TYPES.stream()
-                    .map(EntityType::getSingularTerm)
-                    .map(this::classForEntityName),
-                Stream.of(
-                    DomainAssociationDto.class,
-                    ControlDomainAssociationDto.class,
-                    ProcessDomainAssociationDto.class,
-                    AssetDomainAssociationDto.class,
-                    ScenarioDomainAssociationDto.class,
-                    ScopeDomainAssociationDto.class,
-                    ControlRiskValuesDto.class,
-                    ImpactRiskValuesDto.class,
-                    ScenarioRiskValuesDto.class,
-                    CustomAspectDto.class,
-                    CustomLinkDto.class))
-            .collect(Collectors.toMap(Function.identity(), schemaGenerator::generateSchema));
-  }
+  private final SchemaGenerator schemaGenerator = createSchemaGenerator();
 
   public static SchemaProvider getInstance() {
     return INSTANCE;
   }
 
-  public ObjectNode getSchema(String entitySingularName) {
-    JsonNode jsonSchema = schemas.get(classForEntityName(entitySingularName));
-    if (jsonSchema == null) {
-      throw new IllegalArgumentException("No schema available for " + entitySingularName);
-    }
-    return jsonSchema.deepCopy();
-  }
-
-  private Class<?> classForEntityName(String singularTerm) {
-    try {
-      return Class.forName(PACKAGE_NAME + ".Full" + capitalize(singularTerm) + "Dto");
-    } catch (ClassNotFoundException e) {
-      throw new EntitySchemaException("Invalid entity type: " + singularTerm);
-    }
-  }
-
-  public ObjectNode getSchema(Class<?> clazz) {
-    JsonNode jsonSchema = schemas.get(clazz);
-    if (jsonSchema == null) {
-      throw new IllegalArgumentException("No schema available for " + clazz);
-    }
-    return jsonSchema.deepCopy();
+  /** Generates JSON schema for given class. */
+  public Supplier<ObjectNode> schema(Class<?> clazz) {
+    var schema = schemaGenerator.generateSchema(clazz);
+    return schema::deepCopy;
   }
 
   private SchemaGenerator createSchemaGenerator() {

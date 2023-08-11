@@ -17,7 +17,11 @@
  ******************************************************************************/
 package org.veo.adapter.persistence.schema;
 
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
@@ -25,11 +29,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import org.veo.adapter.presenter.api.ElementTypeDtoInfo;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntitySchemaException;
 
 public class EntitySchemaGenerator {
-
+  private final Map<String, Supplier<ObjectNode>> dtoByElementType =
+      Arrays.stream(ElementTypeDtoInfo.values())
+          .collect(
+              Collectors.toMap(
+                  ElementTypeDtoInfo::getSingularTerm,
+                  et -> SchemaProvider.getInstance().schema(et.getFullDtoClass())));
   private final SchemaExtender schemaExtender;
 
   private final ObjectWriter writer;
@@ -44,7 +54,7 @@ public class EntitySchemaGenerator {
 
   public String createSchema(String baseName, Set<Domain> domains) {
     try {
-      ObjectNode jsonSchema = SchemaProvider.getInstance().getSchema(baseName);
+      ObjectNode jsonSchema = dtoByElementType.get(baseName).get();
       schemaExtender.extendSchema(jsonSchema, baseName, domains);
 
       return writer.writeValueAsString(jsonSchema);

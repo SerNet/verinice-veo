@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.veo.adapter.persistence.schema
 
+import org.veo.adapter.presenter.api.dto.full.FullDocumentDto
+import org.veo.adapter.presenter.api.dto.full.FullUnitDto
+
 import spock.lang.Specification
 
 class SchemaProviderSpec extends Specification {
@@ -25,7 +28,7 @@ class SchemaProviderSpec extends Specification {
 
     def "Schema contains constraints on description property"() {
         when:
-        def schema = schemaProvider.getSchema("document")
+        def schema = schemaProvider.schema(FullDocumentDto).get()
 
         then:
         schema != null
@@ -36,5 +39,16 @@ class SchemaProviderSpec extends Specification {
         then:
         descriptionSchema != null
         descriptionSchema.get('maxLength').intValue() == 65535
+    }
+
+    def "encapsulated schemas are returned as copies"() {
+        given:
+        def schema = schemaProvider.schema(FullUnitDto.class)
+
+        when: "modifying one copy of the schema"
+        schema.get().put("extraField", 5)
+
+        then: "the next copy is pristine"
+        schema.get().get("extraField") == null
     }
 }
