@@ -41,7 +41,7 @@ public class EntitySchemaServiceImpl implements EntitySchemaService {
 
   private static final List<String> VALID_TYPE_SINGULAR_TERMS =
       EntityType.ELEMENT_TYPES.stream().map(EntityType::getSingularTerm).toList();
-  private final EntitySchemaGenerator generateEntitytSchema;
+  private final EntitySchemaGenerator generator;
 
   @Override
   public String getSchema(String type, Set<Domain> domains) {
@@ -49,7 +49,7 @@ public class EntitySchemaServiceImpl implements EntitySchemaService {
       throw new IllegalArgumentException(String.format("Type \"%s\" is not a valid schema.", type));
     }
     log.debug("Getting dynamic JSON schema for type: {}", type);
-    return generateEntitytSchema.createSchema(type, domains);
+    return generator.createSchema(type, domains);
   }
 
   @Override
