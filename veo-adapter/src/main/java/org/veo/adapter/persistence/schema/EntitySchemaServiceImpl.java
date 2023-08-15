@@ -44,7 +44,7 @@ public class EntitySchemaServiceImpl implements EntitySchemaService {
   private final EntitySchemaGenerator generateEntitytSchema;
 
   @Override
-  public String findSchema(String type, Set<Domain> domains) {
+  public String getSchema(String type, Set<Domain> domains) {
     if (!VALID_TYPE_SINGULAR_TERMS.contains(type)) {
       throw new IllegalArgumentException(String.format("Type \"%s\" is not a valid schema.", type));
     }

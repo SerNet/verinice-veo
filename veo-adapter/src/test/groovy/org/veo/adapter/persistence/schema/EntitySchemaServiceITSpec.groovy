@@ -131,7 +131,7 @@ class EntitySchemaServiceITSpec extends Specification {
         def testDomain = getTestDomain()
 
         when:
-        def schema = new JsonSlurper().parseText(entitySchemaService.findSchema(Process.SINGULAR_TERM, Set.of(testDomain)))
+        def schema = new JsonSlurper().parseText(entitySchemaService.getSchema(Process.SINGULAR_TERM, Set.of(testDomain)))
 
         then:
         def riskValueProps = schema.properties.domains.properties.(testDomain.idAsString).properties.riskValues.properties
@@ -212,7 +212,7 @@ class EntitySchemaServiceITSpec extends Specification {
     }
 
     private JsonNode getSchema(Set<Domain> domains, String type) {
-        Json.mapper().readTree(entitySchemaService.findSchema(type, domains))
+        Json.mapper().readTree(entitySchemaService.getSchema(type, domains))
     }
 
     private Domain getTestDomain() {

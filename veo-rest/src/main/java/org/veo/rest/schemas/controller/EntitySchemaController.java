@@ -86,7 +86,7 @@ public class EntitySchemaController implements EntitySchemaResource {
           }
 
           String schema =
-              schemaService.roleFilter(userRoles, schemaService.findSchema(type, domains));
+              schemaService.roleFilter(userRoles, schemaService.getSchema(type, domains));
           return ResponseEntity.ok().body(schema);
         });
   }

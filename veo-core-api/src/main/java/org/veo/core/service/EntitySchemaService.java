@@ -36,7 +36,7 @@ public interface EntitySchemaService {
    * @param domains the domains to use, i.e. 'GDPR', 'ISO_27001'
    * @return a JSON schema document dynamically generated for the above parameters
    */
-  String findSchema(String type, Set<Domain> domains);
+  String getSchema(String type, Set<Domain> domains);
 
   /**
    * Returns a translations for the given language identifiers. If no translation is present for any
