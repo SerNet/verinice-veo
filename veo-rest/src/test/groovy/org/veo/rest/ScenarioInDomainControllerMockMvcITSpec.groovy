@@ -126,6 +126,9 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "Attack"
 
+        and: "it conforms to the JSON schema"
+        validate(response, get("/domains/$testDomainId/scenarios/json-schema")).empty
+
         when: "associating scenario with a second domain"
         post("/domains/$dsgvoTestDomainId/scenarios/$scenarioId", [
             subType: "SCN_Scenario",

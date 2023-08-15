@@ -106,7 +106,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(IncidentInDomainController.URL_BASE_PATH)
 @Slf4j
-public class IncidentInDomainController {
+public class IncidentInDomainController implements ElementInDomainResource {
   public static final String URL_BASE_PATH =
       "/" + Domain.PLURAL_TERM + "/{domainId}/" + Incident.PLURAL_TERM;
   private final ClientLookup clientLookup;
@@ -384,5 +384,12 @@ public class IncidentInDomainController {
       @Valid @RequestBody FullIncidentInDomainDto dto) {
     return elementService.evaluate(
         auth, dto, domainId, dtoToEntityTransformer::transformDto2Element);
+  }
+
+  @Operation(summary = "Returns domain-specific incident JSON schema")
+  @Override
+  public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(
+      Authentication auth, String domainId) {
+    return elementService.getJsonSchema(auth, domainId, Incident.SINGULAR_TERM);
   }
 }

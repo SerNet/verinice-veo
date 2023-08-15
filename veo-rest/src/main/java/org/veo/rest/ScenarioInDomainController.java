@@ -103,7 +103,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(ScenarioInDomainController.URL_BASE_PATH)
-public class ScenarioInDomainController {
+public class ScenarioInDomainController implements ElementInDomainResource {
   public static final String URL_BASE_PATH =
       "/" + Domain.PLURAL_TERM + "/{domainId}/" + Scenario.PLURAL_TERM;
   private final ClientLookup clientLookup;
@@ -381,5 +381,12 @@ public class ScenarioInDomainController {
       @Valid @RequestBody FullScenarioInDomainDto dto) {
     return elementService.evaluate(
         auth, dto, domainId, dtoToEntityTransformer::transformDto2Element);
+  }
+
+  @Operation(summary = "Returns domain-specific scenario JSON schema")
+  @Override
+  public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(
+      Authentication auth, String domainId) {
+    return elementService.getJsonSchema(auth, domainId, Scenario.SINGULAR_TERM);
   }
 }

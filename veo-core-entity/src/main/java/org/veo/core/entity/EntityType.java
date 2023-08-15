@@ -60,6 +60,11 @@ public enum EntityType {
           .filter(type -> Element.class.isAssignableFrom(type.type))
           .collect(Collectors.toUnmodifiableSet());
 
+  public static final Set<EntityType> RISK_AFFECTED_TYPES =
+      Stream.of(values())
+          .filter(type -> RiskAffected.class.isAssignableFrom(type.type))
+          .collect(Collectors.toUnmodifiableSet());
+
   public static final Set<String> ELEMENT_PLURAL_TERMS =
       Stream.of(values())
           .filter(type -> Element.class.isAssignableFrom(type.type))

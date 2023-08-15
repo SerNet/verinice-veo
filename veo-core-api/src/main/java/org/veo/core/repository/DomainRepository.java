@@ -18,6 +18,7 @@
 package org.veo.core.repository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -68,4 +69,13 @@ public interface DomainRepository extends IdentifiableVersionedRepository<Domain
   boolean nameExistsInClient(String name, Client client);
 
   Domain getByIdWithDecisions(Key<UUID> domainId, Key<UUID> clientId);
+
+  default Domain getActiveByIdWithElementTypeDefinitionsAndRiskDefinitions(
+      Key<UUID> domainId, Key<UUID> clientId) {
+    return findActiveByIdsAndClientWithEntityTypeDefinitionsAndRiskDefinitions(
+            List.of(domainId), clientId)
+        .stream()
+        .findFirst()
+        .orElseThrow(() -> new NotFoundException(domainId, Domain.class));
+  }
 }

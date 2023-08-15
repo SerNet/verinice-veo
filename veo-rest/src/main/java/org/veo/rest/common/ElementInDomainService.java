@@ -46,7 +46,9 @@ import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
+import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.service.EntitySchemaService;
 import org.veo.core.usecase.UseCaseInteractor;
 import org.veo.core.usecase.base.AddLinksUseCase;
 import org.veo.core.usecase.base.AssociateElementWithDomainUseCase;
@@ -76,6 +78,8 @@ public class ElementInDomainService {
   private final ReferenceAssembler referenceAssembler;
   private final EvaluateElementUseCase evaluateElementUseCase;
   private final AddLinksUseCase addLinksUseCase;
+  private final DomainRepository domainRepository;
+  private final EntitySchemaService entitySchemaService;
   private final TransactionalRunner runner;
   private final CacheControl defaultCacheControl = CacheControl.noCache();
 
@@ -254,5 +258,16 @@ public class ElementInDomainService {
     return ResponseEntity.ok()
         .eTag(ETag.from(entity.getIdAsString(), entity.getVersion()))
         .body(toDtoMapper.apply(entity, domain));
+  }
+
+  public CompletableFuture<ResponseEntity<String>> getJsonSchema(
+      Authentication auth, String domainId, String elementType) {
+    return CompletableFuture.supplyAsync(
+        () -> {
+          var domain =
+              domainRepository.getActiveByIdWithElementTypeDefinitionsAndRiskDefinitions(
+                  Key.uuidFrom(domainId), clientLookup.getClient(auth).getId());
+          return ResponseEntity.ok().body(entitySchemaService.getSchema(elementType, domain));
+        });
   }
 }

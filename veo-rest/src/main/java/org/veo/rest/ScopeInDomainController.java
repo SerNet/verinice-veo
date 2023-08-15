@@ -111,7 +111,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(ScopeInDomainController.URL_BASE_PATH)
 @Slf4j
-public class ScopeInDomainController {
+public class ScopeInDomainController implements ElementInDomainResource {
   public static final String URL_BASE_PATH =
       "/" + Domain.PLURAL_TERM + "/{domainId}/" + Scope.PLURAL_TERM;
   private final ClientLookup clientLookup;
@@ -385,5 +385,12 @@ public class ScopeInDomainController {
                 pageSize, pageNumber,
                 sortColumn, sortOrder)),
         entityToDtoTransformer::transformElement2Dto);
+  }
+
+  @Operation(summary = "Returns domain-specific scope JSON schema")
+  @Override
+  public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(
+      Authentication auth, String domainId) {
+    return elementService.getJsonSchema(auth, domainId, Scope.SINGULAR_TERM);
   }
 }

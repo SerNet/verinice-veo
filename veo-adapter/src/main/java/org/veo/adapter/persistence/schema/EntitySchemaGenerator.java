@@ -40,6 +40,12 @@ public class EntitySchemaGenerator {
               Collectors.toMap(
                   ElementTypeDtoInfo::getSingularTerm,
                   et -> SchemaProvider.getInstance().schema(et.getFullDtoClass())));
+  private final Map<String, Supplier<ObjectNode>> dtoInDomainByElementType =
+      Arrays.stream(ElementTypeDtoInfo.values())
+          .collect(
+              Collectors.toMap(
+                  ElementTypeDtoInfo::getSingularTerm,
+                  et -> SchemaProvider.getInstance().schema(et.getFullDomainSpecificDtoClass())));
   private final SchemaExtender schemaExtender;
 
   private final ObjectWriter writer;
@@ -56,6 +62,17 @@ public class EntitySchemaGenerator {
     try {
       ObjectNode jsonSchema = dtoByElementType.get(baseName).get();
       schemaExtender.extendSchema(jsonSchema, baseName, domains);
+
+      return writer.writeValueAsString(jsonSchema);
+    } catch (JsonProcessingException e) {
+      throw new EntitySchemaException("Schema creation failed", e);
+    }
+  }
+
+  public String createSchema(String elementType, Domain domain) {
+    try {
+      ObjectNode jsonSchema = dtoInDomainByElementType.get(elementType).get();
+      schemaExtender.extendSchema(jsonSchema, elementType, domain);
 
       return writer.writeValueAsString(jsonSchema);
     } catch (JsonProcessingException e) {

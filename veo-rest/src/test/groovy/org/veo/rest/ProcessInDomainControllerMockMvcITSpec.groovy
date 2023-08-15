@@ -126,6 +126,9 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "BusinessProcess"
 
+        and: "it conforms to the JSON schema"
+        validate(response, get("/domains/$testDomainId/processes/json-schema")).empty
+
         when: "associating process with a second domain"
         post("/domains/$dsgvoTestDomainId/processes/$processId", [
             subType: "PRO_DataProcessing",

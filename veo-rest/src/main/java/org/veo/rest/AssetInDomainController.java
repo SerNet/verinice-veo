@@ -104,7 +104,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(AssetInDomainController.URL_BASE_PATH)
-public class AssetInDomainController {
+public class AssetInDomainController implements ElementInDomainResource {
   public static final String URL_BASE_PATH =
       "/" + Domain.PLURAL_TERM + "/{domainId}/" + Asset.PLURAL_TERM;
   private final ClientLookup clientLookup;
@@ -377,5 +377,12 @@ public class AssetInDomainController {
       @Valid @RequestBody FullAssetInDomainDto dto) {
     return elementService.evaluate(
         auth, dto, domainId, dtoToEntityTransformer::transformDto2Element);
+  }
+
+  @Operation(summary = "Returns domain-specific asset JSON schema")
+  @Override
+  public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(
+      Authentication auth, String domainId) {
+    return elementService.getJsonSchema(auth, domainId, Asset.SINGULAR_TERM);
   }
 }

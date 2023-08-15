@@ -118,6 +118,9 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "Programmer"
 
+        and: "it conforms to the JSON schema"
+        validate(response, get("/domains/$testDomainId/persons/json-schema")).empty
+
         when: "associating person with a second domain"
         post("/domains/$dsgvoTestDomainId/persons/$personId", [
             subType: "PER_Person",

@@ -23,13 +23,16 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.web.servlet.ResultActions
 import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.transaction.support.TransactionTemplate
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SchemaValidatorsConfig
 import com.networknt.schema.SpecVersion
+import com.networknt.schema.ValidationMessage
 
 import org.veo.adapter.service.domaintemplate.DomainTemplateServiceImpl
 import org.veo.core.entity.Client
@@ -190,8 +193,21 @@ abstract class VeoSpringSpec extends VeoSpec {
     }
 
     JsonSchema getSchema(Client client, String type) {
+        parseSchema(entitySchemaService.getSchema(type, client.domains))
+    }
+
+    JsonSchema getSchema(Domain domain, String elementType) {
+        parseSchema(entitySchemaService.getSchema(elementType, domain))
+    }
+
+    Set<ValidationMessage> validate(Object target, ResultActions schema) {
+        return parseSchema(schema.andReturn().response.contentAsString)
+                .validate(new ObjectMapper().valueToTree(target))
+    }
+
+    private JsonSchema parseSchema(String schema) {
         JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V201909).getSchema(
-                entitySchemaService.getSchema(type, client.domains),
+                schema,
                 new SchemaValidatorsConfig().tap {
                     // schema is used to to validate outgoing data from an API
                     writeOnly = true

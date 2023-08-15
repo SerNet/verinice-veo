@@ -45,11 +45,21 @@ public class EntitySchemaServiceImpl implements EntitySchemaService {
 
   @Override
   public String getSchema(String type, Set<Domain> domains) {
+    validateElementType(type);
+    log.debug("Getting dynamic JSON schema for type: {}", type);
+    return generator.createSchema(type, domains);
+  }
+
+  @Override
+  public String getSchema(String elementType, Domain domain) {
+    validateElementType(elementType);
+    return generator.createSchema(elementType, domain);
+  }
+
+  private static void validateElementType(String type) {
     if (!VALID_TYPE_SINGULAR_TERMS.contains(type)) {
       throw new IllegalArgumentException(String.format("Type \"%s\" is not a valid schema.", type));
     }
-    log.debug("Getting dynamic JSON schema for type: {}", type);
-    return generator.createSchema(type, domains);
   }
 
   @Override

@@ -118,6 +118,9 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "Manual"
 
+        and: "it conforms to the JSON schema"
+        validate(response, get("/domains/$testDomainId/documents/json-schema")).empty
+
         when: "associating document with a second domain"
         post("/domains/$dsgvoTestDomainId/documents/$documentId", [
             subType: "DOC_Document",

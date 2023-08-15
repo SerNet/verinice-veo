@@ -120,6 +120,9 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.members[0].associatedWithDomain
         response.members[0].subType == "Company"
 
+        and: "it conforms to the JSON schema"
+        validate(response, get("/domains/$testDomainId/scopes/json-schema")).empty
+
         when: "associating scope with a second domain"
         post("/domains/$dsgvoTestDomainId/scopes/$scopeId", [
             subType: "SCP_Processor",

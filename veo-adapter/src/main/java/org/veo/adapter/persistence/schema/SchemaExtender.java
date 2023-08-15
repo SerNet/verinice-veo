@@ -37,6 +37,7 @@ import org.veo.adapter.presenter.api.dto.ControlRiskValuesDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
 import org.veo.adapter.presenter.api.dto.ImpactRiskValuesDto;
+import org.veo.adapter.presenter.api.dto.LinkDto;
 import org.veo.adapter.presenter.api.dto.ScenarioRiskValuesDto;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Control;
@@ -67,6 +68,7 @@ public class SchemaExtender {
       provider.schema(ScenarioRiskValuesDto.class);
   private final Supplier<ObjectNode> customAspectDto = provider.schema(CustomAspectDto.class);
   private final Supplier<ObjectNode> customLinkDto = provider.schema(CustomLinkDto.class);
+  private final Supplier<ObjectNode> linkDto = provider.schema(LinkDto.class);
   private final Supplier<ObjectNode> impactRiskValuesDto =
       provider.schema(ImpactRiskValuesDto.class);
   private final Map<String, Supplier<ObjectNode>> domainAssociationDtoByElementType =
@@ -84,6 +86,10 @@ public class SchemaExtender {
       ExternalDocumentAttributeDefinition.PROTOCOL_PATTERN + ".+";
   private final ObjectMapper mapper = new ObjectMapper();
 
+  /**
+   * Extend {@link org.veo.adapter.presenter.api.dto.AbstractElementDto} schema with domain-specific
+   * definitions
+   */
   public void extendSchema(JsonNode schema, String elementType, Set<Domain> domains) {
     var domainsRoot = (ObjectNode) schema.get(PROPS).get("domains");
     var domainProps = domainsRoot.putObject(PROPS);
@@ -99,6 +105,20 @@ public class SchemaExtender {
           addCustomAspects(customObjectProperties, typeDef.getCustomAspects());
           addLinks(linkProps, typeDef.getLinks(), customLinkDto);
         });
+  }
+
+  /**
+   * Extend {@link org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto} schema with
+   * domain-specific definitions
+   */
+  public void extendSchema(ObjectNode schema, String elementType, Domain domain) {
+    var linkProps = putProps(schema, "links");
+    var customAspectProps = putProps(schema, "customAspects");
+    var typeDef = domain.getElementTypeDefinition(elementType);
+    addSubTypes(schema, typeDef.getSubTypes());
+    addCustomAspectMap(customAspectProps, typeDef.getCustomAspects());
+    addLinks(linkProps, typeDef.getLinks(), linkDto);
+    extendDomainAssociationSchema(schema, elementType, domain);
   }
 
   private static ObjectNode putProps(JsonNode schema, String node) {
@@ -220,6 +240,19 @@ public class SchemaExtender {
         });
   }
 
+  /** Fill {@link org.veo.adapter.presenter.api.dto.LinkMapDto} schema (new flat structure) */
+  private void addCustomAspectMap(
+      ObjectNode customAspectProps, Map<String, CustomAspectDefinition> customAspects) {
+    customAspects.forEach(
+        (type, definition) -> {
+          var attributesNode = customAspectProps.putObject(type);
+          addAttributes(attributesNode, definition.getAttributeDefinitions());
+        });
+  }
+
+  /**
+   * Fill {@link org.veo.adapter.presenter.api.dto.CustomAspectDto} map schema (old fat structure).
+   */
   private void addCustomAspects(
       ObjectNode customAspectProps, Map<String, CustomAspectDefinition> customAspects) {
     customAspects.forEach(

@@ -118,6 +118,9 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "DISASTER"
 
+        and: "it conforms to the JSON schema"
+        validate(response, get("/domains/$testDomainId/incidents/json-schema")).empty
+
         when: "associating incident with a second domain"
         post("/domains/$dsgvoTestDomainId/incidents/$incidentId", [
             subType: "INC_Incident",

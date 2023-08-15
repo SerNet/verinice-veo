@@ -30,13 +30,16 @@ import org.veo.core.entity.Domain;
 public interface EntitySchemaService {
 
   /**
-   * Build and return a schema JSON as a simple string.
+   * Build and return an element DTO schema JSON as a simple string.
    *
    * @param type the entity type, i.e. 'process'
    * @param domains the domains to use, i.e. 'GDPR', 'ISO_27001'
    * @return a JSON schema document dynamically generated for the above parameters
    */
   String getSchema(String type, Set<Domain> domains);
+
+  /** Build domain-specific element DTO schema */
+  String getSchema(String elementType, Domain domain);
 
   /**
    * Returns a translations for the given language identifiers. If no translation is present for any

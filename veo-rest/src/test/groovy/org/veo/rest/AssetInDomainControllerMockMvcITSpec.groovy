@@ -118,6 +118,9 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "Server"
 
+        and: "it conforms to the JSON schema"
+        validate(response, get("/domains/$testDomainId/assets/json-schema")).empty
+
         when: "associating asset with a second domain"
         post("/domains/$dsgvoTestDomainId/assets/$assetId", [
             subType: "AST_IT-System",

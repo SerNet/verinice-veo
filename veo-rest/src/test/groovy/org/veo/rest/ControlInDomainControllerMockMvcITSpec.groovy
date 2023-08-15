@@ -124,6 +124,9 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.parts[0].associatedWithDomain
         response.parts[0].subType == "TOM"
 
+        and: "it conforms to the JSON schema"
+        validate(response, get("/domains/$testDomainId/controls/json-schema")).empty
+
         when: "associating control with a second domain"
         post("/domains/$dsgvoTestDomainId/controls/$controlId", [
             subType: "CTL_TOM",

@@ -104,7 +104,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(DocumentInDomainController.URL_BASE_PATH)
-public class DocumentInDomainController {
+public class DocumentInDomainController implements ElementInDomainResource {
   public static final String URL_BASE_PATH =
       "/" + Domain.PLURAL_TERM + "/{domainId}/" + Document.PLURAL_TERM;
   private final ClientLookup clientLookup;
@@ -382,5 +382,12 @@ public class DocumentInDomainController {
       @Valid @RequestBody FullDocumentInDomainDto dto) {
     return elementService.evaluate(
         auth, dto, domainId, dtoToEntityTransformer::transformDto2Element);
+  }
+
+  @Operation(summary = "Returns domain-specific document JSON schema")
+  @Override
+  public @Valid CompletableFuture<ResponseEntity<String>> getJsonSchema(
+      Authentication auth, String domainId) {
+    return elementService.getJsonSchema(auth, domainId, Document.SINGULAR_TERM);
   }
 }
