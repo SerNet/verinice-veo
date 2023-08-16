@@ -193,6 +193,6 @@ trigger_deployment:
   only:
     - develop
     - main
-  image: "${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}curlimages/curl:latest"
+  image: "${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/curlimages/curl:latest"
   script:
     - curl -i -k -X POST --user gitlab:$JENKINS_API_TOKEN https://bob.int.sernet.de:8443/job/verinice-veo-deployment/job/master/build
