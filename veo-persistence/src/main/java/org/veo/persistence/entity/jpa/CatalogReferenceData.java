@@ -33,11 +33,9 @@ import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @MappedSuperclass
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 public abstract class CatalogReferenceData implements Identifiable, CatalogReference {
@@ -47,7 +45,6 @@ public abstract class CatalogReferenceData implements Identifiable, CatalogRefer
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
   private String dbId;
 
-  @EqualsAndHashCode.Include
   @ManyToOne(targetEntity = CatalogItemData.class)
   private CatalogItem catalogItem;
 
@@ -62,5 +59,26 @@ public abstract class CatalogReferenceData implements Identifiable, CatalogRefer
   @Override
   public void setId(Key<UUID> id) {
     setDbId(Optional.ofNullable(id).map(Key::uuidValue).orElse(null));
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) return false;
+
+    if (this == o) return true;
+
+    if (!(o instanceof CatalogReferenceData)) return false;
+    CatalogReferenceData other = (CatalogReferenceData) o;
+    // Transient (unmanaged) entities have an ID of 'null'. Only managed
+    // (persisted and detached) entities have an identity. JPA requires that
+    // an entity's identity remains the same over all state changes.
+    // Therefore a transient entity must never equal another entity.
+    String dbId = getDbId();
+    return dbId != null && dbId.equals(other.getDbId());
+  }
+
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
   }
 }

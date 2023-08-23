@@ -449,6 +449,84 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         scenarioResult.domains[domain.id.uuidValue()].riskValues.id.potentialProbability == 3
     }
 
+    @WithUserDetails("user@domain.example")
+    def "retrieve the apply info for part and composite and post"() {
+        given: "the created catalogitems"
+
+        when: "requesting incarnation descriptions for a composite and part"
+        def result = getIncarnationDescriptions(unit,itemComposite, itemPart)
+
+        then: "it contains 2 elements to create, part and composite"
+        result.parameters.size() == 2
+
+        when: "we create both"
+        def postResult = postIncarnationDescriptions(unit,result)
+
+        then: "2 objects are created"
+        postResult.size() == 2
+
+        when: "we get the created scenario"
+        def composite = parseJson(get(postResult[0].targetUri))
+        def part = parseJson(get(postResult[1].targetUri))
+
+        then: "the element is created and the part is set"
+        validateNewElementAgainstCatalogItem(composite, itemComposite, domain)
+        validateNewElementAgainstCatalogItem(part, itemPart, domain)
+        composite.parts.size() == 1
+        composite.parts[0].targetUri == part._self
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "retrieve the apply info for part and post"() {
+        given: "the created catalogitems"
+
+        when: "fetching incarnation descriptions for a part"
+        def getResult = getIncarnationDescriptions(unit, itemPart)
+
+        then: "it contains 1 elements to create"
+        getResult.parameters.size() == 1
+
+        when: "we post an incomplete description"
+        post("/${basePath}/${unit.id.uuidValue()}/incarnations",getResult, 422)
+
+        then: "can not apply"
+        def upEx = thrown(UnprocessableDataException)
+        upEx.message == "CatalogItem null:zzzzzComposite not included in request but required by CTL-1:zzzzzPart."
+
+        when: "we create a control"
+        getResult = getIncarnationDescriptions(unit, item1)
+        def postResult = postIncarnationDescriptions(unit,getResult)
+        def compositeControlUri = postResult[0].targetUri
+
+        and: "link the composite reference"
+        getResult = getIncarnationDescriptions(unit, itemPart)
+        getResult.parameters.references[0].first().put("referencedElement", ["targetUri": compositeControlUri])
+        postResult = postIncarnationDescriptions(unit,getResult)
+
+        then:
+        postResult.size() == 1
+
+        when:
+        def part = parseJson(get(postResult[0].targetUri))
+        def composite = parseJson(get(compositeControlUri))
+
+        then: "the element is created and the part is set"
+        validateNewElementAgainstCatalogItem(part, itemPart, domain)
+        composite.parts.size() == 1
+        composite.parts[0].targetUri == part._self
+
+        when: "we create the composite and link"
+        getResult = getIncarnationDescriptions(unit, itemComposite)
+        getResult.parameters.references[0].first().put("referencedElement", Map.of("targetUri", compositeControlUri))
+        postResult = postIncarnationDescriptions(unit,getResult)
+        def newComposite = parseJson(get(postResult[0].targetUri))
+
+        then:
+        postResult.size() == 1
+        validateNewElementAgainstCatalogItem(newComposite, itemComposite, domain)
+        newComposite.parts[0].targetUri == composite._self
+    }
+
     private getIncarnationDescriptions(Unit unit, CatalogItem... items) {
         parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${items.collect{it.id.uuidValue()}.join(',')}"))
     }

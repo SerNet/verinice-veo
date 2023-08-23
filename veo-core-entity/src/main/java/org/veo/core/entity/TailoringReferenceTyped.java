@@ -36,12 +36,34 @@ public interface TailoringReferenceTyped {
       r ->
           r.getReferenceType() == TailoringReferenceType.LINK
               || r.getReferenceType() == TailoringReferenceType.LINK_EXTERNAL;
+
   Predicate<? super TailoringReferenceTyped> IS_EXTERNALLINK_PREDICATE =
       r -> r.getReferenceType() == TailoringReferenceType.LINK_EXTERNAL;
 
   /** Predicate to filter {@link TailoringReferenceType#LINK} */
   Predicate<? super TailoringReferenceTyped> IS_LINK_PREDICATE =
       r -> r.getReferenceType() == TailoringReferenceType.LINK;
+
+  Predicate<? super TailoringReferenceTyped> IS_ALL_PART_PREDICATE =
+      r ->
+          r.getReferenceType() == TailoringReferenceType.PART
+              || r.getReferenceType() == TailoringReferenceType.COMPOSITE;
+
+  /** Predicate to filter {@link TailoringReferenceType#PART} */
+  Predicate<? super TailoringReferenceTyped> IS_PART_PREDICATE =
+      r -> r.getReferenceType() == TailoringReferenceType.PART;
+
+  /** Predicate to filter {@link TailoringReferenceType#COMPOSITE} */
+  Predicate<? super TailoringReferenceTyped> IS_COMPOSITE_PREDICATE =
+      r -> r.getReferenceType() == TailoringReferenceType.COMPOSITE;
+
+  /** Predicate to filter all tailorref mapping to a parameter */
+  Predicate<? super TailoringReferenceTyped> IS_PARAMETER_REF =
+      r ->
+          r.getReferenceType() == TailoringReferenceType.LINK
+              || r.getReferenceType() == TailoringReferenceType.LINK_EXTERNAL
+              || r.getReferenceType() == TailoringReferenceType.PART
+              || r.getReferenceType() == TailoringReferenceType.COMPOSITE;
 
   /** Is any kind of link References. */
   default boolean isLinkTailoringReferences() {

@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import jakarta.validation.Valid;
 
@@ -123,6 +122,11 @@ public class CreateCatalogFromUnitUseCase
     log.info("number of applied items {}", incarnations.size());
 
     incarnations.forEach(e -> e.getAppliedCatalogItems().removeAll(list));
+    list.forEach(
+        ci -> {
+          ci.getTailoringReferences().forEach(tr -> tr.setOwner(null));
+          ci.getTailoringReferences().clear();
+        });
     domain.getCatalogItems().clear();
   }
 
@@ -130,32 +134,50 @@ public class CreateCatalogFromUnitUseCase
       Map<Element, CatalogItem> elementsToCatalogItems, Domain domain) {
     elementsToCatalogItems.forEach(
         (element, source) -> {
-          Set<TailoringReference> refecences =
-              element.getLinks(domain).stream()
-                  .flatMap(
-                      l ->
-                          Stream.of(
-                              createLinkReference(
-                                  l,
-                                  source,
-                                  elementsToCatalogItems.get(l.getTarget()),
-                                  TailoringReferenceType.LINK),
-                              createLinkReference(
-                                  l,
-                                  elementsToCatalogItems.get(l.getTarget()),
-                                  source,
-                                  TailoringReferenceType.LINK_EXTERNAL)))
-                  .collect(Collectors.toSet());
+          element
+              .getLinks(domain)
+              .forEach(
+                  link -> {
+                    createLinkReference(
+                        link,
+                        source,
+                        elementsToCatalogItems.get(link.getTarget()),
+                        TailoringReferenceType.LINK);
+                    createLinkReference(
+                        link,
+                        elementsToCatalogItems.get(link.getTarget()),
+                        source,
+                        TailoringReferenceType.LINK_EXTERNAL);
+                  });
+
           if (element instanceof CompositeElement<?> composite) {
-            if (!composite.getParts().isEmpty())
-              log.info(
-                  "Skip {} parts of: {}", composite.getParts().size(), composite.getDisplayName());
+            composite
+                .getParts()
+                .forEach(
+                    target -> {
+                      CatalogItem partCatalogItem = elementsToCatalogItems.get(target);
+                      createTailoringReference(
+                          partCatalogItem, source, TailoringReferenceType.COMPOSITE);
+                    });
+            composite
+                .getComposites()
+                .forEach(
+                    target -> {
+                      CatalogItem compositeCatalogItem = elementsToCatalogItems.get(target);
+                      createTailoringReference(
+                          compositeCatalogItem, source, TailoringReferenceType.PART);
+                    });
           } else if (element instanceof Scope scope) {
             if (!scope.getMembers().isEmpty())
               log.info("Skip {} members of: {}", scope.getMembers().size(), scope.getDisplayName());
           }
-          source.setTailoringReferences(refecences);
         });
+  }
+
+  private void createTailoringReference(
+      CatalogItem source, CatalogItem target, TailoringReferenceType type) {
+    TailoringReference tailoringReference = factory.createTailoringReference(source, type);
+    tailoringReference.setCatalogItem(target);
   }
 
   private LinkTailoringReference createLinkReference(

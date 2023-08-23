@@ -73,11 +73,14 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
     def "get the apply information for a catalog-item"() {
         given:
         Control control2 = Mock()
+        def trId = Key.newUuid()
+
         item2.id >> Key.newUuid()
         item2.owner >> existingDomain
         item2.elementInterface >> Control.class
 
         LinkTailoringReference tr = Mock()
+        tr.id >> trId
         tr.referenceType >> TailoringReferenceType.LINK
         tr.owner >> item1
         tr.linkType >> "link.type"

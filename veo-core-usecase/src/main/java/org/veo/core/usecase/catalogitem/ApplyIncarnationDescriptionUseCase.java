@@ -20,8 +20,8 @@ package org.veo.core.usecase.catalogitem;
 import static java.lang.String.format;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,6 +38,7 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
@@ -50,7 +51,6 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.transform.EntityFactory;
-import org.veo.core.entity.util.TailoringReferenceComparators;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.ElementRepository;
@@ -86,6 +86,7 @@ public class ApplyIncarnationDescriptionUseCase
 
   @Override
   public OutputData execute(InputData input) {
+    // TODO: verinice-veo#2357 refactor this usecase
     log.info("ApplyIncarnationDescriptionUseCase: {}", input);
     Unit unit = unitRepository.getByIdFetchClient(input.getContainerId());
     Client authenticatedClient = input.authenticatedClient;
@@ -105,6 +106,7 @@ public class ApplyIncarnationDescriptionUseCase
         (elementData, iElement) -> {
           elementData.elements.add(iElement.element);
           elementData.internalLinks.addAll(iElement.getInternalLinks());
+          elementData.mapping.put(iElement.getItem(), iElement.element);
         };
     BinaryOperator<IncarnationResult> operator =
         (source, data) -> {
@@ -115,6 +117,7 @@ public class ApplyIncarnationDescriptionUseCase
     Function<IncarnationResult, List<Element>> function =
         elementData -> {
           processInternalLinks(elementData.internalLinks, elementData.elements);
+          processParts(elementData.getMapping(), elementData.internalLinks);
           return elementData.elements;
         };
 
@@ -151,6 +154,51 @@ public class ApplyIncarnationDescriptionUseCase
     return new ApplyIncarnationDescriptionUseCase.OutputData(createdElements);
   }
 
+  private void processParts(
+      Map<CatalogItem, Element> mapping, List<InternalResolveInfo> internalLinks) {
+    internalLinks.stream()
+        .filter(TailoringReferenceTyped.IS_PART_PREDICATE)
+        .forEach(
+            il -> {
+              Element element = mapping.get(il.sourceItem);
+
+              if (element == null) {
+                throw new UnprocessableDataException(
+                    format(
+                        "CatalogItem %s:%s not included in request but required by %s:%s.",
+                        il.sourceItem.getNamespace(),
+                        il.sourceItem.getDisplayName(),
+                        il.source.getDesignator(),
+                        il.source.getName()));
+              }
+
+              addToPart(il.source, element);
+            });
+    internalLinks.stream()
+        .filter(TailoringReferenceTyped.IS_COMPOSITE_PREDICATE)
+        .forEach(
+            il -> {
+              Element element = mapping.get(il.sourceItem);
+
+              if (element == null) {
+                throw new UnprocessableDataException(
+                    format(
+                        "CatalogItem %s:%s not included in request but required by %s:%s.",
+                        il.sourceItem.getNamespace(),
+                        il.sourceItem.getDisplayName(),
+                        il.source.getDesignator(),
+                        il.source.getName()));
+              }
+              addToPart(element, il.source);
+            });
+  }
+
+  @SuppressWarnings("unchecked")
+  private void addToPart(Element element, Element part) {
+    ((CompositeElement<CompositeElement<?>>) element)
+        .addPart((CompositeElement<CompositeElement<?>>) part);
+  }
+
   /**
    * Incarnate a catalogItem, uses the {@link CatalogItem#incarnate()} to create the element. Set
    * the customLinkTargets of this element to the given referencesToApply. Assign the designator,
@@ -172,7 +220,18 @@ public class ApplyIncarnationDescriptionUseCase
             linkTailorReferencesParameters(
                 referencesToApply, TailoringReferenceTyped.IS_LINK_PREDICATE),
             linkTailorReferences(catalogItem, TailoringReferenceTyped.IS_LINK_PREDICATE));
+    List<InternalResolveInfo> internalpartsLinks = Collections.emptyList();
+
     entity.setOwner(unit);
+    if (entity instanceof CompositeElement<?> composite) {
+      internalpartsLinks =
+          applyPartReferences(
+              composite,
+              referencesToApply,
+              catalogItem.getTailoringReferences().stream()
+                  .filter(TailoringReferenceTyped.IS_ALL_PART_PREDICATE)
+                  .toList());
+    }
     designatorService.assignDesignator(entity, authenticatedClient);
     entity = saveElement(entity);
     applyExternalTailoringReferences(
@@ -181,7 +240,81 @@ public class ApplyIncarnationDescriptionUseCase
         linkTailorReferences(catalogItem, TailoringReferenceTyped.IS_EXTERNALLINK_PREDICATE),
         linkTailorReferencesParameters(
             referencesToApply, TailoringReferenceTyped.IS_EXTERNALLINK_PREDICATE));
-    return new ElementResult(entity, internalLinks);
+
+    List<InternalResolveInfo> arrayList =
+        new ArrayList<>(internalLinks.size() + internalpartsLinks.size());
+    arrayList.addAll(internalLinks);
+    arrayList.addAll(internalpartsLinks);
+    return new ElementResult(entity, catalogItem, arrayList);
+  }
+
+  private List<InternalResolveInfo> applyPartReferences(
+      Element entity,
+      List<TailoringReferenceParameter> referencesToApply,
+      List<TailoringReference> tailoringReferences) {
+    log.debug("applyPartReferences {},{},{}", entity, tailoringReferences, referencesToApply);
+    List<InternalResolveInfo> internalLinks = new ArrayList<>(tailoringReferences.size());
+
+    referencesToApply.stream()
+        .filter(TailoringReferenceTyped.IS_PART_PREDICATE)
+        .forEach(
+            referenceParameter -> {
+              TailoringReference reference =
+                  tailoringReferences.stream()
+                      .filter(tr -> tr.getIdAsString().equals(referenceParameter.getId()))
+                      .findAny()
+                      .orElseThrow(
+                          () ->
+                              new IllegalArgumentException(
+                                  String.format(
+                                      "Unmapped PART tailoring reference. id:%s",
+                                      referenceParameter.getId())));
+
+              if (referenceParameter.getReferencedElement() == null) {
+                internalLinks.add(
+                    new InternalResolveInfo(
+                        entity,
+                        reference.getCatalogItem(),
+                        reference.getReferenceType(),
+                        reference.getReferenceType().name(),
+                        null,
+                        null));
+              } else {
+                addToPart(entity, referenceParameter.getReferencedElement());
+              }
+            });
+
+    referencesToApply.stream()
+        .filter(TailoringReferenceTyped.IS_COMPOSITE_PREDICATE)
+        .forEach(
+            referenceParameter -> {
+              TailoringReference reference =
+                  tailoringReferences.stream()
+                      .filter(tr -> tr.getIdAsString().equals(referenceParameter.getId()))
+                      .findAny()
+                      .orElseThrow(
+                          () ->
+                              new IllegalArgumentException(
+                                  String.format(
+                                      "Unmapped %s tailoring reference. id:%s",
+                                      referenceParameter.getReferenceKey(),
+                                      referenceParameter.getId())));
+
+              if (referenceParameter.getReferencedElement() == null) {
+                internalLinks.add(
+                    new InternalResolveInfo(
+                        entity,
+                        reference.getCatalogItem(),
+                        reference.getReferenceType(),
+                        null,
+                        null,
+                        null));
+              } else {
+                addToPart(referenceParameter.getReferencedElement(), entity);
+              }
+            });
+
+    return internalLinks;
   }
 
   /**
@@ -191,42 +324,43 @@ public class ApplyIncarnationDescriptionUseCase
    * corresponding link. When the {@link TailoringReferenceParameter#getReferencedElement()} is null
    * the link will be removed from the element and linked later in {@link
    * #processInternalLinks(List, List)}.
+   *
+   * @param catalogItem
    */
   private List<InternalResolveInfo> applyLinkTailoringReferences(
       Element copyItem,
       Domain domain,
       List<TailoringReferenceParameter> referencesToApply,
       List<LinkTailoringReference> linkTailoringReferences) {
-    if (linkTailoringReferences.size() > referencesToApply.size()) {
-      throw new IllegalArgumentException(
-          "Number of defined links cannot be smaller than number of references to apply.");
-    }
-
     List<InternalResolveInfo> internalLinks = new ArrayList<>(linkTailoringReferences.size());
-    Iterator<LinkTailoringReference> linkRefs = linkTailoringReferences.iterator();
-    Iterator<TailoringReferenceParameter> refsToApply = referencesToApply.iterator();
 
-    while (linkRefs.hasNext()) {
-      LinkTailoringReference linkTailoringReference = linkRefs.next();
-      TailoringReferenceParameter referenceParameter = refsToApply.next();
-      if (referenceParameter.getReferencedElement() == null) {
-        internalLinks.add(
-            new InternalResolveInfo(
-                copyItem,
-                linkTailoringReference.getCatalogItem(),
-                linkTailoringReference.getLinkType(),
-                linkTailoringReference.getAttributes(),
-                domain));
-      } else {
-        createLink(
-            copyItem,
-            referenceParameter.getReferencedElement(),
-            domain,
-            linkTailoringReference.getLinkType(),
-            linkTailoringReference.getAttributes());
-      }
-    }
-    // TODO: VEO-612 handle parts
+    referencesToApply.stream()
+        .forEach(
+            referenceParameter -> {
+              LinkTailoringReference linkTailoringReference =
+                  linkTailoringReferences.stream()
+                      .filter(t -> t.getId().uuidValue().equals(referenceParameter.getId()))
+                      .findAny()
+                      .orElseThrow(
+                          () -> new IllegalArgumentException("Unmapped tailoring reference."));
+              if (referenceParameter.getReferencedElement() == null) {
+                internalLinks.add(
+                    new InternalResolveInfo(
+                        copyItem,
+                        linkTailoringReference.getCatalogItem(),
+                        linkTailoringReference.getReferenceType(),
+                        linkTailoringReference.getLinkType(),
+                        linkTailoringReference.getAttributes(),
+                        domain));
+              } else {
+                createLink(
+                    copyItem,
+                    referenceParameter.getReferencedElement(),
+                    domain,
+                    linkTailoringReference.getLinkType(),
+                    linkTailoringReference.getAttributes());
+              }
+            });
     return internalLinks;
   }
 
@@ -248,29 +382,40 @@ public class ApplyIncarnationDescriptionUseCase
       Domain domain,
       List<LinkTailoringReference> externalTailoringRefs,
       List<TailoringReferenceParameter> referencesToApply) {
-    Iterator<TailoringReferenceParameter> parameter = referencesToApply.iterator();
-    Iterator<LinkTailoringReference> references = externalTailoringRefs.iterator();
-    while (references.hasNext()) {
-      TailoringReferenceParameter tailoringReferenceParameter = parameter.next();
-      LinkTailoringReference catalogReference = references.next();
-      Element element = tailoringReferenceParameter.getReferencedElement();
-      if (element != null) {
-        if (element.getDomains() == null || !element.getDomains().contains(domain)) {
-          throw new IllegalArgumentException(
-              "The element to link is not part of the domain: "
-                  + element.getDesignator()
-                  + "  "
-                  + domain.getName());
-        }
-        createLink(
-            element,
-            linkTargetEntity,
-            domain,
-            catalogReference.getLinkType(),
-            catalogReference.getAttributes());
-        saveElement(element);
-      }
-    }
+
+    referencesToApply.stream()
+        .forEach(
+            tailoringReferenceParameter -> {
+              LinkTailoringReference catalogReference =
+                  externalTailoringRefs.stream()
+                      .filter(
+                          t -> t.getId().uuidValue().equals(tailoringReferenceParameter.getId()))
+                      .findAny()
+                      .orElseThrow(
+                          () ->
+                              new IllegalArgumentException(
+                                  String.format(
+                                      "Unmapped %s tailoring reference. id:%s",
+                                      tailoringReferenceParameter.getReferenceKey(),
+                                      tailoringReferenceParameter.getId())));
+              Element element = tailoringReferenceParameter.getReferencedElement();
+              if (element != null) {
+                if (element.getDomains() == null || !element.getDomains().contains(domain)) {
+                  throw new IllegalArgumentException(
+                      "The element to link is not part of the domain: "
+                          + element.getDesignator()
+                          + "  "
+                          + domain.getName());
+                }
+                createLink(
+                    element,
+                    linkTargetEntity,
+                    domain,
+                    catalogReference.getLinkType(),
+                    catalogReference.getAttributes());
+                saveElement(element);
+              }
+            });
   }
 
   /**
@@ -280,7 +425,7 @@ public class ApplyIncarnationDescriptionUseCase
   private CustomLink createLink(
       Element source, Element target, Domain domain, String type, Map<String, Object> attributes) {
     CustomLink link = factory.createCustomLink(target, source, type, domain);
-    link.setAttributes(attributes == null ? null : new HashMap<>(attributes));
+    link.setAttributes(attributes == null ? new HashMap<>() : new HashMap<>(attributes));
     link.setType(type);
     source.applyLink(link);
     return link;
@@ -292,24 +437,28 @@ public class ApplyIncarnationDescriptionUseCase
    */
   private void processInternalLinks(
       List<InternalResolveInfo> internalLinks, List<Element> createdCatalogables) {
-    for (InternalResolveInfo ri : internalLinks) {
-      Element internalTarget =
-          createdCatalogables.stream()
-              .filter(c -> c.getAppliedCatalogItems().contains(ri.sourceItem))
-              .findFirst()
-              .orElseThrow(
-                  () ->
-                      new UnprocessableDataException(
-                          format(
-                              "CatalogItem %s:%s not included in request but required by %s:%s.",
-                              ri.sourceItem.getNamespace(),
-                              ri.sourceItem.getDisplayName(),
-                              ri.source.getDesignator(),
-                              ri.source.getName())));
-      CustomLink link =
-          createLink(ri.source, internalTarget, ri.domain, ri.linkType, ri.attributes);
-      ri.source.applyLink(link);
-    }
+
+    internalLinks.stream()
+        .filter(TailoringReferenceTyped.IS_ALL_LINK_PREDICATE)
+        .forEach(
+            ri -> {
+              Element internalTarget =
+                  createdCatalogables.stream()
+                      .filter(c -> c.getAppliedCatalogItems().contains(ri.sourceItem))
+                      .findFirst()
+                      .orElseThrow(
+                          () ->
+                              new UnprocessableDataException(
+                                  format(
+                                      "CatalogItem %s:%s not included in request but required by %s:%s.",
+                                      ri.sourceItem.getNamespace(),
+                                      ri.sourceItem.getDisplayName(),
+                                      ri.source.getDesignator(),
+                                      ri.source.getName())));
+              CustomLink link =
+                  createLink(ri.source, internalTarget, ri.domain, ri.linkType, ri.attributes);
+              ri.source.applyLink(link);
+            });
   }
 
   /**
@@ -347,7 +496,6 @@ public class ApplyIncarnationDescriptionUseCase
       CatalogItem catalogItem, Predicate<? super TailoringReference> typePredicate) {
     return catalogItem.getTailoringReferences().stream()
         .filter(typePredicate)
-        .sorted(TailoringReferenceComparators.BY_EXECUTION)
         .map(LinkTailoringReference.class::cast)
         .toList();
   }
@@ -378,9 +526,10 @@ public class ApplyIncarnationDescriptionUseCase
     @Valid List<Element> newElements;
   }
 
-  /** Contains the created elements and the links to resolve later of all these elements. */
+  /** Contains the created elements and the links to resolve later all these elements. */
   @Data
   private static class IncarnationResult {
+    private final Map<CatalogItem, Element> mapping = new HashMap<>();
     private final List<Element> elements = new ArrayList<>();
     private final List<InternalResolveInfo> internalLinks = new ArrayList<>();
   }
@@ -390,13 +539,16 @@ public class ApplyIncarnationDescriptionUseCase
   @RequiredArgsConstructor
   private static class ElementResult {
     private final Element element;
+    private final CatalogItem item;
     private final List<InternalResolveInfo> internalLinks;
   }
 
+  @Data
   @AllArgsConstructor
-  private static class InternalResolveInfo {
+  private static class InternalResolveInfo implements TailoringReferenceTyped {
     Element source;
     CatalogItem sourceItem;
+    TailoringReferenceType referenceType;
     String linkType;
     Map<String, Object> attributes;
     Domain domain;

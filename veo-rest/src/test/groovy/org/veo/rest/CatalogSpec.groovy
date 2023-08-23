@@ -71,6 +71,8 @@ class CatalogSpec extends VeoMvcSpec {
     CatalogItem processImpactExample
     CatalogItem controlImpactExample
     CatalogItem scenarioProbabilityExample
+    CatalogItem itemComposite
+    CatalogItem itemPart
     Client client
     Client secondClient
     Domain domain3
@@ -274,6 +276,27 @@ class CatalogSpec extends VeoMvcSpec {
                 //                ]
             })
 
+            itemComposite = newCatalogItem(domain, {
+                elementType = "control"
+                subType = "CTL_TOM"
+                status = "NEW"
+                name = 'zzzzzComposite'
+            })
+
+            itemPart = newCatalogItem(domain, {
+                elementType = "control"
+                subType = "CTL_TOM"
+                status = "NEW"
+                name = 'zzzzzPart'
+            })
+
+            newTailoringReference(itemComposite, TailoringReferenceType.PART) {
+                catalogItem = itemPart
+            }
+            newTailoringReference(itemPart, TailoringReferenceType.COMPOSITE) {
+                catalogItem = itemComposite
+            }
+
             domain1 = newDomain (client) {
                 description = "ISO/IEC2"
                 abbreviation = "ISO"
@@ -292,7 +315,8 @@ class CatalogSpec extends VeoMvcSpec {
             domain = client.domains.toList().get(0)
             domain1 = client.domains.toList().get(1)
 
-            (item1, item2, item3, item4, item5, item6, item7, zz1, zz2, processImpactExample, controlImpactExample, scenarioProbabilityExample) = domain.catalogItems.sort{it.name}
+            (item1, item2, item3, item4, item5, item6, item7, zz1, zz2, processImpactExample,
+                    controlImpactExample, scenarioProbabilityExample, itemComposite, itemPart) = domain.catalogItems.sort{it.name}
 
             secondClient = newClient() {
                 it.name = "the other"

@@ -63,7 +63,9 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         item2.elementType >> "control"
         item2.tailoringReferences >> []
 
+        def trId = Key.newUuid()
         TailoringReference tr = Mock()
+        tr.id >> trId
         tr.referenceType >> TailoringReferenceType.COPY
         tr.owner >> item1
         tr.catalogItem >> item2
@@ -87,7 +89,9 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         item2.elementType >> "control"
         item2.elementInterface >> Control.class
 
+        def trId = Key.newUuid()
         LinkTailoringReference tr = Mock()
+        tr.id >> trId
         tr.referenceType >> TailoringReferenceType.LINK
         tr.owner >> item1
         tr.linkType >> "link.type"
@@ -118,7 +122,9 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         item2.elementType >> "control"
         item2.elementInterface >> Control.class
 
+        def trId = Key.newUuid()
         LinkTailoringReference tr = Mock()
+        tr.id >> trId
         tr.referenceType >> TailoringReferenceType.LINK_EXTERNAL
         tr.linkType >> "external.link.type"
         tr.owner >> item1

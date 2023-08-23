@@ -71,11 +71,13 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
     def "apply an element from item with tailor refs"() {
         given:
         Control control3 = Mock()
+        def trId = Key.newUuid()
 
         item2.id >> Key.newUuid()
         item2.owner >> existingDomain
 
         LinkTailoringReference tr = Mock()
+        tr.id >> trId
         tr.referenceType >> TailoringReferenceType.LINK
         tr.owner >> item1
         tr.linkType >> "link.type"
@@ -89,6 +91,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         newLink.type >> "link.type"
 
         TailoringReferenceParameter ref = Mock()
+        ref.id >> trId.uuidValue()
         ref.referenceType >> TailoringReferenceType.LINK
         ref.referencedElement >> control3
 
@@ -110,6 +113,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
     def "apply an element from item with external tailor refs"() {
         given:
         CustomLink newLink = Mock()
+        def trId = Key.newUuid()
 
         factory.createCustomLink(_, _, _, _) >> newLink
 
@@ -127,6 +131,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         link.attributes >> [:]
 
         LinkTailoringReference etr = Mock()
+        etr.id >> trId
         etr.referenceType >> TailoringReferenceType.LINK_EXTERNAL
         etr.owner >> item1
         etr.catalogItem >> item2
@@ -137,6 +142,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         newControl.links >> []
 
         TailoringReferenceParameter ref = Mock()
+        ref.id >> trId.uuidValue()
         ref.referencedElement >> control3
         ref.referenceType >> TailoringReferenceType.LINK_EXTERNAL
 

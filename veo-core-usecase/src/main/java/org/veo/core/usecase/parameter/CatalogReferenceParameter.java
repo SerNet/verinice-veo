@@ -27,5 +27,6 @@ import lombok.EqualsAndHashCode;
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
 /** Represents a concrete reference on a concrete {@link Element}. */
 public abstract class CatalogReferenceParameter {
+  private String id;
   private Element referencedElement;
 }

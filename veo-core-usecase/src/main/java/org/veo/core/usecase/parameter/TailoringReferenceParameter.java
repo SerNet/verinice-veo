@@ -43,8 +43,12 @@ public class TailoringReferenceParameter extends CatalogReferenceParameter
   @EqualsAndHashCode.Include private String referenceKey;
 
   public TailoringReferenceParameter(
-      Element linkedElement, TailoringReferenceType referenceType, String referenceName) {
+      Element linkedElement,
+      TailoringReferenceType referenceType,
+      String referenceName,
+      String tailoringReferenceId) {
     this(referenceType, referenceName);
     setReferencedElement(linkedElement);
+    setId(tailoringReferenceId);
   }
 }

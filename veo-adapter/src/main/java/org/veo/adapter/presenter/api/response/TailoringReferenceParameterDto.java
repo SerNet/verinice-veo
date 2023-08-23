@@ -69,4 +69,11 @@ public class TailoringReferenceParameterDto {
       accessMode = AccessMode.READ_ONLY,
       requiredMode = REQUIRED)
   private TailoringReferenceType referenceType;
+
+  @Schema(
+      description = "The maping key of the Tailoringreference.",
+      example = "an uuid",
+      accessMode = AccessMode.READ_ONLY,
+      requiredMode = REQUIRED)
+  private String id;
 }

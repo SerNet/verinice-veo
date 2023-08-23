@@ -64,7 +64,8 @@ public class IncarnateCatalogItemDescriptionDto {
                     new TailoringReferenceParameterDto(
                         IdRef.from(r.getReferencedElement(), urlAssembler),
                         r.getReferenceKey(),
-                        r.getReferenceType()))
+                        r.getReferenceType(),
+                        r.getId()))
             .toList();
   }
 
@@ -78,7 +79,8 @@ public class IncarnateCatalogItemDescriptionDto {
                             ? null
                             : idRefResolver.resolve(t.getReferencedElement()),
                         t.getReferenceType(),
-                        t.getReferenceKey()))
+                        t.getReferenceKey(),
+                        t.getId()))
             .toList();
     return new IncarnateCatalogItemDescription(idRefResolver.resolve(item), list);
   }

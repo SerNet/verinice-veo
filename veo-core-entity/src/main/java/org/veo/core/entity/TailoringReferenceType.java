@@ -46,5 +46,16 @@ public enum TailoringReferenceType {
    * @see TailoringReferenceType#COPY, but clear in semantics, it alway create the linked {@link
    *     CatalogItem#getElement()} in the same step.
    */
-  COPY_ALWAYS;
+  COPY_ALWAYS,
+  /**
+   * Defines this references as part of a composite. The owner is the part and the {@link
+   * TailoringReference#getCatalogItem()} is the composite.
+   */
+  PART,
+  /**
+   * Defines this references as part of a composite. The owner is the composite and the {@link
+   * TailoringReference#getCatalogItem()} is the part. This is the opposite feature to {@link
+   * #PART}.
+   */
+  COMPOSITE;
 }

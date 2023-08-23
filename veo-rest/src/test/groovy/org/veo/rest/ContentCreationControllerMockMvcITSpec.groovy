@@ -418,6 +418,25 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             ]
         ], 204)
 
+        def scenarioPart = parseJson(post("/domains/$domainId/scenarios", [
+            name: "example scenario 1",
+            subType: "SCN_Scenario",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"]
+        ],201)).resourceId
+
+        post("/domains/$domainId/scenarios", [
+            name: "example scenario Container",
+            abbreviation: "Cont",
+            subType: "SCN_Scenario",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"],
+            parts: [
+                [targetInDomainUri: "/domains/$domainId/scenarios/$scenarioId"],
+                [targetInDomainUri: "/domains/$domainId/scenarios/$scenarioPart"],
+            ]
+        ],201)
+
         when: "we create new catalog items from the unit"
         put("/content-creation/domains/${domainId}/catalog-items?unit=${unitId}",
                 [:], 204)
@@ -429,7 +448,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         then:
-        catalogItems.size() == 8
+        catalogItems.size() == 10
         with(catalogItems.sort{it.name}[0]) {
             name == "asset"
             elementType == "asset"
@@ -440,6 +459,16 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             tailoringReferences.size() == 1
             tailoringReferences[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
             tailoringReferences[0].linkType == "process_requiredApplications"
+        }
+
+        with(catalogItems.find{it.name == "example scenario Container" }) {
+            elementType == "scenario"
+            status == "NEW"
+            subType == "SCN_Scenario"
+            abbreviation == "Cont"
+            namespace == subType+ "."+abbreviation
+            tailoringReferences.size() == 2
+            tailoringReferences[0].referenceType == TailoringReferenceType.PART
         }
 
         when: "we incarnate all catatlog items"
@@ -458,8 +487,23 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             assetDataRepository.findById(assetId).get()
         }
 
+        def scenarioIds = elementList.collect {it.targetUri}.findAll {it.contains('scenarios')}.collect {it.split('/' ).last()}
+        def scenarios = txTemplate.execute {
+            def list = scenarioDataRepository.findAllWithCompositesAndCompositesPartsByDbIdIn(scenarioIds)
+            list.collect { it.appliedCatalogItems.size() }
+            list.collect { it.parts.size() }
+            list
+        }
+
         then: "the item is applied"
         asset.appliedCatalogItems.size() == 1
+
+        with(scenarios.find{ it.name == "example scenario Container"}) {
+            parts.size() == 2
+            parts[0].composites.size() == 1
+            parts[0].composites[0] == it
+            appliedCatalogItems.size() == 1
+        }
 
         when: "we create new catalog items from the unit"
         put("/content-creation/domains/${domainId}/catalog-items?unit=${unitId}",
@@ -471,6 +515,44 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then: "the applied item is gone"
         asset.appliedCatalogItems.size() == 0
+
+        when: "we incarnate secanrio 1 and link the composite feature to the first scenario"
+        catalogItems = txTemplate.execute {
+            domainDataRepository.findById(domainId).get().catalogItems.each {
+                it.tailoringReferences.size()
+            }
+        }
+
+        def scenarioItemIds = catalogItems.find{ it.name =="example scenario 1" }.collect {it.getIdAsString()}.join(',')
+        incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${scenarioItemIds}"))
+
+        then:
+        incarnationDescription.parameters.size() == 1
+
+        when: "we link the composite to an existing scenario "
+        incarnationDescription.parameters.references[0].first().put("referencedElement", Map.of("targetUri", "/scenarios/$scenarioId"))
+        elementList = parseJson(post("/units/${unitId}/incarnations", incarnationDescription))
+
+        def modifiedScenario = txTemplate.execute {
+            scenarioDataRepository.findById(scenarioId).get().tap {
+                parts.collect { it.parts.size() }
+                composites.collect { it.composites.size() }
+            }
+        }
+        def newScenario1 = txTemplate.execute {
+            def q = scenarioDataRepository.findById(elementList[0].targetUri.split('/' ).last()).get()
+                    .tap {
+                        parts.collect { it.parts.size() }
+                        composites.collect { it.composites.size() }
+                    }
+        }
+
+        then: "the existing scenarion has the new as part and the new scenario a composite"
+        elementList.size() == 1
+        modifiedScenario.parts.size() == 1
+        modifiedScenario.parts[0] == newScenario1
+        newScenario1.composites.size() == 1
+        newScenario1.composites[0] == modifiedScenario
     }
 
     @WithUserDetails("content-creator")

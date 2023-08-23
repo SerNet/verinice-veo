@@ -261,18 +261,21 @@ class DomainRestTestITSpec extends DomainRestTest {
 
         when: "we create a unit with elements"
         def catalogSourceUnitId = postNewUnit().resourceId
-        post("/domains/$domainId/persons", [
+        def person1Id = post("/domains/$domainId/persons", [
             name   : "example person 1",
             subType: "PER_Person",
             status: "NEW",
-            owner: [targetUri: "$baseUrl/units/$catalogSourceUnitId"],
-        ])
+            owner: [targetUri: "/units/$catalogSourceUnitId"],
+        ]).body.resourceId
 
         post("/domains/$domainId/persons", [
             name: "example person 2",
             subType: "PER_Person",
             status: "NEW",
             owner: [targetUri: "$baseUrl/units/$catalogSourceUnitId"],
+            parts: [
+                [targetUri: "/persons/$person1Id"],
+            ]
         ])
 
         post("/domains/$domainId/assets", [
@@ -303,9 +306,28 @@ class DomainRestTestITSpec extends DomainRestTest {
         def catalogItemsIds = catalogItems.collect{it.id}.join(',')
         def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${catalogItemsIds}").body
 
-        post("/units/${unitId}/incarnations", incarnationDescription)
+        then:
+        with(incarnationDescription.parameters.find { it.item.displayName == "example person 1" } ) {
+            references.size() ==1
+            references.first().referenceType == "COMPOSITE"
+        }
 
-        and: "create new catatlog items from the unit"
+        with(incarnationDescription.parameters.find { it.item.displayName == "example person 2" } ) {
+            references.size() ==1
+            references.first().referenceType == "PART"
+        }
+
+        when:
+        def elements = post("/units/${unitId}/incarnations", incarnationDescription).body
+        def persons = get("/persons?unit=${unitId}").body
+
+        then: "the part relation is added"
+        with(persons.items.find{ it.name == "example person 2" }) {
+            parts.size() == 1
+            parts.first().displayName.endsWith("example person 1")
+        }
+
+        when: "create new catatlog items from the unit"
         put("/content-creation/domains/${domainId}/catalog-items?unit=$unitId",
                 [:], null, 204, CONTENT_CREATOR)
 
