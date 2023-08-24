@@ -118,7 +118,8 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(ScenarioController.URL_BASE_PATH)
 @Slf4j
-public class ScenarioController extends AbstractElementController<Scenario, FullScenarioDto> {
+public class ScenarioController
+    extends AbstractCompositeElementController<Scenario, FullScenarioDto> {
 
   public ScenarioController(
       GetScenarioUseCase getScenarioUseCase,

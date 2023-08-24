@@ -82,6 +82,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
+import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateScopeDto;
@@ -123,25 +124,18 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /** REST service which provides methods to manage scopes. */
 @RestController
 @RequestMapping(ScopeController.URL_BASE_PATH)
-@RequiredArgsConstructor
 @Slf4j
-public class ScopeController extends AbstractEntityControllerWithDefaultSearch
+public class ScopeController extends AbstractElementController<Scope, AbstractScopeDto>
     implements ScopeRiskResource {
   public static final String EMBED_RISKS_PARAM = "embedRisks";
   public static final String URL_BASE_PATH = "/" + Scope.PLURAL_TERM;
 
-  protected static final String TYPE_PARAM = "type";
-
-  private TransactionalRunner runner;
-
   private final CreateElementUseCase<Scope> createScopeUseCase;
-  private final GetScopeUseCase getScopeUseCase;
   private final GetScopesUseCase getScopesUseCase;
   private final UpdateScopeUseCase updateScopeUseCase;
   private final DeleteElementUseCase deleteElementUseCase;
@@ -150,8 +144,31 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
   private final GetScopeRisksUseCase getScopeRisksUseCase;
   private final DeleteRiskUseCase deleteRiskUseCase;
   private final UpdateScopeRiskUseCase updateScopeRiskUseCase;
-  private final InspectElementUseCase inspectElementUseCase;
-  private final EvaluateElementUseCase evaluateElementUseCase;
+
+  public ScopeController(
+      GetScopeUseCase getElementUseCase,
+      EvaluateElementUseCase evaluateElementUseCase,
+      InspectElementUseCase inspectElementUseCase,
+      CreateElementUseCase<Scope> createScopeUseCase,
+      GetScopesUseCase getScopesUseCase,
+      UpdateScopeUseCase updateScopeUseCase,
+      DeleteElementUseCase deleteElementUseCase,
+      GetScopeRiskUseCase getScopeRiskUseCase,
+      CreateScopeRiskUseCase createScopeRiskUseCase,
+      GetScopeRisksUseCase getScopeRisksUseCase,
+      DeleteRiskUseCase deleteRiskUseCase,
+      UpdateScopeRiskUseCase updateScopeRiskUseCase) {
+    super(Scope.class, getElementUseCase, evaluateElementUseCase, inspectElementUseCase);
+    this.createScopeUseCase = createScopeUseCase;
+    this.getScopesUseCase = getScopesUseCase;
+    this.updateScopeUseCase = updateScopeUseCase;
+    this.deleteElementUseCase = deleteElementUseCase;
+    this.getScopeRiskUseCase = getScopeRiskUseCase;
+    this.createScopeRiskUseCase = createScopeRiskUseCase;
+    this.getScopeRisksUseCase = getScopeRisksUseCase;
+    this.deleteRiskUseCase = deleteRiskUseCase;
+    this.updateScopeRiskUseCase = updateScopeRiskUseCase;
+  }
 
   @GetMapping
   @Operation(summary = "Loads all scopes")
@@ -261,7 +278,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
     }
     CompletableFuture<FullScopeDto> scopeFuture =
         useCaseInteractor.execute(
-            getScopeUseCase,
+            getElementUseCase,
             new GetElementUseCase.InputData(Key.uuidFrom(uuid), client),
             output -> entityToDtoTransformer.transformScope2Dto(output.getElement(), embedRisks));
     return scopeFuture.thenApply(
@@ -289,7 +306,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
       return null;
     }
     return useCaseInteractor.execute(
-        getScopeUseCase,
+        getElementUseCase,
         new GetElementUseCase.InputData(Key.uuidFrom(uuid), client),
         output -> {
           Scope scope = output.getElement();
@@ -530,12 +547,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
           @PathVariable
           String uuid,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
-    var client = getAuthenticatedClient(auth);
-    return useCaseInteractor.execute(
-        inspectElementUseCase,
-        new InspectElementUseCase.InputData(
-            client, Scope.class, Key.uuidFrom(uuid), Key.uuidFrom(domainId)),
-        output -> ResponseEntity.ok().body(output.getFindings()));
+    return inspect(auth, uuid, domainId, Scope.class);
   }
 
   @Operation(
@@ -553,14 +565,7 @@ public class ScopeController extends AbstractEntityControllerWithDefaultSearch
       @Parameter(required = true, hidden = true) Authentication auth,
       @Valid @RequestBody FullScopeDto dto,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
-    var client = getAuthenticatedClient(auth);
-    var element =
-        runner.run(
-            () -> dtoToEntityTransformer.transformDto2Element(dto, createIdRefResolver(client)));
-    return useCaseInteractor.execute(
-        evaluateElementUseCase,
-        new EvaluateElementUseCase.InputData(client, Key.uuidFrom(domainId), element),
-        output -> ResponseEntity.ok().body(output));
+    return super.evaluate(auth, dto, domainId);
   }
 
   @Override

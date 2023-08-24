@@ -444,6 +444,25 @@ class MultiDomainElementRestTest extends VeoRestTest {
         then: "the decision result should be true"
         post("/domains/$domainIdB/$type.pluralTerm/evaluation", element, 200).body.decisionResults.easyDecision.value
 
+        and: "the legacy evaluation endpoint also works"
+        post("/$type.pluralTerm/evaluation?domain=$domainIdB", [
+            name: "decision test element",
+            owner: [targetUri: "/units/$unitId"],
+            domains: [
+                (domainIdB): [
+                    subType: "STB",
+                    status: "ON",
+                ]
+            ],
+            customAspects: [
+                separateCa: [
+                    attributes: [
+                        someAttr: 6
+                    ]
+                ]
+            ]
+        ], 200).body.decisionResults.easyDecision.value
+
         where:
         type << EntityType.ELEMENT_TYPES
     }

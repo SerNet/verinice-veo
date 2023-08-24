@@ -86,7 +86,6 @@ import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateAssetDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
-import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
@@ -130,7 +129,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(AssetController.URL_BASE_PATH)
 @Slf4j
-public class AssetController extends AbstractElementController<Asset, FullAssetDto>
+public class AssetController extends AbstractCompositeElementController<Asset, FullAssetDto>
     implements AssetRiskResource {
   public static final String EMBED_RISKS_PARAM = "embedRisks";
   private final DeleteRiskUseCase deleteRiskUseCase;
@@ -422,7 +421,7 @@ public class AssetController extends AbstractElementController<Asset, FullAssetD
   @PostMapping(value = "/evaluation")
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
       @Parameter(required = true, hidden = true) Authentication auth,
-      @Valid @RequestBody FullProcessDto element,
+      @Valid @RequestBody FullAssetDto element,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
     return super.evaluate(auth, element, domainId);
   }

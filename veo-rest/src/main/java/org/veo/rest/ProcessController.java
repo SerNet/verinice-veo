@@ -133,7 +133,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(ProcessController.URL_BASE_PATH)
 @Slf4j
-public class ProcessController extends AbstractElementController<Process, FullProcessDto>
+public class ProcessController extends AbstractCompositeElementController<Process, FullProcessDto>
     implements ProcessRiskResource {
 
   public static final String URL_BASE_PATH = "/" + Process.PLURAL_TERM;

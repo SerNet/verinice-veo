@@ -118,7 +118,8 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(IncidentController.URL_BASE_PATH)
 @Slf4j
-public class IncidentController extends AbstractElementController<Incident, FullIncidentDto> {
+public class IncidentController
+    extends AbstractCompositeElementController<Incident, FullIncidentDto> {
 
   public IncidentController(
       GetIncidentUseCase getIncidentUseCase,

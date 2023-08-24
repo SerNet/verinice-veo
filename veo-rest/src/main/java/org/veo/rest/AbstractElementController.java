@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.rest;
 
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -31,7 +30,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
-import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.Element;
@@ -46,13 +44,12 @@ import org.veo.rest.security.ApplicationUser;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public abstract class AbstractElementController<
-        T extends CompositeElement<T>, E extends CompositeEntityDto<T>>
+public abstract class AbstractElementController<T extends Element, E extends AbstractElementDto<T>>
     extends AbstractEntityControllerWithDefaultSearch {
 
-  private final Class<T> modelType;
+  protected final Class<T> modelType;
 
-  private final GetElementUseCase<T> getElementUseCase;
+  protected final GetElementUseCase<T> getElementUseCase;
   private final EvaluateElementUseCase evaluateElementUseCase;
   private final InspectElementUseCase inspectElementUseCase;
 
@@ -81,23 +78,6 @@ public abstract class AbstractElementController<
             output -> entity2Dto(output.getElement()));
     return entityFuture.thenApply(
         dto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(dto));
-  }
-
-  public @Valid CompletableFuture<ResponseEntity<List<E>>> getElementParts(
-      Authentication auth, String uuid, WebRequest request) {
-    Client client = getAuthenticatedClient(auth);
-    if (getEtag(modelType, uuid).map(request::checkNotModified).orElse(false)) {
-      return null;
-    }
-    return useCaseInteractor.execute(
-        getElementUseCase,
-        new GetElementUseCase.InputData(Key.uuidFrom(uuid), client),
-        output -> {
-          T element = output.getElement();
-          return ResponseEntity.ok()
-              .cacheControl(defaultCacheControl)
-              .body(element.getParts().stream().map(this::entity2Dto).toList());
-        });
   }
 
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
