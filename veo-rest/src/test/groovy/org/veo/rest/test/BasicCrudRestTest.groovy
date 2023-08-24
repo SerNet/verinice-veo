@@ -538,5 +538,11 @@ class BasicCrudRestTest extends VeoRestTest {
         then:
         responseBody.name == "A name must be present."
         responseBody.owner == "An owner must be present."
+
+        expect:
+        post("/units", [
+            name: "u",
+            parent: [targetUri: "httpx://uri.geller"]
+        ], 422).body.message == "Invalid entity reference: httpx://uri.geller"
     }
 }

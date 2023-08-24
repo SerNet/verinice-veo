@@ -37,6 +37,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.veo.adapter.presenter.api.dto.ModelDto;
 import org.veo.adapter.presenter.api.dto.full.LegacyCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
+import org.veo.core.entity.exception.UnprocessableDataException;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -114,7 +115,7 @@ public class TypeExtractor {
             .orElseThrow(
                 () -> {
                   log.warn("No mapping found for URI string {}", uriString);
-                  return new AssertionError(
+                  return new UnprocessableDataException(
                       String.format("No mapping found for URI: %s", uriString));
                 });
 

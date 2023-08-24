@@ -32,6 +32,7 @@ import org.veo.adapter.presenter.api.dto.full.FullScopeDto
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto
 import org.veo.adapter.presenter.api.dto.full.LegacyCatalogItemDto
 import org.veo.core.VeoSpringSpec
+import org.veo.core.entity.exception.UnprocessableDataException
 import org.veo.rest.configuration.TypeExtractor
 
 class TypeExtractorITSpec extends VeoSpringSpec {
@@ -69,7 +70,7 @@ class TypeExtractorITSpec extends VeoSpringSpec {
         typeExtractor.parseDtoType(uri)
 
         then: "no type is returned for this URI"
-        def error = thrown AssertionError
+        def error = thrown UnprocessableDataException
         error.message ==~ message
 
         where:
