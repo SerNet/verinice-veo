@@ -81,7 +81,7 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
   }
 
   public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
-      Authentication auth, @Valid AbstractElementDto dto, String domainId) {
+      Authentication auth, @Valid E dto, String domainId) {
     var client = getAuthenticatedClient(auth);
     var element =
         runner.run(
@@ -103,10 +103,7 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
   }
 
   public CompletableFuture<ResponseEntity<Set<Finding>>> inspect(
-      Authentication auth,
-      String elementId,
-      String domainId,
-      Class<? extends Element> elementType) {
+      Authentication auth, String elementId, String domainId, Class<T> elementType) {
     var client = getAuthenticatedClient(auth);
     return useCaseInteractor.execute(
         inspectElementUseCase,
