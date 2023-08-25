@@ -181,7 +181,7 @@ class DomainRestTestITSpec extends DomainRestTest {
         def domainDto = exportDomain(newDomainId)
 
         then: "the profile is contained"
-        with(domainDto.profiles.exampleUnit) {
+        with(domainDto.jsonProfiles.exampleUnit) {
             name == 'Example profile'
             elements*.name ==~ [
                 "example process",
@@ -197,12 +197,12 @@ class DomainRestTestITSpec extends DomainRestTest {
         with(domainTemplate) {
             name == "DS-GVO"
             templateVersion == "1.4.1"
-            profiles.exampleUnit.elements*.name ==~ [
+            jsonProfiles.exampleUnit.elements*.name ==~ [
                 "example process",
                 "example scenario"
             ]
-            profiles.exampleUnit.risks.size() == 1
-            profiles.exampleUnit.elements[0].domains.keySet() ==~ [domainTemplate.id]
+            jsonProfiles.exampleUnit.risks.size() == 1
+            jsonProfiles.exampleUnit.elements[0].domains.keySet() ==~ [domainTemplate.id]
         }
 
         when:" we post the domain export as domain template"
@@ -216,11 +216,11 @@ class DomainRestTestITSpec extends DomainRestTest {
         with(domainTemplateExport) {
             name == domainDto.name
             templateVersion == domainDto.templateVersion
-            profiles.exampleUnit.elements*.name ==~ [
+            jsonProfiles.exampleUnit.elements*.name ==~ [
                 "example process",
                 "example scenario"
             ]
-            profiles.exampleUnit.risks.size() == 1
+            jsonProfiles.exampleUnit.risks.size() == 1
         }
     }
 

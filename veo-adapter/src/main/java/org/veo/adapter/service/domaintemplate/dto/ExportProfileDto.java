@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler.
+ * Copyright (C) 2023  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,28 +15,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.adapter.service.domaintemplate.dto;
 
-import org.veo.adapter.presenter.api.common.IdRef;
-import org.veo.adapter.presenter.api.openapi.IdRefCatalogReferenceCatalogItem;
-import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.TailoringReference;
-import org.veo.core.entity.UpdateReference;
+import java.util.HashSet;
+import java.util.Set;
+
+import jakarta.validation.constraints.Pattern;
+
+import org.veo.adapter.presenter.api.Patterns;
+import org.veo.adapter.presenter.api.dto.AbstractProfileDto;
+import org.veo.adapter.presenter.api.response.IdentifiableDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-/**
- * The base dto class for all catalog references like {@link TailoringReference} or {@link
- * UpdateReference}. As long as we do not have an editor, (see VEO-399) it is only used internally.
- * Therefore all schema annotations are quite useless as these are not part of any client api.
- */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class AbstractCatalogReferenceDto extends AbstractVersionedDto {
+public class ExportProfileDto extends AbstractProfileDto implements IdentifiableDto {
+  @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
+  @Schema(
+      description = "ID must be a valid UUID string following RFC 4122.",
+      example = "adf037f1-0089-48ad-9177-92269918758b",
+      format = "uuid")
+  @ToString.Include
+  private String id;
 
-  @Schema(implementation = IdRefCatalogReferenceCatalogItem.class)
-  private IdRef<CatalogItem> catalogItem;
+  @Schema(description = "The profile-items for the Profile.")
+  private Set<ExportProfileItemDto> items = new HashSet<>();
 }

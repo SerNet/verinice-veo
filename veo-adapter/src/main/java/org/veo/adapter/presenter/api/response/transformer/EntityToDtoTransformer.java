@@ -94,6 +94,8 @@ import org.veo.adapter.service.domaintemplate.dto.ExportDomainDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportLinkProfileTailoringReference;
 import org.veo.adapter.service.domaintemplate.dto.ExportLinkTailoringReference;
+import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
+import org.veo.adapter.service.domaintemplate.dto.ExportProfileItemDto;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
@@ -171,6 +173,16 @@ public final class EntityToDtoTransformer {
         "No transform method defined for " + source.getClass().getSimpleName());
   }
 
+  private ExportProfileDto transformProfile2ExportDto(Profile profile) {
+    ExportProfileDto profileDto = new ExportProfileDto();
+    profileDto.setId(profile.getIdAsString());
+    profileDto.setName(profile.getName());
+    profileDto.setDescription(profile.getDescription());
+    profileDto.setLanguage(profile.getLanguage());
+    profileDto.setItems(convertSet(profile.getItems(), this::transformProfileItem2ExportDto));
+    return profileDto;
+  }
+
   public FullProfileDto transformProfile2Dto(Profile profile) {
     FullProfileDto profileDto = new FullProfileDto();
     profileDto.setId(profile.getIdAsString());
@@ -192,6 +204,30 @@ public final class EntityToDtoTransformer {
 
   public FullProfileItemDto transformProfileItem2Dto(ProfileItem source) {
     FullProfileItemDto target = new FullProfileItemDto();
+    target.setId(source.getId().uuidValue());
+    mapVersionedSelfReferencingProperties(source, target);
+    mapNameableProperties(source, target);
+    target.setElementType(source.getElementType());
+    target.setSubType(source.getSubType());
+    target.setStatus(source.getStatus());
+
+    target.setCustomAspects(
+        new CustomAspectMapDto(
+            source.getCustomAspects().entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey(), e -> new AttributesDto(e.getValue())))));
+
+    target.setTailoringReferences(
+        source.getTailoringReferences().stream()
+            .map(this::transformProfileTailoringReference2Dto)
+            .collect(toSet()));
+    // TODO #2301 remove
+    target.setNamespace(source.getNamespace());
+
+    return target;
+  }
+
+  private ExportProfileItemDto transformProfileItem2ExportDto(ProfileItem source) {
+    ExportProfileItemDto target = new ExportProfileItemDto();
     target.setId(source.getId().uuidValue());
     mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);
@@ -397,7 +433,7 @@ public final class EntityToDtoTransformer {
     target.setAuthority(source.getAuthority());
     target.setTemplateVersion(source.getTemplateVersion());
     target.setDecisions(source.getDecisions());
-    target.setProfiles(Map.copyOf(source.getJsonProfiles()));
+    target.setJsonProfiles(Map.copyOf(source.getJsonProfiles()));
     target.setElementTypeDefinitions(
         source.getElementTypeDefinitions().stream()
             .collect(toMap(ElementTypeDefinition::getElementType, this::mapElementTypeDefinition)));
@@ -405,12 +441,18 @@ public final class EntityToDtoTransformer {
     mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);
     target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
+
+    target.setProfilesNew(convertSet(source.getProfiles(), this::transformProfile2Dto));
+
     return target;
   }
 
   public ExportDomainTemplateDto transformDomainTemplate2Dto(@Valid DomainBase source) {
     var target = new ExportDomainTemplateDto();
     mapDomain(source, target);
+
+    target.setProfilesNew(convertSet(source.getProfiles(), this::transformProfile2ExportDto));
+
     return target;
   }
 
@@ -418,6 +460,9 @@ public final class EntityToDtoTransformer {
     var target = new ExportDomainDto();
     mapDomain(source, target);
     target.setDomainTemplate(IdRef.from(source.getDomainTemplate(), referenceAssembler));
+
+    target.setProfilesNew(convertSet(source.getProfiles(), this::transformProfile2ExportDto));
+
     return target;
   }
 
@@ -426,12 +471,11 @@ public final class EntityToDtoTransformer {
     target.setVersion(source.getVersion());
     target.setAuthority(source.getAuthority());
     target.setTemplateVersion(source.getTemplateVersion());
-    target.setProfiles(Map.copyOf(source.getJsonProfiles()));
+    target.setJsonProfiles(Map.copyOf(source.getJsonProfiles()));
 
     mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);
     target.setCatalogItems(convertSet(source.getCatalogItems(), this::transformCatalogItem2Dto));
-
     Map<String, ElementTypeDefinitionDto> elementTypeDefinitionsByType =
         source.getElementTypeDefinitions().stream()
             .collect(toMap(ElementTypeDefinition::getElementType, this::mapElementTypeDefinition));

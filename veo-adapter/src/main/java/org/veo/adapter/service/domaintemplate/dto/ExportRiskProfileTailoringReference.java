@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler.
+ * Copyright (C) 2023  Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,28 +15,41 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.adapter.service.domaintemplate.dto;
+
+import java.util.Collections;
+import java.util.Map;
 
 import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.dto.AbstractProfileTailoringReferenceDto;
 import org.veo.adapter.presenter.api.openapi.IdRefCatalogReferenceCatalogItem;
-import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.TailoringReference;
-import org.veo.core.entity.UpdateReference;
+import org.veo.core.entity.ProfileItem;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
- * The base dto class for all catalog references like {@link TailoringReference} or {@link
- * UpdateReference}. As long as we do not have an editor, (see VEO-399) it is only used internally.
- * Therefore all schema annotations are quite useless as these are not part of any client api.
+ * This DTO is used to represent an ExternalTailoringReference. It is primarily used in the
+ * construction and serialization of a domain template.
  */
-@Data
 @EqualsAndHashCode(callSuper = true)
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class AbstractCatalogReferenceDto extends AbstractVersionedDto {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+class ExportRiskProfileTailoringReference extends AbstractProfileTailoringReferenceDto {
 
   @Schema(implementation = IdRefCatalogReferenceCatalogItem.class)
-  private IdRef<CatalogItem> catalogItem;
+  private IdRef<ProfileItem> mitigation;
+
+  @Schema(implementation = IdRefCatalogReferenceCatalogItem.class)
+  private IdRef<ProfileItem> riskOwner;
+
+  @Schema(implementation = IdRefCatalogReferenceCatalogItem.class)
+  private IdRef<ProfileItem> catalogItem;
+
+  @Schema(description = "The properties of the risk element.", example = " name: 'value'")
+  private Map<String, Object> riskAspects = Collections.emptyMap();
 }

@@ -30,18 +30,21 @@ import org.apache.commons.lang3.NotImplementedException;
 
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
+import org.veo.adapter.presenter.api.dto.AbstractProfileTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
+import org.veo.adapter.presenter.api.dto.full.FullProfileItemDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
+import org.veo.adapter.service.domaintemplate.dto.ExportLinkProfileTailoringReference;
 import org.veo.adapter.service.domaintemplate.dto.ExportLinkTailoringReference;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.AssetRisk;
@@ -55,6 +58,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.ProcessRisk;
+import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.TailoringReference;
@@ -195,7 +199,7 @@ public final class DtoToEntityTransformer {
         source.getCatalogItems().stream()
             .map(c -> transformDto2CatalogItem(c, idRefResolver))
             .collect(Collectors.toSet()));
-    target.setProfiles(copyOf(source.getProfiles()));
+    target.setProfiles(copyOf(source.getJsonProfiles()));
   }
 
   public ElementTypeDefinition mapElementTypeDefinition(
@@ -225,6 +229,31 @@ public final class DtoToEntityTransformer {
     if (source.isLinkTailoringReferences()) {
       ExportLinkTailoringReference tailoringReferenceDto = (ExportLinkTailoringReference) source;
       LinkTailoringReference tailoringReference = (LinkTailoringReference) target;
+      tailoringReference.setAttributes(tailoringReferenceDto.getAttributes());
+      tailoringReference.setLinkType(tailoringReferenceDto.getLinkType());
+    }
+
+    return target;
+  }
+
+  private TailoringReference<ProfileItem> transformDto2ProfileTailoringReference(
+      AbstractProfileTailoringReferenceDto source, ProfileItem owner, IdRefResolver idRefResolver) {
+
+    TailoringReference<ProfileItem> target =
+        source.isLinkTailoringReferences()
+            ? createIdentifiable(LinkTailoringReference.class, source)
+            : createIdentifiable(TailoringReference.class, source);
+    target.setOwner(owner);
+    target.setReferenceType(source.getReferenceType());
+    if (source.getTarget() != null) {
+      ProfileItem resolve = idRefResolver.resolve(source.getTarget());
+      target.setTarget(resolve);
+    }
+
+    if (source.isLinkTailoringReferences()) {
+      ExportLinkProfileTailoringReference tailoringReferenceDto =
+          (ExportLinkProfileTailoringReference) source;
+      LinkTailoringReference<ProfileItem> tailoringReference = (LinkTailoringReference) target;
       tailoringReference.setAttributes(tailoringReferenceDto.getAttributes());
       tailoringReference.setLinkType(tailoringReferenceDto.getLinkType());
     }
@@ -272,6 +301,31 @@ public final class DtoToEntityTransformer {
             source.getTailoringReferences(),
             tr -> transformDto2TailoringReference(tr, target, idRefResolver)));
 
+    // TODO #2301 remove
+    target.setNamespace(source.getNamespace());
+    return target;
+  }
+
+  public ProfileItem transformDto2ProfileItem(
+      FullProfileItemDto source, IdRefResolver idRefResolver) {
+    var target = createIdentifiable(ProfileItem.class, source);
+    target.setAbbreviation(source.getAbbreviation());
+    target.setName(source.getName());
+    target.setDescription(source.getDescription());
+    target.setElementType(source.getElementType());
+    target.setStatus(source.getStatus());
+    target.setSubType(source.getSubType());
+
+    target.setCustomAspects(
+        source.getCustomAspects().getValue().entrySet().stream()
+            .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().getValue())));
+
+    target.setTailoringReferences(
+        convertSet(
+            source.getTailoringReferences(),
+            tr -> transformDto2ProfileTailoringReference(tr, target, idRefResolver)));
+
+    // TODO #2301 remove
     target.setNamespace(source.getNamespace());
     return target;
   }

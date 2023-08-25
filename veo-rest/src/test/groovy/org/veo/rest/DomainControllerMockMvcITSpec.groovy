@@ -365,8 +365,8 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         def result = parseJson(get("/domains/${domain.idAsString}"))
 
         then:
-        result.profiles.size() == 1
-        with(result.profiles.exampleOrganization) {
+        result.jsonProfiles.size() == 1
+        with(result.jsonProfiles.exampleOrganization) {
             name == 'Beispieldaten'
             description == 'Beispieldaten für den Datenschutz'
             language == 'de_DE'

@@ -17,7 +17,9 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate.dto;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import jakarta.validation.constraints.Pattern;
@@ -26,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.dto.AbstractDomainTemplateDto;
+import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -51,4 +54,7 @@ public class ExportDomainTemplateDto extends AbstractDomainTemplateDto implement
   private String id;
 
   private Set<ExportCatalogItemDto> catalogItems = new HashSet<>();
+  private Set<ExportProfileDto> profilesNew = new HashSet<>();
+
+  private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions = new HashMap<>();
 }

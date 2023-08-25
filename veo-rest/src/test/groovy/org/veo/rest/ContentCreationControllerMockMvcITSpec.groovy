@@ -784,6 +784,22 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 customAspects == s.customAspects
             }
         }
+
+        when: "exporting the domain"
+        def exportedDomain = parseJson(get("/domains/${domain1.idAsString}/export"))
+
+        then: "the profiles are exported"
+        exportedDomain != null
+        exportedDomain.profilesNew.size() ==1
+        with(exportedDomain.profilesNew.first()) {
+            name == "test"
+            items.size() == 10
+            with(items.find { it.name == 'asset' } ) {
+                elementType=="asset"
+                subType=="AST_Application"
+                tailoringReferences.size() == 2
+            }
+        }
     }
 
     @WithUserDetails("content-creator")
@@ -963,7 +979,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:" the export file contains the profile data"
         exportedDomain.name == newDomain.name
-        exportedDomain.profiles.exampleOrganization.elements*.type ==~ [
+        exportedDomain.jsonProfiles.exampleOrganization.elements*.type ==~ [
             "asset",
             "control",
             "document",
@@ -973,7 +989,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             "scenario",
             "scope"
         ]
-        exportedDomain.profiles.exampleOrganization.risks.size() == 2
+        exportedDomain.jsonProfiles.exampleOrganization.risks.size() == 2
 
         when: "we create a new domain template from the export"
         exportedDomain.templateVersion = "1.2.4"
