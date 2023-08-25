@@ -21,15 +21,16 @@ import static org.veo.core.entity.riskdefinition.RiskDefinition.MAX_ID_SIZE;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Scope;
-import org.veo.core.entity.state.ControlImplementationState;
 import org.veo.core.entity.state.ScopeDomainAssociationState;
 import org.veo.core.entity.state.ScopeState;
 
@@ -46,7 +47,7 @@ import lombok.ToString;
     description =
         "A group that can contain different types of elements. Scopes represent organizational structures such as organizations, departments or projects.  This DTO represents a scope from the viewpoint of a domain and contains both basic and domain-specific properties.")
 public abstract class AbstractScopeInDomainDto extends AbstractElementInDomainDto<Scope>
-    implements ScopeState, ScopeDomainAssociationState {
+    implements ScopeState, ScopeDomainAssociationState, RiskAffectedDto<Scope> {
 
   @Override
   @Schema(example = "Data Inc.")
@@ -88,9 +89,5 @@ public abstract class AbstractScopeInDomainDto extends AbstractElementInDomainDt
           "Key is risk definition ID, value contains risk values in the context of that risk definition.")
   Map<String, ImpactRiskValuesDto> riskValues = new HashMap<>();
 
-  @Override
-  public Set<ControlImplementationState> getControlImplementationStates() {
-    // FIXME #2336 implement method
-    return Collections.emptySet();
-  }
+  @Valid private Set<ControlImplementationDto> controlImplementations = new HashSet<>();
 }

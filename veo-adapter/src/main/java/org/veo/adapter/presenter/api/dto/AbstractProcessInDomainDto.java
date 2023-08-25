@@ -17,13 +17,14 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import jakarta.validation.Valid;
+
 import org.veo.core.entity.Process;
-import org.veo.core.entity.state.ControlImplementationState;
 import org.veo.core.entity.state.ProcessState;
 import org.veo.core.entity.state.RiskImpactDomainAssociationState;
 
@@ -41,7 +42,7 @@ import lombok.ToString;
         "A series of activities that uses organization resources to transform input into results - this DTO represents a process from the viewpoint of a domain and contains both basic and domain-specific properties.")
 public abstract class AbstractProcessInDomainDto
     extends AbstractCompositeElementInDomainDto<Process>
-    implements ProcessState, RiskImpactDomainAssociationState {
+    implements ProcessState, RiskImpactDomainAssociationState, RiskAffectedDto<Process> {
 
   @Override
   @Schema(example = "External wage accounting")
@@ -77,9 +78,5 @@ public abstract class AbstractProcessInDomainDto
           "Key is risk definition ID, value contains risk values in the context of that risk definition.")
   Map<String, ImpactRiskValuesDto> riskValues = new HashMap<>();
 
-  @Override
-  public Set<ControlImplementationState> getControlImplementationStates() {
-    // FIXME #2336 implement method
-    return Collections.emptySet();
-  }
+  @Valid private Set<ControlImplementationDto> controlImplementations = new HashSet<>();
 }

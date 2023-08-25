@@ -21,6 +21,7 @@ import static org.veo.adapter.presenter.api.dto.MapFunctions.renameKey;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,7 +30,6 @@ import jakarta.validation.Valid;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Scope;
-import org.veo.core.entity.state.ControlImplementationState;
 import org.veo.core.entity.state.ScopeState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -41,7 +41,8 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "scope", description = "Schema for scope")
-public abstract class AbstractScopeDto extends AbstractElementDto<Scope> implements ScopeState {
+public abstract class AbstractScopeDto extends AbstractElementDto<Scope>
+    implements ScopeState, RiskAffectedDto<Scope> {
 
   @Schema(description = "The scope's members")
   private Set<IdRef<Element>> members = Collections.emptySet();
@@ -67,9 +68,5 @@ public abstract class AbstractScopeDto extends AbstractElementDto<Scope> impleme
           "Details about this element's association with domains. Domain ID is key, association object is value.")
   private Map<String, ScopeDomainAssociationDto> domains = new HashMap<>();
 
-  @Override
-  public Set<ControlImplementationState> getControlImplementationStates() {
-    // FIXME #2336 implement method
-    return Collections.emptySet();
-  }
+  @Valid private Set<ControlImplementationDto> controlImplementations = new HashSet<>();
 }

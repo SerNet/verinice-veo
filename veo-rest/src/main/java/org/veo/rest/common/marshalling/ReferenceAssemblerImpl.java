@@ -24,6 +24,7 @@ import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.ANY_BOOLEAN;
 import static org.veo.rest.ControllerConstants.ANY_INT;
 import static org.veo.rest.ControllerConstants.ANY_REQUEST;
+import static org.veo.rest.ControllerConstants.ANY_REQUIREMENT_IMPLEMENTATION;
 import static org.veo.rest.ControllerConstants.ANY_SEARCH;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
 import static org.veo.rest.ControllerConstants.ANY_STRING_LIST;
@@ -36,6 +37,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -63,6 +65,8 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.compliance.ControlImplementation;
+import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.rest.AssetController;
@@ -82,6 +86,7 @@ import org.veo.rest.PersonInDomainController;
 import org.veo.rest.ProcessController;
 import org.veo.rest.ProcessInDomainController;
 import org.veo.rest.ProcessRiskResource;
+import org.veo.rest.RiskAffectedResource;
 import org.veo.rest.ScenarioController;
 import org.veo.rest.ScenarioInDomainController;
 import org.veo.rest.ScopeController;
@@ -261,6 +266,73 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     }
     throw new NotImplementedException(
         "%s references in domain context not supported".formatted(type.getSimpleName()));
+  }
+
+  @Override
+  public String targetReferenceOf(RequirementImplementation requirementImplementation) {
+    return trimVariables(
+        switch (requirementImplementation.getOrigin().getModelType()) {
+          case Asset.SINGULAR_TERM -> linkToRequirementImplementation(
+                  AssetController.class, requirementImplementation)
+              .withRel(AssetController.URL_BASE_PATH)
+              .getHref();
+          case Process.SINGULAR_TERM -> linkToRequirementImplementation(
+                  ProcessController.class, requirementImplementation)
+              .withRel(ProcessController.URL_BASE_PATH)
+              .getHref();
+          case Scope.SINGULAR_TERM -> linkToRequirementImplementation(
+                  ScopeController.class, requirementImplementation)
+              .withRel(ScopeController.URL_BASE_PATH)
+              .getHref();
+          default -> throw new IllegalArgumentException();
+        });
+  }
+
+  @Override
+  public String requirementImplementationsOf(ControlImplementation controlImplementation) {
+    return trimVariables(
+        switch (controlImplementation.getOwner().getModelType()) {
+          case Asset.SINGULAR_TERM -> linkToRequirementImplementations(
+                  AssetController.class, controlImplementation)
+              .withRel(AssetController.URL_BASE_PATH)
+              .getHref();
+          case Process.SINGULAR_TERM -> linkToRequirementImplementations(
+                  ProcessController.class, controlImplementation)
+              .withRel(ProcessController.URL_BASE_PATH)
+              .getHref();
+          case Scope.SINGULAR_TERM -> linkToRequirementImplementations(
+                  ScopeController.class, controlImplementation)
+              .withRel(ScopeController.URL_BASE_PATH)
+              .getHref();
+          default -> throw new IllegalArgumentException();
+        });
+  }
+
+  private WebMvcLinkBuilder linkToRequirementImplementation(
+      Class<? extends RiskAffectedResource> controller,
+      RequirementImplementation requirementImplementation) {
+    return linkTo(
+        methodOn(controller)
+            .updateRequirementImplementation(
+                ANY_AUTH,
+                requirementImplementation.getOrigin().getIdAsString(),
+                requirementImplementation.getControl().getIdAsString(),
+                ANY_REQUIREMENT_IMPLEMENTATION));
+  }
+
+  private WebMvcLinkBuilder linkToRequirementImplementations(
+      Class<? extends RiskAffectedResource> controller,
+      ControlImplementation controlImplementation) {
+    return linkTo(
+        methodOn(controller)
+            .getRequirementImplementations(
+                ANY_AUTH,
+                controlImplementation.getOwner().getIdAsString(),
+                controlImplementation.getControl().getIdAsString(),
+                ANY_INT,
+                ANY_INT,
+                ANY_STRING,
+                ANY_STRING));
   }
 
   /**

@@ -82,6 +82,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
+import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
@@ -91,6 +92,7 @@ import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
+import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControlImplementationInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
@@ -101,6 +103,7 @@ import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
+import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.process.CreateProcessRiskUseCase;
 import org.veo.core.usecase.process.GetProcessRiskUseCase;
@@ -134,7 +137,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(ProcessController.URL_BASE_PATH)
 @Slf4j
 public class ProcessController extends AbstractCompositeElementController<Process, FullProcessDto>
-    implements ProcessRiskResource {
+    implements ProcessRiskResource, RiskAffectedResource {
 
   public static final String URL_BASE_PATH = "/" + Process.PLURAL_TERM;
   public static final String EMBED_RISKS_PARAM = "embedRisks";
@@ -149,6 +152,8 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   private final DeleteRiskUseCase deleteRiskUseCase;
   private final UpdateProcessRiskUseCase updateProcessRiskUseCase;
   private final GetProcessUseCase getProcessUseCase;
+  private final GetRequirementImplementationsByControlImplementationUseCase
+      getRequirementImplementationsByControlImplementationUseCase;
 
   public ProcessController(
       CreateElementUseCase<Process> createProcessUseCase,
@@ -162,7 +167,9 @@ public class ProcessController extends AbstractCompositeElementController<Proces
       DeleteRiskUseCase deleteRiskUseCase,
       UpdateProcessRiskUseCase updateProcessRiskUseCase,
       EvaluateElementUseCase evaluateElementUseCase,
-      InspectElementUseCase inspectElementUseCase) {
+      InspectElementUseCase inspectElementUseCase,
+      GetRequirementImplementationsByControlImplementationUseCase
+          getRequirementImplementationsByControlImplementationUseCase) {
     super(Process.class, getProcessUseCase, evaluateElementUseCase, inspectElementUseCase);
     this.createProcessUseCase = createProcessUseCase;
     this.updateProcessUseCase = putProcessUseCase;
@@ -174,6 +181,8 @@ public class ProcessController extends AbstractCompositeElementController<Proces
     this.deleteRiskUseCase = deleteRiskUseCase;
     this.updateProcessRiskUseCase = updateProcessRiskUseCase;
     this.getProcessUseCase = getProcessUseCase;
+    this.getRequirementImplementationsByControlImplementationUseCase =
+        getRequirementImplementationsByControlImplementationUseCase;
   }
 
   @Operation(summary = "Loads a process")
@@ -562,6 +571,41 @@ public class ProcessController extends AbstractCompositeElementController<Proces
           String uuid,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
     return inspect(auth, uuid, domainId, Process.class);
+  }
+
+  @Override
+  public Future<ResponseEntity<ApiResponseBody>> updateRequirementImplementation(
+      Authentication auth,
+      String riskAffectedId,
+      String controlId,
+      RequirementImplementationDto dto) {
+    // TODO #2398 implement
+    return null;
+  }
+
+  @Override
+  public Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
+      Authentication auth,
+      String riskAffectedId,
+      String controlId,
+      Integer pageSize,
+      Integer pageNumber,
+      String sortColumn,
+      String sortOrder) {
+    return useCaseInteractor.execute(
+        getRequirementImplementationsByControlImplementationUseCase,
+        GetRequirementImplementationsByControlImplementationInputMapper.map(
+            getAuthenticatedClient(auth),
+            Process.class,
+            riskAffectedId,
+            controlId,
+            pageSize,
+            pageNumber,
+            sortColumn,
+            sortOrder),
+        out ->
+            PagingMapper.toPage(
+                out.getResult(), entityToDtoTransformer::transformRequirementImplementation2Dto));
   }
 
   @Override

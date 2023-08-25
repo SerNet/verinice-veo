@@ -82,6 +82,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
+import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateAssetDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
@@ -91,6 +92,7 @@ import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
+import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControlImplementationInputMapper;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
@@ -108,8 +110,10 @@ import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.common.ETag;
+import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
+import org.veo.persistence.access.jpa.RequirementImplementationDataRepository;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;
@@ -130,11 +134,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(AssetController.URL_BASE_PATH)
 @Slf4j
 public class AssetController extends AbstractCompositeElementController<Asset, FullAssetDto>
-    implements AssetRiskResource {
+    implements AssetRiskResource, RiskAffectedResource {
   public static final String EMBED_RISKS_PARAM = "embedRisks";
   private final DeleteRiskUseCase deleteRiskUseCase;
   private final UpdateAssetRiskUseCase updateAssetRiskUseCase;
   private final GetAssetRisksUseCase getAssetRisksUseCase;
+  private final GetRequirementImplementationsByControlImplementationUseCase
+      getRequirementImplementationsByControlImplementationUseCase;
 
   public AssetController(
       GetAssetUseCase getAssetUseCase,
@@ -148,7 +154,10 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
       UpdateAssetRiskUseCase updateAssetRiskUseCase,
       GetAssetRisksUseCase getAssetRisksUseCase,
       EvaluateElementUseCase evaluateElementUseCase,
-      InspectElementUseCase inspectElementUseCase) {
+      InspectElementUseCase inspectElementUseCase,
+      GetRequirementImplementationsByControlImplementationUseCase
+          getRequirementImplementationsByControlImplementationUseCase,
+      RequirementImplementationDataRepository requirementImplementationDataRepository) {
     super(Asset.class, getAssetUseCase, evaluateElementUseCase, inspectElementUseCase);
     this.getAssetsUseCase = getAssetsUseCase;
     this.createAssetUseCase = createAssetUseCase;
@@ -160,6 +169,8 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
     this.updateAssetRiskUseCase = updateAssetRiskUseCase;
     this.getAssetRisksUseCase = getAssetRisksUseCase;
     this.getAssetUseCase = getAssetUseCase;
+    this.getRequirementImplementationsByControlImplementationUseCase =
+        getRequirementImplementationsByControlImplementationUseCase;
   }
 
   public static final String URL_BASE_PATH = "/" + Asset.PLURAL_TERM;
@@ -562,6 +573,41 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
           String uuid,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
     return inspect(auth, uuid, domainId, Asset.class);
+  }
+
+  @Override
+  public Future<ResponseEntity<ApiResponseBody>> updateRequirementImplementation(
+      Authentication auth,
+      String riskAffectedId,
+      String controlId,
+      RequirementImplementationDto dto) {
+    // TODO #2398 implement
+    return null;
+  }
+
+  @Override
+  public Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
+      Authentication auth,
+      String riskAffectedId,
+      String controlId,
+      Integer pageSize,
+      Integer pageNumber,
+      String sortColumn,
+      String sortOrder) {
+    return useCaseInteractor.execute(
+        getRequirementImplementationsByControlImplementationUseCase,
+        GetRequirementImplementationsByControlImplementationInputMapper.map(
+            getAuthenticatedClient(auth),
+            Asset.class,
+            riskAffectedId,
+            controlId,
+            pageSize,
+            pageNumber,
+            sortColumn,
+            sortOrder),
+        out ->
+            PagingMapper.toPage(
+                out.getResult(), entityToDtoTransformer::transformRequirementImplementation2Dto));
   }
 
   @Override

@@ -19,8 +19,8 @@ package org.veo.adapter.presenter.api.dto;
 
 import static org.veo.adapter.presenter.api.dto.MapFunctions.renameKey;
 
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,7 +28,6 @@ import java.util.Set;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Process;
-import org.veo.core.entity.state.ControlImplementationState;
 import org.veo.core.entity.state.ProcessState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -46,7 +45,7 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "process", description = "Schema for process")
 public abstract class AbstractProcessDto extends CompositeEntityDto<Process>
-    implements ProcessState {
+    implements ProcessState, RiskAffectedDto<Process> {
 
   @Override
   @Schema(description = "The name for the process.", example = "Two-factor authentication")
@@ -101,9 +100,5 @@ public abstract class AbstractProcessDto extends CompositeEntityDto<Process>
           "Details about this element's association with domains. Domain ID is key, association object is value.")
   private Map<String, ProcessDomainAssociationDto> domains = new HashMap<>();
 
-  @Override
-  public Set<ControlImplementationState> getControlImplementationStates() {
-    // FIXME #2336 implement method
-    return Collections.emptySet();
-  }
+  @Valid private Set<ControlImplementationDto> controlImplementations = new HashSet<>();
 }

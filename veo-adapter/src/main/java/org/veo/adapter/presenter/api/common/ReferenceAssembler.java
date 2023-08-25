@@ -25,6 +25,8 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.compliance.ControlImplementation;
+import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.entity.ref.ITypedId;
 
 /**
@@ -105,4 +107,8 @@ public interface ReferenceAssembler {
   String parseElementIdInDomain(String targetInDomainUri);
 
   Class<Element> parseElementTypeInDomain(String targetInDomainUri);
+
+  String targetReferenceOf(RequirementImplementation requirementImplementation);
+
+  String requirementImplementationsOf(ControlImplementation controlImplementation);
 }

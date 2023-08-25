@@ -19,8 +19,8 @@ package org.veo.adapter.presenter.api.dto;
 
 import static org.veo.adapter.presenter.api.dto.MapFunctions.renameKey;
 
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,7 +29,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.state.AssetState;
-import org.veo.core.entity.state.ControlImplementationState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -41,7 +40,8 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Schema(title = "asset", description = "Schema for asset")
-public abstract class AbstractAssetDto extends CompositeEntityDto<Asset> implements AssetState {
+public abstract class AbstractAssetDto extends CompositeEntityDto<Asset>
+    implements AssetState, RiskAffectedDto<Asset> {
 
   @Override
   @Schema(description = "The name for the asset.", example = "Mail Server")
@@ -94,9 +94,5 @@ public abstract class AbstractAssetDto extends CompositeEntityDto<Asset> impleme
           "Details about this element's association with domains. Domain ID is key, association object is value.")
   private Map<String, AssetDomainAssociationDto> domains = new HashMap<>();
 
-  @Override
-  public Set<ControlImplementationState> getControlImplementationStates() {
-    // FIXME #2336 implement method
-    return Collections.emptySet();
-  }
+  @Valid private Set<ControlImplementationDto> controlImplementations = new HashSet<>();
 }

@@ -33,6 +33,8 @@ import jakarta.validation.Valid;
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
+import org.veo.adapter.presenter.api.common.RequirementImplementationRef;
+import org.veo.adapter.presenter.api.common.RequirementImplementationsRef;
 import org.veo.adapter.presenter.api.dto.AbstractCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.AbstractCompositeElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
@@ -43,6 +45,7 @@ import org.veo.adapter.presenter.api.dto.AbstractVersionedDto;
 import org.veo.adapter.presenter.api.dto.AbstractVersionedSelfReferencingDto;
 import org.veo.adapter.presenter.api.dto.AttributesDto;
 import org.veo.adapter.presenter.api.dto.CompositeEntityDto;
+import org.veo.adapter.presenter.api.dto.ControlImplementationDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.CustomLinkDto;
@@ -51,6 +54,8 @@ import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.LinkDto;
 import org.veo.adapter.presenter.api.dto.LinkMapDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
+import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
+import org.veo.adapter.presenter.api.dto.RiskAffectedDto;
 import org.veo.adapter.presenter.api.dto.ShortCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
@@ -102,12 +107,15 @@ import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
+import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.Versioned;
+import org.veo.core.entity.compliance.ControlImplementation;
+import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 
 /** A collection of transform functions to transform entities to Dto back and forth. */
@@ -204,6 +212,7 @@ public final class EntityToDtoTransformer {
   public FullAssetDto transformAsset2Dto(@Valid Asset source, boolean embedRisks) {
     FullAssetDto target = new FullAssetDto();
     mapCompositeEntity(source, target);
+    mapRiskAffected(source, target);
     domainAssociationTransformer.mapDomainsToDto(source, target);
 
     if (embedRisks) {
@@ -224,6 +233,7 @@ public final class EntityToDtoTransformer {
   public FullProcessDto transformProcess2Dto(@Valid Process source, boolean embedRisks) {
     FullProcessDto target = new FullProcessDto();
     mapCompositeEntity(source, target);
+    mapRiskAffected(source, target);
     domainAssociationTransformer.mapDomainsToDto(source, target);
 
     if (embedRisks) {
@@ -272,6 +282,7 @@ public final class EntityToDtoTransformer {
   public FullScopeDto transformScope2Dto(@Valid Scope source, boolean embedRisks) {
     FullScopeDto target = new FullScopeDto();
     mapElement(source, target);
+    mapRiskAffected(source, target);
     domainAssociationTransformer.mapDomainsToDto(source, target);
     target.setMembers(convertReferenceSet(source.getMembers()));
     if (embedRisks) {
@@ -282,6 +293,18 @@ public final class EntityToDtoTransformer {
               .collect(toSet()));
     }
 
+    return target;
+  }
+
+  public RequirementImplementationDto transformRequirementImplementation2Dto(
+      RequirementImplementation source) {
+    var target = new RequirementImplementationDto();
+    target.setSelfRef(RequirementImplementationRef.from(source, referenceAssembler));
+    target.setControl(IdRef.from(source.getControl(), referenceAssembler));
+    target.setStatus(source.getStatus());
+    target.setOrigin(IdRef.from(source.getOrigin(), referenceAssembler));
+    target.setImplementationStatement(source.getImplementationStatement());
+    target.setOrigination(source.getOrigination());
     return target;
   }
 
@@ -478,6 +501,27 @@ public final class EntityToDtoTransformer {
     if (source.getOwner() != null) {
       target.setOwner(IdRef.from(source.getOwner(), referenceAssembler));
     }
+  }
+
+  private <T extends RiskAffected<T, ?>> void mapRiskAffected(T source, RiskAffectedDto<T> target) {
+    target.setControlImplementations(
+        source.getControlImplementations().stream()
+            .map(ci -> mapControlImplementation(source, ci))
+            .collect(toSet()));
+  }
+
+  private ControlImplementationDto mapControlImplementation(
+      RiskAffected<?, ?> riskAffected, ControlImplementation source) {
+    return new ControlImplementationDto(
+        IdRef.from(source.getControl(), referenceAssembler),
+        riskAffected.getRequirementImplementations().stream()
+            .filter(ri -> ri.getControl().equals(source.getControl()))
+            .findAny()
+            .get()
+            .getStatus(),
+        riskAffected.getDescription(),
+        IdRef.from(source.getResponsible(), referenceAssembler),
+        RequirementImplementationsRef.from(source, referenceAssembler));
   }
 
   private <TDto extends Identifiable & Versioned> void mapVersionedSelfReferencingProperties(

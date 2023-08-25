@@ -84,6 +84,7 @@ import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractScopeDto;
 import org.veo.adapter.presenter.api.dto.PageDto;
+import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.create.CreateScopeDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
@@ -92,6 +93,7 @@ import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateElementInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
+import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControlImplementationInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
@@ -102,6 +104,7 @@ import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.common.ETag;
+import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.core.usecase.scope.CreateScopeRiskUseCase;
@@ -131,7 +134,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(ScopeController.URL_BASE_PATH)
 @Slf4j
 public class ScopeController extends AbstractElementController<Scope, AbstractScopeDto>
-    implements ScopeRiskResource {
+    implements ScopeRiskResource, RiskAffectedResource {
   public static final String EMBED_RISKS_PARAM = "embedRisks";
   public static final String URL_BASE_PATH = "/" + Scope.PLURAL_TERM;
 
@@ -144,6 +147,8 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
   private final GetScopeRisksUseCase getScopeRisksUseCase;
   private final DeleteRiskUseCase deleteRiskUseCase;
   private final UpdateScopeRiskUseCase updateScopeRiskUseCase;
+  private final GetRequirementImplementationsByControlImplementationUseCase
+      getRequirementImplementationsByControlImplementationUseCase;
 
   public ScopeController(
       GetScopeUseCase getElementUseCase,
@@ -157,7 +162,9 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
       CreateScopeRiskUseCase createScopeRiskUseCase,
       GetScopeRisksUseCase getScopeRisksUseCase,
       DeleteRiskUseCase deleteRiskUseCase,
-      UpdateScopeRiskUseCase updateScopeRiskUseCase) {
+      UpdateScopeRiskUseCase updateScopeRiskUseCase,
+      GetRequirementImplementationsByControlImplementationUseCase
+          getRequirementImplementationsByControlImplementationUseCase) {
     super(Scope.class, getElementUseCase, evaluateElementUseCase, inspectElementUseCase);
     this.createScopeUseCase = createScopeUseCase;
     this.getScopesUseCase = getScopesUseCase;
@@ -168,6 +175,8 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
     this.getScopeRisksUseCase = getScopeRisksUseCase;
     this.deleteRiskUseCase = deleteRiskUseCase;
     this.updateScopeRiskUseCase = updateScopeRiskUseCase;
+    this.getRequirementImplementationsByControlImplementationUseCase =
+        getRequirementImplementationsByControlImplementationUseCase;
   }
 
   @GetMapping
@@ -592,6 +601,41 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
     return useCaseInteractor
         .execute(updateScopeRiskUseCase, input, output -> null)
         .thenCompose(o -> this.getRisk(client, scopeId, scenarioId));
+  }
+
+  @Override
+  public Future<ResponseEntity<ApiResponseBody>> updateRequirementImplementation(
+      Authentication auth,
+      String riskAffectedId,
+      String controlId,
+      RequirementImplementationDto dto) {
+    // TODO #2398 implement
+    return null;
+  }
+
+  @Override
+  public Future<PageDto<RequirementImplementationDto>> getRequirementImplementations(
+      Authentication auth,
+      String riskAffectedId,
+      String controlId,
+      Integer pageSize,
+      Integer pageNumber,
+      String sortColumn,
+      String sortOrder) {
+    return useCaseInteractor.execute(
+        getRequirementImplementationsByControlImplementationUseCase,
+        GetRequirementImplementationsByControlImplementationInputMapper.map(
+            getAuthenticatedClient(auth),
+            Scope.class,
+            riskAffectedId,
+            controlId,
+            pageSize,
+            pageNumber,
+            sortColumn,
+            sortOrder),
+        out ->
+            PagingMapper.toPage(
+                out.getResult(), entityToDtoTransformer::transformRequirementImplementation2Dto));
   }
 
   protected FullScopeDto entity2Dto(Scope entity) {

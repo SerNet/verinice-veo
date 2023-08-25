@@ -110,6 +110,7 @@ import org.veo.core.usecase.catalogitem.GetCatalogItemsUseCase;
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.QueryCatalogItemsUseCase;
 import org.veo.core.usecase.client.DeleteClientUseCase;
+import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
 import org.veo.core.usecase.control.GetControlsUseCase;
 import org.veo.core.usecase.control.UpdateControlUseCase;
@@ -569,6 +570,15 @@ public class ModuleConfiguration {
   @Bean
   public GetAssetRisksUseCase getAssetRisksUseCase(RepositoryProvider repositoryProvider) {
     return new GetAssetRisksUseCase(repositoryProvider);
+  }
+
+  @Bean
+  public GetRequirementImplementationsByControlImplementationUseCase
+      retrieveRequirementImplementationsUseCase(
+          RepositoryProvider repositoryProvider,
+          RequirementImplementationRepository requirementImplementationRepository) {
+    return new GetRequirementImplementationsByControlImplementationUseCase(
+        repositoryProvider, requirementImplementationRepository);
   }
 
   @Bean
