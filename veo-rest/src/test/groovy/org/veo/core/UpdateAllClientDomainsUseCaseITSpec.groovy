@@ -115,8 +115,13 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         client = clientRepository.findById(client.id).get()
 
         then: 'the old domain is disabled'
-        !client.getAllDomains().find{it.id == dsgvoDomain.id}.active
-        client.domains.find{it.id == dsgvoDomainV2.id}.active
+        with(client.domains) {
+            size() == 1
+            with(first()) {
+                it.id == dsgvoDomainV2.id
+                it.active
+            }
+        }
     }
 
     def "Migrate an empty unit"() {

@@ -152,6 +152,8 @@ abstract class VeoSpringSpec extends VeoSpec {
                 unitDataRepository.findByClientId(client.idAsString).findAll { it.parent == null }.each {
                     deleteUnitRecursively(it)
                 }
+                domainDataRepository.deleteAll(domainDataRepository.findAllByClient(client.idAsString))
+                client.domains = []
                 clientDataRepository.delete(client)
             }
             domainTemplateDataRepository.deleteAll()

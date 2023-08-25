@@ -21,6 +21,7 @@ import static java.util.stream.StreamSupport.stream;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
@@ -29,6 +30,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Key;
 import org.veo.core.repository.ClientRepository;
 import org.veo.persistence.access.jpa.ClientDataRepository;
+import org.veo.persistence.access.jpa.DomainDataRepository;
 import org.veo.persistence.entity.jpa.ClientData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
@@ -37,10 +39,15 @@ public class ClientRepositoryImpl
     extends AbstractIdentifiableVersionedRepository<Client, ClientData>
     implements ClientRepository {
   private final ClientDataRepository clientDataRepository;
+  private final DomainDataRepository domainDataRepository;
 
-  public ClientRepositoryImpl(ClientDataRepository dataRepository, ValidationService validator) {
+  public ClientRepositoryImpl(
+      ClientDataRepository dataRepository,
+      DomainDataRepository domainDataRepository,
+      ValidationService validator) {
     super(dataRepository, validator);
     clientDataRepository = dataRepository;
+    this.domainDataRepository = domainDataRepository;
   }
 
   @Override
@@ -69,5 +76,12 @@ public class ClientRepositoryImpl
     return stream(clientDataRepository.findAll().spliterator(), false)
         .map(Client.class::cast)
         .toList();
+  }
+
+  @Override
+  public void delete(Client client) {
+    domainDataRepository.deleteAll(domainDataRepository.findAllByClient(client.getIdAsString()));
+    client.setDomains(Set.of());
+    super.delete(client);
   }
 }

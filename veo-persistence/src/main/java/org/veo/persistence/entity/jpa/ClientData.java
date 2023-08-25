@@ -19,7 +19,6 @@ package org.veo.persistence.entity.jpa;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -29,6 +28,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.Valid;
+
+import org.hibernate.annotations.Where;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -79,6 +80,7 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
       cascade = CascadeType.ALL,
       orphanRemoval = true,
       targetEntity = DomainData.class)
+  @Where(clause = "active = true")
   @Valid
   private final Set<Domain> domains = new HashSet<>();
 
@@ -102,12 +104,8 @@ public class ClientData extends IdentifiableVersionedData implements Client, Nam
     domains.addAll(newDomains);
   }
 
-  // Only return active domains
+  // Only returns active domains
   public Set<Domain> getDomains() {
-    return domains.stream().filter(Domain::isActive).collect(Collectors.toSet());
-  }
-
-  public Set<Domain> getAllDomains() {
     return domains;
   }
 
