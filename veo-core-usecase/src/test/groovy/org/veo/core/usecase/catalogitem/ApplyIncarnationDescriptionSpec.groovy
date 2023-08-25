@@ -66,5 +66,6 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
 
         item1.id >> Key.newUuid()
         item1.owner >> existingDomain
+        item1.requireDomainMembership() >> existingDomain
     }
 }

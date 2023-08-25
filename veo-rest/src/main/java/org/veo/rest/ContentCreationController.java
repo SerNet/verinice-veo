@@ -63,6 +63,7 @@ import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.UnitDumpDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainDto;
+import org.veo.adapter.presenter.api.dto.create.CreateProfileDto;
 import org.veo.adapter.presenter.api.io.mapper.CreateDomainTemplateInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.UnitDumpMapper;
@@ -84,6 +85,7 @@ import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.usecase.UseCase.IdAndClient;
 import org.veo.core.usecase.domain.CreateCatalogFromUnitUseCase;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
+import org.veo.core.usecase.domain.CreateProfileFromUnitUseCase;
 import org.veo.core.usecase.domain.DeleteDecisionUseCase;
 import org.veo.core.usecase.domain.DeleteDomainUseCase;
 import org.veo.core.usecase.domain.DeleteRiskDefinitionUseCase;
@@ -126,6 +128,7 @@ public class ContentCreationController extends AbstractVeoController {
   private final DeleteRiskDefinitionUseCase deleteRiskDefinitionUseCase;
   private final CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase;
   private final CreateCatalogFromUnitUseCase createCatalogForDomainUseCase;
+  private final CreateProfileFromUnitUseCase createProfileFromUnitUseCase;
   private final DeleteDomainUseCase deleteDomainUseCase;
   private final GetDomainTemplateUseCase getDomainTemplateUseCase;
   public static final String URL_BASE_PATH = "/content-creation";
@@ -351,6 +354,83 @@ public class ContentCreationController extends AbstractVeoController {
         createCatalogForDomainUseCase,
         new CreateCatalogFromUnitUseCase.InputData(
             Key.uuidFrom(domainId), client, Key.uuidFrom(unitId)),
+        out -> RestApiResponse.noContent());
+  }
+
+  @PostMapping(value = "/domains/{domainId}/profiles")
+  @Operation(summary = "Creates a profile for a domain")
+  @ApiResponse(responseCode = "201", description = "Profile created")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> createProfileForDomain(
+      Authentication auth,
+      @Pattern(
+              regexp = Patterns.UUID,
+              message = "ID must be a valid UUID string following RFC 4122.")
+          @PathVariable
+          String domainId,
+      @Pattern(
+              regexp = Patterns.UUID,
+              message =
+                  "Pass a unit ID to initialize the profile with profile items created from the elements in that unit.")
+          @RequestParam(name = UNIT_PARAM, required = false)
+          String unitId,
+      @Valid @NotNull @RequestBody CreateProfileDto createParameter) {
+    Client client = getAuthenticatedClient(auth);
+    return useCaseInteractor.execute(
+        createProfileFromUnitUseCase,
+        new CreateProfileFromUnitUseCase.InputData(
+            Key.uuidFrom(domainId),
+            client,
+            Key.uuidFrom(unitId),
+            null,
+            new ProfileDefinition(
+                createParameter.getName(),
+                createParameter.getDescription(),
+                createParameter.getLanguage(),
+                null,
+                null)),
+        out -> RestApiResponse.noContent());
+    // TODO: #2393 return the created resource
+  }
+
+  @PutMapping(value = "/domains/{domainId}/profiles/{profileId}")
+  @Operation(summary = "Update a profile for a domain")
+  @ApiResponse(responseCode = "204", description = "Profile updated")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> updateProfileForDomain(
+      Authentication auth,
+      @Pattern(
+              regexp = Patterns.UUID,
+              message = "ID must be a valid UUID string following RFC 4122.")
+          @PathVariable
+          String domainId,
+      @Pattern(
+              regexp = Patterns.UUID,
+              message = "ID must be a valid UUID string following RFC 4122.")
+          @PathVariable
+          @NotNull
+          String profileId,
+      @Pattern(
+              regexp = Patterns.UUID,
+              message =
+                  "Pass a unit ID to overwrite all items in the profile with "
+                      + "new profile items created from the elements in that unit. "
+                      + "Omit unit ID to leave current profile items untouched.")
+          @RequestParam(name = UNIT_PARAM, required = false)
+          String unitId,
+      @Valid @NotNull @RequestBody CreateProfileDto createParameter) {
+    Client client = getAuthenticatedClient(auth);
+    return useCaseInteractor.execute(
+        createProfileFromUnitUseCase,
+        new CreateProfileFromUnitUseCase.InputData(
+            Key.uuidFrom(domainId),
+            client,
+            Key.uuidFrom(unitId),
+            Key.uuidFrom(profileId),
+            new ProfileDefinition(
+                createParameter.getName(),
+                createParameter.getDescription(),
+                createParameter.getLanguage(),
+                null,
+                null)),
         out -> RestApiResponse.noContent());
   }
 

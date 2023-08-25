@@ -265,6 +265,7 @@ public class EntityDataFactory implements EntityFactory {
   public Profile createProfile(DomainBase domainTemplate) {
     Profile profile = new ProfileData();
     profile.setOwner(domainTemplate);
+    domainTemplate.getProfiles().add(profile);
     return profile;
   }
 

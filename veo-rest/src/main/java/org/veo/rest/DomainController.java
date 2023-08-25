@@ -72,6 +72,8 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.statistics.CatalogItemsTypeCount;
 import org.veo.core.entity.statistics.ElementStatusCounts;
 import org.veo.core.usecase.UseCase;
+import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase;
+import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.QueryCatalogItemsUseCase;
 import org.veo.core.usecase.domain.ApplyJsonProfileUseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
@@ -114,8 +116,11 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   private final ExportDomainUseCase exportDomainUseCase;
   private final GetElementStatusCountUseCase getElementStatusCountUseCase;
   private final GetCatalogItemsTypeCountUseCase getCatalogItemsTypeCountUseCase;
-  private final ApplyJsonProfileUseCase applyProfileUseCase;
+  private final ApplyJsonProfileUseCase applyJsonProfileUseCase;
   private final QueryCatalogItemsUseCase queryCatalogItemsUseCase;
+
+  private final ApplyProfileIncarnationDescriptionUseCase applyProfileIncarnationDescriptionUseCase;
+  private final GetProfileIncarnationDescriptionUseCase getProfileIncarnationDescriptionUseCase;
 
   @GetMapping
   @Operation(summary = "Loads all domains")
@@ -303,19 +308,44 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   @ApiResponse(responseCode = "204", description = "Profile applied")
   @ApiResponse(responseCode = "404", description = "Domain not found")
   @ApiResponse(responseCode = "404", description = "Unit not found")
-  public CompletableFuture<ResponseEntity<ApiResponseBody>> applyProfile(
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> applyJsonProfile(
       @Parameter(required = true, hidden = true) Authentication auth,
       @PathVariable @Pattern(regexp = UUID_REGEX) String id,
       @PathVariable String profileKey,
       @PathVariable @Pattern(regexp = UUID_REGEX) String unitId) {
     return useCaseInteractor.execute(
-        applyProfileUseCase,
+        applyJsonProfileUseCase,
         new ApplyJsonProfileUseCase.InputData(
             getAuthenticatedClient(auth).getId(),
             Key.uuidFrom(id),
             ProfileReferenceFactoryImpl.getInstance().createProfileRef(profileKey),
             Key.uuidFrom(unitId)),
         out -> ResponseEntity.noContent().build());
+  }
+
+  @PostMapping("/{id}/profilesnew/{profileKey}/units/{unitId}")
+  @Operation(summary = "Apply a profile to a unit. Adds all profile elements & risks to the unit.")
+  @ApiResponse(responseCode = "204", description = "Profile applied")
+  @ApiResponse(responseCode = "404", description = "Domain not found")
+  @ApiResponse(responseCode = "404", description = "Unit not found")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> applyProfile(
+      @Parameter(required = true, hidden = true) Authentication auth,
+      @PathVariable @Pattern(regexp = UUID_REGEX) String id,
+      @PathVariable @Pattern(regexp = UUID_REGEX) String profileKey,
+      @PathVariable @Pattern(regexp = UUID_REGEX) String unitId) {
+    return useCaseInteractor
+        .execute(
+            getProfileIncarnationDescriptionUseCase,
+            new GetProfileIncarnationDescriptionUseCase.InputData(
+                getAuthenticatedClient(auth), Key.uuidFrom(unitId), null, Key.uuidFrom(profileKey)),
+            GetProfileIncarnationDescriptionUseCase.OutputData::getReferences)
+        .thenCompose(
+            references ->
+                useCaseInteractor.execute(
+                    applyProfileIncarnationDescriptionUseCase,
+                    new ApplyProfileIncarnationDescriptionUseCase.InputData(
+                        getAuthenticatedClient(auth), Key.uuidFrom(unitId), references),
+                    out -> ResponseEntity.noContent().build()));
   }
 
   @InitBinder

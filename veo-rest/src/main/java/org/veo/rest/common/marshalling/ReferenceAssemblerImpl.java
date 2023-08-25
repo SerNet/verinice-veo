@@ -59,6 +59,8 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
+import org.veo.core.entity.Profile;
+import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
@@ -188,7 +190,10 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
           .getHref();
     }
     // Some types have no endpoint.
-    if (Client.class.isAssignableFrom(type) || TemplateItemReference.class.isAssignableFrom(type)) {
+    if (Client.class.isAssignableFrom(type)
+        || TemplateItemReference.class.isAssignableFrom(type)
+        || Profile.class.isAssignableFrom(type)
+        || ProfileItem.class.isAssignableFrom(type)) {
       return null;
     }
 
@@ -425,7 +430,9 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     // Some types have no endpoint.
     if (Client.class.isAssignableFrom(type)
         || CatalogItem.class.isAssignableFrom(type)
-        || DomainTemplate.class.isAssignableFrom(type)) {
+        || DomainTemplate.class.isAssignableFrom(type)
+        || Profile.class.isAssignableFrom(type)
+        || ProfileItem.class.isAssignableFrom(type)) {
       return null;
     }
     throw new NotImplementedException("Unsupported search reference type " + type.getSimpleName());
@@ -627,7 +634,10 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
           .getHref();
     }
     // Some types have no endpoint.
-    if (Client.class.isAssignableFrom(type) || CatalogItem.class.isAssignableFrom(type)) {
+    if (Client.class.isAssignableFrom(type)
+        || CatalogItem.class.isAssignableFrom(type)
+        || Profile.class.isAssignableFrom(type)
+        || ProfileItem.class.isAssignableFrom(type)) {
       return null;
     }
     throw new NotImplementedException("Unsupported collection reference type " + type);

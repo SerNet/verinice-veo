@@ -70,6 +70,7 @@ import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.ProcessRepository;
+import org.veo.core.repository.ProfileRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.RequirementImplementationRepository;
 import org.veo.core.repository.ScopeRepository;
@@ -105,9 +106,11 @@ import org.veo.core.usecase.base.UpdateProcessInDomainUseCase;
 import org.veo.core.usecase.base.UpdateScenarioInDomainUseCase;
 import org.veo.core.usecase.base.UpdateScopeInDomainUseCase;
 import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase;
+import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemsUseCase;
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase;
+import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.QueryCatalogItemsUseCase;
 import org.veo.core.usecase.client.DeleteClientUseCase;
 import org.veo.core.usecase.compliance.GetRequirementImplementationUseCase;
@@ -125,6 +128,7 @@ import org.veo.core.usecase.domain.ApplyJsonProfileUseCase;
 import org.veo.core.usecase.domain.CreateCatalogFromUnitUseCase;
 import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
+import org.veo.core.usecase.domain.CreateProfileFromUnitUseCase;
 import org.veo.core.usecase.domain.DeleteDecisionUseCase;
 import org.veo.core.usecase.domain.DeleteDomainUseCase;
 import org.veo.core.usecase.domain.DeleteRiskDefinitionUseCase;
@@ -530,6 +534,16 @@ public class ModuleConfiguration {
   }
 
   @Bean
+  public CreateProfileFromUnitUseCase createProfileForDomainUseCase(
+      GenericElementRepository genericElementRepository,
+      UnitRepository unitRepository,
+      DomainRepository domainRepository,
+      EntityFactory factory) {
+    return new CreateProfileFromUnitUseCase(
+        genericElementRepository, unitRepository, domainRepository, factory);
+  }
+
+  @Bean
   public SchemaExtender schemaExtender() {
     return new SchemaExtender();
   }
@@ -763,6 +777,14 @@ public class ModuleConfiguration {
   }
 
   @Bean
+  public GetProfileIncarnationDescriptionUseCase getProfileIncarnationDescriptionUseCase(
+      UnitRepository unitRepository,
+      ProfileRepository profileRepository,
+      RepositoryProvider repositoryProvider) {
+    return new GetProfileIncarnationDescriptionUseCase(unitRepository, profileRepository);
+  }
+
+  @Bean
   public DeleteClientUseCase deleteClientUseCase(
       AccountProvider accountProvider,
       ClientRepository clientRepository,
@@ -802,6 +824,23 @@ public class ModuleConfiguration {
       DesignatorService designatorService,
       EntityFactory factory) {
     return new ApplyIncarnationDescriptionUseCase(
+        unitRepository,
+        catalogItemRepository,
+        domainRepository,
+        repositoryProvider,
+        designatorService,
+        factory);
+  }
+
+  @Bean
+  public ApplyProfileIncarnationDescriptionUseCase applyProfileIncarnationDescriptionUseCase(
+      UnitRepository unitRepository,
+      ProfileRepository catalogItemRepository,
+      DomainRepository domainRepository,
+      RepositoryProvider repositoryProvider,
+      DesignatorService designatorService,
+      EntityFactory factory) {
+    return new ApplyProfileIncarnationDescriptionUseCase(
         unitRepository,
         catalogItemRepository,
         domainRepository,

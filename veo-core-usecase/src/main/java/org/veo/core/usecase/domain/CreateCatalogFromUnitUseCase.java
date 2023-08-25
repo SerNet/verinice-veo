@@ -28,13 +28,11 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.LinkTailoringReference;
-import org.veo.core.entity.Scope;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
@@ -53,25 +51,15 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class CreateCatalogFromUnitUseCase
+public class CreateCatalogFromUnitUseCase extends AbstractCreateItemsFromUnitUseCase<CatalogItem>
     implements TransactionalUseCase<CreateCatalogFromUnitUseCase.InputData, EmptyOutput> {
-
-  private final GenericElementRepository genericElementRepository;
-
-  private final UnitRepository unitRepository;
-  private final DomainRepository domainRepository;
-  private final EntityFactory factory;
 
   public CreateCatalogFromUnitUseCase(
       GenericElementRepository genericElementRepository,
       UnitRepository unitRepository,
       DomainRepository domainRepository,
       EntityFactory factory) {
-    super();
-    this.genericElementRepository = genericElementRepository;
-    this.unitRepository = unitRepository;
-    this.domainRepository = domainRepository;
-    this.factory = factory;
+    super(factory, domainRepository, genericElementRepository, unitRepository);
   }
 
   public EmptyOutput execute(InputData input) {
@@ -130,59 +118,17 @@ public class CreateCatalogFromUnitUseCase
     domain.getCatalogItems().clear();
   }
 
-  private void createTailorreferences(
-      Map<Element, CatalogItem> elementsToCatalogItems, Domain domain) {
-    elementsToCatalogItems.forEach(
-        (element, source) -> {
-          element
-              .getLinks(domain)
-              .forEach(
-                  link -> {
-                    createLinkReference(
-                        link,
-                        source,
-                        elementsToCatalogItems.get(link.getTarget()),
-                        TailoringReferenceType.LINK);
-                    createLinkReference(
-                        link,
-                        elementsToCatalogItems.get(link.getTarget()),
-                        source,
-                        TailoringReferenceType.LINK_EXTERNAL);
-                  });
-
-          if (element instanceof CompositeElement<?> composite) {
-            composite
-                .getParts()
-                .forEach(
-                    target -> {
-                      CatalogItem partCatalogItem = elementsToCatalogItems.get(target);
-                      createTailoringReference(
-                          partCatalogItem, source, TailoringReferenceType.COMPOSITE);
-                    });
-            composite
-                .getComposites()
-                .forEach(
-                    target -> {
-                      CatalogItem compositeCatalogItem = elementsToCatalogItems.get(target);
-                      createTailoringReference(
-                          compositeCatalogItem, source, TailoringReferenceType.PART);
-                    });
-          } else if (element instanceof Scope scope) {
-            if (!scope.getMembers().isEmpty())
-              log.info("Skip {} members of: {}", scope.getMembers().size(), scope.getDisplayName());
-          }
-        });
-  }
-
-  private void createTailoringReference(
+  protected void createTailoringReference(
       CatalogItem source, CatalogItem target, TailoringReferenceType type) {
-    TailoringReference tailoringReference = factory.createTailoringReference(source, type);
+    TailoringReference<CatalogItem> tailoringReference =
+        factory.createTailoringReference(source, type);
     tailoringReference.setTarget(target);
   }
 
-  private LinkTailoringReference createLinkReference(
+  protected LinkTailoringReference<CatalogItem> createLinkReference(
       CustomLink link, CatalogItem source, CatalogItem target, TailoringReferenceType type) {
-    LinkTailoringReference reference = factory.createLinkTailoringReference(source, type);
+    LinkTailoringReference<CatalogItem> reference =
+        factory.createLinkTailoringReference(source, type);
     reference.setAttributes(link.getAttributes());
     reference.setTarget(target);
     reference.setLinkType(link.getType());

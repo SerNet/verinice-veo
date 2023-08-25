@@ -40,6 +40,7 @@ import org.veo.adapter.presenter.api.dto.AbstractCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.AbstractCompositeElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
+import org.veo.adapter.presenter.api.dto.AbstractProfileTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractVersionedDto;
@@ -73,6 +74,9 @@ import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessInDomainDto;
+import org.veo.adapter.presenter.api.dto.full.FullProfileDto;
+import org.veo.adapter.presenter.api.dto.full.FullProfileItemDto;
+import org.veo.adapter.presenter.api.dto.full.FullProfileTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
@@ -83,6 +87,7 @@ import org.veo.adapter.presenter.api.dto.full.LegacyCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.adapter.service.domaintemplate.dto.ExportLinkProfileTailoringReference;
 import org.veo.adapter.service.domaintemplate.dto.FullCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainDto;
 import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
@@ -108,6 +113,8 @@ import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
+import org.veo.core.entity.Profile;
+import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
@@ -145,6 +152,12 @@ public final class EntityToDtoTransformer {
     if (source instanceof AbstractRisk abstractRisk) {
       return transform2Dto(abstractRisk);
     }
+    if (source instanceof Profile profile) {
+      return transformProfile2Dto(profile);
+    }
+    if (source instanceof ProfileItem profileitem) {
+      return transformProfileItem2Dto(profileitem);
+    }
     if (source instanceof CatalogItem catalogItem) {
       return transformCatalogItem2Dto(catalogItem, false);
     }
@@ -153,6 +166,59 @@ public final class EntityToDtoTransformer {
     }
     throw new IllegalArgumentException(
         "No transform method defined for " + source.getClass().getSimpleName());
+  }
+
+  public FullProfileDto transformProfile2Dto(Profile profile) {
+    FullProfileDto profileDto = new FullProfileDto();
+    profileDto.setId(profile.getIdAsString());
+    profileDto.setName(profile.getName());
+    profileDto.setDescription(profile.getDescription());
+    profileDto.setLanguage(profile.getLanguage());
+    profileDto.setItems(convertSet(profile.getItems(), this::transformProfileItem2Dto));
+    return profileDto;
+  }
+
+  public FullProfileItemDto transformProfileItem2Dto(ProfileItem source) {
+    FullProfileItemDto target = new FullProfileItemDto();
+    target.setId(source.getId().uuidValue());
+    mapVersionedSelfReferencingProperties(source, target);
+    mapNameableProperties(source, target);
+    target.setElementType(source.getElementType());
+    target.setSubType(source.getSubType());
+    target.setStatus(source.getStatus());
+
+    target.setCustomAspects(
+        new CustomAspectMapDto(
+            source.getCustomAspects().entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey(), e -> new AttributesDto(e.getValue())))));
+
+    target.setTailoringReferences(
+        source.getTailoringReferences().stream()
+            .map(this::transformProfileTailoringReference2Dto)
+            .collect(toSet()));
+    // TODO #2301 remove
+    target.setNamespace(source.getNamespace());
+
+    return target;
+  }
+
+  public AbstractProfileTailoringReferenceDto transformProfileTailoringReference2Dto(
+      @Valid TailoringReference<ProfileItem> source) {
+    AbstractProfileTailoringReferenceDto target;
+    if (source instanceof LinkTailoringReference<ProfileItem> linkRef) {
+      target =
+          new ExportLinkProfileTailoringReference(
+              linkRef.getLinkType(), Map.copyOf(linkRef.getAttributes()));
+    } else {
+      target = new FullProfileTailoringReferenceDto(source.getId().uuidValue());
+    }
+    // TODO: handle risk ref
+    target.setReferenceType(source.getReferenceType());
+
+    if (source.getTarget() != null) {
+      target.setTarget(IdRef.from(source.getTarget(), referenceAssembler));
+    }
+    return target;
   }
 
   public AbstractElementDto transform2Dto(@Valid Element source) {

@@ -557,6 +557,259 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("content-creator")
+    def "create an empty profile in a domain"() {
+        given: "a domain"
+        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
+
+        when: "we create a new empty profile"
+        post("/content-creation/domains/${domainId}/profiles",
+                [
+                    name: 'test',
+                    description: 'All the good stuff',
+                    language: 'de_DE'
+                ], 204)
+
+        Domain domain1 = txTemplate.execute {
+            def d = domainDataRepository.findById(domainId).get()
+            d.profiles.size()
+            d
+        }
+
+        then: "the profile is created"
+        domain1.getProfiles().size()==1
+        with(domain1.getProfiles().first()) {
+            name == "test"
+            description == "All the good stuff"
+            language == "de_DE"
+        }
+
+        when: "we update the empty profile"
+        def profileId = domain1.getProfiles().first().idAsString
+        put("/content-creation/domains/${domainId}/profiles/${profileId}",
+                [
+                    name: 'test1',
+                    description: 'All the good stuff, but better.',
+                    language: 'de_DE'
+                ], 204)
+
+        domain1 = txTemplate.execute {
+            def d = domainDataRepository.findById(domainId).get()
+            d.profiles.size()
+            d
+        }
+
+        then: "the profile is updated"
+        domain1.getProfiles().size()==1
+        with(domain1.getProfiles().first()) {
+            name == "test1"
+            description == "All the good stuff, but better."
+            language == "de_DE"
+        }
+    }
+
+    @WithUserDetails("content-creator")
+    def "create profile in a domain from a unit"() {
+        given: "a domain and a unit with elements"
+        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
+        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId)
+
+        post("/domains/${domainId}/processes/${processId}/links", [
+            process_requiredApplications: [
+                [
+                    target: [targetInDomainUri: "/domains/$domainId/assets/${assetId}"]
+                ]
+            ]
+        ], 204)
+
+        def scenarioPart = parseJson(post("/domains/$domainId/scenarios", [
+            name: "example scenario 1",
+            subType: "SCN_Scenario",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"]
+        ],201)).resourceId
+
+        post("/domains/$domainId/scenarios", [
+            name: "example scenario Container",
+            abbreviation: "Cont",
+            subType: "SCN_Scenario",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"],
+            parts: [
+                [targetInDomainUri: "/domains/$domainId/scenarios/$scenarioId"],
+                [targetInDomainUri: "/domains/$domainId/scenarios/$scenarioPart"],
+            ]
+        ],201)
+
+        when: "we create a new profile from the unit"
+        post("/content-creation/domains/${domainId}/profiles?unit=${unitId}",
+                [
+                    name: 'test',
+                    description: 'All the good stuff',
+                    language: 'de_DE'
+                ], 204)
+
+        def domain1 = txTemplate.execute {
+            def d = domainDataRepository.findById(domainId).get()
+            d.profiles.each {
+                it.items.size()
+                it.items.each{
+                    it.tailoringReferences.size()
+                }
+            }
+            d
+        }
+        def exportedOrgUnit = parseJson(get("/units/${unitId}/export"))
+
+        then:
+        domain1.profiles.size() == 1
+        domain1.profiles[0].items.size() == 10
+        with(domain1.profiles[0].items.sort{it.name}[0]) {
+            name == "asset"
+            elementType == "asset"
+            status == "NEW"
+            subType == "AST_Application"
+            abbreviation == null
+            namespace == subType+ "."+abbreviation
+            tailoringReferences.size() == 2
+            with(tailoringReferences.sort {it.referenceType}) {
+                it[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
+                it[0].linkType == "process_requiredApplications"
+                it[1].referenceType == TailoringReferenceType.RISK
+            }
+        }
+        with(domain1.profiles[0].items.find{it.name == "example scenario Container" }) {
+            elementType == "scenario"
+            status == "NEW"
+            subType == "SCN_Scenario"
+            abbreviation == "Cont"
+            namespace == subType+ "."+abbreviation
+            tailoringReferences.size() == 2
+            tailoringReferences[0].referenceType == TailoringReferenceType.PART
+        }
+
+        when: "applying the profile"
+        unitId = parseJson(post("/units", [
+            name   : "applied profile unit",
+            domains: [
+                [targetUri: "http://localhost/domains/$domainId"]
+            ]
+        ])).resourceId
+
+        post("/domains/${domain1.idAsString}/profilesnew/${domain1.profiles[0].idAsString}/units/${unitId}",[:], 204)
+        def exportedUnit = parseJson(get("/units/${unitId}/export"))
+
+        then:
+        exportedUnit.elements.size() == exportedOrgUnit.elements.size()
+        exportedUnit.risks.size() == exportedOrgUnit.risks.size()
+    }
+
+    @WithUserDetails("content-creator")
+    def "create a profile in a domain from a unit with applied items "() {
+        given: "a domain and a unit with elements"
+        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
+        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId)
+
+        post("/domains/${domainId}/processes/${processId}/links", [
+            process_requiredApplications: [
+                [
+                    target: [targetInDomainUri: "/domains/$domainId/assets/${assetId}"]
+                ]
+            ]
+        ], 204)
+
+        when: "we create new catalog items from the unit"
+        put("/content-creation/domains/${domainId}/catalog-items?unit=${unitId}",
+                [:], 204)
+
+        def catalogItems = txTemplate.execute {
+            domainDataRepository.findById(domainId).get().catalogItems.each {
+                it.tailoringReferences.size()
+            }
+        }
+
+        then:
+        catalogItems.size() == 8
+        with(catalogItems.sort{it.name}[0]) {
+            name == "asset"
+            elementType == "asset"
+            status == "NEW"
+            subType == "AST_Application"
+            abbreviation == null
+            namespace == subType+ "."+abbreviation
+            tailoringReferences.size() == 1
+            tailoringReferences[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
+            tailoringReferences[0].linkType == "process_requiredApplications"
+        }
+
+        when: "we incarnate all catatlog items"
+        def catalogItemsIds = catalogItems.collect{it.getIdAsString()}.join(',')
+        unitId = parseJson(post("/units", [
+            name   : "you knit 2",
+            domains: [
+                [targetUri: "http://localhost/domains/$domainId"]
+            ]
+        ])).resourceId
+        def incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${catalogItemsIds}"))
+        def elementList = parseJson(post("/units/${unitId}/incarnations", incarnationDescription))
+        assetId = elementList.find {it.targetUri.contains('assets')}.targetUri.split('/' ).last()
+        scenarioId = elementList.find {it.targetUri.contains('scenarios')}.targetUri.split('/' ).last()
+        def personId = elementList.find {it.targetUri.contains('persons')}.targetUri.split('/' ).last()
+        def controlId = elementList.find {it.targetUri.contains('controls')}.targetUri.split('/' ).last()
+
+        post("/assets/$assetId/risks", [
+            domains : [
+                (domainId): [
+                    reference: [targetUri: "http://localhost/domains/$domainId"]
+                ]
+            ],
+            riskOwner: [targetUri: "http://localhost/persons/$personId"],
+            mitigation: [targetUri: "http://localhost/controls/$controlId"],
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ])
+
+        and: "we create a new profile from the unit"
+        post("/content-creation/domains/${domainId}/profiles?unit=$unitId",
+                [
+                    name: 'test',
+                    description: 'All the good stuff',
+                    language: 'de_DE'
+                ], 204)
+
+        def domain1 = txTemplate.execute {
+            def d = domainDataRepository.findById(domainId).get()
+            d.profiles.each {
+                it.items.size()
+                it.items.each{
+                    it.tailoringReferences.size()
+                    it.appliedCatalogItem.name
+                }
+            }
+            d
+        }
+
+        then:
+        domain1.profiles.size() == 1
+        with(domain1.profiles[0].items.sort{it.name}[0]) {
+            name == "asset"
+            elementType == "asset"
+            status == "NEW"
+            subType == "AST_Application"
+            abbreviation == null
+            namespace == subType+ "."+abbreviation
+            appliedCatalogItem.name == "asset"
+            tailoringReferences.size() == 2
+            with(tailoringReferences.sort {it.referenceType}) {
+                it[0].referenceType == TailoringReferenceType.LINK_EXTERNAL
+                it[0].linkType == "process_requiredApplications"
+                it[1].referenceType == TailoringReferenceType.RISK
+                it[1].mitigation.name == "control"
+                it[1].riskOwner.name == "person"
+                it[1].target.name == "scenario"
+            }
+        }
+    }
+
+    @WithUserDetails("content-creator")
     def "create a domain template with unit"() {
         Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domain.idAsString)
@@ -598,7 +851,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         dt.templateVersion == "1.2.3"
 
         and: "the example profile exists"
-        with(dt.getJsonProfiles().exampleOrganization) {
+        with(dt.jsonProfiles.exampleOrganization) {
             name == 'Example elements'
             description == 'All the good stuff'
             language == 'de_DE'

@@ -35,7 +35,8 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
     EntityFactory factory = Mock()
 
     ApplyIncarnationDescriptionUseCase usecase = new ApplyIncarnationDescriptionUseCase(
-    unitRepo, catalogItemRepository, domainRepository, entityRepo, designatorService, factory)
+    unitRepo, catalogItemRepository, domainRepository,
+    entityRepo, designatorService, factory)
 
     def setup() {
 
@@ -212,6 +213,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         domainRepository.getById(otherDomainId) >> otherDomain
 
         item2.owner >> otherDomain
+        item2.requireDomainMembership() >> otherDomain
 
         when:
         usecase.execute(new InputData(existingClient, existingUnit.id, [

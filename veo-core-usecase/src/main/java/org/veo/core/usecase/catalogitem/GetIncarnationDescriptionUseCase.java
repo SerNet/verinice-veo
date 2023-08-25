@@ -36,11 +36,9 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.LinkTailoringReference;
-import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceTyped;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
-import org.veo.core.entity.exception.RuntimeModelException;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.ElementRepository;
@@ -59,6 +57,7 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @Slf4j
 public class GetIncarnationDescriptionUseCase
+    extends AbstractGetIncarnationDescriptionUseCase<CatalogItem>
     implements TransactionalUseCase<
         GetIncarnationDescriptionUseCase.InputData, GetIncarnationDescriptionUseCase.OutputData> {
   private final UnitRepository unitRepository;
@@ -67,7 +66,7 @@ public class GetIncarnationDescriptionUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    log.info("GetIncarnationDescriptionUseCase: {}", input);
+    log.info("unid: {}, items: {}", input.containerId, input.catalogItemIds);
     Unit unit = unitRepository.getByIdFetchClient(input.getContainerId());
     unit.checkSameClient(input.authenticatedClient);
     validateInput(input);
@@ -96,7 +95,7 @@ public class GetIncarnationDescriptionUseCase
                 catalogItem ->
                     catalogItem.getTailoringReferences().stream()
                         .filter(TailoringReferenceTyped.IS_ALL_LINK_PREDICATE)
-                        .map(l -> (LinkTailoringReference<CatalogItem>) l)
+                        .map(tr -> (LinkTailoringReference<CatalogItem>) tr)
                         .map(LinkTailoringReference::getTarget));
 
     Map<Key<UUID>, Element> referencedItemsByCatalogItemId = new HashMap<>();
@@ -124,7 +123,8 @@ public class GetIncarnationDescriptionUseCase
             .map(
                 catalogItem -> {
                   List<TailoringReferenceParameter> parameters =
-                      toTailorreferenceParameters(catalogItem, referencedItemsByCatalogItemId);
+                      toParameters(
+                          catalogItem.getTailoringReferences(), referencedItemsByCatalogItemId);
                   return new TemplateItemIncarnationDescription(catalogItem, parameters);
                 })
             .toList();
@@ -138,54 +138,6 @@ public class GetIncarnationDescriptionUseCase
         != input.catalogItemIds.size()) {
       throw new IllegalArgumentException("Provided catalogitems are not unique.");
     }
-  }
-
-  private List<TailoringReferenceParameter> toTailorreferenceParameters(
-      CatalogItem catalogItem, Map<Key<UUID>, Element> referencedItemsByCatalogItemId) {
-    return catalogItem.getTailoringReferences().stream()
-        .filter(TailoringReferenceTyped.IS_PARAMETER_REF)
-        .map(tr -> mapParameter(tr, referencedItemsByCatalogItemId.get(tr.getTarget().getId())))
-        .toList();
-  }
-
-  private TailoringReferenceParameter mapParameter(TailoringReference reference, Element element) {
-    return switch (reference.getReferenceType()) {
-      case PART, COMPOSITE -> fromReference(reference, element);
-      case LINK, LINK_EXTERNAL -> fromLinkReference((LinkTailoringReference) reference, element);
-      default -> throw new IllegalArgumentException(
-          "Unmaped tailorreference type: " + reference.getReferenceType());
-    };
-  }
-
-  private TailoringReferenceParameter fromReference(
-      TailoringReference linkReference, Element element) {
-    TailoringReferenceParameter tailoringReferenceParameter =
-        new TailoringReferenceParameter(linkReference.getReferenceType(), null);
-    if (element != null) {
-      tailoringReferenceParameter.setReferencedElement(element);
-    }
-    tailoringReferenceParameter.setId(linkReference.getId().uuidValue());
-    return tailoringReferenceParameter;
-  }
-
-  /**
-   * Create the parameter object for this {@link LinkTailoringReference} it also adds the suggestion
-   * found by {@link #findReferencedAppliedItem(Unit, CatalogItem)} in the reference.
-   */
-  private TailoringReferenceParameter fromLinkReference(
-      LinkTailoringReference linkReference, Element element) {
-    if (linkReference.getLinkType() == null) {
-      throw new RuntimeModelException(
-          "LinkType should not be null affected TailoringReferences: " + linkReference.getId());
-    }
-    TailoringReferenceParameter tailoringReferenceParameter =
-        new TailoringReferenceParameter(
-            linkReference.getReferenceType(), linkReference.getLinkType());
-    tailoringReferenceParameter.setId(linkReference.getId().uuidValue());
-    if (element != null) {
-      tailoringReferenceParameter.setReferencedElement(element);
-    }
-    return tailoringReferenceParameter;
   }
 
   /** Searches for {@link Element}s in the unit which have the given catalogItems applied. */
