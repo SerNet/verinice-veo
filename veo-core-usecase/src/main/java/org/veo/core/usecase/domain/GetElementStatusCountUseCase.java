@@ -24,7 +24,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
-import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
@@ -32,7 +31,7 @@ import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.entity.statistics.ElementStatusCounts;
 import org.veo.core.repository.DomainRepository;
-import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.SubTypeStatusCount;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -50,7 +49,7 @@ public class GetElementStatusCountUseCase
 
   private final DomainRepository domainRepository;
   private final UnitRepository unitRepository;
-  private final RepositoryProvider repositoryProvider;
+  private final GenericElementRepository genericElementRepository;
 
   @Override
   public OutputData execute(InputData input) {
@@ -67,22 +66,16 @@ public class GetElementStatusCountUseCase
 
     ElementStatusCounts elementStatusCounts = new ElementStatusCounts(domain);
 
-    EntityType.ELEMENT_TYPES.stream()
-        .forEach(
-            type -> {
-              String typeName = type.getSingularTerm();
-              log.debug("Checking type {}", typeName);
-              Set<SubTypeStatusCount> counts =
-                  repositoryProvider
-                      .getElementRepositoryFor((Class<? extends Element>) type.getType())
-                      .getCountsBySubType(unit, domain);
-              log.debug("Found counts: {}", counts);
+    Set<SubTypeStatusCount> counts = genericElementRepository.getCountsBySubType(unit, domain);
+    log.debug("Found counts: {}", counts);
 
-              counts.forEach(
-                  c ->
-                      elementStatusCounts.setCount(
-                          type, c.getSubType(), c.getStatus(), c.getCount()));
-            });
+    counts.forEach(
+        c ->
+            elementStatusCounts.setCount(
+                EntityType.getBySingularTerm(c.getType()),
+                c.getSubType(),
+                c.getStatus(),
+                c.getCount()));
 
     return new OutputData(elementStatusCounts);
   }

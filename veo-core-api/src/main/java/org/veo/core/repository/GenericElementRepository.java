@@ -18,10 +18,15 @@
 package org.veo.core.repository;
 
 import java.util.Collection;
+import java.util.Set;
 
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Unit;
 
 public interface GenericElementRepository extends ElementQueryProvider<Element> {
 
   void deleteAll(Collection<Element> entities);
+
+  Set<SubTypeStatusCount> getCountsBySubType(Unit u, Domain domain);
 }

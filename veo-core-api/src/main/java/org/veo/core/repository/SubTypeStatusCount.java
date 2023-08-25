@@ -21,6 +21,7 @@ import lombok.Data;
 
 @Data
 public class SubTypeStatusCount {
+  private final String type;
   private final String subType;
   private final String status;
   private final long count;

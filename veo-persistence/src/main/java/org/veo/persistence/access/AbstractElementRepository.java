@@ -36,7 +36,6 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.ElementRepository;
 import org.veo.core.repository.PagingConfiguration;
-import org.veo.core.repository.SubTypeStatusCount;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ElementDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
@@ -109,11 +108,6 @@ abstract class AbstractElementRepository<T extends Element, S extends ElementDat
   @Override
   public T getById(Key<UUID> id, Key<UUID> clientId) {
     return findById(id, clientId).orElseThrow(() -> new NotFoundException(id, elementType));
-  }
-
-  @Override
-  public Set<SubTypeStatusCount> getCountsBySubType(Unit u, Domain d) {
-    return dataRepository.getCountsBySubType(u.getIdAsString(), d.getIdAsString());
   }
 
   @Override

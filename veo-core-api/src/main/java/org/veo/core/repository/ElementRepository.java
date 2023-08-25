@@ -33,8 +33,6 @@ public interface ElementRepository<T extends Element>
 
   Set<T> findByDomain(Domain domain);
 
-  Set<SubTypeStatusCount> getCountsBySubType(Unit u, Domain domain);
-
   void deleteAll(Set<T> entities);
 
   Optional<T> findById(Key<UUID> id, Key<UUID> clientId);

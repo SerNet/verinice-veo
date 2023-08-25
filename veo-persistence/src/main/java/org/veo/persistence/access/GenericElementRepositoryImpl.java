@@ -33,6 +33,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Document;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
@@ -41,8 +42,10 @@ import org.veo.core.entity.ProcessRisk;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
+import org.veo.core.entity.Unit;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.GenericElementRepository;
+import org.veo.core.repository.SubTypeStatusCount;
 import org.veo.persistence.access.jpa.AssetDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ElementDataRepository;
@@ -68,6 +71,11 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
   @Override
   public ElementQuery<Element> query(Client client) {
     return elementQueryFactory.queryElements(client);
+  }
+
+  @Override
+  public Set<SubTypeStatusCount> getCountsBySubType(Unit u, Domain d) {
+    return dataRepository.getCountsBySubType(u.getIdAsString(), d.getIdAsString());
   }
 
   @Override

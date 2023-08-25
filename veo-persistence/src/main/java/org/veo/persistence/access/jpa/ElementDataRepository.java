@@ -93,12 +93,12 @@ public interface ElementDataRepository<T extends ElementData>
   Page<T> findAll(Specification<T> specification, Pageable pageable);
 
   @Query(
-      "SELECT new org.veo.core.repository.SubTypeStatusCount(a.subType, a.status, count(a.status)) from #{#entityName} as e "
+      "SELECT new org.veo.core.repository.SubTypeStatusCount(e.elementType, a.subType, a.status, count(a.status)) from #{#entityName} as e "
           + "inner join e.subTypeAspects a "
           + "inner join e.domains d "
           + "where e.owner.dbId = ?1 "
           + "and d.id = ?2 "
-          + "group by a.subType, a.status")
+          + "group by e.elementType, a.subType, a.status")
   Set<SubTypeStatusCount> getCountsBySubType(String unitId, String domainId);
 
   @Transactional(readOnly = true)

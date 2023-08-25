@@ -62,6 +62,7 @@ import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
@@ -155,6 +156,11 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   @Formula("length(designator)")
   @Setter(AccessLevel.NONE)
   private String designatorLength;
+
+  @Getter(value = AccessLevel.NONE)
+  @Setter(value = AccessLevel.NONE)
+  @Column(insertable = false, updatable = false, name = "dtype")
+  private String elementType;
 
   protected <T extends Aspect> Optional<T> findAspectByDomain(Set<T> source, Domain domain) {
     return source.stream().filter(aspect -> aspect.getDomain().equals(domain)).findFirst();
