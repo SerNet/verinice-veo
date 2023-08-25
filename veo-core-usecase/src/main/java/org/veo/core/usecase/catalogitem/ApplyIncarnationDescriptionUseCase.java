@@ -61,8 +61,8 @@ import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseTools;
-import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 import org.veo.core.usecase.parameter.TailoringReferenceParameter;
+import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -70,7 +70,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
-/** Uses a list of {@link TemplateItemIncarnationDescription} to create items from a catalog in a unit. */
+/**
+ * Uses a list of {@link TemplateItemIncarnationDescription} to create items from a catalog in a
+ * unit.
+ */
 @Slf4j
 @AllArgsConstructor
 public class ApplyIncarnationDescriptionUseCase

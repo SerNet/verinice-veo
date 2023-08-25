@@ -44,8 +44,9 @@ public class CatalogItemValidator {
     item.getTailoringReferences().stream().forEach(tr -> validate(tr, domain));
   }
 
-  public static void validate(TailoringReference tailoringReference, DomainBase domain) {
-    if (tailoringReference instanceof LinkTailoringReference linkRef) {
+  public static void validate(
+      TailoringReference<CatalogItem> tailoringReference, DomainBase domain) {
+    if (tailoringReference instanceof LinkTailoringReference<CatalogItem> linkRef) {
       validateLink(
           linkRef.getLinkType(),
           linkRef.getLinkSourceItem(),

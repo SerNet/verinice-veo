@@ -143,8 +143,8 @@ public interface Element
 
   void setAppliedCatalogItems(Set<CatalogItem> aCatalogitems);
 
-  /** Applies the properties of the catalogItem to the element. */
-  void apply(CatalogItem catalogItem);
+  /** Applies the properties of the template item to the element. */
+  void apply(TemplateItem catalogItem);
 
   Unit getOwner();
 
@@ -215,4 +215,6 @@ public interface Element
 
   /** Applies the properties of the element to the catalog item. */
   CatalogItem toCatalogItem(Domain domain);
+
+  ProfileItem toProfileItem(Profile profile);
 }

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler.
+ * Copyright (C) 2023  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,22 +15,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.parameter;
+package org.veo.persistence.entity.jpa;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.veo.core.entity.TemplateItem;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 
-import lombok.AllArgsConstructor;
+import org.hibernate.annotations.Type;
+
+import org.veo.core.entity.LinkTailoringReference;
+import org.veo.core.entity.ProfileItem;
+
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Entity(name = "profile_link_tailoring_reference")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-@AllArgsConstructor
-/** Contains the element together with the relevant tailoringreferences. */
-public class TemplateItemIncarnationDescription {
-  private TemplateItem item;
-  private List<TailoringReferenceParameter> references = new ArrayList<>();
+public class ProfileLinkTailoringReferenceData extends ProfileTailoringReferenceData
+    implements LinkTailoringReference<ProfileItem> {
+
+  @ToString.Include private String linkType;
+
+  @Type(JsonType.class)
+  @Column(columnDefinition = "jsonb")
+  private Map<String, Object> attributes = new HashMap<>();
 }

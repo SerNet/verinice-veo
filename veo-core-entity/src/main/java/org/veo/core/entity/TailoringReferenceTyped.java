@@ -57,6 +57,10 @@ public interface TailoringReferenceTyped {
   Predicate<? super TailoringReferenceTyped> IS_COMPOSITE_PREDICATE =
       r -> r.getReferenceType() == TailoringReferenceType.COMPOSITE;
 
+  /** Predicate to filter {@link TailoringReferenceType#COMPOSITE} */
+  Predicate<? super TailoringReferenceTyped> IS_RISK_PREDICATE =
+      r -> r.getReferenceType() == TailoringReferenceType.RISK;
+
   /** Predicate to filter all tailorref mapping to a parameter */
   Predicate<? super TailoringReferenceTyped> IS_PARAMETER_REF =
       r ->

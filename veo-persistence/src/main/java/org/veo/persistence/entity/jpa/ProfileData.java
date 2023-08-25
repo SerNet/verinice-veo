@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler.
+ * Copyright (C) 2023  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,6 +18,7 @@
 package org.veo.persistence.entity.jpa;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -28,17 +29,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.validation.Valid;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Element;
-import org.veo.core.entity.TailoringReference;
-import org.veo.core.entity.UpdateReference;
+import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.Nameable;
+import org.veo.core.entity.Profile;
+import org.veo.core.entity.ProfileItem;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -47,17 +48,35 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity(name = "catalogitem")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-@ToString(onlyExplicitlyIncluded = true, callSuper = true)
+@Entity(name = "profile")
 @Data
-public class CatalogItemData extends TemplateItemData implements CatalogItem {
-
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(onlyExplicitlyIncluded = true)
+public class ProfileData extends IdentifiableVersionedData implements Profile {
   @Id
   @ToString.Include
   @GeneratedValue(generator = "UUID")
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  @EqualsAndHashCode.Include
   private String dbId;
+
+  @ToString.Include
+  @Column(name = "name")
+  private String name;
+
+  @Column(name = "description", length = Nameable.DESCRIPTION_MAX_LENGTH)
+  private String description;
+
+  @Column(name = "language", length = 20)
+  private String language;
+
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      fetch = FetchType.LAZY,
+      mappedBy = "owner",
+      targetEntity = ProfileItemData.class,
+      orphanRemoval = true)
+  private Set<ProfileItem> items = new HashSet<>();
 
   @ManyToOne(targetEntity = DomainData.class)
   @Getter(value = AccessLevel.NONE)
@@ -69,33 +88,25 @@ public class CatalogItemData extends TemplateItemData implements CatalogItem {
   @Setter(value = AccessLevel.NONE)
   private DomainTemplate domainTemplate;
 
-  @Column(name = "tailoringreferences")
-  @OneToMany(
-      cascade = CascadeType.ALL,
-      orphanRemoval = true,
-      targetEntity = CatalogTailoringReferenceData.class,
-      mappedBy = "owner",
-      fetch = FetchType.LAZY)
-  @Valid
-  private Set<TailoringReference<CatalogItem>> tailoringReferences = new HashSet<>();
+  @Override
+  public String getModelType() {
+    return SINGULAR_TERM;
+  }
 
-  @Column(name = "updatereferences")
-  @OneToMany(
-      cascade = CascadeType.ALL,
-      orphanRemoval = true,
-      targetEntity = UpdateReferenceData.class,
-      mappedBy = "owner",
-      fetch = FetchType.LAZY)
-  @Valid
-  private Set<UpdateReference> updateReferences = new HashSet<>();
+  @Override
+  public Class<? extends Identifiable> getModelInterface() {
+    return ProfileItem.class;
+  }
 
+  @Override
   public DomainBase getOwner() {
     return domain != null ? domain : domainTemplate;
   }
 
+  @Override
   public void setOwner(DomainBase owner) {
     if (getOwner() != null && !getOwner().equals(owner)) {
-      throw new IllegalArgumentException("Cannot move catalog item between domains");
+      throw new IllegalArgumentException("Cannot move profiles between domains");
     }
 
     if (owner instanceof Domain d) {
@@ -107,17 +118,9 @@ public class CatalogItemData extends TemplateItemData implements CatalogItem {
     }
   }
 
-  /** create an instance of the described element* */
   @Override
-  public Element incarnate() {
-    requireDomainMembership();
-
-    Element element = createElement();
-    element.setName(name);
-    element.setDescription(description);
-    element.setAbbreviation(abbreviation);
-    element.apply(this);
-    element.getAppliedCatalogItems().add(this);
-    return element;
+  public Optional<Client> getOwningClient() {
+    if (domain == null) return Optional.empty();
+    else return domain.getOwningClient();
   }
 }

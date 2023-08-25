@@ -439,7 +439,7 @@ public final class EntityToDtoTransformer {
   }
 
   public AbstractTailoringReferenceDto transformTailoringReference2Dto(
-      @Valid TailoringReference source) {
+      @Valid TailoringReference<CatalogItem> source) {
     AbstractTailoringReferenceDto target = null;
     if (source.isLinkTailoringReferences()) {
       LinkTailoringReference linkRef = (LinkTailoringReference) source;

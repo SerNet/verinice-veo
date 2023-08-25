@@ -49,8 +49,8 @@ import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseTools;
-import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 import org.veo.core.usecase.parameter.TailoringReferenceParameter;
+import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;

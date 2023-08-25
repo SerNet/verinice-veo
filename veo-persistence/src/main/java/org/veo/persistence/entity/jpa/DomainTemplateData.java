@@ -28,6 +28,7 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Nameable;
+import org.veo.core.entity.Profile;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -45,6 +46,14 @@ public class DomainTemplateData extends DomainBaseData implements DomainTemplate
       mappedBy = "domainTemplate")
   @Valid
   private Set<CatalogItem> catalogItems = new HashSet<>();
+
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      targetEntity = ProfileData.class,
+      mappedBy = "domainTemplate")
+  @Valid
+  private Set<Profile> profiles = new HashSet<>();
 
   public void setCatalogItems(Set<CatalogItem> catalogItems) {
     catalogItems.forEach(ci -> ci.setOwner(this));

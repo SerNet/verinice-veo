@@ -80,7 +80,8 @@ public interface CatalogItem
     return elementsToCreate;
   }
 
-  default void addElementsToCopy(TailoringReference reference, Set<CatalogItem> itemList) {
+  default void addElementsToCopy(
+      TailoringReference<CatalogItem> reference, Set<CatalogItem> itemList) {
     itemList.add(reference.getCatalogItem());
     reference.getCatalogItem().getTailoringReferences().stream()
         .filter(TailoringReferenceTyped.IS_COPY_PREDICATE)
@@ -88,9 +89,9 @@ public interface CatalogItem
   }
 
   /** All the tailoring references for this catalog item. */
-  Set<TailoringReference> getTailoringReferences();
+  Set<TailoringReference<CatalogItem>> getTailoringReferences();
 
-  default void setTailoringReferences(Set<TailoringReference> tailoringReferences) {
+  default void setTailoringReferences(Set<TailoringReference<CatalogItem>> tailoringReferences) {
     getTailoringReferences().clear();
     tailoringReferences.forEach(tailoringReference -> tailoringReference.setOwner(this));
     getTailoringReferences().addAll(tailoringReferences);
@@ -129,6 +130,4 @@ public interface CatalogItem
   DomainBase getOwner();
 
   void setOwner(DomainBase owner);
-
-  Element incarnate();
 }

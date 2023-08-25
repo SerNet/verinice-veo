@@ -49,7 +49,10 @@ import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Nameable;
+import org.veo.core.entity.Profile;
+import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.aspects.Aspect;
 import org.veo.core.entity.aspects.SubTypeAspect;
@@ -281,13 +284,12 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   @Override
-  public void apply(CatalogItem catalogItem) {
+  public void apply(TemplateItem catalogItem) {
     var domain = catalogItem.requireDomainMembership();
     associateWithDomain(domain, catalogItem.getSubType(), catalogItem.getStatus());
     catalogItem.getCustomAspects().entrySet().stream()
         .map(e -> new CustomAspectData(e.getKey(), e.getValue(), domain))
         .forEach(this::applyCustomAspect);
-    appliedCatalogItems.add(catalogItem);
   }
 
   @Transient
@@ -319,6 +321,22 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   @Override
   public CatalogItem toCatalogItem(Domain domain) {
     CatalogItem item = new EntityDataFactory().createCatalogItem(domain);
+    toItem(domain, item);
+    return item;
+  }
+
+  @Override
+  public ProfileItem toProfileItem(Profile profile) {
+    ProfileItem item = new EntityDataFactory().createProfileItem(profile);
+    toItem((Domain) profile.getOwner(), item);
+    getAppliedCatalogItems().stream()
+        .filter(ci -> ci.getOwner().getIdAsString().equals(profile.getOwner().getIdAsString()))
+        .findAny()
+        .ifPresent(ci -> item.setAppliedCatalogItem(ci));
+    return item;
+  }
+
+  private void toItem(Domain domain, TemplateItem item) {
     item.setName(getName());
     item.setAbbreviation(getAbbreviation());
     item.setDescription(getDescription());
@@ -329,8 +347,6 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     item.setCustomAspects(
         getCustomAspects(domain).stream()
             .collect(Collectors.toMap(ca -> ca.getType(), ca -> ca.getAttributes())));
-
-    return item;
   }
 
   /**

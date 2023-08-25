@@ -25,8 +25,8 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.openapi.IdRefCatalogItemDescriptionItem;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 import org.veo.core.usecase.parameter.TailoringReferenceParameter;
+import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 import org.veo.core.usecase.service.IdRefResolver;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;

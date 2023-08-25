@@ -34,6 +34,7 @@ import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
@@ -55,6 +56,14 @@ public class DomainData extends DomainBaseData implements Domain {
       mappedBy = "domain")
   @Valid
   private Set<CatalogItem> catalogItems = new HashSet<>();
+
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      targetEntity = ProfileData.class,
+      mappedBy = "domain")
+  @Valid
+  private Set<Profile> profiles = new HashSet<>();
 
   @ManyToOne(targetEntity = DomainTemplateData.class, fetch = FetchType.LAZY)
   @Valid

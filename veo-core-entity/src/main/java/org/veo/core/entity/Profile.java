@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler.
+ * Copyright (C) 2023  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,22 +15,41 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.persistence.entity.jpa;
+package org.veo.core.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import java.util.Set;
 
-import org.veo.core.entity.ItemUpdateType;
-import org.veo.core.entity.UpdateReference;
+import org.veo.core.entity.exception.UnprocessableDataException;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+public interface Profile extends Versioned, Identifiable, ClientOwned {
+  String SINGULAR_TERM = "profile";
+  String PLURAL_TERM = "profiles";
 
-@Entity(name = "updatereference")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-@Data
-public class UpdateReferenceData extends CatalogReferenceData implements UpdateReference {
+  String getName();
 
-  @Column(name = "updatetype", columnDefinition = "int4")
-  private ItemUpdateType updateType;
+  void setName(String name);
+
+  String getDescription();
+
+  void setDescription(String description);
+
+  String getLanguage();
+
+  void setLanguage(String language);
+
+  Set<ProfileItem> getItems();
+
+  void setItems(Set<ProfileItem> items);
+
+  void setOwner(DomainBase owner);
+
+  DomainBase getOwner();
+
+  default Domain requireDomainMembership() {
+    if (getOwner() instanceof Domain domain) {
+      return domain;
+    }
+    throw new UnprocessableDataException(
+        "Profile is part of a domain template, items cannot be applied");
+  }
 }

@@ -57,5 +57,11 @@ public enum TailoringReferenceType {
    * TailoringReference#getCatalogItem()} is the part. This is the opposite feature to {@link
    * #PART}.
    */
-  COMPOSITE;
+  COMPOSITE,
+  /**
+   * Defines a risk as part of a {@link RiskAffected} in a {@link ProfileItem} and maps to a {@link
+   * RiskTailoringReference}. It describes relations to {@link Scenario}, {@link Control} an {@link
+   * Person} and the risk data.
+   */
+  RISK;
 }

@@ -86,13 +86,19 @@ public interface DomainBase extends Nameable, Identifiable, Versioned {
     return getRiskDefinition(riskDefinitionId.value());
   }
 
+  @Deprecated
   Map<String, ProfileDefinition> getJsonProfiles();
 
   default Optional<ProfileDefinition> findProfile(ProfileRef ref) {
     return Optional.ofNullable(getJsonProfiles().get(ref.getKeyRef()));
   }
 
+  @Deprecated
   void setProfiles(Map<String, ProfileDefinition> profiles);
+
+  Set<Profile> getProfiles();
+
+  void setProfiles(Set<Profile> profiles);
 
   void setRiskDefinitions(Map<String, RiskDefinition> definitions);
 

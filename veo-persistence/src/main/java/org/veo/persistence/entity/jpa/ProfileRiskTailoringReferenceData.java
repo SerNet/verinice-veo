@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler.
+ * Copyright (C) 2023  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,22 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.parameter;
+package org.veo.persistence.entity.jpa;
 
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 
-import org.veo.core.entity.TemplateItem;
+import org.veo.core.entity.ProfileItem;
+import org.veo.core.entity.RiskTailoringReference;
+import org.veo.core.entity.TailoringReference;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+/** owner is risk-affected, target is scenario * */
+@Entity(name = "profile_risk_tailoring_reference")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-@AllArgsConstructor
-/** Contains the element together with the relevant tailoringreferences. */
-public class TemplateItemIncarnationDescription {
-  private TemplateItem item;
-  private List<TailoringReferenceParameter> references = new ArrayList<>();
+public class ProfileRiskTailoringReferenceData extends ProfileTailoringReferenceData
+    implements TailoringReference<ProfileItem>, RiskTailoringReference {
+
+  @ManyToOne(targetEntity = ProfileItemData.class)
+  private ProfileItem riskOwner;
+
+  @ManyToOne(targetEntity = ProfileItemData.class)
+  private ProfileItem mitigation;
 }

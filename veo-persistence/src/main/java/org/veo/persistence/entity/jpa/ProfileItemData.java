@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler.
+ * Copyright (C) 2023  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -33,78 +32,50 @@ import jakarta.validation.Valid;
 import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.DomainBase;
-import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.Profile;
+import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.TailoringReference;
-import org.veo.core.entity.UpdateReference;
 
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
-@Entity(name = "catalogitem")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-@ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-public class CatalogItemData extends TemplateItemData implements CatalogItem {
-
+@Entity(name = "profile_item")
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@ToString(onlyExplicitlyIncluded = true, callSuper = true)
+public class ProfileItemData extends TemplateItemData implements ProfileItem {
   @Id
   @ToString.Include
   @GeneratedValue(generator = "UUID")
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
   private String dbId;
 
-  @ManyToOne(targetEntity = DomainData.class)
-  @Getter(value = AccessLevel.NONE)
-  @Setter(value = AccessLevel.NONE)
-  private Domain domain;
+  @ManyToOne(targetEntity = CatalogItemData.class, fetch = FetchType.LAZY)
+  private CatalogItem appliedCatalogItem;
 
-  @ManyToOne(targetEntity = DomainTemplateData.class)
-  @Getter(value = AccessLevel.NONE)
-  @Setter(value = AccessLevel.NONE)
-  private DomainTemplate domainTemplate;
+  @ManyToOne(targetEntity = ProfileData.class, optional = false)
+  private Profile owner;
 
-  @Column(name = "tailoringreferences")
   @OneToMany(
       cascade = CascadeType.ALL,
       orphanRemoval = true,
-      targetEntity = CatalogTailoringReferenceData.class,
+      targetEntity = ProfileTailoringReferenceData.class,
       mappedBy = "owner",
       fetch = FetchType.LAZY)
   @Valid
-  private Set<TailoringReference<CatalogItem>> tailoringReferences = new HashSet<>();
+  private Set<TailoringReference<ProfileItem>> tailoringReferences = new HashSet<>();
 
-  @Column(name = "updatereferences")
-  @OneToMany(
-      cascade = CascadeType.ALL,
-      orphanRemoval = true,
-      targetEntity = UpdateReferenceData.class,
-      mappedBy = "owner",
-      fetch = FetchType.LAZY)
-  @Valid
-  private Set<UpdateReference> updateReferences = new HashSet<>();
-
-  public DomainBase getOwner() {
-    return domain != null ? domain : domainTemplate;
+  @Override
+  public String getModelType() {
+    return SINGULAR_TERM;
   }
 
-  public void setOwner(DomainBase owner) {
-    if (getOwner() != null && !getOwner().equals(owner)) {
-      throw new IllegalArgumentException("Cannot move catalog item between domains");
-    }
-
-    if (owner instanceof Domain d) {
-      this.domain = d;
-    } else if (owner instanceof DomainTemplate dt) {
-      this.domainTemplate = dt;
-    } else {
-      throw new IllegalArgumentException("Unexpected domain type");
-    }
+  @Override
+  public Class<? extends Identifiable> getModelInterface() {
+    return ProfileItem.class;
   }
 
   /** create an instance of the described element* */
@@ -117,7 +88,9 @@ public class CatalogItemData extends TemplateItemData implements CatalogItem {
     element.setDescription(description);
     element.setAbbreviation(abbreviation);
     element.apply(this);
-    element.getAppliedCatalogItems().add(this);
+    if (getAppliedCatalogItem() != null) {
+      element.getAppliedCatalogItems().add(getAppliedCatalogItem());
+    }
     return element;
   }
 }

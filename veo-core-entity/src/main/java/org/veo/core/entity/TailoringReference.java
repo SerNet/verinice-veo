@@ -42,7 +42,5 @@ public interface TailoringReference<T extends TemplateItem>
     return SINGULAR_TERM;
   }
 
-  default void remove() {
-    getOwner().getTailoringReferences().remove(this);
-  }
+  void remove();
 }

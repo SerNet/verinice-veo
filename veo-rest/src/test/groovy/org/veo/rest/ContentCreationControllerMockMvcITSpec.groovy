@@ -589,14 +589,16 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         def dt = txTemplate.execute {
             domainTemplateRepository.findAll()
                     .find{ it.name == domain.name && it.templateVersion == "1.2.3"}
-                    .tap{it.profiles  } // init proxy
+                    .tap{
+                        it.jsonProfiles
+                    } // init proxy
         }
 
         then: "the template is found, the version is set"
         dt.templateVersion == "1.2.3"
 
         and: "the example profile exists"
-        with(dt.profiles.exampleOrganization) {
+        with(dt.getJsonProfiles().exampleOrganization) {
             name == 'Example elements'
             description == 'All the good stuff'
             language == 'de_DE'

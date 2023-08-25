@@ -49,6 +49,10 @@ public interface TemplateItem extends Nameable, Identifiable {
 
   void setCustomAspects(Map<String, Map<String, Object>> container);
 
+  Domain requireDomainMembership();
+
+  Element incarnate();
+
   default Class<? extends Element> getElementInterface() {
     return (Class<? extends Element>) EntityType.getBySingularTerm(getElementType()).getType();
   }

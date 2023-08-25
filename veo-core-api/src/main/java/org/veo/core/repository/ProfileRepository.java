@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler.
+ * Copyright (C) 2023  Urs Zeidler
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,22 +15,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.parameter;
+package org.veo.core.repository;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
-import org.veo.core.entity.TemplateItem;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.Key;
+import org.veo.core.entity.Profile;
+import org.veo.core.entity.ProfileItem;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+/**
+ * A repository for <code>CatalogItem</code> entities.
+ *
+ * <p>Implements basic CRUD operations from the superinterface and extends them with more specific
+ * methods - i.e. queries based on particular fields.
+ */
+public interface ProfileRepository extends IdentifiableVersionedRepository<Profile> {
+  Set<ProfileItem> findAllByIdsFetchDomainAndTailoringReferences(Set<Key<UUID>> ids);
 
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Data
-@AllArgsConstructor
-/** Contains the element together with the relevant tailoringreferences. */
-public class TemplateItemIncarnationDescription {
-  private TemplateItem item;
-  private List<TailoringReferenceParameter> references = new ArrayList<>();
+  Set<ProfileItem> findAllByIdsFetchDomainAndTailoringReferences(Key<UUID> profileid);
+
+  Set<Profile> findAllByDomain(Domain domain);
 }
