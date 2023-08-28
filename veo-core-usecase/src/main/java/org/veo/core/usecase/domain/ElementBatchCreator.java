@@ -48,8 +48,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class ElementBatchCreator {
-  private static final String DESIGNATOR_PREFIX = "DMO-";
-
   private final RepositoryProvider repositoryProvider;
   private final EventPublisher eventPublisher;
   private final Decider decider;
