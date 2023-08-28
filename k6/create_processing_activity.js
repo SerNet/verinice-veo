@@ -68,12 +68,12 @@ const VEO_REPORTS_BASE_URL = "https://api." + HOSTNAME + "/reporting";
 const KEYCLOAK_REALM = "verinice-veo";
 
 // Maximum number of seconds to sleep after a request
-const MAX_SLEEP_SECONDS = 5;
+const MAX_SLEEP_SECONDS = 10;
 
 // Maximum number of seconds to sleep before saving a new element
-const MAX_SLEEP_SECONDS_NEW_ELEMENT = 15;
+const MAX_SLEEP_SECONDS_NEW_ELEMENT = 20;
 
-const REQUEST_TIMEOUT = "8s";
+const REQUEST_TIMEOUT = "10s";
 
 const RESPONSIBLE_BODY = JSON.parse(open("./responsible_body.json"));
 const JOINT_CONTROLLER = JSON.parse(open("./joint_controller.json"));
