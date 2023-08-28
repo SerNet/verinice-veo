@@ -388,8 +388,6 @@ export function createResponsibleBody() {
   loadPersons(unitId, "PER_DataProtectionOfficer");
   loadPersons(unitId, "PER_Person");
   loadForms();
-  loadForms();
-  loadForms();
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/scopes", RESPONSIBLE_BODY, "SCP_ResponsibleBody",domainId,unitId);
 }
@@ -406,8 +404,6 @@ export function createJointController() {
   loadPersons(unitId, "PER_DataProtectionOfficer");
   loadPersons(unitId, "PER_Person");
   loadHistory(unitId);
-  loadForms();
-  loadForms();
   loadForms();
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/scopes", JOINT_CONTROLLER, "SCP_JointController",domainId,unitId);
