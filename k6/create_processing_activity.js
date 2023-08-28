@@ -271,6 +271,7 @@ export function loadDashboard() {
   loadTranslations()
   loadForms();
   loadForms();
+  loadCatalogs();
 }
 
 export function loadElementStatusCount(unitId) {
@@ -624,6 +625,9 @@ export function loadCatalogs() {
   var params = {
     headers: {
       Authorization: TOKEN,
+    },
+    tags: { 
+      name: 'GET /catalogs'
     },
     timeout: REQUEST_TIMEOUT
   };
