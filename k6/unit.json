@@ -1,0 +1,5 @@
+{
+  "name": "k6",
+  "description": "Unit created for k6 load test",
+  "domains": []
+}

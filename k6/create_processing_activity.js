@@ -86,6 +86,7 @@ const APPLICATION = JSON.parse(open("./application.json"));
 let scenario = JSON.parse(open("./scenario.json"));
 const DATA_PROCESSING = JSON.parse(open("./data_processing.json"));
 let risk = JSON.parse(open("./risk.json"));
+let UNIT = JSON.parse(open("./unit.json"));
 
 // Token for Authorization "Bearer <TOKEN>"
 let TOKEN;
@@ -99,9 +100,13 @@ let scenarioIds = [];
 let scenarioRiskIds = [];
 let personIds = [];
 let tomIds = [];
-let dataProcessingId;
 let itSystemIds = [];
 let applicationIds = [];
+let dataTransferId;
+let dataTypeId;
+let dataProcessingId;
+let responsibleBodyId;
+let jointControllerId;
 
 export let options = {
   thresholds: {
@@ -125,16 +130,34 @@ export let options = {
   }
 };
 
-// This method is executed for each virtual user
-export default function () {
-  console.info("Starting iteration...");
+export function setup() {
+  console.info("Setup...");
   getToken();
   var domain = loadFirstDomain();
   domainId = domain.id;
   check(domainId, {
     "Domain ID is a valid UUID": (id) => checkIfValidUUID(id),
   });
+  if(unitId===undefined) {
+    unitId = createUnit();
+    return { domain: domainId, unit: unitId };
+  } else {
+    return { domain: domainId };
+  }
+  
+}
 
+// This method is executed for each virtual user
+export default function (data) {
+  if (data.unit) {
+    unitId = data.unit;
+  }
+  if (data.domain) {
+    domainId = data.domain;
+  }
+  console.info("Starting iteration...");
+  getToken();
+  
   if(!checkIfValidUUID(domainId)) {
     console.error("Domain ID is not a valid UUID: " + domainId);
   }
@@ -148,8 +171,8 @@ export default function () {
   }
 
   scenarioRiskIds = [...scenarioIds];
-  let responsibleBodyId = createResponsibleBody();
-  let jointControllerId = createJointController();
+  responsibleBodyId = createResponsibleBody();
+  jointControllerId = createJointController();
   loadDashboardFromCache();
   let numberOfPersons = getRandomInt(5) + 1;
   for (let i = 0; i < numberOfPersons; i++) {
@@ -159,9 +182,9 @@ export default function () {
   for (let i = 0; i < numberOfToms; i++) {
     tomIds.push(createTOM());
   }
-  let dataTypeId = createDataType();
+  dataTypeId = createDataType();
   DATA_TRANSFER.links.process_dataType[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + dataTypeId;
-  let dataTransferId = createDataTransfer();
+  dataTransferId = createDataTransfer();
   loadDashboardFromCache();
   getToken();
   let numberOfItSystems = getRandomInt(4) + 1;
@@ -185,22 +208,34 @@ export default function () {
   for (let i = 0; i < numberOfRisks; i++) {
     createRisk(dataProcessingId);
   }
-  
-  deleteElement("/processes/", dataProcessingId);
-  deleteElement("/processes/", dataTransferId);
-  deleteElement("/scopes/", responsibleBodyId);
-  deleteElement("/scopes/", jointControllerId);
+  cleanUp();
+}
+
+export function teardown(data) {
+  console.info("Teardown...");
+  if(!(data.unit===undefined)) {
+    getToken();
+    let unitId = data.unit;
+    deleteElement("/units/", unitId)
+  }
+}
+
+export function cleanUp() {
+  scenarioIds.forEach(id => {deleteElement("/scenarios/", id)});
+  scenarioIds = [];
   personIds.forEach(id => {deleteElement("/persons/", id)});
   personIds = [];
   tomIds.forEach(id => {deleteElement("/controls/", id)});
   tomIds = [];
-  deleteElement("/assets/", dataTypeId);
   itSystemIds.forEach(id => {deleteElement("/assets/", id)});
   itSystemIds = [];
   applicationIds.forEach(id => {deleteElement("/assets/", id)});
   applicationIds = [];
-  scenarioIds.forEach(id => {deleteElement("/scenarios/", id)});
-  scenarioIds = [];
+  deleteElement("/processes/", dataProcessingId);
+  deleteElement("/processes/", dataTransferId);
+  deleteElement("/scopes/", responsibleBodyId);
+  deleteElement("/scopes/", jointControllerId);
+  deleteElement("/assets/", dataTypeId);
 }
 
 /**
@@ -364,6 +399,13 @@ export function createTOM() {
   loadSchema("control");
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/controls", TOM, "CTL_TOM",domainId,unitId);
+}
+
+export function createUnit() {
+  console.info("Creating Unit...");
+  let unitBody = UNIT;
+  unitBody.domains[0] = { targetUri: VEO_BASE_URL + "/domains/" + domainId};
+  return createElement("/units", unitBody);
 }
 
 export function createPerson() {
