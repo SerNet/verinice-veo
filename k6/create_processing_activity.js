@@ -239,39 +239,29 @@ export function loadUnitSelection() {
 
 export function loadDashboard() {
   console.info("Loading dashboard...");
-
+  loadElementAndSleep("/units/", unitId, 0);
+  loadElementsAndSleep("/domains", 0);
+  loadElementsAndSleep("/domains", 0);
+  loadTranslations();
   loadElementAndSleep("/domains/", domainId, 0);
+  loadElementStatusCount(unitId);
+  loadElementsAndSleep("/types", 0);
+  loadReports();
+  loadElementAndSleep("/units/", unitId, 0);
+  loadCatalogs();
   loadElementAndSleep("/domains/", domainId, 0);
-  loadElementAndSleep("/domains/", domainId, 0);
-  loadElementStatusCount(unitId) 
-  loadSchema("process"); 
-  loadElementsAndSleep("/domains", 0); 
-  loadTranslations()
-  loadSchema("incident");
+  loadCatalogs();
   loadForms();
+  loadForms();
+  loadSchema("asset");
+  loadSchema("control");
   loadSchema("document");
-  loadTranslations()
-  loadForms();
+  loadSchema("incident");
+  loadSchema("person");
+  loadSchema("process");
   loadSchema("scenario");
-  loadTranslations()
-  loadForms();
   loadSchema("scope");
   loadHistory(unitId);
-  loadTranslations()
-  loadForms();
-  loadForms();
-  loadTranslations()
-  loadSchema("asset");
-  loadTranslations()
-  loadForms();
-  loadTranslations()
-  loadSchema("person");
-  loadForms();
-  loadSchema("control");
-  loadTranslations()
-  loadForms();
-  loadForms();
-  loadCatalogs();
 }
 
 export function loadElementStatusCount(unitId) {
