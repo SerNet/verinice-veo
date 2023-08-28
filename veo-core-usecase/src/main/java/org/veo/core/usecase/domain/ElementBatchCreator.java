@@ -20,23 +20,21 @@ package org.veo.core.usecase.domain;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
-import org.veo.core.repository.ElementRepository;
-import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.service.EventPublisher;
 import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.decision.Decider;
@@ -48,7 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class ElementBatchCreator {
-  private final RepositoryProvider repositoryProvider;
+  private final GenericElementRepository genericElementRepository;
   private final EventPublisher eventPublisher;
   private final Decider decider;
   private final ElementMigrationService elementMigrationService;
@@ -59,7 +57,6 @@ public class ElementBatchCreator {
    * throw up. Assigns designators.
    */
   public void create(Collection<Element> elements, Unit unit, boolean migrate) {
-    Map<Class<Element>, List<Element>> elementsGroupedByType = groupByType(elements);
     Map<Element, Set<CustomLink>> links = new HashMap<>();
 
     Map<RiskAffected, Set<AbstractRisk>> risks = new HashMap<>();
@@ -82,12 +79,11 @@ public class ElementBatchCreator {
               e.getRisks().clear();
             });
 
-    elementsGroupedByType.entrySet().stream()
+    elements.stream()
         // sort entries by model type to get predictable designators
-        .sorted(Comparator.comparing(entry -> entry.getKey().getSimpleName()))
-        .flatMap(entry -> entry.getValue().stream())
+        .sorted(Comparator.comparing(Identifiable::getModelType))
         .forEach(e -> prepareElement(e, unit, migrate));
-    elementsGroupedByType.forEach(this::saveElements);
+    saveElements(elements);
 
     links.forEach(
         (element, elementLinks) -> {
@@ -117,16 +113,9 @@ public class ElementBatchCreator {
     log.info("{} elements added to unit {}", elements.size(), unit.getIdAsString());
   }
 
-  @SuppressWarnings("unchecked")
-  private Map<Class<Element>, List<Element>> groupByType(Collection<Element> elements) {
-    return elements.stream()
-        .collect(Collectors.groupingBy(e1 -> (Class<Element>) e1.getModelInterface()));
-  }
-
-  private <T extends Element> void saveElements(Class<T> entityType, List<T> elementsWithType) {
-    ElementRepository<T> elementRepository = repositoryProvider.getElementRepositoryFor(entityType);
-    log.debug("Saving {} entities with type {}", elementsWithType.size(), entityType);
-    elementRepository.saveAll(Set.copyOf(elementsWithType));
+  private <T extends Element> void saveElements(Collection<T> elements) {
+    log.debug("Saving {} entities", elements.size());
+    genericElementRepository.saveAll(Set.copyOf(elements));
     log.debug("Done");
   }
 

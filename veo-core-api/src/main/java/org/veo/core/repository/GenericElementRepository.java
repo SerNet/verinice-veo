@@ -26,6 +26,8 @@ import org.veo.core.entity.Unit;
 
 public interface GenericElementRepository extends ElementQueryProvider<Element> {
 
+  Collection<Element> saveAll(Collection<Element> entities);
+
   void deleteAll(Collection<Element> entities);
 
   Set<SubTypeStatusCount> getCountsBySubType(Unit u, Domain domain);

@@ -80,6 +80,14 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
 
   @Override
   @Transactional
+  public Collection<Element> saveAll(Collection<Element> entities) {
+    return dataRepository.saveAll(entities.stream().map(ElementData.class::cast).toList()).stream()
+        .map(Element.class::cast)
+        .toList();
+  }
+
+  @Override
+  @Transactional
   public void deleteAll(Collection<Element> elements) {
     Set<Key<UUID>> elementKeys = elements.stream().map(Element::getId).collect(Collectors.toSet());
     Set<String> elementUUIDs = elementKeys.stream().map(Key::uuidValue).collect(Collectors.toSet());

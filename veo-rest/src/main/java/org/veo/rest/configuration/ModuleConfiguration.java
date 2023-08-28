@@ -961,13 +961,17 @@ public class ModuleConfiguration {
 
   @Bean
   ElementBatchCreator elementBatchCreator(
-      RepositoryProvider repositoryProvider,
+      GenericElementRepository genericElementRepository,
       EventPublisher eventPublisher,
       Decider decider,
       ElementMigrationService elementMigrationService,
       DesignatorService designatorService) {
     return new ElementBatchCreator(
-        repositoryProvider, eventPublisher, decider, elementMigrationService, designatorService);
+        genericElementRepository,
+        eventPublisher,
+        decider,
+        elementMigrationService,
+        designatorService);
   }
 
   @Bean

@@ -25,8 +25,7 @@ import org.veo.core.entity.ProcessRisk
 import org.veo.core.entity.Unit
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent
 import org.veo.core.entity.profile.ProfileRef
-import org.veo.core.repository.AssetRepository
-import org.veo.core.repository.ProcessRepository
+import org.veo.core.repository.GenericElementRepository
 import org.veo.core.repository.RepositoryProvider
 import org.veo.core.repository.UnitRepository
 import org.veo.core.service.DomainTemplateService
@@ -41,14 +40,12 @@ class ProfileApplierSpec extends Specification {
 
     DomainTemplateService domainTemplateService = Mock()
     UnitRepository unitRepository = Mock()
-    AssetRepository assetRepository = Mock()
-    ProcessRepository processRepository = Mock()
     EventPublisher eventPublisher = Mock()
-    RepositoryProvider repositoryProvider = Mock()
+    GenericElementRepository genericElementRepository = Mock()
     Decider decider = Mock()
     ElementMigrationService elementMigrationService = Mock()
     DesignatorService designatorService= Mock()
-    ElementBatchCreator elementBatchCreator = new ElementBatchCreator(repositoryProvider, eventPublisher, decider, elementMigrationService, designatorService)
+    ElementBatchCreator elementBatchCreator = new ElementBatchCreator(genericElementRepository, eventPublisher, decider, elementMigrationService, designatorService)
 
     ProfileApplier profileApplier = new ProfileApplier(domainTemplateService, unitRepository, elementBatchCreator)
 
@@ -62,7 +59,7 @@ class ProfileApplierSpec extends Specification {
         ProfileRef profile = new ProfileRef("highProfile")
 
         Asset asset1 = Mock {
-            getModelInterface() >> Asset
+            getModelType() >> 'asset'
             getParts() >> []
             getLinks() >> []
             getDomains()  >> [domain]
@@ -70,7 +67,7 @@ class ProfileApplierSpec extends Specification {
             getOwningClient() >> Optional.of(existingClient)
         }
         Asset asset2 = Mock() {
-            getModelInterface() >> Asset
+            getModelType() >> 'asset'
             getParts() >> []
             getLinks() >> []
             getDomains()  >> [domain]
@@ -81,7 +78,7 @@ class ProfileApplierSpec extends Specification {
         }
 
         Process process = Mock {
-            getModelInterface() >> Process
+            getModelType() >> 'process'
             getParts() >> []
             getLinks() >> []
             getDomains()  >> [domain]
@@ -118,10 +115,7 @@ class ProfileApplierSpec extends Specification {
 
         and: "everything is saved in the database"
         1 * unitRepository.save(_) >> unit
-        1 * repositoryProvider.getElementRepositoryFor(Asset) >> assetRepository
-        1 * repositoryProvider.getElementRepositoryFor(Process) >> processRepository
-        1 * assetRepository.saveAll([asset1, asset2] as Set)
-        1 * processRepository.saveAll([process] as Set)
+        1 * genericElementRepository.saveAll([asset1, asset2, process] as Set)
         3 * eventPublisher.publish(_ as RiskAffectingElementChangeEvent)
     }
 }
