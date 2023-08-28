@@ -150,7 +150,7 @@ export default function () {
   scenarioRiskIds = [...scenarioIds];
   let responsibleBodyId = createResponsibleBody();
   let jointControllerId = createJointController();
-  loadDashboard();
+  loadDashboardFromCache();
   let numberOfPersons = getRandomInt(5) + 1;
   for (let i = 0; i < numberOfPersons; i++) {
     personIds.push(createPerson());
@@ -162,7 +162,7 @@ export default function () {
   let dataTypeId = createDataType();
   DATA_TRANSFER.links.process_dataType[0].target.targetUri = "https://api." + HOSTNAME + "/veo/assets/" + dataTypeId;
   let dataTransferId = createDataTransfer();
-  loadDashboard();
+  loadDashboardFromCache();
   getToken();
   let numberOfItSystems = getRandomInt(4) + 1;
   for (let i = 0; i < numberOfItSystems; i++) {
@@ -172,7 +172,7 @@ export default function () {
   for (let i = 0; i < numberOfApplications; i++) {
     applicationIds.push(createApplication());
   }
-  loadDashboard();
+  loadDashboardFromCache();
   DATA_PROCESSING.links.process_responsiblePerson[0].target.targetUri = "https://api." + HOSTNAME + "/veo/persons/" + getRandom(personIds);
   DATA_PROCESSING.links.process_responsibleBody[0].target.targetUri = "https://api." + HOSTNAME + "/veo/scopes/" + responsibleBodyId;
   DATA_PROCESSING.links.process_jointControllership[0].target.targetUri = "https://api." + HOSTNAME + "/veo/scopes/" + jointControllerId;
@@ -261,6 +261,12 @@ export function loadDashboard() {
   loadSchema("process");
   loadSchema("scenario");
   loadSchema("scope");
+  loadHistory(unitId);
+}
+
+export function loadDashboardFromCache() {
+  console.info("Loading dashboard from cache...");
+  loadElementStatusCount(unitId);
   loadHistory(unitId);
 }
 
