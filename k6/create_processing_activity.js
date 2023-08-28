@@ -303,7 +303,6 @@ export function createDataProcessing() {
   loadForms();
   loadProcesses(unitId, "PRO_DataProcessing");
   loadSchema("process");
-  loadHistory(unitId);
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/processes", DATA_PROCESSING, "PRO_DataProcessing",domainId,unitId);
 }
@@ -313,7 +312,6 @@ export function createApplication() {
   loadForms();
   loadAssets(unitId, "AST_Application");
   loadSchema("asset");
-  loadHistory(unitId);
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/assets", APPLICATION, "AST_Application",domainId,unitId);
 }
@@ -323,7 +321,6 @@ export function createItSystem() {
   loadForms();
   loadAssets(unitId, "AST_IT-System");
   loadSchema("asset");
-  loadHistory(unitId);
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/assets", IT_SYSTEM, "AST_IT-System",domainId,unitId);
 }
@@ -333,7 +330,6 @@ export function createScenario() {
   loadForms();
   loadScenarios(unitId, "SCN_Scenario");
   loadSchema("scenario");
-  loadHistory(unitId);
   let scenarioString = JSON.stringify(scenario);
   scenarioString = scenarioString.replace("DOMAIN_ID", domainId);
   scenarioString = scenarioString.replace("\"PROBABILITY\"", getRandomInt(3));
@@ -347,7 +343,6 @@ export function createDataTransfer() {
   loadForms();
   loadScopes(unitId, "PRO_DataTransfer");
   loadSchema("process");
-  loadHistory(unitId);
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/processes", DATA_TRANSFER, "PRO_DataTransfer",domainId,unitId);
 }
@@ -367,7 +362,6 @@ export function createTOM() {
   loadForms();
   loadControls(unitId, "CTL_TOM");
   loadSchema("control");
-  loadHistory(unitId);
   sleep(Math.random() * MAX_SLEEP_SECONDS_NEW_ELEMENT);
   return createElement("/controls", TOM, "CTL_TOM",domainId,unitId);
 }
@@ -393,7 +387,6 @@ export function createResponsibleBody() {
   loadPersons(unitId, "PER_Person");
   loadPersons(unitId, "PER_DataProtectionOfficer");
   loadPersons(unitId, "PER_Person");
-  loadHistory(unitId);
   loadForms();
   loadForms();
   loadForms();
