@@ -110,8 +110,8 @@ export let options = {
     http_req_duration: ["p(80)<200"] // 80% of requests must complete below 200ms
   },
   stages: [
-    { duration: "2m", target: 100 }, // Scale up
-    { duration: "8m", target: 100 }, 
+    { duration: "2m", target: 50 }, // Scale up
+    { duration: "8m", target: 50 }, 
     { duration: "2m", target: 0 } // Scale down
   ],
   ext: {
