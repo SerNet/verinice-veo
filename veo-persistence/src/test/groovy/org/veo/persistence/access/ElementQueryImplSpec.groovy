@@ -786,6 +786,74 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         }
     }
 
+    def 'sort by abbreviation produces expected sorting'() {
+        given:
+        personDataRepository.saveAll([
+            newPerson(unit) {
+                abbreviation = "q2"
+            },
+            newPerson(unit) {
+                abbreviation = "p10.5"
+            },
+            newPerson(unit) {
+                abbreviation = "p10.12"
+            },
+            newPerson(unit) {
+                abbreviation = "p3"
+            },
+            newPerson(unit) {
+                abbreviation = "p1"
+            },
+            newPerson(unit) {
+                abbreviation = "p3.541"
+            },
+        ])
+
+        when: "querying persons sorted by abbreviation ascending"
+        def query = elementQueryFactory.queryPersons(client)
+        def result = query.execute(new PagingConfiguration(10, 0, 'abbreviation', SortOrder.ASCENDING))
+
+        then: "the sort order is correct"
+        result.resultPage*.abbreviation == [
+            "p1",
+            "p3",
+            "p3.541",
+            "p10.5",
+            "p10.12",
+            "q2"
+        ]
+    }
+
+    def 'sort by name produces expected sorting'() {
+        given:
+        assetDataRepository.saveAll([
+            newAsset(unit) {
+                name = "Server 4 (win)"
+            },
+            newAsset(unit) {
+                name = "Server 10 (linux)"
+            },
+            newAsset(unit) {
+                name = "Server 1 (linux)"
+            },
+            newAsset(unit) {
+                name = "Server 5 (linux)"
+            },
+        ])
+
+        when: "querying assets sorted by abbreviation ascending"
+        def query = elementQueryFactory.queryAssets(client)
+        def result = query.execute(new PagingConfiguration(10, 0, 'name', SortOrder.ASCENDING))
+
+        then: "the sort order is correct"
+        result.resultPage*.name == [
+            "Server 1 (linux)",
+            "Server 4 (win)",
+            "Server 5 (linux)",
+            "Server 10 (linux)"
+        ]
+    }
+
     def 'queries by domain'() {
         given:
         newDomain(client) { name = "one" }

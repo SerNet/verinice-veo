@@ -153,10 +153,6 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   @Setter(AccessLevel.NONE)
   private String displayName;
 
-  @Formula("length(designator)")
-  @Setter(AccessLevel.NONE)
-  private String designatorLength;
-
   @Getter(value = AccessLevel.NONE)
   @Setter(value = AccessLevel.NONE)
   @Column(insertable = false, updatable = false, name = "dtype")
