@@ -72,8 +72,8 @@ class DomainRestTestITSpec extends DomainRestTest {
         }
     }
 
-    def "post a domaintemplate with translation errors"() {
-        given: "a DS-GVO domaintemplate with translation errors"
+    def "post a domain template with translation errors"() {
+        given: "a DS-GVO domain template with translation errors"
         def domainDto = exportDomain(dsgvoDomainId)
         def modifiedDomain = [:] << domainDto
 
@@ -86,8 +86,8 @@ class DomainRestTestITSpec extends DomainRestTest {
         modifiedDomain.elementTypeDefinitions.process.translations.de.remove('process_controller')
         modifiedDomain.elementTypeDefinitions.process.translations.de.superfluous_key = "I'm not even supposed to be here today!"
 
-        when: " we post the domaintemplate"
-        def response = post("/domaintemplates", modifiedDomain, 422, UserType.CONTENT_CREATOR)
+        when: " we post the domain template"
+        def response = post("/content-creation/domaintemplates", modifiedDomain, 422, UserType.CONTENT_CREATOR)
 
         then: "the errors are recognized"
         response.getStatusCode() == 422
@@ -191,9 +191,9 @@ class DomainRestTestITSpec extends DomainRestTest {
         }
 
         when: "we export the new domain template"
-        def domainTemplate = get("/domaintemplates/${newTemplateVersionId}/export").body
+        def domainTemplate = get("/content-creation/domaintemplates/${newTemplateVersionId}").body
 
-        then: "the domaintemplate is returned"
+        then: "the domain template is returned"
         with(domainTemplate) {
             name == "DS-GVO"
             templateVersion == "1.4.1"
@@ -205,14 +205,14 @@ class DomainRestTestITSpec extends DomainRestTest {
             profiles.exampleUnit.elements[0].domains.keySet() ==~ [domainTemplate.id]
         }
 
-        when:" we post the domain export as domaintemplate"
+        when:" we post the domain export as domain template"
         domainDto.name = "My own domain"
 
-        def template = post("/domaintemplates", domainDto, 201, UserType.CONTENT_CREATOR).body
+        def template = post("/content-creation/domaintemplates", domainDto, 201, UserType.CONTENT_CREATOR).body
         def templateId = template.resourceId
-        def domainTemplateExport = get("/domaintemplates/$templateId/export", 200, UserType.CONTENT_CREATOR).body
+        def domainTemplateExport = get("/content-creation/domaintemplates/$templateId", 200, UserType.CONTENT_CREATOR).body
 
-        then: "the domaintemplate exist and contains the data"
+        then: "the domain template exist and contains the data"
         with(domainTemplateExport) {
             name == domainDto.name
             templateVersion == domainDto.templateVersion

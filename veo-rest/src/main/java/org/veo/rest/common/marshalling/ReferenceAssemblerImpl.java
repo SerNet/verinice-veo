@@ -73,6 +73,7 @@ import org.veo.rest.AssetController;
 import org.veo.rest.AssetInDomainController;
 import org.veo.rest.AssetRiskResource;
 import org.veo.rest.CatalogController;
+import org.veo.rest.ContentCreationController;
 import org.veo.rest.ControlController;
 import org.veo.rest.ControlInDomainController;
 import org.veo.rest.DocumentController;
@@ -173,8 +174,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
           .getHref();
     }
     if (DomainTemplate.class.isAssignableFrom(type)) {
-      return linkTo(
-              methodOn(DomainTemplateController.class).getDomainTemplate(ANY_AUTH, id, ANY_REQUEST))
+      return linkTo(methodOn(ContentCreationController.class).getDomainTemplate(ANY_AUTH, id))
           .withRel(DomainTemplateController.URL_BASE_PATH)
           .getHref();
     }

@@ -121,7 +121,9 @@ class ProfileRestTest extends VeoRestTest {
                 ]
             ]
         ], 201, CONTENT_CREATOR).body.targetUri
-        post("$templateUri/createdomains", null, 204, ADMIN)
+        def templateId = uriToId(templateUri)
+        println(templateId)
+        post("/domaintemplates/$templateId/createdomains", null, 204, ADMIN)
 
         and: "applying the profile in secondary client"
         def secondaryClientDomainId = get("/domains", 200, SECONDARY_CLIENT_USER).body.find {
@@ -199,5 +201,9 @@ class ProfileRestTest extends VeoRestTest {
                         ]
                     ],
                 ], null, 204, CONTENT_CREATOR)
+    }
+
+    private uriToId(String targetUri) {
+        targetUri.split('/').last()
     }
 }

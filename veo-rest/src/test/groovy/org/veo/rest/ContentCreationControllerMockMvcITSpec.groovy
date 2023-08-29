@@ -365,7 +365,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         and: "there is one more template in the repo"
         domainTemplateDataRepository.count() == initialTemplateCount + 1
 
-        when: "loading the domaintemplates from the database"
+        when: "loading the domain templates from the database"
         def dt = txTemplate.execute {
             domainTemplateRepository.findAll().find{ it.name == "Domain 1" }
         }
@@ -585,7 +585,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         and: "there is one more template in the repo"
         domainTemplateDataRepository.count() == initialTemplateCount + 1
 
-        when: "loading the domaintemplates from the database"
+        when: "loading the domain templates from the database"
         def dt = txTemplate.execute {
             domainTemplateRepository.findAll()
                     .find{ it.name == domain.name && it.templateVersion == "1.2.3"}
@@ -640,7 +640,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         when: "we create a new domain template from the export"
         exportedDomain.templateVersion = "1.2.4"
-        def domainTemplateId = parseJson(post("/domaintemplates", exportedDomain)).resourceId
+        def domainTemplateId = parseJson(post("/content-creation/domaintemplates", exportedDomain)).resourceId
 
         then:" the domain template is created"
         UUID.fromString(domainTemplateId)

@@ -115,7 +115,7 @@ public class WebSecurity {
           .toArray(String[]::new);
 
   // Paths that require the role 'content-creator' for read access:
-  private static final String CONTENT_CREATOR_VIEWABLE_PATHS = "/domaintemplates/*/export";
+  private static final String CONTENT_CREATOR_PATHS = "/content-creation/**";
 
   // Paths that must only be accessible by the admin role:
   private static final String[] ADMIN_PATHS = {"/admin/**", "/domaintemplates/*/createdomains"};
@@ -179,27 +179,13 @@ public class WebSecurity {
             auth.requestMatchers(antMatcher(path)).hasRole("veo-admin");
           }
 
-          // content-creator write access:
-          auth.requestMatchers(HttpMethod.POST, CONTENT_CREATOR_EDITABLE_PATHS)
-              .hasRole("veo-content-creator")
-              .requestMatchers(HttpMethod.PUT, CONTENT_CREATOR_EDITABLE_PATHS)
-              .hasRole("veo-content-creator")
-              .requestMatchers(HttpMethod.DELETE, CONTENT_CREATOR_EDITABLE_PATHS)
-              .hasRole("veo-content-creator")
-
-              // content-creator read access (will be required in addition to more general roles
-              // matched below):
-              .requestMatchers(antMatcher(HttpMethod.GET, CONTENT_CREATOR_VIEWABLE_PATHS))
-              .hasRole("veo-content-creator")
-              .requestMatchers(antMatcher(HttpMethod.HEAD, CONTENT_CREATOR_VIEWABLE_PATHS))
-              .hasRole("veo-content-creator")
-              .requestMatchers(antMatcher(HttpMethod.OPTIONS, CONTENT_CREATOR_VIEWABLE_PATHS))
-              .hasRole("veo-content-creator");
-
           // POST is allowed to transient paths for regular users:
           for (String path : TRANSIENT_PATHS) {
             auth.requestMatchers(antMatcher(HttpMethod.POST, path)).hasRole("veo-user");
           }
+
+          // content-creator write access:
+          auth.requestMatchers(antMatcher(CONTENT_CREATOR_PATHS)).hasRole("veo-content-creator");
 
           // read-only access:
           Stream.of(USER_VIEWABLE_PATHS)

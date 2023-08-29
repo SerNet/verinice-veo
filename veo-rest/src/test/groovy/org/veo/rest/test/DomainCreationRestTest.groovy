@@ -79,7 +79,7 @@ class DomainCreationRestTest extends DomainRestTest {
         when: "creating a template from the domain"
         def templateUri = post("/content-creation/domains/$domainId/template", [
             version: "1.0.0"
-        ]).body.targetUri
+        ]).body.targetUri.replaceAll( /\/content-creation\//, "/")
 
         and: "applying the template in another client"
         post("$templateUri/createdomains", null, 204, ADMIN)

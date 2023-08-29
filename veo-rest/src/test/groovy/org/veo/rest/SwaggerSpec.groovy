@@ -465,7 +465,7 @@ class SwaggerSpec extends VeoSpringSpec {
         endPointInfo.post != null
 
         and: 'it has a meaningful description'
-        endPointInfo.post.summary == 'Creates a domaintemplate from a domain'
+        endPointInfo.post.summary == 'Creates a domain template from a domain'
 
         and: 'parameter is described'
         with(endPointInfo.post.parameters[0]) {

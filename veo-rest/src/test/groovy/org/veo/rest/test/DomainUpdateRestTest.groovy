@@ -30,10 +30,10 @@ class DomainUpdateRestTest extends VeoRestTest {
         templateName = "domain update test template ${UUID.randomUUID()}"
 
         def template = getTemplate()
-        oldDomainTemplateId = post("/domaintemplates", template, 201, CONTENT_CREATOR).body.resourceId
+        oldDomainTemplateId = post("/content-creation/domaintemplates", template, 201, CONTENT_CREATOR).body.resourceId
 
         template.templateVersion = "1.1.0"
-        newDomainTemplateId = post("/domaintemplates", template, 201, CONTENT_CREATOR).body.resourceId
+        newDomainTemplateId = post("/content-creation/domaintemplates", template, 201, CONTENT_CREATOR).body.resourceId
     }
 
     def "updates client to new domain template version and migrates elements"() {

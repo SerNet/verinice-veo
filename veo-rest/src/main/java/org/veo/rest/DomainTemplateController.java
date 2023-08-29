@@ -21,10 +21,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
-import java.util.function.Function;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,33 +30,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.WebRequest;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.DomainTemplateMetadataDto;
-import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
-import org.veo.adapter.presenter.api.io.mapper.CreateDomainTemplateInputMapper;
-import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
-import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
-import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Key;
-import org.veo.core.entity.transform.EntityFactory;
-import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
-import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
 import org.veo.core.usecase.domaintemplate.FindDomainTemplatesUseCase;
-import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase;
-import org.veo.core.usecase.service.EntityStateMapper;
-import org.veo.rest.common.RestApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -84,12 +67,7 @@ public class DomainTemplateController extends AbstractEntityController {
   public static final String URL_BASE_PATH = "/" + DomainTemplate.PLURAL_TERM;
 
   private final CreateDomainFromTemplateUseCase createDomainFromTemplateUseCase;
-  private final CreateDomainTemplateUseCase createDomainTemplatesUseCase;
-  private final EntityFactory entityFactory;
-  private final IdentifiableFactory identifiableFactory;
-  private final EntityStateMapper entityStateMapper;
   private final FindDomainTemplatesUseCase findDomainTemplatesUseCase;
-  private final GetDomainTemplateUseCase getDomainTemplateUseCase;
 
   @GetMapping
   @Operation(summary = "Loads all domain templates (metadata only)")
@@ -123,72 +101,6 @@ public class DomainTemplateController extends AbstractEntityController {
         createDomainFromTemplateUseCase,
         new CreateDomainFromTemplateUseCase.InputData(id, Optional.ofNullable(clientIds)),
         out -> ResponseEntity.noContent().build());
-  }
-
-  @PostMapping()
-  @Operation(summary = "Creates domain template")
-  @ApiResponse(responseCode = "201", description = "Domain template created")
-  @ApiResponse(responseCode = "409", description = "Domain template with given ID already exists")
-  public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomainTemplate(
-      @Valid @NotNull @RequestBody TransformDomainTemplateDto domainTemplateDto) {
-    var input =
-        CreateDomainTemplateInputMapper.map(
-            domainTemplateDto, identifiableFactory, entityFactory, entityStateMapper);
-    return useCaseInteractor.execute(
-        createDomainTemplatesUseCase,
-        input,
-        out -> {
-          var body = CreateOutputMapper.map(out.getDomainTemplate());
-          return RestApiResponse.created(URL_BASE_PATH, body);
-        });
-  }
-
-  @GetMapping(value = "/{id}")
-  @Operation(summary = "Loads a domaintemplate")
-  @ApiResponse(
-      responseCode = "200",
-      description = "DomainTemplate loaded",
-      content =
-          @Content(
-              mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(implementation = FullDomainDto.class)))
-  @ApiResponse(responseCode = "404", description = "DomainTemplate not found")
-  public @Valid Future<ResponseEntity<TransformDomainTemplateDto>> getDomainTemplate(
-      @Parameter(hidden = true) Authentication auth, @PathVariable String id, WebRequest request) {
-    // TODO: VEO-1549 implement getDomainTemplate, hint: use getDomainTemplate(id, client,
-    // toDtoFunction);
-    return CompletableFuture.failedFuture(new UnsupportedOperationException("not implemented"));
-  }
-
-  @GetMapping(value = "/{id}/export")
-  @Operation(summary = "export a domaintemplate")
-  @ApiResponse(
-      responseCode = "200",
-      description = "DomainTemplate exported",
-      content =
-          @Content(
-              mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(implementation = TransformDomainTemplateDto.class)))
-  @ApiResponse(responseCode = "404", description = "DomainTemplate not found")
-  public @Valid Future<ResponseEntity<TransformDomainTemplateDto>> exportDomainTemplate(
-      @Parameter(hidden = true) Authentication auth, @PathVariable String id, WebRequest request) {
-    Client client = getAuthenticatedClient(auth);
-    Function<GetDomainTemplateUseCase.OutputData, TransformDomainTemplateDto> toDtoFunction =
-        output -> entityToDtoTransformer.transformDomainTemplate2Dto(output.getDomainTemplate());
-    return getDomainTemplate(id, client, toDtoFunction);
-  }
-
-  private Future<ResponseEntity<TransformDomainTemplateDto>> getDomainTemplate(
-      String id,
-      Client client,
-      Function<GetDomainTemplateUseCase.OutputData, TransformDomainTemplateDto> toDtoFunction) {
-    var domainFuture =
-        useCaseInteractor.execute(
-            getDomainTemplateUseCase,
-            new UseCase.IdAndClient(Key.uuidFrom(id), client),
-            toDtoFunction);
-    return domainFuture.thenApply(
-        domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
   }
 
   @Override

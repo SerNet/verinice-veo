@@ -36,9 +36,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         it.replace("/**", "")
     }
 
-    static def CONTENT_CREATOR_EDITABLE_PATHS = WebSecurity.CONTENT_CREATOR_EDITABLE_PATHS.collect {
-        it.replace("/**", "")
-    }
+    static def CONTENT_CREATOR_PATHS = WebSecurity.CONTENT_CREATOR_PATHS
 
     def setup() {
         domainId = createTestDomain(createTestClient(), TEST_DOMAIN_TEMPLATE_ID).idAsString
@@ -94,22 +92,22 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
 
         and: "domain template import to be allowed"
         mvc.perform(MockMvcRequestBuilders
-                .post("/domaintemplates")).andReturn().response.status == 400
+                .post("/content-creation/domaintemplates")).andReturn().response.status == 400
         mvc.perform(MockMvcRequestBuilders
-                .post("/domaintemplates")).andReturn().response.status == 400
+                .post("/content-creation/domaintemplates")).andReturn().response.status == 400
     }
 
     @WithUserDetails("user@domain.example")
     def "content-creator endpoints are forbidden for a normal user"() {
         expect: "domain template creation to be forbidden"
         mvc.perform(MockMvcRequestBuilders
-                .post("/domaintemplates")).andReturn().response.status == 403
+                .post("/content-creation/domaintemplates")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
                 .post("/content-creation/domains")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
-                .post("/domaintemplates")).andReturn().response.status == 403
+                .post("/content-creation/domaintemplates")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
-                .get("/domaintemplates/" + TEST_DOMAIN_TEMPLATE_ID + "/export"))
+                .get("/content-creation/domaintemplates/" + TEST_DOMAIN_TEMPLATE_ID))
                 .andReturn().response.status == 403
     }
 
@@ -117,13 +115,13 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
     def "content-creator endpoints are forbidden for an admin"() {
         expect: "domain template creation to be forbidden"
         mvc.perform(MockMvcRequestBuilders
-                .post("/domaintemplates")).andReturn().response.status == 403
+                .post("/content-creation/domaintemplates")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
                 .post("/content-creation/domains")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
-                .post("/domaintemplates")).andReturn().response.status == 403
+                .post("/content-creation/domaintemplates")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
-                .get("/domaintemplates/" + TEST_DOMAIN_TEMPLATE_ID + "/export"))
+                .get("/content-creation/domaintemplates/" + TEST_DOMAIN_TEMPLATE_ID))
                 .andReturn().response.status == 403
     }
 
@@ -174,7 +172,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         }
 
         where:
-        entity << USER_EDITABLE_PATHS + CONTENT_CREATOR_EDITABLE_PATHS
+        entity << USER_EDITABLE_PATHS
     }
 
     @WithUserDetails("no-rights-user")
@@ -204,7 +202,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         }
 
         where:
-        entity << USER_EDITABLE_PATHS + CONTENT_CREATOR_EDITABLE_PATHS
+        entity << USER_EDITABLE_PATHS + CONTENT_CREATOR_PATHS
     }
 
     @WithUserDetails("read-only-user")
@@ -214,7 +212,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
                 .andReturn().response.status == 403
 
         where:
-        entity << USER_EDITABLE_PATHS + CONTENT_CREATOR_EDITABLE_PATHS
+        entity << USER_EDITABLE_PATHS + CONTENT_CREATOR_PATHS
     }
 
     @WithUserDetails("read-only-user")
@@ -246,7 +244,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
                 .andReturn().response.status == 403
 
         where:
-        entity << USER_EDITABLE_PATHS + CONTENT_CREATOR_EDITABLE_PATHS
+        entity << USER_EDITABLE_PATHS + CONTENT_CREATOR_PATHS
     }
 
     @WithUserDetails("read-only-user")
@@ -256,7 +254,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
                 .andReturn().response.status == 403
 
         where:
-        entity << USER_EDITABLE_PATHS + CONTENT_CREATOR_EDITABLE_PATHS
+        entity << USER_EDITABLE_PATHS + CONTENT_CREATOR_PATHS
     }
 
     @WithUserDetails("content-creator-readonly")
@@ -294,6 +292,6 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         }
 
         where:
-        entity << USER_EDITABLE_PATHS + CONTENT_CREATOR_EDITABLE_PATHS
+        entity << USER_EDITABLE_PATHS
     }
 }

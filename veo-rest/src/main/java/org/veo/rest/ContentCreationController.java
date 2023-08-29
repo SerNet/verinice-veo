@@ -18,6 +18,7 @@
 package org.veo.rest;
 
 import static org.veo.adapter.presenter.api.io.mapper.VersionMapper.parseVersion;
+import static org.veo.rest.ControllerConstants.DEFAULT_CACHE_CONTROL;
 import static org.veo.rest.ControllerConstants.UNIT_PARAM;
 import static org.veo.rest.ControllerConstants.UUID_DESCRIPTION;
 import static org.veo.rest.ControllerConstants.UUID_EXAMPLE;
@@ -28,16 +29,19 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,12 +63,14 @@ import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.UnitDumpDto;
 import org.veo.adapter.presenter.api.dto.create.CreateDomainDto;
+import org.veo.adapter.presenter.api.io.mapper.CreateDomainTemplateInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.CreateOutputMapper;
 import org.veo.adapter.presenter.api.io.mapper.UnitDumpMapper;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.adapter.service.domaintemplate.dto.CreateDomainTemplateFromDomainParameterDto;
+import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.EntityType;
@@ -73,6 +79,8 @@ import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
+import org.veo.core.entity.transform.EntityFactory;
+import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.core.usecase.UseCase.IdAndClient;
 import org.veo.core.usecase.domain.CreateCatalogFromUnitUseCase;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
@@ -83,12 +91,17 @@ import org.veo.core.usecase.domain.SaveDecisionUseCase;
 import org.veo.core.usecase.domain.SaveRiskDefinitionUseCase;
 import org.veo.core.usecase.domain.UpdateElementTypeDefinitionUseCase;
 import org.veo.core.usecase.domaintemplate.CreateDomainTemplateFromDomainUseCase;
+import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
+import org.veo.core.usecase.domaintemplate.GetDomainTemplateUseCase;
+import org.veo.core.usecase.service.EntityStateMapper;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.security.ApplicationUser;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -100,6 +113,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(ContentCreationController.URL_BASE_PATH)
 @RequiredArgsConstructor
 @SecurityRequirement(name = RestApplication.SECURITY_SCHEME_OAUTH)
+@ApiResponse(responseCode = "401", description = "Content creator role required")
 public class ContentCreationController extends AbstractVeoController {
   private final ObjectSchemaParser objectSchemaParser;
   private final DtoToEntityTransformer dtoToEntityTransformer;
@@ -113,9 +127,14 @@ public class ContentCreationController extends AbstractVeoController {
   private final CreateDomainTemplateFromDomainUseCase createDomainTemplateFromDomainUseCase;
   private final CreateCatalogFromUnitUseCase createCatalogForDomainUseCase;
   private final DeleteDomainUseCase deleteDomainUseCase;
+  private final GetDomainTemplateUseCase getDomainTemplateUseCase;
   public static final String URL_BASE_PATH = "/content-creation";
 
   private final CreateDomainUseCase createDomainUseCase;
+  private final CreateDomainTemplateUseCase createDomainTemplatesUseCase;
+  private final EntityFactory entityFactory;
+  private final IdentifiableFactory identifiableFactory;
+  private final EntityStateMapper entityStateMapper;
 
   @PostMapping("/domains")
   @Operation(summary = "Creates blank new domain")
@@ -336,8 +355,8 @@ public class ContentCreationController extends AbstractVeoController {
   }
 
   @PostMapping(value = "/domains/{id}/template")
-  @Operation(summary = "Creates a domaintemplate from a domain")
-  @ApiResponse(responseCode = "201", description = "DomainTemplate created")
+  @Operation(summary = "Creates a domain template from a domain")
+  @ApiResponse(responseCode = "201", description = "Domain template created")
   @ApiResponse(responseCode = "400", description = "Invalid version")
   @ApiResponse(responseCode = "409", description = "Template with version already exists")
   @ApiResponse(responseCode = "422", description = "Version is lower than current template version")
@@ -363,6 +382,47 @@ public class ContentCreationController extends AbstractVeoController {
                 domainTemplateId -> buildProfiles(createParameter, id, domainTemplateId)),
             out -> IdRef.from(out.getNewDomainTemplate(), referenceAssembler));
     return completableFuture.thenApply(result -> ResponseEntity.status(201).body(result));
+  }
+
+  @GetMapping(value = "/domaintemplates/{id}")
+  @Operation(summary = "Loads a domain template")
+  @ApiResponse(
+      responseCode = "200",
+      description = "Domain template loaded",
+      content =
+          @Content(
+              mediaType = MediaType.APPLICATION_JSON_VALUE,
+              schema = @Schema(implementation = TransformDomainTemplateDto.class)))
+  @ApiResponse(responseCode = "404", description = "Domain template not found")
+  @ApiResponse(responseCode = "400", description = "Bad request")
+  public @Valid Future<ResponseEntity<TransformDomainTemplateDto>> getDomainTemplate(
+      @Parameter(hidden = true) Authentication auth, @PathVariable String id) {
+    return useCaseInteractor
+        .execute(
+            getDomainTemplateUseCase,
+            new IdAndClient(Key.uuidFrom(id), getAuthenticatedClient(auth)),
+            output ->
+                entityToDtoTransformer.transformDomainTemplate2Dto(output.getDomainTemplate()))
+        .thenApply(
+            domainDto -> ResponseEntity.ok().cacheControl(DEFAULT_CACHE_CONTROL).body(domainDto));
+  }
+
+  @PostMapping("/domaintemplates")
+  @Operation(summary = "Creates domain template")
+  @ApiResponse(responseCode = "201", description = "Domain template created")
+  @ApiResponse(responseCode = "409", description = "Domain template with given ID already exists")
+  public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomainTemplate(
+      @Valid @NotNull @RequestBody TransformDomainTemplateDto domainTemplateDto) {
+    var input =
+        CreateDomainTemplateInputMapper.map(
+            domainTemplateDto, identifiableFactory, entityFactory, entityStateMapper);
+    return useCaseInteractor.execute(
+        createDomainTemplatesUseCase,
+        input,
+        out -> {
+          var body = CreateOutputMapper.map(out.getDomainTemplate());
+          return RestApiResponse.created(URL_BASE_PATH, body);
+        });
   }
 
   // TODO VEO-2010 this is all so hideous

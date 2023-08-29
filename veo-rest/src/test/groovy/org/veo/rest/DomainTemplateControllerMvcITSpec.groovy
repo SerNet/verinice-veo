@@ -132,7 +132,7 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("content-creator")
     def "import domain template exported from system with different context path"() {
         when:
-        post("/domaintemplates", getTemplateBody())
+        post("/content-creation/domaintemplates", getTemplateBody())
 
         then:
         noExceptionThrown()

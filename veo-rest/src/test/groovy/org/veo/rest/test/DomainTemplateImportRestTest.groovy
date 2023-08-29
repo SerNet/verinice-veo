@@ -26,7 +26,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         def template = getTemplateBody()
 
         when: "importing the domain template"
-        def templateId = post("/domaintemplates", template, 201, UserType.CONTENT_CREATOR).body.resourceId
+        def templateId = post("/content-creation/domaintemplates", template, 201, UserType.CONTENT_CREATOR).body.resourceId
 
         and: "creating and fetching a new domain based on the template"
         post("/domaintemplates/$templateId/createdomains", null, 204, UserType.ADMIN)
@@ -72,7 +72,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         catalogItemElements*.name.sort() == ["Control-1", "Test process-1"]
 
         expect: "updating to fail"
-        post("/domaintemplates", template, 409)
+        post("/content-creation/domaintemplates", template, 409)
     }
 
     def "cannot import template with identical name & version twice"() {
@@ -80,19 +80,19 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         def name = "import test template ${UUID.randomUUID()}"
 
         expect: "posting different version numbers to succeed"
-        post("/domaintemplates", [
+        post("/content-creation/domaintemplates", [
             name: name,
             templateVersion: "2.0.0",
             authority: "me"
         ], 201, UserType.CONTENT_CREATOR)
-        post("/domaintemplates", [
+        post("/content-creation/domaintemplates", [
             name: name,
             templateVersion: "2.1.0",
             authority: "me"
         ], 201, UserType.CONTENT_CREATOR)
 
         and: "posting a previous version number again to cause a conflict"
-        post("/domaintemplates", [
+        post("/content-creation/domaintemplates", [
             name: name,
             templateVersion: "2.1.0",
             authority: "me"
@@ -104,14 +104,14 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         def name = "import test template ${UUID.randomUUID()}"
 
         expect: "posting a valid version number to succeed"
-        post("/domaintemplates", [
+        post("/content-creation/domaintemplates", [
             name: name,
             templateVersion: "1.0.0",
             authority: "me"
         ], 201, UserType.CONTENT_CREATOR)
 
         and: "posting an invalid version to fail"
-        post("/domaintemplates", [
+        post("/content-creation/domaintemplates", [
             name: name,
             templateVersion: "1.1",
             authority: "me"
@@ -124,7 +124,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         template.decisions.negativeDecision.elementSubType = "sillySub"
 
         when: "trying to create the template"
-        def response = post("/domaintemplates", template, 422, UserType.CONTENT_CREATOR).body
+        def response = post("/content-creation/domaintemplates", template, 422, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
         response.message == "Validation error in decision 'negativeDecision': Sub type sillySub is not defined"
@@ -139,7 +139,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         ]
 
         when: "trying to create the template"
-        def response = post("/domaintemplates", template, 400, UserType.CONTENT_CREATOR).body
+        def response = post("/content-creation/domaintemplates", template, 400, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
         response.message.endsWith("Invalid value for attribute 'process_accessAuthorization_description': must be a string")
@@ -158,7 +158,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                 )
 
         when: "trying to create the template"
-        def response = post("/domaintemplates", template, 400, UserType.CONTENT_CREATOR).body
+        def response = post("/content-creation/domaintemplates", template, 400, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
         response.message.endsWith("Invalid target type 'process' for link type 'process_manager'")
@@ -171,7 +171,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         vtElement.subType = "PRO_fit"
 
         when: "trying to create the template"
-        def response = post("/domaintemplates", template, 400, UserType.CONTENT_CREATOR).body
+        def response = post("/content-creation/domaintemplates", template, 400, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
         response.message.endsWith("Sub type 'PRO_fit' is not defined for element type process")
@@ -184,7 +184,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         vtItem.subType = null
 
         when: "trying to create the template"
-        def response = post("/domaintemplates", template, 400, UserType.CONTENT_CREATOR).body
+        def response = post("/content-creation/domaintemplates", template, 400, UserType.CONTENT_CREATOR).body
 
         then: "it fails with a helpful message"
         response.message.endsWith("Cannot assign element to domain without specifying a sub type")
@@ -208,7 +208,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         ]
 
         when: "trying to create the template"
-        def response = post("/domaintemplates", template, 422, UserType.CONTENT_CREATOR).body
+        def response = post("/content-creation/domaintemplates", template, 422, UserType.CONTENT_CREATOR).body
 
         then: "it fails"
         response.message.contains("Domain $template.name 1.0.0 contains no risk definition with ID RDX")
@@ -220,7 +220,7 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         template.riskDefinitions['RD1'].riskMethod.translations.de.remove('description')
 
         when: "trying to create the template"
-        def response = post("/domaintemplates", template, 422, UserType.CONTENT_CREATOR).body
+        def response = post("/content-creation/domaintemplates", template, 422, UserType.CONTENT_CREATOR).body
 
         then: "it fails"
         response.message.contains(" MISSING: riskDefinition RD1 risk method: description")
