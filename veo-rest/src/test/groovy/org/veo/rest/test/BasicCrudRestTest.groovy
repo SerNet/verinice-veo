@@ -19,6 +19,7 @@ package org.veo.rest.test
 
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
+
 /**
  * This class contains tests of the basic operations create, read, update, and delete (CRUD).
  */
@@ -544,5 +545,18 @@ class BasicCrudRestTest extends VeoRestTest {
             name: "u",
             parent: [targetUri: "httpx://uri.geller"]
         ], 422).body.message == "Invalid entity reference: httpx://uri.geller"
+
+        and:
+        post("/domains/$testDomainId/incidents", [
+            name: "terrible incident",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "DISASTER",
+            status: "DETECTED",
+            customAspects: [
+                fantasyCa: [
+                    fantasyAttr: 99
+                ]
+            ]
+        ], 400).body.message == "Custom aspect 'fantasyCa' is not defined"
     }
 }

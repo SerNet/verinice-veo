@@ -67,8 +67,7 @@ public class DomainSensitiveElementValidator {
     var caDefinition =
         ca.getDomain()
             .getElementTypeDefinition(element.getModelType())
-            .getCustomAspects()
-            .get(ca.getType());
+            .getCustomAspectDefinition(ca.getType());
     try {
       AttributeValidator.validate(ca.getAttributes(), caDefinition.getAttributeDefinitions());
     } catch (IllegalArgumentException ex) {
