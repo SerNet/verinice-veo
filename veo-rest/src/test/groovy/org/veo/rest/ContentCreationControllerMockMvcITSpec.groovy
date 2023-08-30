@@ -557,7 +557,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("content-creator")
-    def "create a DomainTemplate with unit"() {
+    def "create a domain template with unit"() {
         Domain domain = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID)
         def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domain.idAsString)
 
@@ -640,9 +640,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         when: "we create a new domain template from the export"
         exportedDomain.templateVersion = "1.2.4"
-        def domainTemplateId = parseJson(post("/content-creation/domaintemplates", exportedDomain)).resourceId
+        def domainTemplateId = parseJson(post("/content-creation/domain-templates", exportedDomain)).resourceId
 
-        then:" the domain template is created"
+        then: "the domain template is created"
         UUID.fromString(domainTemplateId)
 
         when: "we create a domain from the domain template"
@@ -684,7 +684,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("user@domain.example")
-    def "create a DomainTemplate forbidden for user"() {
+    def "create a domain template forbidden for user"() {
         given: "a saved domain"
 
         when: "a request is made to the server"

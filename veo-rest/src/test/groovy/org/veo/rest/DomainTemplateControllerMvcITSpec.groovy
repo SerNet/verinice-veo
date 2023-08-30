@@ -40,7 +40,7 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
         createTestDomainTemplate(TEST_DOMAIN_TEMPLATE_ID)
 
         when:
-        def templates = parseJson(get("/domaintemplates"))
+        def templates = parseJson(get("/domain-templates"))
 
         then:
         templates.size() == 2
@@ -50,7 +50,7 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
             id instanceof String
             templateVersion == "1.4.0"
             createdAt instanceof String
-            _self.endsWith("/domaintemplates/$id")
+            _self.endsWith("/domain-templates/$id")
         }
         with(templates.find {
             it.name == "test-domain"
@@ -58,7 +58,7 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
             id instanceof String
             templateVersion == "1.0.0"
             createdAt instanceof String
-            _self.endsWith("/domaintemplates/$id")
+            _self.endsWith("/domain-templates/$id")
         }
     }
 
@@ -68,7 +68,7 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
         def client2 = clientRepo.save(newClient {})
 
         when: "creating the DSGVO domain for the client"
-        post("/domaintemplates/$DSGVO_DOMAINTEMPLATE_UUID/createdomains?clientids=${client1.id.uuidValue()}", [:], HttpStatus.SC_NO_CONTENT)
+        post("/domain-templates/$DSGVO_DOMAINTEMPLATE_UUID/createdomains?clientids=${client1.id.uuidValue()}", [:], HttpStatus.SC_NO_CONTENT)
         client1 = loadClientAndInitializeDomains(client1.id)
 
         then: "the client gets the new domain"
@@ -90,7 +90,7 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
         def client3 = clientRepo.save(newClient {})
 
         when: "creating the DSGVO domain for the client"
-        post("/domaintemplates/$DSGVO_DOMAINTEMPLATE_UUID/createdomains?clientids=${client1.id.uuidValue()},${client2.id.uuidValue()}", [:], HttpStatus.SC_NO_CONTENT)
+        post("/domain-templates/$DSGVO_DOMAINTEMPLATE_UUID/createdomains?clientids=${client1.id.uuidValue()},${client2.id.uuidValue()}", [:], HttpStatus.SC_NO_CONTENT)
         client1 = loadClientAndInitializeDomains(client1.id)
         client2 = loadClientAndInitializeDomains(client2.id)
         client3 = loadClientAndInitializeDomains(client3.id)
@@ -118,7 +118,7 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
         def client3 = clientRepo.save(newClient {})
 
         when: "creating the DSGVO domain for the client"
-        post("/domaintemplates/$DSGVO_DOMAINTEMPLATE_UUID/createdomains", [:], HttpStatus.SC_NO_CONTENT)
+        post("/domain-templates/$DSGVO_DOMAINTEMPLATE_UUID/createdomains", [:], HttpStatus.SC_NO_CONTENT)
         client1 = loadClientAndInitializeDomains(client1.id)
         client2 = loadClientAndInitializeDomains(client2.id)
         client3 = loadClientAndInitializeDomains(client3.id)
@@ -132,7 +132,7 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
     @WithUserDetails("content-creator")
     def "import domain template exported from system with different context path"() {
         when:
-        post("/content-creation/domaintemplates", getTemplateBody())
+        post("/content-creation/domain-templates", getTemplateBody())
 
         then:
         noExceptionThrown()

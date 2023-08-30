@@ -23,8 +23,8 @@ package org.veo.core.entity;
  * authority-name VERSION: version
  */
 public interface DomainTemplate extends DomainBase {
-  String SINGULAR_TERM = "domaintemplate";
-  String PLURAL_TERM = "domaintemplates";
+  String SINGULAR_TERM = "domain-template";
+  String PLURAL_TERM = "domain-templates";
 
   @Override
   default Class<? extends Identifiable> getModelInterface() {

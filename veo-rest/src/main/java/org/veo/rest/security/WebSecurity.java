@@ -60,7 +60,7 @@ public class WebSecurity {
   private static final String ROOT_PATH = "/";
 
   private static final String[] DOMAINTEMPLATE_PATHS = {
-    "/domaintemplates/**",
+    "/domain-templates/**",
   };
 
   private static final String[] CONTENT_CREATION_PATHS = {
@@ -109,7 +109,7 @@ public class WebSecurity {
   private static final String CONTENT_CREATOR_PATHS = "/content-creation/**";
 
   // Paths that must only be accessible by the admin role:
-  private static final String[] ADMIN_PATHS = {"/admin/**", "/domaintemplates/*/createdomains"};
+  private static final String[] ADMIN_PATHS = {"/admin/**", "/domain-templates/*/createdomains"};
 
   // Paths that never change state on the server:
   // Searches and inspections are transient and may be POSTed by regular users.

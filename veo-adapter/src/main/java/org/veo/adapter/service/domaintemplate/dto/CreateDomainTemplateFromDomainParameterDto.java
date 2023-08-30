@@ -36,9 +36,9 @@ public class CreateDomainTemplateFromDomainParameterDto {
   static final String SEM_VER_PATTERN = "[0-9]+\\.[0-9]+\\.[0-9]+";
 
   @Schema(
-      description = "The version of the domaintemplate, with semantic version",
+      description = "The version of the domain template, with semantic version",
       example = "1.0.0")
-  @NotNull(message = "domaintemplate version is missing")
+  @NotNull(message = "Domain template version is missing")
   @Size(max = 255)
   @Pattern(regexp = SEM_VER_PATTERN)
   private String version;

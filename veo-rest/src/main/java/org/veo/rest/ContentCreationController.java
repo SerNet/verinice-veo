@@ -384,7 +384,7 @@ public class ContentCreationController extends AbstractVeoController {
     return completableFuture.thenApply(result -> ResponseEntity.status(201).body(result));
   }
 
-  @GetMapping(value = "/domaintemplates/{id}")
+  @GetMapping(value = "/domain-templates/{id}")
   @Operation(summary = "Loads a domain template")
   @ApiResponse(
       responseCode = "200",
@@ -407,7 +407,7 @@ public class ContentCreationController extends AbstractVeoController {
             domainDto -> ResponseEntity.ok().cacheControl(DEFAULT_CACHE_CONTROL).body(domainDto));
   }
 
-  @PostMapping("/domaintemplates")
+  @PostMapping("/domain-templates")
   @Operation(summary = "Creates domain template")
   @ApiResponse(responseCode = "201", description = "Domain template created")
   @ApiResponse(responseCode = "409", description = "Domain template with given ID already exists")

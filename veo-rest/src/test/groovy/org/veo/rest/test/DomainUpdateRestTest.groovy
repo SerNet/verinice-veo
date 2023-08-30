@@ -30,15 +30,15 @@ class DomainUpdateRestTest extends VeoRestTest {
         templateName = "domain update test template ${UUID.randomUUID()}"
 
         def template = getTemplate()
-        oldDomainTemplateId = post("/content-creation/domaintemplates", template, 201, CONTENT_CREATOR).body.resourceId
+        oldDomainTemplateId = post("/content-creation/domain-templates", template, 201, CONTENT_CREATOR).body.resourceId
 
         template.templateVersion = "1.1.0"
-        newDomainTemplateId = post("/content-creation/domaintemplates", template, 201, CONTENT_CREATOR).body.resourceId
+        newDomainTemplateId = post("/content-creation/domain-templates", template, 201, CONTENT_CREATOR).body.resourceId
     }
 
     def "updates client to new domain template version and migrates elements"() {
         given: "a scope and a process linked to it in the old domain"
-        post("/domaintemplates/$oldDomainTemplateId/createdomains", null, 204, ADMIN)
+        post("/domain-templates/$oldDomainTemplateId/createdomains", null, 204, ADMIN)
         def unitId = postNewUnit().resourceId
         def oldDomainId = get("/domains").body.find { it.name == templateName }.id
         def scopeId = post("/scopes", [
@@ -80,10 +80,10 @@ class DomainUpdateRestTest extends VeoRestTest {
         put("/scopes/$scopeId", scope, scopeResponse.getETag())
 
         when: "incarnating the new domain template version"
-        post("/domaintemplates/$newDomainTemplateId/createdomains", null, 204, ADMIN)
+        post("/domain-templates/$newDomainTemplateId/createdomains", null, 204, ADMIN)
 
         and: "triggering migration to the new domain"
-        post("/admin/domaintemplates/$newDomainTemplateId/allclientsupdate", null, 204, ADMIN)
+        post("/admin/domain-templates/$newDomainTemplateId/allclientsupdate", null, 204, ADMIN)
 
         then: "only the new domain is active"
         defaultPolling.eventually {

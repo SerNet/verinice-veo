@@ -81,7 +81,7 @@ public class AdminController {
         out -> UnitDumpMapper.mapOutput(out, entityToDtoTransformer));
   }
 
-  @PostMapping("domaintemplates/{id}/allclientsupdate")
+  @PostMapping("domain-templates/{id}/allclientsupdate")
   @Operation(
       summary = "Migrates all clients to the domain created from given domain template",
       description =

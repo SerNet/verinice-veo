@@ -191,7 +191,7 @@ class ReferenceAssemblerImplSpec extends Specification {
         Incident       | '/incidents{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
         Scope          | '/scopes{?unit,displayName,subType,status,childElementIds,hasParentElements,hasChildElements,description,designator,name,updatedBy,size,page,sortBy,sortOrder,embedRisks}'
         Domain         | '/domains'
-        DomainTemplate | '/domaintemplates'
+        DomainTemplate | '/domain-templates'
     }
 
     def "searches reference for #type is #reference"() {

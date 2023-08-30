@@ -104,7 +104,7 @@ class AdminControllerMvcITSpec extends ContentSpec {
         def oldProbability = risk.domains.(domainId).riskDefinitions.DSRA.probability
 
         and: 'updating all clients'
-        post("/admin/domaintemplates/${DSGVO_DOMAINTEMPLATE_V2_UUID}/allclientsupdate", [:], 204)
+        post("/admin/domain-templates/${DSGVO_DOMAINTEMPLATE_V2_UUID}/allclientsupdate", [:], 204)
 
         then: 'the elements and risks are transferred to the new domain'
         defaultPolling.eventually {

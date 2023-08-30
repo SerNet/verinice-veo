@@ -87,7 +87,7 @@ class DomainRestTestITSpec extends DomainRestTest {
         modifiedDomain.elementTypeDefinitions.process.translations.de.superfluous_key = "I'm not even supposed to be here today!"
 
         when: " we post the domain template"
-        def response = post("/content-creation/domaintemplates", modifiedDomain, 422, UserType.CONTENT_CREATOR)
+        def response = post("/content-creation/domain-templates", modifiedDomain, 422, UserType.CONTENT_CREATOR)
 
         then: "the errors are recognized"
         response.getStatusCode() == 422
@@ -154,7 +154,7 @@ class DomainRestTestITSpec extends DomainRestTest {
         delete("/units/$profileSourceUnitId")
 
         and: "we create a domain from the new template version"
-        post("/domaintemplates/${newTemplateVersionId}/createdomains", [:], HttpStatus.SC_NO_CONTENT, UserType.ADMIN)
+        post("/domain-templates/${newTemplateVersionId}/createdomains", [:], HttpStatus.SC_NO_CONTENT, UserType.ADMIN)
         defaultPolling.eventually {
             getDomains().count { it.name == oldDomain.name } == 2
         }
@@ -191,7 +191,7 @@ class DomainRestTestITSpec extends DomainRestTest {
         }
 
         when: "we export the new domain template"
-        def domainTemplate = get("/content-creation/domaintemplates/${newTemplateVersionId}").body
+        def domainTemplate = get("/content-creation/domain-templates/${newTemplateVersionId}").body
 
         then: "the domain template is returned"
         with(domainTemplate) {
@@ -208,9 +208,9 @@ class DomainRestTestITSpec extends DomainRestTest {
         when:" we post the domain export as domain template"
         domainDto.name = "My own domain"
 
-        def template = post("/content-creation/domaintemplates", domainDto, 201, UserType.CONTENT_CREATOR).body
+        def template = post("/content-creation/domain-templates", domainDto, 201, UserType.CONTENT_CREATOR).body
         def templateId = template.resourceId
-        def domainTemplateExport = get("/content-creation/domaintemplates/$templateId", 200, UserType.CONTENT_CREATOR).body
+        def domainTemplateExport = get("/content-creation/domain-templates/$templateId", 200, UserType.CONTENT_CREATOR).body
 
         then: "the domain template exist and contains the data"
         with(domainTemplateExport) {

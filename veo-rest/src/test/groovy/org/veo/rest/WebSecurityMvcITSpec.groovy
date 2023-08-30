@@ -73,7 +73,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
 
         and: "domain creation to be forbidden"
         mvc.perform(MockMvcRequestBuilders
-                .post("/domaintemplates/f8ed22b1-b277-56ec-a2ce-0dbd94e24824/createdomains"))
+                .post("/domain-templates/f8ed22b1-b277-56ec-a2ce-0dbd94e24824/createdomains"))
                 .andReturn().response.status == 403
     }
 
@@ -81,31 +81,31 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
     def "domain template metadata is allowed for a normal user"() {
         expect:
         mvc.perform(MockMvcRequestBuilders
-                .get("/domaintemplates")).andReturn().response.status == 200
+                .get("/domain-templates")).andReturn().response.status == 200
     }
 
     @WithUserDetails("content-creator")
     def "domain template endpoints are allowed for a content-creator"() {
         expect: "domain template metadata to be allowed"
         mvc.perform(MockMvcRequestBuilders
-                .get("/domaintemplates")).andReturn().response.status == 200
+                .get("/domain-templates")).andReturn().response.status == 200
 
         and: "domain template import to be allowed"
         mvc.perform(MockMvcRequestBuilders
-                .post("/content-creation/domaintemplates")).andReturn().response.status == 400
+                .post("/content-creation/domain-templates")).andReturn().response.status == 400
     }
 
     @WithUserDetails("user@domain.example")
     def "content-creator endpoints are forbidden for a normal user"() {
         expect: "domain template creation to be forbidden"
         mvc.perform(MockMvcRequestBuilders
-                .post("/content-creation/domaintemplates")).andReturn().response.status == 403
+                .post("/content-creation/domain-templates")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
                 .post("/content-creation/domains")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
-                .post("/content-creation/domaintemplates")).andReturn().response.status == 403
+                .post("/content-creation/domain-templates")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
-                .get("/content-creation/domaintemplates/" + TEST_DOMAIN_TEMPLATE_ID))
+                .get("/content-creation/domain-templates/" + TEST_DOMAIN_TEMPLATE_ID))
                 .andReturn().response.status == 403
     }
 
@@ -113,13 +113,13 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
     def "content-creator endpoints are forbidden for an admin"() {
         expect: "domain template creation to be forbidden"
         mvc.perform(MockMvcRequestBuilders
-                .post("/content-creation/domaintemplates")).andReturn().response.status == 403
+                .post("/content-creation/domain-templates")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
                 .post("/content-creation/domains")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
-                .post("/content-creation/domaintemplates")).andReturn().response.status == 403
+                .post("/content-creation/domain-templates")).andReturn().response.status == 403
         mvc.perform(MockMvcRequestBuilders
-                .get("/content-creation/domaintemplates/" + TEST_DOMAIN_TEMPLATE_ID))
+                .get("/content-creation/domain-templates/" + TEST_DOMAIN_TEMPLATE_ID))
                 .andReturn().response.status == 403
     }
 
@@ -147,11 +147,11 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
                 .andReturn().response.status == 200
                 break
             case [
-                "/domaintemplates",
+                "/domain-templates",
             ]:
                 assert mvc.perform(
                 MockMvcRequestBuilders
-                .get("/domaintemplates/$TEST_DOMAIN_TEMPLATE_ID"))
+                .get("/domain-templates/$TEST_DOMAIN_TEMPLATE_ID"))
                 .andReturn().response.status == 200
                 break
             case ~/\/domains\/.+/:

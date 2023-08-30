@@ -77,7 +77,7 @@ public class TypeExtractor {
             && segments.get(1).equals("catalogitems")) {
       return Optional.of(LegacyCatalogItemDto.class);
     }
-    if (uriString.startsWith("/domaintemplates")) {
+    if (uriString.startsWith("/domain-templates")) {
       return Optional.of(TransformDomainTemplateDto.class);
     }
 

@@ -373,9 +373,9 @@ class SwaggerSpec extends VeoSpringSpec {
         schema.example instanceof Map
     }
 
-    def "endpoint documentation is correct for GET /domaintemplates"() {
+    def "endpoint documentation is correct for GET /domain-templates"() {
         given: "the endpoint docs"
-        def endPointInfo = parsedApiDocs.paths["/domaintemplates"].get
+        def endPointInfo = parsedApiDocs.paths["/domain-templates"].get
 
         expect: "that the correct schema is used"
         endPointInfo.responses['200'].content['application/json'].schema['$ref'] == '#/components/schemas/DomainTemplateMetadataDto'
@@ -407,7 +407,7 @@ class SwaggerSpec extends VeoSpringSpec {
 
     def "endpoint documentation is correct for CreateDomainUseCase"() {
         when: "retrieving the information about the endpoint"
-        def endPointInfo = parsedApiDocs.paths["/domaintemplates/{id}/createdomains"]
+        def endPointInfo = parsedApiDocs.paths["/domain-templates/{id}/createdomains"]
 
         then: "the information is found"
         endPointInfo != null
