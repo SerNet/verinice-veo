@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import jakarta.validation.Valid;
+
 import org.veo.core.entity.definitions.CustomAspectDefinition;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.definitions.SubTypeDefinition;
@@ -29,8 +31,8 @@ import lombok.Data;
 
 @Data
 public class ElementTypeDefinitionDto {
-  Map<String, SubTypeDefinition> subTypes = new HashMap<>();
-  Map<String, CustomAspectDefinition> customAspects = new HashMap<>();
-  Map<String, LinkDefinition> links = new HashMap<>();
-  Map<Locale, Map<String, String>> translations = new HashMap<>();
+  @Valid Map<String, SubTypeDefinition> subTypes = new HashMap<>();
+  @Valid Map<String, CustomAspectDefinition> customAspects = new HashMap<>();
+  @Valid Map<String, LinkDefinition> links = new HashMap<>();
+  @Valid Map<Locale, Map<String, String>> translations = new HashMap<>();
 }

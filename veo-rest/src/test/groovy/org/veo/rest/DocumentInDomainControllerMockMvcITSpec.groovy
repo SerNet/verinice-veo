@@ -48,9 +48,11 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "CRUD document in domain contexts"() {
         given: "an document with linked person and a part"
-        def personId = parseJson(post("/persons", [
+        def personId = parseJson(post("/domains/$testDomainId/persons", [
             name: "Ricky Writer",
             owner: [targetUri: "/units/$unitId"],
+            subType: "MasterOfDisaster",
+            status: "WATCHING_DISASTER_MOVIES",
         ])).resourceId
         def partId = parseJson(post("/domains/$testDomainId/documents", [
             name: "ISMS manual changelog",
@@ -108,8 +110,8 @@ class DocumentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.customAspects.details.numberOfPages == 84
         response.links.author[0].target.targetUri == "http://localhost/persons/$personId"
         response.links.author[0].target.targetInDomainUri == "http://localhost/domains/$testDomainId/persons/$personId"
-        response.links.author[0].target.associatedWithDomain == false
-        response.links.author[0].target.subType == null
+        response.links.author[0].target.associatedWithDomain
+        response.links.author[0].target.subType == "MasterOfDisaster"
         response.links.author[0].attributes.writingFinished == "2022-08-09"
 
         and: "parts"

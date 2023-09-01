@@ -70,6 +70,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
                             placeOfAuthoring: new TextAttributeDefinition(),
                         ]
                         targetType = "person"
+                        targetSubType = "author"
                     }
                 ]
             })

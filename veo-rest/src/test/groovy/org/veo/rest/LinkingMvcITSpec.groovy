@@ -64,17 +64,15 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                     subTypes["Normal"] = new SubTypeDefinition().tap{
                         it.statuses = ["NEW"]
                     }
-                    links["linkToWhateverPersonA"] = new LinkDefinition().tap{
-                        targetType = Person.SINGULAR_TERM
-                    }
-                    links["linkToWhateverPersonB"] = new LinkDefinition().tap{
-                        targetType = Person.SINGULAR_TERM
-                    }
                     links["linkToNormalPerson"] = new LinkDefinition().tap{
                         targetType = Person.SINGULAR_TERM
                         targetSubType = "Normal"
                     }
-                    links["linkToNicePerson"] = new LinkDefinition().tap{
+                    links["linkToNicePersonA"] = new LinkDefinition().tap{
+                        targetType = Person.SINGULAR_TERM
+                        targetSubType = "Nice"
+                    }
+                    links["linkToNicePersonB"] = new LinkDefinition().tap{
                         targetType = Person.SINGULAR_TERM
                         targetSubType = "Nice"
                     }
@@ -90,7 +88,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             name: "person 1",
             domains: [
                 (domainId): [
-                    subType: "Normal",
+                    subType: "Nice",
                     status: "NEW",
                 ]
             ],
@@ -100,7 +98,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             name: "person 2",
             domains: [
                 (domainId): [
-                    subType: "Normal",
+                    subType: "Nice",
                     status: "NEW",
                 ]
             ],
@@ -110,7 +108,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
             name: "person 3",
             domains: [
                 (domainId): [
-                    subType: "Normal",
+                    subType: "Nice",
                     status: "NEW",
                 ]
             ],
@@ -120,7 +118,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         when: "creating a scope with different links to all persons"
         def scopeId = parseJson(post("/scopes", [
             links: [
-                linkToWhateverPersonA: [
+                linkToNicePersonA: [
                     [
                         target: [targetUri: "http://localhost/persons/$person1"]
                     ],
@@ -128,7 +126,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                         target: [targetUri: "http://localhost/persons/$person2"]
                     ]
                 ],
-                linkToWhateverPersonB: [
+                linkToNicePersonB: [
                     [
                         target: [targetUri: "http://localhost/persons/$person2"]
                     ],
@@ -149,11 +147,11 @@ class LinkingMvcITSpec extends VeoMvcSpec {
         def retrievedScope = parseJson(get("/scopes/$scopeId"))
 
         then:
-        retrievedScope.links.linkToWhateverPersonA*.target*.targetUri ==~ [
+        retrievedScope.links.linkToNicePersonA*.target*.targetUri ==~ [
             "http://localhost/persons/$person1",
             "http://localhost/persons/$person2",
         ]*.toString()
-        retrievedScope.links.linkToWhateverPersonB*.target*.targetUri ==~ [
+        retrievedScope.links.linkToNicePersonB*.target*.targetUri ==~ [
             "http://localhost/persons/$person2",
             "http://localhost/persons/$person3",
         ]*.toString()
@@ -347,7 +345,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                 ]
             ],
             links: [
-                linkToNicePerson: [
+                linkToNicePersonA: [
                     [
                         target: [
                             targetUri: "http://localhost/persons/$nicePersonId"
@@ -374,7 +372,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                 ]
             ],
             links: [
-                linkToNicePerson: [
+                linkToNicePersonA: [
                     [
                         target: [
                             targetUri: "http://localhost/persons/$anotherNicePersonId"
@@ -401,7 +399,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                 ]
             ],
             links: [
-                linkToNicePerson: [
+                linkToNicePersonA: [
                     [
                         target: [
                             targetUri: "http://localhost/persons/$normalPersonId"
@@ -413,7 +411,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
 
         then:
         IllegalArgumentException ex = thrown()
-        ex.message == "Expected target of link 'linkToNicePerson' ('John') to have sub type 'Nice' but found 'Normal'"
+        ex.message == "Expected target of link 'linkToNicePersonA' ('John') to have sub type 'Nice' but found 'Normal'"
 
         when: "posting a scope with an invalid link"
         post("/scopes", [
@@ -428,7 +426,7 @@ class LinkingMvcITSpec extends VeoMvcSpec {
                 ]
             ],
             links: [
-                linkToNicePerson: [
+                linkToNicePersonA: [
                     [
                         target: [
                             targetUri: "http://localhost/persons/$normalPersonId"
@@ -440,6 +438,6 @@ class LinkingMvcITSpec extends VeoMvcSpec {
 
         then:
         ex = thrown()
-        ex.message == "Expected target of link 'linkToNicePerson' ('John') to have sub type 'Nice' but found 'Normal'"
+        ex.message == "Expected target of link 'linkToNicePersonA' ('John') to have sub type 'Nice' but found 'Normal'"
     }
 }

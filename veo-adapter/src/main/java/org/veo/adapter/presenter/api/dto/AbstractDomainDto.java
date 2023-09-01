@@ -22,6 +22,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import java.util.HashMap;
 import java.util.Map;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.adapter.presenter.api.common.IdRef;
@@ -86,6 +87,7 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
       requiredMode = REQUIRED)
   private Map<String, ProfileDefinition> profiles = new HashMap<>();
 
+  @Valid
   @Schema(
       description = "The definitions of domain-specific element properties",
       requiredMode = REQUIRED)

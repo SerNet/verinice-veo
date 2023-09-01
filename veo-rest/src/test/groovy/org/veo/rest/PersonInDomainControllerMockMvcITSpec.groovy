@@ -48,9 +48,11 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "CRUD person in domain contexts"() {
         given: "a person with linked scope and a part"
-        def scopeId = parseJson(post("/scopes", [
+        def scopeId = parseJson(post("/domains/$testDomainId/scopes", [
             name: "Hack Inc.",
             owner: [targetUri: "/units/$unitId"],
+            subType: "Company",
+            status: "NEW",
         ])).resourceId
         def partId = parseJson(post("/domains/$testDomainId/persons", [
             name: "Harry's rubber duck",
@@ -108,8 +110,8 @@ class PersonInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.customAspects.general.dateOfBirth == "1999-12-31"
         response.links.employer[0].target.targetUri == "http://localhost/scopes/$scopeId"
         response.links.employer[0].target.targetInDomainUri == "http://localhost/domains/$testDomainId/scopes/$scopeId"
-        response.links.employer[0].target.associatedWithDomain == false
-        response.links.employer[0].target.subType == null
+        response.links.employer[0].target.associatedWithDomain
+        response.links.employer[0].target.subType == "Company"
         response.links.employer[0].attributes.employedSince == "2022-08-01"
 
         and: "parts"

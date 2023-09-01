@@ -48,9 +48,11 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "CRUD scope in domain contexts"() {
         given: "an scope with linked person and a part"
-        def personId = parseJson(post("/persons", [
+        def personId = parseJson(post("/domains/$testDomainId/persons", [
             name: "Lou Vice",
             owner: [targetUri: "/units/$unitId"],
+            subType: "MasterOfDisaster",
+            status: "WATCHING_DISASTER_MOVIES",
         ])).resourceId
         def memberId = parseJson(post("/domains/$testDomainId/scopes", [
             name: "Data Party Inc.",
@@ -109,8 +111,8 @@ class ScopeInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.customAspects.staff.numberOfEmployees == 638
         response.links.dataProtectionOfficer[0].target.targetUri == "http://localhost/persons/$personId"
         response.links.dataProtectionOfficer[0].target.targetInDomainUri == "http://localhost/domains/$testDomainId/persons/$personId"
-        response.links.dataProtectionOfficer[0].target.associatedWithDomain == false
-        response.links.dataProtectionOfficer[0].target.subType == null
+        response.links.dataProtectionOfficer[0].target.associatedWithDomain
+        response.links.dataProtectionOfficer[0].target.subType == "MasterOfDisaster"
         response.links.dataProtectionOfficer[0].attributes.experienceSince == "1988-08-08"
         response.riskDefinition == "riskyDef"
 

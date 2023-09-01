@@ -78,6 +78,7 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
       orphanRemoval = true,
       targetEntity = ElementTypeDefinitionData.class,
       mappedBy = "owner")
+  @Valid
   private Set<ElementTypeDefinition> elementTypeDefinitions = new HashSet<>();
 
   @Valid

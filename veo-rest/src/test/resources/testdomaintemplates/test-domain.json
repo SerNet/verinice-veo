@@ -154,6 +154,7 @@
       "links": {
         "admin": {
           "targetType": "person",
+          "targetSubType": "MasterOfDisaster",
           "attributeDefinitions": {
             "accessProtocol": {
               "type": "enum",
@@ -179,10 +180,12 @@
       },
       "links": {
         "Control_details_Control": {
-          "targetType": "control"
+          "targetType": "control",
+          "targetSubType": "TOM"
         },
         "literature": {
           "targetType": "document",
+          "targetSubType": "Manual",
           "attributeDefinitions": {
             "chapters": {
               "type": "list",
@@ -215,6 +218,7 @@
       "links": {
         "author": {
           "targetType": "person",
+          "targetSubType": "MasterOfDisaster",
           "attributeDefinitions": {
             "writingFinished": {
               "type": "date"
@@ -252,6 +256,7 @@
       "links": {
         "responsiblePerson": {
           "targetType": "person",
+          "targetSubType": "MasterOfDisaster",
           "attributeDefinitions": {
             "takesAllTheBlame": {
               "type": "boolean"
@@ -267,6 +272,12 @@
             "CODING",
             "REVIEWING"
           ]
+        },
+        "MasterOfDisaster": {
+          "statuses": [
+            "WATCHING_DISASTER_MOVIES",
+            "CAUSING_REAL_DISASTERS"
+          ]
         }
       },
       "customAspects": {
@@ -281,6 +292,7 @@
       "links": {
         "employer": {
           "targetType": "scope",
+          "targetSubType": "Company",
           "attributeDefinitions": {
             "employedSince": {
               "type": "date"
@@ -314,6 +326,7 @@
       "links": {
         "necessaryData": {
           "targetType": "asset",
+          "targetSubType": "Information",
           "attributeDefinitions": {
             "essential": {
               "type": "boolean"
@@ -342,6 +355,7 @@
       "links": {
         "expert": {
           "targetType": "person",
+          "targetSubType": "MasterOfDisaster",
           "attributeDefinitions": {
             "experienceSince": {
               "type": "date"
@@ -370,6 +384,7 @@
       "links": {
         "dataProtectionOfficer": {
           "targetType": "person",
+          "targetSubType": "MasterOfDisaster",
           "attributeDefinitions": {
             "experienceSince": {
               "type": "date"

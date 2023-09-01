@@ -354,7 +354,8 @@ class DomainTemplateImportRestTest extends VeoRestTest {
                         ],
                         'process_manager': [
                             'attributeDefinitions': [:],
-                            'targetType': 'person'
+                            'targetType': 'person',
+                            'targetSubType': 'PER_Person',
                         ],
                     ],
                     'subTypes': [

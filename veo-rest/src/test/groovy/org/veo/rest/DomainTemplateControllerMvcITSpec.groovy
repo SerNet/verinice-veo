@@ -303,6 +303,7 @@ class DomainTemplateControllerMvcITSpec extends VeoMvcSpec {
                         ],
                         'process_manager': [
                             'attributeDefinitions': [:],
+                            'targetSubType': 'PER_DataProtectionOfficer',
                             'targetType': 'person'
                         ],
                     ],

@@ -70,7 +70,7 @@ public class CatalogItemValidator {
               linkType, linkSourceItem.getElementType()));
     }
     validateLinkTargetType(linkType, linkTargetItem, linkDefinition);
-    validateLinkTargetSubType(linkType, linkTargetItem, domain, linkDefinition);
+    validateLinkTargetSubType(linkType, linkTargetItem, linkDefinition);
     try {
       AttributeValidator.validate(attributes, linkDefinition.getAttributeDefinitions());
     } catch (IllegalArgumentException ex) {
@@ -87,10 +87,7 @@ public class CatalogItemValidator {
   }
 
   private static void validateLinkTargetSubType(
-      String linkType, CatalogItem target, DomainBase domain, LinkDefinition linkDefinition) {
-    if (linkDefinition.getTargetSubType() == null) {
-      return;
-    }
+      String linkType, CatalogItem target, LinkDefinition linkDefinition) {
     var targetSubType = target.getSubType();
     if (!linkDefinition.getTargetSubType().equals(targetSubType)) {
       throw new IllegalArgumentException(

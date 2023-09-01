@@ -1165,10 +1165,12 @@
       "links": {
         "control_tom": {
           "attributeDefinitions": {},
-          "targetType": "control"
+          "targetType": "control",
+          "targetSubType": "CTL_TOM"
         },
         "Control_details_Control": {
-          "targetType": "control"
+          "targetType": "control",
+          "targetSubType": "CTL_TOM"
         }
       }
     },

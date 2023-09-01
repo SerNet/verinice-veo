@@ -2782,7 +2782,8 @@
       "links": {
         "control_tom": {
           "attributeDefinitions": {},
-          "targetType": "control"
+          "targetType": "control",
+          "targetSubType": "CTL_TOM"
         }
       }
     },

@@ -251,7 +251,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             ],
             links:[
                 container_owner:[
-                    targetType: 'person'
+                    targetType: 'person',
+                    targetSubType: 'MasterOfDisaster',
                 ]
             ],
             translations:[

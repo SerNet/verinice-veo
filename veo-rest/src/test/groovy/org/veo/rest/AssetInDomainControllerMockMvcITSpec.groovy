@@ -48,9 +48,11 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "CRUD asset in domain contexts"() {
         given: "an asset with linked person and a part"
-        def personId = parseJson(post("/persons", [
+        def personId = parseJson(post("/domains/$testDomainId/persons", [
             name: "Anne Admin",
             owner: [targetUri: "/units/$unitId"],
+            subType: "MasterOfDisaster",
+            status: "WATCHING_DISASTER_MOVIES",
         ])).resourceId
         def partId = parseJson(post("/domains/$testDomainId/assets", [
             name: "Git server",
@@ -108,8 +110,8 @@ class AssetInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.customAspects.storage.totalCapacityInTb == 32
         response.links.admin[0].target.targetUri == "http://localhost/persons/$personId"
         response.links.admin[0].target.targetInDomainUri == "http://localhost/domains/$testDomainId/persons/$personId"
-        response.links.admin[0].target.associatedWithDomain == false
-        response.links.admin[0].target.subType == null
+        response.links.admin[0].target.associatedWithDomain
+        response.links.admin[0].target.subType == "MasterOfDisaster"
         response.links.admin[0].attributes.accessProtocol == "ssh"
 
         and: "parts"

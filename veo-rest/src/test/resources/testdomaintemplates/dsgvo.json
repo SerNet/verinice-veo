@@ -3210,7 +3210,8 @@
       "links": {
         "person_favoriteScope": {
           "attributeDefinitions": {},
-          "targetType": "scope"
+          "targetType": "scope",
+          "targetSubType": "SCP_Scope"
         }
       },
       "translations": {

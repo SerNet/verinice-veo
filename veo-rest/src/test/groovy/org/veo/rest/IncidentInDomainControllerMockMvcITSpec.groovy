@@ -48,9 +48,11 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "CRUD incident in domain contexts"() {
         given: "an incident with linked person and a part"
-        def personId = parseJson(post("/persons", [
+        def personId = parseJson(post("/domains/$testDomainId/persons", [
             name: "Master of disaster",
             owner: [targetUri: "/units/$unitId"],
+            subType: "MasterOfDisaster",
+            status: "CAUSING_REAL_DISASTERS",
         ])).resourceId
         def partId = parseJson(post("/domains/$testDomainId/incidents", [
             name: "part of the disaster",
@@ -108,8 +110,8 @@ class IncidentInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.customAspects.general.timeOfOccurrence == "2023-02-10T12:00:00.000Z"
         response.links.responsiblePerson[0].target.targetUri == "http://localhost/persons/$personId"
         response.links.responsiblePerson[0].target.targetInDomainUri == "http://localhost/domains/$testDomainId/persons/$personId"
-        response.links.responsiblePerson[0].target.associatedWithDomain == false
-        response.links.responsiblePerson[0].target.subType == null
+        response.links.responsiblePerson[0].target.associatedWithDomain
+        response.links.responsiblePerson[0].target.subType == "MasterOfDisaster"
         response.links.responsiblePerson[0].attributes.takesAllTheBlame
 
         and: "parts"

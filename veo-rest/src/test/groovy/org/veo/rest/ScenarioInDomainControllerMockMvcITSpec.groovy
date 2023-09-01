@@ -48,9 +48,11 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "CRUD scenario in domain contexts"() {
         given: "an scenario with linked person and a part"
-        def personId = parseJson(post("/persons", [
+        def personId = parseJson(post("/domains/$testDomainId/persons", [
             name: "Mac Hack",
             owner: [targetUri: "/units/$unitId"],
+            subType: "MasterOfDisaster",
+            status: "CAUSING_REAL_DISASTERS",
         ])).resourceId
         def partId = parseJson(post("/domains/$testDomainId/scenarios", [
             name: "Credential recycling",
@@ -114,8 +116,8 @@ class ScenarioInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.customAspects.help.technicalArticle == "https://test.test/brute-force.html"
         response.links.expert[0].target.targetUri == "http://localhost/persons/$personId"
         response.links.expert[0].target.targetInDomainUri == "http://localhost/domains/$testDomainId/persons/$personId"
-        response.links.expert[0].target.associatedWithDomain == false
-        response.links.expert[0].target.subType == null
+        response.links.expert[0].target.associatedWithDomain
+        response.links.expert[0].target.subType == "MasterOfDisaster"
         response.links.expert[0].attributes.experienceSince == "1988-08-08"
         response.riskValues.riskyDef.potentialProbability == 1
         response.riskValues.riskyDef.potentialProbabilityExplanation == "It happens"

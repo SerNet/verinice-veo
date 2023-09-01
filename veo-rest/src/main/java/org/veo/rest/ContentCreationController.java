@@ -166,7 +166,7 @@ public class ContentCreationController extends AbstractVeoController {
       Authentication auth,
       @PathVariable String id,
       @PathVariable EntityType type,
-      @RequestBody ElementTypeDefinitionDto elementTypeDefinitionDto) {
+      @Valid @RequestBody ElementTypeDefinitionDto elementTypeDefinitionDto) {
     Client client = getAuthenticatedClient(auth);
     return useCaseInteractor.execute(
         updateElementTypeDefinitionUseCase,

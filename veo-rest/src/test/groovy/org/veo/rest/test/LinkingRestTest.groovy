@@ -40,20 +40,30 @@ class LinkingRestTest extends VeoRestTest {
     }
 
     def "asset can be linked with #targetType.pluralTerm"() {
-        given: "a target element"
+        given: "a link definition between asset and target type"
+        put("/content-creation/domains/$domainId/element-type-definitions/$targetType.singularTerm", [
+            subTypes: [
+                ST: [statuses: ["NEW"]]
+            ]
+        ], "", 204, CONTENT_CREATOR)
         put("/content-creation/domains/$domainId/element-type-definitions/asset", [
             subTypes: [
                 ST: [statuses: ["NEW"]]
             ],
             links: [
                 someLink: [
-                    targetType: targetType.singularTerm
+                    targetType: targetType.singularTerm,
+                    targetSubType: "ST",
                 ]
             ]
         ], "", 204, CONTENT_CREATOR)
-        def targetId = post("/$targetType.pluralTerm", [
+
+        and: "a target element"
+        def targetId = post("/domains/$domainId/$targetType.pluralTerm", [
             name: "target element",
-            owner: [targetUri: "/units/$unitId"]
+            owner: [targetUri: "/units/$unitId"],
+            subType: "ST",
+            status: "NEW"
         ]).body.resourceId
 
         when: "creating an asset with a link to the target"
@@ -192,5 +202,16 @@ class LinkingRestTest extends VeoRestTest {
 
         where:
         type << EntityType.ELEMENT_TYPES
+    }
+
+    def "link definition must have a sub type"() {
+        expect:
+        put("/content-creation/domains/$domainId/element-type-definitions/asset", [
+            links: [
+                badLink: [
+                    targetType: "asset"
+                ]
+            ]
+        ], null, 400).body['links[badLink].targetSubType'] == "must not be null"
     }
 }

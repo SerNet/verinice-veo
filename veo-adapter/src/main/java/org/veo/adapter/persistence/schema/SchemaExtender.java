@@ -19,7 +19,6 @@ package org.veo.adapter.persistence.schema;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -290,9 +289,7 @@ public class SchemaExtender {
     // information for the client.
     var targetProps = (ObjectNode) linkSchema.get(PROPS).get("target").get(PROPS);
     targetProps.putObject(TYPE).putArray("enum").add(definition.getTargetType());
-    Optional.ofNullable(definition.getTargetSubType())
-        .ifPresent(subType -> targetProps.putObject("subType").putArray("enum").add(subType));
-
+    targetProps.putObject("subType").putArray("enum").add(definition.getTargetSubType());
     return linkSchema;
   }
 

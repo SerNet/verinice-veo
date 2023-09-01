@@ -116,9 +116,6 @@ public class DomainSensitiveElementValidator {
 
   private static void validateLinkTargetSubType(
       String linkType, Element target, Domain domain, LinkDefinition linkDefinition) {
-    if (linkDefinition.getTargetSubType() == null) {
-      return;
-    }
     var targetSubType = target.findSubType(domain).orElse(null);
     if (!linkDefinition.getTargetSubType().equals(targetSubType)) {
       throw new IllegalArgumentException(

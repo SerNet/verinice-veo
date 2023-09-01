@@ -48,9 +48,11 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "CRUD control in domain contexts"() {
         given: "a control with linked document and a part"
-        def documentId = parseJson(post("/documents", [
+        def documentId = parseJson(post("/domains/$testDomainId/documents", [
             name: "Encryption for dummies",
             owner: [targetUri: "/units/$unitId"],
+            subType: "Manual",
+            status: "OUTDATED",
         ])).resourceId
         def partId = parseJson(post("/domains/$testDomainId/controls", [
             name: "Encrypt user messages",
@@ -113,8 +115,8 @@ class ControlInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.customAspects.implementation.explanation == "Data is encrypted / decrypted by the clients, not by the server"
         response.links.literature[0].target.targetUri == "http://localhost/documents/$documentId"
         response.links.literature[0].target.targetInDomainUri == "http://localhost/domains/$testDomainId/documents/$documentId"
-        response.links.literature[0].target.associatedWithDomain == false
-        response.links.literature[0].target.subType == null
+        response.links.literature[0].target.associatedWithDomain
+        response.links.literature[0].target.subType == "Manual"
         response.links.literature[0].attributes.chapters == [2, 7, 8]
         response.riskValues.riskyDef.implementationStatus == 1
 

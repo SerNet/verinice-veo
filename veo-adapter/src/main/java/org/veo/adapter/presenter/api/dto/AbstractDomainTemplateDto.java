@@ -22,6 +22,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import java.util.HashMap;
 import java.util.Map;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -88,6 +89,7 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfRef
   @Schema(
       description = "The definitions of domain-specific element properties",
       requiredMode = REQUIRED)
+  @Valid
   private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions = new HashMap<>();
 
   private Map<String, Decision> decisions = new HashMap<>();

@@ -32,6 +32,7 @@ public class LinkDefinition extends CustomAspectDefinition {
   @Size(min = 1, max = 32)
   private String targetType;
 
+  @NotNull
   @Size(min = 1, max = SUB_TYPE_MAX_LENGTH)
   private String targetSubType;
 }

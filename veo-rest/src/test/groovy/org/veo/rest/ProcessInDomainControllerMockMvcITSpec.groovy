@@ -48,9 +48,11 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
 
     def "CRUD process in domain contexts"() {
         given: "an process with linked process and a part"
-        def assetId = parseJson(post("/assets", [
+        def assetId = parseJson(post("/domains/$testDomainId/assets", [
             name: "Market investigation results",
             owner: [targetUri: "/units/$unitId"],
+            subType: "Information",
+            status: "CURRENT",
         ])).resourceId
         def partId = parseJson(post("/domains/$testDomainId/processes", [
             name: "Promotion",
@@ -115,8 +117,8 @@ class ProcessInDomainControllerMockMvcITSpec extends VeoMvcSpec {
         response.customAspects.general.complexity == "high"
         response.links.necessaryData[0].target.targetUri == "http://localhost/assets/$assetId"
         response.links.necessaryData[0].target.targetInDomainUri == "http://localhost/domains/$testDomainId/assets/$assetId"
-        response.links.necessaryData[0].target.associatedWithDomain == false
-        response.links.necessaryData[0].target.subType == null
+        response.links.necessaryData[0].target.associatedWithDomain
+        response.links.necessaryData[0].target.subType == "Information"
         response.links.necessaryData[0].attributes.essential
         response.riskValues.riskyDef.potentialImpacts.C == 1
 
