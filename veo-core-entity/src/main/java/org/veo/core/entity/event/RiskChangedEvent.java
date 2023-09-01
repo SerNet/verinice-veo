@@ -41,7 +41,7 @@ import lombok.With;
 @Value
 @RequiredArgsConstructor
 @With
-public class RiskChangedEvent implements RiskEvent, DomainEvent {
+public class RiskChangedEvent implements RiskEvent {
 
   public RiskChangedEvent(AbstractRisk<?, ?> risk, Object source) {
     this.risk = risk;

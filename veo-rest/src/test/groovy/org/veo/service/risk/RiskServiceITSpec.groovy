@@ -56,6 +56,7 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
 
     @Autowired
     RiskService riskService
+
     @Autowired
     RiskEventListener listener
 

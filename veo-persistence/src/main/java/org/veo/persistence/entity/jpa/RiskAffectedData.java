@@ -31,7 +31,6 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.RiskAffected;
-import org.veo.core.entity.RiskRelated;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -46,7 +45,7 @@ import lombok.ToString;
 @Data
 @Entity
 public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends AbstractRisk<T, R>>
-    extends ElementData implements RiskAffected<T, R>, RiskRelated {
+    extends ElementData implements RiskAffected<T, R> {
 
   @Override
   public void transferToDomain(Domain oldDomain, Domain newDomain) {
