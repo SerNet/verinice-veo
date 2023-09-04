@@ -49,6 +49,7 @@ public class UnitImportMapper {
     var transformer =
         new DtoToEntityTransformer(entityFactory, resolvingFactory, entityStateMapper);
     var unit = transformer.transformDto2Unit(dto.getUnit(), resolvingFactory);
+    resolvingFactory.setOverrideOwner(unit);
     unit.setClient(client);
     var elements =
         dto.getElements().stream()

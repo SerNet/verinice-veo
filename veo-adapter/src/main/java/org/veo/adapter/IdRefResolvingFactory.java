@@ -26,8 +26,10 @@ import java.util.stream.Collectors;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.transform.IdentifiableFactory;
@@ -60,6 +62,7 @@ public class IdRefResolvingFactory implements IdRefResolver, IdentifiableFactory
   private final Map<ITypedId<?>, Identifiable> registry = new HashMap<>();
   private Key<UUID> globalDomainTemplateId;
   private Domain globalDomain;
+  private Unit overrideOwner;
 
   @Override
   public <TEntity extends Identifiable> TEntity resolve(ITypedId<TEntity> objectReference)
@@ -83,7 +86,12 @@ public class IdRefResolvingFactory implements IdRefResolver, IdentifiableFactory
         return findOrCreate((Class<T>) DomainTemplate.class, globalDomainTemplateId);
       }
     }
-    return findOrCreate(type, id);
+
+    T result = findOrCreate(type, id);
+    if (overrideOwner != null && result instanceof Element e) {
+      e.setOwner(overrideOwner);
+    }
+    return result;
   }
 
   private <T extends Identifiable> T findOrCreate(Class<T> type, Key<UUID> id) {
@@ -123,6 +131,11 @@ public class IdRefResolvingFactory implements IdRefResolver, IdentifiableFactory
           "Global domain and global domain template ID cannot be combined.");
     }
     globalDomain = domain;
+  }
+
+  /** Define a unit to be used as the owner for all created elements */
+  public void setOverrideOwner(Unit owner) {
+    overrideOwner = owner;
   }
 
   /** Registers an existing entity, so it can be resolved using its ID. */

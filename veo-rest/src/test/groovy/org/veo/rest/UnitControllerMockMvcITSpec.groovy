@@ -113,6 +113,48 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("user@domain.example")
+    def "Import a unit for an existing client"() {
+        given:
+        def unitId = UUID.randomUUID().toString()
+        def compositeId = UUID.randomUUID().toString()
+        def partId = UUID.randomUUID().toString()
+        def domain = parseJson(get("/domains/${domain.idAsString}"))
+        Map request = [
+            unit:[
+                name: 'New unit',
+                id: unitId
+            ],
+            elements: [
+                [
+                    id: compositeId,
+                    name: 'Composite',
+                    owner: [targetUri:"/units/$unitId"],
+                    type: 'asset',
+                    parts:[
+                        [targetUri:"/assets/$partId"]
+                    ]
+                ],
+                [
+                    id: partId,
+                    name: 'Part',
+                    owner: [targetUri:"/units/$unitId"],
+                    type: 'asset'
+                ]
+            ],
+            domains: [
+                domain
+            ],
+            risks: []
+        ]
+
+        when:
+        def result = post('/units/import', request)
+
+        then:
+        result != null
+    }
+
+    @WithUserDetails("user@domain.example")
     def "get a unit"() {
         def unit = urepository.save(newUnit(client) {
             name = "Test unit"
