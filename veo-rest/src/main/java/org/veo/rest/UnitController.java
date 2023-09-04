@@ -271,7 +271,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
   @ApiResponse(responseCode = "201", description = "Unit imported")
   @ApiResponse(responseCode = "404", description = "Domain not found")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> importUnit(
-      @Parameter(hidden = true) ApplicationUser user, @RequestBody UnitDumpDto dto) {
+      @Parameter(hidden = true) ApplicationUser user, @RequestBody @Valid UnitDumpDto dto) {
     return useCaseInteractor.execute(
         unitImportUseCase,
         (Supplier<UnitImportUseCase.InputData>)

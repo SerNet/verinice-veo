@@ -19,6 +19,9 @@ package org.veo.adapter.presenter.api.dto;
 
 import java.util.Set;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -54,8 +57,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UnitDumpDto {
-  private FullUnitDto unit;
-  private Set<FullDomainDto> domains;
+  @NotNull(message = "A unit must be present.")
+  private @Valid FullUnitDto unit;
+
+  @NotNull(message = "Domain references must be present.")
+  private Set<@Valid FullDomainDto> domains;
 
   @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
   @JsonSubTypes({
@@ -68,7 +74,8 @@ public class UnitDumpDto {
     @Type(value = FullScenarioDto.class, name = Scenario.SINGULAR_TERM),
     @Type(value = FullScopeDto.class, name = Scope.SINGULAR_TERM),
   })
-  private Set<AbstractElementDto> elements;
+  @NotNull(message = "Elements must be present.")
+  private Set<@Valid AbstractElementDto> elements;
 
   @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
   @JsonSubTypes({
@@ -76,5 +83,6 @@ public class UnitDumpDto {
     @Type(value = ProcessRiskDto.class),
     @Type(value = ScopeRiskDto.class),
   })
-  private Set<AbstractRiskDto> risks;
+  @NotNull(message = "Risks must be present.")
+  private Set<@Valid AbstractRiskDto> risks;
 }

@@ -39,6 +39,7 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.test.context.TestSecurityContextHolder
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.transaction.support.TransactionTemplate
+import org.springframework.web.bind.MethodArgumentNotValidException
 
 import org.veo.adapter.presenter.api.DeviatingIdException
 import org.veo.core.VeoMvcSpec
@@ -655,5 +656,20 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         thrown(HttpMessageNotReadableException)
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "Validate unit dump dto in import endpoint"() {
+        given:
+        Map request = [
+            unit:[name: 'New unit']
+        ]
+
+        when:
+        def results = post('/units/import', request, 400)
+
+        then:
+        MethodArgumentNotValidException e = thrown()
+        e.message.contains('Domain references must be present')
     }
 }
