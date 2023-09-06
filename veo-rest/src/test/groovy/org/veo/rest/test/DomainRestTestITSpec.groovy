@@ -342,5 +342,24 @@ class DomainRestTestITSpec extends DomainRestTest {
                 name == 'example asset'
             }
         }
+
+        when: "export the domain"
+        def exportedDomain = get("/domains/${domainId}/export").body
+
+        then:
+        exportedDomain !=null
+        with(exportedDomain) {
+            catalogItems.size() == 4
+            with(catalogItems.find { it.name == "example person 2" }) {
+                tailoringReferences.size() == 1
+                tailoringReferences[0].referenceType == "PART"
+                tailoringReferences[0].catalogItem.displayName == "example person 1"
+            }
+            with(catalogItems.find { it.name == "example person 1" }) {
+                tailoringReferences.size() == 1
+                tailoringReferences[0].referenceType == "COMPOSITE"
+                tailoringReferences[0].catalogItem.displayName == "example person 2"
+            }
+        }
     }
 }

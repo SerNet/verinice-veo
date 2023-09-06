@@ -34,6 +34,7 @@ import org.veo.adapter.presenter.api.dto.AbstractCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.create.CreateTailoringReferenceDto;
+import org.veo.adapter.presenter.api.dto.full.FullTailoringReferenceDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.aspects.SubTypeAspect;
@@ -75,7 +76,12 @@ public class FullCatalogItemDto extends AbstractCatalogItemDto implements Identi
       property = "referenceType")
   @JsonSubTypes({
     @JsonSubTypes.Type(value = TransformLinkTailoringReference.class, name = "LINK_EXTERNAL"),
-    @JsonSubTypes.Type(value = TransformLinkTailoringReference.class, name = "LINK")
+    @JsonSubTypes.Type(value = TransformLinkTailoringReference.class, name = "LINK"),
+    @JsonSubTypes.Type(value = FullTailoringReferenceDto.class, name = "OMIT"),
+    @JsonSubTypes.Type(value = FullTailoringReferenceDto.class, name = "COPY"),
+    @JsonSubTypes.Type(value = FullTailoringReferenceDto.class, name = "COPY_ALWAYS"),
+    @JsonSubTypes.Type(value = FullTailoringReferenceDto.class, name = "PART"),
+    @JsonSubTypes.Type(value = FullTailoringReferenceDto.class, name = "COMPOSITE")
   })
   @Schema(description = "References to other catalog items in the same domain")
   private Set<AbstractTailoringReferenceDto> tailoringReferences = new HashSet<>();
