@@ -22,12 +22,20 @@ dependencies {
     implementation 'org.apache.commons:commons-collections4'
 
     runtimeOnly 'org.flywaydb:flyway-database-postgresql'
+}
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.boot:spring-boot-starter-validation'
-    testImplementation project(":veo-test")
+testing {
+    suites {
+        test {
+            dependencies {
+                implementation 'org.springframework.boot:spring-boot-starter-test'
+                implementation 'org.springframework.boot:spring-boot-starter-validation'
+                implementation project(":veo-test")
 
-    testRuntimeOnly "org.testcontainers:postgresql"
-    testRuntimeOnly 'org.postgresql:postgresql'
-    testRuntimeOnly 'org.spockframework:spock-spring'
+                runtimeOnly "org.testcontainers:postgresql"
+                runtimeOnly 'org.postgresql:postgresql'
+                runtimeOnly 'org.spockframework:spock-spring'
+            }
+        }
+    }
 }

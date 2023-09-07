@@ -33,19 +33,6 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
     runtimeOnly 'org.springdoc:springdoc-openapi-starter-webmvc-ui'
-
-    testImplementation "org.testcontainers:testcontainers"
-    testImplementation 'org.keycloak:keycloak-authz-client'
-
-    testImplementation 'org.spockframework:spock-spring'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'com.networknt:json-schema-validator'
-    testImplementation project(":veo-test")
-    testImplementation 'org.apache.groovy:groovy-json'
-
-    testRuntimeOnly "org.testcontainers:spock"
-    testRuntimeOnly 'org.testcontainers:postgresql'
 }
 
 jar {
@@ -106,37 +93,74 @@ tasks.withType(com.gorylenko.GenerateGitPropertiesTask).all {
     enabled = includeRealInfo
 }
 
-test {
-    filter {
-        excludeTestsMatching "org.veo.rest.test.*"
+testing {
+    suites {
+        configureEach {
+            dependencies {
+                implementation 'org.keycloak:keycloak-authz-client'
+
+                implementation 'org.springframework.boot:spring-boot-starter-test'
+                implementation 'org.springframework.security:spring-security-test'
+                implementation project(":veo-test")
+                implementation 'org.apache.groovy:groovy-json'
+
+                runtimeOnly 'org.postgresql:postgresql'
+            }
+        }
+        test {
+            dependencies {
+                implementation 'com.networknt:json-schema-validator'
+                implementation "org.testcontainers:testcontainers"
+                implementation 'org.spockframework:spock-spring'
+
+                runtimeOnly "org.testcontainers:spock"
+                runtimeOnly 'org.testcontainers:postgresql'
+            }
+        }
+        restTest(JvmTestSuite) {
+            testType = TestSuiteType.INTEGRATION_TEST
+            dependencies {
+                implementation project()
+
+                runtimeOnly 'org.spockframework:spock-spring'
+            }
+            // https://github.com/gradle/gradle/issues/19684
+            sources {
+                compileClasspath += sourceSets.main.output
+                runtimeClasspath += sourceSets.main.output
+            }
+            targets {
+                all {
+                    testTask.configure {
+
+                        shouldRunAfter(test)
+                        inputs.property("veoBaseUrl") {
+                            System.getenv("VEO_RESTTEST_BASEURL")
+                        }.optional(true)
+
+                        systemProperties System.properties.subMap([
+                            "http.proxyHost",
+                            "http.proxyPort",
+                            "http.nonProxyHosts",
+                            "https.proxyHost",
+                            "https.proxyPort",
+                            "http.nonProxyHosts"
+                        ]) + [
+                            // Enable Origin header for CORS tests
+                            "sun.net.http.allowRestrictedHeaders": "true"
+                        ]
+                    }
+                }
+            }
+        }
     }
 }
 
-tasks.register('restTest', Test) {
-    description = 'Runs REST API integration tests'
-    group = 'verification'
+spotbugsRestTest.enabled = false
 
-    shouldRunAfter test
-
-    filter {
-        includeTestsMatching "org.veo.rest.test.*"
-    }
-
-    inputs.property("veoBaseUrl") {
-        System.getenv("VEO_RESTTEST_BASEURL")
-    }.optional(true)
-
-    systemProperties System.properties.subMap([
-        "http.proxyHost",
-        "http.proxyPort",
-        "http.nonProxyHosts",
-        "https.proxyHost",
-        "https.proxyPort",
-        "http.nonProxyHosts"
-    ]) + [
-        // Enable Origin header for CORS tests
-        "sun.net.http.allowRestrictedHeaders": "true"
-    ]
+configurations{
+    // https://github.com/gradle/gradle/issues/23477
+    restTestImplementation.extendsFrom implementation
 }
 
 // specific "continuous integration" settings needed by Jenkins

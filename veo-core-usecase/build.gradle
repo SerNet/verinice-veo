@@ -16,8 +16,16 @@ dependencies {
     implementation 'com.github.zafarkhaja:java-semver'
     implementation 'org.jgrapht:jgrapht-core'
     implementation 'org.jgrapht:jgrapht-io'
+}
 
-    testImplementation 'org.spockframework:spock-core'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'commons-codec:commons-codec'
+testing {
+    suites {
+        test {
+            dependencies {
+                implementation 'org.spockframework:spock-core'
+                implementation 'org.springframework.boot:spring-boot-starter-test'
+                implementation 'commons-codec:commons-codec'
+            }
+        }
+    }
 }

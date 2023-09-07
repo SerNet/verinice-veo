@@ -1,6 +1,8 @@
 veo:
   cors:
     origins: https://*.verinice.example, https://frontend.somewhereelse.example
+  etag:
+    salt: rl2xo5fVE3$rf
   message:
     consume:
       autoDelete: 'true'

@@ -17,10 +17,18 @@ dependencies {
     implementation 'com.fasterxml.uuid:java-uuid-generator'
 
     compileOnly('org.projectlombok:lombok')
+}
 
-    testImplementation 'com.networknt:json-schema-validator'
-    testImplementation 'io.swagger.core.v3:swagger-core-jakarta'
-    testImplementation 'org.spockframework:spock-core'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.apache.groovy:groovy-json'
+testing {
+    suites {
+        test{
+            dependencies {
+                implementation 'com.networknt:json-schema-validator'
+                implementation 'io.swagger.core.v3:swagger-core-jakarta'
+                implementation 'org.spockframework:spock-core'
+                implementation 'org.springframework.boot:spring-boot-starter-test'
+                implementation 'org.apache.groovy:groovy-json'
+            }
+        }
+    }
 }

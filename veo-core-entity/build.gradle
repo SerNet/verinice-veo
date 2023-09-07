@@ -5,9 +5,17 @@ dependencies {
     compileOnly 'jakarta.validation:jakarta.validation-api'
 
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
+}
 
-    testImplementation 'org.spockframework:spock-core'
-    testImplementation 'jakarta.validation:jakarta.validation-api'
-    testImplementation 'org.hibernate.validator:hibernate-validator'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+testing {
+    suites {
+        test {
+            dependencies {
+                implementation 'org.spockframework:spock-core'
+                implementation 'jakarta.validation:jakarta.validation-api'
+                implementation 'org.hibernate.validator:hibernate-validator'
+                implementation 'org.springframework.boot:spring-boot-starter-test'
+            }
+        }
+    }
 }

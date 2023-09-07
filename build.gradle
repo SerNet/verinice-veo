@@ -144,17 +144,27 @@ subprojects {
         maven { url 'https://jitpack.io' }
     }
 
-    tasks.withType(Test) {
-        maxHeapSize = '1g'
-        useJUnitPlatform()
-        systemProperties project.properties.subMap([
-            "http.proxyHost",
-            "http.proxyPort",
-            "https.proxyHost",
-            "https.proxyPort"
-        ])
-        systemProperty 'user.language', 'en'
-        systemProperty 'user.country', 'US'
+    testing {
+        suites {
+            configureEach {
+                useSpock('2.4-M4-groovy-4.0')
+                targets {
+                    all {
+                        testTask.configure {
+                            maxHeapSize = '512m'
+                            systemProperties project.properties.subMap([
+                                "http.proxyHost",
+                                "http.proxyPort",
+                                "https.proxyHost",
+                                "https.proxyPort"
+                            ])
+                            systemProperty 'user.language', 'en'
+                            systemProperty 'user.country', 'US'
+                        }
+                    }
+                }
+            }
+        }
     }
 
     pmd {

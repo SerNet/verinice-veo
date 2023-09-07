@@ -23,11 +23,10 @@ class RestTestProfileResolver implements ActiveProfilesResolver {
     @Override
     String[] resolve(Class<?> testClass) {
         if (System.getenv('CI') != null) {
-            return ["test", "resttest"]
+            return ["resttest"]
         }
         return [
             "background-tasks",
-            "test",
             "resttest",
             "local"
         ]

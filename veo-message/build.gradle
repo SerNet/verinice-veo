@@ -8,6 +8,14 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
 
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
+}
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+testing {
+    suites {
+        test{
+            dependencies {
+                implementation 'org.springframework.boot:spring-boot-starter-test'
+            }
+        }
+    }
 }

@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 /** Provides current user or a fallback value. */
 @Component
 @Slf4j
+@Profile("!resttest")
 public class LenientCurrentUserProviderImpl implements CurrentUserProvider {
 
   private final AuditorAware<String> auditorAware;
