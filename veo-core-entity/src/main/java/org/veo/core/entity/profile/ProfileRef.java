@@ -48,7 +48,7 @@ public class ProfileRef {
 
   public ProfileRef(String profileKey, Domain domain) {
     this(profileKey);
-    if (!domain.getProfiles().containsKey(profileKey)) {
+    if (!domain.getJsonProfiles().containsKey(profileKey)) {
       throw new NotFoundException(
           "Profile \"%s\" not found in domain %s", profileKey, domain.getIdAsString());
     }

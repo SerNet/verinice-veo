@@ -136,7 +136,7 @@ public abstract class DomainBaseData extends IdentifiableVersionedData
   private ProfileSetData profileSet = new ProfileSetData();
 
   @Override
-  public Map<String, ProfileDefinition> getProfiles() {
+  public Map<String, ProfileDefinition> getJsonProfiles() {
     return profileSet.getProfiles();
   }
 

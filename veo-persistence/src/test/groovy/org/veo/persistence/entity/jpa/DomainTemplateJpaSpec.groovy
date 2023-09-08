@@ -90,7 +90,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         d.authority == domain0.authority
         d.templateVersion == domain0.templateVersion
         d.riskDefinitions == domain0.riskDefinitions
-        d.profiles == domain0.profiles
+        d.jsonProfiles == domain0.jsonProfiles
     }
 
     def 'domainTemplate with items'() {

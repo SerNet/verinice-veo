@@ -648,7 +648,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then: "the domain contains the profiles"
         newDomain.name == "DSGVO-test"
-        newDomain.profiles.exampleOrganization.elements*.type ==~ [
+        newDomain.jsonProfiles.exampleOrganization.elements*.type ==~ [
             "asset",
             "control",
             "document",
@@ -658,7 +658,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             "scenario",
             "scope"
         ]
-        newDomain.profiles.exampleOrganization.risks.size() == 2
+        newDomain.jsonProfiles.exampleOrganization.risks.size() == 2
     }
 
     @WithUserDetails("content-creator")
