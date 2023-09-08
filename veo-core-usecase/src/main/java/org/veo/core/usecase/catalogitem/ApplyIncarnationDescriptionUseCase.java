@@ -20,6 +20,7 @@ package org.veo.core.usecase.catalogitem;
 import static java.lang.String.format;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +43,7 @@ import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.TailoringReference;
@@ -59,7 +61,7 @@ import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseTools;
-import org.veo.core.usecase.parameter.IncarnateCatalogItemDescription;
+import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 import org.veo.core.usecase.parameter.TailoringReferenceParameter;
 
 import lombok.AllArgsConstructor;
@@ -68,11 +70,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Uses a list of {@link IncarnateCatalogItemDescription} to create items from a catalog in a unit.
- */
-@AllArgsConstructor
+/** Uses a list of {@link TemplateItemIncarnationDescription} to create items from a catalog in a unit. */
 @Slf4j
+@AllArgsConstructor
 public class ApplyIncarnationDescriptionUseCase
     implements TransactionalUseCase<
         ApplyIncarnationDescriptionUseCase.InputData,
@@ -91,11 +91,11 @@ public class ApplyIncarnationDescriptionUseCase
     Unit unit = unitRepository.getByIdFetchClient(input.getContainerId());
     Client authenticatedClient = input.authenticatedClient;
     unit.checkSameClient(authenticatedClient);
-    List<IncarnateCatalogItemDescription> referencesToApply = input.getReferencesToApply();
+    List<TemplateItemIncarnationDescription> referencesToApply = input.getReferencesToApply();
     Set<Key<UUID>> catalogItemIds =
         referencesToApply.stream()
-            .map(IncarnateCatalogItemDescription::getItem)
-            .map(CatalogItem::getId)
+            .map(TemplateItemIncarnationDescription::getItem)
+            .map(Identifiable::getId)
             .collect(Collectors.toSet());
     Map<Key<UUID>, CatalogItem> catalogItemsbyId =
         catalogItemRepository.findAllByIdsFetchDomainAndTailoringReferences(catalogItemIds).stream()
@@ -219,7 +219,8 @@ public class ApplyIncarnationDescriptionUseCase
             domain,
             linkTailorReferencesParameters(
                 referencesToApply, TailoringReferenceTyped.IS_LINK_PREDICATE),
-            linkTailorReferences(catalogItem, TailoringReferenceTyped.IS_LINK_PREDICATE));
+            linkTailorReferences(
+                catalogItem.getTailoringReferences(), TailoringReferenceTyped.IS_LINK_PREDICATE));
     List<InternalResolveInfo> internalpartsLinks = Collections.emptyList();
 
     entity.setOwner(unit);
@@ -237,7 +238,9 @@ public class ApplyIncarnationDescriptionUseCase
     applyExternalTailoringReferences(
         entity,
         domain,
-        linkTailorReferences(catalogItem, TailoringReferenceTyped.IS_EXTERNALLINK_PREDICATE),
+        linkTailorReferences(
+            catalogItem.getTailoringReferences(),
+            TailoringReferenceTyped.IS_EXTERNALLINK_PREDICATE),
         linkTailorReferencesParameters(
             referencesToApply, TailoringReferenceTyped.IS_EXTERNALLINK_PREDICATE));
 
@@ -251,7 +254,7 @@ public class ApplyIncarnationDescriptionUseCase
   private List<InternalResolveInfo> applyPartReferences(
       Element entity,
       List<TailoringReferenceParameter> referencesToApply,
-      List<TailoringReference> tailoringReferences) {
+      List<TailoringReference<CatalogItem>> tailoringReferences) {
     log.debug("applyPartReferences {},{},{}", entity, tailoringReferences, referencesToApply);
     List<InternalResolveInfo> internalLinks = new ArrayList<>(tailoringReferences.size());
 
@@ -259,7 +262,7 @@ public class ApplyIncarnationDescriptionUseCase
         .filter(TailoringReferenceTyped.IS_PART_PREDICATE)
         .forEach(
             referenceParameter -> {
-              TailoringReference reference =
+              TailoringReference<CatalogItem> reference =
                   tailoringReferences.stream()
                       .filter(tr -> tr.getIdAsString().equals(referenceParameter.getId()))
                       .findAny()
@@ -288,7 +291,7 @@ public class ApplyIncarnationDescriptionUseCase
         .filter(TailoringReferenceTyped.IS_COMPOSITE_PREDICATE)
         .forEach(
             referenceParameter -> {
-              TailoringReference reference =
+              TailoringReference<CatalogItem> reference =
                   tailoringReferences.stream()
                       .filter(tr -> tr.getIdAsString().equals(referenceParameter.getId()))
                       .findAny()
@@ -331,13 +334,13 @@ public class ApplyIncarnationDescriptionUseCase
       Element copyItem,
       Domain domain,
       List<TailoringReferenceParameter> referencesToApply,
-      List<LinkTailoringReference> linkTailoringReferences) {
+      List<LinkTailoringReference<CatalogItem>> linkTailoringReferences) {
     List<InternalResolveInfo> internalLinks = new ArrayList<>(linkTailoringReferences.size());
 
     referencesToApply.stream()
         .forEach(
             referenceParameter -> {
-              LinkTailoringReference linkTailoringReference =
+              LinkTailoringReference<CatalogItem> linkTailoringReference =
                   linkTailoringReferences.stream()
                       .filter(t -> t.getId().uuidValue().equals(referenceParameter.getId()))
                       .findAny()
@@ -380,13 +383,13 @@ public class ApplyIncarnationDescriptionUseCase
   private void applyExternalTailoringReferences(
       Element linkTargetEntity,
       Domain domain,
-      List<LinkTailoringReference> externalTailoringRefs,
+      List<LinkTailoringReference<CatalogItem>> externalTailoringRefs,
       List<TailoringReferenceParameter> referencesToApply) {
 
     referencesToApply.stream()
         .forEach(
             tailoringReferenceParameter -> {
-              LinkTailoringReference catalogReference =
+              LinkTailoringReference<CatalogItem> catalogReference =
                   externalTailoringRefs.stream()
                       .filter(
                           t -> t.getId().uuidValue().equals(tailoringReferenceParameter.getId()))
@@ -467,13 +470,18 @@ public class ApplyIncarnationDescriptionUseCase
    */
   private void validateItem(
       CatalogItem catalogItem, List<TailoringReferenceParameter> referencesToApply) {
-    if (linkTailorReferences(catalogItem, TailoringReferenceTyped.IS_LINK_PREDICATE).size()
+    if (linkTailorReferences(
+                catalogItem.getTailoringReferences(), TailoringReferenceTyped.IS_LINK_PREDICATE)
+            .size()
         != linkTailorReferencesParameters(
                 referencesToApply, TailoringReferenceTyped.IS_LINK_PREDICATE)
             .size()) {
       throw new IllegalArgumentException("Tailoring references (LINK) don't match.");
     }
-    if (linkTailorReferences(catalogItem, TailoringReferenceTyped.IS_EXTERNALLINK_PREDICATE).size()
+    if (linkTailorReferences(
+                catalogItem.getTailoringReferences(),
+                TailoringReferenceTyped.IS_EXTERNALLINK_PREDICATE)
+            .size()
         != linkTailorReferencesParameters(
                 referencesToApply, TailoringReferenceTyped.IS_EXTERNALLINK_PREDICATE)
             .size()) {
@@ -492,11 +500,12 @@ public class ApplyIncarnationDescriptionUseCase
    * Return the list of TailoringReference filtered by {@code typePredicate} and ordered
    * BY_EXECUTION for the given catalogItem.
    */
-  private List<LinkTailoringReference> linkTailorReferences(
-      CatalogItem catalogItem, Predicate<? super TailoringReference> typePredicate) {
-    return catalogItem.getTailoringReferences().stream()
+  private List<LinkTailoringReference<CatalogItem>> linkTailorReferences(
+      Collection<TailoringReference<CatalogItem>> references,
+      Predicate<? super TailoringReference<CatalogItem>> typePredicate) {
+    return references.stream()
         .filter(typePredicate)
-        .map(LinkTailoringReference.class::cast)
+        .map(l -> (LinkTailoringReference<CatalogItem>) l)
         .toList();
   }
 
@@ -517,7 +526,7 @@ public class ApplyIncarnationDescriptionUseCase
   public static class InputData implements UseCase.InputData {
     Client authenticatedClient;
     Key<UUID> containerId;
-    List<IncarnateCatalogItemDescription> referencesToApply;
+    List<TemplateItemIncarnationDescription> referencesToApply;
   }
 
   @Valid

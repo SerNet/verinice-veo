@@ -25,7 +25,7 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.openapi.IdRefCatalogItemDescriptionItem;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.usecase.parameter.IncarnateCatalogItemDescription;
+import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 import org.veo.core.usecase.parameter.TailoringReferenceParameter;
 import org.veo.core.usecase.service.IdRefResolver;
 
@@ -55,8 +55,8 @@ public class IncarnateCatalogItemDescriptionDto {
   private List<TailoringReferenceParameterDto> references;
 
   public IncarnateCatalogItemDescriptionDto(
-      IncarnateCatalogItemDescription p, ReferenceAssembler urlAssembler) {
-    item = IdRef.from(p.getItem(), urlAssembler);
+      TemplateItemIncarnationDescription p, ReferenceAssembler urlAssembler) {
+    item = IdRef.from((CatalogItem) p.getItem(), urlAssembler);
     references =
         p.getReferences().stream()
             .map(
@@ -69,7 +69,7 @@ public class IncarnateCatalogItemDescriptionDto {
             .toList();
   }
 
-  public IncarnateCatalogItemDescription dto2Model(IdRefResolver idRefResolver) {
+  public TemplateItemIncarnationDescription dto2Model(IdRefResolver idRefResolver) {
     List<TailoringReferenceParameter> list =
         getReferences().stream()
             .map(
@@ -82,6 +82,6 @@ public class IncarnateCatalogItemDescriptionDto {
                         t.getReferenceKey(),
                         t.getId()))
             .toList();
-    return new IncarnateCatalogItemDescription(idRefResolver.resolve(item), list);
+    return new TemplateItemIncarnationDescription(idRefResolver.resolve(item), list);
   }
 }

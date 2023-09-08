@@ -49,7 +49,7 @@ import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.UseCaseTools;
-import org.veo.core.usecase.parameter.IncarnateCatalogItemDescription;
+import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 import org.veo.core.usecase.parameter.TailoringReferenceParameter;
 
 import lombok.AllArgsConstructor;
@@ -96,7 +96,7 @@ public class GetIncarnationDescriptionUseCase
                 catalogItem ->
                     catalogItem.getTailoringReferences().stream()
                         .filter(TailoringReferenceTyped.IS_ALL_LINK_PREDICATE)
-                        .map(LinkTailoringReference.class::cast)
+                        .map(l -> (LinkTailoringReference<CatalogItem>) l)
                         .map(LinkTailoringReference::getCatalogItem));
 
     Map<Key<UUID>, Element> referencedItemsByCatalogItemId = new HashMap<>();
@@ -119,13 +119,13 @@ public class GetIncarnationDescriptionUseCase
     usedDomains.forEach(
         domain -> UseCaseTools.checkDomainBelongsToClient(input.getAuthenticatedClient(), domain));
 
-    List<IncarnateCatalogItemDescription> incarnationDescriptions =
+    List<TemplateItemIncarnationDescription> incarnationDescriptions =
         itemsToCreate.stream()
             .map(
                 catalogItem -> {
                   List<TailoringReferenceParameter> parameters =
                       toTailorreferenceParameters(catalogItem, referencedItemsByCatalogItemId);
-                  return new IncarnateCatalogItemDescription(catalogItem, parameters);
+                  return new TemplateItemIncarnationDescription(catalogItem, parameters);
                 })
             .toList();
     log.info(
@@ -219,7 +219,7 @@ public class GetIncarnationDescriptionUseCase
   @Valid
   @Value
   public static class OutputData implements UseCase.OutputData {
-    @Valid List<IncarnateCatalogItemDescription> references;
+    @Valid List<TemplateItemIncarnationDescription> references;
     Unit container;
   }
 }

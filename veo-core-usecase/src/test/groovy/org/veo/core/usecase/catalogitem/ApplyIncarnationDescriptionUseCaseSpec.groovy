@@ -28,7 +28,7 @@ import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase.InputData
-import org.veo.core.usecase.parameter.IncarnateCatalogItemDescription
+import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription
 import org.veo.core.usecase.parameter.TailoringReferenceParameter
 
 class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSpec {
@@ -56,7 +56,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
 
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [
-            new IncarnateCatalogItemDescription(item1, [])
+            new TemplateItemIncarnationDescription(item1, [])
         ]))
 
         then:
@@ -97,7 +97,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
 
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [
-            new IncarnateCatalogItemDescription(item1, [ref])
+            new TemplateItemIncarnationDescription(item1, [ref])
         ]))
 
         then:
@@ -148,7 +148,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
 
         when:
         def output = usecase.execute(new InputData(existingClient, existingUnit.id, [
-            new IncarnateCatalogItemDescription(item1, [ref])
+            new TemplateItemIncarnationDescription(item1, [ref])
         ]))
 
         then:
@@ -175,7 +175,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
 
         when:
         usecase.execute(new InputData(existingClient, existingUnit.id, [
-            new IncarnateCatalogItemDescription(item1, [])
+            new TemplateItemIncarnationDescription(item1, [])
         ]))
 
         then:
@@ -192,7 +192,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
 
         when:
         usecase.execute(new InputData(existingClient, anotherUnit.id, [
-            new IncarnateCatalogItemDescription(item1, [])
+            new TemplateItemIncarnationDescription(item1, [])
         ]))
 
         then:
@@ -215,7 +215,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
 
         when:
         usecase.execute(new InputData(existingClient, existingUnit.id, [
-            new IncarnateCatalogItemDescription(item2, [])
+            new TemplateItemIncarnationDescription(item2, [])
         ]))
 
         then:
@@ -232,7 +232,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         when:
         usecase.execute(new InputData(existingClient, existingUnit.id,
                 [
-                    new IncarnateCatalogItemDescription(item1, [ref])
+                    new TemplateItemIncarnationDescription(item1, [ref])
                 ]))
 
         then:

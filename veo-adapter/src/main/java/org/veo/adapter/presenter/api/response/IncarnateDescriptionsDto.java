@@ -22,7 +22,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 import java.util.List;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.core.usecase.parameter.IncarnateCatalogItemDescription;
+import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 import org.veo.core.usecase.service.IdRefResolver;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -47,14 +47,14 @@ public class IncarnateDescriptionsDto {
   private List<IncarnateCatalogItemDescriptionDto> parameters;
 
   public IncarnateDescriptionsDto(
-      List<IncarnateCatalogItemDescription> references, ReferenceAssembler urlAssembler) {
+      List<TemplateItemIncarnationDescription> references, ReferenceAssembler urlAssembler) {
     this.parameters =
         references.stream()
             .map(p -> new IncarnateCatalogItemDescriptionDto(p, urlAssembler))
             .toList();
   }
 
-  public List<IncarnateCatalogItemDescription> dto2Model(IdRefResolver idRefResolver) {
+  public List<TemplateItemIncarnationDescription> dto2Model(IdRefResolver idRefResolver) {
     return getParameters().stream().map(a -> a.dto2Model(idRefResolver)).toList();
   }
 }

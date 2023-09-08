@@ -20,7 +20,7 @@ package org.veo.core.usecase.parameter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.Identifiable;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,7 +30,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @AllArgsConstructor
 /** Contains the element together with the relevant tailoringreferences. */
-public class IncarnateCatalogItemDescription {
-  private CatalogItem item;
+public class TemplateItemIncarnationDescription {
+  private Identifiable item;
   private List<TailoringReferenceParameter> references = new ArrayList<>();
 }
