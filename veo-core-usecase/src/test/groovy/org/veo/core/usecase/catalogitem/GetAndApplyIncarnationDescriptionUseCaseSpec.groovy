@@ -51,7 +51,7 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         catalogItemRepository.getById(item1.id) >> item1
 
         when: "get the apply data for item"
-        def output = usecaseGet.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
+        def output = usecaseGet.execute(new InputData(existingClient, existingUnit.id, [item1.id], IncarnationRequestModeType.MANUAL))
 
         then: "the parameter object is return"
         output.references.size() == 1
@@ -91,9 +91,9 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         CustomLink newLink = Mock()
 
         when: "request to create an item with a link"
-        def output = usecaseGet.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
+        def output = usecaseGet.execute(new InputData(existingClient, existingUnit.id, [item1.id], IncarnationRequestModeType.MANUAL))
 
-        then: "we got the parameter objekt"
+        then: "we got the parameter object"
         output.references.size()== 1
         output.references.first().item == item1
         output.references.first().references.size() == 1

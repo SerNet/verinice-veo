@@ -143,7 +143,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         def result = getIncarnationDescriptions(unit,item3)
         def postResult = postIncarnationDescriptions(unit,result)
         def elementList = postResult.collect{it.targetUri}
-        result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${item4.id.uuidValue()}"))
+        result = parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${item4.id.uuidValue()}&mode=MANUAL"))
 
         when: "post the data to create item4 with the altered links set to c-3"
         result.parameters[0].references[0].referencedElement.targetUri = elementList[0]
@@ -528,7 +528,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
     }
 
     private getIncarnationDescriptions(Unit unit, CatalogItem... items) {
-        parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${items.collect{it.id.uuidValue()}.join(',')}"))
+        parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${items.collect{it.id.uuidValue()}.join(',')}&mode=MANUAL"))
     }
 
     private postIncarnationDescriptions(Unit unit, incarnationDescriptions) {

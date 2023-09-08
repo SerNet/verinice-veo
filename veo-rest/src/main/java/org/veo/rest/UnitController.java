@@ -70,6 +70,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase;
+import org.veo.core.usecase.catalogitem.IncarnationRequestModeType;
 import org.veo.core.usecase.service.IdRefResolver;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
@@ -136,15 +137,19 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
       @Parameter(description = "The target unit for the catalog items.") @PathVariable
           String unitId,
       @Parameter(description = "The list of catalog items to create in the unit.") @RequestParam()
-          List<String> itemIds) {
+          List<String> itemIds,
+      @Parameter(
+              description =
+                  "The request mode allows to control the included items in the incarnation description.")
+          @RequestParam(name = "mode", required = false)
+          IncarnationRequestModeType requestMode) {
     Client client = getAuthenticatedClient(auth);
     Key<UUID> containerId = Key.uuidFrom(unitId);
     List<Key<UUID>> list = itemIds.stream().map(Key::uuidFrom).toList();
-
     CompletableFuture<IncarnateDescriptionsDto> catalogFuture =
         useCaseInteractor.execute(
             getIncarnationDescriptionUseCase,
-            new GetIncarnationDescriptionUseCase.InputData(client, containerId, list),
+            new GetIncarnationDescriptionUseCase.InputData(client, containerId, list, requestMode),
             output -> new IncarnateDescriptionsDto(output.getReferences(), urlAssembler));
     return catalogFuture.thenApply(result -> ResponseEntity.ok().body(result));
   }

@@ -34,6 +34,7 @@ import org.veo.core.entity.Unit
 import org.veo.core.usecase.UseCaseInteractor
 import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase
+import org.veo.core.usecase.catalogitem.IncarnationRequestModeType
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.StoredEventDataRepository
@@ -75,7 +76,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
         QueryCountHolder.clear()
 
         when:
-        def inputDataGetIncarnationDescription = new GetIncarnationDescriptionUseCase.InputData(client, unit.id, domain.catalogItems.collect{it.id})
+        def inputDataGetIncarnationDescription = new GetIncarnationDescriptionUseCase.InputData(client, unit.id, domain.catalogItems.collect{it.id}, IncarnationRequestModeType.MANUAL)
         GetIncarnationDescriptionUseCase.OutputData description = executeInTransaction {
             synchronousUseCaseInteractor.execute(getIncarnationDescriptionUseCase, inputDataGetIncarnationDescription, Function.identity()).get()
         }

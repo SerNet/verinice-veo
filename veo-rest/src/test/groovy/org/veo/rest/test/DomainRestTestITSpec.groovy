@@ -305,8 +305,12 @@ class DomainRestTestITSpec extends DomainRestTest {
 
         def catalogItemsIds = catalogItems.collect{it.id}.join(',')
         def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${catalogItemsIds}").body
+        def incarnationDescriptionManual = get("/units/${unitId}/incarnations?itemIds=${catalogItemsIds}&mode=MANUAL").body
 
-        then:
+        then: "manual mode and default mode must be the same because all were listed as itemIds"
+        incarnationDescription == incarnationDescriptionManual
+
+        and: "the elements are contained"
         with(incarnationDescription.parameters.find { it.item.displayName == "example person 1" } ) {
             references.size() ==1
             references.first().referenceType == "COMPOSITE"

@@ -144,6 +144,15 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         elementResults.message ==~/The element to link is not part of the domain: CTL.*/
     }
 
+    def "Create elements with wrong mode"() {
+        when: "a control is created"
+        def allItems = getCatalogItems(dsgvoDomainId)*.id.join(',')
+        def error = get("/units/${unitId}/incarnations?itemIds=${allItems.join(',')}&mode=TEST", 400).body
+
+        then: "an error messages is returned"
+        error.message ==~/No enum constant org.veo.core.usecase.catalogitem.IncarnationRequestModeType.TEST/
+    }
+
     def "Create linked elements from the dsgvo catalog"() {
         when:"we create the controls"
         def sourceProcessId = post("/processes", [
@@ -288,7 +297,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
     }
 
     private getIncarnationDescriptions(String unitId, String... itemIds) {
-        get("/units/${unitId}/incarnations?itemIds=${itemIds.join(',')}").body
+        get("/units/${unitId}/incarnations?itemIds=${itemIds.join(',')}&mode=MANUAL").body
     }
 
     private postIncarnationDescriptions(unitId, applyInfo, int expectedStatus = 201) {

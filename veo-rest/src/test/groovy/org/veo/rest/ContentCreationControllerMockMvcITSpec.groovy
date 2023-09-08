@@ -423,7 +423,10 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             name: "example scenario 1",
             subType: "SCN_Scenario",
             status: "NEW",
-            owner: [targetUri: "/units/$unitId"]
+            owner: [targetUri: "/units/$unitId"],
+            parts: [
+                [targetInDomainUri: "/domains/$domainId/scenarios/$scenarioId"]
+            ]
         ],201)).resourceId
 
         post("/domains/$domainId/scenarios", [
@@ -433,8 +436,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             status: "NEW",
             owner: [targetUri: "/units/$unitId"],
             parts: [
-                [targetInDomainUri: "/domains/$domainId/scenarios/$scenarioId"],
-                [targetInDomainUri: "/domains/$domainId/scenarios/$scenarioPart"],
+                [targetInDomainUri: "/domains/$domainId/scenarios/$scenarioPart"]
             ]
         ],201)
 
@@ -468,11 +470,27 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             subType == "SCN_Scenario"
             abbreviation == "Cont"
             namespace == subType+ "."+abbreviation
-            tailoringReferences.size() == 2
+            tailoringReferences.size() == 1
             tailoringReferences[0].referenceType == TailoringReferenceType.PART
         }
 
-        when: "we incarnate all catatlog items"
+        when: "we incarnate one linked catalog item"
+        def catalogItemsId = catalogItems.find{it.name == "example scenario Container" }.getIdAsString()
+        unitId = parseJson(post("/units", [
+            name   : "you knit 2",
+            domains: [
+                [targetUri: "http://localhost/domains/$domainId"]
+            ]
+        ])).resourceId
+        def incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${catalogItemsId}"))
+        def elementList = parseJson(post("/units/${unitId}/incarnations", incarnationDescription))
+
+        then: "all linked elements are created"
+        incarnationDescription.parameters.size() == 3
+        elementList.size() == 3
+
+        when: "we incarnate all catalog items"
+        delete("/units/${unitId}")
         def catalogItemsIds = catalogItems.collect{it.getIdAsString()}.join(',')
         unitId = parseJson(post("/units", [
             name   : "you knit 2",
@@ -480,8 +498,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 [targetUri: "http://localhost/domains/$domainId"]
             ]
         ])).resourceId
-        def incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${catalogItemsIds}"))
-        def elementList = parseJson(post("/units/${unitId}/incarnations", incarnationDescription))
+        incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${catalogItemsIds}"))
+        elementList = parseJson(post("/units/${unitId}/incarnations", incarnationDescription))
 
         assetId = elementList.find {it.targetUri.contains('assets')}.targetUri.split('/' ).last()
         def asset = txTemplate.execute {
@@ -500,7 +518,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         asset.appliedCatalogItems.size() == 1
 
         with(scenarios.find{ it.name == "example scenario Container"}) {
-            parts.size() == 2
+            parts.size() == 1
             parts[0].composites.size() == 1
             parts[0].composites[0] == it
             appliedCatalogItems.size() == 1
@@ -525,13 +543,17 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         def scenarioItemIds = catalogItems.find{ it.name =="example scenario 1" }.collect {it.getIdAsString()}.join(',')
-        incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${scenarioItemIds}"))
+        incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${scenarioItemIds}&mode=MANUAL"))
+        def references = incarnationDescription.parameters.references.first()
 
         then:
         incarnationDescription.parameters.size() == 1
+        references.size() == 2
+        references*.referenceType ==~ ["PART", "COMPOSITE"]
 
         when: "we link the composite to an existing scenario "
-        incarnationDescription.parameters.references[0].first().put("referencedElement", Map.of("targetUri", "/scenarios/$scenarioId"))
+        references[0].put("referencedElement", ["targetUri": "/scenarios/$scenarioId"])
+        references[1].put("referencedElement", ["targetUri": "/scenarios/$scenarioId"])
         elementList = parseJson(post("/units/${unitId}/incarnations", incarnationDescription))
 
         def modifiedScenario = txTemplate.execute {

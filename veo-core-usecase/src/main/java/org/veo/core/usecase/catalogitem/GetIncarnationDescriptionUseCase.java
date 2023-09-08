@@ -37,6 +37,7 @@ import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.TailoringReferenceTyped;
+import org.veo.core.entity.TemplateItemReference;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.repository.CatalogItemRepository;
@@ -66,8 +67,8 @@ public class GetIncarnationDescriptionUseCase
 
   @Override
   public OutputData execute(InputData input) {
-    log.info("unid: {}, items: {}", input.containerId, input.catalogItemIds);
-    Unit unit = unitRepository.getByIdFetchClient(input.getContainerId());
+    log.info("unid: {}, items: {}", input.unitId, input.catalogItemIds);
+    Unit unit = unitRepository.getByIdFetchClient(input.getUnitId());
     unit.checkSameClient(input.authenticatedClient);
     validateInput(input);
     List<Key<UUID>> catalogItemIds = input.getCatalogItemIds();
@@ -76,7 +77,7 @@ public class GetIncarnationDescriptionUseCase
             .findAllByIdsFetchDomainAndTailoringReferences(Set.copyOf(catalogItemIds))
             .stream()
             .collect(Collectors.toMap(CatalogItem::getId, Function.identity()));
-    List<CatalogItem> itemsToCreate =
+    List<CatalogItem> requestedItems =
         input.getCatalogItemIds().stream()
             .map(
                 id -> {
@@ -89,6 +90,13 @@ public class GetIncarnationDescriptionUseCase
             .flatMap(ci -> ci.getAllElementsToCreate().stream())
             .distinct()
             .toList();
+    IncarnationRequestModeType requestType =
+        input.requestType == null ? IncarnationRequestModeType.DEFAULT : input.requestType;
+    Collection<CatalogItem> itemsToCreate =
+        switch (requestType) {
+          case DEFAULT -> collectAllItems(requestedItems);
+          case MANUAL -> requestedItems;
+        };
 
     Stream<CatalogItem> linkedCatalogItems =
         itemsToCreate.stream()
@@ -134,6 +142,26 @@ public class GetIncarnationDescriptionUseCase
     return new OutputData(incarnationDescriptions, unit);
   }
 
+  /**
+   * Collect recursively all link targets together with the elements until all targets are included.
+   */
+  private List<CatalogItem> collectAllItems(List<CatalogItem> itemsToCreate) {
+    List<CatalogItem> current = itemsToCreate;
+    List<CatalogItem> next =
+        Stream.concat(
+                itemsToCreate.stream(), itemsToCreate.stream().flatMap(this::getReferencedTargets))
+            .distinct()
+            .toList();
+    while (current.size() < next.size()) {
+      current = collectAllItems(next);
+    }
+    return current;
+  }
+
+  private Stream<? extends CatalogItem> getReferencedTargets(CatalogItem ci) {
+    return ci.getTailoringReferences().stream().map(TemplateItemReference<CatalogItem>::getTarget);
+  }
+
   private void validateInput(InputData input) {
     if (input.catalogItemIds.stream().collect(Collectors.toSet()).size()
         != input.catalogItemIds.size()) {
@@ -164,8 +192,9 @@ public class GetIncarnationDescriptionUseCase
   @Value
   public static class InputData implements UseCase.InputData {
     Client authenticatedClient;
-    Key<UUID> containerId;
+    Key<UUID> unitId;
     List<Key<UUID>> catalogItemIds;
+    IncarnationRequestModeType requestType;
   }
 
   @Valid

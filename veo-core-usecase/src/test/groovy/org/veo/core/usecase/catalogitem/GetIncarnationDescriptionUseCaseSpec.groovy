@@ -47,7 +47,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         item1.tailoringReferences >> []
 
         when:
-        def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
+        def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id], IncarnationRequestModeType.MANUAL))
 
         then:
         output.references.size() == 1
@@ -73,7 +73,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         item1.tailoringReferences >> [tr]
 
         when:
-        def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
+        def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id], IncarnationRequestModeType.MANUAL))
 
         then:
         output.references.size() == 2
@@ -102,7 +102,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         item1.elementInterface >> Control.class
 
         when:
-        def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
+        def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id], IncarnationRequestModeType.MANUAL))
 
         then:
         output.references.size()== 1
@@ -135,7 +135,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         item1.elementInterface >> Control.class
 
         when:
-        def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
+        def output = usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id], IncarnationRequestModeType.MANUAL))
 
         then:
         output.references.size()== 1
@@ -161,7 +161,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         item1.getElementType() >> "control"
 
         when:
-        usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id]))
+        usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id], IncarnationRequestModeType.MANUAL))
 
         then:
         thrown(RuntimeModelException)
@@ -176,7 +176,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         anotherUnit.id >> unitId
 
         when:
-        usecase.execute(new InputData(existingClient, anotherUnit.id, [item1.id]))
+        usecase.execute(new InputData(existingClient, anotherUnit.id, [item1.id], IncarnationRequestModeType.MANUAL))
 
         then:
         thrown(NotFoundException)
@@ -187,7 +187,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         item1.tailoringReferences >> []
 
         when:
-        usecase.execute(new InputData(existingClient, existingUnit.id, [Key.newUuid()]))
+        usecase.execute(new InputData(existingClient, existingUnit.id, [Key.newUuid()], IncarnationRequestModeType.MANUAL))
 
         then:
         thrown(NotFoundException)
@@ -198,7 +198,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         item1.tailoringReferences >> []
 
         when:
-        usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id, item1.id]))
+        usecase.execute(new InputData(existingClient, existingUnit.id, [item1.id, item1.id], null))
 
         then:
         thrown(IllegalArgumentException)

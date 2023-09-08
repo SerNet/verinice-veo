@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.veo.rest.test
 
+import org.veo.core.usecase.catalogitem.IncarnationRequestModeType
+
 class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
     final def UNIT_NAME = 'incarnate catalog item test unit'
 
@@ -75,12 +77,34 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         newElements.size() == 2
 
         when: "we access the created elements"
-        def controlC1Result = get(newElements[0].targetUri).body
-        def controlC2Result = get(newElements[1].targetUri).body
+        def controlC1Result = get(newElements.toSorted { it.name }[0].targetUri).body
+        def controlC2Result = get(newElements.toSorted { it.name }[1].targetUri).body
 
         then: "The data is correct"
         controlC1Result.name == "Control-1"
         controlC2Result.name == "Control-2"
+    }
+
+    def "Create a unit and incarnate cc-2 in one request DEFAULT mode"() {
+        when: "we get cc-2 id"
+        def itemCC2Id = itemIdByAbbreviation("cc-2")
+        def incarnationDescription = getIncarnationDescriptions([itemCC2Id], IncarnationRequestModeType.DEFAULT)
+
+        and: "we post the given description"
+        def newElements = incarnate(incarnationDescription)
+
+        then: "two elements are created"
+        newElements.size() == 2
+
+        when: "we access the created elements"
+        def controlC1Result = get(newElements[0].targetUri).body
+        def controlC2Result = get(newElements[1].targetUri).body
+
+        then: "The data is correct"
+        controlC1Result.name == "Control-cc-2"
+        controlC2Result.name == "Control-cc-1"
+        controlC1Result.links.Control_details_Control.target.targetUri[0] == newElements[1].targetUri
+        controlC2Result.links.Control_details_Control.target.targetUri[0] == newElements[0].targetUri
     }
 
     def "Create a unit and incarnate c-1 and cc-1->c-1, and cc-2 linked default to cc-1"() {
@@ -233,7 +257,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         when: "We create all elements"
         def catalogItemsIds = getCatalogItems(testDomainId)*.id
 
-        def incarnationDescription = getIncarnationDescriptions(catalogItemsIds)
+        def incarnationDescription = getIncarnationDescriptions(catalogItemsIds, IncarnationRequestModeType.DEFAULT)
         def newElements = incarnate(incarnationDescription)
 
         then: "all items of the catalog are created"
@@ -243,11 +267,11 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
     def "Create a unit and one tom, then add the tom again and again"() {
         when: "We create one element"
         def tomi = itemIdByAbbreviation("TOM-I", dsgvoDomainId)
-        def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${tomi}").body
+        def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${tomi}&mode=MANUAL").body
         incarnate(incarnationDescription)
 
         and: "We add the same control from the catalog"
-        def idTom = get("/units/${unitId}/incarnations?itemIds=${tomi}").body
+        def idTom = get("/units/${unitId}/incarnations?itemIds=${tomi}&mode=MANUAL").body
         def toms = incarnate(idTom)
         def tom1 = get(toms[0].targetUri).body
 
@@ -256,7 +280,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         tom1.abbreviation == "TOM-I"
 
         when: "We add the same element again"
-        idTom = get("/units/${unitId}/incarnations?itemIds=${tomi}").body
+        idTom = get("/units/${unitId}/incarnations?itemIds=${tomi}&mode=MANUAL").body
         toms = incarnate(idTom)
         tom1 = get(toms[0].targetUri).body
 
@@ -268,7 +292,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
     def "Create a unit and the whole dsgvo catalog in one step add controls after"() {
         when: "We create all elements"
         def catalogItemsIds = getCatalogItems(dsgvoDomainId)*.id
-        def incarnationDescription = getIncarnationDescriptions(catalogItemsIds)
+        def incarnationDescription = getIncarnationDescriptions(catalogItemsIds, IncarnationRequestModeType.MANUAL)
         def newElements = incarnate(incarnationDescription)
 
         then: "all items of the catalog are created"
@@ -278,7 +302,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         def tomi = itemIdByAbbreviation("TOM-I", dsgvoDomainId)
         def tome = itemIdByAbbreviation("TOM-P", dsgvoDomainId)
 
-        def idTom = get("/units/${unitId}/incarnations?itemIds=${tomi},${tome}").body
+        def idTom = get("/units/${unitId}/incarnations?itemIds=${tomi},${tome}&mode=MANUAL").body
         def toms = incarnate(idTom)
 
         def tom1 = get(toms[0].targetUri).body
@@ -294,8 +318,8 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         getCatalogItems(domainId).find { it.abbreviation == abbreviation }.id
     }
 
-    private Object getIncarnationDescriptions(Collection<String> itemIds) {
-        get("/units/${unitId}/incarnations?itemIds=${itemIds.join(',')}").body
+    private Object getIncarnationDescriptions(Collection<String> itemIds, IncarnationRequestModeType mode = IncarnationRequestModeType.MANUAL) {
+        get("/units/${unitId}/incarnations?itemIds=${itemIds.join(',')}&mode=${mode}").body
     }
 
     private getControls() {
