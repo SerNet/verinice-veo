@@ -41,7 +41,6 @@ public interface Element
 
   int ELEMENT_TYPE_MAX_LENGTH = Constraints.DEFAULT_CONSTANT_MAX_LENGTH;
 
-  /** Can be null when the owner is a catalogitem owned by a domain template. */
   default Optional<Client> getOwningClient() {
     return Optional.ofNullable(getOwner()).map(Unit::getClient);
   }
@@ -54,8 +53,7 @@ public interface Element
   boolean removeFromDomains(Domain domain);
 
   /**
-   * @return all domains that this element is associated with (if it is an element in a unit) or an
-   *     empty list (if it is a catalog item element).
+   * @return all domains that this element is associated with
    */
   Set<Domain> getDomains();
 
@@ -215,6 +213,6 @@ public interface Element
 
   void setStatus(String status, Domain domain);
 
-  /** Applies the properties of the element to the catalogItem. */
+  /** Applies the properties of the element to the catalog item. */
   CatalogItem toCalalogItem(Domain domain);
 }
