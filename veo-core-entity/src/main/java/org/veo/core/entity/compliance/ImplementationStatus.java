@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jonas Jordan.
+ * Copyright (C) 2023  Alexander Koderman
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,25 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.repository;
+package org.veo.core.entity.compliance;
 
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-/**
- * A set of values to be matched against in a query. The condition is true if the tested value is
- * equal to any of the values in the set.
- */
-@Data
-@AllArgsConstructor
-public class QueryCondition<TValue> {
-  private final Set<TValue> values;
-
-  public <TOut> QueryCondition<Object> map(Function<TValue, TOut> transformation) {
-    return new QueryCondition<>(values.stream().map(transformation).collect(Collectors.toSet()));
-  }
+public enum ImplementationStatus {
+  UNKNOWN,
+  YES,
+  NO,
+  PARTIAL,
+  N_A
 }

@@ -19,4 +19,4 @@ package org.veo.core.entity.state;
 
 import org.veo.core.entity.Asset;
 
-public interface AssetState extends CompositeElementState<Asset> {}
+public interface AssetState extends CompositeElementState<Asset>, RiskAffectedState<Asset> {}

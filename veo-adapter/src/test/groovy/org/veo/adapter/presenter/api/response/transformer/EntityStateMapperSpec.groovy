@@ -32,6 +32,7 @@ import org.veo.core.entity.Process
 import org.veo.core.entity.ref.ITypedId
 import org.veo.core.entity.state.RiskImpactDomainAssociationState
 import org.veo.core.entity.transform.EntityFactory
+import org.veo.core.service.EventPublisher
 import org.veo.core.usecase.service.EntityStateMapper
 import org.veo.core.usecase.service.IdRefResolver
 import org.veo.core.usecase.service.TypedId
@@ -51,7 +52,8 @@ class EntityStateMapperSpec extends Specification {
         resolve(TypedId.from(domain1Id.uuidValue(), Domain)) >> domain1
     }
     EntityFactory entityFactory = Mock()
-    EntityStateMapper entityStateMapper = new EntityStateMapper(entityFactory)
+    EventPublisher eventPublisher = Mock()
+    EntityStateMapper entityStateMapper = new EntityStateMapper(entityFactory, eventPublisher)
 
     def "maps domains from DTO to entity"() {
         given: "a process with two domains and a DTO with different sub types for those domains"
@@ -59,6 +61,7 @@ class EntityStateMapperSpec extends Specification {
         Process entity = Mock()
         entity.modelInterface >> Process
 
+        dto.controlImplementationStates >> []
         dto.getDomainAssociationStates() >> [
             Mock(RiskImpactDomainAssociationState) {
                 subType >> "foo"
@@ -90,6 +93,7 @@ class EntityStateMapperSpec extends Specification {
         1 * entity.getLinks(domain1) >> []
         1 * entity.getCustomAspects(domain0) >> []
         1 * entity.getCustomAspects(domain1) >> []
+        1 * entity.getControlImplementations() >> []
         1 * entity.getDomains() >> []
     }
 
@@ -102,6 +106,7 @@ class EntityStateMapperSpec extends Specification {
         def asset2 = Mock(Asset)
         def newCompositeAssetEntity = Mock(Asset) {
             it.modelType >> Asset.SINGULAR_TERM
+            it.controlImplementations >> []
         }
 
         def compositeAssetId = Key.newUuid()

@@ -19,4 +19,4 @@ package org.veo.core.entity.state;
 
 import org.veo.core.entity.Process;
 
-public interface ProcessState extends CompositeElementState<Process> {}
+public interface ProcessState extends CompositeElementState<Process>, RiskAffectedState<Process> {}

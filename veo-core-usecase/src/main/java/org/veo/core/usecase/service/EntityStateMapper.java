@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -35,9 +36,12 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.compliance.ControlImplementation;
+import org.veo.core.entity.event.ControlPartsChangedEvent;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.ControlRiskValues;
@@ -50,16 +54,19 @@ import org.veo.core.entity.risk.RiskImpactValues;
 import org.veo.core.entity.risk.ScenarioRiskValues;
 import org.veo.core.entity.state.CompositeElementState;
 import org.veo.core.entity.state.ControlDomainAssociationState;
+import org.veo.core.entity.state.ControlImplementationState;
 import org.veo.core.entity.state.ControlRiskValuesState;
 import org.veo.core.entity.state.CustomLinkState;
 import org.veo.core.entity.state.DomainAssociationState;
 import org.veo.core.entity.state.ElementState;
+import org.veo.core.entity.state.RiskAffectedState;
 import org.veo.core.entity.state.RiskImpactDomainAssociationState;
 import org.veo.core.entity.state.ScenarioDomainAssociationState;
 import org.veo.core.entity.state.ScopeDomainAssociationState;
 import org.veo.core.entity.state.ScopeState;
 import org.veo.core.entity.state.UnitState;
 import org.veo.core.entity.transform.EntityFactory;
+import org.veo.core.service.EventPublisher;
 
 import lombok.RequiredArgsConstructor;
 
@@ -67,6 +74,13 @@ import lombok.RequiredArgsConstructor;
 public class EntityStateMapper {
 
   private final EntityFactory entityFactory;
+
+  private final EventPublisher eventPublisher;
+
+  private EntityStateMapper() {
+    entityFactory = null;
+    eventPublisher = null;
+  }
 
   public void mapState(UnitState source, Unit target, IdRefResolver idRefResolver) {
     mapNameableProperties(source, target);
@@ -102,7 +116,17 @@ public class EntityStateMapper {
     }
     if (target instanceof CompositeElement ce) {
       CompositeElementState<T> compositeElementState = (CompositeElementState<T>) source;
+      var oldParts = ce.getPartsRecursively();
       ce.setParts(idRefResolver.resolve(compositeElementState.getParts()));
+      publishPartsChanged(ce, oldParts);
+    }
+  }
+
+  private void publishPartsChanged(CompositeElement entity, Set oldParts) {
+    // So far we only publish changes for control parts.
+    // Do not publish if entity has no client.
+    if (entity instanceof Control control && entity.getOwningClient().isPresent()) {
+      eventPublisher.publish(new ControlPartsChangedEvent(control, oldParts));
     }
   }
 
@@ -123,6 +147,41 @@ public class EntityStateMapper {
     if (source.getOwner() != null) {
       target.setOwner(idRefResolver.resolve(source.getOwner()));
     }
+
+    if (source instanceof RiskAffectedState<?> sourceRa
+        && target instanceof RiskAffected<?, ?> targetRa) {
+      applyControlImplementations(sourceRa, targetRa, idRefResolver);
+    }
+  }
+
+  private static <T extends Element> void applyControlImplementations(
+      RiskAffectedState<?> source, RiskAffected<?, ?> target, IdRefResolver idRefResolver) {
+
+    // Remove old CIs that are absent in list of new CIs
+    target.getControlImplementations().stream()
+        .map(ControlImplementation::getControl)
+        .filter(isNotPresentIn(source))
+        .forEach(target::disassociateControl);
+
+    // Apply new CIs
+    Set<ControlImplementationState> states = source.getControlImplementationStates();
+    states.forEach(ciState -> transferState(target, idRefResolver, ciState));
+  }
+
+  private static void transferState(
+      RiskAffected<?, ?> target,
+      IdRefResolver idRefResolver,
+      ControlImplementationState sourceState) {
+    var ci = target.implementControl(idRefResolver.resolve(sourceState.getControl()));
+    ci.setDescription(sourceState.getDescription());
+    ci.setResponsible(
+        Optional.ofNullable(sourceState.getResponsible()).map(idRefResolver::resolve).orElse(null));
+  }
+
+  private static Predicate<Control> isNotPresentIn(RiskAffectedState<?> source) {
+    return ctl ->
+        source.getControlImplementationStates().stream()
+            .noneMatch(ciState -> ciState.references(ctl));
   }
 
   private <T extends Element> void applyLinks(

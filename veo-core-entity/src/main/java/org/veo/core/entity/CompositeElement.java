@@ -20,6 +20,8 @@ package org.veo.core.entity;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.veo.core.entity.specification.EntitySpecification;
 
@@ -97,5 +99,21 @@ public interface CompositeElement<T extends CompositeElement> extends Element {
     // Work with copies of parent element lists to avoid concurrent modifications
     new HashSet<>(getComposites()).forEach(c -> c.removePart(this));
     new HashSet<>(getScopes()).forEach(s -> s.removeMember(this));
+  }
+
+  default Set<T> getPartsRecursively() {
+    return (Set<T>)
+        Stream.concat(
+                getParts().stream(),
+                getParts().stream().flatMap(part -> part.getPartsRecursively().stream()))
+            .collect(Collectors.toSet());
+  }
+
+  default Set<T> getCompositesRecursively() {
+    return (Set<T>)
+        Stream.concat(
+                getComposites().stream(),
+                getComposites().stream().flatMap(part -> part.getCompositesRecursively().stream()))
+            .collect(Collectors.toSet());
   }
 }

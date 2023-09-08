@@ -42,6 +42,7 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
         def id = Key.newUuid()
         ProcessState process = Mock()
         process.domainAssociationStates >> []
+        process.controlImplementationStates >> []
         process.getId() >> id.uuidValue()
         process.getName()>> "Updated process"
         process.parts >> []
@@ -52,6 +53,7 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
             it.owner >> existingUnit
             it.domains >> []
             it.customAspects >> []
+            it.controlImplementations >> []
             it.links >> []
             it.domainTemplates >> []
             it.modelInterface >> Process
@@ -64,7 +66,7 @@ public class UpdateProcessUseCaseSpec extends UseCaseSpec {
 
         then:
         1 * repositoryProvider.getElementRepositoryFor(Process) >> processRepository
-        1 * existingProcess.getOwningClient() >> Optional.of(existingClient)
+        _ * existingProcess.getOwningClient() >> Optional.of(existingClient)
         1 * processRepository.save(existingProcess) >> existingProcess
         1 * processRepository.findById(id) >> Optional.of(existingProcess)
         1 * processRepository.getById(id, existingClient.id) >> existingProcess

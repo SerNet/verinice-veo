@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jonas Jordan.
+ * Copyright (C) 2023  Alexander Koderman
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,22 +18,17 @@
 package org.veo.core.repository;
 
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import org.veo.core.entity.Client;
+import org.veo.core.entity.Control;
+import org.veo.core.entity.compliance.ReqImplRef;
+import org.veo.core.entity.compliance.RequirementImplementation;
 
-/**
- * A set of values to be matched against in a query. The condition is true if the tested value is
- * equal to any of the values in the set.
- */
-@Data
-@AllArgsConstructor
-public class QueryCondition<TValue> {
-  private final Set<TValue> values;
+public interface RequirementImplementationRepository {
 
-  public <TOut> QueryCondition<Object> map(Function<TValue, TOut> transformation) {
-    return new QueryCondition<>(values.stream().map(transformation).collect(Collectors.toSet()));
-  }
+  RequirementImplementationQuery query(Client client);
+
+  Set<RequirementImplementation> findByControls(Set<Control> removedControls);
+
+  Set<RequirementImplementation> findAllByRef(Set<ReqImplRef> requirementImplementations);
 }

@@ -29,5 +29,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ControlRiskValues {
+  @Deprecated // TODO VEO-2334 move to controlImplementation
   private ImplementationStatusRef implementationStatus;
 }

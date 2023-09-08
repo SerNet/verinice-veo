@@ -18,5 +18,6 @@
 package org.veo.core.entity.state;
 
 public interface ControlRiskValuesState {
+  @Deprecated() // TODO VEO-2334
   Integer getImplementationStatus();
 }

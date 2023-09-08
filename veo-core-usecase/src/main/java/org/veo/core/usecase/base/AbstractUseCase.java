@@ -22,9 +22,12 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.ClientOwned;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -55,9 +58,20 @@ public abstract class AbstractUseCase<I extends UseCase.InputData, O extends Use
     domains.forEach(domain -> checkSameClient(authenticatedClient, domain));
   }
 
-  private void checkSameClient(Client authenticatedClient, Domain domain) {
-    if (!domain.getOwner().equals(authenticatedClient))
-      throw new ClientBoundaryViolationException(domain, authenticatedClient);
+  private <T extends Identifiable & ClientOwned> void checkSameClient(
+      Client authenticatedClient, T entity) {
+    if (!entity.getOwningClient().get().equals(authenticatedClient))
+      throw new ClientBoundaryViolationException(entity, authenticatedClient);
+  }
+
+  protected <M extends Identifiable & ClientOwned> M getEntity(ITypedId<M> ref, Client client) {
+    var e =
+        repositoryProvider
+            .getRepositoryFor(ref.getType())
+            .findById(Key.uuidFrom(ref.getId()))
+            .orElseThrow(() -> new NotFoundException(ref.getId(), ref.getType()));
+    checkSameClient(client, e);
+    return e;
   }
 
   protected <M extends Identifiable> Optional<M> findEntity(Class<M> clazz, Key<UUID> id) {

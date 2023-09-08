@@ -67,6 +67,8 @@ public class DeleteUnitUseCase
     query.fetchParentsAndChildrenAndSiblings();
     query.fetchRisks();
     query.fetchRiskValuesAspects();
+    query.fetchControlImplementations();
+    query.fetchRequirementImplementations();
 
     List<Element> entitiesInUnit = query.execute(PagingConfiguration.UNPAGED).getResultPage();
 

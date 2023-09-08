@@ -64,12 +64,14 @@ import org.veo.core.events.MessageCreatorImpl;
 import org.veo.core.repository.AssetRepository;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.ClientRepository;
+import org.veo.core.repository.ControlImplementationRepository;
 import org.veo.core.repository.DesignatorSequenceRepository;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.ProcessRepository;
 import org.veo.core.repository.RepositoryProvider;
+import org.veo.core.repository.RequirementImplementationRepository;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.service.DomainTemplateIdGenerator;
@@ -175,16 +177,20 @@ import org.veo.core.usecase.unit.UpdateUnitUseCase;
 import org.veo.persistence.CurrentUserProvider;
 import org.veo.persistence.access.AssetRepositoryImpl;
 import org.veo.persistence.access.ClientRepositoryImpl;
+import org.veo.persistence.access.ControlImplementationRepositoryImpl;
 import org.veo.persistence.access.ControlRepositoryImpl;
 import org.veo.persistence.access.DocumentRepositoryImpl;
 import org.veo.persistence.access.IncidentRepositoryImpl;
 import org.veo.persistence.access.PersonRepositoryImpl;
 import org.veo.persistence.access.ProcessRepositoryImpl;
+import org.veo.persistence.access.RequirementImplementationRepositoryImpl;
 import org.veo.persistence.access.ScenarioRepositoryImpl;
 import org.veo.persistence.access.ScopeRepositoryImpl;
 import org.veo.persistence.access.StoredEventRepository;
 import org.veo.persistence.access.StoredEventRepositoryImpl;
 import org.veo.persistence.access.UnitRepositoryImpl;
+import org.veo.persistence.access.jpa.ControlImplementationDataRepository;
+import org.veo.persistence.access.jpa.RequirementImplementationDataRepository;
 import org.veo.persistence.access.jpa.StoredEventDataRepository;
 import org.veo.persistence.entity.jpa.ReferenceSerializationModule;
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory;
@@ -192,6 +198,7 @@ import org.veo.persistence.entity.jpa.transformer.IdentifiableDataFactory;
 import org.veo.rest.security.AuthAwareImpl;
 import org.veo.rest.security.CurrentUserProviderImpl;
 import org.veo.service.CatalogMigrationService;
+import org.veo.service.ControlImplementationService;
 import org.veo.service.DefaultDomainCreator;
 import org.veo.service.ElementMigrationService;
 import org.veo.service.EtagService;
@@ -275,7 +282,7 @@ public class ModuleConfiguration {
   public UpdateAssetUseCase updateAssetUseCase(
       RepositoryProvider repositoryProvider, Decider decider, EventPublisher eventPublisher) {
     return new UpdateAssetUseCase(
-        repositoryProvider, decider, getEntityStateMapper(), eventPublisher);
+        repositoryProvider, decider, getEntityStateMapper(eventPublisher), eventPublisher);
   }
 
   @Bean
@@ -296,7 +303,7 @@ public class ModuleConfiguration {
   public UpdateControlUseCase updateControlUseCase(
       RepositoryProvider repositoryProvider, EventPublisher eventPublisher, Decider decider) {
     return new UpdateControlUseCase(
-        repositoryProvider, eventPublisher, decider, getEntityStateMapper());
+        repositoryProvider, eventPublisher, decider, getEntityStateMapper(eventPublisher));
   }
 
   @Bean
@@ -315,8 +322,9 @@ public class ModuleConfiguration {
 
   @Bean
   public UpdateDocumentUseCase updateDocumentUseCase(
-      RepositoryProvider repositoryProvider, Decider decider) {
-    return new UpdateDocumentUseCase(repositoryProvider, decider, getEntityStateMapper());
+      RepositoryProvider repositoryProvider, Decider decider, EventPublisher eventPublisher) {
+    return new UpdateDocumentUseCase(
+        repositoryProvider, decider, getEntityStateMapper(eventPublisher));
   }
 
   @Bean
@@ -337,7 +345,7 @@ public class ModuleConfiguration {
   public UpdateScenarioUseCase updateScenarioUseCase(
       RepositoryProvider repositoryProvider, EventPublisher eventPublisher, Decider decider) {
     return new UpdateScenarioUseCase(
-        repositoryProvider, eventPublisher, decider, getEntityStateMapper());
+        repositoryProvider, eventPublisher, decider, getEntityStateMapper(eventPublisher));
   }
 
   @Bean
@@ -356,8 +364,9 @@ public class ModuleConfiguration {
 
   @Bean
   public UpdateIncidentUseCase updateIncidentUseCase(
-      RepositoryProvider repositoryProvider, Decider decider) {
-    return new UpdateIncidentUseCase(repositoryProvider, decider, getEntityStateMapper());
+      RepositoryProvider repositoryProvider, Decider decider, EventPublisher eventPublisher) {
+    return new UpdateIncidentUseCase(
+        repositoryProvider, decider, getEntityStateMapper(eventPublisher));
   }
 
   @Bean
@@ -395,7 +404,7 @@ public class ModuleConfiguration {
   public UpdateProcessUseCase putProcessUseCase(
       RepositoryProvider repositoryProvider, EventPublisher eventPublisher, Decider decider) {
     return new UpdateProcessUseCase(
-        repositoryProvider, eventPublisher, decider, getEntityStateMapper());
+        repositoryProvider, eventPublisher, decider, getEntityStateMapper(eventPublisher));
   }
 
   @Bean
@@ -432,8 +441,8 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public EntityStateMapper getEntityStateMapper() {
-    return new EntityStateMapper(getEntityFactory());
+  public EntityStateMapper getEntityStateMapper(EventPublisher eventPublisher) {
+    return new EntityStateMapper(getEntityFactory(), eventPublisher);
   }
 
   @Bean
@@ -469,8 +478,9 @@ public class ModuleConfiguration {
 
   @Bean
   public UpdatePersonUseCase updatePersonUseCase(
-      RepositoryProvider repositoryProvider, Decider decider) {
-    return new UpdatePersonUseCase(repositoryProvider, decider, getEntityStateMapper());
+      RepositoryProvider repositoryProvider, Decider decider, EventPublisher eventPublisher) {
+    return new UpdatePersonUseCase(
+        repositoryProvider, decider, getEntityStateMapper(eventPublisher));
   }
 
   @Bean
@@ -491,7 +501,7 @@ public class ModuleConfiguration {
   public UpdateScopeUseCase updateScopeUseCase(
       RepositoryProvider repositoryProvider, Decider decider, EventPublisher eventPublisher) {
     return new UpdateScopeUseCase(
-        repositoryProvider, decider, getEntityStateMapper(), eventPublisher);
+        repositoryProvider, decider, getEntityStateMapper(eventPublisher), eventPublisher);
   }
 
   @Bean
@@ -617,6 +627,18 @@ public class ModuleConfiguration {
   }
 
   @Bean
+  public RequirementImplementationRepository requirementImplementationRepository(
+      RequirementImplementationDataRepository dataRepository) {
+    return new RequirementImplementationRepositoryImpl(dataRepository);
+  }
+
+  @Bean
+  public ControlImplementationRepository controlImplementationRepository(
+      ControlImplementationDataRepository dataRepository) {
+    return new ControlImplementationRepositoryImpl(dataRepository);
+  }
+
+  @Bean
   public AuthAwareImpl authAwareImpl() {
     return new AuthAwareImpl();
   }
@@ -632,8 +654,9 @@ public class ModuleConfiguration {
   public DtoToEntityTransformer dtoToEntityTransformer(
       EntityFactory entityFactory,
       IdentifiableFactory identifiableFactory,
-      EntitySchemaService entitySchemaService) {
-    return new DtoToEntityTransformer(entityFactory, identifiableFactory, getEntityStateMapper());
+      EventPublisher eventPublisher) {
+    return new DtoToEntityTransformer(
+        entityFactory, identifiableFactory, getEntityStateMapper(eventPublisher));
   }
 
   @Primary
@@ -678,7 +701,8 @@ public class ModuleConfiguration {
       IdentifiableFactory identifiableFactory,
       DomainAssociationTransformer domainAssociationTransformer,
       DomainTemplateIdGenerator domainTemplateIdGenerator,
-      ReferenceAssembler referenceAssembler) {
+      ReferenceAssembler referenceAssembler,
+      EventPublisher eventPublisher) {
 
     ObjectMapper objectMapper =
         new ObjectMapper()
@@ -697,7 +721,7 @@ public class ModuleConfiguration {
         domainTemplateIdGenerator,
         referenceAssembler,
         objectMapper,
-        getEntityStateMapper());
+        getEntityStateMapper(eventPublisher));
   }
 
   @Bean
@@ -897,6 +921,12 @@ public class ModuleConfiguration {
   }
 
   @Bean
+  public ControlImplementationService controlImplementationService(
+      ControlImplementationRepository ciRepo, RequirementImplementationRepository riRepo) {
+    return new ControlImplementationService(ciRepo, riRepo);
+  }
+
+  @Bean
   public Decider decider(ClientRepository clientRepository, RepositoryProvider repositoryProvider) {
     return new Decider(clientRepository, repositoryProvider);
   }
@@ -978,52 +1008,56 @@ public class ModuleConfiguration {
   UpdateAssetInDomainUseCase updateAssetDomainAssociationUseCase(
       RepositoryProvider repositoryProvider, Decider decider, EventPublisher eventPublisher) {
     return new UpdateAssetInDomainUseCase(
-        repositoryProvider, decider, getEntityStateMapper(), eventPublisher);
+        repositoryProvider, decider, getEntityStateMapper(eventPublisher), eventPublisher);
   }
 
   @Bean
   UpdateControlInDomainUseCase updateControlInDomainUseCase(
-      RepositoryProvider repositoryProvider, Decider decider) {
-    return new UpdateControlInDomainUseCase(repositoryProvider, decider, getEntityStateMapper());
+      RepositoryProvider repositoryProvider, Decider decider, EventPublisher eventPublisher) {
+    return new UpdateControlInDomainUseCase(
+        repositoryProvider, decider, getEntityStateMapper(eventPublisher));
   }
 
   @Bean
   UpdateDocumentInDomainUseCase updateDocumentInDomainUseCase(
-      RepositoryProvider repositoryProvider, Decider decider) {
-    return new UpdateDocumentInDomainUseCase(repositoryProvider, decider, getEntityStateMapper());
+      RepositoryProvider repositoryProvider, Decider decider, EventPublisher eventPublisher) {
+    return new UpdateDocumentInDomainUseCase(
+        repositoryProvider, decider, getEntityStateMapper(eventPublisher));
   }
 
   @Bean
   UpdateIncidentInDomainUseCase updateIncidentInDomainUseCase(
-      RepositoryProvider repositoryProvider, Decider decider) {
-    return new UpdateIncidentInDomainUseCase(repositoryProvider, decider, getEntityStateMapper());
+      RepositoryProvider repositoryProvider, Decider decider, EventPublisher eventPublisher) {
+    return new UpdateIncidentInDomainUseCase(
+        repositoryProvider, decider, getEntityStateMapper(eventPublisher));
   }
 
   @Bean
   UpdatePersonInDomainUseCase updatePersonInDomainUseCase(
-      RepositoryProvider repositoryProvider, Decider decider) {
-    return new UpdatePersonInDomainUseCase(repositoryProvider, decider, getEntityStateMapper());
+      RepositoryProvider repositoryProvider, Decider decider, EventPublisher eventPublisher) {
+    return new UpdatePersonInDomainUseCase(
+        repositoryProvider, decider, getEntityStateMapper(eventPublisher));
   }
 
   @Bean
   UpdateProcessInDomainUseCase updateProcessInDomainUseCase(
       RepositoryProvider repositoryProvider, Decider decider, EventPublisher eventPublisher) {
     return new UpdateProcessInDomainUseCase(
-        repositoryProvider, decider, getEntityStateMapper(), eventPublisher);
+        repositoryProvider, decider, getEntityStateMapper(eventPublisher), eventPublisher);
   }
 
   @Bean
   UpdateScenarioInDomainUseCase updateScenarioInDomainUseCase(
       RepositoryProvider repositoryProvider, Decider decider, EventPublisher eventPublisher) {
     return new UpdateScenarioInDomainUseCase(
-        repositoryProvider, decider, getEntityStateMapper(), eventPublisher);
+        repositoryProvider, decider, getEntityStateMapper(eventPublisher), eventPublisher);
   }
 
   @Bean
   UpdateScopeInDomainUseCase updateScopeInDomainUseCase(
       RepositoryProvider repositoryProvider, Decider decider, EventPublisher eventPublisher) {
     return new UpdateScopeInDomainUseCase(
-        repositoryProvider, decider, getEntityStateMapper(), eventPublisher);
+        repositoryProvider, decider, getEntityStateMapper(eventPublisher), eventPublisher);
   }
 
   @Bean

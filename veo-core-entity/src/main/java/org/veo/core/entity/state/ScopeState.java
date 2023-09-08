@@ -23,7 +23,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ref.ITypedId;
 
-public interface ScopeState extends ElementState<Scope> {
+public interface ScopeState extends RiskAffectedState<Scope> {
 
   Set<? extends ITypedId<Element>> getMembers();
 }

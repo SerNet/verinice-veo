@@ -58,4 +58,14 @@ public interface CompositeRiskAffectedDataRepository<T extends RiskAffectedData<
          left join fetch r.riskAspects
          where e.dbId in ?1""")
   List<T> findAllWithRisksByDbIdIn(Iterable<String> ids);
+
+  @Nonnull
+  @Query(
+      """
+    select distinct e from #{#entityName} e
+    left join fetch e.controlImplementations
+    left join fetch e.requirementImplementations
+    where e.dbId in ?1
+    """)
+  Set<T> findAllWithCIsAndRIs(Iterable<String> ids);
 }

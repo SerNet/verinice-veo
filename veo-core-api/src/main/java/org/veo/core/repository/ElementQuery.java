@@ -97,4 +97,8 @@ public interface ElementQuery<T extends Element> extends Query<T> {
   void whereDomainsContain(Domain domain);
 
   void whereScopesContain(SingleValueQueryCondition<Key<UUID>> scopeId);
+
+  void fetchControlImplementations();
+
+  void fetchRequirementImplementations();
 }

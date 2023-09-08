@@ -26,6 +26,9 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import org.veo.core.entity.compliance.ControlImplementation;
+import org.veo.core.entity.compliance.ReqImplRef;
+import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.entity.exception.ModelConsistencyException;
 import org.veo.core.entity.risk.ImpactValueProvider;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -141,4 +144,37 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
       throw new ModelConsistencyException(
           "The provided domain '%s' is not yet known to this object. ", domain.getDisplayName());
   }
+
+  /**
+   * Add a control implementation to this element for the specified control. This will also document
+   * all implemented requirements of that control.
+   *
+   * <p>If an implementation for this control already exists, return it instead.
+   *
+   * @return the newly created implementation or the existing one that was already present
+   */
+  ControlImplementation implementControl(Control control);
+
+  /** Specify that a control is no longer being implemented by this element. */
+  void disassociateControl(Control control);
+
+  Set<ControlImplementation> getControlImplementations();
+
+  Set<RequirementImplementation> getRequirementImplementations();
+
+  /**
+   * Returns an implementation of a requirement for the given reference.
+   *
+   * @throws org.veo.core.entity.exception.NotFoundException if no implementation matching the
+   *     reference is found on the element
+   */
+  RequirementImplementation getRequirementImplementation(ReqImplRef reqImplRef);
+
+  /**
+   * Returns an existing implementation of this element for the given control.
+   *
+   * @throws org.veo.core.entity.exception.NotFoundException if no implementation exists for this
+   *     control
+   */
+  ControlImplementation getImplementationFor(Control control);
 }

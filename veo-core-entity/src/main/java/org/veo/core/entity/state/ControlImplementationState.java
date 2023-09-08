@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Jonas Jordan.
+ * Copyright (C) 2023  Alexander Koderman
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,25 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.repository;
+package org.veo.core.entity.state;
 
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import org.veo.core.entity.Constraints;
+import org.veo.core.entity.Control;
+import org.veo.core.entity.Person;
+import org.veo.core.entity.ref.ITypedId;
 
-/**
- * A set of values to be matched against in a query. The condition is true if the tested value is
- * equal to any of the values in the set.
- */
-@Data
-@AllArgsConstructor
-public class QueryCondition<TValue> {
-  private final Set<TValue> values;
+@Valid
+public interface ControlImplementationState {
 
-  public <TOut> QueryCondition<Object> map(Function<TValue, TOut> transformation) {
-    return new QueryCondition<>(values.stream().map(transformation).collect(Collectors.toSet()));
+  ITypedId<Control> getControl();
+
+  ITypedId<Person> getResponsible();
+
+  @Size(max = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH)
+  String getDescription();
+
+  default boolean references(Control ctl) {
+    return ctl.getIdAsString().equals(getControl().getId());
   }
 }

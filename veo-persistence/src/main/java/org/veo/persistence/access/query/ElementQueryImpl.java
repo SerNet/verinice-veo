@@ -97,6 +97,8 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   private boolean fetchRiskValuesAspects;
   private boolean fetchPartsAndCompositesAndCompositeParts;
   private boolean fetchMembers;
+  private boolean fetchControlImplementations;
+  private boolean fetchRequirementImplementations;
 
   public ElementQueryImpl(
       ElementDataRepository<TDataClass> repo,
@@ -276,6 +278,16 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   }
 
   @Override
+  public void fetchControlImplementations() {
+    fetchControlImplementations = true;
+  }
+
+  @Override
+  public void fetchRequirementImplementations() {
+    fetchRequirementImplementations = true;
+  }
+
+  @Override
   public void fetchRisks() {
     fetchRisks = true;
   }
@@ -361,6 +373,9 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
       if (fetchRisks) {
         scopeDataRepository.findAllWithRisksByDbIdIn(ids);
       }
+      if (fetchRequirementImplementations || fetchControlImplementations) {
+        scopeDataRepository.findAllWithCIsAndRIs(ids);
+      }
     }
   }
 
@@ -373,6 +388,9 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
     fetchComposites(ids, repo);
     if (fetchRisks) {
       repo.findAllWithRisksByDbIdIn(ids);
+    }
+    if (fetchRequirementImplementations || fetchControlImplementations) {
+      repo.findAllWithCIsAndRIs(ids);
     }
   }
 

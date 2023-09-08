@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.KeyDeserializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
+import org.veo.core.entity.compliance.ReqImplRef;
 import org.veo.core.entity.decision.DecisionRef;
 import org.veo.core.entity.decision.DecisionRuleRef;
 import org.veo.core.entity.risk.CategoryRef;
@@ -255,6 +256,26 @@ public class ReferenceSerializationModule extends SimpleModule {
           @Override
           public RiskRef deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             return refFactory.createRiskRef(p.getDecimalValue());
+          }
+        });
+
+    addSerializer(
+        ReqImplRef.class,
+        new JsonSerializer<>() {
+          @Override
+          public void serialize(ReqImplRef value, JsonGenerator gen, SerializerProvider serializers)
+              throws IOException {
+            gen.writeString(value.getKeyRef());
+          }
+        });
+
+    addDeserializer(
+        ReqImplRef.class,
+        new JsonDeserializer<>() {
+          @Override
+          public ReqImplRef deserialize(JsonParser p, DeserializationContext ctxt)
+              throws IOException {
+            return ReqImplRef.from(p.getValueAsString());
           }
         });
 

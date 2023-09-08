@@ -80,6 +80,7 @@ class CompositeElementDtoTransformerSpec extends Specification {
         compositeAsset.getLinks() >> []
         compositeAsset.getLinks() >> []
         compositeAsset.getCustomAspects() >> []
+        compositeAsset.getControlImplementations() >> []
         compositeAsset.getOwner() >> unit
         compositeAsset.getModelInterface >> Asset.class
         compositeAsset.getParts() >> []
@@ -114,6 +115,7 @@ class CompositeElementDtoTransformerSpec extends Specification {
             it.domains >> []
             it.links >> []
             it.customAspects >> []
+            it.controlImplementations >> []
             it.parts >> ([asset1, asset2] as Set)
             it.modelInterface >> Asset.class
             it.createdAt >> Instant.now()
@@ -142,6 +144,7 @@ class CompositeElementDtoTransformerSpec extends Specification {
         compositeAsset.domains >> []
         compositeAsset.links >> []
         compositeAsset.customAspects >> []
+        compositeAsset.getControlImplementations() >> []
         compositeAsset.modelInterface >> Document.class
         compositeAsset.parts >> ([compositeAsset] as Set)
         compositeAsset.createdAt >> Instant.now()

@@ -38,7 +38,9 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
+import org.veo.core.entity.Process;
 import org.veo.core.entity.ProcessRisk;
+import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
@@ -47,9 +49,11 @@ import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.SubTypeStatusCount;
 import org.veo.persistence.access.jpa.AssetDataRepository;
+import org.veo.persistence.access.jpa.ControlImplementationDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ElementDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
+import org.veo.persistence.access.jpa.RequirementImplementationDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.ElementData;
@@ -67,6 +71,10 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
   private final ProcessDataRepository processDataRepository;
   private final ScopeDataRepository scopeDataRepository;
   private final CustomLinkDataRepository linkDataRepository;
+
+  private final ControlImplementationDataRepository ciRepository;
+
+  private final RequirementImplementationDataRepository riRepository;
 
   @Override
   public ElementQuery<Element> query(Client client) {
@@ -103,6 +111,15 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
       removeRisks(scenarios);
     }
 
+    var riskAffecteds =
+        elements.stream()
+            .filter(it -> it.getClass().isAssignableFrom(RiskAffected.class))
+            .map(RiskAffected.class::cast)
+            .collect(Collectors.toSet());
+    if (!riskAffecteds.isEmpty()) {
+      removeCIsAndRIsFrom(riskAffecteds);
+    }
+
     // remove elements from scope members:
     Set<Scope> scopes = scopeDataRepository.findDistinctOthersByMemberIds(elementUUIDs);
     scopes.stream()
@@ -129,6 +146,24 @@ public class GenericElementRepositoryImpl implements GenericElementRepository {
                     it -> deletionOrder.indexOf(it.getModelInterface())))
             .map(ElementData.class::cast)
             .toList());
+  }
+
+  private void removeCIsAndRIsFrom(Set<? extends RiskAffected> riskAffecteds) {
+    riskAffecteds.forEach(
+        ra -> {
+          removeRIs(ra);
+          removeCIs(ra);
+          ra.getRequirementImplementations().clear();
+          ra.getControlImplementations().clear();
+        });
+  }
+
+  private void removeCIs(RiskAffected ra) {
+    ciRepository.deleteAll(ra.getControlImplementations());
+  }
+
+  private void removeRIs(RiskAffected ra) {
+    riRepository.deleteAll(ra.getRequirementImplementations());
   }
 
   private void removeRisks(Set<ScenarioData> scenarios) {
