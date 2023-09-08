@@ -29,6 +29,7 @@ import jakarta.validation.constraints.Size;
 import org.veo.adapter.presenter.api.common.ElementInDomainIdRef;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.state.ControlImplementationState;
 import org.veo.core.entity.state.ScopeDomainAssociationState;
 import org.veo.core.entity.state.ScopeState;
 
@@ -86,4 +87,10 @@ public abstract class AbstractScopeInDomainDto extends AbstractElementInDomainDt
       description =
           "Key is risk definition ID, value contains risk values in the context of that risk definition.")
   Map<String, ImpactRiskValuesDto> riskValues = new HashMap<>();
+
+  @Override
+  public Set<ControlImplementationState> getControlImplementationStates() {
+    // FIXME #2336 implement method
+    return Collections.emptySet();
+  }
 }

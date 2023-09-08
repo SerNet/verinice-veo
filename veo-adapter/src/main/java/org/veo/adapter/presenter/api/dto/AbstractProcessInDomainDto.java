@@ -17,10 +17,13 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.veo.core.entity.Process;
+import org.veo.core.entity.state.ControlImplementationState;
 import org.veo.core.entity.state.ProcessState;
 import org.veo.core.entity.state.RiskImpactDomainAssociationState;
 
@@ -73,4 +76,10 @@ public abstract class AbstractProcessInDomainDto
       description =
           "Key is risk definition ID, value contains risk values in the context of that risk definition.")
   Map<String, ImpactRiskValuesDto> riskValues = new HashMap<>();
+
+  @Override
+  public Set<ControlImplementationState> getControlImplementationStates() {
+    // FIXME #2336 implement method
+    return Collections.emptySet();
+  }
 }

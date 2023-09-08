@@ -17,21 +17,11 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto.create;
 
-import java.util.Collections;
-import java.util.Set;
-
 import org.veo.adapter.presenter.api.dto.AbstractProcessInDomainDto;
-import org.veo.core.entity.state.ControlImplementationState;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class CreateProcessInDomainDto extends AbstractProcessInDomainDto {
-  @Override
-  public Set<ControlImplementationState> getControlImplementationStates() {
-    // FIXME #2336 implement method
-    return Collections.emptySet();
-  }
-}
+public class CreateProcessInDomainDto extends AbstractProcessInDomainDto {}

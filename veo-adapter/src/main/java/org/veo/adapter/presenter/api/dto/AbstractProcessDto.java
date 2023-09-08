@@ -19,13 +19,16 @@ package org.veo.adapter.presenter.api.dto;
 
 import static org.veo.adapter.presenter.api.dto.MapFunctions.renameKey;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Process;
+import org.veo.core.entity.state.ControlImplementationState;
 import org.veo.core.entity.state.ProcessState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -97,4 +100,10 @@ public abstract class AbstractProcessDto extends CompositeEntityDto<Process>
       description =
           "Details about this element's association with domains. Domain ID is key, association object is value.")
   private Map<String, ProcessDomainAssociationDto> domains = new HashMap<>();
+
+  @Override
+  public Set<ControlImplementationState> getControlImplementationStates() {
+    // FIXME #2336 implement method
+    return Collections.emptySet();
+  }
 }
