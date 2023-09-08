@@ -91,7 +91,7 @@ public class CreateCatalogFromUnitUseCase
     Set<Element> elements = getElements(unit, domain);
     Map<Element, CatalogItem> elementsToCatalogItems =
         getElements(unit, domain).stream()
-            .collect(Collectors.toMap(Function.identity(), e -> e.toCalalogItem(domain)));
+            .collect(Collectors.toMap(Function.identity(), e -> e.toCatalogItem(domain)));
     createTailorreferences(elementsToCatalogItems, domain);
 
     domainRepository.save(domain);

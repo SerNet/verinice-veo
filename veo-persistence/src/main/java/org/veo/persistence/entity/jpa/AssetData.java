@@ -66,8 +66,8 @@ public class AssetData extends RiskAffectedData<Asset, AssetRisk> implements Ass
   private final Set<Asset> composites = new HashSet<>();
 
   @Override
-  public CatalogItem toCalalogItem(Domain domain) {
-    CatalogItem item = super.toCalalogItem(domain);
+  public CatalogItem toCatalogItem(Domain domain) {
+    CatalogItem item = super.toCatalogItem(domain);
     getImpactValues(domain)
         .ifPresent(
             m -> { // TODO: verinice-veo#2285 set the impact values to the catalog item

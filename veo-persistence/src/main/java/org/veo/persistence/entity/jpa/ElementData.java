@@ -317,7 +317,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   @Override
-  public CatalogItem toCalalogItem(Domain domain) {
+  public CatalogItem toCatalogItem(Domain domain) {
     CatalogItem item = new EntityDataFactory().createCatalogItem(domain);
     item.setName(getName());
     item.setAbbreviation(getAbbreviation());

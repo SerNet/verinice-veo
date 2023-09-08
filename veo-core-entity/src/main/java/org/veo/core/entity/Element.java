@@ -214,5 +214,5 @@ public interface Element
   void setStatus(String status, Domain domain);
 
   /** Applies the properties of the element to the catalog item. */
-  CatalogItem toCalalogItem(Domain domain);
+  CatalogItem toCatalogItem(Domain domain);
 }

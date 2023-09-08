@@ -110,8 +110,8 @@ public class ControlData extends ElementData implements Control {
   }
 
   @Override
-  public CatalogItem toCalalogItem(Domain domain) {
-    CatalogItem item = super.toCalalogItem(domain);
+  public CatalogItem toCatalogItem(Domain domain) {
+    CatalogItem item = super.toCatalogItem(domain);
     getRiskValues(domain)
         .ifPresent(m -> log.info("Ignoring riskvalues for control: {}", getIdAsString()));
     return item;
