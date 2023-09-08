@@ -20,18 +20,16 @@ package org.veo.core.entity;
 import java.util.Optional;
 
 /** Basic type for catalog references. */
-public interface CatalogReference extends Identifiable, ClientOwned {
+public interface TemplateItemReference<T extends TemplateItem> extends Identifiable, ClientOwned {
 
   /** The reference to an other catalogitem. */
-  CatalogItem getCatalogItem();
+  T getCatalogItem();
 
-  void setCatalogItem(CatalogItem aCatalogitem);
+  void setCatalogItem(T aCatalogitem);
 
-  CatalogItem getOwner();
+  T getOwner();
 
-  void setOwner(CatalogItem owner);
+  void setOwner(T owner);
 
-  default Optional<Client> getOwningClient() {
-    return getOwner().getOwningClient();
-  }
+  Optional<Client> getOwningClient();
 }

@@ -47,7 +47,7 @@ import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.CatalogReference;
+import org.veo.core.entity.TemplateItemReference;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Document;
@@ -189,7 +189,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
           .getHref();
     }
     // Some types have no endpoint.
-    if (Client.class.isAssignableFrom(type) || CatalogReference.class.isAssignableFrom(type)) {
+    if (Client.class.isAssignableFrom(type) || TemplateItemReference.class.isAssignableFrom(type)) {
       return null;
     }
 
