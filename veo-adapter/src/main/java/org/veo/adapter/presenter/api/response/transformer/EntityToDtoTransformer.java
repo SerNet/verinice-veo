@@ -519,7 +519,7 @@ public final class EntityToDtoTransformer {
             .findAny()
             .get()
             .getStatus(),
-        riskAffected.getDescription(),
+        source.getDescription(),
         IdRef.from(source.getResponsible(), referenceAssembler),
         RequirementImplementationsRef.from(source, referenceAssembler));
   }

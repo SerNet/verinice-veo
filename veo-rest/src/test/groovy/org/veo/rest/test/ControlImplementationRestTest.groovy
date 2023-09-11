@@ -26,6 +26,8 @@ class ControlImplementationRestTest extends VeoRestTest {
     private String subControl1Id
     private String subControl2Id
     private String subControl3Id
+    private String person1Id
+    private String person2Id
 
     def setup() {
         unitId = postNewUnit()
@@ -57,6 +59,15 @@ class ControlImplementationRestTest extends VeoRestTest {
                 [targetUri: "http://localhost/controls/$subControl3Id"]
             ],
         ]).body.resourceId
+
+        person1Id = post("/persons", [
+            name: "person 1",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+        ]).body.resourceId
+        person2Id = post("/persons", [
+            name: "person 2",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+        ]).body.resourceId
     }
 
     def "CRUD control implementations for #elementType.singularTerm"() {
@@ -67,9 +78,11 @@ class ControlImplementationRestTest extends VeoRestTest {
             controlImplementations: [
                 [
                     control: [targetUri: "/controls/$rootControl1Id"],
+                    description: "I have my reasons",
                 ],
                 [
                     control: [targetUri: "/controls/$rootControl2Id"],
+                    responsible: [targetUri: "/persons/$person1Id"],
                 ],
             ]
         ]).body.resourceId
@@ -79,6 +92,7 @@ class ControlImplementationRestTest extends VeoRestTest {
         retrievedElement.controlImplementations.size() == 2
         with(retrievedElement.controlImplementations.find { it.control.displayName.endsWith("root control 1") }) {
             implementationStatus == "UNKNOWN"
+            description == "I have my reasons"
             with(owner.get(_requirementImplementations).body) {
                 totalItemCount == 3
                 with(items.find { it.control.displayName.endsWith("root control 1") }) {
@@ -94,6 +108,7 @@ class ControlImplementationRestTest extends VeoRestTest {
         }
         with(retrievedElement.controlImplementations.find { it.control.displayName.endsWith("root control 2") }) {
             implementationStatus == "UNKNOWN"
+            responsible.displayName.endsWith("person 1")
             with(owner.get(_requirementImplementations).body) {
                 totalItemCount == 2
                 with(items.find { it.control.displayName.endsWith("root control 2") }) {
