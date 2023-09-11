@@ -70,6 +70,7 @@ import org.veo.core.entity.riskdefinition.RiskValue
 import org.veo.core.entity.transform.EntityFactory
 import org.veo.persistence.entity.jpa.AssetData
 import org.veo.persistence.entity.jpa.CatalogItemData
+import org.veo.persistence.entity.jpa.CatalogTailoringReferenceData
 import org.veo.persistence.entity.jpa.ClientData
 import org.veo.persistence.entity.jpa.ControlData
 import org.veo.persistence.entity.jpa.CustomAspectData
@@ -83,7 +84,6 @@ import org.veo.persistence.entity.jpa.PersonData
 import org.veo.persistence.entity.jpa.ProcessData
 import org.veo.persistence.entity.jpa.ScenarioData
 import org.veo.persistence.entity.jpa.ScopeData
-import org.veo.persistence.entity.jpa.TailoringReferenceData
 import org.veo.persistence.entity.jpa.UnitData
 import org.veo.persistence.entity.jpa.UpdateReferenceData
 import org.veo.persistence.entity.jpa.transformer.EntityDataFactory
@@ -208,7 +208,7 @@ abstract class VeoSpec extends Specification {
         }
     }
 
-    static TailoringReferenceData newTailoringReference(CatalogItem catalogItem, TailoringReferenceType type, @DelegatesTo(value = TailoringReference.class, strategy = Closure.DELEGATE_FIRST)
+    static CatalogTailoringReferenceData newTailoringReference(CatalogItem catalogItem, TailoringReferenceType type, @DelegatesTo(value = TailoringReference.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.TailoringReference") Closure init = null) {
         return factory.createTailoringReference(catalogItem, type).tap {
             VeoSpec.execute(it, init)

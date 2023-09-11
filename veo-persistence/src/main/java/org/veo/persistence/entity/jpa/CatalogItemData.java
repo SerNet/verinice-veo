@@ -73,7 +73,7 @@ public class CatalogItemData extends TemplateItemData implements CatalogItem {
   @OneToMany(
       cascade = CascadeType.ALL,
       orphanRemoval = true,
-      targetEntity = TailoringReferenceData.class,
+      targetEntity = CatalogTailoringReferenceData.class,
       mappedBy = "owner",
       fetch = FetchType.LAZY)
   @Valid

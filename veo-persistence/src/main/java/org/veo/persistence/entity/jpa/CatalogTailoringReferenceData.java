@@ -20,7 +20,7 @@ package org.veo.persistence.entity.jpa;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
-import org.veo.core.entity.CatalogReference;
+import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
 
@@ -30,10 +30,15 @@ import lombok.EqualsAndHashCode;
 @Entity(name = "tailoringreference")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-public class TailoringReferenceData extends CatalogReferenceData
-    implements TailoringReference, CatalogReference {
+public class CatalogTailoringReferenceData extends CatalogReferenceData
+    implements TailoringReference<CatalogItem> {
 
   @Column(name = "referencetype", columnDefinition = "int4")
   @EqualsAndHashCode.Include
   private TailoringReferenceType referenceType;
+
+  @Override
+  public void remove() {
+    getOwner().getTailoringReferences().remove(this);
+  }
 }

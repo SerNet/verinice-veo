@@ -51,6 +51,7 @@ import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.persistence.entity.jpa.AssetData;
 import org.veo.persistence.entity.jpa.CatalogItemData;
+import org.veo.persistence.entity.jpa.CatalogTailoringReferenceData;
 import org.veo.persistence.entity.jpa.ClientData;
 import org.veo.persistence.entity.jpa.ControlData;
 import org.veo.persistence.entity.jpa.CustomAspectData;
@@ -65,7 +66,6 @@ import org.veo.persistence.entity.jpa.PersonData;
 import org.veo.persistence.entity.jpa.ProcessData;
 import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ScopeData;
-import org.veo.persistence.entity.jpa.TailoringReferenceData;
 import org.veo.persistence.entity.jpa.UnitData;
 import org.veo.persistence.entity.jpa.UpdateReferenceData;
 
@@ -205,7 +205,7 @@ public class EntityDataFactory implements EntityFactory {
   @Override
   public TailoringReference createTailoringReference(
       CatalogItem catalogItem, TailoringReferenceType referenceType) {
-    TailoringReferenceData tailoringReference = new TailoringReferenceData();
+    CatalogTailoringReferenceData tailoringReference = new CatalogTailoringReferenceData();
     tailoringReference.setOwner(catalogItem);
     tailoringReference.setReferenceType(referenceType);
     catalogItem.getTailoringReferences().add(tailoringReference);

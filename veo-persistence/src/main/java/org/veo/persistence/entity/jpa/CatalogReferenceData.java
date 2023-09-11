@@ -28,9 +28,10 @@ import jakarta.persistence.MappedSuperclass;
 import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.TemplateItemReference;
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.TemplateItemReference;
 
 import lombok.Data;
 import lombok.ToString;
@@ -38,7 +39,8 @@ import lombok.ToString;
 @MappedSuperclass
 @Data
 @SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-public abstract class CatalogReferenceData implements Identifiable, TemplateItemReference<CatalogItem> {
+public abstract class CatalogReferenceData
+    implements Identifiable, TemplateItemReference<CatalogItem> {
   @Id
   @ToString.Include
   @GeneratedValue(generator = "UUID")
@@ -59,6 +61,11 @@ public abstract class CatalogReferenceData implements Identifiable, TemplateItem
   @Override
   public void setId(Key<UUID> id) {
     setDbId(Optional.ofNullable(id).map(Key::uuidValue).orElse(null));
+  }
+
+  @Override
+  public Optional<Client> getOwningClient() {
+    return getOwner().getOwningClient();
   }
 
   @Override

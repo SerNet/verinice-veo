@@ -40,6 +40,7 @@ import org.veo.core.entity.UpdateReference;
 import org.veo.core.entity.transform.IdentifiableFactory;
 import org.veo.persistence.entity.jpa.AssetData;
 import org.veo.persistence.entity.jpa.CatalogItemData;
+import org.veo.persistence.entity.jpa.CatalogTailoringReferenceData;
 import org.veo.persistence.entity.jpa.ClientData;
 import org.veo.persistence.entity.jpa.ControlData;
 import org.veo.persistence.entity.jpa.DocumentData;
@@ -51,7 +52,6 @@ import org.veo.persistence.entity.jpa.PersonData;
 import org.veo.persistence.entity.jpa.ProcessData;
 import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ScopeData;
-import org.veo.persistence.entity.jpa.TailoringReferenceData;
 import org.veo.persistence.entity.jpa.UnitData;
 import org.veo.persistence.entity.jpa.UpdateReferenceData;
 
@@ -104,7 +104,7 @@ public class IdentifiableDataFactory implements IdentifiableFactory {
       return (T) new CatalogItemData();
     }
     if (type == TailoringReference.class) {
-      return (T) new TailoringReferenceData();
+      return (T) new CatalogTailoringReferenceData();
     }
     if (type == UpdateReference.class) {
       return (T) new UpdateReferenceData();
