@@ -73,7 +73,7 @@ import org.veo.core.entity.statistics.CatalogItemsTypeCount;
 import org.veo.core.entity.statistics.ElementStatusCounts;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.catalogitem.QueryCatalogItemsUseCase;
-import org.veo.core.usecase.domain.ApplyProfileUseCase;
+import org.veo.core.usecase.domain.ApplyJsonProfileUseCase;
 import org.veo.core.usecase.domain.ExportDomainUseCase;
 import org.veo.core.usecase.domain.GetCatalogItemsTypeCountUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
@@ -114,7 +114,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   private final ExportDomainUseCase exportDomainUseCase;
   private final GetElementStatusCountUseCase getElementStatusCountUseCase;
   private final GetCatalogItemsTypeCountUseCase getCatalogItemsTypeCountUseCase;
-  private final ApplyProfileUseCase applyProfileUseCase;
+  private final ApplyJsonProfileUseCase applyProfileUseCase;
   private final QueryCatalogItemsUseCase queryCatalogItemsUseCase;
 
   @GetMapping
@@ -310,7 +310,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
       @PathVariable @Pattern(regexp = UUID_REGEX) String unitId) {
     return useCaseInteractor.execute(
         applyProfileUseCase,
-        new ApplyProfileUseCase.InputData(
+        new ApplyJsonProfileUseCase.InputData(
             getAuthenticatedClient(auth).getId(),
             Key.uuidFrom(id),
             ProfileReferenceFactoryImpl.getInstance().createProfileRef(profileKey),

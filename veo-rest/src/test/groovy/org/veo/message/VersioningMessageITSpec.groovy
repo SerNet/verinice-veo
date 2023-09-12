@@ -28,7 +28,7 @@ import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.ScopeRepository
-import org.veo.core.usecase.domain.ApplyProfileUseCase
+import org.veo.core.usecase.domain.ApplyJsonProfileUseCase
 import org.veo.persistence.access.jpa.StoredEventDataRepository
 
 class VersioningMessageITSpec extends VeoSpringSpec {
@@ -37,7 +37,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
     }
 
     @Autowired
-    ApplyProfileUseCase applyProfileUseCase
+    ApplyJsonProfileUseCase applyProfileUseCase
 
     @Autowired
     StoredEventDataRepository storedEventRepository
@@ -63,7 +63,7 @@ class VersioningMessageITSpec extends VeoSpringSpec {
             client = clientRepository.save(client)
             var dsgvo = client.domains.find { it.name == "DS-GVO" }
             def unit = unitDataRepository.save(newUnit(client))
-            applyProfileUseCase.execute(new ApplyProfileUseCase.InputData(client.id, dsgvo.id, new ProfileRef("exampleOrganization"), unit.id))
+            applyProfileUseCase.execute(new ApplyJsonProfileUseCase.InputData(client.id, dsgvo.id, new ProfileRef("exampleOrganization"), unit.id))
         }
 
         and: "fetching all messages"

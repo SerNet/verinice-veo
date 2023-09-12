@@ -33,8 +33,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 @RequiredArgsConstructor
-public class ApplyProfileUseCase
-    implements TransactionalUseCase<ApplyProfileUseCase.InputData, UseCase.EmptyOutput> {
+public class ApplyJsonProfileUseCase
+    implements TransactionalUseCase<ApplyJsonProfileUseCase.InputData, UseCase.EmptyOutput> {
   private final DomainRepository domainRepository;
   private final ProfileApplier profileApplier;
   private final UnitRepository unitRepository;

@@ -119,7 +119,7 @@ import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.document.GetDocumentUseCase;
 import org.veo.core.usecase.document.GetDocumentsUseCase;
 import org.veo.core.usecase.document.UpdateDocumentUseCase;
-import org.veo.core.usecase.domain.ApplyProfileUseCase;
+import org.veo.core.usecase.domain.ApplyJsonProfileUseCase;
 import org.veo.core.usecase.domain.CreateCatalogFromUnitUseCase;
 import org.veo.core.usecase.domain.CreateDomainFromTemplateUseCase;
 import org.veo.core.usecase.domain.CreateDomainUseCase;
@@ -984,11 +984,11 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  ApplyProfileUseCase applyProfileUseCase(
+  ApplyJsonProfileUseCase applyProfileUseCase(
       DomainRepository domainRepository,
       ProfileApplier profileApplier,
       UnitRepository unitRepository) {
-    return new ApplyProfileUseCase(domainRepository, profileApplier, unitRepository);
+    return new ApplyJsonProfileUseCase(domainRepository, profileApplier, unitRepository);
   }
 
   @Bean

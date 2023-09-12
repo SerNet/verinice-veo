@@ -41,7 +41,7 @@ import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.PagingConfiguration
 import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ScenarioRepository
-import org.veo.core.usecase.domain.ApplyProfileUseCase
+import org.veo.core.usecase.domain.ApplyJsonProfileUseCase
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase
 import org.veo.core.usecase.domain.UpdateAllClientDomainsUseCase.InputData
 import org.veo.persistence.access.AssetRepositoryImpl
@@ -68,7 +68,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
     private UpdateAllClientDomainsUseCase useCase
 
     @Autowired
-    private ApplyProfileUseCase applyProfileUseCase
+    private ApplyJsonProfileUseCase applyProfileUseCase
 
     @Autowired
     ScopeRepositoryImpl scopeRepository
@@ -376,7 +376,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         given: 'a profile applied in a unit'
         def unit = executeInTransaction {
             unitRepository.save(newUnit(client)).tap{
-                applyProfileUseCase.execute(new ApplyProfileUseCase.InputData(client.id, dsgvoDomain.id, new ProfileRef("exampleOrganization"), it.id))
+                applyProfileUseCase.execute(new ApplyJsonProfileUseCase.InputData(client.id, dsgvoDomain.id, new ProfileRef("exampleOrganization"), it.id))
             }
         }
 

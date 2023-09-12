@@ -37,7 +37,7 @@ import org.veo.core.VeoSpringSpec
 import org.veo.core.entity.Client
 import org.veo.core.entity.profile.ProfileRef
 import org.veo.core.repository.UnitRepository
-import org.veo.core.usecase.domain.ApplyProfileUseCase
+import org.veo.core.usecase.domain.ApplyJsonProfileUseCase
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.core.usecase.unit.GetUnitsUseCase
 import org.veo.jobs.MessageDeletionJob
@@ -114,7 +114,7 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
     GetUnitsUseCase getUnitsUseCase
 
     @Autowired
-    ApplyProfileUseCase applyProfileUseCase
+    ApplyJsonProfileUseCase applyProfileUseCase
 
     @Autowired
     DeleteUnitUseCase deleteUnitUseCase
@@ -189,7 +189,7 @@ class ScheduledEventDispatchITSpec extends VeoSpringSpec {
         }
         executeInTransaction {
             def unit = unitRepository.save(newUnit(client))
-            applyProfileUseCase.execute(new ApplyProfileUseCase.InputData(client.id, dsgvoTestDomain.id, new ProfileRef("exampleOrganization"), unit.id))
+            applyProfileUseCase.execute(new ApplyJsonProfileUseCase.InputData(client.id, dsgvoTestDomain.id, new ProfileRef("exampleOrganization"), unit.id))
         }
 
         and: "the event table has been completely cleared by the deletion job"

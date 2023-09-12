@@ -26,7 +26,7 @@ import org.veo.core.entity.Client
 import org.veo.core.entity.Unit
 import org.veo.core.entity.profile.ProfileRef
 import org.veo.core.repository.UnitRepository
-import org.veo.core.usecase.domain.ApplyProfileUseCase
+import org.veo.core.usecase.domain.ApplyJsonProfileUseCase
 import org.veo.core.usecase.unit.DeleteUnitUseCase
 import org.veo.core.usecase.unit.DeleteUnitUseCase.InputData
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -41,7 +41,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
     private ClientRepositoryImpl clientRepository
 
     @Autowired
-    private ApplyProfileUseCase applyProfileUseCase
+    private ApplyJsonProfileUseCase applyProfileUseCase
 
     @Autowired
     private UnitRepository unitRepository
@@ -60,7 +60,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
         var domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
         def unit = unitRepository.save(newUnit(client))
         executeInTransaction {
-            applyProfileUseCase.execute(new ApplyProfileUseCase.InputData(client.id, domain.id, new ProfileRef("exampleOrganization"), unit.id))
+            applyProfileUseCase.execute(new ApplyJsonProfileUseCase.InputData(client.id, domain.id, new ProfileRef("exampleOrganization"), unit.id))
         }
         QueryCountHolder.clear()
         def rowCountBefore = DataSourceProxyBeanPostProcessor.totalResultSetRowsRead
