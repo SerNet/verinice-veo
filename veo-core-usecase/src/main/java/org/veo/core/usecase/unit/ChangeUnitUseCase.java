@@ -27,7 +27,6 @@ import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
-import org.veo.core.usecase.common.ETagMismatchException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -54,7 +53,7 @@ public abstract class ChangeUnitUseCase
 
     var storedUnit = unitRepository.getById(Key.uuidFrom(input.getId()));
     checkSameClient(storedUnit, input);
-    checkETag(storedUnit, input);
+    ETag.validate(input.getETag(), storedUnit);
     unitValidator.validateUpdate(input.changedUnit, storedUnit);
     var updatedUnit = update(storedUnit, input);
     save(updatedUnit, input);
@@ -90,15 +89,6 @@ public abstract class ChangeUnitUseCase
         input.getAuthenticatedClient().getId().uuidValue(),
         storedUnit.getClient().getId().uuidValue());
     storedUnit.checkSameClient(input.getAuthenticatedClient());
-  }
-
-  private void checkETag(Unit storedUnit, InputData input) {
-    if (!ETag.matches(storedUnit.getId().uuidValue(), storedUnit.getVersion(), input.getETag())) {
-      throw new ETagMismatchException(
-          String.format(
-              "The eTag does not match for the unit with the ID %s",
-              storedUnit.getId().uuidValue()));
-    }
   }
 
   @Override

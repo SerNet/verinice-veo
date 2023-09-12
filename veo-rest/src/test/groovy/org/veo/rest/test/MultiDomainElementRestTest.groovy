@@ -307,7 +307,7 @@ class MultiDomainElementRestTest extends VeoRestTest {
         get("/domains/$domainIdB/$type.pluralTerm/$elementId").body.with {
             it.status = "OFF"
             put(it._self, it, eTagAfterAssociating, 412)
-        }.body.message == "The eTag does not match for the element with the ID $elementId"
+        }.body.message == "The eTag does not match for the $type.singularTerm with the ID $elementId"
 
         and: "updating the element with new ETag to succeed"
         get("/domains/$domainIdB/$type.pluralTerm/$elementId").body.with {

@@ -22,6 +22,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.Versioned;
+
 /** This class provides methods to manage ETags, see: https://en.wikipedia.org/wiki/HTTP_ETag. */
 public final class ETag {
 
@@ -80,5 +83,14 @@ public final class ETag {
       throw new IllegalArgumentException("Salt must not be empty");
     }
     ETag.salt = salt;
+  }
+
+  public static <T extends Identifiable & Versioned> void validate(String eTag, T storedEntity) {
+    if (!matches(storedEntity.getId().uuidValue(), storedEntity.getVersion(), eTag)) {
+      throw new ETagMismatchException(
+          String.format(
+              "The eTag does not match for the %s with the ID %s",
+              storedEntity.getModelType(), storedEntity.getId().uuidValue()));
+    }
   }
 }

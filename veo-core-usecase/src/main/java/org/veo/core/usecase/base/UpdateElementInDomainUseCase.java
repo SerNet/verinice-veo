@@ -33,7 +33,6 @@ import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.common.ETag;
-import org.veo.core.usecase.common.ETagMismatchException;
 import org.veo.core.usecase.decision.Decider;
 import org.veo.core.usecase.service.DbIdRefResolver;
 import org.veo.core.usecase.service.EntityStateMapper;
@@ -66,7 +65,7 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
           storedElement.getIdAsString(),
           domain.getIdAsString());
     }
-    checkETag(storedElement, input);
+    ETag.validate(input.getETag(), storedElement);
     entityStateMapper.mapState(inputElement, storedElement, false, idRefResolver);
     // TODO VEO-1874: Only mark root element as updated when basic properties change, version domain
     // associations independently.
@@ -76,16 +75,6 @@ public abstract class UpdateElementInDomainUseCase<T extends Element>
     repo.save(storedElement);
     // re-fetch element to make sure it is returned with updated versioning information
     return new OutputData<>(repo.getById(storedElement.getId(), input.authenticatedClient.getId()));
-  }
-
-  private void checkETag(Element storedElement, InputData<? extends Element> input) {
-    if (!ETag.matches(
-        storedElement.getId().uuidValue(), storedElement.getVersion(), input.getETag())) {
-      throw new ETagMismatchException(
-          String.format(
-              "The eTag does not match for the element with the ID %s",
-              storedElement.getId().uuidValue()));
-    }
   }
 
   @Override
