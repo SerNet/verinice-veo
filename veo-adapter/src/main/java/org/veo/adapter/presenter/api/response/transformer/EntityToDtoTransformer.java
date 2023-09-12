@@ -24,6 +24,7 @@ import static java.util.stream.Collectors.toSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -303,6 +304,9 @@ public final class EntityToDtoTransformer {
     target.setControl(IdRef.from(source.getControl(), referenceAssembler));
     target.setStatus(source.getStatus());
     target.setOrigin(IdRef.from(source.getOrigin(), referenceAssembler));
+    Optional.ofNullable(source.getResponsible())
+        .map(r -> IdRef.from(r, referenceAssembler))
+        .ifPresent(target::setResponsible);
     target.setImplementationStatement(source.getImplementationStatement());
     target.setOrigination(source.getOrigination());
     return target;
