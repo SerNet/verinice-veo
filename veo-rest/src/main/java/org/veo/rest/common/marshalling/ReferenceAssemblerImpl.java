@@ -24,7 +24,6 @@ import static org.veo.rest.ControllerConstants.ANY_AUTH;
 import static org.veo.rest.ControllerConstants.ANY_BOOLEAN;
 import static org.veo.rest.ControllerConstants.ANY_INT;
 import static org.veo.rest.ControllerConstants.ANY_REQUEST;
-import static org.veo.rest.ControllerConstants.ANY_REQUIREMENT_IMPLEMENTATION;
 import static org.veo.rest.ControllerConstants.ANY_SEARCH;
 import static org.veo.rest.ControllerConstants.ANY_STRING;
 import static org.veo.rest.ControllerConstants.ANY_STRING_LIST;
@@ -313,11 +312,10 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
       RequirementImplementation requirementImplementation) {
     return linkTo(
         methodOn(controller)
-            .updateRequirementImplementation(
+            .getRequirementImplementation(
                 ANY_AUTH,
                 requirementImplementation.getOrigin().getIdAsString(),
-                requirementImplementation.getControl().getIdAsString(),
-                ANY_REQUIREMENT_IMPLEMENTATION));
+                requirementImplementation.getControl().getIdAsString()));
   }
 
   private WebMvcLinkBuilder linkToRequirementImplementations(

@@ -24,7 +24,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.context.request.WebRequest;
 
-import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.rest.security.ApplicationUser;
 
@@ -41,7 +40,6 @@ public final class ControllerConstants {
   public static final List<String> ANY_STRING_LIST = null;
   public static final Boolean ANY_BOOLEAN = null;
   public static final WebRequest ANY_REQUEST = null;
-  public static final RequirementImplementationDto ANY_REQUIREMENT_IMPLEMENTATION = null;
   public static final String SCOPE_IDS_PARAM = "scopes";
   public static final String SCOPE_IDS_DESCRIPTION =
       "IDs of scopes that the new element should be a member of";
