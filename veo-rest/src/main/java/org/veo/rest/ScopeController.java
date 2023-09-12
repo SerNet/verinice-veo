@@ -95,6 +95,7 @@ import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControlImplementationInputMapper;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.inspection.Finding;
@@ -104,6 +105,7 @@ import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.common.ETag;
+import org.veo.core.usecase.compliance.GetRequirementImplementationUseCase;
 import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
@@ -114,6 +116,7 @@ import org.veo.core.usecase.scope.GetScopeUseCase;
 import org.veo.core.usecase.scope.GetScopesUseCase;
 import org.veo.core.usecase.scope.UpdateScopeRiskUseCase;
 import org.veo.core.usecase.scope.UpdateScopeUseCase;
+import org.veo.core.usecase.service.TypedId;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;
@@ -149,6 +152,7 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
   private final UpdateScopeRiskUseCase updateScopeRiskUseCase;
   private final GetRequirementImplementationsByControlImplementationUseCase
       getRequirementImplementationsByControlImplementationUseCase;
+  private final GetRequirementImplementationUseCase getRequirementImplementationUseCase;
 
   public ScopeController(
       GetScopeUseCase getElementUseCase,
@@ -164,7 +168,8 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
       DeleteRiskUseCase deleteRiskUseCase,
       UpdateScopeRiskUseCase updateScopeRiskUseCase,
       GetRequirementImplementationsByControlImplementationUseCase
-          getRequirementImplementationsByControlImplementationUseCase) {
+          getRequirementImplementationsByControlImplementationUseCase,
+      GetRequirementImplementationUseCase getRequirementImplementationUseCase) {
     super(Scope.class, getElementUseCase, evaluateElementUseCase, inspectElementUseCase);
     this.createScopeUseCase = createScopeUseCase;
     this.getScopesUseCase = getScopesUseCase;
@@ -177,6 +182,7 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
     this.updateScopeRiskUseCase = updateScopeRiskUseCase;
     this.getRequirementImplementationsByControlImplementationUseCase =
         getRequirementImplementationsByControlImplementationUseCase;
+    this.getRequirementImplementationUseCase = getRequirementImplementationUseCase;
   }
 
   @GetMapping
@@ -601,6 +607,23 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
     return useCaseInteractor
         .execute(updateScopeRiskUseCase, input, output -> null)
         .thenCompose(o -> this.getRisk(client, scopeId, scenarioId));
+  }
+
+  @Override
+  public Future<ResponseEntity<RequirementImplementationDto>> getRequirementImplementation(
+      Authentication auth, String riskAffectedId, String controlId) {
+    return useCaseInteractor.execute(
+        getRequirementImplementationUseCase,
+        new GetRequirementImplementationUseCase.InputData(
+            getAuthenticatedClient(auth),
+            TypedId.from(riskAffectedId, Scope.class),
+            TypedId.from(controlId, Control.class)),
+        out ->
+            ResponseEntity.ok()
+                .eTag(out.getETag())
+                .body(
+                    entityToDtoTransformer.transformRequirementImplementation2Dto(
+                        out.getRequirementImplementation())));
   }
 
   @Override

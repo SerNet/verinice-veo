@@ -30,6 +30,7 @@ import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.ReqImplRef;
 import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.entity.exception.ModelConsistencyException;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.risk.ImpactValueProvider;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.risk.RiskValues;
@@ -177,4 +178,15 @@ public interface RiskAffected<T extends RiskAffected<T, R>, R extends AbstractRi
    *     control
    */
   ControlImplementation getImplementationFor(Control control);
+
+  default RequirementImplementation getRequirementImplementation(Control control) {
+    return getRequirementImplementations().stream()
+        .filter(ri -> ri.getControl().equals(control))
+        .findAny()
+        .orElseThrow(
+            () ->
+                new NotFoundException(
+                    "%s %s contains no requirement implementation for control %s"
+                        .formatted(getModelType(), getIdAsString(), control.getIdAsString())));
+  }
 }

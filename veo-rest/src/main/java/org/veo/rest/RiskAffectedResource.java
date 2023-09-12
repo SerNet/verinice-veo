@@ -50,6 +50,26 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 public interface RiskAffectedResource {
+  @GetMapping(
+      "/{riskAffectedId:"
+          + UUID_REGEX
+          + "}/requirement-implementations/{controlId:"
+          + UUID_REGEX
+          + "}")
+  @Operation(summary = "Load a requirement implementation for a control")
+  @ApiResponse(responseCode = "200", description = "Requirement implementation loaded")
+  @ApiResponse(responseCode = "404", description = "Risk-affected not found")
+  @ApiResponse(responseCode = "404", description = "Control not found")
+  @ApiResponse(responseCode = "404", description = "Requirement implementation not found")
+  Future<ResponseEntity<RequirementImplementationDto>> getRequirementImplementation(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String riskAffectedId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String controlId);
+
   @PutMapping(
       "/{riskAffectedId:"
           + UUID_REGEX

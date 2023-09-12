@@ -36,6 +36,10 @@ public final class ETag {
     // do not instantiate, use public static methods
   }
 
+  public static <T extends Identifiable & Versioned> String from(T entity) {
+    return from(entity.getIdAsString(), entity.getVersion());
+  }
+
   public static String from(String id, long version) {
     try {
       return "\"" + createSHA256Hash(id + "_" + salt + "_" + version) + "\"";

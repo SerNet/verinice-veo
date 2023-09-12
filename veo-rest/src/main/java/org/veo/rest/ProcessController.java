@@ -94,6 +94,7 @@ import org.veo.adapter.presenter.api.io.mapper.GetRiskAffectedInputMapper;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.unit.GetRequirementImplementationsByControlImplementationInputMapper;
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.inspection.Finding;
@@ -103,6 +104,7 @@ import org.veo.core.usecase.base.DeleteElementUseCase;
 import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
+import org.veo.core.usecase.compliance.GetRequirementImplementationUseCase;
 import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.process.CreateProcessRiskUseCase;
@@ -113,6 +115,7 @@ import org.veo.core.usecase.process.GetProcessesUseCase;
 import org.veo.core.usecase.process.UpdateProcessRiskUseCase;
 import org.veo.core.usecase.process.UpdateProcessUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
+import org.veo.core.usecase.service.TypedId;
 import org.veo.rest.annotations.UnitUuidParam;
 import org.veo.rest.common.RestApiResponse;
 import org.veo.rest.schemas.EvaluateElementOutputSchema;
@@ -154,6 +157,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   private final GetProcessUseCase getProcessUseCase;
   private final GetRequirementImplementationsByControlImplementationUseCase
       getRequirementImplementationsByControlImplementationUseCase;
+  private final GetRequirementImplementationUseCase getRequirementImplementationUseCase;
 
   public ProcessController(
       CreateElementUseCase<Process> createProcessUseCase,
@@ -169,7 +173,8 @@ public class ProcessController extends AbstractCompositeElementController<Proces
       EvaluateElementUseCase evaluateElementUseCase,
       InspectElementUseCase inspectElementUseCase,
       GetRequirementImplementationsByControlImplementationUseCase
-          getRequirementImplementationsByControlImplementationUseCase) {
+          getRequirementImplementationsByControlImplementationUseCase,
+      GetRequirementImplementationUseCase getRequirementImplementationUseCase) {
     super(Process.class, getProcessUseCase, evaluateElementUseCase, inspectElementUseCase);
     this.createProcessUseCase = createProcessUseCase;
     this.updateProcessUseCase = putProcessUseCase;
@@ -183,6 +188,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
     this.getProcessUseCase = getProcessUseCase;
     this.getRequirementImplementationsByControlImplementationUseCase =
         getRequirementImplementationsByControlImplementationUseCase;
+    this.getRequirementImplementationUseCase = getRequirementImplementationUseCase;
   }
 
   @Operation(summary = "Loads a process")
@@ -571,6 +577,23 @@ public class ProcessController extends AbstractCompositeElementController<Proces
           String uuid,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
     return inspect(auth, uuid, domainId, Process.class);
+  }
+
+  @Override
+  public Future<ResponseEntity<RequirementImplementationDto>> getRequirementImplementation(
+      Authentication auth, String riskAffectedId, String controlId) {
+    return useCaseInteractor.execute(
+        getRequirementImplementationUseCase,
+        new GetRequirementImplementationUseCase.InputData(
+            getAuthenticatedClient(auth),
+            TypedId.from(riskAffectedId, Process.class),
+            TypedId.from(controlId, Control.class)),
+        out ->
+            ResponseEntity.ok()
+                .eTag(out.getETag())
+                .body(
+                    entityToDtoTransformer.transformRequirementImplementation2Dto(
+                        out.getRequirementImplementation())));
   }
 
   @Override
