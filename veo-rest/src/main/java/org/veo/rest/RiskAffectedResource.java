@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.rest;
 
+import static org.veo.rest.ControllerConstants.IF_MATCH_HEADER;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_DEFAULT_VALUE;
 import static org.veo.rest.ControllerConstants.PAGE_NUMBER_PARAM;
 import static org.veo.rest.ControllerConstants.PAGE_SIZE_DEFAULT_VALUE;
@@ -31,6 +32,7 @@ import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.util.concurrent.Future;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 import org.springframework.http.ResponseEntity;
@@ -38,6 +40,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import org.veo.adapter.presenter.api.common.ApiResponseBody;
@@ -78,8 +82,11 @@ public interface RiskAffectedResource {
           + "}")
   @Operation(summary = "Update an existing requirement implementation")
   @ApiResponse(responseCode = "204", description = "Requirement implementation updated")
+  @ApiResponse(responseCode = "404", description = "Risk-affected not found")
+  @ApiResponse(responseCode = "404", description = "Control not found")
   @ApiResponse(responseCode = "404", description = "Requirement implementation not found")
   Future<ResponseEntity<ApiResponseBody>> updateRequirementImplementation(
+      @RequestHeader(name = IF_MATCH_HEADER) @NotNull String eTag,
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
@@ -87,7 +94,7 @@ public interface RiskAffectedResource {
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
           String controlId,
-      RequirementImplementationDto dto);
+      @RequestBody RequirementImplementationDto dto);
 
   @GetMapping(
       "/{riskAffectedId:"

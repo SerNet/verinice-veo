@@ -113,6 +113,7 @@ import org.veo.core.usecase.base.ModifyElementUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.compliance.GetRequirementImplementationUseCase;
 import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
+import org.veo.core.usecase.compliance.UpdateRequirementImplementationUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.core.usecase.service.TypedId;
@@ -144,6 +145,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
   private final GetRequirementImplementationsByControlImplementationUseCase
       getRequirementImplementationsByControlImplementationUseCase;
   private final GetRequirementImplementationUseCase getRequirementImplementationUseCase;
+  private final UpdateRequirementImplementationUseCase updateRequirementImplementationUseCase;
 
   public AssetController(
       GetAssetUseCase getAssetUseCase,
@@ -160,7 +162,8 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
       InspectElementUseCase inspectElementUseCase,
       GetRequirementImplementationsByControlImplementationUseCase
           getRequirementImplementationsByControlImplementationUseCase,
-      GetRequirementImplementationUseCase getRequirementImplementationUseCase) {
+      GetRequirementImplementationUseCase getRequirementImplementationUseCase,
+      UpdateRequirementImplementationUseCase updateRequirementImplementationUseCase) {
     super(Asset.class, getAssetUseCase, evaluateElementUseCase, inspectElementUseCase);
     this.getAssetsUseCase = getAssetsUseCase;
     this.createAssetUseCase = createAssetUseCase;
@@ -175,6 +178,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
     this.getRequirementImplementationUseCase = getRequirementImplementationUseCase;
     this.getRequirementImplementationsByControlImplementationUseCase =
         getRequirementImplementationsByControlImplementationUseCase;
+    this.updateRequirementImplementationUseCase = updateRequirementImplementationUseCase;
   }
 
   public static final String URL_BASE_PATH = "/" + Asset.PLURAL_TERM;
@@ -598,12 +602,20 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
 
   @Override
   public Future<ResponseEntity<ApiResponseBody>> updateRequirementImplementation(
+      String eTag,
       Authentication auth,
       String riskAffectedId,
       String controlId,
       RequirementImplementationDto dto) {
-    // TODO #2398 implement
-    return null;
+    return useCaseInteractor.execute(
+        updateRequirementImplementationUseCase,
+        new UpdateRequirementImplementationUseCase.InputData(
+            getAuthenticatedClient(auth),
+            TypedId.from(riskAffectedId, Asset.class),
+            TypedId.from(controlId, Control.class),
+            dto,
+            eTag),
+        out -> ResponseEntity.noContent().eTag(out.getETag()).build());
   }
 
   @Override

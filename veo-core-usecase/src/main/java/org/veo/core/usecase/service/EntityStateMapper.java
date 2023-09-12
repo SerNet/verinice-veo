@@ -41,6 +41,7 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.compliance.ControlImplementation;
+import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.entity.event.ControlPartsChangedEvent;
 import org.veo.core.entity.ref.ITypedId;
 import org.veo.core.entity.risk.CategoryRef;
@@ -59,6 +60,7 @@ import org.veo.core.entity.state.ControlRiskValuesState;
 import org.veo.core.entity.state.CustomLinkState;
 import org.veo.core.entity.state.DomainAssociationState;
 import org.veo.core.entity.state.ElementState;
+import org.veo.core.entity.state.RequirementImplementationState;
 import org.veo.core.entity.state.RiskAffectedState;
 import org.veo.core.entity.state.RiskImpactDomainAssociationState;
 import org.veo.core.entity.state.ScenarioDomainAssociationState;
@@ -120,6 +122,18 @@ public class EntityStateMapper {
       ce.setParts(idRefResolver.resolve(compositeElementState.getParts()));
       publishPartsChanged(ce, oldParts);
     }
+  }
+
+  public void mapState(
+      RequirementImplementationState source,
+      RequirementImplementation target,
+      IdRefResolver idRefResolver) {
+    target.setImplementationStatement(source.getImplementationStatement());
+    Optional.ofNullable(source.getResponsible())
+        .map(idRefResolver::resolve)
+        .ifPresent(target::setResponsible);
+    target.setOrigination(source.getOrigination());
+    target.setStatus(source.getStatus());
   }
 
   private void publishPartsChanged(CompositeElement entity, Set oldParts) {

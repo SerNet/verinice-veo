@@ -107,6 +107,7 @@ import org.veo.core.usecase.base.GetElementsUseCase;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.compliance.GetRequirementImplementationUseCase;
 import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
+import org.veo.core.usecase.compliance.UpdateRequirementImplementationUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.core.usecase.scope.CreateScopeRiskUseCase;
@@ -153,6 +154,7 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
   private final GetRequirementImplementationsByControlImplementationUseCase
       getRequirementImplementationsByControlImplementationUseCase;
   private final GetRequirementImplementationUseCase getRequirementImplementationUseCase;
+  private final UpdateRequirementImplementationUseCase updateRequirementImplementationUseCase;
 
   public ScopeController(
       GetScopeUseCase getElementUseCase,
@@ -169,7 +171,8 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
       UpdateScopeRiskUseCase updateScopeRiskUseCase,
       GetRequirementImplementationsByControlImplementationUseCase
           getRequirementImplementationsByControlImplementationUseCase,
-      GetRequirementImplementationUseCase getRequirementImplementationUseCase) {
+      GetRequirementImplementationUseCase getRequirementImplementationUseCase,
+      UpdateRequirementImplementationUseCase updateRequirementImplementationUseCase) {
     super(Scope.class, getElementUseCase, evaluateElementUseCase, inspectElementUseCase);
     this.createScopeUseCase = createScopeUseCase;
     this.getScopesUseCase = getScopesUseCase;
@@ -183,6 +186,7 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
     this.getRequirementImplementationsByControlImplementationUseCase =
         getRequirementImplementationsByControlImplementationUseCase;
     this.getRequirementImplementationUseCase = getRequirementImplementationUseCase;
+    this.updateRequirementImplementationUseCase = updateRequirementImplementationUseCase;
   }
 
   @GetMapping
@@ -628,12 +632,20 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
 
   @Override
   public Future<ResponseEntity<ApiResponseBody>> updateRequirementImplementation(
+      String eTag,
       Authentication auth,
       String riskAffectedId,
       String controlId,
       RequirementImplementationDto dto) {
-    // TODO #2398 implement
-    return null;
+    return useCaseInteractor.execute(
+        updateRequirementImplementationUseCase,
+        new UpdateRequirementImplementationUseCase.InputData(
+            getAuthenticatedClient(auth),
+            TypedId.from(riskAffectedId, Scope.class),
+            TypedId.from(controlId, Control.class),
+            dto,
+            eTag),
+        out -> ResponseEntity.noContent().eTag(out.getETag()).build());
   }
 
   @Override

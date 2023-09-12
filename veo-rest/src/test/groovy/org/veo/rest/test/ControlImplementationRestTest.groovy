@@ -70,7 +70,7 @@ class ControlImplementationRestTest extends VeoRestTest {
         ]).body.resourceId
     }
 
-    def "CRUD control implementations for #elementType.singularTerm"() {
+    def "CRUD CIs & RIs for #elementType.singularTerm"() {
         when: "creating and fetching an element with two CIs"
         def elementId = post("/$elementType.pluralTerm", [
             name: "lame",
@@ -120,6 +120,40 @@ class ControlImplementationRestTest extends VeoRestTest {
             }
         }
 
+        when: "editing requirement implementations"
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$rootControl1Id").with {
+            body.status = "PARTIAL"
+            body.implementationStatement = "It's a start"
+            body.responsible = [targetUri: "/persons/$person2Id"]
+            put(body._self, body, getETag(), 204)
+        }
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id").with {
+            body.status = "YES"
+            body.implementationStatement = "Done!"
+            body.responsible = [targetUri: "/persons/$person2Id"]
+            put(body._self, body, getETag(), 204)
+        }
+
+        then: "changes have been applied"
+        with(get("/$elementType.pluralTerm/$elementId/control-implementations/$rootControl1Id/requirement-implementations").body) {
+            with(items.find { it.control.displayName.endsWith("root control 1") }) {
+                status == "PARTIAL"
+                implementationStatement == "It's a start"
+                responsible.displayName.endsWith("person 2")
+            }
+            with(items.find { it.control.displayName.endsWith("sub control 2") }) {
+                status == "YES"
+                implementationStatement == "Done!"
+                responsible.displayName.endsWith("person 2")
+            }
+        }
+
+        and: "implementation status is reflected in CI"
+        get("/$elementType.pluralTerm/$elementId").body
+                .controlImplementations
+                .find { it.control.displayName.endsWith("root control 1") }
+                .implementationStatus == "PARTIAL"
+
         when: "removing one CI"
         get("/$elementType.pluralTerm/$elementId").with {
             body.controlImplementations.removeIf { it.control.targetUri.endsWith(rootControl1Id) }
@@ -128,6 +162,52 @@ class ControlImplementationRestTest extends VeoRestTest {
 
         then: "it is gone"
         get("/$elementType.pluralTerm/$elementId").body.controlImplementations.size() == 1
+
+        and: "its unedited RIs are gone"
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl1Id", 404)
+
+        and: "its edited RIs are still present"
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$rootControl1Id")
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id")
+
+        and: "RIs for the other CI are still present"
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$rootControl2Id")
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl3Id")
+
+        where:
+        elementType << EntityType.RISK_AFFECTED_TYPES
+    }
+
+    def "concurrent requirement implementation changes on #elementType.singularTerm are detected"() {
+        given:
+        def elementId = post("/$elementType.pluralTerm", [
+            name: "risk aficionado",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            controlImplementations: [
+                [
+                    control: [targetUri: "/controls/$subControl2Id"]
+                ]
+            ]
+        ]).body.resourceId
+
+        when: "retrieving the RI"
+        def riUri = "/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id"
+        var originalGetResponse = get(riUri)
+        var body = originalGetResponse.body
+        var originalETag = originalGetResponse.getETag()
+
+        and: "updating it"
+        var newETag = put(riUri, body, originalETag, 204).getETag()
+
+        then: "the ETag yielded by the PUT is correct"
+        newETag != originalETag
+        newETag == get(riUri).getETag()
+
+        and: "the original ETag cannot be used for another update"
+        put(riUri, body, originalETag, 412).body.message == "The eTag does not match for the $elementType.singularTerm with the ID $elementId"
+
+        and: "the new ETag can be used for another update"
+        put(riUri, body, newETag, 204)
 
         where:
         elementType << EntityType.RISK_AFFECTED_TYPES

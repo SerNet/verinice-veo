@@ -112,6 +112,7 @@ import org.veo.core.usecase.catalogitem.QueryCatalogItemsUseCase;
 import org.veo.core.usecase.client.DeleteClientUseCase;
 import org.veo.core.usecase.compliance.GetRequirementImplementationUseCase;
 import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
+import org.veo.core.usecase.compliance.UpdateRequirementImplementationUseCase;
 import org.veo.core.usecase.control.GetControlUseCase;
 import org.veo.core.usecase.control.GetControlsUseCase;
 import org.veo.core.usecase.control.UpdateControlUseCase;
@@ -577,6 +578,12 @@ public class ModuleConfiguration {
   public GetRequirementImplementationUseCase getRequirementImplementationUseCase(
       RepositoryProvider repositoryProvider) {
     return new GetRequirementImplementationUseCase(repositoryProvider);
+  }
+
+  @Bean
+  public UpdateRequirementImplementationUseCase updateRequirementImplementationUseCase(
+      RepositoryProvider repositoryProvider, EntityStateMapper entityStateMapper) {
+    return new UpdateRequirementImplementationUseCase(repositoryProvider, entityStateMapper);
   }
 
   @Bean

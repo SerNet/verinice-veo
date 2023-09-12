@@ -106,6 +106,7 @@ import org.veo.core.usecase.base.ModifyElementUseCase.InputData;
 import org.veo.core.usecase.common.ETag;
 import org.veo.core.usecase.compliance.GetRequirementImplementationUseCase;
 import org.veo.core.usecase.compliance.GetRequirementImplementationsByControlImplementationUseCase;
+import org.veo.core.usecase.compliance.UpdateRequirementImplementationUseCase;
 import org.veo.core.usecase.decision.EvaluateElementUseCase;
 import org.veo.core.usecase.process.CreateProcessRiskUseCase;
 import org.veo.core.usecase.process.GetProcessRiskUseCase;
@@ -158,6 +159,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   private final GetRequirementImplementationsByControlImplementationUseCase
       getRequirementImplementationsByControlImplementationUseCase;
   private final GetRequirementImplementationUseCase getRequirementImplementationUseCase;
+  private final UpdateRequirementImplementationUseCase updateRequirementImplementationUseCase;
 
   public ProcessController(
       CreateElementUseCase<Process> createProcessUseCase,
@@ -174,7 +176,8 @@ public class ProcessController extends AbstractCompositeElementController<Proces
       InspectElementUseCase inspectElementUseCase,
       GetRequirementImplementationsByControlImplementationUseCase
           getRequirementImplementationsByControlImplementationUseCase,
-      GetRequirementImplementationUseCase getRequirementImplementationUseCase) {
+      GetRequirementImplementationUseCase getRequirementImplementationUseCase,
+      UpdateRequirementImplementationUseCase updateRequirementImplementationUseCase) {
     super(Process.class, getProcessUseCase, evaluateElementUseCase, inspectElementUseCase);
     this.createProcessUseCase = createProcessUseCase;
     this.updateProcessUseCase = putProcessUseCase;
@@ -189,6 +192,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
     this.getRequirementImplementationsByControlImplementationUseCase =
         getRequirementImplementationsByControlImplementationUseCase;
     this.getRequirementImplementationUseCase = getRequirementImplementationUseCase;
+    this.updateRequirementImplementationUseCase = updateRequirementImplementationUseCase;
   }
 
   @Operation(summary = "Loads a process")
@@ -598,12 +602,20 @@ public class ProcessController extends AbstractCompositeElementController<Proces
 
   @Override
   public Future<ResponseEntity<ApiResponseBody>> updateRequirementImplementation(
+      String eTag,
       Authentication auth,
       String riskAffectedId,
       String controlId,
       RequirementImplementationDto dto) {
-    // TODO #2398 implement
-    return null;
+    return useCaseInteractor.execute(
+        updateRequirementImplementationUseCase,
+        new UpdateRequirementImplementationUseCase.InputData(
+            getAuthenticatedClient(auth),
+            TypedId.from(riskAffectedId, Process.class),
+            TypedId.from(controlId, Control.class),
+            dto,
+            eTag),
+        out -> ResponseEntity.noContent().eTag(out.getETag()).build());
   }
 
   @Override
