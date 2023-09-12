@@ -212,4 +212,54 @@ class ControlImplementationRestTest extends VeoRestTest {
         where:
         elementType << EntityType.RISK_AFFECTED_TYPES
     }
+
+    def "origin of a requirement implementation on #elementType.singularTerm cannot be changed"() {
+        given:
+        def elementId = post("/$elementType.pluralTerm", [
+            name: "protagonist",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            controlImplementations: [
+                [
+                    control: [targetUri: "/controls/$subControl2Id"]
+                ]
+            ]
+        ]).body.resourceId
+        def otherElementId = post("/assets", [
+            name: "antagonist",
+            owner: [targetUri: "http://localhost/units/$unitId"]
+        ]).body.resourceId
+
+        when: "altering the origin of the RI"
+        var getResponse = get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id")
+        getResponse.body.origin.targetUri = "/assets/$otherElementId"
+
+        then: "the change cannot be persisted"
+        put(getResponse.body._self, getResponse.body, getResponse.getETag(), 422).body.message == "Property 'origin' is read-only and cannot be modified"
+
+        where:
+        elementType << EntityType.RISK_AFFECTED_TYPES
+    }
+
+    def "control of a requirement implementation on #elementType.singularTerm cannot be changed"() {
+        given:
+        def elementId = post("/$elementType.pluralTerm", [
+            name: "risk aficionado",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            controlImplementations: [
+                [
+                    control: [targetUri: "/controls/$subControl2Id"]
+                ]
+            ]
+        ]).body.resourceId
+
+        when: "altering the control of the RI"
+        var getResponse = get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id")
+        getResponse.body.control.targetUri = "/controls/$subControl3Id"
+
+        then: "the change cannot be persisted"
+        put(getResponse.body._self, getResponse.body, getResponse.getETag(), 422).body.message == "Property 'control' is read-only and cannot be modified"
+
+        where:
+        elementType << EntityType.RISK_AFFECTED_TYPES
+    }
 }

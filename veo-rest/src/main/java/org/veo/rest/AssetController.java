@@ -607,6 +607,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
       String riskAffectedId,
       String controlId,
       RequirementImplementationDto dto) {
+    dto.validateAgainstPathVariables(riskAffectedId, controlId);
     return useCaseInteractor.execute(
         updateRequirementImplementationUseCase,
         new UpdateRequirementImplementationUseCase.InputData(
