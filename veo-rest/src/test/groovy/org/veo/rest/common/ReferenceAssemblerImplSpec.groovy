@@ -40,8 +40,10 @@ import org.veo.core.entity.Incident
 import org.veo.core.entity.Key
 import org.veo.core.entity.Process
 import org.veo.core.entity.ProcessRisk
+import org.veo.core.entity.RiskAffected
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
+import org.veo.core.entity.compliance.ControlImplementation
 import org.veo.rest.common.marshalling.ReferenceAssemblerImpl
 import org.veo.rest.configuration.TypeExtractor
 
@@ -226,6 +228,30 @@ class ReferenceAssemblerImplSpec extends Specification {
         type        | entityType | entityId                               | scenarioId                             | reference
         AssetRisk   | Asset      | '40331ed5-be07-4c69-bf99-553811ce5454' | '5743c89a-5b17-4b50-8c21-72f2ac86faf3' | '/assets/40331ed5-be07-4c69-bf99-553811ce5454/risks/5743c89a-5b17-4b50-8c21-72f2ac86faf3'
         ProcessRisk | Process    | '40331ed5-be07-4c69-bf99-553811ce5454' | '5743c89a-5b17-4b50-8c21-72f2ac86faf3' | '/processes/40331ed5-be07-4c69-bf99-553811ce5454/risks/5743c89a-5b17-4b50-8c21-72f2ac86faf3'
+    }
+
+    def "requirement implementations reference for #type is generated"() {
+        given:
+        def controlImplementation = Spy(ControlImplementation) {
+            owner >> Spy(type as Class<RiskAffected>) {
+                id >> Key.uuidFrom("aff15bfa-7259-4044-a396-59db2e16b0e0")
+            }
+            control >> Spy(Control) {
+                id >> Key.uuidFrom("da8f6256-15e0-4fd3-a11b-4a76c916abe5")
+            }
+        }
+
+        when:
+        def result = referenceAssembler.requirementImplementationsOf(controlImplementation)
+
+        then:
+        result == reference
+
+        where:
+        type    | reference
+        Asset   | '/assets/aff15bfa-7259-4044-a396-59db2e16b0e0/control-implementations/da8f6256-15e0-4fd3-a11b-4a76c916abe5/requirement-implementations'
+        Process | '/processes/aff15bfa-7259-4044-a396-59db2e16b0e0/control-implementations/da8f6256-15e0-4fd3-a11b-4a76c916abe5/requirement-implementations'
+        Scope   | '/scopes/aff15bfa-7259-4044-a396-59db2e16b0e0/control-implementations/da8f6256-15e0-4fd3-a11b-4a76c916abe5/requirement-implementations'
     }
 
     def "create a key for a reference to a #type with id #id "() {

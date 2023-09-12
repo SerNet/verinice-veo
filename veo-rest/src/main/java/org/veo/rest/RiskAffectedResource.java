@@ -74,7 +74,7 @@ public interface RiskAffectedResource {
           + UUID_REGEX
           + "}/control-implementations/{controlId:"
           + UUID_REGEX
-          + "}/requirement-implementations/")
+          + "}/requirement-implementations")
   @Operation(summary = "Retrieve all requirement implementations for an implemented control")
   @ApiResponse(responseCode = "200", description = "Requirement implementations loaded")
   @ApiResponse(responseCode = "404", description = "Element not found")
