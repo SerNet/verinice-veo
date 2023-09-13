@@ -39,6 +39,7 @@ public abstract class CreateClientUnitsJob {
         client,
         () -> {
           createUnit(client, "Unit 1");
+          createUnit(client, "Demo");
         });
   }
 
