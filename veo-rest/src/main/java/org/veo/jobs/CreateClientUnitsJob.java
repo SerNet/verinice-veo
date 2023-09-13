@@ -38,15 +38,17 @@ public abstract class CreateClientUnitsJob {
     AsSystemUser.runInClient(
         client,
         () -> {
-          createUnitUseCase.execute(
-              new CreateUnitUseCase.InputData(
-                  new NameableInputData(Optional.empty(), "Unit 1", "", ""),
-                  client.getId(),
-                  Optional.empty(),
-                  client.getMaxUnits(),
-                  client.getDomains().stream()
-                      .map(Identifiable::getId)
-                      .collect(Collectors.toSet())));
+          createUnit(client, "Unit 1");
         });
+  }
+
+  private void createUnit(Client client, String name) {
+    createUnitUseCase.execute(
+        new CreateUnitUseCase.InputData(
+            new NameableInputData(Optional.empty(), name, "", ""),
+            client.getId(),
+            Optional.empty(),
+            client.getMaxUnits(),
+            client.getDomains().stream().map(Identifiable::getId).collect(Collectors.toSet())));
   }
 }
