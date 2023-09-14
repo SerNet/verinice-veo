@@ -77,7 +77,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
                 .andReturn().response.status == 403
     }
 
-    @WithUserDetails("content-creator")
+    @WithUserDetails("user@domain.example")
     def "domain template metadata is allowed for a normal user"() {
         expect:
         mvc.perform(MockMvcRequestBuilders
@@ -92,9 +92,9 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
 
         and: "domain template import to be allowed"
         mvc.perform(MockMvcRequestBuilders
-                .post("/content-creation/domaintemplates")).andReturn().response.status == 400
+                .post("/content-creation/domaintemplates")).andReturn().response.status == 200
         mvc.perform(MockMvcRequestBuilders
-                .post("/content-creation/domaintemplates")).andReturn().response.status == 400
+                .post("/domaintemplates")).andReturn().response.status == 404
     }
 
     @WithUserDetails("user@domain.example")
@@ -189,13 +189,6 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
                 .get("/translations?languages=en"))
                 .andReturn().response.status == 403
                 break
-            case [
-                "/domaintemplates",
-            ]:
-                assert mvc.perform(MockMvcRequestBuilders
-                .get("/domaintemplates/$TEST_DOMAIN_TEMPLATE_ID"))
-                .andReturn().response.status == 403
-                break
             default:
                 assert mvc.perform(MockMvcRequestBuilders
                 .get(entity)).andReturn().response.status == 403
@@ -254,20 +247,13 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
                 .andReturn().response.status == 403
 
         where:
-        entity << USER_EDITABLE_PATHS + CONTENT_CREATOR_PATHS
+        entity << USER_EDITABLE_PATHS
     }
 
     @WithUserDetails("content-creator-readonly")
     def "content-creator without write access may not POST #entity"() {
         expect:
         switch (entity) {
-            case [
-                "/domaintemplates",
-            ]:
-                assert mvc.perform(MockMvcRequestBuilders.post(entity, [
-                    name: "can i haz dummytemplaid"
-                ])).andReturn().response.status == 400
-                break
             case ["/domains"]:
                 assert mvc.perform(MockMvcRequestBuilders.post(
                 "/content-creation/domains/$DSGVO_TEST_DOMAIN_TEMPLATE_ID/template"))

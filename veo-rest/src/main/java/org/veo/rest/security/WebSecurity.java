@@ -105,15 +105,6 @@ public class WebSecurity {
           .flatMap(identity())
           .toArray(String[]::new);
 
-  // Paths that require the role 'content-creator' for write access:
-  private static final String[] CONTENT_CREATOR_EDITABLE_PATHS =
-      Stream.of(
-              Stream.of(DOMAINTEMPLATE_PATHS),
-              Stream.of(DOMAIN_RESOURCE_PATHS),
-              Stream.of(CONTENT_CREATION_PATHS))
-          .flatMap(identity())
-          .toArray(String[]::new);
-
   // Paths that require the role 'content-creator' for read access:
   private static final String CONTENT_CREATOR_PATHS = "/content-creation/**";
 

@@ -73,7 +73,7 @@ public class DomainTemplateController extends AbstractEntityController {
   @Operation(summary = "Loads all domain templates (metadata only)")
   @ApiResponse(
       responseCode = "200",
-      description = "DomainTemplates loaded",
+      description = "Domain templates loaded",
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
