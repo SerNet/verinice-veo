@@ -23,7 +23,6 @@ import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.definitions.LinkDefinition;
-import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.specification.ElementDomainsAreSubsetOfUnitDomains;
 import org.veo.core.entity.specification.ElementIsAssociatedWithCustomAspectAndLinkDomains;
@@ -37,7 +36,7 @@ public class DomainSensitiveElementValidator {
           "Element can only be associated with its unit's domains");
     }
     if (!new ElementIsAssociatedWithCustomAspectAndLinkDomains().test(element)) {
-      throw new NotFoundException(
+      throw new IllegalArgumentException(
           "Element cannot contain custom aspects or links for domains it is not associated with");
     }
     element.getCustomAspects().forEach(ca -> validateCustomAspect(element, ca));

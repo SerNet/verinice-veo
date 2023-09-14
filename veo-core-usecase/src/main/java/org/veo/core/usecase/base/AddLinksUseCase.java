@@ -27,6 +27,7 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.state.CustomLinkState;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.RepositoryProvider;
@@ -66,6 +67,11 @@ public class AddLinksUseCase
     var domain = domainRepository.getById(domainId, client.getId());
     var elementRepo = repositoryProvider.getElementRepositoryFor(type);
     var element = elementRepo.getById(elementId, client.getId());
+    if (!element.isAssociatedWithDomain(domain)) {
+      throw new NotFoundException(
+          "%s %s is not associated with domain %s"
+              .formatted(element.getModelType(), element.getIdAsString(), domain.getIdAsString()));
+    }
     var resolver = new DbIdRefResolver(repositoryProvider, client);
     links.stream()
         .map(linkState -> entityStateMapper.mapLink(linkState, element, domain, resolver))

@@ -198,7 +198,7 @@ class LinkingRestTest extends VeoRestTest {
                     target: [targetInDomainUri: targetAUri]
                 ]
             ]
-        ], 404).body.message == "Element cannot contain custom aspects or links for domains it is not associated with"
+        ], 404).body.message == "$type.singularTerm $unassociatedElementId is not associated with domain $domainId"
 
         where:
         type << EntityType.ELEMENT_TYPES
