@@ -258,7 +258,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
     }
 
     @WithUserDetails("content-creator-readonly")
-    def "content-creator without write access may only POST #entity if it is a domain(template)"() {
+    def "content-creator without write access may not POST #entity"() {
         expect:
         switch (entity) {
             case [
