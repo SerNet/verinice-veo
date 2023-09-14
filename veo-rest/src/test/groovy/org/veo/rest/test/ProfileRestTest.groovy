@@ -200,8 +200,4 @@ class ProfileRestTest extends VeoRestTest {
                     ],
                 ], null, 204, CONTENT_CREATOR)
     }
-
-    private uriToId(String targetUri) {
-        targetUri.split('/').last()
-    }
 }

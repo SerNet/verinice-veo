@@ -315,4 +315,8 @@ class VeoRestTest extends Specification {
         userTokenCache[user] = newToken
         return newToken
     }
+
+    protected uriToId(String targetUri) {
+        targetUri.split('/').last()
+    }
 }

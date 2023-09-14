@@ -294,10 +294,6 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         getCatalogItems(domainId).find { it.abbreviation == abbreviation }.id
     }
 
-    private uriToId(String targetUri) {
-        targetUri.split('/').last()
-    }
-
     private Object getIncarnationDescriptions(Collection<String> itemIds) {
         get("/units/${unitId}/incarnations?itemIds=${itemIds.join(',')}").body
     }
