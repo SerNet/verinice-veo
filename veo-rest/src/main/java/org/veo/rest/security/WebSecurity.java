@@ -184,7 +184,7 @@ public class WebSecurity {
             auth.requestMatchers(antMatcher(HttpMethod.POST, path)).hasRole("veo-user");
           }
 
-          // content-creator write access:
+          // content-creator access:
           auth.requestMatchers(antMatcher(CONTENT_CREATOR_PATHS)).hasRole("veo-content-creator");
 
           // read-only access:
