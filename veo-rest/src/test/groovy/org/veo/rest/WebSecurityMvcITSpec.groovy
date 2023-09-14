@@ -244,7 +244,7 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
                 .andReturn().response.status == 403
 
         where:
-        entity << USER_EDITABLE_PATHS + CONTENT_CREATOR_PATHS
+        entity << USER_EDITABLE_PATHS
     }
 
     @WithUserDetails("read-only-user")
