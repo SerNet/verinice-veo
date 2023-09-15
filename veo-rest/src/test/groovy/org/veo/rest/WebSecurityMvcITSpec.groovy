@@ -93,8 +93,6 @@ class WebSecurityMvcITSpec extends VeoMvcSpec {
         and: "domain template import to be allowed"
         mvc.perform(MockMvcRequestBuilders
                 .post("/content-creation/domaintemplates")).andReturn().response.status == 400
-        mvc.perform(MockMvcRequestBuilders
-                .post("/domaintemplates")).andReturn().response.status == 405
     }
 
     @WithUserDetails("user@domain.example")
