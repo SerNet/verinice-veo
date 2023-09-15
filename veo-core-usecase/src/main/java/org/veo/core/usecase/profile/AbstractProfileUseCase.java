@@ -15,30 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.core.usecase.profile;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
+import org.veo.core.entity.Key;
+import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.repository.ProfileRepository;
 
-import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.ProfileItem;
-import org.veo.core.entity.aspects.SubTypeAspect;
+import lombok.AllArgsConstructor;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+@AllArgsConstructor
+public abstract class AbstractProfileUseCase {
+  protected final ProfileRepository profileRepo;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
-public abstract class AbstractProfileItemDto extends AbstractCatalogItemDto {
-
-  @NotNull
-  @Schema(description = "The status for the Element.", example = "NEW")
-  @Size(min = 1, max = SubTypeAspect.STATUS_MAX_LENGTH)
-  private String status;
-
-  @Override
-  public Class<? extends Identifiable> getModelInterface() {
-    return ProfileItem.class;
+  void checkClientOwnsDomain(Client client, String id) {
+    client.getDomains().stream()
+        .filter(d -> d.getIdAsString().equals(id))
+        .findAny()
+        .orElseThrow(() -> new NotFoundException(Key.uuidFrom(id), Domain.class));
   }
 }

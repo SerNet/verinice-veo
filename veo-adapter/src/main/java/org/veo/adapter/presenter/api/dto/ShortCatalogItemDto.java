@@ -29,7 +29,7 @@ import lombok.ToString;
 /** Partial catalog item */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ShortCatalogItemDto extends AbstractCatalogItemDto implements NameableDto {
+public class ShortCatalogItemDto extends AbstractCatalogItemDto {
   @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
   @Schema(
       description = "ID must be a valid UUID string following RFC 4122.",

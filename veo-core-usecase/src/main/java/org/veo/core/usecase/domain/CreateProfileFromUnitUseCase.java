@@ -45,10 +45,10 @@ import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.PagingConfiguration;
+import org.veo.core.repository.ProfileRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCase.EmptyOutput;
 
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -56,17 +56,22 @@ import lombok.extern.slf4j.Slf4j;
 /** Create or update a profile in a domain. */
 @Slf4j
 public class CreateProfileFromUnitUseCase extends AbstractCreateItemsFromUnitUseCase<ProfileItem>
-    implements TransactionalUseCase<CreateProfileFromUnitUseCase.InputData, EmptyOutput> {
+    implements TransactionalUseCase<
+        CreateProfileFromUnitUseCase.InputData, CreateProfileFromUnitUseCase.OutputData> {
+
+  private final ProfileRepository profileRepo;
 
   public CreateProfileFromUnitUseCase(
       GenericElementRepository genericElementRepository,
       UnitRepository unitRepository,
       DomainRepository domainRepository,
-      EntityFactory factory) {
+      EntityFactory factory,
+      ProfileRepository profileRepo) {
     super(factory, domainRepository, genericElementRepository, unitRepository);
+    this.profileRepo = profileRepo;
   }
 
-  public EmptyOutput execute(InputData input) {
+  public OutputData execute(InputData input) {
     Domain domain =
         domainRepository.getActiveById(input.getDomainId(), input.authenticatedClient.getId());
     Client client = input.getAuthenticatedClient();
@@ -97,13 +102,13 @@ public class CreateProfileFromUnitUseCase extends AbstractCreateItemsFromUnitUse
       profile.setItems(new HashSet<>(elementsToProfileItems.values()));
     }
 
-    domainRepository.save(domain);
+    Profile p = profileRepo.save(profile);
     log.info(
         "new profile {} in domain {} with {} elements created",
         profile.getName(),
         domain.getName(),
         profile.getItems().size());
-    return EmptyOutput.INSTANCE;
+    return new OutputData(p);
   }
 
   private void cleanProfile(Profile profile) {
@@ -188,5 +193,11 @@ public class CreateProfileFromUnitUseCase extends AbstractCreateItemsFromUnitUse
     Key<UUID> unitId;
     Key<UUID> profileId;
     ProfileDefinition profileDefinition;
+  }
+
+  @Valid
+  @Value
+  public static class OutputData implements UseCase.OutputData {
+    @Valid Profile profile;
   }
 }

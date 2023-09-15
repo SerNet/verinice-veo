@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2023  Urs Zeidler
+ * Copyright (C) 2023  Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,30 +15,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.adapter.presenter.api.dto.full;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import java.util.Collections;
+import java.util.Map;
 
-import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.ProfileItem;
-import org.veo.core.entity.aspects.SubTypeAspect;
+import org.veo.adapter.presenter.api.dto.AbstractProfileTailoringReferenceDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-@Data
+/**
+ * This DTO is used to represent an ExternalTailoringRefrence it is primarily used in the
+ * construction and serialization of a domain template.
+ */
 @EqualsAndHashCode(callSuper = true)
-public abstract class AbstractProfileItemDto extends AbstractCatalogItemDto {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class FullLinkProfileTailoringReferenceDto extends AbstractProfileTailoringReferenceDto {
 
-  @NotNull
-  @Schema(description = "The status for the Element.", example = "NEW")
-  @Size(min = 1, max = SubTypeAspect.STATUS_MAX_LENGTH)
-  private String status;
+  private String linkType;
 
-  @Override
-  public Class<? extends Identifiable> getModelInterface() {
-    return ProfileItem.class;
-  }
+  @Schema(
+      description = "The properties of the element described by the schema of the type attribute.",
+      example = " name: 'value'")
+  private Map<String, Object> attributes = Collections.emptyMap();
 }

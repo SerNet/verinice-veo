@@ -589,7 +589,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                     name: 'test',
                     description: 'All the good stuff',
                     language: 'de_DE'
-                ], 204)
+                ], 201)
 
         Domain domain1 = txTemplate.execute {
             def d = domainDataRepository.findById(domainId).get()
@@ -663,13 +663,20 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         ],201)
 
         when: "we create a new profile from the unit"
-        post("/content-creation/domains/${domainId}/profiles?unit=${unitId}",
+        def profileRef = parseJson(post("/content-creation/domains/${domainId}/profiles?unit=${unitId}",
                 [
                     name: 'test',
                     description: 'All the good stuff',
                     language: 'de_DE'
-                ], 204)
+                ], 201))
 
+        then: "the resurce is returned"
+        with(profileRef) {
+            displayName == "test"
+            targetUri.contains("domains/${domainId}/profiles/")
+        }
+
+        when: "we select the data in the db"
         def domain1 = txTemplate.execute {
             def d = domainDataRepository.findById(domainId).get()
             d.profiles.each {
@@ -680,6 +687,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             }
             d
         }
+
+        and: "we export the original unit to compare later"
         def exportedOrgUnit = parseJson(get("/units/${unitId}/export"))
 
         then:
@@ -709,7 +718,30 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             tailoringReferences[0].referenceType == TailoringReferenceType.PART
         }
 
-        when: "applying the profile"
+        when: "we get the profile"
+        def profiles = parseJson(get("/domains/${domain1.id.uuidValue()}/profiles"))
+
+        then: "the profile is returned"
+        profiles.size() == 1
+        with(profiles[0]) {
+            name == 'test'
+            description == 'All the good stuff'
+            language == 'de_DE'
+        }
+
+        when: "we get the profile items"
+        def profileItems = parseJson(get("/domains/${domain1.id.uuidValue()}/profiles/${profiles[0].id}/items"))
+
+        then:
+        profileItems.size() == 10
+        with(profileItems.sort{it.name}[0]) {
+            name == "asset"
+            elementType == "asset"
+            subType == "AST_Application"
+            abbreviation == null
+        }
+
+        when: "we create a new unit"
         unitId = parseJson(post("/units", [
             name   : "applied profile unit",
             domains: [
@@ -717,12 +749,23 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             ]
         ])).resourceId
 
+        and: "applying the profile to it"
         post("/domains/${domain1.idAsString}/profilesnew/${domain1.profiles[0].idAsString}/units/${unitId}",[:], 204)
+
+        and: "export the unit"
         def exportedUnit = parseJson(get("/units/${unitId}/export"))
 
-        then:
+        then: "both exports are the same"
         exportedUnit.elements.size() == exportedOrgUnit.elements.size()
         exportedUnit.risks.size() == exportedOrgUnit.risks.size()
+        exportedUnit.elements.forEach{s->
+            with(exportedOrgUnit.elements.find{it.name == s.name}) {
+                type == s.type
+                domains == s.domains
+                links.size() == s.links.size()
+                customAspects == s.customAspects
+            }
+        }
     }
 
     @WithUserDetails("content-creator")
@@ -790,12 +833,12 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         ])
 
         and: "we create a new profile from the unit"
-        post("/content-creation/domains/${domainId}/profiles?unit=$unitId",
+        def profile = parseJson(post("/content-creation/domains/${domainId}/profiles?unit=$unitId",
                 [
                     name: 'test',
                     description: 'All the good stuff',
                     language: 'de_DE'
-                ], 204)
+                ], 201))
 
         def domain1 = txTemplate.execute {
             def d = domainDataRepository.findById(domainId).get()
@@ -809,8 +852,9 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             d
         }
 
-        then:
+        then: "the profile ist created and complete and persistent"
         domain1.profiles.size() == 1
+        profile.targetUri.endsWith(domain1.profiles[0].idAsString)
         with(domain1.profiles[0].items.sort{it.name}[0]) {
             name == "asset"
             elementType == "asset"

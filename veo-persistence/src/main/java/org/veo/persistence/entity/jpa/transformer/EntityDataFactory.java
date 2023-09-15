@@ -258,6 +258,7 @@ public class EntityDataFactory implements EntityFactory {
   public ProfileItem createProfileItem(Profile profile) {
     ProfileItemData profileData = new ProfileItemData();
     profileData.setOwner(profile);
+    profile.getItems().add(profileData);
     return profileData;
   }
 

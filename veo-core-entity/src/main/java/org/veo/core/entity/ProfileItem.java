@@ -41,7 +41,7 @@ public interface ProfileItem extends TemplateItem<ProfileItem>, ClientOwned, Ver
 
   @Override
   default Class<? extends Identifiable> getModelInterface() {
-    return CatalogItem.class;
+    return ProfileItem.class;
   }
 
   @Override

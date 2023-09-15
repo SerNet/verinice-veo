@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.access;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -59,6 +60,13 @@ public class ProfileRepositoryImpl
   }
 
   @Override
+  public Optional<ProfileItem> findProfileItemByIdFetchTailoringReferences(
+      Key<UUID> profileId, Key<UUID> itemId, Key<UUID> clientId) {
+    return profileDataRepository.findProfileItemByIdFetchTailoringReferences(
+        profileId.uuidValue(), itemId.uuidValue(), clientId.uuidValue());
+  }
+
+  @Override
   public Set<Profile> findAllByDomain(Domain domain) {
     return profileDataRepository.findAllByDomain((DomainData) domain);
   }
@@ -72,5 +80,15 @@ public class ProfileRepositoryImpl
             false)
         .map(ProfileItem.class::cast)
         .collect(Collectors.toSet());
+  }
+
+  @Override
+  public Set<Profile> findAllByDomainId(Key<UUID> clientId, Key<UUID> domainId) {
+    return profileDataRepository.findAllByDomainId(clientId.uuidValue(), domainId.uuidValue());
+  }
+
+  @Override
+  public Optional<Profile> findById(Key<UUID> clientId, Key<UUID> profileId) {
+    return profileDataRepository.findById(clientId.uuidValue(), profileId.uuidValue());
   }
 }

@@ -189,11 +189,31 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
           .expand()
           .getHref();
     }
+    if (Profile.class.isAssignableFrom(type)) {
+      Profile profile = (Profile) identifiable;
+      return linkTo(
+              methodOn(DomainController.class)
+                  .getProfile(ANY_AUTH, profile.getOwner().getIdAsString(), id, ANY_REQUEST))
+          .withRel(DomainController.URL_BASE_PATH)
+          .expand()
+          .getHref();
+    }
+    if (ProfileItem.class.isAssignableFrom(type)) {
+      ProfileItem profileItem = (ProfileItem) identifiable;
+      return linkTo(
+              methodOn(DomainController.class)
+                  .getProfileItem(
+                      ANY_AUTH,
+                      profileItem.requireDomainMembership().getIdAsString(),
+                      profileItem.getOwner().getIdAsString(),
+                      id,
+                      ANY_REQUEST))
+          .withRel(DomainController.URL_BASE_PATH)
+          .expand()
+          .getHref();
+    }
     // Some types have no endpoint.
-    if (Client.class.isAssignableFrom(type)
-        || TemplateItemReference.class.isAssignableFrom(type)
-        || Profile.class.isAssignableFrom(type)
-        || ProfileItem.class.isAssignableFrom(type)) {
+    if (Client.class.isAssignableFrom(type) || TemplateItemReference.class.isAssignableFrom(type)) {
       return null;
     }
 

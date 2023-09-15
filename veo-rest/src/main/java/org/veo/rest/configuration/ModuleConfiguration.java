@@ -161,6 +161,10 @@ import org.veo.core.usecase.process.GetProcessUseCase;
 import org.veo.core.usecase.process.GetProcessesUseCase;
 import org.veo.core.usecase.process.UpdateProcessRiskUseCase;
 import org.veo.core.usecase.process.UpdateProcessUseCase;
+import org.veo.core.usecase.profile.GetProfileItemUseCase;
+import org.veo.core.usecase.profile.GetProfileItemsUseCase;
+import org.veo.core.usecase.profile.GetProfileUseCase;
+import org.veo.core.usecase.profile.GetProfilesUseCase;
 import org.veo.core.usecase.risk.DeleteRiskUseCase;
 import org.veo.core.usecase.scenario.GetScenarioUseCase;
 import org.veo.core.usecase.scenario.GetScenariosUseCase;
@@ -218,6 +222,26 @@ import org.veo.service.risk.RiskService;
  */
 @Configuration
 public class ModuleConfiguration {
+
+  @Bean
+  public GetProfilesUseCase getProfilesUseCase(ProfileRepository profileRepository) {
+    return new GetProfilesUseCase(profileRepository);
+  }
+
+  @Bean
+  public GetProfileUseCase getProfileUseCase(ProfileRepository profileRepository) {
+    return new GetProfileUseCase(profileRepository);
+  }
+
+  @Bean
+  public GetProfileItemUseCase getProfileItemUseCase(ProfileRepository profileRepository) {
+    return new GetProfileItemUseCase(profileRepository);
+  }
+
+  @Bean
+  public GetProfileItemsUseCase getProfileItemsUseCase(ProfileRepository profileRepository) {
+    return new GetProfileItemsUseCase(profileRepository);
+  }
 
   @Bean
   public GetCatalogItemsTypeCountUseCase getCatalogItemsTypeCountUseCase(
@@ -538,9 +562,10 @@ public class ModuleConfiguration {
       GenericElementRepository genericElementRepository,
       UnitRepository unitRepository,
       DomainRepository domainRepository,
-      EntityFactory factory) {
+      EntityFactory factory,
+      ProfileRepository profileRepository) {
     return new CreateProfileFromUnitUseCase(
-        genericElementRepository, unitRepository, domainRepository, factory);
+        genericElementRepository, unitRepository, domainRepository, factory, profileRepository);
   }
 
   @Bean

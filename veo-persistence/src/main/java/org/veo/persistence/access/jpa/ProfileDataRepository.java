@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.Query;
@@ -30,14 +31,27 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
 
   @Query(
       """
-                  select i from profile_item i
-                     left join fetch i.tailoringReferences tr
-                    left join fetch i.appliedCatalogItem
-                    left join fetch i.owner p
-                    left join fetch p.domain
-                    left join fetch p.domainTemplate
-                    where i.dbId in ?1
-                """)
+                        select i from profile_item i
+                           left join fetch i.tailoringReferences tr
+                          left join fetch i.appliedCatalogItem
+                          left join fetch i.owner p
+                          left join fetch p.domain d
+                          left join fetch p.domainTemplate
+                          where i.dbId = ?2 and p.dbId= ?1 and d.owner.dbId = ?3
+                      """)
+  Optional<ProfileItem> findProfileItemByIdFetchTailoringReferences(
+      String profileId, String itemId, String clientId);
+
+  @Query(
+      """
+                        select i from profile_item i
+                           left join fetch i.tailoringReferences tr
+                          left join fetch i.appliedCatalogItem
+                          left join fetch i.owner p
+                          left join fetch p.domain
+                          left join fetch p.domainTemplate
+                          where i.dbId in ?1
+                      """)
   Iterable<ProfileItem> findAllByIdsFetchDomainAndTailoringReferences(Iterable<String> ids);
 
   @Query(
@@ -54,4 +68,10 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
 
   @Query("select ci from #{#entityName} ci where ci.domain = ?1")
   Set<Profile> findAllByDomain(DomainData domain);
+
+  @Query("select ci from #{#entityName} ci where ci.domain.owner.dbId = ?1 and ci.domain.dbId = ?2")
+  Set<Profile> findAllByDomainId(String clientId, String domainId);
+
+  @Query("select ci from #{#entityName} ci where ci.domain.owner.dbId = ?1 and ci.dbId = ?2")
+  Optional<Profile> findById(String clientId, String profileId);
 }

@@ -97,6 +97,22 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
                     name = 'c3'
                 })
                 riskDefinitions = ["id":rd] as Map
+                newProfile(d,{p->
+                    name = "test-profile"
+                    description = "my description"
+                    language = "de_DE"
+                    newProfileItem(p,{
+                        elementType = "control"
+                        subType = "CTL_TOM"
+                        status = "NEW"
+                        name = "profile-tom"
+                    })
+                })
+                newProfile(d,{
+                    name = "test-profile1"
+                    description = "another description"
+                    language = "de_DE"
+                })
             }
 
             client = clientRepository.save(client)
@@ -182,6 +198,47 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         result.elementTypeDefinitions != null
         result.riskDefinitions !=null
         result.catalogItems*.name ==~ ["c1", "c2", "c3"]
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "get all Profiles and items"() {
+        when: "get the profiles"
+        def result = parseJson(get("/domains/${completeDomain.id.uuidValue()}/profiles"))
+        def orderedProfiles = result.sort{ it.name }
+
+        then:
+        result.size() == 2
+        with(orderedProfiles[0]) {
+            name == 'test-profile'
+            description == 'my description'
+            language == 'de_DE'
+        }
+        with(orderedProfiles[1]) {
+            name == 'test-profile1'
+            description == 'another description'
+            language == 'de_DE'
+        }
+
+        when: "get the profile items"
+        result = parseJson(get("/domains/${completeDomain.id.uuidValue()}/profiles/${orderedProfiles[0].id}/items"))
+
+        then:
+        result.size() == 1
+        with(result[0]) {
+            name == "profile-tom"
+            subType == "CTL_TOM"
+            elementType == "control"
+        }
+
+        when: "get a single profile item"
+        result = parseJson(get("/domains/${completeDomain.id.uuidValue()}/profiles/${orderedProfiles[0].id}/items/${result[0].id}"))
+
+        then:
+        with(result) {
+            name == "profile-tom"
+            subType == "CTL_TOM"
+            elementType == "control"
+        }
     }
 
     @WithUserDetails("user@domain.example")

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2023  Urs Zeidler
+ * Copyright (C) 2021  Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,28 +17,24 @@
  ******************************************************************************/
 package org.veo.adapter.presenter.api.dto;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
 
-import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.ProfileItem;
-import org.veo.core.entity.aspects.SubTypeAspect;
+import org.veo.adapter.presenter.api.Patterns;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
+/** Partial catalog item */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public abstract class AbstractProfileItemDto extends AbstractCatalogItemDto {
-
-  @NotNull
-  @Schema(description = "The status for the Element.", example = "NEW")
-  @Size(min = 1, max = SubTypeAspect.STATUS_MAX_LENGTH)
-  private String status;
-
-  @Override
-  public Class<? extends Identifiable> getModelInterface() {
-    return ProfileItem.class;
-  }
+public class ShortProfileItemDto extends AbstractProfileItemDto {
+  @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
+  @Schema(
+      description = "ID must be a valid UUID string following RFC 4122.",
+      example = "adf037f1-0089-48ad-9177-92269918758b",
+      format = "uuid")
+  @ToString.Include
+  private String id;
 }

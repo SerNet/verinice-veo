@@ -25,6 +25,11 @@ public interface Profile extends Versioned, Identifiable, ClientOwned {
   String SINGULAR_TERM = "profile";
   String PLURAL_TERM = "profiles";
 
+  @Override
+  default Class<? extends Identifiable> getModelInterface() {
+    return Profile.class;
+  }
+
   String getName();
 
   void setName(String name);

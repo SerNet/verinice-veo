@@ -59,6 +59,8 @@ import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.RequirementImplementationDto;
 import org.veo.adapter.presenter.api.dto.RiskAffectedDto;
 import org.veo.adapter.presenter.api.dto.ShortCatalogItemDto;
+import org.veo.adapter.presenter.api.dto.ShortProfileDto;
+import org.veo.adapter.presenter.api.dto.ShortProfileItemDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetInDomainDto;
@@ -120,6 +122,7 @@ import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.Versioned;
 import org.veo.core.entity.compliance.ControlImplementation;
@@ -175,6 +178,15 @@ public final class EntityToDtoTransformer {
     profileDto.setDescription(profile.getDescription());
     profileDto.setLanguage(profile.getLanguage());
     profileDto.setItems(convertSet(profile.getItems(), this::transformProfileItem2Dto));
+    return profileDto;
+  }
+
+  public ShortProfileDto transformProfile2ListDto(Profile profile) {
+    ShortProfileDto profileDto = new ShortProfileDto();
+    profileDto.setId(profile.getIdAsString());
+    profileDto.setName(profile.getName());
+    profileDto.setDescription(profile.getDescription());
+    profileDto.setLanguage(profile.getLanguage());
     return profileDto;
   }
 
@@ -463,11 +475,20 @@ public final class EntityToDtoTransformer {
     var target = new ShortCatalogItemDto();
     target.setId(source.getId().uuidValue());
     mapCatalogItem(source, target);
+    mapVersionedSelfReferencingProperties(source, target);
     return target;
   }
 
-  private void mapCatalogItem(CatalogItem source, AbstractCatalogItemDto target) {
+  public ShortProfileItemDto transformShortProfileItem2Dto(@Valid ProfileItem source) {
+    var target = new ShortProfileItemDto();
+    target.setId(source.getId().uuidValue());
+    mapCatalogItem(source, target);
+    target.setStatus(source.getStatus());
     mapVersionedSelfReferencingProperties(source, target);
+    return target;
+  }
+
+  private void mapCatalogItem(TemplateItem source, AbstractCatalogItemDto target) {
     mapNameableProperties(source, target);
     target.setElementType(source.getElementType());
     target.setSubType(source.getSubType());

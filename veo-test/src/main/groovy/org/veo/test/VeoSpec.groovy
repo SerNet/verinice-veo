@@ -39,6 +39,8 @@ import org.veo.core.entity.Key
 import org.veo.core.entity.LinkTailoringReference
 import org.veo.core.entity.Person
 import org.veo.core.entity.Process
+import org.veo.core.entity.Profile
+import org.veo.core.entity.ProfileItem
 import org.veo.core.entity.Scenario
 import org.veo.core.entity.Scope
 import org.veo.core.entity.TailoringReference
@@ -83,6 +85,8 @@ import org.veo.persistence.entity.jpa.IncidentData
 import org.veo.persistence.entity.jpa.LinkTailoringReferenceData
 import org.veo.persistence.entity.jpa.PersonData
 import org.veo.persistence.entity.jpa.ProcessData
+import org.veo.persistence.entity.jpa.ProfileData
+import org.veo.persistence.entity.jpa.ProfileItemData
 import org.veo.persistence.entity.jpa.ScenarioData
 import org.veo.persistence.entity.jpa.ScopeData
 import org.veo.persistence.entity.jpa.UnitData
@@ -203,6 +207,24 @@ abstract class VeoSpec extends Specification {
     static DomainTemplateData newDomainTemplate(@DelegatesTo(value = DomainTemplate.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.DomainTemplate") Closure init = null) {
         return factory.createDomainTemplate(null, "me", "1.0.0", Key.newUuid()).tap {
+            VeoSpec.execute(it, init)
+            VeoSpec.name(it)
+            VeoSpec.version(it)
+        }
+    }
+
+    static ProfileData newProfile(DomainBase domain,@DelegatesTo(value = Profile.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.Profile") Closure init = null) {
+        return factory.createProfile(domain).tap {
+            VeoSpec.execute(it, init)
+            VeoSpec.name(it)
+            VeoSpec.version(it)
+        }
+    }
+
+    static ProfileItemData newProfileItem(Profile profile,@DelegatesTo(value = ProfileItem.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.ProfileItem") Closure init = null) {
+        return factory.createProfileItem(profile).tap {
             VeoSpec.execute(it, init)
             VeoSpec.name(it)
             VeoSpec.version(it)

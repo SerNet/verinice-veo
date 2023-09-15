@@ -33,10 +33,10 @@ import jakarta.persistence.OneToMany;
 import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Displayable;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
@@ -52,7 +52,7 @@ import lombok.ToString;
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
-public class ProfileData extends IdentifiableVersionedData implements Profile {
+public class ProfileData extends IdentifiableVersionedData implements Profile, Displayable {
   @Id
   @ToString.Include
   @GeneratedValue(generator = "UUID")
@@ -94,11 +94,6 @@ public class ProfileData extends IdentifiableVersionedData implements Profile {
   }
 
   @Override
-  public Class<? extends Identifiable> getModelInterface() {
-    return ProfileItem.class;
-  }
-
-  @Override
   public DomainBase getOwner() {
     return domain != null ? domain : domainTemplate;
   }
@@ -122,5 +117,10 @@ public class ProfileData extends IdentifiableVersionedData implements Profile {
   public Optional<Client> getOwningClient() {
     if (domain == null) return Optional.empty();
     else return domain.getOwningClient();
+  }
+
+  @Override
+  public String getDisplayName() {
+    return name;
   }
 }

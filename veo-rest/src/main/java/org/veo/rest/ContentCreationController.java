@@ -76,6 +76,7 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.decision.Decision;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.profile.ProfileDefinition;
@@ -360,7 +361,7 @@ public class ContentCreationController extends AbstractVeoController {
   @PostMapping(value = "/domains/{domainId}/profiles")
   @Operation(summary = "Creates a profile for a domain")
   @ApiResponse(responseCode = "201", description = "Profile created")
-  public CompletableFuture<ResponseEntity<ApiResponseBody>> createProfileForDomain(
+  public CompletableFuture<ResponseEntity<IdRef<Profile>>> createProfileForDomain(
       Authentication auth,
       @Pattern(
               regexp = Patterns.UUID,
@@ -375,21 +376,22 @@ public class ContentCreationController extends AbstractVeoController {
           String unitId,
       @Valid @NotNull @RequestBody CreateProfileDto createParameter) {
     Client client = getAuthenticatedClient(auth);
-    return useCaseInteractor.execute(
-        createProfileFromUnitUseCase,
-        new CreateProfileFromUnitUseCase.InputData(
-            Key.uuidFrom(domainId),
-            client,
-            Key.uuidFrom(unitId),
-            null,
-            new ProfileDefinition(
-                createParameter.getName(),
-                createParameter.getDescription(),
-                createParameter.getLanguage(),
+    return useCaseInteractor
+        .execute(
+            createProfileFromUnitUseCase,
+            new CreateProfileFromUnitUseCase.InputData(
+                Key.uuidFrom(domainId),
+                client,
+                Key.uuidFrom(unitId),
                 null,
-                null)),
-        out -> RestApiResponse.noContent());
-    // TODO: #2393 return the created resource
+                new ProfileDefinition(
+                    createParameter.getName(),
+                    createParameter.getDescription(),
+                    createParameter.getLanguage(),
+                    null,
+                    null)),
+            out -> IdRef.from(out.getProfile(), referenceAssembler))
+        .thenApply(result -> ResponseEntity.status(201).body(result));
   }
 
   @PutMapping(value = "/domains/{domainId}/profiles/{profileId}")

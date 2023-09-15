@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -35,7 +34,6 @@ import org.veo.adapter.presenter.api.dto.AbstractProfileTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.create.CreateTailoringReferenceDto;
 import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.aspects.SubTypeAspect;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -54,11 +52,6 @@ public class FullProfileItemDto extends AbstractProfileItemDto {
   @ToString.Include
   private String id;
 
-  @NotNull
-  @Schema(description = "The status for the Element.", example = "NEW")
-  @Size(min = 1, max = SubTypeAspect.STATUS_MAX_LENGTH)
-  private String status;
-
   @Valid
   @Schema(
       description = "Groups of customizable attributes - see '/schemas'",
@@ -72,8 +65,13 @@ public class FullProfileItemDto extends AbstractProfileItemDto {
       include = As.EXISTING_PROPERTY,
       property = "referenceType")
   @JsonSubTypes({
-    @JsonSubTypes.Type(value = FullProfileTailoringReferenceDto.class, name = "LINK_EXTERNAL"),
-    @JsonSubTypes.Type(value = FullProfileTailoringReferenceDto.class, name = "LINK")
+    @JsonSubTypes.Type(value = FullProfileTailoringReferenceDto.class, name = "OMIT"),
+    @JsonSubTypes.Type(value = FullProfileTailoringReferenceDto.class, name = "COPY"),
+    @JsonSubTypes.Type(value = FullProfileTailoringReferenceDto.class, name = "COPY_ALWAYS"),
+    @JsonSubTypes.Type(value = FullProfileTailoringReferenceDto.class, name = "PART"),
+    @JsonSubTypes.Type(value = FullProfileTailoringReferenceDto.class, name = "COMPOSITE"),
+    @JsonSubTypes.Type(value = FullLinkProfileTailoringReferenceDto.class, name = "LINK_EXTERNAL"),
+    @JsonSubTypes.Type(value = FullLinkProfileTailoringReferenceDto.class, name = "LINK")
   })
   @Schema(description = "References to other catalog items in the same domain")
   private Set<AbstractProfileTailoringReferenceDto> tailoringReferences = new HashSet<>();

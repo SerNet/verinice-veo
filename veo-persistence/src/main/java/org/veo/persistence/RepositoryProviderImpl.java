@@ -35,6 +35,7 @@ import org.veo.core.entity.Incident;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.RiskRelated;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
@@ -51,6 +52,7 @@ import org.veo.core.repository.IdentifiableVersionedRepository;
 import org.veo.core.repository.IncidentRepository;
 import org.veo.core.repository.PersonRepository;
 import org.veo.core.repository.ProcessRepository;
+import org.veo.core.repository.ProfileRepository;
 import org.veo.core.repository.Repository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.ScenarioRepository;
@@ -84,6 +86,8 @@ public class RepositoryProviderImpl implements RepositoryProvider {
 
   @Autowired private CatalogItemRepository catalogItemRepository;
 
+  @Autowired private ProfileRepository profileRepository;
+
   @SuppressWarnings("unchecked")
   @Override
   public <T extends Identifiable> Repository<T, Key<UUID>> getRepositoryFor(Class<T> entityType) {
@@ -101,6 +105,9 @@ public class RepositoryProviderImpl implements RepositoryProvider {
     }
     if (CatalogItem.class.isAssignableFrom(entityType)) {
       return (Repository<T, Key<UUID>>) catalogItemRepository;
+    }
+    if (Profile.class.isAssignableFrom(entityType)) {
+      return (Repository<T, Key<UUID>>) profileRepository;
     }
     throw new IllegalArgumentException("Unsupported entity type " + entityType);
   }
@@ -125,6 +132,9 @@ public class RepositoryProviderImpl implements RepositoryProvider {
     }
     if (CatalogItem.class.isAssignableFrom(entityType)) {
       return (IdentifiableVersionedRepository<T>) catalogItemRepository;
+    }
+    if (Profile.class.isAssignableFrom(entityType)) {
+      return (IdentifiableVersionedRepository<T>) profileRepository;
     }
     throw new IllegalArgumentException("Unsupported entity type " + entityType);
   }

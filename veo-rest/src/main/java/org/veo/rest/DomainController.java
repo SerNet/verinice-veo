@@ -61,7 +61,10 @@ import org.veo.adapter.presenter.api.common.ApiResponseBody;
 import org.veo.adapter.presenter.api.dto.PageDto;
 import org.veo.adapter.presenter.api.dto.SearchQueryDto;
 import org.veo.adapter.presenter.api.dto.ShortCatalogItemDto;
+import org.veo.adapter.presenter.api.dto.ShortProfileDto;
+import org.veo.adapter.presenter.api.dto.ShortProfileItemDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
+import org.veo.adapter.presenter.api.dto.full.FullProfileDto;
 import org.veo.adapter.presenter.api.io.mapper.PagingMapper;
 import org.veo.adapter.presenter.api.io.mapper.QueryInputMapper;
 import org.veo.core.ExportDto;
@@ -69,6 +72,8 @@ import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Profile;
+import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.statistics.CatalogItemsTypeCount;
 import org.veo.core.entity.statistics.ElementStatusCounts;
 import org.veo.core.usecase.UseCase;
@@ -81,6 +86,11 @@ import org.veo.core.usecase.domain.GetCatalogItemsTypeCountUseCase;
 import org.veo.core.usecase.domain.GetDomainUseCase;
 import org.veo.core.usecase.domain.GetDomainsUseCase;
 import org.veo.core.usecase.domain.GetElementStatusCountUseCase;
+import org.veo.core.usecase.profile.GetProfileItemUseCase;
+import org.veo.core.usecase.profile.GetProfileItemsUseCase;
+import org.veo.core.usecase.profile.GetProfileUseCase;
+import org.veo.core.usecase.profile.GetProfilesUseCase;
+import org.veo.core.usecase.service.TypedId;
 import org.veo.persistence.entity.jpa.ProfileReferenceFactoryImpl;
 import org.veo.rest.annotations.UnitUuidParam;
 
@@ -118,6 +128,10 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   private final GetCatalogItemsTypeCountUseCase getCatalogItemsTypeCountUseCase;
   private final ApplyJsonProfileUseCase applyJsonProfileUseCase;
   private final QueryCatalogItemsUseCase queryCatalogItemsUseCase;
+  private final GetProfileItemsUseCase getProfileItemsUseCase;
+  private final GetProfileItemUseCase getProfileItemUseCase;
+  private final GetProfilesUseCase getProfilesUseCase;
+  private final GetProfileUseCase getProfileUseCase;
 
   private final ApplyProfileIncarnationDescriptionUseCase applyProfileIncarnationDescriptionUseCase;
   private final GetProfileIncarnationDescriptionUseCase getProfileIncarnationDescriptionUseCase;
@@ -191,6 +205,100 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             ExportDomainUseCase.OutputData::getExportDomain);
     return domainFuture.thenApply(
         domainDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(domainDto));
+  }
+
+  @GetMapping("/{domainId}/profiles")
+  @Operation(summary = "Loads all profiles in the domain")
+  public @Valid Future<List<ShortProfileDto>> getProfiles(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId) {
+    return useCaseInteractor.execute(
+        getProfilesUseCase,
+        new GetProfilesUseCase.InputData(
+            getAuthenticatedClient(auth), TypedId.from(domainId, Domain.class)),
+        out ->
+            out.getProfiles().stream()
+                .map(entityToDtoTransformer::transformProfile2ListDto)
+                .toList());
+  }
+
+  @GetMapping("/{domainId}/profiles/{profileId}")
+  @Operation(summary = "Loads a profile in the domain")
+  public @Valid Future<ResponseEntity<FullProfileDto>> getProfile(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String profileId,
+      WebRequest request) {
+    if (getEtag(Profile.class, profileId).map(request::checkNotModified).orElse(false)) {
+      return null;
+    }
+
+    return useCaseInteractor
+        .execute(
+            getProfileUseCase,
+            new GetProfileUseCase.InputData(
+                getAuthenticatedClient(auth),
+                TypedId.from(domainId, Domain.class),
+                TypedId.from(profileId, Profile.class)),
+            t -> entityToDtoTransformer.transformProfile2Dto(t.getProfile()))
+        .thenApply(
+            profileDto -> ResponseEntity.ok().cacheControl(defaultCacheControl).body(profileDto));
+  }
+
+  @GetMapping("/{domainId}/profiles/{profileId}/items")
+  @Operation(summary = "Loads all profile items in the profile")
+  public @Valid Future<List<ShortProfileItemDto>> getProfileItems(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String profileId,
+      WebRequest request) {
+    return useCaseInteractor.execute(
+        getProfileItemsUseCase,
+        new GetProfileItemsUseCase.InputData(
+            getAuthenticatedClient(auth),
+            TypedId.from(domainId, Domain.class),
+            TypedId.from(profileId, Profile.class)),
+        out ->
+            out.getItems().stream()
+                .map(v -> entityToDtoTransformer.transformShortProfileItem2Dto(v))
+                .toList());
+  }
+
+  @GetMapping("/{domainId}/profiles/{profileId}/items/{itemId}")
+  @Operation(summary = "Loads a profile item in the profile")
+  public @Valid Future<ResponseEntity<ShortProfileItemDto>> getProfileItem(
+      @Parameter(hidden = true) Authentication auth,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String domainId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String profileId,
+      @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
+          @PathVariable
+          String itemId,
+      WebRequest request) {
+    return useCaseInteractor.execute(
+        getProfileItemUseCase,
+        new GetProfileItemUseCase.InputData(
+            getAuthenticatedClient(auth),
+            TypedId.from(domainId, Domain.class),
+            TypedId.from(profileId, Profile.class),
+            TypedId.from(itemId, ProfileItem.class)),
+        out ->
+            ResponseEntity.ok()
+                .cacheControl(defaultCacheControl)
+                .body(entityToDtoTransformer.transformShortProfileItem2Dto(out.getProfileItems())));
   }
 
   @GetMapping("/{domainId}/catalog-items")
