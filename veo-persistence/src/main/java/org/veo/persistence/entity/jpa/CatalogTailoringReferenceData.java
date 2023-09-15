@@ -27,13 +27,13 @@ import org.veo.core.entity.TailoringReferenceType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-@Entity(name = "tailoringreference")
+@Entity(name = "catalog_tailoring_reference")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 public class CatalogTailoringReferenceData extends CatalogReferenceData
     implements TailoringReference<CatalogItem> {
 
-  @Column(name = "referencetype", columnDefinition = "int4")
+  @Column(name = "reference_type", columnDefinition = "int4")
   @EqualsAndHashCode.Include
   private TailoringReferenceType referenceType;
 

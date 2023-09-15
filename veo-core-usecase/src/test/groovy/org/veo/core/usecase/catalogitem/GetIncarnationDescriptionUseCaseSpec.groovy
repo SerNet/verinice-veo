@@ -68,7 +68,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         tr.id >> trId
         tr.referenceType >> TailoringReferenceType.COPY
         tr.owner >> item1
-        tr.catalogItem >> item2
+        tr.target >> item2
 
         item1.tailoringReferences >> [tr]
 
@@ -95,7 +95,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         tr.referenceType >> TailoringReferenceType.LINK
         tr.owner >> item1
         tr.linkType >> "link.type"
-        tr.catalogItem >> item2
+        tr.target >> item2
 
         item1.tailoringReferences >> [tr]
         item1.elementType >> "control"
@@ -128,7 +128,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         tr.referenceType >> TailoringReferenceType.LINK_EXTERNAL
         tr.linkType >> "external.link.type"
         tr.owner >> item1
-        tr.catalogItem >> item2
+        tr.target >> item2
 
         item1.tailoringReferences >> [tr]
         item1.elementType >> "control"
@@ -155,7 +155,7 @@ class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSp
         LinkTailoringReference tr = Mock()
         tr.referenceType >> TailoringReferenceType.LINK
         tr.owner >> item1
-        tr.catalogItem >> item1
+        tr.target >> item1
         item1.tailoringReferences >> [tr]
         item1.getAppliedCatalogItems() >> []
         item1.getElementType() >> "control"

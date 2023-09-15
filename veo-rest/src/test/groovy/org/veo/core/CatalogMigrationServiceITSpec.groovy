@@ -149,11 +149,11 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
             tailoringReferences = [
                 newLinkTailoringReference(it, TailoringReferenceType.LINK) {
                     it.linkType = "author"
-                    it.catalogItem = manualAuthor
+                    it.target = manualAuthor
                 },
                 newLinkTailoringReference(it, TailoringReferenceType.LINK) {
                     it.linkType = "author"
-                    it.catalogItem = randomAsset
+                    it.target = randomAsset
                 },
             ]
         })
@@ -167,13 +167,13 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
         and:
         def domain = executeInTransaction {
             domainRepository.getById(domain.id).tap{
-                it.catalogItems*.tailoringReferences*.catalogItem
+                it.catalogItems*.tailoringReferences*.target
             }
         }
 
         then:
         with(domain.catalogItems.find{it.namespace == "routerManual"}) {
-            it.tailoringReferences*.catalogItem*.namespace == ["manualAuthor"]
+            it.tailoringReferences*.target*.namespace == ["manualAuthor"]
         }
     }
 
@@ -193,7 +193,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
             tailoringReferences = [
                 newLinkTailoringReference(it, TailoringReferenceType.LINK_EXTERNAL) {
                     it.linkType = "author"
-                    it.catalogItem = routerManual
+                    it.target = routerManual
                     it.attributes.copyrightYear = 2019
                     it.attributes.placeOfAuthoring = 22
                 }
@@ -207,7 +207,7 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
             tailoringReferences = [
                 newLinkTailoringReference(it, TailoringReferenceType.LINK) {
                     it.linkType = "author"
-                    it.catalogItem = manualAuthor
+                    it.target = manualAuthor
                     it.attributes.copyrightYear = "2019"
                     it.attributes.placeOfAuthoring = "She wrote it in her armchair"
                 },
@@ -223,19 +223,19 @@ class CatalogMigrationServiceITSpec extends VeoSpringSpec{
         and: "fetching the catalog"
         def domain = executeInTransaction {
             domainRepository.findById(domain.id).get().tap{
-                it.catalogItems*.tailoringReferences*.catalogItem
+                it.catalogItems*.tailoringReferences*.target
             }
         }
 
         then: "only the valid attributes remain"
         with(domain.catalogItems.find{it.namespace == "manualAuthor"}) {
-            with(it.tailoringReferences.find{it.catalogItem.namespace == "routerManual"}) {
+            with(it.tailoringReferences.find{it.target.namespace == "routerManual"}) {
                 attributes.copyrightYear == 2019
                 attributes.placeOfAuthoring == null
             }
         }
         with(domain.catalogItems.find{it.namespace == "thermometerManual"}) {
-            with(it.tailoringReferences.find{it.catalogItem.namespace == "manualAuthor"}) {
+            with(it.tailoringReferences.find{it.target.namespace == "manualAuthor"}) {
                 attributes.copyrightYear == null
                 attributes.placeOfAuthoring == "She wrote it in her armchair"
             }

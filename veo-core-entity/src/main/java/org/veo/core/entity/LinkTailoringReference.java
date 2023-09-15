@@ -36,7 +36,7 @@ public interface LinkTailoringReference<T extends TemplateItem> extends Tailorin
 
   default T getLinkSourceItem() {
     if (getReferenceType().equals(TailoringReferenceType.LINK_EXTERNAL)) {
-      return getCatalogItem();
+      return getTarget();
     }
     return getOwner();
   }
@@ -45,6 +45,6 @@ public interface LinkTailoringReference<T extends TemplateItem> extends Tailorin
     if (getReferenceType().equals(TailoringReferenceType.LINK_EXTERNAL)) {
       return getOwner();
     }
-    return getCatalogItem();
+    return getTarget();
   }
 }

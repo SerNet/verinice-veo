@@ -31,6 +31,6 @@ import lombok.EqualsAndHashCode;
 @Data
 public class UpdateReferenceData extends CatalogReferenceData implements UpdateReference {
 
-  @Column(name = "updatetype", columnDefinition = "int4")
+  @Column(name = "update_type", columnDefinition = "int4")
   private ItemUpdateType updateType;
 }

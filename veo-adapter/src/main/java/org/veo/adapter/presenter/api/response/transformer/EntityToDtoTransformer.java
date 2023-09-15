@@ -452,8 +452,8 @@ public final class EntityToDtoTransformer {
 
     target.setReferenceType(source.getReferenceType());
 
-    if (source.getCatalogItem() != null) {
-      target.setCatalogItem(IdRef.from(source.getCatalogItem(), referenceAssembler));
+    if (source.getTarget() != null) {
+      target.setCatalogItem(IdRef.from(source.getTarget(), referenceAssembler));
     }
     return target;
   }

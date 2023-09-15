@@ -371,7 +371,7 @@ class StoredEventsMvcITSpec extends VeoMvcSpec {
                 status = "NEW"
             })
             newTailoringReference(item2, TailoringReferenceType.COPY) {
-                catalogItem = item1
+                target = item1
             }
         })
 

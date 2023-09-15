@@ -33,7 +33,7 @@ import lombok.EqualsAndHashCode;
 @Data
 public class ProfileTailoringReferenceData extends ProfileReferenceData
     implements TailoringReference<ProfileItem>, TemplateItemReference<ProfileItem> {
-  @Column(name = "referencetype", columnDefinition = "int4")
+  @Column(name = "reference_type", columnDefinition = "int4")
   private TailoringReferenceType referenceType;
 
   @Override

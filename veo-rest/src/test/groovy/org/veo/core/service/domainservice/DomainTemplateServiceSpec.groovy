@@ -65,7 +65,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         with (domainFromTemplate.catalogItems.sort { it.name }) {
             it[0].tailoringReferences.size()==1
             it[0].tailoringReferences.first().referenceType == TailoringReferenceType.LINK_EXTERNAL
-            it[0].tailoringReferences.first().catalogItem == it[5]
+            it[0].tailoringReferences.first().target == it[5]
             with(it[0]) {
                 name == 'Control-1'
                 abbreviation == 'c-1'
@@ -84,7 +84,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
 
             it[2].tailoringReferences.size()==1
             it[2].tailoringReferences.first().referenceType == TailoringReferenceType.LINK
-            it[2].tailoringReferences.first().catalogItem == it[0]
+            it[2].tailoringReferences.first().target == it[0]
             with(it[2]) {
                 name == 'Control-3'
                 abbreviation == 'c-3'
@@ -144,7 +144,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             it[0].description.startsWith('Lore')
             it[0].tailoringReferences.size()==1
             it[0].tailoringReferences.first().referenceType == TailoringReferenceType.LINK_EXTERNAL
-            it[0].tailoringReferences.first().catalogItem == it[5]
+            it[0].tailoringReferences.first().target == it[5]
 
             it[1].name == 'Control-2'
             it[1].abbreviation == 'c-2'
@@ -154,7 +154,7 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             it[2].abbreviation == 'c-3'
             it[2].tailoringReferences.size()==1
             it[2].tailoringReferences.first().referenceType == TailoringReferenceType.LINK
-            it[2].tailoringReferences.first().catalogItem == it[0]
+            it[2].tailoringReferences.first().target == it[0]
 
             it[3].name == 'Control-cc-1'
 

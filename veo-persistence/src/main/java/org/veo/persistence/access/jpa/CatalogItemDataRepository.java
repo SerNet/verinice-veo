@@ -41,7 +41,7 @@ public interface CatalogItemDataRepository
               left join fetch ci.domain
               left join fetch ci.domainTemplate
               left join fetch ci.tailoringReferences tr
-              left join fetch tr.catalogItem
+              left join fetch tr.target
               where ci.dbId in ?1
           """)
   Iterable<CatalogItemData> findAllByIdsFetchDomainAndTailoringReferences(Iterable<String> ids);

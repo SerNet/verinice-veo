@@ -185,7 +185,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
         })
 
         newLinkTailoringReference(ci, LINK) {
-            catalogItem = itemP1
+            target = itemP1
             linkType = "p2->p1"
         }
 
@@ -213,7 +213,7 @@ class DomainTemplateJpaSpec extends AbstractJpaSpec {
 
             tailoringReferences.size() == 1
             tailoringReferences[0].linkType == 'p2->p1'
-            tailoringReferences[0].catalogItem.name == 'p1'
+            tailoringReferences[0].target.name == 'p1'
         }
         d.elementTypeDefinitions.size() == 8
     }

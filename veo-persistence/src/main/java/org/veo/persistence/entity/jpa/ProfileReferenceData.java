@@ -48,7 +48,7 @@ public abstract class ProfileReferenceData
   private String dbId;
 
   @ManyToOne(targetEntity = ProfileItemData.class)
-  private ProfileItem catalogItem;
+  private ProfileItem target;
 
   @ManyToOne(targetEntity = ProfileItemData.class, optional = false)
   private ProfileItem owner;

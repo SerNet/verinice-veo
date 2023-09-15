@@ -97,7 +97,7 @@ public class GetIncarnationDescriptionUseCase
                     catalogItem.getTailoringReferences().stream()
                         .filter(TailoringReferenceTyped.IS_ALL_LINK_PREDICATE)
                         .map(l -> (LinkTailoringReference<CatalogItem>) l)
-                        .map(LinkTailoringReference::getCatalogItem));
+                        .map(LinkTailoringReference::getTarget));
 
     Map<Key<UUID>, Element> referencedItemsByCatalogItemId = new HashMap<>();
     Map<Class<? extends Identifiable>, List<CatalogItem>> linkedItemsByElementType =
@@ -144,8 +144,7 @@ public class GetIncarnationDescriptionUseCase
       CatalogItem catalogItem, Map<Key<UUID>, Element> referencedItemsByCatalogItemId) {
     return catalogItem.getTailoringReferences().stream()
         .filter(TailoringReferenceTyped.IS_PARAMETER_REF)
-        .map(
-            tr -> mapParameter(tr, referencedItemsByCatalogItemId.get(tr.getCatalogItem().getId())))
+        .map(tr -> mapParameter(tr, referencedItemsByCatalogItemId.get(tr.getTarget().getId())))
         .toList();
   }
 

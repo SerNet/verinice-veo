@@ -82,8 +82,8 @@ public interface CatalogItem
 
   default void addElementsToCopy(
       TailoringReference<CatalogItem> reference, Set<CatalogItem> itemList) {
-    itemList.add(reference.getCatalogItem());
-    reference.getCatalogItem().getTailoringReferences().stream()
+    itemList.add(reference.getTarget());
+    reference.getTarget().getTailoringReferences().stream()
         .filter(TailoringReferenceTyped.IS_COPY_PREDICATE)
         .forEach(rr -> addElementsToCopy(rr, itemList));
   }

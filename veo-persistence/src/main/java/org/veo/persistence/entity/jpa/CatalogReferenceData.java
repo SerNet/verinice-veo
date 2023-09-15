@@ -48,7 +48,7 @@ public abstract class CatalogReferenceData
   private String dbId;
 
   @ManyToOne(targetEntity = CatalogItemData.class)
-  private CatalogItem catalogItem;
+  private CatalogItem target;
 
   @ManyToOne(targetEntity = CatalogItemData.class, optional = false)
   private CatalogItem owner;

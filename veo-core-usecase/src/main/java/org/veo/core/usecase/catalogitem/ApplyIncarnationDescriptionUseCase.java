@@ -280,7 +280,7 @@ public class ApplyIncarnationDescriptionUseCase
                 internalLinks.add(
                     new InternalResolveInfo(
                         entity,
-                        reference.getCatalogItem(),
+                        reference.getTarget(),
                         reference.getReferenceType(),
                         reference.getReferenceType().name(),
                         null,
@@ -310,7 +310,7 @@ public class ApplyIncarnationDescriptionUseCase
                 internalLinks.add(
                     new InternalResolveInfo(
                         entity,
-                        reference.getCatalogItem(),
+                        reference.getTarget(),
                         reference.getReferenceType(),
                         null,
                         null,
@@ -353,7 +353,7 @@ public class ApplyIncarnationDescriptionUseCase
                 internalLinks.add(
                     new InternalResolveInfo(
                         copyItem,
-                        linkTailoringReference.getCatalogItem(),
+                        linkTailoringReference.getTarget(),
                         linkTailoringReference.getReferenceType(),
                         linkTailoringReference.getLinkType(),
                         linkTailoringReference.getAttributes(),

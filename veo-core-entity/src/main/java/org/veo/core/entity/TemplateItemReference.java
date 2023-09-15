@@ -23,9 +23,9 @@ import java.util.Optional;
 public interface TemplateItemReference<T extends TemplateItem> extends Identifiable, ClientOwned {
 
   /** The reference to an other catalogitem. */
-  T getCatalogItem();
+  T getTarget();
 
-  void setCatalogItem(T aCatalogitem);
+  void setTarget(T target);
 
   T getOwner();
 

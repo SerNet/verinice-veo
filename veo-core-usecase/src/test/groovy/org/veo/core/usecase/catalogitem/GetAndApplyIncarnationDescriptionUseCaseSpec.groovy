@@ -84,7 +84,7 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         tr.referenceType >> TailoringReferenceType.LINK
         tr.owner >> item1
         tr.linkType >> "link.type"
-        tr.catalogItem >> item2
+        tr.target >> item2
 
         item1.tailoringReferences >> [tr]
 

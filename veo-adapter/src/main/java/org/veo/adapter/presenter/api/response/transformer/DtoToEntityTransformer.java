@@ -219,7 +219,7 @@ public final class DtoToEntityTransformer {
     target.setReferenceType(source.getReferenceType());
     if (source.getCatalogItem() != null) {
       CatalogItem resolve = idRefResolver.resolve(source.getCatalogItem());
-      target.setCatalogItem(resolve);
+      target.setTarget(resolve);
     }
 
     if (source.isLinkTailoringReferences()) {

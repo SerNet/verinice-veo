@@ -27,14 +27,14 @@ public enum TailoringReferenceType {
   /**
    * Defines a {@link TailoringReference} which corresponds to a {@link CustomLink} or a {@link
    * CompositeElement} in the element of the owning {@link CatalogItem}. The target of the feature
-   * need to be the element owned by the target of the {@link TailoringReference#getCatalogItem()}.
+   * need to be the element owned by the target of the {@link TailoringReference#getTarget()}.
    */
   LINK,
   /**
    * Defines a link in another {@link Element} which points to the {@link CatalogItem#getElement()}.
-   * The property {@link TailoringReference#getCatalogItem()} points to the {@link CatalogItem} in
-   * which the {@link ExternalTailoringReference#getExternalLink()} object is added. This describes
-   * the modeling of an opposite feature.
+   * The property {@link TailoringReference#getTarget()} points to the {@link CatalogItem} in which
+   * the {@link ExternalTailoringReference#getExternalLink()} object is added. This describes the
+   * modeling of an opposite feature.
    */
   LINK_EXTERNAL,
   /**
@@ -49,13 +49,12 @@ public enum TailoringReferenceType {
   COPY_ALWAYS,
   /**
    * Defines this references as part of a composite. The owner is the part and the {@link
-   * TailoringReference#getCatalogItem()} is the composite.
+   * TailoringReference#getTarget()} is the composite.
    */
   PART,
   /**
    * Defines this references as part of a composite. The owner is the composite and the {@link
-   * TailoringReference#getCatalogItem()} is the part. This is the opposite feature to {@link
-   * #PART}.
+   * TailoringReference#getTarget()} is the part. This is the opposite feature to {@link #PART}.
    */
   COMPOSITE,
   /**

@@ -177,14 +177,14 @@ public class CreateCatalogFromUnitUseCase
   private void createTailoringReference(
       CatalogItem source, CatalogItem target, TailoringReferenceType type) {
     TailoringReference tailoringReference = factory.createTailoringReference(source, type);
-    tailoringReference.setCatalogItem(target);
+    tailoringReference.setTarget(target);
   }
 
   private LinkTailoringReference createLinkReference(
       CustomLink link, CatalogItem source, CatalogItem target, TailoringReferenceType type) {
     LinkTailoringReference reference = factory.createLinkTailoringReference(source, type);
     reference.setAttributes(link.getAttributes());
-    reference.setCatalogItem(target);
+    reference.setTarget(target);
     reference.setLinkType(link.getType());
     return reference;
   }

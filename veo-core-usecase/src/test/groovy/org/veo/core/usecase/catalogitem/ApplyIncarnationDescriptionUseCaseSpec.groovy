@@ -134,7 +134,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         etr.id >> trId
         etr.referenceType >> TailoringReferenceType.LINK_EXTERNAL
         etr.owner >> item1
-        etr.catalogItem >> item2
+        etr.target >> item2
         etr.externalLink >> link
 
         item1.tailoringReferences >> [etr]
@@ -169,7 +169,7 @@ class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescription
         LinkTailoringReference tr = Mock()
         tr.referenceType >> TailoringReferenceType.LINK
         tr.owner >> item1
-        tr.catalogItem >> item2
+        tr.target >> item2
 
         item1.tailoringReferences >> [tr]
 

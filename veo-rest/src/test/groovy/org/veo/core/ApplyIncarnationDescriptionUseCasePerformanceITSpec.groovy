@@ -141,7 +141,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
             })
 
             newTailoringReference(item3, TailoringReferenceType.COPY) {
-                catalogItem = item2
+                target = item2
             }
 
             CatalogItem item4 = newCatalogItem(domain, {
@@ -159,11 +159,11 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
             })
 
             newTailoringReference(item5, TailoringReferenceType.COPY) {
-                catalogItem = item2
+                target = item2
             }
 
             newLinkTailoringReference(item5, TailoringReferenceType.LINK) {
-                catalogItem = item3
+                target = item3
                 linkType = "aLink"
             }
 
@@ -175,7 +175,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
             })
 
             newLinkTailoringReference(item6, TailoringReferenceType.LINK_EXTERNAL) {
-                catalogItem = item2
+                target = item2
                 linkType = 'externallinktest'
             }
 

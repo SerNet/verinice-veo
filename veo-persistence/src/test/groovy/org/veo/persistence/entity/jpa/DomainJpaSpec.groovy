@@ -154,7 +154,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
             name = 'c3'
         })
         newTailoringReference(item3, TailoringReferenceType.COPY) {
-            catalogItem = item2
+            target = item2
         }
 
         when: "saving"
@@ -214,7 +214,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
             status = "NEW"
         })
         newTailoringReference(item3, TailoringReferenceType.COPY) {
-            catalogItem = item2
+            target = item2
         }
         CatalogItem item4 = newCatalogItem(domain0, {
             elementType = "asset"
@@ -229,10 +229,10 @@ class DomainJpaSpec extends AbstractJpaSpec {
             status = "NEW"
         })
         newTailoringReference(item5, TailoringReferenceType.COPY) {
-            catalogItem = item2
+            target = item2
         }
         newLinkTailoringReference(item5, TailoringReferenceType.LINK) {
-            catalogItem = item3
+            target = item3
             linkType = 'linktest'
         }
 
@@ -243,7 +243,7 @@ class DomainJpaSpec extends AbstractJpaSpec {
             status = "NEW"
         })
         newLinkTailoringReference(item6, TailoringReferenceType.LINK_EXTERNAL) {
-            catalogItem = item2
+            target = item2
             linkType = 'externallinktest'
         }
 
