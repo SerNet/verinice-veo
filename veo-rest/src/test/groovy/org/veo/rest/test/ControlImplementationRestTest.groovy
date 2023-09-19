@@ -253,11 +253,45 @@ class ControlImplementationRestTest extends VeoRestTest {
         ]).body.resourceId
 
         when: "altering the control of the RI"
-        var getResponse = get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id")
-        getResponse.body.control.targetUri = "/controls/$subControl3Id"
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id").with{
+            body.control.targetUri = "/controls/$subControl3Id"
+            put(body._self, body, getETag(), 204)
+        }
 
-        then: "the change cannot be persisted"
-        put(getResponse.body._self, getResponse.body, getResponse.getETag(), 422).body.message == "Property 'control' is read-only and cannot be modified"
+        then: "the control remains the same"
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id")
+                .body.control.targetUri.endsWith("/controls/$subControl2Id")
+
+        where:
+        elementType << EntityType.RISK_AFFECTED_TYPES
+    }
+
+    def "missing resources are handled for #elementType.pluralTerm"() {
+        given:
+        var randomUuid = UUID.randomUUID().toString()
+        def elementId = post("/$elementType.pluralTerm", [
+            name: "risk affe",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            controlImplementations: [
+                [
+                    control: [targetUri: "/controls/$subControl2Id"]
+                ]
+            ]
+        ]).body.resourceId
+
+        expect:
+        get("/$elementType.pluralTerm/$randomUuid/control-implementations/$subControl2Id/requirement-implementations", 404)
+                .body.message == "$elementType.type.simpleName with ID $randomUuid not found"
+        get("/$elementType.pluralTerm/$elementId/control-implementations/$randomUuid/requirement-implementations", 404)
+                .body.message == "Control with ID $randomUuid not found"
+        get("/$elementType.pluralTerm/$elementId/control-implementations/$subControl3Id/requirement-implementations", 404)
+                .body.message == "$elementType.singularTerm $elementId does not implement control $subControl3Id"
+
+        and:
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$randomUuid", 404)
+                .body.message == "Control with ID $randomUuid not found"
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl3Id", 404)
+                .body.message == "$elementType.singularTerm $elementId contains no requirement implementation for control $subControl3Id"
 
         where:
         elementType << EntityType.RISK_AFFECTED_TYPES
