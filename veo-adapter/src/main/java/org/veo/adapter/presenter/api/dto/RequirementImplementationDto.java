@@ -30,7 +30,6 @@ import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.compliance.ImplementationStatus;
 import org.veo.core.entity.compliance.Origination;
-import org.veo.core.entity.exception.UnprocessableDataException;
 import org.veo.core.entity.state.RequirementImplementationState;
 
 import lombok.Data;
@@ -40,9 +39,6 @@ import lombok.EqualsAndHashCode;
 @Data
 public class RequirementImplementationDto extends AbstractVersionedDto
     implements RequirementImplementationState {
-  public static final String READ_ONLY_MESSAGE =
-      "Property '%s' is read-only and cannot be modified";
-
   @JsonIgnore private RequirementImplementationRef selfRef;
   IdRef<RiskAffected<?, ?>> origin;
   IdRef<Control> control;
@@ -57,14 +53,5 @@ public class RequirementImplementationDto extends AbstractVersionedDto
   @JsonProperty(value = "_self", access = JsonProperty.Access.READ_ONLY)
   public String getSelf() {
     return selfRef.getTargetUrl();
-  }
-
-  public void validateAgainstPathVariables(String originId, String controlId) {
-    if (origin != null && !originId.equals(origin.getId())) {
-      throw new UnprocessableDataException(READ_ONLY_MESSAGE.formatted("origin"));
-    }
-    if (control != null && !controlId.equals(control.getId())) {
-      throw new UnprocessableDataException(READ_ONLY_MESSAGE.formatted("control"));
-    }
   }
 }

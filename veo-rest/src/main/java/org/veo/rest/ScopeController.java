@@ -637,7 +637,6 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
       String riskAffectedId,
       String controlId,
       RequirementImplementationDto dto) {
-    dto.validateAgainstPathVariables(riskAffectedId, controlId);
     return useCaseInteractor.execute(
         updateRequirementImplementationUseCase,
         new UpdateRequirementImplementationUseCase.InputData(

@@ -53,9 +53,9 @@ public class UpdateRequirementImplementationUseCase
   @Override
   public OutputData execute(InputData input) {
     var origin = getEntity(input.origin, input.authenticatedClient);
-    ETag.validate(input.eTag, origin);
     var control = getEntity(input.control, input.authenticatedClient);
     var requirementImplementation = origin.getRequirementImplementation(control);
+    ETag.validate(input.eTag, origin);
     var idRefResolver = new DbIdRefResolver(repositoryProvider, input.authenticatedClient);
     entityStateMapper.mapState(input.state, requirementImplementation, idRefResolver);
     origin.setUpdatedAt(Instant.now());

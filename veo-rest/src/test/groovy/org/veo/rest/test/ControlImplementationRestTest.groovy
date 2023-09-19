@@ -230,11 +230,14 @@ class ControlImplementationRestTest extends VeoRestTest {
         ]).body.resourceId
 
         when: "altering the origin of the RI"
-        var getResponse = get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id")
-        getResponse.body.origin.targetUri = "/assets/$otherElementId"
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id").with{
+            body.origin.targetUri = "/assets/$otherElementId"
+            put(body._self, body, getETag(), 204)
+        }
 
-        then: "the change cannot be persisted"
-        put(getResponse.body._self, getResponse.body, getResponse.getETag(), 422).body.message == "Property 'origin' is read-only and cannot be modified"
+        then: "the origin remains the same"
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl2Id")
+                .body.origin.targetUri.endsWith("/$elementType.pluralTerm/$elementId")
 
         where:
         elementType << EntityType.RISK_AFFECTED_TYPES
@@ -292,6 +295,22 @@ class ControlImplementationRestTest extends VeoRestTest {
                 .body.message == "Control with ID $randomUuid not found"
         get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl3Id", 404)
                 .body.message == "$elementType.singularTerm $elementId contains no requirement implementation for control $subControl3Id"
+
+        and:
+        put("/$elementType.pluralTerm/$elementId/requirement-implementations/$randomUuid", [
+            origination: [targetUri: "/$elementType.pluralTerm/$elementId"],
+            control: [targetUri: "/controls/$subControl2Id"],
+            status: "YES",
+            origination: "SYSTEM_SPECIFIC",
+        ], "", 404)
+        .body.message == "Control with ID $randomUuid not found"
+        put("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl3Id", [
+            origination: [targetUri: "/$elementType.pluralTerm/$elementId"],
+            control: [targetUri: "/controls/$subControl2Id"],
+            status: "YES",
+            origination: "SYSTEM_SPECIFIC",
+        ], "", 404)
+        .body.message == "$elementType.singularTerm $elementId contains no requirement implementation for control $subControl3Id"
 
         where:
         elementType << EntityType.RISK_AFFECTED_TYPES

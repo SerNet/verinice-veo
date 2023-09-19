@@ -607,7 +607,6 @@ public class ProcessController extends AbstractCompositeElementController<Proces
       String riskAffectedId,
       String controlId,
       RequirementImplementationDto dto) {
-    dto.validateAgainstPathVariables(riskAffectedId, controlId);
     return useCaseInteractor.execute(
         updateRequirementImplementationUseCase,
         new UpdateRequirementImplementationUseCase.InputData(
