@@ -28,6 +28,7 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.definitions.CustomAspectDefinition
+import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.attribute.EnumAttributeDefinition
 import org.veo.core.entity.definitions.attribute.TextAttributeDefinition
 import org.veo.core.entity.risk.RiskDefinitionRef
@@ -92,7 +93,39 @@ class CatalogSpec extends VeoMvcSpec {
                 templateVersion = '1.0'
                 domainTemplate = domainTemplate
                 riskDefinitions = [(RISK_DEF_ID): createRiskDefinition(RISK_DEF_ID)]
+                applyElementTypeDefinition(newElementTypeDefinition("control", it) {
+                    subTypes = [
+                        CTL_TOM: newSubTypeDefinition {
+                            statuses = ["NEW", "NEW1"]
+                        }
+                    ]
+                    links = [
+                        link_to_zz1: newLinkDefinition("control", "CTL_TOM") {
+                            attributeDefinitions = [
+                                control_comment: new TextAttributeDefinition(),
+                                control_another_attribute: new TextAttributeDefinition(),
+                            ]
+                        },
+                        link_to_zz2: newLinkDefinition("control", "CTL_TOM") {
+                            attributeDefinitions = [
+                                control_comment: new TextAttributeDefinition(),
+                                control_operatingStage: new TextAttributeDefinition(),
+                            ]
+                        }
+                    ]
+                })
                 applyElementTypeDefinition(newElementTypeDefinition("process", it) {
+                    subTypes = [
+                        normalProcess: newSubTypeDefinition {},
+                        MY_SUBTYPE: newSubTypeDefinition {
+                            statuses = ["NEW", "START"]
+                        },
+                    ]
+                    links = [
+                        link_to_item_1: newLinkDefinition("control", "CTL_TOM"),
+                        link_to_item_2: newLinkDefinition("control", "CTL_TOM"),
+                        externallinktest: newLinkDefinition("control", "CTL_TOM"),
+                    ]
                     customAspects = [
                         process_resilience: newCustomAspectDefinition {
                             attributeDefinitions = [

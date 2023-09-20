@@ -52,6 +52,7 @@ import org.veo.core.entity.decision.Decision
 import org.veo.core.entity.decision.Rule
 import org.veo.core.entity.definitions.CustomAspectDefinition
 import org.veo.core.entity.definitions.ElementTypeDefinition
+import org.veo.core.entity.definitions.LinkDefinition
 import org.veo.core.entity.definitions.SubTypeDefinition
 import org.veo.core.entity.event.ClientEvent
 import org.veo.core.entity.inspection.Inspection
@@ -186,6 +187,15 @@ abstract class VeoSpec extends Specification {
     static CustomAspectDefinition newCustomAspectDefinition(@DelegatesTo(value = CustomAspectDefinition.class, strategy = Closure.DELEGATE_FIRST)
             @ClosureParams(value = SimpleType, options = "org.veo.core.entity.definitions.CustomAspectDefinition") Closure init = null) {
         return new CustomAspectDefinition().tap{
+            VeoSpec.execute(it, init)
+        }
+    }
+
+    static LinkDefinition newLinkDefinition(String targetType, String targetSubType, @DelegatesTo(value = LinkDefinition.class, strategy = Closure.DELEGATE_FIRST)
+            @ClosureParams(value = SimpleType, options = "org.veo.core.entity.definitions.LinkDefinition") Closure init = null) {
+        return new LinkDefinition().tap{
+            it.targetType = targetType
+            it.targetSubType = targetSubType
             VeoSpec.execute(it, init)
         }
     }
