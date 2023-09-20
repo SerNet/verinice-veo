@@ -18,13 +18,13 @@
 package org.veo.core.entity;
 
 /** owner is risk-affected, target is scenario * */
-public interface RiskTailoringReference extends TailoringReference<ProfileItem> {
+public interface RiskTailoringReference<T extends TemplateItem<T>> extends TailoringReference<T> {
 
-  void setMitigation(ProfileItem mitigation);
+  void setMitigation(T mitigation);
 
-  ProfileItem getMitigation();
+  T getMitigation();
 
-  void setRiskOwner(ProfileItem riskOwner);
+  void setRiskOwner(T riskOwner);
 
-  ProfileItem getRiskOwner();
+  T getRiskOwner();
 }

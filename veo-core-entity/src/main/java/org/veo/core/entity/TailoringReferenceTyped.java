@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.entity;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 import jakarta.validation.constraints.NotNull;
@@ -64,10 +65,11 @@ public interface TailoringReferenceTyped {
   /** Predicate to filter all tailorref mapping to a parameter */
   Predicate<? super TailoringReferenceTyped> IS_PARAMETER_REF =
       r ->
-          r.getReferenceType() == TailoringReferenceType.LINK
-              || r.getReferenceType() == TailoringReferenceType.LINK_EXTERNAL
-              || r.getReferenceType() == TailoringReferenceType.PART
-              || r.getReferenceType() == TailoringReferenceType.COMPOSITE;
+          !List.of(
+                  TailoringReferenceType.COPY,
+                  TailoringReferenceType.COPY_ALWAYS,
+                  TailoringReferenceType.OMIT)
+              .contains(r.getReferenceType());
 
   /** Is any kind of link References. */
   default boolean isLinkTailoringReferences() {
