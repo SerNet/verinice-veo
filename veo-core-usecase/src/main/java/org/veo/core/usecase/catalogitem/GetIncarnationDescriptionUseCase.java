@@ -87,6 +87,7 @@ public class GetIncarnationDescriptionUseCase
                   return catalogItem;
                 })
             .flatMap(ci -> ci.getAllElementsToCreate().stream())
+            .distinct()
             .toList();
 
     Stream<CatalogItem> linkedCatalogItems =
