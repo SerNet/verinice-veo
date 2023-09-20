@@ -284,10 +284,10 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   }
 
   @Override
-  public void apply(TemplateItem catalogItem) {
-    var domain = catalogItem.requireDomainMembership();
-    associateWithDomain(domain, catalogItem.getSubType(), catalogItem.getStatus());
-    catalogItem.getCustomAspects().entrySet().stream()
+  public void apply(TemplateItem<?> item) {
+    var domain = item.requireDomainMembership();
+    associateWithDomain(domain, item.getSubType(), item.getStatus());
+    item.getCustomAspects().entrySet().stream()
         .map(e -> new CustomAspectData(e.getKey(), e.getValue(), domain))
         .forEach(this::applyCustomAspect);
   }

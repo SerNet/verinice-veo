@@ -34,7 +34,7 @@ import org.veo.core.entity.exception.UnprocessableDataException;
  * set of UpdateReferences.
  */
 public interface CatalogItem
-    extends Identifiable, Displayable, ClientOwned, Versioned, TemplateItem {
+    extends Identifiable, Displayable, ClientOwned, Versioned, TemplateItem<CatalogItem> {
 
   String SINGULAR_TERM = "catalogitem";
   String PLURAL_TERM = "catalogitems";
@@ -87,9 +87,6 @@ public interface CatalogItem
         .filter(TailoringReferenceTyped.IS_COPY_PREDICATE)
         .forEach(rr -> addElementsToCopy(rr, itemList));
   }
-
-  /** All the tailoring references for this catalog item. */
-  Set<TailoringReference<CatalogItem>> getTailoringReferences();
 
   default void setTailoringReferences(Set<TailoringReference<CatalogItem>> tailoringReferences) {
     getTailoringReferences().clear();

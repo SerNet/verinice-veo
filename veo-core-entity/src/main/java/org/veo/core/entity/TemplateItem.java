@@ -18,13 +18,14 @@
 package org.veo.core.entity;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.exception.UnprocessableDataException;
 
-public interface TemplateItem extends Nameable, Identifiable {
+public interface TemplateItem<T extends TemplateItem<T>> extends Nameable, Identifiable {
 
   @Deprecated // TODO #2301 remove
   String getNamespace();
@@ -52,6 +53,9 @@ public interface TemplateItem extends Nameable, Identifiable {
   Domain requireDomainMembership();
 
   Element incarnate();
+
+  /** All the tailoring references for this template item. */
+  Set<TailoringReference<T>> getTailoringReferences();
 
   default Class<? extends Element> getElementInterface() {
     return (Class<? extends Element>) EntityType.getBySingularTerm(getElementType()).getType();

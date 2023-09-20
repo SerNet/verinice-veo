@@ -46,7 +46,7 @@ import lombok.ToString;
 @Entity(name = "profile_item")
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
-public class ProfileItemData extends TemplateItemData implements ProfileItem {
+public class ProfileItemData extends TemplateItemData<ProfileItem> implements ProfileItem {
   @Id
   @ToString.Include
   @GeneratedValue(generator = "UUID")

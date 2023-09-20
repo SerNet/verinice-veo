@@ -31,6 +31,6 @@ import lombok.EqualsAndHashCode;
 @AllArgsConstructor
 /** Contains the element together with the relevant tailoringreferences. */
 public class TemplateItemIncarnationDescription {
-  private TemplateItem item;
+  private TemplateItem<?> item;
   private List<TailoringReferenceParameter> references = new ArrayList<>();
 }

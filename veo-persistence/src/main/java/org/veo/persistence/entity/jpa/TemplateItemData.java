@@ -41,7 +41,8 @@ import lombok.ToString;
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
 @MappedSuperclass
-public abstract class TemplateItemData extends IdentifiableVersionedData implements TemplateItem {
+public abstract class TemplateItemData<T extends TemplateItem<T>> extends IdentifiableVersionedData
+    implements TemplateItem<T> {
 
   @Deprecated // TODO #2301 remove
   @ToString.Include

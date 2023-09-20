@@ -51,7 +51,7 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 @Data
-public class CatalogItemData extends TemplateItemData implements CatalogItem {
+public class CatalogItemData extends TemplateItemData<CatalogItem> implements CatalogItem {
 
   @Id
   @ToString.Include

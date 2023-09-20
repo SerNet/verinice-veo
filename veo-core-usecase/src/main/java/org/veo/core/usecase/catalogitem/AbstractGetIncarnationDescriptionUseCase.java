@@ -31,7 +31,7 @@ import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.exception.RuntimeModelException;
 import org.veo.core.usecase.parameter.TailoringReferenceParameter;
 
-public class AbstractGetIncarnationDescriptionUseCase<T extends TemplateItem> {
+public class AbstractGetIncarnationDescriptionUseCase<T extends TemplateItem<T>> {
 
   protected List<TailoringReferenceParameter> toParameters(
       Collection<TailoringReference<T>> catalogItem,
