@@ -266,27 +266,27 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
 
     def "Create a unit and one tom, then add the tom again and again"() {
         when: "We create one element"
-        def tomi = itemIdByAbbreviation("TOM-I", dsgvoDomainId)
-        def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${tomi}&mode=MANUAL").body
+        def dsg10 = itemIdByAbbreviation("DS-G.10", dsgvoDomainId)
+        def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${dsg10}&mode=MANUAL").body
         incarnate(incarnationDescription)
 
         and: "We add the same control from the catalog"
-        def idTom = get("/units/${unitId}/incarnations?itemIds=${tomi}&mode=MANUAL").body
+        def idTom = get("/units/${unitId}/incarnations?itemIds=${dsg10}&mode=MANUAL").body
         def toms = incarnate(idTom)
         def tom1 = get(toms[0].targetUri).body
 
         then: "we check some basic data"
         toms.size() == 1
-        tom1.abbreviation == "TOM-I"
+        tom1.abbreviation == "DS-G.10"
 
         when: "We add the same element again"
-        idTom = get("/units/${unitId}/incarnations?itemIds=${tomi}&mode=MANUAL").body
+        idTom = get("/units/${unitId}/incarnations?itemIds=${dsg10}&mode=MANUAL").body
         toms = incarnate(idTom)
         tom1 = get(toms[0].targetUri).body
 
         then: "we check some basic data"
         toms.size() == 1
-        tom1.abbreviation == "TOM-I"
+        tom1.abbreviation == "DS-G.10"
     }
 
     def "Create a unit and the whole dsgvo catalog in one step add controls after"() {
