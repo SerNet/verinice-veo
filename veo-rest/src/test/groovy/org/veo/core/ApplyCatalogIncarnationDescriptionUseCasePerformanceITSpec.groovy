@@ -32,7 +32,7 @@ import org.veo.core.entity.Process
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.usecase.UseCaseInteractor
-import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase
+import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.IncarnationRequestModeType
 import org.veo.persistence.access.ClientRepositoryImpl
@@ -42,7 +42,7 @@ import org.veo.persistence.access.jpa.StoredEventDataRepository
 import net.ttddyy.dsproxy.QueryCountHolder
 
 @WithUserDetails("user@domain.example")
-class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerformanceITSpec {
+class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerformanceITSpec {
 
     @Autowired
     private ClientRepositoryImpl clientRepository
@@ -64,7 +64,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
     private GetIncarnationDescriptionUseCase getIncarnationDescriptionUseCase
 
     @Autowired
-    private ApplyIncarnationDescriptionUseCase applyIncarnationDescriptionUseCase
+    private ApplyCatalogIncarnationDescriptionUseCase applyIncarnationDescriptionUseCase
 
     private Client client
     private Unit unit
@@ -87,7 +87,7 @@ class ApplyIncarnationDescriptionUseCasePerformanceITSpec extends AbstractPerfor
         queryCounts.select == 7
 
         when:
-        def inputData = new  ApplyIncarnationDescriptionUseCase.InputData(client, unit.id, description.references)
+        def inputData = new  ApplyCatalogIncarnationDescriptionUseCase.InputData(client, unit.id, description.references)
         QueryCountHolder.clear()
         executeInTransaction {
             synchronousUseCaseInteractor.execute(applyIncarnationDescriptionUseCase, inputData, Function.identity()).get()

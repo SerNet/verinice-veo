@@ -29,7 +29,7 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
     EntityFactory factory = Mock()
     GetIncarnationDescriptionUseCase usecaseGet = new GetIncarnationDescriptionUseCase(unitRepo, catalogItemRepository, entityRepo)
 
-    ApplyIncarnationDescriptionUseCase usecasePut = new ApplyIncarnationDescriptionUseCase(
+    ApplyCatalogIncarnationDescriptionUseCase usecasePut = new ApplyCatalogIncarnationDescriptionUseCase(
     unitRepo, catalogItemRepository, domainRepository, entityRepo, designatorService, factory)
 
     def setup() {
@@ -59,7 +59,7 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
         output.references.first().references == []
 
         when: "use this parameter object"
-        def o1 = usecasePut.execute(new ApplyIncarnationDescriptionUseCase.InputData(existingClient, existingUnit.id, output.references))
+        def o1 = usecasePut.execute(new ApplyCatalogIncarnationDescriptionUseCase.InputData(existingClient, existingUnit.id, output.references))
 
         then: "the new element is created and saved"
         1* repo.save(newControl) >> newControl
@@ -101,7 +101,7 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
 
         when: "we set control2 as the target of the link"
         output.references.first().references.first().referencedElement = control2
-        def o1 = usecasePut.execute(new ApplyIncarnationDescriptionUseCase.InputData(existingClient, existingUnit.id, output.references))
+        def o1 = usecasePut.execute(new ApplyCatalogIncarnationDescriptionUseCase.InputData(existingClient, existingUnit.id, output.references))
 
         then: "the control is saved and the link ist set to control2"
         1* repo.save(newControl) >> newControl

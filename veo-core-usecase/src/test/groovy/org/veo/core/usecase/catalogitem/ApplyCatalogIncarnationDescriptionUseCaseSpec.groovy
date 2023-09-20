@@ -27,14 +27,14 @@ import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.specification.ClientBoundaryViolationException
 import org.veo.core.entity.transform.EntityFactory
-import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase.InputData
+import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase.InputData
 import org.veo.core.usecase.parameter.TailoringReferenceParameter
 import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription
 
-class ApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSpec {
+class ApplyCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSpec {
     EntityFactory factory = Mock()
 
-    ApplyIncarnationDescriptionUseCase usecase = new ApplyIncarnationDescriptionUseCase(
+    ApplyCatalogIncarnationDescriptionUseCase usecase = new ApplyCatalogIncarnationDescriptionUseCase(
     unitRepo, catalogItemRepository, domainRepository,
     entityRepo, designatorService, factory)
 

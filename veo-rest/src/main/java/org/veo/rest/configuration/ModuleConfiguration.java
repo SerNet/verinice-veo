@@ -105,7 +105,7 @@ import org.veo.core.usecase.base.UpdatePersonInDomainUseCase;
 import org.veo.core.usecase.base.UpdateProcessInDomainUseCase;
 import org.veo.core.usecase.base.UpdateScenarioInDomainUseCase;
 import org.veo.core.usecase.base.UpdateScopeInDomainUseCase;
-import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase;
+import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemsUseCase;
@@ -816,14 +816,14 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public ApplyIncarnationDescriptionUseCase applyIncarnationDescriptionUseCase(
+  public ApplyCatalogIncarnationDescriptionUseCase applyCatalogIncarnationDescriptionUseCase(
       UnitRepository unitRepository,
       CatalogItemRepository catalogItemRepository,
       DomainRepository domainRepository,
       RepositoryProvider repositoryProvider,
       DesignatorService designatorService,
       EntityFactory factory) {
-    return new ApplyIncarnationDescriptionUseCase(
+    return new ApplyCatalogIncarnationDescriptionUseCase(
         unitRepository,
         catalogItemRepository,
         domainRepository,

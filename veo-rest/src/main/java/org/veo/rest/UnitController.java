@@ -68,7 +68,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Unit;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.catalogitem.ApplyIncarnationDescriptionUseCase;
+import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.IncarnationRequestModeType;
 import org.veo.core.usecase.service.IdRefResolver;
@@ -115,7 +115,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
   private final UpdateUnitUseCase putUnitUseCase;
   private final DeleteUnitUseCase deleteUnitUseCase;
   private final GetUnitsUseCase getUnitsUseCase;
-  private final ApplyIncarnationDescriptionUseCase applyIncarnationDescriptionUseCase;
+  private final ApplyCatalogIncarnationDescriptionUseCase applyCatalogIncarnationDescriptionUseCase;
   private final GetIncarnationDescriptionUseCase getIncarnationDescriptionUseCase;
   private final GetUnitDumpUseCase getUnitDumpUseCase;
   private final UnitImportUseCase unitImportUseCase;
@@ -182,11 +182,11 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
     Client client = getAuthenticatedClient(auth);
     CompletableFuture<List<IdRef<Element>>> completableFuture =
         useCaseInteractor.execute(
-            applyIncarnationDescriptionUseCase,
-            (Supplier<ApplyIncarnationDescriptionUseCase.InputData>)
+            applyCatalogIncarnationDescriptionUseCase,
+            (Supplier<ApplyCatalogIncarnationDescriptionUseCase.InputData>)
                 () -> {
                   IdRefResolver idRefResolver = createIdRefResolver(client);
-                  return new ApplyIncarnationDescriptionUseCase.InputData(
+                  return new ApplyCatalogIncarnationDescriptionUseCase.InputData(
                       client, Key.uuidFrom(unitId), applyInformation.dto2Model(idRefResolver));
                 },
             output ->

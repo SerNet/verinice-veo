@@ -52,12 +52,12 @@ import lombok.extern.slf4j.Slf4j;
  * unit.
  */
 @Slf4j
-public class ApplyIncarnationDescriptionUseCase
+public class ApplyCatalogIncarnationDescriptionUseCase
     extends AbtractApplyIncarnationDescriptionUseCase<CatalogItem>
     implements TransactionalUseCase<
-        ApplyIncarnationDescriptionUseCase.InputData,
-        ApplyIncarnationDescriptionUseCase.OutputData> {
-  public ApplyIncarnationDescriptionUseCase(
+        ApplyCatalogIncarnationDescriptionUseCase.InputData,
+        ApplyCatalogIncarnationDescriptionUseCase.OutputData> {
+  public ApplyCatalogIncarnationDescriptionUseCase(
       UnitRepository unitRepository,
       CatalogItemRepository catalogItemRepository,
       DomainRepository domainRepository,
@@ -102,7 +102,7 @@ public class ApplyIncarnationDescriptionUseCase
                       return elementData.getElements();
                     }));
     log.info("ApplyIncarnationDescriptionUseCase elements created: {}", createdElements);
-    return new ApplyIncarnationDescriptionUseCase.OutputData(createdElements);
+    return new OutputData(createdElements);
   }
 
   protected ElementResult<CatalogItem> incarnateByDescription(
