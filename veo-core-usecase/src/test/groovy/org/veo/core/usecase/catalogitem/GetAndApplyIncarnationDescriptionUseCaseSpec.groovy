@@ -33,7 +33,7 @@ class GetAndApplyIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescr
     unitRepo, catalogItemRepository, domainRepository, entityRepo, designatorService, factory)
 
     def setup() {
-        item1.incarnate() >> newControl
+        item1.incarnate(_) >> newControl
         entityRepo.getElementRepositoryFor(_) >> repo
         repo.query(existingClient) >> emptyQuery
 

@@ -192,7 +192,7 @@ public abstract class AbtractApplyIncarnationDescriptionUseCase<T extends Templa
       Domain domain,
       List<TailoringReferenceParameter> referencesToApply) {
     validateItem(tailorReferences, referencesToApply);
-    Element entity = catalogItem.incarnate();
+    Element entity = catalogItem.incarnate(unit);
     List<InternalResolveInfo<T>> internalLinks =
         applyLinkTailoringReferences(
             entity,

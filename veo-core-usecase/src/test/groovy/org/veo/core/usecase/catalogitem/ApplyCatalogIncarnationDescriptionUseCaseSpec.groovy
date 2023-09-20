@@ -40,7 +40,7 @@ class ApplyCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDesc
 
     def setup() {
 
-        item1.incarnate() >> newControl
+        item1.incarnate(existingUnit) >> newControl
         entityRepo.getElementRepositoryFor(_) >> repo
 
         catalogItemRepository.findAllByIdsFetchDomainAndTailoringReferences([item1.id] as Set) >> [item1]

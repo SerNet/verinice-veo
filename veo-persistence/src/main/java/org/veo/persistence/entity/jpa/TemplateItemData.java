@@ -30,6 +30,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.TemplateItem;
+import org.veo.core.entity.Unit;
 import org.veo.persistence.entity.jpa.transformer.IdentifiableDataFactory;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
@@ -81,9 +82,13 @@ public abstract class TemplateItemData<T extends TemplateItem<T>> extends Identi
     this.elementType = elementType;
   }
 
-  protected Element createElement() {
+  protected Element createElement(Unit owner) {
     TemplateItem.checkValidElementType(getElementType());
-    return new IdentifiableDataFactory()
-        .create((Class<Element>) EntityType.getBySingularTerm(getElementType()).getType(), null);
+    var element =
+        new IdentifiableDataFactory()
+            .create(
+                (Class<Element>) EntityType.getBySingularTerm(getElementType()).getType(), null);
+    element.setOwner(owner);
+    return element;
   }
 }

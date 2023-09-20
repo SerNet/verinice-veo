@@ -37,6 +37,7 @@ import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.Unit;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -80,10 +81,10 @@ public class ProfileItemData extends TemplateItemData<ProfileItem> implements Pr
 
   /** create an instance of the described element* */
   @Override
-  public Element incarnate() {
+  public Element incarnate(Unit owner) {
     requireDomainMembership();
 
-    Element element = createElement();
+    Element element = createElement(owner);
     element.setName(name);
     element.setDescription(description);
     element.setAbbreviation(abbreviation);

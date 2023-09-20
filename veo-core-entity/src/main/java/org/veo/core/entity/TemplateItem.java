@@ -52,7 +52,7 @@ public interface TemplateItem<T extends TemplateItem<T>> extends Nameable, Ident
 
   Domain requireDomainMembership();
 
-  Element incarnate();
+  Element incarnate(Unit owner);
 
   /** All the tailoring references for this template item. */
   Set<TailoringReference<T>> getTailoringReferences();

@@ -65,7 +65,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
             })
         }
         item = testDomain.catalogItems.find {it.abbreviation == "c-1"}
-        element = item.incarnate()
+        element = item.incarnate(unit)
     }
 
     def "retrieve example elements for default client"() {
@@ -90,7 +90,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
 
         when: "we take another item"
         item = testDomain.catalogItems.find {it.abbreviation == "c-3"}
-        element = item.incarnate()
+        element = item.incarnate(unit)
 
         then: "the element is created and initialized"
         element.name == "Control-3"

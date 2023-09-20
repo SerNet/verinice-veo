@@ -38,6 +38,7 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.Unit;
 import org.veo.core.entity.UpdateReference;
 
 import lombok.AccessLevel;
@@ -109,10 +110,10 @@ public class CatalogItemData extends TemplateItemData<CatalogItem> implements Ca
 
   /** create an instance of the described element* */
   @Override
-  public Element incarnate() {
+  public Element incarnate(Unit owner) {
     requireDomainMembership();
 
-    Element element = createElement();
+    Element element = createElement(owner);
     element.setName(name);
     element.setDescription(description);
     element.setAbbreviation(abbreviation);
