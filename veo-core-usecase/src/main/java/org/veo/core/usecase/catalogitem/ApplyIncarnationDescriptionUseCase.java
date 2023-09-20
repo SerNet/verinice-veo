@@ -74,7 +74,7 @@ public class ApplyIncarnationDescriptionUseCase
   public OutputData execute(InputData input) {
     // TODO: verinice-veo#2357 refactor this usecase
     log.info("ApplyIncarnationDescriptionUseCase: {}", input);
-    Unit unit = unitRepository.getByIdFetchClient(input.getContainerId());
+    Unit unit = unitRepository.getByIdFetchClient(input.getUnitId());
     Client authenticatedClient = input.authenticatedClient;
     unit.checkSameClient(authenticatedClient);
     Set<Key<UUID>> catalogItemIds =
@@ -133,7 +133,7 @@ public class ApplyIncarnationDescriptionUseCase
   @Value
   public static class InputData implements UseCase.InputData {
     Client authenticatedClient;
-    Key<UUID> containerId;
+    Key<UUID> unitId;
     List<TemplateItemIncarnationDescription> referencesToApply;
   }
 
