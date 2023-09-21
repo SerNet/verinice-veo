@@ -23,6 +23,8 @@ import java.util.function.Function
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.test.context.support.WithUserDetails
 
+import org.veo.adapter.presenter.api.common.ReferenceAssembler
+import org.veo.adapter.presenter.api.response.IncarnateDescriptionsDto
 import org.veo.core.entity.Asset
 import org.veo.core.entity.CatalogItem
 import org.veo.core.entity.Client
@@ -31,10 +33,12 @@ import org.veo.core.entity.Domain
 import org.veo.core.entity.Process
 import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
+import org.veo.core.repository.RepositoryProvider
 import org.veo.core.usecase.UseCaseInteractor
 import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.IncarnationRequestModeType
+import org.veo.core.usecase.service.DbIdRefResolver
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.StoredEventDataRepository
@@ -66,6 +70,12 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
     @Autowired
     private ApplyCatalogIncarnationDescriptionUseCase applyIncarnationDescriptionUseCase
 
+    @Autowired
+    private RepositoryProvider repositoryProvider
+
+    @Autowired
+    private ReferenceAssembler urlAssembler
+
     private Client client
     private Unit unit
 
@@ -74,28 +84,38 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
         createClient()
         Domain domain = createCatalogItems()
         QueryCountHolder.clear()
+        def resolver = new DbIdRefResolver(repositoryProvider, client)
+        def itemIds = domain.catalogItems.collect { it.id }
 
-        when:
-        def inputDataGetIncarnationDescription = new GetIncarnationDescriptionUseCase.InputData(client, unit.id, domain.catalogItems.collect{it.id}, IncarnationRequestModeType.MANUAL)
-        GetIncarnationDescriptionUseCase.OutputData description = executeInTransaction {
-            synchronousUseCaseInteractor.execute(getIncarnationDescriptionUseCase, inputDataGetIncarnationDescription, Function.identity()).get()
+        when: "simulating the GET"
+        def dto = executeInTransaction {
+            def out = synchronousUseCaseInteractor.execute(
+                    getIncarnationDescriptionUseCase,
+                    new GetIncarnationDescriptionUseCase.InputData(client, unit.id, itemIds, IncarnationRequestModeType.MANUAL),
+                    Function.identity()
+                    ).get()
+            new IncarnateDescriptionsDto(out.references, urlAssembler)
         }
         def queryCounts = QueryCountHolder.grandTotal
 
         then:
-        description.references.size() == 6
+        dto.parameters.size() == 6
         queryCounts.select == 7
 
-        when:
-        def inputData = new  ApplyCatalogIncarnationDescriptionUseCase.InputData(client, unit.id, description.references)
+        when: "simulating the POST"
         QueryCountHolder.clear()
         executeInTransaction {
-            synchronousUseCaseInteractor.execute(applyIncarnationDescriptionUseCase, inputData, Function.identity()).get()
+            var references = dto.dto2Model(resolver)
+            synchronousUseCaseInteractor.execute(
+                    applyIncarnationDescriptionUseCase,
+                    new  ApplyCatalogIncarnationDescriptionUseCase.InputData(client, unit.id, references),
+                    Function.identity()
+                    ).get()
         }
         queryCounts = QueryCountHolder.grandTotal
 
         then:
-        queryCounts.select == 8
+        queryCounts.select == 15
         queryCounts.insert == 18
         queryCounts.time < 500
     }
