@@ -105,6 +105,30 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
             client = newClient()
             def domain = newDomain(client) {
                 name = "domain1"
+                applyElementTypeDefinition(newElementTypeDefinition(Asset.SINGULAR_TERM, it) {
+                    subTypes = [
+                        Test: newSubTypeDefinition {
+                        }
+                    ]
+                })
+                applyElementTypeDefinition(newElementTypeDefinition(Control.SINGULAR_TERM, it) {
+                    subTypes = [
+                        Test: newSubTypeDefinition {
+                        }
+                    ]
+                    links = [
+                        externallinktest: newLinkDefinition(Control.SINGULAR_TERM, "Test")
+                    ]
+                })
+                applyElementTypeDefinition(newElementTypeDefinition(Process.SINGULAR_TERM, it) {
+                    subTypes = [
+                        Test: newSubTypeDefinition {
+                        }
+                    ]
+                    links = [
+                        aLink: newLinkDefinition(Control.SINGULAR_TERM, "Test")
+                    ]
+                })
             }
             client = clientRepository.save(client)
             unit = newUnit(client) {
