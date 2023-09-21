@@ -24,13 +24,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.veo.core.entity.AbstractRisk;
-import org.veo.core.entity.Asset;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
-import org.veo.core.entity.Process;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
@@ -109,7 +107,9 @@ public class ElementBatchCreator {
                 .forEach(d -> element.setDecisionResults(decider.decide(element, d), d)));
 
     elements.stream()
-        .filter(pr -> pr instanceof Process || pr instanceof Asset || pr instanceof Scope)
+        .filter(r -> r instanceof RiskAffected)
+        .map(r -> (RiskAffected<?, ?>) r)
+        .filter(r -> !r.getRisks().isEmpty())
         .forEach(it -> eventPublisher.publish(new RiskAffectingElementChangeEvent(it, this)));
     log.info("{} elements added to unit {}", elements.size(), unit.getIdAsString());
   }

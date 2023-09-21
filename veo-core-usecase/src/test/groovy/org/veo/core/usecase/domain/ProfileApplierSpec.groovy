@@ -26,7 +26,6 @@ import org.veo.core.entity.Unit
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent
 import org.veo.core.entity.profile.ProfileRef
 import org.veo.core.repository.GenericElementRepository
-import org.veo.core.repository.RepositoryProvider
 import org.veo.core.repository.UnitRepository
 import org.veo.core.service.DomainTemplateService
 import org.veo.core.service.EventPublisher
@@ -116,6 +115,6 @@ class ProfileApplierSpec extends Specification {
         and: "everything is saved in the database"
         1 * unitRepository.save(_) >> unit
         1 * genericElementRepository.saveAll([asset1, asset2, process])
-        3 * eventPublisher.publish(_ as RiskAffectingElementChangeEvent)
+        1 * eventPublisher.publish(_ as RiskAffectingElementChangeEvent)
     }
 }
