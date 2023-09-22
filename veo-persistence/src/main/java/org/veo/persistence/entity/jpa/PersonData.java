@@ -28,7 +28,6 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Person;
 
 import lombok.EqualsAndHashCode;
@@ -39,11 +38,6 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true, callSuper = true)
 public class PersonData extends ElementData implements Person {
-
-  @Override
-  public Class<? extends Identifiable> getModelInterface() {
-    return Person.class;
-  }
 
   @ManyToMany(
       targetEntity = PersonData.class,
