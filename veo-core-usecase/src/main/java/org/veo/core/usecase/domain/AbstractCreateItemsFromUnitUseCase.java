@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @AllArgsConstructor
-public abstract class AbstractCreateItemsFromUnitUseCase<T extends TemplateItem> {
+public abstract class AbstractCreateItemsFromUnitUseCase<T extends TemplateItem<T>> {
 
   protected final EntityFactory factory;
   protected final DomainRepository domainRepository;

@@ -20,7 +20,8 @@ package org.veo.core.entity;
 import java.util.Optional;
 
 /** Basic type for catalog references. */
-public interface TemplateItemReference<T extends TemplateItem> extends Identifiable, ClientOwned {
+public interface TemplateItemReference<T extends TemplateItem<T>>
+    extends Identifiable, ClientOwned {
 
   /** The reference to an other catalogitem. */
   T getTarget();

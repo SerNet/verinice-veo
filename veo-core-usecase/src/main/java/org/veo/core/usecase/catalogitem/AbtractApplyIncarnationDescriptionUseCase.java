@@ -63,7 +63,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @AllArgsConstructor
 @Slf4j
-public abstract class AbtractApplyIncarnationDescriptionUseCase<T extends TemplateItem> {
+public abstract class AbtractApplyIncarnationDescriptionUseCase<T extends TemplateItem<T>> {
   protected final DesignatorService designatorService;
   protected final EntityFactory factory;
   protected final DomainRepository domainRepository;

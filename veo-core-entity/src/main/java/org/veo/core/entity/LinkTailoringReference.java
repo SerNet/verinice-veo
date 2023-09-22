@@ -24,7 +24,7 @@ import java.util.Map;
  * which will be added to it when this {@link CatalogItem} is applied. There are currently two kinds
  * {@link TailoringReferenceType#LINK} and {@link TailoringReferenceType#LINK_EXTERNAL}.
  */
-public interface LinkTailoringReference<T extends TemplateItem> extends TailoringReference<T> {
+public interface LinkTailoringReference<T extends TemplateItem<T>> extends TailoringReference<T> {
 
   String getLinkType();
 

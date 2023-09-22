@@ -25,7 +25,7 @@ package org.veo.core.entity;
  * in the same catalog. 2.2. For each such reference a coresponding tailref of type LINK must exist,
  * pointing to the catalogItem which holds the refered element.
  */
-public interface TailoringReference<T extends TemplateItem>
+public interface TailoringReference<T extends TemplateItem<T>>
     extends TemplateItemReference<T>, TailoringReferenceTyped {
   String SINGULAR_TERM = "tailoringreference";
   String PLURAL_TERM = "tailoringreferences";
