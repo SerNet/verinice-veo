@@ -1017,7 +1017,7 @@ from the source code management (SCM) system project uses.
 
 --------------------------------------------------------------------------------
 
-13. Group: com.fasterxml.uuid  Name: java-uuid-generator  Version: 4.2.0
+13. Group: com.fasterxml.uuid  Name: java-uuid-generator  Version: 4.3.0
 
 Project URL: https://github.com/cowtowncoder/java-uuid-generator
 
@@ -22782,5 +22782,5 @@ POM License: Apache License, Version 2.0 - https://www.apache.org/licenses/LICEN
 --------------------------------------------------------------------------------
 
 
-This report was generated at Fri Sep 22 08:25:20 UTC 2023.
+This report was generated at Fri Sep 22 13:26:14 UTC 2023.
 
