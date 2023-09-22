@@ -18,33 +18,21 @@
 package org.veo.core.usecase.catalogitem;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
-import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Unit;
-import org.veo.core.entity.exception.ReferenceTargetNotFoundException;
-import org.veo.core.entity.transform.EntityFactory;
+import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.repository.CatalogItemRepository;
-import org.veo.core.repository.DomainRepository;
-import org.veo.core.repository.RepositoryProvider;
-import org.veo.core.repository.UnitRepository;
-import org.veo.core.usecase.DesignatorService;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,81 +40,20 @@ import lombok.extern.slf4j.Slf4j;
  * Uses a list of {@link TemplateItemIncarnationDescription} to create items from a catalog in a
  * unit.
  */
+@RequiredArgsConstructor
 @Slf4j
 public class ApplyCatalogIncarnationDescriptionUseCase
-    extends AbtractApplyIncarnationDescriptionUseCase<CatalogItem>
     implements TransactionalUseCase<
         ApplyCatalogIncarnationDescriptionUseCase.InputData,
         ApplyCatalogIncarnationDescriptionUseCase.OutputData> {
-  public ApplyCatalogIncarnationDescriptionUseCase(
-      UnitRepository unitRepository,
-      CatalogItemRepository catalogItemRepository,
-      DomainRepository domainRepository,
-      RepositoryProvider repositoryProvider,
-      DesignatorService designatorService,
-      EntityFactory factory) {
-    super(designatorService, factory, domainRepository, unitRepository, repositoryProvider);
-    this.catalogItemRepository = catalogItemRepository;
-  }
-
   private final CatalogItemRepository catalogItemRepository;
+  private final IncarnationDescriptionApplier applier;
 
   @Override
   public OutputData execute(InputData input) {
-    // TODO: verinice-veo#2357 refactor this usecase
-    log.info(
-        "ApplyIncarnationDescriptionUseCase number of referencesToApply: {}",
-        input.referencesToApply.size());
-    Unit unit = unitRepository.getByIdFetchClient(input.getUnitId());
-    Client authenticatedClient = input.authenticatedClient;
-    unit.checkSameClient(authenticatedClient);
-    Set<Key<UUID>> catalogItemIds =
-        input.getReferencesToApply().stream()
-            .map(TemplateItemIncarnationDescription::getItem)
-            .map(Identifiable::getId)
-            .collect(Collectors.toSet());
-    Map<Key<UUID>, CatalogItem> catalogItemsbyId =
-        catalogItemRepository.findAllByIdsFetchDomainAndTailoringReferences(catalogItemIds).stream()
-            .collect(Collectors.toMap(CatalogItem::getId, Function.identity()));
-    checkDomains(input.getAuthenticatedClient(), catalogItemsbyId);
-
-    List<Element> createdElements =
-        input.getReferencesToApply().stream()
-            .map(ra -> incarnateByDescription(unit, authenticatedClient, catalogItemsbyId, ra))
-            .collect(
-                Collector.of(
-                    IncarnationResult::new,
-                    collectElementData(),
-                    combineElementData(),
-                    elementData -> {
-                      processInternalLinks(
-                          elementData.getInternalLinks(), elementData.getElements());
-                      processParts(elementData.getMapping(), elementData.getInternalLinks());
-                      return elementData.getElements();
-                    }));
-    log.info(
-        "ApplyIncarnationDescriptionUseCase number of elements created: {}",
-        createdElements.size());
-    return new OutputData(createdElements);
-  }
-
-  protected ElementResult<CatalogItem> incarnateByDescription(
-      Unit unit,
-      Client authenticatedClient,
-      Map<Key<UUID>, CatalogItem> catalogItemsbyId,
-      TemplateItemIncarnationDescription ra) {
-    Key<UUID> catalogItemId = ra.getItem().getId();
-    CatalogItem catalogItem = catalogItemsbyId.get(catalogItemId);
-    if (catalogItem == null) {
-      throw new ReferenceTargetNotFoundException(catalogItemId, CatalogItem.class);
-    }
-    return createElementFromCatalogItem(
-        unit,
-        authenticatedClient,
-        catalogItem,
-        catalogItem.getTailoringReferences(),
-        catalogItem.requireDomainMembership(),
-        ra.getReferences());
+    return new OutputData(
+        applier.incarnate(
+            input.unitId, input.descriptions, catalogItemRepository, input.authenticatedClient));
   }
 
   @Override
@@ -139,7 +66,7 @@ public class ApplyCatalogIncarnationDescriptionUseCase
   public static class InputData implements UseCase.InputData {
     Client authenticatedClient;
     @NotNull Key<UUID> unitId;
-    @NotNull List<TemplateItemIncarnationDescription> referencesToApply;
+    @NotNull List<TemplateItemIncarnationDescriptionState> descriptions;
   }
 
   @Valid

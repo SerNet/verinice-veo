@@ -38,7 +38,6 @@ import org.veo.core.usecase.UseCaseInteractor
 import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.IncarnationRequestModeType
-import org.veo.core.usecase.service.DbIdRefResolver
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
 import org.veo.persistence.access.jpa.StoredEventDataRepository
@@ -84,7 +83,6 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
         createClient()
         Domain domain = createCatalogItems()
         QueryCountHolder.clear()
-        def resolver = new DbIdRefResolver(repositoryProvider, client)
         def itemIds = domain.catalogItems.collect { it.id }
 
         when: "simulating the GET"
@@ -105,7 +103,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
         when: "simulating the POST"
         QueryCountHolder.clear()
         executeInTransaction {
-            var references = dto.dto2Model(resolver)
+            var references = dto.getParameters()
             synchronousUseCaseInteractor.execute(
                     applyIncarnationDescriptionUseCase,
                     new  ApplyCatalogIncarnationDescriptionUseCase.InputData(client, unit.id, references),
@@ -115,7 +113,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
         queryCounts = QueryCountHolder.grandTotal
 
         then:
-        queryCounts.select == 15
+        queryCounts.select == 12
         queryCounts.insert == 18
         queryCounts.time < 500
     }

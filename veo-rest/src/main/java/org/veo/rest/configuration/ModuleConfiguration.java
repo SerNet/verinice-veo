@@ -70,6 +70,7 @@ import org.veo.core.repository.DomainRepository;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.ProcessRepository;
+import org.veo.core.repository.ProfileItemRepository;
 import org.veo.core.repository.ProfileRepository;
 import org.veo.core.repository.RepositoryProvider;
 import org.veo.core.repository.RequirementImplementationRepository;
@@ -111,6 +112,7 @@ import org.veo.core.usecase.catalogitem.GetCatalogItemUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemsUseCase;
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase;
+import org.veo.core.usecase.catalogitem.IncarnationDescriptionApplier;
 import org.veo.core.usecase.catalogitem.QueryCatalogItemsUseCase;
 import org.veo.core.usecase.client.DeleteClientUseCase;
 import org.veo.core.usecase.compliance.GetRequirementImplementationUseCase;
@@ -841,37 +843,29 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public ApplyCatalogIncarnationDescriptionUseCase applyCatalogIncarnationDescriptionUseCase(
+  public IncarnationDescriptionApplier incarnationDescriptionApplier(
       UnitRepository unitRepository,
+      ElementBatchCreator elementBatchCreator,
+      EntityFactory factory,
+      RepositoryProvider repositoryProvider) {
+    return new IncarnationDescriptionApplier(
+        factory, unitRepository, elementBatchCreator, repositoryProvider);
+  }
+
+  @Bean
+  public ApplyCatalogIncarnationDescriptionUseCase applyCatalogIncarnationDescriptionUseCase(
       CatalogItemRepository catalogItemRepository,
-      DomainRepository domainRepository,
-      RepositoryProvider repositoryProvider,
-      DesignatorService designatorService,
-      EntityFactory factory) {
+      IncarnationDescriptionApplier incarnationDescriptionApplier) {
     return new ApplyCatalogIncarnationDescriptionUseCase(
-        unitRepository,
-        catalogItemRepository,
-        domainRepository,
-        repositoryProvider,
-        designatorService,
-        factory);
+        catalogItemRepository, incarnationDescriptionApplier);
   }
 
   @Bean
   public ApplyProfileIncarnationDescriptionUseCase applyProfileIncarnationDescriptionUseCase(
-      UnitRepository unitRepository,
-      ProfileRepository catalogItemRepository,
-      DomainRepository domainRepository,
-      RepositoryProvider repositoryProvider,
-      DesignatorService designatorService,
-      EntityFactory factory) {
+      ProfileItemRepository profileItemRepository,
+      IncarnationDescriptionApplier incarnationDescriptionApplier) {
     return new ApplyProfileIncarnationDescriptionUseCase(
-        unitRepository,
-        catalogItemRepository,
-        domainRepository,
-        repositoryProvider,
-        designatorService,
-        factory);
+        profileItemRepository, incarnationDescriptionApplier);
   }
 
   @Bean

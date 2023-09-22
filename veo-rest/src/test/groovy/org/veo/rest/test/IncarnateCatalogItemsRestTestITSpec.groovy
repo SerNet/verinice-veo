@@ -289,6 +289,38 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         tom1.abbreviation == "DS-G.10"
     }
 
+    def "all references must be resolved"() {
+        when: "fetching an incarnation description for a single item with an external link reference"
+        def itemId = itemIdByAbbreviation("TOM-I", dsgvoDomainId)
+        def incarnationDescription = get("/units/${unitId}/incarnations?itemIds=${itemId}&mode=MANUAL").body
+
+        then: "it cannot be applied"
+        incarnate(incarnationDescription, 422).message == "CatalogItem VVT not included in request but required by TOM zur Gewährleistung der Integrität."
+
+        when: "specifying a reference target"
+        def processId = post("/domains/$dsgvoDomainId/processes", [
+            name: "process",
+            owner: [targetUri: "/units/$unitId"],
+            subType: "PRO_DataProcessing",
+            status: "NEW",
+        ]).body.resourceId
+        incarnationDescription.parameters[0].references[0].referencedElement = [
+            targetUri: "/processes/$processId"
+        ]
+
+        and: "applying the customized incarnation description"
+        def incarnatedTomUri = incarnate(incarnationDescription)[0].targetUri
+
+        then: "the control has been incarnated"
+        get(incarnatedTomUri).body.abbreviation == "TOM-I"
+
+        and: "the link has been added to the process"
+        with(get("/processes/$processId").body) {
+            links.process_tom[0].target.targetUri == incarnatedTomUri
+            updatedAt > createdAt
+        }
+    }
+
     def "Create a unit and the whole dsgvo catalog in one step add controls after"() {
         when: "We create all elements"
         def catalogItemsIds = getCatalogItems(dsgvoDomainId)*.id
@@ -326,7 +358,7 @@ class IncarnateCatalogItemsRestTestITSpec extends VeoRestTest {
         get("/controls?unit=${unitId}").body
     }
 
-    private incarnate(descriptions) {
-        post("/units/${unitId}/incarnations", descriptions).body
+    private incarnate(descriptions, assertStatus = 201) {
+        post("/units/${unitId}/incarnations", descriptions, assertStatus).body
     }
 }

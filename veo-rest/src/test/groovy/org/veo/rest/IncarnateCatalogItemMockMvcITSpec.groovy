@@ -522,7 +522,7 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         then: "can not apply"
         def upEx = thrown(UnprocessableDataException)
-        upEx.message == "CatalogItemData zzzzzComposite:zzzzzComposite not included in request but required by CTL-1:zzzzzPart."
+        upEx.message == "CatalogItem zzzzzComposite not included in request but required by zzzzzPart."
 
         when: "we create a control"
         getResult = getIncarnationDescriptions(unit, item1)

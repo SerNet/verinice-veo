@@ -21,13 +21,16 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
-import org.veo.adapter.presenter.api.openapi.IdRefCatalogItemDescriptionItem;
-import org.veo.core.entity.CatalogItem;
-import org.veo.core.usecase.parameter.TailoringReferenceParameter;
+import org.veo.adapter.presenter.api.openapi.IdRefTemplateItem;
+import org.veo.core.entity.TemplateItem;
+import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.state.TailoringReferenceParameterState;
+import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
-import org.veo.core.usecase.service.IdRefResolver;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,14 +41,15 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Describes the incarnation parameters of one catalogitem.")
-public class IncarnateCatalogItemDescriptionDto {
+@Schema(description = "Describes the incarnation parameters of one template item.")
+public class IncarnateTemplateItemDescriptionDto
+    implements TemplateItemIncarnationDescriptionState {
 
   @Schema(
-      title = "Reference the catalogitem to be incarnated.",
+      title = "Reference the template item to be incarnated.",
       requiredMode = REQUIRED,
-      implementation = IdRefCatalogItemDescriptionItem.class)
-  private IdRef<CatalogItem> item;
+      implementation = IdRefTemplateItem.class)
+  private IdRef<TemplateItem<?>> item;
 
   @ArraySchema(
       schema =
@@ -54,9 +58,9 @@ public class IncarnateCatalogItemDescriptionDto {
               implementation = TailoringReferenceParameterDto.class))
   private List<TailoringReferenceParameterDto> references;
 
-  public IncarnateCatalogItemDescriptionDto(
+  public IncarnateTemplateItemDescriptionDto(
       TemplateItemIncarnationDescription p, ReferenceAssembler urlAssembler) {
-    item = IdRef.from((CatalogItem) p.getItem(), urlAssembler);
+    item = IdRef.from(p.getItem(), urlAssembler);
     references =
         p.getReferences().stream()
             .map(
@@ -69,19 +73,15 @@ public class IncarnateCatalogItemDescriptionDto {
             .toList();
   }
 
-  public TemplateItemIncarnationDescription dto2Model(IdRefResolver idRefResolver) {
-    List<TailoringReferenceParameter> list =
-        getReferences().stream()
-            .map(
-                t ->
-                    new TailoringReferenceParameter(
-                        t.getReferencedElement() == null
-                            ? null
-                            : idRefResolver.resolve(t.getReferencedElement()),
-                        t.getReferenceType(),
-                        t.getReferenceKey(),
-                        t.getId()))
-            .toList();
-    return new TemplateItemIncarnationDescription(idRefResolver.resolve(item), list);
+  @JsonIgnore
+  @Override
+  public ITypedId<TemplateItem<?>> getItemRef() {
+    return item;
+  }
+
+  @JsonIgnore
+  @Override
+  public List<TailoringReferenceParameterState> getParameterStates() {
+    return references.stream().map(TailoringReferenceParameterState.class::cast).toList();
   }
 }

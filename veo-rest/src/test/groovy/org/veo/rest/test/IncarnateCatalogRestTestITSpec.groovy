@@ -141,7 +141,7 @@ class IncarnateCatalogRestTestITSpec extends VeoRestTest {
         def elementResults = applyCatalogItems(testDomainId, ["Control-4"], "/controls/$sourceControlId", false)
 
         then: "an error messages is returned"
-        elementResults.message ==~/The element to link is not part of the domain: CTL.*/
+        elementResults.message == "Element cannot contain custom aspects or links for domains it is not associated with"
     }
 
     def "Create elements with wrong mode"() {

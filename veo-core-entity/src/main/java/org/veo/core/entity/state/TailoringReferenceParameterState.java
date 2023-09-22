@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2023  Jochen Kemnade
+ * Copyright (C) 2023  Jonas Jordan
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,24 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.core.usecase.service;
+package org.veo.core.entity.state;
 
-import org.veo.core.entity.Identifiable;
+import java.util.Optional;
+
+import org.veo.core.entity.Element;
 import org.veo.core.entity.ref.ITypedId;
 
-import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import lombok.Value;
+public interface TailoringReferenceParameterState {
+  String getId();
 
-@AllArgsConstructor(staticName = "from")
-@Value
-public class TypedId<T extends Identifiable> implements ITypedId<T> {
-
-  @NonNull private final String id;
-
-  @NonNull private final Class<T> type;
-
-  public static <T extends Identifiable> TypedId<T> from(T entity) {
-    return new TypedId<T>(entity.getIdAsString(), (Class<T>) entity.getModelInterface());
-  }
+  Optional<ITypedId<Element>> getReferencedElementRef();
 }

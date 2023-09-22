@@ -68,11 +68,11 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.IncarnationRequestModeType;
-import org.veo.core.usecase.service.IdRefResolver;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
 import org.veo.core.usecase.unit.GetUnitDumpUseCase;
@@ -197,11 +197,13 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
         useCaseInteractor.execute(
             applyCatalogIncarnationDescriptionUseCase,
             (Supplier<ApplyCatalogIncarnationDescriptionUseCase.InputData>)
-                () -> {
-                  IdRefResolver idRefResolver = createIdRefResolver(client);
-                  return new ApplyCatalogIncarnationDescriptionUseCase.InputData(
-                      client, Key.uuidFrom(unitId), applyInformation.dto2Model(idRefResolver));
-                },
+                () ->
+                    new ApplyCatalogIncarnationDescriptionUseCase.InputData(
+                        client,
+                        Key.uuidFrom(unitId),
+                        applyInformation.getParameters().stream()
+                            .map(TemplateItemIncarnationDescriptionState.class::cast)
+                            .toList()),
             output ->
                 output.getNewElements().stream()
                     .map(c -> IdRef.from(c, referenceAssembler))

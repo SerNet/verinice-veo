@@ -17,9 +17,14 @@
  ******************************************************************************/
 package org.veo.core.usecase.parameter;
 
+import java.util.Optional;
+
 import org.veo.core.entity.Element;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TailoringReferenceTyped;
+import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.state.TailoringReferenceParameterState;
+import org.veo.core.usecase.service.TypedId;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,7 +38,7 @@ import lombok.EqualsAndHashCode;
  * TailoringReference}.
  */
 public class TailoringReferenceParameter extends CatalogReferenceParameter
-    implements TailoringReferenceTyped {
+    implements TailoringReferenceTyped, TailoringReferenceParameterState {
   @EqualsAndHashCode.Include private TailoringReferenceType referenceType;
 
   /**
@@ -50,5 +55,10 @@ public class TailoringReferenceParameter extends CatalogReferenceParameter
     this(referenceType, referenceName);
     setReferencedElement(linkedElement);
     setId(tailoringReferenceId);
+  }
+
+  @Override
+  public Optional<ITypedId<Element>> getReferencedElementRef() {
+    return Optional.ofNullable(getReferencedElement()).map(TypedId::from);
   }
 }

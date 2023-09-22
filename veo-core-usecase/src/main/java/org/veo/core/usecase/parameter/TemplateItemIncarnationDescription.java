@@ -21,6 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.veo.core.entity.TemplateItem;
+import org.veo.core.entity.ref.ITypedId;
+import org.veo.core.entity.state.TailoringReferenceParameterState;
+import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
+import org.veo.core.usecase.service.TypedId;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,7 +34,17 @@ import lombok.EqualsAndHashCode;
 @Data
 @AllArgsConstructor
 /** Contains the element together with the relevant tailoringreferences. */
-public class TemplateItemIncarnationDescription {
+public class TemplateItemIncarnationDescription implements TemplateItemIncarnationDescriptionState {
   private TemplateItem<?> item;
   private List<TailoringReferenceParameter> references = new ArrayList<>();
+
+  @Override
+  public ITypedId<TemplateItem<?>> getItemRef() {
+    return TypedId.from(item);
+  }
+
+  @Override
+  public List<TailoringReferenceParameterState> getParameterStates() {
+    return references.stream().map(TailoringReferenceParameterState.class::cast).toList();
+  }
 }

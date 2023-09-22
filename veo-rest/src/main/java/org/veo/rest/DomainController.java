@@ -74,6 +74,7 @@ import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
+import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.entity.statistics.CatalogItemsTypeCount;
 import org.veo.core.entity.statistics.ElementStatusCounts;
 import org.veo.core.usecase.UseCase;
@@ -446,7 +447,10 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
             getProfileIncarnationDescriptionUseCase,
             new GetProfileIncarnationDescriptionUseCase.InputData(
                 getAuthenticatedClient(auth), Key.uuidFrom(unitId), null, Key.uuidFrom(profileKey)),
-            GetProfileIncarnationDescriptionUseCase.OutputData::getReferences)
+            out ->
+                out.getReferences().stream()
+                    .map(TemplateItemIncarnationDescriptionState.class::cast)
+                    .toList())
         .thenCompose(
             references ->
                 useCaseInteractor.execute(

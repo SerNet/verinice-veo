@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
-import org.veo.core.usecase.service.IdRefResolver;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -44,17 +43,13 @@ public class IncarnateDescriptionsDto {
       description =
           "A list of CatalogItemDescription defining the structure of each catalog item to create.",
       requiredMode = REQUIRED)
-  private List<IncarnateCatalogItemDescriptionDto> parameters;
+  private List<IncarnateTemplateItemDescriptionDto> parameters;
 
   public IncarnateDescriptionsDto(
       List<TemplateItemIncarnationDescription> references, ReferenceAssembler urlAssembler) {
     this.parameters =
         references.stream()
-            .map(p -> new IncarnateCatalogItemDescriptionDto(p, urlAssembler))
+            .map(p -> new IncarnateTemplateItemDescriptionDto(p, urlAssembler))
             .toList();
-  }
-
-  public List<TemplateItemIncarnationDescription> dto2Model(IdRefResolver idRefResolver) {
-    return getParameters().stream().map(a -> a.dto2Model(idRefResolver)).toList();
   }
 }

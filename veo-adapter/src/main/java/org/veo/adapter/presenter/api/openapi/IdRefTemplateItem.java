@@ -23,18 +23,18 @@ import org.veo.adapter.presenter.api.common.IIdRef;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "A reference to a catalog item.")
-public interface IdRefCatalogItemDescriptionItem extends IIdRef {
+@Schema(description = "A reference to a template item.")
+public interface IdRefTemplateItem extends IIdRef {
 
   @Schema(
-      description = "A friendly human readable title of the catalog item to incarnate.",
+      description = "A friendly human readable title of the template item to incarnate.",
       accessMode = Schema.AccessMode.READ_ONLY)
   @Override
   String getDisplayName();
 
   @Schema(
       requiredMode = REQUIRED,
-      description = "The resource URL of the referenced catalog item.",
+      description = "The resource URL of the referenced template item.",
       example =
           "http://<api.example.org>/api/v1/catalogs/<00000000-0000-0000-0000-000000000000>/items/<00000000-0000-0000-0000-000000000000>",
       format = "uri")
