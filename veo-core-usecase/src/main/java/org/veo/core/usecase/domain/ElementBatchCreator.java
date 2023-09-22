@@ -24,13 +24,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.veo.core.entity.AbstractRisk;
-import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.RiskAffected;
-import org.veo.core.entity.Scope;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.event.RiskAffectingElementChangeEvent;
 import org.veo.core.repository.GenericElementRepository;
@@ -137,13 +135,6 @@ public class ElementBatchCreator {
     // migrated in the domain.
     if (migrate) {
       element.getDomains().forEach(d -> elementMigrationService.migrate(element, d));
-    }
-
-    if (element instanceof CompositeElement<?> ce) {
-      ce.getParts().forEach(e -> prepareElement(e, unit, migrate));
-    } else if (element instanceof Scope scope) {
-      Set<Element> members = scope.getMembers();
-      members.forEach(m -> prepareElement(m, unit, migrate));
     }
   }
 }
