@@ -135,7 +135,7 @@ subprojects {
 
     dependencyManagement {
         dependencies {
-            dependency 'io.hypersistence:hypersistence-utils-hibernate-62:3.5.2'
+            dependency 'io.hypersistence:hypersistence-utils-hibernate-62:3.5.3'
             dependency 'io.jsonwebtoken:jjwt-api:0.11.5'
             dependency 'io.jsonwebtoken:jjwt-impl:0.11.5'
             dependency 'io.jsonwebtoken:jjwt-jackson:0.11.5'
