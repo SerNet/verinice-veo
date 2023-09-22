@@ -25,8 +25,10 @@ import java.util.stream.StreamSupport;
 import org.springframework.stereotype.Repository;
 
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.TailoringReference;
 import org.veo.core.repository.CatalogItemQuery;
 import org.veo.core.repository.CatalogItemRepository;
 import org.veo.core.repository.SubTypeCount;
@@ -58,6 +60,26 @@ public class CatalogItemRepositoryImpl
                 .spliterator(),
             false)
         .map(CatalogItem.class::cast)
+        .collect(Collectors.toSet());
+  }
+
+  @Override
+  public Set<CatalogItem> findAllByIdsFetchDomain(Set<Key<UUID>> ids, Client client) {
+    return catalogItemDataRepository
+        .findAllByIdsFetchDomain(ids.stream().map(Key::uuidValue).toList(), client)
+        .stream()
+        .map(CatalogItem.class::cast)
+        .collect(Collectors.toSet());
+  }
+
+  @Override
+  public Set<TailoringReference<CatalogItem>> findTailoringReferencesByIds(
+      Set<Key<UUID>> ids, Client client) {
+    return catalogItemDataRepository
+        .findTailoringReferencesByIds(
+            ids.stream().map(Key::uuidValue).collect(Collectors.toSet()), client)
+        .stream()
+        .map(tr -> (TailoringReference<CatalogItem>) tr)
         .collect(Collectors.toSet());
   }
 

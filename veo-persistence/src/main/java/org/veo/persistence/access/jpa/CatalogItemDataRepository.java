@@ -28,12 +28,23 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.Client;
 import org.veo.core.repository.SubTypeCount;
 import org.veo.persistence.entity.jpa.CatalogItemData;
+import org.veo.persistence.entity.jpa.CatalogTailoringReferenceData;
 import org.veo.persistence.entity.jpa.DomainData;
 
 public interface CatalogItemDataRepository
     extends IdentifiableVersionedDataRepository<CatalogItemData> {
+
+  @Query(
+      """
+         select ci from #{#entityName} ci
+           left join fetch ci.domain
+           left join fetch ci.domainTemplate
+           where ci.dbId in ?1 and ci.domain.owner = ?2
+         """)
+  Set<CatalogItemData> findAllByIdsFetchDomain(Iterable<String> ids, Client client);
 
   @Query(
       """
@@ -61,4 +72,14 @@ public interface CatalogItemDataRepository
   @Nonnull
   @Transactional(readOnly = true)
   Page<CatalogItemData> findAll(Specification<CatalogItemData> specification, Pageable pageable);
+
+  @Query(
+      """
+         select tr from catalog_tailoring_reference tr
+           left join fetch tr.owner
+           left join fetch tr.target
+           where tr.dbId in ?1 and tr.owner.domain.owner = ?2
+         """)
+  Set<CatalogTailoringReferenceData> findTailoringReferencesByIds(
+      Iterable<String> ids, Client client);
 }
