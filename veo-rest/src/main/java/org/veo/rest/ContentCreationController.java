@@ -71,7 +71,7 @@ import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.service.ObjectSchemaParser;
 import org.veo.adapter.service.domaintemplate.dto.CreateDomainTemplateFromDomainParameterDto;
-import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
+import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.EntityType;
@@ -474,10 +474,10 @@ public class ContentCreationController extends AbstractVeoController {
       content =
           @Content(
               mediaType = MediaType.APPLICATION_JSON_VALUE,
-              schema = @Schema(implementation = TransformDomainTemplateDto.class)))
+              schema = @Schema(implementation = ExportDomainTemplateDto.class)))
   @ApiResponse(responseCode = "404", description = "Domain template not found")
   @ApiResponse(responseCode = "400", description = "Bad request")
-  public @Valid Future<ResponseEntity<TransformDomainTemplateDto>> getDomainTemplate(
+  public @Valid Future<ResponseEntity<ExportDomainTemplateDto>> getDomainTemplate(
       @Parameter(hidden = true) Authentication auth, @PathVariable String id) {
     return useCaseInteractor
         .execute(
@@ -494,7 +494,7 @@ public class ContentCreationController extends AbstractVeoController {
   @ApiResponse(responseCode = "201", description = "Domain template created")
   @ApiResponse(responseCode = "409", description = "Domain template with given ID already exists")
   public CompletableFuture<ResponseEntity<ApiResponseBody>> createDomainTemplate(
-      @Valid @NotNull @RequestBody TransformDomainTemplateDto domainTemplateDto) {
+      @Valid @NotNull @RequestBody ExportDomainTemplateDto domainTemplateDto) {
     var input =
         CreateDomainTemplateInputMapper.map(
             domainTemplateDto, identifiableFactory, entityFactory, entityStateMapper);

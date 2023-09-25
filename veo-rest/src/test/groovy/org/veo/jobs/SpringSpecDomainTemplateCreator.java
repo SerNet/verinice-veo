@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.veo.adapter.presenter.api.io.mapper.CreateDomainTemplateInputMapper;
-import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
+import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
@@ -58,7 +58,7 @@ public class SpringSpecDomainTemplateCreator {
       new PathMatchingResourcePatternResolver(getClass().getClassLoader());
   private final ObjectMapper objectMapper;
   private final DomainTemplateRepository domainTemplateRepository;
-  private Map<String, TransformDomainTemplateDto> domainTemplateDtos;
+  private Map<String, ExportDomainTemplateDto> domainTemplateDtos;
   private final IdentifiableFactory identifiableFactory;
   private final EntityFactory entityFactory;
   private final EntityStateMapper entityStateMapper;
@@ -108,7 +108,7 @@ public class SpringSpecDomainTemplateCreator {
         });
   }
 
-  private TransformDomainTemplateDto getTestTemplateDto(String templateId) {
+  private ExportDomainTemplateDto getTestTemplateDto(String templateId) {
     if (domainTemplateDtos == null) {
       try {
         domainTemplateDtos =
@@ -117,7 +117,7 @@ public class SpringSpecDomainTemplateCreator {
                     r -> {
                       try {
                         return objectMapper.readValue(
-                            r.getInputStream(), TransformDomainTemplateDto.class);
+                            r.getInputStream(), ExportDomainTemplateDto.class);
                       } catch (IOException e) {
                         throw new RuntimeException(e);
                       }

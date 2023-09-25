@@ -19,7 +19,7 @@ package org.veo.adapter.presenter.api.io.mapper;
 
 import org.veo.adapter.IdRefResolvingFactory;
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
-import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
+import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.transform.EntityFactory;
 import org.veo.core.entity.transform.IdentifiableFactory;
@@ -27,12 +27,11 @@ import org.veo.core.usecase.domaintemplate.CreateDomainTemplateUseCase;
 import org.veo.core.usecase.service.EntityStateMapper;
 
 /**
- * Maps between {@link TransformDomainTemplateDto} and {@link
- * CreateDomainTemplateUseCase.InputData}.
+ * Maps between {@link ExportDomainTemplateDto} and {@link CreateDomainTemplateUseCase.InputData}.
  */
 public class CreateDomainTemplateInputMapper {
   public static CreateDomainTemplateUseCase.InputData map(
-      TransformDomainTemplateDto domainTemplateDto,
+      ExportDomainTemplateDto domainTemplateDto,
       IdentifiableFactory identifiableFactory,
       EntityFactory entityFactory,
       EntityStateMapper entityStateMapper) {

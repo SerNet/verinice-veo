@@ -71,7 +71,7 @@ import lombok.ToString;
   @JsonSubTypes.Type(value = FullScopeDto.class, name = Scope.SINGULAR_TERM),
   @JsonSubTypes.Type(value = FullScenarioDto.class, name = Scenario.SINGULAR_TERM)
 })
-public class TransformElementDto implements IdentifiableDto {
+public class ExportElementDto implements IdentifiableDto {
 
   @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
   @Schema(

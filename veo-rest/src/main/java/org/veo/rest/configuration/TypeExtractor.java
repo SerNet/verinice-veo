@@ -36,7 +36,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import org.veo.adapter.presenter.api.dto.ModelDto;
 import org.veo.adapter.presenter.api.dto.full.LegacyCatalogItemDto;
-import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
+import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.core.entity.exception.UnprocessableDataException;
 
 import lombok.AllArgsConstructor;
@@ -78,7 +78,7 @@ public class TypeExtractor {
       return Optional.of(LegacyCatalogItemDto.class);
     }
     if (uriString.startsWith("/domain-templates")) {
-      return Optional.of(TransformDomainTemplateDto.class);
+      return Optional.of(ExportDomainTemplateDto.class);
     }
 
     log.debug("Reduced URI string {} to path component {}", uriString, pathComponent);

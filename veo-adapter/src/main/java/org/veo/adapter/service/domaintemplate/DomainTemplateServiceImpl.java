@@ -37,7 +37,7 @@ import org.veo.adapter.presenter.api.response.transformer.DomainAssociationTrans
 import org.veo.adapter.presenter.api.response.transformer.DtoToEntityTransformer;
 import org.veo.adapter.presenter.api.response.transformer.EntityToDtoTransformer;
 import org.veo.adapter.service.InternalDataCorruptionException;
-import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
+import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.core.ExportDto;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
@@ -117,7 +117,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
                     new NotFoundException(
                         "Domain template %s does not exist for client %s.", templateId, client));
 
-    TransformDomainTemplateDto domainTemplateDto =
+    ExportDomainTemplateDto domainTemplateDto =
         dtoTransformer.transformDomainTemplate2Dto(domainTemplate);
 
     var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
@@ -186,7 +186,7 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
 
   @Override
   public DomainTemplate createDomainTemplateFromDomain(Domain domain) {
-    TransformDomainTemplateDto domainDto = dtoTransformer.transformDomainTemplate2Dto(domain);
+    ExportDomainTemplateDto domainDto = dtoTransformer.transformDomainTemplate2Dto(domain);
 
     String domainTemplateId = createDomainTemplateId(domain);
     Key<UUID> domainTemplateKey = Key.uuidFrom(domainTemplateId);

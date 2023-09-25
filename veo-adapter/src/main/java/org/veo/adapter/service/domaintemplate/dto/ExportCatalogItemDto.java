@@ -47,7 +47,7 @@ import lombok.ToString;
 /** Complete catalog item including tailoring references & custom aspects */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class FullCatalogItemDto extends AbstractCatalogItemDto implements IdentifiableDto {
+public class ExportCatalogItemDto extends AbstractCatalogItemDto implements IdentifiableDto {
 
   @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
   @Schema(
@@ -75,8 +75,8 @@ public class FullCatalogItemDto extends AbstractCatalogItemDto implements Identi
       include = As.EXISTING_PROPERTY,
       property = "referenceType")
   @JsonSubTypes({
-    @JsonSubTypes.Type(value = TransformLinkTailoringReference.class, name = "LINK_EXTERNAL"),
-    @JsonSubTypes.Type(value = TransformLinkTailoringReference.class, name = "LINK"),
+    @JsonSubTypes.Type(value = ExportLinkTailoringReference.class, name = "LINK_EXTERNAL"),
+    @JsonSubTypes.Type(value = ExportLinkTailoringReference.class, name = "LINK"),
     @JsonSubTypes.Type(value = FullTailoringReferenceDto.class, name = "OMIT"),
     @JsonSubTypes.Type(value = FullTailoringReferenceDto.class, name = "COPY"),
     @JsonSubTypes.Type(value = FullTailoringReferenceDto.class, name = "COPY_ALWAYS"),

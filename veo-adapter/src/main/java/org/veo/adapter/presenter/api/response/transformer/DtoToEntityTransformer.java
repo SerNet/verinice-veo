@@ -40,9 +40,9 @@ import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
-import org.veo.adapter.service.domaintemplate.dto.FullCatalogItemDto;
-import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
-import org.veo.adapter.service.domaintemplate.dto.TransformLinkTailoringReference;
+import org.veo.adapter.service.domaintemplate.dto.ExportCatalogItemDto;
+import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
+import org.veo.adapter.service.domaintemplate.dto.ExportLinkTailoringReference;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.CatalogItem;
@@ -158,14 +158,14 @@ public final class DtoToEntityTransformer {
   }
 
   public DomainTemplate transformTransformDomainTemplateDto2DomainTemplate(
-      TransformDomainTemplateDto source, IdRefResolver idRefResolver) {
+      ExportDomainTemplateDto source, IdRefResolver idRefResolver) {
     var target = createIdentifiable(DomainTemplate.class, source);
     mapTransformDomainTemplate(source, idRefResolver, target);
     return target;
   }
 
   public Domain transformTransformDomainTemplateDto2Domain(
-      TransformDomainTemplateDto source, IdRefResolver idRefResolver) {
+      ExportDomainTemplateDto source, IdRefResolver idRefResolver) {
     // DO NOT use domain template ID as domain ID.
     var target = identifiableFactory.create(Domain.class, Key.newUuid());
     mapTransformDomainTemplate(source, idRefResolver, target);
@@ -181,7 +181,7 @@ public final class DtoToEntityTransformer {
   }
 
   private void mapTransformDomainTemplate(
-      TransformDomainTemplateDto source, IdRefResolver idRefResolver, DomainBase target) {
+      ExportDomainTemplateDto source, IdRefResolver idRefResolver, DomainBase target) {
     target.setAuthority(source.getAuthority());
     target.setTemplateVersion(source.getTemplateVersion());
     mapNameableProperties(source, target);
@@ -223,8 +223,7 @@ public final class DtoToEntityTransformer {
     }
 
     if (source.isLinkTailoringReferences()) {
-      TransformLinkTailoringReference tailoringReferenceDto =
-          (TransformLinkTailoringReference) source;
+      ExportLinkTailoringReference tailoringReferenceDto = (ExportLinkTailoringReference) source;
       LinkTailoringReference tailoringReference = (LinkTailoringReference) target;
       tailoringReference.setAttributes(tailoringReferenceDto.getAttributes());
       tailoringReference.setLinkType(tailoringReferenceDto.getLinkType());
@@ -255,7 +254,7 @@ public final class DtoToEntityTransformer {
   }
 
   public CatalogItem transformDto2CatalogItem(
-      FullCatalogItemDto source, IdRefResolver idRefResolver) {
+      ExportCatalogItemDto source, IdRefResolver idRefResolver) {
     var target = createIdentifiable(CatalogItem.class, source);
     target.setAbbreviation(source.getAbbreviation());
     target.setName(source.getName());

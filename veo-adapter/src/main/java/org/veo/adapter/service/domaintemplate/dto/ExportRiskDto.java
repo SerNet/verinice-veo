@@ -40,4 +40,4 @@ import lombok.Data;
   @JsonSubTypes.Type(value = ScopeRiskDto.class, name = "scoperisk"),
   @JsonSubTypes.Type(value = AssetRiskDto.class, name = "assetrisk")
 })
-public class TransformRiskDto extends AbstractRiskDto {}
+public class ExportRiskDto extends AbstractRiskDto {}

@@ -89,11 +89,11 @@ import org.veo.adapter.presenter.api.dto.full.LegacyCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
+import org.veo.adapter.service.domaintemplate.dto.ExportCatalogItemDto;
+import org.veo.adapter.service.domaintemplate.dto.ExportDomainDto;
+import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportLinkProfileTailoringReference;
-import org.veo.adapter.service.domaintemplate.dto.FullCatalogItemDto;
-import org.veo.adapter.service.domaintemplate.dto.TransformDomainDto;
-import org.veo.adapter.service.domaintemplate.dto.TransformDomainTemplateDto;
-import org.veo.adapter.service.domaintemplate.dto.TransformLinkTailoringReference;
+import org.veo.adapter.service.domaintemplate.dto.ExportLinkTailoringReference;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
@@ -408,20 +408,20 @@ public final class EntityToDtoTransformer {
     return target;
   }
 
-  public TransformDomainTemplateDto transformDomainTemplate2Dto(@Valid DomainBase source) {
-    var target = new TransformDomainTemplateDto();
+  public ExportDomainTemplateDto transformDomainTemplate2Dto(@Valid DomainBase source) {
+    var target = new ExportDomainTemplateDto();
     mapDomain(source, target);
     return target;
   }
 
-  public TransformDomainDto transformDomain2ExportDto(@Valid Domain source) {
-    var target = new TransformDomainDto();
+  public ExportDomainDto transformDomain2ExportDto(@Valid Domain source) {
+    var target = new ExportDomainDto();
     mapDomain(source, target);
     target.setDomainTemplate(IdRef.from(source.getDomainTemplate(), referenceAssembler));
     return target;
   }
 
-  private void mapDomain(DomainBase source, TransformDomainTemplateDto target) {
+  private void mapDomain(DomainBase source, ExportDomainTemplateDto target) {
     target.setId(source.getId().uuidValue());
     target.setVersion(source.getVersion());
     target.setAuthority(source.getAuthority());
@@ -451,8 +451,8 @@ public final class EntityToDtoTransformer {
     return elementTypeDefinitionDto;
   }
 
-  public FullCatalogItemDto transformCatalogItem2Dto(@Valid CatalogItem source) {
-    var target = new FullCatalogItemDto();
+  public ExportCatalogItemDto transformCatalogItem2Dto(@Valid CatalogItem source) {
+    var target = new ExportCatalogItemDto();
     target.setId(source.getId().uuidValue());
     mapCatalogItem(source, target);
     target.setStatus(source.getStatus());
@@ -535,7 +535,7 @@ public final class EntityToDtoTransformer {
     if (source.isLinkTailoringReferences()) {
       LinkTailoringReference linkRef = (LinkTailoringReference) source;
       target =
-          new TransformLinkTailoringReference(
+          new ExportLinkTailoringReference(
               linkRef.getLinkType(), Map.copyOf(linkRef.getAttributes()));
     } else {
       target = new FullTailoringReferenceDto(source.getId().uuidValue());

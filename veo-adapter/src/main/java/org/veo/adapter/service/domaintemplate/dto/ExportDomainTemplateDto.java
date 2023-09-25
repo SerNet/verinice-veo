@@ -38,8 +38,7 @@ import lombok.ToString;
 @JsonIgnoreProperties("domainTemplate")
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class TransformDomainTemplateDto extends AbstractDomainTemplateDto
-    implements IdentifiableDto {
+public class ExportDomainTemplateDto extends AbstractDomainTemplateDto implements IdentifiableDto {
 
   @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
   @Schema(
@@ -51,5 +50,5 @@ public class TransformDomainTemplateDto extends AbstractDomainTemplateDto
   @ToString.Include
   private String id;
 
-  private Set<FullCatalogItemDto> catalogItems = new HashSet<>();
+  private Set<ExportCatalogItemDto> catalogItems = new HashSet<>();
 }
