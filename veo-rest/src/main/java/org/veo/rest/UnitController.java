@@ -66,6 +66,7 @@ import org.veo.adapter.presenter.api.unit.CreateUnitInputMapper;
 import org.veo.core.entity.Client;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.Unit;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase;
@@ -142,14 +143,26 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
               description =
                   "The request mode allows to control the included items in the incarnation description.")
           @RequestParam(name = "mode", required = false)
-          IncarnationRequestModeType requestMode) {
+          IncarnationRequestModeType requestMode,
+      @Parameter(
+              description =
+                  "The request mode allows to control the included references in the incarnation description.")
+          @RequestParam(name = "include", required = false)
+          List<TailoringReferenceType> include,
+      @Parameter(
+              description =
+                  "The request mode allows to control the excluded references in the incarnation description.")
+          @RequestParam(name = "exclude", required = false)
+          List<TailoringReferenceType> exclude) {
+
     Client client = getAuthenticatedClient(auth);
     Key<UUID> containerId = Key.uuidFrom(unitId);
     List<Key<UUID>> list = itemIds.stream().map(Key::uuidFrom).toList();
     CompletableFuture<IncarnateDescriptionsDto> catalogFuture =
         useCaseInteractor.execute(
             getIncarnationDescriptionUseCase,
-            new GetIncarnationDescriptionUseCase.InputData(client, containerId, list, requestMode),
+            new GetIncarnationDescriptionUseCase.InputData(
+                client, containerId, list, requestMode, include, exclude),
             output -> new IncarnateDescriptionsDto(output.getReferences(), urlAssembler));
     return catalogFuture.thenApply(result -> ResponseEntity.ok().body(result));
   }

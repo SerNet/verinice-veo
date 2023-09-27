@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,7 +38,10 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.LinkTailoringReference;
+import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TailoringReferenceTyped;
+import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.TemplateItemReference;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
@@ -72,6 +76,9 @@ public class GetIncarnationDescriptionUseCase
     Unit unit = unitRepository.getByIdFetchClient(input.getUnitId());
     unit.checkSameClient(input.authenticatedClient);
     validateInput(input);
+
+    Predicate<TailoringReferenceTyped> tailoringReferenceFilter =
+        createTailoringReferenceFilter(input.exclude, input.include);
     List<Key<UUID>> catalogItemIds = input.getCatalogItemIds();
     Map<Key<UUID>, CatalogItem> catalogItemsbyId =
         catalogItemRepository
@@ -95,7 +102,7 @@ public class GetIncarnationDescriptionUseCase
         input.requestType == null ? IncarnationRequestModeType.DEFAULT : input.requestType;
     Collection<CatalogItem> itemsToCreate =
         switch (requestType) {
-          case DEFAULT -> collectAllItems(requestedItems);
+          case DEFAULT -> collectAllItems(requestedItems, tailoringReferenceFilter);
           case MANUAL -> requestedItems;
         };
 
@@ -105,6 +112,7 @@ public class GetIncarnationDescriptionUseCase
                 catalogItem ->
                     catalogItem.getTailoringReferences().stream()
                         .filter(TailoringReferenceTyped.IS_ALL_LINK_PREDICATE)
+                        .filter(tailoringReferenceFilter)
                         .map(tr -> (LinkTailoringReference<CatalogItem>) tr)
                         .map(LinkTailoringReference::getTarget));
 
@@ -134,7 +142,10 @@ public class GetIncarnationDescriptionUseCase
                 catalogItem -> {
                   List<TailoringReferenceParameter> parameters =
                       toParameters(
-                          catalogItem.getTailoringReferences(), referencedItemsByCatalogItemId);
+                          catalogItem.getTailoringReferences().stream()
+                              .filter(tailoringReferenceFilter)
+                              .toList(),
+                          referencedItemsByCatalogItemId);
                   return new TemplateItemIncarnationDescription(catalogItem, parameters);
                 })
             .toList();
@@ -145,16 +156,25 @@ public class GetIncarnationDescriptionUseCase
 
   /**
    * Collect recursively all link targets together with the elements until all targets are included.
+   *
+   * @param tailoringReferenceFilter
    */
-  private List<CatalogItem> collectAllItems(List<CatalogItem> itemsToCreate) {
+  private List<CatalogItem> collectAllItems(
+      List<CatalogItem> itemsToCreate,
+      Predicate<? super TailoringReference<CatalogItem>> tailoringReferenceFilter) {
     List<CatalogItem> current = itemsToCreate;
     List<CatalogItem> next =
         Stream.concat(
-                itemsToCreate.stream(), itemsToCreate.stream().flatMap(this::getReferencedTargets))
+                itemsToCreate.stream(),
+                itemsToCreate.stream()
+                    .map(TemplateItem::getTailoringReferences)
+                    .flatMap(Collection::stream)
+                    .filter(tailoringReferenceFilter)
+                    .map(tr -> tr.getTarget()))
             .distinct()
             .toList();
     while (current.size() < next.size()) {
-      current = collectAllItems(next);
+      current = collectAllItems(next, tailoringReferenceFilter);
     }
     return current;
   }
@@ -196,6 +216,8 @@ public class GetIncarnationDescriptionUseCase
     @NotNull Key<UUID> unitId;
     @NotNull List<Key<UUID>> catalogItemIds;
     IncarnationRequestModeType requestType;
+    List<TailoringReferenceType> include;
+    List<TailoringReferenceType> exclude;
   }
 
   @Valid

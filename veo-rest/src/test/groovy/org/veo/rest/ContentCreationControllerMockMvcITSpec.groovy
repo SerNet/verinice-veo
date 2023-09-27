@@ -576,6 +576,24 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         modifiedScenario.parts[0] == newScenario1
         newScenario1.composites.size() == 1
         newScenario1.composites[0] == modifiedScenario
+
+        when: "we only include PART"
+        incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${scenarioItemIds}&mode=MANUAL&include=PART"))
+        references = incarnationDescription.parameters.references.first()
+
+        then: "only PART is returned"
+        incarnationDescription.parameters.size() == 1
+        references.size() == 1
+        references.referenceType == ["PART"]
+
+        when: "we exclude PART"
+        incarnationDescription = parseJson(get("/units/${unitId}/incarnations?itemIds=${scenarioItemIds}&mode=MANUAL&exclude=PART"))
+        references = incarnationDescription.parameters.references.first()
+
+        then: "only COMPOSITE is returned"
+        incarnationDescription.parameters.size() == 1
+        references.size() == 1
+        references.referenceType == ["COMPOSITE"]
     }
 
     @WithUserDetails("content-creator")

@@ -91,7 +91,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
         def dto = executeInTransaction {
             def out = synchronousUseCaseInteractor.execute(
                     getIncarnationDescriptionUseCase,
-                    new GetIncarnationDescriptionUseCase.InputData(client, unit.id, itemIds, IncarnationRequestModeType.MANUAL),
+                    new GetIncarnationDescriptionUseCase.InputData(client, unit.id, itemIds, IncarnationRequestModeType.MANUAL, null, null),
                     Function.identity()
                     ).get()
             new IncarnateDescriptionsDto(out.references, urlAssembler)

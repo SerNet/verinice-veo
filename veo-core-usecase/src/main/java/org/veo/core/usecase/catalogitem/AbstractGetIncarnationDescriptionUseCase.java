@@ -21,11 +21,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TailoringReferenceTyped;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.exception.RuntimeModelException;
@@ -78,5 +80,21 @@ public class AbstractGetIncarnationDescriptionUseCase<T extends TemplateItem<T>>
       tailoringReferenceParameter.setReferencedElement(element);
     }
     return tailoringReferenceParameter;
+  }
+
+  Predicate<TailoringReferenceTyped> createTailoringReferenceFilter(
+      List<TailoringReferenceType> exclude, List<TailoringReferenceType> include) {
+    Predicate<TailoringReferenceTyped> filter = t -> true;
+    if (exclude != null && !exclude.isEmpty()) {
+      Predicate<TailoringReferenceTyped> excludeFilter =
+          t -> !exclude.contains(t.getReferenceType());
+      filter = excludeFilter;
+    }
+    if (include != null && !include.isEmpty()) {
+      Predicate<TailoringReferenceTyped> includeFilter =
+          t -> include.contains(t.getReferenceType());
+      filter = filter.and(includeFilter);
+    }
+    return filter;
   }
 }
