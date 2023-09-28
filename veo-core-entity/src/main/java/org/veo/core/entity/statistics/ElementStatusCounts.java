@@ -55,7 +55,11 @@ public class ElementStatusCounts {
   }
 
   public void setCount(EntityType type, String subType, String status, Long count) {
-    values.get(type.getSingularTerm()).get(subType).put(status, count);
+    Map<String, Long> valuesForSubType = values.get(type.getSingularTerm()).get(subType);
+    if (valuesForSubType == null) {
+      throw new IllegalArgumentException("Invalid subType: " + subType);
+    }
+    valuesForSubType.put(status, count);
   }
 
   @JsonAnyGetter

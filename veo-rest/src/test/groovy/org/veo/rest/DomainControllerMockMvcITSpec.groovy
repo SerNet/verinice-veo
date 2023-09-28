@@ -284,6 +284,39 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("user@domain.example")
+    def "retrieve element statistics for a unit with invalid elements"() {
+        given:
+        def client = testDomain.owner
+        def domain = createTestDomain(client, DSGVO_DOMAINTEMPLATE_UUID)
+        def unit = executeInTransaction{
+            def unit = unitDataRepository.save(newUnit(client))
+            processDataRepository.save(newProcess(unit) {
+                associateWithDomain(domain, 'PRO_DPIA', 'FOR_REVIEW')
+            })
+            processDataRepository.save(newProcess(unit) {
+                associateWithDomain(domain, 'PRO_DataProcessing', 'NEW')
+            })
+            processDataRepository.save(newProcess(unit) {
+                associateWithDomain(domain, 'PRO_DoesNotExist', 'ARCHIVED')
+            })
+
+            unit
+        }
+
+        when:
+        def result = parseJson(get("/domains/${domain.idAsString}/element-status-count?unit=${unit.idAsString}"))
+
+        then:
+        result.size() == 8
+        with(result.process) {
+            size() == 3
+            get('PRO_DPIA') == [IN_PROGRESS:0, NEW:0, RELEASED:0, FOR_REVIEW:1, ARCHIVED:0]
+            get('PRO_DataProcessing') == [IN_PROGRESS:0, NEW:1, RELEASED:0, FOR_REVIEW:0, ARCHIVED:0]
+            !containsKey('PRO_DoesNotExist')
+        }
+    }
+
+    @WithUserDetails("user@domain.example")
     def "retrieve example profile metadata"() {
         given:
         def client = testDomain.owner
