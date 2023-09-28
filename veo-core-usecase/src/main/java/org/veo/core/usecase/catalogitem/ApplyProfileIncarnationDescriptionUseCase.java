@@ -26,6 +26,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Client;
@@ -79,7 +80,9 @@ public class ApplyProfileIncarnationDescriptionUseCase
   @Override
   public OutputData execute(InputData input) {
     // TODO: verinice-veo#2357 refactor this usecase
-    log.info("ApplyIncarnationDescriptionUseCase: {}", input);
+    log.info(
+        "ApplyProfileIncarnationDescriptionUseCase number of referencesToApply: {}",
+        input.referencesToApply.size());
     Unit unit = unitRepository.getByIdFetchClient(input.getUnitId());
     Client authenticatedClient = input.authenticatedClient;
     unit.checkSameClient(authenticatedClient);
@@ -102,7 +105,9 @@ public class ApplyProfileIncarnationDescriptionUseCase
                       processRisks(elementData.getMapping(), elementData.getInternalLinks());
                       return elementData.getElements();
                     }));
-    log.info("ApplyProfileIncarnationDescriptionUseCase elements created: {}", createdElements);
+    log.info(
+        "ApplyProfileIncarnationDescriptionUseCase number of elements created: {}",
+        createdElements.size());
     return new ApplyProfileIncarnationDescriptionUseCase.OutputData(createdElements);
   }
 
@@ -216,8 +221,8 @@ public class ApplyProfileIncarnationDescriptionUseCase
   @Value
   public static class InputData implements UseCase.InputData {
     Client authenticatedClient;
-    Key<UUID> unitId;
-    List<TemplateItemIncarnationDescription> referencesToApply;
+    @NotNull Key<UUID> unitId;
+    @NotNull List<TemplateItemIncarnationDescription> referencesToApply;
   }
 
   @Valid

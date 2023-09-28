@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
@@ -192,8 +193,8 @@ public class GetIncarnationDescriptionUseCase
   @Value
   public static class InputData implements UseCase.InputData {
     Client authenticatedClient;
-    Key<UUID> unitId;
-    List<Key<UUID>> catalogItemIds;
+    @NotNull Key<UUID> unitId;
+    @NotNull List<Key<UUID>> catalogItemIds;
     IncarnationRequestModeType requestType;
   }
 
