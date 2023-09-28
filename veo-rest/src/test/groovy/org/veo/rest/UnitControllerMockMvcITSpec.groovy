@@ -118,6 +118,8 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         def unitId = UUID.randomUUID().toString()
         def compositeId = UUID.randomUUID().toString()
         def partId = UUID.randomUUID().toString()
+        def controlId = UUID.randomUUID().toString()
+        def personId = UUID.randomUUID().toString()
         def domain = parseJson(get("/domains/${domain.idAsString}"))
         Map request = [
             unit:[
@@ -125,6 +127,18 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
                 id: unitId
             ],
             elements: [
+                [
+                    id: controlId,
+                    name: 'Control',
+                    owner: [targetUri:"/units/$unitId"],
+                    type: 'control'
+                ],
+                [
+                    id: personId,
+                    name: 'Person',
+                    owner: [targetUri:"/units/$unitId"],
+                    type: 'person'
+                ],
                 [
                     id: compositeId,
                     name: 'Composite',
@@ -138,7 +152,14 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
                     id: partId,
                     name: 'Part',
                     owner: [targetUri:"/units/$unitId"],
-                    type: 'asset'
+                    type: 'asset',
+                    controlImplementations : [
+                        [
+                            control: [targetUri:"/controls/$controlId"],
+                            responsible: [targetUri:"/persons/$personId"],
+                            description : 'All done'
+                        ]
+                    ]
                 ]
             ],
             domains: [
@@ -152,6 +173,25 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
 
         then:
         result != null
+
+        when:
+        def savedPart = executeInTransaction {
+            assetDataRepository.findAll().find{it.name == 'Part'}.tap {
+                //initialize lazy associations
+                it.controlImplementations.each {
+                    it.control.name
+                    it.responsible.name
+                }
+            }
+        }
+
+        then:
+        savedPart != null
+        savedPart.controlImplementations.size() == 1
+        with(savedPart.controlImplementations.first()) {
+            control.name == 'Control'
+            responsible.name == 'Person'
+        }
     }
 
     @WithUserDetails("user@domain.example")

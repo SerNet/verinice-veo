@@ -22,12 +22,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.CompositeElement;
 import org.veo.core.entity.CustomLink;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Process;
 import org.veo.core.entity.RiskAffected;
@@ -113,9 +115,23 @@ public class ElementBatchCreator {
     log.info("{} elements added to unit {}", elements.size(), unit.getIdAsString());
   }
 
-  private <T extends Element> void saveElements(Collection<T> elements) {
+  private void saveElements(Collection<Element> elements) {
     log.debug("Saving {} entities", elements.size());
-    genericElementRepository.saveAll(Set.copyOf(elements));
+    // save controls first so they can be referenced by requirement and control implementations
+    Set<Element> controls =
+        elements.stream()
+            .filter(it -> it.getModelType().equals(EntityType.CONTROL.getSingularTerm()))
+            .collect(Collectors.toSet());
+    Set<Element> nonControls =
+        elements.stream()
+            .filter(it -> !it.getModelType().equals(EntityType.CONTROL.getSingularTerm()))
+            .collect(Collectors.toSet());
+    if (!controls.isEmpty()) {
+      genericElementRepository.saveAll(controls);
+    }
+    if (!nonControls.isEmpty()) {
+      genericElementRepository.saveAll(nonControls);
+    }
     log.debug("Done");
   }
 
