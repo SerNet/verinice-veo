@@ -246,6 +246,11 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
 
         then: "1 object is created"
         postResult.size() == 1
+        postResult[0].name == item7.name
+        with(postResult[0]) {
+            designator != null
+            id != null
+        }
 
         when: "we get the created tom"
         def tomResult = parseJson(get(postResult[0].targetUri))

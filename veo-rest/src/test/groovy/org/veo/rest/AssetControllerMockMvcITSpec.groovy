@@ -285,9 +285,14 @@ class AssetControllerMockMvcITSpec extends VeoMvcSpec {
         def result = parseJson(results)
         result.name == 'Test asset-1'
         result.links.size() == 1
-        result.links.mypreciouslink.target.targetUri == [
-            "http://localhost/assets/${targetAsset.id.uuidValue()}"
-        ]
+
+        and: "the reference contains the expected data fields"
+        with(result.links.mypreciouslink[0].target) {
+            id == targetAsset.idAsString
+            designator ==~ /AST-\d+/
+            name == "asset null"
+            targetUri == "http://localhost/assets/${targetAsset.id.uuidValue()}"
+        }
 
         when: "all assets are queried"
         def allAssets = parseJson(get("/assets"))

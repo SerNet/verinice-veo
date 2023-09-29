@@ -21,7 +21,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.veo.core.entity.Displayable;
+import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.Nameable;
 import org.veo.core.entity.ref.ITypedId;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -40,7 +42,10 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
 
-  @JsonIgnore @ToString.Include @EqualsAndHashCode.Include private final String id;
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  @ToString.Include
+  @EqualsAndHashCode.Include
+  private final String id;
 
   @ToString.Include
   @Schema(accessMode = Schema.AccessMode.READ_ONLY)
@@ -106,5 +111,29 @@ public class IdRef<T extends Identifiable> implements IIdRef, ITypedId<T> {
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   public String getResourcesUri() {
     return urlAssembler.resourcesReferenceOf(type);
+  }
+
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  public String getDesignator() {
+    if (entity instanceof Element designated) {
+      return designated.getDesignator();
+    }
+    return null;
+  }
+
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  public String getName() {
+    if (entity instanceof Nameable nameable) {
+      return nameable.getName();
+    }
+    return null;
+  }
+
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  public String getAbbreviation() {
+    if (entity instanceof Nameable nameable) {
+      return nameable.getAbbreviation();
+    }
+    return null;
   }
 }
