@@ -603,6 +603,48 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         result.parameters[0].references.size() == 0
     }
 
+    @WithUserDetails("user@domain.example")
+    def "retrieve the apply info for part linked to existing composite"() {
+        when: "we create the composite by removing the part reference"
+        def incarnationDescriptions = getIncarnationDescriptions(unit, itemComposite)
+        incarnationDescriptions.parameters.first().references.clear()
+
+        and: "post"
+        def elementRefs = parseJson(post("/${basePath}/${unit.id.uuidValue()}/incarnations",incarnationDescriptions, 201))
+
+        then: "the composite is created"
+        elementRefs.size() == 1
+
+        when: "we create the part"
+        incarnationDescriptions = getIncarnationDescriptions(unit, itemPart)
+
+        then: "the parameter is set to the existing composite"
+        incarnationDescriptions.parameters.size() == 1;
+        incarnationDescriptions.parameters.first().references.size() == 1
+        incarnationDescriptions.parameters.first().references.first().referencedElement.targetUri == elementRefs.targetUri.first()
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "retrieve the apply info for composite linked to existing part"() {
+        when: "we create the part by removing the composite reference"
+        def incarnationDescriptions = getIncarnationDescriptions(unit, itemPart)
+        incarnationDescriptions.parameters.first().references.clear()
+
+        and: "post"
+        def elementRef = parseJson(post("/${basePath}/${unit.id.uuidValue()}/incarnations",incarnationDescriptions, 201))
+
+        then: "the part is created"
+        elementRef.size() == 1
+
+        when: "we create the composite"
+        incarnationDescriptions = getIncarnationDescriptions(unit, itemComposite)
+
+        then: "the parameter is set to the existing part"
+        incarnationDescriptions.parameters.size() == 1;
+        incarnationDescriptions.parameters.first().references.size() == 1
+        incarnationDescriptions.parameters.first().references.first().referencedElement.targetUri == elementRef.targetUri.first()
+    }
+
     private getIncarnationDescriptions(Unit unit, CatalogItem... items) {
         parseJson(get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${items.collect{it.id.uuidValue()}.join(',')}&mode=MANUAL"))
     }

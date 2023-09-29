@@ -37,7 +37,6 @@ import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
 import org.veo.core.entity.TailoringReferenceTyped;
@@ -111,10 +110,9 @@ public class GetIncarnationDescriptionUseCase
             .flatMap(
                 catalogItem ->
                     catalogItem.getTailoringReferences().stream()
-                        .filter(TailoringReferenceTyped.IS_ALL_LINK_PREDICATE)
                         .filter(tailoringReferenceFilter)
-                        .map(tr -> (LinkTailoringReference<CatalogItem>) tr)
-                        .map(LinkTailoringReference::getTarget));
+                        .filter(TailoringReferenceTyped.IS_PARAMETER_REF)
+                        .map(TailoringReference::getTarget));
 
     Map<Key<UUID>, Element> referencedItemsByCatalogItemId = new HashMap<>();
     Map<Class<? extends Identifiable>, List<CatalogItem>> linkedItemsByElementType =
