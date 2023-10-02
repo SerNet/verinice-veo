@@ -25,6 +25,7 @@ import org.veo.core.entity.CompositeElement
 import org.veo.core.entity.EntityType
 import org.veo.core.entity.Unit
 import org.veo.core.repository.AssetRepository
+import org.veo.core.repository.ControlImplementationRepository
 import org.veo.core.repository.ControlRepository
 import org.veo.core.repository.DocumentRepository
 import org.veo.core.repository.IncidentRepository
@@ -32,7 +33,9 @@ import org.veo.core.repository.PersonRepository
 import org.veo.core.repository.ProcessRepository
 import org.veo.core.repository.ScenarioRepository
 import org.veo.persistence.access.jpa.ClientDataRepository
+import org.veo.persistence.access.jpa.ControlImplementationDataRepository
 import org.veo.persistence.access.jpa.CustomLinkDataRepository
+import org.veo.persistence.access.jpa.RequirementImplementationDataRepository
 import org.veo.persistence.access.jpa.UnitDataRepository
 import org.veo.persistence.entity.jpa.AbstractJpaSpec
 import org.veo.persistence.entity.jpa.ValidationService
@@ -55,6 +58,12 @@ class CompositeElementAccessSpec extends AbstractJpaSpec {
     @Autowired
     CustomLinkDataRepository linkDataRepository
 
+    @Autowired
+    ControlImplementationDataRepository controlImplementationRepository
+
+    @Autowired
+    RequirementImplementationDataRepository requirementImplementationDataRepository
+
     ValidationService validationMock = Mock()
 
     @Autowired
@@ -71,7 +80,7 @@ class CompositeElementAccessSpec extends AbstractJpaSpec {
         controlRepository = new ControlRepositoryImpl(controlDataRepository, validationMock, linkDataRepository, scopeDataRepository, assetDataRepository, processDataRepository, elementQueryFactory)
         documentRepository = new DocumentRepositoryImpl(documentDataRepository, validationMock, linkDataRepository, scopeDataRepository, elementQueryFactory)
         incidentRepository = new IncidentRepositoryImpl(incidentDataRepository, validationMock, linkDataRepository, scopeDataRepository, elementQueryFactory)
-        personRepository = new PersonRepositoryImpl(personDataRepository, validationMock, linkDataRepository, scopeDataRepository, assetDataRepository, processDataRepository, elementQueryFactory)
+        personRepository = new PersonRepositoryImpl(personDataRepository, validationMock, linkDataRepository, scopeDataRepository, assetDataRepository, processDataRepository, elementQueryFactory, controlImplementationRepository, requirementImplementationDataRepository)
         processRepository = new ProcessRepositoryImpl(processDataRepository, validationMock, linkDataRepository, scopeDataRepository, elementQueryFactory)
         scenarioRepository = new ScenarioRepositoryImpl(scenarioDataRepository, validationMock, linkDataRepository, scopeDataRepository, assetDataRepository, processDataRepository, elementQueryFactory)
     }

@@ -20,11 +20,16 @@ package org.veo.core.repository;
 import java.util.Set;
 
 import org.veo.core.entity.Control;
+import org.veo.core.entity.Person;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.RequirementImplementation;
 
 public interface ControlImplementationRepository {
+  Set<ControlImplementation> findByPerson(Person responsiblePerson);
+
   Set<ControlImplementation> findByControls(Set<Control> removedControls);
 
   Set<ControlImplementation> findByRequirement(RequirementImplementation referencedRI);
+
+  Set<ControlImplementation> findByPersons(Set<Person> responsibles);
 }

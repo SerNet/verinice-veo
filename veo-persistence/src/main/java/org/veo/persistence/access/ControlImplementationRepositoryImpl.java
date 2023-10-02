@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.Person;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.core.repository.ControlImplementationRepository;
@@ -46,5 +47,15 @@ public class ControlImplementationRepositoryImpl implements ControlImplementatio
     return dataRepo.findAllById(allIds).stream()
         .map(ControlImplementation.class::cast)
         .collect(Collectors.toSet());
+  }
+
+  @Override
+  public Set<ControlImplementation> findByPerson(Person responsible) {
+    return dataRepo.findByPerson(responsible);
+  }
+
+  @Override
+  public Set<ControlImplementation> findByPersons(Set<Person> responsibles) {
+    return dataRepo.findByPersons(responsibles);
   }
 }

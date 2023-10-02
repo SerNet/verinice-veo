@@ -19,6 +19,7 @@ package org.veo.persistence.access;
 
 import static java.util.Collections.singleton;
 
+import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -33,9 +34,11 @@ import org.veo.core.entity.Person;
 import org.veo.core.repository.ElementQuery;
 import org.veo.core.repository.PersonRepository;
 import org.veo.persistence.access.jpa.AssetDataRepository;
+import org.veo.persistence.access.jpa.ControlImplementationDataRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.PersonDataRepository;
 import org.veo.persistence.access.jpa.ProcessDataRepository;
+import org.veo.persistence.access.jpa.RequirementImplementationDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.access.query.ElementQueryFactory;
 import org.veo.persistence.entity.jpa.PersonData;
@@ -48,6 +51,8 @@ public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<
   private final AssetDataRepository assetDataRepository;
   private final ProcessDataRepository processDataRepository;
   private final ScopeDataRepository scopeDataRepository;
+  private final ControlImplementationDataRepository controlImplementationDataRepository;
+  private final RequirementImplementationDataRepository requirementImplementationDataRepository;
 
   public PersonRepositoryImpl(
       PersonDataRepository dataRepository,
@@ -56,7 +61,9 @@ public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<
       ScopeDataRepository scopeDataRepository,
       AssetDataRepository assetDataRepository,
       ProcessDataRepository processDataRepository,
-      ElementQueryFactory elementQueryFactory) {
+      ElementQueryFactory elementQueryFactory,
+      ControlImplementationDataRepository controlImplementationDataRepository,
+      RequirementImplementationDataRepository requirementImplementationDataRepository) {
     super(
         dataRepository,
         validation,
@@ -67,6 +74,8 @@ public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<
     this.assetDataRepository = assetDataRepository;
     this.processDataRepository = processDataRepository;
     this.scopeDataRepository = scopeDataRepository;
+    this.controlImplementationDataRepository = controlImplementationDataRepository;
+    this.requirementImplementationDataRepository = requirementImplementationDataRepository;
   }
 
   @Override
@@ -77,6 +86,7 @@ public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<
   @Override
   public void delete(Person person) {
     removeFromRisks(singleton((PersonData) person));
+    removeFromCIRIs(singleton(person));
     super.deleteById(person.getId());
   }
 
@@ -89,10 +99,30 @@ public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<
         .forEach(risk -> risk.appoint(null));
   }
 
+  private void removeFromCIRIs(Set<Person> elements) {
+    requirementImplementationDataRepository
+        .findByPersons(elements)
+        .forEach(
+            ri -> {
+              ri.setResponsible(null);
+              ri.getOrigin().setUpdatedAt(Instant.now());
+            });
+    controlImplementationDataRepository
+        .findByPersons(elements)
+        .forEach(
+            ci -> {
+              ci.setResponsible(null);
+              ci.getOwner().setUpdatedAt(Instant.now());
+            });
+  }
+
   @Override
   @Transactional
   public void deleteAll(Set<Person> elements) {
     removeFromRisks(elements.stream().map(PersonData.class::cast).collect(Collectors.toSet()));
+    removeFromCIRIs(elements);
+
+    // elements.stream().forEach(p -> removeFromCIsRIs(p));
     super.deleteAll(elements);
   }
 

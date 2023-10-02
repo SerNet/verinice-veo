@@ -26,6 +26,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.entity.Person;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.persistence.entity.jpa.ControlImplementationData;
 
@@ -48,6 +49,24 @@ public interface ControlImplementationDataRepository
           where ci.control.dbId in ?1
          """)
   Set<ControlImplementation> findByControlIdWithOwner(Set<String> controlIds);
+
+  @Query(
+      """
+              select distinct ci from control_implementation  ci
+              join fetch ci.owner
+              join fetch ci.responsible
+              where ci.responsible = ?1
+             """)
+  Set<ControlImplementation> findByPerson(Person responsible);
+
+  @Query(
+      """
+                  select distinct ci from control_implementation  ci
+                  join fetch ci.owner
+                  join fetch ci.responsible
+                  where ci.responsible in ?1
+                 """)
+  Set<ControlImplementation> findByPersons(Set<Person> responsibles);
 
   @Query(
       value =

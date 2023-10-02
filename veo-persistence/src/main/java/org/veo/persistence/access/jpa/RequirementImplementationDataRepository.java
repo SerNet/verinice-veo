@@ -30,6 +30,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.veo.core.entity.Person;
 import org.veo.core.entity.compliance.RequirementImplementation;
 import org.veo.persistence.entity.jpa.RequirementImplementationData;
 
@@ -43,6 +44,24 @@ public interface RequirementImplementationDataRepository
           where ri.id in (:uuids)
          """)
   Set<RequirementImplementation> findAllByUUID(@Param("uuids") Set<UUID> uuids);
+
+  @Query(
+      """
+                      select distinct ri from requirement_implementation ri
+                      join fetch ri.origin
+                      join fetch ri.responsible
+                      where ri.responsible = ?1
+                     """)
+  Set<RequirementImplementation> findByPerson(Person responsible);
+
+  @Query(
+      """
+                      select distinct ri from requirement_implementation ri
+                      join fetch ri.origin
+                      join fetch ri.responsible
+                      where ri.responsible in ?1
+                     """)
+  Set<RequirementImplementation> findByPersons(Set<Person> responsible);
 
   @Nonnull
   @Transactional(readOnly = true)

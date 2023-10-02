@@ -178,6 +178,51 @@ class ControlImplementationRestTest extends VeoRestTest {
         elementType << EntityType.RISK_AFFECTED_TYPES
     }
 
+    def "responsible person of #elementType.singularTerm CIs & RIs can be deleted"() {
+        when: "creating and fetching an element with one CIs and a responsible person"
+        def personId = post("/persons", [
+            name: "person will be removed",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+        ]).body.resourceId
+
+        def elementId = post("/$elementType.pluralTerm", [
+            name: "lame",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            controlImplementations: [
+                [
+                    control: [targetUri: "/controls/$rootControl1Id"],
+                    responsible: [targetUri: "/persons/$personId"],
+                ],
+            ]
+        ]).body.resourceId
+        def retrievedElement = get("/$elementType.pluralTerm/$elementId").body
+
+        then: "the person has been assigned to the CI"
+        retrievedElement.controlImplementations.size() == 1
+        retrievedElement.controlImplementations[0].responsible.targetUri.endsWith("/persons/$personId")
+
+        when: "assigning the RI to the person"
+        get("/$elementType.pluralTerm/$elementId/requirement-implementations/$rootControl1Id").with {
+            body.responsible = [targetUri: "/persons/$personId"]
+            put(body._self, body, getETag(), 204)
+        }
+
+        and: "removing the person"
+        delete("/persons/$personId")
+
+        and: "fetching the element"
+        retrievedElement = get("/$elementType.pluralTerm/$elementId").body
+
+        then: "the responsible person is unset"
+        retrievedElement.controlImplementations.size() == 1
+        retrievedElement.controlImplementations[0].responsible == null
+
+        get("/$elementType.pluralTerm/$elementId/control-implementations/$rootControl1Id/requirement-implementations").body.responsible == null
+
+        where:
+        elementType << EntityType.RISK_AFFECTED_TYPES
+    }
+
     def "concurrent requirement implementation changes on #elementType.singularTerm are detected"() {
         given:
         def elementId = post("/$elementType.pluralTerm", [

@@ -406,7 +406,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.delete == 16
         queryCounts.insert == 11
         queryCounts.update == 0
-        queryCounts.select == 22
+        queryCounts.select == 24
         queryCounts.time < 4000
     }
 
@@ -452,7 +452,7 @@ class DataSourcePerformanceITSpec extends AbstractPerformanceITSpec {
         queryCounts.delete <= 12
         queryCounts.insert == 1 // This count is off - at least 18 events are being inserted. See issue #2266.
         queryCounts.update in [2l, 3l]
-        queryCounts.select == 51
+        queryCounts.select == 53
         queryCounts.time < 500
     }
 
