@@ -17,10 +17,6 @@
  ******************************************************************************/
 package org.veo.core.entity.condition;
 
-import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_CREATED;
-import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_DELETED;
-import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_VALUES_CHANGED;
-
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -51,23 +47,9 @@ public class MaxRiskProvider implements InputProvider {
 
   @Override
   public boolean isAffectedByEvent(ElementEvent event, Domain domain) {
-    if (event instanceof RiskAffectingElementChangeEvent) {
-      var elementRiskEvent = (RiskAffectingElementChangeEvent) event;
+    if (event instanceof RiskAffectingElementChangeEvent elementRiskEvent) {
       return elementRiskEvent.getChangedRisks().stream()
-          .anyMatch(
-              riskChangedEvent -> {
-                var changes = riskChangedEvent.getChanges();
-                // Reevaluate max risk if a risk has been created or removed.
-                if (changes.contains(RISK_CREATED) || changes.contains(RISK_DELETED)) {
-                  return true;
-                }
-                // Reevaluate max risk if a risk value has been changed in the domain.
-                if (changes.contains(RISK_VALUES_CHANGED)
-                    && riskChangedEvent.getDomainId().equals(domain.getId())) {
-                  return true;
-                }
-                return false;
-              });
+          .anyMatch(riskChangedEvent -> riskChangedEvent.shouldReevaluate(domain));
     }
     return false;
   }

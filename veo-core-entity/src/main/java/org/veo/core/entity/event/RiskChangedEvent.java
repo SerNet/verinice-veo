@@ -19,15 +19,19 @@ package org.veo.core.entity.event;
 
 import static org.veo.core.entity.event.RiskEvent.ChangedValues.IMPACT_VALUES_CHANGED;
 import static org.veo.core.entity.event.RiskEvent.ChangedValues.PROBABILITY_VALUES_CHANGED;
+import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_CREATED;
+import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_DELETED;
 import static org.veo.core.entity.event.RiskEvent.ChangedValues.RISK_VALUES_CHANGED;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
 import org.veo.core.entity.AbstractRisk;
+import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
@@ -70,7 +74,7 @@ public class RiskChangedEvent implements RiskEvent {
   @Nullable Key<UUID> domainId;
 
   /**
-   * The affected risk -definition. May be null, i.e. when deleting a risk which affects all risk
+   * The affected risk-definition. May be null, i.e. when deleting a risk which affects all risk
    * definitions.
    */
   @Nullable RiskDefinitionRef riskDefinition;
@@ -81,5 +85,24 @@ public class RiskChangedEvent implements RiskEvent {
 
   public Key<UUID> getScenarioId() {
     return risk.getScenario().getId();
+  }
+
+  /**
+   * Test whether risk values should be re-evaluated because of changes. This is always the case
+   * when a risk was created or removed.
+   *
+   * <p>For changes, this method only returns true if they apply to the requested domain.
+   *
+   * @param domain The domain to check
+   * @return true if the risk should be re-evaluated, false otherwise.
+   */
+  public boolean shouldReevaluate(Identifiable domain) {
+    var changes = getChanges();
+    // Reevaluate max risk if a risk has been created or removed.
+    if (changes.contains(RISK_CREATED) || changes.contains(RISK_DELETED)) {
+      return true;
+    }
+    // Reevaluate max risk if a risk value has been changed in the domain.
+    return changes.contains(RISK_VALUES_CHANGED) && Objects.equals(getDomainId(), domain.getId());
   }
 }
