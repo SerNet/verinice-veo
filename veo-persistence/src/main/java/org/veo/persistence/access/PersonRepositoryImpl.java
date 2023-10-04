@@ -22,6 +22,7 @@ import static java.util.Collections.singleton;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +47,7 @@ public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<
 
   private final AssetDataRepository assetDataRepository;
   private final ProcessDataRepository processDataRepository;
+  private final ScopeDataRepository scopeDataRepository;
 
   public PersonRepositoryImpl(
       PersonDataRepository dataRepository,
@@ -64,6 +66,7 @@ public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<
         Person.class);
     this.assetDataRepository = assetDataRepository;
     this.processDataRepository = processDataRepository;
+    this.scopeDataRepository = scopeDataRepository;
   }
 
   @Override
@@ -79,13 +82,9 @@ public class PersonRepositoryImpl extends AbstractCompositeEntityRepositoryImpl<
 
   private void removeFromRisks(Set<PersonData> persons) {
     // remove association to person from risks:
-    assetDataRepository.findDistinctByRisks_RiskOwner_In(persons).stream()
-        .flatMap(assetData -> assetData.getRisks().stream())
-        .filter(risk -> persons.contains(risk.getRiskOwner()))
-        .forEach(risk -> risk.appoint(null));
-
-    processDataRepository.findDistinctByRisks_RiskOwner_In(persons).stream()
-        .flatMap(processData -> processData.getRisks().stream())
+    Stream.of(assetDataRepository, processDataRepository, scopeDataRepository)
+        .flatMap(r -> r.findDistinctByRisks_RiskOwner_In(persons).stream())
+        .flatMap(riskAffected -> riskAffected.getRisks().stream())
         .filter(risk -> persons.contains(risk.getRiskOwner()))
         .forEach(risk -> risk.appoint(null));
   }
