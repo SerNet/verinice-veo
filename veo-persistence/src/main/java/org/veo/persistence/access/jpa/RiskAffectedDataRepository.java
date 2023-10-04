@@ -29,21 +29,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.persistence.entity.jpa.ControlData;
 import org.veo.persistence.entity.jpa.PersonData;
+import org.veo.persistence.entity.jpa.RiskAffectedData;
 import org.veo.persistence.entity.jpa.ScenarioData;
-import org.veo.persistence.entity.jpa.ScopeData;
 
 @Transactional(readOnly = true)
 @NoRepositoryBean
-public interface ScopeRiskAffectedDataRepository extends ElementDataRepository<ScopeData> {
+public interface RiskAffectedDataRepository<T extends RiskAffectedData<?, ?>> {
 
   @SuppressWarnings("PMD.MethodNamingConventions")
-  Set<ScopeData> findDistinctByRisks_ScenarioIn(Collection<ScenarioData> causes);
+  Set<T> findDistinctByRisks_ScenarioIn(Collection<ScenarioData> causes);
 
   @SuppressWarnings("PMD.MethodNamingConventions")
-  Set<ScopeData> findDistinctByRisks_Mitigation_In(Collection<ControlData> controls);
+  Set<T> findDistinctByRisks_Mitigation_In(Collection<ControlData> controls);
 
   @SuppressWarnings("PMD.MethodNamingConventions")
-  Set<ScopeData> findDistinctByRisks_RiskOwner_In(Collection<PersonData> persons);
+  Set<T> findDistinctByRisks_RiskOwner_In(Collection<PersonData> persons);
 
   @Nonnull
   @Query(
@@ -56,7 +56,7 @@ public interface ScopeRiskAffectedDataRepository extends ElementDataRepository<S
          left join fetch r.riskOwner
          left join fetch r.riskAspects
          where e.dbId in ?1""")
-  List<ScopeData> findAllWithRisksByDbIdIn(Iterable<String> ids);
+  List<T> findAllWithRisksByDbIdIn(Iterable<String> ids);
 
   @Nonnull
   @Query(
@@ -66,5 +66,5 @@ public interface ScopeRiskAffectedDataRepository extends ElementDataRepository<S
     left join fetch e.requirementImplementations
     where e.dbId in ?1
     """)
-  Set<ScopeData> findAllWithCIsAndRIs(Iterable<String> ids);
+  Set<T> findAllWithCIsAndRIs(Iterable<String> ids);
 }

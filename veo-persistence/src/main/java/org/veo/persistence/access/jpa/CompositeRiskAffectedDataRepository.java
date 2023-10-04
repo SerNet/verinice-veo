@@ -17,55 +17,12 @@
  ******************************************************************************/
 package org.veo.persistence.access.jpa;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
-import jakarta.annotation.Nonnull;
-
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import org.veo.persistence.entity.jpa.ControlData;
-import org.veo.persistence.entity.jpa.PersonData;
 import org.veo.persistence.entity.jpa.RiskAffectedData;
-import org.veo.persistence.entity.jpa.ScenarioData;
 
 @Transactional(readOnly = true)
 @NoRepositoryBean
 public interface CompositeRiskAffectedDataRepository<T extends RiskAffectedData<?, ?>>
-    extends CompositeEntityDataRepository<T> {
-
-  @SuppressWarnings("PMD.MethodNamingConventions")
-  Set<T> findDistinctByRisks_ScenarioIn(Collection<ScenarioData> causes);
-
-  @SuppressWarnings("PMD.MethodNamingConventions")
-  Set<T> findDistinctByRisks_Mitigation_In(Collection<ControlData> controls);
-
-  @SuppressWarnings("PMD.MethodNamingConventions")
-  Set<T> findDistinctByRisks_RiskOwner_In(Collection<PersonData> persons);
-
-  @Nonnull
-  @Query(
-      """
-         select distinct e from #{#entityName} e
-         left join fetch e.risks r
-         left join fetch r.domains
-         left join fetch r.scenario
-         left join fetch r.mitigation
-         left join fetch r.riskOwner
-         left join fetch r.riskAspects
-         where e.dbId in ?1""")
-  List<T> findAllWithRisksByDbIdIn(Iterable<String> ids);
-
-  @Nonnull
-  @Query(
-      """
-    select distinct e from #{#entityName} e
-    left join fetch e.controlImplementations
-    left join fetch e.requirementImplementations
-    where e.dbId in ?1
-    """)
-  Set<T> findAllWithCIsAndRIs(Iterable<String> ids);
-}
+    extends CompositeEntityDataRepository<T>, RiskAffectedDataRepository<T> {}

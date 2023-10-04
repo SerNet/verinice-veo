@@ -25,25 +25,33 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Control;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Person;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
+import org.veo.core.entity.ScopeRisk;
 import org.veo.core.repository.ElementQuery;
+import org.veo.core.repository.RiskAffectedRepository;
 import org.veo.core.repository.ScopeRepository;
 import org.veo.persistence.access.jpa.CustomLinkDataRepository;
 import org.veo.persistence.access.jpa.ScopeDataRepository;
 import org.veo.persistence.access.query.ElementQueryFactory;
+import org.veo.persistence.entity.jpa.ControlData;
+import org.veo.persistence.entity.jpa.PersonData;
 import org.veo.persistence.entity.jpa.ScenarioData;
+import org.veo.persistence.entity.jpa.ScopeData;
 import org.veo.persistence.entity.jpa.ValidationService;
 
 @Repository
-public class ScopeRepositoryImpl extends AbstractScopeRiskAffectedRepository
-    implements ScopeRepository {
+public class ScopeRepositoryImpl extends AbstractElementRepository<Scope, ScopeData>
+    implements ScopeRepository, RiskAffectedRepository<Scope, ScopeRisk> {
 
   private final ScopeDataRepository scopeDataRepository;
 
@@ -53,7 +61,13 @@ public class ScopeRepositoryImpl extends AbstractScopeRiskAffectedRepository
       CustomLinkDataRepository linkDataRepository,
       ScopeDataRepository scopeDataRepository,
       ElementQueryFactory elementQueryFactory) {
-    super(dataRepository, validation, linkDataRepository, elementQueryFactory, scopeDataRepository);
+    super(
+        dataRepository,
+        validation,
+        linkDataRepository,
+        scopeDataRepository,
+        elementQueryFactory,
+        Scope.class);
     this.scopeDataRepository = scopeDataRepository;
   }
 
@@ -89,5 +103,32 @@ public class ScopeRepositoryImpl extends AbstractScopeRiskAffectedRepository
     } else {
       return this.findById(id);
     }
+  }
+
+  @Override
+  public Set<Scope> findByRisk(Scenario cause) {
+    return scopeDataRepository
+        .findDistinctByRisks_ScenarioIn(singleton((ScenarioData) cause))
+        .stream()
+        .map(Scope.class::cast)
+        .collect(Collectors.toSet());
+  }
+
+  @Override
+  public Set<Scope> findByRisk(Control mitigatedBy) {
+    return scopeDataRepository
+        .findDistinctByRisks_Mitigation_In(singleton((ControlData) mitigatedBy))
+        .stream()
+        .map(Scope.class::cast)
+        .collect(Collectors.toSet());
+  }
+
+  @Override
+  public Set<Scope> findByRisk(Person riskOwner) {
+    return scopeDataRepository
+        .findDistinctByRisks_RiskOwner_In(singleton((PersonData) riskOwner))
+        .stream()
+        .map(Scope.class::cast)
+        .collect(Collectors.toSet());
   }
 }
