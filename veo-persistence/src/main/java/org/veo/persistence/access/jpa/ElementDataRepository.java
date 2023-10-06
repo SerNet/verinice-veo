@@ -95,9 +95,8 @@ public interface ElementDataRepository<T extends ElementData>
   @Query(
       "SELECT new org.veo.core.repository.SubTypeStatusCount(e.elementType, a.subType, a.status, count(a.status)) from #{#entityName} as e "
           + "inner join e.subTypeAspects a "
-          + "inner join e.domains d "
           + "where e.owner.dbId = ?1 "
-          + "and d.id = ?2 "
+          + "and a.domain.id = ?2 "
           + "group by e.elementType, a.subType, a.status")
   Set<SubTypeStatusCount> getCountsBySubType(String unitId, String domainId);
 

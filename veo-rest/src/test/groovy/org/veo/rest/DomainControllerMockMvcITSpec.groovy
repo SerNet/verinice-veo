@@ -75,6 +75,12 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
             }
             newDomain(client) {
                 name = "Domain 2"
+                applyElementTypeDefinition(newElementTypeDefinition("person", it) {
+                    subTypes = [
+                        Team: newSubTypeDefinition {},
+                        Member: newSubTypeDefinition {},
+                    ]
+                })
             }
             newDomain(client) { d->
                 name = "Domain-complete"
@@ -280,6 +286,39 @@ class DomainControllerMockMvcITSpec extends ContentSpec {
         with(result.asset) {
             size() == 3
             get('AST_Application') == [IN_PROGRESS:0, NEW:0, RELEASED:0, FOR_REVIEW:0, ARCHIVED:0]
+        }
+    }
+
+    @WithUserDetails("user@domain.example")
+    def "element statistics are correct for multi-domain elements"() {
+        given: 'a unit with some single- and multi-domain elements'
+        def client = testDomain.owner
+        def unit = executeInTransaction {
+            def unit = unitDataRepository.save(newUnit(client))
+            personDataRepository.save(newPerson(unit) {
+                associateWithDomain(testDomain, 'Team', 'NEW')
+                associateWithDomain(secondDomain, 'Team', 'NEW')
+            })
+            personDataRepository.save(newPerson(unit) {
+                associateWithDomain(testDomain, 'Employee', 'NEW')
+                associateWithDomain(secondDomain, 'Member', 'NEW')
+            })
+            personDataRepository.save(newPerson(unit) {
+                associateWithDomain(testDomain, 'Employee', 'NEW')
+            })
+            unit
+        }
+
+        expect: "correct status counts for both domains"
+        with(parseJson(get("/domains/${testDomain.idAsString}/element-status-count?unit=${unit.idAsString}")).person) {
+            size() == 2
+            get('Team').NEW == 1
+            get('Employee').NEW == 2
+        }
+        with(parseJson(get("/domains/${secondDomain.idAsString}/element-status-count?unit=${unit.idAsString}")).person) {
+            size() == 2
+            get('Team').NEW == 1
+            get('Member').NEW == 1
         }
     }
 
