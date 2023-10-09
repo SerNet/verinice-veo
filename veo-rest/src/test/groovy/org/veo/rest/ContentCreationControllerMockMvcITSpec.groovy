@@ -790,8 +790,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then: "the profiles are exported"
         exportedDomain != null
-        exportedDomain.profilesNew.size() ==1
-        with(exportedDomain.profilesNew.first()) {
+        exportedDomain.profiles_v2.size() ==1
+        with(exportedDomain.profiles_v2.first()) {
             name == "test"
             items.size() == 10
             with(items.find { it.name == 'asset' } ) {
@@ -943,7 +943,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             domainTemplateRepository.findAll()
                     .find{ it.name == domain.name && it.templateVersion == "1.2.3"}
                     .tap{
-                        it.jsonProfiles
+                        it.profileSet.profiles.size()
                     } // init proxy
         }
 
@@ -979,7 +979,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
 
         then:" the export file contains the profile data"
         exportedDomain.name == newDomain.name
-        exportedDomain.jsonProfiles.exampleOrganization.elements*.type ==~ [
+        exportedDomain.profiles.exampleOrganization.elements*.type ==~ [
             "asset",
             "control",
             "document",
@@ -989,7 +989,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             "scenario",
             "scope"
         ]
-        exportedDomain.jsonProfiles.exampleOrganization.risks.size() == 2
+        exportedDomain.profiles.exampleOrganization.risks.size() == 2
 
         when: "we create a new domain template from the export"
         exportedDomain.templateVersion = "1.2.4"

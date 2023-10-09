@@ -28,9 +28,9 @@ import jakarta.validation.constraints.NotNull;
 
 import javax.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.dto.full.FullProfileDto;
@@ -94,7 +94,7 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
   @Schema(
       description = "The profiles that belong to this domain keyed by their symbolic names.",
       requiredMode = REQUIRED)
-  @JsonAlias({"profiles"})
+  @JsonProperty("profiles")
   @Deprecated
   private Map<String, ProfileDefinition> jsonProfiles = new HashMap<>();
 
@@ -103,7 +103,7 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
       requiredMode = RequiredMode.NOT_REQUIRED)
   @Nullable
   @JsonInclude(Include.NON_NULL)
-  @JsonAlias({"profiles_v2"})
+  @JsonProperty("profiles_v2")
   private Set<FullProfileDto> profilesNew;
 
   @Valid

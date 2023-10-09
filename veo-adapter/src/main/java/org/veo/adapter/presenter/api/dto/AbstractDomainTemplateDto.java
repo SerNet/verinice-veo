@@ -26,7 +26,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.DomainTemplate;
@@ -86,7 +86,7 @@ public abstract class AbstractDomainTemplateDto extends AbstractVersionedSelfRef
       description =
           "The profiles that belong to this domain template keyed by their symbolic names.",
       requiredMode = REQUIRED)
-  @JsonAlias({"profiles"})
+  @JsonProperty("profiles")
   @Deprecated
   private Map<String, ProfileDefinition> jsonProfiles = new HashMap<>();
 

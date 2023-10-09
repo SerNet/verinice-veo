@@ -25,6 +25,7 @@ import java.util.Set;
 import jakarta.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.dto.AbstractDomainTemplateDto;
@@ -54,6 +55,8 @@ public class ExportDomainTemplateDto extends AbstractDomainTemplateDto implement
   private String id;
 
   private Set<ExportCatalogItemDto> catalogItems = new HashSet<>();
+
+  @JsonProperty("profiles_v2")
   private Set<ExportProfileDto> profilesNew = new HashSet<>();
 
   private Map<String, ElementTypeDefinitionDto> elementTypeDefinitions = new HashMap<>();
