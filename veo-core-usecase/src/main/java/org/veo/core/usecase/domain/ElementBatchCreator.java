@@ -22,7 +22,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
@@ -117,21 +116,14 @@ public class ElementBatchCreator {
 
   private void saveElements(Collection<Element> elements) {
     log.debug("Saving {} entities", elements.size());
-    // save controls first so they can be referenced by requirement and control implementations
-    Set<Element> controls =
+    // save controls first, so they can be referenced by requirement and control implementations
+    genericElementRepository.saveAll(
         elements.stream()
-            .filter(it -> it.getModelType().equals(EntityType.CONTROL.getSingularTerm()))
-            .collect(Collectors.toSet());
-    Set<Element> nonControls =
-        elements.stream()
-            .filter(it -> !it.getModelType().equals(EntityType.CONTROL.getSingularTerm()))
-            .collect(Collectors.toSet());
-    if (!controls.isEmpty()) {
-      genericElementRepository.saveAll(controls);
-    }
-    if (!nonControls.isEmpty()) {
-      genericElementRepository.saveAll(nonControls);
-    }
+            .sorted(
+                Comparator.comparing(
+                    it -> !it.getModelType().equals(EntityType.CONTROL.getSingularTerm())))
+            .toList());
+
     log.debug("Done");
   }
 
