@@ -77,19 +77,6 @@
         "^io.jsonwebtoken:"
       ],
       "groupName": "JWT"
-    },
-    {
-      "matchPackagePatterns": [
-        "^org.spockframework:",
-        "^com.github.jk1.dependency-license-report$",
-        "^com.github.spotbugs$",
-        "org.testcontainers:",
-        "^io.freefair.lombok",
-        "^gradle$",
-        "^org.keycloak:keycloak-authz-client$",
-        "^com.networknt:json-schema-validator"
-      ],
-      "postUpgradeTasks": {}
     }
   ]
 }
