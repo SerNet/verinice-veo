@@ -61,7 +61,7 @@ public interface CatalogItem
    * Includes itself together with {@link this.getElementsToCreate()}. This list is ordered. The
    * item itself is at the first position.
    */
-  default List<CatalogItem> getAllElementsToCreate() {
+  default List<CatalogItem> getAllItemsToIncarnate() {
     return Stream.concat(
             Stream.of(this), getElementsToCreate().stream().sorted(BY_CATALOGITEMS).distinct())
         .toList();

@@ -94,7 +94,7 @@ public class GetIncarnationDescriptionUseCase
                   }
                   return catalogItem;
                 })
-            .flatMap(ci -> ci.getAllElementsToCreate().stream())
+            .flatMap(ci -> ci.getAllItemsToIncarnate().stream())
             .distinct()
             .toList();
     IncarnationRequestModeType requestType =
