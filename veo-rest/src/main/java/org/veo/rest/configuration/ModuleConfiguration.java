@@ -798,16 +798,14 @@ public class ModuleConfiguration {
   public GetCatalogIncarnationDescriptionUseCase getIncarnationDescriptionUseCase(
       UnitRepository unitRepository,
       CatalogItemRepository catalogItemRepository,
-      RepositoryProvider repositoryProvider) {
+      GenericElementRepository genericElementRepository) {
     return new GetCatalogIncarnationDescriptionUseCase(
-        unitRepository, catalogItemRepository, repositoryProvider);
+        unitRepository, catalogItemRepository, genericElementRepository);
   }
 
   @Bean
   public GetProfileIncarnationDescriptionUseCase getProfileIncarnationDescriptionUseCase(
-      UnitRepository unitRepository,
-      ProfileRepository profileRepository,
-      RepositoryProvider repositoryProvider) {
+      UnitRepository unitRepository, ProfileRepository profileRepository) {
     return new GetProfileIncarnationDescriptionUseCase(unitRepository, profileRepository);
   }
 

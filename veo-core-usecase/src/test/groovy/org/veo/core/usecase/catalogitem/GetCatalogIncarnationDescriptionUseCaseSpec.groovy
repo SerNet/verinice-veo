@@ -29,11 +29,10 @@ import org.veo.core.usecase.catalogitem.GetCatalogIncarnationDescriptionUseCase.
 
 class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSpec {
 
-    GetCatalogIncarnationDescriptionUseCase usecase = new GetCatalogIncarnationDescriptionUseCase(unitRepo, catalogItemRepository, entityRepo)
+    GetCatalogIncarnationDescriptionUseCase usecase = new GetCatalogIncarnationDescriptionUseCase(unitRepo, catalogItemRepository, genericElementRepository)
 
     def setup() {
-        entityRepo.getElementRepositoryFor(_) >> repo
-        repo.query(existingClient) >> emptyQuery
+        genericElementRepository.query(existingClient) >> emptyQuery
 
         catalogItemRepository.findAllByIdsFetchDomainAndTailoringReferences([item1.id] as Set, existingClient) >> [item1]
         catalogItemRepository.findAllByIdsFetchDomainAndTailoringReferences(_, existingClient) >> []

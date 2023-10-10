@@ -26,6 +26,7 @@ import org.veo.core.repository.CatalogItemRepository
 import org.veo.core.repository.DomainRepository
 import org.veo.core.repository.ElementQuery
 import org.veo.core.repository.ElementRepository
+import org.veo.core.repository.GenericElementRepository
 import org.veo.core.repository.PagedResult
 import org.veo.core.repository.RepositoryProvider
 import org.veo.core.repository.UnitRepository
@@ -36,7 +37,7 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
     DesignatorService designatorService = Mock()
     CatalogItemRepository catalogItemRepository = Mock()
     DomainRepository domainRepository = Mock()
-    RepositoryProvider entityRepo = Mock()
+    GenericElementRepository genericElementRepository = Mock()
     ElementRepository repo = Mock()
     UnitRepository unitRepo = Mock()
     CatalogItem item1 = Spy()

@@ -20,11 +20,9 @@ package org.veo.core.usecase.catalogitem;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Predicate;
 
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Key;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
@@ -36,11 +34,10 @@ import org.veo.core.usecase.parameter.TailoringReferenceParameter;
 public class AbstractGetIncarnationDescriptionUseCase<T extends TemplateItem<T>> {
 
   protected List<TailoringReferenceParameter> toParameters(
-      Collection<TailoringReference<T>> catalogItem,
-      Map<Key<UUID>, Element> referencedItemsByCatalogItemId) {
+      Collection<TailoringReference<T>> catalogItem, Map<T, Element> existingIncarnationsByItem) {
     return catalogItem.stream()
         .filter(TailoringReferenceTyped.IS_PARAMETER_REF)
-        .map(tr -> mapParameter(tr, referencedItemsByCatalogItemId.get(tr.getTarget().getId())))
+        .map(tr -> mapParameter(tr, existingIncarnationsByItem.get(tr.getTarget())))
         .toList();
   }
 
@@ -58,9 +55,7 @@ public class AbstractGetIncarnationDescriptionUseCase<T extends TemplateItem<T>>
       TailoringReference<T> linkReference, Element element) {
     TailoringReferenceParameter tailoringReferenceParameter =
         new TailoringReferenceParameter(linkReference.getReferenceType(), null);
-    if (element != null) {
-      tailoringReferenceParameter.setReferencedElement(element);
-    }
+    tailoringReferenceParameter.setReferencedElement(element);
     tailoringReferenceParameter.setId(linkReference.getId().uuidValue());
     return tailoringReferenceParameter;
   }
@@ -76,9 +71,7 @@ public class AbstractGetIncarnationDescriptionUseCase<T extends TemplateItem<T>>
         new TailoringReferenceParameter(
             linkReference.getReferenceType(), linkReference.getLinkType());
     tailoringReferenceParameter.setId(linkReference.getId().uuidValue());
-    if (element != null) {
-      tailoringReferenceParameter.setReferencedElement(element);
-    }
+    tailoringReferenceParameter.setReferencedElement(element);
     return tailoringReferenceParameter;
   }
 
@@ -86,14 +79,10 @@ public class AbstractGetIncarnationDescriptionUseCase<T extends TemplateItem<T>>
       List<TailoringReferenceType> exclude, List<TailoringReferenceType> include) {
     Predicate<TailoringReferenceTyped> filter = t -> true;
     if (exclude != null && !exclude.isEmpty()) {
-      Predicate<TailoringReferenceTyped> excludeFilter =
-          t -> !exclude.contains(t.getReferenceType());
-      filter = excludeFilter;
+      filter = t -> !exclude.contains(t.getReferenceType());
     }
     if (include != null && !include.isEmpty()) {
-      Predicate<TailoringReferenceTyped> includeFilter =
-          t -> include.contains(t.getReferenceType());
-      filter = filter.and(includeFilter);
+      filter = filter.and(t -> include.contains(t.getReferenceType()));
     }
     return filter;
   }

@@ -18,11 +18,11 @@
 package org.veo.core.usecase.catalogitem;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
@@ -83,8 +83,7 @@ public class GetProfileIncarnationDescriptionUseCase
 
   private void validateInput(InputData input) {
     if (input.getProfileId() != null) return;
-    if (input.profileItemIds.stream().collect(Collectors.toSet()).size()
-        != input.profileItemIds.size()) {
+    if (new HashSet<>(input.profileItemIds).size() != input.profileItemIds.size()) {
       throw new IllegalArgumentException("Provided catalogitems are not unique.");
     }
   }
