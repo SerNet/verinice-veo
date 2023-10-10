@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.springframework.data.jpa.repository.Query;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.persistence.entity.jpa.DomainData;
@@ -49,10 +50,10 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
                           left join fetch i.appliedCatalogItem
                           left join fetch i.owner p
                           left join fetch p.domain
-                          left join fetch p.domainTemplate
-                          where i.dbId in ?1
+                          where i.dbId in ?1 and p.domain.owner = ?2
                       """)
-  Iterable<ProfileItem> findAllByIdsFetchDomainAndTailoringReferences(Iterable<String> ids);
+  Iterable<ProfileItem> findItemsByIdsFetchDomainAndTailoringReferences(
+      Iterable<String> ids, Client client);
 
   @Query(
       """
@@ -61,10 +62,10 @@ public interface ProfileDataRepository extends IdentifiableVersionedDataReposito
                     left join fetch i.appliedCatalogItem
                     left join fetch i.owner p
                     left join fetch p.domain
-                    left join fetch p.domainTemplate
-                    where i.owner.dbId = ?1
+                    where p.dbId = ?1 and p.domain.owner = ?2
                 """)
-  Iterable<ProfileItem> findAllByIdsFetchDomainAndTailoringReferences(String profileId);
+  Iterable<ProfileItem> findItemsByProfileIdFetchDomainAndTailoringReferences(
+      String profileId, Client client);
 
   @Query("select ci from #{#entityName} ci where ci.domain = ?1")
   Set<Profile> findAllByDomain(DomainData domain);

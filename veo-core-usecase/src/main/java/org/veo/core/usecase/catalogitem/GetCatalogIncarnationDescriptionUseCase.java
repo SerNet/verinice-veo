@@ -33,7 +33,6 @@ import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Client;
-import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
@@ -51,7 +50,6 @@ import org.veo.core.repository.PagingConfiguration;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.UseCaseTools;
 import org.veo.core.usecase.parameter.TailoringReferenceParameter;
 import org.veo.core.usecase.parameter.TemplateItemIncarnationDescription;
 
@@ -82,7 +80,8 @@ public class GetCatalogIncarnationDescriptionUseCase
     List<Key<UUID>> catalogItemIds = input.getCatalogItemIds();
     Map<Key<UUID>, CatalogItem> catalogItemsbyId =
         catalogItemRepository
-            .findAllByIdsFetchDomainAndTailoringReferences(Set.copyOf(catalogItemIds))
+            .findAllByIdsFetchDomainAndTailoringReferences(
+                Set.copyOf(catalogItemIds), input.authenticatedClient)
             .stream()
             .collect(Collectors.toMap(CatalogItem::getId, Function.identity()));
     List<CatalogItem> requestedItems =
@@ -129,11 +128,6 @@ public class GetCatalogIncarnationDescriptionUseCase
                                 appliedItem ->
                                     referencedItemsByCatalogItemId.put(
                                         appliedItem.getId(), element))));
-    Set<DomainBase> usedDomains =
-        itemsToCreate.stream().map(CatalogItem::getOwner).collect(Collectors.toSet());
-
-    usedDomains.forEach(
-        domain -> UseCaseTools.checkDomainBelongsToClient(input.getAuthenticatedClient(), domain));
 
     List<TemplateItemIncarnationDescription> incarnationDescriptions =
         itemsToCreate.stream()

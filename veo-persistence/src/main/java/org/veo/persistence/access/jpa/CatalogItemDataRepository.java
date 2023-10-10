@@ -53,9 +53,10 @@ public interface CatalogItemDataRepository
               left join fetch ci.domainTemplate
               left join fetch ci.tailoringReferences tr
               left join fetch tr.target
-              where ci.dbId in ?1
+              where ci.dbId in ?1 and ci.domain.owner = ?2
           """)
-  Iterable<CatalogItemData> findAllByIdsFetchDomainAndTailoringReferences(Iterable<String> ids);
+  Iterable<CatalogItemData> findAllByIdsFetchDomainAndTailoringReferences(
+      Iterable<String> ids, Client client);
 
   @Query("select ci from #{#entityName} ci where ci.domain = ?1")
   Set<CatalogItem> findAllByDomain(DomainData domain);

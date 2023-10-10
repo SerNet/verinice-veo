@@ -52,11 +52,12 @@ public class CatalogItemRepositoryImpl
   }
 
   @Override
-  public Set<CatalogItem> findAllByIdsFetchDomainAndTailoringReferences(Set<Key<UUID>> ids) {
+  public Set<CatalogItem> findAllByIdsFetchDomainAndTailoringReferences(
+      Set<Key<UUID>> ids, Client client) {
     var idStrings = ids.stream().map(Key::uuidValue).toList();
     return StreamSupport.stream(
             catalogItemDataRepository
-                .findAllByIdsFetchDomainAndTailoringReferences(idStrings)
+                .findAllByIdsFetchDomainAndTailoringReferences(idStrings, client)
                 .spliterator(),
             false)
         .map(CatalogItem.class::cast)

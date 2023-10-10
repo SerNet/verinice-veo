@@ -61,11 +61,14 @@ public class GetProfileIncarnationDescriptionUseCase
 
     var incarnationDescriptions =
         Optional.ofNullable(input.profileId)
-            .map(profileRepository::findAllByIdsFetchDomainAndTailoringReferences)
+            .map(
+                id ->
+                    profileRepository.findItemsByProfileIdFetchDomainAndTailoringReferences(
+                        id, input.authenticatedClient))
             .orElseGet(
                 () ->
-                    profileRepository.findAllByIdsFetchDomainAndTailoringReferences(
-                        Set.copyOf(input.profileItemIds)))
+                    profileRepository.findItemsByIdsFetchDomainAndTailoringReferences(
+                        Set.copyOf(input.profileItemIds), input.authenticatedClient))
             .stream()
             .map(
                 catalogItem ->

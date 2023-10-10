@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
@@ -33,9 +34,11 @@ import org.veo.core.entity.ProfileItem;
  * methods - i.e. queries based on particular fields.
  */
 public interface ProfileRepository extends IdentifiableVersionedRepository<Profile> {
-  Set<ProfileItem> findAllByIdsFetchDomainAndTailoringReferences(Set<Key<UUID>> ids);
+  Set<ProfileItem> findItemsByIdsFetchDomainAndTailoringReferences(
+      Set<Key<UUID>> profileItemIds, Client client);
 
-  Set<ProfileItem> findAllByIdsFetchDomainAndTailoringReferences(Key<UUID> profileid);
+  Set<ProfileItem> findItemsByProfileIdFetchDomainAndTailoringReferences(
+      Key<UUID> profileId, Client client);
 
   Set<Profile> findAllByDomain(Domain domain);
 

@@ -71,8 +71,8 @@ class IncarnateCatalogItemMockMvcITSpec extends CatalogSpec {
         when: "trying to retrieve incarnation descriptions for another client's catalog item"
         get("/${basePath}/${unit.id.uuidValue()}/incarnations?itemIds=${otherItem.id.uuidValue()}", 404)
 
-        then: "a client boundary violation is detected"
-        thrown(ClientBoundaryViolationException)
+        then:
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("user@domain.example")

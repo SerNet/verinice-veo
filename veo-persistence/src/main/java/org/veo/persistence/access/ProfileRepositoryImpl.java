@@ -25,6 +25,7 @@ import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Repository;
 
+import org.veo.core.entity.Client;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.Profile;
@@ -48,11 +49,12 @@ public class ProfileRepositoryImpl
   }
 
   @Override
-  public Set<ProfileItem> findAllByIdsFetchDomainAndTailoringReferences(Set<Key<UUID>> ids) {
-    var idStrings = ids.stream().map(Key::uuidValue).toList();
+  public Set<ProfileItem> findItemsByIdsFetchDomainAndTailoringReferences(
+      Set<Key<UUID>> profileItemIds, Client client) {
+    var idStrings = profileItemIds.stream().map(Key::uuidValue).toList();
     return StreamSupport.stream(
             profileDataRepository
-                .findAllByIdsFetchDomainAndTailoringReferences(idStrings)
+                .findItemsByIdsFetchDomainAndTailoringReferences(idStrings, client)
                 .spliterator(),
             false)
         .map(ProfileItem.class::cast)
@@ -72,10 +74,12 @@ public class ProfileRepositoryImpl
   }
 
   @Override
-  public Set<ProfileItem> findAllByIdsFetchDomainAndTailoringReferences(Key<UUID> profileid) {
+  public Set<ProfileItem> findItemsByProfileIdFetchDomainAndTailoringReferences(
+      Key<UUID> profileId, Client client) {
     return StreamSupport.stream(
             profileDataRepository
-                .findAllByIdsFetchDomainAndTailoringReferences(profileid.uuidValue())
+                .findItemsByProfileIdFetchDomainAndTailoringReferences(
+                    profileId.uuidValue(), client)
                 .spliterator(),
             false)
         .map(ProfileItem.class::cast)
