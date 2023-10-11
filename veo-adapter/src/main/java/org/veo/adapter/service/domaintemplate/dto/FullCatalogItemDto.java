@@ -33,7 +33,6 @@ import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractTemplateItemDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
-import org.veo.adapter.presenter.api.dto.create.CreateTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.FullTailoringReferenceDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.CatalogItem;
@@ -72,7 +71,7 @@ public class FullCatalogItemDto extends AbstractTemplateItemDto
   @JsonTypeInfo(
       use = JsonTypeInfo.Id.NAME,
       visible = true,
-      defaultImpl = CreateTailoringReferenceDto.class,
+      defaultImpl = FullTailoringReferenceDto.class,
       include = As.EXISTING_PROPERTY,
       property = "referenceType")
   @JsonSubTypes({

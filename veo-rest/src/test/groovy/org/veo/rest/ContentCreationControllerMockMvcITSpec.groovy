@@ -474,6 +474,24 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             tailoringReferences[0].referenceType == TailoringReferenceType.PART
         }
 
+        with(catalogItems.find{it.name == "example scope" }) {
+            elementType == "scope"
+            status == "NEW"
+            subType == "SCP_Scope"
+            abbreviation == "Cont"
+            namespace == subType+ "."+abbreviation
+            tailoringReferences.size() == 1
+            tailoringReferences[0].referenceType == TailoringReferenceType.MEMBER
+        }
+
+        with(catalogItems.find{it.name == "asset scope member 1" }) {
+            elementType == "asset"
+            status == "NEW"
+            subType == "AST_Application"
+            tailoringReferences.size() == 1
+            tailoringReferences[0].referenceType == TailoringReferenceType.SCOPE
+        }
+
         when: "we incarnate one linked catalog item"
         def catalogItemsId = catalogItems.find{it.name == "example scenario Container" }.getIdAsString()
         unitId = parseJson(post("/units", [

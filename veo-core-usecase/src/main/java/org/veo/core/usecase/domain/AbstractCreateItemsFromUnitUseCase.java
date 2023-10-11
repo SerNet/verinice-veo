@@ -33,9 +33,7 @@ import org.veo.core.repository.GenericElementRepository;
 import org.veo.core.repository.UnitRepository;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @AllArgsConstructor
 public abstract class AbstractCreateItemsFromUnitUseCase<T extends TemplateItem<T>> {
 
@@ -89,8 +87,14 @@ public abstract class AbstractCreateItemsFromUnitUseCase<T extends TemplateItem<
                 createTailoringReference(compositeCatalogItem, item, TailoringReferenceType.PART);
               });
     } else if (element instanceof Scope scope) {
-      if (!scope.getMembers().isEmpty())
-        log.info("Skip {} members of: {}", scope.getMembers().size(), scope.getDisplayName());
+      scope
+          .getMembers()
+          .forEach(
+              member -> {
+                T memberAsCatalogItem = elementsToCatalogItems.get(member);
+                createTailoringReference(memberAsCatalogItem, item, TailoringReferenceType.SCOPE);
+                createTailoringReference(item, memberAsCatalogItem, TailoringReferenceType.MEMBER);
+              });
     }
   }
 }

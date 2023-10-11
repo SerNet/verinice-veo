@@ -62,5 +62,15 @@ public enum TailoringReferenceType {
    * RiskTailoringReference}. It describes relations to {@link Scenario}, {@link Control} an {@link
    * Person} and the risk data.
    */
-  RISK;
+  RISK,
+  /**
+   * Defines this reference as part of a scope relation. The owner is the scope and the {@link
+   * TailoringReference#getTarget()} is the member.
+   */
+  SCOPE,
+  /**
+   * Defines this reference as part of a scope relation. The owner is the member and the {@link
+   * TailoringReference#getTarget()} is the scope.
+   */
+  MEMBER;
 }

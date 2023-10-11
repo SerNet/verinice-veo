@@ -36,6 +36,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.Scope;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.Unit;
@@ -202,10 +203,19 @@ public class IncarnationDescriptionApplier {
       case LINK_EXTERNAL -> addLink(target, origin, domain, tailoringReference);
       case PART -> addPart(origin, target);
       case COMPOSITE -> addPart(target, origin);
+      case SCOPE -> addScope(origin, target);
+      case MEMBER -> addScope(target, origin);
       case RISK -> addRisk(origin, target, domain);
       default -> throw new IllegalArgumentException(
           "Unexpected tailoring reference type %s"
               .formatted(tailoringReference.getReferenceType()));
+    }
+  }
+
+  private <T extends TemplateItem<T>> void addScope(Element origin, Element targetScope) {
+    if (targetScope instanceof Scope scope) {
+      scope.addMember(origin);
+      handleModification(scope);
     }
   }
 
