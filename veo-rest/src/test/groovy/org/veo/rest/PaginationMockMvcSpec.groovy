@@ -27,6 +27,8 @@ import org.veo.core.entity.Unit
 import org.veo.core.repository.UnitRepository
 import org.veo.persistence.access.ClientRepositoryImpl
 
+import jakarta.servlet.ServletException
+
 @WithUserDetails("user@domain.example")
 class PaginationMockMvcSpec extends VeoMvcSpec {
     @Autowired
@@ -100,7 +102,8 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
         get("/$type?size=0&sortBy=abbreviation&sortOrder=desc", 400)
 
         then:
-        thrown(IllegalArgumentException)
+        ServletException e = thrown()
+        e.message.contains('pageSize: must be greater than or equal to 1')
 
         expect: "pagination works when running a search for all elements in the unit"
         def searchUri = parseJson(post("/$type/searches", [:])).searchUrl
@@ -147,7 +150,8 @@ class PaginationMockMvcSpec extends VeoMvcSpec {
         get(new URI("$searchUri?size=0&sortBy=abbreviation&sortOrder=desc"), 400)
 
         then:
-        thrown(IllegalArgumentException)
+        ServletException e2 = thrown()
+        e2.message.contains('pageSize: must be greater than or equal to 1')
 
         where:
         type << EntityType.values().findAll { Element.isAssignableFrom(it.type) }*.pluralTerm

@@ -32,6 +32,7 @@ import static org.veo.rest.ControllerConstants.UUID_REGEX;
 
 import java.util.concurrent.Future;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
@@ -119,6 +120,7 @@ public interface RiskAffectedResource {
               value = PAGE_SIZE_PARAM,
               required = false,
               defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          @Min(1)
           Integer pageSize,
       @RequestParam(
               value = PAGE_NUMBER_PARAM,

@@ -42,6 +42,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 
 import org.springframework.http.MediaType;
@@ -292,10 +293,8 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
     return useCaseInteractor.execute(
         getProfileItemUseCase,
         new GetProfileItemUseCase.InputData(
-            getAuthenticatedClient(auth),
-            TypedId.from(domainId, Domain.class),
-            TypedId.from(profileId, Profile.class),
-            TypedId.from(itemId, ProfileItem.class)),
+            getAuthenticatedClient(auth), TypedId.from(domainId, Domain.class),
+            TypedId.from(profileId, Profile.class), TypedId.from(itemId, ProfileItem.class)),
         out ->
             ResponseEntity.ok()
                 .cacheControl(defaultCacheControl)
@@ -315,6 +314,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
               value = PAGE_SIZE_PARAM,
               required = false,
               defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          @Min(1)
           Integer pageSize,
       @RequestParam(
               value = PAGE_NUMBER_PARAM,

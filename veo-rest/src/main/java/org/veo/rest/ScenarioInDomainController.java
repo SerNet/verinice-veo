@@ -50,6 +50,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -168,6 +169,7 @@ public class ScenarioInDomainController implements ElementInDomainResource {
               value = PAGE_SIZE_PARAM,
               required = false,
               defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          @Min(1)
           Integer pageSize,
       @RequestParam(
               value = PAGE_NUMBER_PARAM,
@@ -204,9 +206,7 @@ public class ScenarioInDomainController implements ElementInDomainResource {
             designator,
             name,
             updatedBy,
-            PagingMapper.toConfig(
-                pageSize, pageNumber,
-                sortColumn, sortOrder)),
+            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformScenario2Dto);
   }
 
@@ -233,6 +233,7 @@ public class ScenarioInDomainController implements ElementInDomainResource {
               value = PAGE_SIZE_PARAM,
               required = false,
               defaultValue = PAGE_SIZE_DEFAULT_VALUE)
+          @Min(1)
           Integer pageSize,
       @RequestParam(
               value = PAGE_NUMBER_PARAM,
@@ -272,9 +273,7 @@ public class ScenarioInDomainController implements ElementInDomainResource {
             null,
             null,
             null,
-            PagingMapper.toConfig(
-                pageSize, pageNumber,
-                sortColumn, sortOrder)),
+            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)),
         entityToDtoTransformer::transformScenario2Dto);
   }
 
