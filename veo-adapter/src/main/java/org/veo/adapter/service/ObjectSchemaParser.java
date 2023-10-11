@@ -29,6 +29,7 @@ import java.util.stream.StreamSupport;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.TranslationProvider;
@@ -54,7 +55,8 @@ import org.veo.core.entity.transform.EntityFactory;
  */
 public class ObjectSchemaParser {
 
-  private static final ObjectMapper OBJECTMAPPER = new ObjectMapper();
+  private static final ObjectMapper OBJECTMAPPER =
+      new ObjectMapper().registerModule(new BlackbirdModule());
 
   private static final String PROPERTIES = "properties";
 

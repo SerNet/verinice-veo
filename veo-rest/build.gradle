@@ -33,6 +33,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'com.github.zafarkhaja:java-semver'
+    implementation 'com.fasterxml.jackson.module:jackson-module-blackbird'
 
     runtimeOnly 'io.jsonwebtoken:jjwt-impl'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson'

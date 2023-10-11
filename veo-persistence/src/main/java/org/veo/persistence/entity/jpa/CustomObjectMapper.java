@@ -18,10 +18,12 @@
 package org.veo.persistence.entity.jpa;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 
 /** Custom mapping for use in JSONB DB columns. */
 public class CustomObjectMapper extends ObjectMapper {
   public CustomObjectMapper() {
     registerModule(new ReferenceSerializationModule());
+    registerModule(new BlackbirdModule());
   }
 }

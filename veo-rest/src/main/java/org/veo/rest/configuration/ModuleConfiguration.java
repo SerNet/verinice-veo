@@ -37,6 +37,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 
 import org.veo.adapter.SchemaReplacer;
 import org.veo.adapter.persistence.schema.EntitySchemaGenerator;
@@ -744,6 +745,11 @@ public class ModuleConfiguration {
   }
 
   @Bean
+  public BlackbirdModule blackbirdModule() {
+    return new BlackbirdModule();
+  }
+
+  @Bean
   public MessageConverter jsonMessageConverter() {
     ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
     mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -777,6 +783,7 @@ public class ModuleConfiguration {
                 new SimpleModule()
                     .addDeserializer(IdRef.class, new ReferenceDeserializer(referenceAssembler)))
             .registerModule(new ReferenceSerializationModule())
+            .registerModule(blackbirdModule())
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     return new DomainTemplateServiceImpl(
         domainTemplateRepository,

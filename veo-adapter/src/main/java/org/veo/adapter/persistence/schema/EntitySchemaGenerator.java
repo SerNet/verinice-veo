@@ -28,6 +28,7 @@ import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 
 import org.veo.adapter.presenter.api.ElementTypeDtoInfo;
 import org.veo.core.entity.Domain;
@@ -55,7 +56,7 @@ public class EntitySchemaGenerator {
 
     CustomPrettyPrinter prettyPrinter = new CustomPrettyPrinter();
     prettyPrinter.indentArraysWith(new DefaultIndenter());
-    writer = new ObjectMapper().writer(prettyPrinter);
+    writer = new ObjectMapper().registerModule(new BlackbirdModule()).writer(prettyPrinter);
   }
 
   public String createSchema(String baseName, Set<Domain> domains) {

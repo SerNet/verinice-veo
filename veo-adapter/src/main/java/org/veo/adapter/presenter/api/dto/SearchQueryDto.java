@@ -30,6 +30,7 @@ import jakarta.validation.Valid;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Value;
@@ -90,7 +91,8 @@ public class SearchQueryDto {
           "Whether the elements must / mustn't have parent elements (scopes or composites)")
   SingleValueQueryConditionDto<Boolean> hasParentElements;
 
-  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  private static final ObjectMapper OBJECT_MAPPER =
+      new ObjectMapper().registerModule(new BlackbirdModule());
 
   /**
    * Encodes this search query as a base64url-encoded, compressed string. This representation only

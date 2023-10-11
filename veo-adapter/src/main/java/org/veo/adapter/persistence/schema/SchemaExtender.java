@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import com.fasterxml.jackson.module.blackbird.BlackbirdModule;
 
 import org.veo.adapter.presenter.api.ElementTypeDtoInfo;
 import org.veo.adapter.presenter.api.dto.ControlRiskValuesDto;
@@ -83,7 +84,7 @@ public class SchemaExtender {
   public static final String TYPE = "type";
   private static final String EXTERNAL_DOCUMENT_PATTERN =
       ExternalDocumentAttributeDefinition.PROTOCOL_PATTERN + ".+";
-  private final ObjectMapper mapper = new ObjectMapper();
+  private final ObjectMapper mapper = new ObjectMapper().registerModule(new BlackbirdModule());
 
   /**
    * Extend {@link org.veo.adapter.presenter.api.dto.AbstractElementDto} schema with domain-specific

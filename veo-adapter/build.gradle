@@ -14,6 +14,7 @@ dependencies {
     implementation 'io.swagger.core.v3:swagger-annotations-jakarta'
     implementation 'org.springdoc:springdoc-openapi-starter-common'
     implementation 'com.github.zafarkhaja:java-semver'
+    implementation 'com.fasterxml.jackson.module:jackson-module-blackbird'
 
     compileOnly('org.projectlombok:lombok')
     compileOnly 'io.swagger.core.v3:swagger-core-jakarta'
