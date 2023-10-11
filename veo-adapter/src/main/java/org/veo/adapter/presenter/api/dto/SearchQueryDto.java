@@ -90,6 +90,8 @@ public class SearchQueryDto {
           "Whether the elements must / mustn't have parent elements (scopes or composites)")
   SingleValueQueryConditionDto<Boolean> hasParentElements;
 
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
   /**
    * Encodes this search query as a base64url-encoded, compressed string. This representation only
    * contains unreserved URI characters (see RFC 3986 section 2.3).
@@ -106,7 +108,7 @@ public class SearchQueryDto {
     try (DeflaterOutputStream deflaterOutputStream =
         new DeflaterOutputStream(stream, new Deflater(Deflater.DEFAULT_COMPRESSION, true))) {
       deflaterOutputStream.write(
-          new ObjectMapper().writeValueAsString(this).getBytes(StandardCharsets.UTF_8));
+          OBJECT_MAPPER.writeValueAsString(this).getBytes(StandardCharsets.UTF_8));
     }
     return stream.toByteArray();
   }
@@ -133,6 +135,6 @@ public class SearchQueryDto {
         new InflaterOutputStream(stream, new Inflater(true))) {
       inflaterOutputStream.write(decoder.decode(searchId.getBytes(StandardCharsets.UTF_8)));
     }
-    return new ObjectMapper().readValue(stream.toString(StandardCharsets.UTF_8), clazz);
+    return OBJECT_MAPPER.readValue(stream.toString(StandardCharsets.UTF_8), clazz);
   }
 }
