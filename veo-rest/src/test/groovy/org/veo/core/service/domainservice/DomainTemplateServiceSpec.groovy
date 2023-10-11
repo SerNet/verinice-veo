@@ -226,7 +226,6 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         }
     }
 
-    @Ignore("#2462 enable test and add references")
     def "create a domain whose catalog contains a scope"() {
         given: "a client"
         Client client = repository.save(newClient { })
@@ -251,16 +250,19 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             authority == domainTemplate.authority
             templateVersion == domainTemplate.templateVersion
         }
-        with (domainFromTemplate.catalogs) {
-            size() == 1
-            first().name == 'TEST-Elements'
-            first().catalogItems.size() == 3
-        }
-        with (domainFromTemplate.catalogs.first().catalogItems.sort { it.name }) {
+        domainFromTemplate.catalogItems.size() == 3
+        with (domainFromTemplate.catalogItems.sort { it.name }) {
             it[0].name == 'Asset 1'
+            it[0].tailoringReferences[0].target.name == "Scope 1"
+            it[0].tailoringReferences[0].referenceType == TailoringReferenceType.SCOPE
+            it[0].tailoringReferences.size() == 1
             it[1].name == 'Asset 2'
+            it[1].tailoringReferences[0].referenceType == TailoringReferenceType.SCOPE
+            it[1].tailoringReferences.size() == 1
             it[2].name == 'Scope 1'
-            it[2].members.collect {it.name}.toSorted() == ['Asset 1', 'Asset 2']
+            it[2].tailoringReferences.collect {it.target.name}.toSorted() == ['Asset 1', 'Asset 2']
+            it[2].tailoringReferences[0].referenceType == TailoringReferenceType.MEMBER
+            it[2].tailoringReferences[1].referenceType == TailoringReferenceType.MEMBER
         }
     }
 }

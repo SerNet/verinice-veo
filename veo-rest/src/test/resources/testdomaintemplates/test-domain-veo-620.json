@@ -9,7 +9,15 @@
       "name": "Asset 2",
       "abbreviation": "a2",
       "description": "This is the second asset.",
-      "tailoringReferences": [],
+      "tailoringReferences": [
+        {
+          "catalogItem": {
+            "targetUri": "/catalogs/99af3dc3-eb17-5267-afc5-14e9f2ebd701/items/782a0b43-deb2-4e4c-a42f-d1314658697f"
+          },
+          "referenceType": "SCOPE",
+          "id": "f0638479-eb41-4479-a778-91bedc756051"
+        }
+      ],
       "namespace": "S",
       "subType": "default",
       "status": "NEW",
@@ -21,7 +29,22 @@
       "name": "Scope 1",
       "abbreviation": "S1",
       "description": "This is a scope that contains some assets",
-      "tailoringReferences": [],
+      "tailoringReferences": [
+        {
+          "catalogItem": {
+            "targetUri": "/catalogs/99af3dc3-eb17-5267-afc5-14e9f2ebd701/items/2091c610-6e59-48cb-a848-456bd9645763"
+          },
+          "referenceType": "MEMBER",
+          "id": "fe638471-eb41-4479-a778-91bedc756051"
+        },
+        {
+          "catalogItem": {
+            "targetUri": "/catalogs/99af3dc3-eb17-5267-afc5-14e9f2ebd701/items/19ebf336-32ca-453b-b832-4d69408e1446"
+          },
+          "referenceType": "MEMBER",
+          "id": "fe630479-eb41-4479-a778-91bedc756051"
+        }
+      ],
       "namespace": "S",
       "subType": "default",
       "status": "NEW",
@@ -33,7 +56,15 @@
       "name": "Asset 1",
       "abbreviation": "a1",
       "description": "This is the first asset.",
-      "tailoringReferences": [],
+      "tailoringReferences": [
+        {
+          "catalogItem": {
+            "targetUri": "/catalogs/99af3dc3-eb17-5267-afc5-14e9f2ebd701/items/782a0b43-deb2-4e4c-a42f-d1314658697f"
+          },
+          "referenceType": "SCOPE",
+          "id": "fe438479-eb41-4479-a778-91bedc756051"
+        }
+      ],
       "namespace": "S",
       "subType": "default",
       "status": "NEW",
