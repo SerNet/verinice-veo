@@ -440,6 +440,25 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             ]
         ],201)
 
+        def scopeMember1Id = parseJson(post("/domains/$domainId/assets", [
+            name: "asset scope member 1",
+            abbreviation: "a1",
+            subType: "AST_Application",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"],
+        ],201)).resourceId
+
+        def scopeId = parseJson(post("/domains/$domainId/scopes", [
+            name: "example scope",
+            abbreviation: "Cont",
+            subType: "SCP_Scope",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"],
+            members: [
+                [targetInDomainUri: "/domains/$domainId/assets/$scopeMember1Id"]
+            ]
+        ],201)).resourceId
+
         when: "we create new catalog items from the unit"
         put("/content-creation/domains/${domainId}/catalog-items?unit=${unitId}",
                 [:], 204)
@@ -451,7 +470,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
         }
 
         then:
-        catalogItems.size() == 10
+        catalogItems.size() == 12
         with(catalogItems.sort{it.name}[0]) {
             name == "asset"
             elementType == "asset"
