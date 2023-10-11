@@ -24,6 +24,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -33,6 +34,7 @@ import org.veo.rest.common.SearchResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 
+@Validated
 public abstract class AbstractEntityControllerWithDefaultSearch extends AbstractEntityController {
 
   @PostMapping(value = "/searches")
