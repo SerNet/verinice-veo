@@ -9,7 +9,22 @@
       "name": "All controls",
       "abbreviation": "CTLS",
       "description": "This is a composite control that contains all other controls.",
-      "tailoringReferences": [],
+      "tailoringReferences": [
+        {
+          "catalogItem": {
+            "targetUri": "/catalogs/40df37d5-cd23-528e-bfc2-7b73c0aa2c67/items/35060217-5435-4047-96b1-8d9109e820b7"
+          },
+          "referenceType": "PART",
+          "id": "fe638409-eb41-4479-a778-91bedc756051"
+        },
+        {
+          "catalogItem": {
+            "targetUri": "/catalogs/40df37d5-cd23-528e-bfc2-7b73c0aa2c67/items/31d87c23-3112-4547-94ad-592cc25fc250"
+          },
+          "referenceType": "PART",
+          "id": "fe238479-eb41-4479-a778-91bedc756051"
+        }
+      ],
       "namespace": "CTLS",
       "subType": "CTL_Control",
       "status": "NEW",
@@ -21,7 +36,15 @@
       "name": "Control-1",
       "abbreviation": "c-1",
       "description": "This is the first control.",
-      "tailoringReferences": [],
+      "tailoringReferences": [
+        {
+          "catalogItem": {
+            "targetUri": "/catalogs/40df37d5-cd23-528e-bfc2-7b73c0aa2c67/items/782a0b43-deb2-4e4c-a42f-d1314658697f"
+          },
+          "referenceType": "COMPOSITE",
+          "id": "fe638479-eb41-4479-a778-91bedc756051"
+        }
+      ],
       "namespace": "CTLS",
       "subType": "CTL_Control",
       "status": "NEW",
@@ -33,7 +56,15 @@
       "name": "Control-2",
       "abbreviation": "c-2",
       "description": "This is the second control.",
-      "tailoringReferences": [],
+      "tailoringReferences": [
+        {
+          "catalogItem": {
+            "targetUri": "/catalogs/40df37d5-cd23-528e-bfc2-7b73c0aa2c67/items/782a0b43-deb2-4e4c-a42f-d1314658697f"
+          },
+          "referenceType": "COMPOSITE",
+          "id": "fe638479-eb41-4479-a778-91bedc756051"
+        }
+      ],
       "namespace": "CTLS",
       "subType": "CTL_Control",
       "status": "NEW",

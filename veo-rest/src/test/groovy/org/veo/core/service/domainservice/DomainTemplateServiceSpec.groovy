@@ -192,7 +192,6 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
         thrown(ModelConsistencyException)
     }
 
-    @Ignore("veo-2269 enable test and add refereces")
     def "create a domain whose catalog contains a composite"() {
         given: "a client"
         Client client = repository.save(newClient { })
@@ -217,20 +216,17 @@ class DomainTemplateServiceSpec extends VeoSpringSpec {
             authority == domainTemplate.authority
             templateVersion == domainTemplate.templateVersion
         }
-        with (domainFromTemplate.catalogs) {
-            size() == 1
-            first().name == 'test-domain'
-            first().catalogItems.size() == 3
-        }
-        with (domainFromTemplate.catalogs.first().catalogItems.sort { it.name }) {
+        domainFromTemplate.catalogItems.size() == 3
+
+        with (domainFromTemplate.catalogItems.sort { it.name }) {
             it[0].name == 'All controls'
             it[1].name == 'Control-1'
             it[2].name == 'Control-2'
-            it[0].parts.collect {it.name}.toSorted() == ['Control-1', 'Control-2']
+            it[0].tailoringReferences.collect {it.target.name}.toSorted() == ['Control-1', 'Control-2']
         }
     }
 
-    @Ignore("veo-2269 enable test and add refereces")
+    @Ignore("#2462 enable test and add references")
     def "create a domain whose catalog contains a scope"() {
         given: "a client"
         Client client = repository.save(newClient { })
