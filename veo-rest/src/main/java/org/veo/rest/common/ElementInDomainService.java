@@ -221,8 +221,9 @@ public class ElementInDomainService {
               if (e instanceof CompositeElement) {
                 // initialize subtypeAspects field for PartCountProvider
                 // TODO VEO-1569: remove this when the PartCountProvider uses a repository method
-                var ce = (CompositeElement<CompositeElement>) e;
-                ce.getParts().forEach(p -> Hibernate.initialize(p.getSubTypeAspects()));
+                var ce = (CompositeElement) e;
+                ce.getParts()
+                    .forEach(p -> Hibernate.initialize(((CompositeElement) p).getSubTypeAspects()));
               }
               return e;
             });

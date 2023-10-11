@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.veo.core.entity.specification.EntitySpecification;
 
@@ -30,7 +29,7 @@ import org.veo.core.entity.specification.EntitySpecification;
  *
  * @param <T> the type of the entity and its parts
  */
-public interface CompositeElement<T extends CompositeElement> extends Element {
+public interface CompositeElement<T extends CompositeElement<T>> extends Element {
 
   Set<T> getParts();
 
@@ -44,7 +43,7 @@ public interface CompositeElement<T extends CompositeElement> extends Element {
     if (getOwningClient().isPresent()) {
       checkSameClient(part);
     }
-    part.getComposites().add(this);
+    part.getComposites().add((T) this);
     return getParts().add(part);
   }
 
@@ -97,7 +96,7 @@ public interface CompositeElement<T extends CompositeElement> extends Element {
   default void remove() {
     setParts(new HashSet<>());
     // Work with copies of parent element lists to avoid concurrent modifications
-    new HashSet<>(getComposites()).forEach(c -> c.removePart(this));
+    new HashSet<>(getComposites()).forEach(c -> c.removePart((T) this));
     new HashSet<>(getScopes()).forEach(s -> s.removeMember(this));
   }
 

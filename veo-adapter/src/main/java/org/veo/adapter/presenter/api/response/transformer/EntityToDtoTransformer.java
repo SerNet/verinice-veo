@@ -666,7 +666,7 @@ public final class EntityToDtoTransformer {
   }
 
   private <
-          TEntity extends CompositeElement,
+          TEntity extends CompositeElement<TEntity>,
           TDto extends CompositeEntityDto<TEntity> & IdentifiableDto>
       void mapCompositeEntity(CompositeElement<TEntity> source, TDto target) {
     mapElement(source, target);

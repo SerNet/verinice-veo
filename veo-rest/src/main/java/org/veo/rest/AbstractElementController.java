@@ -91,7 +91,7 @@ public abstract class AbstractElementController<T extends Element, E extends Abs
                 // initialize subtypeAspects field for PartCountProvider
                 // TODO VEO-1569: remove this when the PartCountProvider uses a repository method
                 @SuppressWarnings({"unchecked", "rawtypes"})
-                CompositeElement<CompositeElement> ce = (CompositeElement<CompositeElement>) e;
+                var ce = (CompositeElement<?>) e;
                 ce.getParts().forEach(p -> Hibernate.initialize(p.getSubTypeAspects()));
               }
               return e;
