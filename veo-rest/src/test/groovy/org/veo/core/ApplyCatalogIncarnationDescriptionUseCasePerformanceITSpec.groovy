@@ -36,7 +36,7 @@ import org.veo.core.entity.Unit
 import org.veo.core.repository.RepositoryProvider
 import org.veo.core.usecase.UseCaseInteractor
 import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase
-import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase
+import org.veo.core.usecase.catalogitem.GetCatalogIncarnationDescriptionUseCase
 import org.veo.core.usecase.catalogitem.IncarnationRequestModeType
 import org.veo.persistence.access.ClientRepositoryImpl
 import org.veo.persistence.access.UnitRepositoryImpl
@@ -64,7 +64,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
     ] as UseCaseInteractor
 
     @Autowired
-    private GetIncarnationDescriptionUseCase getIncarnationDescriptionUseCase
+    private GetCatalogIncarnationDescriptionUseCase getIncarnationDescriptionUseCase
 
     @Autowired
     private ApplyCatalogIncarnationDescriptionUseCase applyIncarnationDescriptionUseCase
@@ -89,7 +89,7 @@ class ApplyCatalogIncarnationDescriptionUseCasePerformanceITSpec extends Abstrac
         def dto = executeInTransaction {
             def out = synchronousUseCaseInteractor.execute(
                     getIncarnationDescriptionUseCase,
-                    new GetIncarnationDescriptionUseCase.InputData(client, unit.id, itemIds, IncarnationRequestModeType.MANUAL, null, null),
+                    new GetCatalogIncarnationDescriptionUseCase.InputData(client, unit.id, itemIds, IncarnationRequestModeType.MANUAL, null, null),
                     Function.identity()
                     ).get()
             new IncarnateDescriptionsDto(out.references, urlAssembler)

@@ -61,10 +61,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @AllArgsConstructor
 @Slf4j
-public class GetIncarnationDescriptionUseCase
+public class GetCatalogIncarnationDescriptionUseCase
     extends AbstractGetIncarnationDescriptionUseCase<CatalogItem>
     implements TransactionalUseCase<
-        GetIncarnationDescriptionUseCase.InputData, GetIncarnationDescriptionUseCase.OutputData> {
+        GetCatalogIncarnationDescriptionUseCase.InputData,
+        GetCatalogIncarnationDescriptionUseCase.OutputData> {
   private final UnitRepository unitRepository;
   private final CatalogItemRepository catalogItemRepository;
   private final org.veo.core.repository.RepositoryProvider repositoryProvider;

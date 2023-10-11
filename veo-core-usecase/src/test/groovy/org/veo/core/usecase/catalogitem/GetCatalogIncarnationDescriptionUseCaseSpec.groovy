@@ -25,11 +25,11 @@ import org.veo.core.entity.TailoringReferenceType
 import org.veo.core.entity.Unit
 import org.veo.core.entity.exception.NotFoundException
 import org.veo.core.entity.exception.RuntimeModelException
-import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase.InputData
+import org.veo.core.usecase.catalogitem.GetCatalogIncarnationDescriptionUseCase.InputData
 
-class GetIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSpec {
+class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescriptionSpec {
 
-    GetIncarnationDescriptionUseCase usecase = new GetIncarnationDescriptionUseCase(unitRepo, catalogItemRepository, entityRepo)
+    GetCatalogIncarnationDescriptionUseCase usecase = new GetCatalogIncarnationDescriptionUseCase(unitRepo, catalogItemRepository, entityRepo)
 
     def setup() {
         entityRepo.getElementRepositoryFor(_) >> repo

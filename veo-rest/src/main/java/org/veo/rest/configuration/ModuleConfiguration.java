@@ -108,9 +108,9 @@ import org.veo.core.usecase.base.UpdateScenarioInDomainUseCase;
 import org.veo.core.usecase.base.UpdateScopeInDomainUseCase;
 import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.ApplyProfileIncarnationDescriptionUseCase;
+import org.veo.core.usecase.catalogitem.GetCatalogIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemUseCase;
 import org.veo.core.usecase.catalogitem.GetCatalogItemsUseCase;
-import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.GetProfileIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.IncarnationDescriptionApplier;
 import org.veo.core.usecase.catalogitem.QueryCatalogItemsUseCase;
@@ -795,11 +795,11 @@ public class ModuleConfiguration {
   }
 
   @Bean
-  public GetIncarnationDescriptionUseCase getIncarnationDescriptionUseCase(
+  public GetCatalogIncarnationDescriptionUseCase getIncarnationDescriptionUseCase(
       UnitRepository unitRepository,
       CatalogItemRepository catalogItemRepository,
       RepositoryProvider repositoryProvider) {
-    return new GetIncarnationDescriptionUseCase(
+    return new GetCatalogIncarnationDescriptionUseCase(
         unitRepository, catalogItemRepository, repositoryProvider);
   }
 

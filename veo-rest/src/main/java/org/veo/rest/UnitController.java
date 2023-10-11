@@ -71,7 +71,7 @@ import org.veo.core.entity.Unit;
 import org.veo.core.entity.state.TemplateItemIncarnationDescriptionState;
 import org.veo.core.usecase.UseCase;
 import org.veo.core.usecase.catalogitem.ApplyCatalogIncarnationDescriptionUseCase;
-import org.veo.core.usecase.catalogitem.GetIncarnationDescriptionUseCase;
+import org.veo.core.usecase.catalogitem.GetCatalogIncarnationDescriptionUseCase;
 import org.veo.core.usecase.catalogitem.IncarnationRequestModeType;
 import org.veo.core.usecase.unit.CreateUnitUseCase;
 import org.veo.core.usecase.unit.DeleteUnitUseCase;
@@ -117,7 +117,7 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
   private final DeleteUnitUseCase deleteUnitUseCase;
   private final GetUnitsUseCase getUnitsUseCase;
   private final ApplyCatalogIncarnationDescriptionUseCase applyCatalogIncarnationDescriptionUseCase;
-  private final GetIncarnationDescriptionUseCase getIncarnationDescriptionUseCase;
+  private final GetCatalogIncarnationDescriptionUseCase getCatalogIncarnationDescriptionUseCase;
   private final GetUnitDumpUseCase getUnitDumpUseCase;
   private final UnitImportUseCase unitImportUseCase;
 
@@ -160,8 +160,8 @@ public class UnitController extends AbstractEntityControllerWithDefaultSearch {
     List<Key<UUID>> list = itemIds.stream().map(Key::uuidFrom).toList();
     CompletableFuture<IncarnateDescriptionsDto> catalogFuture =
         useCaseInteractor.execute(
-            getIncarnationDescriptionUseCase,
-            new GetIncarnationDescriptionUseCase.InputData(
+            getCatalogIncarnationDescriptionUseCase,
+            new GetCatalogIncarnationDescriptionUseCase.InputData(
                 client, containerId, list, requestMode, include, exclude),
             output -> new IncarnateDescriptionsDto(output.getReferences(), urlAssembler));
     return catalogFuture.thenApply(result -> ResponseEntity.ok().body(result));
