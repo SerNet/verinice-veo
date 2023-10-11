@@ -68,7 +68,7 @@ public final class ControllerConstants {
   static final String SORT_COLUMN_DEFAULT_VALUE = "name";
   static final String SORT_ORDER_PARAM = "sortOrder";
   static final String SORT_ORDER_DEFAULT_VALUE = "asc";
-  static final String SORT_ORDER_PATTERN = "[asc|desc|ASC|DESC]";
+  static final String SORT_ORDER_PATTERN = "asc|desc|ASC|DESC";
   static final String IF_MATCH_HEADER = "If-Match";
 
   static final String UUID_DESCRIPTION =
