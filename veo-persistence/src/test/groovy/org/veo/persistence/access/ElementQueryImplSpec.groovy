@@ -611,7 +611,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         def result = query.execute(PagingConfiguration.UNPAGED)
 
         then:
-        result.resultPage.sort{it.name}*.name == ["Process Two", "Whatever"]
+        result.resultPage.toSorted{it.name}*.name == ["Process Two", "Whatever"]
     }
 
     def 'queries by description'() {
@@ -637,7 +637,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         def result = query.execute(PagingConfiguration.UNPAGED)
 
         then:
-        result.resultPage.sort{it.name}*.name == ["B", "C"]
+        result.resultPage.toSorted{it.name}*.name == ["B", "C"]
     }
 
     def 'queries by designator'() {
@@ -663,7 +663,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         def result = query.execute(PagingConfiguration.UNPAGED)
 
         then:
-        result.resultPage.sort{it.name}*.name == ["B", "C"]
+        result.resultPage.toSorted{it.name}*.name == ["B", "C"]
     }
 
     def 'queries by updatedBy'() {
@@ -689,7 +689,7 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         def result = query.execute(PagingConfiguration.UNPAGED)
 
         then:
-        result.resultPage.sort{it.name}*.name == ["B", "C"]
+        result.resultPage.toSorted{it.name}*.name == ["B", "C"]
     }
 
     def 'sort results by different properties'() {
@@ -886,6 +886,6 @@ class ElementQueryImplSpec extends AbstractJpaSpec {
         def result = query.execute(PagingConfiguration.UNPAGED)
 
         then:
-        result.resultPage.sort{it.name}*.name == ["one", "two"]
+        result.resultPage.toSorted{it.name}*.name == ["one", "two"]
     }
 }
