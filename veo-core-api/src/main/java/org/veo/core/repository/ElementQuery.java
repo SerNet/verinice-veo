@@ -86,10 +86,6 @@ public interface ElementQuery<T extends Element> extends Query<T> {
 
   void fetchParentsAndChildrenAndSiblings();
 
-  void fetchPartsAndCompositesAndCompositesParts();
-
-  void fetchMembers();
-
   void fetchRisks();
 
   void fetchRiskValuesAspects();

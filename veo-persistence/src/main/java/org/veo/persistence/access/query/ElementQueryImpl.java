@@ -261,11 +261,6 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   }
 
   @Override
-  public void fetchPartsAndCompositesAndCompositesParts() {
-    fetchPartsAndCompositesAndCompositeParts = true;
-  }
-
-  @Override
   public void fetchAppliedCatalogItems() {
     fetchAppliedCatalogItems = true;
   }
@@ -290,11 +285,6 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   @Override
   public void fetchRisks() {
     fetchRisks = true;
-  }
-
-  @Override
-  public void fetchMembers() {
-    fetchMembers = true;
   }
 
   @Override
