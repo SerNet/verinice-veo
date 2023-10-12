@@ -432,7 +432,7 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
         out -> ResponseEntity.noContent().build());
   }
 
-  @PostMapping("/{id}/profilesnew/{profileKey}/units/{unitId}")
+  @PostMapping("/{id}/profilesnew/{profileId}/units/{unitId}")
   @Operation(summary = "Apply a profile to a unit. Adds all profile elements & risks to the unit.")
   @ApiResponse(responseCode = "204", description = "Profile applied")
   @ApiResponse(responseCode = "404", description = "Domain not found")
@@ -440,13 +440,17 @@ public class DomainController extends AbstractEntityControllerWithDefaultSearch 
   public CompletableFuture<ResponseEntity<ApiResponseBody>> applyProfile(
       @Parameter(required = true, hidden = true) Authentication auth,
       @PathVariable @Pattern(regexp = UUID_REGEX) String id,
-      @PathVariable @Pattern(regexp = UUID_REGEX) String profileKey,
+      @PathVariable @Pattern(regexp = UUID_REGEX) String profileId,
       @PathVariable @Pattern(regexp = UUID_REGEX) String unitId) {
     return useCaseInteractor
         .execute(
             getProfileIncarnationDescriptionUseCase,
             new GetProfileIncarnationDescriptionUseCase.InputData(
-                getAuthenticatedClient(auth), Key.uuidFrom(unitId), null, Key.uuidFrom(profileKey)),
+                getAuthenticatedClient(auth),
+                Key.uuidFrom(unitId),
+                Key.uuidFrom(id),
+                null,
+                Key.uuidFrom(profileId)),
             out ->
                 out.getReferences().stream()
                     .map(TemplateItemIncarnationDescriptionState.class::cast)

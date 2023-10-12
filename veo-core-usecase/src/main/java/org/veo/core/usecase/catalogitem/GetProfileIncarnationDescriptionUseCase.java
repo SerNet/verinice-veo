@@ -27,9 +27,14 @@ import java.util.UUID;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Client;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.Unit;
+import org.veo.core.entity.exception.NotFoundException;
+import org.veo.core.entity.specification.ClientBoundaryViolationException;
+import org.veo.core.entity.specification.EntitySpecifications;
 import org.veo.core.repository.ProfileRepository;
 import org.veo.core.repository.UnitRepository;
 import org.veo.core.usecase.TransactionalUseCase;
@@ -53,7 +58,7 @@ public class GetProfileIncarnationDescriptionUseCase
   @Override
   public OutputData execute(InputData input) {
     log.info(
-        "profile: {}, unid: {}, items: {}", input.profileId, input.unitId, input.profileItemIds);
+        "profile: {}, unit: {}, items: {}", input.profileId, input.unitId, input.profileItemIds);
     Unit unit = unitRepository.getByIdFetchClient(input.getUnitId());
     unit.checkSameClient(input.authenticatedClient);
 
@@ -82,7 +87,27 @@ public class GetProfileIncarnationDescriptionUseCase
   }
 
   private void validateInput(InputData input) {
-    if (input.getProfileId() != null) return;
+    input.authenticatedClient.getDomains().stream()
+        .filter(d -> d.getIdAsString().equals(input.domainId.uuidValue()))
+        .findAny()
+        .orElseThrow(() -> new NotFoundException(input.domainId, Domain.class));
+
+    if (input.getProfileId() != null) {
+      Profile profile =
+          profileRepository
+              .findById(input.getProfileId())
+              .orElseThrow(() -> new NotFoundException(input.getProfileId(), Profile.class));
+      if (!(EntitySpecifications.hasSameClient(
+              profile
+                  .getOwningClient()
+                  .orElseThrow(
+                      () ->
+                          new ClientBoundaryViolationException(profile, input.authenticatedClient)))
+          .isSatisfiedBy(input.authenticatedClient))) {
+        throw new ClientBoundaryViolationException(profile, input.authenticatedClient);
+      }
+      return;
+    }
     if (new HashSet<>(input.profileItemIds).size() != input.profileItemIds.size()) {
       throw new IllegalArgumentException("Provided catalogitems are not unique.");
     }
@@ -93,6 +118,7 @@ public class GetProfileIncarnationDescriptionUseCase
   public static class InputData implements UseCase.InputData {
     Client authenticatedClient;
     Key<UUID> unitId;
+    Key<UUID> domainId;
     List<Key<UUID>> profileItemIds;
     Key<UUID> profileId;
   }

@@ -900,6 +900,18 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                 tailoringReferences.size() == 2
             }
         }
+
+        when: "we applying a non existent profile to the unit"
+        post("/domains/${domain1.idAsString}/profilesnew/${UUID.randomUUID()}/units/${unitId}",[:], 404)
+
+        then: "it is not found"
+        thrown(NotFoundException)
+
+        when: "we applying an existent profile to the unit with random domain"
+        post("/domains/${UUID.randomUUID()}/profilesnew/${domain1.profiles[0].idAsString}/units/${unitId}",[:], 404)
+
+        then: "it is not found"
+        thrown(NotFoundException)
     }
 
     @WithUserDetails("content-creator")
