@@ -95,7 +95,8 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   private boolean fetchScopesAndScopeMembers;
   private boolean fetchRisks;
   private boolean fetchRiskValuesAspects;
-  private boolean fetchPartsAndCompositesAndCompositeParts;
+  private boolean fetchParts;
+  private boolean fetchCompositesAndCompositeParts;
   private boolean fetchMembers;
   private boolean fetchControlImplementations;
   private boolean fetchRequirementImplementations;
@@ -268,7 +269,8 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   @Override
   public void fetchParentsAndChildrenAndSiblings() {
     fetchScopesAndScopeMembers = true;
-    fetchPartsAndCompositesAndCompositeParts = true;
+    fetchParts = true;
+    fetchCompositesAndCompositeParts = true;
     fetchMembers = true;
   }
 
@@ -285,6 +287,12 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   @Override
   public void fetchRisks() {
     fetchRisks = true;
+  }
+
+  @Override
+  public void fetchChildren() {
+    fetchParts = true;
+    fetchMembers = true;
   }
 
   @Override
@@ -386,8 +394,10 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
 
   private void fetchComposites(
       List<String> ids, CompositeEntityDataRepository<? extends ElementData> repo) {
-    if (fetchPartsAndCompositesAndCompositeParts) {
+    if (fetchParts) {
       repo.findAllWithPartsByDbIdIn(ids);
+    }
+    if (fetchCompositesAndCompositeParts) {
       repo.findAllWithCompositesAndCompositesPartsByDbIdIn(ids);
     }
   }

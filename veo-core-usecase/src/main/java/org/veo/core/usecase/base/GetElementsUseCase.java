@@ -143,6 +143,7 @@ public abstract class GetElementsUseCase<T extends Element, I extends GetElement
     if (input.getScopeId() != null) {
       query.whereScopesContain(input.getScopeId());
     }
+    query.fetchChildren();
   }
 
   @Valid
