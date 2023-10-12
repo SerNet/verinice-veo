@@ -222,7 +222,7 @@ public class ControlController extends AbstractCompositeElementController<Contro
               schema = @Schema(implementation = AbstractControlDto.class)))
   @ApiResponse(responseCode = "404", description = "Control not found")
   @GetMapping(ControllerConstants.UUID_PARAM_SPEC)
-  public @Valid Future<ResponseEntity<FullControlDto>> getElement(
+  public Future<ResponseEntity<FullControlDto>> getElement(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
@@ -242,7 +242,7 @@ public class ControlController extends AbstractCompositeElementController<Contro
               array = @ArraySchema(schema = @Schema(implementation = FullControlDto.class))))
   @ApiResponse(responseCode = "404", description = "Control not found")
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
-  public @Valid CompletableFuture<ResponseEntity<List<FullControlDto>>> getElementParts(
+  public CompletableFuture<ResponseEntity<List<FullControlDto>>> getElementParts(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
@@ -363,7 +363,7 @@ public class ControlController extends AbstractCompositeElementController<Contro
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
   @PostMapping(value = "/evaluation")
-  public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
+  public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
       @Parameter(required = true, hidden = true) Authentication auth,
       @Valid @RequestBody FullControlDto element,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {

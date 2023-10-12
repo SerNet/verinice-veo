@@ -240,7 +240,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
               array = @ArraySchema(schema = @Schema(implementation = FullProcessDto.class))))
   @ApiResponse(responseCode = "404", description = "Process not found")
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
-  public @Valid CompletableFuture<ResponseEntity<List<FullProcessDto>>> getElementParts(
+  public CompletableFuture<ResponseEntity<List<FullProcessDto>>> getElementParts(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
@@ -438,7 +438,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
   @PostMapping(value = "/evaluation")
-  public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
+  public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
       @Parameter(required = true, hidden = true) Authentication auth,
       @Valid @RequestBody FullProcessDto element,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
@@ -446,7 +446,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   }
 
   @Override
-  public @Valid CompletableFuture<List<ProcessRiskDto>> getRisks(
+  public CompletableFuture<List<ProcessRiskDto>> getRisks(
       @Parameter(hidden = true) ApplicationUser user, String processId) {
 
     Client client = getClient(user.getClientId());
@@ -462,7 +462,7 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   }
 
   @Override
-  public @Valid Future<ResponseEntity<ProcessRiskDto>> getRisk(
+  public Future<ResponseEntity<ProcessRiskDto>> getRisk(
       @Parameter(hidden = true) ApplicationUser user, String processId, String scenarioId) {
 
     Client client = getClient(user.getClientId());
@@ -540,12 +540,8 @@ public class ProcessController extends AbstractCompositeElementController<Proces
   }
 
   @Override
-  public @Valid CompletableFuture<ResponseEntity<ProcessRiskDto>> updateRisk(
-      ApplicationUser user,
-      String processId,
-      String scenarioId,
-      @Valid @NotNull ProcessRiskDto dto,
-      String eTag) {
+  public CompletableFuture<ResponseEntity<ProcessRiskDto>> updateRisk(
+      ApplicationUser user, String processId, String scenarioId, ProcessRiskDto dto, String eTag) {
     var client = getClient(user.getClientId());
     var input =
         new UpdateProcessRiskUseCase.InputData(

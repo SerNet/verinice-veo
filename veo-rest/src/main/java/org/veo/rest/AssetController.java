@@ -250,9 +250,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
             designator,
             name,
             updatedBy,
-            PagingMapper.toConfig(
-                pageSize, pageNumber,
-                sortColumn, sortOrder),
+            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder),
             embedRisks));
   }
 
@@ -311,7 +309,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
               array = @ArraySchema(schema = @Schema(implementation = FullAssetDto.class))))
   @ApiResponse(responseCode = "404", description = "Asset not found")
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
-  public @Valid CompletableFuture<ResponseEntity<List<FullAssetDto>>> getElementParts(
+  public CompletableFuture<ResponseEntity<List<FullAssetDto>>> getElementParts(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
@@ -438,7 +436,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
   @PostMapping(value = "/evaluation")
-  public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
+  public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
       @Parameter(required = true, hidden = true) Authentication auth,
       @Valid @RequestBody FullAssetDto element,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
@@ -446,7 +444,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
   }
 
   @Override
-  public @Valid CompletableFuture<List<AssetRiskDto>> getRisks(
+  public CompletableFuture<List<AssetRiskDto>> getRisks(
       @Parameter(hidden = true) ApplicationUser user, String assetId) {
 
     Client client = getClient(user.getClientId());
@@ -462,7 +460,7 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
   }
 
   @Override
-  public @Valid Future<ResponseEntity<AssetRiskDto>> getRisk(
+  public Future<ResponseEntity<AssetRiskDto>> getRisk(
       @Parameter(hidden = true) ApplicationUser user, String assetId, String scenarioId) {
 
     Client client = getClient(user.getClientId());
@@ -540,12 +538,8 @@ public class AssetController extends AbstractCompositeElementController<Asset, F
   }
 
   @Override
-  public @Valid CompletableFuture<ResponseEntity<AssetRiskDto>> updateRisk(
-      ApplicationUser user,
-      String assetId,
-      String scenarioId,
-      @Valid @NotNull AssetRiskDto dto,
-      String eTag) {
+  public CompletableFuture<ResponseEntity<AssetRiskDto>> updateRisk(
+      ApplicationUser user, String assetId, String scenarioId, AssetRiskDto dto, String eTag) {
     var client = getClient(user.getClientId());
     var input =
         new UpdateAssetRiskUseCase.InputData(

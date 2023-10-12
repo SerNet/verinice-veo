@@ -197,9 +197,7 @@ public class PersonController extends AbstractCompositeElementController<Person,
             designator,
             name,
             updatedBy,
-            PagingMapper.toConfig(
-                pageSize, pageNumber,
-                sortColumn, sortOrder)));
+            PagingMapper.toConfig(pageSize, pageNumber, sortColumn, sortOrder)));
   }
 
   private CompletableFuture<PageDto<FullPersonDto>> getPersons(
@@ -222,7 +220,7 @@ public class PersonController extends AbstractCompositeElementController<Person,
               schema = @Schema(implementation = FullPersonDto.class)))
   @ApiResponse(responseCode = "404", description = "Person not found")
   @GetMapping(UUID_PARAM_SPEC)
-  public @Valid Future<ResponseEntity<FullPersonDto>> getElement(
+  public Future<ResponseEntity<FullPersonDto>> getElement(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
@@ -242,7 +240,7 @@ public class PersonController extends AbstractCompositeElementController<Person,
               array = @ArraySchema(schema = @Schema(implementation = FullPersonDto.class))))
   @ApiResponse(responseCode = "404", description = "Person not found")
   @GetMapping(value = "/{" + UUID_PARAM + ":" + UUID_REGEX + "}/parts")
-  public @Valid CompletableFuture<ResponseEntity<List<FullPersonDto>>> getElementParts(
+  public CompletableFuture<ResponseEntity<List<FullPersonDto>>> getElementParts(
       @Parameter(hidden = true) Authentication auth,
       @Parameter(required = true, example = UUID_EXAMPLE, description = UUID_DESCRIPTION)
           @PathVariable
@@ -363,7 +361,7 @@ public class PersonController extends AbstractCompositeElementController<Person,
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
   @PostMapping(value = "/evaluation")
-  public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
+  public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
       @Parameter(required = true, hidden = true) Authentication auth,
       @Valid @RequestBody FullPersonDto element,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {

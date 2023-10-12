@@ -457,7 +457,7 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
   }
 
   @Override
-  public @Valid CompletableFuture<List<ScopeRiskDto>> getRisks(
+  public CompletableFuture<List<ScopeRiskDto>> getRisks(
       @Parameter(hidden = true) ApplicationUser user, String scopeId) {
 
     Client client = getClient(user.getClientId());
@@ -473,7 +473,7 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
   }
 
   @Override
-  public @Valid Future<ResponseEntity<ScopeRiskDto>> getRisk(
+  public Future<ResponseEntity<ScopeRiskDto>> getRisk(
       @Parameter(hidden = true) ApplicationUser user, String scopeId, String scenarioId) {
 
     Client client = getClient(user.getClientId());
@@ -580,7 +580,7 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
               mediaType = MediaType.APPLICATION_JSON_VALUE,
               schema = @Schema(implementation = EvaluateElementOutputSchema.class)))
   @PostMapping(value = "/evaluation")
-  public @Valid CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
+  public CompletableFuture<ResponseEntity<EvaluateElementUseCase.OutputData>> evaluate(
       @Parameter(required = true, hidden = true) Authentication auth,
       @Valid @RequestBody FullScopeDto dto,
       @RequestParam(value = DOMAIN_PARAM) String domainId) {
@@ -588,12 +588,8 @@ public class ScopeController extends AbstractElementController<Scope, AbstractSc
   }
 
   @Override
-  public @Valid CompletableFuture<ResponseEntity<ScopeRiskDto>> updateRisk(
-      ApplicationUser user,
-      String scopeId,
-      String scenarioId,
-      @Valid @NotNull ScopeRiskDto dto,
-      String eTag) {
+  public CompletableFuture<ResponseEntity<ScopeRiskDto>> updateRisk(
+      ApplicationUser user, String scopeId, String scenarioId, ScopeRiskDto dto, String eTag) {
 
     var client = getClient(user.getClientId());
     var input =
