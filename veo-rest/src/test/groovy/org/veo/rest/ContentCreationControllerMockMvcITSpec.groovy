@@ -648,6 +648,106 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
     }
 
     @WithUserDetails("content-creator")
+    def "update a profile in a domain"() {
+        given: "a domain and a unit"
+        def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
+        def (unitId, assetId, scenarioId, processId) = createUnitWithElements(domainId)
+
+        when: "we create a new profile"
+        post("/content-creation/domains/${domainId}/profiles?unit=${unitId}",
+                [
+                    name: 'test',
+                    description: 'All the good stuff',
+                    language: 'de_DE'
+                ], 201)
+
+        Domain domain1 = txTemplate.execute {
+            def d = domainDataRepository.findById(domainId).get()
+            d.profiles.each {
+                it.items.size()
+                it.items.each{
+                    it.tailoringReferences.size()
+                }
+            }
+            d
+        }
+
+        then: "the profile is created"
+        domain1.getProfiles().size()==1
+        with(domain1.getProfiles().first()) {
+            name == "test"
+            description == "All the good stuff"
+            language == "de_DE"
+            items.size() == 8
+        }
+
+        when: "we update the profile meta data"
+        def profileId = domain1.getProfiles().first().idAsString
+        put("/content-creation/domains/${domainId}/profiles/${profileId}",
+                [
+                    name: 'test1',
+                    description: 'All the good stuff, but better.',
+                    language: 'de_DE'
+                ], 204)
+
+        domain1 = txTemplate.execute {
+            def d = domainDataRepository.findById(domainId).get()
+            d.profiles.each {
+                it.items.size()
+                it.items.each{
+                    it.tailoringReferences.size()
+                }
+            }
+            d
+        }
+
+        then: "the profile meta data is updated"
+        domain1.getProfiles().size()==1
+        with(domain1.getProfiles().first()) {
+            name == "test1"
+            description == "All the good stuff, but better."
+            language == "de_DE"
+            items.size() == 8
+        }
+
+        when: "we create another element in the unit"
+        post("/domains/$domainId/scenarios", [
+            name: "example scenario 1",
+            subType: "SCN_Scenario",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"]
+        ],201)
+
+        and: "update the profile"
+        put("/content-creation/domains/${domainId}/profiles/${profileId}?unit=${unitId}",
+                [
+                    name: 'test1',
+                    description: 'All the good stuff, but much better.',
+                    language: 'de_DE'
+                ], 204)
+
+        domain1 = txTemplate.execute {
+            def d = domainDataRepository.findById(domainId).get()
+            d.profiles.each {
+                it.items.size()
+                it.items.each{
+                    it.tailoringReferences.size()
+                }
+            }
+            d
+        }
+
+        then: "the profile is updated"
+        domain1.getProfiles().size()==1
+        with(domain1.getProfiles().first()) {
+            name == "test1"
+            description == "All the good stuff, but much better."
+            language == "de_DE"
+            items.size() == 9
+        }
+    }
+
+    @WithUserDetails("content-creator")
     def "create profile in a domain from a unit"() {
         given: "a domain and a unit with elements"
         def domainId = createTestDomain(client, DSGVO_TEST_DOMAIN_TEMPLATE_ID).idAsString
@@ -688,7 +788,7 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
                     language: 'de_DE'
                 ], 201))
 
-        then: "the resurce is returned"
+        then: "the resource is returned"
         with(profileRef) {
             displayName == "test"
             targetUri.contains("domains/${domainId}/profiles/")

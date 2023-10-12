@@ -87,11 +87,8 @@ public class CreateProfileFromUnitUseCase extends AbstractCreateItemsFromUnitUse
     profile.setDescription(input.getProfileDefinition().getDescription());
     profile.setLanguage(input.profileDefinition.getLanguage());
 
-    if (input.getProfileId() == null) {
-      cleanProfile(profile);
-    }
-
     if (input.unitId != null) {
+      cleanProfile(profile);
       var unit = unitRepository.getById(input.unitId);
       unit.checkSameClient(client);
 
@@ -99,7 +96,7 @@ public class CreateProfileFromUnitUseCase extends AbstractCreateItemsFromUnitUse
           getElements(unit, domain).stream()
               .collect(Collectors.toMap(Function.identity(), e -> e.toProfileItem(profile)));
       createTailorreferences(elementsToProfileItems, domain);
-      profile.setItems(new HashSet<>(elementsToProfileItems.values()));
+      profile.getItems().addAll(elementsToProfileItems.values());
     }
 
     Profile p = profileRepo.save(profile);
