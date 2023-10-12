@@ -88,8 +88,6 @@ public interface ElementDataRepository<T extends ElementData>
   @Override
   @Nonnull
   @Transactional(readOnly = true)
-  // TODO use a projection to return only the IDs once
-  // https://github.com/spring-projects/spring-data-jpa/issues/1378 is fixed
   Page<T> findAll(Specification<T> specification, Pageable pageable);
 
   @Query(

@@ -20,9 +20,7 @@ package org.veo.persistence.access.query;
 import static org.veo.persistence.access.query.QueryFunctions.andInIgnoringCase;
 import static org.veo.persistence.access.query.QueryFunctions.in;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -305,17 +303,16 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
   public PagedResult<TInterface> execute(PagingConfiguration pagingConfiguration) {
     Page<TDataClass> items = dataRepository.findAll(mySpec, toPageable(pagingConfiguration));
     List<String> ids = items.stream().map(ElementData::getDbId).toList();
-    List<TDataClass> fullyLoadedItems = fullyLoadItems(ids);
-    fullyLoadedItems.sort(Comparator.comparingInt(item -> ids.indexOf(item.getDbId())));
+    fullyLoadItems(ids);
 
     return new PagedResult<>(
         pagingConfiguration,
-        (List<TInterface>) fullyLoadedItems,
+        items.stream().map(it -> (TInterface) it).toList(),
         items.getTotalElements(),
         items.getTotalPages());
   }
 
-  private List<TDataClass> fullyLoadItems(List<String> ids) {
+  private void fullyLoadItems(List<String> ids) {
     var items = dataRepository.findAllWithDomainsLinksDecisionsByDbIdIn(ids);
     dataRepository.findAllWithCustomAspectsByDbIdIn(ids);
     dataRepository.findAllWithSubtypeAspectsByDbIdIn(ids);
@@ -329,8 +326,6 @@ class ElementQueryImpl<TInterface extends Element, TDataClass extends ElementDat
     items.stream()
         .collect(Collectors.groupingBy(Element::getModelInterface))
         .forEach(this::fullyLoadItems);
-
-    return new ArrayList<>(items);
   }
 
   private void fullyLoadItems(Class<? extends Identifiable> type, List<TDataClass> items) {
