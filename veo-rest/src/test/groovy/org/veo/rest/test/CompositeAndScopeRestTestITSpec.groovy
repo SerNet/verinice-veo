@@ -238,6 +238,34 @@ class CompositeAndScopeRestTestITSpec extends VeoRestTest{
         get("/persons/$partInOtherUnitId")
     }
 
+    def "simple circular structure is supported"() {
+        given: "an asset that is part of itself"
+        def assetId = post("/assets", [
+            name: "I am so alone",
+            owner: [targetUri: "/units/$unitId"],
+        ]).body.resourceId
+        get("/assets/$assetId").with{
+            body.parts = [
+                [targetUri: "/assets/$assetId"]
+            ]
+            put(body._self, body, getETag())
+        }
+
+        expect: "that it can be updated"
+        get("/assets/$assetId").with{
+            body.name = "I am my own best friend"
+            put(body._self, body, getETag())
+        }
+
+        and: "and retrieved"
+        with(get("/assets/$assetId").body) {
+            name == "I am my own best friend"
+            parts.size() == 1
+            parts[0].targetUri.endsWith"/assets/$assetId"
+            parts[0].displayName.endsWith("I am my own best friend")
+        }
+    }
+
     def "delete unit with parts of composite in other unit"() {
         given: "a person in this unit that is part of a composite in another unit"
         def partInThisUnitId = post("/persons", [

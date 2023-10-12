@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.orm.jpa.JpaSystemException
 import org.springframework.transaction.support.TransactionTemplate
 
-import org.veo.core.entity.Asset
 import org.veo.core.entity.Client
 import org.veo.core.entity.CompositeElement
 import org.veo.core.entity.Unit
@@ -49,18 +48,50 @@ class CompositeElementJpaSpec extends AbstractJpaSpec {
 
     def "circular composites are supported"() {
         when:"saving a circular asset composite structure"
-        def composite1Id = txTemplate.execute {
-            def composite1 = newAsset(unit)
-            def composite2 = newAsset(unit) {
-                parts = [composite1]
-            }
+        def assetIds = txTemplate.execute {
+            def leaf = assetDataRepository.save(newAsset(unit) {
+                name = "leaf"
+            })
+            def composite1 = assetDataRepository.save(newAsset(unit) {
+                name = "composite 1"
+            })
+            def composite2 = assetDataRepository.save(newAsset(unit) {
+                name = "composite 2"
+            })
             composite1.addPart(composite2)
-            assetDataRepository.save(composite1).id.uuidValue()
+            composite1.addPart(leaf)
+            composite2.addPart(composite1)
+            [composite1, composite2, leaf]*.idAsString
         }
 
         then: "the elements can be retrieved"
-        def retrievedComposite1 = (Asset)assetDataRepository.findById(composite1Id).get()
-        def retrievedComposite2 = (Asset)retrievedComposite1.parts.first()
+        def (retrievedComposite1, retrievedComposite2, retrievedLeaf) = assetIds
+                .collect { assetDataRepository.findById(it) }
+                *.get()
+
+        and: "composite and parts are set"
+        retrievedComposite1.composites*.name ==~ ["composite 2"]
+        retrievedComposite1.parts*.name ==~ ["composite 2", "leaf"]
+        retrievedComposite2.composites*.name ==~ ["composite 1"]
+        retrievedComposite2.parts*.name ==~ ["composite 1"]
+        retrievedLeaf.composites*.name ==~ ["composite 1"]
+        retrievedLeaf.parts*.name == []
+
+        and: "composites and parts are found recursively"
+        retrievedComposite2.compositesRecursively*.name ==~ ["composite 1", "composite 2"]
+        retrievedComposite2.partsRecursively*.name ==~ [
+            "composite 1",
+            "composite 2",
+            "leaf"
+        ]
+        retrievedComposite1.compositesRecursively*.name ==~ ["composite 2", "composite 1"]
+        retrievedComposite1.partsRecursively*.name ==~ [
+            "composite 2",
+            "composite 1",
+            "leaf"
+        ]
+        retrievedLeaf.compositesRecursively*.name ==~ ["composite 1", "composite 2"]
+        retrievedLeaf.partsRecursively*.name == []
 
         and: "composite 1 is always the same object"
         retrievedComposite2.parts.first().is(retrievedComposite1)

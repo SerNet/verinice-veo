@@ -20,6 +20,7 @@ package org.veo.core.entity;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.veo.core.entity.specification.EntitySpecification;
@@ -101,18 +102,24 @@ public interface CompositeElement<T extends CompositeElement<T>> extends Element
   }
 
   default Set<T> getPartsRecursively() {
-    return (Set<T>)
-        Stream.concat(
-                getParts().stream(),
-                getParts().stream().flatMap(part -> part.getPartsRecursively().stream()))
-            .collect(Collectors.toSet());
+    return walkTree(CompositeElement::getParts);
   }
 
   default Set<T> getCompositesRecursively() {
-    return (Set<T>)
-        Stream.concat(
-                getComposites().stream(),
-                getComposites().stream().flatMap(part -> part.getCompositesRecursively().stream()))
-            .collect(Collectors.toSet());
+    return walkTree(CompositeElement::getComposites);
+  }
+
+  private Set<T> walkTree(Function<T, Set<T>> getter) {
+    Set<T> allElements = new HashSet<>();
+    Set<T> elementsOnCurrentLayer = getter.apply((T) this);
+    while (!elementsOnCurrentLayer.isEmpty()) {
+      allElements.addAll(elementsOnCurrentLayer);
+      elementsOnCurrentLayer =
+          elementsOnCurrentLayer.stream()
+              .flatMap(e -> getter.apply(e).stream())
+              .filter(e -> !allElements.contains(e))
+              .collect(Collectors.toSet());
+    }
+    return allElements;
   }
 }
