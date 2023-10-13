@@ -47,7 +47,7 @@ public class AbstractGetIncarnationDescriptionUseCase<T extends TemplateItem<T>>
       case PART, COMPOSITE, RISK -> fromReference(reference, element);
       case LINK, LINK_EXTERNAL -> fromLinkReference((LinkTailoringReference<T>) reference, element);
       default -> throw new IllegalArgumentException(
-          "Unmaped tailorreference type: " + reference.getReferenceType());
+          "Unmapped tailoring reference type: " + reference.getReferenceType());
     };
   }
 
