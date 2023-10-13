@@ -18,7 +18,10 @@
 package org.veo.rest.test
 
 import static groovy.json.JsonOutput.toJson
+import static java.util.UUID.randomUUID
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
+import static org.veo.rest.test.UserType.ADMIN
+import static org.veo.rest.test.UserType.CONTENT_CREATOR
 
 import java.time.Instant
 
@@ -314,6 +317,19 @@ class VeoRestTest extends Specification {
         }
         userTokenCache[user] = newToken
         return newToken
+    }
+
+    /**
+     * Create a copy of domain with given ID. The copy does not reference the same domain template.
+     * @return ID of domain copy
+     * */
+    def copyDomain(String domainId) {
+        def domain = get("/domains/$domainId/export").body
+        // TODO #2386 use domain import instead of importing as a template
+        domain.name = "copy of $domain.name $domain.templateVersion ${randomUUID().toString().subSequence(0, 5)}"
+        def templateId = post("/content-creation/domain-templates", domain, 201, CONTENT_CREATOR).body.resourceId
+        post("/domain-templates/$templateId/createdomains", null, 204, ADMIN)
+        return get("/domains").body.find { it.name == domain.name }.id
     }
 
     protected uriToId(String targetUri) {

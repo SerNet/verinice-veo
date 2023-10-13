@@ -21,6 +21,7 @@ import static java.util.Map.copyOf;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
@@ -37,7 +38,6 @@ import org.veo.adapter.presenter.api.dto.AbstractUnitDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
-import org.veo.adapter.presenter.api.dto.full.FullProfileItemDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
@@ -46,6 +46,8 @@ import org.veo.adapter.service.domaintemplate.dto.ExportCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportLinkProfileTailoringReference;
 import org.veo.adapter.service.domaintemplate.dto.ExportLinkTailoringReference;
+import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
+import org.veo.adapter.service.domaintemplate.dto.ExportProfileItemDto;
 import org.veo.adapter.service.domaintemplate.dto.FullTemplateItemDto;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.AssetRisk;
@@ -59,6 +61,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.ProcessRisk;
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.ScopeRisk;
@@ -202,6 +205,23 @@ public final class DtoToEntityTransformer {
             .map(c -> transformDto2CatalogItem(c, idRefResolver))
             .collect(Collectors.toSet()));
     target.setProfiles(copyOf(source.getJsonProfiles()));
+    target.setProfiles(
+        source.getProfilesNew().stream()
+            .map(profileDto -> mapProfile(profileDto, target, idRefResolver))
+            .collect(toSet()));
+  }
+
+  private Profile mapProfile(
+      ExportProfileDto source, DomainBase owner, IdRefResolver idRefResolver) {
+    var target = createIdentifiable(Profile.class, source);
+    target.setName(source.getName());
+    target.setDescription(source.getDescription());
+    target.setLanguage(source.getLanguage());
+    target.setItems(
+        source.getItems().stream()
+            .map(itemDto -> transformDto2ProfileItem(itemDto, idRefResolver))
+            .collect(toSet()));
+    return target;
   }
 
   public ElementTypeDefinition mapElementTypeDefinition(
@@ -296,13 +316,16 @@ public final class DtoToEntityTransformer {
   }
 
   public ProfileItem transformDto2ProfileItem(
-      FullProfileItemDto source, IdRefResolver idRefResolver) {
+      ExportProfileItemDto source, IdRefResolver idRefResolver) {
     var target = createIdentifiable(ProfileItem.class, source);
     mapTemplateItem(source, target);
     target.setTailoringReferences(
         convertSet(
             source.getTailoringReferences(),
             tr -> transformDto2ProfileTailoringReference(tr, target, idRefResolver)));
+    Optional.ofNullable(source.getAppliedCatalogItem())
+        .map(idRefResolver::resolve)
+        .ifPresent(target::setAppliedCatalogItem);
     return target;
   }
 

@@ -70,6 +70,11 @@ public class ProfileData extends IdentifiableVersionedData implements Profile, D
   @Column(name = "language", length = 20)
   private String language;
 
+  public void setItems(Set<ProfileItem> items) {
+    items.stream().map(i -> (ProfileItemData) i).forEach(i -> i.setOwner(this));
+    this.items = items;
+  }
+
   @OneToMany(
       cascade = CascadeType.ALL,
       fetch = FetchType.LAZY,

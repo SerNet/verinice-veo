@@ -32,6 +32,8 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.Person;
 import org.veo.core.entity.Process;
+import org.veo.core.entity.Profile;
+import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.TailoringReference;
@@ -50,6 +52,8 @@ import org.veo.persistence.entity.jpa.IncidentData;
 import org.veo.persistence.entity.jpa.LinkTailoringReferenceData;
 import org.veo.persistence.entity.jpa.PersonData;
 import org.veo.persistence.entity.jpa.ProcessData;
+import org.veo.persistence.entity.jpa.ProfileData;
+import org.veo.persistence.entity.jpa.ProfileItemData;
 import org.veo.persistence.entity.jpa.ScenarioData;
 import org.veo.persistence.entity.jpa.ScopeData;
 import org.veo.persistence.entity.jpa.UnitData;
@@ -111,6 +115,12 @@ public class IdentifiableDataFactory implements IdentifiableFactory {
     }
     if (type == LinkTailoringReference.class) {
       return (T) new LinkTailoringReferenceData();
+    }
+    if (type == Profile.class) {
+      return (T) new ProfileData();
+    }
+    if (type == ProfileItem.class) {
+      return (T) new ProfileItemData();
     }
     throw new UnsupportedOperationException("Unsupported type " + type);
   }

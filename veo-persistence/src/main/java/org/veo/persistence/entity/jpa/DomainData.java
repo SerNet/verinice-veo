@@ -57,6 +57,11 @@ public class DomainData extends DomainBaseData implements Domain {
   @Valid
   private Set<CatalogItem> catalogItems = new HashSet<>();
 
+  public void setProfiles(Set<Profile> profiles) {
+    profiles.stream().map(ProfileData.class::cast).forEach(p -> p.setOwner(this));
+    this.profiles = profiles;
+  }
+
   @OneToMany(
       cascade = CascadeType.ALL,
       orphanRemoval = true,
