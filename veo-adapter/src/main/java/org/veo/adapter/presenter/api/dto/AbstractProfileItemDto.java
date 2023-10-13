@@ -30,7 +30,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public abstract class AbstractProfileItemDto extends AbstractCatalogItemDto {
+public abstract class AbstractProfileItemDto extends AbstractTemplateItemDto {
 
   @NotNull
   @Schema(description = "The status for the Element.", example = "NEW")

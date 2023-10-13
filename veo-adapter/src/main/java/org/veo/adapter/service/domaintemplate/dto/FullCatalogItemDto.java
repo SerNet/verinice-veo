@@ -30,8 +30,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 
 import org.veo.adapter.presenter.api.Patterns;
-import org.veo.adapter.presenter.api.dto.AbstractCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
+import org.veo.adapter.presenter.api.dto.AbstractTemplateItemDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.create.CreateTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.FullTailoringReferenceDto;
@@ -47,7 +47,7 @@ import lombok.ToString;
 /** Complete catalog item including tailoring references & custom aspects */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class FullCatalogItemDto extends AbstractCatalogItemDto implements IdentifiableDto {
+public class FullCatalogItemDto extends AbstractTemplateItemDto implements IdentifiableDto {
 
   @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
   @Schema(

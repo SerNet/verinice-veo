@@ -36,13 +36,13 @@ import org.veo.adapter.presenter.api.common.IdRef;
 import org.veo.adapter.presenter.api.common.ReferenceAssembler;
 import org.veo.adapter.presenter.api.common.RequirementImplementationRef;
 import org.veo.adapter.presenter.api.common.RequirementImplementationsRef;
-import org.veo.adapter.presenter.api.dto.AbstractCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.AbstractCompositeElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractProfileTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
 import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
+import org.veo.adapter.presenter.api.dto.AbstractTemplateItemDto;
 import org.veo.adapter.presenter.api.dto.AbstractVersionedDto;
 import org.veo.adapter.presenter.api.dto.AbstractVersionedSelfReferencingDto;
 import org.veo.adapter.presenter.api.dto.AttributesDto;
@@ -532,7 +532,7 @@ public final class EntityToDtoTransformer {
     return target;
   }
 
-  private void mapCatalogItem(TemplateItem source, AbstractCatalogItemDto target) {
+  private void mapCatalogItem(TemplateItem source, AbstractTemplateItemDto target) {
     mapNameableProperties(source, target);
     target.setElementType(source.getElementType());
     target.setSubType(source.getSubType());

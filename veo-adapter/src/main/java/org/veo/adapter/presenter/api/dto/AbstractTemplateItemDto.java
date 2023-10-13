@@ -30,7 +30,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public abstract class AbstractCatalogItemDto extends AbstractVersionedSelfReferencingDto
+public abstract class AbstractTemplateItemDto extends AbstractVersionedSelfReferencingDto
     implements NameableDto {
   @NotNull private String name;
 
