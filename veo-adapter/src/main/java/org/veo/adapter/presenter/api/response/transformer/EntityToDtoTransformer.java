@@ -659,8 +659,8 @@ public final class EntityToDtoTransformer {
         RequirementImplementationsRef.from(source, referenceAssembler));
   }
 
-  private <TDto extends Identifiable & Versioned> void mapVersionedSelfReferencingProperties(
-      TDto source, AbstractVersionedSelfReferencingDto target) {
+  private <TEntity extends Identifiable & Versioned> void mapVersionedSelfReferencingProperties(
+      TEntity source, AbstractVersionedSelfReferencingDto target) {
     target.setSelfRef(IdRef.from(source, referenceAssembler));
     mapVersionedProperties(source, target);
   }
