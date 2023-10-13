@@ -334,6 +334,7 @@ public final class DtoToEntityTransformer {
     target.setElementType(source.getElementType());
     target.setStatus(source.getStatus());
     target.setSubType(source.getSubType());
+    target.setAspects(source.getAspects());
     target.setCustomAspects(
         source.getCustomAspects().getValue().entrySet().stream()
             .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().getValue())));

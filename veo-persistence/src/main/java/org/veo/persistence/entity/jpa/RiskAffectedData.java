@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -34,6 +35,7 @@ import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.TemplateItemAspects;
 import org.veo.core.entity.compliance.ControlImplementation;
 import org.veo.core.entity.compliance.ReqImplRef;
 import org.veo.core.entity.compliance.RequirementImplementation;
@@ -195,6 +197,17 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
       getRisks().forEach(r -> r.removeFromDomains(domain));
     }
     return removed;
+  }
+
+  @Override
+  protected TemplateItemAspects mapAspectsToItem(Domain domain) {
+    return new TemplateItemAspects(null, this.getImpactValues(domain), null);
+  }
+
+  @Override
+  protected void applyItemAspects(TemplateItemAspects itemAspects, Domain domain) {
+    setImpactValues(
+        domain, Optional.ofNullable(itemAspects.impactValues()).orElse(new HashMap<>()));
   }
 
   @Override

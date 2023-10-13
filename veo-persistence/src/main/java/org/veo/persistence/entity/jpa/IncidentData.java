@@ -27,7 +27,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Incident;
+import org.veo.core.entity.TemplateItemAspects;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -51,4 +53,9 @@ public class IncidentData extends ElementData implements Incident {
   @ManyToMany(targetEntity = IncidentData.class, mappedBy = "parts", fetch = FetchType.LAZY)
   @Getter
   private final Set<Incident> composites = new HashSet<>();
+
+  @Override
+  protected void applyItemAspects(TemplateItemAspects itemAspects, Domain domain) {
+    // GNDN
+  }
 }

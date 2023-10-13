@@ -496,6 +496,7 @@ public final class EntityToDtoTransformer {
     mapTemplateItem(source, target);
     target.setId(source.getIdAsString());
     target.setStatus(source.getStatus());
+    target.setAspects(source.getAspects());
     target.setCustomAspects(
         new CustomAspectMapDto(
             source.getCustomAspects().entrySet().stream()

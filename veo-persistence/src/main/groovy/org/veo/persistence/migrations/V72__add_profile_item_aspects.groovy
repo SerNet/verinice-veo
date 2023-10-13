@@ -15,38 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.service.domaintemplate.dto;
+package org.veo.persistence.migrations
 
-import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
-import org.veo.adapter.presenter.api.dto.NameableDto;
-import org.veo.core.entity.TemplateItemAspects;
+import org.flywaydb.core.api.migration.BaseJavaMigration
+import org.flywaydb.core.api.migration.Context
 
-public interface FullTemplateItemDto extends NameableDto {
-  String getId();
+import groovy.sql.Sql
 
-  String getStatus();
+class V72__add_profile_item_aspects extends BaseJavaMigration {
+    @Override
+    void migrate(Context context) throws Exception {
+        new Sql(context.connection).execute("""
+        update catalogitem set aspects = '{}' :: jsonb;
+        alter table catalogitem
+            alter column aspects set not null ,
+            alter column aspects set default '{}' :: jsonb;
 
-  CustomAspectMapDto getCustomAspects();
-
-  String getNamespace();
-
-  void setId(String id);
-
-  void setStatus(String status);
-
-  void setCustomAspects(CustomAspectMapDto customAspects);
-
-  void setNamespace(String namespace);
-
-  String getElementType();
-
-  void setElementType(String elementType);
-
-  String getSubType();
-
-  void setSubType(String subType);
-
-  TemplateItemAspects getAspects();
-
-  void setAspects(TemplateItemAspects aspects);
+        alter table profile_item
+            add aspects jsonb not null default '{}' :: jsonb;
+""")
+    }
 }

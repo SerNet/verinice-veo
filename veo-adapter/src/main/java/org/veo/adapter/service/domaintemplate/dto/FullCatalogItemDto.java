@@ -36,6 +36,7 @@ import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.full.FullTailoringReferenceDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.TemplateItemAspects;
 import org.veo.core.entity.aspects.SubTypeAspect;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -61,6 +62,8 @@ public class FullCatalogItemDto extends AbstractTemplateItemDto
   @Schema(description = "The status for the Element.", example = "NEW")
   @Size(min = 1, max = SubTypeAspect.STATUS_MAX_LENGTH)
   private String status;
+
+  @Valid @NotNull private TemplateItemAspects aspects = new TemplateItemAspects();
 
   @Valid
   @Schema(

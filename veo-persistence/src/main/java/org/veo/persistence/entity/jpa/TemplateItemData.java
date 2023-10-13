@@ -30,6 +30,7 @@ import org.veo.core.entity.Element;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.Nameable;
 import org.veo.core.entity.TemplateItem;
+import org.veo.core.entity.TemplateItemAspects;
 import org.veo.core.entity.Unit;
 import org.veo.persistence.entity.jpa.transformer.IdentifiableDataFactory;
 
@@ -76,6 +77,11 @@ public abstract class TemplateItemData<T extends TemplateItem<T>> extends Identi
   @Type(JsonType.class)
   @Column(columnDefinition = "jsonb")
   private Map<String, Map<String, Object>> customAspects = new HashMap<>();
+
+  @NotNull
+  @Type(JsonType.class)
+  @Column(columnDefinition = "jsonb")
+  private TemplateItemAspects aspects = new TemplateItemAspects();
 
   public void setElementType(String elementType) {
     TemplateItem.checkValidElementType(elementType);

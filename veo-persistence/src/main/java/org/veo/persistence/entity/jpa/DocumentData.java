@@ -29,7 +29,9 @@ import jakarta.persistence.ManyToMany;
 import jakarta.validation.Valid;
 
 import org.veo.core.entity.Document;
+import org.veo.core.entity.Domain;
 import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.TemplateItemAspects;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -59,4 +61,9 @@ public class DocumentData extends ElementData implements Document {
   @ManyToMany(targetEntity = DocumentData.class, mappedBy = "parts", fetch = FetchType.LAZY)
   @Getter
   private final Set<Document> composites = new HashSet<>();
+
+  @Override
+  protected void applyItemAspects(TemplateItemAspects itemAspects, Domain domain) {
+    // GNDN
+  }
 }

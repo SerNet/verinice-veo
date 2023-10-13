@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -35,6 +36,7 @@ import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.create.CreateTailoringReferenceDto;
 import org.veo.adapter.service.domaintemplate.dto.FullTemplateItemDto;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.TemplateItemAspects;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -52,6 +54,8 @@ public class FullProfileItemDto extends AbstractProfileItemDto implements FullTe
       format = "uuid")
   @ToString.Include
   private String id;
+
+  @Valid @NotNull private TemplateItemAspects aspects = new TemplateItemAspects();
 
   @Valid
   @Schema(

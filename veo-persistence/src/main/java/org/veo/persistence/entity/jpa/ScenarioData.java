@@ -17,8 +17,10 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -32,6 +34,7 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scenario;
+import org.veo.core.entity.TemplateItemAspects;
 import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
@@ -54,6 +57,17 @@ public class ScenarioData extends ElementData implements Scenario {
   @Valid
   @Getter
   private final Set<Scenario> parts = new HashSet<>();
+
+  @Override
+  protected void applyItemAspects(TemplateItemAspects itemAspects, Domain domain) {
+    setPotentialProbability(
+        domain, Optional.ofNullable(itemAspects.scenarioRiskValues()).orElse(new HashMap<>()));
+  }
+
+  @Override
+  protected TemplateItemAspects mapAspectsToItem(Domain domain) {
+    return new TemplateItemAspects(null, null, getPotentialProbability(domain));
+  }
 
   @OneToMany(
       cascade = CascadeType.ALL,

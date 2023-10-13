@@ -17,8 +17,10 @@
  ******************************************************************************/
 package org.veo.persistence.entity.jpa;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -33,6 +35,7 @@ import jakarta.validation.Valid;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Identifiable;
+import org.veo.core.entity.TemplateItemAspects;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
@@ -110,5 +113,16 @@ public class ControlData extends ElementData implements Control {
     return findAspectByDomain(riskValuesAspects, domain)
         .map(a -> a.values.remove(riskDefinition) != null)
         .orElse(false);
+  }
+
+  @Override
+  protected void applyItemAspects(TemplateItemAspects itemAspects, Domain domain) {
+    setRiskValues(
+        domain, Optional.ofNullable(itemAspects.controlRiskValues()).orElse(new HashMap<>()));
+  }
+
+  @Override
+  protected TemplateItemAspects mapAspectsToItem(Domain domain) {
+    return new TemplateItemAspects(getRiskValues(domain), null, null);
   }
 }

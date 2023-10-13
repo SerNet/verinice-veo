@@ -53,6 +53,7 @@ import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.TemplateItem;
+import org.veo.core.entity.TemplateItemAspects;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.aspects.Aspect;
 import org.veo.core.entity.aspects.SubTypeAspect;
@@ -294,7 +295,10 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     item.getCustomAspects().entrySet().stream()
         .map(e -> new CustomAspectData(e.getKey(), e.getValue(), domain))
         .forEach(this::applyCustomAspect);
+    applyItemAspects(item.getAspects(), domain);
   }
+
+  protected abstract void applyItemAspects(TemplateItemAspects itemAspects, Domain domain);
 
   @Transient
   @Override
@@ -351,6 +355,11 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     item.setCustomAspects(
         getCustomAspects(domain).stream()
             .collect(Collectors.toMap(ca -> ca.getType(), ca -> ca.getAttributes())));
+    item.setAspects(mapAspectsToItem(domain));
+  }
+
+  protected TemplateItemAspects mapAspectsToItem(Domain domain) {
+    return new TemplateItemAspects();
   }
 
   /**

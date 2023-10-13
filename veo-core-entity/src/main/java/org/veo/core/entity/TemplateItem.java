@@ -57,6 +57,10 @@ public interface TemplateItem<T extends TemplateItem<T>> extends Nameable, Ident
   /** All the tailoring references for this template item. */
   Set<TailoringReference<T>> getTailoringReferences();
 
+  TemplateItemAspects getAspects();
+
+  void setAspects(TemplateItemAspects aspects);
+
   default Class<? extends Element> getElementInterface() {
     return (Class<? extends Element>) EntityType.getBySingularTerm(getElementType()).getType();
   }
