@@ -47,7 +47,8 @@ import lombok.ToString;
 /** Complete catalog item including tailoring references & custom aspects */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class FullCatalogItemDto extends AbstractTemplateItemDto implements IdentifiableDto {
+public class FullCatalogItemDto extends AbstractTemplateItemDto
+    implements IdentifiableDto, FullTemplateItemDto {
 
   @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
   @Schema(
