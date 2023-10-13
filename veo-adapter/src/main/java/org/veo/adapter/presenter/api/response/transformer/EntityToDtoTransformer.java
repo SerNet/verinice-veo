@@ -96,6 +96,7 @@ import org.veo.adapter.service.domaintemplate.dto.ExportLinkProfileTailoringRefe
 import org.veo.adapter.service.domaintemplate.dto.ExportLinkTailoringReference;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileItemDto;
+import org.veo.adapter.service.domaintemplate.dto.FullTemplateItemDto;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
@@ -204,50 +205,26 @@ public final class EntityToDtoTransformer {
 
   public FullProfileItemDto transformProfileItem2Dto(ProfileItem source) {
     FullProfileItemDto target = new FullProfileItemDto();
-    target.setId(source.getId().uuidValue());
-    mapVersionedSelfReferencingProperties(source, target);
-    mapNameableProperties(source, target);
-    target.setElementType(source.getElementType());
-    target.setSubType(source.getSubType());
-    target.setStatus(source.getStatus());
-
-    target.setCustomAspects(
-        new CustomAspectMapDto(
-            source.getCustomAspects().entrySet().stream()
-                .collect(Collectors.toMap(e -> e.getKey(), e -> new AttributesDto(e.getValue())))));
-
-    target.setTailoringReferences(
-        source.getTailoringReferences().stream()
-            .map(this::transformProfileTailoringReference2Dto)
-            .collect(toSet()));
-    // TODO #2301 remove
-    target.setNamespace(source.getNamespace());
-
+    mapFullProfileItem(source, target);
     return target;
   }
 
   private ExportProfileItemDto transformProfileItem2ExportDto(ProfileItem source) {
-    ExportProfileItemDto target = new ExportProfileItemDto();
-    target.setId(source.getId().uuidValue());
+    var target = new ExportProfileItemDto();
+    mapFullProfileItem(source, target);
+    Optional.ofNullable(source.getAppliedCatalogItem())
+        .map(ci -> IdRef.from(ci, referenceAssembler))
+        .ifPresent(target::setAppliedCatalogItem);
+    return target;
+  }
+
+  private void mapFullProfileItem(ProfileItem source, FullProfileItemDto target) {
     mapVersionedSelfReferencingProperties(source, target);
-    mapNameableProperties(source, target);
-    target.setElementType(source.getElementType());
-    target.setSubType(source.getSubType());
-    target.setStatus(source.getStatus());
-
-    target.setCustomAspects(
-        new CustomAspectMapDto(
-            source.getCustomAspects().entrySet().stream()
-                .collect(Collectors.toMap(e -> e.getKey(), e -> new AttributesDto(e.getValue())))));
-
+    mapFullTemplateItem(source, target);
     target.setTailoringReferences(
         source.getTailoringReferences().stream()
             .map(this::transformProfileTailoringReference2Dto)
             .collect(toSet()));
-    // TODO #2301 remove
-    target.setNamespace(source.getNamespace());
-
-    return target;
   }
 
   public AbstractProfileTailoringReferenceDto transformProfileTailoringReference2Dto(
@@ -497,42 +474,46 @@ public final class EntityToDtoTransformer {
 
   public ExportCatalogItemDto transformCatalogItem2Dto(@Valid CatalogItem source) {
     var target = new ExportCatalogItemDto();
-    target.setId(source.getId().uuidValue());
-    mapCatalogItem(source, target);
-    target.setStatus(source.getStatus());
-
-    target.setCustomAspects(
-        new CustomAspectMapDto(
-            source.getCustomAspects().entrySet().stream()
-                .collect(Collectors.toMap(e -> e.getKey(), e -> new AttributesDto(e.getValue())))));
-
+    mapFullTemplateItem(source, target);
     target.setTailoringReferences(
         source.getTailoringReferences().stream()
             .map(this::transformTailoringReference2Dto)
             .collect(toSet()));
     // TODO #2301 remove
-    target.setNamespace(source.getNamespace());
     return target;
   }
 
   public ShortCatalogItemDto transformShortCatalogItem2Dto(@Valid CatalogItem source) {
     var target = new ShortCatalogItemDto();
     target.setId(source.getId().uuidValue());
-    mapCatalogItem(source, target);
-    mapVersionedSelfReferencingProperties(source, target);
+    mapTemplateItem(source, target);
     return target;
   }
 
   public ShortProfileItemDto transformShortProfileItem2Dto(@Valid ProfileItem source) {
     var target = new ShortProfileItemDto();
     target.setId(source.getId().uuidValue());
-    mapCatalogItem(source, target);
     target.setStatus(source.getStatus());
-    mapVersionedSelfReferencingProperties(source, target);
+    mapTemplateItem(source, target);
     return target;
   }
 
-  private void mapCatalogItem(TemplateItem source, AbstractTemplateItemDto target) {
+  private <T extends AbstractTemplateItemDto & FullTemplateItemDto> void mapFullTemplateItem(
+      TemplateItem<?> source, T target) {
+    mapTemplateItem(source, target);
+    target.setId(source.getIdAsString());
+    target.setStatus(source.getStatus());
+    target.setCustomAspects(
+        new CustomAspectMapDto(
+            source.getCustomAspects().entrySet().stream()
+                .collect(
+                    Collectors.toMap(Map.Entry::getKey, e -> new AttributesDto(e.getValue())))));
+    // TODO #2301 remove
+    target.setNamespace(source.getNamespace());
+  }
+
+  private void mapTemplateItem(TemplateItem<?> source, AbstractTemplateItemDto target) {
+    mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);
     target.setElementType(source.getElementType());
     target.setSubType(source.getSubType());

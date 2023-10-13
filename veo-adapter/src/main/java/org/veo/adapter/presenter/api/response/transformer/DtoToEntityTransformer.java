@@ -46,6 +46,7 @@ import org.veo.adapter.service.domaintemplate.dto.ExportCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportLinkProfileTailoringReference;
 import org.veo.adapter.service.domaintemplate.dto.ExportLinkTailoringReference;
+import org.veo.adapter.service.domaintemplate.dto.FullTemplateItemDto;
 import org.veo.core.entity.AbstractRisk;
 import org.veo.core.entity.AssetRisk;
 import org.veo.core.entity.CatalogItem;
@@ -62,6 +63,7 @@ import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.RiskAffected;
 import org.veo.core.entity.ScopeRisk;
 import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.definitions.ElementTypeDefinition;
 import org.veo.core.entity.transform.EntityFactory;
@@ -285,49 +287,35 @@ public final class DtoToEntityTransformer {
   public CatalogItem transformDto2CatalogItem(
       ExportCatalogItemDto source, IdRefResolver idRefResolver) {
     var target = createIdentifiable(CatalogItem.class, source);
-    target.setAbbreviation(source.getAbbreviation());
-    target.setName(source.getName());
-    target.setDescription(source.getDescription());
-    target.setElementType(source.getElementType());
-    target.setStatus(source.getStatus());
-    target.setSubType(source.getSubType());
-
-    target.setCustomAspects(
-        source.getCustomAspects().getValue().entrySet().stream()
-            .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().getValue())));
-
+    mapTemplateItem(source, target);
     target.setTailoringReferences(
         convertSet(
             source.getTailoringReferences(),
             tr -> transformDto2TailoringReference(tr, target, idRefResolver)));
-
-    // TODO #2301 remove
-    target.setNamespace(source.getNamespace());
     return target;
   }
 
   public ProfileItem transformDto2ProfileItem(
       FullProfileItemDto source, IdRefResolver idRefResolver) {
     var target = createIdentifiable(ProfileItem.class, source);
-    target.setAbbreviation(source.getAbbreviation());
-    target.setName(source.getName());
-    target.setDescription(source.getDescription());
-    target.setElementType(source.getElementType());
-    target.setStatus(source.getStatus());
-    target.setSubType(source.getSubType());
-
-    target.setCustomAspects(
-        source.getCustomAspects().getValue().entrySet().stream()
-            .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().getValue())));
-
+    mapTemplateItem(source, target);
     target.setTailoringReferences(
         convertSet(
             source.getTailoringReferences(),
             tr -> transformDto2ProfileTailoringReference(tr, target, idRefResolver)));
+    return target;
+  }
 
+  private void mapTemplateItem(FullTemplateItemDto source, TemplateItem<?> target) {
+    mapNameableProperties(source, target);
+    target.setElementType(source.getElementType());
+    target.setStatus(source.getStatus());
+    target.setSubType(source.getSubType());
+    target.setCustomAspects(
+        source.getCustomAspects().getValue().entrySet().stream()
+            .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().getValue())));
     // TODO #2301 remove
     target.setNamespace(source.getNamespace());
-    return target;
   }
 
   private <T extends Identifiable> T createIdentifiable(Class<T> type, Object source) {
