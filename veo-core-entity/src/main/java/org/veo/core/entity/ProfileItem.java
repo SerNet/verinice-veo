@@ -22,7 +22,7 @@ import java.util.Set;
 
 import org.veo.core.entity.exception.UnprocessableDataException;
 
-public interface ProfileItem extends TemplateItem<ProfileItem>, ClientOwned, Versioned {
+public interface ProfileItem extends TemplateItem<ProfileItem>, ClientOwned {
   String SINGULAR_TERM = "profile-item";
   String PLURAL_TERM = "profile-items";
 

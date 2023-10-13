@@ -33,8 +33,7 @@ import org.veo.core.entity.exception.UnprocessableDataException;
  * Usecase 1 is defined by the element and a set of TailoringReferences. Usecase 2 is defined by a
  * set of UpdateReferences.
  */
-public interface CatalogItem
-    extends Identifiable, Displayable, ClientOwned, Versioned, TemplateItem<CatalogItem> {
+public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem> {
 
   String SINGULAR_TERM = "catalogitem";
   String PLURAL_TERM = "catalogitems";

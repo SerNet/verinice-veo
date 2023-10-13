@@ -25,7 +25,7 @@ import jakarta.validation.constraints.NotNull;
 
 import org.veo.core.entity.exception.UnprocessableDataException;
 
-public interface TemplateItem<T extends TemplateItem<T>> extends Nameable, Identifiable {
+public interface TemplateItem<T extends TemplateItem<T>> extends Nameable, Identifiable, Versioned {
 
   @Deprecated // TODO #2301 remove
   String getNamespace();
