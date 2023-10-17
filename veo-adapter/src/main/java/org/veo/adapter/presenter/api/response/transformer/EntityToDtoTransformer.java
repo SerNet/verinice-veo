@@ -427,9 +427,6 @@ public final class EntityToDtoTransformer {
   public ExportDomainTemplateDto transformDomainTemplate2Dto(@Valid DomainBase source) {
     var target = new ExportDomainTemplateDto();
     mapDomain(source, target);
-
-    target.setProfilesNew(convertSet(source.getProfiles(), this::transformProfile2ExportDto));
-
     return target;
   }
 
@@ -437,9 +434,6 @@ public final class EntityToDtoTransformer {
     var target = new ExportDomainDto();
     mapDomain(source, target);
     target.setDomainTemplate(IdRef.from(source.getDomainTemplate(), referenceAssembler));
-
-    target.setProfilesNew(convertSet(source.getProfiles(), this::transformProfile2ExportDto));
-
     return target;
   }
 
@@ -449,6 +443,7 @@ public final class EntityToDtoTransformer {
     target.setAuthority(source.getAuthority());
     target.setTemplateVersion(source.getTemplateVersion());
     target.setJsonProfiles(Map.copyOf(source.getJsonProfiles()));
+    target.setProfilesNew(convertSet(source.getProfiles(), this::transformProfile2ExportDto));
 
     mapVersionedSelfReferencingProperties(source, target);
     mapNameableProperties(source, target);
