@@ -196,6 +196,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     if (Profile.class.isAssignableFrom(type)) {
       Profile profile = (Profile) identifiable;
       return linkTo(
+              // TODO #2497 introduce endpoint for  profiles in domain templates
               methodOn(DomainController.class)
                   .getProfile(ANY_AUTH, profile.getOwner().getIdAsString(), id, ANY_REQUEST))
           .withRel(DomainController.URL_BASE_PATH)
@@ -208,7 +209,8 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
               methodOn(DomainController.class)
                   .getProfileItem(
                       ANY_AUTH,
-                      profileItem.requireDomainMembership().getIdAsString(),
+                      // TODO #2497 introduce endpoint for  profile items in domain templates
+                      profileItem.getDomainBase().getIdAsString(),
                       profileItem.getOwner().getIdAsString(),
                       id,
                       ANY_REQUEST))
