@@ -419,8 +419,6 @@ public final class EntityToDtoTransformer {
     mapNameableProperties(source, target);
     target.setRiskDefinitions(Map.copyOf(source.getRiskDefinitions()));
 
-    target.setProfilesNew(convertSet(source.getProfiles(), this::transformProfile2Dto));
-
     return target;
   }
 

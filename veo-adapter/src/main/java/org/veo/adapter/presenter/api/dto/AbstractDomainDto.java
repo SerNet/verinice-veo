@@ -21,19 +21,13 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
-import javax.annotation.Nullable;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.veo.adapter.presenter.api.common.IdRef;
-import org.veo.adapter.presenter.api.dto.full.FullProfileDto;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Identifiable;
@@ -42,7 +36,6 @@ import org.veo.core.entity.profile.ProfileDefinition;
 import org.veo.core.entity.riskdefinition.RiskDefinition;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -97,14 +90,6 @@ public abstract class AbstractDomainDto extends AbstractVersionedSelfReferencing
   @JsonProperty("profiles")
   @Deprecated
   private Map<String, ProfileDefinition> jsonProfiles = new HashMap<>();
-
-  @Schema(
-      description = "The profiles that belong to this domain template.",
-      requiredMode = RequiredMode.NOT_REQUIRED)
-  @Nullable
-  @JsonInclude(Include.NON_NULL)
-  @JsonProperty("profiles_v2")
-  private Set<FullProfileDto> profilesNew;
 
   @Valid
   @Schema(
