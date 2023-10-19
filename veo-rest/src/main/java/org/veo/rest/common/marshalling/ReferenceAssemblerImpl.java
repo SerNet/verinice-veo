@@ -109,6 +109,7 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
       "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
 
   private static final Pattern UUID_PATTERN = Pattern.compile(UUID_REGEX);
+  private static final Pattern LAST_UUID_PATTERN = Pattern.compile(".+/(" + UUID_REGEX + ")");
   private static final Pattern ELEMENT_IN_DOMAIN_URI_PATTERN =
       Pattern.compile("/" + Domain.PLURAL_TERM + "/" + UUID_REGEX + "/(.+)/(" + UUID_REGEX + ")");
 
@@ -700,16 +701,12 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
     if (pathComponent == null) {
       throw invalidReference(uriString);
     }
-    Matcher matcher = UUID_PATTERN.matcher(pathComponent);
+    Matcher matcher = LAST_UUID_PATTERN.matcher(pathComponent);
     if (!matcher.find()) {
       throw invalidReference(uriString);
     }
-    String result = matcher.group(0);
-    if (matcher.find()) {
-      // TODO: VEO-585: probably throw an exception
-      result = matcher.group(0);
-    }
-    return result;
+    return matcher.group(1);
+    // TODO: VEO-585: handle compound IDs
   }
 
   @Override

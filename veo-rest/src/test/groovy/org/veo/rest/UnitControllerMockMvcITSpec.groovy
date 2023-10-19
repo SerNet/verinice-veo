@@ -712,7 +712,7 @@ class UnitControllerMockMvcITSpec extends VeoMvcSpec {
         Map request = [
             name: 'New unit',
             domains: [
-                [targetUri:"/domains/${otherClientsDomain.id}"]
+                [targetUri:"/domains/${otherClientsDomain.idAsString}"]
             ]
         ]
 

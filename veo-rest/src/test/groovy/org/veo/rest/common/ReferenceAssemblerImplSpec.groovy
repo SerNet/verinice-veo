@@ -72,6 +72,7 @@ class ReferenceAssemblerImplSpec extends Specification {
         'http://localhost:9000/domains/28df429d-da5e-431a-a2d8-488c0741fb9f'                                             | '28df429d-da5e-431a-a2d8-488c0741fb9f'
         'http://localhost:9000/catalogs/37dccbdc-7d58-4929-9d96-df8c533ea5a5/items/47799d6d-7887-48d5-9cd2-1af23e0b467a' | '47799d6d-7887-48d5-9cd2-1af23e0b467a'
         'http://veo-4c053c73-5242-4c79-9222-09609911b1f5:8070/veo/catalogs/ec2f0c9b-4a2b-429d-95af-83f107f07946/items/7688ddc3-6914-4899-a96a-067cc74cded1' | '7688ddc3-6914-4899-a96a-067cc74cded1'
+        'http://veo-4c053c73-5242-4c79-9222-09609911b1f5:8070/veo/domains/753dcdd6-597a-4f6d-9096-6e3b2cf8059e/profiles/065e7d6c-0dff-4b1f-9244-90a0c745d7f1/items/3dcf5383-60ed-4c7f-bfbf-f34c12fdf8b9' | '3dcf5383-60ed-4c7f-bfbf-f34c12fdf8b9'
     }
 
     def "parsed type for #url is #type"() {
