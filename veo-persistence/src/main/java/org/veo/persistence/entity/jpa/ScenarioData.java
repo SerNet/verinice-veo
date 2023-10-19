@@ -71,6 +71,10 @@ public class ScenarioData extends ElementData implements Scenario {
 
   public void setPotentialProbability(
       Domain domain, Map<RiskDefinitionRef, PotentialProbabilityImpl> potentialProbability) {
+    if (potentialProbability.isEmpty()) {
+      removeAspectByDomain(riskValuesAspects, domain);
+      return;
+    }
     var aspect =
         findAspectByDomain(this.riskValuesAspects, domain)
             .orElseGet(

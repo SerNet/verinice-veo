@@ -78,6 +78,10 @@ public class ControlData extends ElementData implements Control {
 
   @Override
   public void setRiskValues(Domain domain, Map<RiskDefinitionRef, ControlRiskValues> riskValues) {
+    if (riskValues.isEmpty()) {
+      removeAspectByDomain(riskValuesAspects, domain);
+      return;
+    }
     var aspect =
         findAspectByDomain(riskValuesAspects, domain)
             .orElseGet(

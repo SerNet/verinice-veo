@@ -191,6 +191,10 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     addToLinks(customLink);
   }
 
+  protected void removeAspectByDomain(Set<? extends AspectData> aspects, Domain domain) {
+    aspects.removeIf(a -> a.getDomain().equals(domain));
+  }
+
   @Override
   public void transferToDomain(Domain oldDomain, Domain newDomain) {
     requireAssociationWithDomain(oldDomain);

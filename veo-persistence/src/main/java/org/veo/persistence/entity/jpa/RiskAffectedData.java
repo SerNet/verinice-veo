@@ -91,6 +91,10 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
 
   @Override
   public void setImpactValues(Domain domain, Map<RiskDefinitionRef, ImpactValues> riskValues) {
+    if (riskValues.isEmpty()) {
+      removeAspectByDomain(riskValuesAspects, domain);
+      return;
+    }
     var aspect =
         findAspectByDomain(riskValuesAspects, domain)
             .orElseGet(

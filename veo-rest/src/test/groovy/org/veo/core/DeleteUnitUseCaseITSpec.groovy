@@ -74,7 +74,7 @@ class DeleteUnitUseCaseITSpec extends AbstractPerformanceITSpec {
             queryCounts.select == 32
             queryCounts.insert == 2
             queryCounts.update == 1
-            queryCounts.delete == 43
+            queryCounts.delete == 42
             queryCounts.time < 1000
             // 115 is the currently observed count of 105 rows plus an acceptable safety margin
             DataSourceProxyBeanPostProcessor.totalResultSetRowsRead - rowCountBefore <= 115
