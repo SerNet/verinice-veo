@@ -189,15 +189,13 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
               var riskAspect = new RiskValuesAspectData(domain, this, riskDefinitionRef);
               getScenario()
                   .getPotentialProbability(domain, riskDefinitionRef)
-                  .map(PotentialProbability::getPotentialProbability)
+                  .map(PotentialProbability::potentialProbability)
                   .ifPresent(riskAspect::setPotentialProbability);
               getEntity()
                   .getImpactValues(domain, riskDefinitionRef)
                   .ifPresent(
                       impactValues ->
-                          impactValues
-                              .getPotentialImpacts()
-                              .forEach(riskAspect::setPotentialImpact));
+                          impactValues.potentialImpacts().forEach(riskAspect::setPotentialImpact));
               riskAspects.add(riskAspect);
               return riskAspect;
             });

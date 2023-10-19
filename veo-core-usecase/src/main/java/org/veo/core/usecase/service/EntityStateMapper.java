@@ -314,15 +314,11 @@ public class EntityStateMapper {
       String riskDefinitionId,
       ScenarioRiskValues riskValuesDto,
       DomainRiskReferenceProvider referenceProvider) {
-    var riskValues = new PotentialProbability();
-
-    riskValues.setPotentialProbability(
+    return new PotentialProbability(
         Optional.ofNullable(riskValuesDto.getPotentialProbability())
             .map(pp -> referenceProvider.getProbabilityRef(riskDefinitionId, pp))
-            .orElse(null));
-    riskValues.setPotentialProbabilityExplanation(
+            .orElse(null),
         riskValuesDto.getPotentialProbabilityExplanation());
-    return riskValues;
   }
 
   private Map<RiskDefinitionRef, ControlRiskValues> mapRiskValues(
@@ -340,12 +336,10 @@ public class EntityStateMapper {
       String riskDefinitionId,
       ControlRiskValuesState riskValuesState,
       DomainRiskReferenceProvider referenceProvider) {
-    var riskValues = new ControlRiskValues();
-    riskValues.setImplementationStatus(
+    return new ControlRiskValues(
         Optional.ofNullable(riskValuesState.getImplementationStatus())
             .map(status -> referenceProvider.getImplementationStatus(riskDefinitionId, status))
             .orElse(null));
-    return riskValues;
   }
 
   private void mapToEntity(
@@ -396,15 +390,11 @@ public class EntityStateMapper {
       String riskDefinitionId,
       RiskImpactValues value,
       DomainRiskReferenceProvider referenceProvider) {
-    var riskValues = new ImpactValues();
-
-    Map<CategoryRef, ImpactRef> potentialImpacts =
+    return new ImpactValues(
         value.getPotentialImpacts().entrySet().stream()
             .collect(
                 Collectors.toMap(
-                    e -> toCategoryRef(riskDefinitionId, referenceProvider, e), Entry::getValue));
-    riskValues.setPotentialImpacts(potentialImpacts);
-    return riskValues;
+                    e -> toCategoryRef(riskDefinitionId, referenceProvider, e), Entry::getValue)));
   }
 
   private CategoryRef toCategoryRef(

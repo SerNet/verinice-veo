@@ -78,7 +78,7 @@ class ImpactValuesAspectData extends AspectData {
               RiskDefinition riskDefinition =
                   this.getDomain().getRiskDefinitions().get(e.getKey().getIdRef());
               ImpactValues impactValues = e.getValue();
-              impactValues.getPotentialImpacts().entrySet().stream()
+              impactValues.potentialImpacts().entrySet().stream()
                   .forEach(
                       impacts -> {
                         CategoryDefinition categoryDefinition =
@@ -109,7 +109,7 @@ class ImpactValuesAspectData extends AspectData {
                       .map(DimensionDefinition::getId)
                       .collect(Collectors.toSet());
               Set<String> usedCatIds =
-                  e.getValue().getPotentialImpacts().keySet().stream()
+                  e.getValue().potentialImpacts().keySet().stream()
                       .map(CategoryRef::getIdRef)
                       .collect(Collectors.toSet());
 

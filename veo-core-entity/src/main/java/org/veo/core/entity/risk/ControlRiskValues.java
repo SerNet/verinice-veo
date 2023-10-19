@@ -17,18 +17,10 @@
  ******************************************************************************/
 package org.veo.core.entity.risk;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 /**
  * Holds risk related info for a control. A {@link ControlRiskValues} object is only valid for a
  * certain risk definition.
+ *
+ * @param implementationStatus TODO VEO-2334 move to controlImplementation
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class ControlRiskValues {
-  @Deprecated // TODO VEO-2334 move to controlImplementation
-  private ImplementationStatusRef implementationStatus;
-}
+public record ControlRiskValues(@Deprecated ImplementationStatusRef implementationStatus) {}

@@ -21,26 +21,16 @@ import jakarta.validation.constraints.Size;
 
 import org.veo.core.entity.Constraints;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 /**
  * This class contains a reference to a potential probability. The referenced probability must be
  * defined in a risk definition.
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class PotentialProbability {
+public record PotentialProbability(
+    ProbabilityRef potentialProbability,
+    @Size(max = EXPLANATION_MAX_LENGTH) String potentialProbabilityExplanation) {
   public static final int EXPLANATION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
 
   public PotentialProbability(ProbabilityRef potentialProbability) {
-    this.potentialProbability = potentialProbability;
+    this(potentialProbability, null);
   }
-
-  private ProbabilityRef potentialProbability;
-
-  @Size(max = EXPLANATION_MAX_LENGTH)
-  private String potentialProbabilityExplanation;
 }

@@ -197,7 +197,7 @@ public class RiskService {
     ProbabilityRef newProbability =
         scenario
             .getPotentialProbability(domain, rdr)
-            .map(PotentialProbability::getPotentialProbability)
+            .map(PotentialProbability::potentialProbability)
             .orElse(null);
     if (!Objects.equals(newProbability, riskValueProbability.getPotentialProbability())) {
       riskEvent.addChange(PROBABILITY_VALUES_CHANGED);
@@ -282,7 +282,7 @@ public class RiskService {
     ImpactRef newImpact =
         process
             .getImpactValues(domain, riskDefinitionRef)
-            .map(ImpactValues::getPotentialImpacts)
+            .map(ImpactValues::potentialImpacts)
             .map(it -> it.get(categoryRef))
             .orElse(null);
     if (!Objects.equals(newImpact, riskValueImpact.getPotentialImpact(categoryRef))) {

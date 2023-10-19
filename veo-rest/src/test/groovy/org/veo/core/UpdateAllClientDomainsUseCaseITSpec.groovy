@@ -190,10 +190,9 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         RiskDefinitionRef riskDefinitionRef = new RiskDefinitionRef("xyz")
         DomainRiskReferenceProvider riskreferenceProvider = DomainRiskReferenceProvider.referencesForDomain(dsgvoDomain)
 
-        ImpactValues scopeImpactValues = new ImpactValues()
         def categoryref = riskreferenceProvider.getCategoryRef(riskDefinitionRef.getIdRef(), "C")
         def impactValue = riskreferenceProvider.getImpactRef(riskDefinitionRef.getIdRef(), categoryref.getIdRef(), new BigDecimal("2"))
-        scopeImpactValues.potentialImpacts = [(categoryref) : impactValue]
+        ImpactValues scopeImpactValues = new ImpactValues([(categoryref) : impactValue])
         Map impactValues = [
             (riskDefinitionRef) : scopeImpactValues
         ]
@@ -285,10 +284,9 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         RiskDefinitionRef riskDefinitionRef = new RiskDefinitionRef("xyz")
         DomainRiskReferenceProvider riskreferenceProvider = DomainRiskReferenceProvider.referencesForDomain(dsgvoDomain)
 
-        ImpactValues assetImpactValues = new ImpactValues()
         def categoryref = riskreferenceProvider.getCategoryRef(riskDefinitionRef.getIdRef(), "C")
         def impactValue = riskreferenceProvider.getImpactRef(riskDefinitionRef.getIdRef(), categoryref.getIdRef(), new BigDecimal("2"))
-        assetImpactValues.potentialImpacts = [(categoryref) : impactValue]
+        ImpactValues assetImpactValues = new ImpactValues([(categoryref) : impactValue])
         Map impactValues = [
             (riskDefinitionRef) : assetImpactValues
         ]
@@ -331,10 +329,9 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         RiskDefinitionRef riskDefinitionRef = new RiskDefinitionRef("xyz")
         DomainRiskReferenceProvider riskreferenceProvider = DomainRiskReferenceProvider.referencesForDomain(dsgvoDomain)
 
-        ImpactValues processImpactValues = new ImpactValues()
         def categoryref = riskreferenceProvider.getCategoryRef(riskDefinitionRef.getIdRef(), "C")
         def impactValue = riskreferenceProvider.getImpactRef(riskDefinitionRef.getIdRef(), categoryref.getIdRef(), new BigDecimal("2"))
-        processImpactValues.potentialImpacts = [(categoryref) : impactValue]
+        ImpactValues processImpactValues = new ImpactValues([(categoryref) : impactValue])
         Map impactValues = [
             (riskDefinitionRef) : processImpactValues
         ]

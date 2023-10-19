@@ -98,10 +98,9 @@ class ScopeRiskValuesMockMvcITSpec extends VeoMvcSpec {
         RiskDefinitionRef riskDefinitionRef = new RiskDefinitionRef("r1d1")
         DomainRiskReferenceProvider riskreferenceProvider = DomainRiskReferenceProvider.referencesForDomain(domain)
 
-        ImpactValues scopeImpactValues = new ImpactValues()
         def categoryref = riskreferenceProvider.getCategoryRef(riskDefinitionRef.getIdRef(), "A")
         def impactValue = riskreferenceProvider.getImpactRef(riskDefinitionRef.getIdRef(), categoryref.getIdRef(), new BigDecimal("2"))
-        scopeImpactValues.potentialImpacts = [(categoryref) : impactValue]
+        ImpactValues scopeImpactValues = new ImpactValues([(categoryref) : impactValue])
         Map impactValues = [
             (riskDefinitionRef) : scopeImpactValues
         ]

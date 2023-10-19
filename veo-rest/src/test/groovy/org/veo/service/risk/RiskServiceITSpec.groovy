@@ -89,17 +89,15 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
         def riskDefinitionRef = RiskDefinitionRef.from(riskDefinition)
 
         def unit = unitDataRepository.save(newUnit(client))
-        ImpactValues processImpactValues = new ImpactValues()
         def lowConfidentialityImpact = confidentiality.getLevel(0).orElseThrow()
         def limitedAvailabilityImpact = availability.getLevel(2).orElseThrow()
         def highAvailabilityImpact = availability.getLevel(3).orElseThrow()
         def probabilityRare = ProbabilityRef.from(riskDefinition.getProbability().getLevel(0).orElseThrow())
         def probabilityOften = ProbabilityRef.from(riskDefinition.getProbability().getLevel(2).orElseThrow())
-
-        processImpactValues.potentialImpacts = [
+        ImpactValues processImpactValues = new ImpactValues([
             (confidentialityRef) : ImpactRef.from(lowConfidentialityImpact),
             (availabilityRef): ImpactRef.from(limitedAvailabilityImpact)
-        ]
+        ])
         Map impactValues = [
             (riskDefinitionRef) : processImpactValues
         ]
@@ -110,9 +108,9 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
 
         Scenario scenario = scenarioDataRepository.save(newScenario(unit) {
             associateWithDomain(domain, "NormalScenario", "NEW")
-            setPotentialProbability(domain, [(riskDefinitionRef): new PotentialProbability().tap {
-                    potentialProbability = probabilityRare
-                }])
+            setPotentialProbability(domain, [
+                (riskDefinitionRef): new PotentialProbability(probabilityRare)
+            ])
         })
         ProcessRisk risk = process.obtainRisk(scenario, domain).tap {
             assignDesignator(it)
@@ -200,7 +198,9 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
         listener.receivedEvents.clear()
         executeInTransaction {
             scenario = scenarioDataRepository.findById(scenario.idAsString).get().tap {
-                riskValuesAspects.first().potentialProbability[riskDefinitionRef].potentialProbability = probabilityOften
+                setPotentialProbability(domain, [
+                    (riskDefinitionRef): new PotentialProbability(probabilityOften)
+                ])
             }
             process = processDataRepository.findById(process.idAsString).get()
             QueryCountHolder.clear()

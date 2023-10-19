@@ -96,7 +96,7 @@ public class DomainAssociationTransformer {
       Map.Entry<RiskDefinitionRef, ControlRiskValues> entry) {
     var riskValuesDto = new ControlRiskValuesDto();
     riskValuesDto.setImplementationStatus(
-        Optional.ofNullable(entry.getValue().getImplementationStatus())
+        Optional.ofNullable(entry.getValue().implementationStatus())
             .map(ImplementationStatusRef::getOrdinalValue)
             .orElse(null));
     return riskValuesDto;
@@ -106,7 +106,7 @@ public class DomainAssociationTransformer {
       Map.Entry<RiskDefinitionRef, ImpactValues> entry) {
     var riskValuesDto = new ImpactRiskValuesDto();
     riskValuesDto.setPotentialImpacts(
-        entry.getValue().getPotentialImpacts().entrySet().stream()
+        entry.getValue().potentialImpacts().entrySet().stream()
             .collect(Collectors.toMap(e -> e.getKey().getIdRef(), Entry::getValue)));
     return riskValuesDto;
   }
@@ -169,11 +169,11 @@ public class DomainAssociationTransformer {
       Map.Entry<RiskDefinitionRef, PotentialProbability> entry) {
     var riskValuesDto = new ScenarioRiskValuesDto();
     riskValuesDto.setPotentialProbability(
-        Optional.ofNullable(entry.getValue().getPotentialProbability())
+        Optional.ofNullable(entry.getValue().potentialProbability())
             .map(ProbabilityRef::getIdRef)
             .orElse(null));
     riskValuesDto.setPotentialProbabilityExplanation(
-        entry.getValue().getPotentialProbabilityExplanation());
+        entry.getValue().potentialProbabilityExplanation());
     return riskValuesDto;
   }
 

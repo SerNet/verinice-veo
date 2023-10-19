@@ -19,17 +19,14 @@ package org.veo.core.entity.risk;
 
 import java.util.Map;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Holds risk related info for an element. A {@link ImpactValues} object is only valid for a certain
  * risk definition.
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class ImpactValues {
-  private Map<CategoryRef, ImpactRef> potentialImpacts;
+public record ImpactValues(@NotNull Map<CategoryRef, ImpactRef> potentialImpacts) {
+  public ImpactValues {
+    potentialImpacts = Map.copyOf(potentialImpacts);
+  }
 }
