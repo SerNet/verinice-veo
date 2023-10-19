@@ -102,14 +102,15 @@ public abstract class RiskAffectedData<T extends RiskAffected<T, R>, R extends A
     aspect.setValues(riskValues);
   }
 
-  public Optional<Map<RiskDefinitionRef, ImpactValues>> getImpactValues(Domain domain) {
-    return findAspectByDomain(riskValuesAspects, domain).map(ImpactValuesAspectData::getValues);
+  public Map<RiskDefinitionRef, ImpactValues> getImpactValues(Domain domain) {
+    return findAspectByDomain(riskValuesAspects, domain)
+        .map(ImpactValuesAspectData::getValues)
+        .orElse(Map.of());
   }
 
   @Override
   public Optional<ImpactValues> getImpactValues(Domain domain, RiskDefinitionRef riskDefinition) {
-    return getImpactValues(domain)
-        .map(impactValuesByRiskDefinition -> impactValuesByRiskDefinition.get(riskDefinition));
+    return Optional.ofNullable(getImpactValues(domain).get(riskDefinition));
   }
 
   @OneToMany(

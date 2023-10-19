@@ -19,7 +19,6 @@ package org.veo.persistence.entity.jpa;
 
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -90,10 +89,10 @@ public class ScenarioData extends ElementData implements Scenario {
         .orElse(false);
   }
 
-  public Optional<Map<RiskDefinitionRef, PotentialProbabilityImpl>> getPotentialProbability(
-      Domain domain) {
+  public Map<RiskDefinitionRef, PotentialProbabilityImpl> getPotentialProbability(Domain domain) {
     return findAspectByDomain(riskValuesAspects, domain)
-        .map(ScenarioRiskValuesAspectData::getPotentialProbability);
+        .map(ScenarioRiskValuesAspectData::getPotentialProbability)
+        .orElse(Map.of());
   }
 
   @Override

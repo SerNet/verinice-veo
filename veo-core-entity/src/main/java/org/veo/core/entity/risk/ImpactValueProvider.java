@@ -24,7 +24,7 @@ import org.veo.core.entity.Domain;
 
 public interface ImpactValueProvider {
 
-  Optional<Map<RiskDefinitionRef, ImpactValues>> getImpactValues(Domain domain);
+  Map<RiskDefinitionRef, ImpactValues> getImpactValues(Domain domain);
 
   Optional<ImpactValues> getImpactValues(Domain domain, RiskDefinitionRef riskDefinition);
 

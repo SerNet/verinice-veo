@@ -18,7 +18,6 @@
 package org.veo.core.entity;
 
 import java.util.Map;
-import java.util.Optional;
 
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -40,7 +39,7 @@ public interface Control extends CompositeElement<Control>, RiskRelated {
     return TYPE_DESIGNATOR;
   }
 
-  Optional<Map<RiskDefinitionRef, ControlRiskValues>> getRiskValues(Domain domain);
+  Map<RiskDefinitionRef, ControlRiskValues> getRiskValues(Domain domain);
 
   void setRiskValues(Domain domain, Map<RiskDefinitionRef, ControlRiskValues> riskValues);
 }

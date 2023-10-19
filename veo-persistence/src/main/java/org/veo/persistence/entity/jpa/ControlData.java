@@ -19,7 +19,6 @@ package org.veo.persistence.entity.jpa;
 
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -90,9 +89,10 @@ public class ControlData extends ElementData implements Control {
     aspect.setValues(riskValues);
   }
 
-  public Optional<Map<RiskDefinitionRef, ControlRiskValues>> getRiskValues(Domain domain) {
+  public Map<RiskDefinitionRef, ControlRiskValues> getRiskValues(Domain domain) {
     return findAspectByDomain(riskValuesAspects, domain)
-        .map(ControlRiskValuesAspectData::getValues);
+        .map(ControlRiskValuesAspectData::getValues)
+        .orElse(Map.of());
   }
 
   @Override

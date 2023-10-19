@@ -48,12 +48,11 @@ public interface Scenario extends Element, CompositeElement<Scenario>, RiskRelat
     return TYPE_DESIGNATOR;
   }
 
-  Optional<Map<RiskDefinitionRef, PotentialProbabilityImpl>> getPotentialProbability(Domain domain);
+  Map<RiskDefinitionRef, PotentialProbabilityImpl> getPotentialProbability(Domain domain);
 
   default Optional<PotentialProbabilityImpl> getPotentialProbability(
       Domain domain, RiskDefinitionRef riskDefinition) {
-    return getPotentialProbability(domain)
-        .map(probabilityByRiskDefinition -> probabilityByRiskDefinition.get((riskDefinition)));
+    return Optional.ofNullable(getPotentialProbability(domain).get((riskDefinition)));
   }
 
   void setPotentialProbability(
