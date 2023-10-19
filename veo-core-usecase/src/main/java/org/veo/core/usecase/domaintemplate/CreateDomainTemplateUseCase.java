@@ -28,7 +28,7 @@ import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.service.DomainTemplateIdGenerator;
 import org.veo.core.usecase.TransactionalUseCase;
 import org.veo.core.usecase.UseCase;
-import org.veo.core.usecase.base.CatalogItemValidator;
+import org.veo.core.usecase.base.TemplateItemValidator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -56,7 +56,7 @@ public class CreateDomainTemplateUseCase
       throw new EntityAlreadyExistsException(domainTemplate);
     }
 
-    domainTemplate.getCatalogItems().forEach(CatalogItemValidator::validate);
+    domainTemplate.getCatalogItems().forEach(TemplateItemValidator::validate);
 
     domainTemplate = domainTemplateRepository.save(domainTemplate);
 

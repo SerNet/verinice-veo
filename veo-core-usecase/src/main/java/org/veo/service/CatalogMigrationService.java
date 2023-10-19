@@ -25,7 +25,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.EntityType;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.repository.CatalogItemRepository;
-import org.veo.core.usecase.base.CatalogItemValidator;
+import org.veo.core.usecase.base.TemplateItemValidator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +65,7 @@ public class CatalogMigrationService {
                               linkTailoringReference.getAttributes(),
                               linkDef.getAttributeDefinitions());
                           try {
-                            CatalogItemValidator.validate(linkTailoringReference, domain);
+                            TemplateItemValidator.validate(linkTailoringReference, domain);
                           } catch (IllegalArgumentException illEx) {
                             log.info("Tailoring reference validation failed", illEx);
                             log.info(

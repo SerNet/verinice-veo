@@ -19,34 +19,33 @@ package org.veo.core.usecase.base;
 
 import java.util.Map;
 
-import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.DomainBase;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.TailoringReference;
+import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.definitions.LinkDefinition;
 
-/** Validates catalog items according to the domain's element type definitions. */
-public class CatalogItemValidator {
-
-  public static void validate(CatalogItem item) {
-    DomainBase domain = item.getDomainBase();
+/** Validates template items according to the domain's element type definitions. */
+public class TemplateItemValidator {
+  public static <T extends TemplateItem<T>> void validate(T item) {
+    var domain = item.getDomainBase();
     SubTypeValidator.validate(domain, item.getSubType(), item.getStatus(), item.getElementType());
-    item.getCustomAspects().entrySet().stream()
+    item.getCustomAspects()
         .forEach(
-            e -> {
+            (caType, customAspects) -> {
               var caDefinition =
                   domain
                       .getElementTypeDefinition(item.getElementType())
-                      .getCustomAspectDefinition(e.getKey());
-              AttributeValidator.validate(e.getValue(), caDefinition.getAttributeDefinitions());
+                      .getCustomAspectDefinition(caType);
+              AttributeValidator.validate(customAspects, caDefinition.getAttributeDefinitions());
             });
 
-    item.getTailoringReferences().stream().forEach(tr -> validate(tr, domain));
+    item.getTailoringReferences().forEach(tr -> validate(tr, domain));
   }
 
-  public static void validate(
-      TailoringReference<CatalogItem> tailoringReference, DomainBase domain) {
-    if (tailoringReference instanceof LinkTailoringReference<CatalogItem> linkRef) {
+  public static <T extends TemplateItem<T>> void validate(
+      TailoringReference<T> tailoringReference, DomainBase domain) {
+    if (tailoringReference instanceof LinkTailoringReference<T> linkRef) {
       validateLink(
           linkRef.getLinkType(),
           linkRef.getLinkSourceItem(),
@@ -56,10 +55,10 @@ public class CatalogItemValidator {
     }
   }
 
-  private static void validateLink(
+  private static <T extends TemplateItem<T>> void validateLink(
       String linkType,
-      CatalogItem linkSourceItem,
-      CatalogItem linkTargetItem,
+      T linkSourceItem,
+      T linkTargetItem,
       Map<String, Object> attributes,
       DomainBase domain) {
     var linkDefinition =
@@ -81,14 +80,14 @@ public class CatalogItemValidator {
     }
   }
 
-  private static void validateLinkTargetType(
-      String linkType, CatalogItem target, LinkDefinition linkDefinition) {
+  private static <T extends TemplateItem<T>> void validateLinkTargetType(
+      String linkType, T target, LinkDefinition linkDefinition) {
     var targetType = target.getElementType();
     DomainSensitiveElementValidator.validateLinkTargetType(linkType, linkDefinition, targetType);
   }
 
-  private static void validateLinkTargetSubType(
-      String linkType, CatalogItem target, LinkDefinition linkDefinition) {
+  private static <T extends TemplateItem<T>> void validateLinkTargetSubType(
+      String linkType, T target, LinkDefinition linkDefinition) {
     var targetSubType = target.getSubType();
     if (!linkDefinition.getTargetSubType().equals(targetSubType)) {
       throw new IllegalArgumentException(
