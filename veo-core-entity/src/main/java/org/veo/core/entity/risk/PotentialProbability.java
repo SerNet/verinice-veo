@@ -32,10 +32,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PotentialProbabilityImpl {
+public class PotentialProbability {
   public static final int EXPLANATION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
 
-  public PotentialProbabilityImpl(ProbabilityRef potentialProbability) {
+  public PotentialProbability(ProbabilityRef potentialProbability) {
     this.potentialProbability = potentialProbability;
   }
 

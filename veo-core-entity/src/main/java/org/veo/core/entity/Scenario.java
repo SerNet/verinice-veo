@@ -20,7 +20,7 @@ package org.veo.core.entity;
 import java.util.Map;
 import java.util.Optional;
 
-import org.veo.core.entity.risk.PotentialProbabilityImpl;
+import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
 /**
@@ -48,13 +48,13 @@ public interface Scenario extends Element, CompositeElement<Scenario>, RiskRelat
     return TYPE_DESIGNATOR;
   }
 
-  Map<RiskDefinitionRef, PotentialProbabilityImpl> getPotentialProbability(Domain domain);
+  Map<RiskDefinitionRef, PotentialProbability> getPotentialProbability(Domain domain);
 
-  default Optional<PotentialProbabilityImpl> getPotentialProbability(
+  default Optional<PotentialProbability> getPotentialProbability(
       Domain domain, RiskDefinitionRef riskDefinition) {
     return Optional.ofNullable(getPotentialProbability(domain).get((riskDefinition)));
   }
 
   void setPotentialProbability(
-      Domain domain, Map<RiskDefinitionRef, PotentialProbabilityImpl> potentialProbability);
+      Domain domain, Map<RiskDefinitionRef, PotentialProbability> potentialProbability);
 }

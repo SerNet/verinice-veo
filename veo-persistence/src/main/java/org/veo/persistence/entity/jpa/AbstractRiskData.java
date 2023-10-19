@@ -60,7 +60,7 @@ import org.veo.core.entity.risk.DeterminedRisk;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.entity.risk.DomainRiskReferenceValidator;
 import org.veo.core.entity.risk.Impact;
-import org.veo.core.entity.risk.PotentialProbabilityImpl;
+import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.ProbabilityImpl;
 import org.veo.core.entity.risk.ProbabilityValueProvider;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -189,7 +189,7 @@ public abstract class AbstractRiskData<T extends RiskAffected<T, R>, R extends A
               var riskAspect = new RiskValuesAspectData(domain, this, riskDefinitionRef);
               getScenario()
                   .getPotentialProbability(domain, riskDefinitionRef)
-                  .map(PotentialProbabilityImpl::getPotentialProbability)
+                  .map(PotentialProbability::getPotentialProbability)
                   .ifPresent(riskAspect::setPotentialProbability);
               getEntity()
                   .getImpactValues(domain, riskDefinitionRef)

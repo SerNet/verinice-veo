@@ -54,7 +54,7 @@ import org.veo.core.entity.Scope;
 import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.ImpactValues;
 import org.veo.core.entity.risk.ImplementationStatusRef;
-import org.veo.core.entity.risk.PotentialProbabilityImpl;
+import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.ProbabilityRef;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
@@ -166,7 +166,7 @@ public class DomainAssociationTransformer {
   }
 
   private ScenarioRiskValuesDto mapScenarioRiskValuesToDto(
-      Map.Entry<RiskDefinitionRef, PotentialProbabilityImpl> entry) {
+      Map.Entry<RiskDefinitionRef, PotentialProbability> entry) {
     var riskValuesDto = new ScenarioRiskValuesDto();
     riskValuesDto.setPotentialProbability(
         Optional.ofNullable(entry.getValue().getPotentialProbability())

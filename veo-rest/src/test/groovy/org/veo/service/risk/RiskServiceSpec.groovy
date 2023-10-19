@@ -27,7 +27,7 @@ import org.veo.core.entity.event.RiskAffectingElementChangeEvent
 import org.veo.core.entity.event.RiskChangedEvent
 import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.ImpactRef
-import org.veo.core.entity.risk.PotentialProbabilityImpl
+import org.veo.core.entity.risk.PotentialProbability
 import org.veo.core.entity.risk.ProbabilityRef
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.entity.risk.RiskRef
@@ -94,7 +94,7 @@ class RiskServiceSpec extends VeoSpec {
         risk.getProbabilityProvider(riskDefRef, domain).potentialProbability =
                 previousProb?.with { new ProbabilityRef(it) }
         scenario.setPotentialProbability(domain, [
-            (riskDefRef): new PotentialProbabilityImpl(prob?.with { new ProbabilityRef(it) })
+            (riskDefRef): new PotentialProbability(prob?.with { new ProbabilityRef(it) })
         ])
         def categoryRef = new CategoryRef("C")
         risk.getRiskProvider(riskDefRef, domain)
@@ -125,7 +125,7 @@ class RiskServiceSpec extends VeoSpec {
         risk.getProbabilityProvider(riskDefRef, domain).potentialProbability =
                 previousProb?.with { new ProbabilityRef(it) }
         scenario.setPotentialProbability(domain, [
-            (riskDefRef): new PotentialProbabilityImpl(prob?.with { new ProbabilityRef(it) })
+            (riskDefRef): new PotentialProbability(prob?.with { new ProbabilityRef(it) })
         ])
 
         sut.evaluateChangedRiskComponent(this.process)
@@ -170,7 +170,7 @@ class RiskServiceSpec extends VeoSpec {
                 previousProb?.with { new ProbabilityRef(it) }
         risk.getImpactProvider(riskDefRef, domain).setSpecificImpact(categoryRef, new ImpactRef(1))
         scenario.setPotentialProbability(domain, [
-            (riskDefRef): new PotentialProbabilityImpl(prob?.with { new ProbabilityRef(it) })
+            (riskDefRef): new PotentialProbability(prob?.with { new ProbabilityRef(it) })
         ])
         risk.getRiskProvider(riskDefRef, domain)
                 .getCategorizedRisks()
@@ -321,10 +321,10 @@ class RiskServiceSpec extends VeoSpec {
                 (new ProbabilityRef(1))
 
         scenario.setPotentialProbability(domain, [
-            (riskDefRef): new PotentialProbabilityImpl(new ProbabilityRef(1))
+            (riskDefRef): new PotentialProbability(new ProbabilityRef(1))
         ])
         scenario2.setPotentialProbability(domain, [
-            (riskDefRef): new PotentialProbabilityImpl(new ProbabilityRef(3))
+            (riskDefRef): new PotentialProbability(new ProbabilityRef(3))
         ])
 
         sut.evaluateChangedRiskComponent(this.process)

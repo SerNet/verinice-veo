@@ -44,7 +44,7 @@ import org.veo.core.entity.risk.CategoryRef;
 import org.veo.core.entity.risk.DeterminedRiskImpl;
 import org.veo.core.entity.risk.ImpactRef;
 import org.veo.core.entity.risk.ImpactValues;
-import org.veo.core.entity.risk.PotentialProbabilityImpl;
+import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.ProbabilityRef;
 import org.veo.core.entity.risk.ProbabilityValueProvider;
 import org.veo.core.entity.risk.RiskDefinitionRef;
@@ -197,7 +197,7 @@ public class RiskService {
     ProbabilityRef newProbability =
         scenario
             .getPotentialProbability(domain, rdr)
-            .map(PotentialProbabilityImpl::getPotentialProbability)
+            .map(PotentialProbability::getPotentialProbability)
             .orElse(null);
     if (!Objects.equals(newProbability, riskValueProbability.getPotentialProbability())) {
       riskEvent.addChange(PROBABILITY_VALUES_CHANGED);

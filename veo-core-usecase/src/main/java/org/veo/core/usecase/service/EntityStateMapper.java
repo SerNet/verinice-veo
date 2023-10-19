@@ -49,7 +49,7 @@ import org.veo.core.entity.risk.ControlRiskValues;
 import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.entity.risk.ImpactRef;
 import org.veo.core.entity.risk.ImpactValues;
-import org.veo.core.entity.risk.PotentialProbabilityImpl;
+import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 import org.veo.core.entity.risk.RiskImpactValues;
 import org.veo.core.entity.risk.ScenarioRiskValues;
@@ -294,7 +294,7 @@ public class EntityStateMapper {
     mapToEntity(domains, target, idRefResolver, customMapper, removeFromOtherDomains);
   }
 
-  private Map<RiskDefinitionRef, PotentialProbabilityImpl> mapPotentialProbability(
+  private Map<RiskDefinitionRef, PotentialProbability> mapPotentialProbability(
       Map<String, ? extends ScenarioRiskValues> riskValues, Domain domain) {
     return riskValues.entrySet().stream().collect(groupScenarioRiskValuesByDomain(domain));
   }
@@ -302,7 +302,7 @@ public class EntityStateMapper {
   private Collector<
           Map.Entry<String, ? extends ScenarioRiskValues>,
           ?,
-          Map<RiskDefinitionRef, PotentialProbabilityImpl>>
+          Map<RiskDefinitionRef, PotentialProbability>>
       groupScenarioRiskValuesByDomain(Domain domain) {
     var referenceProvider = referencesForDomain(domain);
     return Collectors.toMap(
@@ -310,11 +310,11 @@ public class EntityStateMapper {
         kv -> mapScenarioRiskValuesDto2Entity(kv.getKey(), kv.getValue(), referenceProvider));
   }
 
-  private PotentialProbabilityImpl mapScenarioRiskValuesDto2Entity(
+  private PotentialProbability mapScenarioRiskValuesDto2Entity(
       String riskDefinitionId,
       ScenarioRiskValues riskValuesDto,
       DomainRiskReferenceProvider referenceProvider) {
-    var riskValues = new PotentialProbabilityImpl();
+    var riskValues = new PotentialProbability();
 
     riskValues.setPotentialProbability(
         Optional.ofNullable(riskValuesDto.getPotentialProbability())

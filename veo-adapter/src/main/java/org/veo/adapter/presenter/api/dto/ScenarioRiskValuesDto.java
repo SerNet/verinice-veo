@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
-import org.veo.core.entity.risk.PotentialProbabilityImpl;
+import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.ScenarioRiskValues;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,7 +38,7 @@ public class ScenarioRiskValuesDto implements ScenarioRiskValues {
       example = "2")
   BigDecimal potentialProbability;
 
-  @Size(max = PotentialProbabilityImpl.EXPLANATION_MAX_LENGTH)
+  @Size(max = PotentialProbability.EXPLANATION_MAX_LENGTH)
   @Schema(
       description = "The optional potential probability explanation.",
       example = "Because of sience.")

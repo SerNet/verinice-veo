@@ -27,7 +27,7 @@ import org.hibernate.annotations.Type;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scenario;
-import org.veo.core.entity.risk.PotentialProbabilityImpl;
+import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
@@ -54,5 +54,5 @@ class ScenarioRiskValuesAspectData extends AspectData {
   @NotNull
   @Column(columnDefinition = "jsonb", name = "probability")
   @Type(JsonType.class)
-  Map<RiskDefinitionRef, PotentialProbabilityImpl> potentialProbability;
+  Map<RiskDefinitionRef, PotentialProbability> potentialProbability;
 }

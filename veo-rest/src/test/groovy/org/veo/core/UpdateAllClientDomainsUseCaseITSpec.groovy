@@ -34,7 +34,7 @@ import org.veo.core.entity.risk.ControlRiskValues
 import org.veo.core.entity.risk.DomainRiskReferenceProvider
 import org.veo.core.entity.risk.ImpactValues
 import org.veo.core.entity.risk.ImplementationStatusRef
-import org.veo.core.entity.risk.PotentialProbabilityImpl
+import org.veo.core.entity.risk.PotentialProbability
 import org.veo.core.entity.risk.ProbabilityRef
 import org.veo.core.entity.risk.RiskDefinitionRef
 import org.veo.core.repository.ControlRepository
@@ -239,7 +239,7 @@ class UpdateAllClientDomainsUseCaseITSpec extends VeoSpringSpec {
         given: 'a unit with a scenario containing a probability'
         RiskDefinitionRef riskDefinitionRef = new RiskDefinitionRef("xyz")
         ProbabilityRef probabilityRef = new ProbabilityRef(2)
-        PotentialProbabilityImpl probability = new PotentialProbabilityImpl(probabilityRef)
+        PotentialProbability probability = new PotentialProbability(probabilityRef)
         Map riskValues = [
             (riskDefinitionRef) : probability
         ]

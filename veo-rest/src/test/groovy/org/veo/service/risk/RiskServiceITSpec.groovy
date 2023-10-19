@@ -36,7 +36,7 @@ import org.veo.core.entity.event.RiskEvent
 import org.veo.core.entity.risk.CategoryRef
 import org.veo.core.entity.risk.ImpactRef
 import org.veo.core.entity.risk.ImpactValues
-import org.veo.core.entity.risk.PotentialProbabilityImpl
+import org.veo.core.entity.risk.PotentialProbability
 import org.veo.core.entity.risk.ProbabilityRef
 import org.veo.core.entity.risk.RiskDefinitionRef
 
@@ -110,7 +110,7 @@ class RiskServiceITSpec extends AbstractPerformanceITSpec  {
 
         Scenario scenario = scenarioDataRepository.save(newScenario(unit) {
             associateWithDomain(domain, "NormalScenario", "NEW")
-            setPotentialProbability(domain, [(riskDefinitionRef): new PotentialProbabilityImpl().tap {
+            setPotentialProbability(domain, [(riskDefinitionRef): new PotentialProbability().tap {
                     potentialProbability = probabilityRare
                 }])
         })

@@ -32,7 +32,7 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Scenario;
-import org.veo.core.entity.risk.PotentialProbabilityImpl;
+import org.veo.core.entity.risk.PotentialProbability;
 import org.veo.core.entity.risk.RiskDefinitionRef;
 
 import lombok.EqualsAndHashCode;
@@ -70,7 +70,7 @@ public class ScenarioData extends ElementData implements Scenario {
   private final Set<Scenario> composites = new HashSet<>();
 
   public void setPotentialProbability(
-      Domain domain, Map<RiskDefinitionRef, PotentialProbabilityImpl> potentialProbability) {
+      Domain domain, Map<RiskDefinitionRef, PotentialProbability> potentialProbability) {
     if (potentialProbability.isEmpty()) {
       removeAspectByDomain(riskValuesAspects, domain);
       return;
@@ -93,7 +93,7 @@ public class ScenarioData extends ElementData implements Scenario {
         .orElse(false);
   }
 
-  public Map<RiskDefinitionRef, PotentialProbabilityImpl> getPotentialProbability(Domain domain) {
+  public Map<RiskDefinitionRef, PotentialProbability> getPotentialProbability(Domain domain) {
     return findAspectByDomain(riskValuesAspects, domain)
         .map(ScenarioRiskValuesAspectData::getPotentialProbability)
         .orElse(Map.of());
