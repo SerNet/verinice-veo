@@ -30,10 +30,6 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.Asset;
 import org.veo.core.entity.AssetRisk;
-import org.veo.core.entity.CatalogItem;
-import org.veo.core.entity.Domain;
-import org.veo.core.entity.Profile;
-import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.Scenario;
 
 import lombok.EqualsAndHashCode;
@@ -66,30 +62,4 @@ public class AssetData extends RiskAffectedData<Asset, AssetRisk> implements Ass
   @ManyToMany(targetEntity = AssetData.class, mappedBy = "parts", fetch = FetchType.LAZY)
   @Getter
   private final Set<Asset> composites = new HashSet<>();
-
-  @Override
-  public CatalogItem toCatalogItem(Domain domain) {
-    CatalogItem item = super.toCatalogItem(domain);
-    getImpactValues(domain)
-        .ifPresent(
-            m -> { // TODO: verinice-veo#2285 set the impact values to the catalog item
-              log.info("Ignoring Impactvalues for asset: {}", getIdAsString());
-            });
-    return item;
-  }
-
-  @Override
-  public ProfileItem toProfileItem(Profile profile) {
-    ProfileItem item = super.toProfileItem(profile);
-    getImpactValues((Domain) profile.getOwner())
-        .ifPresent(
-            m -> { // TODO: verinice-veo#2285 set the impact values to the catalog item
-              log.info(
-                  "Ignoring Impactvalues for asset: {} in profile {}",
-                  getIdAsString(),
-                  profile.getName());
-            });
-
-    return item;
-  }
 }

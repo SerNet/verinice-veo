@@ -31,7 +31,6 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.Valid;
 
-import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Identifiable;
@@ -107,13 +106,5 @@ public class ControlData extends ElementData implements Control {
     return findAspectByDomain(riskValuesAspects, domain)
         .map(a -> a.values.remove(riskDefinition) != null)
         .orElse(false);
-  }
-
-  @Override
-  public CatalogItem toCatalogItem(Domain domain) {
-    CatalogItem item = super.toCatalogItem(domain);
-    getRiskValues(domain)
-        .ifPresent(m -> log.info("Ignoring riskvalues for control: {}", getIdAsString()));
-    return item;
   }
 }
