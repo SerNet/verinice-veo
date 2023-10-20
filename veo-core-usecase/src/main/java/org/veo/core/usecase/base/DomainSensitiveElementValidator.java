@@ -19,11 +19,15 @@ package org.veo.core.usecase.base;
 
 import java.util.Map;
 
+import org.veo.core.entity.Control;
 import org.veo.core.entity.CustomAspect;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
+import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.Scenario;
 import org.veo.core.entity.definitions.LinkDefinition;
 import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 import org.veo.core.entity.specification.ElementDomainsAreSubsetOfUnitDomains;
 import org.veo.core.entity.specification.ElementIsAssociatedWithCustomAspectAndLinkDomains;
 
@@ -51,7 +55,26 @@ public class DomainSensitiveElementValidator {
                   link.getAttributes(),
                   link.getDomain());
             });
-    element.getDomains().forEach(d -> SubTypeValidator.validate(element, d));
+    element
+        .getDomains()
+        .forEach(
+            domain -> {
+              SubTypeValidator.validate(element, domain);
+
+              var riskRefProvider = DomainRiskReferenceProvider.referencesForDomain(domain);
+              if (element instanceof RiskAffected<?, ?> riskAffected) {
+                RiskValuesValidator.validateImpactValues(
+                    riskAffected.getImpactValues(domain), riskRefProvider);
+              }
+              if (element instanceof Control control) {
+                RiskValuesValidator.validateControlRiskValues(
+                    control.getRiskValues(domain), riskRefProvider);
+              }
+              if (element instanceof Scenario scenario) {
+                RiskValuesValidator.validateScenarioRiskValues(
+                    scenario.getPotentialProbability(domain), riskRefProvider);
+              }
+            });
   }
 
   static void validateLinkTargetType(

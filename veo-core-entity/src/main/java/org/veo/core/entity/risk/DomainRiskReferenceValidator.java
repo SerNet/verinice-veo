@@ -47,4 +47,11 @@ public class DomainRiskReferenceValidator extends ReferenceValidator {
         ? null
         : refProvider.getRiskRef(riskDefinition.getIdRef(), riskRef.getIdRef());
   }
+
+  public ImplementationStatusRef validate(ImplementationStatusRef implementationStatusRef) {
+    return implementationStatusRef == null
+        ? null
+        : refProvider.getImplementationStatus(
+            riskDefinition.getIdRef(), implementationStatusRef.getOrdinalValue());
+  }
 }

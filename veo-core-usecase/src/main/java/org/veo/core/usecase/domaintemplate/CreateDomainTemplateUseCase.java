@@ -23,6 +23,7 @@ import jakarta.validation.Valid;
 
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Key;
+import org.veo.core.entity.Profile;
 import org.veo.core.entity.exception.EntityAlreadyExistsException;
 import org.veo.core.repository.DomainTemplateRepository;
 import org.veo.core.service.DomainTemplateIdGenerator;
@@ -57,6 +58,9 @@ public class CreateDomainTemplateUseCase
     }
 
     domainTemplate.getCatalogItems().forEach(TemplateItemValidator::validate);
+    domainTemplate.getProfiles().stream()
+        .flatMap((Profile profile) -> profile.getItems().stream())
+        .forEach(TemplateItemValidator::validate);
 
     domainTemplate = domainTemplateRepository.save(domainTemplate);
 

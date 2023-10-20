@@ -190,6 +190,38 @@ class DomainTemplateImportRestTest extends VeoRestTest {
         response.message.endsWith("Cannot assign element to domain without specifying a sub type")
     }
 
+    def "cannot import template where profile item has invalid risk values"() {
+        given: "a template with a scenario profile item that uses an undefined probability level"
+        var template = getTemplateBody()
+        template.profiles_v2 = [
+            [
+                id: UUID.randomUUID(),
+                items: [
+                    [
+                        id: UUID.randomUUID(),
+                        name: "very likely",
+                        elementType: "scenario",
+                        subType: "SCN_Scenario",
+                        status: "RELEASED",
+                        aspects: [
+                            scenarioRiskValues: [
+                                RD1: [
+                                    potentialProbability: 9001
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+        when: "trying to create the template"
+        def response = post("/content-creation/domain-templates", template, 422, UserType.CONTENT_CREATOR).body
+
+        then: "it fails with a helpful message"
+        response.message.endsWith("Risk definition RD1 contains no probability with ordinal value 9001")
+    }
+
     @Ignore
     def "cannot import template with invalid catalog item risk definition"() {
         given: "a template with a catalog item using a non-existing risk definition"

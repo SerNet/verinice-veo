@@ -18,12 +18,21 @@
 package org.veo.core.usecase.base;
 
 import java.util.Map;
+import java.util.Optional;
 
+import jakarta.validation.constraints.NotNull;
+
+import org.veo.core.entity.Control;
 import org.veo.core.entity.DomainBase;
+import org.veo.core.entity.EntityType;
 import org.veo.core.entity.LinkTailoringReference;
+import org.veo.core.entity.Scenario;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TemplateItem;
+import org.veo.core.entity.TemplateItemAspects;
 import org.veo.core.entity.definitions.LinkDefinition;
+import org.veo.core.entity.exception.UnprocessableDataException;
+import org.veo.core.entity.risk.DomainRiskReferenceProvider;
 
 /** Validates template items according to the domain's element type definitions. */
 public class TemplateItemValidator {
@@ -41,6 +50,8 @@ public class TemplateItemValidator {
             });
 
     item.getTailoringReferences().forEach(tr -> validate(tr, domain));
+
+    validate(item.getAspects(), item.getElementType(), domain);
   }
 
   public static <T extends TemplateItem<T>> void validate(
@@ -95,5 +106,42 @@ public class TemplateItemValidator {
               "Expected target of link '%s' ('%s') to have sub type '%s' but found '%s'",
               linkType, target.getName(), linkDefinition.getTargetSubType(), targetSubType));
     }
+  }
+
+  private static void validate(
+      @NotNull TemplateItemAspects aspects,
+      @NotNull String elementType,
+      @NotNull DomainBase domain) {
+    var refProvider = DomainRiskReferenceProvider.referencesForDomain(domain);
+    Optional.ofNullable(aspects.controlRiskValues())
+        .ifPresent(
+            v -> {
+              if (!elementType.equals(Control.SINGULAR_TERM)) {
+                throw new UnprocessableDataException(
+                    "%s cannot contain control risk values".formatted(elementType));
+              }
+              RiskValuesValidator.validateControlRiskValues(v, refProvider);
+            });
+    Optional.ofNullable(aspects.impactValues())
+        .ifPresent(
+            v -> {
+              if (!EntityType.RISK_AFFECTED_TYPES.stream()
+                  .map(EntityType::getSingularTerm)
+                  .toList()
+                  .contains(elementType)) {
+                throw new UnprocessableDataException(
+                    "%s cannot contain impact values".formatted(elementType));
+              }
+              RiskValuesValidator.validateImpactValues(v, refProvider);
+            });
+    Optional.ofNullable(aspects.scenarioRiskValues())
+        .ifPresent(
+            v -> {
+              if (!elementType.equals(Scenario.SINGULAR_TERM)) {
+                throw new UnprocessableDataException(
+                    "%s cannot contain scenario risk values".formatted(elementType));
+              }
+              RiskValuesValidator.validateScenarioRiskValues(v, refProvider);
+            });
   }
 }
