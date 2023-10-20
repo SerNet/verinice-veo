@@ -28,7 +28,10 @@ import jakarta.validation.constraints.Size;
  * @see org.veo.core.entity.riskdefinition.RiskDefinition
  */
 @Valid
-public interface Probability extends PotentialProbability {
+public interface Probability {
+  ProbabilityRef getPotentialProbability();
+
+  void setPotentialProbability(ProbabilityRef potential);
 
   /**
    * The corrected value for a specific case of a scenario interfering with a risk-affected entity.

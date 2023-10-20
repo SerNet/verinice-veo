@@ -33,7 +33,7 @@ public class ProbabilityImpl implements Probability {
   @Setter(AccessLevel.NONE)
   private ProbabilityRef effectiveProbability;
 
-  @Size(max = ExplainedPotentialProbability.EXPLANATION_MAX_LENGTH)
+  @Size(max = PotentialProbabilityImpl.EXPLANATION_MAX_LENGTH)
   private String specificProbabilityExplanation;
 
   private ProbabilityRef potentialProbability;

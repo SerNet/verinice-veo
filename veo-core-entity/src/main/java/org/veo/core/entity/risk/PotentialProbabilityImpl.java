@@ -19,6 +19,8 @@ package org.veo.core.entity.risk;
 
 import jakarta.validation.constraints.Size;
 
+import org.veo.core.entity.Constraints;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,7 +32,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PotentialProbabilityImpl implements ExplainedPotentialProbability {
+public class PotentialProbabilityImpl {
+  public static final int EXPLANATION_MAX_LENGTH = Constraints.DEFAULT_DESCRIPTION_MAX_LENGTH;
 
   public PotentialProbabilityImpl(ProbabilityRef potentialProbability) {
     this.potentialProbability = potentialProbability;
@@ -38,6 +41,6 @@ public class PotentialProbabilityImpl implements ExplainedPotentialProbability {
 
   private ProbabilityRef potentialProbability;
 
-  @Size(max = ExplainedPotentialProbability.EXPLANATION_MAX_LENGTH)
+  @Size(max = EXPLANATION_MAX_LENGTH)
   private String potentialProbabilityExplanation;
 }
