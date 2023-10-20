@@ -79,7 +79,7 @@ public abstract class AbstractElementDto<T extends Element>
 
   @Valid
   @Schema(description = "Custom relations which do not affect the behavior.", title = "CustomLink")
-  private Map<String, List<CustomLinkDto>> links = Collections.emptyMap();
+  private Map<String, List<@Valid CustomLinkDto>> links = Collections.emptyMap();
 
   @Valid
   @Schema(

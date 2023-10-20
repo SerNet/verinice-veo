@@ -23,6 +23,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import jakarta.validation.Valid;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -34,13 +36,14 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
+@Valid
 public class LinkMapDto {
   @JsonCreator
   public LinkMapDto(Map<String, List<LinkDto>> value) {
     this.value = value;
   }
 
-  @JsonValue private Map<String, List<LinkDto>> value = Collections.emptyMap();
+  @JsonValue private Map<String, List<@Valid LinkDto>> value = Collections.emptyMap();
 
   @JsonIgnore
   public Set<CustomLinkState> getCustomLinkStates() {

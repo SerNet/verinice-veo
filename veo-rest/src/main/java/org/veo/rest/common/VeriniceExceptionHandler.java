@@ -141,6 +141,7 @@ public class VeriniceExceptionHandler {
     return new ResponseEntity<>(
         ex.getBindingResult().getAllErrors().stream()
             .map(FieldError.class::cast)
+            // TODO #2496 use JSON path instead of field path
             .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)),
         HttpStatus.BAD_REQUEST);
   }

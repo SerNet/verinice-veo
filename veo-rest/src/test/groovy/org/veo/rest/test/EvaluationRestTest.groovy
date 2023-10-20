@@ -267,6 +267,40 @@ class EvaluationRestTest extends VeoRestTest {
         }
     }
 
+    def "invalid link is handled"() {
+        expect:
+        post("/domains/$dsgvoDomainId/processes/evaluation", [
+            name: "bad process",
+            subType: "PRO_DataProcessing",
+            status: "NEW",
+            links: [
+                process_dataType: [
+                    [:]
+                ]
+            ],
+            owner: [targetUri: unitUri],
+        ], 400).body['links.value[process_dataType][0].target'] == "A target must be present."
+    }
+
+    def "invalid link is handled by legacy endpoint"() {
+        expect:
+        post("/processes/evaluation?domain=$dsgvoDomainId", [
+            name: "bad process",
+            domains: [
+                (dsgvoDomainId): [
+                    subType: "PRO_DataProcessing",
+                    status: "NEW"
+                ]
+            ],
+            links: [
+                process_dataType: [
+                    [:]
+                ]
+            ],
+            owner: [targetUri: unitUri],
+        ], 400).body['links[process_dataType][0].target'] == "A target must be present."
+    }
+
     private void addRiskValue(String processId, Integer userDefinedResidualRisk) {
         post("/domains/$dsgvoDomainId/scopes", [
             name: "risky scope",
