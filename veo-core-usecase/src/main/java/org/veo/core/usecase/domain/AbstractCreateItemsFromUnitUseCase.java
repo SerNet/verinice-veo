@@ -48,6 +48,7 @@ public abstract class AbstractCreateItemsFromUnitUseCase<T extends TemplateItem<
       CustomLink link, T source, T target, TailoringReferenceType type);
 
   protected void createTailorreferences(Map<Element, T> elementsToCatalogItems, Domain domain) {
+    elementsToCatalogItems.values().forEach(TemplateItem::clearTailoringReferences);
     elementsToCatalogItems.forEach(
         (element, item) ->
             createTailoringReferences(elementsToCatalogItems, domain, element, item));

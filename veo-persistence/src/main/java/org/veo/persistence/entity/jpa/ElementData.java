@@ -335,8 +335,13 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
 
   @Override
   public CatalogItem toCatalogItem(Domain domain) {
-    CatalogItem item = new EntityDataFactory().createCatalogItem(domain);
+    var item =
+        appliedCatalogItems.stream()
+            .filter(ci -> ci.getDomainBase().equals(domain))
+            .findFirst()
+            .orElseGet(() -> new EntityDataFactory().createCatalogItem(domain));
     toItem(domain, item);
+    appliedCatalogItems.add(item);
     return item;
   }
 
@@ -363,6 +368,9 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
         getCustomAspects(domain).stream()
             .collect(Collectors.toMap(ca -> ca.getType(), ca -> ca.getAttributes())));
     item.setAspects(mapAspectsToItem(domain));
+    if (item.getId() != null) {
+      item.setUpdatedAt(Instant.now());
+    }
   }
 
   protected TemplateItemAspects mapAspectsToItem(Domain domain) {

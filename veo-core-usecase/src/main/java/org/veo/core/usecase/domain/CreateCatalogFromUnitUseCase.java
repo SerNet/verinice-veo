@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.veo.core.usecase.domain;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -75,9 +76,9 @@ public class CreateCatalogFromUnitUseCase extends AbstractCreateItemsFromUnitUse
     }
     var unit = unitRepository.getById(input.unitId);
     unit.checkSameClient(client);
-
-    cleanCatalogItems(domain, client);
     Set<Element> elements = getElements(unit, domain);
+
+    deleteObsoleteCatalogItems(domain, client, elements);
     Map<Element, CatalogItem> elementsToCatalogItems =
         getElements(unit, domain).stream()
             .collect(Collectors.toMap(Function.identity(), e -> e.toCatalogItem(domain)));
@@ -102,17 +103,24 @@ public class CreateCatalogFromUnitUseCase extends AbstractCreateItemsFromUnitUse
     return false;
   }
 
-  private void cleanCatalogItems(Domain domain, Client client) {
+  private void deleteObsoleteCatalogItems(
+      Domain domain, Client client, Collection<Element> newElements) {
+    var relevantItems =
+        newElements.stream().flatMap(e -> e.getAppliedCatalogItems().stream()).toList();
+    var obsoleteItems =
+        domain.getCatalogItems().stream().filter(ci -> !relevantItems.contains(ci)).toList();
     var query = genericElementRepository.query(client);
     query.fetchAppliedCatalogItems();
-    Set<CatalogItem> list = domain.getCatalogItems();
-    query.whereAppliedItemsContain(list);
+    query.whereAppliedItemsContain(obsoleteItems);
     var incarnations = query.execute(PagingConfiguration.UNPAGED).getResultPage();
-    log.info("number of applied items {}", incarnations.size());
 
-    incarnations.forEach(e -> e.getAppliedCatalogItems().removeAll(list));
-    list.forEach(TemplateItem::clearTailoringReferences);
-    domain.getCatalogItems().clear();
+    log.info(
+        "removing references to obsolete catalog items from {} incarnations", incarnations.size());
+    incarnations.forEach(e -> e.getAppliedCatalogItems().removeAll(obsoleteItems));
+
+    log.info("removing {} obsolete catalog items", obsoleteItems.size());
+    obsoleteItems.forEach(TemplateItem::clearTailoringReferences);
+    domain.getCatalogItems().removeAll(obsoleteItems);
   }
 
   protected void createTailoringReference(

@@ -136,9 +136,15 @@ public interface Element
 
   Set<SubTypeAspect> getSubTypeAspects();
 
-  /** Stores the references of the applied catalog items. */
   // TODO VEO-889: Should this be unique in one domain/template? Should an object
   // exist in two different version of the same domainTemplate?
+  /**
+   * Catalog items that have been applied to this element. This is a many-to-many relationship,
+   * because an element may have been created from a catalog item in one domain with additional
+   * catalog items from other domains applied to it.
+   *
+   * <p>There may only be one catalog item per domain referenced in this set.
+   */
   Set<CatalogItem> getAppliedCatalogItems();
 
   void setAppliedCatalogItems(Set<CatalogItem> aCatalogitems);
@@ -213,7 +219,13 @@ public interface Element
 
   void setStatus(String status, Domain domain);
 
-  /** Applies the properties of the element to the catalog item. */
+  /**
+   * Applies the properties of this element to the catalog item.
+   *
+   * <p>If the element does not reference a catalog item in given domain yet, a new catalog item is
+   * created, and a reference to the new item is added to this element (see {@link
+   * Element#getAppliedCatalogItems()})
+   */
   CatalogItem toCatalogItem(Domain domain);
 
   ProfileItem toProfileItem(Profile profile);

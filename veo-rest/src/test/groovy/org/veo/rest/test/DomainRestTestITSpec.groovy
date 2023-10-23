@@ -24,7 +24,6 @@ import org.apache.http.HttpStatus
 import org.springframework.security.test.context.support.WithUserDetails
 
 import org.veo.adapter.service.domaintemplate.DomainTemplateIdGeneratorImpl
-import org.veo.core.entity.Process
 
 import groovy.util.logging.Slf4j
 
@@ -373,5 +372,62 @@ class DomainRestTestITSpec extends DomainRestTest {
 
         then:
         result.elementTypeDefinitions.process.translations.de.process_PRO_DataTransfer_plural == "Datenübertragungen"
+    }
+
+    @WithUserDetails("content-creator")
+    def "existing catalog items can be modified"() {
+        given: "a unit with two elements"
+        def domainId = post("/content-creation/domains", [
+            name: "catalog item update test ${randomUUID()}",
+            authority: "JJ",
+        ], 201, CONTENT_CREATOR).body.resourceId
+        postPersonObjectSchema(domainId)
+        def unitId = postNewUnit().resourceId
+        def person1Id = post("/domains/$domainId/persons", [
+            name: "person 1",
+            subType: "PER_Person",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"]
+        ]).body.resourceId
+        def person2Id = post("/domains/$domainId/persons", [
+            name: "person 2",
+            subType: "PER_Person",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"]
+        ]).body.resourceId
+
+        when: "creating catalog items from the unit"
+        put("/content-creation/domains/$domainId/catalog-items?unit=$unitId", null, null, 204)
+        def originalPerson1Item = get("/domains/$domainId/catalog-items").body.items.find { it.name == "person 1" }
+        def originalPerson2Item = get("/domains/$domainId/catalog-items").body.items.find { it.name == "person 2" }
+
+        and: "adding, updating and deleting source elements"
+        get("/domains/$domainId/persons/$person1Id").with {
+            body.name = "updated person 1"
+            put(body._self, body, getETag(), 200)
+        }
+        delete("/persons/$person2Id")
+        post("/domains/$domainId/persons", [
+            name: "person 3",
+            subType: "PER_Person",
+            status: "NEW",
+            owner: [targetUri: "/units/$unitId"]
+        ]).body.resourceId
+
+        and: "updating the catalog items"
+        put("/content-creation/domains/$domainId/catalog-items?unit=$unitId", null, null, 204)
+
+        then: "modifications have been applied"
+        with(get("/domains/$domainId/catalog-items").body.items) {
+            it.size() == 2
+            with(it.find { it.name == "updated person 1" }) {
+                id == originalPerson1Item.id
+                updatedAt > originalPerson1Item.updatedAt
+            }
+            with(it.find { it.name == "person 3" }) {
+                id != originalPerson1Item.id
+                id != originalPerson2Item.id
+            }
+        }
     }
 }

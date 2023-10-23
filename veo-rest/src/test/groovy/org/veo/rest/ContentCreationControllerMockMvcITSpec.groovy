@@ -571,8 +571,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             assetDataRepository.findById(assetId).get()
         }
 
-        then: "the applied item is gone"
-        asset.appliedCatalogItems.size() == 0
+        then: "the reference to the updated catalog item is intact"
+        asset.appliedCatalogItems.size() == 1
 
         when: "we incarnate scenario 1 and link the composite feature to the first scenario"
         catalogItems = txTemplate.execute {
