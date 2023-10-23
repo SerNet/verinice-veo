@@ -92,7 +92,7 @@ class ProfileApplierSpec extends Specification {
         1 * unit.addToDomains(domain)
 
         and: "profile elements are retrieved"
-        1 * domainTemplateService.getProfileElements(domain, profile) >> [asset1, asset2, process]
+        1 * domainTemplateService.getProfileElements(domain, profile, unit) >> [asset1, asset2, process]
 
         with(asset1) {
             1 * setOwner(unit)

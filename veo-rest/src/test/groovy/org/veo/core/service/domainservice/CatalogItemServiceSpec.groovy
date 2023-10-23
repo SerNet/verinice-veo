@@ -70,7 +70,7 @@ class CatalogItemServiceSpec extends VeoSpringSpec {
 
     def "retrieve example elements for default client"() {
         when: "retrieving the example elements for a client"
-        def elements = domainTemplateService.getProfileElements(dsgvoDomain, new ProfileRef("exampleOrganization"))
+        def elements = domainTemplateService.getProfileElements(dsgvoDomain, new ProfileRef("exampleOrganization"), unit)
 
         then: "the elements for all the client's units are returned"
         elements.size() == 9

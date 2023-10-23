@@ -62,7 +62,7 @@ public class IdRefResolvingFactory implements IdRefResolver, IdentifiableFactory
   private final Map<ITypedId<?>, Identifiable> registry = new HashMap<>();
   private Key<UUID> globalDomainTemplateId;
   private Domain globalDomain;
-  private Unit overrideOwner;
+  private Unit globalUnit;
 
   @Override
   public <TEntity extends Identifiable> TEntity resolve(ITypedId<TEntity> objectReference)
@@ -88,13 +88,16 @@ public class IdRefResolvingFactory implements IdRefResolver, IdentifiableFactory
     }
 
     T result = findOrCreate(type, id);
-    if (overrideOwner != null && result instanceof Element e) {
-      e.setOwner(overrideOwner);
+    if (globalUnit != null && result instanceof Element e) {
+      e.setOwner(globalUnit);
     }
     return result;
   }
 
   private <T extends Identifiable> T findOrCreate(Class<T> type, Key<UUID> id) {
+    if (globalUnit != null && Unit.class.isAssignableFrom(type)) {
+      return (T) globalUnit;
+    }
     if (id == null) {
       return factory.create(type, null);
     }
@@ -134,8 +137,8 @@ public class IdRefResolvingFactory implements IdRefResolver, IdentifiableFactory
   }
 
   /** Define a unit to be used as the owner for all created elements */
-  public void setOverrideOwner(Unit owner) {
-    overrideOwner = owner;
+  public void setGlobalUnit(Unit owner) {
+    globalUnit = owner;
   }
 
   /** Registers an existing entity, so it can be resolved using its ID. */

@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.veo.core.service;
 
-import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +28,7 @@ import org.veo.core.entity.Domain;
 import org.veo.core.entity.DomainTemplate;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Key;
-import org.veo.core.entity.Versioned;
+import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.profile.ProfileRef;
 
@@ -39,8 +38,6 @@ import org.veo.core.entity.profile.ProfileRef;
  * template.
  */
 public interface DomainTemplateService {
-  public static final String SYSTEM_USER = "system";
-
   List<DomainTemplate> getTemplates(Client client);
 
   Optional<DomainTemplate> getTemplate(Client client, Key<UUID> templateId);
@@ -53,15 +50,9 @@ public interface DomainTemplateService {
    */
   Domain createDomain(Client client, String templateId);
 
-  Collection<Element> getProfileElements(Domain domain, ProfileRef profileKey);
+  Collection<Element> getProfileElements(Domain domain, ProfileRef profileKey, Unit unit);
 
   ExportDto exportDomain(Domain domain);
 
   DomainTemplate createDomainTemplateFromDomain(Domain domain);
-
-  public static void updateVersion(Versioned v) {
-    v.setCreatedBy(SYSTEM_USER);
-    v.setUpdatedBy(SYSTEM_USER);
-    v.setCreatedAt(Instant.now());
-  }
 }

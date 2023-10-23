@@ -132,52 +132,43 @@ public class DomainTemplateServiceImpl implements DomainTemplateService {
   }
 
   @Override
-  public Collection<Element> getProfileElements(Domain domain, ProfileRef profileKey) {
-    var client = domain.getOwner();
+  public Collection<Element> getProfileElements(Domain domain, ProfileRef profileKey, Unit unit) {
     return domain
         .findProfile(profileKey)
-        .map(profile -> createElementsFromProfile(client, domain, profile))
+        .map(profile -> createElementsFromProfile(domain, profile, unit))
         .orElseThrow(() -> new NotFoundException("Profile '%s' not found", profileKey.getKeyRef()));
   }
 
   private Collection<Element> createElements(
-      Client client,
       Domain domain,
       Set<AbstractElementDto> profileElements,
-      Set<AbstractRiskDto> profileRisks) {
+      Set<AbstractRiskDto> profileRisks,
+      Unit unit) {
     var resolvingFactory = new IdRefResolvingFactory(identifiableFactory);
     resolvingFactory.setGlobalDomain(domain);
+    resolvingFactory.setGlobalUnit(unit);
     var transformer = new DtoToEntityTransformer(factory, resolvingFactory, entityStateMapper);
     var elements =
         profileElements.stream()
             .map(e -> transformer.transformDto2Element(e, resolvingFactory))
             .toList();
-    Unit dummyOwner = factory.createUnit(UUID.randomUUID().toString(), null);
-    dummyOwner.setClient(client);
-    elements.forEach(
-        e -> {
-          log.debug("Process element {}", e);
-          e.setOwner(dummyOwner);
-          DomainTemplateService.updateVersion(e);
-        });
     profileRisks.forEach(
         r -> {
           log.debug("Transforming risk {}", r);
           var risk = transformer.transformDto2Risk(r, resolvingFactory);
           log.debug("Transformed risk: {}", risk);
         });
-    dummyOwner.setClient(null);
     return elements;
   }
 
   private Collection<Element> createElementsFromProfile(
-      Client client, Domain domain, ProfileDefinition profileDefinition) {
+      Domain domain, ProfileDefinition profileDefinition, Unit unit) {
     try {
       return createElements(
-          client,
           domain,
           parseJsonObjects(profileDefinition.getElements(), new TypeReference<>() {}),
-          parseJsonObjects(profileDefinition.getRisks(), new TypeReference<>() {}));
+          parseJsonObjects(profileDefinition.getRisks(), new TypeReference<>() {}),
+          unit);
     } catch (IOException e) {
       log.error("Error reading profile from domain template", e);
       throw new InternalDataCorruptionException("Error reading profile from domain template.", e);

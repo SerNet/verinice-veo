@@ -36,7 +36,7 @@ public class ProfileApplier {
   private final ElementBatchCreator elementBatchCreator;
 
   public void applyProfile(Domain domain, ProfileRef profile, Unit unit) {
-    var profileElements = domainTemplateService.getProfileElements(domain, profile);
+    var profileElements = domainTemplateService.getProfileElements(domain, profile, unit);
     unit.addToDomains(domain);
     unitRepository.save(unit);
     elementBatchCreator.create(profileElements, unit, true);
