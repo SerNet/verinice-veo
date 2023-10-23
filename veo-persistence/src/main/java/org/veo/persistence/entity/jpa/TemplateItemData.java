@@ -88,6 +88,12 @@ public abstract class TemplateItemData<T extends TemplateItem<T>> extends Identi
     this.elementType = elementType;
   }
 
+  @Override
+  public void clearTailoringReferences() {
+    getTailoringReferences().forEach(tr -> tr.setOwner(null));
+    getTailoringReferences().clear();
+  }
+
   protected Element createElement(Unit owner) {
     TemplateItem.checkValidElementType(getElementType());
     var element =

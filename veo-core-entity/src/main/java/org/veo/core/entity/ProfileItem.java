@@ -35,7 +35,7 @@ public interface ProfileItem extends TemplateItem<ProfileItem>, ClientOwned {
   }
 
   default void setTailoringReferences(Set<TailoringReference<ProfileItem>> tailoringReferences) {
-    getTailoringReferences().clear();
+    clearTailoringReferences();
     tailoringReferences.forEach(tailoringReference -> tailoringReference.setOwner(this));
     getTailoringReferences().addAll(tailoringReferences);
   }

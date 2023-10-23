@@ -88,7 +88,7 @@ public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem> {
   }
 
   default void setTailoringReferences(Set<TailoringReference<CatalogItem>> tailoringReferences) {
-    getTailoringReferences().clear();
+    clearTailoringReferences();
     tailoringReferences.forEach(tailoringReference -> tailoringReference.setOwner(this));
     getTailoringReferences().addAll(tailoringReferences);
   }

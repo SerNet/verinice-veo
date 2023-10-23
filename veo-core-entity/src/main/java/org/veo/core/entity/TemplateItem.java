@@ -57,6 +57,8 @@ public interface TemplateItem<T extends TemplateItem<T>> extends Nameable, Ident
   /** All the tailoring references for this template item. */
   Set<TailoringReference<T>> getTailoringReferences();
 
+  void clearTailoringReferences();
+
   TemplateItemAspects getAspects();
 
   void setAspects(TemplateItemAspects aspects);

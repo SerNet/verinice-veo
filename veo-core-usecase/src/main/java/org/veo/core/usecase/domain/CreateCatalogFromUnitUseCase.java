@@ -35,6 +35,7 @@ import org.veo.core.entity.Key;
 import org.veo.core.entity.LinkTailoringReference;
 import org.veo.core.entity.TailoringReference;
 import org.veo.core.entity.TailoringReferenceType;
+import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.Unit;
 import org.veo.core.entity.exception.NotFoundException;
 import org.veo.core.entity.specification.ClientBoundaryViolationException;
@@ -110,11 +111,7 @@ public class CreateCatalogFromUnitUseCase extends AbstractCreateItemsFromUnitUse
     log.info("number of applied items {}", incarnations.size());
 
     incarnations.forEach(e -> e.getAppliedCatalogItems().removeAll(list));
-    list.forEach(
-        ci -> {
-          ci.getTailoringReferences().forEach(tr -> tr.setOwner(null));
-          ci.getTailoringReferences().clear();
-        });
+    list.forEach(TemplateItem::clearTailoringReferences);
     domain.getCatalogItems().clear();
   }
 
