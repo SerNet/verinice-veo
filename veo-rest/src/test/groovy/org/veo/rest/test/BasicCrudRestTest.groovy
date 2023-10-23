@@ -559,4 +559,19 @@ class BasicCrudRestTest extends VeoRestTest {
             ]
         ], 400).body.message == "Custom aspect 'fantasyCa' is not defined"
     }
+
+    def "moving an element between units is forbidden"() {
+        given: "an asset in main unit"
+        def assetId = post("/assets", [
+            name: "sneaky asset",
+            owner: [targetUri: "/units/$unitId"]
+        ]).body.resourceId
+        def otherUnitId = postNewUnit().resourceId
+
+        expect: "that the elements cannot be moved to the other unit"
+        get("/assets/$assetId").with {
+            body.owner = [targetUri: "/units/$otherUnitId"]
+            put(body._self, body, getETag(), 422)
+        }.body.message == "Elements cannot be moved between units"
+    }
 }

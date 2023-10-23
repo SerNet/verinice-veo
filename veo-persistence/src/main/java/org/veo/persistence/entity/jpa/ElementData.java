@@ -147,6 +147,13 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
   @ManyToMany(targetEntity = CatalogItemData.class, fetch = FetchType.LAZY)
   private Set<CatalogItem> appliedCatalogItems = new HashSet<>();
 
+  public void setOwner(Unit owner) {
+    if (this.owner != null && !owner.equals(this.owner)) {
+      throw new UnprocessableDataException("Elements cannot be moved between units");
+    }
+    this.owner = owner;
+  }
+
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY, targetEntity = UnitData.class)
   @JoinColumn(name = "owner_id")
