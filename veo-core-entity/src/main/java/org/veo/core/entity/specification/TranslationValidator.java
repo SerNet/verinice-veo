@@ -50,6 +50,8 @@ public class TranslationValidator {
    * The naming convention used for the translation of subtype statuses is: {@code
    * <TYPE>_<SUBTYPE>_status_<STATUS>}
    */
+  public static final String SUBTYPE_NAME_PATTERN = "%s_%s_%s";
+
   public static final String SUBTYPE_STATUS_PATTERN = "%s_%s_status_%s";
 
   private static final Pattern LEADING_SPACE_PATTERN = Pattern.compile("^\\s.*$");
@@ -97,6 +99,7 @@ public class TranslationValidator {
     allEntityKeys.addAll(attributeTranslationKeys(customAspects));
     allEntityKeys.addAll(attributeTranslationKeys(links));
     allEntityKeys.addAll(linkIdTranslationKeys(links));
+    allEntityKeys.addAll(subTypeNameTranslationKeys(type, subTypes));
     allEntityKeys.addAll(statusTranslationKeys(type, subTypes));
 
     var violations =
@@ -239,6 +242,16 @@ public class TranslationValidator {
 
   private static List<String> keysInAButNotB(List<String> listA, List<String> listB) {
     return listA.stream().filter(not(listB::contains)).toList();
+  }
+
+  private static Collection<String> subTypeNameTranslationKeys(
+      @NonNull String type, Map<String, SubTypeDefinition> subTypes) {
+    return subTypes.entrySet().stream().flatMap(e -> toSubTypeNameKeys(type, e.getKey())).toList();
+  }
+
+  private static Stream<String> toSubTypeNameKeys(String type, String subType) {
+    return Stream.of("singular", "plural")
+        .map(sp -> SUBTYPE_NAME_PATTERN.formatted(type, subType, sp));
   }
 
   private static List<String> statusTranslationKeys(

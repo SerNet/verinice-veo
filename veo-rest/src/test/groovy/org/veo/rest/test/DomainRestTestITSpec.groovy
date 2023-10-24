@@ -366,4 +366,12 @@ class DomainRestTestITSpec extends DomainRestTest {
             }
         }
     }
+
+    def "retrieve element type definition"() {
+        when:
+        def result = get("/domains/$dsgvoDomainId").body
+
+        then:
+        result.elementTypeDefinitions.process.translations.de.process_PRO_DataTransfer_plural == "Datenübertragungen"
+    }
 }

@@ -2301,6 +2301,10 @@
     },
     "translations": {
       "de": {
+        "process_PRO_DataTransfer_singular": "Datenübertragung",
+        "process_PRO_DataTransfer_plural": "Datenübertragungen",
+        "process_PRO_DataProcessing_singular": "Datenverarbeitung",
+        "process_PRO_DataProcessing_plural": "Datenverarbeitungen",
         "process_generalInformation_document": "Dokument",
         "process_processingDetails_responsibleDepartment": "Verantwortliche Fachabteilung",
         "process_processingDetails_typeOfSurvey": "Art der Erhebung",
@@ -2477,6 +2481,10 @@
         "process_dataType_deletionPeriodCount": "Löschfrist (Dauer)"
       },
       "en": {
+        "process_PRO_DataTransfer_singular": "Data transfer",
+        "process_PRO_DataTransfer_plural": "Data transfers",
+        "process_PRO_DataProcessing_singular": "Data processing",
+        "process_PRO_DataProcessing_plural": "Data processings",
         "process_generalInformation_document": "Document",
         "process_processingDetails_responsibleDepartment": "Responsible department",
         "process_processingDetails_typeOfSurvey": "Type of survey",

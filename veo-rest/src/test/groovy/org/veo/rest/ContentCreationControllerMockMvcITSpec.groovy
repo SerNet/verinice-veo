@@ -257,6 +257,8 @@ class ContentCreationControllerMockMvcITSpec extends ContentSpec {
             ],
             translations:[
                 en:[
+                    scope_SCP_Container_singular: 'Container',
+                    scope_SCP_Container_plural: 'Containers',
                     scope_SCP_Container_status_Empty: 'Empty',
                     scope_SCP_Container_status_Full: 'Full',
                     container_lid_present: 'Lid present?',

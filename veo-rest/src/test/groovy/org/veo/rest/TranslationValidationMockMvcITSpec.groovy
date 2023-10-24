@@ -62,9 +62,11 @@ class TranslationValidationMockMvcITSpec extends ContentSpec {
         modifiedSchema.properties.translations.de.scope_SCP_Scope_status_NEW = ' Neu'
         modifiedSchema.properties.translations.de.scope_SCP_Scope_status_RELEASED = 'Freigegeben '
         modifiedSchema.properties.translations.de.remove('scope_management') // remove an attribute
+        modifiedSchema.properties.translations.de.remove('scope_SCP_Processor_singular') // remove a sub type
         modifiedSchema.properties.translations.de.remove('scope_informationSecurityOfficer') // remove a link id
         modifiedSchema.properties.translations.en.remove('scope_SCP_Scope_status_IN_PROGRESS') // remove a subtype status
         modifiedSchema.properties.translations.en.remove('scope_dataProtectionOfficer_affiliation_external') // remove an enum
+        modifiedSchema.properties.translations.en.remove('scope_SCP_ResponsibleBody_plural') // remove a sub type
         modifiedSchema.properties.translations.de.superfluous_key = "I'm not even supposed to be here today!" // add a superfluous (i.e. mistyped) key
 
         when: "a request is made to the server"
@@ -72,6 +74,6 @@ class TranslationValidationMockMvcITSpec extends ContentSpec {
 
         then: "all missing and  mistyped/superfluous translations are listed"
         Exception ex = thrown()
-        ex.message == "Issues were found in the translations: Language 'de': LEADING_SPACES: scope_SCP_Scope_status_NEW ; MISSING: scope_informationSecurityOfficer, scope_management ; SUPERFLUOUS: superfluous_key ; TRAILING_SPACES: scope_SCP_Scope_status_RELEASED    /    Language 'en': MISSING: scope_SCP_Scope_status_IN_PROGRESS, scope_dataProtectionOfficer_affiliation_external"
+        ex.message == "Issues were found in the translations: Language 'de': LEADING_SPACES: scope_SCP_Scope_status_NEW ; MISSING: scope_SCP_Processor_singular, scope_informationSecurityOfficer, scope_management ; SUPERFLUOUS: superfluous_key ; TRAILING_SPACES: scope_SCP_Scope_status_RELEASED    /    Language 'en': MISSING: scope_SCP_ResponsibleBody_plural, scope_SCP_Scope_status_IN_PROGRESS, scope_dataProtectionOfficer_affiliation_external"
     }
 }

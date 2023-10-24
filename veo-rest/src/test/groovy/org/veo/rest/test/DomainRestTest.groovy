@@ -66,6 +66,8 @@ abstract class DomainRestTest extends VeoRestTest{
                         ],
                         translations: [
                             en: [
+                                asset_server_singular: "Server",
+                                asset_server_plural: "Servers",
                                 asset_server_status_off: "off",
                                 asset_server_status_on: "on"
                             ]
