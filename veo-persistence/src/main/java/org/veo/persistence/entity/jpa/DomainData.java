@@ -85,7 +85,7 @@ public class DomainData extends DomainBaseData implements Domain {
   }
 
   public void setCatalogItems(Set<CatalogItem> catalogItems) {
-    catalogItems.forEach(ci -> ci.setOwner(this));
+    catalogItems.forEach(ci -> ci.setDomainBase(this));
     this.catalogItems.clear();
     this.catalogItems.addAll(catalogItems);
   }

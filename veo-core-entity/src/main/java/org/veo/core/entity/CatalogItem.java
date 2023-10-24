@@ -49,7 +49,7 @@ public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem> {
    * @throws UnprocessableDataException if this belongs to a domain template and cannot be applied
    */
   default Domain requireDomainMembership() {
-    if (getOwner() instanceof Domain domain) {
+    if (getDomainBase() instanceof Domain domain) {
       return domain;
     }
     throw new UnprocessableDataException(
@@ -117,13 +117,11 @@ public interface CatalogItem extends ClientOwned, TemplateItem<CatalogItem> {
   }
 
   default Optional<Client> getOwningClient() {
-    return Optional.ofNullable(getOwner())
+    return Optional.ofNullable(getDomainBase())
         .filter(ClientOwned.class::isInstance)
         .map(ClientOwned.class::cast)
         .flatMap(ClientOwned::getOwningClient);
   }
 
-  DomainBase getOwner();
-
-  void setOwner(DomainBase owner);
+  void setDomainBase(DomainBase owner);
 }

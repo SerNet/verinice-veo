@@ -29,7 +29,7 @@ import org.veo.core.entity.definitions.LinkDefinition;
 public class CatalogItemValidator {
 
   public static void validate(CatalogItem item) {
-    DomainBase domain = item.getOwner();
+    DomainBase domain = item.getDomainBase();
     SubTypeValidator.validate(domain, item.getSubType(), item.getStatus(), item.getElementType());
     item.getCustomAspects().entrySet().stream()
         .forEach(

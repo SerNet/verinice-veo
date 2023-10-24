@@ -29,6 +29,11 @@ public interface ProfileItem extends TemplateItem<ProfileItem>, ClientOwned {
   /** All the tailoring references for this catalog item. */
   Set<TailoringReference<ProfileItem>> getTailoringReferences();
 
+  @Override
+  default DomainBase getDomainBase() {
+    return getOwner().getOwner();
+  }
+
   default void setTailoringReferences(Set<TailoringReference<ProfileItem>> tailoringReferences) {
     getTailoringReferences().clear();
     tailoringReferences.forEach(tailoringReference -> tailoringReference.setOwner(this));

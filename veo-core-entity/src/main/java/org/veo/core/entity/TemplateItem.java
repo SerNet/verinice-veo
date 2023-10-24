@@ -72,4 +72,6 @@ public interface TemplateItem<T extends TemplateItem<T>> extends Nameable, Ident
                   .collect(Collectors.joining(", ")));
     }
   }
+
+  DomainBase getDomainBase();
 }

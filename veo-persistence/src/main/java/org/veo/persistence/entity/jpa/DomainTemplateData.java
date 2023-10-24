@@ -61,7 +61,7 @@ public class DomainTemplateData extends DomainBaseData implements DomainTemplate
   private Set<Profile> profiles = new HashSet<>();
 
   public void setCatalogItems(Set<CatalogItem> catalogItems) {
-    catalogItems.forEach(ci -> ci.setOwner(this));
+    catalogItems.forEach(ci -> ci.setDomainBase(this));
     this.catalogItems.clear();
     this.catalogItems.addAll(catalogItems);
   }

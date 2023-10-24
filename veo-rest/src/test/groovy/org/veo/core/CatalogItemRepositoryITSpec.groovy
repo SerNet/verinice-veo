@@ -85,7 +85,7 @@ class CatalogItemRepositoryITSpec extends VeoSpringSpec {
         catalogItem.setName("my name")
         catalogItem.setSubType("ctl")
         catalogItem.setStatus("NEW")
-        catalogItem.setOwner(domain)
+        catalogItem.setDomainBase(domain)
         catalogItemRepository.save(catalogItem)
 
         then:

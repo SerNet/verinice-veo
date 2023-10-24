@@ -28,7 +28,6 @@ import org.veo.core.repository.ElementQuery
 import org.veo.core.repository.ElementRepository
 import org.veo.core.repository.GenericElementRepository
 import org.veo.core.repository.PagedResult
-import org.veo.core.repository.RepositoryProvider
 import org.veo.core.repository.UnitRepository
 import org.veo.core.usecase.DesignatorService
 import org.veo.core.usecase.UseCaseSpec
@@ -66,7 +65,7 @@ abstract class ApplyIncarnationDescriptionSpec extends UseCaseSpec {
         domainRepository.getById(existingDomainId) >> existingDomain
 
         item1.id >> Key.newUuid()
-        item1.owner >> existingDomain
+        item1.domainBase >> existingDomain
         item1.requireDomainMembership() >> existingDomain
     }
 }

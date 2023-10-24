@@ -90,12 +90,12 @@ public class CatalogItemData extends TemplateItemData<CatalogItem> implements Ca
   @Valid
   private Set<UpdateReference> updateReferences = new HashSet<>();
 
-  public DomainBase getOwner() {
+  public DomainBase getDomainBase() {
     return domain != null ? domain : domainTemplate;
   }
 
-  public void setOwner(DomainBase owner) {
-    if (getOwner() != null && !getOwner().equals(owner)) {
+  public void setDomainBase(DomainBase owner) {
+    if (getDomainBase() != null && !getDomainBase().equals(owner)) {
       throw new IllegalArgumentException("Cannot move catalog item between domains");
     }
 

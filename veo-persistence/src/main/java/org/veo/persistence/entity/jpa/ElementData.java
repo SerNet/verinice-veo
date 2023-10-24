@@ -330,7 +330,7 @@ public abstract class ElementData extends IdentifiableVersionedData implements E
     ProfileItem item = new EntityDataFactory().createProfileItem(profile);
     toItem((Domain) profile.getOwner(), item);
     getAppliedCatalogItems().stream()
-        .filter(ci -> ci.getOwner().getIdAsString().equals(profile.getOwner().getIdAsString()))
+        .filter(ci -> ci.getDomainBase().getIdAsString().equals(profile.getOwner().getIdAsString()))
         .findAny()
         .ifPresent(ci -> item.setAppliedCatalogItem(ci));
     return item;

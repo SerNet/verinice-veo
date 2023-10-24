@@ -58,7 +58,7 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
         given:
         def id2 = Key.newUuid()
         item2.id >> id2
-        item2.owner >> existingDomain
+        item2.domainBase >> existingDomain
         item2.elementType >> "control"
         item2.tailoringReferences >> []
 
@@ -84,7 +84,7 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
         given:
         def id2 = Key.newUuid()
         item2.id >> id2
-        item2.owner >> existingDomain
+        item2.domainBase >> existingDomain
         item2.elementType >> "control"
         item2.elementInterface >> Control.class
 
@@ -117,7 +117,7 @@ class GetCatalogIncarnationDescriptionUseCaseSpec extends ApplyIncarnationDescri
         given:
         def id2 = Key.newUuid()
         item2.id >> id2
-        item2.owner >> existingDomain
+        item2.domainBase >> existingDomain
         item2.elementType >> "control"
         item2.elementInterface >> Control.class
 

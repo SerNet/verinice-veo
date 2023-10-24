@@ -205,7 +205,7 @@ public class EntityDataFactory implements EntityFactory {
   @Override
   public CatalogItem createCatalogItem(DomainBase domain) {
     CatalogItem catalogItem = new CatalogItemData();
-    catalogItem.setOwner(domain);
+    catalogItem.setDomainBase(domain);
     domain.getCatalogItems().add(catalogItem);
     return catalogItem;
   }

@@ -184,7 +184,11 @@ public class ReferenceAssemblerImpl implements ReferenceAssembler {
       return linkTo(
               methodOn(CatalogController.class)
                   .getCatalogItem(
-                      ANY_AUTH, catalogItem.getOwner().getId().uuidValue(), id, null, ANY_REQUEST))
+                      ANY_AUTH,
+                      catalogItem.getDomainBase().getId().uuidValue(),
+                      id,
+                      null,
+                      ANY_REQUEST))
           .withRel(CatalogController.URL_BASE_PATH)
           .expand()
           .getHref();

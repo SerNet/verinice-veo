@@ -171,7 +171,7 @@ class ReferenceAssemblerImplSpec extends Specification {
         }
         CatalogItem catalogItem = Stub {
             getId () >> Key.uuidFrom(itemId)
-            getOwner()  >> domain
+            getDomainBase()  >> domain
             getModelInterface() >> CatalogItem
         }
 

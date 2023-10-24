@@ -37,7 +37,7 @@ class GetCatalogItemUseCaseSpec extends UseCaseSpec {
         existingDomain.owner >> existingClient
 
         catalogItem.getId() >> catalogItemId
-        catalogItem.getOwner() >> existingDomain
+        catalogItem.getDomainBase() >> existingDomain
         existingDomain.getCatalogItems() >> [catalogItem]
         anotherClient.getDomains() >> []
     }

@@ -64,7 +64,7 @@ class ReferenceAssemblerImplITSpec extends VeoSpringSpec {
             def domain = Stub(Domain) {
                 getId() >> Key.newUuid()
             }
-            entity.owner >> domain
+            entity.domainBase >> domain
         }
         entity
     }
