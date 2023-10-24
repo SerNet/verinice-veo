@@ -68,7 +68,6 @@ class ScopeRiskValuesMockMvcITSpec extends VeoMvcSpec {
     private Domain domain
     private String unitId
     private String domainId
-    private String r1d1DomainId
     private ScopeData scope
     private ScenarioData scenario
 
@@ -92,22 +91,6 @@ class ScopeRiskValuesMockMvcITSpec extends VeoMvcSpec {
         }
         domainId = domain.idAsString
 
-        r1d1DomainId = (newDomain(client) {
-            riskDefinitions = [
-                "r1d1": createRiskDefinition("r1d1"),
-            ]
-            applyElementTypeDefinition(newElementTypeDefinition("scope", it) {
-                subTypes = [
-                    Riskyscope: newSubTypeDefinition()
-                ]
-            })
-            applyElementTypeDefinition(newElementTypeDefinition("scenario", it) {
-                subTypes = [
-                    HypotheticalScenario: newSubTypeDefinition()
-                ]
-            })
-        }).idAsString
-
         clientRepository.save(client)
         unit = newUnit(client)
         unitId = unitRepository.save(unit).idAsString
@@ -116,7 +99,7 @@ class ScopeRiskValuesMockMvcITSpec extends VeoMvcSpec {
         DomainRiskReferenceProvider riskreferenceProvider = DomainRiskReferenceProvider.referencesForDomain(domain)
 
         ImpactValues scopeImpactValues = new ImpactValues()
-        def categoryref = riskreferenceProvider.getCategoryRef(riskDefinitionRef.getIdRef(), "C")
+        def categoryref = riskreferenceProvider.getCategoryRef(riskDefinitionRef.getIdRef(), "A")
         def impactValue = riskreferenceProvider.getImpactRef(riskDefinitionRef.getIdRef(), categoryref.getIdRef(), new BigDecimal("2"))
         scopeImpactValues.potentialImpacts = [(categoryref) : impactValue]
         Map impactValues = [
@@ -125,7 +108,7 @@ class ScopeRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
         scope = newScope(unit) {
             associateWithDomain(domain, "Difficultscope", "NEW")
-            //            setImpactValues(domain, impactValues)
+            setImpactValues(domain, impactValues)
         }
         scopeRepository.save(scope)
 
@@ -661,40 +644,84 @@ class ScopeRiskValuesMockMvcITSpec extends VeoMvcSpec {
     }
 
     def "Creating a risk with potential values calculates risk value"() {
-        given: "a process"
-        def scopeId = parseJson(post("/scopes", [
-            domains: [
-                (domainId): [
-                    subType: "Difficultscope",
-                    status: "NEW",
-                ]
-            ],
-            name: "risk test process",
-            owner: [targetUri: "http://localhost/units/$unitId"]
-        ])).resourceId
-        def processETag = getETag(get("/scopes/$scopeId"))
+        given: "a scope & scenario"
+        def scopeId = scope.idAsString
 
-        Map headers = [
-            'If-Match': processETag
-        ]
-        put("/scopes/$scopeId", [
+        def scenarioId = parseJson(post("/scenarios", [
+            name: "process risk test scenario",
+            owner: [targetUri: "http://localhost/units/$unitId"],
             domains: [
                 (domainId): [
-                    subType: "Difficultscope",
+                    subType: "BestCase",
                     status: "NEW",
                     riskValues: [
                         r1d1 : [
-                            potentialImpacts: [
-                                "A": 2,
+                            potentialProbability: 2
+                        ]
+                    ]
+                ]
+            ]
+        ])).resourceId
+
+        when: "a risk is created with specific probability and impact"
+        post("/scopes/$scopeId/risks", [
+            domains : [
+                (domainId): [
+                    reference      : [targetUri: "http://localhost/domains/$domainId"],
+                    riskDefinitions: [
+                        r1d1: [
+                            probability: [
+                                specificProbability: 1
+                            ],
+                            impactValues: [
+                                [
+                                    category      : "A",
+                                    specificImpact: 1
+                                ]
                             ]
                         ]
                     ]
                 ]
             ],
-            name: "risk test process",
-            owner: [targetUri: "http://localhost/units/$unitId"]
-        ], headers)
+            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
+        ], 201)
 
+        then: "scope contains impact"
+        def retrievedscope = parseJson(get("/scopes/$scopeId"))
+        retrievedscope.domains.get(domainId).riskValues.r1d1.potentialImpacts.A == 2
+
+        and: "scenario contains probability"
+        def retrievedScenario = parseJson(get("/scenarios/$scenarioId"))
+        retrievedScenario.domains.get(domainId).riskValues.r1d1.potentialProbability == 2
+
+        and: "the risk resource was created with the values"
+        def retrievedscopeRisk2 = parseJson(get("/scopes/$scopeId/risks/$scenarioId"))
+
+        with(retrievedscopeRisk2.domains.get(domainId).riskDefinitions) {
+            size() == 1
+
+            r1d1.impactValues.find{it.category=='A'}.potentialImpact == 2
+            r1d1.impactValues.find{it.category=='A'}.specificImpact == 1
+            r1d1.impactValues.find{it.category=='A'}.effectiveImpact == 1
+
+            r1d1.probability.potentialProbability == 2
+            r1d1.probability.specificProbability == 1
+            r1d1.probability.effectiveProbability == 1
+        }
+
+        and: "the risk was calculated"
+        retrievedscopeRisk2.domains.get(domainId).riskDefinitions.r1d1.riskValues.size() == 4
+        with(
+                retrievedscopeRisk2.domains.get(domainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}) {
+                    inherentRisk == 0
+                    residualRisk == 0
+                }
+    }
+
+    def "Creating a risk with potential values calculates risk value (with only one risk definition in the domain)"() {
+        given: "a scope in a domain with only a single risk definition"
+        domain.riskDefinitions.remove("r2d2")
+        def scopeId = scope.idAsString
         def scenarioId = parseJson(post("/scenarios", [
             name: "process risk test scenario",
             owner: [targetUri: "http://localhost/units/$unitId"],
@@ -744,110 +771,19 @@ class ScopeRiskValuesMockMvcITSpec extends VeoMvcSpec {
 
         and: "the risk resource was created with the values"
         def retrievedscopeRisk2 = parseJson(get("/scopes/$scopeId/risks/$scenarioId"))
+        retrievedscopeRisk2.domains.get(domainId).riskDefinitions.size() == 1
 
-        with(retrievedscopeRisk2.domains.get(domainId).riskDefinitions) {
-            size() == 1
+        retrievedscopeRisk2.domains.get(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.potentialImpact == 2
+        retrievedscopeRisk2.domains.get(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.specificImpact == 1
+        retrievedscopeRisk2.domains.get(domainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.effectiveImpact == 1
 
-            r1d1.impactValues.find{it.category=='A'}.potentialImpact == 2
-            r1d1.impactValues.find{it.category=='A'}.specificImpact == 1
-            r1d1.impactValues.find{it.category=='A'}.effectiveImpact == 1
-
-            r1d1.probability.potentialProbability == 2
-            r1d1.probability.specificProbability == 1
-            r1d1.probability.effectiveProbability == 1
-        }
+        retrievedscopeRisk2.domains.get(domainId).riskDefinitions.r1d1.probability.potentialProbability == 2
+        retrievedscopeRisk2.domains.get(domainId).riskDefinitions.r1d1.probability.specificProbability == 1
+        retrievedscopeRisk2.domains.get(domainId).riskDefinitions.r1d1.probability.effectiveProbability == 1
 
         and: "the risk was calculated"
         retrievedscopeRisk2.domains.get(domainId).riskDefinitions.r1d1.riskValues.size() == 4
-        with(
-                retrievedscopeRisk2.domains.get(domainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}) {
-                    inherentRisk == 0
-                    residualRisk == 0
-                }
-    }
-
-    def "Creating a risk with potential values calculates risk value (with only one risk definition in the domain)"() {
-        given: "a process in a domain with only a single risk definition"
-        def scopeId = parseJson(post("/scopes", [
-            domains: [
-                (r1d1DomainId): [
-                    subType: "Riskyscope",
-                    status: "NEW",
-                    riskValues: [
-                        r1d1 : [
-                            potentialImpacts: [
-                                "A": 2,
-                            ]
-                        ]
-                    ]
-                ]
-            ],
-            name: "risk test process",
-            owner: [targetUri: "http://localhost/units/$unitId"]
-        ])).resourceId
-
-        def scenarioId = parseJson(post("/scenarios", [
-            name: "process risk test scenario",
-            owner: [targetUri: "http://localhost/units/$unitId"],
-            domains: [
-                (r1d1DomainId): [
-                    subType: "HypotheticalScenario",
-                    status: "NEW",
-                    riskValues: [
-                        r1d1 : [
-                            potentialProbability: 2
-                        ]
-                    ]
-                ]
-            ]
-        ])).resourceId
-
-        when: "a risk is created with specific probability and impact"
-        post("/scopes/$scopeId/risks", [
-            domains : [
-                (r1d1DomainId): [
-                    reference      : [targetUri: "http://localhost/domains/$r1d1DomainId"],
-                    riskDefinitions: [
-                        r1d1: [
-                            probability: [
-                                specificProbability: 1
-                            ],
-                            impactValues: [
-                                [
-                                    category      : "A",
-                                    specificImpact: 1
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ],
-            scenario: [targetUri: "http://localhost/scenarios/$scenarioId"]
-        ], 201)
-
-        then: "process contains impact"
-        def retrievedscope = parseJson(get("/scopes/$scopeId"))
-        retrievedscope.domains.get(r1d1DomainId).riskValues.r1d1.potentialImpacts.A == 2
-
-        and: "scenario contains probability"
-        def retrievedScenario = parseJson(get("/scenarios/$scenarioId"))
-        retrievedScenario.domains.get(r1d1DomainId).riskValues.r1d1.potentialProbability == 2
-
-        and: "the risk resource was created with the values"
-        def retrievedscopeRisk2 = parseJson(get("/scopes/$scopeId/risks/$scenarioId"))
-        retrievedscopeRisk2.domains.get(r1d1DomainId).riskDefinitions.size() == 1
-
-        retrievedscopeRisk2.domains.get(r1d1DomainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.potentialImpact == 2
-        retrievedscopeRisk2.domains.get(r1d1DomainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.specificImpact == 1
-        retrievedscopeRisk2.domains.get(r1d1DomainId).riskDefinitions.r1d1.impactValues.find{it.category=='A'}.effectiveImpact == 1
-
-        retrievedscopeRisk2.domains.get(r1d1DomainId).riskDefinitions.r1d1.probability.potentialProbability == 2
-        retrievedscopeRisk2.domains.get(r1d1DomainId).riskDefinitions.r1d1.probability.specificProbability == 1
-        retrievedscopeRisk2.domains.get(r1d1DomainId).riskDefinitions.r1d1.probability.effectiveProbability == 1
-
-        and: "the risk was calculated"
-        retrievedscopeRisk2.domains.get(r1d1DomainId).riskDefinitions.r1d1.riskValues.size() == 4
-        with(retrievedscopeRisk2.domains.get(r1d1DomainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}) {
+        with(retrievedscopeRisk2.domains.get(domainId).riskDefinitions.r1d1.riskValues.find{it.category=='A'}) {
             inherentRisk == 0
             residualRisk == 0
         }
