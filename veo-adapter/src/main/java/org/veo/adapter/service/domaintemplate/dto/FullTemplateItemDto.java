@@ -17,11 +17,21 @@
  ******************************************************************************/
 package org.veo.adapter.service.domaintemplate.dto;
 
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
+import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
+import org.veo.adapter.presenter.api.dto.full.LinkTailoringReferenceDto;
+import org.veo.core.entity.TemplateItem;
 import org.veo.core.entity.TemplateItemAspects;
 
-public interface FullTemplateItemDto extends NameableDto {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public interface FullTemplateItemDto<T extends TemplateItem<T>> extends NameableDto {
   String getId();
 
   String getStatus();
@@ -49,4 +59,18 @@ public interface FullTemplateItemDto extends NameableDto {
   TemplateItemAspects getAspects();
 
   void setAspects(TemplateItemAspects aspects);
+
+  @JsonTypeInfo(
+      use = JsonTypeInfo.Id.NAME,
+      visible = true,
+      defaultImpl = TailoringReferenceDto.class,
+      include = JsonTypeInfo.As.EXISTING_PROPERTY,
+      property = "referenceType")
+  @JsonSubTypes({
+    @JsonSubTypes.Type(value = LinkTailoringReferenceDto.class, name = "LINK_EXTERNAL"),
+    @JsonSubTypes.Type(value = LinkTailoringReferenceDto.class, name = "LINK"),
+    @JsonSubTypes.Type(value = RiskTailoringReferenceDto.class, name = "RISK"),
+  })
+  @Schema(description = "References to other catalog items in the same domain")
+  Set<TailoringReferenceDto<T>> getTailoringReferences();
 }

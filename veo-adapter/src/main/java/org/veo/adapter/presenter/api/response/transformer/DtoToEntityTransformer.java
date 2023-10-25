@@ -31,21 +31,19 @@ import org.apache.commons.lang3.NotImplementedException;
 
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
-import org.veo.adapter.presenter.api.dto.AbstractProfileTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
-import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractUnitDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
+import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
-import org.veo.adapter.presenter.api.dto.full.FullLinkProfileTailoringReferenceDto;
+import org.veo.adapter.presenter.api.dto.full.LinkTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
-import org.veo.adapter.service.domaintemplate.dto.ExportLinkTailoringReference;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileItemDto;
 import org.veo.adapter.service.domaintemplate.dto.FullTemplateItemDto;
@@ -235,21 +233,20 @@ public final class DtoToEntityTransformer {
   }
 
   public TailoringReference transformDto2TailoringReference(
-      AbstractTailoringReferenceDto source, CatalogItem owner, IdRefResolver idRefResolver) {
-
+      TailoringReferenceDto<CatalogItem> source, CatalogItem owner, IdRefResolver idRefResolver) {
     var target =
         source.isLinkTailoringReferences()
             ? createIdentifiable(LinkTailoringReference.class, source)
             : createIdentifiable(TailoringReference.class, source);
     target.setOwner(owner);
     target.setReferenceType(source.getReferenceType());
-    if (source.getCatalogItem() != null) {
-      CatalogItem resolve = idRefResolver.resolve(source.getCatalogItem());
+    if (source.getTarget() != null) {
+      CatalogItem resolve = idRefResolver.resolve(source.getTarget());
       target.setTarget(resolve);
     }
 
     if (source.isLinkTailoringReferences()) {
-      ExportLinkTailoringReference tailoringReferenceDto = (ExportLinkTailoringReference) source;
+      LinkTailoringReferenceDto tailoringReferenceDto = (LinkTailoringReferenceDto) source;
       LinkTailoringReference tailoringReference = (LinkTailoringReference) target;
       tailoringReference.setAttributes(tailoringReferenceDto.getAttributes());
       tailoringReference.setLinkType(tailoringReferenceDto.getLinkType());
@@ -259,7 +256,7 @@ public final class DtoToEntityTransformer {
   }
 
   private TailoringReference<ProfileItem> transformDto2ProfileTailoringReference(
-      AbstractProfileTailoringReferenceDto source, ProfileItem owner, IdRefResolver idRefResolver) {
+      TailoringReferenceDto<ProfileItem> source, ProfileItem owner, IdRefResolver idRefResolver) {
 
     TailoringReference<ProfileItem> target =
         source.isLinkTailoringReferences()
@@ -273,8 +270,7 @@ public final class DtoToEntityTransformer {
     }
 
     if (source.isLinkTailoringReferences()) {
-      FullLinkProfileTailoringReferenceDto tailoringReferenceDto =
-          (FullLinkProfileTailoringReferenceDto) source;
+      LinkTailoringReferenceDto tailoringReferenceDto = (LinkTailoringReferenceDto) source;
       LinkTailoringReference<ProfileItem> tailoringReference = (LinkTailoringReference) target;
       tailoringReference.setAttributes(tailoringReferenceDto.getAttributes());
       tailoringReference.setLinkType(tailoringReferenceDto.getLinkType());

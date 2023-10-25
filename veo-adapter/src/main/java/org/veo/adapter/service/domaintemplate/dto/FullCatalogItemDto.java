@@ -25,15 +25,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
-
 import org.veo.adapter.presenter.api.Patterns;
-import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractTemplateItemDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
-import org.veo.adapter.presenter.api.dto.full.FullTailoringReferenceDto;
+import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.TemplateItemAspects;
@@ -48,7 +43,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class FullCatalogItemDto extends AbstractTemplateItemDto
-    implements IdentifiableDto, FullTemplateItemDto {
+    implements IdentifiableDto, FullTemplateItemDto<CatalogItem> {
 
   @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
   @Schema(
@@ -71,18 +66,7 @@ public class FullCatalogItemDto extends AbstractTemplateItemDto
       title = "CustomAspect")
   private CustomAspectMapDto customAspects = new CustomAspectMapDto();
 
-  @JsonTypeInfo(
-      use = JsonTypeInfo.Id.NAME,
-      visible = true,
-      defaultImpl = FullTailoringReferenceDto.class,
-      include = As.EXISTING_PROPERTY,
-      property = "referenceType")
-  @JsonSubTypes({
-    @JsonSubTypes.Type(value = ExportLinkTailoringReference.class, name = "LINK_EXTERNAL"),
-    @JsonSubTypes.Type(value = ExportLinkTailoringReference.class, name = "LINK"),
-  })
-  @Schema(description = "References to other catalog items in the same domain")
-  private Set<AbstractTailoringReferenceDto> tailoringReferences = new HashSet<>();
+  private Set<TailoringReferenceDto<CatalogItem>> tailoringReferences = new HashSet<>();
 
   @Deprecated // TODO #2301 remove
   @ToString.Include

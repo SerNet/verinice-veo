@@ -25,17 +25,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
-
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.dto.AbstractProfileItemDto;
-import org.veo.adapter.presenter.api.dto.AbstractProfileTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
-import org.veo.adapter.service.domaintemplate.dto.ExportRiskProfileTailoringReference;
+import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.adapter.service.domaintemplate.dto.FullTemplateItemDto;
 import org.veo.core.entity.CatalogItem;
+import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.TemplateItemAspects;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -45,7 +41,8 @@ import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class FullProfileItemDto extends AbstractProfileItemDto implements FullTemplateItemDto {
+public class FullProfileItemDto extends AbstractProfileItemDto
+    implements FullTemplateItemDto<ProfileItem> {
 
   @Pattern(regexp = Patterns.UUID, message = "ID must be a valid UUID string following RFC 4122.")
   @Schema(
@@ -63,19 +60,7 @@ public class FullProfileItemDto extends AbstractProfileItemDto implements FullTe
       title = "CustomAspect")
   private CustomAspectMapDto customAspects = new CustomAspectMapDto();
 
-  @JsonTypeInfo(
-      use = JsonTypeInfo.Id.NAME,
-      visible = true,
-      defaultImpl = FullProfileTailoringReferenceDto.class,
-      include = As.EXISTING_PROPERTY,
-      property = "referenceType")
-  @JsonSubTypes({
-    @JsonSubTypes.Type(value = FullLinkProfileTailoringReferenceDto.class, name = "LINK_EXTERNAL"),
-    @JsonSubTypes.Type(value = FullLinkProfileTailoringReferenceDto.class, name = "LINK"),
-    @JsonSubTypes.Type(value = ExportRiskProfileTailoringReference.class, name = "RISK"),
-  })
-  @Schema(description = "References to other catalog items in the same domain")
-  private Set<AbstractProfileTailoringReferenceDto> tailoringReferences = new HashSet<>();
+  private Set<TailoringReferenceDto<ProfileItem>> tailoringReferences = new HashSet<>();
 
   @Deprecated // TODO #2301 remove
   @ToString.Include

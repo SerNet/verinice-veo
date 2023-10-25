@@ -1,6 +1,6 @@
 /*******************************************************************************
  * verinice.veo
- * Copyright (C) 2021  Urs Zeidler.
+ * Copyright (C) 2023  Urs Zeidler.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,25 +15,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package org.veo.adapter.presenter.api.dto;
+package org.veo.adapter.service.domaintemplate.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.Collections;
+import java.util.Map;
 
-import org.veo.core.entity.TailoringReferenceType;
-import org.veo.core.entity.TailoringReferenceTyped;
+import org.veo.adapter.presenter.api.common.IdRef;
+import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
+import org.veo.core.entity.TemplateItem;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 
-/** Base class for all TailoringReferenceDto. */
-@Data
+/** Represents a {@link org.veo.core.entity.RiskTailoringReference} */
 @EqualsAndHashCode(callSuper = true)
-@ToString(onlyExplicitlyIncluded = true, callSuper = true)
-@SuppressWarnings("PMD.AbstractClassWithoutAnyMethod")
-@JsonIgnoreProperties(value = "linkTailoringReferences")
-public abstract class AbstractTailoringReferenceDto extends AbstractCatalogReferenceDto
-    implements TailoringReferenceTyped {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class RiskTailoringReferenceDto<T extends TemplateItem<T>> extends TailoringReferenceDto<T> {
+  private IdRef<T> mitigation;
+  private IdRef<T> riskOwner;
 
-  private TailoringReferenceType referenceType;
+  @Schema(description = "The properties of the risk element.", example = " name: 'value'")
+  private Map<String, Object> riskAspects = Collections.emptyMap();
 }

@@ -41,9 +41,7 @@ import org.veo.adapter.presenter.api.common.RequirementImplementationsRef;
 import org.veo.adapter.presenter.api.dto.AbstractCompositeElementInDomainDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementDto;
 import org.veo.adapter.presenter.api.dto.AbstractElementInDomainDto;
-import org.veo.adapter.presenter.api.dto.AbstractProfileTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractRiskDto;
-import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractTemplateItemDto;
 import org.veo.adapter.presenter.api.dto.AbstractVersionedDto;
 import org.veo.adapter.presenter.api.dto.AbstractVersionedSelfReferencingDto;
@@ -63,6 +61,7 @@ import org.veo.adapter.presenter.api.dto.RiskAffectedDto;
 import org.veo.adapter.presenter.api.dto.ShortCatalogItemDto;
 import org.veo.adapter.presenter.api.dto.ShortProfileDto;
 import org.veo.adapter.presenter.api.dto.ShortProfileItemDto;
+import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetDto;
 import org.veo.adapter.presenter.api.dto.full.FullAssetInDomainDto;
@@ -74,28 +73,25 @@ import org.veo.adapter.presenter.api.dto.full.FullDocumentInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullIncidentDto;
 import org.veo.adapter.presenter.api.dto.full.FullIncidentInDomainDto;
-import org.veo.adapter.presenter.api.dto.full.FullLinkProfileTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullProfileDto;
 import org.veo.adapter.presenter.api.dto.full.FullProfileItemDto;
-import org.veo.adapter.presenter.api.dto.full.FullProfileTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioDto;
 import org.veo.adapter.presenter.api.dto.full.FullScenarioInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeDto;
 import org.veo.adapter.presenter.api.dto.full.FullScopeInDomainDto;
-import org.veo.adapter.presenter.api.dto.full.FullTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.FullUnitDto;
 import org.veo.adapter.presenter.api.dto.full.LegacyCatalogItemDto;
+import org.veo.adapter.presenter.api.dto.full.LinkTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
-import org.veo.adapter.service.domaintemplate.dto.ExportLinkTailoringReference;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileItemDto;
 import org.veo.adapter.service.domaintemplate.dto.FullTemplateItemDto;
@@ -229,15 +225,16 @@ public final class EntityToDtoTransformer {
             .collect(toSet()));
   }
 
-  public AbstractProfileTailoringReferenceDto transformProfileTailoringReference2Dto(
+  public TailoringReferenceDto<ProfileItem> transformProfileTailoringReference2Dto(
       @Valid TailoringReference<ProfileItem> source) {
-    AbstractProfileTailoringReferenceDto target;
+    TailoringReferenceDto<ProfileItem> target;
     if (source instanceof LinkTailoringReference<ProfileItem> linkRef) {
       target =
-          new FullLinkProfileTailoringReferenceDto(
+          new LinkTailoringReferenceDto<>(
               linkRef.getLinkType(), Map.copyOf(linkRef.getAttributes()));
     } else {
-      target = new FullProfileTailoringReferenceDto(source.getId().uuidValue());
+      target = new TailoringReferenceDto<>();
+      target.setId(source.getId().uuidValue());
     }
     // TODO: handle risk ref
     target.setReferenceType(source.getReferenceType());
@@ -550,22 +547,23 @@ public final class EntityToDtoTransformer {
     return target;
   }
 
-  public AbstractTailoringReferenceDto transformTailoringReference2Dto(
+  public TailoringReferenceDto<CatalogItem> transformTailoringReference2Dto(
       @Valid TailoringReference<CatalogItem> source) {
-    AbstractTailoringReferenceDto target = null;
+    TailoringReferenceDto<CatalogItem> target = null;
     if (source.isLinkTailoringReferences()) {
       LinkTailoringReference linkRef = (LinkTailoringReference) source;
       target =
-          new ExportLinkTailoringReference(
+          new LinkTailoringReferenceDto<CatalogItem>(
               linkRef.getLinkType(), Map.copyOf(linkRef.getAttributes()));
     } else {
-      target = new FullTailoringReferenceDto(source.getId().uuidValue());
+      target = new TailoringReferenceDto<>();
     }
 
+    target.setId(source.getIdAsString());
     target.setReferenceType(source.getReferenceType());
 
     if (source.getTarget() != null) {
-      target.setCatalogItem(IdRef.from(source.getTarget(), referenceAssembler));
+      target.setLegacyTarget(IdRef.from(source.getTarget(), referenceAssembler));
     }
     return target;
   }

@@ -26,9 +26,9 @@ import jakarta.validation.constraints.Size;
 
 import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.common.IdRef;
-import org.veo.adapter.presenter.api.dto.AbstractTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.AbstractVersionedSelfReferencingDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
+import org.veo.adapter.presenter.api.dto.TailoringReferenceDto;
 import org.veo.adapter.presenter.api.openapi.IdRefCatalogItemElement;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.core.entity.CatalogItem;
@@ -80,5 +80,5 @@ public class LegacyCatalogItemDto extends AbstractVersionedSelfReferencingDto
   private IdRef<Element> element;
 
   @Schema(description = "The tailoring references of this catalog item.")
-  private Set<AbstractTailoringReferenceDto> tailoringReferences = new HashSet<>();
+  private Set<TailoringReferenceDto<CatalogItem>> tailoringReferences = new HashSet<>();
 }
