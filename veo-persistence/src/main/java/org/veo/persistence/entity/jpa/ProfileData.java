@@ -96,11 +96,6 @@ public class ProfileData extends IdentifiableVersionedData implements Profile, D
   private DomainTemplate domainTemplate;
 
   @Override
-  public String getModelType() {
-    return SINGULAR_TERM;
-  }
-
-  @Override
   public DomainBase getOwner() {
     return domain != null ? domain : domainTemplate;
   }

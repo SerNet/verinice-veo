@@ -33,6 +33,11 @@ public interface Profile extends Versioned, Identifiable, ClientOwned {
     return Profile.class;
   }
 
+  @Override
+  default String getModelType() {
+    return SINGULAR_TERM;
+  }
+
   String getName();
 
   void setName(String name);

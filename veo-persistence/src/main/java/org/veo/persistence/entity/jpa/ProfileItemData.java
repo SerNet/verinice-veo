@@ -33,7 +33,6 @@ import org.hibernate.annotations.GenericGenerator;
 
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.Element;
-import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Profile;
 import org.veo.core.entity.ProfileItem;
 import org.veo.core.entity.TailoringReference;
@@ -68,16 +67,6 @@ public class ProfileItemData extends TemplateItemData<ProfileItem> implements Pr
       fetch = FetchType.LAZY)
   @Valid
   private Set<TailoringReference<ProfileItem>> tailoringReferences = new HashSet<>();
-
-  @Override
-  public String getModelType() {
-    return SINGULAR_TERM;
-  }
-
-  @Override
-  public Class<? extends Identifiable> getModelInterface() {
-    return ProfileItem.class;
-  }
 
   /** create an instance of the described element* */
   @Override
