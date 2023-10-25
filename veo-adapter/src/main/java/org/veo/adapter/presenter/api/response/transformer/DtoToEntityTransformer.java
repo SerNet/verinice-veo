@@ -38,13 +38,13 @@ import org.veo.adapter.presenter.api.dto.AbstractUnitDto;
 import org.veo.adapter.presenter.api.dto.ElementTypeDefinitionDto;
 import org.veo.adapter.presenter.api.dto.NameableDto;
 import org.veo.adapter.presenter.api.dto.full.AssetRiskDto;
+import org.veo.adapter.presenter.api.dto.full.FullLinkProfileTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.ProcessRiskDto;
 import org.veo.adapter.presenter.api.dto.full.ScopeRiskDto;
 import org.veo.adapter.presenter.api.io.mapper.CategorizedRiskValueMapper;
 import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
-import org.veo.adapter.service.domaintemplate.dto.ExportLinkProfileTailoringReference;
 import org.veo.adapter.service.domaintemplate.dto.ExportLinkTailoringReference;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileItemDto;
@@ -273,8 +273,8 @@ public final class DtoToEntityTransformer {
     }
 
     if (source.isLinkTailoringReferences()) {
-      ExportLinkProfileTailoringReference tailoringReferenceDto =
-          (ExportLinkProfileTailoringReference) source;
+      FullLinkProfileTailoringReferenceDto tailoringReferenceDto =
+          (FullLinkProfileTailoringReferenceDto) source;
       LinkTailoringReference<ProfileItem> tailoringReference = (LinkTailoringReference) target;
       tailoringReference.setAttributes(tailoringReferenceDto.getAttributes());
       tailoringReference.setLinkType(tailoringReferenceDto.getLinkType());

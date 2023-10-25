@@ -74,6 +74,7 @@ import org.veo.adapter.presenter.api.dto.full.FullDocumentInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullIncidentDto;
 import org.veo.adapter.presenter.api.dto.full.FullIncidentInDomainDto;
+import org.veo.adapter.presenter.api.dto.full.FullLinkProfileTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonDto;
 import org.veo.adapter.presenter.api.dto.full.FullPersonInDomainDto;
 import org.veo.adapter.presenter.api.dto.full.FullProcessDto;
@@ -94,7 +95,6 @@ import org.veo.adapter.presenter.api.response.IdentifiableDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportCatalogItemDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportDomainTemplateDto;
-import org.veo.adapter.service.domaintemplate.dto.ExportLinkProfileTailoringReference;
 import org.veo.adapter.service.domaintemplate.dto.ExportLinkTailoringReference;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileDto;
 import org.veo.adapter.service.domaintemplate.dto.ExportProfileItemDto;
@@ -234,7 +234,7 @@ public final class EntityToDtoTransformer {
     AbstractProfileTailoringReferenceDto target;
     if (source instanceof LinkTailoringReference<ProfileItem> linkRef) {
       target =
-          new ExportLinkProfileTailoringReference(
+          new FullLinkProfileTailoringReferenceDto(
               linkRef.getLinkType(), Map.copyOf(linkRef.getAttributes()));
     } else {
       target = new FullProfileTailoringReferenceDto(source.getId().uuidValue());
