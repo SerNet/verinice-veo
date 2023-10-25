@@ -33,7 +33,7 @@ import org.veo.adapter.presenter.api.Patterns;
 import org.veo.adapter.presenter.api.dto.AbstractProfileItemDto;
 import org.veo.adapter.presenter.api.dto.AbstractProfileTailoringReferenceDto;
 import org.veo.adapter.presenter.api.dto.CustomAspectMapDto;
-import org.veo.adapter.presenter.api.dto.create.CreateTailoringReferenceDto;
+import org.veo.adapter.service.domaintemplate.dto.ExportRiskProfileTailoringReference;
 import org.veo.adapter.service.domaintemplate.dto.FullTemplateItemDto;
 import org.veo.core.entity.CatalogItem;
 import org.veo.core.entity.TemplateItemAspects;
@@ -66,17 +66,13 @@ public class FullProfileItemDto extends AbstractProfileItemDto implements FullTe
   @JsonTypeInfo(
       use = JsonTypeInfo.Id.NAME,
       visible = true,
-      defaultImpl = CreateTailoringReferenceDto.class,
+      defaultImpl = FullProfileTailoringReferenceDto.class,
       include = As.EXISTING_PROPERTY,
       property = "referenceType")
   @JsonSubTypes({
-    @JsonSubTypes.Type(value = FullProfileTailoringReferenceDto.class, name = "OMIT"),
-    @JsonSubTypes.Type(value = FullProfileTailoringReferenceDto.class, name = "COPY"),
-    @JsonSubTypes.Type(value = FullProfileTailoringReferenceDto.class, name = "COPY_ALWAYS"),
-    @JsonSubTypes.Type(value = FullProfileTailoringReferenceDto.class, name = "PART"),
-    @JsonSubTypes.Type(value = FullProfileTailoringReferenceDto.class, name = "COMPOSITE"),
     @JsonSubTypes.Type(value = FullLinkProfileTailoringReferenceDto.class, name = "LINK_EXTERNAL"),
-    @JsonSubTypes.Type(value = FullLinkProfileTailoringReferenceDto.class, name = "LINK")
+    @JsonSubTypes.Type(value = FullLinkProfileTailoringReferenceDto.class, name = "LINK"),
+    @JsonSubTypes.Type(value = ExportRiskProfileTailoringReference.class, name = "RISK"),
   })
   @Schema(description = "References to other catalog items in the same domain")
   private Set<AbstractProfileTailoringReferenceDto> tailoringReferences = new HashSet<>();

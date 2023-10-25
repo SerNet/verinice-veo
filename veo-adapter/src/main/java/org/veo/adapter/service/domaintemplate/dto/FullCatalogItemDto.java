@@ -80,11 +80,6 @@ public class FullCatalogItemDto extends AbstractTemplateItemDto
   @JsonSubTypes({
     @JsonSubTypes.Type(value = ExportLinkTailoringReference.class, name = "LINK_EXTERNAL"),
     @JsonSubTypes.Type(value = ExportLinkTailoringReference.class, name = "LINK"),
-    @JsonSubTypes.Type(value = FullTailoringReferenceDto.class, name = "OMIT"),
-    @JsonSubTypes.Type(value = FullTailoringReferenceDto.class, name = "COPY"),
-    @JsonSubTypes.Type(value = FullTailoringReferenceDto.class, name = "COPY_ALWAYS"),
-    @JsonSubTypes.Type(value = FullTailoringReferenceDto.class, name = "PART"),
-    @JsonSubTypes.Type(value = FullTailoringReferenceDto.class, name = "COMPOSITE")
   })
   @Schema(description = "References to other catalog items in the same domain")
   private Set<AbstractTailoringReferenceDto> tailoringReferences = new HashSet<>();

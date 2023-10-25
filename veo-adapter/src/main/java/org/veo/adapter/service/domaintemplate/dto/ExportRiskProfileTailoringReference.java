@@ -39,7 +39,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-class ExportRiskProfileTailoringReference extends AbstractProfileTailoringReferenceDto {
+public class ExportRiskProfileTailoringReference extends AbstractProfileTailoringReferenceDto {
 
   @Schema(implementation = IdRefCatalogReferenceCatalogItem.class)
   private IdRef<ProfileItem> mitigation;
