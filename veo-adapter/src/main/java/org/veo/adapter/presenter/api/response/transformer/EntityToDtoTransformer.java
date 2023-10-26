@@ -728,6 +728,7 @@ public final class EntityToDtoTransformer {
   public FullAssetInDomainDto transformAsset2Dto(Asset source, Domain domain) {
     var target = new FullAssetInDomainDto(source.getIdAsString());
     mapCompositeElementProperties(source, target, domain);
+    mapRiskAffectedProperties(source, target);
     target.setRiskValues(domainAssociationTransformer.mapRiskValues(source, domain));
     return target;
   }
@@ -760,6 +761,7 @@ public final class EntityToDtoTransformer {
   public FullProcessInDomainDto transformProcess2Dto(Process source, Domain domain) {
     var target = new FullProcessInDomainDto(source.getIdAsString());
     mapCompositeElementProperties(source, target, domain);
+    mapRiskAffectedProperties(source, target);
     target.setRiskValues(domainAssociationTransformer.mapRiskValues(source, domain));
     return target;
   }
@@ -774,6 +776,7 @@ public final class EntityToDtoTransformer {
   public FullScopeInDomainDto transformScope2Dto(Scope source, Domain domain) {
     var target = new FullScopeInDomainDto(source.getIdAsString());
     mapElementProperties(source, target, domain);
+    mapRiskAffectedProperties(source, target);
     target.setMembers(
         source.getMembers().stream()
             .map(m -> ElementInDomainIdRef.from(m, domain, referenceAssembler))
@@ -781,6 +784,14 @@ public final class EntityToDtoTransformer {
     target.setRiskDefinition(domainAssociationTransformer.mapRiskDefinition(source, domain));
     target.setRiskValues(domainAssociationTransformer.mapRiskValues(source, domain));
     return target;
+  }
+
+  private <TElement extends RiskAffected<TElement, ?>> void mapRiskAffectedProperties(
+      TElement source, RiskAffectedDto<TElement> target) {
+    target.setControlImplementations(
+        source.getControlImplementations().stream()
+            .map(ci -> mapControlImplementation(source, ci))
+            .collect(toSet()));
   }
 
   private <TElement extends CompositeElement<TElement>> void mapCompositeElementProperties(

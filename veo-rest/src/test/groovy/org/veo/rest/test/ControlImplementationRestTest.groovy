@@ -20,6 +20,7 @@ package org.veo.rest.test
 import org.veo.core.entity.EntityType
 
 class ControlImplementationRestTest extends VeoRestTest {
+    private String domainId
     private String unitId
     private String rootControl1Id
     private String rootControl2Id
@@ -30,7 +31,11 @@ class ControlImplementationRestTest extends VeoRestTest {
     private String person2Id
 
     def setup() {
-        unitId = postNewUnit()
+        domainId = post("/content-creation/domains", [
+            name: "CI/RI test domain ${UUID.randomUUID()}",
+            authority: "JJ",
+        ], 201, UserType.CONTENT_CREATOR).body.resourceId
+        unitId = postNewUnit().resourceId
 
         subControl1Id = post("/controls", [
             name: "sub control 1",
@@ -173,6 +178,60 @@ class ControlImplementationRestTest extends VeoRestTest {
         and: "RIs for the other CI are still present"
         get("/$elementType.pluralTerm/$elementId/requirement-implementations/$rootControl2Id")
         get("/$elementType.pluralTerm/$elementId/requirement-implementations/$subControl3Id")
+
+        where:
+        elementType << EntityType.RISK_AFFECTED_TYPES
+    }
+
+    def "CRUD CIs for #elementType.singularTerm with domain-specific API"() {
+        given:
+        defineSubTypeAndStatus(elementType)
+
+        when: "creating and fetching an element with two CIs"
+        def elementId = post("/domains/$domainId/$elementType.pluralTerm", [
+            name: "lame",
+            subType: "A",
+            status: "living",
+            owner: [targetUri: "http://localhost/units/$unitId"],
+            controlImplementations: [
+                [
+                    control: [targetUri: "/controls/$rootControl1Id"],
+                    description: "I have my reasons",
+                ],
+                [
+                    control: [targetUri: "/controls/$rootControl2Id"],
+                    responsible: [targetUri: "/persons/$person1Id"],
+                ],
+            ]
+        ]).body.resourceId
+        def retrievedElement = get("/$elementType.pluralTerm/$elementId").body
+
+        then: "CIs for both controls are present"
+        retrievedElement.controlImplementations.size() == 2
+        with(retrievedElement.controlImplementations.find { it.control.displayName.endsWith("root control 1") }) {
+            implementationStatus == "UNKNOWN"
+            description == "I have my reasons"
+        }
+        with(retrievedElement.controlImplementations.find { it.control.displayName.endsWith("root control 2") }) {
+            implementationStatus == "UNKNOWN"
+            responsible.displayName.endsWith("person 1")
+        }
+
+        when: "modifying CIs"
+        get("/domains/$domainId/$elementType.pluralTerm/$elementId").with {
+            body.controlImplementations.removeIf { it.control.targetUri.endsWith(rootControl1Id) }
+            body.controlImplementations
+                    .find { it.control.targetUri.endsWith(rootControl2Id) }
+                    .description = "I've made changes"
+            owner.put(body._self, body, getETag())
+        }
+
+        then: "changes have been applied"
+        with(get("/domains/$domainId/$elementType.pluralTerm/$elementId").body.controlImplementations) {
+            size() == 1
+            get(0).control.targetUri.endsWith(owner.rootControl2Id)
+            get(0).description == "I've made changes"
+        }
 
         where:
         elementType << EntityType.RISK_AFFECTED_TYPES
@@ -359,5 +418,17 @@ class ControlImplementationRestTest extends VeoRestTest {
 
         where:
         elementType << EntityType.RISK_AFFECTED_TYPES
+    }
+
+    String defineSubTypeAndStatus(EntityType type) {
+        put("/content-creation/domains/$domainId/element-type-definitions/${type.singularTerm}", [
+            subTypes: [
+                A: [
+                    statuses: [
+                        "living"
+                    ]
+                ]
+            ]
+        ], null, 204)
     }
 }
