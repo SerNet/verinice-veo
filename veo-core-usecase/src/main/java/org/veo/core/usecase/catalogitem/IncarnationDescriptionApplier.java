@@ -23,18 +23,22 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.veo.core.entity.Client;
 import org.veo.core.entity.CompositeElement;
+import org.veo.core.entity.Control;
 import org.veo.core.entity.Domain;
 import org.veo.core.entity.Element;
 import org.veo.core.entity.Identifiable;
 import org.veo.core.entity.Key;
 import org.veo.core.entity.LinkTailoringReference;
+import org.veo.core.entity.Person;
 import org.veo.core.entity.RiskAffected;
+import org.veo.core.entity.RiskTailoringReference;
 import org.veo.core.entity.Scenario;
 import org.veo.core.entity.Scope;
 import org.veo.core.entity.TailoringReference;
@@ -187,12 +191,16 @@ public class IncarnationDescriptionApplier {
           }
           // TODO #898 adapt to non-redundant tailoring reference system
           applyTailoringReference(
-              tailoringReference, element, target, item.requireDomainMembership());
+              tailoringReference, element, target, item.requireDomainMembership(), elementsByItem);
         });
   }
 
   private <T extends TemplateItem<T>> void applyTailoringReference(
-      TailoringReference<T> tailoringReference, Element origin, Element target, Domain domain) {
+      TailoringReference<T> tailoringReference,
+      Element origin,
+      Element target,
+      Domain domain,
+      Map<T, Element> elementsByItem) {
     log.debug(
         "Applying {} tailoring reference {} with target {}",
         tailoringReference.getReferenceType(),
@@ -205,7 +213,7 @@ public class IncarnationDescriptionApplier {
       case COMPOSITE -> addPart(target, origin);
       case SCOPE -> addScope(origin, target);
       case MEMBER -> addScope(target, origin);
-      case RISK -> addRisk(origin, target, domain);
+      case RISK -> addRisk(origin, target, domain, tailoringReference, elementsByItem);
       default -> throw new IllegalArgumentException(
           "Unexpected tailoring reference type %s"
               .formatted(tailoringReference.getReferenceType()));
@@ -247,9 +255,24 @@ public class IncarnationDescriptionApplier {
     }
   }
 
-  private static void addRisk(Element source, Element target, Domain domain) {
+  private static <T extends TemplateItem<T>> void addRisk(
+      Element source,
+      Element target,
+      Domain domain,
+      TailoringReference<T> tailoringReference,
+      Map<T, Element> elementsByItem) {
     if (source instanceof RiskAffected<?, ?> riskAffected && target instanceof Scenario scenario) {
-      riskAffected.obtainRisk(scenario, domain);
+      var risk = riskAffected.obtainRisk(scenario, domain);
+      if (tailoringReference instanceof RiskTailoringReference<T> riskTailoringReference) {
+        Optional.ofNullable(riskTailoringReference.getRiskOwner())
+            .map(elementsByItem::get)
+            .map(Person.class::cast)
+            .ifPresent(risk::appoint);
+        Optional.ofNullable(riskTailoringReference.getMitigation())
+            .map(elementsByItem::get)
+            .map(Control.class::cast)
+            .ifPresent(risk::mitigate);
+      }
     } else
       throw new ModelConsistencyException(
           "Cannot add risk for %s and %s".formatted(source.getModelType(), target.getModelType()));
